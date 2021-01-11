@@ -3,7 +3,7 @@ import { forceCheckOrVisible, LazyLoadComponent } from '../../../../../common-co
 import ManufacturingMillScheduleList from './manufacturing-mill-schedule';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import WokrderScheduleList from './worker-schedule';
+import WorkerScheduleList from './worker-schedule';
 
 class WorkSchedule extends Component {
     render() {
@@ -24,7 +24,7 @@ class WorkSchedule extends Component {
                     <div className="tab-pane" id="list-workder-schedule">
                         <LazyLoadComponent
                         >
-                            <WokrderScheduleList />
+                            <WorkerScheduleList />
                         </LazyLoadComponent>
                     </div>
                 </div>

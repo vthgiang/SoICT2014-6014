@@ -307,6 +307,7 @@ exports.links = [
             { path: '/task/tasks/:taskId/sub-tasks', method: 'GET' },
             { path: '/task/task-evaluations', method: 'GET' },
             { path: '/task/analys/user/:userId', method: 'GET' },
+            { path: '/task/time-sheet', method: 'GET' },
 
             // Perform-task
             { path: '/performtask/tasks/:taskId', method: 'GET' },
@@ -314,6 +315,7 @@ exports.links = [
             { path: '/performtask/task-timesheet-logs', method: 'GET' },
             { path: '/performtask/tasks/:taskId/timesheet-logs/start-timer', method: 'POST' },
             { path: '/performtask/tasks/:taskId/timesheet-logs/stop-timer', method: 'POST' },
+            { path: '/performtask/tasks/:taskId/timesheet-logs/:timesheetlogId', method: 'PATCH' },
             { path: '/performtask/:task', method: 'POST' },
             { path: '/performtask/tasks/:taskId/files', method: 'POST' },
             { path: '/performtask/tasks/:taskId/documents', method: 'PATCH' },
@@ -816,9 +818,6 @@ exports.links = [
         url: '/manage-sales-order',
         apis: ['@all']
     },{
-        url: '/manage-manufacturing-order',
-        apis: ['@all']
-    },{
         url: '/manage-purchase-order',
         apis: ['@all']
     },{
@@ -826,9 +825,6 @@ exports.links = [
         apis: ['@all']
     },{
         url: '/manage-sales-order-dashboard',
-        apis: ['@all']
-    },{
-        url: '/manage-manufacturing-order-dashboard',
         apis: ['@all']
     },{
         url: '/manage-discount',
@@ -839,7 +835,20 @@ exports.links = [
     },{
         url: '/manage-sla',
         apis: ['@all']
-    },{
+    },
+    {
+        url: '/manage-payment',
+        apis: ['@all']
+    },
+    {
+        url: '/manage-business-department',
+        apis: ['@all']
+    },
+    {
+        url: '/manage-bank-account',
+        apis: ['@all']
+    },
+    {
         url: '/crm/dashboard',
         apis: ['@all']
     },{

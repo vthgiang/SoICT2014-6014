@@ -16,7 +16,7 @@ class Payment extends Component {
         if (listTaxsByGoodId && listTaxsByGoodId.length) {
             options = listTaxsByGoodId.map((item) => {
                 return {
-                    value: item._id,
+                    value: item.code,
                     text: item.name + " -- " + item.percent + " (%)",
                 };
             });
@@ -60,7 +60,7 @@ class Payment extends Component {
                             <i className="fa  fa-money"></i> Thuế &ensp;
                         </span>
                         <SelectBox
-                            id={`select-sales-order-taxs-${this.getSelectTaxsId()}`}
+                            id={`select-sales-order-taxs-${this.getSelectTaxsId()}-create`}
                             className="form-control select2"
                             style={{ width: "100%" }}
                             value={taxs}

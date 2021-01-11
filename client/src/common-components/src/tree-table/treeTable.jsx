@@ -237,9 +237,8 @@ class TreeTable extends Component {
                 return <a
                     style={{ cursor: 'pointer' }}
                     onClick={() => !performtasks.currentTimer && this.props.funcStartTimer(id)}
-                    className={`timer ${performtasks.currentTimer && performtasks.currentTimer._id === id ? 'text-orange' : ''}`}
+                    className={`timer ${performtasks.currentTimer ? performtasks.currentTimer._id === id ? 'text-orange' : 'text-gray' : 'text-black'}`}
                     title={titleAction.startTimer}
-                    disabled={performtasks.currentTimer}
                 >
                     <i className="material-icons">timer</i>
                 </a>

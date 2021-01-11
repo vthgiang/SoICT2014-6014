@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import Swal from 'sweetalert2';
-import { DataTableSetting, DatePicker, PaginateBar, SelectMulti, Tree, TreeTable } from '../../../../common-components';
-import { getFormatDateFromTime } from '../../../../helpers/stringMethod';
+import { DataTableSetting, DatePicker, PaginateBar, SelectBox, SelectMulti, Tree, TreeTable } from '../../../../common-components';
+import { convertTime, getFormatDateFromTime } from '../../../../helpers/stringMethod';
 import { getStorage } from '../../../../config';
 
 import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
@@ -42,6 +42,7 @@ class TaskManagement extends Component {
                 creator: userId,
                 task: ""
             },
+            monthTimeSheetLog: ''
         };
     }
 
@@ -119,12 +120,35 @@ class TaskManagement extends Component {
         }
     }
 
-    startTimer = async (taskId) => {
+    startTimer = async (taskId, overrideTSLog = 'no') => {
         let userId = getStorage("userId");
         let timer = {
             creator: userId,
+            overrideTSLog
         };
-        this.props.startTimer(taskId, timer);
+        this.props.startTimer(taskId, timer).catch(err => {
+            let warning = Array.isArray(err.response.data.messages) ? err.response.data.messages : [err.response.data.messages];
+            if (warning[0] === 'time_overlapping') {
+                Swal.fire({
+                    title: `Bạn đã hẹn tắt bấm giờ cho công việc [ ${warning[1]} ]`,
+                    html: `<h4 class="text-red">Hủy bỏ bấm giờ làm việc và bấm giờ công việc mới</h4>`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Bấm giờ mới',
+                    cancelButtonText: 'Hủy'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        let timer = {
+                            creator: userId,
+                            overrideTSLog: 'yes'
+                        };
+                        this.props.startTimer(taskId, timer)
+                    }
+                })
+            }
+        })
     }
 
     // Hàm xử lý trạng thái lưu kho
@@ -452,9 +476,26 @@ class TaskManagement extends Component {
         }
     }
 
+    handleChangeMonthTimeSheetLog = (value) => {
+        this.setState({
+            monthTimeSheetLog: value
+        });
+    }
+
+    getTotalTimeSheet = (ts) => {
+        let total = 0;
+        for (let i = 0; i < ts.length; i++) {
+            let tslog = ts[i];
+            if (typeof (tslog.duration) === 'number' && tslog.acceptLog) {
+                total = total + Number(tslog.duration);
+            }
+        }
+        return convertTime(total);
+    }
+
     render() {
         const { tasks, user, translate, taskProject } = this.props;
-        const { currentTaskId, currentPage, currentTab, parentTask, startDate, endDate, perPage, status, displayType } = this.state;
+        const { currentTaskId, currentPage, currentTab, parentTask, startDate, endDate, perPage, status, monthTimeSheetLog } = this.state;
         let currentTasks, units = [];
         if (tasks) {
             currentTasks = tasks.tasks;
@@ -496,7 +537,7 @@ class TaskManagement extends Component {
                 if (dataTemp[0].isArchived === true) {
                     archived = "restore";
                 }
-                if (dataTemp[n].creator._id === userId || dataTemp[n].informedEmployees.indexOf(userId) !== -1) {
+                if (dataTemp[n].creator && dataTemp[n].creator._id === userId || dataTemp[n].informedEmployees.indexOf(userId) !== -1) {
                     let del = null;
                     if (dataTemp[n].creator._id === userId) {
                         del = "delete";
@@ -597,195 +638,197 @@ class TaskManagement extends Component {
         }
 
         return (
-            <div className="box">
-                <div className="box-body qlcv">
-                    <div style={{ height: "40px" }}>
-                        <button type="button" style={{ borderRadius: 0, marginLeft: 10 }} className="btn btn-default" title="Dạng bảng" onClick={() => this.handleDisplayType('table')}><i className="fa fa-list"></i> Dạng bảng</button>
-                        <button type="button" style={{ borderRadius: 0, marginLeft: 10 }} className="btn btn-default" title="Dạng cây" onClick={() => this.handleDisplayType('tree')}><i className="fa fa-sitemap"></i> Dạng cây</button>
-                        <button type="button" style={{ borderRadius: 0, marginLeft: 10 }} className="btn btn-default" onClick={() => { window.$('#tasks-filter').slideToggle() }}><i className="fa fa-filter"></i> Lọc</button>
-                        {currentTab !== "informed" &&
-                            <button type="button" onClick={() => { this.handleAddTask("") }} className="btn btn-success pull-right" title={translate('task.task_management.add_title')}>{translate('task.task_management.add_task')}</button>
-                        }
-                        <TaskAddModal currentTasks={(currentTasks && currentTasks.length !== 0) && this.list_to_tree(currentTasks)} parentTask={parentTask} />
-                    </div>
-
-                    <div id="tasks-filter" className="form-inline" style={{ display: 'none' }}>
-                        <div className="form-group">
-                            <label>{translate('task.task_management.department')}</label>
-                            {units &&
-                                <SelectMulti id="multiSelectUnit1"
-                                    defaultValue={units.map(item => item._id)}
-                                    items={units.map(item => { return { value: item._id, text: item.name } })}
-                                    onChange={this.handleSelectOrganizationalUnit}
-                                    options={{ nonSelectedText: units.length !== 0 ? translate('task.task_management.select_department') : "Bạn chưa có đơn vị", allSelectedText: translate(`task.task_management.select_all_department`) }}>
-                                </SelectMulti>
+            <React.Fragment>
+                <div className="box">
+                    <div className="box-body qlcv">
+                        <div style={{ height: "40px" }}>
+                            <button type="button" style={{ borderRadius: 0, marginLeft: 10 }} className="btn btn-default" title="Dạng bảng" onClick={() => this.handleDisplayType('table')}><i className="fa fa-list"></i> Dạng bảng</button>
+                            <button type="button" style={{ borderRadius: 0, marginLeft: 10 }} className="btn btn-default" title="Dạng cây" onClick={() => this.handleDisplayType('tree')}><i className="fa fa-sitemap"></i> Dạng cây</button>
+                            <button type="button" style={{ borderRadius: 0, marginLeft: 10 }} className="btn btn-default" onClick={() => { window.$('#tasks-filter').slideToggle() }}><i className="fa fa-filter"></i> Lọc</button>
+                            {currentTab !== "informed" &&
+                                <button type="button" onClick={() => { this.handleAddTask("") }} className="btn btn-success pull-right" title={translate('task.task_management.add_title')}>{translate('task.task_management.add_task')}</button>
                             }
-                        </div>
-                        <div className="form-group">
-                            <label>{translate('task.task_management.status')}</label>
-                            <SelectMulti id="multiSelectStatus"
-                                value={status}
-                                items={[
-                                    { value: "inprocess", text: translate('task.task_management.inprocess') },
-                                    { value: "wait_for_approval", text: translate('task.task_management.wait_for_approval') },
-                                    { value: "finished", text: translate('task.task_management.finished') },
-                                    { value: "delayed", text: translate('task.task_management.delayed') },
-                                    { value: "canceled", text: translate('task.task_management.canceled') }
-                                ]}
-                                onChange={this.handleSelectStatus}
-                                options={{ nonSelectedText: translate('task.task_management.select_status'), allSelectedText: translate('task.task_management.select_all_status') }}>
-                            </SelectMulti>
-                        </div>
-                        <div className="form-group">
-                            <label>{translate('task.task_management.priority')}</label>
-                            <SelectMulti id="multiSelectPriority" defaultValue={[
-                                translate('task.task_management.urgent'),
-                                translate('task.task_management.high'),
-                                translate('task.task_management.standard'),
-                                translate('task.task_management.average'),
-                                translate('task.task_management.low'),
-                            ]}
-                                items={[
-                                    { value: "5", text: translate('task.task_management.urgent') },
-                                    { value: "4", text: translate('task.task_management.high') },
-                                    { value: "3", text: translate('task.task_management.standard') },
-                                    { value: "2", text: translate('task.task_management.average') },
-                                    { value: "1", text: translate('task.task_management.low') },
-                                ]}
-                                onChange={this.handleSelectPriority}
-                                options={{ nonSelectedText: translate('task.task_management.select_priority'), allSelectedText: translate('task.task_management.select_all_priority') }}>
-                            </SelectMulti>
+                            <TaskAddModal currentTasks={(currentTasks && currentTasks.length !== 0) && this.list_to_tree(currentTasks)} parentTask={parentTask} />
                         </div>
 
-                        <div className="form-group">
-                            <label>{translate('task.task_management.special')}</label>
-                            <SelectMulti id="multiSelectCharacteristic" defaultValue={[
-                                translate('task.task_management.store'),
-                                translate('task.task_management.current_month')
-                            ]}
-                                items={[
-                                    { value: "Lưu trong kho", text: translate('task.task_management.stored') },
-                                    { value: "Tháng hiện tại", text: translate('task.task_management.current_month') }
+                        <div id="tasks-filter" className="form-inline" style={{ display: 'none' }}>
+                            <div className="form-group">
+                                <label>{translate('task.task_management.department')}</label>
+                                {units &&
+                                    <SelectMulti id="multiSelectUnit1"
+                                        defaultValue={units.map(item => item._id)}
+                                        items={units.map(item => { return { value: item._id, text: item.name } })}
+                                        onChange={this.handleSelectOrganizationalUnit}
+                                        options={{ nonSelectedText: units.length !== 0 ? translate('task.task_management.select_department') : "Bạn chưa có đơn vị", allSelectedText: translate(`task.task_management.select_all_department`) }}>
+                                    </SelectMulti>
+                                }
+                            </div>
+                            <div className="form-group">
+                                <label>{translate('task.task_management.status')}</label>
+                                <SelectMulti id="multiSelectStatus"
+                                    value={status}
+                                    items={[
+                                        { value: "inprocess", text: translate('task.task_management.inprocess') },
+                                        { value: "wait_for_approval", text: translate('task.task_management.wait_for_approval') },
+                                        { value: "finished", text: translate('task.task_management.finished') },
+                                        { value: "delayed", text: translate('task.task_management.delayed') },
+                                        { value: "canceled", text: translate('task.task_management.canceled') }
+                                    ]}
+                                    onChange={this.handleSelectStatus}
+                                    options={{ nonSelectedText: translate('task.task_management.select_status'), allSelectedText: translate('task.task_management.select_all_status') }}>
+                                </SelectMulti>
+                            </div>
+                            <div className="form-group">
+                                <label>{translate('task.task_management.priority')}</label>
+                                <SelectMulti id="multiSelectPriority" defaultValue={[
+                                    translate('task.task_management.urgent'),
+                                    translate('task.task_management.high'),
+                                    translate('task.task_management.standard'),
+                                    translate('task.task_management.average'),
+                                    translate('task.task_management.low'),
                                 ]}
-                                onChange={this.handleSelectSpecial}
-                                options={{ nonSelectedText: translate('task.task_management.select_special'), allSelectedText: translate('task.task_management.select_all_special') }}>
-                            </SelectMulti>
-                        </div>
-                        <div className="form-group">
-                            <label>{translate('task.task_management.name')}</label>
-                            <input className="form-control" type="text" placeholder={translate('task.task_management.search_by_name')} name="name" onChange={(e) => this.handleChangeName(e)} />
-                        </div>
+                                    items={[
+                                        { value: "5", text: translate('task.task_management.urgent') },
+                                        { value: "4", text: translate('task.task_management.high') },
+                                        { value: "3", text: translate('task.task_management.standard') },
+                                        { value: "2", text: translate('task.task_management.average') },
+                                        { value: "1", text: translate('task.task_management.low') },
+                                    ]}
+                                    onChange={this.handleSelectPriority}
+                                    options={{ nonSelectedText: translate('task.task_management.select_priority'), allSelectedText: translate('task.task_management.select_all_priority') }}>
+                                </SelectMulti>
+                            </div>
 
-                        <div className="form-group">
-                            <label>{translate('task.task_management.role')}</label>
-                            <SelectMulti id="select-task-role"
-                                items={[
-                                    { value: "responsible", text: translate('task.task_management.responsible') },
-                                    { value: "accountable", text: translate('task.task_management.accountable') },
-                                    { value: "consulted", text: translate('task.task_management.consulted') },
-                                    { value: "creator", text: translate('task.task_management.creator') },
-                                    { value: "informed", text: translate('task.task_management.informed') },
+                            <div className="form-group">
+                                <label>{translate('task.task_management.special')}</label>
+                                <SelectMulti id="multiSelectCharacteristic" defaultValue={[
+                                    translate('task.task_management.store'),
+                                    translate('task.task_management.current_month')
                                 ]}
-                                value={currentTab}
-                                onChange={this.handleRoleChange}
-                                options={{ nonSelectedText: translate('task.task_management.select_role'), allSelectedText: translate('task.task_management.select_all_role') }}>
-                            </SelectMulti>
-                        </div>
+                                    items={[
+                                        { value: "stored", text: translate('task.task_management.stored') },
+                                        { value: "currentMonth", text: translate('task.task_management.current_month') }
+                                    ]}
+                                    onChange={this.handleSelectSpecial}
+                                    options={{ nonSelectedText: translate('task.task_management.select_special'), allSelectedText: translate('task.task_management.select_all_special') }}>
+                                </SelectMulti>
+                            </div>
+                            <div className="form-group">
+                                <label>{translate('task.task_management.name')}</label>
+                                <input className="form-control" type="text" placeholder={translate('task.task_management.search_by_name')} name="name" onChange={(e) => this.handleChangeName(e)} />
+                            </div>
 
-                        <div className="form-group">
-                            <label>{translate('task.task_management.start_date')}</label>
-                            <DatePicker
-                                id="start-date"
-                                dateFormat="month-year"
-                                value={startDate}
-                                onChange={this.handleChangeStartDate}
-                                disabled={false}
+                            <div className="form-group">
+                                <label>{translate('task.task_management.role')}</label>
+                                <SelectMulti id="select-task-role"
+                                    items={[
+                                        { value: "responsible", text: translate('task.task_management.responsible') },
+                                        { value: "accountable", text: translate('task.task_management.accountable') },
+                                        { value: "consulted", text: translate('task.task_management.consulted') },
+                                        { value: "creator", text: translate('task.task_management.creator') },
+                                        { value: "informed", text: translate('task.task_management.informed') },
+                                    ]}
+                                    value={currentTab}
+                                    onChange={this.handleRoleChange}
+                                    options={{ nonSelectedText: translate('task.task_management.select_role'), allSelectedText: translate('task.task_management.select_all_role') }}>
+                                </SelectMulti>
+                            </div>
+
+                            <div className="form-group">
+                                <label>{translate('task.task_management.start_date')}</label>
+                                <DatePicker
+                                    id="start-date"
+                                    dateFormat="month-year"
+                                    value={startDate}
+                                    onChange={this.handleChangeStartDate}
+                                    disabled={false}
+                                />
+                            </div>
+
+                            <div className="form-group">
+                                <label>{translate('task.task_management.end_date')}</label>
+                                <DatePicker
+                                    id="end-date"
+                                    dateFormat="month-year"
+                                    value={endDate}
+                                    onChange={this.handleChangeEndDate}
+                                    disabled={false}
+                                />
+                            </div>
+
+                            <div className="form-group">
+                                <label></label>
+                                <button type="button" className="btn btn-success" onClick={this.handleUpdateData}>{translate('task.task_management.search')}</button>
+                            </div>
+
+                            <DataTableSetting
+                                tableId="tree-table"
+                                tableContainerId="tree-table-container"
+                                columnArr={[
+                                    translate('task.task_management.col_name'),
+                                    translate('task.task_management.col_organization'),
+                                    translate('task.task_management.col_priority'),
+                                    translate('task.task_management.col_start_date'),
+                                    translate('task.task_management.col_end_date'),
+                                    translate('task.task_management.col_status'),
+                                    translate('task.task_management.col_progress'),
+                                    translate('task.task_management.col_logged_time')
+                                ]}
+                                limit={perPage}
+                                setLimit={this.setLimit}
+                                hideColumnOption={true}
+                                className="pull-right btn btn-default"
+                                style={{ borderRadius: 0 }}
+                                fontSize={16}
+                                text="Thiết lập"
                             />
                         </div>
 
-                        <div className="form-group">
-                            <label>{translate('task.task_management.end_date')}</label>
-                            <DatePicker
-                                id="end-date"
-                                dateFormat="month-year"
-                                value={endDate}
-                                onChange={this.handleChangeEndDate}
-                                disabled={false}
+                        {
+                            currentTaskId &&
+                            <ModalPerform
+                                units={units}
+                                id={currentTaskId}
+                            />
+                        }
+
+                        <div id="tree-table-container" style={{ marginTop: '30px' }}>
+                            <TreeTable
+                                behaviour="show-children"
+                                column={column}
+                                data={data}
+                                titleAction={{
+                                    edit: translate('task.task_management.action_edit'),
+                                    delete: translate('task.task_management.action_delete'),
+                                    store: translate('task.task_management.action_store'),
+                                    restore: translate('task.task_management.action_restore'),
+                                    add: translate('task.task_management.action_add'),
+                                    startTimer: translate('task.task_management.action_start_timer'),
+                                }}
+                                funcEdit={this.handleShowModal}
+                                funcAdd={this.handleAddTask}
+                                funcStartTimer={this.startTimer}
+                                funcStore={this.handleStore}
+                                funcDelete={this.handleDelete}
+                            />
+                        </div>
+                        <div id="tasks-list-tree" style={{ display: 'none', marginTop: '30px' }}>
+                            <Tree id="tasks-list-treeview"
+                                plugins={false}
+                                onChanged={this.handleShowTask}
+                                data={dataTree}
                             />
                         </div>
 
-                        <div className="form-group">
-                            <label></label>
-                            <button type="button" className="btn btn-success" onClick={this.handleUpdateData}>{translate('task.task_management.search')}</button>
-                        </div>
-
-                        <DataTableSetting
-                            tableId="tree-table"
-                            tableContainerId="tree-table-container"
-                            columnArr={[
-                                translate('task.task_management.col_name'),
-                                translate('task.task_management.col_organization'),
-                                translate('task.task_management.col_priority'),
-                                translate('task.task_management.col_start_date'),
-                                translate('task.task_management.col_end_date'),
-                                translate('task.task_management.col_status'),
-                                translate('task.task_management.col_progress'),
-                                translate('task.task_management.col_logged_time')
-                            ]}
-                            limit={perPage}
-                            setLimit={this.setLimit}
-                            hideColumnOption={true}
-                            className="pull-right btn btn-default"
-                            style={{ borderRadius: 0 }}
-                            fontSize={16}
-                            text="Thiết lập"
+                        <PaginateBar
+                            pageTotal={tasks.pages}
+                            currentPage={currentPage}
+                            func={this.handleGetDataPagination}
                         />
+
                     </div>
-
-                    {
-                        currentTaskId &&
-                        <ModalPerform
-                            units={units}
-                            id={currentTaskId}
-                        />
-                    }
-
-                    <div id="tree-table-container" style={{ marginTop: '30px' }}>
-                        <TreeTable
-                            behaviour="show-children"
-                            column={column}
-                            data={data}
-                            titleAction={{
-                                edit: translate('task.task_management.action_edit'),
-                                delete: translate('task.task_management.action_delete'),
-                                store: translate('task.task_management.action_store'),
-                                restore: translate('task.task_management.action_restore'),
-                                add: translate('task.task_management.action_add'),
-                                startTimer: translate('task.task_management.action_start_timer'),
-                            }}
-                            funcEdit={this.handleShowModal}
-                            funcAdd={this.handleAddTask}
-                            funcStartTimer={this.startTimer}
-                            funcStore={this.handleStore}
-                            funcDelete={this.handleDelete}
-                        />
-                    </div>
-                    <div id="tasks-list-tree" style={{ display: 'none', marginTop: '30px' }}>
-                        <Tree id="tasks-list-treeview"
-                            plugins={false}
-                            onChanged={this.handleShowTask}
-                            data={dataTree}
-                        />
-                    </div>
-
-                    <PaginateBar
-                        pageTotal={tasks.pages}
-                        currentPage={currentPage}
-                        func={this.handleGetDataPagination}
-                    />
-
-                </div>
-            </div >
+                </div >
+            </React.Fragment>
         );
     }
 }

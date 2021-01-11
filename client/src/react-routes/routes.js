@@ -129,6 +129,8 @@ import SalesOrderDashboard from "../modules/production/order/sales-order-dashboa
 import Tax from "../modules/production/order/tax/components";
 import ServiceLevelAgreement from "../modules/production/order/service-level-agreement/components";
 import BusinessDepartment from "../modules/production/order/business-department/components";
+import Payment from "../modules/production/order/payment/components";
+import BankAccount from "../modules/production/order/bank-account/components";
 
 // plans
 import PlanManagement from "../modules/plan/components";
@@ -2065,6 +2067,46 @@ class Routes extends Component {
                         pageName={"manage_business_department"}
                         layout={Layout}
                         component={BusinessDepartment}
+                    /> 
+
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"/manage-bank-account"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/manage-bank-account",
+                                name: "manage_bank_account",
+                                icon: "fa fa-address-card",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/manage-bank-account"}
+                        path={"/manage-bank-account"}
+                        pageName={"manage_bank_account"}
+                        layout={Layout}
+                        component={BankAccount}
+                    />
+
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"/manage-payment"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/manage-payment",
+                                name: "manage_payment",
+                                icon: "fa fa-address-card",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/manage-payment"}
+                        path={"/manage-payment"}
+                        pageName={"manage_payment"}
+                        layout={Layout}
+                        component={Payment}
                     />
 
                     {/* Plans Management */}

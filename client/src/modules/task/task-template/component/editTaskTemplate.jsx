@@ -124,7 +124,7 @@ class EditTaskTemplate extends Component {
                 taskTemplateId: nextProps.taskTemplateId,
                 editingTemplate: {
                     _id: nextProps.taskTemplate._id,
-                    organizationalUnit: nextProps.taskTemplate.organizationalUnit._id,
+                    organizationalUnit: nextProps.taskTemplate.organizationalUnit,
                     collaboratedWithOrganizationalUnits: nextProps.taskTemplate.collaboratedWithOrganizationalUnits,
                     name: nextProps.taskTemplate.name,
                     readByEmployees: nextProps.taskTemplate.readByEmployees,
@@ -480,8 +480,6 @@ class EditTaskTemplate extends Component {
         var allUnitsMember = getEmployeeSelectBoxItems(usersInUnitsOfCompany);
         // let unitMembers = getEmployeeSelectBoxItems(usersOfChildrenOrganizationalUnit);
 
-        console.log("editting tasktemplate action: ", editingTemplate.taskActions, this.state.showMore)
-
         return (
             <React.Fragment>
                 {/**Form chứa thông tin của mẫu công việc đang sửa */}
@@ -509,7 +507,7 @@ class EditTaskTemplate extends Component {
                                         })
                                     }
                                     onChange={this.handleTaskTemplateUnit}
-                                    value={editingTemplate.organizationalUnit._id}
+                                    value={editingTemplate.organizationalUnit}
                                     multiple={false}
 
                                 />
@@ -705,12 +703,12 @@ class EditTaskTemplate extends Component {
                     <div className="row">
                         <div className={`${isProcess ? "col-lg-12" : "col-sm-6"}`}>
                             {/**Các hoạt động mẫu công việc này */}
-                            <ActionForm initialData={editingTemplate.taskActions} onDataChange={this.handleTaskActionsChange} />
+                            <ActionForm initialData={editingTemplate.taskActions} onDataChange={this.handleTaskActionsChange} type="edit" />
                         </div>
 
                         <div className={`${isProcess ? "col-lg-12" : "col-sm-6"}`}>
                             {/**Các hoạt động mẫu công việc này */}
-                            <InformationForm initialData={editingTemplate.taskInformations} onDataChange={this.handleTaskInformationsChange} />
+                            <InformationForm initialData={editingTemplate.taskInformations} onDataChange={this.handleTaskInformationsChange} type="edit" />
                         </div>
 
                     </div>

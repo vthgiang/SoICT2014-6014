@@ -70,32 +70,11 @@ class ActionForm extends Component {
         });
     }
 
-    /**
-     * Bộ xử lý cho Action Form 
-    **/
-    isActionFormValidated = () => {
-        let result =
-            this.validateActionName(this.state.action.name, false)
-        return result;
-    }
-
     handleChangeActionName = (event) => {
         let value = event.target.value;
-        this.validateActionName(value, true);
-    }
-    validateActionName = (value, willUpdateState = true) => {
-        let msg = TaskTemplateFormValidator.validateActionName(value);
-
-        if (willUpdateState) {
-            this.state.action.name = value;
-            this.state.action.errorOnName = msg;
-            this.setState(state => {
-                return {
-                    ...state,
-                };
-            });
-        }
-        return msg === undefined;
+        let { action } = this.state;
+        action.name = value;
+        this.setState({ action });
     }
 
     handleChangeActionDesc = (value, imgs) => {
@@ -111,12 +90,9 @@ class ActionForm extends Component {
 
     handleChangeActionMandatory = (event) => {
         let value = event.target.checked;
-        this.state.action.mandatory = value;
-        this.setState(state => {
-            return {
-                ...state
-            };
-        });
+        let { action } = this.state;
+        action.mandatory = value;
+        this.setState({ action });
     }
     /** cancel editing an action*/
     handleCancelEditAction = (event) => {
@@ -225,11 +201,8 @@ class ActionForm extends Component {
 
                 {/**Tên hoạt động  */}
                 <div className={`form-group ${this.state.action.errorOnName === undefined ? "" : "has-error"}`} >
-                    <label className="control-label">{translate('task_template.action_name')}<span className="text-red">*</span></label>
-                    <div>
-                        <input type="text" className="form-control" placeholder={translate('task_template.action_name')} value={action.name} onChange={this.handleChangeActionName} />
-                        <ErrorLabel content={this.state.action.errorOnName} />
-                    </div>
+                    <label className="control-label">{translate('task_template.action_name')}</label>
+                    <input type="text" className="form-control" placeholder={translate('task_template.action_name')} value={action.name} onChange={this.handleChangeActionName} />
                 </div>
 
                 {/**Mô tả hoạt động*/}
@@ -239,6 +212,7 @@ class ActionForm extends Component {
                         id={`actionsTemplate${type}`}
                         getTextData={this.handleChangeActionDesc}
                         quillValueDefault={quillValueDefault}
+                        embeds={false}
                     />
                 </div>
 
@@ -255,9 +229,9 @@ class ActionForm extends Component {
                     {this.state.editAction ?
                         <React.Fragment>
                             <button className="btn btn-success" style={{ marginLeft: "10px" }} onClick={this.handleCancelEditAction}>{translate('task_template.cancel_editing')}</button>
-                            <button className="btn btn-success" style={{ marginLeft: "10px" }} disabled={!this.isActionFormValidated()} onClick={this.handleSaveEditedAction}>{translate('task_template.save')}</button>
+                            <button className="btn btn-success" style={{ marginLeft: "10px" }} onClick={this.handleSaveEditedAction}>{translate('task_template.save')}</button>
                         </React.Fragment> :
-                        <button className="btn btn-success" style={{ marginLeft: "10px" }} disabled={!this.isActionFormValidated()} onClick={this.handleAddAction}>{translate('task_template.add')}</button>
+                        <button className="btn btn-success" style={{ marginLeft: "10px" }} onClick={this.handleAddAction}>{translate('task_template.add')}</button>
                     }
                     <button className="btn btn-primary" style={{ marginLeft: "10px" }} onClick={this.handleClearAction}>{translate('task_template.delete')}</button>
                 </div>

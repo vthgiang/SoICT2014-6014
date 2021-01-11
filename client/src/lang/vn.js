@@ -1169,7 +1169,9 @@ export default {
             manage_discount: "Giảm giá",
             manage_tax: "Thuế",
             manage_sla: "Cam kết chất lượng",
-            manage_business_department: "Phòng ban kinh doanh",
+            manage_business_department: "Cấu hình đơn vị kinh doanh",
+            manage_payment: "Quản lý thu chi",
+            manage_bank_account: "Quản lý thông tin tài khoản ngân hàng",
 
             // Quản lý kế hoạch sản xuất
             manage_plans: "Quản lý kế hoạch sản xuất",
@@ -1732,6 +1734,8 @@ export default {
                 intermediate_degree: "Trung cấp",
                 colleges: "Cao đẳng",
                 university: "Đại học",
+                engineer: "Kỹ sư",
+                bachelor: "Cử nhân",
                 master_degree: "Thạc sỹ",
                 engineer: 'Kỹ sư',
                 bachelor: 'Cử nhân',
@@ -2600,6 +2604,7 @@ export default {
                 recommend_units: "Đơn vị đề nghị",
                 accountable: "Người phê duyệt",
                 note: "Ghi chú",
+                time_created: "Thời gian lập phiếu",
 
                 //Thông điệp trả về từ server
                 get_usage_success: "Lấy thông tin sử dụng thành công",
@@ -2988,6 +2993,7 @@ export default {
                 detail_priority: "Độ ưu tiên công việc",
                 detail_status: "Trạng thái công việc",
                 detail_time: "Thời gian thực hiện công việc",
+                detail_average_results: "Kết quả trung bình công việc",
 
                 detail_general_info: "Thông tin chung",
                 detail_description: "Mô tả",
@@ -3003,6 +3009,8 @@ export default {
                 detail_not_auto: "Chưa có điểm tự động",
                 detail_not_emp: "Chưa tự đánh giá",
                 detail_not_acc: "Chưa có điểm phê duyệt",
+                detail_not_coefficient: "Không theo hệ số",
+                detail_coefficient: "Theo hệ số",
 
                 detail_not_eval_on_month: "Chưa đánh giá tháng này",
                 detail_not_eval: "Chưa ai đánh giá công việc tháng này",
@@ -3360,6 +3368,7 @@ export default {
                 edit_task_information_failure: "Chỉnh sửa thông tin thất bại",
                 edit_document_task_comment_failure:
                     "Chỉnh sửa tài liệu thất bại",
+                time_overlapping: 'Thời điểm bắt đầu không hợp lệ. (Tồn tại một công việc tắt bấm giờ tự động trong khoảng thời gian này)',
 
                 // error label
                 err_require: "Trường này phải có giá trị",
@@ -4911,6 +4920,10 @@ export default {
                     color: "red",
                     content: "Đã hủy",
                 },
+                6: {
+                    color: "#26f2da",
+                    content: "Mới tạo"
+                },
                 //mill
                 choose_all_mill: "Tất cả các xưởng",
                 manufacturing_mill_schedule_list: "Lịch sản xuất của xưởng",
@@ -4970,7 +4983,7 @@ export default {
                 progress_1: "Đúng tiến độ",
                 progress_2: "Chậm tiến độ",
                 progress_3: "Quá hạn",
-
+                schedule_info: "Xưởng và công nhân",
                 general_info: "Thông tin chung",
                 material_info: "Nguyên vật liệu",
                 command_info: "Lệnh sản xuất",
@@ -5036,6 +5049,25 @@ export default {
                 list_order: "Danh sách đơn hàng",
                 manufacturing_command_info: "Thông tin lệnh sản xuất",
                 history_info: "Lịch sử sản xuất theo mặt hàng",
+                schedule_booking: "Chọn xưởng sản xuất và phân việc công nhân",
+                choose_mill: "Chọn xưởng sản xuất",
+                turn_number_suggest: "Số ca đề xuất",
+                worker_number_suggest: "Số công nhân đề xuất",
+                start_date_command: "Ngày bắt đầu",
+                start_turn: "Ca bắt đầu",
+                end_date_command: "Ngày kết thúc",
+                end_turn: "Ca kết thúc",
+                responsible: "Người thực hiện",
+                choose_mill_error: "Vui lòng chọn xưởng sản xuất!",
+                choose_mill_error_on_good: "Xưởng không thể sản xuất mặt hàng này!",
+                month_lower_case: "tháng",
+                month_upper_case: "Tháng",
+                work_schedule: "Lịch sản xuất",
+                next: "Sau",
+                prev: "Trước",
+                choose_start_date: "Không được để trống thời gian",
+                choose_end_date: "Không được để trống thời gian",
+                choose_date_error: "Ngày bắt đầu phải trước hoặc bằng ngày kết thúc"
 
 
 
@@ -5079,6 +5111,10 @@ export default {
                 5: {
                     color: "red",
                     content: "Đã hủy",
+                },
+                6: {
+                    color: "#26f2da",
+                    content: "Mới tạo"
                 },
                 choose_status: "Chọn trạng thái",
                 choose_all: "Chọn tất cả",

@@ -60,6 +60,15 @@ exports.getAllManufacturingMills = async (query, portal) => {
                 $in: organizationalUnitId
             }
         });
+
+        // Lấy ra các nhà máy mà currentRole cũng quản lý
+        let listWorksByManageRole = await ManufacturingWorks(connect(DB_CONNECTION, portal)).find({
+            manageRoles: {
+                $in: role
+            }
+        })
+        listManufacturingWorks = [...listManufacturingWorks, ...listWorksByManageRole];
+
         let listWorksId = listManufacturingWorks.map(x => x._id);
         option.manufacturingWorks = {
             $in: listWorksId

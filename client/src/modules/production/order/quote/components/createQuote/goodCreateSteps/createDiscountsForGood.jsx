@@ -14,14 +14,6 @@ class CreateDiscountsForGood extends Component {
         };
     }
 
-    // static getDerivedStateFromProps(nextProps, prevState) {
-    //     if (nextProps.goodId !== prevState.goodId) {
-    //         return {
-    //             goodId: nextProps.goodId,
-    //         };
-    //     }
-    // }
-
     getDiscountValue = (idCheckBox) => {
         let { listDiscountsByGoodId } = this.props.goods.goodItems;
         let { goodId } = this.props;

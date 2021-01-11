@@ -155,9 +155,9 @@ const COMPONENTS = [{
         ROOT_ROLES.ADMIN.name
     ],
     links: [
-        '/manage-manufacturing-plan',
+        '/manage-work-schedule',
     ],
-},{
+}, {
     name: 'create-stock-button',
     description: 'Button thêm mới kho',
     roles: [
@@ -992,19 +992,6 @@ const LINKS = [{
     components: getComponentsInLink('/manage-sales-order'),
 },
 {
-    url: "/manage-manufacturing-order",
-    description: "Đơn hàng sản xuất",
-    category: LINK_CATEGORY.ORDER.name,
-    roles: [
-        ROOT_ROLES.SUPER_ADMIN.name,
-        ROOT_ROLES.ADMIN.name,
-        ROOT_ROLES.MANAGER.name,
-        ROOT_ROLES.DEPUTY_MANAGER.name,
-        ROOT_ROLES.EMPLOYEE.name,
-    ],
-    components: getComponentsInLink('/manage-manufacturing-order'),
-},
-{
     url: "/manage-purchase-order",
     description: "Đơn mua hàng",
     category: LINK_CATEGORY.ORDER.name,
@@ -1042,19 +1029,6 @@ const LINKS = [{
         ROOT_ROLES.EMPLOYEE.name,
     ],
     components: getComponentsInLink('/manage-sales-order-dashboard'),
-},
-{
-    url: "/manage-manufacturing-order-dashboard",
-    description: "Dashboard đơn sản xuất",
-    category: LINK_CATEGORY.ORDER.name,
-    roles: [
-        ROOT_ROLES.SUPER_ADMIN.name,
-        ROOT_ROLES.ADMIN.name,
-        ROOT_ROLES.MANAGER.name,
-        ROOT_ROLES.DEPUTY_MANAGER.name,
-        ROOT_ROLES.EMPLOYEE.name,
-    ],
-    components: getComponentsInLink('/manage-manufacturing-order-dashboard'),
 },
 {
     url: "/manage-discount",
@@ -1097,6 +1071,19 @@ const LINKS = [{
     components: getComponentsInLink('/manage-sla'),
 },
 {
+    url: "/manage-payment",
+    description: "Quản lý thu chi",
+    category: LINK_CATEGORY.ORDER.name,
+    roles: [
+        ROOT_ROLES.SUPER_ADMIN.name,
+        ROOT_ROLES.ADMIN.name,
+        ROOT_ROLES.MANAGER.name,
+        ROOT_ROLES.DEPUTY_MANAGER.name,
+        ROOT_ROLES.EMPLOYEE.name,
+    ],
+    components: getComponentsInLink('/manage-payment'),
+},
+{
     url: "/manage-business-department",
     description: "Phòng ban liên quan quản lý đơn hàng",
     category: LINK_CATEGORY.ORDER.name,
@@ -1108,20 +1095,20 @@ const LINKS = [{
         // ROOT_ROLES.EMPLOYEE.name,
     ],
     components: getComponentsInLink('/manage-business-department'),
-},
-{
-    url: "/manage-admin-department",
-    description: "Phòng kế toán bán hàng",
-    category: LINK_CATEGORY.ORDER.name,
-    roles: [
-        ROOT_ROLES.SUPER_ADMIN.name,
-        ROOT_ROLES.ADMIN.name,
-        ROOT_ROLES.MANAGER.name,
-        ROOT_ROLES.DEPUTY_MANAGER.name,
-        ROOT_ROLES.EMPLOYEE.name,
-    ],
-    components: getComponentsInLink('/manage-admin-department'),
-},
+    },
+    {
+        url: "/manage-bank-account",
+        description: "Số tài khoản ngân hàng",
+        category: LINK_CATEGORY.ORDER.name,
+        roles: [
+            // ROOT_ROLES.SUPER_ADMIN.name,
+            ROOT_ROLES.ADMIN.name,
+            // ROOT_ROLES.MANAGER.name,
+            // ROOT_ROLES.DEPUTY_MANAGER.name,
+            // ROOT_ROLES.EMPLOYEE.name,
+        ],
+        components: getComponentsInLink('/manage-bank-account'),
+    },
 {
     url: '/crm/dashboard',
     description: `Bảng tin quản lý khách hàng`,

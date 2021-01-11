@@ -6,7 +6,8 @@ export const worksActions = {
     getAllManufacturingWorks,
     createManufacturingWorks,
     getDetailManufacturingWorks,
-    editManufacturingWorks
+    editManufacturingWorks,
+    getAllUsersByWorksManageRole,
 }
 
 function getAllManufacturingWorks(queryData = {}) {
@@ -89,6 +90,26 @@ function editManufacturingWorks(id, data) {
             .catch((error) => {
                 dispatch({
                     type: worksConstants.UPDATE_WORKS_FAILURE,
+                    error
+                });
+            });
+    }
+}
+
+function getAllUsersByWorksManageRole(data) {
+    return (dispatch) => {
+        dispatch({
+            type: worksConstants.GET_ALL_USERS_BY_WORKS_MANAGE_ROLEST_REQUEST
+        });
+        worksServices.getAllUsersByWorksManageRole(data)
+            .then((res) => {
+                dispatch({
+                    type: worksConstants.GET_ALL_USERS_BY_WORKS_MANAGE_ROLEST_SUCCESS,
+                    payload: res.data.content
+                });
+            }).catch((error) => {
+                dispatch({
+                    type: worksConstants.GET_ALL_USERS_BY_WORKS_MANAGE_ROLEST_FAILURE,
                     error
                 });
             });

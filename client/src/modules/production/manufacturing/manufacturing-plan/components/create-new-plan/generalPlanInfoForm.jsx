@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { DatePicker, ErrorLabel, SelectBox } from "../../../../../../common-components";
 import sampleData from "../../../sampleData";
 import { LotActions } from "../../../../warehouse/inventory-management/redux/actions";
+import { compareLtDate, compareLteDate } from "../../../../../../helpers/formatDate";
 
 class PlanInfoForm extends Component {
     constructor(props) {
@@ -22,12 +23,61 @@ class PlanInfoForm extends Component {
     }
 
     handleStartDateChange = (value) => {
-        this.props.onStartDateChange(value);
+        this.validateStartDateChange(value, true);
     };
 
+    validateStartDateChange = (value, willUpdateState = true) => {
+        let msg = undefined;
+        const { translate } = this.props;
+        if (!value) {
+            msg = translate("manufacturing.plan.choose_start_date");
+        }
+        if (value && this.state.endDate) {
+            let obj = compareLteDate(value, this.state.endDate);
+            if (!obj.status) {
+                msg = translate("manufacturing.plan.choose_date_error");
+            }
+        }
+        if (willUpdateState) {
+            this.setState((state) => ({
+                ...state,
+                startDate: value,
+                startDateError: msg,
+                endDateError: msg
+            }));
+        }
+        this.props.onStartDateChange(value);
+        return msg;
+    }
+
+
     handleEndDateChange = (value) => {
-        this.props.onEndDateChange(value);
+        this.validateEndDateChange(value, true);
     };
+
+    validateEndDateChange = (value, willUpdateState = true) => {
+        let msg = undefined;
+        const { translate } = this.props;
+        if (value === "") {
+            msg = translate("manufacturing.plan.choose_end_date");
+        }
+        if (value && this.state.endDate) {
+            let obj = compareLteDate(this.state.startDate, value);
+            if (!obj.status) {
+                msg = translate("manufacturing.plan.choose_date_error");
+            }
+        }
+        if (willUpdateState) {
+            this.setState((state) => ({
+                ...state,
+                endDate: value,
+                endDateError: msg,
+                startDateError: msg
+            }));
+        }
+        this.props.onEndDateChange(value);
+        return msg;
+    }
 
     handleDescriptionChange = (e) => {
         const { value } = e.target;
@@ -313,7 +363,7 @@ class PlanInfoForm extends Component {
 
     render() {
         const { translate, code, salesOrderIds, startDate, endDate, description, listGoodsSalesOrders, addedAllGoods, listGoods } = this.props;
-        const { good, errorGood, errorQuantity, approvers, errorApprovers } = this.state;
+        const { good, errorGood, errorQuantity, approvers, errorApprovers, startDateError, endDateError } = this.state;
         let listSalesOrdersChoosed = [];
         listSalesOrdersChoosed = this.getListSalesOrdersChoosed(salesOrderIds);
         return (
@@ -358,7 +408,7 @@ class PlanInfoForm extends Component {
                         </div>
                     </div>
                     <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                        <div className="form-group">
+                        <div className={`form-group ${!startDateError ? "" : "has-error"}`}>
                             <label>
                                 {translate("manufacturing.plan.start_date")}
                                 <span className="text-red">*</span>
@@ -370,8 +420,9 @@ class PlanInfoForm extends Component {
                                 onChange={this.handleStartDateChange}
                                 disabled={false}
                             />
+                            <ErrorLabel content={startDateError} />
                         </div>
-                        <div className="form-group">
+                        <div className={`form-group ${!endDateError ? "" : "has-error"}`}>
                             <label>
                                 {translate("manufacturing.plan.end_date")}
                                 <span className="text-red">*</span>
@@ -383,6 +434,7 @@ class PlanInfoForm extends Component {
                                 onChange={this.handleEndDateChange}
                                 disabled={false}
                             />
+                            <ErrorLabel content={endDateError} />
                         </div>
                         <div className="form-group">
                             <label>{translate("manufacturing.plan.description")}</label>

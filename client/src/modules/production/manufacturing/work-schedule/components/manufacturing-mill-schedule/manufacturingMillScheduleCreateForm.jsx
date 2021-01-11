@@ -84,13 +84,15 @@ class ManufacturingMillScheduleCreateForm extends Component {
             data = {
                 allManufacturingMill: true,
                 month: formatToTimeZoneDate(month),
-                numberOfTurns: numberOfTurns
+                numberOfTurns: numberOfTurns,
+                currentRole: localStorage.getItem("currentRole")
             }
         } else {
             data = {
                 manufacturingMill: manufacturingMill,
                 month: formatToTimeZoneDate(month),
-                numberOfTurns: numberOfTurns
+                numberOfTurns: numberOfTurns,
+                currentRole: localStorage.getItem("currentRole")
             }
         }
 
@@ -105,7 +107,6 @@ class ManufacturingMillScheduleCreateForm extends Component {
         for (let i = 1; i <= numberOfTurns; i++) {
             turns.push(i)
         }
-        console.log(workSchedule.listWorkSchedules);
         return (
             < React.Fragment >
                 <ButtonModal modalID="modal-create-mill-work-schedule" button_name={translate('manufacturing.work_schedule.add_work_schedule_button')} title={translate('manufacturing.work_schedule.add_work_schedule')} />
@@ -149,7 +150,7 @@ class ManufacturingMillScheduleCreateForm extends Component {
                             <input type="number" disabled={true} value={numberOfTurns} className="form-control" onChange={this.handleNumberOfTurnsChange}></input>
                         </div>
                         <div id="create-croll-table" className="form-inline">
-                            <table id="create-work-schedule-table" className="table table-striped table-bordered table-hover">
+                            <table id="create-work-schedule-table" className="table table-striped table-bordered table-hover not-sort">
                                 <thead>
                                     <tr>
                                         <th style={{ width: 100 }}>{translate('manufacturing.work_schedule.work_turns')}</th>

@@ -1,9 +1,14 @@
 const mongoose = require("mongoose");
+const { generateUniqueCode } = require("../../helpers/functionHelper");
 const Schema = mongoose.Schema;
 
 // Model quản lý thông tin của một công việc và liên kết với tài liệu, kết quả thực hiện công việc
 const TaskSchema = new Schema(
     {
+        code: {
+            type: String,
+            default: generateUniqueCode('DXT_')
+        },
         process: {
             type: Schema.Types.ObjectId,
             ref: "TaskProcess",
@@ -495,6 +500,9 @@ const TaskSchema = new Schema(
                         creator: {
                             type: Schema.Types.ObjectId,
                             ref: "User",
+                        },
+                        role: {
+                            type: String // đánh giá với vai trò ntn (phê duyệt, tư vấn, quan sát, thiết)
                         },
                         createdAt: {
                             type: Date,

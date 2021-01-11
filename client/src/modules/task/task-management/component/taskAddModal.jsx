@@ -11,7 +11,7 @@ import { managerKpiActions } from '../../../kpi/employee/management/redux/action
 import { taskTemplateActions } from '../../../task/task-template/redux/actions';
 import { taskManagementActions } from '../redux/actions';
 
-import { DialogModal, DatePicker, SelectBox, ErrorLabel, ToolTip, TreeSelect } from '../../../../common-components';
+import { DialogModal, DatePicker, SelectBox, ErrorLabel, ToolTip, TreeSelect, QuillEditor } from '../../../../common-components';
 import { TaskFormValidator } from './taskFormValidator';
 import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
 import ModalAddTaskProject from '../../task-project/component/modalAddTaskProject';
@@ -112,8 +112,7 @@ class TaskAddModal extends Component {
         })
     }
 
-    handleChangeTaskDescription = (event) => {
-        let value = event.target.value;
+    handleChangeTaskDescription = (value, imgs) => {
         this.validateTaskDescription(value, true);
     }
     validateTaskDescription = (value, willUpdateState = true) => {
@@ -138,13 +137,15 @@ class TaskAddModal extends Component {
     validateTaskStartDate = (value, willUpdateState = true) => {
         let { translate } = this.props;
         let msg = TaskFormValidator.validateTaskStartDate(value, this.state.newTask.endDate, translate);
-
+        let { newTask } = this.state;
         if (willUpdateState) {
-            this.state.newTask.startDate = value;
-            this.state.newTask.errorOnStartDate = msg;
+            newTask.startDate = value;
+            newTask.errorOnStartDate = msg;
+            if (!msg && newTask.endDate) newTask.errorOnEndDate = msg;
             this.setState(state => {
                 return {
                     ...state,
+                    newTask
                 };
             });
         }
@@ -156,19 +157,17 @@ class TaskAddModal extends Component {
     }
     validateTaskEndDate = (value, willUpdateState = true) => {
         let { translate } = this.props;
-        const { newTask } = this.state;
-
+        let { newTask } = this.state;
         let msg = TaskFormValidator.validateTaskEndDate(newTask.startDate, value, translate);
 
         if (willUpdateState) {
+            newTask.endDate = value;
+            newTask.errorOnEndDate = msg;
+            if (!msg && newTask.startDate) newTask.errorOnStartDate = msg;
             this.setState(state => {
                 return {
                     ...state,
-                    newTask: {
-                        ...state.newTask,
-                        endDate: value,
-                        errorOnEndDate: msg
-                    }
+                    newTask
                 };
             });
         }
@@ -282,16 +281,6 @@ class TaskAddModal extends Component {
             }
         })
     }
-
-    // handleChangeTaskParent = (event) => {
-    //     let value = event.target.value;
-    //     this.state.newTask.parent = value;
-    //     this.setState(state => {
-    //         return {
-    //             ...state,
-    //         };
-    //     });
-    // }
 
     onSearch = async (txt) => {
 
@@ -462,7 +451,7 @@ class TaskAddModal extends Component {
 
         if (this.props.parentTask && this.props.parentTask !== "" && this.props.currentTasks) {
             let taskItem = this.props.currentTasks.find(e => e._id === this.props.parentTask);
-            listParentTask.push({ value: taskItem._id, text: taskItem.name })
+            taskItem && listParentTask.push({ value: taskItem._id, text: taskItem.name })
         }
 
         if (tasks.listSearchTasks) {
@@ -526,7 +515,13 @@ class TaskAddModal extends Component {
                                 {/* Mô tả công việc */}
                                 <div className={`form-group ${newTask.errorOnDescription === undefined ? "" : "has-error"}`}>
                                     <label className="control-label">{translate('task.task_management.detail_description')}<span className="text-red">*</span></label>
-                                    <textarea style={{ height: 80 }} type="Description" className="form-control" name="Mô tả công việc" placeholder={translate('task.task_management.detail_description')} value={newTask.description} onChange={this.handleChangeTaskDescription} />
+                                    <QuillEditor
+                                        id={"task-add-modal"}
+                                        toolbar={false}
+                                        getTextData={this.handleChangeTaskDescription}
+                                        height={80}
+                                        placeholder={translate('task.task_management.detail_description')}
+                                    />
                                     <ErrorLabel content={newTask.errorOnDescription} />
                                 </div>
 
@@ -740,7 +735,6 @@ const actionCreators = {
     getAllUserSameDepartment: UserActions.getAllUserSameDepartment,
     getAllUserOfDepartment: UserActions.getAllUserOfDepartment,
     getAllUserOfCompany: UserActions.getAllUserOfCompany,
-    getAllKPIPersonalByUserID: managerKpiActions.getAllKPIPersonalByUserID,
     getChildrenOfOrganizationalUnits: UserActions.getChildrenOfOrganizationalUnitsAsTree,
     getAllUserInAllUnitsOfCompany: UserActions.getAllUserInAllUnitsOfCompany,
     getPaginateTasksByUser: taskManagementActions.getPaginateTasksByUser,

@@ -1,4 +1,5 @@
 import { GoodServices } from './services';
+import { LotServices } from '../../../warehouse/inventory-management/redux/services';
 import { GoodConstants } from './constants';
 
 export const GoodActions = {
@@ -228,6 +229,22 @@ function getDiscountByGoodsId(goodId) {
     })
 }
 
+function getManufacturingWorksByProductIdPromise(goodId) {
+    return new Promise((resolve, reject) => {
+        GoodServices.getManufacturingWorksByProductId(goodId)
+            .then(res => { resolve(res.data.content) })
+            .catch(err => { reject(err) })
+    })
+}
+
+function getInventoryByGoodIdPromise(data) {
+    return new Promise((resolve, reject) => {
+        LotServices.getInventoryByGoodIds(data)
+            .then(res => { resolve(res.data.content) })
+            .catch(err => { reject(err) })
+    })
+}
+
 function getItemsForGood(goodId) {
     return dispatch => {
         dispatch({
@@ -237,6 +254,8 @@ function getItemsForGood(goodId) {
             getTaxByGoodsId(goodId),
             getSlaByGoodsId(goodId),
             getDiscountByGoodsId(goodId),
+            getManufacturingWorksByProductIdPromise(goodId),
+            getInventoryByGoodIdPromise({ array: [goodId] })
         ])
             .then(res => {
                 dispatch({
@@ -245,7 +264,9 @@ function getItemsForGood(goodId) {
                         goodId: goodId,
                         listTaxsByGoodId: res[0].taxs,
                         listSlasByGoodId: res[1].slas,
-                        listDiscountsByGoodId: res[2].discounts
+                        listDiscountsByGoodId: res[2].discounts,
+                        listManufacturingWorks: res[3].manufacturingWorks,
+                        inventoryByGoodId: res[4].length ? res[4][0].inventory : 0
                     }
                 })
             })

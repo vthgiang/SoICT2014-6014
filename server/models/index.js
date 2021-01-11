@@ -99,7 +99,7 @@ module.exports = {
     ServiceLevelAgreement: require('./production/order/serviceLevelAgreement.model'),
     PurchaseOrder: require('./production/order/purchseOrder.model'),
     BusinessDepartment: require('./production/order/businessDepartment.model'),
-
+    Payment: require('./production/order/payment.model'),
 
     Location: require('./common/location.model'),
 

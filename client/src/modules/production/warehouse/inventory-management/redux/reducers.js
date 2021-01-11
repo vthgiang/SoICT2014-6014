@@ -29,7 +29,8 @@ const initState = {
     nextPage: 0,
     type: '',
     listManufacturingLots: [],
-    currentLot: {}
+    currentLot: {},
+    listInventories: []
 }
 
 export function lots(state = initState, action) {

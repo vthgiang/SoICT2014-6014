@@ -1,6 +1,8 @@
 import { taskManagementConstants } from "./constants";
 
-export function tasks(state = {}, action) {
+export function tasks(state = {
+    userTimeSheetLogs: []
+}, action) {
     switch (action.type) {
         case taskManagementConstants.GETALL_TASK_REQUEST:
             return {
@@ -204,6 +206,7 @@ export function tasks(state = {}, action) {
             }
 
         case taskManagementConstants.GET_PAGINATE_TASK_SUCCESS:
+            console.log('aaaaaaaaaaaa', action.payload)
             return {
                 ...state,
                 tasks: action.payload.tasks,
@@ -486,7 +489,7 @@ export function tasks(state = {}, action) {
             }
 
         case taskManagementConstants.GET_TASK_IN_ORGANIZATION_UNIT_REQUEST:
-            if(action.typeApi){
+            if (action.typeApi) {
                 return {
                     ...state,
                     organizationUnitTasksInMonth: null,
@@ -499,7 +502,7 @@ export function tasks(state = {}, action) {
                 isLoading: true
             };
         case taskManagementConstants.GET_TASK_IN_ORGANIZATION_UNIT_SUCCESS:
-            if(action.typeApi){
+            if (action.typeApi) {
                 return {
                     ...state,
                     organizationUnitTasksInMonth: action.payload,
@@ -518,20 +521,20 @@ export function tasks(state = {}, action) {
                 error: action.error,
 
             }
-        
-        
+
+
         case taskManagementConstants.GET_TASK_IN_ORGANIZATION_UNIT_PRIORITY_FAILURE:
             return {
                 ...state,
                 isLoading: false
             }
-        
+
         case taskManagementConstants.GET_TASK_IN_ORGANIZATION_UNIT_PRIORITY_REQUEST:
             return {
                 ...state,
                 isLoading: true
             }
-        
+
         case taskManagementConstants.GET_TASK_IN_ORGANIZATION_UNIT_PRIORITY_SUCCESS:
             return {
                 ...state,
@@ -541,6 +544,26 @@ export function tasks(state = {}, action) {
                 },
                 isLoading: false,
             }
+
+        case taskManagementConstants.GET_TIME_SHEET_OF_USER_REQUEST:
+            return {
+                ...state,
+                isLoading: true
+            };
+
+        case taskManagementConstants.GET_TIME_SHEET_OF_USER_FAILE:
+            return {
+                ...state,
+                isLoading: false
+            };
+
+        case taskManagementConstants.GET_TIME_SHEET_OF_USER_SUCCESS:
+            return {
+                ...state,
+                userTimeSheetLogs: action.payload,
+                isLoading: false
+            };
+
         default:
             return state
     }
