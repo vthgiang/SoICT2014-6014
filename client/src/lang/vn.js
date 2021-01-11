@@ -5067,7 +5067,10 @@ export default {
                 prev: "Trước",
                 choose_start_date: "Không được để trống thời gian",
                 choose_end_date: "Không được để trống thời gian",
-                choose_date_error: "Ngày bắt đầu phải trước hoặc bằng ngày kết thúc"
+                choose_date_error: "Ngày bắt đầu phải trước hoặc bằng ngày kết thúc",
+                booking_mill_error: "Các ca làm việc phải liên tục!",
+                turn: "Ca ",
+                please_booking_mill: "Vui lòng chọn phân lệnh sản xuất vào ca làm việc!"
 
 
 

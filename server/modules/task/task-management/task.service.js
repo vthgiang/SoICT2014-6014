@@ -328,28 +328,28 @@ exports.getPaginatedTasks = async (portal, task) => {
         };
     }
 
-    if (Array.isArray(special)) {
-        let checkStore = special.some(node => node === 'stored');
-        if(checkStore) {
-            keySearch = {
-                ...keySearch,
-                isArchived: true
-            };
-        }
-        let checkCurrentMonth = special.some(node => node === 'currentMonth');
-        if(checkCurrentMonth){
-            let now = new Date();
-            let currentYear = now.getFullYear();
-            let currentMonth = now.getMonth()+1;
-            let start = new Date(`${currentYear}-${currentMonth}`); //ngày cuối cùng của tháng trước
-            let end = new Date(currentYear, currentMonth); // ngày cuối cùng của tháng hiện tại
+    if (special) {
+        for (let i = 0; i < special.length; i++) {
+            if (special[i] === "stored") {
+                keySearch = {
+                    ...keySearch,
+                    isArchived: true
+                };
+            }
+            else {
+                let now = new Date();
+                let currentYear = now.getFullYear();
+                let currentMonth = now.getMonth();
+                let endOfCurrentMonth = new Date(currentYear, currentMonth + 1);
+                let endOfLastMonth = new Date(currentYear, currentMonth);
 
-            keySearchSpecial = {
-                $or: [
-                    { 'endDate': { $lte: end, $gt: start } },
-                    { 'startDate': { $lte: end, $gt: start } },
-                    { 'startDate': { $lte: start }, 'endDate': { $gte: end } }
-                ]
+                keySearchSpecial = {
+                    $or: [
+                        { 'endDate': { $lte: endOfCurrentMonth, $gt: endOfLastMonth } },
+                        { 'startDate': { $lte: endOfCurrentMonth, $gt: endOfLastMonth } },
+                        { $and: [{ 'endDate': { $gte: endOfCurrentMonth } }, { 'startDate': { $lte: endOfLastMonth } }] }
+                    ]
+                }
             }
         }
     }
@@ -420,7 +420,7 @@ exports.getPaginatedTasks = async (portal, task) => {
         }
 
     }
-
+    console.log(keySearch, keySearchPeriod)
     let optionQuery = {
         $and: [
             keySearch,

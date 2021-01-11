@@ -12,21 +12,22 @@ const PaymentSchema = new Schema({
         enum: [1, 2],
         // required: true
     },
+    customer: {
+        type: Schema.Types.ObjectId,
+        ref: 'Customer'
+    },
     curator: { //Người phụ trách
         type: Schema.Types.ObjectId,
         ref: 'User',
         // required: true
     },
-    bankAccountIn: {// Tài khoản nhận tiền
+    bankAccountReceived: {// Tài khoản nhận tiền
         type: Schema.Types.ObjectId,
         ref: 'BankAccount'
     },
-    bankAccountOut: {// Tài khoản chi tiền 
+    bankAccountPaid: {// Tài khoản chi tiền 
         type: Schema.Types.ObjectId,
         ref: 'BankAccount'
-    },
-    paymentAt: {
-        type: Date
     },
     salesOrders: [{ //Thanh toán theo từng đơn
         salesOrder: {//Thanh toán cho đơn bán hàng nào
@@ -47,7 +48,10 @@ const PaymentSchema = new Schema({
             type: Number,
             // required: true
         },
-    }]
+    }],
+    paymentAt: {
+        type: Date
+    },
 }, {
     timestamps: true,
 })

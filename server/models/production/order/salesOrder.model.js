@@ -272,29 +272,6 @@ const SalesOrderSchema = new Schema({
     note: {
         type: String
     },
-    payments: [{
-        paymentType: {// 1: Tiền mặt, 2: Chuyển khoản
-            type: Number,
-            enum: [1, 2],
-            // required: true
-        },
-        money: {
-            type: Number,
-            // required: true
-        },
-        receiver: {
-            type: Schema.Types.ObjectId,
-            ref: 'User',
-            // required: true
-        },
-        bankAccount: {// Tài khoản nhận thanh toán về
-            type: Schema.Types.ObjectId,
-            ref: 'BankAccount'
-        },
-        paymentAt: {
-            type: Date
-        },
-    }],
     bill: {//Phiếu đề nghị xuất kho
         type: Schema.Types.ObjectId,
         ref: 'Bill',

@@ -124,7 +124,7 @@ class BankAccountManagementTable extends Component {
                             </button>
                         </div>
                     </div>
-                    <table id="tax-table" className="table table-striped table-bordered table-hover">
+                    <table id="bank-account-table" className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
                                 <th>STT</th>

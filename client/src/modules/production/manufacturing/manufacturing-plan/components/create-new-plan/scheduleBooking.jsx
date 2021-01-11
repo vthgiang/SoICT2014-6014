@@ -13,12 +13,12 @@ class MillScheduleBooking extends Component {
     constructor(props) {
         super(props);
         this.EMPTY_COMMAND = {
-            manufacturingMill: "",
+            manufacturingMill: "1",
             startDate: "",
             endDate: "",
             startTurn: "",
             endTurn: "",
-            responsibles: ""
+            responsibles: []
         }
         this.state = {
             booking: false,
@@ -46,18 +46,19 @@ class MillScheduleBooking extends Component {
         window.$('#history-command-table').modal('show');
     }
     handleBookingCommand = (command, index) => {
+        command.manufacturingMill = "1";
         this.setState((state) => ({
             ...state,
             command: Object.assign(this.EMPTY_COMMAND, command),
             booking: true,
-            indexBooking: index
+            indexBooking: index,
         }));
     }
 
     getManufacturingMillsArray = () => {
         const { translate, manufacturingMill } = this.props;
         let manufacturingMillArr = [{
-            value: "",
+            value: "1",
             text: translate('manufacturing.plan.choose_mill')
         }];
         const { listMills } = manufacturingMill;
@@ -80,7 +81,7 @@ class MillScheduleBooking extends Component {
     validateManufacturingMillChange = (value, willUpdateState = true) => {
         let msg = undefined;
         const { translate } = this.props;
-        if (value === "") {
+        if (value === "1") {
             msg = translate('manufacturing.plan.choose_mill_error')
         }
 
@@ -158,9 +159,34 @@ class MillScheduleBooking extends Component {
         }
     }
 
+    handleChangeStartDateEndDate = (startDate, startTurn, endDate, endTurn) => {
+        const { command } = this.state;
+        command.startDate = startDate;
+        command.startTurn = startTurn;
+        command.endDate = endDate;
+        command.endTurn = endTurn;
+        this.setState({
+            command: { ...command }
+        });
+    }
+
+    handleCancelEditCommand = (e) => {
+        e.preventDefault();
+        this.setState({
+            command: Object.assign({}, this.EMPTY_COMMAND),
+            booking: false,
+            listWorkSchedulesOfWorks: this.state.listWorkSchedulesOfWorks
+        });
+    }
+
+    handleClearCommand = (e) => {
+        e.preventDefault();
+    }
+
     render() {
         const { translate, listGoods } = this.props;
         const { command, manufacturingCommands, manufacturingMillError, listWorkSchedulesOfWorks } = this.state;
+        console.log(listWorkSchedulesOfWorks);
         return (
             <React.Fragment>
                 {
@@ -289,94 +315,83 @@ class MillScheduleBooking extends Component {
                                         <div className={`form-group`}>
                                             <label>{translate('manufacturing.plan.start_date_command')}<span className="attention"> * </span></label>
                                             <DatePicker
-                                                id={`command_start_date`}
+                                                id={`command_start_date_booking`}
                                                 // dateFormat={dateFormat}
-                                                value={""}
+                                                value={command.startDate}
                                                 onChange={this.handleStartDateChange}
-                                                disabled={false}
+                                                disabled={true}
                                             />
-                                            <ErrorLabel content={""} />
                                         </div>
                                     </div>
                                     <div className="col-xs-12 col-sm-3 col-md-3 col-lg-3">
                                         <div className={`form-group`}>
                                             <label>{translate('manufacturing.plan.start_turn')}<span className="attention"> * </span></label>
-                                            <SelectBox
-                                                id="select-start-turn-of-command"
-                                                className="form-control select"
-                                                style={{ width: "100%" }}
-                                                items={[{
-                                                    value: 1, text: "ca 1"
-                                                }]}
-                                                disabled={false}
-                                                onChange={this.handleApproversChange}
-                                                value={1}
-                                            />
-                                            <ErrorLabel content={""} />
+                                            <input type="text" disabled={true} value={command.startTurn ? translate('manufacturing.plan.turn') + command.startTurn : ""} className="form-control" />
                                         </div>
                                     </div>
                                     <div className="col-xs-12 col-sm-3 col-md-3 col-lg-3">
                                         <div className={`form-group`}>
                                             <label>{translate('manufacturing.plan.end_date_command')}<span className="attention"> * </span></label>
                                             <DatePicker
-                                                id={`command_start_date`}
+                                                id={`command_end_date_booking`}
                                                 // dateFormat={dateFormat}
-                                                value={""}
+                                                value={command.endDate}
                                                 onChange={this.handleStartDateChange}
-                                                disabled={false}
+                                                disabled={true}
                                             />
-                                            <ErrorLabel content={""} />
                                         </div>
                                     </div>
                                     <div className="col-xs-12 col-sm-3 col-md-3 col-lg-3">
                                         <div className={`form-group`}>
                                             <label>{translate('manufacturing.plan.end_turn')}<span className="attention"> * </span></label>
-                                            <SelectBox
-                                                id="select-end-turn-of-command"
-                                                className="form-control select"
-                                                style={{ width: "100%" }}
-                                                items={[{
-                                                    value: 1, text: "ca 1"
-                                                }]}
-                                                disabled={false}
-                                                onChange={this.handleApproversChange}
-                                                value={1}
-                                            />
-                                            <ErrorLabel content={""} />
+                                            <input type="text" disabled={true} value={command.endTurn ? translate('manufacturing.plan.turn') + command.endTurn : ""} className="form-control" />
                                         </div>
-                                        <ErrorLabel content={""} />
                                     </div>
                                 </div>
                                 {
-                                    command.manufacturingMill && !manufacturingMillError &&
+                                    command.manufacturingMill !== "1" && !manufacturingMillError &&
                                     <WorkScheduleComponent
                                         manufacturingMillId={command.manufacturingMill}
-                                        commandCode={command.code}
+                                        command={command}
                                         listWorkSchedulesOfMill={listWorkSchedulesOfWorks.get(command.manufacturingMill)}
                                         manufacturingMillName={this.getManufacturingMillNameById()}
                                         startDate={this.props.startDate}
+                                        onChangeStartDateEndDate={this.handleChangeStartDateEndDate}
                                     />
                                 }
-                                {/* <div className="row">
-                                    <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-                                        <div className={`form-group`}>
-                                            <label>{translate('manufacturing.plan.responsible')}<span className="attention"> * </span></label>
-                                            <SelectBox
-                                                id="select-responsible-of-command"
-                                                className="form-control select"
-                                                style={{ width: "100%" }}
-                                                items={[{
-                                                    value: 1, text: "ban a"
-                                                }]}
-                                                disabled={false}
-                                                onChange={this.handleApproversChange}
-                                                value={1}
-                                                multiple={true}
-                                            />
-                                            <ErrorLabel content={""} />
+                                {
+                                    this.state.command.startDate &&
+                                    <div className="row">
+                                        <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                                            <div className={`form-group`}>
+                                                <label>{translate('manufacturing.plan.responsible')}<span className="attention"> * </span></label>
+                                                <SelectBox
+                                                    id="select-responsible-of-command"
+                                                    className="form-control select"
+                                                    style={{ width: "100%" }}
+                                                    items={[{
+                                                        value: 1, text: "ban a"
+                                                    }, {
+                                                        value: 2, text: "ban b"
+                                                    }]}
+                                                    disabled={false}
+                                                    onChange={this.handleApproversChange}
+                                                    value={command.responsibles}
+                                                    multiple={true}
+                                                />
+                                                <ErrorLabel content={""} />
+                                            </div>
                                         </div>
                                     </div>
-                                </div> */}
+                                }
+                                <div className="pull-right" style={{ marginBottom: "10px" }}>
+                                    <React.Fragment>
+                                        <button className="btn btn-success" onClick={this.handleCancelEditCommand} style={{ marginLeft: "10px" }}>{translate('manufacturing.purchasing_request.cancel_editing_good')}</button>
+                                        <button className="btn btn-success" onClick={this.handleSaveEditCommand} style={{ marginLeft: "10px" }}>{translate('manufacturing.purchasing_request.save_good')}</button>
+                                    </React.Fragment>
+                                    <button className="btn btn-primary" style={{ marginLeft: "10px" }} onClick={this.handleClearCommand}>{translate('manufacturing.purchasing_request.delete_good')}</button>
+                                </div>
+
                             </fieldset>
                         </div>
                     </div>

@@ -489,6 +489,7 @@ exports.links = [
             { path: '/categories/:id', method: 'DELETE' },
 
             { path: '/goods', method: 'GET' },
+            { path: '/goods/get-number-good', method: 'GET' },
             { path: '/goods/all-goods', method: 'GET' },
             { path: '/goods/by-type', method: 'GET' },
             { path: '/goods', method: 'POST' },
@@ -498,6 +499,7 @@ exports.links = [
             { path: '/goods/by-category/:id', method: 'GET' },
             
             { path: '/lot', method: 'GET' },
+            { path: '/lot/get-inventory-dashboard', method: 'GET' },
             { path: '/lot/get-lot-by-good', method: 'GET' },
             { path: '/lot/create-or-edit-lot', method: 'POST' },
             { path: '/lot/delete-many', method: 'POST' },
@@ -506,6 +508,7 @@ exports.links = [
             { path: '/lot/:id', method: 'PATCH' },
 
             { path: '/bills', method: 'GET' },
+            { path: '/bills/get-number-bill', method: 'GET' },
             { path: '/bills/get-bill-by-good', method: 'GET' },
             { path: '/bills/get-bill-by-status', method: 'GET' },
             { path: '/bills/bill-by-command', method: 'GET' },

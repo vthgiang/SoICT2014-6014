@@ -170,3 +170,25 @@ exports.createManyProductBills = async (req, res) => {
         })
     }
 }
+
+exports.getNumberBills = async (req, res) => {
+    try {
+        console.log(req.query);
+        const totalBills = await BillService.getNumberBills(req.query, req.portal);
+
+        await Logger.info(req.user.email, 'GET_BILL_SUCCESS', req.portal);
+
+        res.status(200).json({
+            success: true,
+            messages: ['get_bill_success'],
+            content: totalBills
+        })
+    } catch (error) {
+        await Logger.error(req.user.email, 'GET_BILL_FAILED', req.portal);
+        res.status(400).json({
+            success: false,
+            messages: ['get_bill_failed'],
+            content: error.message
+        })
+    }
+}

@@ -34,6 +34,7 @@ export function salesOrders(state = initState, action) {
         case SalesOrderConstants.APPROVE_SALES_ORDER_REQUEST:
         case SalesOrderConstants.ADD_MANUFACTURING_PLAN_FOR_GOOD_REQUEST:
         case SalesOrderConstants.GET_SALES_ORDER_BY_MANUFACTURING_WORKS_REQUEST:
+        case  SalesOrderConstants.GET_SALES_ORDERS_FOR_PAYMENT_REQUEST:
             return {
                 ...state,
                 isLoading: true
@@ -45,6 +46,7 @@ export function salesOrders(state = initState, action) {
         case SalesOrderConstants.APPROVE_SALES_ORDER_FAILURE:
         case SalesOrderConstants.ADD_MANUFACTURING_PLAN_FOR_GOOD_FAILURE:
         case SalesOrderConstants.GET_SALES_ORDER_BY_MANUFACTURING_WORKS_FAILURE:
+        case SalesOrderConstants.GET_SALES_ORDERS_FOR_PAYMENT_FAILURE:
             return {
                 ...state,
                 isLoading: false,
@@ -111,6 +113,12 @@ export function salesOrders(state = initState, action) {
             return {
                 ...state,
                 salesOrders: action.payload.salesOrders,
+                isLoading: false
+            }
+        case SalesOrderConstants.GET_SALES_ORDERS_FOR_PAYMENT_SUCCESS:
+            return {
+                ...state,
+                salesOrdersForPayment: action.payload.salesOrders,
                 isLoading: false
             }
         default:

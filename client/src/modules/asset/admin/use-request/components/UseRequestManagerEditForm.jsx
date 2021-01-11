@@ -252,20 +252,24 @@ class UseRequestManagerEditForm extends Component {
                         checkCreateUsage = true
                     }
                 }
-                if (checkCreateUsage == false) {
-                    let start = dataToSubmit.dateStartUse.split("-");
-                    let end = dataToSubmit.dateEndUse.split("-");
-                    let dateStartUse, dateEndUse;
-                    if (dataToSubmit.startTime) {
-                        dateStartUse = start[2] + "-" + start[1] + "-" + start[0] + " " + dataToSubmit.startTime
-                    } else {
-                        dateStartUse = start[2] + "-" + start[1] + "-" + start[0]
-                    }
+                if (checkCreateUsage === false) {
 
-                    if (dataToSubmit.stopTime) {
-                        dateEndUse = end[2] + "-" + end[1] + "-" + end[0] + " " + dataToSubmit.stopTime
-                    } else {
-                        dateEndUse = end[2] + "-" + end[1] + "-" + end[0]
+                    let dateStartUse, dateEndUse;
+                    if (dataToSubmit.dateStartUse) {
+                        let start = dataToSubmit.dateStartUse.split("-");
+                        if (dataToSubmit.startTime) {
+                            dateStartUse = start[2] + "-" + start[1] + "-" + start[0] + " " + dataToSubmit.startTime
+                        } else {
+                            dateStartUse = start[2] + "-" + start[1] + "-" + start[0]
+                        }
+                    }
+                    if (dataToSubmit.dateEndUse) {
+                        let end = dataToSubmit.dateEndUse.split("-");
+                        if (dataToSubmit.stopTime) {
+                            dateEndUse = end[2] + "-" + end[1] + "-" + end[0] + " " + dataToSubmit.stopTime
+                        } else {
+                            dateEndUse = end[2] + "-" + end[1] + "-" + end[0]
+                        }
                     }
 
                     let newUsage = {
@@ -331,8 +335,17 @@ class UseRequestManagerEditForm extends Component {
                 stopTime = [hourEnd, minutesEnd].join(':');
                 endDate = [partStop.getDate(), (partStop.getMonth() + 1), partStop.getFullYear()].join('-');
             } else {
-                startDate = [partStart.getDate(), (partStart.getMonth() + 1), partStart.getFullYear()].join('-');
-                endDate = [partStop.getDate(), (partStop.getMonth() + 1), partStop.getFullYear()].join('-');
+                if (nextProps.dateStartUse) {
+                    startDate = [partStart.getDate(), (partStart.getMonth() + 1), partStart.getFullYear()].join('-');
+                } else {
+                    startDate = null;
+                }
+
+                if (nextProps.dateEndUse) {
+                    endDate = [partStop.getDate(), (partStop.getMonth() + 1), partStop.getFullYear()].join('-');
+                } else {
+                    endDate = null;
+                }
             }
             return {
                 ...prevState,
@@ -458,13 +471,14 @@ class UseRequestManagerEditForm extends Component {
                                 <div className={`form-group ${!errorOnDateStartUse ? "" : "has-error"}`}>
                                     <label>{translate('asset.general_information.handover_from_date')}<span className="text-red">*</span></label>
                                     <DatePicker
-                                        id={`edit_start_use${_id}`}
+                                        id={`edit_start_use`}
                                         value={dateStartUse}
                                         onChange={this.handleDateStartUseChange}
                                     />
                                     {asset && asset.typeRegisterForUse == 2 &&
                                         < TimePicker
                                             id={`edit_start_time_use${_id}`}
+                                            ref={`edit_start_time_use${_id}`}
                                             value={startTime}
                                             onChange={this.handleStartTimeChange}
                                         />
@@ -477,7 +491,7 @@ class UseRequestManagerEditForm extends Component {
                                 <div className={`form-group ${!errorOnDateEndUse ? "" : "has-error"}`}>
                                     <label>{translate('asset.general_information.handover_to_date')}</label>
                                     <DatePicker
-                                        id={`edit_end_use${_id}`}
+                                        id={`edit_end_use`}
                                         value={dateEndUse}
                                         onChange={this.handleDateEndUseChange}
                                     />

@@ -267,7 +267,7 @@ class UseRequest extends Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {(listRecommendDistributes && listRecommendDistributes.length !== 0) &&
+                            {(listRecommendDistributes && listRecommendDistributes.length !== 0) ?
                                 listRecommendDistributes.filter(item => item.proponent && item.proponent._id === auth.user._id).map((x, index) => {
                                     return (
                                         <tr key={index}>
@@ -295,7 +295,7 @@ class UseRequest extends Component {
                                             </td>
                                         </tr>
                                     )
-                                })
+                                }) : null
                             }
                         </tbody>
                     </table>

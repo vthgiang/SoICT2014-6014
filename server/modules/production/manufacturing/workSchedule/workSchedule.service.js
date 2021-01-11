@@ -474,7 +474,7 @@ exports.getWorkSchedulesOfManufacturingWork = async (query, portal) => {
             $in: manufacturingMills
         }
     }
-    let workSchedules = await WorkSchedule(connect(DB_CONNECTION, portal)).find(options);
+    let workSchedules = await WorkSchedule(connect(DB_CONNECTION, portal)).find(options).sort({ 'month': 'asc' });
     for (let i = 0; i < workSchedules.length; i++) {
         for (let j = 0; j < workSchedules[i].turns.length; j++) {
             for (k = 0; k < workSchedules[i].turns[j].length; k++) {

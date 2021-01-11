@@ -2,6 +2,8 @@ const {
     SalesOrder, Quote
 } = require(`../../../../models`);
 
+const PaymentService = require('../payment/payment.service');
+
 const {
     connect
 } = require(`../../../../helpers/dbHelper`);
@@ -109,15 +111,6 @@ exports.createNewSalesOrder = async (userId, data, portal) => {
         totalTax: data.totalTax,
         paymentAmount: data.paymentAmount,
         note: data.note,
-        payments: data.payments ? data.payments.map((payment) => {
-            return {
-                paymentType: payment.paymentType,
-                money: payment.money,
-                receiver: payment.receiver,
-                bankAccount: payment.bankAccount,
-                paymentAt: new Date()
-            }
-        }) : undefined,
         bill: data.bill,
         quote: data.quote
     });
@@ -144,8 +137,6 @@ exports.createNewSalesOrder = async (userId, data, portal) => {
         path: 'goods.discounts.discountOnGoods.good', select: 'code name baseUnit'
     }, {
         path: 'discounts.bonusGoods.good', select: 'code name baseUnit'
-    }, {
-        path: 'payments.receiver', select: 'code name'
     }]);;
     return { salesOrder }
 }
@@ -185,8 +176,6 @@ exports.getAllSalesOrders = async (query, portal) => {
                 path: 'goods.discounts.discountOnGoods.good', select: 'code name baseUnit'
             }, {
                 path: 'discounts.bonusGoods.good', select: 'code name baseUnit'
-            }, {
-                path: 'payments.receiver', select: 'code name'
             }]);
         return { allSalesOrders }
     } else {
@@ -210,8 +199,6 @@ exports.getAllSalesOrders = async (query, portal) => {
                 path: 'goods.discounts.discountOnGoods.good', select: 'code name baseUnit'
             }, {
                 path: 'discounts.bonusGoods.good', select: 'code name baseUnit'
-            }, {
-                path: 'payments.receiver', select: 'code name'
             }]
         })
         return { allSalesOrders }
@@ -304,8 +291,6 @@ exports.editSalesOrder = async (userId, id, data, portal) => {
             path: 'goods.discounts.discountOnGoods.good', select: 'code name baseUnit'
         }, {
             path: 'discounts.bonusGoods.good', select: 'code name baseUnit'
-        }, {
-            path: 'payments.receiver', select: 'code name'
         }]);
 
     console.log("salesOrderUpdated", salesOrderUpdated);
@@ -389,4 +374,28 @@ exports.getSalesOrdersByManufacturingWorks = async (manufacturingWorksId, portal
     }
 
     return { salesOrders }
+}
+
+//Lấy các đơn hàng chưa thanh toán của khách hàng
+exports.getSalesOrdersForPayment = async (customerId, portal) => {
+    let salesOrdersForPayment = await SalesOrder(connect(DB_CONNECTION, portal)).find({ customer: customerId });
+    let salesOrders = [];
+    if (salesOrdersForPayment.length) {
+        for (let index = 0; index < salesOrdersForPayment.length; index++){
+            let paid = await PaymentService.getPaidForSalesOrder(salesOrdersForPayment[index]._id, portal);
+
+            if (paid < salesOrdersForPayment[index].paymentAmount) {
+                //Chỉ trả về các đơn hàng chưa thanh toán
+                salesOrders.push({
+                    _id: salesOrdersForPayment[index]._id,
+                    code: salesOrdersForPayment[index].code,
+                    paymentAmount: salesOrdersForPayment[index].paymentAmount,
+                    customer: salesOrdersForPayment[index].customer,
+                    paid: paid,
+                })
+            }
+        }
+    }
+
+    return {salesOrders}
 }

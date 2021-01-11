@@ -307,24 +307,27 @@ class ActionTab extends Component {
     submitComment = async (actionId, taskId) => {
         let { newCommentOfAction } = this.state;
         const data = new FormData();
-        data.append("creator", newCommentOfAction[`${actionId}`].creator);
-        data.append("description", newCommentOfAction[`${actionId}`].description);
-        newCommentOfAction[`${actionId}`].files && newCommentOfAction[`${actionId}`].files.forEach(x => {
-            data.append("files", x);
-        })
-        if (newCommentOfAction[`${actionId}`].description && newCommentOfAction[`${actionId}`].creator) {
-            this.props.createActionComment(taskId, actionId, data);
+
+        if (actionId) {
+            data.append("creator", newCommentOfAction[`${actionId}`].creator);
+            data.append("description", newCommentOfAction[`${actionId}`].description);
+            newCommentOfAction[`${actionId}`].files && newCommentOfAction[`${actionId}`].files.forEach(x => {
+                data.append("files", x);
+            })
+            if (newCommentOfAction[`${actionId}`].description && newCommentOfAction[`${actionId}`].creator) {
+                this.props.createActionComment(taskId, actionId, data);
+            }
+            this.setState(state => {
+                state.newCommentOfAction[`${actionId}`] = {
+                    description: "",
+                    files: [],
+                    descriptionDefault: ''
+                }
+                return {
+                    ...state,
+                }
+            })
         }
-        this.setState(state => {
-            state.newCommentOfAction[`${actionId}`] = {
-                description: "",
-                files: [],
-                descriptionDefault: ''
-            }
-            return {
-                ...state,
-            }
-        })
     }
 
     //Thêm mới hoạt động
@@ -1310,7 +1313,7 @@ class ActionTab extends Component {
                                                                     src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="user avatar"
                                                                 />
                                                                 <ContentMaker
-                                                                    idQuill="add-comment-action"
+                                                                    idQuill={`add-comment-action-${item._id}`}
                                                                     imageDropAndPasteQuill={false}
                                                                     inputCssClass="text-input-level2" controlCssClass="tool-level2 row"
                                                                     onFilesChange={(files) => this.onCommentFilesChange(files, item._id)}
@@ -1581,7 +1584,7 @@ class ActionTab extends Component {
                                                     <div>
                                                         <img className="user-img-level2" src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="user avatar" />
                                                         <ContentMaker
-                                                            idQuill="add-child-comment"
+                                                            idQuill={`add-child-comment-${item._id}`}
                                                             inputCssClass="text-input-level2" controlCssClass="tool-level2 row"
                                                             onFilesChange={(files) => this.onCommentOfTaskCommentFilesChange(item._id, files)}
                                                             onFilesError={this.onFilesError}
