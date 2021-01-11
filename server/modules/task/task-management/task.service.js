@@ -439,7 +439,8 @@ exports.getPaginatedTasks = async (portal, task) => {
 
     return {
         "tasks": taskList,
-        "totalPage": totalPages
+        "totalPage": totalPages,
+        totalCount
     };
 }
 
@@ -617,7 +618,8 @@ exports.getPaginatedTasksThatUserHasResponsibleRole = async (portal, task) => {
 
     return {
         "tasks": responsibleTasks,
-        "totalPage": totalPages
+        "totalPage": totalPages,
+        totalCount
     };
 }
 
@@ -793,7 +795,8 @@ exports.getPaginatedTasksThatUserHasAccountableRole = async (portal, task) => {
     var totalPages = Math.ceil(totalCount / perPage);
     return {
         "tasks": accountableTasks,
-        "totalPage": totalPages
+        "totalPage": totalPages,
+        totalCount
     };
 }
 
@@ -968,7 +971,8 @@ exports.getPaginatedTasksThatUserHasConsultedRole = async (portal, task) => {
     var totalPages = Math.ceil(totalCount / perPage);
     return {
         "tasks": consultedTasks,
-        "totalPage": totalPages
+        "totalPage": totalPages,
+        totalCount
     };
 }
 
@@ -1293,7 +1297,8 @@ exports.getPaginatedTasksThatUserHasInformedRole = async (portal, task) => {
     var totalPages = Math.ceil(totalCount / perPage);
     return {
         "tasks": informedTasks,
-        "totalPage": totalPages
+        "totalPage": totalPages,
+        totalCount
     };
 }
 
@@ -1502,7 +1507,8 @@ exports.getPaginatedTasksByUser = async (portal, task, type = "paginated_task_by
     var totalPages = Math.ceil(totalCount / perPage);
     return {
         "tasks": tasks,
-        "totalPage": totalPages
+        "totalPage": totalPages,
+        totalCount
     };
 }
 

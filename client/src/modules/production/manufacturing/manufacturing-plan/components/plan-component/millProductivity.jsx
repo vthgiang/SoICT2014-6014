@@ -11,7 +11,6 @@ class MillProductivity extends Component {
 
     render() {
         const { translate, listGoods } = this.props;
-        console.log(listGoods)
         return (
             <fieldset className="scheduler-border">
                 <legend className="scheduler-border">{translate('manufacturing.plan.productivity_mill')}</legend>

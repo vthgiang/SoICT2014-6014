@@ -9,7 +9,8 @@ export const BillActions = {
     editBill,
     getBillsByStatus,
     getBillsByCommand,
-    createManyProductBills
+    createManyProductBills,
+    getNumberBills
 }
 
 function getBillsByType(data) {
@@ -196,5 +197,26 @@ function createManyProductBills(data) {
                     error
                 });
             });
+    }
+}
+
+function getNumberBills(data) {
+    return dispatch => {
+        dispatch({
+            type: BillConstants.GET_NUMBER_BILL_REQUEST,
+        })
+        BillServices.getNumberBills(data)
+        .then(res => {
+            dispatch({
+                type: BillConstants.GET_NUMBER_BILL_SUCCESS,
+                payload: res.data.content
+            })
+        })
+        .catch(error => {
+            dispatch({
+                type: BillConstants.GET_NUMBER_BILL_FAILURE,
+                error
+            })
+        })
     }
 }

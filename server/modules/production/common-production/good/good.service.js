@@ -218,3 +218,10 @@ exports.getManufacturingWorksByProductId = async (productId, portal) => {
     });
     return { manufacturingWorks }
 }
+
+exports.numberGoods = async (portal) => {
+    const totalGoods = await Good(connect(DB_CONNECTION, portal)).find().count();
+    const totalProducts = await Good(connect(DB_CONNECTION, portal)).find({ type: 'product' }).count();
+    const totalMaterials = await Good(connect(DB_CONNECTION, portal)).find({ type: 'material' }).count();
+    return { totalGoods, totalProducts, totalMaterials};
+}
