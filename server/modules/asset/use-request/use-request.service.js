@@ -171,6 +171,7 @@ exports.createUseRequest = async (portal, company, data) => {
         status: data.status,
     });
 
+    const findRecommend = await RecommendDistribute(connect(DB_CONNECTION, portal)).findOne({_id:  mongoose.Types.ObjectId(createRecommendDistribute._id) }).populate({ path: 'asset proponent approver' });
     let asset = await Asset(connect(DB_CONNECTION, portal)).findById({
         _id: data.asset,
     }).populate({ path: 'assetType' });
@@ -185,7 +186,7 @@ exports.createUseRequest = async (portal, company, data) => {
             type
         );
         return {
-            createRecommendDistribute: createRecommendDistribute,
+            createRecommendDistribute: findRecommend,
             manager: mail.manager,
             user: mail.user,
             email: mail.email,
@@ -193,8 +194,6 @@ exports.createUseRequest = async (portal, company, data) => {
             assetName: asset.assetName
         };
     }
-
-    return createRecommendDistribute;
 }
 
 /**

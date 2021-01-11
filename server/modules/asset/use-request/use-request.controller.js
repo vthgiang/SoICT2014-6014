@@ -80,7 +80,7 @@ exports.createUseRequest = async (req, res) => {
         res.status(200).json({
             success: true,
             messages: ["create_use_request_success"],
-            content: newRecommendDistribute
+            content: newRecommendDistribute.createRecommendDistribute
         });
 
     } catch (error) {
