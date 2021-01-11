@@ -61,6 +61,7 @@ exports.getPaymentDetail = async (req, res) => {
         });
     } catch (error) {
         await Log.error(req.user.email, "GET_PAYMENT_DETAIL", req.portal);
+        console.log( error.message);
         res.status(400).json({
             success: false,
             messages: ["get_payment_detail_failed"],
