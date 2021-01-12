@@ -43,7 +43,7 @@ class GoodIssueCreateForm extends Component {
         this.props.goods.listGoods.map((item) => {
             goodArr.push({
                 value: item._id,
-                text: item.code + " -- " + item.name,
+                text: item.code + " -- " + item.name + " (" + item.baseUnit + ")",
                 code: item.code,
                 name: item.name,
                 baseUnit: item.baseUnit,
@@ -631,9 +631,9 @@ class GoodIssueCreateForm extends Component {
             salesOrderId,
         });
 
-        //Load lại dữ liệu đơn hàng sau 1000ms
+        //Load lại dữ liệu đơn hàng sau 3000ms
         if (createdSource === "salesOrder") {
-            await setTimeout(this.props.reloadSalesOrderTable(), 1000);
+            await setTimeout(this.props.reloadSalesOrderTable(), 3000);
         }
     };
 

@@ -10,6 +10,39 @@ const {
 
 
 
+exports.getAnnaulLeaveBeforAndAfterOneWeek =async (portal, organizationalUnits,company) =>{
+    const dateNow = new Date();
+    let firstDay = new Date();
+    let lastDay = new Date();
+    firstDay = new Date(firstDay.setDate(dateNow.getDate() - 6))
+    lastDay = new Date(lastDay.setDate(dateNow.getDate() + 6))
+    let keySearch = {
+        company: company,
+        "$or": [{
+            startDate: {
+                "$gte": firstDay,
+                "$lte": lastDay
+            }
+        }, {
+            endDate: {
+                "$gte": firstDay,
+                "$lte": lastDay
+            }
+        }]
+    };
+    // Bắt sựu kiện tìm kiếm theo đơn vị 
+    if (organizationalUnits !== undefined) {
+        keySearch = {
+            ...keySearch,
+            organizationalUnit: {
+                $in: organizationalUnits
+            }
+        }
+    }
+    const annualLeave = await AnnualLeave(connect(DB_CONNECTION, portal)).find(keySearch)
+    return annualLeave;
+}
+
 /**
  * Lấy số lượng ngày nghỉ phép đã được chấp nhận của nhân viên theo email và năm
  * @param {*} email : email công ty nhân viên

@@ -1163,7 +1163,7 @@ export default {
             //QUẢN LÝ ĐƠN HÀNG
             manage_orders: "Quản lý đơn hàng",
             manage_sales_order: "Đơn bán hàng",
-            manage_purchase_order: "Đơn mua NVL",
+            manage_purchase_order: "Đơn mua nguyên vật liệu",
             manage_sales_order_dashboard: "Thống kê bán hàng",
             manage_quote: "Báo giá",
             manage_discount: "Giảm giá",

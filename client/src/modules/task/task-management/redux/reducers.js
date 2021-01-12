@@ -1,7 +1,10 @@
 import { taskManagementConstants } from "./constants";
 
 export function tasks(state = {
-    userTimeSheetLogs: []
+    userTimeSheetLogs: [],
+    totalCount: 0,
+    tasks: [],
+    pages: 0
 }, action) {
     switch (action.type) {
         case taskManagementConstants.GETALL_TASK_REQUEST:
@@ -206,11 +209,11 @@ export function tasks(state = {
             }
 
         case taskManagementConstants.GET_PAGINATE_TASK_SUCCESS:
-            console.log('aaaaaaaaaaaa', action.payload)
             return {
                 ...state,
                 tasks: action.payload.tasks,
                 pages: action.payload.totalPage,
+                totalCount: action.payload.totalCount,
                 isLoading: false
             };
         case taskManagementConstants.GET_PAGINATE_TASK_FAILURE:

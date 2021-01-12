@@ -139,7 +139,6 @@ class DiscountCreateForm extends Component {
     };
 
     onChangeDiscounts = (dataSubmit) => {
-        console.log("DATA SUBMIT", dataSubmit);
         this.setState({
             discounts: dataSubmit,
         });

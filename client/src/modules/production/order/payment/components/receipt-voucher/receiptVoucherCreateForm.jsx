@@ -15,22 +15,13 @@ class ReceiptVoucherCreateForm extends Component {
             salesOrders: [],
             salesOrder: "",
             money: "",
+            paid: "",
+            paymentAmount: 0,
+            code: "", //Mã sales order
+            totalMoney: "",
+            indexEditting: -1,
         };
     }
-
-    isFormValidated = () => {
-        let { translate } = this.props;
-        let { account, owner, bankName, bankAcronym } = this.state;
-        if (
-            ValidationHelper.validateName(translate, account, 4, 255).message ||
-            ValidationHelper.validateName(translate, bankName, 4, 255).message ||
-            ValidationHelper.validateName(translate, bankAcronym, 1, 255).message ||
-            ValidationHelper.validateName(translate, owner, 2, 255).message
-        ) {
-            return false;
-        }
-        return true;
-    };
 
     getCustomerOptions = () => {
         let options = [];
@@ -134,7 +125,7 @@ class ReceiptVoucherCreateForm extends Component {
     handleCustomerChange = async (value) => {
         this.setState({
             customer: value[0],
-            amount: "",
+            money: "",
             salesOrder: "title",
             paymentType: "title",
             bankAccountReceived: "title",
@@ -215,14 +206,91 @@ class ReceiptVoucherCreateForm extends Component {
         return msg;
     };
 
+    getMoneyForPayment = (salesOrderId) => {
+        const { salesOrdersForPayment } = this.props.salesOrders;
+        let salesOrderInfo = salesOrdersForPayment.find((element) => element._id === salesOrderId);
+
+        const { totalMoney, salesOrders, indexEditting } = this.state;
+        //Tổng số tiền đã thêm vào đơn
+
+        let moneyAdded = 0;
+        for (let index = 0; index < salesOrders.length; index++) {
+            if (index !== parseInt(indexEditting)) {
+                moneyAdded += salesOrders[index].money;
+            }
+        }
+
+        let money = totalMoney - moneyAdded;
+
+        if (parseInt(money) > parseInt(salesOrderInfo.paymentAmount - salesOrderInfo.paid)) {
+            money = salesOrderInfo.paymentAmount - salesOrderInfo.paid;
+        }
+
+        return money;
+    };
+
+    //tổng tiền thanh toán phải bằng tổng thanh toán dưới bảng
+    validateCompareTotalMoney = () => {
+        const { totalMoney, salesOrders } = this.state;
+
+        let moneyAdded = 0;
+        for (let index = 0; index < salesOrders.length; index++) {
+            moneyAdded += salesOrders[index].money;
+        }
+
+        return parseInt(moneyAdded) === parseInt(totalMoney);
+    };
+
     handleSalesOrderChange = (value) => {
-        this.setState({
-            salesOrder: value[0],
-        });
+        if (value[0] !== "title") {
+            const { salesOrdersForPayment } = this.props.salesOrders;
+            let salesOrderInfo = salesOrdersForPayment.find((element) => element._id === value[0]);
+            let money = this.getMoneyForPayment(value[0]);
+            this.setState({
+                //Lưu thông tin tạm thời của sales order vào state
+                salesOrder: value[0],
+                code: salesOrderInfo.code,
+                paymentAmount: salesOrderInfo.paymentAmount,
+                paid: salesOrderInfo.paid,
+                money,
+            });
+        } else {
+            this.setState({
+                salesOrder: value[0],
+            });
+        }
         this.validateSalesOrder(value[0], true);
     };
 
-    validateAmount = (value, willUpdateState = true) => {
+    validateMoney = (value, willUpdateState = true) => {
+        let { paid, paymentAmount } = this.state;
+        let msg = undefined;
+        if (!value) {
+            msg = "Giá trị không được bỏ trống!";
+        } else if (parseInt(value) <= 0) {
+            msg = "Số tiền phải lớn hơn 0!";
+        } else if (parseInt(value) > parseInt(paymentAmount - paid)) {
+            msg = "Số tiền thanh toán không được vượt quá dư nợ: " + formatCurrency(paymentAmount - paid);
+        }
+        if (willUpdateState) {
+            this.setState({
+                moneyError: msg,
+            });
+        }
+
+        return msg;
+    };
+
+    handleMoneyChange = (e) => {
+        let { value } = e.target;
+        this.setState({
+            money: value,
+        });
+
+        this.validateMoney(value, true);
+    };
+
+    validateTotalMoney = (value, willUpdateState = true) => {
         let msg = undefined;
         if (!value) {
             msg = "Giá trị không được bỏ trống!";
@@ -231,25 +299,26 @@ class ReceiptVoucherCreateForm extends Component {
         }
         if (willUpdateState) {
             this.setState({
-                amountError: msg,
+                totalMoneyError: msg,
             });
         }
 
         return msg;
     };
 
-    handleAmountChange = (e) => {
+    handleTotalMoneyChange = (e) => {
         let { value } = e.target;
         this.setState({
-            amount: value,
+            totalMoney: value,
+            salesOrder: "title",
+            money: 0,
         });
-
-        this.validateAmount(value, true);
+        this.validateTotalMoney(value, true);
     };
 
     isSubmitPaymentForSalesOrderValidate = () => {
-        let { salesOrder, amount } = this.state;
-        if (this.validateSalesOrder(salesOrder, false) || this.validateAmount(amount, false)) {
+        let { salesOrder, money } = this.state;
+        if (this.validateSalesOrder(salesOrder, false) || this.validateMoney(money, false)) {
             return false;
         }
 
@@ -258,15 +327,14 @@ class ReceiptVoucherCreateForm extends Component {
 
     handleSubmitPaymentForSalesOrder = () => {
         if (this.isSubmitPaymentForSalesOrderValidate) {
-            let { salesOrder, amount, salesOrders } = this.state;
-            const { salesOrdersForPayment } = this.props.salesOrders;
-            let salesOrderInfo = salesOrdersForPayment.find((element) => element._id === salesOrder);
+            let { salesOrder, money, salesOrders, code, paymentAmount, paid } = this.state;
 
             let data = {
                 salesOrder,
-                amount,
-                paymentAmount: salesOrderInfo.paymentAmount,
-                paid: salesOrderInfo.paid,
+                money,
+                code,
+                paymentAmount,
+                paid,
             };
 
             salesOrders.push(data);
@@ -274,29 +342,131 @@ class ReceiptVoucherCreateForm extends Component {
                 return {
                     ...state,
                     salesOrder: "title",
-                    amount: "",
+                    money: "",
+                    code: "",
+                    paymentAmount: 0,
+                    paid: "",
                 };
             });
         }
     };
 
+    handlePaymentForSalesOrderEdit = async (item, index) => {
+        await this.setState({
+            editSalesOrder: true,
+            indexEditting: index,
+            salesOrder: item.salesOrder,
+            code: item.code,
+            paymentAmount: item.paymentAmount,
+            paid: item.paid,
+        });
+
+        let money = await this.getMoneyForPayment(item.salesOrder);
+        await this.setState({
+            money,
+        });
+    };
+
+    handleSaveEditPaymentForSalesOrder = () => {
+        if (this.isSubmitPaymentForSalesOrderValidate) {
+            let { salesOrder, money, salesOrders, code, paymentAmount, paid, indexEditting, editSalesOrder } = this.state;
+
+            let data = {
+                salesOrder,
+                money,
+                code,
+                paymentAmount,
+                paid,
+            };
+
+            salesOrders[indexEditting] = data;
+
+            this.setState((state) => {
+                return {
+                    ...state,
+                    salesOrder: "title",
+                    money: "",
+                    code: "",
+                    paymentAmount: 0,
+                    paid: "",
+                    indexEditting: -1,
+                    editSalesOrder: false,
+                };
+            });
+        }
+    };
+
+    handleCancelEditPaymentForSalesOrder = () => {
+        this.setState((state) => {
+            return {
+                ...state,
+                salesOrder: "title",
+                money: "",
+                code: "",
+                paymentAmount: 0,
+                paid: "",
+                indexEditting: -1,
+                editSalesOrder: false,
+            };
+        });
+    };
+
+    handleDeletePaymentForSalesOrder = (item) => {
+        let { salesOrders } = this.state;
+
+        let salesOrdersFilter = salesOrders.filter((element) => element.salesOrder !== item.salesOrder);
+        this.setState({
+            salesOrders: salesOrdersFilter,
+        });
+    };
+
+    isFormValidated = () => {
+        let { customer, paymentType, bankAccountReceived, salesOrders } = this.state;
+        if (
+            this.validateCustomer(customer, false) ||
+            this.validatePaymentType(paymentType, false) ||
+            !this.validateCompareTotalMoney() ||
+            !salesOrders.length
+        ) {
+            return false;
+        }
+
+        if (parseInt(paymentType) === 2 && this.validateBankAccountReceived(bankAccountReceived, false)) {
+            return false;
+        }
+
+        return true;
+    };
+
+    getSalesOrderForSubmit = async (salesOrders) => {
+        let salesOrdersMap = await salesOrders.map((item) => {
+            return {
+                salesOrder: item.salesOrder,
+                money: item.money,
+            };
+        });
+
+        return salesOrdersMap;
+    };
+
     save = async () => {
         if (this.isFormValidated()) {
-            let { account, owner, bankName, bankAcronym, status } = this.state;
+            let { customer, paymentType, bankAccountReceived, salesOrders } = this.state;
             let data = {
-                account,
-                owner,
-                bankName,
-                bankAcronym,
-                status,
+                customer,
+                paymentType,
+                bankAccountReceived: bankAccountReceived !== "" ? bankAccountReceived : undefined,
+                salesOrders: await this.getSalesOrderForSubmit(salesOrders),
+                type: 1, //Phiếu thu tiền bán hàng
             };
+
             await this.props.createPayment(data);
             await this.setState({
-                account: "",
-                owner: "",
-                bankName: "",
-                bankAcronym: "",
-                status: false,
+                customer: "title",
+                paymentType: "title",
+                bankAccountReceived: "",
+                salesOrders: [],
+                totalMoney: "",
             });
         }
     };
@@ -307,15 +477,25 @@ class ReceiptVoucherCreateForm extends Component {
             paymentType,
             bankAccountReceived,
             salesOrder,
-            amount,
+            money,
+            totalMoney,
             customerError,
             paymentTypeError,
             bankAccountReceivedError,
             salesOrderError,
             salesOrders,
             editSalesOrder,
-            amountError,
+            moneyError,
+            totalMoneyError,
         } = this.state;
+
+        let debt = 0;
+        const { salesOrdersForPayment } = this.props.salesOrders;
+        if (salesOrdersForPayment && salesOrdersForPayment.length) {
+            for (let index = 0; index < salesOrdersForPayment.length; index++) {
+                debt += salesOrdersForPayment[index].paymentAmount - salesOrdersForPayment[index].paid;
+            }
+        }
 
         return (
             <React.Fragment>
@@ -396,8 +576,22 @@ class ReceiptVoucherCreateForm extends Component {
                                 <ErrorLabel content={bankAccountReceivedError} />
                             </div>
                         )}
+
+                        <div className={`form-group`}>
+                            <label>{"Tổng dư nợ của khách hàng"}</label>
+                            <input type="text" className="form-control" value={formatCurrency(debt)} disabled={true} />
+                        </div>
+
+                        <div className={`form-group ${!totalMoneyError ? "" : "has-error"}`}>
+                            <label>
+                                {"Tổng tiền thanh toán"}
+                                <span className="attention"> * </span>
+                            </label>
+                            <input type="number" className="form-control" value={totalMoney} onChange={this.handleTotalMoneyChange} />
+                            <ErrorLabel content={totalMoneyError} />
+                        </div>
                         <fieldset className="scheduler-border">
-                            <legend className="scheduler-border">Các đơn hàng thanh toán</legend>
+                            <legend className="scheduler-border">Thanh toán cho từng đơn</legend>
                             <div className={`form-group ${!salesOrderError ? "" : "has-error"}`}>
                                 <label>
                                     Đơn hàng còn dư nợ
@@ -415,13 +609,13 @@ class ReceiptVoucherCreateForm extends Component {
                                 <ErrorLabel content={salesOrderError} />
                             </div>
 
-                            <div className={`form-group ${!amountError ? "" : "has-error"}`}>
+                            <div className={`form-group ${!moneyError ? "" : "has-error"}`}>
                                 <label>
                                     {"Số tiền thanh toán"}
                                     <span className="attention"> * </span>
                                 </label>
-                                <input type="number" className="form-control" value={amount} onChange={this.handleAmountChange} />
-                                <ErrorLabel content={amountError} />
+                                <input type="number" className="form-control" value={money} onChange={this.handleMoneyChange} disabled={true} />
+                                <ErrorLabel content={moneyError} />
                             </div>
 
                             <div className={"pull-right"} style={{ padding: 10 }}>
@@ -429,15 +623,15 @@ class ReceiptVoucherCreateForm extends Component {
                                     <React.Fragment>
                                         <button
                                             className="btn btn-success"
-                                            // onClick={this.handleCancelEditGoodTaxCollection}
+                                            onClick={this.handleCancelEditPaymentForSalesOrder}
                                             style={{ marginLeft: "10px" }}
                                         >
                                             Hủy chỉnh sửa
                                         </button>
                                         <button
                                             className="btn btn-success"
-                                            // disabled={!this.isGoodsValidated()}
-                                            // onClick={this.handleSaveEditGoodTaxCollection}
+                                            disabled={!this.isSubmitPaymentForSalesOrderValidate()}
+                                            onClick={this.handleSaveEditPaymentForSalesOrder}
                                             style={{ marginLeft: "10px" }}
                                         >
                                             Lưu
@@ -462,7 +656,7 @@ class ReceiptVoucherCreateForm extends Component {
                                         <th title={"Mã đơn"}>Mã đơn</th>
                                         <th title={"Tổng tiền"}>Tổng tiền</th>
                                         <th title={"Còn"}>Tiền dư nợ</th>
-                                        <th title={"Số lượng tồn kho"}>Thanh toán</th>
+                                        <th title={"Số tiền thanh toán"}>Số tiền thanh toán</th>
                                         <th title={"Đơn vị tính"}>Hành động</th>
                                     </tr>
                                 </thead>
@@ -473,20 +667,20 @@ class ReceiptVoucherCreateForm extends Component {
                                                 <tr key={index}>
                                                     <td>{index + 1}</td>
                                                     <td>{item.code}</td>
-                                                    <td>{item.paymentAmount}</td>
-                                                    <td>{item.paymentAmount - item.paid}</td>
-                                                    <td>{item.money}</td>
+                                                    <td>{item.paymentAmount ? formatCurrency(item.paymentAmount) : ""}</td>
+                                                    <td>{item.paymentAmount - item.paid ? formatCurrency(item.paymentAmount - item.paid) : ""}</td>
+                                                    <td style={{ fontWeight: 600 }}>{item.money ? formatCurrency(item.money) : ""}</td>
                                                     <td style={{ textAlign: "center" }}>
                                                         <a
                                                             href="#abc"
                                                             className="edit"
                                                             title="Sửa"
-                                                            // onClick={() => this.handleEditGoodsTaxCollection(item, index)}
+                                                            onClick={() => this.handlePaymentForSalesOrderEdit(item, index)}
                                                         >
                                                             <i className="material-icons">edit</i>
                                                         </a>
                                                         <a
-                                                            // onClick={() => this.handleDeleteGoodsTaxCollection(item)}
+                                                            onClick={() => this.handleDeletePaymentForSalesOrder(item)}
                                                             className="delete text-red"
                                                             style={{ width: "5px" }}
                                                             title={"Xóa"}
@@ -497,6 +691,21 @@ class ReceiptVoucherCreateForm extends Component {
                                                 </tr>
                                             );
                                         })}
+                                    {salesOrders.length !== 0 && (
+                                        <tr>
+                                            <td colSpan={4} style={{ fontWeight: 600 }}>
+                                                <center>Tổng thanh toán</center>
+                                            </td>
+                                            <td style={{ fontWeight: 600 }}>
+                                                {formatCurrency(
+                                                    salesOrders.reduce((accumulator, currentValue) => {
+                                                        return accumulator + currentValue.money;
+                                                    }, 0)
+                                                )}
+                                            </td>
+                                            <td></td>
+                                        </tr>
+                                    )}
                                 </tbody>
                             </table>
                         </fieldset>

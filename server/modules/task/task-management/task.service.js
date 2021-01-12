@@ -420,7 +420,7 @@ exports.getPaginatedTasks = async (portal, task) => {
         }
 
     }
-    console.log(keySearch, keySearchPeriod)
+
     let optionQuery = {
         $and: [
             keySearch,
@@ -428,7 +428,8 @@ exports.getPaginatedTasks = async (portal, task) => {
             keySearchPeriod
         ]
     }
-    taskList = await Task(connect(DB_CONNECTION, portal)).find(optionQuery).sort({ 'createdAt': 'asc' })
+
+    taskList = await Task(connect(DB_CONNECTION, portal)).find(optionQuery).sort({ 'createdAt': 1 })
         .skip(perPage * (page - 1)).limit(perPage).populate([
             { path: "organizationalUnit creator parent responsibleEmployees" },
             { path: "timesheetLogs.creator", select: "name" },
@@ -439,7 +440,8 @@ exports.getPaginatedTasks = async (portal, task) => {
 
     return {
         "tasks": taskList,
-        "totalPage": totalPages
+        "totalPage": totalPages,
+        totalCount
     };
 }
 
@@ -603,7 +605,7 @@ exports.getPaginatedTasksThatUserHasResponsibleRole = async (portal, task) => {
             keySearchSpecial,
             keySearchPeriod
         ]
-    }).sort({ 'createdAt': 'asc' })
+    }).sort({ 'createdAt': 1 })
         .skip(perPage * (page - 1)).limit(perPage).populate({ path: "organizationalUnit creator parent responsibleEmployees" });
 
     var totalCount = await Task(connect(DB_CONNECTION, portal)).countDocuments({
@@ -617,7 +619,8 @@ exports.getPaginatedTasksThatUserHasResponsibleRole = async (portal, task) => {
 
     return {
         "tasks": responsibleTasks,
-        "totalPage": totalPages
+        "totalPage": totalPages,
+        totalCount
     };
 }
 
@@ -780,7 +783,7 @@ exports.getPaginatedTasksThatUserHasAccountableRole = async (portal, task) => {
             keySearchSpecial,
             keySearchPeriod
         ]
-    }).sort({ 'createdAt': 'asc' })
+    }).sort({ 'createdAt': 1 })
         .skip(perPage * (page - 1)).limit(perPage).populate({ path: "organizationalUnit creator parent" });
 
     var totalCount = await Task(connect(DB_CONNECTION, portal)).countDocuments({
@@ -793,7 +796,8 @@ exports.getPaginatedTasksThatUserHasAccountableRole = async (portal, task) => {
     var totalPages = Math.ceil(totalCount / perPage);
     return {
         "tasks": accountableTasks,
-        "totalPage": totalPages
+        "totalPage": totalPages,
+        totalCount
     };
 }
 
@@ -955,7 +959,7 @@ exports.getPaginatedTasksThatUserHasConsultedRole = async (portal, task) => {
             keySearchSpecial,
             keySearchPeriod
         ]
-    }).sort({ 'createdAt': 'asc' })
+    }).sort({ 'createdAt': 1 })
         .skip(perPage * (page - 1)).limit(perPage).populate({ path: "organizationalUnit creator parent" });
 
     var totalCount = await Task(connect(DB_CONNECTION, portal)).countDocuments({
@@ -968,7 +972,8 @@ exports.getPaginatedTasksThatUserHasConsultedRole = async (portal, task) => {
     var totalPages = Math.ceil(totalCount / perPage);
     return {
         "tasks": consultedTasks,
-        "totalPage": totalPages
+        "totalPage": totalPages,
+        totalCount
     };
 }
 
@@ -1102,7 +1107,7 @@ exports.getPaginatedTasksCreatedByUser = async (portal, task) => {
             keySearchSpecial,
             keySearchPeriod
         ]
-    }).sort({ 'createdAt': 'asc' })
+    }).sort({ 'createdAt': 1 })
         .skip(perPage * (page - 1)).limit(perPage).populate({ path: "organizationalUnit creator parent" });
 
     var totalCount = await Task(connect(DB_CONNECTION, portal)).countDocuments({
@@ -1279,7 +1284,7 @@ exports.getPaginatedTasksThatUserHasInformedRole = async (portal, task) => {
             keySearchSpecial,
             keySearchPeriod
         ]
-    }).sort({ 'createdAt': 'asc' })
+    }).sort({ 'createdAt': 1 })
         .skip(perPage * (page - 1)).limit(perPage)
         .populate({ path: "organizationalUnit creator parent" });
 
@@ -1293,7 +1298,8 @@ exports.getPaginatedTasksThatUserHasInformedRole = async (portal, task) => {
     var totalPages = Math.ceil(totalCount / perPage);
     return {
         "tasks": informedTasks,
-        "totalPage": totalPages
+        "totalPage": totalPages,
+        totalCount
     };
 }
 
@@ -1488,7 +1494,7 @@ exports.getPaginatedTasksByUser = async (portal, task, type = "paginated_task_by
             keySearchSpecial,
             keySearchPeriod
         ]
-    }).sort({ 'createdAt': 'asc' })
+    }).sort({ 'createdAt': 1 })
         .skip(perPage * (page - 1)).limit(perPage)
         .populate({ path: "organizationalUnit creator parent" });
 
@@ -1502,7 +1508,8 @@ exports.getPaginatedTasksByUser = async (portal, task, type = "paginated_task_by
     var totalPages = Math.ceil(totalCount / perPage);
     return {
         "tasks": tasks,
-        "totalPage": totalPages
+        "totalPage": totalPages,
+        totalCount
     };
 }
 
@@ -1544,7 +1551,7 @@ exports.getAllTaskOfOrganizationalUnitByMonth = async (portal, task) => {
         }
     }
 
-    organizationUnitTasks = await Task(connect(DB_CONNECTION, portal)).find(keySearch).sort({ 'createdAt': 'asc' })
+    organizationUnitTasks = await Task(connect(DB_CONNECTION, portal)).find(keySearch).sort({ 'createdAt': 1 })
         .populate({ path: "organizationalUnit creator parent responsibleEmployees" });
     return {
         "tasks": organizationUnitTasks

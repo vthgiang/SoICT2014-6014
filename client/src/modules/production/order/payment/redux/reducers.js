@@ -23,6 +23,7 @@ const initState = {
     nextPage: 0,
     listPayments: [],
     paymentsForOrder: [],
+    paymentDetail: {}
 }
 
 export function payments(state = initState, action) {
@@ -79,6 +80,7 @@ export function payments(state = initState, action) {
             return {
                 ...state,
                 paymentsForOrder: action.payload.payments,
+                isLoading: false,
         }
         default:
             return state

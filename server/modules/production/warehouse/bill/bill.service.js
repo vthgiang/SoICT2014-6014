@@ -309,7 +309,7 @@ exports.createBill = async (userId, data, portal) => {
             address: data.address,
         },
         description: data.description,
-        goods: data.goods.map(item => {
+        goods: data.goods ? data.goods.map(item => {
             return {
                 good: item.good,
                 quantity: item.quantity,
@@ -317,7 +317,7 @@ exports.createBill = async (userId, data, portal) => {
                 realQuantity: item.realQuantity,
                 damagedQuantity: item.damagedQuantity,
                 description: item.description,
-                lots: item.lots.map(x => {
+                lots: item.lots ? item.lots.map(x => {
                     return {
                         lot: x.lot,
                         quantity: x.quantity,
@@ -326,9 +326,9 @@ exports.createBill = async (userId, data, portal) => {
                         realQuantity: x.realQuantity,
                         note: x.note
                     }
-                })
+                }) : undefined
             }
-        }),
+        }) : undefined,
         manufacturingMill: data.manufacturingMill,
         manufacturingCommand: data.manufacturingCommand,
         logs: logs
@@ -786,6 +786,41 @@ exports.editBill = async (id, userId, data, portal) => {
                                 }
                             }
                             await lot.save();
+                        }
+                    }
+                }
+            }
+        }
+    }
+    //Nếu nhập kho thành phẩm từ xưởng sản xuất
+    //Chuyển trạng thái đơn hàng từ đang thực hiện sang hoàn Thành
+    //Thay đổi trạng thái lô sản xuất thành đã nhập kho
+    if(data.type === '2') {
+        if (data.oldStatus === '5' && data.status === '2') {
+            if (data.goods && data.goods.length > 0) {
+                for (let i = 0; i < data.goods.length; i++) {
+                    if (data.goods[i].lots && data.goods[i].lots.length > 0) {
+                        for (let j = 0; j < data.goods[i].lots.length; j++) {
+                            let lotId = data.goods[i].lots[j].lot._id;
+                            let lot = await Lot(connect(DB_CONNECTION, portal)).findById(lotId);
+                            lot.status = '3';
+                            await lot.save();
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    //Nhập kho: Chuyển trạng thái từ đã hoàn thành sang đã Hủy
+    if(data.type === '1') {
+        if (data.oldStatus === '2' && data.status === '4') {
+            if (data.goods && data.goods.length > 0) {
+                for (let i = 0; i < data.goods.length; i++) {
+                    if (data.goods[i].lots && data.goods[i].lots.length > 0) {
+                        for (let j = 0; j < data.goods[i].lots.length; j++) {
+                            let lotId = data.goods[i].lots[j].lot._id;
+                            await Lot(connect(DB_CONNECTION, portal)).deleteOne({ _id: lotId });
                         }
                     }
                 }
