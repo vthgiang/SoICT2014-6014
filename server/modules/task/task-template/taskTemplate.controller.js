@@ -61,7 +61,7 @@ exports.getTaskTemplate = async (req, res) => {
  */
 exports.createTaskTemplate = async (req, res) => {
     try {
-        let data = await TaskTemplateService.createTaskTemplate(req.portal, req.body);
+        let data = await TaskTemplateService.createTaskTemplate(req.portal, req.body, req.user._id);
 
         await Logger.info(req.user.email, 'create_task_template', req.portal);
         res.status(200).json({
