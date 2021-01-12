@@ -61,7 +61,7 @@ class QuantityLotGoodReceipt extends Component {
                 if(quantity > 0) {
                     lotArr.push({ 
                         value: item._id, 
-                        text: item.code + "--" + quantity,
+                        text: item.code + "--" + quantity + " (" + item.good.baseUnit + ")",
                         quantity: quantity,
                     });
                 }

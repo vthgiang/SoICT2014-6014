@@ -138,45 +138,50 @@ class QuantityInventoryDashboard extends Component {
                         <h3 className="box-title">
                             Số lượng tồn kho của các mặt hàng
                         </h3>
-                        <div className="form-inline" style={{display: 'flex'}}>
-                            <div className="form-group" style={{display: 'flex', marginRight: '20px'}}>
-                                <label>Kho</label>
-                                <SelectMulti
-                                id={`select-multi-stock-dashboard-inventory`}
-                                multiple="multiple"
-                                options={{ nonSelectedText: "Tổng các kho", allSelectedText: "Tổng các kho" }}
-                                className="form-control select2"
-                                style={{ width: "100%" }}
-                                items={listStocks.map((x, index) => { return { value: x._id, text: x.name }})}
-                                onChange={this.handleStockChange}
-                            />
-                            </div>
-                            <div className="form-group" style={{display: 'flex', marginRight: '20px'}}>
-                                <label>Loại hàng hóa</label>
-                                <SelectMulti
-                                id={`select-multi-type-dashboard-inventory`}
-                                multiple="multiple"
-                                options={{ nonSelectedText: "Loại hàng hóa", allSelectedText: "Chọn tất cả" }}
-                                className="form-control select2"
-                                style={{ width: "100%" }}
-                                items={[
-                                    { value: 'product', text: 'Sản phẩm'},
-                                    { value: 'material', text: 'Nguyên vật liệu'},
-                                ]}
-                                onChange={this.handleTypeChange}
-                            />
-                            </div>
-                            <div className="form-group" style={{display: 'flex'}}>
-                                <label>Danh mục</label>
-                                <TreeSelect 
-                                    data={dataCategory} 
-                                    value={category} 
-                                    handleChange={this.handleCategoryChange} 
-                                    mode="hierarchical" 
+                        <div className="box-body qlcv" >
+                            <div className="form-inline">
+                                <div className="form-group">
+                                    <label>Kho</label>
+                                    <SelectMulti
+                                    id={`select-multi-stock-dashboard-inventory`}
+                                    multiple="multiple"
+                                    options={{ nonSelectedText: "Tổng các kho", allSelectedText: "Tổng các kho" }}
+                                    className="form-control select2"
+                                    style={{ width: "100%" }}
+                                    items={listStocks.map((x, index) => { return { value: x._id, text: x.name }})}
+                                    onChange={this.handleStockChange}
                                 />
+                                </div>
+                                <div className="form-group">
+                                    <label>Loại hàng hóa</label>
+                                    <SelectMulti
+                                    id={`select-multi-type-dashboard-inventory`}
+                                    multiple="multiple"
+                                    options={{ nonSelectedText: "Loại hàng hóa", allSelectedText: "Chọn tất cả" }}
+                                    className="form-control select2"
+                                    style={{ width: "100%" }}
+                                    items={[
+                                        { value: 'product', text: 'Sản phẩm'},
+                                        { value: 'material', text: 'Nguyên vật liệu'},
+                                    ]}
+                                    onChange={this.handleTypeChange}
+                                />
+                                </div>
                             </div>
-                            <div className="form-group">
-                                <button type="button" className="btn btn-success" title={translate('general.search')} onClick={() => this.handleSubmitSearch()} >{translate('general.search')}</button>
+                            <div className="form-inline">
+                                <div className="form-group">
+                                    <label>Danh mục</label>
+                                    <TreeSelect 
+                                        data={dataCategory} 
+                                        value={category} 
+                                        handleChange={this.handleCategoryChange} 
+                                        mode="hierarchical" 
+                                    />
+                                </div>
+                                <div className="form-group">
+                                <label></label>
+                                    <button type="button" className="btn btn-success" title={translate('general.search')} onClick={() => this.handleSubmitSearch()} >{translate('general.search')}</button>
+                                </div>
                             </div>
                         </div>
                         <div ref="quantityInventoryDashboard"></div>
