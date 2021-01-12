@@ -41,7 +41,6 @@ function getPaymentDetail (id) {
 
 //Lấy các thanh toán cho đơn hàng
 function getPaymentForOrder({ orderId, orderType }) {
-    console.log("orderId", orderId);
     return sendRequest(
         {
             url: `${process.env.REACT_APP_SERVER}/payment/get-for-order`,

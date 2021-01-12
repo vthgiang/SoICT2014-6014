@@ -160,6 +160,21 @@ class SalesOrderDetailForm extends Component {
         return amountAfterApplyTax - amount;
     };
 
+    getPaidTotalMoney = () => {
+        const { paymentsForOrder } = this.props.payments;
+        let paid = 0;
+        if (paymentsForOrder.length) {
+            paid = paymentsForOrder.reduce((accumulator, currentValue) => {
+                if (currentValue.salesOrders.length) {
+                    return accumulator + currentValue.salesOrders[0].money;
+                }
+                return accumulator;
+            }, 0);
+        }
+
+        return formatCurrency(paid);
+    };
+
     setCurrentDiscountOfSalesOrder = async (discountsOfSalesOrderDetail) => {
         await this.setState((state) => {
             return {
@@ -208,8 +223,6 @@ class SalesOrderDetailForm extends Component {
             customerRepresent,
             customerTaxNumber,
             customerEmail,
-            effectiveDate,
-            expirationDate,
             code,
             shippingFee,
             deliveryTime,
@@ -218,6 +231,7 @@ class SalesOrderDetailForm extends Component {
             paymentAmount,
             goods,
             discounts,
+            priority,
         } = this.props.salesOrderDetail;
 
         const { discountsOfSalesOrderDetail, discountOfGoodDetail, slasOfGoodDetail, currentManufacturingWorksOfGood } = this.state;
@@ -234,7 +248,13 @@ class SalesOrderDetailForm extends Component {
         const amountAfterApplyTax = this.getAmountAfterApplyTax();
         let discountsOfSalesOrder = this.getDiscountsValueSalesOrder(amountAfterApplyTax); // Chưa tính miễn phí vận chuyển và sử dụng xu
 
-        console.log("PAYMENTS REDUCERS", this.props.payments);
+        const { translate, payments } = this.props;
+        let paymentsForOrder = [];
+        if (payments.isLoading === false) {
+            paymentsForOrder = payments.paymentsForOrder;
+        }
+        let paymentTypeConvert = ["", "Tiền mặt", "Chuyển khoản"];
+        let priorityConvert = ["", "Thấp", "Trung Bình", "Cao", "Đặc biệt"];
         return (
             <React.Fragment>
                 <DialogModal
@@ -308,10 +328,8 @@ class SalesOrderDetailForm extends Component {
                                     <div style={{ color: "#888", fontSize: "13px" }}>{code}</div>
                                 </div>
                                 <div className="shopping-quote-info-element">
-                                    <div style={{ fontWeight: 600 }}>Thời gian hiệu lực &ensp;</div>
-                                    <div style={{ color: "#888", fontSize: "13px" }}>{effectiveDate ? formatDate(effectiveDate) : ""}</div>
-                                    {effectiveDate && expirationDate ? <span>&ensp;-&ensp;</span> : ""}
-                                    <div style={{ color: "#888", fontSize: "13px" }}>{expirationDate ? formatDate(expirationDate) : ""}</div>
+                                    <div style={{ fontWeight: 600 }}>Độ ưu tiên &ensp;</div>
+                                    <div style={{ color: "#888", fontSize: "13px" }}>{priority ? priorityConvert[priority] : "Trung bình"}</div>
                                 </div>
                             </div>
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12 shopping-products">
@@ -575,6 +593,57 @@ class SalesOrderDetailForm extends Component {
                                     </div>
                                 </div>
                             </div>
+                            {/* Thông tin thanh toán */}
+                            {paymentsForOrder && paymentsForOrder.length ? (
+                                <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12 shopping-discount">
+                                    <div className="shopping-discount-title">
+                                        <i className="fa  fa-credit-card"></i> Tiền đã thanh toán
+                                    </div>
+                                    <div className="shopping-apply-discounts">
+                                        <table id={`receipt-voucher-detail-sales-order`} className="table table-bordered not-sort">
+                                            <thead>
+                                                <tr>
+                                                    <th title={"STT"}>STT</th>
+                                                    <th title={"Phương thức thanh toán"}>Phương thức thanh toán</th>
+                                                    <th title={"Tài khoản thụ hưởng"}>Người nhận thanh toán</th>
+                                                    <th title={"Số tiền thanh toán"}>Thanh toán lúc</th>
+                                                    <th title={"Tài khoản thụ hưởng"}>Tài khoản thụ hưởng</th>
+                                                    <th title={"Tài khoản thụ hưởng"}>Chủ tài khoản</th>
+                                                    <th title={"Tài khoản thụ hưởng"}>Ngân hàng</th>
+                                                    <th title={"Số tiền thanh toán"}>Số tiền thanh toán</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {paymentsForOrder.length !== 0 &&
+                                                    paymentsForOrder.map((item, index) => {
+                                                        return (
+                                                            <tr key={index}>
+                                                                <td>{index + 1}</td>
+                                                                <td>{paymentTypeConvert[item.paymentType]}</td>
+                                                                <td>{item.curator ? item.curator.name : "---"}</td>
+                                                                <td>{item.paymentAt ? formatDate(item.paymentAt) : "---"}</td>
+                                                                <td>{item.bankAccountReceived ? item.bankAccountReceived.account : "---"}</td>
+                                                                <td>{item.bankAccountReceived ? item.bankAccountReceived.bankAcronym : "---"}</td>
+                                                                <td>{item.bankAccountReceived ? item.bankAccountReceived.owner : "---"}</td>
+                                                                <td>{item.salesOrders.length ? formatCurrency(item.salesOrders[0].money) : "0"}</td>
+                                                            </tr>
+                                                        );
+                                                    })}
+                                                {paymentsForOrder.length !== 0 && (
+                                                    <tr>
+                                                        <td colSpan={7} style={{ fontWeight: 600 }}>
+                                                            <center>Tổng tiền đã thanh toán</center>
+                                                        </td>
+                                                        <td style={{ fontWeight: 600 }}>{this.getPaidTotalMoney()}</td>
+                                                    </tr>
+                                                )}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            ) : (
+                                ""
+                            )}
                         </fieldset>
                     </div>
                 </DialogModal>
