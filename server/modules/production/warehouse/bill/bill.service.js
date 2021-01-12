@@ -309,7 +309,7 @@ exports.createBill = async (userId, data, portal) => {
             address: data.address,
         },
         description: data.description,
-        goods: data.goods.map(item => {
+        goods: data.goods ? data.goods.map(item => {
             return {
                 good: item.good,
                 quantity: item.quantity,
@@ -317,7 +317,7 @@ exports.createBill = async (userId, data, portal) => {
                 realQuantity: item.realQuantity,
                 damagedQuantity: item.damagedQuantity,
                 description: item.description,
-                lots: item.lots.map(x => {
+                lots: item.lots ? item.lots.map(x => {
                     return {
                         lot: x.lot,
                         quantity: x.quantity,
@@ -326,9 +326,9 @@ exports.createBill = async (userId, data, portal) => {
                         realQuantity: x.realQuantity,
                         note: x.note
                     }
-                })
+                }) : undefined
             }
-        }),
+        }) : undefined,
         manufacturingMill: data.manufacturingMill,
         manufacturingCommand: data.manufacturingCommand,
         logs: logs

@@ -95,7 +95,6 @@ class BankAccountManagementTable extends Component {
 
     render() {
         const { translate } = this.props;
-        console.log("BANK ACC", this.props.bankAccounts);
         const { bankAccounts } = this.props;
         const { totalPages, page, listBankAccounts } = bankAccounts;
 

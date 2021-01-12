@@ -211,6 +211,7 @@ class SalesOrderCreatePayment extends Component {
             coin,
             paymentAmount,
             enableFormSubmit,
+            priority,
         } = this.props;
 
         let allOfBonusGood = this.getBonusGoodOfAll();
@@ -226,6 +227,7 @@ class SalesOrderCreatePayment extends Component {
         let discountsOfQuote = this.getDiscountsValueQuote(amountAfterApplyTax); // Chưa tính miễn phí vận chuyển và sử dụng xu
         this.getPaymentAmount(amountAfterApplyTax, freeShipCost);
 
+        let priorityConvert = ["", "Thấp", "Trung Bình", "Cao", "Đặc biệt"];
         return (
             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                 <fieldset className="scheduler-border" style={{ background: "#f5f5f5" }}>
@@ -281,6 +283,10 @@ class SalesOrderCreatePayment extends Component {
                         <div className="shopping-quote-info-element">
                             <div style={{ fontWeight: 600 }}>Mã báo giá &ensp;</div>
                             <div style={{ color: "#888", fontSize: "13px" }}>{code}</div>
+                        </div>
+                        <div className="shopping-quote-info-element">
+                            <div style={{ fontWeight: 600 }}>Thời gian hiệu lực &ensp;</div>
+                            <div style={{ color: "#888", fontSize: "13px" }}>{priority ? priorityConvert[priority] : "Trung bình"}</div>
                         </div>
                     </div>
                     <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12 shopping-products">

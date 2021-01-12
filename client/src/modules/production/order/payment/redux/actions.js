@@ -72,20 +72,20 @@ function getPaymentDetail (id) {
     }
 }
 
-function getPaymentForOrder (queryData) {
+function getPaymentForOrder({ orderId, orderType }) {
     return (dispatch) => {
         dispatch({
             type: PaymentConstants.GET_PAYMENT_FOR_ORDER_REQUEST
         })
 
-        PaymentServices.getPaymentForOrder(queryData)
+        PaymentServices.getPaymentForOrder({ orderId, orderType })
         .then((res) => {
             dispatch({
                 type: PaymentConstants.GET_PAYMENT_FOR_ORDER_SUCCESS,
                 payload: res.data.content
             })
         })
-        .catch((error) => {
+            .catch((error) => {
             dispatch({
                 type: PaymentConstants.GET_PAYMENT_FOR_ORDER_FAILURE
             })

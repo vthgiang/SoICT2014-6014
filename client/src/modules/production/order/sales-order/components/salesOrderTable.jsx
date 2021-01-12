@@ -8,6 +8,7 @@ import { CrmCustomerActions } from "../../../../crm/customer/redux/actions";
 import { DepartmentActions } from "../../../../super-admin/organizational-unit/redux/actions";
 import { RoleActions } from "../../../../super-admin/role/redux/actions";
 import { QuoteActions } from "../../quote/redux/actions";
+import { PaymentActions } from "../../payment/redux/actions";
 
 import { BillActions } from "../../../warehouse/bill-management/redux/actions";
 import { StockActions } from "../../../warehouse/stock-management/redux/actions";
@@ -55,7 +56,7 @@ class SalesOrderTable extends Component {
 
     handleClickCreateCode = () => {
         this.setState((state) => {
-            return { ...state, code: generateCode("SALES_ORDER_") };
+            return { ...state, code: generateCode("SO_") };
         });
     };
 
@@ -113,14 +114,15 @@ class SalesOrderTable extends Component {
         this.props.getAllSalesOrders(data);
     };
 
-    handleShowDetailInfo = (data) => {
-        this.setState((state) => {
+    handleShowDetailInfo = async (data) => {
+        await this.props.getPaymentForOrder({ orderId: data._id, orderType: 1 });
+        await this.setState((state) => {
             return {
                 ...state,
                 salesOrderDetail: data,
             };
         });
-        window.$("#modal-detail-sales-order").modal("show");
+        await window.$("#modal-detail-sales-order").modal("show");
     };
 
     reloadSalesOrderTable = () => {
@@ -488,6 +490,7 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = {
     getAllSalesOrders: SalesOrderActions.getAllSalesOrders,
+    getPaymentForOrder: PaymentActions.getPaymentForOrder,
     getDiscountForOrderValue: DiscountActions.getDiscountForOrderValue,
     getCustomers: CrmCustomerActions.getCustomers,
     getAllDepartments: DepartmentActions.get,
