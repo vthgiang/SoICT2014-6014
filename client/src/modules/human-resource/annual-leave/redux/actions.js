@@ -19,13 +19,15 @@ export const AnnualLeaveActions = {
 function searchAnnualLeaves(data) {
     return dispatch => {
         dispatch({
-            type: AnnualLeaveConstants.GET_ANNUAL_LEAVE_REQUEST
+            type: AnnualLeaveConstants.GET_ANNUAL_LEAVE_REQUEST,
+            beforAndAfterOneWeek: data.beforAndAfterOneWeek
         });
         AnnualLeaveService.searchAnnualLeaves(data)
             .then(res => {
                 dispatch({
                     type: AnnualLeaveConstants.GET_ANNUAL_LEAVE_SUCCESS,
-                    payload: res.data.content
+                    payload: res.data.content,
+                    beforAndAfterOneWeek: data.beforAndAfterOneWeek,
                 })
             })
             .catch(err => {

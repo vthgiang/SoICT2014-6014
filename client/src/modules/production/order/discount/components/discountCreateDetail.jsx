@@ -611,7 +611,7 @@ class DiscountCreateDetail extends Component {
 
     getContentDiscountTable = (discount) => {
         const { formality } = this.props;
-        switch (formality) {
+        switch (parseInt(formality)) {
             case 0:
                 return discount.discountedCash;
             case 1:

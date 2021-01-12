@@ -13,3 +13,4 @@ export * from './tabHumanResource';
 export * from './tabSalary';
 export * from './tabAnualLeave';
 export * from './tabIntegratedStatistics';
+export * from './annualLeaveChartAndTable';

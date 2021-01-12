@@ -1,16 +1,20 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
-import {
-    PaginateBar,
-    DataTableSetting,
-    DeleteNotification,
-    SelectBox,
-} from "../../../../../common-components";
 
-import data from "../../dataTest/PurchaseOrderData.json";
+import { PurchaseOrderActions } from "../redux/actions";
+import { purchasingRequestActions } from "../../../manufacturing/purchasing-request/redux/actions";
+import { StockActions } from "../../../warehouse/stock-management/redux/actions";
+import { CrmCustomerActions } from "../../../../crm/customer/redux/actions";
+import { formatCurrency } from "../../../../../helpers/formatCurrency";
+import { formatDate } from "../../../../../helpers/formatDate";
+import { generateCode } from "../../../../../helpers/generateCode";
+
+import { PaginateBar, DataTableSetting, DeleteNotification, SelectBox } from "../../../../../common-components";
+
+import PurchaseOrderCreateFormDirectly from "./purchaseOrderCreateFormDirectly";
+import PurchaseOrderCreateFormFromPurchasingRequest from "./purchaseOrderCreateFormFromPurchasingRequest";
 import PurchaseDetailForm from "./purchaseOrderDetailForm";
-import PurchaseOrderCreateForm from "./purchaseOrderCreateForm";
 import PurchaseOrderEditForm from "./purchaseOrderEditForm";
 
 class PurchaseOrderTable extends Component {
@@ -19,14 +23,99 @@ class PurchaseOrderTable extends Component {
         this.state = {
             limit: 5,
             page: 1,
+            code: "",
+            status: "",
         };
     }
 
-    static getDerivedStateFromProps(props, state) {
-        return {
-            list: data,
-        };
+    componentDidMount() {
+        const { page, limit } = this.state;
+        this.props.getAllPurchaseOrders({ page, limit });
+        this.props.getAllStocks();
+        this.props.getCustomers();
     }
+
+    handleClickCreateCode = () => {
+        this.setState((state) => {
+            return { ...state, codeCreate: generateCode("PO_") };
+        });
+    };
+
+    createDirectly = () => {
+        window.$("#modal-add-purchase-order-directly").modal("show");
+    };
+
+    createFromPurchasingRequest = () => {
+        this.props.getAllPurchasingRequests({ status: 1 });
+        window.$("#modal-add-purchase-order-from-puchasing-request").modal("show");
+    };
+
+    setPage = async (page) => {
+        const { limit, code, status } = this.state;
+        await this.setState({
+            page: page,
+        });
+        const data = {
+            limit,
+            page: page,
+            code,
+            status,
+        };
+        this.props.getAllPurchaseOrders(data);
+    };
+
+    setLimit = async (limit) => {
+        const { page, code, status } = this.state;
+        await this.setState({
+            limit: limit,
+        });
+        const data = {
+            limit: limit,
+            page,
+            code,
+            status,
+        };
+        this.props.getAllPurchaseOrders(data);
+    };
+
+    handleCodeChange = (e) => {
+        const { value } = e.target;
+        this.setState({
+            code: value,
+        });
+    };
+
+    handleStatusChange = (value) => {
+        this.setState({
+            status: value[0],
+        });
+    };
+
+    handleSubmitSearch = () => {
+        const { page, limit, code, status } = this.state;
+        const data = {
+            limit,
+            page,
+            code,
+            status,
+        };
+        this.props.getAllPurchaseOrders(data);
+    };
+
+    getPaymentAmount = (materials, discount) => {
+        let paymentAmount = 0;
+        if (materials && materials.length) {
+            paymentAmount = materials.reduce((accumulator, currentValue) => {
+                return accumulator + currentValue.quantity * currentValue.price;
+            }, 0);
+        }
+
+        if (discount) {
+            paymentAmount = paymentAmount - discount ? paymentAmount - discount : 0;
+        }
+
+        return formatCurrency(paymentAmount);
+    };
 
     handleShowDetailInfo = (data) => {
         this.setState((state) => {
@@ -36,20 +125,6 @@ class PurchaseOrderTable extends Component {
             };
         });
         window.$("#modal-detail-material-purchase-order").modal("show");
-    };
-
-    deletePurchaseOrder = (_id) => {
-        let { list } = this.state;
-        list = list.filter((item) => item._id !== _id);
-
-        this.setState((state) => {
-            return {
-                ...state,
-                list,
-            };
-        });
-
-        console.log("st", this.state);
     };
 
     handleEdit = (data) => {
@@ -63,96 +138,115 @@ class PurchaseOrderTable extends Component {
     };
 
     render() {
-        let { list, limit, page } = this.state;
-        console.log("sss", this.state.editRow);
+        const { code, status, codeCreate } = this.state;
 
-        const { translate } = this.props;
-
-        let totalPages = 0;
-        totalPages =
-            list.length % limit === 0
-                ? parseInt(list.length / limit)
-                : parseInt(list.length / limit + 1);
-
+        const { translate, purchaseOrders } = this.props;
+        const { totalPages, page, listPurchaseOrders } = purchaseOrders;
+        const statusConver = [
+            {
+                className: "text-primary",
+                text: "no status",
+            },
+            {
+                className: "text-primary",
+                text: "Chờ phê duyệt",
+            },
+            {
+                className: "text-warning",
+                text: "Đã phê duyệt",
+            },
+            {
+                className: "text-success",
+                text: "Đã nhập kho",
+            },
+        ];
         return (
             <React.Fragment>
                 <div className="box-body qlcv">
-                    <PurchaseOrderCreateForm />
-                    {this.state.currentRow && (
-                        <PurchaseDetailForm data={this.state.currentRow} />
-                    )}
-                    {this.state.editRow && (
-                        <PurchaseOrderEditForm data={this.state.editRow} />
-                    )}
+                    <div className="form-inline">
+                        {/*Chọn cách thêm đơn mua nguyên vật liệu*/}
+                        {/* Button dropdown thêm mới đơn mua nguyên vật liệu */}
+                        <div className="dropdown pull-right" style={{ marginBottom: 15 }}>
+                            <button
+                                type="button"
+                                className="btn btn-success dropdown-toggle pull-right"
+                                data-toggle="dropdown"
+                                aria-expanded="true"
+                                title={"Thêm mới đơn mu nguyên vật liệu"}
+                                onClick={this.handleClickCreateCode}
+                            >
+                                Thêm đơn
+                            </button>
+                            <ul className="dropdown-menu pull-right" style={{ marginTop: 0 }}>
+                                <li>
+                                    <a style={{ cursor: "pointer" }} title={`Tạo từ báo giá`} onClick={this.createFromPurchasingRequest}>
+                                        Thêm từ đơn đề nghị
+                                    </a>
+                                </li>
+                                <li>
+                                    <a style={{ cursor: "pointer" }} title={`Tạo trực tiếp`} onClick={this.createDirectly}>
+                                        Thêm trực tiếp
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <PurchaseOrderCreateFormDirectly />
+                    <PurchaseOrderCreateFormFromPurchasingRequest />
+                    {this.state.currentRow && <PurchaseDetailForm data={this.state.currentRow} />}
+                    {this.state.editRow && <PurchaseOrderEditForm data={this.state.editRow} />}
+
                     <div className="form-inline">
                         <div className="form-group">
-                            <label className="form-control-static">
-                                Tìm mã đơn mua
-                            </label>
+                            <label className="form-control-static">Tìm mã đơn mua</label>
                             <input
                                 type="text"
                                 className="form-control"
-                                name="code"
-                                onChange={this.handleOrderCodeChange}
-                                placeholder="Nhập vào mã đơn"
+                                value={code}
+                                onChange={this.handleCodeChange}
+                                placeholder="Mã đơn"
                                 autoComplete="off"
                             />
                         </div>
                         <div className="form-group">
-                            <label className="form-control-static">
-                                Trạng thái đơn
-                            </label>
+                            <label className="form-control-static">Trạng thái đơn</label>
                             <SelectBox
                                 id={`select-filter-status-material-purchase-order`}
                                 className="form-control select2"
                                 style={{ width: "100%" }}
                                 items={[
                                     {
-                                        value: "Chờ phê duyệt",
+                                        value: 1,
                                         text: "Chờ phê duyệt",
                                     },
                                     {
-                                        value: "Đã phê duyệt",
+                                        value: 2,
                                         text: "Đã phê duyệt",
                                     },
                                     {
-                                        value: "Đang mua hàng",
-                                        text: "Đang mua hàng",
-                                    },
-                                    {
-                                        value: "Đã hoàn thành",
-                                        text: "Đã hoàn thành",
-                                    },
-                                    {
-                                        value: "Đã nhập kho",
+                                        value: 3,
                                         text: "Đã nhập kho",
                                     },
                                 ]}
                                 onChange={this.handleStatusChange}
+                                value={status}
                             />
                         </div>
                         <div className="form-group">
-                            <button
-                                type="button"
-                                className="btn btn-success"
-                                title="Lọc"
-                                onClick={this.handleSubmitSearch}
-                            >
+                            <button type="button" className="btn btn-success" title="Lọc" onClick={this.handleSubmitSearch}>
                                 Tìm kiếm
                             </button>
                         </div>
                     </div>
-                    <table
-                        id="order-table"
-                        className="table table-striped table-bordered table-hover"
-                        style={{ marginTop: 20 }}
-                    >
+                    <table id="order-table" className="table table-striped table-bordered table-hover" style={{ marginTop: 20 }}>
                         <thead>
                             <tr>
                                 <th>STT</th>
                                 <th>Mã đơn</th>
                                 <th>Trạng thái</th>
+                                <th>Tổng tiền</th>
                                 <th>Người tạo</th>
+                                <th>Ngày tạo</th>
                                 <th
                                     style={{
                                         width: "120px",
@@ -161,85 +255,66 @@ class PurchaseOrderTable extends Component {
                                 >
                                     {translate("table.action")}
                                     <DataTableSetting
-                                        tableId="purchase-order-table"
-                                        columnArr={[
-                                            "STT",
-                                            "Nội dung mua hàng",
-                                            "Trạng thái",
-                                            "Người tạo",
-                                        ]}
-                                        limit={limit}
-                                        setLimit={this.setLimit}
+                                        tableId="manufacturing-works-table"
+                                        columnArr={["STT", "Mã đơn", "Trạng thái", "Người tạo", "Tổng tiền"]}
+                                        limit={this.state.limit}
                                         hideColumnOption={true}
+                                        setLimit={this.setLimit}
                                     />
                                 </th>
                             </tr>
                         </thead>
                         <tbody>
-                            {typeof list !== "undefined" &&
-                                list.length !== 0 &&
-                                list.map((item, index) => (
+                            {listPurchaseOrders.length !== 0 &&
+                                listPurchaseOrders.map((item, index) => (
                                     <tr key={index}>
-                                        <td>
-                                            {index + 1 + (page - 1) * limit}
-                                        </td>
+                                        <td>{index + 1}</td>
                                         <td>{item.code}</td>
-                                        <td>{item.status}</td>
-                                        <td>{item.creator}</td>
+                                        <td>{item.status ? statusConver[item.status] : ""}</td>
+                                        <td>{this.getPaymentAmount(item.materials, item.discount)}</td>
+                                        <td>{item.creator ? item.creator.name : ""}</td>
+                                        <td>{item.createAt ? formatDate(item.createAt) : ""}</td>
                                         <td style={{ textAlign: "center" }}>
-                                            <a
-                                                className="text-green"
-                                                onClick={() =>
-                                                    this.handleShowDetailInfo(
-                                                        item
-                                                    )
-                                                }
-                                            >
-                                                <i className="material-icons">
-                                                    visibility
-                                                </i>
+                                            <a className="text-green" onClick={() => this.handleShowDetailInfo(item)}>
+                                                <i className="material-icons">visibility</i>
                                             </a>
                                             <a
-                                                onClick={() =>
-                                                    this.handleEdit(item)
-                                                }
+                                                onClick={() => this.handleEdit(item)}
                                                 className="edit text-yellow"
                                                 style={{ width: "5px" }}
                                                 title="Sửa đơn"
                                             >
-                                                <i className="material-icons">
-                                                    edit
-                                                </i>
+                                                <i className="material-icons">edit</i>
                                             </a>
-                                            <DeleteNotification
-                                                content={translate(
-                                                    "Xóa đơn nhập nguyên vật liệu"
-                                                )}
-                                                data={{
-                                                    info:
-                                                        "Bạn có chắc chắn muốn xóa đơn: " +
-                                                        item.code,
-                                                }}
-                                                func={() =>
-                                                    this.deletePurchaseOrder(
-                                                        item._id
-                                                    )
-                                                }
-                                            />
                                         </td>
                                     </tr>
                                 ))}
                         </tbody>
                     </table>
-                    <PaginateBar
-                        pageTotal={totalPages ? totalPages : 0}
-                        currentPage={page}
-                        func={this.setPage}
-                    />
+                    {purchaseOrders.isLoading ? (
+                        <div className="table-info-panel">{translate("confirm.loading")}</div>
+                    ) : (
+                        (typeof listPurchaseOrders === "undefined" || listPurchaseOrders.length === 0) && (
+                            <div className="table-info-panel">{translate("confirm.no_data")}</div>
+                        )
+                    )}
+                    <PaginateBar pageTotal={totalPages ? totalPages : 0} currentPage={page} func={this.setPage} />
                 </div>
             </React.Fragment>
         );
     }
 }
 
-export default connect(null, null)(withTranslate(PurchaseOrderTable));
+function mapStateToProps(state) {
+    const { purchaseOrders } = state;
+    return { purchaseOrders };
+}
+
+const mapDispatchToProps = {
+    getAllPurchaseOrders: PurchaseOrderActions.getAllPurchaseOrders,
+    getAllPurchasingRequests: purchasingRequestActions.getAllPurchasingRequests,
+    getAllStocks: StockActions.getAllStocks,
+    getCustomers: CrmCustomerActions.getCustomers,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(PurchaseOrderTable));

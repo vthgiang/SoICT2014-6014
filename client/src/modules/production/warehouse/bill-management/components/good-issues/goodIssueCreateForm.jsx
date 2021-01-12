@@ -631,9 +631,9 @@ class GoodIssueCreateForm extends Component {
             salesOrderId,
         });
 
-        //Load lại dữ liệu đơn hàng sau 1000ms
+        //Load lại dữ liệu đơn hàng sau 3000ms
         if (createdSource === "salesOrder") {
-            await setTimeout(this.props.reloadSalesOrderTable(), 1000);
+            await setTimeout(this.props.reloadSalesOrderTable(), 3000);
         }
     };
 

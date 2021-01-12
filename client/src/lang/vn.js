@@ -1163,7 +1163,7 @@ export default {
             //QUẢN LÝ ĐƠN HÀNG
             manage_orders: "Quản lý đơn hàng",
             manage_sales_order: "Đơn bán hàng",
-            manage_purchase_order: "Đơn mua NVL",
+            manage_purchase_order: "Đơn mua nguyên vật liệu",
             manage_sales_order_dashboard: "Thống kê bán hàng",
             manage_quote: "Báo giá",
             manage_discount: "Giảm giá",
@@ -5067,7 +5067,10 @@ export default {
                 prev: "Trước",
                 choose_start_date: "Không được để trống thời gian",
                 choose_end_date: "Không được để trống thời gian",
-                choose_date_error: "Ngày bắt đầu phải trước hoặc bằng ngày kết thúc"
+                choose_date_error: "Ngày bắt đầu phải trước hoặc bằng ngày kết thúc",
+                booking_mill_error: "Các ca làm việc phải liên tục!",
+                turn: "Ca ",
+                please_booking_mill: "Vui lòng chọn phân lệnh sản xuất vào ca làm việc!"
 
 
 

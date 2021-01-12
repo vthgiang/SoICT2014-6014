@@ -237,7 +237,7 @@ class AnnualLeaveTrendsChart extends Component {
     }
 
     render() {
-        const { department, annualLeave, translate, timesheets } = this.props;
+        const { department, annualLeave, translate, timesheets, childOrganizationalUnit } = this.props;
         const { lineChart, nameChart, organizationalUnits, nameData1, nameData2, startDate, endDate, startDateShow, endDateShow, organizationalUnitsSearch } = this.state;
 
         let organizationalUnitsName = [];
@@ -285,7 +285,7 @@ class AnnualLeaveTrendsChart extends Component {
                                 <div className="form-group">
                                     <label className="form-control-static">{translate('kpi.evaluation.dashboard.organizational_unit')}</label>
                                     <SelectMulti id="multiSelectUnits"
-                                        items={department.list.map((p, i) => { return { value: p._id, text: p.name } })}
+                                        items={childOrganizationalUnit.map((p, i) => { return { value: p.id, text: p.name } })}
                                         options={{ nonSelectedText: translate('page.non_unit'), allSelectedText: translate('page.all_unit') }}
                                         onChange={this.handleSelectOrganizationalUnit}
                                         value={organizationalUnits}

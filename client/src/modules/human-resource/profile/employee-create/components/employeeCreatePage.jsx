@@ -18,7 +18,7 @@ class EmployeeCreatePage extends Component {
                 avatar: '/upload/human-resource/avatars/avatar5.png',
                 gender: "male",
                 maritalStatus: "single",
-                educationalLevel: "12/12",
+                educationalLevel: "",
                 professionalSkill: "unavailable",
                 status: 'active',
                 identityCardDate: this.formatDate2(Date.now()),

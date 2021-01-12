@@ -49,7 +49,7 @@ class TaskManagementOfUnit extends Component {
                     organizationalUnit: units
                 }
             });
-            
+
             await this.props.getPaginatedTasksByOrganizationalUnit(units, 1, 20, status, [], [], null, null, null, isAssigned);
             return true;
         }
@@ -408,7 +408,7 @@ class TaskManagementOfUnit extends Component {
 
         return (
             <React.Fragment>
-                { currentOrganizationalUnit 
+                { currentOrganizationalUnit
                     ? <div className="box">
                         <div className="box-body qlcv">
                             <div className="form-inline">
@@ -581,6 +581,8 @@ class TaskManagementOfUnit extends Component {
                                 />
                             }
                             <PaginateBar
+                                display={tasks.tasks?.length}
+                                total={tasks.totalCount}
                                 pageTotal={tasks.pages}
                                 currentPage={currentPage}
                                 func={this.handleGetDataPagination}
@@ -589,11 +591,11 @@ class TaskManagementOfUnit extends Component {
                         </div>
                     </div>
                     : currentOrganizationalUnitLoading
-                        && <div className="box">
-                            <div className="box-body">
-                                <h4>Bạn chưa có đơn vị</h4>
-                            </div>
+                    && <div className="box">
+                        <div className="box-body">
+                            <h4>Bạn chưa có đơn vị</h4>
                         </div>
+                    </div>
                 }
             </React.Fragment>
         );

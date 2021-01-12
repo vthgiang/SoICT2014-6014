@@ -7,90 +7,64 @@ const PurchaseOrderShema = new Schema({
         type: String,
         required: true
     },
-    status: {// 1: Chờ phê duyệt, 2: Đã phê duyệt, 3: Đang mua hàng, 4: Đã hoàn thành, 5: Đã hủy
+    status: {//1. Chờ phê duyệt, 2. Đã phê duyệt, 3. Đã nhập kho
         type: Number,
-        enum: [ 1, 2 ,3, 4, 5 ],
-        require: true
+        enum: [1, 2, 3],
+        default: 1
     },
-    stock: {
+    creator: { // Người tạo
         type: Schema.Types.ObjectId,
-        ref: 'Stock'
-    },
-    desciption: {
-        type: String
-    },
-    creator: {
-        type: Schema.Types.ObjectId,
-        ref: 'User',
+        ref: "User",
         required: true
     },
-    reponsible: {
-        type: Schema.Types.ObjectId,
-        ref: 'User',
-        required: true,
-    },
-    goods: [{
-        good: {
+    materials: [{ // Danh sách nguyên vật liệu
+        good: { // Nguyên vật liệu
             type: Schema.Types.ObjectId,
-            ref: 'Good',
-            required: true
+            ref: "Good"
         },
-        returnRule: {
-            type: String
-        },
-        serviceLevelAgreement: {
-            type: String
-        },
-        name: {
-            type: String,
-            required: true
-        },
-        baseUnit: {
-            type: String,
-            required: true
+        quantity: { // Số lượng
+            type: Number
         },
         price: {
-            type: Number,
-            required: true
-        },
-        quantity: {
-            type: Number,
-            required: true
+            type: Number
         }
     }],
-    returnRule: {
-        type: String
+    intendReceiveTime: { // Thời gian dự kiến nhận
+        type: Date
     },
-    serviceLevelAgreement: {
-        type: String
+    stock: {//Nhập về kho
+        type: Schema.Types.ObjectId,
+        ref: 'Stock'
     },
     approvers: [{
         approver: {
             type: Schema.Types.ObjectId,
+            ref: 'User',
             required: true
         }, 
-        timeApprove: {
-            type: Date
-        }
-    }],
-    partner: [{
-        type: Schema.Types.ObjectId,
-        required: true
-    }],
-    payments: [{
-        accounting: {
-            type: Schema.Types.ObjectId,
-            required: true
-        },
-        money: {
-            type: Number,
-            required: true
-        },
-        paymentAt: {
+        approveAt: {
             type: Date,
-            required: true
+            default: new Date()
+        },
+        status: {
+            type: Boolean,
+            default: false
         }
-    }]
+    }],
+    customer: {//Đối tác
+        type: Schema.Types.ObjectId,
+        ref: 'Customer',
+    },
+    discount: {
+        type: Number
+    },
+    desciption: {
+        type: String
+    },
+    purchasingRequest: {
+        type: Schema.Types.ObjectId,
+        ref: 'PurchasingRequest',
+    }
 }, {
     timestamps: true,
 })

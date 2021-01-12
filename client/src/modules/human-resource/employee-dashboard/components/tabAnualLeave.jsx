@@ -4,7 +4,7 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import { LazyLoadComponent } from '../../../../common-components';
 
-import { TrendOfOvertime, AnnualLeaveTrendsChart } from './combinedContent';
+import { TrendOfOvertime, AnnualLeaveTrendsChart, AnnualLeaveChartAndTable } from './combinedContent';
 
 class TabAnualLeave extends Component {
     constructor(props) {
@@ -16,10 +16,13 @@ class TabAnualLeave extends Component {
         return (
             <React.Fragment>
                 <LazyLoadComponent>
-                    <AnnualLeaveTrendsChart defaultUnit={defaultUnit} organizationalUnits={[childOrganizationalUnit[0].id]} nameData1='Số lượt nghỉ' nameData2='Số giờ nghỉ phép' nameChart={'Xu hướng nghỉ phép'} />
+                    <AnnualLeaveTrendsChart defaultUnit={defaultUnit} childOrganizationalUnit={childOrganizationalUnit} organizationalUnits={[childOrganizationalUnit[0].id]} nameData1='Số lượt nghỉ' nameData2='Số giờ nghỉ phép' nameChart={'Xu hướng nghỉ phép'} />
                 </LazyLoadComponent>
                 <LazyLoadComponent>
-                    <TrendOfOvertime defaultUnit={defaultUnit} organizationalUnits={[childOrganizationalUnit[0].id]} nameData1='Số giờ tăng ca' nameChart={'Xu hướng tăng ca'} />
+                    <AnnualLeaveChartAndTable childOrganizationalUnit={childOrganizationalUnit} defaultUnit={defaultUnit} organizationalUnits={[childOrganizationalUnit[0].id]}></AnnualLeaveChartAndTable>
+                </LazyLoadComponent>
+                <LazyLoadComponent>
+                    <TrendOfOvertime defaultUnit={defaultUnit} childOrganizationalUnit={childOrganizationalUnit} organizationalUnits={[childOrganizationalUnit[0].id]} nameData1='Số giờ tăng ca' nameChart={'Xu hướng tăng ca'} />
                 </LazyLoadComponent>
             </React.Fragment>
         );

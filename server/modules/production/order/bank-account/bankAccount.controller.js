@@ -37,7 +37,7 @@ exports.editBankAccount = async (req, res) => {
             content: bankAccount
         });
     } catch (error) {
-        await Log.error(req.user.email, "EDIT_SLA", req.portal);
+        await Log.error(req.user.email, "EDIT_BANK_ACCOUNT", req.portal);
         res.status(400).json({
             success: false,
             messages: ["edit_failed"],
