@@ -25,7 +25,7 @@ class ReceiptVoucherManagementTable extends Component {
         const { page, limit, type } = this.state;
         this.props.getAllPayments({ page, limit, type });
         this.props.getCustomers();
-        this.props.getAllBankAccounts({ page: 1, limit: 1000 });
+        this.props.getAllBankAccounts({ page: 1, limit: 1000, status: true });
     }
 
     setPage = async (page) => {

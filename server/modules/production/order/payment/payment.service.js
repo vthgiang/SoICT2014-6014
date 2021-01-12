@@ -5,6 +5,7 @@ const {
 const {
     connect
 } = require(`../../../../helpers/dbHelper`);
+const { Logform } = require("winston");
 
 
 
@@ -121,8 +122,9 @@ exports.getPaymentForOrder = async (orderId, orderType, portal) => {
     let paymentsForOrder = await Payment(connect(DB_CONNECTION, portal)).find({ salesOrders: { $elemMatch: { salesOrder: orderId } } });
 
     //Tìm số tiền thanh toán trong Payment
-    for (let index = 0; i < paymentsForOrder.length; index++){
+    for (let index = 0; index < paymentsForOrder.length; index++){
         let { salesOrders } = paymentsForOrder[index];
+        console.log(salesOrders);
 
         //Lấy chi tiết số tiền cho đơn hàng trong 1 phiếu thu tiền
         let paymentForSalesOrder = salesOrders.find((element) => element.salesOrder.toString() === orderId.toString())

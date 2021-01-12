@@ -59,6 +59,9 @@ exports.getAllBankAccounts = async (query, portal) => {
     if (query.bankAcronym) {
         option.bankAcronym =  new RegExp(query.bankAcronym, "i")
     }
+    if (query.status) {
+        option.status =  query.status
+    }
 
     if ( !page || !limit ){
         let allBankAccounts = await BankAccount(connect(DB_CONNECTION, portal))

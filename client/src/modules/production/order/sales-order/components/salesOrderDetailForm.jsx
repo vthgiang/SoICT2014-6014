@@ -8,6 +8,7 @@ import { CrmCustomerActions } from "../../../../crm/customer/redux/actions";
 import DiscountsOfSalesOrderDetail from "./detailSalesOrder/discountOfSalesOrderDetail";
 import DiscountOfGoodDetail from "./detailSalesOrder/discountOfGoodDetail";
 import SlasOfGoodDetail from "./detailSalesOrder/slasOfGoodDetail";
+import ManufacturingWorksOfGoodDetail from "./detailSalesOrder/manufacturingWorksOfGoodDetail";
 import "./salesOrder.css";
 
 class SalesOrderDetailForm extends Component {
@@ -189,6 +190,16 @@ class SalesOrderDetailForm extends Component {
         window.$("#modal-sales-order-detail-slas-of-good").modal("show");
     };
 
+    setCurrentManufacturingWorksOfGoods = async (data) => {
+        await this.setState((state) => {
+            return {
+                ...state,
+                currentManufacturingWorksOfGood: data,
+            };
+        });
+        window.$("#modal-sales-order-detail-manufacturing-works-of-good-detail").modal("show");
+    };
+
     render() {
         const {
             customerPhone,
@@ -209,7 +220,7 @@ class SalesOrderDetailForm extends Component {
             discounts,
         } = this.props.salesOrderDetail;
 
-        const { discountsOfSalesOrderDetail, discountOfGoodDetail, slasOfGoodDetail } = this.state;
+        const { discountsOfSalesOrderDetail, discountOfGoodDetail, slasOfGoodDetail, currentManufacturingWorksOfGood } = this.state;
 
         let allOfBonusGood = this.getBonusGoodOfAll();
         let freeShipCost = this.getFreeShipCost();
@@ -222,6 +233,8 @@ class SalesOrderDetailForm extends Component {
 
         const amountAfterApplyTax = this.getAmountAfterApplyTax();
         let discountsOfSalesOrder = this.getDiscountsValueSalesOrder(amountAfterApplyTax); // Chưa tính miễn phí vận chuyển và sử dụng xu
+
+        console.log("PAYMENTS REDUCERS", this.props.payments);
         return (
             <React.Fragment>
                 <DialogModal
@@ -236,6 +249,9 @@ class SalesOrderDetailForm extends Component {
                     {discountsOfSalesOrderDetail && <DiscountsOfSalesOrderDetail discountsOfSalesOrderDetail={discountsOfSalesOrderDetail} />}
                     {discountOfGoodDetail && <DiscountOfGoodDetail discountOfGoodDetail={discountOfGoodDetail} />}
                     {slasOfGoodDetail && <SlasOfGoodDetail slasOfGoodDetail={slasOfGoodDetail} />}
+                    {currentManufacturingWorksOfGood && (
+                        <ManufacturingWorksOfGoodDetail currentManufacturingWorksOfGood={currentManufacturingWorksOfGood} />
+                    )}
                     <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <fieldset className="scheduler-border" style={{ background: "#f5f5f5" }}>
                             {/* <legend className="scheduler-border">Chốt đơn báo giá</legend> */}
@@ -301,21 +317,22 @@ class SalesOrderDetailForm extends Component {
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12 shopping-products">
                                 <div className="shopping-products-title">Các sản phẩm</div>
                                 {/* Hiển thị bảng */}
-                                <table className="table table-bordered">
+                                <table className="table table-bordered not-sort">
                                     <thead>
                                         <tr>
                                             <th title={"STT"}>STT</th>
                                             <th title={"Mã sản phẩm"}>Mã sản phẩm</th>
                                             <th title={"Tên sản phẩm"}>Tên sản phẩm</th>
                                             <th title={"Đơn vị tính"}>Đ/v tính</th>
-                                            <th title={"Giá niêm yết"}>Giá niêm yết (vnđ)</th>
-                                            <th title={"giá tính tiền"}>giá tính tiền (vnđ)</th>
+                                            <th title={"Giá niêm yết"}>Giá niêm yết </th>
+                                            <th title={"giá tính tiền"}>giá tính tiền </th>
                                             <th title={"Số lượng"}>Số lượng</th>
                                             <th title={"Khuyến mãi"}>Khuyến mãi</th>
                                             <th title={"Thành tiền"}>Thành tiền</th>
                                             <th title={"Thuế"}>Thuế</th>
                                             <th title={"Tổng tiền"}>Tổng tiền</th>
                                             <th>Cam kết chất lượng</th>
+                                            <th title={"Yêu cầu sản xuất"}>Yêu cầu s/x</th>
                                             <th title={"Ghi chú"}>Ghi chú</th>
                                         </tr>
                                     </thead>
@@ -369,6 +386,29 @@ class SalesOrderDetailForm extends Component {
                                                             </a>
                                                         </div>
                                                     </td>
+                                                    <td>
+                                                        {item.manufacturingWorks ? (
+                                                            <div
+                                                                style={{
+                                                                    display: "flex",
+                                                                }}
+                                                            >
+                                                                <a
+                                                                    style={{
+                                                                        cursor: "pointer",
+                                                                    }}
+                                                                    // data-toggle="modal"
+                                                                    // data-backdrop="static"
+                                                                    // href={"#modal-sales-order-detail-manufacturing-works-of-good-detail"}
+                                                                    onClick={() => this.setCurrentManufacturingWorksOfGoods(item.manufacturingWorks)}
+                                                                >
+                                                                    Đang thiết lập &ensp;
+                                                                </a>
+                                                            </div>
+                                                        ) : (
+                                                            ""
+                                                        )}
+                                                    </td>
                                                     <td>{item.note}</td>
                                                 </tr>
                                             ))}
@@ -405,7 +445,7 @@ class SalesOrderDetailForm extends Component {
                                                         }, 0)
                                                     )}
                                                 </td>
-                                                <td colSpan={2}></td>
+                                                <td colSpan={3}></td>
                                             </tr>
                                         )}
                                     </tbody>
@@ -544,8 +584,9 @@ class SalesOrderDetailForm extends Component {
 }
 
 function mapStateToProps(state) {
+    const { payments } = state;
     const { customers } = state.crm;
-    return { customers };
+    return { customers, payments };
 }
 
 const mapDispatchToProps = {
