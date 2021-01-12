@@ -12,7 +12,7 @@ exports.createPurchaseOrder = async (userId, data, portal) => {
         creator: userId,
         materials: data.materials ? data.materials.map((material) => {
             return {
-                good: material.good,
+                material: material.material,
                 quantity: material.quantity,
                 price: material.price
             }
@@ -35,13 +35,13 @@ exports.createPurchaseOrder = async (userId, data, portal) => {
             path: "creator", select: "code name"
         }, 
         {
-            path: "materials.good", select: "code name baseUnit"
+            path: "materials.material", select: "code name baseUnit"
         },{
             path: "stock", select: "code name address"
         }, {
             path: "approvers.approver", select: "code name"
         },{
-            path: "customer", select: "code name"
+            path: "supplier", select: "code name"
         },{
             path: "purchasingRequest", select: "code"
         } ])
@@ -68,13 +68,13 @@ exports.getAllPurchaseOrders = async (query, portal) => {
                     path: "creator", select: "code name"
                 }, 
                 {
-                    path: "materials.good", select: "code name baseUnit"
+                    path: "materials.material", select: "code name baseUnit"
                 },{
                     path: "stock", select: "code name address"
                 }, {
                     path: "approvers.approver", select: "code name"
                 },{
-                    path: "customer", select: "code name"
+                    path: "supplier", select: "code name"
                 },{
                     path: "purchasingRequest", select: "code"
                 }])
@@ -87,13 +87,13 @@ exports.getAllPurchaseOrders = async (query, portal) => {
                 path: "creator", select: "code name"
             }, 
             {
-                path: "materials.good", select: "code name baseUnit"
+                path: "materials.material", select: "code name baseUnit"
             },{
                 path: "stock", select: "code name address"
             }, {
                 path: "approvers.approver", select: "code name"
             },{
-                path: "customer", select: "code name"
+                path: "supplier", select: "code name"
             },{
                 path: "purchasingRequest", select: "code"
             }]
@@ -112,7 +112,7 @@ exports.editPurchaseOrder = async (userId, id, data, portal) => {
     oldPurchaseOrder.creator = userId;
     oldPurchaseOrder.materials = data.materials ? data.materials.map((material) => {
         return {
-            good: material.good,
+            material: material.material,
             quantity: material.quantity,
             price: material.price
         }
@@ -125,7 +125,7 @@ exports.editPurchaseOrder = async (userId, id, data, portal) => {
             status: approver.status
         }
     }) : undefined,
-    oldPurchaseOrder.customer = data.customer;
+    oldPurchaseOrder.supplier = data.supplier;
     oldPurchaseOrder.discount = data.discount;
     oldPurchaseOrder.desciption = data.desciption;
 
@@ -136,13 +136,13 @@ exports.editPurchaseOrder = async (userId, id, data, portal) => {
             path: "creator", select: "code name"
         }, 
         {
-            path: "materials.good", select: "code name baseUnit"
+            path: "materials.material", select: "code name baseUnit"
         },{
             path: "stock", select: "code name address"
         }, {
             path: "approvers.approver", select: "code name"
         },{
-            path: "customer", select: "code name"
+            path: "supplier", select: "code name"
         },{
             path: "purchasingRequest", select: "code"
         }]);
