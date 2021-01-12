@@ -35,6 +35,7 @@ class PurchaseDetailForm extends Component {
             purchasingRequest,
             status,
             materials,
+            description,
         } = this.props.purchaseOrderDetail;
         const statusConvert = [
             {
@@ -114,6 +115,12 @@ class PurchaseDetailForm extends Component {
                             <div className={`form-group`}>
                                 <strong>Trạng thái đơn :&emsp;</strong>
                                 <span className={status ? statusConvert[status].className : ""}>{status ? statusConvert[status].text : ""}</span>
+                            </div>
+                        </div>
+                        <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                            <div className={`form-group`}>
+                                <strong>Ghi chú :&emsp;</strong>
+                                {description}
                             </div>
                         </div>
 
