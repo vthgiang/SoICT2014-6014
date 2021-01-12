@@ -137,7 +137,7 @@ class AnnualLeaveChartAndTable extends Component {
                             max: 1
                         },
                         format: function (d) {
-                            if (d.getUTCDate() === new Date().getUTCDate()) {
+                            if (d.getDate() === new Date().getDate()) {
                                 return "Hôm nay";
                             }
                             return d3.timeFormat('%d - %m - %Y')(d);
@@ -204,6 +204,7 @@ class AnnualLeaveChartAndTable extends Component {
         })
 
         if (annualLeave.beforAndAfterOneWeeks.length) {
+            console.log(new Date())
             listAnnual.map(x => {
                 annualLeave.beforAndAfterOneWeeks.forEach(y => {
                     if (x.id.toString() === y.organizationalUnit.toString() && y.status === 'approved') {
@@ -253,7 +254,7 @@ class AnnualLeaveChartAndTable extends Component {
             <React.Fragment>
                 <div className="box box-solid">
                     <div className="box-header with-border">
-                        <h3 className="box-title">Xu hướng nghỉ phép nghỉ phép của nhân viên trong tuần trước và tuần tới</h3>
+                        <h3 className="box-title">Xu hướng nghỉ phép của nhân viên trong tuần trước và tuần tới</h3>
                     </div>
                     <div className="box-body">
                         <div className="qlcv" style={{ marginBottom: 15 }}>

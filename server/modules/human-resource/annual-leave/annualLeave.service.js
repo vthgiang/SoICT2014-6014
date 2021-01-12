@@ -16,18 +16,16 @@ exports.getAnnaulLeaveBeforAndAfterOneWeek =async (portal, organizationalUnits,c
     let lastDay = new Date();
     firstDay = new Date(firstDay.setDate(dateNow.getDate() - 6))
     lastDay = new Date(lastDay.setDate(dateNow.getDate() + 6))
-    console.log(firstDay)
-    console.log(lastDay)
     let keySearch = {
         company: company,
         "$or": [{
             startDate: {
-                "$gt": firstDay,
+                "$gte": firstDay,
                 "$lte": lastDay
             }
         }, {
             endDate: {
-                "$gt": firstDay,
+                "$gte": firstDay,
                 "$lte": lastDay
             }
         }]
@@ -42,7 +40,6 @@ exports.getAnnaulLeaveBeforAndAfterOneWeek =async (portal, organizationalUnits,c
         }
     }
     const annualLeave = await AnnualLeave(connect(DB_CONNECTION, portal)).find(keySearch)
-    console.log(annualLeave)
     return annualLeave;
 }
 
