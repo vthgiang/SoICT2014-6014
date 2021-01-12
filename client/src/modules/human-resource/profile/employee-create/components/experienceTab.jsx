@@ -188,7 +188,7 @@ class ExperienceTab extends Component {
                     <fieldset className="scheduler-border">
                         <legend className="scheduler-border"><h4 className="box-title">{translate('human_resource.profile.academic_level')}</h4></legend>
                         {/* Trình độ văn hoá */}
-                        <div className="form-group">
+                        {/* <div className="form-group">
                             <label>{translate('human_resource.profile.educational_level')}<span className="text-red">&#42;</span></label>
                             <select className="form-control" name="educationalLevel" value={educationalLevel} onChange={this.handleChange}>
                                 <option value="12/12">12/12</option>
@@ -196,6 +196,11 @@ class ExperienceTab extends Component {
                                 <option value="10/12">10/12</option>
                                 <option value="9/12">9/12</option>
                             </select>
+                        </div> */}
+                        <div className="form-group">
+                            <label >{translate('human_resource.profile.educational_level')}</label>
+                            <input type="text" className="form-control" name="educationalLevel" value={educationalLevel ? educationalLevel : ''} onChange={this.handleChange}
+                                placeholder={translate('human_resource.profile.educational_level')} autoComplete="off" />
                         </div>
 
                         {/* Trình độ ngoại ngữ */}
