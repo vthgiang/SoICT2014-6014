@@ -84,20 +84,42 @@ exports.getWorkSchedulesByMillId = async (req, res) => {
 exports.getWorkSchedulesOfManufacturingWork = async (req, res) => {
     try {
         let query = req.query;
-        let workSchedules = await WorkScheduleService.getWorkSchedulesOfManufacturingWork(query, "vnist");
-        // await Log.info(req.user.email, "GET_WORK_SCHEDULES_OF_WORK", req.portal);
+        let workSchedules = await WorkScheduleService.getWorkSchedulesOfManufacturingWork(query, req.portal);
+        await Log.info(req.user.email, "GET_WORK_SCHEDULES_OF_WORK", req.portal);
         res.status(200).json({
             success: true,
             messages: ["get_work_schedules_of_work_successfully"],
             content: workSchedules
-        })
+        });
     } catch (error) {
-        // await Log.error(req.user.email, "GET_WORK_SCHEDULES_OF_WORK", req.portal);
+        await Log.error(req.user.email, "GET_WORK_SCHEDULES_OF_WORK", req.portal);
 
         res.status(400).json({
             success: false,
             messages: ["get_work_schedules_of_work_failed"],
             content: error.message
+        });
+    }
+}
+
+exports.getWorkerFromArraySchedules = async (req, res) => {
+    try {
+        let query = req.query;
+        let workers = await WorkScheduleService.getWorkerFromArraySchedules(query, req.portal);
+        await Log.info(req.user.email, "GET_WORKER_FROM_ARRAY_SCHEDULES", req.portal);
+
+        res.status(200).json({
+            success: true,
+            messages: ["get_worker_successfully"],
+            content: workers
         })
+    } catch (error) {
+        await Log.error(req.user.email, "GET_WORKER_FROM_ARRAY_SCHEDULES", req.portal);
+
+        res.status(400).json({
+            success: false,
+            messages: ["get_worker_failed"],
+            content: error.message
+        });
     }
 }

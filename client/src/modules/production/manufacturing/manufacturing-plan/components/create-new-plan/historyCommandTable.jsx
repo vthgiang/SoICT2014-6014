@@ -31,7 +31,7 @@ class HistoryCommandTable extends Component {
                 currentRole: this.state.currentRole
             }
             this.props.getAllManufacturingCommands(data);
-            this.props.getAllManufacturingMills(data);
+            // this.props.getAllManufacturingMills(data);
             return false;
         }
         return true;

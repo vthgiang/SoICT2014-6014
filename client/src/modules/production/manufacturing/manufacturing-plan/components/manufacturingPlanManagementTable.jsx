@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { manufacturingPlanActions } from '../redux/actions';
 import { worksActions } from '../../manufacturing-works/redux/actions';
+import { millActions } from '../../manufacturing-mill/redux/actions';
 class ManufacturingPlanManagementTable extends Component {
     constructor(props) {
         super(props);
@@ -35,6 +36,7 @@ class ManufacturingPlanManagementTable extends Component {
         }
         this.props.getAllManufacturingPlans(data);
         this.props.getAllManufacturingWorks({ currentRole: currentRole });
+        this.props.getAllManufacturingMills({ status: 1, currentRole: currentRole });
     }
 
     handleShowDetailInfo = async (id) => {
@@ -371,7 +373,8 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = {
     getAllManufacturingPlans: manufacturingPlanActions.getAllManufacturingPlans,
-    getAllManufacturingWorks: worksActions.getAllManufacturingWorks
+    getAllManufacturingWorks: worksActions.getAllManufacturingWorks,
+    getAllManufacturingMills: millActions.getAllManufacturingMills
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(ManufacturingPlanManagementTable));
