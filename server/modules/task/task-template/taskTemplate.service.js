@@ -93,7 +93,7 @@ exports.getTaskTemplate = async (portal, id) => {
  * Tạo mới mẫu công việc
  * @body dữ liệu tạo mới mẫu công việc
  */
-exports.createTaskTemplate = async (portal, body) => {
+exports.createTaskTemplate = async (portal, body, userId) => {
     console.log("22", body);
     //kiểm tra tên mẫu công việc đã tồn tại hay chưa ?
     let checkTaskTemplate = await TaskTemplate(connect(DB_CONNECTION, portal)).findOne({ name: body.name });
@@ -161,7 +161,7 @@ exports.createTaskTemplate = async (portal, body) => {
         organizationalUnit: body.organizationalUnit,
         collaboratedWithOrganizationalUnits: body.collaboratedWithOrganizationalUnits,
         name: body.name,
-        creator: body.creator, //id của người tạo
+        creator: userId, //id của người tạo
         readByEmployees: Array.isArray(body.readByEmployees) ? body.readByEmployees : [], //role của người có quyền xem
         responsibleEmployees: body.responsibleEmployees,
         accountableEmployees: body.accountableEmployees,

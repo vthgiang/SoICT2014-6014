@@ -253,7 +253,7 @@ class ManufacturingMillScheduleManagentTable extends Component {
                                                 <tr key={index2}>
                                                     {
                                                         turn.map((command, index3) => {
-                                                            if (command !== null)
+                                                            if (command !== null && command.status)
                                                                 return (
                                                                     <td key={index3} className="tooltip-checkbox">
                                                                         {/* <input type="checkbox" disabled={true} style={{ backgroundColor: translate(`manufacturing.work_schedule.${command.status}.color`) }}>

@@ -43,7 +43,7 @@ class GoodIssueCreateForm extends Component {
         this.props.goods.listGoods.map((item) => {
             goodArr.push({
                 value: item._id,
-                text: item.code + " -- " + item.name,
+                text: item.code + " -- " + item.name + " (" + item.baseUnit + ")",
                 code: item.code,
                 name: item.name,
                 baseUnit: item.baseUnit,

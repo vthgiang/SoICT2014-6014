@@ -9,7 +9,7 @@ import MillProductivity from '../plan-component/millProductivity';
 import HistoryCommandTable from './historyCommandTable';
 import { workScheduleActions } from '../../../work-schedule/redux/actions';
 
-class MillScheduleBooking extends Component {
+class ScheduleBooking extends Component {
     constructor(props) {
         super(props);
         this.EMPTY_COMMAND = {
@@ -23,20 +23,9 @@ class MillScheduleBooking extends Component {
         this.state = {
             booking: false,
             command: Object.assign({}, this.EMPTY_COMMAND),
-            manufacturingCommands: this.props.manufacturingCommands
+            manufacturingCommands: this.props.manufacturingCommands,
+            listWorkSchedulesOfWorks: this.props.listWorkSchedulesOfWorks
         }
-    }
-
-    componentDidMount = () => {
-        const { startDate, endDate, manufacturingMill } = this.props;
-        const { listMills } = manufacturingMill;
-        const listMillIds = listMills.map(x => x._id);
-        const data = {
-            startDate: startDate,
-            endDate: endDate,
-            manufacturingMills: listMillIds
-        }
-        this.props.getAllWorkSchedulesOfManufacturingWork(data);
     }
 
     handleShowCommandHistory = async (goodId) => {
@@ -45,14 +34,23 @@ class MillScheduleBooking extends Component {
         })
         window.$('#history-command-table').modal('show');
     }
-    handleBookingCommand = (command, index) => {
-        command.manufacturingMill = "1";
-        this.setState((state) => ({
+    handleBookingCommand = async (command, index) => {
+        if (!command.manufacturingMill) {
+            command.manufacturingMill = "1";
+            command.startDate = "";
+            command.endDate = "";
+            command.startTurn = "";
+            command.endTurn = "";
+            command.responsibles = [];
+        }
+        await this.setState((state) => ({
             ...state,
-            command: Object.assign(this.EMPTY_COMMAND, command),
+            command: { ...command },
             booking: true,
             indexBooking: index,
         }));
+
+        console.log(this.state.command);
     }
 
     getManufacturingMillsArray = () => {
@@ -140,25 +138,6 @@ class MillScheduleBooking extends Component {
         return mill[0].name;
     }
 
-    static getDerivedStateFromProps = (props, state) => {
-        if (props.workSchedule.listWorkSchedulesOfWorks && props.workSchedule.isLoading === false) {
-            const { manufacturingMill, workSchedule } = props;
-            const { listMills } = manufacturingMill;
-            const listMillIds = listMills.map(x => x._id);
-            var listSchedulesMap = new Map();
-            listMillIds.map(x => {
-                let workSchedulesOfMill = workSchedule.listWorkSchedulesOfWorks.filter(y => y.manufacturingMill === x);
-                listSchedulesMap.set(x, workSchedulesOfMill);
-            })
-            return {
-                ...state,
-                startDate: props.startDate,
-                endDate: props.endDate,
-                listWorkSchedulesOfWorks: listSchedulesMap
-            }
-        }
-    }
-
     handleChangeStartDateEndDate = (startDate, startTurn, endDate, endTurn) => {
         const { command } = this.state;
         command.startDate = startDate;
@@ -174,18 +153,107 @@ class MillScheduleBooking extends Component {
         e.preventDefault();
         this.setState({
             command: Object.assign({}, this.EMPTY_COMMAND),
-            booking: false,
-            listWorkSchedulesOfWorks: this.state.listWorkSchedulesOfWorks
+            booking: false
         });
     }
 
-    handleClearCommand = (e) => {
-        e.preventDefault();
+    handleArrayWorkerSchedulesChange = async (data) => {
+        const { command } = this.state;
+        command.responsibles = [];
+        await this.setState({
+            arrayWorkerSchedules: [...data],
+            command: { ...command }
+        });
+        const query = {
+            arrayWorkerSchedules: data,
+            currentRole: localStorage.getItem("currentRole")
+        }
+        if (data.length) {
+            this.props.getAllWorkerByArrayWorkSchedules(query);
+        }
     }
+
+    getAllWorkerFree = () => {
+        const { workSchedule } = this.props;
+        let listWorkerArr = [];
+        const { listWorkers } = workSchedule;
+        if (listWorkers) {
+            listWorkers.map(x => {
+                listWorkerArr.push({
+                    value: x._id,
+                    text: x.name + " - " + x.email
+                });
+            });
+        }
+        return listWorkerArr;
+    }
+
+    handleResponsiblesChange = (value) => {
+        if (value.length === 0) {
+            value = undefined
+        }
+        this.validateResponsiblesChange(value, true);
+    }
+
+    validateResponsiblesChange = (value, willUpdateState = true) => {
+        let msg = undefined;
+        const { translate } = this.props;
+        if (!value || !value.length) {
+            msg = translate('manufacturing.plan.choose_responisbles')
+        }
+        if (willUpdateState) {
+            const { command } = this.state;
+            command.responsibles = value;
+            this.setState((state) => ({
+                ...state,
+                command: { ...command },
+                responsiblesError: msg
+            }));
+        }
+        return msg;
+    }
+
+    validateSave = () => {
+        const { command } = this.state;
+        if (
+            !command.startDate
+            || !command.endDate
+            || !command.startTurn
+            || !command.endTurn
+            || command.manufacturingMill === "1"
+            || this.validateResponsiblesChange(command.responsibles, false)
+        ) {
+            return false;
+        }
+        return true;
+    }
+
+    handleSaveEditCommand = () => {
+        const { manufacturingCommands, indexBooking, command } = this.state;
+        command.completed = true;
+        manufacturingCommands[indexBooking] = Object.assign(manufacturingCommands[indexBooking], this.state.command);
+        this.setState({
+            command: Object.assign({}, this.EMPTY_COMMAND),
+            booking: false,
+            manufacturingCommands: [...manufacturingCommands]
+        });
+        this.props.onListWorkSchedulesOfWorksChange(this.state.listWorkSchedulesOfWorks);
+        this.props.onManufacturingCommandsChange(this.state.manufacturingCommands);
+    }
+
+    handleListWorkSchedulesOfMillChange = async (data) => {
+        console.log(data);
+        const { listWorkSchedulesOfWorks, command } = this.state;
+        listWorkSchedulesOfWorks.set(command.manufacturingMill, data);
+        this.setState({
+            listWorkSchedulesOfWorks: listWorkSchedulesOfWorks
+        });
+    }
+
 
     render() {
         const { translate, listGoods } = this.props;
-        const { command, manufacturingCommands, manufacturingMillError, listWorkSchedulesOfWorks } = this.state;
+        const { command, manufacturingCommands, manufacturingMillError, listWorkSchedulesOfWorks, responsiblesError } = this.state;
         console.log(listWorkSchedulesOfWorks);
         return (
             <React.Fragment>
@@ -239,7 +307,14 @@ class MillScheduleBooking extends Component {
                                                             <i className="material-icons">visibility</i>
                                                         </a>
                                                     </td>
-                                                    <td></td>
+                                                    <td>
+                                                        {
+                                                            command.completed &&
+                                                            <span className="text-green" title={translate('manufacturing.plan.command_complete')}>
+                                                                <i className="material-icons">done</i>
+                                                            </span>
+                                                        }
+                                                    </td>
                                                     <td>
                                                         <a className="edit text-yellow" style={{ width: '5px' }} title={translate('manufacturing.plan.schedule_booking')}
                                                             onClick={() => this.handleBookingCommand(command, index)}
@@ -357,29 +432,27 @@ class MillScheduleBooking extends Component {
                                         manufacturingMillName={this.getManufacturingMillNameById()}
                                         startDate={this.props.startDate}
                                         onChangeStartDateEndDate={this.handleChangeStartDateEndDate}
+                                        onArrayWorkerSchedulesChange={this.handleArrayWorkerSchedulesChange}
+                                        onListWorkSchedulesOfMillChange={this.handleListWorkSchedulesOfMillChange}
                                     />
                                 }
                                 {
                                     this.state.command.startDate &&
                                     <div className="row">
                                         <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-                                            <div className={`form-group`}>
+                                            <div className={`form-group ${!responsiblesError ? "" : "has-error"}`}>
                                                 <label>{translate('manufacturing.plan.responsible')}<span className="attention"> * </span></label>
                                                 <SelectBox
-                                                    id="select-responsible-of-command"
+                                                    id="select-responsibles-of-command"
                                                     className="form-control select"
                                                     style={{ width: "100%" }}
-                                                    items={[{
-                                                        value: 1, text: "ban a"
-                                                    }, {
-                                                        value: 2, text: "ban b"
-                                                    }]}
+                                                    items={this.getAllWorkerFree()}
                                                     disabled={false}
-                                                    onChange={this.handleApproversChange}
+                                                    onChange={this.handleResponsiblesChange}
                                                     value={command.responsibles}
                                                     multiple={true}
                                                 />
-                                                <ErrorLabel content={""} />
+                                                <ErrorLabel content={responsiblesError} />
                                             </div>
                                         </div>
                                     </div>
@@ -387,9 +460,8 @@ class MillScheduleBooking extends Component {
                                 <div className="pull-right" style={{ marginBottom: "10px" }}>
                                     <React.Fragment>
                                         <button className="btn btn-success" onClick={this.handleCancelEditCommand} style={{ marginLeft: "10px" }}>{translate('manufacturing.purchasing_request.cancel_editing_good')}</button>
-                                        <button className="btn btn-success" onClick={this.handleSaveEditCommand} style={{ marginLeft: "10px" }}>{translate('manufacturing.purchasing_request.save_good')}</button>
+                                        <button className="btn btn-success" onClick={this.handleSaveEditCommand} disabled={!this.validateSave()} style={{ marginLeft: "10px" }}>{translate('manufacturing.purchasing_request.save_good')}</button>
                                     </React.Fragment>
-                                    <button className="btn btn-primary" style={{ marginLeft: "10px" }} onClick={this.handleClearCommand}>{translate('manufacturing.purchasing_request.delete_good')}</button>
                                 </div>
 
                             </fieldset>
@@ -407,7 +479,7 @@ function mapStateToProps(state) {
 }
 
 const mapDispatchToProps = {
-    getAllWorkSchedulesOfManufacturingWork: workScheduleActions.getAllWorkSchedulesOfManufacturingWork,
+    getAllWorkerByArrayWorkSchedules: workScheduleActions.getAllWorkerByArrayWorkSchedules
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(MillScheduleBooking));
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(ScheduleBooking));

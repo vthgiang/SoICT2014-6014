@@ -792,6 +792,41 @@ exports.editBill = async (id, userId, data, portal) => {
             }
         }
     }
+    //Nếu nhập kho thành phẩm từ xưởng sản xuất
+    //Chuyển trạng thái đơn hàng từ đang thực hiện sang hoàn Thành
+    //Thay đổi trạng thái lô sản xuất thành đã nhập kho
+    if(data.type === '2') {
+        if (data.oldStatus === '5' && data.status === '2') {
+            if (data.goods && data.goods.length > 0) {
+                for (let i = 0; i < data.goods.length; i++) {
+                    if (data.goods[i].lots && data.goods[i].lots.length > 0) {
+                        for (let j = 0; j < data.goods[i].lots.length; j++) {
+                            let lotId = data.goods[i].lots[j].lot._id;
+                            let lot = await Lot(connect(DB_CONNECTION, portal)).findById(lotId);
+                            lot.status = '3';
+                            await lot.save();
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    //Nhập kho: Chuyển trạng thái từ đã hoàn thành sang đã Hủy
+    if(data.type === '1') {
+        if (data.oldStatus === '2' && data.status === '4') {
+            if (data.goods && data.goods.length > 0) {
+                for (let i = 0; i < data.goods.length; i++) {
+                    if (data.goods[i].lots && data.goods[i].lots.length > 0) {
+                        for (let j = 0; j < data.goods[i].lots.length; j++) {
+                            let lotId = data.goods[i].lots[j].lot._id;
+                            await Lot(connect(DB_CONNECTION, portal)).deleteOne({ _id: lotId });
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     return await Bill(connect(DB_CONNECTION, portal))
         .findById(bill._id)
