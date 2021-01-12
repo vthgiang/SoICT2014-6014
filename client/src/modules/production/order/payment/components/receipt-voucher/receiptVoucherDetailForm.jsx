@@ -47,14 +47,38 @@ class ReceiptVoucherDetailForm extends Component {
                     </div>
                     <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                         <div className={`form-group`}>
-                            <strong>Ngày thanh toán :&emsp;</strong>
-                            {paymentDetail.paymentAt ? formatDate(paymentDetail.paymentAt) : ""}
-                        </div>
-                    </div>
-                    <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                        <div className={`form-group`}>
                             <strong>Tổng tiền thanh toán :&emsp;</strong>
                             {paymentDetail.salesOrders ? this.getPaidForPayment(paymentDetail.salesOrders) : ""}
+                        </div>
+                    </div>
+                    {paymentDetail.bankAccountReceived ? (
+                        <React.Fragment>
+                            <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                <div className={`form-group`}>
+                                    <strong>Tài khoản thanh toán:&emsp;</strong>
+                                    {paymentDetail.bankAccountReceived.account}
+                                </div>
+                            </div>
+                            <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                <div className={`form-group`}>
+                                    <strong>Ngân hàng:&emsp;</strong>
+                                    {paymentDetail.bankAccountReceived.bankAcronym}
+                                </div>
+                            </div>
+                            <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                <div className={`form-group`}>
+                                    <strong>Chủ tài khoản :&emsp;</strong>
+                                    {paymentDetail.bankAccountReceived.owner}
+                                </div>
+                            </div>
+                        </React.Fragment>
+                    ) : (
+                        ""
+                    )}
+                    <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                        <div className={`form-group`}>
+                            <strong>Ngày thanh toán :&emsp;</strong>
+                            {paymentDetail.paymentAt ? formatDate(paymentDetail.paymentAt) : ""}
                         </div>
                     </div>
                     <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">

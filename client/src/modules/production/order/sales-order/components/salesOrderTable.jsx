@@ -56,7 +56,7 @@ class SalesOrderTable extends Component {
 
     handleClickCreateCode = () => {
         this.setState((state) => {
-            return { ...state, code: generateCode("SALES_ORDER_") };
+            return { ...state, code: generateCode("SO_") };
         });
     };
 
