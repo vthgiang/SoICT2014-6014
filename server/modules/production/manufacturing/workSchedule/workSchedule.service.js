@@ -169,7 +169,6 @@ exports.createWorkSchedule = async (data, portal) => {
             if (data.currentRole) {
                 listWorksIds = await getListWorksIdsByCurrentRole(data.currentRole, portal);
             }
-            console.log(listWorksIds);
             // Lấy ra các xưởng đang hoạt động chưa được sếp lịch trong tháng truyền vào
             let manufacturingMills = await ManufacturingMill(connect(DB_CONNECTION, portal)).find({
                 _id: {
@@ -508,10 +507,8 @@ exports.getWorkerFromArraySchedules = async (query, portal) => {
     const employees = listEmployees.employees;
     // Lấy ra danh sách Id công nhân thuộc nhà máy
     const listEmployeeIds = employees.map(x => x.userId._id);
-    console.log(listEmployeeIds);
     // filter ra cac thang
     let arrayMonth = [];
-    console.log(arrayWorkerSchedules);
     for (let i = 0; i < arrayWorkerSchedules.length; i++) {
         let month = JSON.parse(arrayWorkerSchedules[i]).month;
         if (!arrayMonth.includes(month)) {
@@ -521,7 +518,6 @@ exports.getWorkerFromArraySchedules = async (query, portal) => {
     arrayMonth = arrayMonth.map(x =>
         new Date(formatToTimeZoneDate(x))
     );
-    console.log(arrayMonth);
     // Lấy ra tất cả các lịch công nhân nhà máy trong tháng
     const workerSchedules = await WorkSchedule(connect(DB_CONNECTION, portal)).find({
         user: {
@@ -549,7 +545,6 @@ exports.getWorkerFromArraySchedules = async (query, portal) => {
             workerIds.push(listWorkSchedules[i].user._id);
         }
     }
-    console.log(workers);
     // Trả về danh sách người rảnh
     return { workers }
 }

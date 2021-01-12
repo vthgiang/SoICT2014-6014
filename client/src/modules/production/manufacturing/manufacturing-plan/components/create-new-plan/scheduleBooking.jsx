@@ -24,7 +24,11 @@ class ScheduleBooking extends Component {
             booking: false,
             command: Object.assign({}, this.EMPTY_COMMAND),
             manufacturingCommands: this.props.manufacturingCommands,
-            listWorkSchedulesOfWorks: this.props.listWorkSchedulesOfWorks
+            listWorkSchedulesOfWorks: this.props.listWorkSchedulesOfWorks,
+            // Mảng chứa các ca đang book tạm thời [{index1, index2, month}]
+            arrayWorkerSchedules: [],
+            // Mảng chứa tổng thể các ca đã được save [{index1, index2, month, commandCode, users}]
+            arrayAllWorkerSchedules: []
         }
     }
 
@@ -42,15 +46,27 @@ class ScheduleBooking extends Component {
             command.startTurn = "";
             command.endTurn = "";
             command.responsibles = [];
+            await this.setState((state) => ({
+                ...state,
+                command: { ...command },
+                booking: true,
+                indexBooking: index,
+            }));
+        } else {
+            // Xử lý việc sửa lịch của người
+            // Loại bỏ arrayWorkerSchedule có commandCode ra khỏi arrayAllWorkerSchedule
+            let { arrayAllWorkerSchedules } = this.state;
+            let arrayAllWorkerScheduleRemain = arrayAllWorkerSchedules.filter(x => x.commandCode !== command.code);
+            let arrayWorkerSchedules = arrayAllWorkerSchedules.filter(x => x.commandCode === command.code);
+            await this.setState((state) => ({
+                ...state,
+                arrayAllWorkerSchedules: [...arrayAllWorkerScheduleRemain],
+                arrayWorkerSchedules: arrayWorkerSchedules,
+                command: { ...command },
+                booking: true,
+                indexBooking: index,
+            }));
         }
-        await this.setState((state) => ({
-            ...state,
-            command: { ...command },
-            booking: true,
-            indexBooking: index,
-        }));
-
-        console.log(this.state.command);
     }
 
     getManufacturingMillsArray = () => {
@@ -173,11 +189,32 @@ class ScheduleBooking extends Component {
         }
     }
 
+    getWorkerBusyInCurrentArrayWorkerSchedules = () => {
+        const { arrayWorkerSchedules, arrayAllWorkerSchedules } = this.state;
+        let arrayFilterWorkerSchedules = [];
+        for (let i = 0; i < arrayWorkerSchedules.length; i++) {
+            for (let j = 0; j < arrayAllWorkerSchedules.length; j++) {
+                if (arrayWorkerSchedules[i].index1 === arrayAllWorkerSchedules[j].index1
+                    && arrayWorkerSchedules[i].index2 === arrayAllWorkerSchedules[j].index2
+                    && arrayWorkerSchedules[i].month === arrayAllWorkerSchedules[j].month) {
+                    arrayFilterWorkerSchedules.push(arrayAllWorkerSchedules[j]);
+                }
+            }
+        }
+        let arrayUserBusy = [];
+        arrayFilterWorkerSchedules.map(x => {
+            arrayUserBusy = [...arrayUserBusy, ...x.users];
+        });
+        return arrayUserBusy;
+    }
+
     getAllWorkerFree = () => {
         const { workSchedule } = this.props;
+        let arrayUserBusy = this.getWorkerBusyInCurrentArrayWorkerSchedules();
         let listWorkerArr = [];
-        const { listWorkers } = workSchedule;
+        let { listWorkers } = workSchedule;
         if (listWorkers) {
+            listWorkers = listWorkers.filter(x => !arrayUserBusy.includes(x._id));
             listWorkers.map(x => {
                 listWorkerArr.push({
                     value: x._id,
@@ -228,21 +265,29 @@ class ScheduleBooking extends Component {
         return true;
     }
 
-    handleSaveEditCommand = () => {
-        const { manufacturingCommands, indexBooking, command } = this.state;
+    handleSaveEditCommand = async () => {
+        const { manufacturingCommands, indexBooking, command, arrayWorkerSchedules, arrayAllWorkerSchedules } = this.state;
         command.completed = true;
         manufacturingCommands[indexBooking] = Object.assign(manufacturingCommands[indexBooking], this.state.command);
-        this.setState({
+        // Xử lý lịch con người 
+        for (let i = 0; i < arrayWorkerSchedules.length; i++) {
+            arrayWorkerSchedules[i].commandCode = command.code;
+            arrayWorkerSchedules[i].users = command.responsibles;
+            arrayAllWorkerSchedules.push(arrayWorkerSchedules[i]);
+        }
+        await this.setState({
             command: Object.assign({}, this.EMPTY_COMMAND),
             booking: false,
-            manufacturingCommands: [...manufacturingCommands]
+            manufacturingCommands: [...manufacturingCommands],
+            arrayAllWorkerSchedules: [...arrayAllWorkerSchedules]
         });
         this.props.onListWorkSchedulesOfWorksChange(this.state.listWorkSchedulesOfWorks);
         this.props.onManufacturingCommandsChange(this.state.manufacturingCommands);
+        this.props.onArrayWorkerSchedulesChange(this.state.arrayAllWorkerSchedules);
+
     }
 
     handleListWorkSchedulesOfMillChange = async (data) => {
-        console.log(data);
         const { listWorkSchedulesOfWorks, command } = this.state;
         listWorkSchedulesOfWorks.set(command.manufacturingMill, data);
         this.setState({
@@ -254,7 +299,6 @@ class ScheduleBooking extends Component {
     render() {
         const { translate, listGoods } = this.props;
         const { command, manufacturingCommands, manufacturingMillError, listWorkSchedulesOfWorks, responsiblesError } = this.state;
-        console.log(listWorkSchedulesOfWorks);
         return (
             <React.Fragment>
                 {
