@@ -889,7 +889,7 @@ class PurchaseOrderCreateFormFromPurchasingRequest extends Component {
                                     </button>
                                 </div>
 
-                                <table id={`receipt-voucher-add-sales-order`} className="table table-bordered not-sort">
+                                <table id={`purchase-order-create-from-request-table`} className="table table-bordered not-sort">
                                     <thead>
                                         <tr>
                                             <th title={"STT"}>STT</th>

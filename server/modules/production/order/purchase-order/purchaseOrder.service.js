@@ -25,6 +25,7 @@ exports.createPurchaseOrder = async (userId, data, portal) => {
                 status: approver.status
             }
         }) : undefined,
+        supplier: data.supplier,
         discount: data.discount,
         desciption: data.desciption,
         purchasingRequest: data.purchasingRequest
@@ -138,7 +139,7 @@ exports.editPurchaseOrder = async (userId, id, data, portal) => {
 
     await oldPurchaseOrder.save();
 
-    let purchaseOrderUpdate =  await BankAccount(connect(DB_CONNECTION, portal)).findById(id) .populate([
+    let purchaseOrderUpdate =  await PurchaseOrder(connect(DB_CONNECTION, portal)).findById(id) .populate([
         {
             path: "creator", select: "code name"
         }, 

@@ -121,28 +121,22 @@ class PurchaseOrderTable extends Component {
         return formatCurrency(paymentAmount);
     };
 
-    handleShowDetailInfo = (data) => {
-        this.setState((state) => {
-            return {
-                ...state,
-                currentRow: data,
-            };
+    handleShowDetail = async (data) => {
+        await this.setState({
+            purchaseOrderDetail: data,
         });
-        window.$("#modal-detail-material-purchase-order").modal("show");
+        window.$("#modal-detail-purchase-order").modal("show");
     };
 
-    handleEdit = (data) => {
-        this.setState((state) => {
-            return {
-                ...state,
-                editRow: data,
-            };
+    handleEdit = async (data) => {
+        await this.setState({
+            purchaseOrderEdit: data,
         });
-        window.$("#modal-edit-material-purchase-order").modal("show");
+        window.$("#modal-edit-purchase-order").modal("show");
     };
 
     render() {
-        const { code, status, codeCreate } = this.state;
+        const { code, status, codeCreate, purchaseOrderEdit, purchaseOrderDetail } = this.state;
 
         const { translate, purchaseOrders } = this.props;
         const { totalPages, page, listPurchaseOrders } = purchaseOrders;
@@ -197,8 +191,8 @@ class PurchaseOrderTable extends Component {
                     </div>
                     <PurchaseOrderCreateFormDirectly code={codeCreate} />
                     <PurchaseOrderCreateFormFromPurchasingRequest code={codeCreate} />
-                    {this.state.currentRow && <PurchaseDetailForm data={this.state.currentRow} />}
-                    {this.state.editRow && <PurchaseOrderEditForm data={this.state.editRow} />}
+                    {purchaseOrderDetail && <PurchaseDetailForm purchaseOrderDetail={purchaseOrderDetail} />}
+                    {purchaseOrderEdit && <PurchaseOrderEditForm purchaseOrderEdit={purchaseOrderEdit} />}
 
                     <div className="form-inline">
                         <div className="form-group">
@@ -281,8 +275,8 @@ class PurchaseOrderTable extends Component {
                                         <td>{item.creator ? item.creator.name : ""}</td>
                                         <td>{item.createdAt ? formatDate(item.createdAt) : ""}</td>
                                         <td style={{ textAlign: "center" }}>
-                                            <a className="text-green" onClick={() => this.handleShowDetailInfo(item)}>
-                                                <i className="material-icons">visibility</i>
+                                            <a onClick={() => this.handleShowDetail(item)}>
+                                                <i className="material-icons">view_list</i>
                                             </a>
                                             <a
                                                 onClick={() => this.handleEdit(item)}

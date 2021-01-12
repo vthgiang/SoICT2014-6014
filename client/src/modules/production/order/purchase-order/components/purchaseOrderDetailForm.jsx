@@ -2,293 +2,164 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 import { DialogModal } from "../../../../../common-components";
+import { formatCurrency } from "../../../../../helpers/formatCurrency";
+import { formatDate } from "../../../../../helpers/formatDate";
 
 class PurchaseDetailForm extends Component {
     constructor(props) {
         super(props);
     }
 
-    format_curency(x) {
-        x = x.toString();
-        var pattern = /(-?\d+)(\d{3})/;
-        while (pattern.test(x)) x = x.replace(pattern, "$1,$2");
-        return x;
-    }
+    getPaymentAmount = (materials, discount) => {
+        let paymentAmount = 0;
+
+        paymentAmount = materials.reduce((accumulator, currentValue) => {
+            return accumulator + currentValue.price * currentValue.quantity;
+        }, 0);
+
+        if (discount) {
+            paymentAmount = paymentAmount - discount >= 0 ? paymentAmount - discount : 0;
+        }
+
+        return formatCurrency(paymentAmount);
+    };
 
     render() {
-        const { data } = this.props;
-
+        const {
+            code,
+            approvers,
+            stock,
+            intendReceiveTime,
+            supplier,
+            discount,
+            purchasingRequest,
+            status,
+            materials,
+        } = this.props.purchaseOrderDetail;
+        const statusConvert = [
+            {
+                className: "text-primary",
+                text: "no status",
+            },
+            {
+                className: "text-primary",
+                text: "Chờ phê duyệt",
+            },
+            {
+                className: "text-warning",
+                text: "Đã phê duyệt",
+            },
+            {
+                className: "text-success",
+                text: "Đã nhập kho",
+            },
+        ];
         return (
             <React.Fragment>
                 <DialogModal
-                    modalID="modal-detail-material-purchase-order"
+                    modalID="modal-detail-purchase-order"
                     isLoading={false}
-                    formID="form-detail-material-purchase-order"
+                    formID="form-detail-purchase-order"
                     title={"Chi tiết đơn mua nguyên vật liệu"}
                     size="50"
                     hasSaveButton={false}
                     hasNote={false}
                 >
-                    <div
-                        className="row row-equal-height"
-                        style={{ marginTop: -25 }}
-                    >
-                        <div
-                            className={"col-xs-12 col-sm-12 col-md-6 col-lg-6"}
-                            style={{ padding: 10 }}
-                        >
-                            <div
-                                className="description-box"
-                                style={{ height: "100%" }}
-                            >
-                                <h4>Thông tin chung</h4>
-                                <div className="form-group">
-                                    <strong>{"Mã đơn hàng"}:&emsp; </strong>
-                                    {data.code}
-                                </div>
-
-                                <div className="form-group">
-                                    <strong>{"Nội dung"}:&emsp; </strong>
-                                    {data.description}
-                                </div>
-
-                                <div className="form-group">
-                                    <strong>{"Nhập vào kho"}:&emsp; </strong>
-                                    {data.stock}
-                                </div>
-
-                                <div className="form-group">
-                                    <strong>{"Trạng thái"}:&emsp; </strong>
-                                    {data.status}
-                                </div>
-
-                                {data.returnRule ? (
-                                    <div className="form-group">
-                                        <strong>
-                                            {"Quy tắc đổi trả"}:&emsp;{" "}
-                                        </strong>
-                                        {data.returnRule}
-                                    </div>
-                                ) : (
-                                    ""
-                                )}
-
-                                {data.serviceLevelAgreement ? (
-                                    <div className="form-group">
-                                        <strong>
-                                            {"Cam kết chất lượng"}:&emsp;{" "}
-                                        </strong>
-                                        {data.serviceLevelAgreement}
-                                    </div>
-                                ) : (
-                                    ""
-                                )}
-
-                                <div className="form-group">
-                                    <strong>{"Ngày tạo"}:&emsp; </strong>
-                                    {data.createAt}
-                                </div>
+                    <form id={`form-detail-purchase-order`}>
+                        <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                            <div className={`form-group`}>
+                                <strong>Mã đơn :&emsp;</strong>
+                                {code}
                             </div>
                         </div>
-
-                        <div
-                            className={"col-xs-12 col-sm-12 col-md-6 col-lg-6"}
-                            style={{ padding: 10 }}
-                        >
-                            <div
-                                className="description-box"
-                                style={{ height: "100%" }}
-                            >
-                                <h4>Các bên liên quan</h4>
-                                <div className="form-group">
-                                    <div className="form-group">
-                                        <strong>
-                                            {"Nhà cung cấp"}:&emsp;{" "}
-                                        </strong>
-                                        {data.partner}
-                                    </div>
-                                    <strong>{"Người tạo đơn"}:&emsp; </strong>
-                                    {data.creator}
+                        <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                            <div className={`form-group`}>
+                                <strong>Người phê duyệt :&emsp;</strong>
+                                {approvers.length !== 0 ? approvers.map((item) => <span>{item.approver.name}, </span>) : ""}
+                            </div>
+                        </div>
+                        <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                            <div className={`form-group`}>
+                                <strong>Kho nhập nguyên vật liệu:&emsp;</strong>
+                                {stock ? stock.name : ""}
+                            </div>
+                        </div>
+                        <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                            <div className={`form-group`}>
+                                <strong>Ngày dự kiến nhập hàng :&emsp;</strong>
+                                {intendReceiveTime ? formatDate(intendReceiveTime) : ""}
+                            </div>
+                        </div>
+                        <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                            <div className={`form-group`}>
+                                <strong>Nhà cung cấp :&emsp;</strong>
+                                {supplier ? supplier.name : ""}
+                            </div>
+                        </div>
+                        <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                            <div className={`form-group`}>
+                                <strong>Tiền khuyến mãi :&emsp;</strong>
+                                {discount ? formatCurrency(discount) : ""}
+                            </div>
+                        </div>
+                        {purchasingRequest && (
+                            <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                <div className={`form-group`}>
+                                    <strong>Được tạo từ đơn đề nghị :&emsp;</strong>
+                                    {purchasingRequest.code}
                                 </div>
-                                <div className="form-group">
-                                    <strong>
-                                        {"Chịu trách nhiệm mua hàng"}:&emsp;{" "}
-                                    </strong>
-                                    {data.responsible}
-                                </div>
-                                <div className="form-group">
-                                    <strong>
-                                        {"Những người phê duyệt"}:&emsp;{" "}
-                                    </strong>
-                                    {data.approvers.length
-                                        ? data.approvers.map((user) => (
-                                              <div style={{ display: "flex" }}>
-                                                  <div style={{ width: "50%" }}>
-                                                      <b>
-                                                          {" "}
-                                                          <i>Tên: </i>
-                                                      </b>{" "}
-                                                      {user.name}
-                                                  </div>
-                                                  <div style={{ width: "50%" }}>
-                                                      <b>
-                                                          <i>Chức vụ: </i>
-                                                      </b>{" "}
-                                                      {user.role}
-                                                  </div>
-                                              </div>
-                                          ))
-                                        : "Chưa được phê duyệt"}
-                                </div>
-                                <div className="form-group">
-                                    {data.payments.length ? (
-                                        <fieldset className="scheduler-border">
-                                            <legend className="scheduler-border">
-                                                {"Thông tin thanh toán"}
-                                            </legend>
-                                            <table className="table table-bordered">
-                                                <thead>
-                                                    <tr>
-                                                        <th
-                                                            title={
-                                                                "Người thanh toán"
-                                                            }
-                                                        >
-                                                            Người thanh toán
-                                                        </th>
-                                                        <th
-                                                            title={
-                                                                "Số tiền thanh toán"
-                                                            }
-                                                        >
-                                                            Số tiền thanh toán
-                                                            (vnđ)
-                                                        </th>
-                                                        <th
-                                                            title={
-                                                                "Thanh toán lúc"
-                                                            }
-                                                        >
-                                                            Thanh toán lúc
-                                                        </th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody
-                                                    id={`good-edit-manage-by-purchase-order`}
-                                                >
-                                                    {data.payments.map(
-                                                        (item, index) => (
-                                                            <tr key={index}>
-                                                                <td>
-                                                                    {
-                                                                        item.accounting
-                                                                    }
-                                                                </td>
-                                                                <td>
-                                                                    {this.format_curency(
-                                                                        item.money
-                                                                    )}
-                                                                </td>
-                                                                <td>
-                                                                    {
-                                                                        item.paymentAt
-                                                                    }
-                                                                </td>
-                                                            </tr>
-                                                        )
-                                                    )}
-                                                </tbody>
-                                            </table>
-                                        </fieldset>
-                                    ) : (
-                                        ""
-                                    )}
-                                </div>
+                            </div>
+                        )}
+                        <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                            <div className={`form-group`}>
+                                <strong>Trạng thái đơn :&emsp;</strong>
+                                <span className={status ? statusConvert[status].className : ""}>{status ? statusConvert[status].text : ""}</span>
                             </div>
                         </div>
 
                         <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                            <fieldset
-                                className="scheduler-border"
-                                style={{ padding: 10 }}
-                            >
-                                <legend className="scheduler-border">
-                                    Thông tin chi hàng nhập
-                                </legend>
-                                <table className="table table-bordered">
+                            <fieldset className="scheduler-border">
+                                <legend className="scheduler-border">Thông tin nguyên vật liệu</legend>
+                                <table id={`purchase-order-detail-table`} className="table table-bordered not-sort">
                                     <thead>
                                         <tr>
-                                            <th title={"Tên nguyên vật liệu"}>
-                                                Tên nguyên vật liệu
-                                            </th>
-                                            <th title={"Giá (vnđ)"}>Giá</th>
-                                            <th title={"Số lượng"}>Số lượng</th>
-                                            <th title={"Đơn vị tính"}>
-                                                Đơn vị tính
-                                            </th>
-                                            <th title={"Thành tiền"}>
-                                                Thành tiền
-                                            </th>
-                                            <th title={"Quy tắc đổi trả"}>
-                                                Quy tắc đổi trả
-                                            </th>
-                                            <th title={"Cam kết chất lượng"}>
-                                                Cam kết chất lượng
-                                            </th>
+                                            <th title={"STT"}>STT</th>
+                                            <th title={"Mã đơn"}>Nguyên vật liệu</th>
+                                            <th title={"Mã đơn"}>Đơn vị tính</th>
+                                            <th title={"Tổng tiền"}>Số lượng</th>
+                                            <th title={"Còn"}>Giá nhập</th>
+                                            <th title={"Số tiền thanh toán"}>Tổng tiền</th>
                                         </tr>
                                     </thead>
-                                    <tbody
-                                        id={`good-edit-manage-by-purchase-order`}
-                                    >
-                                        {data.goods.length === 0 ? (
+                                    <tbody>
+                                        {materials.length !== 0 &&
+                                            materials.map((item, index) => {
+                                                return (
+                                                    <tr key={index}>
+                                                        <td>{index + 1}</td>
+                                                        <td>{item.material ? item.material.name : ""}</td>
+                                                        <td>{item.material ? item.material.baseUnit : ""}</td>
+                                                        <td>{item.quantity}</td>
+                                                        <td>{item.price ? formatCurrency(item.price) : ""}</td>
+                                                        <td style={{ fontWeight: 600 }}>
+                                                            {item.price * item.quantity ? formatCurrency(item.price * item.quantity) : ""}
+                                                        </td>
+                                                    </tr>
+                                                );
+                                            })}
+                                        {materials.length !== 0 && (
                                             <tr>
-                                                <td colSpan={6}>
-                                                    <center>
-                                                        {
-                                                            "Chưa có thông tin nguyên vật liệu"
-                                                        }
-                                                    </center>
+                                                <td colSpan={5} style={{ fontWeight: 600 }}>
+                                                    <center>Tổng thanh toán</center>
                                                 </td>
+                                                <td style={{ fontWeight: 600 }}>{this.getPaymentAmount(materials, discount)}</td>
                                             </tr>
-                                        ) : (
-                                            data.goods.map((item, index) => (
-                                                <tr key={index}>
-                                                    <td>{item.name}</td>
-                                                    <td>
-                                                        {this.format_curency(
-                                                            item.price
-                                                        )}
-                                                    </td>
-                                                    <td>{item.quantity}</td>
-                                                    <td>{item.baseUnit}</td>
-                                                    <td>2,000,000</td>
-                                                    <td>
-                                                        <a>Xem chi tiết</a>
-                                                    </td>
-                                                    <td>
-                                                        <a>Xem chi tiết</a>
-                                                    </td>
-                                                </tr>
-                                            ))
                                         )}
-                                        <tr>
-                                            <td
-                                                colSpan={4}
-                                                style={{ fontWeight: 600 }}
-                                            >
-                                                <center>Tổng</center>
-                                            </td>
-                                            <td style={{ fontWeight: 600 }}>
-                                                6,000,000{" "}
-                                            </td>
-                                            <td></td>
-                                            <td></td>
-                                        </tr>
                                     </tbody>
                                 </table>
                             </fieldset>
                         </div>
-                    </div>
+                    </form>
                 </DialogModal>
             </React.Fragment>
         );

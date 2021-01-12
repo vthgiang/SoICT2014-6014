@@ -37,6 +37,7 @@ exports.editPurchaseOrder = async (req, res) => {
         });
     } catch (error) {
         await Log.error(req.user.email, "EDIT_PURCHASE_ORDER", req.portal);
+        console.log(error.message);
         res.status(400).json({
             success: false,
             messages: ["edit_failed"],
