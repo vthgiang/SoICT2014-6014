@@ -8,15 +8,11 @@ const ManufacturingPlanSchema = new Schema({
         type: String,
         required: true
     },
-    manufacturingOrder: { // Đơn sản xuất của kế hoạch
-        type: Schema.Types.ObjectId,
-        ref: "ManufacturingOrder"
-    },
     salesOrders: [{ //  Mã các đơn kinh doanh của kế hoạch
         type: Schema.Types.ObjectId,
         ref: "SalesOrder"
     }],
-    manufacturingWorks: [{
+    manufacturingWorks: [{ // Kế hoạch thuộc những nhà máy nào
         type: Schema.Types.ObjectId,
         ref: "ManufacturingWorks"
     }],
@@ -27,10 +23,7 @@ const ManufacturingPlanSchema = new Schema({
         },
         quantity: { // Số lượng sản xuất theo kế hoạch của mặt hàng
             type: Number
-        },
-        orderedQuantity: { // Số lượng sản xuất theo đơn sản xuất của mặt hàng
-            type: Number
-        },
+        }
     }],
     approvers: [{ // Danh sách người phê duyệt
         approver: { // Người phê duyệt
@@ -62,22 +55,22 @@ const ManufacturingPlanSchema = new Schema({
     endDate: { // Ngày dự kiến kết thúc
         type: Date
     },
-    logs: [{ // Ghi lại nhật ký chỉnh sửa kế hoạch
-        creator: { // Người sửa
-            type: Schema.Types.ObjectId,
-            ref: "User"
-        },
-        title: { // Tiêu đề
-            type: String
-        },
-        description: { // Mô tả nội dung chỉnh sửa
-            type: String
-        },
-        createdAt: { // Thời gian sửa
-            type: Date,
-            default: Date.now
-        }
-    }]
+    // logs: [{ // Ghi lại nhật ký chỉnh sửa kế hoạch
+    //     creator: { // Người sửa
+    //         type: Schema.Types.ObjectId,
+    //         ref: "User"
+    //     },
+    //     title: { // Tiêu đề
+    //         type: String
+    //     },
+    //     description: { // Mô tả nội dung chỉnh sửa
+    //         type: String
+    //     },
+    //     createdAt: { // Thời gian sửa
+    //         type: Date,
+    //         default: Date.now
+    //     }
+    // }]
 }, {
     timestamps: true,
 });

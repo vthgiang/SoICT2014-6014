@@ -3,7 +3,8 @@ import { manufacturingPlanServices } from "./services";
 
 export const manufacturingPlanActions = {
     getAllManufacturingPlans,
-    getAllApproversOfPlan
+    getAllApproversOfPlan,
+    createManufacturingPlan,
 }
 
 function getAllManufacturingPlans(query) {
@@ -40,6 +41,26 @@ function getAllApproversOfPlan(currentRole) {
             }).catch((error) => {
                 dispatch({
                     type: manufacturingPlanConstants.GET_ALL_APPROVERS_OF_PLAN_FAILURE,
+                    error
+                });
+            });
+    }
+}
+
+function createManufacturingPlan(data) {
+    return dispatch => {
+        dispatch({
+            type: manufacturingPlanConstants.CREATE_MANUFACTURING_PLAN_REQUEST
+        });
+        manufacturingPlanServices.createManufacturingPlan(data)
+            .then((res) => {
+                dispatch({
+                    type: manufacturingPlanConstants.CREATE_MANUFACTURING_PLAN_SUCCESS,
+                    payload: res.data.content
+                });
+            }).catch((error) => {
+                dispatch({
+                    type: manufacturingPlanConstants.CREATE_MANUFACTURING_PLAN_FAILURE,
                     error
                 });
             });
