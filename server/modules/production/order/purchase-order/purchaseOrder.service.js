@@ -1,5 +1,5 @@
 const {
-    PurchaseOrder
+    PurchaseOrder, PurchasingRequest
 } = require(`../../../../models`);
 
 const {
@@ -30,6 +30,13 @@ exports.createPurchaseOrder = async (userId, data, portal) => {
         purchasingRequest: data.purchasingRequest
     })
 
+    //Cập nhật trạng thái cho đơn đề nghị
+    if (data.purchasingRequest) {
+        let purchasingRequest = await PurchasingRequest(connect(DB_CONNECTION, portal)).findById({ _id: data.purchasingRequest })
+        purchasingRequest.status = 2;
+        await purchasingRequest.save()
+    }
+
     let purchaseOrder = await PurchaseOrder(connect(DB_CONNECTION, portal)).findById({ _id: newPurchaseOrder._id }) .populate([
         {
             path: "creator", select: "code name"
@@ -53,7 +60,7 @@ exports.getAllPurchaseOrders = async (query, portal) => {
     let option = {};
 
     if (query.code) {
-        option.code = query.code
+        option.code = new RegExp(query.code, "i")
     }
 
     if (query.status) {

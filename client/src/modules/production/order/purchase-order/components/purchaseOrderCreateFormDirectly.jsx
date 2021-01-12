@@ -1,9 +1,11 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
+import { PurchaseOrderActions } from "../redux/actions";
 import { DialogModal, SelectBox, ErrorLabel, DatePicker } from "../../../../../common-components";
 import ValidationHelper from "../../../../../helpers/validationHelper";
 import { formatCurrency } from "../../../../../helpers/formatCurrency";
+import { formatToTimeZoneDate } from "../../../../../helpers/formatDate";
 
 class PurchaseOrderCreateFormDirectly extends Component {
     constructor(props) {
@@ -12,6 +14,7 @@ class PurchaseOrderCreateFormDirectly extends Component {
             code: "",
             material: "",
             materials: [],
+            approvers: [],
             price: "",
             quantity: "",
         };
@@ -108,7 +111,7 @@ class PurchaseOrderCreateFormDirectly extends Component {
             let mapOptions = listGoodsByType.map((item) => {
                 return {
                     value: item._id,
-                    text: item.code + " - " + item.name,
+                    text: item.code + " - " + item.name + " (" + item.baseUnit + ")",
                 };
             });
 
@@ -200,7 +203,10 @@ class PurchaseOrderCreateFormDirectly extends Component {
 
         let { translate } = this.props;
         let { message } = ValidationHelper.validateEmpty(translate, value);
-        this.setState({ intendReceiveTimeError: message });
+        this.setState({
+            intendReceiveTime: value,
+            intendReceiveTimeError: message,
+        });
     };
 
     validateDiscount = (value, willUpdateState = true) => {
@@ -345,7 +351,25 @@ class PurchaseOrderCreateFormDirectly extends Component {
             },
             quantity: "",
             price: "",
+            materialError: undefined,
+            quantityError: undefined,
+            priceError: undefined,
         });
+    };
+
+    getPaymentAmount = () => {
+        let { materials, discount } = this.state;
+        let paymentAmount = 0;
+
+        paymentAmount = materials.reduce((accumulator, currentValue) => {
+            return accumulator + currentValue.price * currentValue.quantity;
+        }, 0);
+
+        if (discount) {
+            paymentAmount = paymentAmount - discount >= 0 ? paymentAmount - discount : 0;
+        }
+
+        return formatCurrency(paymentAmount);
     };
 
     isSubmitMaterial = () => {
@@ -371,6 +395,7 @@ class PurchaseOrderCreateFormDirectly extends Component {
             materials.push(data);
 
             this.setState({
+                materials,
                 material: {
                     _id: "title",
                     code: "",
@@ -379,8 +404,152 @@ class PurchaseOrderCreateFormDirectly extends Component {
                 },
                 quantity: "",
                 price: "",
+                materialError: undefined,
+                quantityError: undefined,
+                priceError: undefined,
             });
         }
+    };
+
+    handleDeleteMaterial = (item) => {
+        let { materials } = this.state;
+        let materialsFilter = materials.filter((element) => element.material !== item.material);
+        this.setState({
+            materials: materialsFilter,
+        });
+    };
+
+    handleMaterialsEdit = (item, index) => {
+        this.setState({
+            editMaterials: true,
+            indexEditting: index,
+            material: item.material,
+            quantity: item.quantity,
+            price: item.price,
+            materialError: undefined,
+            quantityError: undefined,
+            priceError: undefined,
+        });
+    };
+
+    handleSaveEditMaterial = (e) => {
+        e.preventDefault();
+        if (this.isSubmitMaterial()) {
+            const { material, quantity, price, materials, indexEditting } = this.state;
+            let data = {
+                material,
+                quantity,
+                price,
+            };
+
+            materials[indexEditting] = data;
+
+            this.setState({
+                materials,
+                material: {
+                    _id: "title",
+                    code: "",
+                    name: "",
+                    baseUnit: "",
+                },
+                quantity: "",
+                price: "",
+                indexEditting: "",
+                editMaterials: false,
+                materialError: undefined,
+                quantityError: undefined,
+                priceError: undefined,
+            });
+        }
+    };
+
+    handleCancelEditMaterial = (e) => {
+        e.preventDefault();
+        this.setState({
+            material: {
+                _id: "title",
+                code: "",
+                name: "",
+                baseUnit: "",
+            },
+            quantity: "",
+            price: "",
+            indexEditting: "",
+            editMaterials: false,
+            materialError: undefined,
+            quantityError: undefined,
+            priceError: undefined,
+        });
+    };
+
+    isFormValidated = () => {
+        const { translate } = this.props;
+
+        let { stock, supplier, approvers, intendReceiveTime, materials } = this.state;
+        if (
+            this.validateStock(stock, false) ||
+            this.validateSupplier(supplier, false) ||
+            ValidationHelper.validateEmpty(translate, intendReceiveTime).message ||
+            !approvers.length ||
+            !materials.length
+        ) {
+            return false;
+        }
+        return true;
+    };
+
+    formatMaterialsForSubmit = () => {
+        let { materials } = this.state;
+        let materialsMap = materials.map((element) => {
+            return {
+                material: element.material,
+                quantity: element.quantity,
+                price: element.price,
+            };
+        });
+
+        return materialsMap;
+    };
+
+    formatApproversForSubmit = () => {
+        let { approvers } = this.state;
+        let approversMap = approvers.map((element) => {
+            return {
+                approver: element,
+            };
+        });
+
+        return approversMap;
+    };
+
+    save = async () => {
+        let { code, stock, supplier, intendReceiveTime, discount, desciption } = this.state;
+        let materials = await this.formatMaterialsForSubmit();
+        let approvers = await this.formatApproversForSubmit();
+        let data = {
+            code,
+            stock,
+            supplier,
+            approvers,
+            intendReceiveTime: formatToTimeZoneDate(intendReceiveTime),
+            discount,
+            desciption,
+            materials,
+        };
+        await this.props.createPurchaseOrder(data);
+
+        this.setState({
+            stock: "title",
+            supplier: "title",
+            approvers: [],
+            intendReceiveTime: "",
+            discount: "",
+            desciption: "",
+            materials: [],
+            quantity: "",
+            material: "title",
+            price: "",
+        });
     };
 
     render() {
@@ -418,7 +587,7 @@ class PurchaseOrderCreateFormDirectly extends Component {
                     title={"Tạo đơn mua nguyên vật liệu"}
                     msg_success={"Tạo thành công"}
                     msg_faile={"Tạo không thành công"}
-                    // disableSubmit={!this.isFormValidated()}
+                    disableSubmit={!this.isFormValidated()}
                     func={this.save}
                     size="75"
                 >
@@ -431,15 +600,13 @@ class PurchaseOrderCreateFormDirectly extends Component {
                                 </label>
                                 <input type="text" className="form-control" value={code} disabled={true} />
                             </div>
-                        </div>
-                        <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                             <div className={`form-group ${!stockError ? "" : "has-error"}`}>
                                 <label>
                                     Kho nhập nguyên vật liệu
                                     <span className="attention"> * </span>
                                 </label>
                                 <SelectBox
-                                    id={`select-stock-issue-create`}
+                                    id={`select-create-purchase-order-directly-stock`}
                                     className="form-control select2"
                                     style={{ width: "100%" }}
                                     value={stock}
@@ -449,15 +616,13 @@ class PurchaseOrderCreateFormDirectly extends Component {
                                 />
                                 <ErrorLabel content={stockError} />
                             </div>
-                        </div>
-                        <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                             <div className={`form-group ${!supplierError ? "" : "has-error"}`}>
                                 <label>
                                     Nhà cung cấp
                                     <span className="attention"> * </span>
                                 </label>
                                 <SelectBox
-                                    id={`select-receipt-voucher-customer`}
+                                    id={`select-create-purchase-order-directly-supplier`}
                                     className="form-control select2"
                                     style={{ width: "100%" }}
                                     value={supplier}
@@ -475,7 +640,7 @@ class PurchaseOrderCreateFormDirectly extends Component {
                                     <span className="attention"> * </span>
                                 </label>
                                 <SelectBox
-                                    id={`select-approver-bill-issue-create`}
+                                    id={`select-create-purchase-order-directly-approvers`}
                                     className="form-control select2"
                                     style={{ width: "100%" }}
                                     value={approvers}
@@ -485,8 +650,6 @@ class PurchaseOrderCreateFormDirectly extends Component {
                                 />
                                 <ErrorLabel content={approversError} />
                             </div>
-                        </div>
-                        <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                             <div className={`form-group ${!intendReceiveTimeError ? "" : "has-error"}`}>
                                 <label>
                                     Ngày dự kiến nhập hàng
@@ -500,8 +663,6 @@ class PurchaseOrderCreateFormDirectly extends Component {
                                 />
                                 <ErrorLabel content={intendReceiveTimeError} />
                             </div>
-                        </div>
-                        <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                             <div className={`form-group ${!discountError ? "" : "has-error"}`}>
                                 <label>Tiền được khuyến mãi</label>
                                 <input type="number" className="form-control" value={discount} onChange={this.handleDiscountChange} />
@@ -514,140 +675,140 @@ class PurchaseOrderCreateFormDirectly extends Component {
                                 <textarea type="text" className="form-control" value={desciption} onChange={this.handleDescriptionChange} />
                             </div>
                         </div>
-                        <fieldset className="scheduler-border">
-                            <legend className="scheduler-border">Thông tin nguyên vật liệu</legend>
-                            <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-                                <div className={`form-group ${!materialError ? "" : "has-error"}`}>
-                                    <label>
-                                        Nguyên vật liệu
-                                        <span className="attention"> * </span>
-                                    </label>
-                                    <SelectBox
-                                        id={`select-receipt-voucher-sales-order`}
-                                        className="form-control select2"
-                                        style={{ width: "100%" }}
-                                        value={material._id}
-                                        items={this.getMaterialOptions()}
-                                        onChange={this.handleMaterialChange}
-                                        multiple={false}
-                                    />
-                                    <ErrorLabel content={materialError} />
+                        <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                            <fieldset className="scheduler-border">
+                                <legend className="scheduler-border">Thông tin nguyên vật liệu</legend>
+                                <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                                    <div className={`form-group ${!materialError ? "" : "has-error"}`}>
+                                        <label>
+                                            Nguyên vật liệu
+                                            <span className="attention"> * </span>
+                                        </label>
+                                        <SelectBox
+                                            id={`select-create-purchase-order-directly-material`}
+                                            className="form-control select2"
+                                            style={{ width: "100%" }}
+                                            value={material._id}
+                                            items={this.getMaterialOptions()}
+                                            onChange={this.handleMaterialChange}
+                                            multiple={false}
+                                        />
+                                        <ErrorLabel content={materialError} />
+                                    </div>
                                 </div>
-                            </div>
-                            <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-                                <div className={`form-group ${!quantityError ? "" : "has-error"}`}>
-                                    <label>
-                                        Số lượng mua
-                                        <span className="attention"> * </span>
-                                    </label>
-                                    <input type="number" className="form-control" value={quantity} onChange={this.handleQuantityChange} />
-                                    <ErrorLabel content={quantityError} />
+                                <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                                    <div className={`form-group ${!quantityError ? "" : "has-error"}`}>
+                                        <label>
+                                            Số lượng mua
+                                            <span className="attention"> * </span>
+                                        </label>
+                                        <input type="number" className="form-control" value={quantity} onChange={this.handleQuantityChange} />
+                                        <ErrorLabel content={quantityError} />
+                                    </div>
                                 </div>
-                            </div>
-                            <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-                                <div className={`form-group ${!priceError ? "" : "has-error"}`}>
-                                    <label>
-                                        Giá nhập
-                                        <span className="attention"> * </span>
-                                    </label>
-                                    <input type="number" className="form-control" value={price} onChange={this.handlePriceChange} />
-                                    <ErrorLabel content={priceError} />
+                                <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                                    <div className={`form-group ${!priceError ? "" : "has-error"}`}>
+                                        <label>
+                                            Giá nhập
+                                            <span className="attention"> * </span>
+                                        </label>
+                                        <input type="number" className="form-control" value={price} onChange={this.handlePriceChange} />
+                                        <ErrorLabel content={priceError} />
+                                    </div>
                                 </div>
-                            </div>
-                            <div className={"pull-right"} style={{ padding: 10 }}>
-                                {editMaterials ? (
-                                    <React.Fragment>
-                                        <button className="btn btn-success" onClick={this.handleCancelEditMaterial} style={{ marginLeft: "10px" }}>
-                                            Hủy chỉnh sửa
-                                        </button>
+                                <div className={"pull-right"} style={{ padding: 10 }}>
+                                    {editMaterials ? (
+                                        <React.Fragment>
+                                            <button
+                                                className="btn btn-success"
+                                                onClick={this.handleCancelEditMaterial}
+                                                style={{ marginLeft: "10px" }}
+                                            >
+                                                Hủy chỉnh sửa
+                                            </button>
+                                            <button
+                                                className="btn btn-success"
+                                                disabled={!this.isSubmitMaterial()}
+                                                onClick={this.handleSaveEditMaterial}
+                                                style={{ marginLeft: "10px" }}
+                                            >
+                                                Lưu
+                                            </button>
+                                        </React.Fragment>
+                                    ) : (
                                         <button
                                             className="btn btn-success"
-                                            disabled={!this.isSubmitMaterial()}
-                                            onClick={this.handleSaveEditMaterial}
                                             style={{ marginLeft: "10px" }}
+                                            disabled={!this.isSubmitMaterial()}
+                                            onClick={this.handleAddMaterial}
                                         >
-                                            Lưu
+                                            {"Thêm"}
                                         </button>
-                                    </React.Fragment>
-                                ) : (
-                                    <button
-                                        className="btn btn-success"
-                                        style={{ marginLeft: "10px" }}
-                                        disabled={!this.isSubmitMaterial()}
-                                        onClick={this.handleAddMaterial}
-                                    >
-                                        {"Thêm"}
-                                    </button>
-                                )}
-                                <button className="btn btn-primary" style={{ marginLeft: "10px" }} onClick={this.handleClearMaterial}>
-                                    Xóa trắng
-                                </button>
-                            </div>
-
-                            <table id={`receipt-voucher-add-sales-order`} className="table table-bordered not-sort">
-                                <thead>
-                                    <tr>
-                                        <th title={"STT"}>STT</th>
-                                        <th title={"Mã đơn"}>Nguyên vật liệu</th>
-                                        <th title={"Mã đơn"}>Đơn vị tính</th>
-                                        <th title={"Tổng tiền"}>Số lượng</th>
-                                        <th title={"Còn"}>Giá nhập</th>
-                                        <th title={"Số tiền thanh toán"}>Tổng tiền</th>
-                                        <th title={"Đơn vị tính"}>Hành động</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {materials.length !== 0 &&
-                                        materials.map((item, index) => {
-                                            return (
-                                                <tr key={index}>
-                                                    <td>{index + 1}</td>
-                                                    <td>{item.material ? item.material.name : ""}</td>
-                                                    <td>{item.material ? item.material.baseUnit : ""}</td>
-                                                    <td>{item.quantity}</td>
-                                                    <td>{item.price ? formatCurrency(item.price) : ""}</td>
-                                                    <td style={{ fontWeight: 600 }}>
-                                                        {item.price * item.quantity ? formatCurrency(item.price * item.quantity) : ""}
-                                                    </td>
-                                                    <td style={{ textAlign: "center" }}>
-                                                        <a
-                                                            href="#abc"
-                                                            className="edit"
-                                                            title="Sửa"
-                                                            // onClick={() => this.handleMaterialsEdit(item, index)}
-                                                        >
-                                                            <i className="material-icons">edit</i>
-                                                        </a>
-                                                        <a
-                                                            // onClick={() => this.handleDeleteMaterials(item)}
-                                                            className="delete text-red"
-                                                            style={{ width: "5px" }}
-                                                            title={"Xóa"}
-                                                        >
-                                                            <i className="material-icons">delete</i>
-                                                        </a>
-                                                    </td>
-                                                </tr>
-                                            );
-                                        })}
-                                    {materials.length !== 0 && (
-                                        <tr>
-                                            <td colSpan={5} style={{ fontWeight: 600 }}>
-                                                <center>Tổng thanh toán</center>
-                                            </td>
-                                            <td style={{ fontWeight: 600 }}>
-                                                {formatCurrency(
-                                                    materials.reduce((accumulator, currentValue) => {
-                                                        return accumulator + currentValue.price * currentValue.quantity;
-                                                    }, 0)
-                                                )}
-                                            </td>
-                                            <td></td>
-                                        </tr>
                                     )}
-                                </tbody>
-                            </table>
-                        </fieldset>
+                                    <button className="btn btn-primary" style={{ marginLeft: "10px" }} onClick={this.handleClearMaterial}>
+                                        Xóa trắng
+                                    </button>
+                                </div>
+
+                                <table id={`receipt-voucher-add-sales-order`} className="table table-bordered not-sort">
+                                    <thead>
+                                        <tr>
+                                            <th title={"STT"}>STT</th>
+                                            <th title={"Mã đơn"}>Nguyên vật liệu</th>
+                                            <th title={"Mã đơn"}>Đơn vị tính</th>
+                                            <th title={"Tổng tiền"}>Số lượng</th>
+                                            <th title={"Còn"}>Giá nhập</th>
+                                            <th title={"Số tiền thanh toán"}>Tổng tiền</th>
+                                            <th title={"Đơn vị tính"}>Hành động</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {materials.length !== 0 &&
+                                            materials.map((item, index) => {
+                                                return (
+                                                    <tr key={index}>
+                                                        <td>{index + 1}</td>
+                                                        <td>{item.material ? item.material.name : ""}</td>
+                                                        <td>{item.material ? item.material.baseUnit : ""}</td>
+                                                        <td>{item.quantity}</td>
+                                                        <td>{item.price ? formatCurrency(item.price) : ""}</td>
+                                                        <td style={{ fontWeight: 600 }}>
+                                                            {item.price * item.quantity ? formatCurrency(item.price * item.quantity) : ""}
+                                                        </td>
+                                                        <td style={{ textAlign: "center" }}>
+                                                            <a
+                                                                href="#abc"
+                                                                className="edit"
+                                                                title="Sửa"
+                                                                onClick={() => this.handleMaterialsEdit(item, index)}
+                                                            >
+                                                                <i className="material-icons">edit</i>
+                                                            </a>
+                                                            <a
+                                                                onClick={() => this.handleDeleteMaterial(item)}
+                                                                className="delete text-red"
+                                                                style={{ width: "5px" }}
+                                                                title={"Xóa"}
+                                                            >
+                                                                <i className="material-icons">delete</i>
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                );
+                                            })}
+                                        {materials.length !== 0 && (
+                                            <tr>
+                                                <td colSpan={5} style={{ fontWeight: 600 }}>
+                                                    <center>Tổng thanh toán</center>
+                                                </td>
+                                                <td style={{ fontWeight: 600 }}>{this.getPaymentAmount()}</td>
+                                                <td></td>
+                                            </tr>
+                                        )}
+                                    </tbody>
+                                </table>
+                            </fieldset>
+                        </div>
                     </form>
                 </DialogModal>
             </React.Fragment>
@@ -661,6 +822,8 @@ function mapStateToProps(state) {
     return { stocks, customers, user, goods };
 }
 
-const mapDispatchToProps = {};
+const mapDispatchToProps = {
+    createPurchaseOrder: PurchaseOrderActions.createPurchaseOrder,
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(PurchaseOrderCreateFormDirectly));

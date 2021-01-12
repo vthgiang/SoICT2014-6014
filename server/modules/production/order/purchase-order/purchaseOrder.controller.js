@@ -15,7 +15,6 @@ exports.createPurchaseOrder = async (req, res) => {
         });
     }  catch (error) {
         await Log.error(req.user.email, "CREATED_NEW_PURCHASE_ORDER", req.portal);
-
         res.status(400).json({
             success: false,
             messages: ["create_failed"],

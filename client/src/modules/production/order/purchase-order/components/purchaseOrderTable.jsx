@@ -115,7 +115,7 @@ class PurchaseOrderTable extends Component {
         }
 
         if (discount) {
-            paymentAmount = paymentAmount - discount ? paymentAmount - discount : 0;
+            paymentAmount = paymentAmount - discount >= 0 ? paymentAmount - discount : 0;
         }
 
         return formatCurrency(paymentAmount);
@@ -146,7 +146,7 @@ class PurchaseOrderTable extends Component {
 
         const { translate, purchaseOrders } = this.props;
         const { totalPages, page, listPurchaseOrders } = purchaseOrders;
-        const statusConver = [
+        const statusConvert = [
             {
                 className: "text-primary",
                 text: "no status",
@@ -202,7 +202,7 @@ class PurchaseOrderTable extends Component {
 
                     <div className="form-inline">
                         <div className="form-group">
-                            <label className="form-control-static">Tìm mã đơn mua</label>
+                            <label className="form-control-static">Mã đơn</label>
                             <input
                                 type="text"
                                 className="form-control"
@@ -274,10 +274,12 @@ class PurchaseOrderTable extends Component {
                                     <tr key={index}>
                                         <td>{index + 1}</td>
                                         <td>{item.code}</td>
-                                        <td>{item.status ? statusConver[item.status] : ""}</td>
+                                        <td className={item.status ? statusConvert[item.status].className : ""}>
+                                            {item.status ? statusConvert[item.status].text : ""}
+                                        </td>
                                         <td>{this.getPaymentAmount(item.materials, item.discount)}</td>
                                         <td>{item.creator ? item.creator.name : ""}</td>
-                                        <td>{item.createAt ? formatDate(item.createAt) : ""}</td>
+                                        <td>{item.createdAt ? formatDate(item.createdAt) : ""}</td>
                                         <td style={{ textAlign: "center" }}>
                                             <a className="text-green" onClick={() => this.handleShowDetailInfo(item)}>
                                                 <i className="material-icons">visibility</i>
