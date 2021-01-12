@@ -1,15 +1,17 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
-
+//Actions
 import { PurchaseOrderActions } from "../redux/actions";
 import { purchasingRequestActions } from "../../../manufacturing/purchasing-request/redux/actions";
 import { StockActions } from "../../../warehouse/stock-management/redux/actions";
 import { CrmCustomerActions } from "../../../../crm/customer/redux/actions";
+import { UserActions } from "../../../../super-admin/user/redux/actions";
+import { GoodActions } from "../../../common-production/good-management/redux/actions";
 import { formatCurrency } from "../../../../../helpers/formatCurrency";
 import { formatDate } from "../../../../../helpers/formatDate";
 import { generateCode } from "../../../../../helpers/generateCode";
-
+//Component
 import { PaginateBar, DataTableSetting, DeleteNotification, SelectBox } from "../../../../../common-components";
 
 import PurchaseOrderCreateFormDirectly from "./purchaseOrderCreateFormDirectly";
@@ -33,6 +35,8 @@ class PurchaseOrderTable extends Component {
         this.props.getAllPurchaseOrders({ page, limit });
         this.props.getAllStocks();
         this.props.getCustomers();
+        this.props.getUser();
+        this.props.getAllGoodsByType({ type: "material" });
     }
 
     handleClickCreateCode = () => {
@@ -191,8 +195,8 @@ class PurchaseOrderTable extends Component {
                             </ul>
                         </div>
                     </div>
-                    <PurchaseOrderCreateFormDirectly />
-                    <PurchaseOrderCreateFormFromPurchasingRequest />
+                    <PurchaseOrderCreateFormDirectly code={codeCreate} />
+                    <PurchaseOrderCreateFormFromPurchasingRequest code={codeCreate} />
                     {this.state.currentRow && <PurchaseDetailForm data={this.state.currentRow} />}
                     {this.state.editRow && <PurchaseOrderEditForm data={this.state.editRow} />}
 
@@ -315,6 +319,8 @@ const mapDispatchToProps = {
     getAllPurchasingRequests: purchasingRequestActions.getAllPurchasingRequests,
     getAllStocks: StockActions.getAllStocks,
     getCustomers: CrmCustomerActions.getCustomers,
+    getUser: UserActions.get,
+    getAllGoodsByType: GoodActions.getAllGoodsByType,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(PurchaseOrderTable));
