@@ -71,6 +71,10 @@ exports.getAllPurchaseOrders = async (query, portal) => {
         option.status = query.status
     }
 
+    if (query.supplier) {
+        option.supplier = query.supplier
+    }
+
     if ( !page || !limit ){
         let allPurchaseOrders = await PurchaseOrder(connect(DB_CONNECTION, portal))
             .find(option)

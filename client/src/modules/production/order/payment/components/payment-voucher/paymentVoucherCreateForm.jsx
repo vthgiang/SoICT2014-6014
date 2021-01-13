@@ -642,7 +642,7 @@ class PaymentVoucherCreateForm extends Component {
                                         className="form-control"
                                         value={bankAccountPartner}
                                         onChange={this.handleBankAccountPartnerChange}
-                                        placeholder="Nhập vào số tài khoản nhận tiền"
+                                        placeholder="Ví dụ: 103098892890 - Vietinbank"
                                     />
                                     <ErrorLabel content={bankAccountPartnerError} />
                                 </div>

@@ -33,7 +33,7 @@ const PaymentSchema = new Schema({
         ref: 'BankAccount'
     },
     bankAccountPartner: {// Tài khoản của đối tác (nhà cung cấp) 
-        type: Number,
+        type: String,
     },
     salesOrders: [{ //Thanh toán theo từng đơn
         salesOrder: {//Thanh toán cho đơn bán hàng nào

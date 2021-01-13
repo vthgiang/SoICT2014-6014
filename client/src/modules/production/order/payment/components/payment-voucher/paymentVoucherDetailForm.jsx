@@ -54,12 +54,6 @@ class PaymentVoucherDetailForm extends Component {
                     </div>
                     <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                         <div className={`form-group`}>
-                            <strong>Tổng tiền thanh toán :&emsp;</strong>
-                            {paymentDetail.purchaseOrders ? this.getPaidForPayment(paymentDetail.purchaseOrders) : ""}
-                        </div>
-                    </div>
-                    <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                        <div className={`form-group`}>
                             <strong>Ngày thanh toán :&emsp;</strong>
                             {paymentDetail.paymentAt ? formatDate(paymentDetail.paymentAt) : ""}
                         </div>
@@ -122,11 +116,7 @@ class PaymentVoucherDetailForm extends Component {
                                                 <center>Tổng thanh toán</center>
                                             </td>
                                             <td style={{ fontWeight: 600 }}>
-                                                {formatCurrency(
-                                                    paymentDetail.purchaseOrders.reduce((accumulator, currentValue) => {
-                                                        return accumulator + currentValue.money;
-                                                    }, 0)
-                                                )}
+                                                {paymentDetail.purchaseOrders ? this.getPaidForPayment(paymentDetail.purchaseOrders) : ""}
                                             </td>
                                         </tr>
                                     )}

@@ -9,12 +9,13 @@ import { CrmCustomerActions } from "../../../../crm/customer/redux/actions";
 import { UserActions } from "../../../../super-admin/user/redux/actions";
 import { GoodActions } from "../../../common-production/good-management/redux/actions";
 import { BillActions } from "../../../warehouse/bill-management/redux/actions";
+import { PaymentActions } from "../../payment/redux/actions";
 //helpers
 import { formatCurrency } from "../../../../../helpers/formatCurrency";
 import { formatDate } from "../../../../../helpers/formatDate";
 import { generateCode } from "../../../../../helpers/generateCode";
 //Component
-import { PaginateBar, DataTableSetting, DeleteNotification, SelectBox } from "../../../../../common-components";
+import { PaginateBar, DataTableSetting, SelectMulti, SelectBox } from "../../../../../common-components";
 
 import PurchaseOrderCreateFormDirectly from "./purchaseOrderCreateFormDirectly";
 import PurchaseOrderCreateFormFromPurchasingRequest from "./purchaseOrderCreateFormFromPurchasingRequest";
@@ -58,40 +59,37 @@ class PurchaseOrderTable extends Component {
     };
 
     setPage = async (page) => {
-        const { limit, code, status } = this.state;
+        const { limit } = this.state;
         await this.setState({
             page: page,
         });
         const data = {
             limit,
             page: page,
-            code,
-            status,
         };
         this.props.getAllPurchaseOrders(data);
     };
 
     setLimit = async (limit) => {
-        const { page, code, status } = this.state;
+        const { page } = this.state;
         await this.setState({
             limit: limit,
         });
         const data = {
             limit: limit,
             page,
-            code,
-            status,
         };
         this.props.getAllPurchaseOrders(data);
     };
 
     reloadPurchaseOrderTable = () => {
-        const { page, limit, code, status } = this.state;
+        const { page, limit, code, status, supplier } = this.state;
         const data = {
             limit,
             page,
             code,
             status,
+            supplier,
         };
         this.props.getAllPurchaseOrders(data);
     };
@@ -105,22 +103,30 @@ class PurchaseOrderTable extends Component {
 
     handleStatusChange = (value) => {
         this.setState({
-            status: value[0],
+            status: value,
+        });
+    };
+
+    handleSupplierChange = (value) => {
+        this.setState({
+            supplier: value,
         });
     };
 
     handleSubmitSearch = () => {
-        const { page, limit, code, status } = this.state;
+        const { page, limit, code, status, supplier } = this.state;
         const data = {
             limit,
             page,
             code,
             status,
+            supplier,
         };
         this.props.getAllPurchaseOrders(data);
     };
 
     handleShowDetail = async (data) => {
+        await this.props.getPaymentForOrder({ orderId: data._id, orderType: 2 });
         await this.setState({
             purchaseOrderDetail: data,
         });
@@ -253,9 +259,35 @@ class PurchaseOrderTable extends Component {
                                         value: 3,
                                         text: "Đã nhập kho",
                                     },
+                                    {
+                                        value: 4,
+                                        text: "Đã hủy",
+                                    },
                                 ]}
                                 onChange={this.handleStatusChange}
                                 value={status}
+                                multiple={true}
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label className="form-control-static">Nhà cung cấp</label>
+                            <SelectMulti
+                                id={`selectMulti-filter-suppliet-purchase-order`}
+                                className="form-control select2"
+                                style={{ width: "100%" }}
+                                items={
+                                    this.props.customers.list
+                                        ? this.props.customers.list.map((customerItem) => {
+                                              return {
+                                                  value: customerItem._id,
+                                                  text: customerItem.name,
+                                              };
+                                          })
+                                        : []
+                                }
+                                multiple="multiple"
+                                options={{ nonSelectedText: "Chọn nhà cung cấp", allSelectedText: "Đã chọn tất cả" }}
+                                onChange={this.handleSupplierChange}
                             />
                         </div>
                         <div className="form-group">
@@ -271,6 +303,7 @@ class PurchaseOrderTable extends Component {
                                 <th>Mã đơn</th>
                                 <th>Trạng thái</th>
                                 <th>Tổng tiền</th>
+                                <th>Nhà cung cấp</th>
                                 <th>Người tạo</th>
                                 <th>Ngày tạo</th>
                                 <th
@@ -300,6 +333,7 @@ class PurchaseOrderTable extends Component {
                                             {item.status ? statusConvert[item.status].text : ""}
                                         </td>
                                         <td>{item.paymentAmount ? formatCurrency(item.paymentAmount) : ""}</td>
+                                        <td>{item.supplier ? item.supplier.name : ""}</td>
                                         <td>{item.creator ? item.creator.name : ""}</td>
                                         <td>{item.createdAt ? formatDate(item.createdAt) : ""}</td>
                                         <td style={{ textAlign: "center" }}>
@@ -353,8 +387,9 @@ class PurchaseOrderTable extends Component {
 }
 
 function mapStateToProps(state) {
+    const { customers } = state.crm;
     const { purchaseOrders } = state;
-    return { purchaseOrders };
+    return { purchaseOrders, customers };
 }
 
 const mapDispatchToProps = {
@@ -365,6 +400,7 @@ const mapDispatchToProps = {
     getUser: UserActions.get,
     getAllGoodsByType: GoodActions.getAllGoodsByType,
     getDetailBill: BillActions.getDetailBill,
+    getPaymentForOrder: PaymentActions.getPaymentForOrder,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(PurchaseOrderTable));

@@ -108,6 +108,17 @@ class ReceiptVoucherManagementTable extends Component {
                     {paymentDetail && <ReceiptVoucherDetailForm paymentDetail={paymentDetail} />}
                     <div className="form-inline">
                         <div className="form-group">
+                            <label className="form-control-static">Mã phiếu</label>
+                            <input
+                                type="text"
+                                className="form-control"
+                                name="code"
+                                onChange={this.handleCodeChange}
+                                placeholder="Mã phiếu"
+                                autoComplete="off"
+                            />
+                        </div>
+                        <div className="form-group">
                             <label className="form-control-static">Khách hàng</label>
                             <SelectMulti
                                 id={`selectMulti-filter-customer-receipt-voucher`}
@@ -126,18 +137,6 @@ class ReceiptVoucherManagementTable extends Component {
                                 multiple="multiple"
                                 options={{ nonSelectedText: "Chọn khách hàng", allSelectedText: "Đã chọn tất cả" }}
                                 onChange={this.handleCustomerChange}
-                            />
-                        </div>
-
-                        <div className="form-group">
-                            <label className="form-control-static">Mã phiếu</label>
-                            <input
-                                type="text"
-                                className="form-control"
-                                name="code"
-                                onChange={this.handleCodeChange}
-                                placeholder="Mã phiếu"
-                                autoComplete="off"
                             />
                         </div>
 

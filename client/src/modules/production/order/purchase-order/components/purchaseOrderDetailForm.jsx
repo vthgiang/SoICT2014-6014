@@ -10,6 +10,21 @@ class PurchaseDetailForm extends Component {
         super(props);
     }
 
+    getPaidTotalMoney = () => {
+        const { paymentsForOrder } = this.props.payments;
+        let paid = 0;
+        if (paymentsForOrder.length) {
+            paid = paymentsForOrder.reduce((accumulator, currentValue) => {
+                if (currentValue.purchaseOrders.length) {
+                    return accumulator + parseInt(currentValue.purchaseOrders[0].money);
+                }
+                return accumulator;
+            }, 0);
+        }
+
+        return formatCurrency(paid);
+    };
+
     render() {
         const {
             code,
@@ -46,6 +61,16 @@ class PurchaseDetailForm extends Component {
                 text: "Đã hủy",
             },
         ];
+
+        const { translate, payments } = this.props;
+        let paymentsForOrder = [];
+        if (payments.isLoading === false) {
+            paymentsForOrder = payments.paymentsForOrder;
+        }
+
+        console.log("paymentsForOrder", paymentsForOrder);
+
+        let paymentTypeConvert = ["", "Tiền mặt", "Chuyển khoản"];
         return (
             <React.Fragment>
                 <DialogModal
@@ -53,7 +78,7 @@ class PurchaseDetailForm extends Component {
                     isLoading={false}
                     formID="form-detail-purchase-order"
                     title={"Chi tiết đơn mua nguyên vật liệu"}
-                    size="50"
+                    size="75"
                     hasSaveButton={false}
                     hasNote={false}
                 >
@@ -157,6 +182,55 @@ class PurchaseDetailForm extends Component {
                                 </table>
                             </fieldset>
                         </div>
+                        {paymentsForOrder && paymentsForOrder.length !== 0 && (
+                            <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <fieldset className="scheduler-border">
+                                    <legend className="scheduler-border">Thông tin chi trả</legend>
+                                    <table id={`receipt-voucher-detail-sales-order`} className="table table-bordered not-sort">
+                                        <thead>
+                                            <tr>
+                                                <th title={"STT"}>STT</th>
+                                                <th title={"Mã phiếu thu"}>Mã phiếu chi</th>
+                                                <th title={"Phương thức thanh toán"}>Phương thức thanh toán</th>
+                                                <th title={"Tài khoản thụ hưởng"}>Người thanh toán</th>
+                                                <th title={"Số tiền thanh toán"}>Thanh toán lúc</th>
+                                                <th title={"Tài khoản thụ hưởng"}>Tài khoản thanh toán</th>
+                                                <th title={"Tài khoản thụ hưởng"}>Chủ tài khoản</th>
+                                                <th title={"Tài khoản thụ hưởng"}>Ngân hàng</th>
+                                                <th title={"Tài khoản thụ hưởng"}>Tài khoản nhận tiền</th>
+                                                <th title={"Số tiền thanh toán"}>Số tiền thanh toán</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {paymentsForOrder.map((item, index) => {
+                                                return (
+                                                    <tr key={index}>
+                                                        <td>{index + 1}</td>
+                                                        <td>{item.code}</td>
+                                                        <td>{paymentTypeConvert[item.paymentType]}</td>
+                                                        <td>{item.curator ? item.curator.name : "---"}</td>
+                                                        <td>{item.paymentAt ? formatDate(item.paymentAt) : "---"}</td>
+                                                        <td>{item.bankAccountReceived ? item.bankAccountReceived.account : "---"}</td>
+                                                        <td>{item.bankAccountReceived ? item.bankAccountReceived.owner : "---"}</td>
+                                                        <td>{item.bankAccountReceived ? item.bankAccountReceived.bankAcronym : "---"}</td>
+                                                        <td>{item.bankAccountPartner}</td>
+                                                        <td>{item.purchaseOrders.length ? formatCurrency(item.purchaseOrders[0].money) : "0"}</td>
+                                                    </tr>
+                                                );
+                                            })}
+                                            {
+                                                <tr>
+                                                    <td colSpan={9} style={{ fontWeight: 600 }}>
+                                                        <center>Tổng tiền đã thanh toán</center>
+                                                    </td>
+                                                    <td style={{ fontWeight: 600 }}>{this.getPaidTotalMoney()}</td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </fieldset>
+                            </div>
+                        )}
                     </form>
                 </DialogModal>
             </React.Fragment>
@@ -164,4 +238,11 @@ class PurchaseDetailForm extends Component {
     }
 }
 
-export default connect(null, null)(withTranslate(PurchaseDetailForm));
+function mapStateToProps(state) {
+    const { payments } = state;
+    return { payments };
+}
+
+const mapDispatchToProps = {};
+
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(PurchaseDetailForm));

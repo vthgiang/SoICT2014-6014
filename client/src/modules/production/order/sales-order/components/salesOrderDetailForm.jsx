@@ -600,10 +600,11 @@ class SalesOrderDetailForm extends Component {
                                         <i className="fa  fa-credit-card"></i> Tiền đã thanh toán
                                     </div>
                                     <div className="shopping-apply-discounts">
-                                        <table id={`receipt-voucher-detail-sales-order`} className="table table-bordered not-sort">
+                                        <table id={`sales-order-detail-payment`} className="table table-bordered not-sort">
                                             <thead>
                                                 <tr>
                                                     <th title={"STT"}>STT</th>
+                                                    <th title={"Mã phiếu thu"}>Mã phiếu thu</th>
                                                     <th title={"Phương thức thanh toán"}>Phương thức thanh toán</th>
                                                     <th title={"Tài khoản thụ hưởng"}>Người nhận thanh toán</th>
                                                     <th title={"Số tiền thanh toán"}>Thanh toán lúc</th>
@@ -619,19 +620,20 @@ class SalesOrderDetailForm extends Component {
                                                         return (
                                                             <tr key={index}>
                                                                 <td>{index + 1}</td>
+                                                                <td>{item.code}</td>
                                                                 <td>{paymentTypeConvert[item.paymentType]}</td>
                                                                 <td>{item.curator ? item.curator.name : "---"}</td>
                                                                 <td>{item.paymentAt ? formatDate(item.paymentAt) : "---"}</td>
                                                                 <td>{item.bankAccountReceived ? item.bankAccountReceived.account : "---"}</td>
-                                                                <td>{item.bankAccountReceived ? item.bankAccountReceived.bankAcronym : "---"}</td>
                                                                 <td>{item.bankAccountReceived ? item.bankAccountReceived.owner : "---"}</td>
+                                                                <td>{item.bankAccountReceived ? item.bankAccountReceived.bankAcronym : "---"}</td>
                                                                 <td>{item.salesOrders.length ? formatCurrency(item.salesOrders[0].money) : "0"}</td>
                                                             </tr>
                                                         );
                                                     })}
                                                 {paymentsForOrder.length !== 0 && (
                                                     <tr>
-                                                        <td colSpan={7} style={{ fontWeight: 600 }}>
+                                                        <td colSpan={8} style={{ fontWeight: 600 }}>
                                                             <center>Tổng tiền đã thanh toán</center>
                                                         </td>
                                                         <td style={{ fontWeight: 600 }}>{this.getPaidTotalMoney()}</td>

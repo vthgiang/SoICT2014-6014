@@ -6,7 +6,7 @@ import { formatDate } from "../../../../../../helpers/formatDate";
 class ReceiptVoucherDetailForm extends Component {
     getPaidForPayment = (salesOrders) => {
         let paid = salesOrders.reduce((accumulator, currentValue) => {
-            return accumulator + currentValue.money;
+            return accumulator + parseInt(currentValue.money);
         }, 0);
 
         return formatCurrency(paid);
@@ -49,12 +49,6 @@ class ReceiptVoucherDetailForm extends Component {
                         <div className={`form-group`}>
                             <strong>Phương thức thay toán:&emsp;</strong>
                             {paymentTypeConvert[paymentDetail.paymentType]}
-                        </div>
-                    </div>
-                    <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                        <div className={`form-group`}>
-                            <strong>Tổng tiền thanh toán :&emsp;</strong>
-                            {paymentDetail.salesOrders ? this.getPaidForPayment(paymentDetail.salesOrders) : ""}
                         </div>
                     </div>
                     <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
@@ -115,11 +109,7 @@ class ReceiptVoucherDetailForm extends Component {
                                                 <center>Tổng thanh toán</center>
                                             </td>
                                             <td style={{ fontWeight: 600 }}>
-                                                {formatCurrency(
-                                                    paymentDetail.salesOrders.reduce((accumulator, currentValue) => {
-                                                        return accumulator + currentValue.money;
-                                                    }, 0)
-                                                )}
+                                                {paymentDetail.salesOrders ? this.getPaidForPayment(paymentDetail.salesOrders) : ""}
                                             </td>
                                         </tr>
                                     )}

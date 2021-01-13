@@ -109,6 +109,17 @@ class PaymentVoucherManagementTable extends Component {
                     {paymentDetail && <PaymentVoucherDetailForm paymentDetail={paymentDetail} />}
                     <div className="form-inline">
                         <div className="form-group">
+                            <label className="form-control-static">Mã phiếu</label>
+                            <input
+                                type="text"
+                                className="form-control"
+                                name="code"
+                                onChange={this.handleCodeChange}
+                                placeholder="Mã phiếu"
+                                autoComplete="off"
+                            />
+                        </div>
+                        <div className="form-group">
                             <label className="form-control-static">Nhà cung cấp</label>
                             <SelectMulti
                                 id={`selectMulti-filter-supplier-payment-voucher`}
@@ -127,17 +138,6 @@ class PaymentVoucherManagementTable extends Component {
                                 multiple="multiple"
                                 options={{ nonSelectedText: "Chọn nhà cung cấp", allSelectedText: "Đã chọn tất cả" }}
                                 onChange={this.handleSupplierChange}
-                            />
-                        </div>
-                        <div className="form-group">
-                            <label className="form-control-static">Mã phiếu</label>
-                            <input
-                                type="text"
-                                className="form-control"
-                                name="code"
-                                onChange={this.handleCodeChange}
-                                placeholder="Mã phiếu"
-                                autoComplete="off"
                             />
                         </div>
 
