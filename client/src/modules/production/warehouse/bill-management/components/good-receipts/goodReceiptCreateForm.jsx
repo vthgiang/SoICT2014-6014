@@ -519,6 +519,7 @@ class GoodReceiptCreateForm extends Component {
                 purchaseOrderCode: purchaseOrderAddBill.code,
                 type: "1",
                 supplier: purchaseOrderAddBill.supplier ? purchaseOrderAddBill.supplier._id : "",
+                fromStock: purchaseOrderAddBill.stock ? purchaseOrderAddBill.stock._id : "",
                 listGood: purchaseOrderAddBill.materials
                     ? purchaseOrderAddBill.materials.map((material) => {
                           return {
@@ -598,9 +599,9 @@ class GoodReceiptCreateForm extends Component {
             purchaseOrderId,
         });
 
-        //Load lại dữ liệu đơn mua nguyên vật liệu sau 3000ms
+        //Load lại dữ liệu đơn mua nguyên vật liệu sau 15000ms
         if (createdSource === "purchaseOrder") {
-            await setTimeout(this.props.reloadPurchaseOrderTable(), 3000);
+            await setTimeout(() => this.props.reloadPurchaseOrderTable(), 3000);
         }
     };
 
@@ -629,6 +630,7 @@ class GoodReceiptCreateForm extends Component {
             errorQualityControlStaffs,
             errorAccountables,
             errorResponsibles,
+            purchaseOrderId,
         } = this.state;
         const listGoods = this.getAllGoods();
         const dataApprover = this.getApprover();
@@ -711,7 +713,7 @@ class GoodReceiptCreateForm extends Component {
                                             <span className="attention"> * </span>
                                         </label>
                                         <SelectBox
-                                            id={`select-stock-bill-receipt-create`}
+                                            id={`select-stock-bill-receipt-create-${purchaseOrderId}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             value={fromStock}
