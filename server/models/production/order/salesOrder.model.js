@@ -262,6 +262,10 @@ const SalesOrderSchema = new Schema({
     coin: {
         type: Number
     },
+    //Số xu được cộng vào sau khi hoàn thành đơn
+    allCoin: {
+        type: Number
+    },
     //Tổng thuế cho toàn đơn
     totalTax: {
         type: Number,
