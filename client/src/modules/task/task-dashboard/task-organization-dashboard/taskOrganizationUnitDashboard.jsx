@@ -13,7 +13,7 @@ import { WeightTaskOrganizationChart } from './weightTaskOrganizationChart';
 import { AverageResultsOfTaskInOrganizationalUnit } from './averageResultsOfTaskInOrganizationalUnit';
 
 import { withTranslate } from 'react-redux-multilingual';
-import { SelectMulti, DatePicker } from '../../../../common-components/index';
+import { SelectMulti, DatePicker, ToolTip } from '../../../../common-components/index';
 import Swal from 'sweetalert2';
 import { InprocessOfUnitTask } from './processOfUnitTasks';
 
@@ -159,7 +159,7 @@ class TaskOrganizationUnitDashboard extends Component {
         this.INFO_SEARCH.endMonth = month;
         this.INFO_SEARCH.endMonthTitle = endMonthTitle;
     }
-    
+
     handleSearchData = async () => {
         let startMonth = new Date(this.INFO_SEARCH.startMonth);
         let endMonth = new Date(this.INFO_SEARCH.endMonth);
@@ -451,11 +451,16 @@ class TaskOrganizationUnitDashboard extends Component {
                             </div>
 
                         </div>
+                        {/*Dashboard tải công việc */}
                         <div className="row">
                             <div className="col-xs-12">
                                 <div className="box box-primary">
                                     <div className="box-header with-border">
                                         <div className="box-title">Dashboard tải công việc của đơn vị {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
+                                        <ToolTip
+                                            type={"icon_tooltip"} materialIcon={"help"}
+                                            dataTooltip={['Tải công việc tính theo công thức tổng các tỉ số: số ngày thực hiện công việc trong tháng/(số người thực hiện + số người phê duyệt + số người hỗ trợ)']}
+                                        />
                                     </div>
                                     <div className="box-body qlcv">
                                         {this.state.callAction && tasks && tasks.organizationUnitTasks &&

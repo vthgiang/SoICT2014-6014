@@ -114,9 +114,22 @@ const WeightTaskChart = (props) => {
 
             axis: {
                 x: {
+                    label: {
+                        text: 'Thời gian',
+                        position: 'outer-right',
+                    },
+
                     type: 'category',
                     categories: category,
+                },
+                y: {
+                    label: {
+                        text: "Tải công việc",
+                        position: 'outer-top',
+                    },
+
                 }
+
             },
 
 
