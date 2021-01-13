@@ -1,5 +1,5 @@
 const {
-    PurchaseOrder
+    PurchaseOrder, PurchasingRequest
 } = require(`../../../../models`);
 
 const {
@@ -25,10 +25,18 @@ exports.createPurchaseOrder = async (userId, data, portal) => {
                 status: approver.status
             }
         }) : undefined,
+        supplier: data.supplier,
         discount: data.discount,
         desciption: data.desciption,
         purchasingRequest: data.purchasingRequest
     })
+
+    //Cập nhật trạng thái cho đơn đề nghị
+    if (data.purchasingRequest) {
+        let purchasingRequest = await PurchasingRequest(connect(DB_CONNECTION, portal)).findById({ _id: data.purchasingRequest })
+        purchasingRequest.status = 2;
+        await purchasingRequest.save()
+    }
 
     let purchaseOrder = await PurchaseOrder(connect(DB_CONNECTION, portal)).findById({ _id: newPurchaseOrder._id }) .populate([
         {
@@ -53,7 +61,7 @@ exports.getAllPurchaseOrders = async (query, portal) => {
     let option = {};
 
     if (query.code) {
-        option.code = query.code
+        option.code = new RegExp(query.code, "i")
     }
 
     if (query.status) {
@@ -131,7 +139,7 @@ exports.editPurchaseOrder = async (userId, id, data, portal) => {
 
     await oldPurchaseOrder.save();
 
-    let purchaseOrderUpdate =  await BankAccount(connect(DB_CONNECTION, portal)).findById(id) .populate([
+    let purchaseOrderUpdate =  await PurchaseOrder(connect(DB_CONNECTION, portal)).findById(id) .populate([
         {
             path: "creator", select: "code name"
         }, 

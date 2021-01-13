@@ -8,6 +8,8 @@ import { StockActions } from "../../../warehouse/stock-management/redux/actions"
 import { CrmCustomerActions } from "../../../../crm/customer/redux/actions";
 import { UserActions } from "../../../../super-admin/user/redux/actions";
 import { GoodActions } from "../../../common-production/good-management/redux/actions";
+import { BillActions } from "../../../warehouse/bill-management/redux/actions";
+//helpers
 import { formatCurrency } from "../../../../../helpers/formatCurrency";
 import { formatDate } from "../../../../../helpers/formatDate";
 import { generateCode } from "../../../../../helpers/generateCode";
@@ -18,7 +20,8 @@ import PurchaseOrderCreateFormDirectly from "./purchaseOrderCreateFormDirectly";
 import PurchaseOrderCreateFormFromPurchasingRequest from "./purchaseOrderCreateFormFromPurchasingRequest";
 import PurchaseDetailForm from "./purchaseOrderDetailForm";
 import PurchaseOrderEditForm from "./purchaseOrderEditForm";
-
+import GoodReceiptCreateForm from "../../../warehouse/bill-management/components/good-receipts/goodReceiptCreateForm";
+import BillDetailForm from "../../../warehouse/bill-management/components/genaral/billDetailForm";
 class PurchaseOrderTable extends Component {
     constructor(props) {
         super(props);
@@ -82,6 +85,17 @@ class PurchaseOrderTable extends Component {
         this.props.getAllPurchaseOrders(data);
     };
 
+    reloadPurchaseOrderTable = () => {
+        const { page, limit, code, status } = this.state;
+        const data = {
+            limit,
+            page,
+            code,
+            status,
+        };
+        this.props.getAllPurchaseOrders(data);
+    };
+
     handleCodeChange = (e) => {
         const { value } = e.target;
         this.setState({
@@ -115,38 +129,48 @@ class PurchaseOrderTable extends Component {
         }
 
         if (discount) {
-            paymentAmount = paymentAmount - discount ? paymentAmount - discount : 0;
+            paymentAmount = paymentAmount - discount >= 0 ? paymentAmount - discount : 0;
         }
 
         return formatCurrency(paymentAmount);
     };
 
-    handleShowDetailInfo = (data) => {
-        this.setState((state) => {
-            return {
-                ...state,
-                currentRow: data,
-            };
+    handleShowDetail = async (data) => {
+        await this.setState({
+            purchaseOrderDetail: data,
         });
-        window.$("#modal-detail-material-purchase-order").modal("show");
+        window.$("#modal-detail-purchase-order").modal("show");
     };
 
-    handleEdit = (data) => {
-        this.setState((state) => {
+    handleEdit = async (data) => {
+        await this.setState({
+            purchaseOrderEdit: data,
+        });
+        window.$("#modal-edit-purchase-order").modal("show");
+    };
+
+    handleAddBill = async (purchaseOrderAddBill) => {
+        await this.setState((state) => {
             return {
                 ...state,
-                editRow: data,
+                purchaseOrderAddBill,
+                billCode: generateCode("BIRE"),
             };
         });
-        window.$("#modal-edit-material-purchase-order").modal("show");
+        window.$("#modal-create-bill-receipt").modal("show");
+    };
+
+    handleShowBillDetail = async (billId) => {
+        await this.props.getDetailBill(billId);
+        window.$("#modal-detail-bill").modal("show");
     };
 
     render() {
-        const { code, status, codeCreate } = this.state;
+        const { code, status, codeCreate, purchaseOrderEdit, purchaseOrderDetail, purchaseOrderAddBill, billCode } = this.state;
 
         const { translate, purchaseOrders } = this.props;
         const { totalPages, page, listPurchaseOrders } = purchaseOrders;
-        const statusConver = [
+        const statusConvert = [
             {
                 className: "text-primary",
                 text: "no status",
@@ -197,12 +221,21 @@ class PurchaseOrderTable extends Component {
                     </div>
                     <PurchaseOrderCreateFormDirectly code={codeCreate} />
                     <PurchaseOrderCreateFormFromPurchasingRequest code={codeCreate} />
-                    {this.state.currentRow && <PurchaseDetailForm data={this.state.currentRow} />}
-                    {this.state.editRow && <PurchaseOrderEditForm data={this.state.editRow} />}
+                    {purchaseOrderDetail && <PurchaseDetailForm purchaseOrderDetail={purchaseOrderDetail} />}
+                    {purchaseOrderEdit && <PurchaseOrderEditForm purchaseOrderEdit={purchaseOrderEdit} />}
+                    <GoodReceiptCreateForm
+                        purchaseOrderAddBill={purchaseOrderAddBill}
+                        createdSource={"purchaseOrder"}
+                        billCode={billCode}
+                        modalName={`Lập phiếu yêu cầu nhập kho cho đơn hàng: ${purchaseOrderAddBill ? purchaseOrderAddBill.code : ""}`}
+                        reloadPurchaseOrderTable={this.reloadPurchaseOrderTable}
+                        group={"1"}
+                    />
+                    <BillDetailForm />
 
                     <div className="form-inline">
                         <div className="form-group">
-                            <label className="form-control-static">Tìm mã đơn mua</label>
+                            <label className="form-control-static">Mã đơn</label>
                             <input
                                 type="text"
                                 className="form-control"
@@ -274,13 +307,15 @@ class PurchaseOrderTable extends Component {
                                     <tr key={index}>
                                         <td>{index + 1}</td>
                                         <td>{item.code}</td>
-                                        <td>{item.status ? statusConver[item.status] : ""}</td>
+                                        <td className={item.status ? statusConvert[item.status].className : ""}>
+                                            {item.status ? statusConvert[item.status].text : ""}
+                                        </td>
                                         <td>{this.getPaymentAmount(item.materials, item.discount)}</td>
                                         <td>{item.creator ? item.creator.name : ""}</td>
-                                        <td>{item.createAt ? formatDate(item.createAt) : ""}</td>
+                                        <td>{item.createdAt ? formatDate(item.createdAt) : ""}</td>
                                         <td style={{ textAlign: "center" }}>
-                                            <a className="text-green" onClick={() => this.handleShowDetailInfo(item)}>
-                                                <i className="material-icons">visibility</i>
+                                            <a onClick={() => this.handleShowDetail(item)}>
+                                                <i className="material-icons">view_list</i>
                                             </a>
                                             <a
                                                 onClick={() => this.handleEdit(item)}
@@ -290,6 +325,25 @@ class PurchaseOrderTable extends Component {
                                             >
                                                 <i className="material-icons">edit</i>
                                             </a>
+                                            {!item.bill ? (
+                                                <a
+                                                    onClick={() => this.handleAddBill(item)}
+                                                    className="add text-success"
+                                                    style={{ width: "5px" }}
+                                                    title="Yêu cầu nhập kho nguyên vật liệu"
+                                                >
+                                                    <i className="material-icons">add</i>
+                                                </a>
+                                            ) : (
+                                                <a
+                                                    onClick={() => this.handleShowBillDetail(item.bill)}
+                                                    className="add text-success"
+                                                    style={{ width: "5px" }}
+                                                    title="Yêu cầu nhập kho nguyên vật liệu"
+                                                >
+                                                    <i className="material-icons">remove_red_eye</i>
+                                                </a>
+                                            )}
                                         </td>
                                     </tr>
                                 ))}
@@ -321,6 +375,7 @@ const mapDispatchToProps = {
     getCustomers: CrmCustomerActions.getCustomers,
     getUser: UserActions.get,
     getAllGoodsByType: GoodActions.getAllGoodsByType,
+    getDetailBill: BillActions.getDetailBill,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(PurchaseOrderTable));

@@ -180,12 +180,12 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
 
     setDataMultiLineChart = () => {
         const { createKpiUnit } = this.props;
-        const { startDate, endDate }= this.state;
-        let organizationalUnitKpiSetsOfChildUnit, point = [],exportData;
+        const { startDate, endDate } = this.state;
+        let organizationalUnitKpiSetsOfChildUnit, point = [], exportData;
 
         if (createKpiUnit.organizationalUnitKpiSetsOfChildUnit) {
             organizationalUnitKpiSetsOfChildUnit = createKpiUnit.organizationalUnitKpiSetsOfChildUnit;
-            exportData =this.convertDataToExportData(organizationalUnitKpiSetsOfChildUnit,startDate,endDate);
+            exportData = this.convertDataToExportData(organizationalUnitKpiSetsOfChildUnit, startDate, endDate);
             this.handleExportData(exportData);
         }
 
@@ -200,7 +200,7 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
 
     removePreviosChart = () => {
         const chart = this.refs.chart;
-        
+
         if (chart) {
             while (chart.hasChildNodes()) {
                 chart.removeChild(chart.lastChild);
@@ -260,8 +260,7 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
 
     }
 
-    handleExportData =(exportData)=>
-    {
+    handleExportData = (exportData) => {
         const { onDataAvailable } = this.props;
         if (onDataAvailable) {
             onDataAvailable(exportData);
@@ -270,44 +269,43 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
 
     /*Chuyển đổi dữ liệu KPI nhân viên thành dữ liệu export to file excel */
     convertDataToExportData = (data, startDate, endDate) => {
-        let fileName = "Kết quả KPI các đơn vị từ " + (startDate?startDate:"")+" đến "+(endDate?endDate:"");
-        let unitKpiArray=[];
-        let convertedData ={},finalData;
-        if (data) {           
-           for(let i=0; i< data.length;i++){
-               if(data[i].length >1){
-                   for(let j = 1 ; j< data[i].length ; j++){
-                       data[i][j]["unitName"]=data[i][0].name;
-                       unitKpiArray.push(data[i][j]);
-                   }
-               }
-           }
+        let fileName = "Kết quả KPI các đơn vị từ " + (startDate ? startDate : "") + " đến " + (endDate ? endDate : "");
+        let unitKpiArray = [];
+        let convertedData = {}, finalData;
+        if (data) {
+            for (let i = 0; i < data.length; i++) {
+                if (data[i].length > 1) {
+                    for (let j = 1; j < data[i].length; j++) {
+                        data[i][j]["unitName"] = data[i][0].name;
+                        unitKpiArray.push(data[i][j]);
+                    }
+                }
+            }
         }
-        if (unitKpiArray.length>0) {           
+        if (unitKpiArray.length > 0) {
             unitKpiArray = unitKpiArray.map((x, index) => {
-               
-                let automaticPoint = (x.automaticPoint === null)?"Chưa đánh giá":parseInt(x.automaticPoint);
-                let employeePoint = (x.employeePoint === null)?"Chưa đánh giá":parseInt(x.employeePoint);
-                let approverPoint =(x.approvedPoint===null)?"Chưa đánh giá":parseInt(x.approvedPoint);           
-                let date =new Date(x.date);
-                let time = ( date.getMonth() +1 )+"-"+date.getFullYear();
+
+                let automaticPoint = (x.automaticPoint === null) ? "Chưa đánh giá" : parseInt(x.automaticPoint);
+                let employeePoint = (x.employeePoint === null) ? "Chưa đánh giá" : parseInt(x.employeePoint);
+                let approverPoint = (x.approvedPoint === null) ? "Chưa đánh giá" : parseInt(x.approvedPoint);
+                let date = new Date(x.date);
+                let time = (date.getMonth() + 1) + "-" + date.getFullYear();
                 let unitName = x.unitName;
                 return {
                     automaticPoint: automaticPoint,
                     employeePoint: employeePoint,
                     approverPoint: approverPoint,
-                    date : date,
-                    unitName :unitName  ,
-                    time:time              
+                    date: date,
+                    unitName: unitName,
+                    time: time
                 };
             })
         }
-        for(let i=0;i<unitKpiArray.length;i++){
+        for (let i = 0; i < unitKpiArray.length; i++) {
             let objectName = unitKpiArray[i].time;
             let checkDuplicate = (Object.keys(convertedData)).find(element => element === objectName);
-            if(!checkDuplicate)
-            {
-                convertedData[objectName]=[];
+            if (!checkDuplicate) {
+                convertedData[objectName] = [];
                 convertedData[objectName].push(unitKpiArray[i]);
             }
             else {
@@ -315,19 +313,19 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
             }
 
         }
-        finalData =Object.values(convertedData);        
+        finalData = Object.values(convertedData);
 
         let exportData = {
             fileName: fileName,
-            dataSheets: finalData.map((x,index) => {
+            dataSheets: finalData.map((x, index) => {
 
                 return {
-                    sheetName: (x[0].time)?x[0].time:("sheet "+index),
-                    sheetTitle : "Kết quả KPI các đơn vị "+ ((x[0].time)?x[0].time:"") ,
+                    sheetName: (x[0].time) ? x[0].time : ("sheet " + index),
+                    sheetTitle: "Kết quả KPI các đơn vị " + ((x[0].time) ? x[0].time : ""),
                     tables: [
                         {
                             columns: [
-                                { key: "unitName", value: "Tên đơn vị"},
+                                { key: "unitName", value: "Tên đơn vị" },
                                 { key: "date", value: "Thời gian" },
                                 { key: "automaticPoint", value: "Điểm KPI tự động" },
                                 { key: "employeePoint", value: "Điểm KPI tự đánh giá" },
@@ -338,10 +336,10 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
                     ]
                 }
             })
-                
+
         }
-        return exportData;        
-       
+        return exportData;
+
     }
 
     render() {
@@ -397,9 +395,9 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
 
                 <section className="box-body" style={{ textAlign: "right" }}>
                     <div className="btn-group">
-                        <button type="button" className={`btn btn-xs ${this.state.kindOfPoint === this.KIND_OF_POINT.AUTOMATIC ? 'btn-danger' : null}`} onClick={() => this.handleSelectKindOfPoint(this.KIND_OF_POINT.AUTOMATIC)}>Automatic Point</button>
-                        <button type="button" className={`btn btn-xs ${this.state.kindOfPoint === this.KIND_OF_POINT.EMPLOYEE ? 'btn-danger' : null}`} onClick={() => this.handleSelectKindOfPoint(this.KIND_OF_POINT.EMPLOYEE)}>Employee Point</button>
-                        <button type="button" className={`btn btn-xs ${this.state.kindOfPoint === this.KIND_OF_POINT.APPROVED ? 'btn-danger' : null}`} onClick={() => this.handleSelectKindOfPoint(this.KIND_OF_POINT.APPROVED)}>Approved Point</button>
+                        <button type="button" className={`btn btn-xs ${this.state.kindOfPoint === this.KIND_OF_POINT.AUTOMATIC ? 'btn-danger' : null}`} onClick={() => this.handleSelectKindOfPoint(this.KIND_OF_POINT.AUTOMATIC)}>{translate('kpi.evaluation.dashboard.auto_point')}</button>
+                        <button type="button" className={`btn btn-xs ${this.state.kindOfPoint === this.KIND_OF_POINT.EMPLOYEE ? 'btn-danger' : null}`} onClick={() => this.handleSelectKindOfPoint(this.KIND_OF_POINT.EMPLOYEE)}>{translate('kpi.evaluation.dashboard.employee_point')}</button>
+                        <button type="button" className={`btn btn-xs ${this.state.kindOfPoint === this.KIND_OF_POINT.APPROVED ? 'btn-danger' : null}`} onClick={() => this.handleSelectKindOfPoint(this.KIND_OF_POINT.APPROVED)}>{translate('kpi.evaluation.dashboard.approve_point')}</button>
                     </div>
 
                     <div ref="chart"></div>

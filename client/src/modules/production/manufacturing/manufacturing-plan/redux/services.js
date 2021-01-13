@@ -2,7 +2,8 @@ import { sendRequest } from "../../../../../helpers/requestHelper"
 
 export const manufacturingPlanServices = {
     getAllManufacturingPlans,
-    getAllApproversOfPlan
+    getAllApproversOfPlan,
+    createManufacturingPlan
 }
 
 function getAllManufacturingPlans(query) {
@@ -28,4 +29,16 @@ function getAllApproversOfPlan(currentRole) {
         true,
         'manufacturing.plan'
     )
+}
+
+function createManufacturingPlan(data) {
+    return sendRequest(
+        {
+            url: `${process.env.REACT_APP_SERVER}/manufacturing-plan`,
+            method: "POST",
+            data
+        },
+        true,
+        true,
+        "manufacturing.plan")
 }

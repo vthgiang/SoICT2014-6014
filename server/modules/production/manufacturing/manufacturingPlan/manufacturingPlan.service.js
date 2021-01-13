@@ -71,15 +71,14 @@ function filterPlansWithProgress(arrayPlans, progress) {
 }
 
 exports.createManufacturingPlan = async (data, portal) => {
+    console.log(data);
     let newManufacturingPlan = await ManufacturingPlan(connect(DB_CONNECTION, portal)).create({
         code: data.code,
-        manufacturingOrder: data.manufacturingOrder ? data.manufacturingOrder : null,
         salesOrders: data.salesOrders ? data.salesOrders : [],
         goods: data.goods.map(x => {
             return {
                 good: x.good,
                 quantity: x.quantity,
-                orderedQuantity: x.orderedQuantity ? x.orderedQuantity : null
             }
         }),
         approvers: data.approvers.map(x => {
@@ -92,18 +91,19 @@ exports.createManufacturingPlan = async (data, portal) => {
         startDate: data.startDate,
         endDate: data.endDate,
         description: data.description,
-        logs: [{
-            creator: data.creator,
-            title: data.title,
-            description: data.description
-        }],
-        manufacturingWorks: data.manufacturingWorks.map(x => {
-            return x
-        })
+        // manufacturingWorks: data.manufacturingWorks.map(x => {
+        //     return x
+        // })
+        manufacturingWorks: ["5ff9c583d39ee0300666355b"]
     });
 
-    let manufacturingPlan = await ManufacturingPlan(connect(DB_CONNECTION, portal)).findById(newManufacturingPlan._id);
-
+    let manufacturingPlan = await ManufacturingPlan(connect(DB_CONNECTION, portal))
+        .findById(newManufacturingPlan._id)
+        .populate([{
+            path: "creator"
+        }, {
+            path: "manufacturingCommands"
+        }]);
     return { manufacturingPlan }
 }
 

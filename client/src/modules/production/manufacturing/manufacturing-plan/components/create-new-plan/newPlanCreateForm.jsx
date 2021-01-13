@@ -12,8 +12,9 @@ import { manufacturingPlanActions } from "../../redux/actions";
 import { GoodActions } from "../../../../common-production/good-management/redux/actions";
 import { LotActions } from "../../../../warehouse/inventory-management/redux/actions";
 import { UserActions } from "../../../../../super-admin/user/redux/actions";
-import { compareLtDate, compareLteDate } from "../../../../../../helpers/formatDate";
+import { compareLtDate, compareLteDate, formatToTimeZoneDate } from "../../../../../../helpers/formatDate";
 import { workScheduleActions } from "../../../work-schedule/redux/actions";
+import { manufacturingCommand } from "../../../manufacturing-command/redux/reducers";
 
 class NewPlanCreateForm extends Component {
     constructor(props) {
@@ -354,7 +355,6 @@ class NewPlanCreateForm extends Component {
                 return false;
             }
             return true;
-        } else if (index == 3) {
         }
     };
 
@@ -384,6 +384,43 @@ class NewPlanCreateForm extends Component {
         });
     }
 
+    isFormValidated = () => {
+        const { manufacturingCommands } = this.state;
+        let result = true;
+        for (let i = 0; i < manufacturingCommands.length; i++) {
+            if (!manufacturingCommands[i].completed) {
+                result = false;
+            }
+        }
+        return result && manufacturingCommands.length;
+    }
+
+    handleArryWorkerSchedulesChange = (data) => {
+        console.log(data);
+        this.setState((state) => ({
+            ...state,
+            arrayWorkerSchedules: [...data]
+        }));
+    }
+
+    save = () => {
+        if (this.isFormValidated()) {
+            const data = {
+                code: this.state.code,
+                salesOrders: this.state.salesOrders,
+                startDate: formatToTimeZoneDate(this.state.startDate),
+                endDate: formatToTimeZoneDate(this.state.endDate),
+                description: this.state.description,
+                goods: this.state.goods,
+                approvers: this.state.approvers,
+                creator: localStorage.getItem('userId'),
+                manufacturingCommands: this.state.manufacturingCommands,
+                listWorkSchedulesOfWorks: this.state.listWorkSchedulesOfWorks,
+                arrayWorkerSchedules: this.state.arrayWorkerSchedules
+            }
+            this.props.createManufacturingPlan(data);
+        }
+    }
 
     render() {
         console.log(this.state);
@@ -401,10 +438,6 @@ class NewPlanCreateForm extends Component {
             addedAllGoods,
             manufacturingCommands,
         } = this.state;
-
-
-
-
         return (
             <React.Fragment>
                 <ButtonModal
@@ -420,8 +453,8 @@ class NewPlanCreateForm extends Component {
                     title={translate("manufacturing.plan.create_plan_title")}
                     msg_success={translate("manufacturing.plan.create_successfully")}
                     msg_faile={translate("manufacturing.plan.create_failed")}
-                    // func={this.save}
-                    // disableSubmit={!this.isFormValidated()}
+                    func={this.save}
+                    disableSubmit={!this.isFormValidated()}
                     size={100}
                     maxWidth={500}
                 >
@@ -486,6 +519,7 @@ class NewPlanCreateForm extends Component {
                                     onManufacturingCommandsChange={this.handleManufacturingCommandsChange}
                                     listWorkSchedulesOfWorks={this.getListWorkSchedulesOfWorks()}
                                     onListWorkSchedulesOfWorksChange={this.handleListWorkSchedulesOfWorksChange}
+                                    onArrayWorkerSchedulesChange={this.handleArryWorkerSchedulesChange}
                                 />
                             }
                         </div>
@@ -508,7 +542,8 @@ const mapDispatchToProps = {
     getInventoryByGoodIds: LotActions.getInventoryByGoodIds,
     getAllUserOfCompany: UserActions.getAllUserOfCompany,
     getGoodByManageWorkRole: GoodActions.getGoodByManageWorkRole,
-    getAllWorkSchedulesOfManufacturingWork: workScheduleActions.getAllWorkSchedulesOfManufacturingWork
+    getAllWorkSchedulesOfManufacturingWork: workScheduleActions.getAllWorkSchedulesOfManufacturingWork,
+    createManufacturingPlan: manufacturingPlanActions.createManufacturingPlan,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(NewPlanCreateForm));
