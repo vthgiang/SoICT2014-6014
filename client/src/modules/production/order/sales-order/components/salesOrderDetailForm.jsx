@@ -232,6 +232,7 @@ class SalesOrderDetailForm extends Component {
             goods,
             discounts,
             priority,
+            quote,
         } = this.props.salesOrderDetail;
 
         const { discountsOfSalesOrderDetail, discountOfGoodDetail, slasOfGoodDetail, currentManufacturingWorksOfGood } = this.state;
@@ -331,6 +332,12 @@ class SalesOrderDetailForm extends Component {
                                     <div style={{ fontWeight: 600 }}>Độ ưu tiên &ensp;</div>
                                     <div style={{ color: "#888", fontSize: "13px" }}>{priority ? priorityConvert[priority] : "Trung bình"}</div>
                                 </div>
+                                {quote && (
+                                    <div className="shopping-quote-info-element">
+                                        <div style={{ fontWeight: 600 }}>Được tạo từ báo giá: &ensp;</div>
+                                        <div style={{ color: "#671303", fontSize: "14px" }}>{quote.code}</div>
+                                    </div>
+                                )}
                             </div>
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12 shopping-products">
                                 <div className="shopping-products-title">Các sản phẩm</div>

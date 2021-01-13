@@ -163,6 +163,9 @@ exports.getAllQuotes = async (query, portal) => {
             path: 'goods.discounts.discountOnGoods.good', select: 'code name baseUnit'
         }, {
             path: 'discounts.bonusGoods.good', select: 'code name baseUnit'
+        },
+        {
+            path: 'salesOrder', select: 'code createdAt'
         }]);
         return { allQuotes }
     } else {
@@ -181,6 +184,8 @@ exports.getAllQuotes = async (query, portal) => {
                 path: 'goods.discounts.discountOnGoods.good', select: 'code name baseUnit'
             }, {
                 path: 'discounts.bonusGoods.good', select: 'code name baseUnit'
+            },{
+                path: 'salesOrder', select: 'code createdAt'
             }]
             })
         return { allQuotes }    
@@ -267,7 +272,9 @@ exports.editQuote = async (userId, id, data, portal) => {
         },{
             path: 'goods.discounts.discountOnGoods.good', select: 'code name baseUnit'
         }, {
-        path: 'discounts.bonusGoods.good', select: 'code name baseUnit'
+            path: 'discounts.bonusGoods.good', select: 'code name baseUnit'
+        },{
+            path: 'salesOrder', select: 'code createdAt'
         }]);
     
     console.log("quoteUpdated", quoteUpdated);
