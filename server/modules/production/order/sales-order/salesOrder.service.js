@@ -9,7 +9,7 @@ const {
 const PaymentService = require('../payment/payment.service');
 const CustomerService = require('../../../crm/customer/customer.service');
 
-exports.createNewSalesOrder = async (userId, companyId,  data, portal) => {
+exports.createNewSalesOrder = async (userId, companyId, data, portal) => {
     let newSalesOrder = await SalesOrder(connect(DB_CONNECTION, portal)).create({
         code: data.code,
         status: data.status ?  data.status : 1, //Nếu k có thì mặc định bằng 1 (chờ phê duyệt)
@@ -109,6 +109,7 @@ exports.createNewSalesOrder = async (userId, companyId,  data, portal) => {
         shippingFee: data.shippingFee,
         deliveryTime: data.deliveryTime,
         coin: data.coin,
+        allCoin: data.allCoin,
         totalTax: data.totalTax,
         paymentAmount: data.paymentAmount,
         note: data.note,
@@ -126,7 +127,7 @@ exports.createNewSalesOrder = async (userId, companyId,  data, portal) => {
 
     //Trừ xu khách hàng nếu sử dụng
     if (newSalesOrder.coin) {
-        await CustomerService.editCustomerPoint(portal, companyId, newSalesOrder.customer, {point: 0}, userId)
+        await CustomerService.editCustomerPoint(portal, companyId, newSalesOrder.customer, { point: 0 }, userId)
     }
 
     let salesOrder = await SalesOrder(connect(DB_CONNECTION, portal)).findById({ _id: newSalesOrder._id }).populate([{
