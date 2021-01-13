@@ -93,7 +93,14 @@ exports.getDetailLot = async (id, portal) => {
             { path: 'good' },
             { path: 'stocks.binLocations.binLocation', select: 'id path' },
             { path: 'stocks.stock' },
-            { path: 'lotLogs.bill', select: 'id code type' },
+            { path: 'lotLogs.bill', 
+                populate: [
+                    { path: 'supplier' }, 
+                    { path: 'customer'}, 
+                    { path: 'manufacturingMill'},
+                    { path: 'toStock'}
+                ]
+            },
             { path: 'lotLogs.binLocations.binLocation' },
             { path: 'lotLogs.stock', select: 'id name' }
         ])
@@ -573,6 +580,8 @@ exports.getInventories = async (query, portal) => {
             let inventory = 0;
             let goodIssue = 0;
             let goodReceipt = 0;
+            let goodIssued = 0;
+            let goodReceipted = 0;
             let goodInventory = {};
             let options = { good: goods[i]._id };
             let optionBill = {};
@@ -582,6 +591,51 @@ exports.getInventories = async (query, portal) => {
             }
             else {
                 options.stocks = { $elemMatch: { stock: arrayStock } };
+            }
+
+            if (query.startDate && query.endDate) {
+                let date1 = query.startDate.split("-");
+                let date2 = query.endDate.split("-");
+                let start = new Date(date1[1], date1[0] - 1, 1);
+                let end = new Date(date2[1], date2[0], 1);
+
+                optionBill = {
+                    ...optionBill,
+                    createdAt: {
+                        $gt: start,
+                        $lte: end
+                    }
+                }
+            } else {
+                if (query.startDate) {
+                    let date1 = query.startDate.split("-");
+                    let start = new Date(date1[1], date1[0] - 1, 1);
+
+                    optionBill = {
+                        ...optionBill,
+                        createdAt: {
+                            $gt: start
+                        }
+                    }
+                }
+                if (query.endDate) {
+                    let date2 = query.endDate.split("-");
+                    let end = new Date(date2[1], date2[0], 1);
+
+                    optionBill = {
+                        ...optionBill,
+                        createdAt: {
+                            $lte: end
+                        }
+                    },
+
+                    options = {
+                        ...options,
+                        createdAt: {
+                            $lte: end
+                        }
+                    }
+                }
             }
 
             //Lấy số lượng tồn kho
@@ -631,10 +685,40 @@ exports.getInventories = async (query, portal) => {
                 }
             }
 
+            //Lấy số lượng đã xuất kho
+            optionBill.goods = { $elemMatch: { good: goods[i]._id } };
+            optionBill.status = '2';
+            optionBill.group = '2';
+            const goodIssuedBills = await Bill(connect(DB_CONNECTION, portal)).find(optionBill);
+            if (goodIssuedBills.length > 0) {
+                for (let k = 0; k < goodIssuedBills.length; k++) {
+                    for (let x = 0; x < goodIssuedBills[k].goods.length; x++) {
+                        if (goodIssuedBills[k].goods[x].good.toString() === goods[i]._id.toString()) {
+                            goodIssued += Number(goodIssuedBills[k].goods[x].quantity)
+                        }
+                    }
+                }
+            }
+
+            //Lấy số lượng đã nhập kho
+            optionBill.group = '1';
+            const goodReceiptedBills = await Bill(connect(DB_CONNECTION, portal)).find(optionBill);
+            if (goodReceiptedBills.length > 0) {
+                for (let k = 0; k < goodReceiptedBills.length; k++) {
+                    for (let x = 0; x < goodReceiptedBills[k].goods.length; x++) {
+                        if (goodReceiptedBills[k].goods[x].good.toString() === goods[i]._id.toString()) {
+                            goodReceipted += Number(goodReceiptedBills[k].goods[x].quantity)
+                        }
+                    }
+                }
+            }
+
             goodInventory.name = goods[i].name;
             goodInventory.inventory = inventory;
             goodInventory.goodIssue = goodIssue;
             goodInventory.goodReceipt = goodReceipt;
+            goodInventory.goodIssued = goodIssued;
+            goodInventory.goodReceipted = goodReceipted;
             data = [...data, goodInventory];
         }
     }

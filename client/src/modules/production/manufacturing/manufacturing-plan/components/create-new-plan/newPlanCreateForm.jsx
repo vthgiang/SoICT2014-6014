@@ -12,7 +12,9 @@ import { manufacturingPlanActions } from "../../redux/actions";
 import { GoodActions } from "../../../../common-production/good-management/redux/actions";
 import { LotActions } from "../../../../warehouse/inventory-management/redux/actions";
 import { UserActions } from "../../../../../super-admin/user/redux/actions";
-import { compareLtDate, compareLteDate } from "../../../../../../helpers/formatDate";
+import { compareLtDate, compareLteDate, formatToTimeZoneDate } from "../../../../../../helpers/formatDate";
+import { workScheduleActions } from "../../../work-schedule/redux/actions";
+import { manufacturingCommand } from "../../../manufacturing-command/redux/reducers";
 
 class NewPlanCreateForm extends Component {
     constructor(props) {
@@ -49,6 +51,7 @@ class NewPlanCreateForm extends Component {
             listGoodsSalesOrders: [],
             // Mảng chưa good, số lượng good chưa được nhập vào lệnh sản xuất
             listRemainingGoods: [],
+            // Danh sách lịch của xưởng được book trong kế hoạch
         };
     }
 
@@ -86,16 +89,44 @@ class NewPlanCreateForm extends Component {
         });
     };
 
-    handleStartDateChange = (value) => {
-        this.setState({
+    handleStartDateChange = async (value) => {
+        await this.setState({
             startDate: value,
         });
+        if (this.state.startDate && this.state.endDate) {
+            const { manufacturingMill } = this.props;
+            const { startDate, endDate } = this.state;
+            const { listMills } = manufacturingMill;
+            if (listMills) {
+                const listMillIds = listMills.map(x => x._id);
+                const data = {
+                    startDate: startDate,
+                    endDate: endDate,
+                    manufacturingMills: listMillIds
+                }
+                this.props.getAllWorkSchedulesOfManufacturingWork(data);
+            }
+        }
     };
 
-    handleEndDateChange = (value) => {
-        this.setState({
+    handleEndDateChange = async (value) => {
+        await this.setState({
             endDate: value,
         });
+        if (this.state.startDate && this.state.endDate) {
+            const { manufacturingMill } = this.props;
+            const { startDate, endDate } = this.state;
+            const { listMills } = manufacturingMill;
+            if (listMills) {
+                const listMillIds = listMills.map(x => x._id);
+                const data = {
+                    startDate: startDate,
+                    endDate: endDate,
+                    manufacturingMills: listMillIds
+                }
+                this.props.getAllWorkSchedulesOfManufacturingWork(data);
+            }
+        }
     };
 
     handleApproversChange = (value) => {
@@ -324,9 +355,72 @@ class NewPlanCreateForm extends Component {
                 return false;
             }
             return true;
-        } else if (index == 3) {
         }
     };
+
+    handleManufacturingCommandsChange = (data) => {
+        this.setState((state) => ({
+            ...state,
+            manufacturingCommands: [...data]
+        }));
+    }
+
+    getListWorkSchedulesOfWorks = () => {
+        // Lấy danh sách lịch của xưởng truyền xuống
+        const { manufacturingMill, workSchedule } = this.props;
+        const { listMills } = manufacturingMill;
+        const listMillIds = listMills.map(x => x._id);
+        var listSchedulesMap = new Map();
+        listMillIds.map(x => {
+            let workSchedulesOfMill = workSchedule.listWorkSchedulesOfWorks.filter(y => y.manufacturingMill === x);
+            listSchedulesMap.set(x, workSchedulesOfMill);
+        });
+        return listSchedulesMap;
+    }
+
+    handleListWorkSchedulesOfWorksChange = (data) => {
+        this.setState({
+            listWorkSchedulesOfWorks: data
+        });
+    }
+
+    isFormValidated = () => {
+        const { manufacturingCommands } = this.state;
+        let result = true;
+        for (let i = 0; i < manufacturingCommands.length; i++) {
+            if (!manufacturingCommands[i].completed) {
+                result = false;
+            }
+        }
+        return result && manufacturingCommands.length;
+    }
+
+    handleArryWorkerSchedulesChange = (data) => {
+        console.log(data);
+        this.setState((state) => ({
+            ...state,
+            arrayWorkerSchedules: [...data]
+        }));
+    }
+
+    save = () => {
+        if (this.isFormValidated()) {
+            const data = {
+                code: this.state.code,
+                salesOrders: this.state.salesOrders,
+                startDate: formatToTimeZoneDate(this.state.startDate),
+                endDate: formatToTimeZoneDate(this.state.endDate),
+                description: this.state.description,
+                goods: this.state.goods,
+                approvers: this.state.approvers,
+                creator: localStorage.getItem('userId'),
+                manufacturingCommands: this.state.manufacturingCommands,
+                listWorkSchedulesOfWorks: this.state.listWorkSchedulesOfWorks,
+                arrayWorkerSchedules: this.state.arrayWorkerSchedules
+            }
+            this.props.createManufacturingPlan(data);
+        }
+    }
 
     render() {
         console.log(this.state);
@@ -359,8 +453,8 @@ class NewPlanCreateForm extends Component {
                     title={translate("manufacturing.plan.create_plan_title")}
                     msg_success={translate("manufacturing.plan.create_successfully")}
                     msg_faile={translate("manufacturing.plan.create_failed")}
-                    // func={this.save}
-                    // disableSubmit={!this.isFormValidated()}
+                    func={this.save}
+                    disableSubmit={!this.isFormValidated()}
                     size={100}
                     maxWidth={500}
                 >
@@ -422,6 +516,10 @@ class NewPlanCreateForm extends Component {
                                     manufacturingCommands={manufacturingCommands}
                                     startDate={startDate}
                                     endDate={endDate}
+                                    onManufacturingCommandsChange={this.handleManufacturingCommandsChange}
+                                    listWorkSchedulesOfWorks={this.getListWorkSchedulesOfWorks()}
+                                    onListWorkSchedulesOfWorksChange={this.handleListWorkSchedulesOfWorksChange}
+                                    onArrayWorkerSchedulesChange={this.handleArryWorkerSchedulesChange}
                                 />
                             }
                         </div>
@@ -434,8 +532,8 @@ class NewPlanCreateForm extends Component {
 }
 
 function mapStateToProps(state) {
-    const { salesOrders, manufacturingPlan, lots, goods } = state;
-    return { salesOrders, manufacturingPlan, lots, goods };
+    const { salesOrders, manufacturingPlan, lots, goods, manufacturingMill, workSchedule } = state;
+    return { salesOrders, manufacturingPlan, lots, goods, manufacturingMill, workSchedule };
 }
 
 const mapDispatchToProps = {
@@ -444,6 +542,8 @@ const mapDispatchToProps = {
     getInventoryByGoodIds: LotActions.getInventoryByGoodIds,
     getAllUserOfCompany: UserActions.getAllUserOfCompany,
     getGoodByManageWorkRole: GoodActions.getGoodByManageWorkRole,
+    getAllWorkSchedulesOfManufacturingWork: workScheduleActions.getAllWorkSchedulesOfManufacturingWork,
+    createManufacturingPlan: manufacturingPlanActions.createManufacturingPlan,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(NewPlanCreateForm));

@@ -117,7 +117,6 @@ exports.editManufacturingWorks = async (req, res) => {
 
 exports.getUserByWorksManageRole = async (req, res) => {
     try {
-        console.log(" vao vao vao")
         let { currentRole } = req.query;
         let employees = await ManufacturingWorksService.getUserByWorksManageRole(currentRole, req.portal);
         await Log.info(req.user.email, "GET_USER_BY_WORKS_MANAGE_ROLE", req.portal);

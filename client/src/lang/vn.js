@@ -4983,10 +4983,10 @@ export default {
                 progress_1: "Đúng tiến độ",
                 progress_2: "Chậm tiến độ",
                 progress_3: "Quá hạn",
-                schedule_info: "Xưởng và công nhân",
+                schedule_info: "Phân lịch thực hiện",
                 general_info: "Thông tin chung",
                 material_info: "Nguyên vật liệu",
-                command_info: "Lệnh sản xuất",
+                command_info: "Tạo lệnh sản xuất",
                 turn_info: "Ca sản xuất",
                 worker_info: "Công nhân",
                 create_plan: "Tạo kế hoạch",
@@ -5027,7 +5027,7 @@ export default {
                 add_to_plan: "Thêm tất cả",
                 added_to_plan: "Đã thêm tất cả",
                 manufacturing_good_info: "Thông tin các sản phẩm cần sản xuất",
-                productivity_mill: "Thông tin năng xuất của phân xưởng sản xuất",
+                productivity_mill: "Thông tin năng suất của phân xưởng sản xuất",
                 divide_command: "Phân chia các lệnh sản xuất",
                 quantity_not_commmanded: "Số lượng chưa tạo lệnh",
                 mill: "Xưởng sản xuất",
@@ -5070,7 +5070,9 @@ export default {
                 choose_date_error: "Ngày bắt đầu phải trước hoặc bằng ngày kết thúc",
                 booking_mill_error: "Các ca làm việc phải liên tục!",
                 turn: "Ca ",
-                please_booking_mill: "Vui lòng chọn phân lệnh sản xuất vào ca làm việc!"
+                please_booking_mill: "Vui lòng chọn phân lệnh sản xuất vào ca làm việc!",
+                command_complete: "Đã phân lịch thực hiện",
+                choose_responisbles: "Vui lòng chọn người thực hiện"
 
 
 

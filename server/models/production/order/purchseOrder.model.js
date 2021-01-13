@@ -18,7 +18,7 @@ const PurchaseOrderShema = new Schema({
         required: true
     },
     materials: [{ // Danh sách nguyên vật liệu
-        good: { // Nguyên vật liệu
+        material: { // Nguyên vật liệu
             type: Schema.Types.ObjectId,
             ref: "Good"
         },
@@ -44,14 +44,13 @@ const PurchaseOrderShema = new Schema({
         }, 
         approveAt: {
             type: Date,
-            default: new Date()
         },
         status: {
             type: Boolean,
             default: false
         }
     }],
-    customer: {//Đối tác
+    supplier: {//Đối tác, tạm thời chưa có quản lý đối tác kinh doanh nên lấy Customer
         type: Schema.Types.ObjectId,
         ref: 'Customer',
     },
@@ -64,7 +63,11 @@ const PurchaseOrderShema = new Schema({
     purchasingRequest: {
         type: Schema.Types.ObjectId,
         ref: 'PurchasingRequest',
-    }
+    },
+    bill: {//Phiếu đề nghị nhập kho nguyên vật liệu
+        type: Schema.Types.ObjectId,
+        ref: 'Bill',
+    },
 }, {
     timestamps: true,
 })

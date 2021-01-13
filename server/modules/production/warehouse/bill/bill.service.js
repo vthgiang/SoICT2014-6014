@@ -1,4 +1,4 @@
-const { Bill, Lot, Stock, SalesOrder } = require(`../../../../models`);
+const { Bill, Lot, Stock, SalesOrder, PurchaseOrder } = require(`../../../../models`);
 const { connect } = require(`../../../../helpers/dbHelper`);
 
 exports.getBillsByType = async (query, userId, portal) => {
@@ -336,10 +336,18 @@ exports.createBill = async (userId, data, portal) => {
 
     const bill = await Bill(connect(DB_CONNECTION, portal)).create(query);
 
+    //Thêm vào đơn bán hàng trường bill xuất bán sản phẩm
     if (data.salesOrderId) {
         let salesOrder = await SalesOrder(connect(DB_CONNECTION, portal)).findById({ _id: data.salesOrderId });
         salesOrder.bill = bill._id; //Gắn bill vào đơn hàng
         salesOrder.save();
+    }
+
+    //Thêm vào đơn mua nguyên vật liệu trường bill nhập kho nguyên vật liệu
+    if (data.purchaseOrderId) {
+        let purchaseOrder = await PurchaseOrder(connect(DB_CONNECTION, portal)).findById({ _id: data.purchaseOrderId });
+        purchaseOrder.bill = bill._id; //Gắn bill vào đơn hàng
+        purchaseOrder.save();
     }
 
     return await Bill(connect(DB_CONNECTION, portal))
@@ -786,6 +794,41 @@ exports.editBill = async (id, userId, data, portal) => {
                                 }
                             }
                             await lot.save();
+                        }
+                    }
+                }
+            }
+        }
+    }
+    //Nếu nhập kho thành phẩm từ xưởng sản xuất
+    //Chuyển trạng thái đơn hàng từ đang thực hiện sang hoàn Thành
+    //Thay đổi trạng thái lô sản xuất thành đã nhập kho
+    if(data.type === '2') {
+        if (data.oldStatus === '5' && data.status === '2') {
+            if (data.goods && data.goods.length > 0) {
+                for (let i = 0; i < data.goods.length; i++) {
+                    if (data.goods[i].lots && data.goods[i].lots.length > 0) {
+                        for (let j = 0; j < data.goods[i].lots.length; j++) {
+                            let lotId = data.goods[i].lots[j].lot._id;
+                            let lot = await Lot(connect(DB_CONNECTION, portal)).findById(lotId);
+                            lot.status = '3';
+                            await lot.save();
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    //Nhập kho: Chuyển trạng thái từ đã hoàn thành sang đã Hủy
+    if(data.type === '1') {
+        if (data.oldStatus === '2' && data.status === '4') {
+            if (data.goods && data.goods.length > 0) {
+                for (let i = 0; i < data.goods.length; i++) {
+                    if (data.goods[i].lots && data.goods[i].lots.length > 0) {
+                        for (let j = 0; j < data.goods[i].lots.length; j++) {
+                            let lotId = data.goods[i].lots[j].lot._id;
+                            await Lot(connect(DB_CONNECTION, portal)).deleteOne({ _id: lotId });
                         }
                     }
                 }
