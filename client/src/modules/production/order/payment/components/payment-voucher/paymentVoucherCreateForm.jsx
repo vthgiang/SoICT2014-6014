@@ -2,30 +2,30 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 import { PaymentActions } from "../../redux/actions";
-import { SalesOrderActions } from "../../../sales-order/redux/actions";
+import { PurchaseOrderActions } from "../../../purchase-order/redux/actions";
 import ValidationHelper from "../../../../../../helpers/validationHelper";
 import { formatCurrency } from "../../../../../../helpers/formatCurrency";
 import { DialogModal, ButtonModal, ErrorLabel, SelectBox } from "../../../../../../common-components";
 import { generateCode } from "../../../../../../helpers/generateCode";
 
-class ReceiptVoucherCreateForm extends Component {
+class PaymentVoucherCreateForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
             customer: "",
-            salesOrders: [],
-            salesOrder: "",
+            purchaseOrders: [],
+            purchaseOrder: "",
             money: "",
             paid: "",
             paymentAmount: 0,
             code: "", //Mã sales order
             totalMoney: "",
             indexEditting: -1,
-            receiptVoucherCode: "",
+            PaymentVoucherCode: "",
         };
     }
 
-    getCustomerOptions = () => {
+    getSupplierOptions = () => {
         let options = [];
 
         const { list } = this.props.customers;
@@ -33,7 +33,7 @@ class ReceiptVoucherCreateForm extends Component {
             options = [
                 {
                     value: "title", //Title không được chọn
-                    text: "---Chọn khách hàng---",
+                    text: "---Chọn nhà cung cấp---",
                 },
             ];
 
@@ -50,33 +50,33 @@ class ReceiptVoucherCreateForm extends Component {
         return options;
     };
 
-    getSalesOrderOptions = () => {
+    getPurchaseOrdersOptions = () => {
         let options = [];
 
-        const { salesOrdersForPayment } = this.props.salesOrders;
-        if (salesOrdersForPayment && salesOrdersForPayment.length) {
+        const { purchaseOrdersForPayment } = this.props.purchaseOrders;
+        if (purchaseOrdersForPayment && purchaseOrdersForPayment.length) {
             options = [
                 {
                     value: "title", //Title không được chọn
-                    text: "---Chọn đơn hàng---",
+                    text: "---Chọn đơn nhập---",
                 },
             ];
 
-            let mapOptions = salesOrdersForPayment.map((item) => {
+            let mapOptions = purchaseOrdersForPayment.map((item) => {
                 return {
                     value: item._id,
-                    text: item.code + " - dư nợ: " + formatCurrency(item.paymentAmount - item.paid),
+                    text: item.code + " - còn nợ: " + formatCurrency(item.paymentAmount - item.paid),
                 };
             });
 
             options = options.concat(mapOptions);
         }
 
-        if (salesOrdersForPayment && !salesOrdersForPayment.length) {
+        if (purchaseOrdersForPayment && !purchaseOrdersForPayment.length) {
             options = [
                 {
                     value: "title", //Title không được chọn
-                    text: "Khách hàng không còn dư nợ",
+                    text: "Không dư nợ nhà cung cấp này",
                 },
             ];
         }
@@ -92,7 +92,7 @@ class ReceiptVoucherCreateForm extends Component {
             options = [
                 {
                     value: "title", //Title không được chọn
-                    text: "---Chọn tài khoản ngân hàng---",
+                    text: "---Chọn tài khoản thanh toán---",
                 },
             ];
 
@@ -109,7 +109,7 @@ class ReceiptVoucherCreateForm extends Component {
         return options;
     };
 
-    validateCustomer = (value, willUpdateState = true) => {
+    validateSupplier = (value, willUpdateState = true) => {
         let msg = undefined;
         if (!value || value === "" || value === "title") {
             msg = "Giá trị không được bỏ trống!";
@@ -117,28 +117,28 @@ class ReceiptVoucherCreateForm extends Component {
 
         if (willUpdateState) {
             this.setState({
-                customerError: msg,
+                supplierError: msg,
             });
         }
 
         return msg;
     };
 
-    handleCustomerChange = async (value) => {
+    handleSupplierChange = async (value) => {
         this.setState({
-            customer: value[0],
+            supplier: value[0],
             money: "",
-            salesOrder: "title",
-            salesOrders: [],
+            purchaseOrder: "title",
+            purchaseOrders: [],
             paymentType: "title",
             bankAccountReceived: "title",
         });
 
-        this.validateCustomer(value[0]);
+        this.validateSupplier(value[0]);
 
         //Lấy các đơn hàng chưa thanh toán của khách hàng
         if (value[0] !== "title") {
-            await this.props.getSalesOrdersForPayment(value[0], true);
+            await this.props.getPurchaseOrdersForPayment(value[0], true);
         }
     };
 
@@ -167,6 +167,7 @@ class ReceiptVoucherCreateForm extends Component {
             this.setState({
                 paymentType: value[0],
                 bankAccountReceived: "",
+                bankAccountPaid: "",
             });
         }
         this.validatePaymentType(value[0], true);
@@ -194,7 +195,30 @@ class ReceiptVoucherCreateForm extends Component {
         this.validateBankAccountReceived(value[0], true);
     };
 
-    validateSalesOrder = (value, willUpdateState = true) => {
+    validateBankAccountPartner = (value, willUpdateState = true) => {
+        let msg = undefined;
+        if (!value || value === "") {
+            msg = "Giá trị không được bỏ trống!";
+        }
+
+        if (willUpdateState) {
+            this.setState({
+                bbankAccountPartnerError: msg,
+            });
+        }
+
+        return msg;
+    };
+
+    handleBankAccountPartnerChange = (e) => {
+        let { value } = e.target;
+        this.setState({
+            bankAccountPartner: value,
+        });
+        this.validateBankAccountPartner(value, true);
+    };
+
+    validatePurchaseOrder = (value, willUpdateState = true) => {
         let msg = undefined;
         if (!value || value === "" || value === "title") {
             msg = "Giá trị không được bỏ trống!";
@@ -202,31 +226,31 @@ class ReceiptVoucherCreateForm extends Component {
 
         if (willUpdateState) {
             this.setState({
-                salesOrderError: msg,
+                purchaseOrderError: msg,
             });
         }
 
         return msg;
     };
 
-    getMoneyForPayment = (salesOrderId) => {
-        const { salesOrdersForPayment } = this.props.salesOrders;
-        let salesOrderInfo = salesOrdersForPayment.find((element) => element._id === salesOrderId);
+    getMoneyForPayment = (purchaseOrderId) => {
+        const { purchaseOrdersForPayment } = this.props.purchaseOrders;
+        let purchaseOrderInfo = purchaseOrdersForPayment.find((element) => element._id === purchaseOrderId);
 
-        const { totalMoney, salesOrders, indexEditting } = this.state;
+        const { totalMoney, purchaseOrders, indexEditting } = this.state;
         //Tổng số tiền đã thêm vào đơn
 
         let moneyAdded = 0;
-        for (let index = 0; index < salesOrders.length; index++) {
+        for (let index = 0; index < purchaseOrders.length; index++) {
             if (index !== parseInt(indexEditting)) {
-                moneyAdded += salesOrders[index].money;
+                moneyAdded += purchaseOrders[index].money;
             }
         }
 
         let money = totalMoney - moneyAdded;
 
-        if (parseInt(money) > parseInt(salesOrderInfo.paymentAmount - salesOrderInfo.paid)) {
-            money = salesOrderInfo.paymentAmount - salesOrderInfo.paid;
+        if (parseInt(money) > parseInt(purchaseOrderInfo.paymentAmount - purchaseOrderInfo.paid)) {
+            money = purchaseOrderInfo.paymentAmount - purchaseOrderInfo.paid;
         }
 
         return money;
@@ -234,35 +258,34 @@ class ReceiptVoucherCreateForm extends Component {
 
     //tổng tiền thanh toán phải bằng tổng thanh toán dưới bảng
     validateCompareTotalMoney = () => {
-        const { totalMoney, salesOrders } = this.state;
-
+        const { totalMoney, purchaseOrders } = this.state;
         let moneyAdded = 0;
-        for (let index = 0; index < salesOrders.length; index++) {
-            moneyAdded += salesOrders[index].money;
+        for (let index = 0; index < purchaseOrders.length; index++) {
+            moneyAdded += purchaseOrders[index].money;
         }
 
         return parseInt(moneyAdded) === parseInt(totalMoney);
     };
 
-    handleSalesOrderChange = (value) => {
+    handlePurchaseOrderChange = (value) => {
         if (value[0] !== "title") {
-            const { salesOrdersForPayment } = this.props.salesOrders;
-            let salesOrderInfo = salesOrdersForPayment.find((element) => element._id === value[0]);
+            const { purchaseOrdersForPayment } = this.props.purchaseOrders;
+            let purchaseOrderInfo = purchaseOrdersForPayment.find((element) => element._id === value[0]);
             let money = this.getMoneyForPayment(value[0]);
             this.setState({
                 //Lưu thông tin tạm thời của sales order vào state
-                salesOrder: value[0],
-                code: salesOrderInfo.code,
-                paymentAmount: salesOrderInfo.paymentAmount,
-                paid: salesOrderInfo.paid,
+                purchaseOrder: value[0],
+                code: purchaseOrderInfo.code,
+                paymentAmount: purchaseOrderInfo.paymentAmount,
+                paid: purchaseOrderInfo.paid,
                 money,
             });
         } else {
             this.setState({
-                salesOrder: value[0],
+                purchaseOrder: value[0],
             });
         }
-        this.validateSalesOrder(value[0], true);
+        this.validatePurchaseOrder(value[0], true);
     };
 
     validateMoney = (value, willUpdateState = true) => {
@@ -313,39 +336,39 @@ class ReceiptVoucherCreateForm extends Component {
         let { value } = e.target;
         this.setState({
             totalMoney: value,
-            salesOrder: "title",
+            purchaseOrder: "title",
             money: 0,
         });
         this.validateTotalMoney(value, true);
     };
 
-    isSubmitPaymentForSalesOrderValidate = () => {
-        let { salesOrder, money } = this.state;
-        if (this.validateSalesOrder(salesOrder, false) || this.validateMoney(money, false)) {
+    isSubmitPaymentForPurchaseOrderValidate = () => {
+        let { purchaseOrder, money } = this.state;
+        if (this.validatePurchaseOrder(purchaseOrder, false) || this.validateMoney(money, false)) {
             return false;
         }
 
         return true;
     };
 
-    handleSubmitPaymentForSalesOrder = () => {
-        if (this.isSubmitPaymentForSalesOrderValidate) {
-            let { salesOrder, money, salesOrders, code, paymentAmount, paid } = this.state;
+    handleSubmitPaymentForPurchaseOrder = () => {
+        if (this.isSubmitPaymentForPurchaseOrderValidate) {
+            let { purchaseOrder, money, purchaseOrders, code, paymentAmount, paid } = this.state;
 
             let data = {
-                salesOrder,
+                purchaseOrder,
                 money,
                 code,
                 paymentAmount,
                 paid,
             };
 
-            salesOrders.push(data);
+            purchaseOrders.push(data);
             this.setState((state) => {
                 return {
+                    purchaseOrders,
                     ...state,
-                    salesOrders,
-                    salesOrder: "title",
+                    purchaseOrder: "title",
                     money: "",
                     code: "",
                     paymentAmount: 0,
@@ -355,122 +378,129 @@ class ReceiptVoucherCreateForm extends Component {
         }
     };
 
-    handlePaymentForSalesOrderEdit = async (item, index) => {
+    handlePaymentForPurchaseOrderEdit = async (item, index) => {
         await this.setState({
-            editSalesOrder: true,
+            editPurchaseOrder: true,
             indexEditting: index,
-            salesOrder: item.salesOrder,
+            purchaseOrder: item.purchaseOrder,
             code: item.code,
             paymentAmount: item.paymentAmount,
             paid: item.paid,
         });
 
-        let money = await this.getMoneyForPayment(item.salesOrder);
+        let money = await this.getMoneyForPayment(item.purchaseOrder);
         await this.setState({
             money,
         });
     };
 
-    handleSaveEditPaymentForSalesOrder = () => {
-        if (this.isSubmitPaymentForSalesOrderValidate) {
-            let { salesOrder, money, salesOrders, code, paymentAmount, paid, indexEditting, editSalesOrder } = this.state;
+    handleSaveEditPaymentForPurchaseOrder = () => {
+        if (this.isSubmitPaymentForPurchaseOrderValidate) {
+            let { purchaseOrder, money, purchaseOrders, code, paymentAmount, paid, indexEditting, editPurchaseOrder } = this.state;
 
             let data = {
-                salesOrder,
+                purchaseOrder,
                 money,
                 code,
                 paymentAmount,
                 paid,
             };
 
-            salesOrders[indexEditting] = data;
+            purchaseOrders[indexEditting] = data;
 
             this.setState((state) => {
                 return {
                     ...state,
-                    salesOrder: "title",
+                    purchaseOrder: "title",
+                    purchaseOrders,
                     money: "",
                     code: "",
                     paymentAmount: 0,
                     paid: "",
                     indexEditting: -1,
-                    editSalesOrder: false,
+                    editPurchaseOrder: false,
                 };
             });
         }
     };
 
-    handleCancelEditPaymentForSalesOrder = () => {
+    handleCancelEditPaymentForPurchaseOrder = () => {
         this.setState((state) => {
             return {
                 ...state,
-                salesOrder: "title",
+                purchaseOrder: "title",
                 money: "",
                 code: "",
                 paymentAmount: 0,
                 paid: "",
                 indexEditting: -1,
-                editSalesOrder: false,
+                editPurchaseOrder: false,
             };
         });
     };
 
-    handleDeletePaymentForSalesOrder = (item) => {
-        let { salesOrders } = this.state;
+    handleDeletePaymentForPurchaseOrder = (item) => {
+        let { purchaseOrders } = this.state;
 
-        let salesOrdersFilter = salesOrders.filter((element) => element.salesOrder !== item.salesOrder);
+        let purchaseOrdersFilter = purchaseOrders.filter((element) => element.purchaseOrder !== item.purchaseOrder);
         this.setState({
-            salesOrders: salesOrdersFilter,
+            purchaseOrders: purchaseOrdersFilter,
         });
     };
 
     isFormValidated = () => {
-        let { customer, paymentType, bankAccountReceived, salesOrders } = this.state;
+        let { supplier, paymentType, bankAccountReceived, bankAccountPartner, purchaseOrders } = this.state;
         if (
-            this.validateCustomer(customer, false) ||
+            this.validateSupplier(supplier, false) ||
             this.validatePaymentType(paymentType, false) ||
             !this.validateCompareTotalMoney() ||
-            !salesOrders.length
+            !purchaseOrders.length
         ) {
             return false;
         }
 
-        if (parseInt(paymentType) === 2 && this.validateBankAccountReceived(bankAccountReceived, false)) {
+        if (
+            parseInt(paymentType) === 2 &&
+            (this.validateBankAccountReceived(bankAccountReceived, false) || this.validateBankAccountPartner(bankAccountPartner, false))
+        ) {
             return false;
         }
 
         return true;
     };
 
-    getSalesOrderForSubmit = async (salesOrders) => {
-        let salesOrdersMap = await salesOrders.map((item) => {
+    getPurchaseOrderForSubmit = async (purchaseOrders) => {
+        let purchaseOrdersMap = await purchaseOrders.map((item) => {
             return {
-                salesOrder: item.salesOrder,
+                purchaseOrder: item.purchaseOrder,
                 money: item.money,
             };
         });
 
-        return salesOrdersMap;
+        return purchaseOrdersMap;
     };
 
     save = async () => {
         if (this.isFormValidated()) {
-            let { customer, paymentType, bankAccountReceived, salesOrders, receiptVoucherCode } = this.state;
+            let { supplier, paymentType, bankAccountReceived, bankAccountPartner, purchaseOrders, PaymentVoucherCode } = this.state;
             let data = {
-                code: receiptVoucherCode,
-                customer,
+                code: PaymentVoucherCode,
+                supplier,
                 paymentType,
                 bankAccountReceived: bankAccountReceived !== "" ? bankAccountReceived : undefined,
-                salesOrders: await this.getSalesOrderForSubmit(salesOrders),
-                type: 1, //Phiếu thu tiền bán hàng
+                bankAccountPartner: bankAccountPartner !== "" ? bankAccountPartner : undefined,
+                purchaseOrders: await this.getPurchaseOrderForSubmit(purchaseOrders),
+                type: 2, //Phiếu chi tiền mua nguyên vật liệu
             };
 
             await this.props.createPayment(data);
             await this.setState({
-                customer: "title",
+                supplier: "title",
                 paymentType: "title",
-                bankAccountReceived: "",
-                salesOrders: [],
+                bankAccountReceived: "title",
+                bankAccountPartner: "",
+                purchaseOrder: "title",
+                purchaseOrders: [],
                 totalMoney: "",
             });
         }
@@ -478,34 +508,36 @@ class ReceiptVoucherCreateForm extends Component {
 
     handleClickCreateCode = () => {
         this.setState((state) => {
-            return { ...state, receiptVoucherCode: generateCode("RV_") };
+            return { ...state, PaymentVoucherCode: generateCode("PV_") };
         });
     };
 
     render() {
         let {
-            customer,
+            supplier,
             paymentType,
             bankAccountReceived,
-            salesOrder,
+            bankAccountPartner,
+            purchaseOrder,
+            purchaseOrders,
             money,
+            PaymentVoucherCode,
             totalMoney,
-            receiptVoucherCode,
-            customerError,
+            supplierError,
             paymentTypeError,
             bankAccountReceivedError,
-            salesOrderError,
-            salesOrders,
-            editSalesOrder,
+            bankAccountPartnerError,
+            purchaseOrderError,
+            editPurchaseOrder,
             moneyError,
             totalMoneyError,
         } = this.state;
 
         let debt = 0;
-        const { salesOrdersForPayment } = this.props.salesOrders;
-        if (salesOrdersForPayment && salesOrdersForPayment.length) {
-            for (let index = 0; index < salesOrdersForPayment.length; index++) {
-                debt += salesOrdersForPayment[index].paymentAmount - salesOrdersForPayment[index].paid;
+        const { purchaseOrdersForPayment } = this.props.purchaseOrders;
+        if (purchaseOrdersForPayment && purchaseOrdersForPayment.length) {
+            for (let index = 0; index < purchaseOrdersForPayment.length; index++) {
+                debt += purchaseOrdersForPayment[index].paymentAmount - purchaseOrdersForPayment[index].paid;
             }
         }
 
@@ -513,15 +545,15 @@ class ReceiptVoucherCreateForm extends Component {
             <React.Fragment>
                 <ButtonModal
                     onButtonCallBack={this.handleClickCreateCode}
-                    modalID={`modal-create-receipt-voucher`}
-                    button_name={"Tạo phiếu thu"}
-                    title={"Tạo phiếu thu"}
+                    modalID={`modal-create-payment-voucher`}
+                    button_name={"Tạo phiếu chi"}
+                    title={"Tạo phiếu chi"}
                 />
                 <DialogModal
-                    modalID={`modal-create-receipt-voucher`}
+                    modalID={`modal-create-payment-voucher`}
                     isLoading={false}
-                    formID={`form-create-receipt-voucher`}
-                    title={"Tạo phiếu thu"}
+                    formID={`form-create-payment-voucher`}
+                    title={"Tạo phiếu chi"}
                     msg_success={"Thêm thành công"}
                     msg_faile={"Thêm không thành công"}
                     disableSubmit={!this.isFormValidated()}
@@ -529,30 +561,29 @@ class ReceiptVoucherCreateForm extends Component {
                     size="50"
                     style={{ backgroundColor: "green" }}
                 >
-                    <form id={`form-create-receipt-voucher`}>
+                    <form id={`form-create-payment-voucher`}>
                         <div className={`form-group`}>
                             <label>
                                 {"Mã phiếu"}
                                 <span className="attention"> * </span>
                             </label>
-                            <input type="text" value={receiptVoucherCode} className="form-control" disabled={true} />
+                            <input type="text" value={PaymentVoucherCode} className="form-control" disabled={true} />
                         </div>
-
-                        <div className={`form-group ${!customerError ? "" : "has-error"}`}>
+                        <div className={`form-group ${!supplierError ? "" : "has-error"}`}>
                             <label>
-                                Khách hàng
+                                Nhà cung cấp
                                 <span className="attention"> * </span>
                             </label>
                             <SelectBox
-                                id={`select-receipt-voucher-customer`}
+                                id={`select-create-payment-voucher-supplier`}
                                 className="form-control select2"
                                 style={{ width: "100%" }}
-                                value={customer}
-                                items={this.getCustomerOptions()}
-                                onChange={this.handleCustomerChange}
+                                value={supplier}
+                                items={this.getSupplierOptions()}
+                                onChange={this.handleSupplierChange}
                                 multiple={false}
                             />
-                            <ErrorLabel content={customerError} />
+                            <ErrorLabel content={supplierError} />
                         </div>
                         <div className={`form-group ${!paymentTypeError ? "" : "has-error"}`}>
                             <label>
@@ -584,26 +615,42 @@ class ReceiptVoucherCreateForm extends Component {
                             <ErrorLabel content={paymentTypeError} />
                         </div>
                         {parseInt(paymentType) === 2 && (
-                            <div className={`form-group ${!bankAccountReceivedError ? "" : "has-error"}`}>
-                                <label>
-                                    Tài khoản thụ hưởng
-                                    <span className="attention"> * </span>
-                                </label>
-                                <SelectBox
-                                    id={`select--receipt-voucher-bank-account`}
-                                    className="form-control select2"
-                                    style={{ width: "100%" }}
-                                    value={bankAccountReceived}
-                                    items={this.getBankAccountOptions()}
-                                    onChange={this.handleBankAccountReceivedChange}
-                                    multiple={false}
-                                />
-                                <ErrorLabel content={bankAccountReceivedError} />
-                            </div>
+                            <React.Fragment>
+                                <div className={`form-group ${!bankAccountReceivedError ? "" : "has-error"}`}>
+                                    <label>
+                                        Tài khoản thanh toán
+                                        <span className="attention"> * </span>
+                                    </label>
+                                    <SelectBox
+                                        id={`select--receipt-voucher-bank-account`}
+                                        className="form-control select2"
+                                        style={{ width: "100%" }}
+                                        value={bankAccountReceived}
+                                        items={this.getBankAccountOptions()}
+                                        onChange={this.handleBankAccountReceivedChange}
+                                        multiple={false}
+                                    />
+                                    <ErrorLabel content={bankAccountReceivedError} />
+                                </div>
+                                <div className={`form-group ${!bankAccountPartnerError ? "" : "has-error"}`}>
+                                    <label>
+                                        Tài khoản nhận tiền của nhà cung cấp
+                                        <span className="attention"> * </span>
+                                    </label>
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        value={bankAccountPartner}
+                                        onChange={this.handleBankAccountPartnerChange}
+                                        placeholder="Nhập vào số tài khoản nhận tiền"
+                                    />
+                                    <ErrorLabel content={bankAccountPartnerError} />
+                                </div>
+                            </React.Fragment>
                         )}
 
                         <div className={`form-group`}>
-                            <label>{"Tổng dư nợ của khách hàng"}</label>
+                            <label>{"Dư nợ cần thanh toán"}</label>
                             <input type="text" className="form-control" value={formatCurrency(debt)} disabled={true} />
                         </div>
 
@@ -617,21 +664,21 @@ class ReceiptVoucherCreateForm extends Component {
                         </div>
                         <fieldset className="scheduler-border">
                             <legend className="scheduler-border">Thanh toán cho từng đơn</legend>
-                            <div className={`form-group ${!salesOrderError ? "" : "has-error"}`}>
+                            <div className={`form-group ${!purchaseOrderError ? "" : "has-error"}`}>
                                 <label>
                                     Đơn hàng còn dư nợ
                                     <span className="attention"> * </span>
                                 </label>
                                 <SelectBox
-                                    id={`select-receipt-voucher-sales-order`}
+                                    id={`select-payment-voucher-purchase-order`}
                                     className="form-control select2"
                                     style={{ width: "100%" }}
-                                    value={salesOrder}
-                                    items={this.getSalesOrderOptions()}
-                                    onChange={this.handleSalesOrderChange}
+                                    value={purchaseOrder}
+                                    items={this.getPurchaseOrdersOptions()}
+                                    onChange={this.handlePurchaseOrderChange}
                                     multiple={false}
                                 />
-                                <ErrorLabel content={salesOrderError} />
+                                <ErrorLabel content={purchaseOrderError} />
                             </div>
 
                             <div className={`form-group ${!moneyError ? "" : "has-error"}`}>
@@ -644,19 +691,19 @@ class ReceiptVoucherCreateForm extends Component {
                             </div>
 
                             <div className={"pull-right"} style={{ padding: 10 }}>
-                                {editSalesOrder ? (
+                                {editPurchaseOrder ? (
                                     <React.Fragment>
                                         <button
                                             className="btn btn-success"
-                                            onClick={this.handleCancelEditPaymentForSalesOrder}
+                                            onClick={this.handleCancelEditPaymentForPurchaseOrder}
                                             style={{ marginLeft: "10px" }}
                                         >
                                             Hủy chỉnh sửa
                                         </button>
                                         <button
                                             className="btn btn-success"
-                                            disabled={!this.isSubmitPaymentForSalesOrderValidate()}
-                                            onClick={this.handleSaveEditPaymentForSalesOrder}
+                                            disabled={!this.isSubmitPaymentForPurchaseOrderValidate()}
+                                            onClick={this.handleSaveEditPaymentForPurchaseOrdera}
                                             style={{ marginLeft: "10px" }}
                                         >
                                             Lưu
@@ -666,28 +713,28 @@ class ReceiptVoucherCreateForm extends Component {
                                     <button
                                         className="btn btn-success"
                                         style={{ marginLeft: "10px" }}
-                                        disabled={!this.isSubmitPaymentForSalesOrderValidate()}
-                                        onClick={this.handleSubmitPaymentForSalesOrder}
+                                        disabled={!this.isSubmitPaymentForPurchaseOrderValidate()}
+                                        onClick={this.handleSubmitPaymentForPurchaseOrder}
                                     >
                                         {"Thêm"}
                                     </button>
                                 )}
                             </div>
 
-                            <table id={`receipt-voucher-add-sales-order`} className="table table-bordered not-sort">
+                            <table id={`payment-voucher-add-purchase-order`} className="table table-bordered not-sort">
                                 <thead>
                                     <tr>
                                         <th title={"STT"}>STT</th>
                                         <th title={"Mã đơn"}>Mã đơn</th>
                                         <th title={"Tổng tiền"}>Tổng tiền</th>
-                                        <th title={"Còn"}>Tiền dư nợ</th>
+                                        <th title={"Còn dư nợ"}>Tiền dư nợ</th>
                                         <th title={"Số tiền thanh toán"}>Số tiền thanh toán</th>
                                         <th title={"Đơn vị tính"}>Hành động</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {salesOrders.length !== 0 &&
-                                        salesOrders.map((item, index) => {
+                                    {purchaseOrders.length !== 0 &&
+                                        purchaseOrders.map((item, index) => {
                                             return (
                                                 <tr key={index}>
                                                     <td>{index + 1}</td>
@@ -700,12 +747,12 @@ class ReceiptVoucherCreateForm extends Component {
                                                             href="#abc"
                                                             className="edit"
                                                             title="Sửa"
-                                                            onClick={() => this.handlePaymentForSalesOrderEdit(item, index)}
+                                                            onClick={() => this.handlePaymentForPurchaseOrderEdit(item, index)}
                                                         >
                                                             <i className="material-icons">edit</i>
                                                         </a>
                                                         <a
-                                                            onClick={() => this.handleDeletePaymentForSalesOrder(item)}
+                                                            onClick={() => this.handleDeletePaymentForPurchaseOrder(item)}
                                                             className="delete text-red"
                                                             style={{ width: "5px" }}
                                                             title={"Xóa"}
@@ -716,14 +763,14 @@ class ReceiptVoucherCreateForm extends Component {
                                                 </tr>
                                             );
                                         })}
-                                    {salesOrders.length !== 0 && (
+                                    {purchaseOrders.length !== 0 && (
                                         <tr>
                                             <td colSpan={4} style={{ fontWeight: 600 }}>
                                                 <center>Tổng thanh toán</center>
                                             </td>
                                             <td style={{ fontWeight: 600 }}>
                                                 {formatCurrency(
-                                                    salesOrders.reduce((accumulator, currentValue) => {
+                                                    purchaseOrders.reduce((accumulator, currentValue) => {
                                                         return accumulator + currentValue.money;
                                                     }, 0)
                                                 )}
@@ -742,14 +789,14 @@ class ReceiptVoucherCreateForm extends Component {
 }
 
 function mapStateToProps(state) {
-    const { salesOrders, bankAccounts } = state;
+    const { purchaseOrders, bankAccounts } = state;
     const { customers } = state.crm;
-    return { customers, salesOrders, bankAccounts };
+    return { customers, purchaseOrders, bankAccounts };
 }
 
 const mapDispatchToProps = {
     createPayment: PaymentActions.createPayment,
-    getSalesOrdersForPayment: SalesOrderActions.getSalesOrdersForPayment,
+    getPurchaseOrdersForPayment: PurchaseOrderActions.getPurchaseOrdersForPayment,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(ReceiptVoucherCreateForm));
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(PaymentVoucherCreateForm));

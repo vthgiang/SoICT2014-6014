@@ -2,11 +2,11 @@ const {
     SalesOrder, Quote
 } = require(`../../../../models`);
 
-const PaymentService = require('../payment/payment.service');
-
 const {
     connect
 } = require(`../../../../helpers/dbHelper`);
+
+const PaymentService = require('../payment/payment.service');
 
 exports.createNewSalesOrder = async (userId, data, portal) => {
     let newSalesOrder = await SalesOrder(connect(DB_CONNECTION, portal)).create({

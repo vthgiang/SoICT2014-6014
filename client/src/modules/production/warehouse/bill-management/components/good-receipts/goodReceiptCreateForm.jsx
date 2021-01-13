@@ -729,7 +729,7 @@ class GoodReceiptCreateForm extends Component {
                                             <span className="attention"> * </span>
                                         </label>
                                         <SelectBox
-                                            id={`select-customer-receipt-create`}
+                                            id={`select-customer-receipt-create-${purchaseOrderId}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             value={supplier}

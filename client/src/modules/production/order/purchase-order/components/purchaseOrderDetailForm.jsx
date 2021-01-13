@@ -10,20 +10,6 @@ class PurchaseDetailForm extends Component {
         super(props);
     }
 
-    getPaymentAmount = (materials, discount) => {
-        let paymentAmount = 0;
-
-        paymentAmount = materials.reduce((accumulator, currentValue) => {
-            return accumulator + currentValue.price * currentValue.quantity;
-        }, 0);
-
-        if (discount) {
-            paymentAmount = paymentAmount - discount >= 0 ? paymentAmount - discount : 0;
-        }
-
-        return formatCurrency(paymentAmount);
-    };
-
     render() {
         const {
             code,
@@ -36,6 +22,7 @@ class PurchaseDetailForm extends Component {
             status,
             materials,
             description,
+            paymentAmount,
         } = this.props.purchaseOrderDetail;
         const statusConvert = [
             {
@@ -53,6 +40,10 @@ class PurchaseDetailForm extends Component {
             {
                 className: "text-success",
                 text: "Đã nhập kho",
+            },
+            {
+                className: "text-success",
+                text: "Đã hủy",
             },
         ];
         return (
@@ -159,7 +150,7 @@ class PurchaseDetailForm extends Component {
                                                 <td colSpan={5} style={{ fontWeight: 600 }}>
                                                     <center>Tổng thanh toán</center>
                                                 </td>
-                                                <td style={{ fontWeight: 600 }}>{this.getPaymentAmount(materials, discount)}</td>
+                                                <td style={{ fontWeight: 600 }}>{paymentAmount ? formatCurrency(paymentAmount) : ""}</td>
                                             </tr>
                                         )}
                                     </tbody>

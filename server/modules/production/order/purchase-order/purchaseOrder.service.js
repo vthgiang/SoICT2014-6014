@@ -6,6 +6,8 @@ const {
     connect
 } = require(`../../../../helpers/dbHelper`);
 
+const PaymentService = require('../payment/payment.service');
+
 exports.createPurchaseOrder = async (userId, data, portal) => {
     let newPurchaseOrder = await PurchaseOrder(connect(DB_CONNECTION, portal)).create({
         code: data.code,
@@ -28,7 +30,8 @@ exports.createPurchaseOrder = async (userId, data, portal) => {
         supplier: data.supplier,
         discount: data.discount,
         desciption: data.desciption,
-        purchasingRequest: data.purchasingRequest
+        purchasingRequest: data.purchasingRequest,
+        paymentAmount: data.paymentAmount
     })
 
     //Cập nhật trạng thái cho đơn đề nghị
@@ -136,6 +139,7 @@ exports.editPurchaseOrder = async (userId, id, data, portal) => {
     oldPurchaseOrder.supplier = data.supplier;
     oldPurchaseOrder.discount = data.discount;
     oldPurchaseOrder.desciption = data.desciption;
+    oldPurchaseOrder.paymentAmount = data.paymentAmount
 
     await oldPurchaseOrder.save();
 
@@ -158,4 +162,28 @@ exports.editPurchaseOrder = async (userId, id, data, portal) => {
     return {purchaseOrder: purchaseOrderUpdate};
 }
 
+//Lấy các đơn hàng chưa thanh toán cho 1 nhà cung cấp
+exports.getPurchaseOrdersForPayment = async (supplierId, portal) => {
+    //Lấy tất cả các đơn hàng theo nhà cung cấp
+    let purchaseOrdersForPayment = await PurchaseOrder(connect(DB_CONNECTION, portal)).find({ supplier: supplierId });
+    let purchaseOrders = [];
+    if (purchaseOrdersForPayment.length) {
+        for (let index = 0; index < purchaseOrdersForPayment.length; index++){
+            let paid = await PaymentService.getPaidForPurchaseOrder(purchaseOrdersForPayment[index]._id, portal);
+
+            if (paid < purchaseOrdersForPayment[index].paymentAmount) {
+                //Chỉ trả về các đơn hàng chưa thanh toán
+                purchaseOrders.push({
+                    _id: purchaseOrdersForPayment[index]._id,
+                    code: purchaseOrdersForPayment[index].code,
+                    paymentAmount: purchaseOrdersForPayment[index].paymentAmount,
+                    supplier: purchaseOrdersForPayment[index].supplier,
+                    paid: paid,
+                })
+            }
+        }
+    }
+
+    return {purchaseOrders}
+}
 

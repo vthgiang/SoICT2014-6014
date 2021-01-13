@@ -9,15 +9,16 @@ import { BankAccountActions } from "../../../bank-account/redux/actions";
 import { formatDate } from "../../../../../../helpers/formatDate";
 import { formatCurrency } from "../../../../../../helpers/formatCurrency";
 import { PaginateBar, DataTableSetting, SelectMulti } from "../../../../../../common-components";
-import ReceiptVoucherCreateForm from "./receiptVoucherCreateForm";
-import ReceiptVoucherDetailForm from "./receiptVoucherDetailForm";
-class ReceiptVoucherManagementTable extends Component {
+import PaymentVoucherCreateForm from "./paymentVoucherCreateForm";
+import PaymentVoucherDetailForm from "./paymentVoucherDetailForm";
+
+class PaymentVoucherManagementTable extends Component {
     constructor(props) {
         super(props);
         this.state = {
             page: 1,
             limit: 5,
-            type: 1,
+            type: 2,
         };
     }
 
@@ -58,21 +59,21 @@ class ReceiptVoucherManagementTable extends Component {
         await this.setState({
             paymentDetail: payment,
         });
-        window.$("#modal-receipt-voucher-detail").modal("show");
+        window.$("#modal-payment-voucher-detail").modal("show");
     };
 
     getPaidForPayment = (item) => {
-        let paid = item.salesOrders.reduce((accumulator, currentValue) => {
+        let paid = item.purchaseOrders.reduce((accumulator, currentValue) => {
             return accumulator + currentValue.money;
         }, 0);
 
         return formatCurrency(paid);
     };
 
-    handleCustomerChange = (value) => {
+    handleSupplierChange = (value) => {
         //Tìm kiếm theo khách hàng
         this.setState({
-            customer: value,
+            supplier: value,
         });
     };
 
@@ -84,12 +85,12 @@ class ReceiptVoucherManagementTable extends Component {
     };
 
     handleSubmitSearch = () => {
-        let { limit, code, page, customer, type } = this.state;
+        let { limit, page, code, supplier, type } = this.state;
         const data = {
             limit,
             page,
             code,
-            customer,
+            supplier,
             type,
         };
         this.props.getAllPayments(data);
@@ -104,13 +105,13 @@ class ReceiptVoucherManagementTable extends Component {
         return (
             <React.Fragment>
                 <div className="box-body qlcv">
-                    <ReceiptVoucherCreateForm />
-                    {paymentDetail && <ReceiptVoucherDetailForm paymentDetail={paymentDetail} />}
+                    <PaymentVoucherCreateForm />
+                    {paymentDetail && <PaymentVoucherDetailForm paymentDetail={paymentDetail} />}
                     <div className="form-inline">
                         <div className="form-group">
-                            <label className="form-control-static">Khách hàng</label>
+                            <label className="form-control-static">Nhà cung cấp</label>
                             <SelectMulti
-                                id={`selectMulti-filter-customer-receipt-voucher`}
+                                id={`selectMulti-filter-supplier-payment-voucher`}
                                 className="form-control select2"
                                 style={{ width: "100%" }}
                                 items={
@@ -124,11 +125,10 @@ class ReceiptVoucherManagementTable extends Component {
                                         : []
                                 }
                                 multiple="multiple"
-                                options={{ nonSelectedText: "Chọn khách hàng", allSelectedText: "Đã chọn tất cả" }}
-                                onChange={this.handleCustomerChange}
+                                options={{ nonSelectedText: "Chọn nhà cung cấp", allSelectedText: "Đã chọn tất cả" }}
+                                onChange={this.handleSupplierChange}
                             />
                         </div>
-
                         <div className="form-group">
                             <label className="form-control-static">Mã phiếu</label>
                             <input
@@ -147,13 +147,13 @@ class ReceiptVoucherManagementTable extends Component {
                             </button>
                         </div>
                     </div>
-                    <table id="receipt-voucher-table" className="table table-striped table-bordered table-hover">
+                    <table id="payment-voucher-table" className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
                                 <th>STT</th>
                                 <th>Mã phiếu</th>
-                                <th>Khách hàng</th>
-                                <th>Người nhận thanh toán</th>
+                                <th>Nhà cung cấp</th>
+                                <th>Người thanh toán</th>
                                 <th>Số tiền thanh toán</th>
                                 <th>Ngày thanh toán</th>
                                 <th
@@ -165,7 +165,7 @@ class ReceiptVoucherManagementTable extends Component {
                                     Hành động
                                     <DataTableSetting
                                         tableId="bank-account-table"
-                                        columnArr={["STT", "Khách hàng", "Người nhận thanh toán", "Số tiền thanh toán", "Ngày thanh toán"]}
+                                        columnArr={["STT", "Mã phiếu", "Nhà cung cấp", "Người thanh toán", "Số tiền thanh toán", "Ngày thanh toán"]}
                                         limit={this.state.limit}
                                         hideColumnOption={true}
                                         setLimit={this.setLimit}
@@ -179,8 +179,8 @@ class ReceiptVoucherManagementTable extends Component {
                                 listPayments.map((item, index) => (
                                     <tr key={index}>
                                         <td>{index + 1}</td>
-                                        <td>{item.code}</td>
-                                        <td>{item.customer ? item.customer.name : "---"}</td>
+                                        <item>{item.code}</item>
+                                        <td>{item.supplier ? item.supplier.name : "---"}</td>
                                         <td>{item.curator ? item.curator.name : "---"}</td>
                                         <td>{this.getPaidForPayment(item)}</td>
                                         <td>{item.paymentAt ? formatDate(item.paymentAt) : "---"}</td>
@@ -225,4 +225,4 @@ const mapDispatchToProps = {
     getAllBankAccounts: BankAccountActions.getAllBankAccounts,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(ReceiptVoucherManagementTable));
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(PaymentVoucherManagementTable));

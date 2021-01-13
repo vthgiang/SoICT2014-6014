@@ -120,21 +120,6 @@ class PurchaseOrderTable extends Component {
         this.props.getAllPurchaseOrders(data);
     };
 
-    getPaymentAmount = (materials, discount) => {
-        let paymentAmount = 0;
-        if (materials && materials.length) {
-            paymentAmount = materials.reduce((accumulator, currentValue) => {
-                return accumulator + currentValue.quantity * currentValue.price;
-            }, 0);
-        }
-
-        if (discount) {
-            paymentAmount = paymentAmount - discount >= 0 ? paymentAmount - discount : 0;
-        }
-
-        return formatCurrency(paymentAmount);
-    };
-
     handleShowDetail = async (data) => {
         await this.setState({
             purchaseOrderDetail: data,
@@ -186,6 +171,10 @@ class PurchaseOrderTable extends Component {
             {
                 className: "text-success",
                 text: "Đã nhập kho",
+            },
+            {
+                className: "text-success",
+                text: "Đã hủy",
             },
         ];
         return (
@@ -310,7 +299,7 @@ class PurchaseOrderTable extends Component {
                                         <td className={item.status ? statusConvert[item.status].className : ""}>
                                             {item.status ? statusConvert[item.status].text : ""}
                                         </td>
-                                        <td>{this.getPaymentAmount(item.materials, item.discount)}</td>
+                                        <td>{item.paymentAmount ? formatCurrency(item.paymentAmount) : ""}</td>
                                         <td>{item.creator ? item.creator.name : ""}</td>
                                         <td>{item.createdAt ? formatDate(item.createdAt) : ""}</td>
                                         <td style={{ textAlign: "center" }}>
