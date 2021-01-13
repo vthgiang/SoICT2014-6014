@@ -80,7 +80,7 @@ exports.getPurchaseOrdersForPayment = async (req, res) => {
 
         res.status(200).json({
             success: true,
-            messages: ["get_purchase_orders_for_successfully"],
+            messages: ["get_purchase_orders_for_payment_successfully"],
             content: purchaseOrders
         });
     } catch (error) {
@@ -88,7 +88,7 @@ exports.getPurchaseOrdersForPayment = async (req, res) => {
         console.log(error.message);
         res.status(400).json({
             success: false,
-            messages: ["get_purchase_orders_for_failed"],
+            messages: ["get_purchase_orders_for_payment_failed"],
             content: error.message
         });
     }

@@ -160,14 +160,14 @@ exports.getSalesOrdersForPayment = async (req, res) => {
 
         res.status(200).json({
             success: true,
-            messages: ["get_sales_orders_for_successfully"],
+            messages: ["get_sales_orders_for_payment_successfully"],
             content: salesOrders
         });
     } catch (error) {
         await Log.error(req.user.email, "GET_SALES_ORDERS_FOR_PAYMENT", req.portal);
         res.status(400).json({
             success: false,
-            messages: ["get_sales_orders_for_failed"],
+            messages: ["get_sales_orders_for_payment_failed"],
             content: error.message
         });
     }
