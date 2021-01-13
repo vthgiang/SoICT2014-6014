@@ -96,7 +96,8 @@ exports.editBill = async (req, res) => {
             content: bill
         })
     } catch (err) {
-        await Log.error(req.user.email, 'EDIT_BILL_FAILED', req.portal);
+        await Logger.error(req.user.email, 'EDIT_BILL_FAILED', req.portal);
+        console.log(err.message);
         res.status(400).json({
             success: false,
             messages: ['edit_failed'],

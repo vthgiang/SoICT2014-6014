@@ -57,6 +57,15 @@ class DiscountDetailForm extends Component {
 
     render() {
         const { code, name, creator, description, status, type, formality, discounts, effectiveDate, expirationDate } = this.props.discountDetail;
+        const typeConvert = ["Giảm trên toàn đơn", "Giảm giá từng mặt hàng"];
+        const formalityConvert = [
+            "Giảm tiền mặt",
+            "Giảm theo phần trăm",
+            "Tặng xu",
+            "Miễn phí vận chuyển",
+            "Tặng kèm hàng hóa",
+            "Giảm giá bán sản phẩm",
+        ];
         return (
             <React.Fragment>
                 <DialogModal
@@ -80,11 +89,11 @@ class DiscountDetailForm extends Component {
                             </div>
                             <div className="form-group">
                                 <strong>Loại giảm giá:&emsp;</strong>
-                                {type}
+                                {type !== undefined ? typeConvert[type] : ""}
                             </div>
                             <div className="form-group">
                                 <strong>Hình thức giảm giá:&emsp;</strong>
-                                {formality}
+                                {formality !== undefined ? formalityConvert[formality] : ""}
                             </div>
                         </div>
                         <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">

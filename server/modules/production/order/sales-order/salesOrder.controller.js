@@ -5,7 +5,7 @@ exports.createNewSalesOrder = async (req, res) => {
     try {
         let data = req.body;
 
-        let salesOrder = await SalesOrderServices.createNewSalesOrder(req.user._id, data, req.portal)
+        let salesOrder = await SalesOrderServices.createNewSalesOrder(req.user._id, req.user.company._id, data, req.portal)
         await Log.info(req.user.email, "CREATED_NEW_SALES_ORDER", req.portal);
 
 
@@ -55,7 +55,7 @@ exports.editSalesOrder = async (req, res) => {
         let data = req.body;
         let id = req.params.id;
 
-        let salesOrder = await SalesOrderServices.editSalesOrder(req.user._id, id, data, req.portal)
+        let salesOrder = await SalesOrderServices.editSalesOrder(req.user._id, req.user.company._id, id, data, req.portal)
 
         await Log.info(req.user.email, "EDIT_SALES_ORDER", req.portal);
 

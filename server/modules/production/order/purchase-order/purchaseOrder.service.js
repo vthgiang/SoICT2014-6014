@@ -1,10 +1,12 @@
 const {
-    PurchaseOrder
+    PurchaseOrder, PurchasingRequest
 } = require(`../../../../models`);
 
 const {
     connect
 } = require(`../../../../helpers/dbHelper`);
+
+const PaymentService = require('../payment/payment.service');
 
 exports.createPurchaseOrder = async (userId, data, portal) => {
     let newPurchaseOrder = await PurchaseOrder(connect(DB_CONNECTION, portal)).create({
@@ -25,10 +27,19 @@ exports.createPurchaseOrder = async (userId, data, portal) => {
                 status: approver.status
             }
         }) : undefined,
+        supplier: data.supplier,
         discount: data.discount,
         desciption: data.desciption,
-        purchasingRequest: data.purchasingRequest
+        purchasingRequest: data.purchasingRequest,
+        paymentAmount: data.paymentAmount
     })
+
+    //Cập nhật trạng thái cho đơn đề nghị
+    if (data.purchasingRequest) {
+        let purchasingRequest = await PurchasingRequest(connect(DB_CONNECTION, portal)).findById({ _id: data.purchasingRequest })
+        purchasingRequest.status = 2;
+        await purchasingRequest.save()
+    }
 
     let purchaseOrder = await PurchaseOrder(connect(DB_CONNECTION, portal)).findById({ _id: newPurchaseOrder._id }) .populate([
         {
@@ -53,11 +64,15 @@ exports.getAllPurchaseOrders = async (query, portal) => {
     let option = {};
 
     if (query.code) {
-        option.code = query.code
+        option.code = new RegExp(query.code, "i")
     }
 
     if (query.status) {
         option.status = query.status
+    }
+
+    if (query.supplier) {
+        option.supplier = query.supplier
     }
 
     if ( !page || !limit ){
@@ -128,10 +143,11 @@ exports.editPurchaseOrder = async (userId, id, data, portal) => {
     oldPurchaseOrder.supplier = data.supplier;
     oldPurchaseOrder.discount = data.discount;
     oldPurchaseOrder.desciption = data.desciption;
+    oldPurchaseOrder.paymentAmount = data.paymentAmount
 
     await oldPurchaseOrder.save();
 
-    let purchaseOrderUpdate =  await BankAccount(connect(DB_CONNECTION, portal)).findById(id) .populate([
+    let purchaseOrderUpdate =  await PurchaseOrder(connect(DB_CONNECTION, portal)).findById(id) .populate([
         {
             path: "creator", select: "code name"
         }, 
@@ -150,4 +166,28 @@ exports.editPurchaseOrder = async (userId, id, data, portal) => {
     return {purchaseOrder: purchaseOrderUpdate};
 }
 
+//Lấy các đơn hàng chưa thanh toán cho 1 nhà cung cấp
+exports.getPurchaseOrdersForPayment = async (supplierId, portal) => {
+    //Lấy tất cả các đơn hàng theo nhà cung cấp
+    let purchaseOrdersForPayment = await PurchaseOrder(connect(DB_CONNECTION, portal)).find({ supplier: supplierId });
+    let purchaseOrders = [];
+    if (purchaseOrdersForPayment.length) {
+        for (let index = 0; index < purchaseOrdersForPayment.length; index++){
+            let paid = await PaymentService.getPaidForPurchaseOrder(purchaseOrdersForPayment[index]._id, portal);
+
+            if (paid < purchaseOrdersForPayment[index].paymentAmount) {
+                //Chỉ trả về các đơn hàng chưa thanh toán
+                purchaseOrders.push({
+                    _id: purchaseOrdersForPayment[index]._id,
+                    code: purchaseOrdersForPayment[index].code,
+                    paymentAmount: purchaseOrdersForPayment[index].paymentAmount,
+                    supplier: purchaseOrdersForPayment[index].supplier,
+                    paid: paid,
+                })
+            }
+        }
+    }
+
+    return {purchaseOrders}
+}
 

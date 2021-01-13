@@ -496,7 +496,8 @@ class SalesOrderCreatePayment extends Component {
                                     type="checkbox"
                                     className={`form-check-input`}
                                     id={`check-box-use-loyalty-coin-edit`}
-                                    disabled={!customerCoin}
+                                    // Không được sửa coin
+                                    disabled={true}
                                     checked={coin}
                                     onChange={() => handleCoinChange(customerCoin)}
                                     style={{ minWidth: "20px" }}

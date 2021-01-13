@@ -3,7 +3,8 @@ import { sendRequest } from '../../../../../helpers/requestHelper';
 export const PurchaseOrderServices = {
     createPurchaseOrder,
     getAllPurchaseOrders,
-    updatePurchaseOrder
+    updatePurchaseOrder,
+    getPurchaseOrdersForPayment
 }
 
 function createPurchaseOrder(data) {
@@ -37,4 +38,15 @@ function updatePurchaseOrder (id, data) {
         true,
         "manage_order.purchase_order"
     )
+}
+
+function getPurchaseOrdersForPayment(supplierId) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/purchase-order/get-for-payment`,
+        method: "GET",
+        params: {supplierId}
+    },
+        false,
+        true,
+    "manage_order.purchase_order")
 }

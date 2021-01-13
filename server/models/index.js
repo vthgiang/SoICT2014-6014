@@ -97,7 +97,7 @@ module.exports = {
     Tax: require('./production/order/tax.model'),
     SalesOrder: require('./production/order/salesOrder.model'),
     ServiceLevelAgreement: require('./production/order/serviceLevelAgreement.model'),
-    PurchaseOrder: require('./production/order/purchseOrder.model'),
+    PurchaseOrder: require('./production/order/purchaseOrder.model'),
     BusinessDepartment: require('./production/order/businessDepartment.model'),
     Payment: require('./production/order/payment.model'),
 

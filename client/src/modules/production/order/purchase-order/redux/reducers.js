@@ -29,6 +29,7 @@ export function purchaseOrders(state = initState, action) {
         case PurchaseOrderConstants.CREATE_PURCHASE_ORDER_REQUEST:
         case PurchaseOrderConstants.UPDATE_PURCHASE_ORDER_REQUEST:
         case PurchaseOrderConstants.GET_ALL_PURCHASE_ORDERS_REQUEST:
+        case PurchaseOrderConstants.GET_PURCHASE_ORDERS_FOR_PAYMENT_REQUEST:
             return {
                 ...state,
                 isLoading: true
@@ -36,6 +37,7 @@ export function purchaseOrders(state = initState, action) {
         case PurchaseOrderConstants.CREATE_PURCHASE_ORDER_FAILURE:
         case PurchaseOrderConstants.UPDATE_PURCHASE_ORDER_FAILURE:
         case PurchaseOrderConstants.GET_ALL_PURCHASE_ORDERS_FAILURE:
+        case PurchaseOrderConstants.GET_PURCHASE_ORDERS_FOR_PAYMENT_FAILURE:
             return {
                 ...state,
                 isLoading: false,
@@ -72,6 +74,12 @@ export function purchaseOrders(state = initState, action) {
             }
             return {
                 ...state,
+                isLoading: false
+            }
+        case PurchaseOrderConstants.GET_PURCHASE_ORDERS_FOR_PAYMENT_SUCCESS:
+            return {
+                ...state,
+                purchaseOrdersForPayment: action.payload.purchaseOrders,
                 isLoading: false
             }
         default:

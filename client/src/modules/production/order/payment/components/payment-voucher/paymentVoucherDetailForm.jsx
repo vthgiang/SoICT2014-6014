@@ -3,10 +3,10 @@ import { DialogModal } from "../../../../../../common-components";
 import { formatCurrency } from "../../../../../../helpers/formatCurrency";
 import { formatDate } from "../../../../../../helpers/formatDate";
 
-class ReceiptVoucherDetailForm extends Component {
+class PaymentVoucherDetailForm extends Component {
     getPaidForPayment = (salesOrders) => {
         let paid = salesOrders.reduce((accumulator, currentValue) => {
-            return accumulator + parseInt(currentValue.money);
+            return accumulator + currentValue.money;
         }, 0);
 
         return formatCurrency(paid);
@@ -14,19 +14,20 @@ class ReceiptVoucherDetailForm extends Component {
 
     render() {
         const { paymentDetail } = this.props;
+        console.log("paymentDetail", paymentDetail);
 
         let paymentTypeConvert = ["", "Tiền mặt", "Chuyển khoản"];
         return (
             <DialogModal
-                modalID="modal-receipt-voucher-detail"
+                modalID="modal-payment-voucher-detail"
                 isLoading={false}
-                formID="form-receipt-voucher-detail-form"
-                title={"Chi tiết phiếu thu"}
+                formID="form-payment-voucher-detail-form"
+                title={"Chi tiết phiếu chiếu chi"}
                 size="50"
                 hasSaveButton={false}
                 hasNote={false}
             >
-                <form id={`form-receipt-voucher-detail-form`}>
+                <form id={`form-payment-voucher-detail-form`}>
                     <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                         <div className={`form-group`}>
                             <strong>Mã phiếu :&emsp;</strong>
@@ -35,8 +36,8 @@ class ReceiptVoucherDetailForm extends Component {
                     </div>
                     <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                         <div className={`form-group`}>
-                            <strong>Khách hàng :&emsp;</strong>
-                            {paymentDetail.customer ? paymentDetail.customer.code + " - " + paymentDetail.customer.name : ""}
+                            <strong>Nhà cung cấp :&emsp;</strong>
+                            {paymentDetail.supplier ? paymentDetail.supplier.code + " - " + paymentDetail.supplier.name : ""}
                         </div>
                     </div>
                     <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
@@ -77,6 +78,12 @@ class ReceiptVoucherDetailForm extends Component {
                                     {paymentDetail.bankAccountReceived.owner}
                                 </div>
                             </div>
+                            <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                <div className={`form-group`}>
+                                    <strong>Tài khoản nhận tiền :&emsp;</strong>
+                                    {paymentDetail.bankAccountPartner}
+                                </div>
+                            </div>
                         </React.Fragment>
                     ) : (
                         ""
@@ -88,28 +95,28 @@ class ReceiptVoucherDetailForm extends Component {
                                 <thead>
                                     <tr>
                                         <th title={"STT"}>STT</th>
-                                        <th title={"Mã đơn"}>Mã đơn hàng</th>
+                                        <th title={"Mã đơn"}>Mã đơn nhập</th>
                                         <th title={"Số tiền thanh toán"}>Số tiền thanh toán</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {paymentDetail.salesOrders.length !== 0 &&
-                                        paymentDetail.salesOrders.map((item, index) => {
+                                    {paymentDetail.purchaseOrders.length !== 0 &&
+                                        paymentDetail.purchaseOrders.map((item, index) => {
                                             return (
                                                 <tr key={index}>
                                                     <td>{index + 1}</td>
-                                                    <td>{item.salesOrder.code}</td>
+                                                    <td>{item.purchaseOrder.code}</td>
                                                     <td>{item.money ? formatCurrency(item.money) : ""}</td>
                                                 </tr>
                                             );
                                         })}
-                                    {paymentDetail.salesOrders.length !== 0 && (
+                                    {paymentDetail.purchaseOrders.length !== 0 && (
                                         <tr>
                                             <td colSpan={2} style={{ fontWeight: 600 }}>
                                                 <center>Tổng thanh toán</center>
                                             </td>
                                             <td style={{ fontWeight: 600 }}>
-                                                {paymentDetail.salesOrders ? this.getPaidForPayment(paymentDetail.salesOrders) : ""}
+                                                {paymentDetail.purchaseOrders ? this.getPaidForPayment(paymentDetail.purchaseOrders) : ""}
                                             </td>
                                         </tr>
                                     )}
@@ -123,4 +130,4 @@ class ReceiptVoucherDetailForm extends Component {
     }
 }
 
-export default ReceiptVoucherDetailForm;
+export default PaymentVoucherDetailForm;
