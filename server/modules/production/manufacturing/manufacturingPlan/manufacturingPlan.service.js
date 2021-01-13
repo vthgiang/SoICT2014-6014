@@ -10,6 +10,7 @@ const {
 const UserService = require('../../../super-admin/user/user.service');
 const { createManufacturingCommand } = require('../manufacturingCommand/manufacturingCommand.service');
 const { bookingManyManufacturingMills, bookingManyWorkerToCommand } = require('../workSchedule/workSchedule.service');
+const { addManufacturingPlanForGood } = require('../../order/sales-order/salesOrder.service');
 
 
 function getArrayTimeFromString(stringDate) {
@@ -116,8 +117,14 @@ exports.createManufacturingPlan = async (data, portal) => {
         await createManufacturingCommand(manufacturingCommands[i], portal);
     }
     await bookingManyManufacturingMills(listMillSchedules, portal);
-    console.log(arrayWorkerSchedules);
     await bookingManyWorkerToCommand(arrayWorkerSchedules, portal);
+    if (data.salesOrders.length) {
+        for (let i = 0; i < data.salesOrders.length; i++) {
+            await addManufacturingPlanForGood(data.salesOrders[i], manufacturingWorksId, newManufacturingPlan._id, portal);
+        }
+    }
+
+
     return { manufacturingPlan }
 }
 

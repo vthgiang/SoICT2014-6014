@@ -16,7 +16,7 @@ exports.createManufacturingPlan = async (req, res) => {
 
     } catch (error) {
         await Logger.error(req.user.email, "CREATE_MANUFACTURING_PLAN", req.portal);
-
+        console.log(error.message);
         res.status(400).json({
             success: false,
             messages: ["create_failed"],
