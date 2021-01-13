@@ -7,8 +7,9 @@ const {
 } = require(`../../../../helpers/dbHelper`);
 
 const PaymentService = require('../payment/payment.service');
+const CustomerService = require('../../../crm/customer/customer.service');
 
-exports.createNewSalesOrder = async (userId, data, portal) => {
+exports.createNewSalesOrder = async (userId, companyId,  data, portal) => {
     let newSalesOrder = await SalesOrder(connect(DB_CONNECTION, portal)).create({
         code: data.code,
         status: data.status ?  data.status : 1, //Nếu k có thì mặc định bằng 1 (chờ phê duyệt)
@@ -116,11 +117,16 @@ exports.createNewSalesOrder = async (userId, data, portal) => {
     });
 
     //Tạo đơn từ báo giá thì lưu các trường sau vào báo giá
-    if (data.quote) {//Nếu được tạo từ báo giá
+    if (newSalesOrder.quote) {//Nếu được tạo từ báo giá
         let quote = await Quote(connect(DB_CONNECTION, portal)).findById({ _id: data.quote });
         quote.status = 3; //Đã chốt đơn
         quote.salesOrder = newSalesOrder._id;
         quote.save();
+    }
+
+    //Trừ xu khách hàng nếu sử dụng
+    if (newSalesOrder.coin) {
+        await CustomerService.editCustomerPoint(portal, companyId, newSalesOrder.customer, {point: 0}, userId)
     }
 
     let salesOrder = await SalesOrder(connect(DB_CONNECTION, portal)).findById({ _id: newSalesOrder._id }).populate([{
@@ -137,6 +143,8 @@ exports.createNewSalesOrder = async (userId, data, portal) => {
         path: 'goods.discounts.discountOnGoods.good', select: 'code name baseUnit'
     }, {
         path: 'discounts.bonusGoods.good', select: 'code name baseUnit'
+    },{
+        path: 'quote', select: 'code createdAt'
     }]);;
     return { salesOrder }
 }
@@ -176,6 +184,8 @@ exports.getAllSalesOrders = async (query, portal) => {
                 path: 'goods.discounts.discountOnGoods.good', select: 'code name baseUnit'
             }, {
                 path: 'discounts.bonusGoods.good', select: 'code name baseUnit'
+            },{
+                path: 'quote', select: 'code createdAt'
             }]);
         return { allSalesOrders }
     } else {
@@ -199,13 +209,15 @@ exports.getAllSalesOrders = async (query, portal) => {
                 path: 'goods.discounts.discountOnGoods.good', select: 'code name baseUnit'
             }, {
                 path: 'discounts.bonusGoods.good', select: 'code name baseUnit'
+            },{
+                path: 'quote', select: 'code createdAt'
             }]
         })
         return { allSalesOrders }
     }
 }
 
-exports.editSalesOrder = async (userId, id, data, portal) => {
+exports.editSalesOrder = async (userId, companyId, id, data, portal) => {
 
     if (data.goods) {
         let goods = data.goods.map((item) => {
@@ -291,9 +303,9 @@ exports.editSalesOrder = async (userId, id, data, portal) => {
             path: 'goods.discounts.discountOnGoods.good', select: 'code name baseUnit'
         }, {
             path: 'discounts.bonusGoods.good', select: 'code name baseUnit'
-        }]);
-
-    console.log("salesOrderUpdated", salesOrderUpdated);
+        },{
+            path: 'quote', select: 'code createdAt'
+            }]);
 
     return { salesOrder: salesOrderUpdated }
 }

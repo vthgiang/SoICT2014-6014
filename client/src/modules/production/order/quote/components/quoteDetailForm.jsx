@@ -211,6 +211,7 @@ class QuoteDetailForm extends Component {
             paymentAmount,
             goods,
             discounts,
+            salesOrder,
         } = this.props.quoteDetail;
 
         const { discountsOfQuoteDetail, discountOfGoodDetail, slasOfGoodDetail } = this.state;
@@ -301,6 +302,18 @@ class QuoteDetailForm extends Component {
                                     {effectiveDate && expirationDate ? <span>&ensp;-&ensp;</span> : ""}
                                     <div style={{ color: "#888", fontSize: "13px" }}>{expirationDate ? formatDate(expirationDate) : ""}</div>
                                 </div>
+                                {salesOrder && (
+                                    <React.Fragment>
+                                        <div className="shopping-quote-info-element">
+                                            <div style={{ fontWeight: 600 }}>Đơn bán hàng được chốt &ensp;</div>
+                                            <div style={{ color: "#671303", fontSize: "14px" }}>{salesOrder.code}</div>
+                                        </div>
+                                        <div className="shopping-quote-info-element">
+                                            <div style={{ fontWeight: 600 }}>Chốt đơn bán hàng lúc &ensp;</div>
+                                            <div style={{ color: "#888", fontSize: "13px" }}>{formatDate(salesOrder.createdAt)}</div>
+                                        </div>
+                                    </React.Fragment>
+                                )}
                             </div>
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12 shopping-products">
                                 <div className="shopping-products-title">Các sản phẩm</div>

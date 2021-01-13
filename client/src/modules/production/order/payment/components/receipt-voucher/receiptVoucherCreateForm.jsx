@@ -537,7 +537,6 @@ class ReceiptVoucherCreateForm extends Component {
                             </label>
                             <input type="text" value={receiptVoucherCode} className="form-control" disabled={true} />
                         </div>
-
                         <div className={`form-group ${!customerError ? "" : "has-error"}`}>
                             <label>
                                 Khách hàng

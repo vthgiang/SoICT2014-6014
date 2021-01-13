@@ -601,7 +601,7 @@ class GoodReceiptCreateForm extends Component {
 
         //Load lại dữ liệu đơn mua nguyên vật liệu sau 15000ms
         if (createdSource === "purchaseOrder") {
-            await setTimeout(() => this.props.reloadPurchaseOrderTable(), 3000);
+            await setTimeout(() => this.props.reloadPurchaseOrderTable(), 2000);
         }
     };
 

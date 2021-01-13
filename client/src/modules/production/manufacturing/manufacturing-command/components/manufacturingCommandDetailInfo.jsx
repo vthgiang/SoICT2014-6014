@@ -74,8 +74,20 @@ class ManufacturingCommandDetailInfo extends Component {
                                 <div className="form-group">
                                     <strong>{translate('manufacturing.command.sales_order_code')}:&emsp;</strong>
                                     {
-                                        currentCommand.manufacturingPlan && currentCommand.manufacturingPlan.salesOrder
-                                        && currentCommand.manufacturingPlan.salesOrder.code
+                                        currentCommand.manufacturingPlan && currentCommand.manufacturingPlan.salesOrders &&
+                                            currentCommand.manufacturingPlan.salesOrders.length
+                                            ?
+                                            currentCommand.manufacturingPlan.salesOrders.map((x, index) => {
+                                                if (index === (currentCommand.manufacturingPlan.salesOrders.length - 1))
+                                                    return (
+                                                        <a href="#" onClick={() => this.showDetailSalesOrder(x)}>{x.code}</a>
+                                                    )
+                                                return (
+                                                    <a href="#" onClick={() => this.showDetailSalesOrder(x)}>{x.code}, </a>
+                                                )
+                                            })
+                                            :
+                                            ""
 
                                     }
                                 </div>
@@ -137,7 +149,7 @@ class ManufacturingCommandDetailInfo extends Component {
                             </div>
                         </div>
                         {
-                            currentCommand.good && currentCommand.good.good &&
+                            currentCommand.good &&
                             < div className="row">
                                 <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                     <fieldset className="scheduler-border">
@@ -156,12 +168,12 @@ class ManufacturingCommandDetailInfo extends Component {
                                                 </thead>
                                                 <tbody>
                                                     <tr>
-                                                        <td>{currentCommand.good.good.code}</td>
-                                                        <td>{currentCommand.good.good.name}</td>
+                                                        <td>{currentCommand.good.code}</td>
+                                                        <td>{currentCommand.good.name}</td>
                                                         {/* <td>{currentCommand.good.packingRule}</td> */}
                                                         {/* <td>{currentCommand.good.quantity}</td> */}
-                                                        <td>{currentCommand.good.good.baseUnit}</td>
-                                                        <td>{currentCommand.good.quantity}</td>
+                                                        <td>{currentCommand.good.baseUnit}</td>
+                                                        <td>{currentCommand.quantity}</td>
                                                     </tr>
                                                 </tbody>
                                             </table>
@@ -235,14 +247,14 @@ class ManufacturingCommandDetailInfo extends Component {
                                             <React.Fragment>
                                                 <p>
                                                     {translate('manufacturing.command.finishedProductQuantity')}: &emsp;
-                                                    {currentCommand.finishedProductQuantity + " (" + currentCommand.good.good.baseUnit + ")"}
+                                                    {currentCommand.finishedProductQuantity + " (" + currentCommand.good.baseUnit + ")"}
                                                     &emsp;&emsp;&emsp;
                                                     {translate('manufacturing.command.rateFinishedProductQuantity')}: &emsp;
                                                     {Math.round(currentCommand.finishedProductQuantity * 100 / (currentCommand.finishedProductQuantity + (currentCommand.substandardProductQuantity ? currentCommand.substandardProductQuantity : 0)) * 100) / 100}%
                                                 </p>
                                                 <p>
                                                     {translate('manufacturing.command.substandardProductQuantity')}: &emsp;
-                                                    {currentCommand.substandardProductQuantity ? currentCommand.substandardProductQuantity + " (" + currentCommand.good.good.baseUnit + ")" : 0 + " (" + currentCommand.good.good.baseUnit + ")"}
+                                                    {currentCommand.substandardProductQuantity ? currentCommand.substandardProductQuantity + " (" + currentCommand.good.baseUnit + ")" : 0 + " (" + currentCommand.good.baseUnit + ")"}
                                                     &emsp;&emsp;&emsp;
                                                     {translate('manufacturing.command.rateSubstandardProductQuantity')}: &emsp;
                                                     {Math.round((currentCommand.substandardProductQuantity ? currentCommand.substandardProductQuantity : 0) * 100 / (currentCommand.finishedProductQuantity + (currentCommand.substandardProductQuantity ? currentCommand.substandardProductQuantity : 0)) * 100) / 100}%
@@ -334,8 +346,8 @@ class ManufacturingCommandDetailInfo extends Component {
                                 <fieldset className="scheduler-border">
                                     <legend className="scheduler-border">{translate('manufacturing.command.approvers')}</legend>
                                     {
-                                        currentCommand.manufacturingPlan && currentCommand.manufacturingPlan.approvers &&
-                                        currentCommand.manufacturingPlan.approvers.map((x, index) => {
+                                        currentCommand.approvers && currentCommand.approvers.length &&
+                                        currentCommand.approvers.map((x, index) => {
                                             return (
                                                 <div className="form-group" key={index}>
                                                     <p>
@@ -360,7 +372,7 @@ class ManufacturingCommandDetailInfo extends Component {
                                 </fieldset>
                             </div>
                         </div>
-                        <div className="row">
+                        {/* <div className="row">
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                 <fieldset className="scheduler-border">
                                     <legend className="scheduler-border">{translate('manufacturing.command.comment')}</legend>
@@ -369,7 +381,7 @@ class ManufacturingCommandDetailInfo extends Component {
                                     </div>
                                 </fieldset>
                             </div>
-                        </div>
+                        </div> */}
                     </form>
                 </DialogModal>
             </React.Fragment >

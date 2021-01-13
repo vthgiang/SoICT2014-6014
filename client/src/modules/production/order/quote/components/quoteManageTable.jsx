@@ -95,7 +95,6 @@ class QuoteManageTable extends Component {
     };
 
     handleShowDetailInfo = (data) => {
-        console.log("DATA", data);
         this.setState((state) => {
             return {
                 ...state,
@@ -168,8 +167,6 @@ class QuoteManageTable extends Component {
         ];
 
         const { department, role, auth } = this.props;
-
-        console.log("auth", auth);
 
         return (
             <React.Fragment>

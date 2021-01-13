@@ -211,8 +211,16 @@ class SalesOrderTable extends Component {
                 text: "Yêu cầu sản xuất",
             },
             {
-                className: "text-success",
+                className: "text-dark",
                 text: "Yêu cầu xuất kho",
+            },
+            {
+                className: "text-secondary",
+                text: "Đang giao hàng",
+            },
+            {
+                className: "text-success",
+                text: "Đã giao hàng",
             },
             {
                 className: "text-danger",

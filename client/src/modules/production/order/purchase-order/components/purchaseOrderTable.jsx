@@ -179,7 +179,7 @@ class PurchaseOrderTable extends Component {
                 text: "Đã nhập kho",
             },
             {
-                className: "text-success",
+                className: "text-danger",
                 text: "Đã hủy",
             },
         ];
