@@ -15,9 +15,7 @@ class BusinessDepartmentManagementTable extends Component {
         this.state = {
             page: 1,
             limit: 5,
-            code: "",
-            status: "",
-            type: "",
+            role: "",
         };
     }
 
@@ -25,7 +23,6 @@ class BusinessDepartmentManagementTable extends Component {
         const { page, limit } = this.state;
         this.props.getAllBusinessDepartments({ page, limit });
         this.props.getAllDepartments();
-        this.props.getAllRoles();
     };
 
     setPage = async (page) => {
@@ -36,7 +33,7 @@ class BusinessDepartmentManagementTable extends Component {
             limit: this.state.limit,
             page: page,
         };
-        this.props.getAllManufacturingWorks(data);
+        this.props.getAllBusinessDepartments(data);
     };
 
     setLimit = async (limit) => {
@@ -47,28 +44,13 @@ class BusinessDepartmentManagementTable extends Component {
             limit: limit,
             page: this.state.page,
         };
-        this.props.getAllManufacturingWorks(data);
+        this.props.getAllBusinessDepartments(data);
     };
 
-    handleChangeCode = (e) => {
-        const { value } = e.target;
-        this.setState({
-            code: value,
-        });
-    };
-
-    handleChangeType = (value) => {
+    handleRoleChange = (value) => {
         if (value[0] !== "title") {
             this.setState({
-                type: value[0],
-            });
-        }
-    };
-
-    handleChangeStatus = (value) => {
-        if (value[0] !== "title") {
-            this.setState({
-                status: value[0],
+                role: value[0],
             });
         }
     };
@@ -77,13 +59,11 @@ class BusinessDepartmentManagementTable extends Component {
         await this.setState({
             page: 1,
         });
-        let { page, limit, code, status, type } = this.state;
+        let { page, limit, role } = this.state;
         const data = {
             page,
             limit,
-            code,
-            status,
-            type,
+            role,
         };
         this.props.getAllBusinessDepartments(data);
     };
@@ -95,7 +75,6 @@ class BusinessDepartmentManagementTable extends Component {
                 businessDepartmentDetail,
             };
         });
-        console.log("businessDepartmentDetail", businessDepartmentDetail);
         window.$("#modal-detail-business-department").modal("show");
     };
 
@@ -126,55 +105,35 @@ class BusinessDepartmentManagementTable extends Component {
         const { translate } = this.props;
         const { businessDepartments } = this.props;
         const { totalPages, page } = businessDepartments;
-        let { businessDepartmentEdit, businessDepartmentDetail, code, type, status } = this.state;
+        let { businessDepartmentEdit, businessDepartmentDetail, role } = this.state;
         let listBusinessDepartments = [];
         if (businessDepartments.isLoading === false) {
             listBusinessDepartments = businessDepartments.listBusinessDepartments;
         }
 
-        const departmentNames = ["title", "Bộ phận kinh doanh", "Bộ phận kế toán", "Bộ phận thu mua nguyên vật liệu"];
+        const roleConvert = ["title", "Kinh doanh", "Quản lý bán hàng", "Kế toán"];
         return (
             <React.Fragment>
-                {/* {<ManufacturingWorksDetailForm worksDetail={this.state.worksDetail} />} */}
                 {businessDepartmentEdit && <BusinessDepartmentEditForm businessDepartmentEdit={businessDepartmentEdit} />}
                 {businessDepartmentDetail && <BusinessDepartmentDetailForm businessDepartmentDetail={businessDepartmentDetail} />}
                 <div className="box-body qlcv">
                     <BusinessDepartmentCreateForm />
                     <div className="form-inline">
                         <div className="form-group">
-                            <label className="form-control-static">Mã phòng ban</label>
-                            <input type="text" className="form-control" onChange={this.handleChangeCode} placeholder="Nhập mã phòng..." />
-                        </div>
-                        <div className="form-group">
-                            <label className="form-control-static">Thuộc bộ phận</label>
+                            <label className="form-control-static">Vai trò</label>
                             <SelectBox
                                 id={`select-type-for-business-department-search`}
                                 className="form-control select2"
                                 style={{ width: "100%" }}
                                 items={[
-                                    { value: "title", text: "---Chọn bộ phận---" },
-                                    { value: "1", text: "Bộ phận kinh doanh" },
-                                    { value: "2", text: "Bộ phận kế toán" },
-                                    { value: "3", text: "Bộ phận thu mua nguyên vật liệu" },
+                                    { value: "title", text: "---Chọn vai trò đơn vị---" },
+                                    { value: "1", text: "Kinh doanh" },
+                                    { value: "2", text: "Quản lý bán hàng" },
+                                    { value: "3", text: "Kế toán" },
                                 ]}
-                                onChange={this.handleChangeType}
+                                onChange={this.handleRoleChange}
                             />
                         </div>
-                        <div className="form-group">
-                            <label className="form-control-static">Trạng thái</label>
-                            <SelectBox
-                                id={`select-status-for-business-department-search`}
-                                className="form-control select2"
-                                style={{ width: "100%" }}
-                                items={[
-                                    { value: "title", text: "---Chọn trạng thái phòng ban---" },
-                                    { value: "1", text: "Đang hoạt động" },
-                                    { value: "0", text: "Ngừng hoạt động" },
-                                ]}
-                                onChange={this.handleChangeStatus}
-                            />
-                        </div>
-
                         <div className="form-group">
                             <button type="button" className="btn btn-success" title={"Tìm phòng kinh doanh"} onClick={this.handleSubmitSearch}>
                                 {"Tìm kiếm"}
@@ -185,18 +144,14 @@ class BusinessDepartmentManagementTable extends Component {
                         <thead>
                             <tr>
                                 <th>{"STT"}</th>
-                                <th>{"Mã phòng"}</th>
-                                <th>{"Tên phòng"}</th>
-                                <th>{"Bộ phận"}</th>
+                                <th>{"Tên đơn vị"}</th>
                                 <th>{"Trưởng đơn vị"}</th>
-                                <th>{"giám đốc phụ trách"}</th>
-                                <th>{"Trạng thái"}</th>
-                                <th>{"Mô tả"}</th>
+                                <th>{"Vai trò"}</th>
                                 <th style={{ width: "120px", textAlign: "center" }}>
                                     {translate("table.action")}
                                     <DataTableSetting
                                         tableId="business-department-table"
-                                        columnArr={["STT", "Mã phòng", "Tên phòng", "Trưởng phòng", "giám đốc phụ trách", "Mô tả", "Trạng thái"]}
+                                        columnArr={["STT", "Tên đơn vị", "Trưởng đơn vị", "Vai trò"]}
                                         limit={this.state.limit}
                                         hideColumnOption={true}
                                         setLimit={this.setLimit}
@@ -210,19 +165,13 @@ class BusinessDepartmentManagementTable extends Component {
                                 listBusinessDepartments.map((businessDepartment, index) => (
                                     <tr key={index}>
                                         <td>{index + 1}</td>
-                                        <td>{businessDepartment.code}</td>
                                         <td>{businessDepartment.organizationalUnit ? businessDepartment.organizationalUnit.name : "---"}</td>
-                                        <td>{departmentNames[businessDepartment.type]}</td>
                                         <td>
-                                            {businessDepartment.organizationalUnit ? this.getManagerName(businessDepartment.organizationalUnit) : "---"}
+                                            {businessDepartment.organizationalUnit
+                                                ? this.getManagerName(businessDepartment.organizationalUnit)
+                                                : "---"}
                                         </td>
-                                        <td>{businessDepartment.managers ? businessDepartment.managers.map((manager) => manager.name) : "---"}</td>
-                                        <td>{businessDepartment.description}</td>
-                                        {businessDepartment.status ? (
-                                            <td style={{ color: "green" }}>{"Đang hoạt động"}</td>
-                                        ) : (
-                                                <td style={{ color: "red" }}>{"Ngừng hoạt động"}</td>
-                                            )}
+                                        <td>{roleConvert[businessDepartment.role]}</td>
                                         <td style={{ textAlign: "center" }}>
                                             <a
                                                 style={{ width: "5px" }}
@@ -251,10 +200,10 @@ class BusinessDepartmentManagementTable extends Component {
                     {businessDepartments.isLoading ? (
                         <div className="table-info-panel">{translate("confirm.loading")}</div>
                     ) : (
-                            (typeof listBusinessDepartments === "undefined" || listBusinessDepartments.length === 0) && (
-                                <div className="table-info-panel">{translate("confirm.no_data")}</div>
-                            )
-                        )}
+                        (typeof listBusinessDepartments === "undefined" || listBusinessDepartments.length === 0) && (
+                            <div className="table-info-panel">{translate("confirm.no_data")}</div>
+                        )
+                    )}
                     <PaginateBar pageTotal={totalPages ? totalPages : 0} currentPage={page} func={this.setPage} />
                 </div>
             </React.Fragment>

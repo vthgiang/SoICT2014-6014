@@ -515,7 +515,6 @@ exports.editBill = async (id, userId, data, portal, companyId) => {
             if (customerPoint && salesOrder.allCoin) {
                 await CustomerService.editCustomerPoint(portal, companyId, customerPoint._id, {point:salesOrder.allCoin + customerPoint.point }, userId)
             }
-            console.log(customerPoint);
         }
     } else if (parseInt(bill.status) === 4) {//Nếu bill bị hủy
         await PurchaseOrder(connect(DB_CONNECTION, portal)).findOneAndUpdate({
@@ -531,13 +530,12 @@ exports.editBill = async (id, userId, data, portal, companyId) => {
                 $set: { status: 6 }
         });
 
-         //Trả lại số xu đã sử dụng cho khách hàng
+         //Trả lại số xu đã sử dụng cho khách
          if (salesOrder) {
             let customerPoint = await CustomerService.getCustomerPoint(portal, companyId, salesOrder.customer);
             if (customerPoint && salesOrder.coin) {
                 await CustomerService.editCustomerPoint(portal, companyId, customerPoint._id, {point:salesOrder.coin + customerPoint.point }, userId)
             }
-            console.log(customerPoint);
         }
     }
     //------------------KẾT THÚC PHẦN PHỤC VỤ CHO QUẢN LÝ ĐƠN HÀNG-----------------

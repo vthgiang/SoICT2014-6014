@@ -378,6 +378,27 @@ class QuoteCreateForm extends Component {
         });
     };
 
+    getCoinOfAll = () => {
+        let coinOfAll = 0;
+        let { goods } = this.state;
+        let { discountsOfOrderValue } = this.state;
+
+        goods.forEach((good) => {
+            good.discountsOfGood.forEach((discount) => {
+                if (discount.formality == "2") {
+                    coinOfAll += discount.loyaltyCoin;
+                }
+            });
+        });
+
+        discountsOfOrderValue.forEach((discount) => {
+            if (discount.formality == "2") {
+                coinOfAll += discount.loyaltyCoin;
+            }
+        });
+        return coinOfAll;
+    };
+
     setPaymentAmount = (paymentAmount) => {
         this.setState((state) => {
             return {
@@ -485,11 +506,9 @@ class QuoteCreateForm extends Component {
         if (this.isValidateForm()) {
             let {
                 customer,
-                // customerName,
                 customerAddress,
                 customerPhone,
                 customerRepresent,
-                // customerTaxNumber,
                 customerEmail,
                 code,
                 effectiveDate,
@@ -502,22 +521,23 @@ class QuoteCreateForm extends Component {
                 note,
             } = this.state;
 
+            let allCoin = this.getCoinOfAll(); //Lấy tất cả các xu được tặng trong đơn
+
             let data = {
                 code,
                 effectiveDate: effectiveDate ? new Date(formatToTimeZoneDate(effectiveDate)) : undefined,
                 expirationDate: expirationDate ? new Date(formatToTimeZoneDate(expirationDate)) : undefined,
                 customer,
-                // customerName,
                 customerPhone,
                 customerAddress,
                 customerRepresent,
-                // customerTaxNumber,
                 customerEmail,
                 goods: this.formatGoodForSubmit(),
                 discounts: discountsOfOrderValue.length ? this.formatDiscountForSubmit(discountsOfOrderValue) : [],
                 shippingFee,
                 deliveryTime: deliveryTime ? new Date(formatToTimeZoneDate(deliveryTime)) : undefined,
                 coin,
+                allCoin,
                 paymentAmount,
                 note,
             };

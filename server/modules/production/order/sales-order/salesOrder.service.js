@@ -285,9 +285,17 @@ exports.editSalesOrder = async (userId, companyId, id, data, portal) => {
         data = { ...data, goods };
     }
 
-    await SalesOrder(connect(DB_CONNECTION, portal)).findByIdAndUpdate(id, {
+    let salesOrder = await SalesOrder(connect(DB_CONNECTION, portal)).findByIdAndUpdate(id, {
         $set: data
     }, { new: true });
+
+    //Trả lại số xu đã sử dụng cho khách trong trường hợp hủy đơn
+    if (salesOrder) {
+        let customerPoint = await CustomerService.getCustomerPoint(portal, companyId, salesOrder.customer);
+        if (customerPoint && salesOrder.coin) {
+            await CustomerService.editCustomerPoint(portal, companyId, customerPoint._id, {point:salesOrder.coin + customerPoint.point }, userId)
+        }
+    }
 
     let salesOrderUpdated = await SalesOrder(connect(DB_CONNECTION, portal)).findById(id)
         .populate([{

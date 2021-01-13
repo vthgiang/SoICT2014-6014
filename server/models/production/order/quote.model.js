@@ -242,6 +242,9 @@ const QuoteSchema = Schema({
     coin: {
         type: Number
     },
+    allCoin: {
+        type: Number
+    },
     //Tổng thuế cho toàn đơn
     totalTax: {
         type: Number,
