@@ -1,6 +1,6 @@
 const moment = require('moment');
 const {
-    ManufacturingPlan, OrganizationalUnit, ManufacturingWorks, ManufacturingCommand, ManufacturingOrder, SalesOrder
+    ManufacturingPlan, OrganizationalUnit, ManufacturingWorks, ManufacturingCommand, ManufacturingOrder, SalesOrder, ManufacturingMill
 } = require(`../../../../models`);
 
 const {
@@ -8,6 +8,7 @@ const {
 } = require(`../../../../helpers/dbHelper`);
 
 const UserService = require('../../../super-admin/user/user.service');
+const { createManufacturingCommand } = require('../manufacturingCommand/manufacturingCommand.service');
 
 
 function getArrayTimeFromString(stringDate) {
@@ -29,7 +30,7 @@ function getArrayTimeFromString(stringDate) {
 function checkProgressManufacturingCommand(arrayCommands) {
     let date = new Date(moment().subtract(1, "days"));
     for (let i = 0; i < arrayCommands.length; i++) {
-        if ((arrayCommands[i].status == 1 || arrayCommands[i].status == 2) && (arrayCommands[i].startDate < date)
+        if ((arrayCommands[i].status == 1 || arrayCommands[i].status == 2 || arrayCommands[i].status == 6) && (arrayCommands[i].startDate < date)
             || (arrayCommands[i].status == 3 && arrayCommands[i].endDate < date)
         ) {
             return true;
@@ -71,7 +72,14 @@ function filterPlansWithProgress(arrayPlans, progress) {
 }
 
 exports.createManufacturingPlan = async (data, portal) => {
-    console.log(data);
+    const manufacturingCommands = data.manufacturingCommands;
+    const listMillSchedules = data.listMillSchedules;
+    // const arrayWorkerSchedules = data.arrayWorkerSchedules;
+    const manufacturingMill = await ManufacturingMill(connect(DB_CONNECTION, portal)).findById({
+        _id: manufacturingCommands[0].manufacturingMill
+    });
+    const manufacturingWorksId = manufacturingMill.manufacturingWorks;
+
     let newManufacturingPlan = await ManufacturingPlan(connect(DB_CONNECTION, portal)).create({
         code: data.code,
         salesOrders: data.salesOrders ? data.salesOrders : [],
@@ -91,10 +99,7 @@ exports.createManufacturingPlan = async (data, portal) => {
         startDate: data.startDate,
         endDate: data.endDate,
         description: data.description,
-        // manufacturingWorks: data.manufacturingWorks.map(x => {
-        //     return x
-        // })
-        manufacturingWorks: ["5ff9c583d39ee0300666355b"]
+        manufacturingWorks: [manufacturingWorksId]
     });
 
     let manufacturingPlan = await ManufacturingPlan(connect(DB_CONNECTION, portal))
@@ -104,6 +109,13 @@ exports.createManufacturingPlan = async (data, portal) => {
         }, {
             path: "manufacturingCommands"
         }]);
+    for (let i = 0; i < manufacturingCommands.length; i++) {
+        manufacturingCommands[i].manufacturingPlan = newManufacturingPlan._id;
+        manufacturingCommands[i].creator = data.creator;
+        await createManufacturingCommand(manufacturingCommands[i], portal);
+    }
+    console.log(listMillSchedules);
+
     return { manufacturingPlan }
 }
 

@@ -23,7 +23,7 @@ class ManufacturingLotCreateForm extends Component {
     }
 
     static getDerivedStateFromProps = (props, state) => {
-        if (state.command !== props.command) {
+        if (state.manufacturingCommandId !== props.command._id) {
             return {
                 ...state,
                 code1: props.code1,
@@ -31,8 +31,9 @@ class ManufacturingLotCreateForm extends Component {
                 manufacturingCommandId: props.command._id,
                 manufacturingCommandCode: props.command.code,
                 good: props.command.good,
-                expirationDate1: moment().add(props.command.good.good.numberExpirationDate, 'days').format('DD-MM-YYYY'),
-                expirationDate2: moment().add(props.command.good.good.numberExpirationDate, 'days').format('DD-MM-YYYY'),
+                quantity: props.command.quantity,
+                expirationDate1: moment().add(props.command.good.numberExpirationDate, 'days').format('DD-MM-YYYY'),
+                expirationDate2: moment().add(props.command.good.numberExpirationDate, 'days').format('DD-MM-YYYY'),
             }
         }
         return null;
@@ -99,6 +100,7 @@ class ManufacturingLotCreateForm extends Component {
         this.setState({
             expirationDate2: value
         });
+
     }
 
     handleDescription1Change = (e) => {
@@ -129,7 +131,6 @@ class ManufacturingLotCreateForm extends Component {
 
     save = () => {
         if (this.isFormValidated()) {
-
             const data = [];
             const data1 = {
                 code: this.state.code1,
@@ -137,7 +138,7 @@ class ManufacturingLotCreateForm extends Component {
                 originalQuantity: this.state.quantity1,
                 productType: 1,
                 manufacturingCommand: this.state.manufacturingCommandId,
-                good: this.state.good.good._id,
+                good: this.state.good._id,
                 quantity: this.state.quantity1,
                 status: 1,
                 description: this.state.description1,
@@ -152,7 +153,7 @@ class ManufacturingLotCreateForm extends Component {
                     originalQuantity: this.state.quantity2,
                     productType: 2,
                     manufacturingCommand: this.state.manufacturingCommandId,
-                    good: this.state.good.good._id,
+                    good: this.state.good._id,
                     quantity: this.state.quantity2,
                     status: 1,
                     description: this.state.description2,
@@ -173,8 +174,9 @@ class ManufacturingLotCreateForm extends Component {
     }
 
     render() {
+        console.log(this.state.expirationDate2);
         const { lots, translate } = this.props;
-        const { manufacturingCommandCode, good, code1, quantity1, expirationDate1, code2, quantity2, expirationDate2, errorQuantity1, errorQuantity2, description1, description2 } = this.state;
+        const { manufacturingCommandCode, good, quantity, code1, quantity1, expirationDate1, code2, quantity2, expirationDate2, errorQuantity1, errorQuantity2, description1, description2 } = this.state;
         return (
             <React.Fragment>
                 {/* <ButtonModal onButtonCallBack={this.handleClickCreate} modalID="modal-create-manufacturing-lot" button_name={translate('manufacturing.lot.add')} title={translate('manufacturing.lot.add_lot')} /> */}
@@ -196,7 +198,7 @@ class ManufacturingLotCreateForm extends Component {
                         </div>
                         <div className="form-group">
                             <label>{translate('manufacturing.lot.good')}:&emsp;</label>
-                            {good && good.good && good.good.name}
+                            {good && good.name}
                         </div>
                         {/* <div className="form-group">
                             <label>{translate('manufacturing.lot.packing_rule')}:&emsp;</label>
@@ -208,11 +210,11 @@ class ManufacturingLotCreateForm extends Component {
                         </div> */}
                         <div className="form-group">
                             <label>{translate('manufacturing.lot.base_unit')}:&emsp;</label>
-                            {good && good.good && good.good.baseUnit}
+                            {good && good.baseUnit}
                         </div>
                         <div className="form-group">
                             <label>{translate('manufacturing.lot.quantity_base_unit')}:&emsp;</label>
-                            {good && good.quantity + " " + good.good.baseUnit}
+                            {good && quantity + " " + good.baseUnit}
                         </div>
 
                         <fieldset className="scheduler-border">
@@ -222,7 +224,7 @@ class ManufacturingLotCreateForm extends Component {
                                 <input type="text" disabled={true} value={code1} className="form-control"></input>
                             </div>
                             <div className={`form-group ${!errorQuantity1 ? "" : "has-error"}`}>
-                                <label>{translate('manufacturing.lot.quantity')} ({good && good.good.baseUnit})<span className="text-red">*</span></label>
+                                <label>{translate('manufacturing.lot.quantity')} ({good && good.baseUnit})<span className="text-red">*</span></label>
                                 <input type="number" value={quantity1} onChange={this.handleQuantity1Change} className="form-control"></input>
                                 <ErrorLabel content={errorQuantity1} />
                             </div>
@@ -248,7 +250,7 @@ class ManufacturingLotCreateForm extends Component {
                                 <input type="text" disabled={true} value={code2} className="form-control"></input>
                             </div>
                             <div className={`form-group ${!errorQuantity2 ? '' : 'has-error'}`}>
-                                <label>{translate('manufacturing.lot.quantity')} ({good && good.good.baseUnit})</label>
+                                <label>{translate('manufacturing.lot.quantity')} ({good && good.baseUnit})</label>
                                 <input type="number" value={quantity2} onChange={this.handleQuantity2Change} className="form-control"></input>
                                 <ErrorLabel content={errorQuantity2} />
                             </div>

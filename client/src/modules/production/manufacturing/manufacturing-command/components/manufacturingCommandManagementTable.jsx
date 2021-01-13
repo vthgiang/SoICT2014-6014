@@ -252,6 +252,7 @@ class ManufacturingCommandManagementTable extends Component {
                     <ManufacturingCommandDetailInfo idModal={1} commandDetail={this.state.commandDetail} />
                 }
                 {
+                    this.state.command &&
                     <ManufacturingLotCreateForm
                         command={this.state.command}
                         code1={this.state.code1}
@@ -348,7 +349,7 @@ class ManufacturingCommandManagementTable extends Component {
                                 className="form-control select2"
                                 style={{ width: "100%" }}
                                 items={[
-                                    { value: '1', text: translate('manufacturing.command.6.content') },
+                                    { value: '6', text: translate('manufacturing.command.6.content') },
                                     { value: '1', text: translate('manufacturing.command.1.content') },
                                     { value: '2', text: translate('manufacturing.command.2.content') },
                                     { value: '3', text: translate('manufacturing.command.3.content') },

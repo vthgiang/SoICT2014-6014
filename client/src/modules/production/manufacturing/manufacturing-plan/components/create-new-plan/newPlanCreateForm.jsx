@@ -405,6 +405,11 @@ class NewPlanCreateForm extends Component {
 
     save = () => {
         if (this.isFormValidated()) {
+            const { listWorkSchedulesOfWorks } = this.state;
+            let listMillSchedules = [];
+            for (var value of listWorkSchedulesOfWorks.values()) {
+                listMillSchedules = [...listMillSchedules, ...value]
+            }
             const data = {
                 code: this.state.code,
                 salesOrders: this.state.salesOrders,
@@ -415,7 +420,7 @@ class NewPlanCreateForm extends Component {
                 approvers: this.state.approvers,
                 creator: localStorage.getItem('userId'),
                 manufacturingCommands: this.state.manufacturingCommands,
-                listWorkSchedulesOfWorks: this.state.listWorkSchedulesOfWorks,
+                listMillSchedules: listMillSchedules,
                 arrayWorkerSchedules: this.state.arrayWorkerSchedules
             }
             this.props.createManufacturingPlan(data);
@@ -423,7 +428,6 @@ class NewPlanCreateForm extends Component {
     }
 
     render() {
-        console.log(this.state);
         const { step, steps } = this.state;
         const { translate } = this.props;
         const {
