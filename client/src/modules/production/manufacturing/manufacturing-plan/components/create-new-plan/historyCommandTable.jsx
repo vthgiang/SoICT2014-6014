@@ -241,9 +241,9 @@ class HistoryCommandTable extends Component {
                                                 <td>{index + 1}</td>
                                                 <td>{command.code}</td>
                                                 {/* <td>{command.manufacturingPlan !== undefined && command.manufacturingPlan.code}</td> */}
-                                                <td>{command.good && command.good.good.name}</td>
-                                                <td>{command.good && command.good.good.baseUnit}</td>
-                                                <td>{command.good && command.good.quantity}</td>
+                                                <td>{command.good && command.good.name}</td>
+                                                <td>{command.good && command.good.baseUnit}</td>
+                                                <td>{command.quantity}</td>
                                                 <td>{command.accountables && command.accountables.map((acc, index) => {
                                                     if (command.accountables.length === index + 1)
                                                         return acc.name;
