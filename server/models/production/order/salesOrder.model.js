@@ -12,7 +12,7 @@ const SalesOrderSchema = new Schema({
         //3: Yêu cầu xuất kho, 
         //4: Đang giao hàng , 5: Đã giao hàng, 6: Đã hủy
         type: Number,
-        enum: [1, 2, 3, 4, 5, 6, 7],
+        enum: [1, 2, 3, 4, 5, 6],
         // required: true,
         default: 1
     },

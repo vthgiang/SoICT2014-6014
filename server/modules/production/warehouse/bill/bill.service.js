@@ -492,6 +492,37 @@ exports.editBill = async (id, userId, data, portal) => {
     bill.logs = [...bill.logs, log];
 
     await bill.save();
+
+    //--------------------PHẦN PHỤC VỤ CHO QUẢN LÝ ĐƠN HÀNG------------------------
+    if (parseInt(bill.status) === 2) {//Nếu bill đã hoàn thành
+        await PurchaseOrder(connect(DB_CONNECTION, portal)).findOneAndUpdate({
+            bill: bill._id
+        }, {
+                $set: { status: 3 }
+        });
+
+        //Cập nhật trạng thái đơn mua hàng là đà hoàn thành khi bill xuất kho hoàn thành
+        await SalesOrder(connect(DB_CONNECTION, portal)).findOneAndUpdate({
+            bill: bill._id
+        }, {
+                $set: { status: 5 }
+        });
+    } else if (parseInt(bill.status) === 4) {//Nếu bill bị hủy
+        await PurchaseOrder(connect(DB_CONNECTION, portal)).findOneAndUpdate({
+            bill: bill._id
+        }, {
+                $set: { status: 4 }
+        });
+
+        //Cập nhật trạng thái đơn mua hàng là đã hủy
+        await SalesOrder(connect(DB_CONNECTION, portal)).findOneAndUpdate({
+            bill: bill._id
+        }, {
+                $set: { status: 6 }
+        });
+    }
+    //------------------KẾT THÚC PHẦN PHỤC VỤ CHO QUẢN LÝ ĐƠN HÀNG-----------------
+
     // Nếu trạng thái chuyển từ đang thực hiện sang trạng thái đã hoàn thành thì
     if (data.oldStatus === '5' && data.status === '2') {
         //Nếu là phiếu xuất kho hệ thống cập nhật lại số lượng tồn kho
