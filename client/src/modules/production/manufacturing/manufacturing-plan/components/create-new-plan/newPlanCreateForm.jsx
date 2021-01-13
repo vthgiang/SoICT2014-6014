@@ -56,11 +56,13 @@ class NewPlanCreateForm extends Component {
     }
 
     componentDidMount = () => {
-        this.props.getAllSalesOrder({ page: 1, limit: 1000 });
+        // this.props.getAllSalesOrder({ page: 1, limit: 1000 });
         this.props.getAllUserOfCompany();
         const currentRole = localStorage.getItem("currentRole");
+        this.props.getSalesOrdersByManufacturingWorks(currentRole);
         this.props.getAllApproversOfPlan(currentRole);
         this.props.getGoodByManageWorkRole(currentRole);
+        this.props.getAllSalesOrders({ page: 1, limit: 1000 });
     };
 
     setCurrentStep = async (e, step) => {
@@ -146,11 +148,11 @@ class NewPlanCreateForm extends Component {
             salesOrders: value,
         });
 
-        const { listSalesOrders } = this.props.salesOrders;
+        const { listSalesOrdersWorks } = this.props.salesOrders;
 
         let listOrders = [];
-        if (listSalesOrders.length) {
-            listOrders = listSalesOrders.filter((x) => value.includes(x._id));
+        if (listSalesOrdersWorks.length) {
+            listOrders = listSalesOrdersWorks.filter((x) => value.includes(x._id));
         }
         let goods = [];
         // let goodIds = goods.map(x => x.good._id);
@@ -541,13 +543,14 @@ function mapStateToProps(state) {
 }
 
 const mapDispatchToProps = {
-    getAllSalesOrder: SalesOrderActions.getAllSalesOrders,
+    getSalesOrdersByManufacturingWorks: SalesOrderActions.getSalesOrdersByManufacturingWorks,
     getAllApproversOfPlan: manufacturingPlanActions.getAllApproversOfPlan,
     getInventoryByGoodIds: LotActions.getInventoryByGoodIds,
     getAllUserOfCompany: UserActions.getAllUserOfCompany,
     getGoodByManageWorkRole: GoodActions.getGoodByManageWorkRole,
     getAllWorkSchedulesOfManufacturingWork: workScheduleActions.getAllWorkSchedulesOfManufacturingWork,
     createManufacturingPlan: manufacturingPlanActions.createManufacturingPlan,
+    getAllSalesOrders: SalesOrderActions.getAllSalesOrders,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(NewPlanCreateForm));

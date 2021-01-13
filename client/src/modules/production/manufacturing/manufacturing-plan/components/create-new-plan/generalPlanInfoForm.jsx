@@ -2,9 +2,10 @@ import React, { Component } from "react";
 import withTranslate from "react-redux-multilingual/lib/withTranslate";
 import { connect } from "react-redux";
 import { DatePicker, ErrorLabel, SelectBox } from "../../../../../../common-components";
-import sampleData from "../../../sampleData";
 import { LotActions } from "../../../../warehouse/inventory-management/redux/actions";
 import { compareLtDate, compareLteDate } from "../../../../../../helpers/formatDate";
+import { PaymentActions } from "../../../../order/payment/redux/actions";
+import SalesOrderDetailForm from "../../../../order/sales-order/components/salesOrderDetailForm";
 
 class PlanInfoForm extends Component {
     constructor(props) {
@@ -87,9 +88,9 @@ class PlanInfoForm extends Component {
     getListSalesOrdersArr = () => {
         const { translate, salesOrders } = this.props;
         let listSalesOrderArr = [];
-        const { listSalesOrders } = salesOrders;
-        if (listSalesOrders) {
-            listSalesOrders.map((order) => {
+        const { listSalesOrdersWorks } = salesOrders;
+        if (listSalesOrdersWorks) {
+            listSalesOrdersWorks.map((order) => {
                 listSalesOrderArr.push({
                     value: order._id,
                     text: order.code + " - " + translate(`manufacturing.plan.sales_order.${order.priority}.content`),
@@ -360,6 +361,17 @@ class PlanInfoForm extends Component {
         return listSalesOrderChoosed;
     }
 
+    handleShowDetailSalesOrder = async (data) => {
+        await this.props.getPaymentForOrder({ orderId: data._id, orderType: 1 });
+        await this.setState((state) => {
+            return {
+                ...state,
+                salesOrderDetail: data,
+            };
+        });
+        await window.$("#modal-detail-sales-order").modal("show");
+    }
+
 
     render() {
         const { translate, code, salesOrderIds, startDate, endDate, description, listGoodsSalesOrders, addedAllGoods, listGoods } = this.props;
@@ -368,6 +380,7 @@ class PlanInfoForm extends Component {
         listSalesOrdersChoosed = this.getListSalesOrdersChoosed(salesOrderIds);
         return (
             <React.Fragment>
+                {this.state.salesOrderDetail && <SalesOrderDetailForm salesOrderDetail={this.state.salesOrderDetail} />}
                 <div className="row">
                     <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                         <div className="form-group">
@@ -662,6 +675,7 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = {
     getInventoryByGoodId: LotActions.getInventoryByGoodId,
+    getPaymentForOrder: PaymentActions.getPaymentForOrder,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(PlanInfoForm));
