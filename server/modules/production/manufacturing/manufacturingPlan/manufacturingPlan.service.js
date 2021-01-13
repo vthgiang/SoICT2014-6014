@@ -9,6 +9,7 @@ const {
 
 const UserService = require('../../../super-admin/user/user.service');
 const { createManufacturingCommand } = require('../manufacturingCommand/manufacturingCommand.service');
+const { bookingManyManufacturingMills, bookingManyWorkerToCommand } = require('../workSchedule/workSchedule.service');
 
 
 function getArrayTimeFromString(stringDate) {
@@ -74,7 +75,7 @@ function filterPlansWithProgress(arrayPlans, progress) {
 exports.createManufacturingPlan = async (data, portal) => {
     const manufacturingCommands = data.manufacturingCommands;
     const listMillSchedules = data.listMillSchedules;
-    // const arrayWorkerSchedules = data.arrayWorkerSchedules;
+    const arrayWorkerSchedules = data.arrayWorkerSchedules;
     const manufacturingMill = await ManufacturingMill(connect(DB_CONNECTION, portal)).findById({
         _id: manufacturingCommands[0].manufacturingMill
     });
@@ -114,8 +115,9 @@ exports.createManufacturingPlan = async (data, portal) => {
         manufacturingCommands[i].creator = data.creator;
         await createManufacturingCommand(manufacturingCommands[i], portal);
     }
-    console.log(listMillSchedules);
-
+    await bookingManyManufacturingMills(listMillSchedules, portal);
+    console.log(arrayWorkerSchedules);
+    await bookingManyWorkerToCommand(arrayWorkerSchedules, portal);
     return { manufacturingPlan }
 }
 
@@ -242,7 +244,9 @@ exports.getAllManufacturingPlans = async (query, portal) => {
                 path: "creator"
             }, {
                 path: "manufacturingCommands"
-            }]);
+            },]).sort({
+                "updatedAt": "desc"
+            });
 
 
 
