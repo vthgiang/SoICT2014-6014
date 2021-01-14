@@ -109,32 +109,33 @@ class BillDetailForm extends Component {
                                 </div>
                             </div>
                         </div>
-                        <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                            <fieldset className="scheduler-border">
-                                <legend className="scheduler-border">{translate('manage_warehouse.bill_management.approved')}</legend>
-                                {
-                                    billDetail.approvers && billDetail.approvers.length &&
-                                    billDetail.approvers.map((x, index) => {
-                                        return (
-                                            <div className="form-group" key={index}>
-                                                <p>{x.approver.name}{" - "}{x.approver.email}
-                                                {
-                                                    x.approvedTime &&
-                                                    <React.Fragment>
-                                                        &emsp; &emsp; &emsp;
-                                                        {translate('manage_warehouse.bill_management.approved_time')}
-                                                        : &emsp;
-                                                        {formatFullDate(x.approvedTime)}
-                                                    </React.Fragment>
-                                                }
-                                                </p>
-                                            </div>
-                                        )
-                                    })
-                                }
-                            </fieldset>
-                        </div>
-                        { billDetail &&
+                        { 
+                            billDetail.approvers && billDetail.approvers.length && <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <fieldset className="scheduler-border">
+                                    <legend className="scheduler-border">{translate('manage_warehouse.bill_management.approved')}</legend>
+                                    {
+                                        billDetail.approvers.map((x, index) => {
+                                            return (
+                                                <div className="form-group" key={index}>
+                                                    <p>{x.approver.name}{" - "}{x.approver.email}
+                                                    {
+                                                        x.approvedTime &&
+                                                        <React.Fragment>
+                                                            &emsp; &emsp; &emsp;
+                                                            {translate('manage_warehouse.bill_management.approved_time')}
+                                                            : &emsp;
+                                                            {formatFullDate(x.approvedTime)}
+                                                        </React.Fragment>
+                                                    }
+                                                    </p>
+                                                </div>
+                                            )
+                                        })
+                                    }
+                                </fieldset>
+                            </div>
+                        }
+                        { billDetail && billDetail.qualityControlStaffs && billDetail.qualityControlStaffs.length &&
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                 <fieldset className="scheduler-border">
                                     <legend className="scheduler-border">{translate('manage_warehouse.bill_management.qualityControlStaffs')}</legend>
@@ -150,7 +151,7 @@ class BillDetailForm extends Component {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {billDetail.qualityControlStaffs && billDetail.qualityControlStaffs.length &&
+                                            {
                                                 billDetail.qualityControlStaffs.map((x, index) => (
                                                     <tr key={index}>
                                                         <td>{index + 1}</td>
@@ -170,36 +171,38 @@ class BillDetailForm extends Component {
                                 </fieldset>
                             </div>
                         }
-                        <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                            <fieldset className="scheduler-border">
-                                <legend className="scheduler-border">{translate('manage_warehouse.bill_management.accountables')}</legend>
-                                {
-                                    billDetail.accountables && billDetail.accountables.length &&
-                                    billDetail.accountables.map((x, index) => {
-                                        return (
-                                            <div className="form-group" key={index}>
-                                                <p>{x.name}{" - "}{x.email}</p>
-                                            </div>
-                                        )
-                                    })
-                                }
-                            </fieldset>
-                        </div>
-                        <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                            <fieldset className="scheduler-border">
-                                <legend className="scheduler-border">{translate('manage_warehouse.bill_management.users')}</legend>
-                                {
-                                    billDetail.responsibles && billDetail.responsibles.length &&
-                                    billDetail.responsibles.map((x, index) => {
-                                        return (
-                                            <div className="form-group" key={index}>
-                                                <p>{x.name}{" - "}{x.email}</p>
-                                            </div>
-                                        )
-                                    })
-                                }
-                            </fieldset>
-                        </div>
+                        { 
+                            billDetail.accountables && billDetail.accountables.length && <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <fieldset className="scheduler-border">
+                                    <legend className="scheduler-border">{translate('manage_warehouse.bill_management.accountables')}</legend>
+                                    {
+                                        billDetail.accountables.map((x, index) => {
+                                            return (
+                                                <div className="form-group" key={index}>
+                                                    <p>{x.name}{" - "}{x.email}</p>
+                                                </div>
+                                            )
+                                        })
+                                    }
+                                </fieldset>
+                            </div>
+                        }
+                        {
+                            billDetail.responsibles && billDetail.responsibles.length && <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <fieldset className="scheduler-border">
+                                    <legend className="scheduler-border">{translate('manage_warehouse.bill_management.users')}</legend>
+                                    {
+                                        billDetail.responsibles.map((x, index) => {
+                                            return (
+                                                <div className="form-group" key={index}>
+                                                    <p>{x.name}{" - "}{x.email}</p>
+                                                </div>
+                                            )
+                                        })
+                                    }
+                                </fieldset>
+                            </div>
+                        }
                         { billDetail.group !== '4' && 
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                 <fieldset className="scheduler-border">

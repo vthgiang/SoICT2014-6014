@@ -3,10 +3,13 @@ import { connect } from 'react-redux';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import { DialogModal } from '../../../../../common-components';
 import { formatDate, formatFullDate } from '../../../../../helpers/formatDate';
+import { PaymentActions } from '../../../order/payment/redux/actions';
+import SalesOrderDetailForm from '../../../order/sales-order/components/salesOrderDetailForm';
+import { SalesOrderActions } from '../../../order/sales-order/redux/actions';
 import { BillActions } from '../../../warehouse/bill-management/redux/actions';
+import { LotActions } from '../../../warehouse/inventory-management/redux/actions';
 import ManufacturingLotDetailForm from '../../manufacturing-lot/components/manufacturingLotDetailForm';
 import { commandActions } from '../redux/actions';
-import qualityControlForm from './qualityControlForm';
 class ManufacturingCommandDetailInfo extends Component {
     constructor(props) {
         super(props);
@@ -17,6 +20,16 @@ class ManufacturingCommandDetailInfo extends Component {
         if (this.props.commandDetail !== nextProps.commandDetail) {
             this.props.getDetailManufacturingCommand(nextProps.commandDetail._id);
             this.props.getBillsByCommand({ manufacturingCommandId: nextProps.commandDetail._id });
+
+            // Xử lý lấy ra tồn kho của danh sách nguyên vật liệu
+            const materials = nextProps.commandDetail.good.materials;
+            let materialIds = [];
+            materials.map(x => {
+                materialIds.push(x.good._id)
+            });
+            this.props.getInventoryByGoodIds({
+                array: materialIds,
+            });
             return false
         }
         return true;
@@ -30,11 +43,39 @@ class ManufacturingCommandDetailInfo extends Component {
         window.$('#modal-detail-info-manufacturing-lot').modal('show');
     }
 
+    showDetailSalesOrder = async (data) => {
+        await this.props.getPaymentForOrder({ orderId: data._id, orderType: 1 });
+        await this.props.getSalesOrderDetail(data._id);
+        await window.$("#modal-detail-sales-order").modal("show");
+    }
+
+    getCurrentCommandIncludeMaterialInventory = () => {
+        const { manufacturingCommand, lots } = this.props;
+        const { currentCommand } = manufacturingCommand;
+        const { listInventories } = lots;
+        if (listInventories && currentCommand) {
+            listInventories.map((x, index) => {
+                if (currentCommand.good.materials[index]) {
+                    currentCommand.good.materials[index].inventory = x.inventory;
+                }
+            });
+        }
+        return currentCommand;
+    }
+
+    checkInventoryMaterials = (material, currentCommand) => {
+        if (material.quantity * currentCommand.quantity > material.inventory) {
+            return 0
+        }
+        return 1
+    }
+
+
     render() {
         const { translate, manufacturingCommand, idModal, bills } = this.props;
         let currentCommand = {};
         if (manufacturingCommand.currentCommand && manufacturingCommand.isLoading === false) {
-            currentCommand = manufacturingCommand.currentCommand;
+            currentCommand = this.getCurrentCommandIncludeMaterialInventory();
         }
         let listBillByCommand = [];
         if (bills.listBillByCommand && bills.isLoading === false) {
@@ -51,6 +92,7 @@ class ManufacturingCommandDetailInfo extends Component {
                     hasSaveButton={false}
                     hasNote={false}
                 >
+                    <SalesOrderDetailForm />
                     <ManufacturingLotDetailForm lotDetail={this.state.lotDetail} />
                     <form id={`form-detail-manufacturing-command`}>
                         <div className="row">
@@ -186,6 +228,47 @@ class ManufacturingCommandDetailInfo extends Component {
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                 <fieldset className="scheduler-border">
                                     <legend className="scheduler-border">{translate('manufacturing.command.material')}</legend>
+                                    <div className={`form-group`}>
+                                        <table className="table table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th>{translate('manufacturing.command.index')}</th>
+                                                    <th>{translate('manufacturing.command.material_code')}</th>
+                                                    <th>{translate('manufacturing.command.material_name')}</th>
+                                                    <th>{translate('manufacturing.command.good_base_unit')}</th>
+                                                    <th>{translate('manufacturing.command.quantity')}</th>
+                                                    <th>{translate('manufacturing.command.inventory')}</th>
+                                                    <th style={{ textAlign: "left" }}>{translate('manufacturing.command.status')}</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {
+                                                    currentCommand.good && currentCommand.good.materials && currentCommand.good.materials.length
+                                                    &&
+                                                    currentCommand.good.materials.map((x, index) => (
+                                                        <tr>
+                                                            <td> {index + 1}</td>
+                                                            <td>{x.good.code}</td>
+                                                            <td>{x.good.name}</td>
+                                                            <td>{x.good.baseUnit}</td>
+                                                            <td>{x.quantity * currentCommand.quantity}</td>
+                                                            <td>{x.inventory}</td>
+                                                            <td style={{ textAlign: "left", color: translate(`manufacturing.command.materials_info.${this.checkInventoryMaterials(x, currentCommand)}.color`) }}>
+                                                                {translate(`manufacturing.command.materials_info.${this.checkInventoryMaterials(x, currentCommand)}.content`)}
+                                                            </td>
+                                                        </tr>
+                                                    ))
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </fieldset>
+                            </div>
+                        </div>
+                        <div className="row">
+                            <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <fieldset className="scheduler-border">
+                                    <legend className="scheduler-border">{translate('manufacturing.command.material_bill')}</legend>
                                     <div className={`form-group`}>
                                         <table className="table table-bordered">
                                             <thead>
@@ -390,13 +473,16 @@ class ManufacturingCommandDetailInfo extends Component {
 }
 
 function mapStateToProps(state) {
-    const { manufacturingCommand, bills } = state;
-    return { manufacturingCommand, bills }
+    const { manufacturingCommand, bills, lots } = state;
+    return { manufacturingCommand, bills, lots }
 }
 
 const mapDispatchToProps = {
     getDetailManufacturingCommand: commandActions.getDetailManufacturingCommand,
     getBillsByCommand: BillActions.getBillsByCommand,
+    getPaymentForOrder: PaymentActions.getPaymentForOrder,
+    getSalesOrderDetail: SalesOrderActions.getSalesOrderDetail,
+    getInventoryByGoodIds: LotActions.getInventoryByGoodIds,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(ManufacturingCommandDetailInfo));

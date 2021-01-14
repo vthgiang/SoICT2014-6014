@@ -1,5 +1,5 @@
 const {
-    SalesOrder, Quote
+    SalesOrder, Quote, OrganizationalUnit, ManufacturingWorks
 } = require(`../../../../models`);
 
 const {
@@ -9,10 +9,10 @@ const {
 const PaymentService = require('../payment/payment.service');
 const CustomerService = require('../../../crm/customer/customer.service');
 
-exports.createNewSalesOrder = async (userId, companyId,  data, portal) => {
+exports.createNewSalesOrder = async (userId, companyId, data, portal) => {
     let newSalesOrder = await SalesOrder(connect(DB_CONNECTION, portal)).create({
         code: data.code,
-        status: data.status ?  data.status : 1, //Nếu k có thì mặc định bằng 1 (chờ phê duyệt)
+        status: data.status ? data.status : 1, //Nếu k có thì mặc định bằng 1 (chờ phê duyệt)
         creator: userId,
         customer: data.customer,
         customerPhone: data.customerPhone,
@@ -109,6 +109,7 @@ exports.createNewSalesOrder = async (userId, companyId,  data, portal) => {
         shippingFee: data.shippingFee,
         deliveryTime: data.deliveryTime,
         coin: data.coin,
+        allCoin: data.allCoin,
         totalTax: data.totalTax,
         paymentAmount: data.paymentAmount,
         note: data.note,
@@ -126,26 +127,16 @@ exports.createNewSalesOrder = async (userId, companyId,  data, portal) => {
 
     //Trừ xu khách hàng nếu sử dụng
     if (newSalesOrder.coin) {
-        await CustomerService.editCustomerPoint(portal, companyId, newSalesOrder.customer, {point: 0}, userId)
+        await CustomerService.editCustomerPoint(portal, companyId, newSalesOrder.customer, { point: 0 }, userId)
     }
 
     let salesOrder = await SalesOrder(connect(DB_CONNECTION, portal)).findById({ _id: newSalesOrder._id }).populate([{
         path: 'creator', select: 'name'
     }, {
         path: 'customer', select: 'name taxNumber'
-    }, {
-        path: 'goods.good', select: 'code name baseUnit'
-    }, {
-        path: 'goods.manufacturingWorks', select: 'code name address description'
-    }, , {
-        path: 'goods.discounts.bonusGoods.good', select: 'code name baseUnit'
-    }, {
-        path: 'goods.discounts.discountOnGoods.good', select: 'code name baseUnit'
-    }, {
-        path: 'discounts.bonusGoods.good', select: 'code name baseUnit'
     },{
-        path: 'quote', select: 'code createdAt'
-    }]);;
+        path: 'goods.good', select: 'code name baseUnit'
+    } ]);;
     return { salesOrder }
 }
 
@@ -171,21 +162,8 @@ exports.getAllSalesOrders = async (query, portal) => {
                 path: 'creator', select: 'name'
             }, {
                 path: 'customer', select: 'name taxNumber'
-            }, {
-                path: 'goods.good',
-                populate: [{
-                    path: 'manufacturingMills.manufacturingMill'
-                }]
-            }, {
-                path: 'goods.manufacturingWorks', select: 'code name address description'
-            }, , {
-                path: 'goods.discounts.bonusGoods.good', select: 'code name baseUnit'
-            }, {
-                path: 'goods.discounts.discountOnGoods.good', select: 'code name baseUnit'
-            }, {
-                path: 'discounts.bonusGoods.good', select: 'code name baseUnit'
             },{
-                path: 'quote', select: 'code createdAt'
+                path: 'goods.good', select: 'code name baseUnit'
             }]);
         return { allSalesOrders }
     } else {
@@ -196,21 +174,8 @@ exports.getAllSalesOrders = async (query, portal) => {
                 path: 'creator', select: 'name'
             }, {
                 path: 'customer', select: 'name taxNumber'
-            }, {
-                path: 'goods.good',
-                populate: [{
-                    path: 'manufacturingMills.manufacturingMill'
-                }]
-            }, {
-                path: 'goods.manufacturingWorks', select: 'code name address description'
-            }, , {
-                path: 'goods.discounts.bonusGoods.good', select: 'code name baseUnit'
-            }, {
-                path: 'goods.discounts.discountOnGoods.good', select: 'code name baseUnit'
-            }, {
-                path: 'discounts.bonusGoods.good', select: 'code name baseUnit'
             },{
-                path: 'quote', select: 'code createdAt'
+                path: 'goods.good', select: 'code name baseUnit'
             }]
         })
         return { allSalesOrders }
@@ -284,28 +249,26 @@ exports.editSalesOrder = async (userId, companyId, id, data, portal) => {
         data = { ...data, goods };
     }
 
-    await SalesOrder(connect(DB_CONNECTION, portal)).findByIdAndUpdate(id, {
+    let salesOrder = await SalesOrder(connect(DB_CONNECTION, portal)).findByIdAndUpdate(id, {
         $set: data
     }, { new: true });
+
+    //Trả lại số xu đã sử dụng cho khách trong trường hợp hủy đơn
+    if (salesOrder && salesOrder.status===8) {
+        let customerPoint = await CustomerService.getCustomerPoint(portal, companyId, salesOrder.customer);
+        if (customerPoint && salesOrder.coin) {
+            await CustomerService.editCustomerPoint(portal, companyId, customerPoint._id, {point:salesOrder.coin + customerPoint.point }, userId)
+        }
+    }
 
     let salesOrderUpdated = await SalesOrder(connect(DB_CONNECTION, portal)).findById(id)
         .populate([{
             path: 'creator', select: 'name'
         }, {
             path: 'customer', select: 'name taxNumber'
-        }, {
-            path: 'goods.good', select: 'code name baseUnit'
-        }, {
-            path: 'goods.manufacturingWorks', select: 'code name address description'
-        }, , {
-            path: 'goods.discounts.bonusGoods.good', select: 'code name baseUnit'
-        }, {
-            path: 'goods.discounts.discountOnGoods.good', select: 'code name baseUnit'
-        }, {
-            path: 'discounts.bonusGoods.good', select: 'code name baseUnit'
         },{
-            path: 'quote', select: 'code createdAt'
-            }]);
+            path: 'goods.good', select: 'code name baseUnit'
+        }]);
 
     return { salesOrder: salesOrderUpdated }
 }
@@ -334,27 +297,24 @@ exports.approveSalesOrder = async (salesOrderId, approver, portal) => {
  * @param {*} salesOrderId id đơn hàng
  * @param {*} data là 1 array: [{goodId: ObjecId, manufacturingPlanId: ObjectId}] 
  */
-exports.addManufacturingPlanForGood = async (salesOrderId, data, portal) => {
+exports.addManufacturingPlanForGood = async (salesOrderId, manufacturingWorksId, manufacturingPlanId, portal) => {
     //data: [{goodId, manufacturingPlanId}] 
-
     let salesOrder = await SalesOrder(connect(DB_CONNECTION, portal)).findById(salesOrderId);
     if (!salesOrder) {
         throw Error("Sales Order is not existing")
     }
 
     let goodsOfSalesOrder = salesOrder.goods.map((good) => {
-        for (let index = 0; index < data.length; index++) {
-            if (data[index].goodId === good.good) {
-                good.manufacturingPlan = data[index].manufacturingPlanId;
-                return good;
-            }
+        if (good.manufacturingWorks.equals(manufacturingWorksId)) {
+            good.manufacturingPlan = manufacturingPlanId
         }
         return good;
     })
 
     salesOrder.goods = goodsOfSalesOrder;
+    salesOrder.status = 4;
 
-    salesOrder.save();
+    await salesOrder.save();
 
     return { salesOrder }
 }
@@ -363,37 +323,88 @@ exports.addManufacturingPlanForGood = async (salesOrderId, data, portal) => {
  * Lấy các đơn hàng cần lập kế hoạch sản xuất theo nhà máy (chỉ lấy những mặt hàng nhà máy có thể sản xuất)
  * @param {*} manufacturingWorksId id nhà máy
  */
-exports.getSalesOrdersByManufacturingWorks = async (manufacturingWorksId, portal) => {
-    //Lấy những đơn hàng có trạng thái là "yêu cầu sản xuất"
-    let salesOrdersWithStatus = await SalesOrder(connect(DB_CONNECTION, portal)).find({ status: 2 });
+exports.getSalesOrdersByManufacturingWorks = async (currentRole, portal) => {
+    // Lấy ra Id các nhà máy mà currentRole là quản đốc
+    let listWorksIds = await getListWorksIdsByCurrentRole(currentRole, portal);
 
+    //Lấy những đơn hàng có trạng thái là "yêu cầu sản xuất"
+    let salesOrdersWithStatus = await SalesOrder(connect(DB_CONNECTION, portal)).find({ status: 3 })
+        .populate([{
+            path: 'creator', select: 'name'
+        }, {
+            path: 'goods.good',
+            populate: [{
+                path: 'manufacturingMills.manufacturingMill'
+            },{
+                path: 'goods.discounts.bonusGoods.good', select: 'code name baseUnit'
+            }]
+        }]);
     //Lọc đơn hàng theo nhà máy
     let salesOrders = [];
-
     for (let index = 0; index < salesOrdersWithStatus.length; index++) {
         //Lấy các mặt hàng theo nhà máy mà chưa được lập kế hoạch
-        let goodsForManufacturingPlan = salesOrdersWithStatus[index].goods.filter((good) => {
-            if (good.manufacturingWorks === manufacturingWorksId && !good.manufacturingPlan) {
-                return good
-            }
-        })
 
+        let goodsForManufacturingPlan = salesOrdersWithStatus[index].goods.filter((good) => {
+            if (checkValueInArray(listWorksIds, good.manufacturingWorks) && !good.manufacturingPlan) {
+                return true;
+            } else {
+                return false;
+            }
+        });
         //Thêm vào danh sách các đơn hàng cho nhà máy
         if (goodsForManufacturingPlan.length) {
             salesOrdersWithStatus[index].goods = goodsForManufacturingPlan;
             salesOrders.push(salesOrdersWithStatus[index]);
         }
     }
-
     return { salesOrders }
 }
+// Kiểm tra value có trong array hay ko 
+function checkValueInArray(array, value) {
+    let result = false;
+    for (let i = 0; i < array.length; i++) {
+        if (array[i].equals(value)) {
+            result = true
+        }
+    }
+    return result
+}
+
+
+// Lấy ra danh sách id nhà máy mà currentRole quản lý
+async function getListWorksIdsByCurrentRole(currentRole, portal) {
+    // Xử  lý các quyền trước để tìm ra các kế hoạch trong các nhà máy được phân quyền
+    let role = [currentRole];
+    const departments = await OrganizationalUnit(connect(DB_CONNECTION, portal)).find({ 'managers': { $in: role } });
+    let organizationalUnitId = departments.map(department => department._id);
+    let listManufacturingWorks = await ManufacturingWorks(connect(DB_CONNECTION, portal)).find({
+        organizationalUnit: {
+            $in: organizationalUnitId
+        }
+    });
+    // Lấy ra các nhà máy mà currentRole cũng quản lý
+    let listWorksByManageRole = await ManufacturingWorks(connect(DB_CONNECTION, portal)).find({
+        manageRoles: {
+            $in: role
+        }
+    })
+    listManufacturingWorks = [...listManufacturingWorks, ...listWorksByManageRole];
+
+    let listWorksId = listManufacturingWorks.map(x => x._id);
+
+    return listWorksId;
+
+}
+
+
+
 
 //Lấy các đơn hàng chưa thanh toán của khách hàng
 exports.getSalesOrdersForPayment = async (customerId, portal) => {
     let salesOrdersForPayment = await SalesOrder(connect(DB_CONNECTION, portal)).find({ customer: customerId });
     let salesOrders = [];
     if (salesOrdersForPayment.length) {
-        for (let index = 0; index < salesOrdersForPayment.length; index++){
+        for (let index = 0; index < salesOrdersForPayment.length; index++) {
             let paid = await PaymentService.getPaidForSalesOrder(salesOrdersForPayment[index]._id, portal);
 
             if (paid < salesOrdersForPayment[index].paymentAmount) {
@@ -409,5 +420,39 @@ exports.getSalesOrdersForPayment = async (customerId, portal) => {
         }
     }
 
-    return {salesOrders}
+    return { salesOrders }
+}
+
+exports.getSalesOrderDetail = async (id, portal) => {
+    let salesOrder = await SalesOrder(connect(DB_CONNECTION, portal))
+        .findById(id)
+        .populate([{
+            path: 'creator', select: 'name'
+        }, {
+            path: 'customer', select: 'name taxNumber'
+        }, {
+            path: 'goods.good',
+            populate: [{
+                path: 'manufacturingMills.manufacturingMill'
+            }]
+        }, {
+            path: 'goods.manufacturingWorks', select: 'code name address description'
+        },{
+            path: 'goods.manufacturingPlan', select: 'code status startDate endDate'
+        } , {
+            path: 'goods.discounts.bonusGoods.good', select: 'code name baseUnit'
+        }, {
+            path: 'goods.discounts.discountOnGoods.good', select: 'code name baseUnit'
+        }, {
+            path: 'discounts.bonusGoods.good', select: 'code name baseUnit'
+        }, {
+            path: 'quote', select: 'code createdAt'
+        }])
+
+    if (!salesOrder) {
+        throw Error("Sales Order is not existing")
+    }
+
+    return {salesOrder}
+
 }

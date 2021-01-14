@@ -22,13 +22,31 @@ function getArrayTimeFromString(stringDate) {
     return [start, end];
 }
 
+// Hàm format to YYYY-MM để có thể dụng new Date
+function formatToTimeZoneDate(stringDate) {
+    let dateArray = stringDate.split("-");
+    if (dateArray.length == 3) {
+        let day = dateArray[0];
+        let month = dateArray[1];
+        let year = dateArray[2];
+        return `${year}-${month}-${day}`
+    }
+    else if (dateArray.length == 2) {
+        let month = dateArray[0];
+        let year = dateArray[1];
+        return `${year}-${month}`
+    }
+}
+
+
+
 exports.createManufacturingCommand = async (data, portal) => {
     let newManufacturingCommand = await ManufacturingCommand(connect(DB_CONNECTION, portal)).create({
         code: data.code,
         manufacturingPlan: data.manufacturingPlan,
         manufacturingMill: data.manufacturingMill,
-        startDate: data.startDate,
-        endDate: data.endDate,
+        startDate: formatToTimeZoneDate(data.startDate),
+        endDate: formatToTimeZoneDate(data.endDate),
         startTurn: data.startTurn,
         endTurn: data.endTurn,
         good: data.good._id,
@@ -309,7 +327,11 @@ exports.getAllManufacturingCommands = async (query, user, portal) => {
                     path: "creator"
                 }, {
                     path: "good",
-                    select: "code name baseUnit numberExpirationDate"
+                    select: "code name baseUnit numberExpirationDate materials",
+                    populate: [{
+                        path: "materials.good",
+                        select: "code name baseUnit",
+                    }]
                 }, {
                     path: "qualityControlStaffs.staff"
                 }, {
@@ -333,11 +355,6 @@ exports.getManufacturingCommandById = async (id, portal) => {
             populate: [{
                 path: "salesOrders",
                 select: "code"
-            }, {
-                path: "approvers",
-                populate: [{
-                    path: "approver"
-                }]
             }]
         }, {
             path: "manufacturingMill",
@@ -352,7 +369,11 @@ exports.getManufacturingCommandById = async (id, portal) => {
             path: "approvers.approver"
         }, {
             path: "good",
-            select: "code name baseUnit"
+            select: "code name baseUnit materials",
+            populate: [{
+                path: "materials.good",
+                select: "code name baseUnit",
+            }]
         }, {
             path: "qualityControlStaffs.staff"
         }]);
@@ -444,7 +465,11 @@ exports.editManufaturingCommand = async (id, data, portal) => {
             path: "qualityControlStaffs.staff"
         }, {
             path: "good",
-            select: "code name baseUnit numberExpirationDate"
+            select: "code name baseUnit numberExpirationDate materials",
+            populate: [{
+                path: "materials.good",
+                select: "code name baseUnit",
+            }]
         }]);
 
     return { manufacturingCommand }

@@ -87,7 +87,7 @@ exports.createBill = async (req, res) => {
 
 exports.editBill = async (req, res) => {
     try {
-        const bill = await BillService.editBill(req.params.id, req.user._id, req.body, req.portal);
+        const bill = await BillService.editBill(req.params.id, req.user._id, req.body, req.portal, req.user.company._id,);
 
         await Logger.info(req.user.email, 'EDIT_BILL_SUCCESS', req.portal);
         res.status(200).json({

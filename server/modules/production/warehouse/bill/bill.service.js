@@ -1,5 +1,6 @@
 const { Bill, Lot, Stock, SalesOrder, PurchaseOrder } = require(`../../../../models`);
 const { connect } = require(`../../../../helpers/dbHelper`);
+const CustomerService = require('../../../crm/customer/customer.service');
 
 exports.getBillsByType = async (query, userId, portal) => {
     var { page, limit, group, managementLocation } = query;
@@ -391,7 +392,7 @@ function findIndexOfQuatityStaff(array, id) {
     return result;
 }
 
-exports.editBill = async (id, userId, data, portal) => {
+exports.editBill = async (id, userId, data, portal, companyId) => {
     let bill = await Bill(connect(DB_CONNECTION, portal)).findById(id);
     bill.fromStock = bill.fromStock;
     bill.toStock = data.toStock ? data.toStock : bill.toStock;
@@ -502,11 +503,19 @@ exports.editBill = async (id, userId, data, portal) => {
         });
 
         //Cập nhật trạng thái đơn mua hàng là đà hoàn thành khi bill xuất kho hoàn thành
-        await SalesOrder(connect(DB_CONNECTION, portal)).findOneAndUpdate({
+        let salesOrder = await SalesOrder(connect(DB_CONNECTION, portal)).findOneAndUpdate({
             bill: bill._id
         }, {
-                $set: { status: 5 }
+                $set: { status: 7 }
         });
+
+        //Cập nhật số xu cho khách hàng
+        if (salesOrder) {
+            let customerPoint = await CustomerService.getCustomerPoint(portal, companyId, salesOrder.customer);
+            if (customerPoint && salesOrder.allCoin) {
+                await CustomerService.editCustomerPoint(portal, companyId, customerPoint._id, {point:salesOrder.allCoin + customerPoint.point }, userId)
+            }
+        }
     } else if (parseInt(bill.status) === 4) {//Nếu bill bị hủy
         await PurchaseOrder(connect(DB_CONNECTION, portal)).findOneAndUpdate({
             bill: bill._id
@@ -515,11 +524,19 @@ exports.editBill = async (id, userId, data, portal) => {
         });
 
         //Cập nhật trạng thái đơn mua hàng là đã hủy
-        await SalesOrder(connect(DB_CONNECTION, portal)).findOneAndUpdate({
+        let salesOrder = await SalesOrder(connect(DB_CONNECTION, portal)).findOneAndUpdate({
             bill: bill._id
         }, {
-                $set: { status: 6 }
+                $set: { status: 8 }
         });
+
+         //Trả lại số xu đã sử dụng cho khách
+         if (salesOrder) {
+            let customerPoint = await CustomerService.getCustomerPoint(portal, companyId, salesOrder.customer);
+            if (customerPoint && salesOrder.coin) {
+                await CustomerService.editCustomerPoint(portal, companyId, customerPoint._id, {point:salesOrder.coin + customerPoint.point }, userId)
+            }
+        }
     }
     //------------------KẾT THÚC PHẦN PHỤC VỤ CHO QUẢN LÝ ĐƠN HÀNG-----------------
 

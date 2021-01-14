@@ -100,6 +100,7 @@ exports.createNewQuote = async (userId, data, portal) => {
         shippingFee: data.shippingFee,
         deliveryTime: data.deliveryTime,
         coin: data.coin,
+        allCoin: data.allCoin,
         totalTax: data.totalTax,
         paymentAmount: data.paymentAmount,
         note: data.note
