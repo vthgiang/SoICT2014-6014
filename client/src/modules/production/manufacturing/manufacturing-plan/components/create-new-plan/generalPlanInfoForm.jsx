@@ -3,9 +3,10 @@ import withTranslate from "react-redux-multilingual/lib/withTranslate";
 import { connect } from "react-redux";
 import { DatePicker, ErrorLabel, SelectBox } from "../../../../../../common-components";
 import { LotActions } from "../../../../warehouse/inventory-management/redux/actions";
-import { compareLtDate, compareLteDate } from "../../../../../../helpers/formatDate";
+import { compareLtDate, compareLteDate, formatDate } from "../../../../../../helpers/formatDate";
 import { PaymentActions } from "../../../../order/payment/redux/actions";
 import SalesOrderDetailForm from "../../../../order/sales-order/components/salesOrderDetailForm";
+import { formatCurrency } from "../../../../../../helpers/formatCurrency";
 
 class PlanInfoForm extends Component {
     constructor(props) {
@@ -353,12 +354,15 @@ class PlanInfoForm extends Component {
         const { salesOrders } = this.props;
         let listSalesOrderChoosed = [];
         const { listSalesOrders } = salesOrders;
-        listSalesOrders.map(x => {
-            if (salesOrderIds.includes(x._id)) {
-                listSalesOrderChoosed.push(x);
-            }
-        });
-        return listSalesOrderChoosed;
+        if (listSalesOrders && listSalesOrders.length) {
+            listSalesOrders.map(x => {
+                if (salesOrderIds.includes(x._id)) {
+                    listSalesOrderChoosed.push(x);
+                }
+            });
+            return listSalesOrderChoosed;
+        }
+        return [];
     }
 
     handleShowDetailSalesOrder = async (data) => {
@@ -372,12 +376,67 @@ class PlanInfoForm extends Component {
         await window.$("#modal-detail-sales-order").modal("show");
     }
 
-
     render() {
         const { translate, code, salesOrderIds, startDate, endDate, description, listGoodsSalesOrders, addedAllGoods, listGoods } = this.props;
         const { good, errorGood, errorQuantity, approvers, errorApprovers, startDateError, endDateError } = this.state;
         let listSalesOrdersChoosed = [];
         listSalesOrdersChoosed = this.getListSalesOrdersChoosed(salesOrderIds);
+
+        const dataStatus = [
+            {
+                className: "text-primary",
+                text: translate('manufacturing.plan.sales_order.a')
+            },
+            {
+                className: "text-primary",
+                text: translate('manufacturing.plan.sales_order.b')
+            },
+            {
+                className: "text-warning",
+                text: translate('manufacturing.plan.sales_order.c')
+            },
+            {
+                className: "text-dark",
+                text: translate('manufacturing.plan.sales_order.d')
+            },
+            {
+                className: "text-secondary",
+                text: translate('manufacturing.plan.sales_order.e')
+            },
+            {
+                className: "text-success",
+                text: translate('manufacturing.plan.sales_order.f')
+            },
+            {
+                className: "text-danger",
+                text: translate('manufacturing.plan.sales_order.g')
+            },
+        ];
+
+
+        const dataPriority = [
+            {
+                className: "text-primary",
+                text: translate('manufacturing.plan.sales_order.0.content'),
+            },
+            {
+                className: "text-muted",
+                text: translate('manufacturing.plan.sales_order.1.content')
+            },
+            {
+                className: "text-primary",
+                text: translate('manufacturing.plan.sales_order.2.content')
+
+            },
+            {
+                className: "text-success",
+                text: translate('manufacturing.plan.sales_order.3.content')
+            },
+            {
+                className: "text-danger",
+                text: translate('manufacturing.plan.sales_order.4.content')
+            },
+        ];
         return (
             <React.Fragment>
                 {this.state.salesOrderDetail && <SalesOrderDetailForm salesOrderDetail={this.state.salesOrderDetail} />}
@@ -466,7 +525,12 @@ class PlanInfoForm extends Component {
                                         <tr>
                                             <th>{translate('manufacturing.plan.index')}</th>
                                             <th>{translate('manufacturing.plan.sales_order.code')}</th>
+                                            <th>{translate('manufacturing.plan.sales_order.creator')}</th>
+                                            <th>{translate('manufacturing.plan.sales_order.customer')}</th>
+                                            <th>{translate('manufacturing.plan.sales_order.total_money')}</th>
+                                            <th>{translate('manufacturing.plan.sales_order.status')}</th>
                                             <th>{translate('manufacturing.plan.sales_order.priority')}</th>
+                                            <th>{translate('manufacturing.plan.sales_order.intend_deliver_good')}</th>
                                             <th style={{ width: "120px", textAlign: "center" }}>
                                                 {translate("table.action")}
                                             </th>
@@ -478,7 +542,12 @@ class PlanInfoForm extends Component {
                                                 <tr key={index}>
                                                     <td>{index + 1}</td>
                                                     <td>{x.code}</td>
-                                                    <td>{translate(`manufacturing.plan.sales_order.${x.priority}.content`)}</td>
+                                                    <td>{x.creator ? x.creator.name : ""}</td>
+                                                    <td>{x.customer ? x.customer.name : ""}</td>
+                                                    <td>{x.paymentAmount ? formatCurrency(x.paymentAmount) + " VNĐ" : "---"}</td>
+                                                    <td className={dataStatus[x.status].className}>{dataStatus[x.status].text}</td>
+                                                    <td className={dataPriority[x.priority].className}>{dataPriority[x.priority].text}</td>
+                                                    <td>{x.deliveryTime ? formatDate(x.deliveryTime) : "---"}</td>
                                                     <td>
                                                         <a style={{ width: '5px' }} title={translate('manufacturing.plan.sales_order.detail_sales_order')} onClick={() => { this.handleShowDetailSalesOrder(x) }}><i className="material-icons">view_list</i></a>
                                                     </td>

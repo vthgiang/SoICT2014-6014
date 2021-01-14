@@ -70,3 +70,26 @@ exports.getApproversOfPlan = async (req, res) => {
         })
     }
 }
+
+exports.getManufacturingPlanById = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const manufacturingPlan = await ManufacturingPlanService.getManufacturingPlanById(id, req.portal);
+
+        await Logger.info(req.user.email, "GET_PLAN_BY_ID", req.portal);
+
+        res.status(200).json({
+            success: true,
+            messages: ['get_detail_plan_successfully'],
+            content: manufacturingPlan
+        })
+    } catch (error) {
+        await Logger.error(req.user.email, "GET_PLAN_BY_ID", req.portal);
+        console.log(error.message);
+        res.status(400).json({
+            success: false,
+            messages: ['get_detail_plan_failed'],
+            content: error.message
+        })
+    }
+}

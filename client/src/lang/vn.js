@@ -5051,6 +5051,7 @@ export default {
                 approvers: "Người phê duyệt",
                 description: "Mô tả",
                 created_at: "Ngày tạo",
+                manufacturing_commands: "Danh sách lệnh sản xuất",
                 command_code: "Mã lệnh sản xuất",
                 status: "Trạng thái",
                 choose_status: "Chọn trạng thái",
@@ -5097,6 +5098,9 @@ export default {
                 create_failed: "Tạo kế hoạch sản xuất thất bại",
                 choose_sales_order: "Chọn đơn kinh doanh",
                 sales_order: {
+                    "0": {
+                        content: "Default"
+                    },
                     "1": {
                         content: "Thấp"
                     },
@@ -5109,9 +5113,21 @@ export default {
                     "4": {
                         content: "Đặc biệt"
                     },
+                    a: "Không có trạng thái",
+                    b: "Chờ phê duyệt",
+                    c: "Yêu cầu sản xuất",
+                    d: "Yêu cầu xuất kho",
+                    e: "Đang giao hàng",
+                    f: "Đã giao hàng",
+                    g: "Đã hủy",
                     detail_sales_order: "Xem chi tiết đơn hàng kinh doanh",
                     code: "Mã đơn",
-                    priority: "Độ ưu tiên"
+                    priority: "Độ ưu tiên",
+                    creator: "Người tạo",
+                    status: "Trạng thái",
+                    customer: "Khách hàng",
+                    total_money: "Tổng tiền",
+                    intend_deliver_good: "Thời gian giao hàng dự kiến"
                 },
                 add_good_info: "Thêm thông tin các sản phẩm sản xuất",
                 good: "Sản phẩm",

@@ -3,7 +3,8 @@ import { sendRequest } from "../../../../../helpers/requestHelper"
 export const manufacturingPlanServices = {
     getAllManufacturingPlans,
     getAllApproversOfPlan,
-    createManufacturingPlan
+    createManufacturingPlan,
+    getDetailManufacturingPlan
 }
 
 function getAllManufacturingPlans(query) {
@@ -39,6 +40,17 @@ function createManufacturingPlan(data) {
             data
         },
         true,
+        true,
+        "manufacturing.plan")
+}
+
+function getDetailManufacturingPlan(id) {
+    return sendRequest(
+        {
+            url: `${process.env.REACT_APP_SERVER}/manufacturing-plan/${id}`,
+            method: "GET",
+        },
+        false,
         true,
         "manufacturing.plan")
 }

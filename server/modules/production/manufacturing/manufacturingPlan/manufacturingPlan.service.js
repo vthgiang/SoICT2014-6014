@@ -93,7 +93,7 @@ exports.createManufacturingPlan = async (data, portal) => {
         }),
         approvers: data.approvers.map(x => {
             return {
-                approver: x.approver,
+                approver: x,
                 approvedTime: null
             }
         }),
@@ -328,4 +328,45 @@ exports.getApproversOfPlan = async (portal, currentRole) => {
 
     let users = await UserService.getUsersByRolesArray(portal, roles);
     return { users }
+}
+
+exports.getManufacturingPlanById = async (id, portal) => {
+    const manufacturingPlan = await ManufacturingPlan(connect(DB_CONNECTION, portal))
+        .findById(id)
+        .populate([{
+            path: 'salesOrders',
+            populate: [{
+                path: 'creator', select: 'name'
+            }, {
+                path: 'customer', select: 'name taxNumber'
+            }, {
+                path: 'goods.good',
+                populate: [{
+                    path: 'manufacturingMills.manufacturingMill'
+                }]
+            }, {
+                path: 'goods.manufacturingWorks', select: 'code name address description'
+            }, , {
+                path: 'goods.discounts.bonusGoods.good', select: 'code name baseUnit'
+            }, {
+                path: 'goods.discounts.discountOnGoods.good', select: 'code name baseUnit'
+            }, {
+                path: 'discounts.bonusGoods.good', select: 'code name baseUnit'
+            }, {
+                path: 'quote', select: 'code createdAt'
+            }]
+        }, {
+            path: 'manufacturingWorks',
+            select: 'code name'
+        }, {
+            path: 'manufacturingCommands'
+        }, {
+            path: 'goods.good'
+        }, {
+            path: 'approvers.approver',
+        }, {
+            path: 'creator',
+        }]);
+
+    return { manufacturingPlan }
 }
