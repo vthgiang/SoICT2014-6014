@@ -134,19 +134,7 @@ exports.createNewSalesOrder = async (userId, companyId, data, portal) => {
         path: 'creator', select: 'name'
     }, {
         path: 'customer', select: 'name taxNumber'
-    }, {
-        path: 'goods.good', select: 'code name baseUnit'
-    }, {
-        path: 'goods.manufacturingWorks', select: 'code name address description'
-    }, {
-        path: 'goods.discounts.bonusGoods.good', select: 'code name baseUnit'
-    }, {
-        path: 'goods.discounts.discountOnGoods.good', select: 'code name baseUnit'
-    }, {
-        path: 'discounts.bonusGoods.good', select: 'code name baseUnit'
-    }, {
-        path: 'quote', select: 'code createdAt'
-    }]);;
+    } ]);;
     return { salesOrder }
 }
 
@@ -172,23 +160,6 @@ exports.getAllSalesOrders = async (query, portal) => {
                 path: 'creator', select: 'name'
             }, {
                 path: 'customer', select: 'name taxNumber'
-            }, {
-                path: 'goods.good',
-                populate: [{
-                    path: 'manufacturingMills.manufacturingMill'
-                }]
-            }, {
-                path: 'goods.manufacturingWorks', select: 'code name address description'
-            },{
-                path: 'goods.manufacturingPlan', select: 'code status startDate endDate'
-            } , {
-                path: 'goods.discounts.bonusGoods.good', select: 'code name baseUnit'
-            }, {
-                path: 'goods.discounts.discountOnGoods.good', select: 'code name baseUnit'
-            }, {
-                path: 'discounts.bonusGoods.good', select: 'code name baseUnit'
-            }, {
-                path: 'quote', select: 'code createdAt'
             }]);
         return { allSalesOrders }
     } else {
@@ -199,23 +170,6 @@ exports.getAllSalesOrders = async (query, portal) => {
                 path: 'creator', select: 'name'
             }, {
                 path: 'customer', select: 'name taxNumber'
-            }, {
-                path: 'goods.good',
-                populate: [{
-                    path: 'manufacturingMills.manufacturingMill'
-                }]
-            }, {
-                path: 'goods.manufacturingWorks', select: 'code name address description'
-            },{
-                path: 'goods.manufacturingPlan', select: 'code status startDate endDate'
-            } , {
-                path: 'goods.discounts.bonusGoods.good', select: 'code name baseUnit'
-            }, {
-                path: 'goods.discounts.discountOnGoods.good', select: 'code name baseUnit'
-            }, {
-                path: 'discounts.bonusGoods.good', select: 'code name baseUnit'
-            }, {
-                path: 'quote', select: 'code createdAt'
             }]
         })
         return { allSalesOrders }
@@ -306,20 +260,6 @@ exports.editSalesOrder = async (userId, companyId, id, data, portal) => {
             path: 'creator', select: 'name'
         }, {
             path: 'customer', select: 'name taxNumber'
-        }, {
-            path: 'goods.good', select: 'code name baseUnit'
-        }, {
-            path: 'goods.manufacturingWorks', select: 'code name address description'
-        }, {
-            path: 'goods.manufacturingPlan', select: 'code status startDate endDate'
-        }, {
-            path: 'goods.discounts.bonusGoods.good', select: 'code name baseUnit'
-        }, {
-            path: 'goods.discounts.discountOnGoods.good', select: 'code name baseUnit'
-        }, {
-            path: 'discounts.bonusGoods.good', select: 'code name baseUnit'
-        }, {
-            path: 'quote', select: 'code createdAt'
         }]);
 
     return { salesOrder: salesOrderUpdated }

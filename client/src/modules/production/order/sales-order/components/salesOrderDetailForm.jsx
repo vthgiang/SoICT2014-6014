@@ -208,7 +208,7 @@ class SalesOrderDetailForm extends Component {
 
     render() {
         let salesOrderDetail = {};
-        if (this.props.salesOrderDetail) {
+        if (this.props.salesOrderDetail._id) {
             salesOrderDetail = this.props.salesOrderDetail;
         }
 
@@ -224,7 +224,7 @@ class SalesOrderDetailForm extends Component {
         let freeShipCost = 0;
         let coinOfAll = 0;
 
-        if (this.props.salesOrderDetail) {
+        if (this.props.salesOrderDetail._id) {
             allOfBonusGood = this.getBonusGoodOfAll();
             freeShipCost = this.getFreeShipCost();
             coinOfAll = this.getCoinOfAll();
@@ -238,7 +238,7 @@ class SalesOrderDetailForm extends Component {
         let amountAfterApplyTax = 0;
         let discountsOfSalesOrder = 0; // Chưa tính miễn phí vận chuyển và sử dụng xu
 
-        if (this.props.salesOrderDetail) {
+        if (this.props.salesOrderDetail._id) {
             amountAfterApplyTax = this.getAmountAfterApplyTax();
             discountsOfSalesOrder = this.getDiscountsValueSalesOrder(amountAfterApplyTax); // Chưa tính miễn phí vận chuyển và sử dụng xu
         }

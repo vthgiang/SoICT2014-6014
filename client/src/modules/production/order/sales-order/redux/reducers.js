@@ -13,6 +13,7 @@ var findIndex = (array, id) => {
 const initState = {
     isLoading: false,
     listSalesOrders: [],
+    salesOrderDetail: {},
     totalDocs: 0,
     limit: 0,
     totalPages: 0,

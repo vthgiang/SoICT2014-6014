@@ -52,30 +52,30 @@ class SalesOrderEditForm extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.salesOrderEdit._id !== prevState.salesOrderId) {
+        if (nextProps.salesOrderDetail._id !== prevState.salesOrderId) {
             return {
                 ...prevState,
                 step: 0,
-                salesOrderId: nextProps.salesOrderEdit._id,
-                code: nextProps.salesOrderEdit.code,
-                customer: nextProps.salesOrderEdit.customer._id,
-                customerName: nextProps.salesOrderEdit.customer.name,
-                customerPhone: nextProps.salesOrderEdit.customerPhone,
-                customerTaxNumber: nextProps.salesOrderEdit.customer.taxNumber,
-                customerRepresent: nextProps.salesOrderEdit.customerRepresent,
-                customerAddress: nextProps.salesOrderEdit.customerAddress,
-                customerEmail: nextProps.salesOrderEdit.customerEmail,
-                priority: nextProps.salesOrderEdit.priority,
-                deliveryTime: nextProps.salesOrderEdit.deliveryTime ? formatDate(nextProps.salesOrderEdit.deliveryTime) : "",
-                discountsOfOrderValue: nextProps.salesOrderEdit.discounts,
+                salesOrderId: nextProps.salesOrderDetail._id,
+                code: nextProps.salesOrderDetail.code,
+                customer: nextProps.salesOrderDetail.customer._id,
+                customerName: nextProps.salesOrderDetail.customer.name,
+                customerPhone: nextProps.salesOrderDetail.customerPhone,
+                customerTaxNumber: nextProps.salesOrderDetail.customer.taxNumber,
+                customerRepresent: nextProps.salesOrderDetail.customerRepresent,
+                customerAddress: nextProps.salesOrderDetail.customerAddress,
+                customerEmail: nextProps.salesOrderDetail.customerEmail,
+                priority: nextProps.salesOrderDetail.priority,
+                deliveryTime: nextProps.salesOrderDetail.deliveryTime ? formatDate(nextProps.salesOrderDetail.deliveryTime) : "",
+                discountsOfOrderValue: nextProps.salesOrderDetail.discounts,
                 discountsOfOrderValueChecked: Object.assign({}),
-                note: nextProps.salesOrderEdit.note,
-                paymentAmount: nextProps.salesOrderEdit.paymentAmount,
-                shippingFee: nextProps.salesOrderEdit.shippingFee,
-                coin: nextProps.salesOrderEdit.coin,
-                status: nextProps.salesOrderEdit.status,
-                goods: nextProps.salesOrderEdit.goods
-                    ? nextProps.salesOrderEdit.goods.map((item) => {
+                note: nextProps.salesOrderDetail.note,
+                paymentAmount: nextProps.salesOrderDetail.paymentAmount,
+                shippingFee: nextProps.salesOrderDetail.shippingFee,
+                coin: nextProps.salesOrderDetail.coin,
+                status: nextProps.salesOrderDetail.status,
+                goods: nextProps.salesOrderDetail.goods
+                    ? nextProps.salesOrderDetail.goods.map((item) => {
                           return {
                               good: item.good,
                               pricePerBaseUnit: item.pricePerBaseUnit,
@@ -883,9 +883,10 @@ class SalesOrderEditForm extends Component {
 }
 
 function mapStateToProps(state) {
+    const { discounts, salesOrders } = state;
     const { customers } = state.crm;
-    const { discounts } = state;
-    return { discounts, customers };
+    const { salesOrderDetail } = salesOrders;
+    return { discounts, customers, salesOrderDetail };
 }
 
 const mapDispatchToProps = {

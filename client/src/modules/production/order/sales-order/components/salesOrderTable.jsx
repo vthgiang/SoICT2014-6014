@@ -137,12 +137,13 @@ class SalesOrderTable extends Component {
     };
 
     handleEditSalesOrder = async (salesOrderEdit) => {
-        await this.setState((state) => {
-            return {
-                ...state,
-                salesOrderEdit,
-            };
-        });
+        // await this.setState((state) => {
+        //     return {
+        //         ...state,
+        //         salesOrderEdit,
+        //     };
+        // });
+        await this.props.getSalesOrderDetail(salesOrderEdit._id);
         window.$("#modal-edit-sales-order").modal("show");
     };
 
@@ -203,7 +204,7 @@ class SalesOrderTable extends Component {
             },
             {
                 className: "text-success",
-                text: "Chờ phê duyệt",
+                text: "Đã phê duyệt",
             },
             {
                 className: "text-warning",
@@ -303,7 +304,7 @@ class SalesOrderTable extends Component {
                             group={"2"}
                         />
                         <BillDetailForm />
-                        {salesOrderEdit && <SalesOrderEditForm salesOrderEdit={salesOrderEdit} />}
+                        <SalesOrderEditForm />
                         <div className="form-inline">
                             <div className="form-group">
                                 <label className="form-control-static">Mã đơn</label>
