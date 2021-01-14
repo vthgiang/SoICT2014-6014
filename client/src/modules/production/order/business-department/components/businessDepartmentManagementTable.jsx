@@ -60,6 +60,9 @@ class BusinessDepartmentManagementTable extends Component {
             page: 1,
         });
         let { page, limit, role } = this.state;
+        if (role === "all") {
+            role = "";
+        }
         const data = {
             page,
             limit,
@@ -127,6 +130,7 @@ class BusinessDepartmentManagementTable extends Component {
                                 style={{ width: "100%" }}
                                 items={[
                                     { value: "title", text: "---Chọn vai trò đơn vị---" },
+                                    { value: "all", text: "Chọn tất cả" },
                                     { value: "1", text: "Kinh doanh" },
                                     { value: "2", text: "Quản lý bán hàng" },
                                     { value: "3", text: "Kế toán" },

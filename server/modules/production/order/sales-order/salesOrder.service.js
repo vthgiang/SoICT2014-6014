@@ -138,7 +138,7 @@ exports.createNewSalesOrder = async (userId, companyId, data, portal) => {
         path: 'goods.good', select: 'code name baseUnit'
     }, {
         path: 'goods.manufacturingWorks', select: 'code name address description'
-    }, , {
+    }, {
         path: 'goods.discounts.bonusGoods.good', select: 'code name baseUnit'
     }, {
         path: 'goods.discounts.discountOnGoods.good', select: 'code name baseUnit'
@@ -179,7 +179,9 @@ exports.getAllSalesOrders = async (query, portal) => {
                 }]
             }, {
                 path: 'goods.manufacturingWorks', select: 'code name address description'
-            }, , {
+            },{
+                path: 'goods.manufacturingPlan', select: 'code status startDate endDate'
+            } , {
                 path: 'goods.discounts.bonusGoods.good', select: 'code name baseUnit'
             }, {
                 path: 'goods.discounts.discountOnGoods.good', select: 'code name baseUnit'
@@ -204,7 +206,9 @@ exports.getAllSalesOrders = async (query, portal) => {
                 }]
             }, {
                 path: 'goods.manufacturingWorks', select: 'code name address description'
-            }, , {
+            },{
+                path: 'goods.manufacturingPlan', select: 'code status startDate endDate'
+            } , {
                 path: 'goods.discounts.bonusGoods.good', select: 'code name baseUnit'
             }, {
                 path: 'goods.discounts.discountOnGoods.good', select: 'code name baseUnit'
@@ -290,7 +294,7 @@ exports.editSalesOrder = async (userId, companyId, id, data, portal) => {
     }, { new: true });
 
     //Trả lại số xu đã sử dụng cho khách trong trường hợp hủy đơn
-    if (salesOrder) {
+    if (salesOrder && salesOrder.status===8) {
         let customerPoint = await CustomerService.getCustomerPoint(portal, companyId, salesOrder.customer);
         if (customerPoint && salesOrder.coin) {
             await CustomerService.editCustomerPoint(portal, companyId, customerPoint._id, {point:salesOrder.coin + customerPoint.point }, userId)
@@ -306,7 +310,9 @@ exports.editSalesOrder = async (userId, companyId, id, data, portal) => {
             path: 'goods.good', select: 'code name baseUnit'
         }, {
             path: 'goods.manufacturingWorks', select: 'code name address description'
-        }, , {
+        }, {
+            path: 'goods.manufacturingPlan', select: 'code status startDate endDate'
+        }, {
             path: 'goods.discounts.bonusGoods.good', select: 'code name baseUnit'
         }, {
             path: 'goods.discounts.discountOnGoods.good', select: 'code name baseUnit'
@@ -358,6 +364,7 @@ exports.addManufacturingPlanForGood = async (salesOrderId, manufacturingWorksId,
     })
 
     salesOrder.goods = goodsOfSalesOrder;
+    salesOrder.status = 4;
 
     await salesOrder.save();
 
@@ -373,7 +380,7 @@ exports.getSalesOrdersByManufacturingWorks = async (currentRole, portal) => {
     let listWorksIds = await getListWorksIdsByCurrentRole(currentRole, portal);
 
     //Lấy những đơn hàng có trạng thái là "yêu cầu sản xuất"
-    let salesOrdersWithStatus = await SalesOrder(connect(DB_CONNECTION, portal)).find({ status: 2 })
+    let salesOrdersWithStatus = await SalesOrder(connect(DB_CONNECTION, portal)).find({ status: 3 })
         .populate([{
             path: 'creator', select: 'name'
         }, {

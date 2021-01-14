@@ -506,7 +506,7 @@ exports.editBill = async (id, userId, data, portal, companyId) => {
         let salesOrder = await SalesOrder(connect(DB_CONNECTION, portal)).findOneAndUpdate({
             bill: bill._id
         }, {
-                $set: { status: 5 }
+                $set: { status: 7 }
         });
 
         //Cập nhật số xu cho khách hàng
@@ -527,7 +527,7 @@ exports.editBill = async (id, userId, data, portal, companyId) => {
         let salesOrder = await SalesOrder(connect(DB_CONNECTION, portal)).findOneAndUpdate({
             bill: bill._id
         }, {
-                $set: { status: 6 }
+                $set: { status: 8 }
         });
 
          //Trả lại số xu đã sử dụng cho khách

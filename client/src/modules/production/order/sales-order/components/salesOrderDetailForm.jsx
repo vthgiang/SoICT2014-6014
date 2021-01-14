@@ -205,11 +205,12 @@ class SalesOrderDetailForm extends Component {
         window.$("#modal-sales-order-detail-slas-of-good").modal("show");
     };
 
-    setCurrentManufacturingWorksOfGoods = async (data) => {
+    setCurrentManufacturingWorksOfGoods = async (manufacturingWorks, manufacturingPlan) => {
         await this.setState((state) => {
             return {
                 ...state,
-                currentManufacturingWorksOfGood: data,
+                currentManufacturingWorksOfGood: manufacturingWorks,
+                currentManufacturingPlanOfGood: manufacturingPlan,
             };
         });
         window.$("#modal-sales-order-detail-manufacturing-works-of-good-detail").modal("show");
@@ -235,7 +236,13 @@ class SalesOrderDetailForm extends Component {
             quote,
         } = this.props.salesOrderDetail;
 
-        const { discountsOfSalesOrderDetail, discountOfGoodDetail, slasOfGoodDetail, currentManufacturingWorksOfGood } = this.state;
+        const {
+            discountsOfSalesOrderDetail,
+            discountOfGoodDetail,
+            slasOfGoodDetail,
+            currentManufacturingWorksOfGood,
+            currentManufacturingPlanOfGood,
+        } = this.state;
 
         let allOfBonusGood = this.getBonusGoodOfAll();
         let freeShipCost = this.getFreeShipCost();
@@ -271,7 +278,10 @@ class SalesOrderDetailForm extends Component {
                     {discountOfGoodDetail && <DiscountOfGoodDetail discountOfGoodDetail={discountOfGoodDetail} />}
                     {slasOfGoodDetail && <SlasOfGoodDetail slasOfGoodDetail={slasOfGoodDetail} />}
                     {currentManufacturingWorksOfGood && (
-                        <ManufacturingWorksOfGoodDetail currentManufacturingWorksOfGood={currentManufacturingWorksOfGood} />
+                        <ManufacturingWorksOfGoodDetail
+                            currentManufacturingWorksOfGood={currentManufacturingWorksOfGood}
+                            currentManufacturingPlanOfGood={currentManufacturingPlanOfGood}
+                        />
                     )}
                     <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <fieldset className="scheduler-border" style={{ background: "#f5f5f5" }}>
@@ -422,12 +432,14 @@ class SalesOrderDetailForm extends Component {
                                                                     style={{
                                                                         cursor: "pointer",
                                                                     }}
-                                                                    // data-toggle="modal"
-                                                                    // data-backdrop="static"
-                                                                    // href={"#modal-sales-order-detail-manufacturing-works-of-good-detail"}
-                                                                    onClick={() => this.setCurrentManufacturingWorksOfGoods(item.manufacturingWorks)}
+                                                                    onClick={() =>
+                                                                        this.setCurrentManufacturingWorksOfGoods(
+                                                                            item.manufacturingWorks,
+                                                                            item.manufacturingPlan
+                                                                        )
+                                                                    }
                                                                 >
-                                                                    Đang thiết lập &ensp;
+                                                                    Đã gửi yêu cầu &ensp;
                                                                 </a>
                                                             </div>
                                                         ) : (

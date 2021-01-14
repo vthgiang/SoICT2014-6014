@@ -26,9 +26,11 @@ class BusinessDepartmentCreateForm extends Component {
             },
         ];
 
+        console.log("listBusinessDepartments", listBusinessDepartments);
+
         loop: for (let i = 0; i < list.length; i++) {
             for (let j = 0; j < listBusinessDepartments.length; j++) {
-                if (listBusinessDepartments[j].organizationalUnit._id === list[i]._id) {
+                if (listBusinessDepartments[j].organizationalUnit && listBusinessDepartments[j].organizationalUnit._id === list[i]._id) {
                     continue loop;
                 }
             }

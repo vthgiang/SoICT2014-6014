@@ -207,12 +207,20 @@ class SalesOrderTable extends Component {
                 text: "Chờ phê duyệt",
             },
             {
+                className: "text-success",
+                text: "Chờ phê duyệt",
+            },
+            {
                 className: "text-warning",
                 text: "Yêu cầu sản xuất",
             },
             {
+                className: "text-warning",
+                text: "Đang sản xuất",
+            },
+            {
                 className: "text-dark",
-                text: "Yêu cầu xuất kho",
+                text: "Đã sẵn hàng",
             },
             {
                 className: "text-secondary",
@@ -252,6 +260,8 @@ class SalesOrderTable extends Component {
         ];
 
         const { department, role, auth } = this.props;
+
+        console.log("salesOrders", this.props.salesOrders);
 
         return (
             <React.Fragment>
@@ -346,22 +356,30 @@ class SalesOrderTable extends Component {
                                         },
                                         {
                                             value: 2,
-                                            text: "Yêu cầu sản xuất",
+                                            text: "Đã phê duyệt",
                                         },
                                         {
                                             value: 3,
-                                            text: "Yêu cầu xuất kho",
+                                            text: "Yêu cầu sản xuất",
                                         },
                                         {
                                             value: 4,
-                                            text: "Đang giao hàng",
+                                            text: "Đang sản xuất",
                                         },
                                         {
                                             value: 5,
-                                            text: "Đã giao hàng",
+                                            text: "Đã sẵn hàng",
                                         },
                                         {
                                             value: 6,
+                                            text: "Đang giao hàng",
+                                        },
+                                        {
+                                            value: 7,
+                                            text: "Đã giao hàng",
+                                        },
+                                        {
+                                            value: 8,
                                             text: "Hủy đơn",
                                         },
                                     ]}
