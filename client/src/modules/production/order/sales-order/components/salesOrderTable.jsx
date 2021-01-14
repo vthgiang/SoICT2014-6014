@@ -114,14 +114,9 @@ class SalesOrderTable extends Component {
         this.props.getAllSalesOrders(data);
     };
 
-    handleShowDetailInfo = async (data) => {
-        await this.props.getPaymentForOrder({ orderId: data._id, orderType: 1 });
-        await this.setState((state) => {
-            return {
-                ...state,
-                salesOrderDetail: data,
-            };
-        });
+    handleShowDetailInfo = async (salesOrder) => {
+        await this.props.getPaymentForOrder({ orderId: salesOrder._id, orderType: 1 });
+        await this.props.getSalesOrderDetail(salesOrder._id);
         await window.$("#modal-detail-sales-order").modal("show");
     };
 
@@ -207,12 +202,20 @@ class SalesOrderTable extends Component {
                 text: "Chờ phê duyệt",
             },
             {
+                className: "text-success",
+                text: "Chờ phê duyệt",
+            },
+            {
                 className: "text-warning",
                 text: "Yêu cầu sản xuất",
             },
             {
+                className: "text-warning",
+                text: "Đang sản xuất",
+            },
+            {
                 className: "text-dark",
-                text: "Yêu cầu xuất kho",
+                text: "Đã sẵn hàng",
             },
             {
                 className: "text-secondary",
@@ -253,6 +256,8 @@ class SalesOrderTable extends Component {
 
         const { department, role, auth } = this.props;
 
+        console.log("salesOrders", this.props.salesOrders);
+
         return (
             <React.Fragment>
                 <div className="nav-tabs-custom">
@@ -288,7 +293,7 @@ class SalesOrderTable extends Component {
 
                         <SalesOrderCreateForm code={code} />
                         <SalesOrderCreateFormFromQuote code={code} />
-                        <SalesOrderDetailForm salesOrderDetail={salesOrderDetail} />
+                        <SalesOrderDetailForm />
                         <GoodIssueCreateForm
                             salesOrderAddBill={salesOrderAddBill}
                             createdSource={"salesOrder"}
@@ -346,22 +351,30 @@ class SalesOrderTable extends Component {
                                         },
                                         {
                                             value: 2,
-                                            text: "Yêu cầu sản xuất",
+                                            text: "Đã phê duyệt",
                                         },
                                         {
                                             value: 3,
-                                            text: "Yêu cầu xuất kho",
+                                            text: "Yêu cầu sản xuất",
                                         },
                                         {
                                             value: 4,
-                                            text: "Đang giao hàng",
+                                            text: "Đang sản xuất",
                                         },
                                         {
                                             value: 5,
-                                            text: "Đã giao hàng",
+                                            text: "Đã sẵn hàng",
                                         },
                                         {
                                             value: 6,
+                                            text: "Đang giao hàng",
+                                        },
+                                        {
+                                            value: 7,
+                                            text: "Đã giao hàng",
+                                        },
+                                        {
+                                            value: 8,
                                             text: "Hủy đơn",
                                         },
                                     ]}
@@ -504,6 +517,7 @@ const mapDispatchToProps = {
     getAllDepartments: DepartmentActions.get,
     getAllRoles: RoleActions.get,
     getQuotesToMakeOrder: QuoteActions.getQuotesToMakeOrder,
+    getSalesOrderDetail: SalesOrderActions.getSalesOrderDetail,
 
     getBillsByType: BillActions.getBillsByType,
     getDetailBill: BillActions.getDetailBill,

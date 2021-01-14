@@ -637,6 +637,7 @@ class SalesOrderCreateGood extends Component {
             discountsOfGood: item.discountsOfGood,
             slasOfGood: slasForEdit,
             manufacturingWorks: item.manufacturingWorks,
+            manufacturingPlan: item.manufacturingPlan,
         });
 
         this.getCheckedForGood(this.props.goods.goodItems); //gọi để checked trong trường hợp không thay đổi goodId
@@ -697,6 +698,7 @@ class SalesOrderCreateGood extends Component {
                 salesPriceVariance,
                 indexEditting,
                 manufacturingWorks,
+                manufacturingPlan,
             } = this.state;
 
             let { listGoods } = this.props;
@@ -742,6 +744,7 @@ class SalesOrderCreateGood extends Component {
                 amountAfterTax,
                 salesPriceVariance,
                 manufacturingWorks: manufacturingWorks ? (manufacturingWorks._id !== "title" ? manufacturingWorks : undefined) : undefined,
+                manufacturingPlan,
             };
 
             listGoods[indexEditting] = additionGood;
@@ -798,6 +801,7 @@ class SalesOrderCreateGood extends Component {
             step,
             editGood,
             manufacturingWorks,
+            manufacturingPlan,
         } = this.state;
 
         let { goodError, pricePerBaseUnitError, quantityError } = this.state;
@@ -850,6 +854,7 @@ class SalesOrderCreateGood extends Component {
                                         inventory={inventory}
                                         quantity={quantity}
                                         manufacturingWorks={manufacturingWorks}
+                                        manufacturingPlan={manufacturingPlan}
                                         handleGoodChange={this.handleGoodChange}
                                         handlePriceChange={this.handlePriceChange}
                                         handleQuantityChange={this.handleQuantityChange}
@@ -1091,8 +1096,11 @@ class SalesOrderCreateGood extends Component {
                                                         data-toggle="modal"
                                                         data-backdrop="static"
                                                         href={"#modal-edit-sales-order-manufacturing-works-of-good-detail"}
-                                                        onClick={() => setCurrentManufacturingWorksOfGoods(item.manufacturingWorks)}
+                                                        onClick={() =>
+                                                            setCurrentManufacturingWorksOfGoods(item.manufacturingWorks, item.manufacturingPlan)
+                                                        }
                                                     >
+                                                        {console.log("item.manufacturingPlan", item.manufacturingPlan)}
                                                         Đang thiết lập &ensp;
                                                     </a>
                                                 </div>

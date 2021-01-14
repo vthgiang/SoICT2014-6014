@@ -383,9 +383,11 @@ class SalesOrderCreatePayment extends Component {
                                                             data-toggle="modal"
                                                             data-backdrop="static"
                                                             href={"#modal-edit-sales-order-manufacturing-works-of-good-detail"}
-                                                            onClick={() => setCurrentManufacturingWorksOfGoods(item.manufacturingWorks)}
+                                                            onClick={() =>
+                                                                setCurrentManufacturingWorksOfGoods(item.manufacturingWorks, item.manufacturingPlan)
+                                                            }
                                                         >
-                                                            Đang thiết lập &ensp;
+                                                            Đã gửi yêu cầu &ensp;
                                                         </a>
                                                     </div>
                                                 ) : (

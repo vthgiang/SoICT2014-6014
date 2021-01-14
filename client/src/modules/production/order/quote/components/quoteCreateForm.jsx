@@ -608,6 +608,8 @@ class QuoteCreateForm extends Component {
         let enableStepTwo = this.isValidateQuoteCreateGood();
         let enableFormSubmit = enableStepOne && enableStepTwo;
 
+        console.log("businessDepartments", this.props.businessDepartments);
+
         return (
             <React.Fragment>
                 <ButtonModal
@@ -825,8 +827,8 @@ class QuoteCreateForm extends Component {
 }
 
 function mapStateToProps(state) {
-    const { customers } = state.crm;
-    return { customers };
+    const { customers, businessDepartments } = state.crm;
+    return { customers, businessDepartments };
 }
 
 const mapDispatchToProps = {

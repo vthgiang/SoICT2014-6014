@@ -8,11 +8,14 @@ const SalesOrderSchema = new Schema({
         // required: true
     },
     status: { //1: Chờ xác nhận (bộ phận Sales Admin và bộ phận kế toán xác nhận)
-        //2: Yêu cầu sản xuất, 
-        //3: Yêu cầu xuất kho, 
-        //4: Đang giao hàng , 5: Đã giao hàng, 6: Đã hủy
+        //2: Đã phê duyệt
+        //3: Yêu cầu sản xuất, 
+        //4: Đang sản xuất
+        //5: Đã sẵn hàng, 
+        //6: Đang giao hàng , 7: Đã giao hàng, 
+        //8: Đã hủy
         type: Number,
-        enum: [1, 2, 3, 4, 5, 6],
+        enum: [1, 2, 3, 4, 5, 6, 7, 8],
         // required: true,
         default: 1
     },
