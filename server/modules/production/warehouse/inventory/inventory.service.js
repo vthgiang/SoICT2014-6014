@@ -93,6 +93,7 @@ exports.getDetailLot = async (id, portal) => {
             { path: 'good' },
             { path: 'stocks.binLocations.binLocation', select: 'id path' },
             { path: 'stocks.stock' },
+            { path: "manufacturingCommand"},
             { path: 'lotLogs.bill', 
                 populate: [
                     { path: 'supplier' }, 

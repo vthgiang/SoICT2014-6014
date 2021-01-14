@@ -14,6 +14,14 @@ class LotDetailForm extends Component {
         }
     }
 
+    handleShowDetailManufacturingCommand = async (command) => {
+        await this.setState((state) => ({
+            ...state,
+            commandDetail: command
+        }));
+        window.$('#modal-detail-info-manufacturing-command-9').modal('show');
+    }
+
     formatDate(date) {
         let d = new Date(date),
             month = '' + (d.getMonth() + 1),
@@ -63,7 +71,7 @@ class LotDetailForm extends Component {
                                 </div>
                                 <div className="form-group">
                                     <strong>{translate('manage_warehouse.inventory_management.from_to')}:&emsp;</strong>
-                                    <a href="#">SX001</a>
+                                    {lotDetail.manufacturingCommand ? <a href="#">{ lotDetail.manufacturingCommand.code }</a> : "Lô hàng nhập từ nhà cung cấp"}
                                 </div>
                             </div>
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
