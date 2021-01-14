@@ -18,7 +18,7 @@ function createNewQuote(data) {
         },
         true,
         true,
-        "manage_order.quote_add_success")
+        "manage_order.quote")
 }
 
 function getAllQuotes (queryData){
@@ -30,7 +30,7 @@ function getAllQuotes (queryData){
         },
         false,
         true,
-        "manage_order.quote_get_all_success")
+        "manage_order.quote")
 }
 
 function editQuote (id, data) {

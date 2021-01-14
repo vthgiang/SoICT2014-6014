@@ -503,6 +503,40 @@ class GoodReceiptCreateForm extends Component {
     };
 
     static getDerivedStateFromProps(nextProps, prevState) {
+        //---Lập phiếu từ đơn mua nguyên vật liệu---
+        let { purchaseOrderAddBill = { code: "" } } = nextProps;
+
+        if (
+            nextProps.createdSource === "purchaseOrder" &&
+            purchaseOrderAddBill.code !== "" &&
+            purchaseOrderAddBill.code !== prevState.purchaseOrderCode
+        ) {
+            return {
+                ...prevState,
+                group: nextProps.group,
+                code: nextProps.billCode,
+                purchaseOrderId: purchaseOrderAddBill._id,
+                purchaseOrderCode: purchaseOrderAddBill.code,
+                type: "1",
+                supplier: purchaseOrderAddBill.supplier ? purchaseOrderAddBill.supplier._id : "",
+                fromStock: purchaseOrderAddBill.stock ? purchaseOrderAddBill.stock._id : "",
+                listGood: purchaseOrderAddBill.materials
+                    ? purchaseOrderAddBill.materials.map((material) => {
+                          return {
+                              good: {
+                                  _id: material.material._id,
+                                  code: material.material.code,
+                                  name: material.material.name,
+                                  baseUnit: material.material.baseUnit,
+                              },
+                              quantity: material.quantity,
+                          };
+                      })
+                    : "",
+            };
+        }
+        //---Kết thúc phần lập phiếu từ đơn mua nguyên vật liệu---
+
         if (nextProps.group !== prevState.group) {
             return {
                 ...prevState,
@@ -542,8 +576,9 @@ class GoodReceiptCreateForm extends Component {
             listQualityControlStaffs,
             responsibles,
             accountables,
+            purchaseOrderId,
         } = this.state;
-        const { group } = this.props;
+        const { group, createdSource } = this.props;
         await this.props.createBill({
             fromStock: fromStock,
             code: code,
@@ -561,11 +596,17 @@ class GoodReceiptCreateForm extends Component {
             address: address,
             description: description,
             goods: listGood,
+            purchaseOrderId,
         });
+
+        //Load lại dữ liệu đơn mua nguyên vật liệu sau 15000ms
+        if (createdSource === "purchaseOrder") {
+            await setTimeout(() => this.props.reloadPurchaseOrderTable(), 2000);
+        }
     };
 
     render() {
-        const { translate, group } = this.props;
+        const { translate, group, createdSource } = this.props;
         const {
             listGood,
             good,
@@ -589,6 +630,7 @@ class GoodReceiptCreateForm extends Component {
             errorQualityControlStaffs,
             errorAccountables,
             errorResponsibles,
+            purchaseOrderId,
         } = this.state;
         const listGoods = this.getAllGoods();
         const dataApprover = this.getApprover();
@@ -598,12 +640,16 @@ class GoodReceiptCreateForm extends Component {
 
         return (
             <React.Fragment>
-                <ButtonModal
-                    onButtonCallBack={this.handleClickCreate}
-                    modalID={`modal-create-bill-receipt`}
-                    button_name={translate("manage_warehouse.good_management.add")}
-                    title={translate("manage_warehouse.good_management.add_title")}
-                />
+                {createdSource !== "purchaseOrder" ? (
+                    <ButtonModal
+                        onButtonCallBack={this.handleClickCreate}
+                        modalID={`modal-create-bill-receipt`}
+                        button_name={translate("manage_warehouse.good_management.add")}
+                        title={translate("manage_warehouse.good_management.add_title")}
+                    />
+                ) : (
+                    ""
+                )}
 
                 <DialogModal
                     modalID={`modal-create-bill-receipt`}
@@ -667,7 +713,7 @@ class GoodReceiptCreateForm extends Component {
                                             <span className="attention"> * </span>
                                         </label>
                                         <SelectBox
-                                            id={`select-stock-bill-receipt-create`}
+                                            id={`select-stock-bill-receipt-create-${purchaseOrderId}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             value={fromStock}
@@ -683,7 +729,7 @@ class GoodReceiptCreateForm extends Component {
                                             <span className="attention"> * </span>
                                         </label>
                                         <SelectBox
-                                            id={`select-customer-receipt-create`}
+                                            id={`select-customer-receipt-create-${purchaseOrderId}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             value={supplier}

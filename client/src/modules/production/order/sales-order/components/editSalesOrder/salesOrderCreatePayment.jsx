@@ -383,9 +383,11 @@ class SalesOrderCreatePayment extends Component {
                                                             data-toggle="modal"
                                                             data-backdrop="static"
                                                             href={"#modal-edit-sales-order-manufacturing-works-of-good-detail"}
-                                                            onClick={() => setCurrentManufacturingWorksOfGoods(item.manufacturingWorks)}
+                                                            onClick={() =>
+                                                                setCurrentManufacturingWorksOfGoods(item.manufacturingWorks, item.manufacturingPlan)
+                                                            }
                                                         >
-                                                            Đang thiết lập &ensp;
+                                                            Đã gửi yêu cầu &ensp;
                                                         </a>
                                                     </div>
                                                 ) : (
@@ -496,7 +498,8 @@ class SalesOrderCreatePayment extends Component {
                                     type="checkbox"
                                     className={`form-check-input`}
                                     id={`check-box-use-loyalty-coin-edit`}
-                                    disabled={!customerCoin}
+                                    // Không được sửa coin
+                                    disabled={true}
                                     checked={coin}
                                     onChange={() => handleCoinChange(customerCoin)}
                                     style={{ minWidth: "20px" }}

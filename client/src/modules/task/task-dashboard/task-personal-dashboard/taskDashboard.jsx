@@ -10,7 +10,7 @@ import { AverageResultsOfTask } from './averageResultsOfTask';
 
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DatePicker } from '../../../../common-components';
+import { DatePicker, ToolTip } from '../../../../common-components';
 import Swal from 'sweetalert2';
 import { TasksIsNotLinked } from './tasksIsNotLinked';
 import { TaskHasActionNotEvaluated } from './taskHasActionNotEvaluated';
@@ -534,10 +534,15 @@ class TaskDashboard extends Component {
 
                 </div>
                 {/* <div className="row"> */}
+                {/*Biểu đồ dashboard tải công việc */}
                 <div className="col-xs-12">
                     <div className="box box-primary">
                         <div className="box-header with-border">
                             <div className="box-title">Dashboard tải công việc</div>
+                            <ToolTip
+                                type={"icon_tooltip"} materialIcon={"help"}
+                                dataTooltip={['Tải công việc tính theo công thức tổng các tỉ số: số ngày thực hiện công việc trong tháng/(số người thực hiện + số người phê duyệt + số người hỗ trợ)']}
+                            />
                         </div>
 
                         <div className="box-body qlcv">

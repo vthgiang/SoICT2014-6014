@@ -15,7 +15,6 @@ exports.createPurchaseOrder = async (req, res) => {
         });
     }  catch (error) {
         await Log.error(req.user.email, "CREATED_NEW_PURCHASE_ORDER", req.portal);
-
         res.status(400).json({
             success: false,
             messages: ["create_failed"],
@@ -64,6 +63,32 @@ exports.getAllPurchaseOrders = async ( req, res ) => {
         res.status(400).json({
             success: false,
             messages: ["get_all_failed"],
+            content: error.message
+        });
+    }
+}
+
+//Lấy các đơn hàng chưa thanh toán hết của theo nhà cùng cấp
+exports.getPurchaseOrdersForPayment = async (req, res) => {
+    try {
+
+        let supplierId = req.query.supplierId;
+
+        let purchaseOrders = await PurchaseOrderService.getPurchaseOrdersForPayment(supplierId, req.portal)
+
+        await Log.info(req.user.email, "GET_PURCHASE_ORDERS_FOR_PAYMENT", req.portal);
+
+        res.status(200).json({
+            success: true,
+            messages: ["get_purchase_orders_for_payment_successfully"],
+            content: purchaseOrders
+        });
+    } catch (error) {
+        await Log.error(req.user.email, "GET_PURCHASE_ORDERS_FOR_PAYMENT", req.portal);
+        console.log(error.message);
+        res.status(400).json({
+            success: false,
+            messages: ["get_purchase_orders_for_payment_failed"],
             content: error.message
         });
     }

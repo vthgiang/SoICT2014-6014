@@ -21,7 +21,8 @@ class WorkScheduleComponent extends Component {
             startOfIndex: 0,
             // Mảng 1 chiều để validate các ca liền nhau
             arrayValidate: [],
-            // listWorkSchedulesOfMill: [...this.props.listWorkSchedulesOfMill]
+            // Mảng 1 tập các object {index1, index2, month} => tìm xem thằng nào rảnh
+            arrayWorkerSchedules: []
         }
     }
 
@@ -82,21 +83,57 @@ class WorkScheduleComponent extends Component {
     }
 
     handleCheckBoxChange = async (index1, index2) => {
-        let { listWorkSchedulesOfMill, month, startOfIndex, arrayValidate } = this.state;
+        let { listWorkSchedulesOfMill, month, startOfIndex, arrayWorkerSchedules } = this.state;
         const index = this.findIndex(listWorkSchedulesOfMill, month);
         listWorkSchedulesOfMill[index].turns[index1][index2] = (listWorkSchedulesOfMill[index].turns[index1][index2] === null) ? this.props.command : null;
+
+
+        // setting arrayValidate cho trường hợp sửa.
+        let arrayValidate = this.getArrayValidate();
         if (listWorkSchedulesOfMill[index].turns[index1][index2] !== null) {
             let indexOfArray = startOfIndex + this.TURNS_NUMBER * index2 + index1;
             arrayValidate[indexOfArray] = true;
+            arrayWorkerSchedules.push({
+                index1: index1,
+                index2: index2,
+                month: month
+            })
         } else {
             let indexOfArray = startOfIndex + this.TURNS_NUMBER * index2 + index1;
             arrayValidate[indexOfArray] = undefined;
+            arrayWorkerSchedules = arrayWorkerSchedules.filter(x => !((x.index1 === index1) && (x.index2 === index2) && (x.month === month)))
         }
+
         await this.setState({
             listWorkSchedulesOfMill: [...listWorkSchedulesOfMill],
             arrayValidate: [...arrayValidate],
+            arrayWorkerSchedules: [...arrayWorkerSchedules],
             bookingMillError: this.validateCheckBoxChange(arrayValidate)
         });
+        this.props.onArrayWorkerSchedulesChange(this.state.arrayWorkerSchedules);
+        this.props.onListWorkSchedulesOfMillChange(this.state.listWorkSchedulesOfMill);
+    }
+
+    getArrayValidate = () => {
+        const { listWorkSchedulesOfMill } = this.state;
+        let arrayValidate = [];
+        const { command } = this.props;
+        let startIndexOfMonth = 0;
+        for (let i = 0; i < listWorkSchedulesOfMill.length; i++) {
+            for (let j = 0; j < listWorkSchedulesOfMill[i].turns.length; j++) {
+                for (let k = 0; k < listWorkSchedulesOfMill[i].turns[j].length; k++) {
+                    if (listWorkSchedulesOfMill[i].turns[j][k] && listWorkSchedulesOfMill[i].turns[j][k].code === command.code) {
+                        let indexOfArray = startIndexOfMonth + this.TURNS_NUMBER * k + j;
+                        arrayValidate[indexOfArray] = true;
+                    }
+                }
+            }
+            const month = formatYearMonth(listWorkSchedulesOfMill[i].month);
+            const arangeOfMonth = startIndexOfMonth + this.getAllDaysOfMonth(month).length * this.TURNS_NUMBER;
+            const startIndexOfNextMonth = startIndexOfMonth + arangeOfMonth;
+            startIndexOfMonth = startIndexOfNextMonth;
+        }
+        return arrayValidate;
     }
 
     validateCheckBoxChange = (arrayValidate) => {
@@ -183,10 +220,24 @@ class WorkScheduleComponent extends Component {
     }
 
     static getDerivedStateFromProps = (props, state) => {
-        if (props.listWorkSchedulesOfMill !== state.listWorkSchedulesOfMill) {
+        if (props.manufacturingMillId !== state.manufacturingMillId) {
+            let listWorkSchedulesOfMill = [];
+            props.listWorkSchedulesOfMill.map(x => {
+                let y = {};
+                y.month = x.month;
+                y.manufacturingMill = x.manufacturingMill;
+                y._id = x._id;
+                y.createdAt = x.createdAt;
+                y.updatedAt = x.updatedAt;
+                y.turns = x.turns.map(x1 => {
+                    return x1.slice();
+                })
+                listWorkSchedulesOfMill.push(y);
+            });
             return {
                 ...state,
-                listWorkSchedulesOfMill: [...props.listWorkSchedulesOfMill]
+                manufacturingMillId: props.manufacturingMillId,
+                listWorkSchedulesOfMill: [...listWorkSchedulesOfMill]
             }
         }
         return null;
@@ -195,8 +246,6 @@ class WorkScheduleComponent extends Component {
     render() {
         const { manufacturingMillName, translate } = this.props;
         const { allDaysOfMonth, month, listWorkSchedulesOfMill } = this.state;
-        console.log(listWorkSchedulesOfMill);
-        console.log(this.props.listWorkSchedulesOfMill);
         const currentWorkSchedule = listWorkSchedulesOfMill ? listWorkSchedulesOfMill.filter(x => formatYearMonth(x.month) === month)[0] : undefined;
         const arrayStatus = [0, 6, 1, 2, 3, 4, 5];
         return (
@@ -262,15 +311,27 @@ class WorkScheduleComponent extends Component {
                                                                     <span className="tooltiptext"><a style={{ color: "white", cursor: "pointer" }} onClick={() => this.handleShowDetailManufacturingCommand(command)}>{command.code}</a></span>
                                                                 </td>
                                                             )
+                                                        else if (command !== null && !command.status)
+                                                            return (
+                                                                <td key={index2}>
+                                                                    <div className="plan-checkbox-custom">
+                                                                        <input
+                                                                            type="checkbox"
+                                                                            disabled={this.checkBoxDisabled(index1, index2)}
+                                                                            checked={this.checkBoxChecked(index1, index2)}
+                                                                            onChange={() => this.handleCheckBoxChange(index1, index2)}
+                                                                        />
+                                                                    </div>
+                                                                    {/* <span className="tooltiptext"><a style={{ color: "white", cursor: "pointer" }}>{command.code}</a></span> */}
+                                                                </td>
+                                                            )
 
                                                         return (
                                                             <td key={index2}>
                                                                 <div className="plan-checkbox-custom">
                                                                     <input
                                                                         type="checkbox"
-                                                                        checked={this.checkBoxChecked(index1, index2)}
                                                                         onChange={() => this.handleCheckBoxChange(index1, index2)}
-                                                                        disabled={this.checkBoxDisabled(index1, index2)}
                                                                     />
                                                                 </div>
                                                             </td>

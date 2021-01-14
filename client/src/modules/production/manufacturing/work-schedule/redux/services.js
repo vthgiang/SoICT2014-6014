@@ -4,7 +4,8 @@ export const workScheduleSevices = {
     getAllWorkSchedules,
     createWorkSchedule,
     getAllWorkSchedulesByMillId,
-    getAllWorkSchedulesOfManufacturingWork
+    getAllWorkSchedulesOfManufacturingWork,
+    getAllWorkerByArrayWorkSchedules
 }
 
 function getAllWorkSchedules(query) {
@@ -50,6 +51,19 @@ function getAllWorkSchedulesOfManufacturingWork(query) {
     return sendRequest(
         {
             url: `${process.env.REACT_APP_SERVER}/work-schedule/manufacturingMills`,
+            method: "GET",
+            params: query
+        },
+        false,
+        true,
+        'manufacturing.work_schedule'
+    )
+}
+
+function getAllWorkerByArrayWorkSchedules(query) {
+    return sendRequest(
+        {
+            url: `${process.env.REACT_APP_SERVER}/work-schedule/worker/array-schedules`,
             method: "GET",
             params: query
         },

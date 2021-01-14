@@ -5,6 +5,7 @@ export const PurchaseOrderActions = {
     createPurchaseOrder,
     getAllPurchaseOrders,
     updatePurchaseOrder,
+    getPurchaseOrdersForPayment
 }
 
 function createPurchaseOrder (data) {
@@ -66,6 +67,28 @@ function updatePurchaseOrder (id, data) {
         .catch((error) => {
             dispatch({
                 type: PurchaseOrderConstants.UPDATE_PURCHASE_ORDER_FAILURE,
+                error
+            })
+        })
+    }
+}
+
+function getPurchaseOrdersForPayment (supplierId) {
+    return (dispatch) => {
+        dispatch({
+            type: PurchaseOrderConstants.GET_PURCHASE_ORDERS_FOR_PAYMENT_REQUEST
+        })
+
+        PurchaseOrderServices.getPurchaseOrdersForPayment(supplierId)
+        .then((res) => {
+            dispatch({
+                type: PurchaseOrderConstants.GET_PURCHASE_ORDERS_FOR_PAYMENT_SUCCESS,
+                payload: res.data.content
+            })
+        })
+        .catch((error) => {
+            dispatch({
+                type: PurchaseOrderConstants.GET_PURCHASE_ORDERS_FOR_PAYMENT_FAILURE,
                 error
             })
         })

@@ -565,7 +565,7 @@ class GoodIssueCreateForm extends Component {
                                   name: good.good.name,
                                   baseUnit: good.good.baseUnit,
                               },
-                              quantityWithSalesOrder: good.quantity,
+                              quantity: good.quantity,
                           };
                       })
                     : "",
@@ -631,9 +631,9 @@ class GoodIssueCreateForm extends Component {
             salesOrderId,
         });
 
-        //Load lại dữ liệu đơn hàng sau 3000ms
+        //Load lại dữ liệu đơn hàng sau 1000ms
         if (createdSource === "salesOrder") {
-            await setTimeout(this.props.reloadSalesOrderTable(), 3000);
+            await setTimeout(() => this.props.reloadSalesOrderTable(), 2000);
         }
     };
 
@@ -987,11 +987,6 @@ class GoodIssueCreateForm extends Component {
                                                 <th title={translate("manage_warehouse.bill_management.unit")}>
                                                     {translate("manage_warehouse.bill_management.unit")}
                                                 </th>
-                                                {createdSource === "salesOrder" ? (
-                                                    <th title={translate("Số lượng theo đơn")}>{"Số lượng theo đơn"}</th>
-                                                ) : (
-                                                    ""
-                                                )}
                                                 <th title={translate("manage_warehouse.bill_management.number")}>
                                                     {translate("manage_warehouse.bill_management.number")}
                                                 </th>
@@ -1015,7 +1010,6 @@ class GoodIssueCreateForm extends Component {
                                                         <td>{x.good.code}</td>
                                                         <td>{x.good.name}</td>
                                                         <td>{x.good.baseUnit}</td>
-                                                        {createdSource === "salesOrder" ? <td>{x.quantityWithSalesOrder}</td> : ""}
                                                         <td>{x.quantity}</td>
                                                         <td>{x.description}</td>
                                                         <td>
