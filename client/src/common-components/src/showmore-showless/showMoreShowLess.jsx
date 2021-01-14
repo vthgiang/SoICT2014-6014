@@ -88,13 +88,15 @@ class ShowMoreShowLess extends Component {
         let allElement = window.$(`#showmore-showless${id} > *`);
 
         window.$(allElement).map((index, item) => {
-            if (lengthText > characterLimit || index > 3) {
-                window.$(item).addClass('hide-component');
+            if (item.id !== `span${id}`) {
+                if (lengthText > characterLimit || index > 3) {
+                    window.$(item).addClass('hide-component');
+                }
+                
+                // Cộng thêm số ký tự của string, lần tới nếu vượt qá characterLimit sẽ thêm class hide-component
+                let str = window.$(item).text();
+                lengthText = lengthText + str.length;
             }
-            
-            // Cộng thêm số ký tự của string, lần tới nếu vượt qá characterLimit sẽ thêm class hide-component
-            let str = window.$(item).text();
-            lengthText = lengthText + str.length;
         })
     }
     
