@@ -173,3 +173,26 @@ exports.getSalesOrdersForPayment = async (req, res) => {
     }
 }
 
+
+exports.getSalesOrderDetail = async ( req, res ) => {
+    try {
+        let id = req.params.id;
+        let salesOrder = await SalesOrderServices.getSalesOrderDetail( id, req.portal)
+
+        await Log.info(req.user.email, "GET_SALES_ORDER_DETAIL", req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ["get_detail_successfully"],
+            content: salesOrder
+        });
+    } catch (error) {
+        await Log.error(req.user.email, "GET_SALES_ORDER_DETAIL", req.portal);
+        console.log(error.message);
+        res.status(400).json({
+            success: false,
+            messages: ["get_detail_failed"],
+            content: error.message
+        });
+    }
+}
+

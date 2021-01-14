@@ -472,3 +472,37 @@ exports.getSalesOrdersForPayment = async (customerId, portal) => {
 
     return { salesOrders }
 }
+
+exports.getSalesOrderDetail = async (id, portal) => {
+    let salesOrder = await SalesOrder(connect(DB_CONNECTION, portal))
+        .findById(id)
+        .populate([{
+            path: 'creator', select: 'name'
+        }, {
+            path: 'customer', select: 'name taxNumber'
+        }, {
+            path: 'goods.good',
+            populate: [{
+                path: 'manufacturingMills.manufacturingMill'
+            }]
+        }, {
+            path: 'goods.manufacturingWorks', select: 'code name address description'
+        },{
+            path: 'goods.manufacturingPlan', select: 'code status startDate endDate'
+        } , {
+            path: 'goods.discounts.bonusGoods.good', select: 'code name baseUnit'
+        }, {
+            path: 'goods.discounts.discountOnGoods.good', select: 'code name baseUnit'
+        }, {
+            path: 'discounts.bonusGoods.good', select: 'code name baseUnit'
+        }, {
+            path: 'quote', select: 'code createdAt'
+        }])
+
+    if (!salesOrder) {
+        throw Error("Sales Order is not existing")
+    }
+
+    return {salesOrder}
+
+}

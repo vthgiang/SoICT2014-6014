@@ -114,14 +114,16 @@ class SalesOrderTable extends Component {
         this.props.getAllSalesOrders(data);
     };
 
-    handleShowDetailInfo = async (data) => {
-        await this.props.getPaymentForOrder({ orderId: data._id, orderType: 1 });
-        await this.setState((state) => {
-            return {
-                ...state,
-                salesOrderDetail: data,
-            };
-        });
+    handleShowDetailInfo = async (salesOrder) => {
+        console.log("salesOrder", salesOrder);
+        await this.props.getPaymentForOrder({ orderId: salesOrder._id, orderType: 1 });
+        await this.props.getSalesOrderDetail(salesOrder._id);
+        // await this.setState((state) => {
+        //     return {
+        //         ...state,
+        //         salesOrderDetail: data,
+        //     };
+        // });
         await window.$("#modal-detail-sales-order").modal("show");
     };
 
@@ -298,7 +300,7 @@ class SalesOrderTable extends Component {
 
                         <SalesOrderCreateForm code={code} />
                         <SalesOrderCreateFormFromQuote code={code} />
-                        <SalesOrderDetailForm salesOrderDetail={salesOrderDetail} />
+                        <SalesOrderDetailForm />
                         <GoodIssueCreateForm
                             salesOrderAddBill={salesOrderAddBill}
                             createdSource={"salesOrder"}
@@ -522,6 +524,7 @@ const mapDispatchToProps = {
     getAllDepartments: DepartmentActions.get,
     getAllRoles: RoleActions.get,
     getQuotesToMakeOrder: QuoteActions.getQuotesToMakeOrder,
+    getSalesOrderDetail: SalesOrderActions.getSalesOrderDetail,
 
     getBillsByType: BillActions.getBillsByType,
     getDetailBill: BillActions.getDetailBill,
