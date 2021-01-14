@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { formatDate } from '../../../../../helpers/formatDate';
-import { DataTableSetting, DatePicker, PaginateBar, SelectMulti } from "../../../../../common-components";
+import { ConfirmNotification, DataTableSetting, DatePicker, PaginateBar, SelectMulti } from "../../../../../common-components";
 import NewPlanCreateForm from './create-new-plan/newPlanCreateForm';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
@@ -194,6 +194,33 @@ class ManufacturingPlanManagementTable extends Component {
         window.$('#modal-detail-info-manufacturing-plan').modal('show');
     }
 
+    checkRoleApprovers = (plan) => {
+        const userId = localStorage.getItem('userId');
+        const { approvers } = plan;
+        for (let i = 0; i < approvers.length; i++) {
+            if (userId === approvers[i].approver._id && !approvers[i].approvedTime) {
+                return true
+            }
+        }
+        return false;
+        // map bất đồng bộ nên luôn trả về false
+        // approvers.map(x => {
+        //     if (x.approver._id === userId && !x.approvedTime) {
+        //         return true;
+        //     }
+        // });
+        // return false;
+    }
+
+    handleApprovePlan = (plan) => {
+        const data = {
+            approvers: {
+                approver: localStorage.getItem('userId')
+            }
+        }
+        this.props.handleEditManufacturingPlan(data, plan._id);
+    }
+
     render() {
         const { translate, manufacturingPlan } = this.props;
         let listPlans = [];
@@ -322,6 +349,7 @@ class ManufacturingPlanManagementTable extends Component {
                                 <th>{translate('manufacturing.plan.index')}</th>
                                 <th>{translate('manufacturing.plan.code')}</th>
                                 <th>{translate('manufacturing.plan.creator')}</th>
+                                <th>{translate('manufacturing.plan.approver')}</th>
                                 <th>{translate('manufacturing.plan.created_at')}</th>
                                 <th>{translate('manufacturing.plan.start_date')}</th>
                                 <th>{translate('manufacturing.plan.end_date')}</th>
@@ -333,6 +361,7 @@ class ManufacturingPlanManagementTable extends Component {
                                             translate('manufacturing.plan.index'),
                                             translate('manufacturing.plan.code'),
                                             translate('manufacturing.plan.creator'),
+                                            translate('manufacturing.plan.approver'),
                                             translate('manufacturing.plan.created_at'),
                                             translate('manufacturing.plan.start_date'),
                                             translate('manufacturing.plan.end_date'),
@@ -352,13 +381,32 @@ class ManufacturingPlanManagementTable extends Component {
                                         <td>{index + 1}</td>
                                         <td>{plan.code}</td>
                                         <td>{plan.creator && plan.creator.name}</td>
+                                        <td>{plan.approvers && plan.approvers.length &&
+                                            plan.approvers.map((x, index) => {
+                                                if (plan.approvers.length === index + 1) {
+                                                    return x.approver.name
+                                                }
+                                                return x.approver.name + ", "
+                                            })
+                                        }</td>
                                         <td>{formatDate(plan.createdAt)}</td>
                                         <td>{formatDate(plan.startDate)}</td>
                                         <td>{formatDate(plan.endDate)}</td>
                                         <td style={{ color: translate(`manufacturing.plan.${plan.status}.color`) }}>{translate(`manufacturing.plan.${plan.status}.content`)}</td>
                                         <td style={{ textAlign: "center" }}>
                                             <a style={{ width: '5px' }} title={translate('manufacturing.plan.plan_detail')} onClick={() => { this.handleShowDetailManufacturingPlan(plan) }}><i className="material-icons">view_list</i></a>
-                                            <a className="edit text-yellow" style={{ width: '5px' }} title="Sửa kế hoạch sản xuất"><i className="material-icons">edit</i></a>
+                                            {
+                                                this.checkRoleApprovers(plan) && plan.status === 1 &&
+                                                <ConfirmNotification
+                                                    icon="question"
+                                                    title={translate('manufacturing.plan.approve_plan')}
+                                                    content={translate('manufacturing.plan.approve_plan') + " " + plan.code}
+                                                    name="done"
+                                                    className="text-green"
+                                                    func={() => this.handleApprovePlan(plan)}
+                                                />
+                                            }
+                                            {/* <a className="edit text-yellow" style={{ width: '5px' }} title="Sửa kế hoạch sản xuất"><i className="material-icons">edit</i></a> */}
                                         </td>
                                     </tr>
                                 ))
@@ -384,7 +432,8 @@ function mapStateToProps(state) {
 const mapDispatchToProps = {
     getAllManufacturingPlans: manufacturingPlanActions.getAllManufacturingPlans,
     getAllManufacturingWorks: worksActions.getAllManufacturingWorks,
-    getAllManufacturingMills: millActions.getAllManufacturingMills
+    getAllManufacturingMills: millActions.getAllManufacturingMills,
+    handleEditManufacturingPlan: manufacturingPlanActions.handleEditManufacturingPlan
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(ManufacturingPlanManagementTable));

@@ -216,7 +216,7 @@ class PlanInfoForm extends Component {
                 good.baseUnit = goodArrFilter[0].baseUnit;
                 const { lots } = this.props;
                 const { listInventories } = lots;
-                if (listInventories) {
+                if (listInventories && listInventories.length) {
                     good.inventory = listInventories[0].inventory;
                 }
             } else {

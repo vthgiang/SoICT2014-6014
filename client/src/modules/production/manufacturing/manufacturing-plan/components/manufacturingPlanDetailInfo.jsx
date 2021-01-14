@@ -1,22 +1,34 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
-import { DialogModal } from '../../../../../common-components';
+import { DataTableSetting, DialogModal, PaginateBar } from '../../../../../common-components';
 import { formatDate, formatFullDate } from '../../../../../helpers/formatDate';
 import { PaymentActions } from '../../../order/payment/redux/actions';
 import SalesOrderDetailForm from '../../../order/sales-order/components/salesOrderDetailForm';
-import { BillActions } from '../../../warehouse/bill-management/redux/actions';
-import ManufacturingLotDetailForm from '../../manufacturing-lot/components/manufacturingLotDetailForm';
-import { commandActions, manufacturingPlanActions } from '../redux/actions';
-class ManufacturingCommandDetailInfo extends Component {
+import ManufacturingCommandDetailInfo from '../../manufacturing-command/components/manufacturingCommandDetailInfo';
+import { commandActions } from '../../manufacturing-command/redux/actions';
+import { manufacturingPlanActions } from '../redux/actions';
+
+class ManufacturingPlanDetailInfo extends Component {
     constructor(props) {
         super(props);
-        this.state = {}
+        this.state = {
+            page: 1,
+            limit: 5,
+            currentRole: localStorage.getItem('currentRole')
+        }
     }
 
     shouldComponentUpdate = (nextProps) => {
         if (this.props.planDetail !== nextProps.planDetail) {
             this.props.getDetailManufacturingPlan(nextProps.planDetail._id);
+            const data = {
+                page: this.state.page,
+                limit: this.state.limit,
+                currentRole: this.state.currentRole,
+                planCode: nextProps.planDetail.code
+            }
+            this.props.getAllManufacturingCommands(data);
             return false
         }
         return true;
@@ -33,12 +45,47 @@ class ManufacturingCommandDetailInfo extends Component {
         await window.$("#modal-detail-sales-order").modal("show");
     }
 
+    setPage = async (page) => {
+        await this.setState({
+            page: page,
+            limit: this.state.limit,
+            currentRole: this.state.currentRole,
+            planCode: this.props.planDetail.code
+        });
+        this.props.getAllManufacturingCommands(this.state);
+    }
+
+    setLimit = async (limit) => {
+        await this.setState({
+            limit: limit,
+            page: this.state.page,
+            currentRole: this.state.currentRole,
+            planCode: this.props.planDetail.code
+        });
+        this.props.getAllManufacturingCommands(this.state);
+    }
+
+    handleShowDetailManufacturingCommand = async (command) => {
+        await this.setState((state) => ({
+            ...state,
+            commandDetail: command
+        }));
+        window.$('#modal-detail-info-manufacturing-command-3').modal('show');
+    }
+
+
+
     render() {
-        const { translate, manufacturingPlan } = this.props;
+        const { translate, manufacturingPlan, manufacturingCommand } = this.props;
         let currentPlan = {};
         if (manufacturingPlan.currentPlan && manufacturingPlan.isLoading === false) {
             currentPlan = manufacturingPlan.currentPlan;
         }
+        let listCommands = [];
+        if (manufacturingCommand.listCommands && manufacturingCommand.isLoading === false) {
+            listCommands = manufacturingCommand.listCommands
+        }
+        const { totalPages, page } = manufacturingCommand;
         return (
             <React.Fragment>
                 <DialogModal
@@ -51,6 +98,9 @@ class ManufacturingCommandDetailInfo extends Component {
                     hasNote={false}
                 >
                     {this.state.salesOrderDetail && <SalesOrderDetailForm salesOrderDetail={this.state.salesOrderDetail} />}
+                    {
+                        <ManufacturingCommandDetailInfo idModal={3} commandDetail={this.state.commandDetail} />
+                    }
                     <form id={`form-detail-manufacturing-plan`}>
                         <div className="row">
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
@@ -195,18 +245,86 @@ class ManufacturingCommandDetailInfo extends Component {
                         <div className="row">
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                 <fieldset className="scheduler-border">
-                                    <legend className="scheduler-border">{translate('manufacturing.plan.manufacturing_commands')}</legend>
-                                  LSX HERE
+                                    <legend className="scheduler-border">{translate('manufacturing.plan.list_commands')}</legend>
+                                    <table id="manufacturing-command-table" className="table table-striped table-bordered table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>{translate('manufacturing.command.index')}</th>
+                                                <th>{translate('manufacturing.command.code')}</th>
+                                                <th>{translate('manufacturing.command.plan_code')}</th>
+                                                <th>{translate('manufacturing.command.created_at')}</th>
+                                                <th>{translate('manufacturing.command.qualityControlStaffs')}</th>
+                                                <th>{translate('manufacturing.command.accountables')}</th>
+                                                <th>{translate('manufacturing.command.mill')}</th>
+                                                <th>{translate('manufacturing.command.start_date')}</th>
+                                                <th>{translate('manufacturing.command.end_date')}</th>
+                                                <th>{translate('manufacturing.command.status')}</th>
+                                                <th style={{ width: "120px", textAlign: "center" }}>{translate('general.action')}
+                                                    <DataTableSetting
+                                                        tableId="manufacturing-command-table"
+                                                        columnArr={[
+                                                            translate('manufacturing.command.index'),
+                                                            translate('manufacturing.command.code'),
+                                                            translate('manufacturing.command.plan_code'),
+                                                            translate('manufacturing.command.created_at'),
+                                                            translate('manufacturing.command.qualityControlStaffs'),
+                                                            translate('manufacturing.command.accountables'),
+                                                            translate('manufacturing.command.mill'),
+                                                            translate('manufacturing.command.start_date'),
+                                                            translate('manufacturing.command.end_date'),
+                                                            translate('manufacturing.command.status')
+                                                        ]}
+                                                        limit={this.state.limit}
+                                                        hideColumnOption={true}
+                                                        setLimit={this.setLimit}
+                                                    />
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {(listCommands && listCommands.length !== 0) &&
+                                                listCommands.map((command, index) => (
+                                                    <tr key={index}>
+                                                        <td>{index + 1}</td>
+                                                        <td>{command.code}</td>
+                                                        <td>{command.manufacturingPlan !== undefined && command.manufacturingPlan.code}</td>
+                                                        <td>{formatDate(command.createdAt)}</td>
+                                                        <td>{command.qualityControlStaffs && command.qualityControlStaffs.map((staff, index) => {
+                                                            if (command.qualityControlStaffs.length === index + 1)
+                                                                return staff.staff.name
+                                                            return staff.staff.name + ", "
+                                                        })}
+                                                        </td>
+                                                        <td>{command.accountables && command.accountables.map((acc, index) => {
+                                                            if (command.accountables.length === index + 1)
+                                                                return acc.name;
+                                                            return acc.name + ", "
+                                                        })}</td>
+                                                        <td>{command.manufacturingMill && command.manufacturingMill.name}</td>
+                                                        <td>{translate('manufacturing.command.turn') + " " + command.startTurn + " " + translate('manufacturing.command.day') + " " + formatDate(command.startDate)}</td>
+                                                        < td > {translate('manufacturing.command.turn') + " " + command.endTurn + " " + translate('manufacturing.command.day') + " " + formatDate(command.endDate)}</td>
+                                                        <td style={{ color: translate(`manufacturing.command.${command.status}.color`) }}>{translate(`manufacturing.command.${command.status}.content`)}</td>
+                                                        <td style={{ textAlign: "center" }}>
+                                                            <a style={{ width: '5px' }} title={translate('manufacturing.command.command_detail')} onClick={() => { this.handleShowDetailManufacturingCommand(command) }}><i className="material-icons">view_list</i></a>
+                                                        </td>
+                                                    </tr>
+                                                ))
+                                            }
+                                        </tbody>
+                                    </table>
+                                    {manufacturingCommand.isLoading ?
+                                        <div className="table-info-panel">{translate('confirm.loading')}</div> :
+                                        (typeof listCommands === 'undefined' || listCommands.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                                    }
+                                    <PaginateBar pageTotal={totalPages ? totalPages : 0} currentPage={page} func={this.setPage} />
                                 </fieldset>
                             </div>
                         </div>
                         {/* <div className="row">
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                 <fieldset className="scheduler-border">
-                                    <legend className="scheduler-border">{translate('manufacturing.command.comment')}</legend>
-                                    <div className={`form-group`}>
-                                        Bình luận
-                                    </div>
+                                    <legend className="scheduler-border">{translate('manufacturing.plan.manufacturing_commands')}</legend>
+                                  Bình luận
                                 </fieldset>
                             </div>
                         </div> */}
@@ -218,13 +336,14 @@ class ManufacturingCommandDetailInfo extends Component {
 }
 
 function mapStateToProps(state) {
-    const { manufacturingPlan } = state;
-    return { manufacturingPlan }
+    const { manufacturingPlan, manufacturingCommand } = state;
+    return { manufacturingPlan, manufacturingCommand }
 }
 
 const mapDispatchToProps = {
     getDetailManufacturingPlan: manufacturingPlanActions.getDetailManufacturingPlan,
-    getPaymentForOrder: PaymentActions.getPaymentForOrder
+    getPaymentForOrder: PaymentActions.getPaymentForOrder,
+    getAllManufacturingCommands: commandActions.getAllManufacturingCommands
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(ManufacturingCommandDetailInfo));
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(ManufacturingPlanDetailInfo));

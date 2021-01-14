@@ -110,6 +110,8 @@ exports.createManufacturingPlan = async (data, portal) => {
             path: "creator"
         }, {
             path: "manufacturingCommands"
+        }, {
+            path: 'approvers.approver',
         }]);
     for (let i = 0; i < manufacturingCommands.length; i++) {
         manufacturingCommands[i].manufacturingPlan = newManufacturingPlan._id;
@@ -251,7 +253,9 @@ exports.getAllManufacturingPlans = async (query, portal) => {
                 path: "creator"
             }, {
                 path: "manufacturingCommands"
-            },]).sort({
+            }, {
+                path: "approvers.approver"
+            }]).sort({
                 "updatedAt": "desc"
             });
 
@@ -368,5 +372,76 @@ exports.getManufacturingPlanById = async (id, portal) => {
             path: 'creator',
         }]);
 
+    return { manufacturingPlan }
+}
+
+
+function findIndexOfApprover(array, id) {
+    let result = -1;
+    array.forEach((element, index) => {
+        if (element.approver == id) {
+            result = index;
+        }
+    });
+    return result;
+}
+
+function checkApproved(oldPlan) {
+    let result = true;
+    oldPlan.approvers.forEach(x => {
+        if (!x.approvedTime) {
+            result = false;
+        }
+    });
+    return result;
+}
+
+exports.editManufacturingPlan = async (id, data, portal) => {
+    let oldPlan = await ManufacturingPlan(connect(DB_CONNECTION, portal)).findById(id);
+    if (!oldPlan) {
+        throw Error("Plan is not existing")
+    }
+    oldPlan.code = data.code ? data.code : oldPlan.code;
+    oldPlan.manufacturingWorks = data.manufacturingWorks ? data.manufacturingWorks : oldPlan.manufacturingWorks;
+    oldPlan.salesOrders = data.salesOrders ? data.salesOrders : oldPlan.salesOrders;
+    oldPlan.goods = data.goods ? data.goods : oldPlan.goods;
+
+    // Xử lý người phê duyệt truyền vào
+    if (data.approvers) {
+        let index = findIndexOfApprover(oldPlan.approvers, data.approvers.approver);
+        if (index !== -1) {
+            oldPlan.approvers[index].approvedTime = new Date(Date.now());
+        }
+        if (checkApproved(oldPlan)) {
+            oldPlan.status = 2;
+            let manufacturingCommands = await ManufacturingCommand(connect(DB_CONNECTION, portal)).find({
+                manufacturingPlan: oldPlan._id
+            });
+            manufacturingCommands.map(x => {
+                x.status = 1;
+                x.save();
+            })
+        }
+    } else {
+        oldPlan.approvers = oldPlan.approvers;
+    }
+
+    oldPlan.manufacturingCommands = data.manufacturingCommands ? data.manufacturingCommands : oldPlan.manufacturingCommands;
+    oldPlan.creator = data.creator ? data.creator : oldPlan.creator;
+    oldPlan.status = data.status ? data.status : oldPlan.status;
+    oldPlan.description = data.description ? data.description : oldPlan.description;
+    oldPlan.startDate = data.startDate ? data.startDate : oldPlan.startDate;
+    oldPlan.endDate = data.endDate ? data.endDate : oldPlan.endDate;
+
+    await oldPlan.save();
+    const manufacturingPlan = await ManufacturingPlan(connect(DB_CONNECTION, portal))
+        .findById({ _id: oldPlan._id })
+        .populate([{
+            path: "creator"
+        }, {
+            path: "manufacturingCommands"
+        }, {
+            path: "approvers.approver"
+        }]);
     return { manufacturingPlan }
 }
