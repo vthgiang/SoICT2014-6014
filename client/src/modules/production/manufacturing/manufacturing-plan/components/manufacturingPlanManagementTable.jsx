@@ -7,6 +7,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import { manufacturingPlanActions } from '../redux/actions';
 import { worksActions } from '../../manufacturing-works/redux/actions';
 import { millActions } from '../../manufacturing-mill/redux/actions';
+import ManufacturingPlanDetailInfo from './manufacturingPlanDetailInfo';
 class ManufacturingPlanManagementTable extends Component {
     constructor(props) {
         super(props);
@@ -185,6 +186,14 @@ class ManufacturingPlanManagementTable extends Component {
         }))
     }
 
+    handleShowDetailManufacturingPlan = async (plan) => {
+        await this.setState((state) => ({
+            ...state,
+            planDetail: plan
+        }));
+        window.$('#modal-detail-info-manufacturing-plan').modal('show');
+    }
+
     render() {
         const { translate, manufacturingPlan } = this.props;
         let listPlans = [];
@@ -195,6 +204,7 @@ class ManufacturingPlanManagementTable extends Component {
         const { totalPages, page } = manufacturingPlan;
         return (
             <React.Fragment>
+                <ManufacturingPlanDetailInfo planDetail={this.state.planDetail} />
                 <div className="box-body qlcv">
                     <NewPlanCreateForm />
                     <div className="form-inline">
@@ -347,7 +357,7 @@ class ManufacturingPlanManagementTable extends Component {
                                         <td>{formatDate(plan.endDate)}</td>
                                         <td style={{ color: translate(`manufacturing.plan.${plan.status}.color`) }}>{translate(`manufacturing.plan.${plan.status}.content`)}</td>
                                         <td style={{ textAlign: "center" }}>
-                                            <a style={{ width: '5px' }} title={translate('manufacturing.purchasing_request.purchasing_request_detail')} onClick={() => { this.handleShowDetailPurchasingRequest(plan) }}><i className="material-icons">view_list</i></a>
+                                            <a style={{ width: '5px' }} title={translate('manufacturing.plan.plan_detail')} onClick={() => { this.handleShowDetailManufacturingPlan(plan) }}><i className="material-icons">view_list</i></a>
                                             <a className="edit text-yellow" style={{ width: '5px' }} title="Sửa kế hoạch sản xuất"><i className="material-icons">edit</i></a>
                                         </td>
                                     </tr>

@@ -350,7 +350,26 @@ exports.getManufacturingCommandById = async (id, portal) => {
             select: "code",
             populate: [{
                 path: "salesOrders",
-                select: "code"
+                populate: [{
+                    path: 'creator', select: 'name'
+                }, {
+                    path: 'customer', select: 'name taxNumber'
+                }, {
+                    path: 'goods.good',
+                    populate: [{
+                        path: 'manufacturingMills.manufacturingMill'
+                    }]
+                }, {
+                    path: 'goods.manufacturingWorks', select: 'code name address description'
+                }, , {
+                    path: 'goods.discounts.bonusGoods.good', select: 'code name baseUnit'
+                }, {
+                    path: 'goods.discounts.discountOnGoods.good', select: 'code name baseUnit'
+                }, {
+                    path: 'discounts.bonusGoods.good', select: 'code name baseUnit'
+                }, {
+                    path: 'quote', select: 'code createdAt'
+                }]
             }, {
                 path: "approvers",
                 populate: [{

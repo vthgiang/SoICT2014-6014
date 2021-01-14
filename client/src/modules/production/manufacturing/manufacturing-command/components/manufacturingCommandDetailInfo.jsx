@@ -3,10 +3,11 @@ import { connect } from 'react-redux';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import { DialogModal } from '../../../../../common-components';
 import { formatDate, formatFullDate } from '../../../../../helpers/formatDate';
+import { PaymentActions } from '../../../order/payment/redux/actions';
+import SalesOrderDetailForm from '../../../order/sales-order/components/salesOrderDetailForm';
 import { BillActions } from '../../../warehouse/bill-management/redux/actions';
 import ManufacturingLotDetailForm from '../../manufacturing-lot/components/manufacturingLotDetailForm';
 import { commandActions } from '../redux/actions';
-import qualityControlForm from './qualityControlForm';
 class ManufacturingCommandDetailInfo extends Component {
     constructor(props) {
         super(props);
@@ -30,6 +31,17 @@ class ManufacturingCommandDetailInfo extends Component {
         window.$('#modal-detail-info-manufacturing-lot').modal('show');
     }
 
+    showDetailSalesOrder = async (data) => {
+        await this.props.getPaymentForOrder({ orderId: data._id, orderType: 1 });
+        await this.setState((state) => {
+            return {
+                ...state,
+                salesOrderDetail: data,
+            };
+        });
+        await window.$("#modal-detail-sales-order").modal("show");
+    }
+
     render() {
         const { translate, manufacturingCommand, idModal, bills } = this.props;
         let currentCommand = {};
@@ -51,6 +63,7 @@ class ManufacturingCommandDetailInfo extends Component {
                     hasSaveButton={false}
                     hasNote={false}
                 >
+                    {this.state.salesOrderDetail && <SalesOrderDetailForm salesOrderDetail={this.state.salesOrderDetail} />}
                     <ManufacturingLotDetailForm lotDetail={this.state.lotDetail} />
                     <form id={`form-detail-manufacturing-command`}>
                         <div className="row">
@@ -397,6 +410,7 @@ function mapStateToProps(state) {
 const mapDispatchToProps = {
     getDetailManufacturingCommand: commandActions.getDetailManufacturingCommand,
     getBillsByCommand: BillActions.getBillsByCommand,
+    getPaymentForOrder: PaymentActions.getPaymentForOrder,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(ManufacturingCommandDetailInfo));

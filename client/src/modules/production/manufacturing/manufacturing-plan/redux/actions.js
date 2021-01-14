@@ -5,6 +5,7 @@ export const manufacturingPlanActions = {
     getAllManufacturingPlans,
     getAllApproversOfPlan,
     createManufacturingPlan,
+    getDetailManufacturingPlan,
 }
 
 function getAllManufacturingPlans(query) {
@@ -61,6 +62,26 @@ function createManufacturingPlan(data) {
             }).catch((error) => {
                 dispatch({
                     type: manufacturingPlanConstants.CREATE_MANUFACTURING_PLAN_FAILURE,
+                    error
+                });
+            });
+    }
+}
+
+function getDetailManufacturingPlan(id) {
+    return dispatch => {
+        dispatch({
+            type: manufacturingPlanConstants.GET_MANUFACTURING_PLAN_BY_ID_REQUEST
+        });
+        manufacturingPlanServices.getDetailManufacturingPlan(id)
+            .then((res) => {
+                dispatch({
+                    type: manufacturingPlanConstants.GET_MANUFACTURING_PLAN_BY_ID_SUCCESS,
+                    payload: res.data.content
+                })
+            }).catch((error) => {
+                dispatch({
+                    type: manufacturingPlanConstants.GET_MANUFACTURING_PLAN_BY_ID_FAILURE,
                     error
                 });
             });

@@ -21,6 +21,7 @@ export function manufacturingPlan(state = initState, action) {
         case manufacturingPlanConstants.GET_ALL_MANUFACTURING_PLANS_REQUEST:
         case manufacturingPlanConstants.GET_ALL_APPROVERS_OF_PLAN_REQUEST:
         case manufacturingPlanConstants.CREATE_MANUFACTURING_PLAN_REQUEST:
+        case manufacturingPlanConstants.GET_MANUFACTURING_PLAN_BY_ID_REQUEST:
             return {
                 ...state,
                 isLoading: true
@@ -28,6 +29,7 @@ export function manufacturingPlan(state = initState, action) {
         case manufacturingPlanConstants.GET_ALL_MANUFACTURING_PLANS_FAILURE:
         case manufacturingPlanConstants.GET_ALL_APPROVERS_OF_PLAN_FAILURE:
         case manufacturingPlanConstants.CREATE_MANUFACTURING_PLAN_FAILURE:
+        case manufacturingPlanConstants.GET_MANUFACTURING_PLAN_BY_ID_FAILURE:
             return {
                 ...state,
                 isLoading: false
@@ -61,6 +63,12 @@ export function manufacturingPlan(state = initState, action) {
                     ...state.listPlans,
                     action.payload.manufacturingPlan
                 ]
+            }
+        case manufacturingPlanConstants.GET_MANUFACTURING_PLAN_BY_ID_SUCCESS:
+            return {
+                ...state,
+                isLoading: false,
+                currentPlan: action.payload.manufacturingPlan
             }
         default:
             return state
