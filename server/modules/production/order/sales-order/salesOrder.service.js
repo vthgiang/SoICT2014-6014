@@ -134,6 +134,8 @@ exports.createNewSalesOrder = async (userId, companyId, data, portal) => {
         path: 'creator', select: 'name'
     }, {
         path: 'customer', select: 'name taxNumber'
+    },{
+        path: 'goods.good', select: 'code name baseUnit'
     } ]);;
     return { salesOrder }
 }
@@ -160,6 +162,8 @@ exports.getAllSalesOrders = async (query, portal) => {
                 path: 'creator', select: 'name'
             }, {
                 path: 'customer', select: 'name taxNumber'
+            },{
+                path: 'goods.good', select: 'code name baseUnit'
             }]);
         return { allSalesOrders }
     } else {
@@ -170,6 +174,8 @@ exports.getAllSalesOrders = async (query, portal) => {
                 path: 'creator', select: 'name'
             }, {
                 path: 'customer', select: 'name taxNumber'
+            },{
+                path: 'goods.good', select: 'code name baseUnit'
             }]
         })
         return { allSalesOrders }
@@ -260,6 +266,8 @@ exports.editSalesOrder = async (userId, companyId, id, data, portal) => {
             path: 'creator', select: 'name'
         }, {
             path: 'customer', select: 'name taxNumber'
+        },{
+            path: 'goods.good', select: 'code name baseUnit'
         }]);
 
     return { salesOrder: salesOrderUpdated }
@@ -327,6 +335,8 @@ exports.getSalesOrdersByManufacturingWorks = async (currentRole, portal) => {
             path: 'goods.good',
             populate: [{
                 path: 'manufacturingMills.manufacturingMill'
+            },{
+                path: 'goods.discounts.bonusGoods.good', select: 'code name baseUnit'
             }]
         }]);
     //Lọc đơn hàng theo nhà máy
