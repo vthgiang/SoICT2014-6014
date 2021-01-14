@@ -115,15 +115,8 @@ class SalesOrderTable extends Component {
     };
 
     handleShowDetailInfo = async (salesOrder) => {
-        console.log("salesOrder", salesOrder);
         await this.props.getPaymentForOrder({ orderId: salesOrder._id, orderType: 1 });
         await this.props.getSalesOrderDetail(salesOrder._id);
-        // await this.setState((state) => {
-        //     return {
-        //         ...state,
-        //         salesOrderDetail: data,
-        //     };
-        // });
         await window.$("#modal-detail-sales-order").modal("show");
     };
 

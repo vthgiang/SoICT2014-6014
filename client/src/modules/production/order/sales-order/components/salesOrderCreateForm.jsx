@@ -83,7 +83,7 @@ class SalesOrderCreateForm extends Component {
     };
 
     handleCustomerChange = (value) => {
-        if (value[0] !== "") {
+        if (value[0] !== "" && value[0] !== "title") {
             let customerInfo = this.props.customers.list.filter((item) => item._id === value[0]);
             if (customerInfo.length) {
                 this.setState({
