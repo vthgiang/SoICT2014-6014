@@ -4,7 +4,8 @@ export const manufacturingPlanServices = {
     getAllManufacturingPlans,
     getAllApproversOfPlan,
     createManufacturingPlan,
-    getDetailManufacturingPlan
+    getDetailManufacturingPlan,
+    handleEditManufacturingPlan
 }
 
 function getAllManufacturingPlans(query) {
@@ -51,6 +52,18 @@ function getDetailManufacturingPlan(id) {
             method: "GET",
         },
         false,
+        true,
+        "manufacturing.plan")
+}
+
+function handleEditManufacturingPlan(data, id) {
+    return sendRequest(
+        {
+            url: `${process.env.REACT_APP_SERVER}/manufacturing-plan/${id}`,
+            method: "PATCH",
+            data
+        },
+        true,
         true,
         "manufacturing.plan")
 }

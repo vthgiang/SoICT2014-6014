@@ -93,3 +93,27 @@ exports.getManufacturingPlanById = async (req, res) => {
         })
     }
 }
+
+exports.editManufacturingPlan = async (req, res) => {
+    try {
+        let data = req.body;
+        let id = req.params.id;
+        const manufacturingPlan = await ManufacturingPlanService.editManufacturingPlan(id, data, req.portal);
+
+        await Logger.info(req.user.email, "EDIT_MANUFACTURING_PLAN", req.portal);
+
+        res.status(200).json({
+            success: true,
+            messages: ['edit_successfully'],
+            content: manufacturingPlan
+        })
+    } catch (error) {
+        await Logger.error(req.user.email, "EDIT_MANUFACTURING_PLAN", req.portal);
+        console.log(error.message);
+        res.status(400).json({
+            success: false,
+            messages: ['edit_failed'],
+            content: error.message
+        })
+    }
+}

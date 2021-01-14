@@ -4759,7 +4759,7 @@ export default {
                 delete_successfully: "Xóa cam kết chất lượng thành công",
                 delete_failed: "Xóa cam kết chất lượng không thành công",
                 get_by_good_successfully: "Lấy cam kết cho mặt hàng thành công",
-                get_by_good_failed:"Lấy cam kết cho mặt hàng không thành công"
+                get_by_good_failed: "Lấy cam kết cho mặt hàng không thành công"
             }
         },
 
@@ -5050,6 +5050,9 @@ export default {
                 end_date: "Ngày dự kiến hoàn thành",
                 approvers: "Người phê duyệt",
                 description: "Mô tả",
+                list_commands: "Danh sách lệnh sản xuất",
+                approve_plan: "Phê duyệt kế hoạch",
+                approver: "Người phê duyệt",
                 created_at: "Ngày tạo",
                 manufacturing_commands: "Danh sách lệnh sản xuất",
                 command_code: "Mã lệnh sản xuất",
