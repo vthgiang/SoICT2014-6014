@@ -72,7 +72,7 @@ exports.searchAssetProfiles = async (portal, company, params) => {
 
     // Thêm key tìm kiếm theo loại tài sản vào keySearch
     if (params.assetType) {
-        keySearch = { ...keySearch, assetType: { $in: params.assetType } };
+        keySearch = { ...keySearch, assetType: { $in: JSON.parse(params.assetType) } };
     }
 
     // Thêm key tìm kiếm tài sản theo trạng thái hoạt động vào keySearch
