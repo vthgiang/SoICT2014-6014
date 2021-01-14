@@ -3,12 +3,49 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { SelectMulti, DatePicker } from '../../../../../common-components';
+import { BillActions } from '../../bill-management/redux/actions';
+import { StockActions } from '../../stock-management/redux/actions';
 class BillDashboardHeader extends Component {
     constructor(props) {
         super(props);
         this.state = {
-
+            currentRole: localStorage.getItem("currentRole"),
         }
+    }
+
+    componentDidMount() {
+        this.props.getNumberBills();
+        this.props.getAllStocks({ managementLocation: this.state.currentRole });
+    }
+
+    handleStockChange = (value) => {
+        this.setState(state => {
+            return {
+                ...state,
+                stock: value
+            }
+        })
+    }
+
+    handleChangeDate = (value) => {
+        if (value === '') {
+            value = null;
+        }
+
+        this.setState(state => {
+            return {
+                ...state,
+                createdAt: value
+            }
+        });
+    }
+
+    handleSubmitSearch = () => {
+        let data = {
+            stock: this.state.stock,
+            createdAt: this.state.createdAt
+        }
+        this.props.getNumberBills(data);
     }
 
     /**
@@ -57,36 +94,37 @@ class BillDashboardHeader extends Component {
         });
     }
     render() {
-        const { translate } = this.props;
+        const { translate, bills, stocks } = this.props;
+        const { numberBills } = bills;
+        const { listStocks } = stocks;
+        const { createdAt } = this.state;
 
         return (
             <React.Fragment>
                 <div className="form-inline">
-                    <div className="form-group">
-                        <label style={{ width: 'auto' }}>Kho</label>
-                        <SelectMulti id="multiSelectOrganizationalUnit"
-                            items={[
-                                { value: '1', text: 'Tạ Quang Bửu'},
-                                { value: '2', text: 'Trần Đại Nghĩa'},
-                                { value: '3', text: 'Đại Cồ Việt'},
-                                { value: '4', text: 'Lê Thanh Nghị'}
-                            ]}
-                            options={{ nonSelectedText: "Tất cả kho(4)", allSelectedText: "Tất cả kho(4)" }}
-                            onChange={this.handleSelectOrganizationalUnit}
-                        >
-                        </SelectMulti>
-                    </div>
-                    <div className="form-group">
-                            <label className="form-control-static">Trong tháng</label>
-                            <DatePicker
-                                id="purchase-month"
-                                dateFormat="month-year"
-                                value=""
-                                onChange={this.handlePurchaseMonthChange}
+                <div className="form-group">
+                            <label className="form-control-static">{translate('manage_warehouse.bill_management.stock')}</label>
+                            <SelectMulti
+                                id={`select-multi-stock-dashboard-bill`}
+                                multiple="multiple"
+                                options={{ nonSelectedText: "Tổng các kho", allSelectedText: "Tổng các kho" }}
+                                className="form-control select2"
+                                style={{ width: "100%" }}
+                                items={listStocks.map((x, index) => { return { value: x._id, text: x.name }})}
+                                onChange={this.handleStockChange}
                             />
                         </div>
                     <div className="form-group">
-                        <button type="button" className="btn btn-success" title={translate('general.search')} onClick={() => this.handleSunmitSearch()} >{translate('general.search')}</button>
+                            <label className="form-control-static">Trong tháng</label>
+                            <DatePicker
+                                id="purchase-month-bill-dashboard"
+                                dateFormat="month-year"
+                                value={createdAt}
+                                onChange={this.handleChangeDate}
+                            />
+                        </div>
+                    <div className="form-group">
+                        <button type="button" className="btn btn-success" title={translate('general.search')} onClick={() => this.handleSubmitSearch()} >{translate('general.search')}</button>
                     </div>
                 </div>
                 <div className="row" style={{ marginTop: 10 }}>
@@ -96,7 +134,7 @@ class BillDashboardHeader extends Component {
                             <div className="info-box-content">
                                 <span className="info-box-text">Số lượng phiếu</span>
                                 <span className="info-box-number">
-                                    5678
+                                    { numberBills !== null ? numberBills.totalBills : 0 }
                                 </span>
                                 <a href={`/bill-management`} target="_blank" >Xem thêm <i className="fa fa-arrow-circle-right"></i></a>
                             </div>
@@ -107,7 +145,7 @@ class BillDashboardHeader extends Component {
                             <span className="info-box-icon bg-green"><i className="fa fa-cart-plus"></i></span>
                             <div className="info-box-content" title="Số khen thưởng tháng/số khen thưởng năm" >
                                 <span className="info-box-text">Số phiếu xuất</span>
-                                <span className="info-box-number">2345/5678</span>
+                                <span className="info-box-number">{ numberBills !== null ? numberBills.totalGoodIssues : 0 }/{ numberBills !== null ? numberBills.totalBills : 0 }</span>
                                 <a href={`/bill-management`} target="_blank" >Xem thêm <i className="fa fa-arrow-circle-right"></i></a>
                             </div>
                         </div>
@@ -117,7 +155,7 @@ class BillDashboardHeader extends Component {
                             <span className="info-box-icon bg-red"><i className="fa  fa-cart-arrow-down"></i></span>
                             <div className="info-box-content" title="Số kỷ luật tháng/số kỷ luật năm">
                                 <span className="info-box-text">Số phiếu nhập</span>
-                                <span className="info-box-number">2000/5678</span>
+                                <span className="info-box-number">{ numberBills !== null ? numberBills.totalGoodReceipts : 0 }/{ numberBills !== null ? numberBills.totalBills : 0 }</span>
                                 <a href={`/bill-management`} target="_blank" >Xem thêm <i className="fa fa-arrow-circle-right"></i></a>
                             </div>
                         </div>
@@ -127,7 +165,7 @@ class BillDashboardHeader extends Component {
                             <span className="info-box-icon bg-yellow"><i className="fa  fa-bicycle"></i></span>
                             <div className="info-box-content" title="Số nghỉ phép tháng/số nghỉ phép năm">
                                 <span className="info-box-text">Số phiếu trả hàng</span>
-                                <span className="info-box-number">300/5678</span>
+                                <span className="info-box-number">{ numberBills !== null ? numberBills.totalGoodReturns : 0 }/{ numberBills !== null ? numberBills.totalBills : 0 }</span>
                                 <a href={`/bill-management`} target="_blank" >Xem thêm <i className="fa  fa-arrow-circle-o-right"></i></a>
                             </div>
                         </div>
@@ -138,4 +176,11 @@ class BillDashboardHeader extends Component {
     }
 };
 
-export default connect(null, null)(withTranslate(BillDashboardHeader));
+const mapStateToProps = state => state;
+
+const mapDispatchToProps = {
+    getNumberBills: BillActions.getNumberBills,
+    getAllStocks: StockActions.getAllStocks,
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(BillDashboardHeader));

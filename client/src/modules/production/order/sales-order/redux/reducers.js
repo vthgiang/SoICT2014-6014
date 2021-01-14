@@ -13,6 +13,7 @@ var findIndex = (array, id) => {
 const initState = {
     isLoading: false,
     listSalesOrders: [],
+    salesOrderDetail: {},
     totalDocs: 0,
     limit: 0,
     totalPages: 0,
@@ -34,23 +35,27 @@ export function salesOrders(state = initState, action) {
         case SalesOrderConstants.APPROVE_SALES_ORDER_REQUEST:
         case SalesOrderConstants.ADD_MANUFACTURING_PLAN_FOR_GOOD_REQUEST:
         case SalesOrderConstants.GET_SALES_ORDER_BY_MANUFACTURING_WORKS_REQUEST:
+        case SalesOrderConstants.GET_SALES_ORDERS_FOR_PAYMENT_REQUEST:
+        case SalesOrderConstants.GET_SALES_ORDER_DETAIL_REQUEST:
             return {
                 ...state,
                 isLoading: true
             }
-        
+
         case SalesOrderConstants.GET_ALL_SALES_ORDERS_FAILURE:
         case SalesOrderConstants.CREATE_SALES_ORDER_FAILURE:
         case SalesOrderConstants.EDIT_SALES_ORDER_FAILURE:
         case SalesOrderConstants.APPROVE_SALES_ORDER_FAILURE:
         case SalesOrderConstants.ADD_MANUFACTURING_PLAN_FOR_GOOD_FAILURE:
         case SalesOrderConstants.GET_SALES_ORDER_BY_MANUFACTURING_WORKS_FAILURE:
+        case SalesOrderConstants.GET_SALES_ORDERS_FOR_PAYMENT_FAILURE:
+        case SalesOrderConstants.GET_SALES_ORDER_DETAIL_FAILURE:
             return {
                 ...state,
                 isLoading: false,
                 error: action.error
             }
-    
+
         case SalesOrderConstants.GET_ALL_SALES_ORDERS_SUCCESS:
             return {
                 ...state,
@@ -66,7 +71,7 @@ export function salesOrders(state = initState, action) {
                 prevPage: action.payload.allSalesOrders.prevPage,
                 nextPage: action.payload.allSalesOrders.nextPage
             }
-        
+
         case SalesOrderConstants.CREATE_SALES_ORDER_SUCCESS:
             return {
                 ...state,
@@ -76,7 +81,7 @@ export function salesOrders(state = initState, action) {
                 ],
                 isLoading: false
             }
-        
+
         case SalesOrderConstants.EDIT_SALES_ORDER_SUCCESS:
             index = findIndex(state.listSalesOrders, action.payload.salesOrder._id);
             if (index !== -1) {
@@ -86,7 +91,7 @@ export function salesOrders(state = initState, action) {
                 ...state,
                 isLoading: false
             }
-        
+
         case SalesOrderConstants.APPROVE_SALES_ORDER_SUCCESS:
             index = findIndex(state.listSalesOrders, action.payload.salesOrder._id);
             if (index !== -1) {
@@ -96,7 +101,7 @@ export function salesOrders(state = initState, action) {
                 ...state,
                 isLoading: false
             }
-        
+
         case SalesOrderConstants.ADD_MANUFACTURING_PLAN_FOR_GOOD_SUCCESS:
             index = findIndex(state.listSalesOrders, action.payload.salesOrder._id);
             if (index !== -1) {
@@ -106,11 +111,23 @@ export function salesOrders(state = initState, action) {
                 ...state,
                 isLoading: false
             }
-        
+
         case SalesOrderConstants.GET_SALES_ORDER_BY_MANUFACTURING_WORKS_SUCCESS:
             return {
                 ...state,
-                salesOrders: action.payload.salesOrders,
+                listSalesOrdersWorks: action.payload.salesOrders,
+                isLoading: false
+            }
+        case SalesOrderConstants.GET_SALES_ORDERS_FOR_PAYMENT_SUCCESS:
+            return {
+                ...state,
+                salesOrdersForPayment: action.payload.salesOrders,
+                isLoading: false
+            }
+        case SalesOrderConstants.GET_SALES_ORDER_DETAIL_SUCCESS:
+            return {
+                ...state,
+                salesOrderDetail: action.payload.salesOrder,
                 isLoading: false
             }
         default:

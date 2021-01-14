@@ -4257,16 +4257,12 @@ const initSampleCompanyDB = async () => {
             code: "LSX202000001",
             manufacturingPlan: manufacturingPlans[0]._id,
             manufacturingMill: manufacturingMills[0]._id,
-            startDate: "2020-11-03",
-            endDate: "2020-11-04",
+            startDate: "2021-01-03",
+            endDate: "2021-01-04",
             startTurn: 1,
             endTurn: 3,
-            good: {
-                good: listProduct[0],
-                packingRule: "Baox10Thung",
-                conversionRate: 10,
-                quantity: 20,
-            },
+            good: listProduct[0],
+            quantity: 20,
             qualityControlStaffs: [
                 {
                     staff: users[11]._id,
@@ -4276,9 +4272,9 @@ const initSampleCompanyDB = async () => {
                 },
                 {
                     staff: users[0]._id,
-                    time: null,
-                    status: 1,
-                    content: null
+                    time: new Date("2020-11-03 6:00:00"),
+                    status: 2,
+                    content: "Lệnh sản xuất đạt tiêu chuẩn chất lượng hạng A"
                 },
             ],
             status: 2,
@@ -4295,25 +4291,21 @@ const initSampleCompanyDB = async () => {
             endDate: "2020-12-02",
             startTurn: 2,
             endTurn: 3,
-            good: {
-                good: listProduct[1],
-                packingRule: "Thungx12Bao",
-                conversionRate: 12,
-                quantity: 25,
-            },
+            good: listProduct[1],
+            quantity: 25,
             status: 2,
             qualityControlStaffs: [
                 {
                     staff: users[5]._id,
-                    time: new Date("2020-12-01 6:00:00"),
-                    status: 2,
-                    content: "Đat đầy đủ tiêu chuẩn chất lượng"
-                },
-                {
-                    staff: users[0]._id,
                     time: null,
                     status: 1,
                     content: null
+                },
+                {
+                    staff: users[0]._id,
+                    time: new Date("2020-11-03 6:00:00"),
+                    status: 2,
+                    content: "Lệnh sản xuất đạt tiêu chuẩn chất lượng hạng A"
                 },
             ],
             creator: users[13]._id,
@@ -4329,12 +4321,8 @@ const initSampleCompanyDB = async () => {
             endDate: "2020-12-03",
             startTurn: 3,
             endTurn: 1,
-            good: {
-                good: listProduct[0],
-                packingRule: "Baox10Thung",
-                conversionRate: 10,
-                quantity: 30,
-            },
+            good: listProduct[0],
+            quantity: 30,
             qualityControlStaffs: [
                 {
                     staff: users[8]._id,
@@ -4344,9 +4332,9 @@ const initSampleCompanyDB = async () => {
                 },
                 {
                     staff: users[0]._id,
-                    time: new Date("2020-12-02 6:00:00"),
+                    time: new Date("2020-11-03 6:00:00"),
                     status: 2,
-                    content: "Lệnh sản xuất chưa đạt chuẩn chất lượng"
+                    content: "Lệnh sản xuất đạt tiêu chuẩn chất lượng hạng A"
                 },
             ],
             status: 1,
@@ -4363,12 +4351,8 @@ const initSampleCompanyDB = async () => {
             endDate: "2020-11-04",
             startTurn: 1,
             endTurn: 3,
-            good: {
-                good: listProduct[0],
-                packingRule: "Baox10Thung",
-                conversionRate: 10,
-                quantity: 20,
-            },
+            good: listProduct[0],
+            quantity: 20,
             qualityControlStaffs: [
                 {
                     staff: users[11]._id,
@@ -4432,8 +4416,8 @@ const initSampleCompanyDB = async () => {
     const workScheduleData = [
         {
             manufacturingMill: manufacturingMills[0]._id,
-            month: "2020-11",
-            turns: [array30days, array30days, array30days],
+            month: "2021-01",
+            turns: [array31days, array31days, array31days],
         },
         {
             manufacturingMill: manufacturingMills[3]._id,
@@ -5583,10 +5567,10 @@ const initSampleCompanyDB = async () => {
     console.log("Xong! Đã tạo mẫu dữ liệu khách hàng");
 
     /*---------------------------------------------------------------------------------------------
-   -----------------------------------------------------------------------------------------------
+    -----------------------------------------------------------------------------------------------
        TẠO DỮ LIỆU THÔNG TIN ĐƠN HÀNG
-   -----------------------------------------------------------------------------------------------
-   ----------------------------------------------------------------------------------------------- */
+    -----------------------------------------------------------------------------------------------
+    ----------------------------------------------------------------------------------------------- */
 
     const salesOrderData = [{
         code: 'DKD20200001',
@@ -5633,10 +5617,10 @@ const initSampleCompanyDB = async () => {
 
 
     /*---------------------------------------------------------------------------------------------
-  -----------------------------------------------------------------------------------------------
+    -----------------------------------------------------------------------------------------------
       TẠO DỮ LIỆU THÔNG TIN THUẾ
-  -----------------------------------------------------------------------------------------------
-  ----------------------------------------------------------------------------------------------- */
+    -----------------------------------------------------------------------------------------------
+    ----------------------------------------------------------------------------------------------- */
 
     console.log("Khởi tạo dữ liệu thông tin thuế");
     var listTaxs = await Tax(vnistDB).insertMany([

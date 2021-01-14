@@ -46,7 +46,7 @@ class GoodSelected extends Component {
     };
 
     render() {
-        let { good, goodName, pricePerBaseUnit, baseUnit, inventory, quantity, manufacturingWorks } = this.props;
+        let { good, goodName, pricePerBaseUnit, baseUnit, inventory, quantity, manufacturingWorks, manufacturingPlan } = this.props;
         let { pricePerBaseUnitError, goodError, quantityError } = this.props;
         const { handleGoodChange, handlePriceChange, handleQuantityChange, handleManufacturingWorkChange } = this.props;
 
@@ -96,6 +96,7 @@ class GoodSelected extends Component {
                             items={this.getManufacturingWorksOptions()}
                             onChange={handleManufacturingWorkChange}
                             multiple={false}
+                            disabled={manufacturingPlan}
                         />
                     </div>
                 </div>

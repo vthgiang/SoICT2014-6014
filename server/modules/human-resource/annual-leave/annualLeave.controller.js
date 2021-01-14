@@ -13,7 +13,9 @@ const Log = require(`../../../logs`);
 exports.searchAnnualLeaves = async (req, res) => {
     try {
         let data = {};
-        if (req.query.numberAnnulLeave) {
+        if(req.query.beforAndAfterOneWeek){
+            data = await AnnualLeaveService.getAnnaulLeaveBeforAndAfterOneWeek(req.portal, req.query.organizationalUnits, req.user.company._id)
+        }else if (req.query.numberAnnulLeave) {
             data = await AnnualLeaveService.getNumberAnnaulLeave(req.portal, req.user.email, req.query.year, req.user.company._id);
         } else if (req.query.startDate && req.query.endDate) {
             data = await AnnualLeaveService.getAnnualLeaveByStartDateAndEndDate(req.portal, req.query.organizationalUnits, req.query.startDate, req.query.endDate, req.user.company._id)

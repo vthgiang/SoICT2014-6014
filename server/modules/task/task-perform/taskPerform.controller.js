@@ -75,14 +75,14 @@ exports.getActiveTimesheetLog = async (req, res) => {
 exports.startTimesheetLog = async (req, res) => {
     try {
         let timerStatus = await PerformTaskService.startTimesheetLog(req.portal, req.params, req.body);
-        await Logger.info(req.user.email, ` start timer `, req.portal)
+        await Logger.info(req.user.email, 'start_timer_success', req.portal)
         res.status(200).json({
             success: true,
             messages: ['start_timer_success'],
             content: timerStatus
         })
-    } catch (error) {
-        await Logger.error(req.user.email, ` start timer `, req.portal)
+    } catch (error) {console.log(error)
+        await Logger.error(req.user.email, 'start_timer_faile', req.portal)
         res.status(400).json({
             success: false,
             messages: Array.isArray(error) ? error : ['start_timer_fail'],
@@ -97,14 +97,14 @@ exports.startTimesheetLog = async (req, res) => {
 exports.stopTimesheetLog = async (req, res) => {
     try {
         let timer = await PerformTaskService.stopTimesheetLog(req.portal, req.params, req.body);
-        await Logger.info(req.user.email, ` stop timer `, req.portal)
+        await Logger.info(req.user.email, 'stop_timer_success', req.portal)
         res.status(200).json({
             success: true,
             messages: ['stop_timer_success'],
             content: timer
         })
     } catch (error) {
-        await Logger.error(req.user.email, ` stop timer `, req.portal)
+        await Logger.error(req.user.email, 'stop_timer_faile', req.portal)
         res.status(400).json({
             success: false,
             messages: ['stop_timer_fail'],
@@ -112,6 +112,31 @@ exports.stopTimesheetLog = async (req, res) => {
         })
     }
 }
+
+/**
+ * 
+ * Sửa lịch sửa bấm giờ
+ */
+exports.editTimeSheetLog = async (req, res) => {
+    try {
+        let {taskId, timesheetlogId} = req.params;
+        let timer = await PerformTaskService.editTimeSheetLog(req.portal, taskId, timesheetlogId, req.body);
+        await Logger.info(req.user.email, 'edit_time_sheet_log_success', req.portal)
+        res.status(200).json({
+            success: true,
+            messages: ['edit_time_sheet_log_success'],
+            content: timer
+        })
+    } catch (error) {
+        await Logger.error(req.user.email, 'edit_time_sheet_log_faile', req.portal)
+        res.status(400).json({
+            success: false,
+            messages: ['edit_time_sheet_log_fail'],
+            content: error
+        })
+    }
+}
+
 /**
  *  Tạo hoạt động
  */

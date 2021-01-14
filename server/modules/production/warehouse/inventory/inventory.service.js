@@ -93,7 +93,14 @@ exports.getDetailLot = async (id, portal) => {
             { path: 'good' },
             { path: 'stocks.binLocations.binLocation', select: 'id path' },
             { path: 'stocks.stock' },
-            { path: 'lotLogs.bill', select: 'id code type' },
+            { path: 'lotLogs.bill', 
+                populate: [
+                    { path: 'supplier' }, 
+                    { path: 'customer'}, 
+                    { path: 'manufacturingMill'},
+                    { path: 'toStock'}
+                ]
+            },
             { path: 'lotLogs.binLocations.binLocation' },
             { path: 'lotLogs.stock', select: 'id name' }
         ])
@@ -545,4 +552,175 @@ exports.getInventoryByGoods = async (data, portal) => {
     }
 
     return arrayGoods;
+}
+
+exports.getInventories = async (query, portal) => {
+    const { stock, category, type, managementLocation } = query;
+    const status = ['1', '3', '5'];
+    let data = [];
+    let optionGood = { type: type };
+    if(category) {
+        optionGood.category = category;
+    }
+
+    if (!managementLocation) throw new Error("roles not avaiable");
+
+    //lấy id các kho của role hiện tại
+    const stocks = await Stock(connect(DB_CONNECTION, portal)).find({ managementLocation: { $elemMatch: { role: managementLocation } } })
+    var arrayStock = [];
+    if (stocks && stocks.length > 0) {
+        for (let i = 0; i < stocks.length; i++) {
+            arrayStock = [...arrayStock, stocks[i]._id];
+        }
+    }
+
+    const goods = await Good(connect(DB_CONNECTION, portal)).find(optionGood);
+    if(goods.length > 0) {
+        for(let i = 0; i < goods.length; i++) {
+            let inventory = 0;
+            let goodIssue = 0;
+            let goodReceipt = 0;
+            let goodIssued = 0;
+            let goodReceipted = 0;
+            let goodInventory = {};
+            let options = { good: goods[i]._id };
+            let optionBill = {};
+            if(query.stock) {
+                options.stocks = { $elemMatch: { stock: query.stock } };
+                optionBill.fromStock = query.stock;
+            }
+            else {
+                options.stocks = { $elemMatch: { stock: arrayStock } };
+            }
+
+            if (query.startDate && query.endDate) {
+                let date1 = query.startDate.split("-");
+                let date2 = query.endDate.split("-");
+                let start = new Date(date1[1], date1[0] - 1, 1);
+                let end = new Date(date2[1], date2[0], 1);
+
+                optionBill = {
+                    ...optionBill,
+                    createdAt: {
+                        $gt: start,
+                        $lte: end
+                    }
+                }
+            } else {
+                if (query.startDate) {
+                    let date1 = query.startDate.split("-");
+                    let start = new Date(date1[1], date1[0] - 1, 1);
+
+                    optionBill = {
+                        ...optionBill,
+                        createdAt: {
+                            $gt: start
+                        }
+                    }
+                }
+                if (query.endDate) {
+                    let date2 = query.endDate.split("-");
+                    let end = new Date(date2[1], date2[0], 1);
+
+                    optionBill = {
+                        ...optionBill,
+                        createdAt: {
+                            $lte: end
+                        }
+                    },
+
+                    options = {
+                        ...options,
+                        createdAt: {
+                            $lte: end
+                        }
+                    }
+                }
+            }
+
+            //Lấy số lượng tồn kho
+            const lots = await Lot(connect(DB_CONNECTION, portal)).find(options);
+            if (lots.length > 0) {
+                for (let j = 0; j < lots.length; j++) {
+                    if(stock === undefined) {
+                        inventory += Number(lots[j].quantity);
+                    }
+                    else {
+                        stock.map(stockId => {
+                            lots[j].stocks.map(stockLot => {
+                                if(stockId.toString() === stockLot.stock.toString()) {
+                                    inventory += Number(stockLot.quantity);
+                                }
+                            })
+                        })
+                    }
+                }
+            }
+
+            //Lấy số lượng sắp xuất kho
+            optionBill.goods = { $elemMatch: { good: goods[i]._id } };
+            optionBill.status = { $in: status };
+            optionBill.group = '2';
+            const goodIssueBills = await Bill(connect(DB_CONNECTION, portal)).find(optionBill);
+            if (goodIssueBills.length > 0) {
+                for (let k = 0; k < goodIssueBills.length; k++) {
+                    for (let x = 0; x < goodIssueBills[k].goods.length; x++) {
+                        if (goodIssueBills[k].goods[x].good.toString() === goods[i]._id.toString()) {
+                            goodIssue += Number(goodIssueBills[k].goods[x].quantity)
+                        }
+                    }
+                }
+            }
+
+            //Lấy số lượng sắp nhập kho
+            optionBill.group = '1';
+            const goodReceiptBills = await Bill(connect(DB_CONNECTION, portal)).find(optionBill);
+            if (goodReceiptBills.length > 0) {
+                for (let k = 0; k < goodReceiptBills.length; k++) {
+                    for (let x = 0; x < goodReceiptBills[k].goods.length; x++) {
+                        if (goodReceiptBills[k].goods[x].good.toString() === goods[i]._id.toString()) {
+                            goodReceipt += Number(goodReceiptBills[k].goods[x].quantity)
+                        }
+                    }
+                }
+            }
+
+            //Lấy số lượng đã xuất kho
+            optionBill.goods = { $elemMatch: { good: goods[i]._id } };
+            optionBill.status = '2';
+            optionBill.group = '2';
+            const goodIssuedBills = await Bill(connect(DB_CONNECTION, portal)).find(optionBill);
+            if (goodIssuedBills.length > 0) {
+                for (let k = 0; k < goodIssuedBills.length; k++) {
+                    for (let x = 0; x < goodIssuedBills[k].goods.length; x++) {
+                        if (goodIssuedBills[k].goods[x].good.toString() === goods[i]._id.toString()) {
+                            goodIssued += Number(goodIssuedBills[k].goods[x].quantity)
+                        }
+                    }
+                }
+            }
+
+            //Lấy số lượng đã nhập kho
+            optionBill.group = '1';
+            const goodReceiptedBills = await Bill(connect(DB_CONNECTION, portal)).find(optionBill);
+            if (goodReceiptedBills.length > 0) {
+                for (let k = 0; k < goodReceiptedBills.length; k++) {
+                    for (let x = 0; x < goodReceiptedBills[k].goods.length; x++) {
+                        if (goodReceiptedBills[k].goods[x].good.toString() === goods[i]._id.toString()) {
+                            goodReceipted += Number(goodReceiptedBills[k].goods[x].quantity)
+                        }
+                    }
+                }
+            }
+
+            goodInventory.name = goods[i].name;
+            goodInventory.inventory = inventory;
+            goodInventory.goodIssue = goodIssue;
+            goodInventory.goodReceipt = goodReceipt;
+            goodInventory.goodIssued = goodIssued;
+            goodInventory.goodReceipted = goodReceipted;
+            data = [...data, goodInventory];
+        }
+    }
+    return data;
 }

@@ -157,8 +157,7 @@ const EmployeeSchema = new Schema({
      */
     educationalLevel: { // Trình độ văn hóa
         type: String,
-        required: true,
-        enum: ['12/12', '11/12', '10/12', '9/12']
+        // enum: ['12/12', '11/12', '10/12', '9/12']
     },
     foreignLanguage: { // Trình độ ngoại ngữ
         type: String

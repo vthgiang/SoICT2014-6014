@@ -13,7 +13,8 @@ export const GoodServices = {
     getSlaByGoodsId,
     getDiscountByGoodsId,
     getGoodByManageWorkRole,
-    getManufacturingWorksByProductId
+    getManufacturingWorksByProductId,
+    getNumberGoods
 }
 
 function getGoodsByType(params) {
@@ -136,4 +137,11 @@ function getManufacturingWorksByProductId(productId) {
         false,
         true,
         "manage_warehouse.good_management")
+}
+
+function getNumberGoods() {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/goods/get-number-good`,
+        method: "GET"
+    }, false, false, "manage_warehouse.good_management")
 }

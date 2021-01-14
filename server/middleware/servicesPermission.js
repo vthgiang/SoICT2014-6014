@@ -315,6 +315,7 @@ exports.links = [
             { path: '/performtask/task-timesheet-logs', method: 'GET' },
             { path: '/performtask/tasks/:taskId/timesheet-logs/start-timer', method: 'POST' },
             { path: '/performtask/tasks/:taskId/timesheet-logs/stop-timer', method: 'POST' },
+            { path: '/performtask/tasks/:taskId/timesheet-logs/:timesheetlogId', method: 'PATCH' },
             { path: '/performtask/:task', method: 'POST' },
             { path: '/performtask/tasks/:taskId/files', method: 'POST' },
             { path: '/performtask/tasks/:taskId/documents', method: 'PATCH' },
@@ -488,6 +489,7 @@ exports.links = [
             { path: '/categories/:id', method: 'DELETE' },
 
             { path: '/goods', method: 'GET' },
+            { path: '/goods/get-number-good', method: 'GET' },
             { path: '/goods/all-goods', method: 'GET' },
             { path: '/goods/by-type', method: 'GET' },
             { path: '/goods', method: 'POST' },
@@ -497,6 +499,7 @@ exports.links = [
             { path: '/goods/by-category/:id', method: 'GET' },
             
             { path: '/lot', method: 'GET' },
+            { path: '/lot/get-inventory-dashboard', method: 'GET' },
             { path: '/lot/get-lot-by-good', method: 'GET' },
             { path: '/lot/create-or-edit-lot', method: 'POST' },
             { path: '/lot/delete-many', method: 'POST' },
@@ -505,6 +508,7 @@ exports.links = [
             { path: '/lot/:id', method: 'PATCH' },
 
             { path: '/bills', method: 'GET' },
+            { path: '/bills/get-number-bill', method: 'GET' },
             { path: '/bills/get-bill-by-good', method: 'GET' },
             { path: '/bills/get-bill-by-status', method: 'GET' },
             { path: '/bills/bill-by-command', method: 'GET' },
@@ -814,9 +818,6 @@ exports.links = [
         url: '/manage-sales-order',
         apis: ['@all']
     },{
-        url: '/manage-manufacturing-order',
-        apis: ['@all']
-    },{
         url: '/manage-purchase-order',
         apis: ['@all']
     },{
@@ -824,9 +825,6 @@ exports.links = [
         apis: ['@all']
     },{
         url: '/manage-sales-order-dashboard',
-        apis: ['@all']
-    },{
-        url: '/manage-manufacturing-order-dashboard',
         apis: ['@all']
     },{
         url: '/manage-discount',
@@ -837,7 +835,20 @@ exports.links = [
     },{
         url: '/manage-sla',
         apis: ['@all']
-    },{
+    },
+    {
+        url: '/manage-payment',
+        apis: ['@all']
+    },
+    {
+        url: '/manage-business-department',
+        apis: ['@all']
+    },
+    {
+        url: '/manage-bank-account',
+        apis: ['@all']
+    },
+    {
         url: '/crm/dashboard',
         apis: ['@all']
     },{

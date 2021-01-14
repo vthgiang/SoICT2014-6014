@@ -19,7 +19,7 @@ class AssetManagement extends Component {
         this.state = {
             code: "",
             assetName: "",
-            assetType: "",
+            assetType: [],
             purchaseDate: null,
             disposalDate: null,
             status: window.location.search ? [qs.parse(window.location.search, { ignoreQueryPrefix: true }).status] : '',
@@ -84,7 +84,6 @@ class AssetManagement extends Component {
 
     // Bắt sự kiện click xem thông tin tài sản
     handleView = async (value) => {
-        console.log("giá trị lấy được", value)
         await this.setState({
             currentRowView: value
         });
@@ -145,14 +144,14 @@ class AssetManagement extends Component {
     }
 
     // Function lưu giá trị loại tài sản vào state khi thay đổi
-    handleAssetTypeChange = (value) => {
-        if (value.length === 0) {
-            value = null
-        }
+    handleAssetTypeChange = async (value) => {
 
-        this.setState({
+        if (value.length === 0) {
+            value = null;
+        }
+        await this.setState({
             ...this.state,
-            assetType: value
+            assetType: value,
         })
     }
 
@@ -720,6 +719,7 @@ class AssetManagement extends Component {
         let typeArr = this.getAssetTypes();
         let dataSelectBox = this.getDepartment();
         let assetTypeName = this.state.assetType ? this.state.assetType : [];
+
         if (assetsManager.isLoading === false) {
             lists = assetsManager.listAssets;
         }

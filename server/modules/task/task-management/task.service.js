@@ -276,7 +276,7 @@ exports.getPaginatedTasks = async (portal, task) => {
     perPage = Number(perPage);
     let page = Number(number);
     let roleArr = [];
-    if (role) {
+    if (Array.isArray(role) && role.length > 0) {
         for (let i in role) {
             if (role[i] === "responsible") roleArr.push({ responsibleEmployees: { $in: [user] } });
             if (role[i] === "accountable") roleArr.push({ accountableEmployees: { $in: [user] } });
@@ -288,6 +288,9 @@ exports.getPaginatedTasks = async (portal, task) => {
         roleArr = [
             { responsibleEmployees: { $in: [user] } },
             { accountableEmployees: { $in: [user] } },
+            { consultedEmployees: { $in: [user] } },
+            { informedEmployees: { $in: [user] } },
+            { creator: { $in: [user] } },
         ];
     }
 
@@ -325,28 +328,28 @@ exports.getPaginatedTasks = async (portal, task) => {
         };
     }
 
-    if (Array.isArray(special)) {
-        let checkStore = special.some(node => node === 'stored');
-        if(checkStore) {
-            keySearch = {
-                ...keySearch,
-                isArchived: true
-            };
-        }
-        let checkCurrentMonth = special.some(node => node === 'currentMonth');
-        if(checkCurrentMonth){
-            let now = new Date();
-            let currentYear = now.getFullYear();
-            let currentMonth = now.getMonth()+1;
-            let start = new Date(`${currentYear}-${currentMonth}`); //ngày cuối cùng của tháng trước
-            let end = new Date(currentYear, currentMonth); // ngày cuối cùng của tháng hiện tại
+    if (special) {
+        for (let i = 0; i < special.length; i++) {
+            if (special[i] === "stored") {
+                keySearch = {
+                    ...keySearch,
+                    isArchived: true
+                };
+            }
+            else {
+                let now = new Date();
+                let currentYear = now.getFullYear();
+                let currentMonth = now.getMonth();
+                let endOfCurrentMonth = new Date(currentYear, currentMonth + 1);
+                let endOfLastMonth = new Date(currentYear, currentMonth);
 
-            keySearchSpecial = {
-                $or: [
-                    { 'endDate': { $lte: end, $gt: start } },
-                    { 'startDate': { $lte: end, $gt: start } },
-                    { 'startDate': { $lte: start }, 'endDate': { $gte: end } }
-                ]
+                keySearchSpecial = {
+                    $or: [
+                        { 'endDate': { $lte: endOfCurrentMonth, $gt: endOfLastMonth } },
+                        { 'startDate': { $lte: endOfCurrentMonth, $gt: endOfLastMonth } },
+                        { $and: [{ 'endDate': { $gte: endOfCurrentMonth } }, { 'startDate': { $lte: endOfLastMonth } }] }
+                    ]
+                }
             }
         }
     }
@@ -425,7 +428,8 @@ exports.getPaginatedTasks = async (portal, task) => {
             keySearchPeriod
         ]
     }
-    taskList = await Task(connect(DB_CONNECTION, portal)).find(optionQuery).sort({ 'createdAt': 'asc' })
+
+    taskList = await Task(connect(DB_CONNECTION, portal)).find(optionQuery).sort({ 'createdAt': 1 })
         .skip(perPage * (page - 1)).limit(perPage).populate([
             { path: "organizationalUnit creator parent responsibleEmployees" },
             { path: "timesheetLogs.creator", select: "name" },
@@ -436,7 +440,8 @@ exports.getPaginatedTasks = async (portal, task) => {
 
     return {
         "tasks": taskList,
-        "totalPage": totalPages
+        "totalPage": totalPages,
+        totalCount
     };
 }
 
@@ -600,7 +605,7 @@ exports.getPaginatedTasksThatUserHasResponsibleRole = async (portal, task) => {
             keySearchSpecial,
             keySearchPeriod
         ]
-    }).sort({ 'createdAt': 'asc' })
+    }).sort({ 'createdAt': 1 })
         .skip(perPage * (page - 1)).limit(perPage).populate({ path: "organizationalUnit creator parent responsibleEmployees" });
 
     var totalCount = await Task(connect(DB_CONNECTION, portal)).countDocuments({
@@ -614,7 +619,8 @@ exports.getPaginatedTasksThatUserHasResponsibleRole = async (portal, task) => {
 
     return {
         "tasks": responsibleTasks,
-        "totalPage": totalPages
+        "totalPage": totalPages,
+        totalCount
     };
 }
 
@@ -777,7 +783,7 @@ exports.getPaginatedTasksThatUserHasAccountableRole = async (portal, task) => {
             keySearchSpecial,
             keySearchPeriod
         ]
-    }).sort({ 'createdAt': 'asc' })
+    }).sort({ 'createdAt': 1 })
         .skip(perPage * (page - 1)).limit(perPage).populate({ path: "organizationalUnit creator parent" });
 
     var totalCount = await Task(connect(DB_CONNECTION, portal)).countDocuments({
@@ -790,7 +796,8 @@ exports.getPaginatedTasksThatUserHasAccountableRole = async (portal, task) => {
     var totalPages = Math.ceil(totalCount / perPage);
     return {
         "tasks": accountableTasks,
-        "totalPage": totalPages
+        "totalPage": totalPages,
+        totalCount
     };
 }
 
@@ -952,7 +959,7 @@ exports.getPaginatedTasksThatUserHasConsultedRole = async (portal, task) => {
             keySearchSpecial,
             keySearchPeriod
         ]
-    }).sort({ 'createdAt': 'asc' })
+    }).sort({ 'createdAt': 1 })
         .skip(perPage * (page - 1)).limit(perPage).populate({ path: "organizationalUnit creator parent" });
 
     var totalCount = await Task(connect(DB_CONNECTION, portal)).countDocuments({
@@ -965,7 +972,8 @@ exports.getPaginatedTasksThatUserHasConsultedRole = async (portal, task) => {
     var totalPages = Math.ceil(totalCount / perPage);
     return {
         "tasks": consultedTasks,
-        "totalPage": totalPages
+        "totalPage": totalPages,
+        totalCount
     };
 }
 
@@ -1099,7 +1107,7 @@ exports.getPaginatedTasksCreatedByUser = async (portal, task) => {
             keySearchSpecial,
             keySearchPeriod
         ]
-    }).sort({ 'createdAt': 'asc' })
+    }).sort({ 'createdAt': 1 })
         .skip(perPage * (page - 1)).limit(perPage).populate({ path: "organizationalUnit creator parent" });
 
     var totalCount = await Task(connect(DB_CONNECTION, portal)).countDocuments({
@@ -1276,7 +1284,7 @@ exports.getPaginatedTasksThatUserHasInformedRole = async (portal, task) => {
             keySearchSpecial,
             keySearchPeriod
         ]
-    }).sort({ 'createdAt': 'asc' })
+    }).sort({ 'createdAt': 1 })
         .skip(perPage * (page - 1)).limit(perPage)
         .populate({ path: "organizationalUnit creator parent" });
 
@@ -1290,7 +1298,8 @@ exports.getPaginatedTasksThatUserHasInformedRole = async (portal, task) => {
     var totalPages = Math.ceil(totalCount / perPage);
     return {
         "tasks": informedTasks,
-        "totalPage": totalPages
+        "totalPage": totalPages,
+        totalCount
     };
 }
 
@@ -1485,7 +1494,7 @@ exports.getPaginatedTasksByUser = async (portal, task, type = "paginated_task_by
             keySearchSpecial,
             keySearchPeriod
         ]
-    }).sort({ 'createdAt': 'asc' })
+    }).sort({ 'createdAt': 1 })
         .skip(perPage * (page - 1)).limit(perPage)
         .populate({ path: "organizationalUnit creator parent" });
 
@@ -1499,7 +1508,8 @@ exports.getPaginatedTasksByUser = async (portal, task, type = "paginated_task_by
     var totalPages = Math.ceil(totalCount / perPage);
     return {
         "tasks": tasks,
-        "totalPage": totalPages
+        "totalPage": totalPages,
+        totalCount
     };
 }
 
@@ -1541,7 +1551,7 @@ exports.getAllTaskOfOrganizationalUnitByMonth = async (portal, task) => {
         }
     }
 
-    organizationUnitTasks = await Task(connect(DB_CONNECTION, portal)).find(keySearch).sort({ 'createdAt': 'asc' })
+    organizationUnitTasks = await Task(connect(DB_CONNECTION, portal)).find(keySearch).sort({ 'createdAt': 1 })
         .populate({ path: "organizationalUnit creator parent responsibleEmployees" });
     return {
         "tasks": organizationUnitTasks
@@ -2404,28 +2414,26 @@ exports.getTaskAnalysOfUser = async (portal, userId, type) => {
 exports.getUserTimeSheet = async (portal, userId, month, year) => {
     console.log("my", month, year)
     let beginOfMonth = new Date(`${year}-${month}`);
-    let beginOfNextMonth = new Date(year, month);
-    let tasks = await Task(connect(DB_CONNECTION, portal))
-        .find({
-            "timesheetLogs.creator": userId,
-            "timesheetLogs.startedAt": { $gte: beginOfMonth, $lt: beginOfNextMonth },
-            "timesheetLogs.stoppedAt": { $exists: true }
-        });
-    console.log("TASKS", tasks)
-    let timesheetlogs = [];
-    for(let i=0; i<tasks.length; i++){
-        let ts = tasks[i].timesheetLogs;
-        console.log("TASK", ts)
-        if(Array.isArray(ts)){
-            for(let j=0; j<ts.length; j++){
-                let tslogs = ts[j];
-                console.log("TSSSS", tslogs)
-                if(tslogs.creator.toString() === userId.toString()){
-                    timesheetlogs.push(tslogs);
-                }
-            }
-        }
-    }
+    let endOfMonth = new Date(year, month);
 
-    return timesheetlogs;
+    let tsl = await Task(connect(DB_CONNECTION, portal)).aggregate([
+        { $match: { 
+            "timesheetLogs.creator": mongoose.Types.ObjectId(userId),
+            "timesheetLogs.startedAt": { $exists: true },
+            "timesheetLogs.startedAt": { $gte: beginOfMonth },
+            "timesheetLogs.stoppedAt": { $exists: true },
+            "timesheetLogs.stoppedAt": { $lte: endOfMonth }
+        } },
+        { $unwind: "$timesheetLogs" },
+        { $replaceRoot: { newRoot: "$timesheetLogs" } },
+        { $match: { 
+            "creator": mongoose.Types.ObjectId(userId),
+            "startedAt": { $exists: true },
+            "startedAt": { $gte: beginOfMonth },
+            "stoppedAt": { $exists: true },
+            "stoppedAt": { $lte: endOfMonth }
+        } },
+    ]);
+
+    return tsl;
 }

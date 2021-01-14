@@ -121,8 +121,6 @@ class GeneralTab extends Component {
             description, status, typeRegisterForUse, detailInfo, usageLogs, readByRoles
         } = this.state;
 
-        console.log("FFFFFFF", userlist, assignedToUser)
-
         return (
             <div id={id} className="tab-pane active">
                 <div className="box-body" >

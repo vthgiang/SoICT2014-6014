@@ -9,10 +9,11 @@ import { DistributionOfEmployee } from './distributionOfEmployee';
 import { DomainOfTaskResultsChart } from '../task-personal-dashboard/domainOfTaskResultsChart';
 import { TaskStatusChart } from '../task-personal-dashboard/taskStatusChart';
 import { CalendarOrganizationUnit } from './calendarOrganizationUnit';
+import { WeightTaskOrganizationChart } from './weightTaskOrganizationChart';
 import { AverageResultsOfTaskInOrganizationalUnit } from './averageResultsOfTaskInOrganizationalUnit';
 
 import { withTranslate } from 'react-redux-multilingual';
-import { SelectMulti, DatePicker } from '../../../../common-components/index';
+import { SelectMulti, DatePicker, ToolTip } from '../../../../common-components/index';
 import Swal from 'sweetalert2';
 import { InprocessOfUnitTask } from './processOfUnitTasks';
 
@@ -36,7 +37,7 @@ class TaskOrganizationUnitDashboard extends Component {
         }
         if (startMonth < 10)
             startMonth = '0' + startMonth;
-        if (month < 9) {
+        if (month < 10) {
             endMonth = '0' + month;
         } else {
             endMonth = month;
@@ -45,10 +46,10 @@ class TaskOrganizationUnitDashboard extends Component {
             idsUnit: [],
             checkUnit: 0,
             startMonth: [startYear, startMonth].join('-'),
-            endMonth: month === 12 ? [year + 1, '01'].join('-') : [year, endMonth].join('-'),
+            endMonth: [year, endMonth].join('-'),
 
             startMonthTitle: [startMonth, startYear].join('-'),
-            endMonthTitle: month < 10 ? ['0' + month, year].join('-') : [month, year].join('-'),
+            endMonthTitle: [endMonth, year].join('-'),
         }
 
         this.state = {
@@ -84,7 +85,7 @@ class TaskOrganizationUnitDashboard extends Component {
 
     shouldComponentUpdate = async (nextProps, nextState) => {
         let data, organizationUnit = "organizationUnit";
-        
+
         if (!this.state.idsUnit.length && this.props.dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit
             || (nextState.checkUnit !== this.state.checkUnit
                 || nextState.startMonth !== this.state.startMonth
@@ -158,6 +159,7 @@ class TaskOrganizationUnitDashboard extends Component {
         this.INFO_SEARCH.endMonth = month;
         this.INFO_SEARCH.endMonthTitle = endMonthTitle;
     }
+
     handleSearchData = async () => {
         let startMonth = new Date(this.INFO_SEARCH.startMonth);
         let endMonth = new Date(this.INFO_SEARCH.endMonth);
@@ -192,6 +194,8 @@ class TaskOrganizationUnitDashboard extends Component {
         let totalTasks = 0;
         let childrenOrganizationalUnit = [];
         let currentOrganizationalUnit, currentOrganizationalUnitLoading;
+
+
 
         if (dashboardEvaluationEmployeeKpiSet) {
             currentOrganizationalUnit = dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit;
@@ -235,7 +239,6 @@ class TaskOrganizationUnitDashboard extends Component {
 
         let defaultStartMonth = [startMonthDefault, startYear].join('-');
         let defaultEndMonth = month < 10 ? ['0' + month, year].join('-') : [month, year].join('-');
-
         return (
             <React.Fragment>
                 {currentOrganizationalUnit
@@ -443,10 +446,36 @@ class TaskOrganizationUnitDashboard extends Component {
                                                 </ul> : "Đang tải dữ liệu"
                                         }
                                     </div>
-  
+
                                 </div>
                             </div>
 
+                        </div>
+                        {/*Dashboard tải công việc */}
+                        <div className="row">
+                            <div className="col-xs-12">
+                                <div className="box box-primary">
+                                    <div className="box-header with-border">
+                                        <div className="box-title">Dashboard tải công việc của đơn vị {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
+                                        <ToolTip
+                                            type={"icon_tooltip"} materialIcon={"help"}
+                                            dataTooltip={['Tải công việc tính theo công thức tổng các tỉ số: số ngày thực hiện công việc trong tháng/(số người thực hiện + số người phê duyệt + số người hỗ trợ)']}
+                                        />
+                                    </div>
+                                    <div className="box-body qlcv">
+                                        {this.state.callAction && tasks && tasks.organizationUnitTasks &&
+                                            <WeightTaskOrganizationChart
+                                                tasks={tasks.organizationUnitTasks}
+                                                listEmployee={user && user.employees}
+                                                units={childrenOrganizationalUnit}
+                                                startMonth={startMonth}
+                                                endMonth={endMonth}
+                                                idsUnit={this.state.idsUnit}
+                                            />
+                                        }
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </React.Fragment>
                     : currentOrganizationalUnitLoading

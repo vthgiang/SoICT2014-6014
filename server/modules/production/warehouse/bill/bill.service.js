@@ -1,5 +1,6 @@
-const { Bill, Lot, Stock } = require(`../../../../models`);
+const { Bill, Lot, Stock, SalesOrder, PurchaseOrder } = require(`../../../../models`);
 const { connect } = require(`../../../../helpers/dbHelper`);
+const CustomerService = require('../../../crm/customer/customer.service');
 
 exports.getBillsByType = async (query, userId, portal) => {
     var { page, limit, group, managementLocation } = query;
@@ -309,7 +310,7 @@ exports.createBill = async (userId, data, portal) => {
             address: data.address,
         },
         description: data.description,
-        goods: data.goods.map(item => {
+        goods: data.goods ? data.goods.map(item => {
             return {
                 good: item.good,
                 quantity: item.quantity,
@@ -317,7 +318,7 @@ exports.createBill = async (userId, data, portal) => {
                 realQuantity: item.realQuantity,
                 damagedQuantity: item.damagedQuantity,
                 description: item.description,
-                lots: item.lots.map(x => {
+                lots: item.lots ? item.lots.map(x => {
                     return {
                         lot: x.lot,
                         quantity: x.quantity,
@@ -326,15 +327,30 @@ exports.createBill = async (userId, data, portal) => {
                         realQuantity: x.realQuantity,
                         note: x.note
                     }
-                })
+                }) : undefined
             }
-        }),
+        }) : undefined,
         manufacturingMill: data.manufacturingMill,
         manufacturingCommand: data.manufacturingCommand,
         logs: logs
     }
 
     const bill = await Bill(connect(DB_CONNECTION, portal)).create(query);
+
+    //Thêm vào đơn bán hàng trường bill xuất bán sản phẩm
+    if (data.salesOrderId) {
+        let salesOrder = await SalesOrder(connect(DB_CONNECTION, portal)).findById({ _id: data.salesOrderId });
+        salesOrder.bill = bill._id; //Gắn bill vào đơn hàng
+        salesOrder.save();
+    }
+
+    //Thêm vào đơn mua nguyên vật liệu trường bill nhập kho nguyên vật liệu
+    if (data.purchaseOrderId) {
+        let purchaseOrder = await PurchaseOrder(connect(DB_CONNECTION, portal)).findById({ _id: data.purchaseOrderId });
+        purchaseOrder.bill = bill._id; //Gắn bill vào đơn hàng
+        purchaseOrder.save();
+    }
+
     return await Bill(connect(DB_CONNECTION, portal))
         .findById(bill._id)
         .populate([
@@ -376,7 +392,7 @@ function findIndexOfQuatityStaff(array, id) {
     return result;
 }
 
-exports.editBill = async (id, userId, data, portal) => {
+exports.editBill = async (id, userId, data, portal, companyId) => {
     let bill = await Bill(connect(DB_CONNECTION, portal)).findById(id);
     bill.fromStock = bill.fromStock;
     bill.toStock = data.toStock ? data.toStock : bill.toStock;
@@ -477,6 +493,53 @@ exports.editBill = async (id, userId, data, portal) => {
     bill.logs = [...bill.logs, log];
 
     await bill.save();
+
+    //--------------------PHẦN PHỤC VỤ CHO QUẢN LÝ ĐƠN HÀNG------------------------
+    if (parseInt(bill.status) === 2) {//Nếu bill đã hoàn thành
+        await PurchaseOrder(connect(DB_CONNECTION, portal)).findOneAndUpdate({
+            bill: bill._id
+        }, {
+                $set: { status: 3 }
+        });
+
+        //Cập nhật trạng thái đơn mua hàng là đà hoàn thành khi bill xuất kho hoàn thành
+        let salesOrder = await SalesOrder(connect(DB_CONNECTION, portal)).findOneAndUpdate({
+            bill: bill._id
+        }, {
+                $set: { status: 7 }
+        });
+
+        //Cập nhật số xu cho khách hàng
+        if (salesOrder) {
+            let customerPoint = await CustomerService.getCustomerPoint(portal, companyId, salesOrder.customer);
+            if (customerPoint && salesOrder.allCoin) {
+                await CustomerService.editCustomerPoint(portal, companyId, customerPoint._id, {point:salesOrder.allCoin + customerPoint.point }, userId)
+            }
+        }
+    } else if (parseInt(bill.status) === 4) {//Nếu bill bị hủy
+        await PurchaseOrder(connect(DB_CONNECTION, portal)).findOneAndUpdate({
+            bill: bill._id
+        }, {
+                $set: { status: 4 }
+        });
+
+        //Cập nhật trạng thái đơn mua hàng là đã hủy
+        let salesOrder = await SalesOrder(connect(DB_CONNECTION, portal)).findOneAndUpdate({
+            bill: bill._id
+        }, {
+                $set: { status: 8 }
+        });
+
+         //Trả lại số xu đã sử dụng cho khách
+         if (salesOrder) {
+            let customerPoint = await CustomerService.getCustomerPoint(portal, companyId, salesOrder.customer);
+            if (customerPoint && salesOrder.coin) {
+                await CustomerService.editCustomerPoint(portal, companyId, customerPoint._id, {point:salesOrder.coin + customerPoint.point }, userId)
+            }
+        }
+    }
+    //------------------KẾT THÚC PHẦN PHỤC VỤ CHO QUẢN LÝ ĐƠN HÀNG-----------------
+
     // Nếu trạng thái chuyển từ đang thực hiện sang trạng thái đã hoàn thành thì
     if (data.oldStatus === '5' && data.status === '2') {
         //Nếu là phiếu xuất kho hệ thống cập nhật lại số lượng tồn kho
@@ -785,6 +848,41 @@ exports.editBill = async (id, userId, data, portal) => {
             }
         }
     }
+    //Nếu nhập kho thành phẩm từ xưởng sản xuất
+    //Chuyển trạng thái đơn hàng từ đang thực hiện sang hoàn Thành
+    //Thay đổi trạng thái lô sản xuất thành đã nhập kho
+    if(data.type === '2') {
+        if (data.oldStatus === '5' && data.status === '2') {
+            if (data.goods && data.goods.length > 0) {
+                for (let i = 0; i < data.goods.length; i++) {
+                    if (data.goods[i].lots && data.goods[i].lots.length > 0) {
+                        for (let j = 0; j < data.goods[i].lots.length; j++) {
+                            let lotId = data.goods[i].lots[j].lot._id;
+                            let lot = await Lot(connect(DB_CONNECTION, portal)).findById(lotId);
+                            lot.status = '3';
+                            await lot.save();
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    //Nhập kho: Chuyển trạng thái từ đã hoàn thành sang đã Hủy
+    if(data.type === '1') {
+        if (data.oldStatus === '2' && data.status === '4') {
+            if (data.goods && data.goods.length > 0) {
+                for (let i = 0; i < data.goods.length; i++) {
+                    if (data.goods[i].lots && data.goods[i].lots.length > 0) {
+                        for (let j = 0; j < data.goods[i].lots.length; j++) {
+                            let lotId = data.goods[i].lots[j].lot._id;
+                            await Lot(connect(DB_CONNECTION, portal)).deleteOne({ _id: lotId });
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     return await Bill(connect(DB_CONNECTION, portal))
         .findById(bill._id)
@@ -908,4 +1006,35 @@ exports.createManyProductBills = async (data, portal) => {
     lot.bills = bills.map(bill => bill._id);
     await lot.save();
     return { bills }
+}
+
+exports.getNumberBills = async (query, portal) => {
+    let options = {};
+    if(query.stock) {
+        options.fromStock = query.stock
+    }
+
+    if (query.createdAt) {
+        let date = query.createdAt.split("-");
+        let start = new Date(date[1], date[0] - 1, 1);
+        let end = new Date(date[1], date[0], 1);
+
+        options = {
+            ...options,
+            createdAt: {
+                $gt: start,
+                $lte: end
+            }
+        }
+    }
+
+    const totalBills = await Bill(connect(DB_CONNECTION, portal)).find(options).count();
+    options.group = '1';
+    const totalGoodReceipts = await Bill(connect(DB_CONNECTION, portal)).find(options).count();
+    options.group = '2';
+    const totalGoodIssues = await Bill(connect(DB_CONNECTION, portal)).find(options).count();
+    options.group = '3';
+    const totalGoodReturns = await Bill(connect(DB_CONNECTION, portal)).find(options).count();
+
+    return { totalBills, totalGoodReturns, totalGoodReceipts, totalGoodIssues };
 }

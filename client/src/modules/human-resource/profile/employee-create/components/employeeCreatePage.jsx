@@ -3,11 +3,27 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { convertJsonObjectToFormData } from '../../../../../helpers/jsonObjectToFormDataObjectConverter';
-import { GeneralTab, ContactTab, TaxTab, InsurranceTab, DisciplineTab, ExperienceTab, CertificateTab, ContractTab, SalaryTab, FileTab } from './combinedContent';
+import { GeneralTab, ContactTab, TaxTab, InsurranceTab, DisciplineTab, ExperienceTab, CertificateTab, ContractTab, SalaryTab, FileTab, CareerMajorTab } from './combinedContent';
+import FamilyMemberTab from './familyMemberTab';
 
 import { EmployeeManagerActions } from '../../employee-management/redux/actions';
 import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
 
+const initMember = {
+    name: '',
+    codeSocialInsurance: '',
+    bookNumberSocialInsurance: '',
+    gender: 'male',
+    isHeadHousehold: 'no',
+    relationshipWithHeadHousehold: '',
+    cnss: '',
+    birth: '',
+    placeOfBirthCertificate: '',
+    nationality: '',
+    nation: '',
+    numberPassport: '',
+    note: ''
+}
 class EmployeeCreatePage extends Component {
     constructor(props) {
         super(props);
@@ -18,7 +34,7 @@ class EmployeeCreatePage extends Component {
                 avatar: '/upload/human-resource/avatars/avatar5.png',
                 gender: "male",
                 maritalStatus: "single",
-                educationalLevel: "12/12",
+                educationalLevel: "",
                 professionalSkill: "unavailable",
                 status: 'active',
                 identityCardDate: this.formatDate2(Date.now()),
@@ -34,6 +50,21 @@ class EmployeeCreatePage extends Component {
             disciplines: [],
             commendations: [],
             annualLeaves: [],
+            major: [],
+            career: [],
+            houseHold: {
+                headHouseHoldName: '',
+                documentType: '',
+                houseHoldNumber: '',
+                city: '',
+                district: '',
+                ward: '',
+                houseHoldAddress: '',
+                phone: '',
+                houseHoldCode: '',
+                familyMembers: []
+            },
+            editMember: initMember,
         };
         this.handleChangeCourse = this.handleChangeCourse.bind(this);
     }
@@ -219,11 +250,33 @@ class EmployeeCreatePage extends Component {
     }
 
     /**
+     * Function thêm, chỉnh sửa thông tin chuyên ngành tương đương
+     * @param {*} data : Dữ liệu thông tin chuyên ngành tương đương
+     * @param {*} addData : Chuyên ngành tương đương muốn thêm
+     */
+    handleChangeMajor = (data, addData) => {
+        this.setState({
+            major: data
+        })
+    }
+
+    /**
+     * Function thêm, chỉnh sửa thông tin công việc tương đương
+     * @param {*} data : Dữ liệu thông tin công việc tương đương
+     * @param {*} addData : Công việc tương đương muốn thêm
+     */
+    handleChangeCareer = (data, addData) => {
+        this.setState({
+            career: data
+        })
+    }
+
+    /**
      * Function thêm mới thông tin nhân viên
      */
     handleSubmit = async () => {
         let { employee, degrees, certificates, contracts, files, avatar,
-            disciplines, commendations, annualLeaves, courses } = this.state;
+            disciplines, commendations, annualLeaves, courses, major, career, houseHold } = this.state;
 
         await this.setState({
             employee: {
@@ -235,7 +288,10 @@ class EmployeeCreatePage extends Component {
                 disciplines,
                 commendations,
                 annualLeaves,
-                courses
+                courses,
+                career,
+                major,
+                houseHold,
             }
         })
 
@@ -252,6 +308,12 @@ class EmployeeCreatePage extends Component {
         files.forEach(x => {
             formData.append("file", x.fileUpload);
         })
+        major.forEach(x => {
+            formData.append("fileMajor", x.fileUpload);
+        })
+        career.forEach(x => {
+            formData.append("fileCareer", x.fileUpload);
+        })
         formData.append("fileAvatar", avatar);
         employee.healthInsuranceAttachment.forEach(x => {
             formData.append('healthInsuranceAttachment', x.fileUpload)
@@ -259,10 +321,132 @@ class EmployeeCreatePage extends Component {
         this.props.addNewEmployee(formData);
     }
 
+    _fm_saveMember = (data) => {
+        this.setState({
+            houseHold: {
+                ...this.state.houseHold,
+                familyMembers: [...this.state.houseHold.familyMembers, data]
+            }
+        })
+    }
+
+    _fm_handleHeadHouseHoldName = (e) => {
+        this.setState({
+            houseHold: {
+                ...this.state.houseHold,
+                headHouseHoldName: e.target.value
+            }
+        });
+    }
+
+    _fm_handleDocumentType = (e) => {
+        this.setState({
+            houseHold: {
+                ...this.state.houseHold,
+                documentType: e.target.value
+            }
+        });
+    }
+
+    _fm_handleHouseHoldNumber = (e) => {
+        this.setState({
+            houseHold: {
+                ...this.state.houseHold,
+                houseHoldNumber: e.target.value
+            }
+        })
+    }
+
+    _fm_handleCity = (e) => {
+        this.setState({
+            houseHold: {
+                ...this.state.houseHold,
+                city: e.target.value
+            }
+        })
+    }
+
+    _fm_handleDistrict = (e) => {
+        this.setState({
+            houseHold: {
+                ...this.state.houseHold,
+                district: e.target.value
+            }
+        });
+    }
+
+    _fm_handleWard = (e) => {
+        this.setState({
+            houseHold: {
+                ...this.state.houseHold,
+                ward: e.target.value
+            }
+        });
+    }
+
+    _fm_handleHouseHoldAddress = (e) => {
+        this.setState({
+            houseHold: {
+                ...this.state.houseHold,
+                houseHoldAddress: e.target.value
+            }
+        })
+    }
+
+    _fm_handlePhone = (e) => {
+        this.setState({
+            houseHold: {
+                ...this.state.houseHold,
+                phone: e.target.value
+            }
+        });
+    }
+
+    _fm_handleHouseHoldCode = (e) => {
+        this.setState({
+            houseHold: {
+                ...this.state.houseHold,
+                houseHoldCode: e.target.value
+            }
+        });
+    }
+
+    _fm_openEditFamilyMemberModal = (index) => {
+        this.setState({
+            editMember: {
+                index,
+                ...this.state.houseHold.familyMembers[index]
+            }
+        });
+        window.$('#form-edit-family-members').slideToggle();
+    }
+
+    _fm_editMember = (index, data) => {
+        let familyMembers = this.state.houseHold.familyMembers;
+        familyMembers[index] = data;
+        this.setState({
+            houseHold: {
+                ...this.state.houseHold,
+                familyMembers
+            }
+        })
+    }
+
+    _fm_deleteMember = (index) => {
+        let familyMembers = this.state.houseHold.familyMembers;
+        familyMembers = familyMembers.filter((node, i) => i !== index);
+        this.setState({
+            houseHold: {
+                ...this.state.houseHold,
+                familyMembers
+            }
+        })
+    }
+
     render() {
         const { translate } = this.props;
 
-        const { img, employee, degrees, certificates, contracts, courses, commendations, disciplines, annualLeaves, files } = this.state;
+        const { img, employee, degrees, certificates, contracts, courses, commendations, disciplines, annualLeaves, files, major, career, editMember } = this.state;
 
         return (
             <div className=" qlcv">
@@ -277,6 +461,8 @@ class EmployeeCreatePage extends Component {
                         <li><a title={translate('human_resource.profile.tab_name.menu_contract_training_title')} data-toggle="tab" href="#hopdong">{translate('human_resource.profile.tab_name.menu_contract_training')}</a></li>
                         <li><a title={translate('human_resource.profile.tab_name.menu_reward_discipline_title')} data-toggle="tab" href="#khenthuong">{translate('human_resource.profile.tab_name.menu_reward_discipline')}</a></li>
                         <li><a title={translate('menu.annual_leave_personal')} data-toggle="tab" href="#historySalary">{translate('menu.annual_leave_personal')}</a></li>
+                        <li><a title={"Công việc - chuyên ngành tương đương"} data-toggle="tab" href="#major_career">Công việc - chuyên ngành tương đương</a></li>
+                        <li><a title={"Thành viên hộ gia đình"} data-toggle="tab" href="#family_member">Thành viên hộ gia đình</a></li>
                         <li><a title={translate('human_resource.profile.tab_name.menu_attachments_title')} data-toggle="tab" href="#pageAttachments">{translate('human_resource.profile.tab_name.menu_attachments')}</a></li>
                     </ul>
                     < div className="tab-content">
@@ -386,6 +572,44 @@ class EmployeeCreatePage extends Component {
                             handleEditFile={this.handleChangeFile}
                             handleDeleteFile={this.handleChangeFile}
                             handleSubmit={this.handleSubmit}
+                        />
+                        {/* Tab công việc - chuyên ngành tương đương */}
+                        <CareerMajorTab
+                            id={`major_career`}
+                            files={files}
+                            major={major}
+                            career={career}
+                            handleChange={this.handleChange}
+
+                            handleAddMajor={this.handleChangeMajor}
+                            handleEditMajor={this.handleChangeMajor}
+                            handleDeleteMajor={this.handleChangeMajor}
+
+                            handleAddCareer={this.handleChangeCareer}
+                            handleEditCareer={this.handleChangeCareer}
+                            handleDeleteCareer={this.handleChangeCareer}
+                        />
+
+
+                        {/* Tab thành viên hộ gia đình */}
+                        <FamilyMemberTab
+                            id="family_member"
+                            tabEditMember="modal-edit-member-c"
+                            editMember={editMember}
+                            _fm_openEditFamilyMemberModal={this._fm_openEditFamilyMemberModal}
+                            _fm_editMember={this._fm_editMember}
+                            _fm_deleteMember={this._fm_deleteMember}
+                            houseHold={this.state.houseHold}
+                            _fm_handleHeadHouseHoldName={this._fm_handleHeadHouseHoldName}
+                            _fm_handleDocumentType={this._fm_handleDocumentType}
+                            _fm_handleHouseHoldNumber={this._fm_handleHouseHoldNumber}
+                            _fm_handleCity={this._fm_handleCity}
+                            _fm_handleDistrict={this._fm_handleDistrict}
+                            _fm_handleWard={this._fm_handleWard}
+                            _fm_handleHouseHoldAddress={this._fm_handleHouseHoldAddress}
+                            _fm_handlePhone={this._fm_handlePhone}
+                            _fm_handleHouseHoldCode={this._fm_handleHouseHoldCode}
+                            _fm_saveMember={this._fm_saveMember}
                         />
                     </div>
                 </div>

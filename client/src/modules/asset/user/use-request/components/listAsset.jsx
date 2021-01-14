@@ -10,7 +10,7 @@ import { UserActions } from "../../../../super-admin/user/redux/actions";
 
 import { UseRequestCreateForm } from './UseRequestCreateForm';
 import { AssetDetailForm } from '../../../admin/asset-information/components/assetDetailForm';
-
+import { getPropertyOfValue } from '../../../../../helpers/stringMethod';
 class ListAsset extends Component {
     constructor(props) {
         super(props);
@@ -422,7 +422,7 @@ class ListAsset extends Component {
                         assetType={currentRowView.assetType}
                         purchaseDate={currentRowView.purchaseDate}
                         warrantyExpirationDate={currentRowView.warrantyExpirationDate}
-                        managedBy={currentRowView.managedBy}
+                        managedBy={getPropertyOfValue(currentRowView.managedBy, '_id', true, userlist)}
                         assignedToUser={currentRowView.assignedToUser}
                         assignedToOrganizationalUnit={currentRowView.assignedToOrganizationalUnit}
                         handoverFromDate={currentRowView.handoverFromDate}
@@ -432,6 +432,8 @@ class ListAsset extends Component {
                         status={currentRowView.status}
                         typeRegisterForUse={currentRowView.typeRegisterForUse}
                         detailInfo={currentRowView.detailInfo}
+                        readByRoles={currentRowView.readByRoles}
+                        group={currentRowView.group}
 
                         cost={currentRowView.cost}
                         residualValue={currentRowView.residualValue}

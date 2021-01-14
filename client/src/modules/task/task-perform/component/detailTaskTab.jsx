@@ -7,7 +7,7 @@ import { UserActions } from '../../../super-admin/user/redux/actions';
 
 import { ModalEditTaskByResponsibleEmployee } from './modalEditTaskByResponsibleEmployee';
 import { ModalEditTaskByAccountableEmployee } from './modalEditTaskByAccountableEmployee';
-import { HoursSpentOfEmployeeChart } from './hourSpentNewVersion';
+import { HoursSpentOfEmployeeChart } from './hourSpentOfEmployeeChart';
 import { CollaboratedWithOrganizationalUnits } from './collaboratedWithOrganizationalUnits';
 
 import { EvaluationModal } from './evaluationModal';
@@ -16,6 +16,9 @@ import { SelectFollowingTaskModal } from './selectFollowingTaskModal';
 import { withTranslate } from 'react-redux-multilingual';
 import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
 import { ShowMoreShowLess } from '../../../../common-components';
+import Swal from 'sweetalert2';
+
+import parse from 'html-react-parser';
 
 class DetailTaskTab extends Component {
 
@@ -155,11 +158,35 @@ class DetailTaskTab extends Component {
         });
     }
 
-    startTimer = async (taskId, userId) => {
-        var timer = {
+    startTimer = async (taskId, overrideTSLog = 'no') => {
+        let userId = getStorage("userId");
+        let timer = {
             creator: userId,
+            overrideTSLog
         };
-        this.props.startTimer(taskId, timer);
+        this.props.startTimer(taskId, timer).catch(err => {
+            let warning = Array.isArray(err.response.data.messages) ? err.response.data.messages : [err.response.data.messages];
+            if (warning[0] === 'time_overlapping') {
+                Swal.fire({
+                    title: `Bạn đã hẹn tắt bấm giờ cho công việc [ ${warning[1]} ]`,
+                    html: `<h4 class="text-red">Hủy bỏ bấm giờ làm việc và bấm giờ công việc mới</h4>`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Bấm giờ mới',
+                    cancelButtonText: 'Hủy'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        let timer = {
+                            creator: userId,
+                            overrideTSLog: 'yes'
+                        };
+                        this.props.startTimer(taskId, timer)
+                    }
+                })
+            }
+        })
     }
 
     formatPriority = (data) => {
@@ -474,18 +501,19 @@ class DetailTaskTab extends Component {
         results.map(item => {
             item.hoursSpent = 0;
         })
+
         for (let i in timesheetLogs) {
             let log = timesheetLogs[i];
             let startedAt = new Date(log.startedAt);
             let stoppedAt = new Date(log.stoppedAt);
 
-            if (startedAt.getTime() >= new Date(startDate).getTime() && stoppedAt.getTime() <= new Date(endDate).getTime()) {
+            if (startedAt.getTime() >= (new Date(startDate)).getTime() && stoppedAt.getTime() <= (new Date(endDate)).getTime()) {
                 let { creator, duration } = log;
                 let check = true;
                 let newResults = [];
 
                 newResults = results.map(item => {
-                    if (item.employee && creator === item.employee._id) {
+                    if (item.employee && creator._id === item.employee._id) {
 
                         check = false;
                         return {
@@ -669,15 +697,17 @@ class DetailTaskTab extends Component {
             hoursSpentOfEmployeeInTask = {};
             for (let i = 0; i < task.timesheetLogs.length; i++) {
                 let tsheetlog = task.timesheetLogs[i];
-                console.log("tssheetlog:", tsheetlog)
-                if (tsheetlog.stoppedAt) {
+
+                if (tsheetlog && tsheetlog.stoppedAt && tsheetlog.creator) {
                     let times = hoursSpentOfEmployeeInTask[tsheetlog.creator.name] ? hoursSpentOfEmployeeInTask[tsheetlog.creator.name] : 0;
+                    
                     if (tsheetlog.acceptLog) {
                         hoursSpentOfEmployeeInTask[tsheetlog.creator.name] = times + tsheetlog.duration;
                     }
                 }
             }
         }
+
         if (task && task.evaluations && task.evaluations.length !== 0) {
             task.evaluations.map(item => {
                 if (item.results && item.results.length !== 0) {
@@ -687,10 +717,10 @@ class DetailTaskTab extends Component {
                         if (result.employee) {
                             if (!hoursSpentOfEmployeeInEvaluation[item.date][result.employee.name]) {
                                 if (result.hoursSpent) {
-                                    hoursSpentOfEmployeeInEvaluation[item.date][result.employee.name] = Number.parseFloat(result.hoursSpent / (1000 * 60 * 60)).toFixed(2);
+                                    hoursSpentOfEmployeeInEvaluation[item.date][result.employee.name] = Number.parseFloat(result.hoursSpent);
                                 }
                             } else {
-                                hoursSpentOfEmployeeInEvaluation[item.date][result.employee.name] = hoursSpentOfEmployeeInEvaluation[item.date][result.employee.name] + result.hoursSpent ? Number.parseFloat(result.hoursSpent / (1000 * 60 * 60)).toFixed(2) : 0;
+                                hoursSpentOfEmployeeInEvaluation[item.date][result.employee.name] = hoursSpentOfEmployeeInEvaluation[item.date][result.employee.name] + result.hoursSpent ? Number.parseFloat(result.hoursSpent) : 0;
                             }
                         }
                     })
@@ -935,11 +965,12 @@ class DetailTaskTab extends Component {
                                 <div>
                                 <strong>{translate('task.task_management.detail_description')}:</strong>
                                     <ShowMoreShowLess
-                                        id={"statistic"}
-                                        characterLimit={210}
-                                        value={task && task.description}
-                                    />
-                                    <br />
+                                        id={"task-description"}
+                                        isHtmlElement={true}
+                                        characterLimit={200}
+                                    >
+                                        {task && parse(task.description)}
+                                    </ShowMoreShowLess>
                                 </div>
                             </div>
                         }

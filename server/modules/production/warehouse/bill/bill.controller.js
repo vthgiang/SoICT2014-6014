@@ -87,7 +87,7 @@ exports.createBill = async (req, res) => {
 
 exports.editBill = async (req, res) => {
     try {
-        const bill = await BillService.editBill(req.params.id, req.user._id, req.body, req.portal);
+        const bill = await BillService.editBill(req.params.id, req.user._id, req.body, req.portal, req.user.company._id,);
 
         await Logger.info(req.user.email, 'EDIT_BILL_SUCCESS', req.portal);
         res.status(200).json({
@@ -96,7 +96,8 @@ exports.editBill = async (req, res) => {
             content: bill
         })
     } catch (err) {
-        await Log.error(req.user.email, 'EDIT_BILL_FAILED', req.portal);
+        await Logger.error(req.user.email, 'EDIT_BILL_FAILED', req.portal);
+        console.log(err.message);
         res.status(400).json({
             success: false,
             messages: ['edit_failed'],
@@ -166,6 +167,28 @@ exports.createManyProductBills = async (req, res) => {
         res.status(400).json({
             success: false,
             messages: ['create_product_bill_failed'],
+            content: error.message
+        })
+    }
+}
+
+exports.getNumberBills = async (req, res) => {
+    try {
+        console.log(req.query);
+        const totalBills = await BillService.getNumberBills(req.query, req.portal);
+
+        await Logger.info(req.user.email, 'GET_BILL_SUCCESS', req.portal);
+
+        res.status(200).json({
+            success: true,
+            messages: ['get_bill_success'],
+            content: totalBills
+        })
+    } catch (error) {
+        await Logger.error(req.user.email, 'GET_BILL_FAILED', req.portal);
+        res.status(400).json({
+            success: false,
+            messages: ['get_bill_failed'],
             content: error.message
         })
     }

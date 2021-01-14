@@ -9,6 +9,7 @@ const {
 const {
     connect
 } = require(`../../../../helpers/dbHelper`);
+const { getUserByWorksManageRole } = require("../manufacturingWorks/manufacturingWorks.service");
 
 // Hàm lấy ra tổng số ngày trong tháng
 function getAllDayOfMonth(month) {
@@ -168,7 +169,6 @@ exports.createWorkSchedule = async (data, portal) => {
             if (data.currentRole) {
                 listWorksIds = await getListWorksIdsByCurrentRole(data.currentRole, portal);
             }
-            console.log(listWorksIds);
             // Lấy ra các xưởng đang hoạt động chưa được sếp lịch trong tháng truyền vào
             let manufacturingMills = await ManufacturingMill(connect(DB_CONNECTION, portal)).find({
                 _id: {
@@ -319,8 +319,6 @@ exports.getWorkSchedules = async (query, portal) => {
             }
         }
 
-
-
         if (!limit || !page) {
 
             let workSchedules = await WorkSchedule(connect(DB_CONNECTION, portal)).find(options)
@@ -340,13 +338,13 @@ exports.getWorkSchedules = async (query, portal) => {
                 });
             for (let i = 0; i < workSchedules.docs.length; i++) {
                 for (let j = 0; j < workSchedules.docs[i].turns.length; j++) {
-                    for (k = 0; k < workSchedules.docs[i].turns[j].length; k++) {
+                    for (let k = 0; k < workSchedules.docs[i].turns[j].length; k++) {
                         if (workSchedules.docs[i].turns[j][k] != null) {
                             let manufacturingCommand = await ManufacturingCommand(connect(DB_CONNECTION, portal)).findById(workSchedules.docs[i].turns[j][k])
-                                .populate([{
-                                    path: "good.good",
-                                    select: "code name"
-                                }]);
+                            // .populate([{
+                            //     path: "good.good",
+                            //     select: "code name"
+                            // }]);
                             workSchedules.docs[i].turns[j][k] = manufacturingCommand;
                         }
                     }
@@ -400,10 +398,10 @@ exports.getWorkSchedules = async (query, portal) => {
                     for (k = 0; k < workSchedules.docs[i].turns[j].length; k++) {
                         if (workSchedules.docs[i].turns[j][k] != null) {
                             let manufacturingCommand = await ManufacturingCommand(connect(DB_CONNECTION, portal)).findById(workSchedules.docs[i].turns[j][k])
-                                .populate([{
-                                    path: "good.good",
-                                    select: "code name"
-                                }]);
+                            // .populate([{
+                            //     path: "good.good",
+                            //     select: "code name"
+                            // }]);
                             workSchedules.docs[i].turns[j][k] = manufacturingCommand;
                         }
                     }
@@ -413,4 +411,211 @@ exports.getWorkSchedules = async (query, portal) => {
             return { workSchedules }
         }
     }
+}
+
+exports.getWorkSchedulesByMillId = async (id, portal) => {
+    const workSchedules = await WorkSchedule(connect(DB_CONNECTION, portal)).find({
+        manufacturingMill: id
+    });
+    for (let i = 0; i < workSchedules.length; i++) {
+        for (let j = 0; j < workSchedules[i].turns.length; j++) {
+            for (let k = 0; k < workSchedules[i].turns[j].length; k++) {
+                if (workSchedules[i].turns[j][k] != null) {
+                    let manufacturingCommand = await ManufacturingCommand(connect(DB_CONNECTION, portal)).findById(workSchedules[i].turns[j][k])
+                        .populate([{
+                            path: "good",
+                            select: "code name"
+                        }]);
+                    workSchedules[i].turns[j][k] = manufacturingCommand;
+                }
+            }
+        }
+    }
+
+    return { workSchedules }
+}
+
+
+function getStartMonthEndMonthFromString(stringStartDate, stringEndDate) {
+    let arrayStartDate = stringStartDate.split('-');
+    let year = arrayStartDate[2];
+    let month = arrayStartDate[1];
+    let day = arrayStartDate[0];
+    const startDate = new Date(year, month - 1, day);
+    const moment = require('moment');
+
+    // start day of createdAt
+    var startMonth = moment(startDate).startOf('month');
+
+    let arrayEndDate = stringEndDate.split('-');
+    year = arrayEndDate[2];
+    month = arrayEndDate[1];
+    day = arrayEndDate[0];
+    const endDate = new Date(year, month - 1, day);
+    // end day of createdAt
+    var endMonth = moment(endDate).endOf('month');
+
+    return [startMonth, endMonth];
+}
+
+exports.getWorkSchedulesOfManufacturingWork = async (query, portal) => {
+    const { manufacturingMills, startDate, endDate } = query;
+    let options = {};
+    if (startDate && endDate) {
+        let arrayMonth = getStartMonthEndMonthFromString(startDate, endDate);
+        options.month = {
+            '$gte': arrayMonth[0],
+            '$lte': arrayMonth[1]
+        }
+    }
+
+    if (manufacturingMills) {
+        options.manufacturingMill = {
+            $in: manufacturingMills
+        }
+        options.user = null
+    }
+    let workSchedules = await WorkSchedule(connect(DB_CONNECTION, portal)).find(options).sort({ 'month': 'asc' });
+    for (let i = 0; i < workSchedules.length; i++) {
+        for (let j = 0; j < workSchedules[i].turns.length; j++) {
+            for (let k = 0; k < workSchedules[i].turns[j].length; k++) {
+                if (workSchedules[i].turns[j][k] != null) {
+                    let manufacturingCommand = await ManufacturingCommand(connect(DB_CONNECTION, portal)).findById(workSchedules[i].turns[j][k])
+                        .populate([{
+                            path: "good",
+                            select: "code name"
+                        }]);
+                    workSchedules[i].turns[j][k] = manufacturingCommand;
+                }
+            }
+        }
+    }
+
+    return { workSchedules }
+}
+
+exports.getWorkerFromArraySchedules = async (query, portal) => {
+    const {
+        arrayWorkerSchedules, currentRole
+    } = query;
+    if (arrayWorkerSchedules && arrayWorkerSchedules.length == 0) {
+        let workers = [];
+        return { workers }
+    }
+    // Lấy ra danh sách các công nhân thuộc nhà máy
+    const listEmployees = await getUserByWorksManageRole(currentRole, portal);
+    const employees = listEmployees.employees;
+    // Lấy ra danh sách Id công nhân thuộc nhà máy
+    const listEmployeeIds = employees.map(x => x.userId._id);
+    // filter ra cac thang
+    let arrayMonth = [];
+    for (let i = 0; i < arrayWorkerSchedules.length; i++) {
+        let month = JSON.parse(arrayWorkerSchedules[i]).month;
+        if (!arrayMonth.includes(month)) {
+            arrayMonth.push(month);
+        }
+    }
+    arrayMonth = arrayMonth.map(x =>
+        new Date(formatToTimeZoneDate(x))
+    );
+    // Lấy ra tất cả các lịch công nhân nhà máy trong tháng
+    const workerSchedules = await WorkSchedule(connect(DB_CONNECTION, portal)).find({
+        user: {
+            $in: listEmployeeIds
+        },
+        month: {
+            $in: arrayMonth
+        }
+    }).populate([{
+        path: "user"
+    }]);
+    // Xử lý tìm ra các lịch rảnh trong các ca truyền vào
+    let listWorkSchedules = [];
+    for (let i = 0; i < workerSchedules.length; i++) {
+        if (checkWorkerSchedules(workerSchedules[i], arrayWorkerSchedules)) {
+            listWorkSchedules.push(workerSchedules[i]);
+        }
+    }
+    // Xử lý tìm ra các người rảnh trong đó
+    let workers = [];
+    let workerIds = [];
+    for (let i = 0; i < listWorkSchedules.length; i++) {
+        if (!workerIds.includes(listWorkSchedules[i].user._id)) {
+            workers.push(listWorkSchedules[i].user);
+            workerIds.push(listWorkSchedules[i].user._id);
+        }
+    }
+    // Trả về danh sách người rảnh
+    return { workers }
+}
+
+
+// Hàm format to YYYY-MM để có thể dụng new Date
+function formatToTimeZoneDate(stringDate) {
+    let dateArray = stringDate.split("-");
+    if (dateArray.length == 3) {
+        let day = dateArray[0];
+        let month = dateArray[1];
+        let year = dateArray[2];
+        return `${year}-${month}-${day}`
+    }
+    else if (dateArray.length == 2) {
+        let month = dateArray[0];
+        let year = dateArray[1];
+        return `${year}-${month}`
+    }
+}
+
+function checkWorkerSchedules(workerSchedule, arrayWorkerSchedules) {
+    let result = true;
+    for (let i = 0; i < arrayWorkerSchedules.length; i++) {
+        ObjectWorker = JSON.parse(arrayWorkerSchedules[i]);
+        if (workerSchedule.turns[ObjectWorker.index1][ObjectWorker.index2] !== null) {
+            result = false;
+        }
+    }
+    return result;
+}
+
+
+exports.bookingManyManufacturingMills = async (listMillsSchedules, portal) => {
+    for (let i = 0; i < listMillsSchedules.length; i++) {
+        let schedule = await WorkSchedule(connect(DB_CONNECTION, portal)).findById(listMillsSchedules[i]._id);
+        for (let j = 0; j < listMillsSchedules[i].turns.length; j++) {
+            for (let k = 0; k < listMillsSchedules[i].turns[j].length; k++) {
+                if (listMillsSchedules[i].turns[j][k] != null && !listMillsSchedules[i].turns[j][k]._id) {
+                    let manufacturingCommand = await ManufacturingCommand(connect(DB_CONNECTION, portal))
+                        .findOne({
+                            code: listMillsSchedules[i].turns[j][k].code
+                        })
+                    schedule.turns[j][k] = manufacturingCommand._id;
+                    await schedule.markModified("turns");
+                    await schedule.save();
+                }
+            }
+        }
+    }
+    return null;
+}
+
+exports.bookingManyWorkerToCommand = async (arrayWorkerSchedules, portal) => {
+    for (let i = 0; i < arrayWorkerSchedules.length; i++) {
+        let listWorkerSchedules = await WorkSchedule(connect(DB_CONNECTION, portal))
+            .find({
+                user: {
+                    $in: arrayWorkerSchedules[i].users
+                },
+                month: new Date(formatToTimeZoneDate(arrayWorkerSchedules[i].month))
+            });
+        for (let j = 0; j < listWorkerSchedules.length; j++) {
+            const command = await ManufacturingCommand(connect(DB_CONNECTION, portal))
+                .findOne({
+                    code: arrayWorkerSchedules[i].commandCode
+                });
+            listWorkerSchedules[j].turns[arrayWorkerSchedules[i].index1][arrayWorkerSchedules[i].index2] = command._id;
+            await listWorkerSchedules[j].markModified("turns");
+            await listWorkerSchedules[j].save();
+        }
+    }
+    return null;
 }

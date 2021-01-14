@@ -6,7 +6,9 @@ export const SalesOrderSevices = {
     editSalesOrder,
     approveSalesOrder,
     addManufacturingPlanForGood,
-    getSalesOrdersByManufacturingWorks
+    getSalesOrdersByManufacturingWorks,
+    getSalesOrdersForPayment,
+    getSalesOrderDetail
 }
 
 function createNewSalesOrder(data) {
@@ -76,3 +78,23 @@ function getSalesOrdersByManufacturingWorks(id) {
     "manage_order.sales_order")
 }
 
+function getSalesOrdersForPayment(customerId) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/sales-order/get-for-payment`,
+        method: "GET",
+        params: {customerId}
+    },
+        false,
+        true,
+    "manage_order.sales_order")
+}
+
+function getSalesOrderDetail(id) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/sales-order/${id}`,
+        method: "GET",
+    },
+        false,
+        true,
+    "manage_order.sales_order")
+}

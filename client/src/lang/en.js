@@ -1012,6 +1012,8 @@ export default {
             manage_tax: "Tax",
             manage_sla: "Service Level Agreement",
             manage_business_department: "Business Department",
+            manage_payment: "Receipts And Payments",
+            manage_bank_account: "Bank Account",
 
             //QUẢN LÝ KẾ HOẠCH SẢN XUẤT
             manage_plans: "Manage Plans",

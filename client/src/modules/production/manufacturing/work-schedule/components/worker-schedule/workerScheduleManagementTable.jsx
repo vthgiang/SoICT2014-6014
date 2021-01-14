@@ -173,7 +173,7 @@ class WorkerScheduleManagementTable extends Component {
 
         const { month, allDaysOfMonth, name } = this.state;
 
-        const arrayStatus = [0, 1, 2, 3, 4, 5];
+        const arrayStatus = [0, 6, 1, 2, 3, 4, 5];
         return (
             <React.Fragment>
                 {
@@ -212,7 +212,7 @@ class WorkerScheduleManagementTable extends Component {
                             />
                         </div>
                         <div className="form-group">
-                            <label className="form-control-static"></label>
+                            {this.checkHasComponent('select-manufacturing-works') && <label className="form-control-static"></label>}
                             <button type="button" className="btn btn-success" title={translate('manufacturing.work_schedule.search')} onClick={this.handleSubmitSearch}>{translate('manufacturing.work_schedule.search')}</button>
                         </div>
                     </div>

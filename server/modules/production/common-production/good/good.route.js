@@ -4,6 +4,7 @@ const { auth } = require(`../../../../middleware`);
 const GoodController = require('./good.controller');
 
 router.get('/', auth, GoodController.getGoodsByType);
+router.get('/get-number-good', auth, GoodController.numberGoods);
 router.get('/all-goods', auth, GoodController.getAllGoods);
 router.get('/by-type', auth, GoodController.getAllGoodsByType);
 router.post('/', auth, GoodController.createGoodByType);

@@ -86,6 +86,9 @@ import { discounts } from "../modules/production/order/discount/redux/reducers";
 import { serviceLevelAgreements } from "../modules/production/order/service-level-agreement/redux/reducers";
 import { businessDepartments } from "../modules/production/order/business-department/redux/reducers";
 import { salesOrders } from "../modules/production/order/sales-order/redux/reducers";
+import { bankAccounts } from "../modules/production/order/bank-account/redux/reducers";
+import { payments } from "../modules/production/order/payment/redux/reducers";
+import { purchaseOrders } from "../modules/production/order/purchase-order/redux/reducers";
 
 //plan
 import { plan } from "../modules/plan/redux/reducers";
@@ -203,6 +206,9 @@ const appReducer = combineReducers({
     serviceLevelAgreements,
     businessDepartments,
     salesOrders,
+    bankAccounts,
+    payments,
+    purchaseOrders,
 
     //plane
     plan,

@@ -36,7 +36,7 @@ export function businessDepartments(state = initState, action) {
             }
         case BusinessDepartmentConstants.GET_ALL_BUSINESS_DEPARTMENT_FAILURE:
         case BusinessDepartmentConstants.CREATE_BUSINESS_DEPARTMENT_FAILURE:
-        case BusinessDepartmentConstants.UPDATE_BUSINESS_DEPARTMENT_SUCCESS:
+        case BusinessDepartmentConstants.UPDATE_BUSINESS_DEPARTMENT_FAILURE:
             return {
                 ...state,
                 isLoading: false,

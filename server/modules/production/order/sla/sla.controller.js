@@ -77,7 +77,7 @@ exports.getSLAById = async ( req, res ) => {
         await Log.info(req.user.email, "GET_SLA_BY_ID", req.portal);
         res.status(200).json({
             success: true,
-            messages: ["get_successfully"],
+            messages: ["get_by_id_successfully"],
             content: sla
         });
     } catch (error) {
@@ -85,7 +85,7 @@ exports.getSLAById = async ( req, res ) => {
 
         res.status(400).json({
             success: false,
-            messages: ["get_failed"],
+            messages: ["get_by_id_failed"],
             content: error.message
         });
     }
@@ -99,7 +99,7 @@ exports.disableSLAById = async ( req, res ) => {
         await Log.info(req.user.email, "DISABLE_SLA_BY_ID", req.portal);
         res.status(200).json({
             success: true,
-            messages: ["get_successfully"],
+            messages: ["disable_successfully"],
             content: sla
         });
     } catch (error) {
@@ -107,7 +107,7 @@ exports.disableSLAById = async ( req, res ) => {
 
         res.status(400).json({
             success: false,
-            messages: ["get_failed"],
+            messages: ["disable_failed"],
             content: error.message
         });
     }
@@ -146,7 +146,7 @@ exports.getSLAByCode = async ( req, res ) => {
         await Log.info(req.user.email, "GET_SLA_BY_CODE", req.portal);
         res.status(200).json({
             success: true,
-            messages: ["get_successfully"],
+            messages: ["get_by_code_successfully"],
             content: slas
         });
     } catch (error) {
@@ -154,7 +154,7 @@ exports.getSLAByCode = async ( req, res ) => {
 
         res.status(400).json({
             success: false,
-            messages: ["get_failed"],
+            messages: ["get_by_code_get_failed"],
             content: error.message
         });
     }        
@@ -190,7 +190,7 @@ exports.getSlaByGoodsId = async (req, res) => {
         await Log.info(req.user.email, "GET_SLA_BY_GOOD_ID", req.portal);
         res.status(200).json({
             success: true,
-            messages: ["get_successfully"],
+            messages: ["get_by_good_successfully"],
             content: slas
         });
     } catch (error) {
@@ -198,7 +198,7 @@ exports.getSlaByGoodsId = async (req, res) => {
 
         res.status(400).json({
             success: false,
-            messages: ["get_failed"],
+            messages: ["get_by_good_failed"],
             content: error.message
         });
     }

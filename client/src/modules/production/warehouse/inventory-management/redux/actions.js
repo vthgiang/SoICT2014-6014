@@ -15,7 +15,8 @@ export const LotActions = {
     getDetailManufacturingLot,
     handleEditManufacturingLot,
     getInventoryByGoodIds,
-    getInventoryByGoodId
+    getInventoryByGoodId,
+    getInventoriesDashboard
 
 }
 
@@ -284,5 +285,26 @@ function getInventoryByGoodId(data) {
                     error
                 });
             });
+    }
+}
+
+function getInventoriesDashboard(data) {
+    return dispatch => {
+        dispatch({
+            type: LotConstants.GET_INVENTORY_DASHBOARD_REQUEST
+        })
+        LotServices.getInventoriesDashboard(data)
+        .then(res => {
+            dispatch({
+                type: LotConstants.GET_INVENTORY_DASHBOARD_SUCCESS,
+                payload: res.data.content
+            })
+        })
+        .catch(error => {
+            dispatch({
+                type: LotConstants.GET_INVENTORY_DASHBOARD_FAILURE,
+                error
+            })
+        })
     }
 }

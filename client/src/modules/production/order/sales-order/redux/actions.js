@@ -7,7 +7,9 @@ export const SalesOrderActions = {
     editSalesOrder,
     approveSalesOrder,
     addManufacturingPlanForGood,
-    getSalesOrdersByManufacturingWorks
+    getSalesOrdersByManufacturingWorks,
+    getSalesOrdersForPayment,
+    getSalesOrderDetail
 }
 
 function createNewSalesOrder (data) {
@@ -147,6 +149,50 @@ function getSalesOrdersByManufacturingWorks (id) {
                 error
             })
         })
+    }
+}
+
+function getSalesOrdersForPayment (customerId) {
+    return (dispatch) => {
+        dispatch({
+            type: SalesOrderConstants.GET_SALES_ORDERS_FOR_PAYMENT_REQUEST
+        })
+
+        SalesOrderSevices.getSalesOrdersForPayment(customerId)
+        .then((res) => {
+            dispatch({
+                type: SalesOrderConstants.GET_SALES_ORDERS_FOR_PAYMENT_SUCCESS,
+                payload: res.data.content
+            })
+        })
+        .catch((error) => {
+            dispatch({
+                type: SalesOrderConstants.GET_SALES_ORDERS_FOR_PAYMENT_FAILURE,
+                error
+            })
+        })
+    }
+}
+
+function getSalesOrderDetail(id) {
+    return (dispatch) => {
+        dispatch({
+            type: SalesOrderConstants.GET_SALES_ORDER_DETAIL_REQUEST
+        })
+
+        SalesOrderSevices.getSalesOrderDetail(id)
+            .then((res) => {
+                dispatch({
+                    type: SalesOrderConstants.GET_SALES_ORDER_DETAIL_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch((error) => {
+                dispatch({
+                    type: SalesOrderConstants.GET_SALES_ORDER_DETAIL_FAILURE,
+                    error
+                })
+            })
     }
 }
 

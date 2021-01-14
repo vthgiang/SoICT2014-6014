@@ -2,8 +2,11 @@ import React, { Component } from "react";
 import withTranslate from "react-redux-multilingual/lib/withTranslate";
 import { connect } from "react-redux";
 import { DatePicker, ErrorLabel, SelectBox } from "../../../../../../common-components";
-import sampleData from "../../../sampleData";
 import { LotActions } from "../../../../warehouse/inventory-management/redux/actions";
+import { compareLtDate, compareLteDate, formatDate } from "../../../../../../helpers/formatDate";
+import { PaymentActions } from "../../../../order/payment/redux/actions";
+import SalesOrderDetailForm from "../../../../order/sales-order/components/salesOrderDetailForm";
+import { formatCurrency } from "../../../../../../helpers/formatCurrency";
 
 class PlanInfoForm extends Component {
     constructor(props) {
@@ -22,12 +25,61 @@ class PlanInfoForm extends Component {
     }
 
     handleStartDateChange = (value) => {
-        this.props.onStartDateChange(value);
+        this.validateStartDateChange(value, true);
     };
 
+    validateStartDateChange = (value, willUpdateState = true) => {
+        let msg = undefined;
+        const { translate } = this.props;
+        if (!value) {
+            msg = translate("manufacturing.plan.choose_start_date");
+        }
+        if (value && this.state.endDate) {
+            let obj = compareLteDate(value, this.state.endDate);
+            if (!obj.status) {
+                msg = translate("manufacturing.plan.choose_date_error");
+            }
+        }
+        if (willUpdateState) {
+            this.setState((state) => ({
+                ...state,
+                startDate: value,
+                startDateError: msg,
+                endDateError: msg
+            }));
+        }
+        this.props.onStartDateChange(value);
+        return msg;
+    }
+
+
     handleEndDateChange = (value) => {
-        this.props.onEndDateChange(value);
+        this.validateEndDateChange(value, true);
     };
+
+    validateEndDateChange = (value, willUpdateState = true) => {
+        let msg = undefined;
+        const { translate } = this.props;
+        if (value === "") {
+            msg = translate("manufacturing.plan.choose_end_date");
+        }
+        if (value && this.state.endDate) {
+            let obj = compareLteDate(this.state.startDate, value);
+            if (!obj.status) {
+                msg = translate("manufacturing.plan.choose_date_error");
+            }
+        }
+        if (willUpdateState) {
+            this.setState((state) => ({
+                ...state,
+                endDate: value,
+                endDateError: msg,
+                startDateError: msg
+            }));
+        }
+        this.props.onEndDateChange(value);
+        return msg;
+    }
 
     handleDescriptionChange = (e) => {
         const { value } = e.target;
@@ -37,9 +89,9 @@ class PlanInfoForm extends Component {
     getListSalesOrdersArr = () => {
         const { translate, salesOrders } = this.props;
         let listSalesOrderArr = [];
-        const { listSalesOrders } = salesOrders;
-        if (listSalesOrders) {
-            listSalesOrders.map((order) => {
+        const { listSalesOrdersWorks } = salesOrders;
+        if (listSalesOrdersWorks) {
+            listSalesOrdersWorks.map((order) => {
                 listSalesOrderArr.push({
                     value: order._id,
                     text: order.code + " - " + translate(`manufacturing.plan.sales_order.${order.priority}.content`),
@@ -164,7 +216,7 @@ class PlanInfoForm extends Component {
                 good.baseUnit = goodArrFilter[0].baseUnit;
                 const { lots } = this.props;
                 const { listInventories } = lots;
-                if (listInventories) {
+                if (listInventories && listInventories.length) {
                     good.inventory = listInventories[0].inventory;
                 }
             } else {
@@ -302,22 +354,92 @@ class PlanInfoForm extends Component {
         const { salesOrders } = this.props;
         let listSalesOrderChoosed = [];
         const { listSalesOrders } = salesOrders;
-        listSalesOrders.map(x => {
-            if (salesOrderIds.includes(x._id)) {
-                listSalesOrderChoosed.push(x);
-            }
-        });
-        return listSalesOrderChoosed;
+        if (listSalesOrders && listSalesOrders.length) {
+            listSalesOrders.map(x => {
+                if (salesOrderIds.includes(x._id)) {
+                    listSalesOrderChoosed.push(x);
+                }
+            });
+            return listSalesOrderChoosed;
+        }
+        return [];
     }
 
+    handleShowDetailSalesOrder = async (data) => {
+        await this.props.getPaymentForOrder({ orderId: data._id, orderType: 1 });
+        await this.setState((state) => {
+            return {
+                ...state,
+                salesOrderDetail: data,
+            };
+        });
+        await window.$("#modal-detail-sales-order").modal("show");
+    }
 
     render() {
         const { translate, code, salesOrderIds, startDate, endDate, description, listGoodsSalesOrders, addedAllGoods, listGoods } = this.props;
-        const { good, errorGood, errorQuantity, approvers, errorApprovers } = this.state;
+        const { good, errorGood, errorQuantity, approvers, errorApprovers, startDateError, endDateError } = this.state;
         let listSalesOrdersChoosed = [];
         listSalesOrdersChoosed = this.getListSalesOrdersChoosed(salesOrderIds);
+
+        const dataStatus = [
+            {
+                className: "text-primary",
+                text: translate('manufacturing.plan.sales_order.a')
+            },
+            {
+                className: "text-primary",
+                text: translate('manufacturing.plan.sales_order.b')
+            },
+            {
+                className: "text-warning",
+                text: translate('manufacturing.plan.sales_order.c')
+            },
+            {
+                className: "text-dark",
+                text: translate('manufacturing.plan.sales_order.d')
+            },
+            {
+                className: "text-secondary",
+                text: translate('manufacturing.plan.sales_order.e')
+            },
+            {
+                className: "text-success",
+                text: translate('manufacturing.plan.sales_order.f')
+            },
+            {
+                className: "text-danger",
+                text: translate('manufacturing.plan.sales_order.g')
+            },
+        ];
+
+
+        const dataPriority = [
+            {
+                className: "text-primary",
+                text: translate('manufacturing.plan.sales_order.0.content'),
+            },
+            {
+                className: "text-muted",
+                text: translate('manufacturing.plan.sales_order.1.content')
+            },
+            {
+                className: "text-primary",
+                text: translate('manufacturing.plan.sales_order.2.content')
+
+            },
+            {
+                className: "text-success",
+                text: translate('manufacturing.plan.sales_order.3.content')
+            },
+            {
+                className: "text-danger",
+                text: translate('manufacturing.plan.sales_order.4.content')
+            },
+        ];
         return (
             <React.Fragment>
+                {this.state.salesOrderDetail && <SalesOrderDetailForm salesOrderDetail={this.state.salesOrderDetail} />}
                 <div className="row">
                     <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                         <div className="form-group">
@@ -358,7 +480,7 @@ class PlanInfoForm extends Component {
                         </div>
                     </div>
                     <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                        <div className="form-group">
+                        <div className={`form-group ${!startDateError ? "" : "has-error"}`}>
                             <label>
                                 {translate("manufacturing.plan.start_date")}
                                 <span className="text-red">*</span>
@@ -370,8 +492,9 @@ class PlanInfoForm extends Component {
                                 onChange={this.handleStartDateChange}
                                 disabled={false}
                             />
+                            <ErrorLabel content={startDateError} />
                         </div>
-                        <div className="form-group">
+                        <div className={`form-group ${!endDateError ? "" : "has-error"}`}>
                             <label>
                                 {translate("manufacturing.plan.end_date")}
                                 <span className="text-red">*</span>
@@ -383,6 +506,7 @@ class PlanInfoForm extends Component {
                                 onChange={this.handleEndDateChange}
                                 disabled={false}
                             />
+                            <ErrorLabel content={endDateError} />
                         </div>
                         <div className="form-group">
                             <label>{translate("manufacturing.plan.description")}</label>
@@ -401,7 +525,12 @@ class PlanInfoForm extends Component {
                                         <tr>
                                             <th>{translate('manufacturing.plan.index')}</th>
                                             <th>{translate('manufacturing.plan.sales_order.code')}</th>
+                                            <th>{translate('manufacturing.plan.sales_order.creator')}</th>
+                                            <th>{translate('manufacturing.plan.sales_order.customer')}</th>
+                                            <th>{translate('manufacturing.plan.sales_order.total_money')}</th>
+                                            <th>{translate('manufacturing.plan.sales_order.status')}</th>
                                             <th>{translate('manufacturing.plan.sales_order.priority')}</th>
+                                            <th>{translate('manufacturing.plan.sales_order.intend_deliver_good')}</th>
                                             <th style={{ width: "120px", textAlign: "center" }}>
                                                 {translate("table.action")}
                                             </th>
@@ -413,7 +542,12 @@ class PlanInfoForm extends Component {
                                                 <tr key={index}>
                                                     <td>{index + 1}</td>
                                                     <td>{x.code}</td>
-                                                    <td>{translate(`manufacturing.plan.sales_order.${x.priority}.content`)}</td>
+                                                    <td>{x.creator ? x.creator.name : ""}</td>
+                                                    <td>{x.customer ? x.customer.name : ""}</td>
+                                                    <td>{x.paymentAmount ? formatCurrency(x.paymentAmount) + " VNĐ" : "---"}</td>
+                                                    <td className={dataStatus[x.status].className}>{dataStatus[x.status].text}</td>
+                                                    <td className={dataPriority[x.priority].className}>{dataPriority[x.priority].text}</td>
+                                                    <td>{x.deliveryTime ? formatDate(x.deliveryTime) : "---"}</td>
                                                     <td>
                                                         <a style={{ width: '5px' }} title={translate('manufacturing.plan.sales_order.detail_sales_order')} onClick={() => { this.handleShowDetailSalesOrder(x) }}><i className="material-icons">view_list</i></a>
                                                     </td>
@@ -610,6 +744,7 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = {
     getInventoryByGoodId: LotActions.getInventoryByGoodId,
+    getPaymentForOrder: PaymentActions.getPaymentForOrder,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(PlanInfoForm));

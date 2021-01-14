@@ -6,6 +6,7 @@ import { DiscountActions } from "../../discount/redux/actions";
 import { CrmCustomerActions } from "../../../../crm/customer/redux/actions";
 import { DepartmentActions } from "../../../../super-admin/organizational-unit/redux/actions";
 import { RoleActions } from "../../../../super-admin/role/redux/actions";
+import { BusinessDepartmentActions } from "../../business-department/redux/actions";
 import { formatCurrency } from "../../../../../helpers/formatCurrency";
 import { formatDate } from "../../../../../helpers/formatDate";
 import { PaginateBar, DataTableSetting, SelectMulti, SelectBox, DeleteNotification } from "../../../../../common-components";
@@ -30,7 +31,7 @@ class QuoteManageTable extends Component {
         this.props.getAllQuotes({ page, limit });
         this.props.getDiscountForOrderValue();
         this.props.getCustomers();
-        this.props.getAllDepartments();
+        this.props.getAllBusinessDepartments({ page: 1, limit: 1000 });
         this.props.getAllRoles();
     };
 
@@ -95,7 +96,6 @@ class QuoteManageTable extends Component {
     };
 
     handleShowDetailInfo = (data) => {
-        console.log("DATA", data);
         this.setState((state) => {
             return {
                 ...state,
@@ -168,8 +168,6 @@ class QuoteManageTable extends Component {
         ];
 
         const { department, role, auth } = this.props;
-
-        console.log("auth", auth);
 
         return (
             <React.Fragment>
@@ -381,7 +379,7 @@ const mapDispatchToProps = {
     deleteQuote: QuoteActions.deleteQuote,
     getDiscountForOrderValue: DiscountActions.getDiscountForOrderValue,
     getCustomers: CrmCustomerActions.getCustomers,
-    getAllDepartments: DepartmentActions.get,
+    getAllBusinessDepartments: BusinessDepartmentActions.getAllBusinessDepartments,
     getAllRoles: RoleActions.get,
 };
 

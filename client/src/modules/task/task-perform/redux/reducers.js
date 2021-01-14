@@ -913,6 +913,30 @@ export function performtasks(state = {}, action) {
                 ...state,
                 task: {...state.task, taskActions: action.payload},
             }
+
+        case performTaskConstants.EDIT_TIME_SHEET_LOG_REQUEST:
+            return {
+                ...state,
+                isLoading: true
+            }
+
+        case performTaskConstants.EDIT_TIME_SHEET_LOG_FAILE:
+            return {
+                ...state,
+                isLoading: false
+            }
+
+        case performTaskConstants.EDIT_TIME_SHEET_LOG_SUCCESS:
+            return {
+                ...state,
+                logtimer: action.payload.timesheetLogs,
+                task: action.payload,
+                tasks: Array.isArray(state.tasks) ? state.tasks.map(t => {
+                    if(action.payload && t._id === action.payload._id){
+                        return action.payload
+                    } else return t;
+                }) : state.tasks
+            }
         
         default:
             return state

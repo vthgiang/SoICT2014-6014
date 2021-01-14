@@ -28,20 +28,12 @@ const ManufacturingCommandSchema = new Schema({
     endTurn: { //  Ca kết thúc
         type: Number
     },
-    good: { // Mặt hàng
-        good: {
-            type: Schema.Types.ObjectId,
-            ref: "Good"
-        },
-        packingRule: {
-            type: String
-        },
-        conversionRate: {
-            type: Number
-        },
-        quantity: { // Số lượng
-            type: Number
-        },
+    good: {
+        type: Schema.Types.ObjectId,
+        ref: "Good"
+    },
+    quantity: { // Số lượng
+        type: Number
     },
     creator: { // Người tạo
         type: Schema.Types.ObjectId,
@@ -53,7 +45,8 @@ const ManufacturingCommandSchema = new Schema({
             ref: "User"
         },
         status: { // Trạng thái kiểm định 1. Chưa kiểm định, 2. Kiểm định Ok, 3. Kiểm định có vấn đề
-            type: Number
+            type: Number,
+            default: 1
         },
         content: { // Nội dung kiểm định
             type: String
@@ -70,9 +63,9 @@ const ManufacturingCommandSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: "User"
     }],
-    status: { //  Trạng thái lệnh sản xuất: 1. Chờ phê duyệt || 2. Lệnh đã duyệt || 3. Lệnh đang được thực thi || 4. Đã hoàn thành
+    status: { //  Trạng thái lệnh sản xuất: 1. Chờ phê duyệt || 2. Lệnh đã duyệt || 3. Lệnh đang được thực thi || 4. Đã hoàn thành || 5. Đã hủy || 6. Mới tạo
         type: Number,
-        default: 1
+        default: 6
     },
     description: { // Mô tả về lệnh
         type: String
@@ -86,7 +79,16 @@ const ManufacturingCommandSchema = new Schema({
     },
     finishedTime: { // Thời gian chính xác hoàn thành lệnh sản xuất
         type: Date
-    }
+    },
+    approvers: [{ // Danh sách người phê duyệt
+        approver: { // Người phê duyệt
+            type: Schema.Types.ObjectId,
+            ref: "User"
+        },
+        approvedTime: { // Thời gian phê duyệt
+            type: Date
+        }
+    }],
 }, {
     timestamps: true
 });

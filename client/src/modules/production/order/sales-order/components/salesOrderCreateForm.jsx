@@ -83,7 +83,7 @@ class SalesOrderCreateForm extends Component {
     };
 
     handleCustomerChange = (value) => {
-        if (value[0] !== "") {
+        if (value[0] !== "" && value[0] !== "title") {
             let customerInfo = this.props.customers.list.filter((item) => item._id === value[0]);
             if (customerInfo.length) {
                 this.setState({
@@ -361,6 +361,27 @@ class SalesOrderCreateForm extends Component {
         });
     };
 
+    getCoinOfAll = () => {
+        let coinOfAll = 0;
+        let { goods } = this.state;
+        let { discountsOfOrderValue } = this.state;
+
+        goods.forEach((good) => {
+            good.discountsOfGood.forEach((discount) => {
+                if (discount.formality == "2") {
+                    coinOfAll += discount.loyaltyCoin;
+                }
+            });
+        });
+
+        discountsOfOrderValue.forEach((discount) => {
+            if (discount.formality == "2") {
+                coinOfAll += discount.loyaltyCoin;
+            }
+        });
+        return coinOfAll;
+    };
+
     setPaymentAmount = (paymentAmount) => {
         this.setState((state) => {
             return {
@@ -481,6 +502,8 @@ class SalesOrderCreateForm extends Component {
                 priority,
             } = this.state;
 
+            let allCoin = this.getCoinOfAll(); //Lấy tất cả các xu được tặng trong đơn
+
             let data = {
                 code,
                 customer,
@@ -494,6 +517,7 @@ class SalesOrderCreateForm extends Component {
                 shippingFee,
                 deliveryTime: deliveryTime ? new Date(formatToTimeZoneDate(deliveryTime)) : undefined,
                 coin,
+                allCoin,
                 paymentAmount,
                 note,
             };
