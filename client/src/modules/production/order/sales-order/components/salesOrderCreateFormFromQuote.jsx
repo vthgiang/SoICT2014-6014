@@ -170,6 +170,7 @@ class SalesOrderCreateFormFromQuote extends Component {
                 shippingFee: quoteInfo.shippingFee,
                 deliveryTime: quoteInfo.deliveryTime,
                 coin: quoteInfo.coin,
+                allCoin: quoteInfo.allCoin,
                 paymentAmount: quoteInfo.paymentAmount,
                 note: quoteInfo.note,
             };

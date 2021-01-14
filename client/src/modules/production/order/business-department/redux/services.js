@@ -15,7 +15,7 @@ function getAllBusinessDepartments(queryData) {
         },
         false,
         true,
-        "order.business_department"
+        "manage_order.business_department"
     );
 }
 
@@ -28,7 +28,7 @@ function createBusinessDepartment(data) {
         },
         true,
         true,
-        "order.business_department")
+        "manage_order.business_department")
 }
 
 function editBusinessDepartment(id, data) {
@@ -40,6 +40,6 @@ function editBusinessDepartment(id, data) {
         },
         true,
         true,
-        "order.business_department"
+        "manage_order.business_department"
     )
 }
