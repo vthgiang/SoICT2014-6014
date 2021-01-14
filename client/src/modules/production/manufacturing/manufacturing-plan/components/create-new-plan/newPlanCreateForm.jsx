@@ -62,7 +62,6 @@ class NewPlanCreateForm extends Component {
         this.props.getSalesOrdersByManufacturingWorks(currentRole);
         this.props.getAllApproversOfPlan(currentRole);
         this.props.getGoodByManageWorkRole(currentRole);
-        this.props.getAllSalesOrders({ page: 1, limit: 1000 });
     };
 
     setCurrentStep = async (e, step) => {
@@ -550,7 +549,6 @@ const mapDispatchToProps = {
     getGoodByManageWorkRole: GoodActions.getGoodByManageWorkRole,
     getAllWorkSchedulesOfManufacturingWork: workScheduleActions.getAllWorkSchedulesOfManufacturingWork,
     createManufacturingPlan: manufacturingPlanActions.createManufacturingPlan,
-    getAllSalesOrders: SalesOrderActions.getAllSalesOrders,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(NewPlanCreateForm));

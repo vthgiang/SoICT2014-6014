@@ -5118,11 +5118,13 @@ export default {
                     },
                     a: "Không có trạng thái",
                     b: "Chờ phê duyệt",
-                    c: "Yêu cầu sản xuất",
-                    d: "Yêu cầu xuất kho",
-                    e: "Đang giao hàng",
-                    f: "Đã giao hàng",
-                    g: "Đã hủy",
+                    c: "Đã phê duyệt",
+                    d: "Yêu cầu sản xuất",
+                    e: "Đang sản xuất",
+                    f: "Đã sẵn sàng",
+                    g: "Đang giao hàng",
+                    h: "Đã giao hàng",
+                    i: "Đã hủy",
                     detail_sales_order: "Xem chi tiết đơn hàng kinh doanh",
                     code: "Mã đơn",
                     priority: "Độ ưu tiên",
@@ -5193,7 +5195,9 @@ export default {
                 turn: "Ca ",
                 please_booking_mill: "Vui lòng chọn phân lệnh sản xuất vào ca làm việc!",
                 command_complete: "Đã phân lịch thực hiện",
-                choose_responisbles: "Vui lòng chọn người thực hiện"
+                choose_responisbles: "Vui lòng chọn người thực hiện",
+                edit_successfully: "Chỉnh sửa kế hoạch thành công",
+                edit_failed: "Chỉnh sửa kế hoạch thất bại",
 
 
 
@@ -5275,6 +5279,7 @@ export default {
                 substandardProductQuantity: "Số lượng phế phẩm",
                 finishedTime: "Thời gian hoàn thành thực tế",
                 material: "Thông tin nguyên vật liệu",
+                inventory: "Số lượng tồn kho",
                 comment: "Bình luận",
                 quality_control_status: "Trạng thái kiểm định",
                 qc_status: {
@@ -5326,7 +5331,18 @@ export default {
                 },
                 status_bill: "Trạng thái phiếu xuất",
                 quantity_gt: "Số lượng lớn hơn",
-                quantity_lt: "Số lượng bé hơn"
+                quantity_lt: "Số lượng bé hơn",
+                material_bill: "Thông tin phiếu xuất nguyên vật liệu",
+                materials_info: {
+                    '0': {
+                        color: "red",
+                        content: "Thiếu"
+                    },
+                    '1': {
+                        color: 'green',
+                        content: "Đủ"
+                    }
+                }
             },
             lot: {
                 index: "STT",
