@@ -1,11 +1,20 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+import FilePreviewer from 'react-file-previewer';
 const UserGuide = () => {
+    const url = `https://docs.google.com/gview?url=http://www.africau.edu/images/default/sample.pdf&embedded=true`;
+    const url1 = `https://docs.google.com/gview?url=${process.env.REACT_APP_SERVER}/upload/user-guide/abc.pdf&embedded=true`
     return (
-        <div style={{ maxWidth: '100%' }}>
-            <iframe width="100%" height="1000" src={`https://docs.google.com/gview?url=${process.env.REACT_APP_SERVER}/upload/user-guide/QLCV_UM_v1.2.docx&embedded=true`}></iframe>
-        </div>
+        <React.Fragment>
+            <div style={{ maxWidth: '100%' }}>
+                <iframe width="100%" height="500" className="doc" src={url1}></iframe>
+            </div>
+            {/* <div style={{ marginTop: '30px' }}>
+                <iframe width="100%" height="500" class="doc" src={}></iframe>
+            </div> */}
+        </React.Fragment>
+
     )
 }
 
