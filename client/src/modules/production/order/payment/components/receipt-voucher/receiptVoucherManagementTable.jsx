@@ -63,7 +63,7 @@ class ReceiptVoucherManagementTable extends Component {
 
     getPaidForPayment = (item) => {
         let paid = item.salesOrders.reduce((accumulator, currentValue) => {
-            return accumulator + currentValue.money;
+            return accumulator + parseInt(currentValue.money);
         }, 0);
 
         return formatCurrency(paid);

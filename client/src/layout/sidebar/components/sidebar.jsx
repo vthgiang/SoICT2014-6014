@@ -55,10 +55,10 @@ class SideBar extends Component {
                                         </Link>
                                     </React.Fragment>
                                 ) : (
-                                    <p style={{ fontSize: "10px" }}>
-                                        <i className="fa fa-circle text-success"></i> Online{" "}
-                                    </p>
-                                )}
+                                        <p style={{ fontSize: "10px" }}>
+                                            <i className="fa fa-circle text-success"></i> Online{" "}
+                                        </p>
+                                    )}
                             </div>
                         </div>
                         <ul className="sidebar-menu" data-widget="tree" ref="sideBarMenu">
@@ -710,6 +710,14 @@ class SideBar extends Component {
                                             path: "/manage-manufacturing-mill",
                                         },
                                     ],
+                                }}
+                            />
+                            {/* Hướng dẫn sử dụng */}
+                            <Item
+                                item={{
+                                    name: "menu.user_guide",
+                                    path: "/user-guide",
+                                    icon: "fa fa-newspaper-o",
                                 }}
                             />
                         </ul>

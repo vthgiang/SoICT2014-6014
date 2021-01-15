@@ -204,6 +204,34 @@ class SalesOrderCreateForm extends Component {
         this.validatePriority(value[0], true);
     };
 
+    validateOrganizationalUnit = (value, willUpdateState = true) => {
+        let msg = undefined;
+        if (!value) {
+            msg = "Giá trị không được để trống";
+        } else if (value === "title") {
+            msg = "Giá trị không được để trống";
+        }
+        if (willUpdateState) {
+            this.setState((state) => {
+                return {
+                    ...state,
+                    organizationalUnitError: msg,
+                };
+            });
+        }
+        return msg;
+    };
+
+    handleOrganizationalUnitChange = (value) => {
+        this.setState((state) => {
+            return {
+                ...state,
+                organizationalUnit: value[0],
+            };
+        });
+        this.validateOrganizationalUnit(value[0], true);
+    };
+
     setCurrentStep = (e, step) => {
         e.preventDefault();
         this.setState({
@@ -392,12 +420,13 @@ class SalesOrderCreateForm extends Component {
     };
 
     isValidateSalesOrderCreateInfo = () => {
-        let { customer, customerEmail, customerPhone, customerAddress, priority } = this.state;
+        let { customer, customerEmail, customerPhone, customerAddress, priority, organizationalUnit } = this.state;
         let { translate } = this.props;
 
         if (
             this.validateCustomer(customer, false) ||
             this.validatePriority(priority, false) ||
+            this.validateOrganizationalUnit(organizationalUnit, false) ||
             !ValidationHelper.validateEmail(translate, customerEmail).status ||
             !ValidationHelper.validateEmpty(translate, customerPhone).status ||
             !ValidationHelper.validateEmpty(translate, customerAddress).status
@@ -564,6 +593,7 @@ class SalesOrderCreateForm extends Component {
             customerTaxNumber,
             customerEmail,
             priority,
+            organizationalUnit,
             step,
             goods,
             shippingFee,
@@ -581,7 +611,7 @@ class SalesOrderCreateForm extends Component {
             paymentAmount,
         } = this.state;
 
-        let { customerError, customerEmailError, customerPhoneError, customerAddressError, priorityError } = this.state;
+        let { customerError, customerEmailError, customerPhoneError, customerAddressError, priorityError, organizationalUnitError } = this.state;
 
         let enableStepOne = this.isValidateSalesOrderCreateInfo();
         let enableStepTwo = this.isValidateSalesOrderCreateGood();
@@ -589,12 +619,6 @@ class SalesOrderCreateForm extends Component {
 
         return (
             <React.Fragment>
-                {/* <ButtonModal
-                    onButtonCallBack={this.handleClickCreateCode}
-                    modalID={`modal-add-sales-order`}
-                    button_name={"Đơn hàng mới"}
-                    title={"Đơn hàng mới"}
-                /> */}
                 <DialogModal
                     modalID={`modal-add-sales-order`}
                     isLoading={false}
@@ -677,6 +701,7 @@ class SalesOrderCreateForm extends Component {
                                     customerTaxNumber={customerTaxNumber}
                                     customerEmail={customerEmail}
                                     priority={priority}
+                                    organizationalUnit={organizationalUnit}
                                     isUseForeignCurrency={isUseForeignCurrency}
                                     foreignCurrency={foreignCurrency}
                                     //handle
@@ -690,12 +715,14 @@ class SalesOrderCreateForm extends Component {
                                     handleRatioOfCurrencyChange={this.handleRatioOfCurrencyChange}
                                     handleSymbolOfForreignCurrencyChange={this.handleSymbolOfForreignCurrencyChange}
                                     handlePriorityChange={this.handlePriorityChange}
+                                    handleOrganizationalUnitChange={this.handleOrganizationalUnitChange}
                                     //Error Status
                                     customerError={customerError}
                                     customerEmailError={customerEmailError}
                                     customerPhoneError={customerPhoneError}
                                     customerAddressError={customerAddressError}
                                     priorityError={priorityError}
+                                    organizationalUnitError={organizationalUnitError}
                                 />
                             )}
                             {step === 1 && (

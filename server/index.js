@@ -17,6 +17,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use("/upload/avatars", express.static("upload/avatars"));
+app.use("/upload/user-guide", express.static("upload/user-guide"));
 
 const router = express.Router();
 

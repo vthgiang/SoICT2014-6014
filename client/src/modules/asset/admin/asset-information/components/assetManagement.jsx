@@ -19,7 +19,6 @@ class AssetManagement extends Component {
         this.state = {
             code: "",
             assetName: "",
-            assetType: [],
             purchaseDate: null,
             disposalDate: null,
             status: window.location.search ? [qs.parse(window.location.search, { ignoreQueryPrefix: true }).status] : '',
@@ -116,7 +115,6 @@ class AssetManagement extends Component {
         this.setState({
             [name]: value
         });
-
     }
 
     // Function lưu giá trị tháng vào state khi thay đổi
@@ -144,14 +142,15 @@ class AssetManagement extends Component {
     }
 
     // Function lưu giá trị loại tài sản vào state khi thay đổi
-    handleAssetTypeChange = async (value) => {
-
+    handleAssetTypeChange = (value) => {
         if (value.length === 0) {
             value = null;
         }
-        await this.setState({
-            ...this.state,
-            assetType: value,
+         this.setState(state => {
+             return {
+                ...state,
+                assetType: JSON.stringify(value),
+             }
         })
     }
 

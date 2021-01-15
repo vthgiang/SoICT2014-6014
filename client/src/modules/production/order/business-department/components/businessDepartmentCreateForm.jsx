@@ -125,7 +125,7 @@ class BusinessDepartmentCreateForm extends Component {
                     <form id="form-create-business-department">
                         <div className={`form-group ${!organizationalUnitError ? "" : "has-error"}`}>
                             <label>
-                                {"Đơn vị được cấu hình"}
+                                {"Đơn vị"}
                                 <span className="text-red">*</span>
                             </label>
                             <SelectBox

@@ -1194,6 +1194,8 @@ export default {
             manage_manufacturing_works: "Quản lý nhà máy sản xuất",
             manage_manufacturing_mill: "Quản lý xưởng sản xuất",
             manage_manufacturing_lot: "Quản lý lô sản xuất",
+
+            user_guide: "Hướng dẫn sử dụng",
         },
 
         manage_system: {

@@ -1037,6 +1037,8 @@ export default {
                 "Analysis manufacturing performance",
             manage_manufacturing_works: "Manage manufacturing works",
             manage_manufacturing_mill: "Manage manufacturing mill",
+
+            user_guide: "User guide",
         },
 
         manage_system: {

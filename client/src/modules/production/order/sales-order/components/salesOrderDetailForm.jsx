@@ -250,12 +250,13 @@ class SalesOrderDetailForm extends Component {
         }
         let paymentTypeConvert = ["", "Tiền mặt", "Chuyển khoản"];
         let priorityConvert = ["", "Thấp", "Trung Bình", "Cao", "Đặc biệt"];
+
         return (
             <React.Fragment>
                 <DialogModal
-                    modalID="modal-detail-sales-order"
+                    modalID={`modal-detail-sales-order-${this.props.modalID}`}
                     isLoading={false}
-                    formID="form-detail-sales-order"
+                    formID={`form-detail-sales-order-${this.props.modalID}`}
                     title={"Chi tiết đơn bán hàng"}
                     size="100"
                     hasSaveButton={false}
