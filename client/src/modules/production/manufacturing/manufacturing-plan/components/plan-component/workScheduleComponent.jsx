@@ -313,7 +313,7 @@ class WorkScheduleComponent extends Component {
                                                             )
                                                         else if (command !== null && !command.status)
                                                             return (
-                                                                <td key={index2} className="tooltip-checkbox">
+                                                                <td key={index2}>
                                                                     <div className="plan-checkbox-custom">
                                                                         <input
                                                                             type="checkbox"
@@ -322,7 +322,7 @@ class WorkScheduleComponent extends Component {
                                                                             onChange={() => this.handleCheckBoxChange(index1, index2)}
                                                                         />
                                                                     </div>
-                                                                    <span className="tooltiptext"><a style={{ color: "white", cursor: "pointer" }}>{command.code}</a></span>
+                                                                    {/* <span className="tooltiptext"><a style={{ color: "white", cursor: "pointer" }}>{command.code}</a></span> */}
                                                                 </td>
                                                             )
 

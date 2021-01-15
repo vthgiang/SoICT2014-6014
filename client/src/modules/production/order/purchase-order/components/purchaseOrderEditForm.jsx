@@ -390,7 +390,7 @@ class PurchaseOrderEditForm extends Component {
         });
     };
 
-    getPaymentAmount = () => {
+    getPaymentAmount = (isSubmit = false) => {
         let { materials, discount } = this.state;
         let paymentAmount = 0;
 
@@ -401,7 +401,9 @@ class PurchaseOrderEditForm extends Component {
         if (discount) {
             paymentAmount = paymentAmount - discount >= 0 ? paymentAmount - discount : 0;
         }
-
+        if (isSubmit) {
+            return paymentAmount;
+        }
         return formatCurrency(paymentAmount);
     };
 
@@ -570,6 +572,7 @@ class PurchaseOrderEditForm extends Component {
             desciption,
             materials,
             status,
+            paymentAmount: this.getPaymentAmount(true),
         };
         await this.props.updatePurchaseOrder(purchaseOrderId, data);
     };
@@ -590,6 +593,7 @@ class PurchaseOrderEditForm extends Component {
             editMaterials,
             purchasingRequest,
             status,
+            purchaseOrderId,
         } = this.state;
         const {
             supplierError,
@@ -609,9 +613,9 @@ class PurchaseOrderEditForm extends Component {
                     modalID={`modal-edit-purchase-order`}
                     isLoading={false}
                     formID={`form-edit-purchase-order`}
-                    title={"Tạo đơn mua nguyên vật liệu"}
-                    msg_success={"Tạo thành công"}
-                    msg_faile={"Tạo không thành công"}
+                    title={"Chỉnh sửa đơn mua nguyên vật liệu"}
+                    msg_success={"Chỉnh sửa thành công"}
+                    msg_faile={"Chỉnh sửa không thành công"}
                     disableSubmit={!this.isFormValidated()}
                     func={this.save}
                     size="75"
@@ -641,7 +645,7 @@ class PurchaseOrderEditForm extends Component {
                                     <span className="attention"> * </span>
                                 </label>
                                 <SelectBox
-                                    id={`select-edit-purchase-order-stock`}
+                                    id={`select-edit-purchase-order-stock-${purchaseOrderId}`}
                                     className="form-control select2"
                                     style={{ width: "100%" }}
                                     value={stock}
@@ -657,7 +661,7 @@ class PurchaseOrderEditForm extends Component {
                                     <span className="attention"> * </span>
                                 </label>
                                 <SelectBox
-                                    id={`select-edit-purchase-order-supplier`}
+                                    id={`select-edit-purchase-order-supplier-${purchaseOrderId}`}
                                     className="form-control select2"
                                     style={{ width: "100%" }}
                                     value={supplier}
@@ -675,7 +679,7 @@ class PurchaseOrderEditForm extends Component {
                                     <span className="attention"> * </span>
                                 </label>
                                 <SelectBox
-                                    id={`select-edit-purchase-order-approvers`}
+                                    id={`select-edit-purchase-order-approvers-${purchaseOrderId}`}
                                     className="form-control select2"
                                     style={{ width: "100%" }}
                                     value={approvers}
@@ -691,14 +695,14 @@ class PurchaseOrderEditForm extends Component {
                                     <span className="attention"> * </span>
                                 </label>
                                 <SelectBox
-                                    id={`select-edit-purchase-order-status`}
+                                    id={`select-edit-purchase-order-status-${purchaseOrderId}`}
                                     className="form-control select2"
                                     style={{ width: "100%" }}
                                     value={status}
                                     items={[
                                         {
                                             value: "title",
-                                            text: "Chờ phê duyệt",
+                                            text: "---Chọn trạng thái---",
                                         },
                                         {
                                             value: 1,
@@ -712,6 +716,10 @@ class PurchaseOrderEditForm extends Component {
                                             value: 3,
                                             text: "Đã nhập kho",
                                         },
+                                        {
+                                            value: 4,
+                                            text: "Đã hủy",
+                                        },
                                     ]}
                                     onChange={this.handleStatusChange}
                                     multiple={false}
@@ -724,7 +732,7 @@ class PurchaseOrderEditForm extends Component {
                                     <span className="attention"> * </span>
                                 </label>
                                 <DatePicker
-                                    id="date_picker_edit_purchase-order_directly_intend_received_time"
+                                    id={`date_picker_edit_purchase-order_directly_intend_received_time_${purchaseOrderId}`}
                                     value={intendReceiveTime}
                                     onChange={this.handleIntendReceiveTimeChange}
                                     disabled={false}
@@ -753,7 +761,7 @@ class PurchaseOrderEditForm extends Component {
                                             <span className="attention"> * </span>
                                         </label>
                                         <SelectBox
-                                            id={`select-edit-purchase-order-directly-material`}
+                                            id={`select-edit-purchase-order-directly-material-${purchaseOrderId}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             value={material._id}
@@ -818,7 +826,7 @@ class PurchaseOrderEditForm extends Component {
                                     </button>
                                 </div>
 
-                                <table id={`purchase-order-edit-table`} className="table table-bordered not-sort">
+                                <table id={`purchase-order-edit-table-${purchaseOrderId}`} className="table table-bordered not-sort">
                                     <thead>
                                         <tr>
                                             <th title={"STT"}>STT</th>

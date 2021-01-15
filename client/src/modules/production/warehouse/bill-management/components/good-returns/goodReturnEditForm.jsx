@@ -714,7 +714,7 @@ class GoodReturnEditForm extends Component {
 
     render() {
         const { translate, group, bills } = this.props;
-        const { lots, listGood, description, good, code, approvers, approver, listQualityControlStaffs, qualityControlStaffs, accountables, responsibles, status, fromStock,
+        const { billId, lots, listGood, description, good, code, approvers, approver, listQualityControlStaffs, qualityControlStaffs, accountables, responsibles, status, fromStock,
             type, name, phone, email, address, errorStock, errorType, errorApprover, errorCustomer, bill, errorQualityControlStaffs, errorAccountables, errorResponsibles } = this.state;
         const dataApprover = this.getApprover();
         const dataStock = this.getStock();
@@ -749,7 +749,7 @@ class GoodReturnEditForm extends Component {
                                     <div className={`form-group ${!errorType ? "" : "has-error"}`}>
                                         <label>{translate('manage_warehouse.bill_management.type')}<span className="attention"> * </span></label>
                                         <SelectBox
-                                            id={`select-type-return-edit`}
+                                            id={`select-type-return-edit-${billId}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             value={type}
@@ -763,7 +763,7 @@ class GoodReturnEditForm extends Component {
                                     <div className={`form-group`}>
                                         <label>{translate('manage_warehouse.bill_management.status')}</label>
                                         <SelectBox
-                                            id={`select-status-return-edit`}
+                                            id={`select-status-return-edit-${billId}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             value={status}
@@ -784,7 +784,7 @@ class GoodReturnEditForm extends Component {
                                     <div className={`form-group ${!errorStock ? "" : "has-error"}`}>
                                         <label>{translate('manage_warehouse.bill_management.stock')}<span className="attention"> * </span></label>
                                         <SelectBox
-                                            id={`select-stock-bill-return-edit`}
+                                            id={`select-stock-bill-return-edit-${billId}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             value={fromStock}
@@ -798,7 +798,7 @@ class GoodReturnEditForm extends Component {
                                     <div className={`form-group ${!errorCustomer ? "" : "has-error"}`}>
                                         <label>{translate('manage_warehouse.bill_management.bill_issued')}<span className="attention"> * </span></label>
                                         <SelectBox
-                                            id={`select-customer-return-edit`}
+                                            id={`select-customer-return-edit-${billId}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             value={bill}
@@ -826,7 +826,7 @@ class GoodReturnEditForm extends Component {
                                         <div className={`form-group ${!errorApprover ? "" : "has-error"}`}>
                                             <label>{translate('manage_warehouse.bill_management.approved')}<span className="attention"> * </span></label>
                                             <SelectBox
-                                                id={`select-approver-bill-return-edit`}
+                                                id={`select-approver-bill-return-edit-${billId}`}
                                                 className="form-control select2"
                                                 style={{ width: "100%" }}
                                                 value={approver}
@@ -854,7 +854,7 @@ class GoodReturnEditForm extends Component {
                                         <div className={`form-group ${!errorQualityControlStaffs ? "" : "has-error"}`}>
                                             <label>{translate('manage_warehouse.bill_management.qualityControlStaffs')}<span className="attention"> * </span></label>
                                             <SelectBox
-                                                id={`select-qualityControlStaffs-bill-return-edit`}
+                                                id={`select-qualityControlStaffs-bill-return-edit-${billId}`}
                                                 className="form-control select2"
                                                 style={{ width: "100%" }}
                                                 value={qualityControlStaffs}
@@ -867,7 +867,7 @@ class GoodReturnEditForm extends Component {
                                         <div className={`form-group ${!errorAccountables ? "" : "has-error"}`}>
                                             <label>{translate('manage_warehouse.bill_management.accountables')}<span className="attention"> * </span></label>
                                             <SelectBox
-                                                id={`select-responsibles-bill-return-edit`}
+                                                id={`select-responsibles-bill-return-edit-${billId}`}
                                                 className="form-control select2"
                                                 style={{ width: "100%" }}
                                                 value={accountables}

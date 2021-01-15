@@ -477,7 +477,7 @@ class SalesOrderCreateGood extends Component {
                 amountAfterDiscount,
                 amountAfterTax,
                 salesPriceVariance,
-                manufacturingWorks: manufacturingWorks && manufacturingWorks._id !== "title" ? manufacturingWorks : undefined,
+                manufacturingWorks: manufacturingWorks ? (manufacturingWorks._id !== "title" ? manufacturingWorks : undefined) : undefined,
             };
 
             listGoods.push(additionGood);
@@ -726,7 +726,7 @@ class SalesOrderCreateGood extends Component {
                 amountAfterDiscount,
                 amountAfterTax,
                 salesPriceVariance,
-                manufacturingWorks: manufacturingWorks._id !== "title" ? manufacturingWorks : undefined,
+                manufacturingWorks: manufacturingWorks ? (manufacturingWorks._id !== "title" ? manufacturingWorks : undefined) : undefined,
             };
 
             listGoods[indexEditting] = additionGood;

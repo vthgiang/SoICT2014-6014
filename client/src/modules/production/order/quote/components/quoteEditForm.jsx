@@ -520,6 +520,27 @@ class QuoteEditForm extends Component {
         });
     };
 
+    getCoinOfAll = () => {
+        let coinOfAll = 0;
+        let { goods } = this.state;
+        let { discountsOfOrderValue } = this.state;
+
+        goods.forEach((good) => {
+            good.discountsOfGood.forEach((discount) => {
+                if (discount.formality == "2") {
+                    coinOfAll += discount.loyaltyCoin;
+                }
+            });
+        });
+
+        discountsOfOrderValue.forEach((discount) => {
+            if (discount.formality == "2") {
+                coinOfAll += discount.loyaltyCoin;
+            }
+        });
+        return coinOfAll;
+    };
+
     setPaymentAmount = (paymentAmount) => {
         this.setState((state) => {
             return {
@@ -646,6 +667,8 @@ class QuoteEditForm extends Component {
                 quoteId,
             } = this.state;
 
+            let allCoin = this.getCoinOfAll(); //Lấy tất cả các xu được tặng trong đơn
+
             let data = {
                 code,
                 effectiveDate: effectiveDate ? new Date(formatToTimeZoneDate(effectiveDate)) : undefined,
@@ -660,6 +683,7 @@ class QuoteEditForm extends Component {
                 shippingFee,
                 deliveryTime: deliveryTime ? new Date(formatToTimeZoneDate(deliveryTime)) : undefined,
                 coin,
+                allCoin,
                 paymentAmount,
                 note,
             };

@@ -5,7 +5,7 @@ exports.createNewSalesOrder = async (req, res) => {
     try {
         let data = req.body;
 
-        let salesOrder = await SalesOrderServices.createNewSalesOrder(req.user._id, data, req.portal)
+        let salesOrder = await SalesOrderServices.createNewSalesOrder(req.user._id, req.user.company._id, data, req.portal)
         await Log.info(req.user.email, "CREATED_NEW_SALES_ORDER", req.portal);
 
 
@@ -55,7 +55,7 @@ exports.editSalesOrder = async (req, res) => {
         let data = req.body;
         let id = req.params.id;
 
-        let salesOrder = await SalesOrderServices.editSalesOrder(req.user._id, id, data, req.portal)
+        let salesOrder = await SalesOrderServices.editSalesOrder(req.user._id, req.user.company._id, id, data, req.portal)
 
         await Log.info(req.user.email, "EDIT_SALES_ORDER", req.portal);
 
@@ -160,14 +160,37 @@ exports.getSalesOrdersForPayment = async (req, res) => {
 
         res.status(200).json({
             success: true,
-            messages: ["get_sales_orders_for_successfully"],
+            messages: ["get_sales_orders_for_payment_successfully"],
             content: salesOrders
         });
     } catch (error) {
         await Log.error(req.user.email, "GET_SALES_ORDERS_FOR_PAYMENT", req.portal);
         res.status(400).json({
             success: false,
-            messages: ["get_sales_orders_for_failed"],
+            messages: ["get_sales_orders_for_payment_failed"],
+            content: error.message
+        });
+    }
+}
+
+
+exports.getSalesOrderDetail = async ( req, res ) => {
+    try {
+        let id = req.params.id;
+        let salesOrder = await SalesOrderServices.getSalesOrderDetail( id, req.portal)
+
+        await Log.info(req.user.email, "GET_SALES_ORDER_DETAIL", req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ["get_detail_successfully"],
+            content: salesOrder
+        });
+    } catch (error) {
+        await Log.error(req.user.email, "GET_SALES_ORDER_DETAIL", req.portal);
+        console.log(error.message);
+        res.status(400).json({
+            success: false,
+            messages: ["get_detail_failed"],
             content: error.message
         });
     }

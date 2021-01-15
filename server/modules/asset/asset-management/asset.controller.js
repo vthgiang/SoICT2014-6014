@@ -156,11 +156,11 @@ exports.updateAssetInformation = async (req, res) => {
                 var html = data.html;
                 var noti = {
                     organizationalUnits: [],
-                    title: "Đăng ký sử dụng tài sản",
+                    title: "Cập nhật thông tin sự cố tài sản",
                     level: "general",
                     content: html,
                     sender: data.user.name,
-                    users: [data.manager]
+                    users: data.manager
                 };
                 await NotificationServices.createNotification(req.portal, req.user.company._id, noti);
                 await sendEmail(email, "Bạn có thông báo mới", '', html);

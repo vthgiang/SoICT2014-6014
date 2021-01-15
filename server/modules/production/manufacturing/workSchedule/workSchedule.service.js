@@ -338,7 +338,7 @@ exports.getWorkSchedules = async (query, portal) => {
                 });
             for (let i = 0; i < workSchedules.docs.length; i++) {
                 for (let j = 0; j < workSchedules.docs[i].turns.length; j++) {
-                    for (k = 0; k < workSchedules.docs[i].turns[j].length; k++) {
+                    for (let k = 0; k < workSchedules.docs[i].turns[j].length; k++) {
                         if (workSchedules.docs[i].turns[j][k] != null) {
                             let manufacturingCommand = await ManufacturingCommand(connect(DB_CONNECTION, portal)).findById(workSchedules.docs[i].turns[j][k])
                             // .populate([{
@@ -419,11 +419,11 @@ exports.getWorkSchedulesByMillId = async (id, portal) => {
     });
     for (let i = 0; i < workSchedules.length; i++) {
         for (let j = 0; j < workSchedules[i].turns.length; j++) {
-            for (k = 0; k < workSchedules[i].turns[j].length; k++) {
+            for (let k = 0; k < workSchedules[i].turns[j].length; k++) {
                 if (workSchedules[i].turns[j][k] != null) {
                     let manufacturingCommand = await ManufacturingCommand(connect(DB_CONNECTION, portal)).findById(workSchedules[i].turns[j][k])
                         .populate([{
-                            path: "good.good",
+                            path: "good",
                             select: "code name"
                         }]);
                     workSchedules[i].turns[j][k] = manufacturingCommand;
@@ -478,11 +478,11 @@ exports.getWorkSchedulesOfManufacturingWork = async (query, portal) => {
     let workSchedules = await WorkSchedule(connect(DB_CONNECTION, portal)).find(options).sort({ 'month': 'asc' });
     for (let i = 0; i < workSchedules.length; i++) {
         for (let j = 0; j < workSchedules[i].turns.length; j++) {
-            for (k = 0; k < workSchedules[i].turns[j].length; k++) {
+            for (let k = 0; k < workSchedules[i].turns[j].length; k++) {
                 if (workSchedules[i].turns[j][k] != null) {
                     let manufacturingCommand = await ManufacturingCommand(connect(DB_CONNECTION, portal)).findById(workSchedules[i].turns[j][k])
                         .populate([{
-                            path: "good.good",
+                            path: "good",
                             select: "code name"
                         }]);
                     workSchedules[i].turns[j][k] = manufacturingCommand;
@@ -577,3 +577,45 @@ function checkWorkerSchedules(workerSchedule, arrayWorkerSchedules) {
     return result;
 }
 
+
+exports.bookingManyManufacturingMills = async (listMillsSchedules, portal) => {
+    for (let i = 0; i < listMillsSchedules.length; i++) {
+        let schedule = await WorkSchedule(connect(DB_CONNECTION, portal)).findById(listMillsSchedules[i]._id);
+        for (let j = 0; j < listMillsSchedules[i].turns.length; j++) {
+            for (let k = 0; k < listMillsSchedules[i].turns[j].length; k++) {
+                if (listMillsSchedules[i].turns[j][k] != null && !listMillsSchedules[i].turns[j][k]._id) {
+                    let manufacturingCommand = await ManufacturingCommand(connect(DB_CONNECTION, portal))
+                        .findOne({
+                            code: listMillsSchedules[i].turns[j][k].code
+                        })
+                    schedule.turns[j][k] = manufacturingCommand._id;
+                    await schedule.markModified("turns");
+                    await schedule.save();
+                }
+            }
+        }
+    }
+    return null;
+}
+
+exports.bookingManyWorkerToCommand = async (arrayWorkerSchedules, portal) => {
+    for (let i = 0; i < arrayWorkerSchedules.length; i++) {
+        let listWorkerSchedules = await WorkSchedule(connect(DB_CONNECTION, portal))
+            .find({
+                user: {
+                    $in: arrayWorkerSchedules[i].users
+                },
+                month: new Date(formatToTimeZoneDate(arrayWorkerSchedules[i].month))
+            });
+        for (let j = 0; j < listWorkerSchedules.length; j++) {
+            const command = await ManufacturingCommand(connect(DB_CONNECTION, portal))
+                .findOne({
+                    code: arrayWorkerSchedules[i].commandCode
+                });
+            listWorkerSchedules[j].turns[arrayWorkerSchedules[i].index1][arrayWorkerSchedules[i].index2] = command._id;
+            await listWorkerSchedules[j].markModified("turns");
+            await listWorkerSchedules[j].save();
+        }
+    }
+    return null;
+}

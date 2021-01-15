@@ -56,9 +56,10 @@ class NewPlanCreateForm extends Component {
     }
 
     componentDidMount = () => {
-        this.props.getAllSalesOrder({ page: 1, limit: 1000 });
+        // this.props.getAllSalesOrder({ page: 1, limit: 1000 });
         this.props.getAllUserOfCompany();
         const currentRole = localStorage.getItem("currentRole");
+        this.props.getSalesOrdersByManufacturingWorks(currentRole);
         this.props.getAllApproversOfPlan(currentRole);
         this.props.getGoodByManageWorkRole(currentRole);
     };
@@ -146,11 +147,11 @@ class NewPlanCreateForm extends Component {
             salesOrders: value,
         });
 
-        const { listSalesOrders } = this.props.salesOrders;
+        const { listSalesOrdersWorks } = this.props.salesOrders;
 
         let listOrders = [];
-        if (listSalesOrders.length) {
-            listOrders = listSalesOrders.filter((x) => value.includes(x._id));
+        if (listSalesOrdersWorks.length) {
+            listOrders = listSalesOrdersWorks.filter((x) => value.includes(x._id));
         }
         let goods = [];
         // let goodIds = goods.map(x => x.good._id);
@@ -405,6 +406,11 @@ class NewPlanCreateForm extends Component {
 
     save = () => {
         if (this.isFormValidated()) {
+            const { listWorkSchedulesOfWorks } = this.state;
+            let listMillSchedules = [];
+            for (var value of listWorkSchedulesOfWorks.values()) {
+                listMillSchedules = [...listMillSchedules, ...value]
+            }
             const data = {
                 code: this.state.code,
                 salesOrders: this.state.salesOrders,
@@ -415,7 +421,7 @@ class NewPlanCreateForm extends Component {
                 approvers: this.state.approvers,
                 creator: localStorage.getItem('userId'),
                 manufacturingCommands: this.state.manufacturingCommands,
-                listWorkSchedulesOfWorks: this.state.listWorkSchedulesOfWorks,
+                listMillSchedules: listMillSchedules,
                 arrayWorkerSchedules: this.state.arrayWorkerSchedules
             }
             this.props.createManufacturingPlan(data);
@@ -423,7 +429,6 @@ class NewPlanCreateForm extends Component {
     }
 
     render() {
-        console.log(this.state);
         const { step, steps } = this.state;
         const { translate } = this.props;
         const {
@@ -537,7 +542,7 @@ function mapStateToProps(state) {
 }
 
 const mapDispatchToProps = {
-    getAllSalesOrder: SalesOrderActions.getAllSalesOrders,
+    getSalesOrdersByManufacturingWorks: SalesOrderActions.getSalesOrdersByManufacturingWorks,
     getAllApproversOfPlan: manufacturingPlanActions.getAllApproversOfPlan,
     getInventoryByGoodIds: LotActions.getInventoryByGoodIds,
     getAllUserOfCompany: UserActions.getAllUserOfCompany,

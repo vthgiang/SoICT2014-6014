@@ -10,12 +10,8 @@ const {
 //Tạo phòng kinh doanh
 exports.createBusinessDepartment = async (data, portal) => {
     let newBusinessDepartment = await BusinessDepartment(connect(DB_CONNECTION, portal)).create({
-        code: data.code,
-        managers: data.managers,
         organizationalUnit: data.organizationalUnit,
-        status: data.status,
-        description: data.description,
-        type: data.type
+        role: data.role
     })
 
     let businessDepartment = await BusinessDepartment(connect(DB_CONNECTION, portal)).findById({ _id: newBusinessDepartment._id })
@@ -32,8 +28,6 @@ exports.createBusinessDepartment = async (data, portal) => {
             },
             { path: 'deputyManagers' },
             { path: 'employees' }]
-        }, {
-            path: 'managers'
         }]);
 
     return {businessDepartment};
@@ -45,13 +39,8 @@ exports.editBusinessDepartment = async (id, data, portal) => {
     if (!oldBusinessDepartment) {
         throw Error("Business Department is not existing")
     }
-
-    oldBusinessDepartment.code = data.code;
-    oldBusinessDepartment.managers = data.managers;
     oldBusinessDepartment.organizationalUnit = data.organizationalUnit;
-    oldBusinessDepartment.status = data.status;
-    oldBusinessDepartment.description = data.description;
-    oldBusinessDepartment.type = data.type;
+    oldBusinessDepartment.role = data.role;
 
     await oldBusinessDepartment.save();
 
@@ -69,8 +58,6 @@ exports.editBusinessDepartment = async (id, data, portal) => {
             },
             { path: 'deputyManagers' },
             { path: 'employees' }]
-        }, {
-            path: 'managers'
         }]);
 
     return {businessDepartment};
@@ -81,18 +68,8 @@ exports.getAllBusinessDepartments = async (query, portal) => {
     let { page, limit } = query;
 
     let option = {};
-    if (query.code) {
-        option.code = new RegExp(query.code, "i")
-    }
-    if (query.name) {
-        option.name = new RegExp(query.name, "i")
-    }
-    if (query.status) {
-        option.status = query.status
-    }
-
-    if (query.type) {
-        option.type = query.type
+    if (query.role) {
+        option.role = query.role
     }
 
     if (!page || !limit) {
@@ -109,10 +86,23 @@ exports.getAllBusinessDepartments = async (query, portal) => {
                         }]
                     }]
                 },
-                { path: 'deputyManagers' },
-                { path: 'employees' }]
-            }, {
-                path: 'managers'
+                {
+                    path: 'deputyManagers',
+                    populate: [{
+                        path: "users",
+                        populate: [{
+                            path: "userId"
+                        }]
+                    }]
+                },{
+                    path: 'employees',
+                    populate: [{
+                        path: "users",
+                        populate: [{
+                            path: "userId"
+                        }]
+                    }]
+                }]
             }]);
 
         return { allBusinessDepartments }
@@ -132,10 +122,24 @@ exports.getAllBusinessDepartments = async (query, portal) => {
                             }]
                         }]
                     },
-                    { path: 'deputyManagers' },
-                    { path: 'employees' }]
-                }, {
-                    path: 'managers'
+                    {
+                        path: 'deputyManagers',
+                        populate: [{
+                            path: "users",
+                            populate: [{
+                                path: "userId"
+                            }]
+                        }]
+                    },
+                    {
+                        path: 'employees',
+                        populate: [{
+                            path: "users",
+                            populate: [{
+                                path: "userId"
+                            }]
+                        }]
+                    }]
                 }]
             })
         return { allBusinessDepartments }

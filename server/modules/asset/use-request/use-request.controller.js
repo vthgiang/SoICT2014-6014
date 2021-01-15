@@ -69,7 +69,7 @@ exports.createUseRequest = async (req, res) => {
                 level: "general",
                 content: html,
                 sender: newRecommendDistribute.user.name,
-                users: [newRecommendDistribute.manager]
+                users: newRecommendDistribute.manager
             };
 
             await NotificationServices.createNotification(req.portal, req.user.company._id, noti);

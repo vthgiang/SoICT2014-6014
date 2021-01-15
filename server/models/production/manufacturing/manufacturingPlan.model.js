@@ -16,7 +16,7 @@ const ManufacturingPlanSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: "ManufacturingWorks"
     }],
-    products: [{ // Danh sách danh mục mặt hàng
+    goods: [{ // Danh sách danh mục mặt hàng
         good: { // Mặt hàng
             type: Schema.Types.ObjectId,
             ref: "Good"

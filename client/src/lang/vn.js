@@ -4661,6 +4661,108 @@ export default {
                 detail_goods: "Chi tiết các mặt hàng",
                 search: "Tìm kiếm",
             },
+            bank_account: {
+                create_successfully: "Tạo tài khoản thành công",
+                create_failed: "Tạo tài khoản không thành công",
+                edit_successfully: "Chỉnh sửa tài khoản thành công",
+                edit_failed: "Chỉnh sửa tài khoản không thành công",
+                get_all_successfully: "Lấy danh sách tài khoản thành công",
+                get_all_failed: "Lấy danh sách tài khoản không thành công"
+            },
+            business_department: {
+                create_successfully: "Đã cấu hình đơn vị kinh doanh",
+                create_failed: "Cấu hình đơn vị kinh doanh không thành công",
+                edit_successfully: "Đã chỉnh sửa cấu hình đơn vị kinh doanh",
+                edit_failed: "Chưa cập nhật được cấu hình đơn vị",
+                get_successfully: "Lấy danh sách cấu hình đơn vị kinh doanh thành công",
+                get_failed: "Đã xảy ra lỗi khi lấy danh sách cấu hình đơn vị kinh doanh"
+            },
+            discount: {
+                create_successfully: "Tạo mới khuyến mãi thành công",
+                create_failed: "Tạo mới khuyến mãi không thành công",
+                get_all_successfully: "Lấy danh sách khuyến mãi thành công",
+                get_all_failed: "Lấy danh sách khuyến mãi không thành công",
+                edit_successfully: "Chỉnh sửa khuyến mãi thành công",
+                edit_failed: "Chỉnh sửa khuyến mãi không thành công",
+                change_status_successfully: "Đã cập nhật trạng thái khuyến mãi",
+                change_status_failed: "Chưa cập nhật được trạng thái khuyến mãi",
+                delete_successfully: "Đã xóa khuyến mãi",
+                delete_failed: "Xóa khuyến mãi không thành công",
+                get_by_good_successfully: "Lấy khuyến mãi theo mặt hàng thành công",
+                get_by_good_failed: "Lấy khuyến mãi theo mặt hàng không thành công",
+                get_for_order_successfully: "Lấy khuyến mãi theo đơn thành công",
+                get_for_order_failed: "Lấy khuyến mãi theo đơn không thành công"
+            },
+            payment: {
+                create_successfully: "Tạo phiếu thành công",
+                create_failed: "Tạo phiếu không thành công",
+                get_all_successfully: "Lấy danh sách phiếu thành công",
+                get_all_failed: "Lấy danh sách phiếu không thành công",
+                get_payment_detail_successfully: "Lấy chi tiết phiếu thành công",
+                get_payment_detail_failed: "Lấy chi tiết phiếu không thành công",
+                get_payment_for_order_successfully: "Lấy các thanh toán theo đơn thành công",
+                get_payment_for_order_failed: "Lấy các thanh toán theo đơn không thành công"
+            },
+            purchase_order: {
+                create_successfully: "Tạo đơn mua nguyên vật liệu thành công",
+                create_failed: "Tạo đơn mua nguyên vật liệu không thành công",
+                edit_successfully: "Chỉnh sửa đơn thành công",
+                edit_failed: "Chỉnh sửa đơn không thành công",
+                get_all_successfully: "Lấy danh sách đơn thành công",
+                get_all_failed: "Lấy danh sách đơn không thành công",
+                get_purchase_orders_for_payment_successfully: "Lấy các đơn còn nợ thành công",
+                get_purchase_orders_for_payment_failed: "Lấy các đơn còn nợ không thành công"
+            },
+            quote: {
+                create_successfully: "Tạo báo giá thành công",
+                create_failed: "Tạo báo giá không thành công",
+                get_successfully: "Lấy danh sách báo giá thành công",
+                get_failed: "Lấy danh sách báo giá không thành công",
+                edit_successfully: "Chỉnh sửa báo giá thành công",
+                edit_failed: "Chỉnh sửa báo giá không thành công",
+                approve_successfully: "Phê duyệt báo giá thành công",
+                approve_failed: "Phê duyệt báo giá không thành công",
+                delete_successfully: "Xóa báo giá thành công",
+                delete_failed: "Xóa báo giá không thành công",
+                get_quotes_to_make_order_successfully: "Lấy các báo giá thành công",
+                get_quotes_to_make_order_failed: "Chưa lấy được danh sách báo giá để lên đơn hàng"
+            },
+            sales_order: {
+                create_successfully: "Tạo đơn bán hàng thành công",
+                create_failed: "Tạo đơn bán hàng không thành công",
+                get_sales_order_successfully: "Lấy danh sách đơn thành công",
+                get_sales_orders_failed: "Lấy danh sách đơn không thành công",
+                edit_successfully: "Chỉnh sửa đơn thành công",
+                edit_failed: "Chỉnh sửa đơn không thành công",
+                approve_successfully: "Phê duyệt đơn thành công",
+                approve_failed: "Phê duyệt đơn không thành công",
+                add_manufacturing_for_sales_order_successfully: "Thêm yêu cầu sản xuất thành công",
+                add_manufacturing_for_sales_order_failed: "Thêm yêu cầu sản xuất không thành công",
+                get_sales_order_by_manufacturing_works_successfully: "Lấy danh sách các đơn hàng cần sản xuất thành công",
+                get_sales_order_by_manufacturing_works_failed: "Lấy danh sách các đơn hàng cần sản xuất không thành công",
+                get_sales_orders_for_payment_successfully: "Lấy các đơn hàng dư nợ của khách hàng thành công",
+                get_sales_orders_for_payment_failed: "Lấy các đơn hàng còn dư nợ của khách hàng không thành công"
+            },
+            sla: {
+                create_successfully: "Tạo cam kết chất lượng thành công",
+                create_failed: "Tạo cam kết chất lượng không thành công",
+                edit_successfully: "Chỉnh sửa cam kết chất lượng thành công",
+                edit_failed: "Chỉnh sửa cam kết chất lượng không thành công",
+                get_all_successfully: "Lấy danh sách cam kết chất lượng thành công",
+                get_all_failed: "Lấy danh sách cam kết chất lượng không thành công",
+                get_by_id_successfully: "Lấy chi tiết thành công",
+                get_by_id_failed: "Lấy chi tiết không thành công",
+                disable_successfully: "Đã cập nhật trạng thái cam kết chất lượng",
+                disable_failed: "Trạng thái cam kết chất lượng chưa được cập nhật",
+                check_successfully: "Mã cam kết chất lượng đã được kiểm tra",
+                check_failed: "Mã cam kết chất lượng chưa được kiểm tra",
+                get_by_code_successfully: "Lấy lịch sử chỉnh sửa thành công",
+                get_by_code_get_failed: "Lấy lịch sử chỉnh sửa không thành công",
+                delete_successfully: "Xóa cam kết chất lượng thành công",
+                delete_failed: "Xóa cam kết chất lượng không thành công",
+                get_by_good_successfully: "Lấy cam kết cho mặt hàng thành công",
+                get_by_good_failed: "Lấy cam kết cho mặt hàng không thành công"
+            }
         },
 
         report_manager: {
@@ -4950,7 +5052,11 @@ export default {
                 end_date: "Ngày dự kiến hoàn thành",
                 approvers: "Người phê duyệt",
                 description: "Mô tả",
+                list_commands: "Danh sách lệnh sản xuất",
+                approve_plan: "Phê duyệt kế hoạch",
+                approver: "Người phê duyệt",
                 created_at: "Ngày tạo",
+                manufacturing_commands: "Danh sách lệnh sản xuất",
                 command_code: "Mã lệnh sản xuất",
                 status: "Trạng thái",
                 choose_status: "Chọn trạng thái",
@@ -4997,6 +5103,9 @@ export default {
                 create_failed: "Tạo kế hoạch sản xuất thất bại",
                 choose_sales_order: "Chọn đơn kinh doanh",
                 sales_order: {
+                    "0": {
+                        content: "Default"
+                    },
                     "1": {
                         content: "Thấp"
                     },
@@ -5009,9 +5118,23 @@ export default {
                     "4": {
                         content: "Đặc biệt"
                     },
+                    a: "Không có trạng thái",
+                    b: "Chờ phê duyệt",
+                    c: "Đã phê duyệt",
+                    d: "Yêu cầu sản xuất",
+                    e: "Đang sản xuất",
+                    f: "Đã sẵn sàng",
+                    g: "Đang giao hàng",
+                    h: "Đã giao hàng",
+                    i: "Đã hủy",
                     detail_sales_order: "Xem chi tiết đơn hàng kinh doanh",
                     code: "Mã đơn",
-                    priority: "Độ ưu tiên"
+                    priority: "Độ ưu tiên",
+                    creator: "Người tạo",
+                    status: "Trạng thái",
+                    customer: "Khách hàng",
+                    total_money: "Tổng tiền",
+                    intend_deliver_good: "Thời gian giao hàng dự kiến"
                 },
                 add_good_info: "Thêm thông tin các sản phẩm sản xuất",
                 good: "Sản phẩm",
@@ -5074,7 +5197,9 @@ export default {
                 turn: "Ca ",
                 please_booking_mill: "Vui lòng chọn phân lệnh sản xuất vào ca làm việc!",
                 command_complete: "Đã phân lịch thực hiện",
-                choose_responisbles: "Vui lòng chọn người thực hiện"
+                choose_responisbles: "Vui lòng chọn người thực hiện",
+                edit_successfully: "Chỉnh sửa kế hoạch thành công",
+                edit_failed: "Chỉnh sửa kế hoạch thất bại",
 
 
 
@@ -5156,6 +5281,7 @@ export default {
                 substandardProductQuantity: "Số lượng phế phẩm",
                 finishedTime: "Thời gian hoàn thành thực tế",
                 material: "Thông tin nguyên vật liệu",
+                inventory: "Số lượng tồn kho",
                 comment: "Bình luận",
                 quality_control_status: "Trạng thái kiểm định",
                 qc_status: {
@@ -5207,7 +5333,18 @@ export default {
                 },
                 status_bill: "Trạng thái phiếu xuất",
                 quantity_gt: "Số lượng lớn hơn",
-                quantity_lt: "Số lượng bé hơn"
+                quantity_lt: "Số lượng bé hơn",
+                material_bill: "Thông tin phiếu xuất nguyên vật liệu",
+                materials_info: {
+                    '0': {
+                        color: "red",
+                        content: "Thiếu"
+                    },
+                    '1': {
+                        color: 'green',
+                        content: "Đủ"
+                    }
+                }
             },
             lot: {
                 index: "STT",

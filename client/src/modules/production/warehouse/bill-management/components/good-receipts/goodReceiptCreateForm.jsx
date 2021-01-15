@@ -601,7 +601,7 @@ class GoodReceiptCreateForm extends Component {
 
         //Load lại dữ liệu đơn mua nguyên vật liệu sau 15000ms
         if (createdSource === "purchaseOrder") {
-            await setTimeout(() => this.props.reloadPurchaseOrderTable(), 3000);
+            await setTimeout(() => this.props.reloadPurchaseOrderTable(), 2000);
         }
     };
 
@@ -729,7 +729,7 @@ class GoodReceiptCreateForm extends Component {
                                             <span className="attention"> * </span>
                                         </label>
                                         <SelectBox
-                                            id={`select-customer-receipt-create`}
+                                            id={`select-customer-receipt-create-${purchaseOrderId}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             value={supplier}

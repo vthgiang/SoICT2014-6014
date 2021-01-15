@@ -15,7 +15,7 @@ exports.createPayment = async (req, res) => {
         });
     }  catch (error) {
         await Log.error(req.user.email, "CREATED_NEW_PAYMENT", req.portal);
-
+        console.log(error.message);
         res.status(400).json({
             success: false,
             messages: ["create_failed"],

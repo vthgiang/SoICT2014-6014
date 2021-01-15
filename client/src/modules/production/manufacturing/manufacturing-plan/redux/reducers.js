@@ -1,5 +1,15 @@
 import { manufacturingPlanConstants } from "./constants";
 
+var findIndex = (array, id) => {
+    var result = -1;
+    array.forEach((value, index) => {
+        if (value._id === id) {
+            result = index;
+        }
+    });
+    return result;
+}
+
 
 const initState = {
     isLoading: false,
@@ -17,10 +27,13 @@ const initState = {
 }
 
 export function manufacturingPlan(state = initState, action) {
+    let index = -1;
     switch (action.type) {
         case manufacturingPlanConstants.GET_ALL_MANUFACTURING_PLANS_REQUEST:
         case manufacturingPlanConstants.GET_ALL_APPROVERS_OF_PLAN_REQUEST:
         case manufacturingPlanConstants.CREATE_MANUFACTURING_PLAN_REQUEST:
+        case manufacturingPlanConstants.GET_MANUFACTURING_PLAN_BY_ID_REQUEST:
+        case manufacturingPlanConstants.EDIT_MANUFACTURING_PLAN_REQUEST:
             return {
                 ...state,
                 isLoading: true
@@ -28,6 +41,8 @@ export function manufacturingPlan(state = initState, action) {
         case manufacturingPlanConstants.GET_ALL_MANUFACTURING_PLANS_FAILURE:
         case manufacturingPlanConstants.GET_ALL_APPROVERS_OF_PLAN_FAILURE:
         case manufacturingPlanConstants.CREATE_MANUFACTURING_PLAN_FAILURE:
+        case manufacturingPlanConstants.GET_MANUFACTURING_PLAN_BY_ID_FAILURE:
+        case manufacturingPlanConstants.EDIT_MANUFACTURING_PLAN_FAILURE:
             return {
                 ...state,
                 isLoading: false
@@ -61,6 +76,21 @@ export function manufacturingPlan(state = initState, action) {
                     ...state.listPlans,
                     action.payload.manufacturingPlan
                 ]
+            }
+        case manufacturingPlanConstants.GET_MANUFACTURING_PLAN_BY_ID_SUCCESS:
+            return {
+                ...state,
+                isLoading: false,
+                currentPlan: action.payload.manufacturingPlan
+            }
+        case manufacturingPlanConstants.EDIT_MANUFACTURING_PLAN_SUCCESS:
+            index = findIndex(state.listPlans, action.payload.manufacturingPlan._id);
+            if (index !== -1) {
+                state.listPlans[index] = action.payload.manufacturingPlan
+            }
+            return {
+                ...state,
+                isLoading: false
             }
         default:
             return state

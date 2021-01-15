@@ -5,7 +5,6 @@ const {
 const {
     connect
 } = require(`../../../../helpers/dbHelper`);
-const ObjectId = require('mongoose').Types.ObjectId;
 
 function getArrayTimeFromString(stringDate) {
     arrayDate = stringDate.split('-');
@@ -23,27 +22,45 @@ function getArrayTimeFromString(stringDate) {
     return [start, end];
 }
 
+// Hàm format to YYYY-MM để có thể dụng new Date
+function formatToTimeZoneDate(stringDate) {
+    let dateArray = stringDate.split("-");
+    if (dateArray.length == 3) {
+        let day = dateArray[0];
+        let month = dateArray[1];
+        let year = dateArray[2];
+        return `${year}-${month}-${day}`
+    }
+    else if (dateArray.length == 2) {
+        let month = dateArray[0];
+        let year = dateArray[1];
+        return `${year}-${month}`
+    }
+}
+
+
+
 exports.createManufacturingCommand = async (data, portal) => {
     let newManufacturingCommand = await ManufacturingCommand(connect(DB_CONNECTION, portal)).create({
         code: data.code,
         manufacturingPlan: data.manufacturingPlan,
         manufacturingMill: data.manufacturingMill,
-        startDate: data.startDate,
-        endDate: data.endDate,
+        startDate: formatToTimeZoneDate(data.startDate),
+        endDate: formatToTimeZoneDate(data.endDate),
         startTurn: data.startTurn,
         endTurn: data.endTurn,
-        good: data.good,
-        // quantity: data.quantity,
+        good: data.good._id,
+        quantity: data.quantity,
         creator: data.creator,
-        // approvers: data.approvers.map(x => {
-        //     return {
-        //         approver: x.approver,
-        //         approvedTime: null
-        //     }
-        // }),
+        approvers: data.approvers.map(x => {
+            return {
+                approver: x,
+                approvedTime: null
+            }
+        }),
         qualityControlStaffs: data.qualityControlStaffs.map(x => {
             return {
-                staff: x.staff,
+                staff: x,
                 status: 1,
                 content: null,
                 time: null
@@ -98,7 +115,6 @@ exports.getAllManufacturingCommands = async (query, user, portal) => {
 
     let listWorksId = listManufacturingWorks.map(x => x._id);
 
-
     // Kiểm tra userId hiện tại có giám sát hay kiểm định chất lượng lệnh nào không
     let userId = [user._id];
     let manufacturingCommand = await ManufacturingCommand(connect(DB_CONNECTION, portal))
@@ -115,6 +131,14 @@ exports.getAllManufacturingCommands = async (query, user, portal) => {
                 }, {
                     accountables: {
                         $in: userId
+                    }
+                }, {
+                    approvers: {
+                        $elemMatch: {
+                            approver: {
+                                $in: userId
+                            }
+                        }
                     }
                 }
             ]
@@ -137,6 +161,14 @@ exports.getAllManufacturingCommands = async (query, user, portal) => {
             $in: listMillIds
         }
     } else if (manufacturingCommandIds.length != 0 && listWorksId.length != 0) {// Trường hợp cả kiểm soát nhà máy cả kiểm soát lệnh
+        let listManufacturingMills = await ManufacturingMill(connect(DB_CONNECTION, portal)).find({
+            manufacturingWorks: {
+                $in: listWorksId
+            }
+        });
+
+        let listMillIds = listManufacturingMills.map(x => x._id);
+
         options.$or = [
             {
                 _id: {
@@ -144,7 +176,7 @@ exports.getAllManufacturingCommands = async (query, user, portal) => {
                 },
             }, {
                 manufacturingMill: {
-                    $in: listWorksId
+                    $in: listMillIds
                 }
             }
         ]
@@ -159,35 +191,42 @@ exports.getAllManufacturingCommands = async (query, user, portal) => {
 
 
 
-    // Nếu trong query có truyền theo mã kế hoạch, mã đơn sản xuất, đơn kinh doanh
+    // Nếu trong query có truyền theo mã kế hoạch, đơn kinh doanh
     // Lấy ra các kế hoạch
-    let listManufacturingPlans = await ManufacturingPlan(connect(DB_CONNECTION, portal))
-        .find();
+    if (planCode || salesOrderCode) {
+        let listManufacturingPlans = await ManufacturingPlan(connect(DB_CONNECTION, portal))
+            .find();
 
-    if (planCode) {
-        listManufacturingPlans = listManufacturingPlans.filter(plan => plan.code.includes(planCode))
-    }
-    if (manufacturingOrderCode) {
-        let manufacturingOrders = await ManufacturingOrder(connect(DB_CONNECTION, portal)).find({
-            code: new RegExp(manufacturingOrderCode, "i")
-        });
-        let manufacturingOrderIds = manufacturingOrders.map(x => x._id);
-        listManufacturingPlans = listManufacturingPlans.filter(x => manufacturingOrderIds.includes(x.manufacturingOrder));
+        if (planCode) {
+            listManufacturingPlans = listManufacturingPlans.filter(plan => plan.code.includes(planCode))
+        }
+        if (salesOrderCode) {
+            let salesOrders = await SalesOrder(connect(DB_CONNECTION, portal)).find({
+                code: new RegExp(salesOrderCode, "i")
+            });
+            let salesOrderIds = salesOrders.map(x => x._id);
+            // Tìm ra kế hoạch cho các đơn này
+            let manufacturingPlan = await ManufacturingPlan(connect(DB_CONNECTION, portal)).find({
+                salesOrders: {
+                    $in: salesOrderIds
+                }
+            })
+            let ids = manufacturingPlan.map(x => x._id);
+            listManufacturingPlans = listManufacturingPlans.filter(x => {
+                for (let i = 0; i < ids.length; i++) {
+                    if (ids[i].equals(x._id)) {
+                        return true;
+                    }
+                }
+                return false
+            });
+        }
 
-    }
+        let listManufacturingPlanIds = listManufacturingPlans.map(x => x._id);
 
-    if (salesOrderCode) {
-        let salesOrders = await SalesOrder(connect(DB_CONNECTION, portal)).find({
-            code: new RegExp(salesOrderCode, "i")
-        });
-        let salesOrderIds = salesOrders.map(x => x._id);
-        listManufacturingPlans = listManufacturingPlans.filter(x => salesOrderIds.includes(x.salesOrder));
-    }
-
-    let listManufacturingPlanIds = listManufacturingPlans.map(x => x._id);
-
-    options.manufacturingPlan = {
-        $in: listManufacturingPlanIds
+        options.manufacturingPlan = {
+            $in: listManufacturingPlanIds
+        }
     }
 
     // Xử lý mã lệnh sản xuất
@@ -243,23 +282,23 @@ exports.getAllManufacturingCommands = async (query, user, portal) => {
 
     //  Xử lý lấy lệnh sản xuất theo mặt hàng
     if (good) {
-        options["good.good"] = good
+        options.good = good
     }
 
     if (quantity_gt) {
-        options["good.quantity"] = {
+        options.quantity = {
             '$gt': quantity_gt
         }
     }
 
     if (quantity_lt) {
-        options["good.quantity"] = {
+        options.quantity = {
+            ...options.quantity,
             '$lt': quantity_lt
         }
     }
 
     if (manufacturingMills) {
-        console.log(manufacturingMills);
         options.manufacturingMill = {
             $in: manufacturingMills
         }
@@ -287,10 +326,16 @@ exports.getAllManufacturingCommands = async (query, user, portal) => {
                 }, {
                     path: "creator"
                 }, {
-                    path: "good.good",
-                    select: "code name baseUnit numberExpirationDate"
+                    path: "good",
+                    select: "code name baseUnit numberExpirationDate materials",
+                    populate: [{
+                        path: "materials.good",
+                        select: "code name baseUnit",
+                    }]
                 }, {
                     path: "qualityControlStaffs.staff"
+                }, {
+                    path: "approvers.approver"
                 }],
                 sort: {
                     "updatedAt": "desc"
@@ -308,13 +353,8 @@ exports.getManufacturingCommandById = async (id, portal) => {
             path: "manufacturingPlan",
             select: "code",
             populate: [{
-                path: "salesOrder",
+                path: "salesOrders",
                 select: "code"
-            }, {
-                path: "approvers",
-                populate: [{
-                    path: "approver"
-                }]
             }]
         }, {
             path: "manufacturingMill",
@@ -326,8 +366,14 @@ exports.getManufacturingCommandById = async (id, portal) => {
         }, {
             path: "creator"
         }, {
-            path: "good.good",
-            select: "code name baseUnit"
+            path: "approvers.approver"
+        }, {
+            path: "good",
+            select: "code name baseUnit materials",
+            populate: [{
+                path: "materials.good",
+                select: "code name baseUnit",
+            }]
         }, {
             path: "qualityControlStaffs.staff"
         }]);
@@ -356,7 +402,6 @@ function findIndexOfStaff(array, id) {
 }
 
 exports.editManufaturingCommand = async (id, data, portal) => {
-    console.log(id, data);
     let oldManufacturingCommand = await ManufacturingCommand(connect(DB_CONNECTION, portal))
         .findById(id);
     if (!oldManufacturingCommand) {
@@ -370,6 +415,7 @@ exports.editManufaturingCommand = async (id, data, portal) => {
     oldManufacturingCommand.startTurn = data.startTurn ? data.startTurn : oldManufacturingCommand.startTurn;
     oldManufacturingCommand.endTurn = data.endTurn ? data.endTurn : oldManufacturingCommand.endTurn;
     oldManufacturingCommand.good = data.good ? data.good : oldManufacturingCommand.good;
+    oldManufacturingCommand.quantity = data.quantity ? data.quantity : oldManufacturingCommand.quantity;
     oldManufacturingCommand.creator = data.creator ? data.creator : oldManufacturingCommand.creator;
     oldManufacturingCommand.responsibles = data.responsibles ?
         data.responsibles.map(x => {
@@ -418,8 +464,12 @@ exports.editManufaturingCommand = async (id, data, portal) => {
         }, {
             path: "qualityControlStaffs.staff"
         }, {
-            path: "good.good",
-            select: "code name baseUnit numberExpirationDate"
+            path: "good",
+            select: "code name baseUnit numberExpirationDate materials",
+            populate: [{
+                path: "materials.good",
+                select: "code name baseUnit",
+            }]
         }]);
 
     return { manufacturingCommand }

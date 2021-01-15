@@ -9,11 +9,13 @@ import { DepartmentActions } from "../../../../super-admin/organizational-unit/r
 import { RoleActions } from "../../../../super-admin/role/redux/actions";
 import { QuoteActions } from "../../quote/redux/actions";
 import { PaymentActions } from "../../payment/redux/actions";
+import { BusinessDepartmentActions } from "../../business-department/redux/actions";
 
 import { BillActions } from "../../../warehouse/bill-management/redux/actions";
 import { StockActions } from "../../../warehouse/stock-management/redux/actions";
 import { UserActions } from "../../../../super-admin/user/redux/actions";
 import { GoodActions } from "../../../common-production/good-management/redux/actions";
+
 //Helper Function
 import { formatCurrency } from "../../../../../helpers/formatCurrency";
 import { formatDate } from "../../../../../helpers/formatDate";
@@ -37,6 +39,7 @@ class SalesOrderTable extends Component {
             code: "",
             status: null,
             salesOrderDetail: {},
+            detailModalId: 1,
         };
     }
 
@@ -45,10 +48,8 @@ class SalesOrderTable extends Component {
         this.props.getAllSalesOrders({ page, limit });
         this.props.getDiscountForOrderValue();
         this.props.getCustomers();
-        this.props.getAllDepartments();
-        this.props.getAllRoles();
+        this.props.getAllBusinessDepartments({ page: 1, limit: 1000 });
 
-        //Create bill
         this.props.getAllStocks({ managementLocation: currentRole });
         this.props.getUser();
         this.props.getGoodsByType({ type: "product" });
@@ -91,7 +92,7 @@ class SalesOrderTable extends Component {
     handleOrderCodeChange = (e) => {
         let { value } = e.target;
         this.setState({
-            code: value,
+            codeQuery: value,
         });
     };
 
@@ -103,34 +104,30 @@ class SalesOrderTable extends Component {
     };
 
     handleSubmitSearch = () => {
-        let { limit, page, code, status, customer } = this.state;
+        let { limit, page, codeQuery, status, customer } = this.state;
         const data = {
             limit,
             page,
-            code,
+            code: codeQuery,
             status,
             customer,
         };
         this.props.getAllSalesOrders(data);
     };
 
-    handleShowDetailInfo = async (data) => {
-        await this.props.getPaymentForOrder({ orderId: data._id, orderType: 1 });
-        await this.setState((state) => {
-            return {
-                ...state,
-                salesOrderDetail: data,
-            };
-        });
-        await window.$("#modal-detail-sales-order").modal("show");
+    handleShowDetailInfo = async (salesOrder) => {
+        const { detailModalId } = this.state;
+        await this.props.getPaymentForOrder({ orderId: salesOrder._id, orderType: 1 });
+        await this.props.getSalesOrderDetail(salesOrder._id);
+        await window.$(`#modal-detail-sales-order-${detailModalId}`).modal("show");
     };
 
     reloadSalesOrderTable = () => {
-        let { limit, page, code, status, customer } = this.state;
+        let { limit, page, codeQuery, status, customer } = this.state;
         const data = {
             limit,
             page,
-            code,
+            code: codeQuery,
             status,
             customer,
         };
@@ -142,12 +139,7 @@ class SalesOrderTable extends Component {
     };
 
     handleEditSalesOrder = async (salesOrderEdit) => {
-        await this.setState((state) => {
-            return {
-                ...state,
-                salesOrderEdit,
-            };
-        });
+        await this.props.getSalesOrderDetail(salesOrderEdit._id);
         window.$("#modal-edit-sales-order").modal("show");
     };
 
@@ -188,7 +180,7 @@ class SalesOrderTable extends Component {
     // }
 
     render() {
-        let { limit, salesOrderDetail, salesOrderEdit, code, salesOrderAddBill, billCode } = this.state;
+        let { limit, code, salesOrderAddBill, billCode, detailModalId } = this.state;
         const { translate, salesOrders } = this.props;
         const { totalPages, page } = salesOrders;
 
@@ -207,12 +199,28 @@ class SalesOrderTable extends Component {
                 text: "Chờ phê duyệt",
             },
             {
+                className: "text-success",
+                text: "Đã phê duyệt",
+            },
+            {
                 className: "text-warning",
                 text: "Yêu cầu sản xuất",
             },
             {
+                className: "text-warning",
+                text: "Đang sản xuất",
+            },
+            {
+                className: "text-dark",
+                text: "Đã sẵn hàng",
+            },
+            {
+                className: "text-secondary",
+                text: "Đang giao hàng",
+            },
+            {
                 className: "text-success",
-                text: "Yêu cầu xuất kho",
+                text: "Đã giao hàng",
             },
             {
                 className: "text-danger",
@@ -242,8 +250,6 @@ class SalesOrderTable extends Component {
                 text: "Đặc biệt",
             },
         ];
-
-        const { department, role, auth } = this.props;
 
         return (
             <React.Fragment>
@@ -280,7 +286,7 @@ class SalesOrderTable extends Component {
 
                         <SalesOrderCreateForm code={code} />
                         <SalesOrderCreateFormFromQuote code={code} />
-                        <SalesOrderDetailForm salesOrderDetail={salesOrderDetail} />
+                        <SalesOrderDetailForm modalID={detailModalId} />
                         <GoodIssueCreateForm
                             salesOrderAddBill={salesOrderAddBill}
                             createdSource={"salesOrder"}
@@ -290,14 +296,14 @@ class SalesOrderTable extends Component {
                             group={"2"}
                         />
                         <BillDetailForm />
-                        {salesOrderEdit && <SalesOrderEditForm salesOrderEdit={salesOrderEdit} />}
+                        <SalesOrderEditForm />
                         <div className="form-inline">
                             <div className="form-group">
                                 <label className="form-control-static">Mã đơn</label>
                                 <input
                                     type="text"
                                     className="form-control"
-                                    name="code"
+                                    name="codeQuery"
                                     onChange={this.handleOrderCodeChange}
                                     placeholder="Nhập vào mã đơn"
                                     autoComplete="off"
@@ -338,22 +344,30 @@ class SalesOrderTable extends Component {
                                         },
                                         {
                                             value: 2,
-                                            text: "Yêu cầu sản xuất",
+                                            text: "Đã phê duyệt",
                                         },
                                         {
                                             value: 3,
-                                            text: "Yêu cầu xuất kho",
+                                            text: "Yêu cầu sản xuất",
                                         },
                                         {
                                             value: 4,
-                                            text: "Đang giao hàng",
+                                            text: "Đang sản xuất",
                                         },
                                         {
                                             value: 5,
-                                            text: "Đã giao hàng",
+                                            text: "Đã sẵn hàng",
                                         },
                                         {
                                             value: 6,
+                                            text: "Đang giao hàng",
+                                        },
+                                        {
+                                            value: 7,
+                                            text: "Đã giao hàng",
+                                        },
+                                        {
+                                            value: 8,
                                             text: "Hủy đơn",
                                         },
                                     ]}
@@ -496,6 +510,8 @@ const mapDispatchToProps = {
     getAllDepartments: DepartmentActions.get,
     getAllRoles: RoleActions.get,
     getQuotesToMakeOrder: QuoteActions.getQuotesToMakeOrder,
+    getSalesOrderDetail: SalesOrderActions.getSalesOrderDetail,
+    getAllBusinessDepartments: BusinessDepartmentActions.getAllBusinessDepartments,
 
     getBillsByType: BillActions.getBillsByType,
     getDetailBill: BillActions.getDetailBill,

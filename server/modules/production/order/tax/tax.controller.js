@@ -4,14 +4,14 @@ const Log = require(`../../../../logs`);
 exports.createNewTax = async (req, res) => {
     try {
         let data = req.body;
-        let Tax = await TaxService.createNewTax(req.user._id, data, req.portal)
+        let tax = await TaxService.createNewTax(req.user._id, data, req.portal)
 
         await Log.info(req.user.email, "CREATED_NEW_TAX", req.portal);
 
         res.status(201).json({
             success: true,
             messages: ["add_successfully"],
-            content: Tax
+            content: tax
         });
     }  catch (error) {
         await Log.error(req.user.email, "CREATED_NEW_TAX", req.portal);
@@ -28,13 +28,13 @@ exports.editTaxByCode = async (req, res) => {
     try {
         let id = req.params.id;
         data = req.body;
-        let Tax = await TaxService.editTaxByCode(req.user._id, id, data, req.portal);
+        let tax = await TaxService.editTaxByCode(req.user._id, id, data, req.portal);
 
         await Log.info(req.user.email, "EDIT_TAX", req.portal);
         res.status(200).json({
             success: true,
             messages: ["edit_successfully"],
-            content: Tax
+            content: tax
         });
     } catch (error) {
         await Log.error(req.user.email, "EDIT_TAX", req.portal);
@@ -72,13 +72,13 @@ exports.getAllTaxs = async ( req, res ) => {
 exports.getTaxById = async ( req, res ) => {
     try {
         let id = req.params.id;
-        let Tax = await TaxService.getTaxById( id, req.portal)
+        let tax = await TaxService.getTaxById( id, req.portal)
 
         await Log.info(req.user.email, "GET_TAX_BY_ID", req.portal);
         res.status(200).json({
             success: true,
             messages: ["get_successfully"],
-            content: Tax
+            content: tax
         });
     } catch (error) {
         await Log.error(req.user.email, "GET_TAX_BY_ID", req.portal);
@@ -94,13 +94,13 @@ exports.getTaxById = async ( req, res ) => {
 exports.disableTaxById = async ( req, res ) => {
     try {
         let id = req.params.id;
-        let Tax = await TaxService.disableTaxById(id, req.portal)
+        let tax = await TaxService.disableTaxById(id, req.portal)
         
         await Log.info(req.user.email, "DISABLE_TAX_BY_ID", req.portal);
         res.status(200).json({
             success: true,
             messages: ["disable_successfully"],
-            content: Tax
+            content: tax
         });
     } catch (error) {
         await Log.error(req.user.email, "DISABLE_TAX_BY_ID", req.portal);
@@ -163,13 +163,13 @@ exports.getTaxByCode = async ( req, res ) => {
 exports.deleteTaxByCode = async ( req, res ) => {
     try {
         let code = req.query.code;
-        let Taxs = await TaxService.deleteTaxByCode(code, req.portal)
+        let taxs = await TaxService.deleteTaxByCode(code, req.portal)
         
         await Log.info(req.user.email, "DELETE_TAX_BY_CODE", req.portal);
         res.status(200).json({
             success: true,
             messages: ["delete_successfully"],
-            content: Taxs
+            content: taxs
         });
     } catch (error) {
         await Log.error(req.user.email, "DELETE_TAX_BY_CODE", req.portal);
