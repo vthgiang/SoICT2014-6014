@@ -68,7 +68,7 @@ class StockDetailForm extends Component {
                                 </div>
                                 <div className="form-group">
                                     <strong>{translate('manage_warehouse.stock_management.status')}:&emsp;</strong>
-                                    {translate(`manage_warehouse.stock_management.${status}`)}
+                                    <span style={{ color: translate(`manage_warehouse.stock_management.${status}.color`)}}>{translate(`manage_warehouse.stock_management.${status}.status`)}</span>
                                 </div>
                             </div>
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">

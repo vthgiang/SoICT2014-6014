@@ -199,7 +199,6 @@ class GoodManagement extends Component {
             };
         });
 
-        console.log(this.state.currentRow);
         window.$("#modal-detail-good").modal("show");
     };
 
@@ -267,7 +266,7 @@ class GoodManagement extends Component {
         return (
             <div className="nav-tabs-custom">
                 <ul className="nav nav-tabs">
-                    { this.checkManagementGood('product') && <li className={`${this.state.activeP ? "active" : ''}`}>
+                    { (this.checkManagementGood('product') || this.checkManagementGood('waste')) && <li className={`${this.state.activeP ? "active" : ''}`}>
                         <a href="#good-products" data-toggle="tab" onClick={() => this.handleProduct()}>
                             {translate("manage_warehouse.good_management.product")}
                         </a>
@@ -378,7 +377,7 @@ class GoodManagement extends Component {
                                 <th>{translate("manage_warehouse.good_management.category")}</th>
                                 <th>{translate("manage_warehouse.good_management.unit")}</th>
                                 {/* <th>{translate("manage_warehouse.good_management.packing_rule")}</th> */}
-                                {type === "product" ? <th>{translate("manage_warehouse.good_management.materials")}</th> : []}
+                                {type === "product" && <th>{translate("manage_warehouse.good_management.materials")}</th>}
                                 <th>{translate("manage_warehouse.good_management.description")}</th>
                                 <th style={{ width: "120px", textAlign: "center" }}>
                                     {translate("table.action")}
@@ -417,16 +416,15 @@ class GoodManagement extends Component {
                                                 : ""}
                                         </td>
                                         <td>{x.baseUnit}</td>
-                                        {/* <td>{x.packingRule}</td> */}
-                                        {type === "product" ? (
-                                            <td>
-                                                {x.materials.map((y, i) => (
-                                                    <p key={i}>{y.good.name},</p>
-                                                ))}
-                                            </td>
-                                        ) : (
-                                                []
-                                            )}
+                                        <td>{
+                                            type === "product" && x.materials.length > 0 &&
+                                            x.materials.map((y, i)  => {
+                                                if(x.materials.length === i + 1){
+                                                    return y.good.name
+                                                }
+                                                return y.good.name + ", "
+                                            })
+                                        }</td>
                                         <td>{x.description}</td>
                                         <td style={{ textAlign: "center" }}>
                                             <a onClick={() => this.handleShowDetailInfo(x)}>
