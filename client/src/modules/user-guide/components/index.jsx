@@ -5,7 +5,8 @@ import DocViewer from "./doc.jsx";
 const UserGuide = () => {
     return (
         <React.Fragment>
-            <DocViewer source={`${process.env.REACT_APP_SERVER}/upload/user-guide/asset-guide.pdf`} />
+            {/* <DocViewer source={`${process.env.REACT_APP_SERVER}/upload/user-guide/ns3.pdf`} /> */}
+            <DocViewer source={`https://www.nsnam.org/docs/release/3.18/tutorial/ns-3-tutorial.pdf`} />
         </React.Fragment>
     );
 };
