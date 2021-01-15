@@ -106,6 +106,10 @@ const LINK_CATEGORY = {
     MANUFACTURING: {
         name: "manufacturing-management",
         description: "Quản lý sản xuất"
+    },
+    USERGUIDE: {
+        name: "user_guide",
+        description: "Hướng dẫn sử dụng",
     }
 };
 
@@ -1340,7 +1344,20 @@ const LINKS = [{
         ROOT_ROLES.ADMIN.name
     ],
     components: getComponentsInLink('/manage-manufacturing-lot'),
-},
+    },
+    {
+        url: "/user-guide",
+        description: "Hướng dẫn sử dụng",
+        category: LINK_CATEGORY.USERGUIDE.name,
+        roles: [
+            ROOT_ROLES.SUPER_ADMIN.name,
+            ROOT_ROLES.ADMIN.name,
+            ROOT_ROLES.MANAGER.name,
+            ROOT_ROLES.DEPUTY_MANAGER.name,
+            ROOT_ROLES.EMPLOYEE.name,
+        ],
+        components: getComponentsInLink('/user-guide')
+    }
 ];
 
 module.exports = {
