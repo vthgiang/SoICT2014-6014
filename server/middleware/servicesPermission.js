@@ -914,5 +914,8 @@ exports.links = [
     },{
         url: '/answer-auth-questions',
         apis: ['@all']
+    }, {
+        url: '/user-guide',
+        apis: ['@all']
     }
 ];

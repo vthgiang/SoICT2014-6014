@@ -155,6 +155,8 @@ import ManufacturingDashboard from "../modules/production/manufacturing/manufact
 import ManufacturingLot from "../modules/production/manufacturing/manufacturing-lot/components";
 
 import AnswerAuthQuestionPage from '../modules/auth/components/answerAuthQuestion';
+
+import UserGuide from '../modules/user-guide/components';
 class Routes extends Component {
     render() {
         const {
@@ -2392,6 +2394,26 @@ class Routes extends Component {
                         pageName={"manage_manufacturing_lot"}
                         layout={Layout}
                         component={ManufacturingLot}
+                    />
+
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"user-guide"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/user-guide",
+                                name: "user_guide",
+                                icon: "fa fa-newspaper-o",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/user-guide"}
+                        path={"/user-guide"}
+                        pageName={"user_guide"}
+                        layout={Layout}
+                        component={UserGuide}
                     />
 
                     {/* NOT FOUND */}
