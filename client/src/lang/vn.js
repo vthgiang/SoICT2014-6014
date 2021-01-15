@@ -4251,10 +4251,26 @@ export default {
             },
 
             stock_management: {
-                1: "Sẵn sàng sử dụng",
-                2: "Đang sử dụng",
-                3: "Đang sửa chữa",
-                4: "Không sử dụng",
+                // 1: "Sẵn sàng sử dụng",
+                // 2: "Đang sử dụng",
+                // 3: "Đang sửa chữa",
+                // 4: "Không sử dụng",
+                1: {
+                    status: "Sẵn sàng sử dụng",
+                    color: "green",
+                },
+                2: {
+                    status: "Đang sử dụng",
+                    color: "blue",
+                },
+                3: {
+                    status: "Đang sửa chữa",
+                    color: "violet",
+                },
+                4: {
+                    status: "Không sử dụng",
+                    color: "red",
+                },
                 index: "STT",
                 add: "Thêm mới",
                 add_title: "Thêm kho mới",
@@ -4539,6 +4555,10 @@ export default {
                 bill_issued: "Đơn đã xuất",
                 choose_bill: "Chọn đơn hàng",
                 users: "Những người thực hiện",
+                add_success: "Thêm mới phiếu thành công",
+                add_faile: "Thêm mới phiếu thất bại",
+                edit_success: "Chỉnh sửa thành công",
+                edit_faile: "Chỉnh sửa thất bại",
 
                 // Phần liên quan lô sản xuất
                 add_issue_product: "Thêm phiếu nhập sản phẩm",

@@ -226,7 +226,6 @@ class GoodEditForm extends Component {
     validateNumberExpirationDate = (value, willUpdateState = true) => {
         let msg = undefined;
         const { translate } = this.props;
-        console.log(value);
         if (value === "") {
             msg = translate("manage_warehouse.good_management.validate_number_expiration_date");
         }

@@ -79,7 +79,7 @@ exports.createBill = async (req, res) => {
         await Logger.error(req.user.email, 'CREATE_BILL_FAILED', req.portal);
         res.status(400).json({
             success: false,
-            messages: ['add_failed'],
+            messages: ['add_faile'],
             content: err.message
         })
     }
@@ -100,7 +100,7 @@ exports.editBill = async (req, res) => {
         console.log(err.message);
         res.status(400).json({
             success: false,
-            messages: ['edit_failed'],
+            messages: ['edit_faile'],
             content: err.message
         })
     }
