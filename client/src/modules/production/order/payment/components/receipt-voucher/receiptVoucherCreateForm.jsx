@@ -723,7 +723,7 @@ class ReceiptVoucherCreateForm extends Component {
                                             <td style={{ fontWeight: 600 }}>
                                                 {formatCurrency(
                                                     salesOrders.reduce((accumulator, currentValue) => {
-                                                        return accumulator + currentValue.money;
+                                                        return accumulator + parseInt(currentValue.money);
                                                     }, 0)
                                                 )}
                                             </td>

@@ -598,7 +598,7 @@ class StockTakeEditForm extends Component {
 
     render() {
         const { translate, group } = this.props;
-        const { lots, listGood, good, code, approvers, approver, listQualityControlStaffs, accountables, responsibles, qualityControlStaffs, status, users, fromStock, type,
+        const { billId, lots, listGood, good, code, approvers, approver, listQualityControlStaffs, accountables, responsibles, qualityControlStaffs, status, users, fromStock, type,
             description, errorStock, errorType, errorApprover, errorUsers, quantity, errorQualityControlStaffs, errorAccountables, errorResponsibles } = this.state;
         const listGoods = this.getAllGoods();
         const dataApprover = this.getApprover();
@@ -633,7 +633,7 @@ class StockTakeEditForm extends Component {
                                     <div className={`form-group ${!errorType ? "" : "has-error"}`}>
                                         <label>{translate('manage_warehouse.bill_management.type')}<span className="attention"> * </span></label>
                                         <SelectBox
-                                            id={`select-type-take-edit`}
+                                            id={`select-type-take-edit-${billId}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             value={type}
@@ -649,7 +649,7 @@ class StockTakeEditForm extends Component {
                                     <div className={`form-group ${!errorStock ? "" : "has-error"}`}>
                                         <label>{translate('manage_warehouse.bill_management.stock')}<span className="attention"> * </span></label>
                                         <SelectBox
-                                            id={`select-stock-bill-take-edit`}
+                                            id={`select-stock-bill-take-edit-${billId}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             value={fromStock}
@@ -664,7 +664,7 @@ class StockTakeEditForm extends Component {
                                     <div className={`form-group`}>
                                         <label>{translate('manage_warehouse.bill_management.status')}</label>
                                         <SelectBox
-                                            id={`select-status-take-edit`}
+                                            id={`select-status-take-edit-${billId}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             value={status}
@@ -690,7 +690,7 @@ class StockTakeEditForm extends Component {
                                         <div className={`form-group ${!errorApprover ? "" : "has-error"}`}>
                                             <label>{translate('manage_warehouse.bill_management.approved')}<span className="attention"> * </span></label>
                                             <SelectBox
-                                                id={`select-approver-bill-take-edit`}
+                                                id={`select-approver-bill-take-edit-${billId}`}
                                                 className="form-control select2"
                                                 style={{ width: "100%" }}
                                                 value={approver}
@@ -703,7 +703,7 @@ class StockTakeEditForm extends Component {
                                         <div className={`form-group ${!errorResponsibles ? "" : "has-error"}`}>
                                             <label>{translate('manage_warehouse.bill_management.users')}<span className="attention"> * </span></label>
                                             <SelectBox
-                                                id={`select-accountables-bill-take-edit`}
+                                                id={`select-accountables-bill-take-edit-${billId}`}
                                                 className="form-control select2"
                                                 style={{ width: "100%" }}
                                                 value={responsibles}
@@ -718,7 +718,7 @@ class StockTakeEditForm extends Component {
                                         <div className={`form-group ${!errorQualityControlStaffs ? "" : "has-error"}`}>
                                             <label>{translate('manage_warehouse.bill_management.qualityControlStaffs')}<span className="attention"> * </span></label>
                                             <SelectBox
-                                                id={`select-qualityControlStaffs-bill-take-edit`}
+                                                id={`select-qualityControlStaffs-bill-take-edit-${billId}`}
                                                 className="form-control select2"
                                                 style={{ width: "100%" }}
                                                 value={qualityControlStaffs}
@@ -731,7 +731,7 @@ class StockTakeEditForm extends Component {
                                         <div className={`form-group ${!errorAccountables ? "" : "has-error"}`}>
                                             <label>{translate('manage_warehouse.bill_management.accountables')}<span className="attention"> * </span></label>
                                             <SelectBox
-                                                id={`select-responsibles-bill-take-edit`}
+                                                id={`select-responsibles-bill-take-edit-${billId}`}
                                                 className="form-control select2"
                                                 style={{ width: "100%" }}
                                                 value={accountables}
@@ -752,7 +752,7 @@ class StockTakeEditForm extends Component {
                                     <div className="form-group">
                                         <label>{translate('manage_warehouse.bill_management.choose_good')}</label>
                                         <SelectBox
-                                            id={`select-good-take-edit`}
+                                            id={`select-good-take-edit-${billId}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             value={good.good ? good.good._id : '1'}
