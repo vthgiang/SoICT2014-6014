@@ -327,7 +327,11 @@ exports.getAllManufacturingCommands = async (query, user, portal) => {
                     path: "creator"
                 }, {
                     path: "good",
-                    select: "code name baseUnit numberExpirationDate"
+                    select: "code name baseUnit numberExpirationDate materials",
+                    populate: [{
+                        path: "materials.good",
+                        select: "code name baseUnit",
+                    }]
                 }, {
                     path: "qualityControlStaffs.staff"
                 }, {
@@ -350,31 +354,7 @@ exports.getManufacturingCommandById = async (id, portal) => {
             select: "code",
             populate: [{
                 path: "salesOrders",
-                populate: [{
-                    path: 'creator', select: 'name'
-                }, {
-                    path: 'customer', select: 'name taxNumber'
-                }, {
-                    path: 'goods.good',
-                    populate: [{
-                        path: 'manufacturingMills.manufacturingMill'
-                    }]
-                }, {
-                    path: 'goods.manufacturingWorks', select: 'code name address description'
-                }, , {
-                    path: 'goods.discounts.bonusGoods.good', select: 'code name baseUnit'
-                }, {
-                    path: 'goods.discounts.discountOnGoods.good', select: 'code name baseUnit'
-                }, {
-                    path: 'discounts.bonusGoods.good', select: 'code name baseUnit'
-                }, {
-                    path: 'quote', select: 'code createdAt'
-                }]
-            }, {
-                path: "approvers",
-                populate: [{
-                    path: "approver"
-                }]
+                select: "code"
             }]
         }, {
             path: "manufacturingMill",
@@ -389,7 +369,11 @@ exports.getManufacturingCommandById = async (id, portal) => {
             path: "approvers.approver"
         }, {
             path: "good",
-            select: "code name baseUnit"
+            select: "code name baseUnit materials",
+            populate: [{
+                path: "materials.good",
+                select: "code name baseUnit",
+            }]
         }, {
             path: "qualityControlStaffs.staff"
         }]);
@@ -481,7 +465,11 @@ exports.editManufaturingCommand = async (id, data, portal) => {
             path: "qualityControlStaffs.staff"
         }, {
             path: "good",
-            select: "code name baseUnit numberExpirationDate"
+            select: "code name baseUnit numberExpirationDate materials",
+            populate: [{
+                path: "materials.good",
+                select: "code name baseUnit",
+            }]
         }]);
 
     return { manufacturingCommand }

@@ -339,26 +339,7 @@ exports.getManufacturingPlanById = async (id, portal) => {
         .findById(id)
         .populate([{
             path: 'salesOrders',
-            populate: [{
-                path: 'creator', select: 'name'
-            }, {
-                path: 'customer', select: 'name taxNumber'
-            }, {
-                path: 'goods.good',
-                populate: [{
-                    path: 'manufacturingMills.manufacturingMill'
-                }]
-            }, {
-                path: 'goods.manufacturingWorks', select: 'code name address description'
-            }, , {
-                path: 'goods.discounts.bonusGoods.good', select: 'code name baseUnit'
-            }, {
-                path: 'goods.discounts.discountOnGoods.good', select: 'code name baseUnit'
-            }, {
-                path: 'discounts.bonusGoods.good', select: 'code name baseUnit'
-            }, {
-                path: 'quote', select: 'code createdAt'
-            }]
+            select: 'code'
         }, {
             path: 'manufacturingWorks',
             select: 'code name'

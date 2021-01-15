@@ -161,9 +161,11 @@ class ArchiveManagementTable extends Component {
                     { currentRow && 
                         <ArchiveEditForm
                             binId={currentRow._id}
+                            binCapacity={currentRow.capacity}
                             binContained={currentRow.contained}
                             binEnableGoods={currentRow.enableGoods}
                             binStatus={currentRow.status}
+                            binUnit={currentRow.unit}
                             binParent={currentRow.parent}
                             page={this.state.page}
                             limit={this.state.limit}

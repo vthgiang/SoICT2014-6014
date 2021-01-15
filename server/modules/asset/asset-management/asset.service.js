@@ -1,10 +1,10 @@
 const mongoose = require("mongoose");
 const Models = require('../../../models');
-const {connect} = require(`../../../helpers/dbHelper`);
+const { connect } = require(`../../../helpers/dbHelper`);
 const arrayToTree = require("array-to-tree");
-const {freshObject} = require(`../../../helpers/functionHelper`);
+const { freshObject } = require(`../../../helpers/functionHelper`);
 
-const { Asset, User, Role } = Models;
+const { Asset, User, Role, Link, Privilege, UserRole } = Models;
 
 /**
  * Gửi email khi báo cáo sự cố
@@ -12,17 +12,36 @@ const { Asset, User, Role } = Models;
  * @param {*} assetIncident tài sản gặp sự cố
  */
 exports.sendEmailToManager = async (portal, oldAsset, userId, type) => {
-    let idManager = oldAsset.managedBy;
-    let manager = await User(connect(DB_CONNECTION, portal)).findById(
-        idManager
-    );
+    let idManager = [], privilege, roleIds = [], userRoles, email = [];
+    idManager.push(oldAsset.managedBy);
+    let link = await Link(connect(DB_CONNECTION, portal)).find({ url: "/manage-info-asset" });
+    if (link.length) {
+        privilege = await Privilege(connect(DB_CONNECTION, portal)).find({ resourceId: link[0]._id });
+        if (privilege.length) {
+            for (let i in privilege) {
+                roleIds.push(privilege[i].roleId);
+            }
+            userRoles = await UserRole(connect(DB_CONNECTION, portal)).find({ roleId: { $in: roleIds } })
+            if (userRoles.length) {
+                for (let j in userRoles) {
+                    if (userRoles[j].userId != oldAsset.managedBy) {
+                        idManager.push(userRoles[j].userId);
+                    }
+                }
+            }
+        }
+    }
+    let manager = await User(connect(DB_CONNECTION, portal)).find({ _id: { $in: idManager } });
     let currentUser = await User(connect(DB_CONNECTION, portal)).findById(
         userId
     );
-    let email = manager ? [manager.email] : [];
+    if (manager.length) {
+        for (i in manager) {
+            email.push(manager.email)
+        }
+    }
     let body = `<p>Mô tả : ${currentUser.name} đã ${type} trong tài sản mã ${oldAsset.code}  </p>`;
     let html = `<p>Bạn có thông báo mới: ` + body;
-
     return {
         oldAsset: oldAsset,
         manager: idManager,
@@ -72,7 +91,7 @@ exports.searchAssetProfiles = async (portal, company, params) => {
 
     // Thêm key tìm kiếm theo loại tài sản vào keySearch
     if (params.assetType) {
-        keySearch = { ...keySearch, assetType: { $in: params.assetType } };
+        keySearch = { ...keySearch, assetType: { $in: JSON.parse(params.assetType) } };
     }
 
     // Thêm key tìm kiếm tài sản theo trạng thái hoạt động vào keySearch
