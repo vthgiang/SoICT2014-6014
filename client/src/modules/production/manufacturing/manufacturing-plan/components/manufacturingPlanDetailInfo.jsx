@@ -38,7 +38,7 @@ class ManufacturingPlanDetailInfo extends Component {
     showDetailSalesOrder = async (data) => {
         await this.props.getPaymentForOrder({ orderId: data._id, orderType: 1 });
         await this.props.getSalesOrderDetail(data._id);
-        await window.$("#modal-detail-sales-order").modal("show");
+        await window.$("#modal-detail-sales-order-1").modal("show");
     }
 
     setPage = async (page) => {
@@ -93,7 +93,7 @@ class ManufacturingPlanDetailInfo extends Component {
                     hasSaveButton={false}
                     hasNote={false}
                 >
-                    <SalesOrderDetailForm />
+                    <SalesOrderDetailForm modalID={1} />
                     {
                         <ManufacturingCommandDetailInfo idModal={3} commandDetail={this.state.commandDetail} />
                     }
@@ -113,10 +113,10 @@ class ManufacturingPlanDetailInfo extends Component {
                                             currentPlan.salesOrders.map((x, index) => {
                                                 if (index === (currentPlan.salesOrders.length - 1))
                                                     return (
-                                                        <a href="#" onClick={() => this.showDetailSalesOrder(x)}>{x.code}</a>
+                                                        <a key={index} href="#" onClick={() => this.showDetailSalesOrder(x)}>{x.code}</a>
                                                     )
                                                 return (
-                                                    <a href="#" onClick={() => this.showDetailSalesOrder(x)}>{x.code}, </a>
+                                                    <a key={index} href="#" onClick={() => this.showDetailSalesOrder(x)}>{x.code}, </a>
                                                 )
                                             })
                                             :
