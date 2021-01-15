@@ -5342,7 +5342,8 @@ export default {
                         color: 'green',
                         content: "Đủ"
                     }
-                }
+                },
+                create_purchasing_request: "Tạo phiếu đề nghị mua hàng"
             },
             lot: {
                 index: "STT",

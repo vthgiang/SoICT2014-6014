@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import { purchasingRequestActions } from '../redux/actions';
-import { formatToTimeZoneDate } from '../../../../../helpers/formatDate';
+import { formatDate, formatToTimeZoneDate } from '../../../../../helpers/formatDate';
 import { ButtonModal, DatePicker, DialogModal, ErrorLabel, SelectBox } from '../../../../../common-components';
 import { generateCode } from '../../../../../helpers/generateCode';
 
@@ -290,12 +290,19 @@ class PurchasingRequestCreateForm extends Component {
         }
     }
 
+    checkInventoryMaterials = (material, currentCommand) => {
+        if (material.quantity * currentCommand.quantity > material.inventory) {
+            return 0
+        }
+        return 1
+    }
+
     render() {
-        const { translate, purchasingRequest } = this.props;
+        const { translate, purchasingRequest, currentCommand, NotHaveCreateButton, bigModal } = this.props;
         const { code, intendReceiveTime, errorIntendReceiveTime, description, errorDescription, good, errorGood, errorQuantity, listGoods, goodOptions } = this.state;
         return (
             <React.Fragment>
-                <ButtonModal onButtonCallBack={this.handleClickCreate} modalID="modal-create-purchasing-request" button_name={translate('manufacturing.purchasing_request.add_purchasing_request_button')} title={translate('manufacturing.purchasing_request.add_purchasing_request')} />
+                {!NotHaveCreateButton && <ButtonModal onButtonCallBack={this.handleClickCreate} modalID="modal-create-purchasing-request" button_name={translate('manufacturing.purchasing_request.add_purchasing_request_button')} title={translate('manufacturing.purchasing_request.add_purchasing_request')} />}
                 <DialogModal
                     modalID="modal-create-purchasing-request" isLoading={purchasingRequest.isLoading}
                     formID="form-create-purchasing-request"
@@ -304,7 +311,7 @@ class PurchasingRequestCreateForm extends Component {
                     msg_faile={translate('manufacturing.purchasing_request.create_failed')}
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
-                    size={50}
+                    size={bigModal ? 75 : 50}
                     maxWidth={500}
                 >
                     <form id="form-create-purchasing-request">
@@ -312,10 +319,24 @@ class PurchasingRequestCreateForm extends Component {
                             <label>{translate('manufacturing.purchasing_request.code')}<span className="text-red">*</span></label>
                             <input type="text" disabled={true} value={code} className="form-control"></input>
                         </div>
-                        {/* <div className="form-group">
-                            <label>{translate('manufacturing.purchasing_request.planCode')}<span className="text-red">*</span></label>
-                            <input type="text" className="form-control"></input>
-                        </div> */}
+                        {
+                            currentCommand &&
+                            <React.Fragment>
+                                <div className="form-group">
+                                    <label>{translate('manufacturing.purchasing_request.command_code')}</label>
+                                    <input type="text" value={currentCommand.code} disabled={true} className="form-control"></input>
+                                </div>
+                                <div className="form-group">
+                                    <label>{translate('manufacturing.command.start_date')}</label>
+                                    <input type="text" value={formatDate(currentCommand.startDate)} disabled={true} className="form-control"></input>
+                                </div>
+                                <div className="form-group">
+                                    <label>{translate('manufacturing.command.end_date')}</label>
+                                    <input type="text" value={formatDate(currentCommand.endDate)} disabled={true} className="form-control"></input>
+                                </div>
+                            </React.Fragment>
+
+                        }
                         <div className={`form-group ${!errorIntendReceiveTime ? "" : "has-error"}`}>
                             <label>{translate('manufacturing.purchasing_request.receiveTime')}<span className="text-red">*</span></label>
                             <DatePicker
@@ -331,6 +352,51 @@ class PurchasingRequestCreateForm extends Component {
                             <input type="text" value={description} onChange={this.handleDescriptionChange} className="form-control"></input>
                             <ErrorLabel content={errorDescription} />
                         </div>
+
+                        {
+                            currentCommand &&
+                            <div className="row">
+                                <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                    <fieldset className="scheduler-border">
+                                        <legend className="scheduler-border">{translate('manufacturing.command.material')}</legend>
+                                        <div className={`form-group`}>
+                                            <table className="table table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th>{translate('manufacturing.command.index')}</th>
+                                                        <th>{translate('manufacturing.command.material_code')}</th>
+                                                        <th>{translate('manufacturing.command.material_name')}</th>
+                                                        <th>{translate('manufacturing.command.good_base_unit')}</th>
+                                                        <th>{translate('manufacturing.command.quantity')}</th>
+                                                        <th>{translate('manufacturing.command.inventory')}</th>
+                                                        <th style={{ textAlign: "left" }}>{translate('manufacturing.command.status')}</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {
+                                                        currentCommand.good && currentCommand.good.materials && currentCommand.good.materials.length
+                                                        &&
+                                                        currentCommand.good.materials.map((x, index) => (
+                                                            <tr>
+                                                                <td> {index + 1}</td>
+                                                                <td>{x.good.code}</td>
+                                                                <td>{x.good.name}</td>
+                                                                <td>{x.good.baseUnit}</td>
+                                                                <td>{x.quantity * currentCommand.quantity}</td>
+                                                                <td>{x.inventory}</td>
+                                                                <td style={{ color: translate(`manufacturing.command.materials_info.${this.checkInventoryMaterials(x, currentCommand)}.color`) }}>
+                                                                    {translate(`manufacturing.command.materials_info.${this.checkInventoryMaterials(x, currentCommand)}.content`)}
+                                                                </td>
+                                                            </tr>
+                                                        ))
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </fieldset>
+                                </div>
+                            </div>
+                        }
 
                         <fieldset className="scheduler-border">
                             <legend className="scheduler-border">{translate('manufacturing.purchasing_request.material_info')}</legend>

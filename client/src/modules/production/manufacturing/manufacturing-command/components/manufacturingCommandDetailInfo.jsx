@@ -3,12 +3,14 @@ import { connect } from 'react-redux';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import { DialogModal } from '../../../../../common-components';
 import { formatDate, formatFullDate } from '../../../../../helpers/formatDate';
+import { GoodActions } from '../../../common-production/good-management/redux/actions';
 import { PaymentActions } from '../../../order/payment/redux/actions';
 import SalesOrderDetailForm from '../../../order/sales-order/components/salesOrderDetailForm';
 import { SalesOrderActions } from '../../../order/sales-order/redux/actions';
 import { BillActions } from '../../../warehouse/bill-management/redux/actions';
 import { LotActions } from '../../../warehouse/inventory-management/redux/actions';
 import ManufacturingLotDetailForm from '../../manufacturing-lot/components/manufacturingLotDetailForm';
+import PurchasingRequestCreateForm from '../../purchasing-request/components/purchasingRequestCreateForm';
 import { commandActions } from '../redux/actions';
 class ManufacturingCommandDetailInfo extends Component {
     constructor(props) {
@@ -22,14 +24,14 @@ class ManufacturingCommandDetailInfo extends Component {
             this.props.getBillsByCommand({ manufacturingCommandId: nextProps.commandDetail._id });
 
             // Xử lý lấy ra tồn kho của danh sách nguyên vật liệu
-            const materials = nextProps.commandDetail.good.materials;
-            let materialIds = [];
-            materials.map(x => {
-                materialIds.push(x.good._id)
-            });
-            this.props.getInventoryByGoodIds({
-                array: materialIds,
-            });
+            // const materials = nextProps.commandDetail.good.materials;
+            // let materialIds = [];
+            // materials.map(x => {
+            //     materialIds.push(x.good._id)
+            // });
+            // this.props.getInventoryByGoodIds({
+            //     array: materialIds,
+            // });
             return false
         }
         return true;
@@ -50,12 +52,13 @@ class ManufacturingCommandDetailInfo extends Component {
     }
 
     getCurrentCommandIncludeMaterialInventory = () => {
+        console.log("abcxyz123")
         const { manufacturingCommand, lots } = this.props;
         const { currentCommand } = manufacturingCommand;
         const { listInventories } = lots;
         if (listInventories && currentCommand) {
             listInventories.map((x, index) => {
-                if (currentCommand.good.materials[index]) {
+                if (currentCommand.good && currentCommand.good.materials[index]) {
                     currentCommand.good.materials[index].inventory = x.inventory;
                 }
             });
@@ -70,12 +73,22 @@ class ManufacturingCommandDetailInfo extends Component {
         return 1
     }
 
+    handleAddPurchasingRequest = async (currentCommand) => {
+        await this.props.getAllGoodsByType({ type: "material" })
+        await this.setState((state) => ({
+            ...state,
+            commandPurchase: currentCommand
+        }));
+        window.$(`#modal-create-purchasing-request`).modal('show');
+    }
+
 
     render() {
         const { translate, manufacturingCommand, idModal, bills } = this.props;
         let currentCommand = {};
         if (manufacturingCommand.currentCommand && manufacturingCommand.isLoading === false) {
-            currentCommand = this.getCurrentCommandIncludeMaterialInventory();
+            currentCommand = manufacturingCommand.currentCommand;
+            // currentCommand = this.getCurrentCommandIncludeMaterialInventory();
         }
         let listBillByCommand = [];
         if (bills.listBillByCommand && bills.isLoading === false) {
@@ -93,6 +106,10 @@ class ManufacturingCommandDetailInfo extends Component {
                     hasNote={false}
                 >
                     <SalesOrderDetailForm />
+                    {
+                        this.state.commandPurchase &&
+                        <PurchasingRequestCreateForm bigModal={true} currentCommand={this.state.commandPurchase} NotHaveCreateButton={true} />
+                    }
                     <ManufacturingLotDetailForm lotDetail={this.state.lotDetail} />
                     <form id={`form-detail-manufacturing-command`}>
                         <div className="row">
@@ -238,7 +255,8 @@ class ManufacturingCommandDetailInfo extends Component {
                                                     <th>{translate('manufacturing.command.good_base_unit')}</th>
                                                     <th>{translate('manufacturing.command.quantity')}</th>
                                                     <th>{translate('manufacturing.command.inventory')}</th>
-                                                    <th style={{ textAlign: "left" }}>{translate('manufacturing.command.status')}</th>
+                                                    <th>{translate('manufacturing.command.status')}</th>
+                                                    <th style={{ textAlign: "left" }}>{translate('general.action')}</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -246,15 +264,18 @@ class ManufacturingCommandDetailInfo extends Component {
                                                     currentCommand.good && currentCommand.good.materials && currentCommand.good.materials.length
                                                     &&
                                                     currentCommand.good.materials.map((x, index) => (
-                                                        <tr>
+                                                        <tr key={index}>
                                                             <td> {index + 1}</td>
                                                             <td>{x.good.code}</td>
                                                             <td>{x.good.name}</td>
                                                             <td>{x.good.baseUnit}</td>
                                                             <td>{x.quantity * currentCommand.quantity}</td>
                                                             <td>{x.inventory}</td>
-                                                            <td style={{ textAlign: "left", color: translate(`manufacturing.command.materials_info.${this.checkInventoryMaterials(x, currentCommand)}.color`) }}>
+                                                            <td style={{ color: translate(`manufacturing.command.materials_info.${this.checkInventoryMaterials(x, currentCommand)}.color`) }}>
                                                                 {translate(`manufacturing.command.materials_info.${this.checkInventoryMaterials(x, currentCommand)}.content`)}
+                                                            </td>
+                                                            <td>
+                                                                <a style={{ width: '5px' }} title={translate('manufacturing.command.create_purchasing_request')} onClick={() => { this.handleAddPurchasingRequest(currentCommand) }}><i className="material-icons">add_shopping_cart</i></a>
                                                             </td>
                                                         </tr>
                                                     ))
@@ -483,6 +504,7 @@ const mapDispatchToProps = {
     getPaymentForOrder: PaymentActions.getPaymentForOrder,
     getSalesOrderDetail: SalesOrderActions.getSalesOrderDetail,
     getInventoryByGoodIds: LotActions.getInventoryByGoodIds,
+    getAllGoodsByType: GoodActions.getAllGoodsByType
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(ManufacturingCommandDetailInfo));

@@ -361,12 +361,14 @@ class PlanInfoForm extends Component {
                     listSalesOrderChoosed.push(x);
                 }
             });
+            console.log(listSalesOrdersWorks);
             return listSalesOrderChoosed;
         }
         return [];
     }
 
     handleShowDetailSalesOrder = async (data) => {
+        console.log(data);
         await this.props.getPaymentForOrder({ orderId: data._id, orderType: 1 });
         await this.props.getSalesOrderDetail(data._id);
         await window.$("#modal-detail-sales-order").modal("show");

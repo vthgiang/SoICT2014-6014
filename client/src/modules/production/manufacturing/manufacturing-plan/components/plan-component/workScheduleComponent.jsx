@@ -247,7 +247,7 @@ class WorkScheduleComponent extends Component {
         const { manufacturingMillName, translate } = this.props;
         const { allDaysOfMonth, month, listWorkSchedulesOfMill } = this.state;
         const currentWorkSchedule = listWorkSchedulesOfMill ? listWorkSchedulesOfMill.filter(x => formatYearMonth(x.month) === month)[0] : undefined;
-        const arrayStatus = [0, 6, 1, 2, 3, 4, 5];
+        const arrayStatus = [0, 6, 1, 2, 3, 4];
         return (
             <div className="box box-primary" style={{ border: "1px solid black" }}>
                 <div className="box-header with-border">

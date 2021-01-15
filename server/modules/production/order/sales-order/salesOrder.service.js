@@ -134,9 +134,9 @@ exports.createNewSalesOrder = async (userId, companyId, data, portal) => {
         path: 'creator', select: 'name'
     }, {
         path: 'customer', select: 'name taxNumber'
-    },{
+    }, {
         path: 'goods.good', select: 'code name baseUnit'
-    } ]);;
+    }]);;
     return { salesOrder }
 }
 
@@ -162,7 +162,7 @@ exports.getAllSalesOrders = async (query, portal) => {
                 path: 'creator', select: 'name'
             }, {
                 path: 'customer', select: 'name taxNumber'
-            },{
+            }, {
                 path: 'goods.good', select: 'code name baseUnit'
             }]);
         return { allSalesOrders }
@@ -174,7 +174,7 @@ exports.getAllSalesOrders = async (query, portal) => {
                 path: 'creator', select: 'name'
             }, {
                 path: 'customer', select: 'name taxNumber'
-            },{
+            }, {
                 path: 'goods.good', select: 'code name baseUnit'
             }]
         })
@@ -254,10 +254,10 @@ exports.editSalesOrder = async (userId, companyId, id, data, portal) => {
     }, { new: true });
 
     //Trả lại số xu đã sử dụng cho khách trong trường hợp hủy đơn
-    if (salesOrder && salesOrder.status===8) {
+    if (salesOrder && salesOrder.status === 8) {
         let customerPoint = await CustomerService.getCustomerPoint(portal, companyId, salesOrder.customer);
         if (customerPoint && salesOrder.coin) {
-            await CustomerService.editCustomerPoint(portal, companyId, customerPoint._id, {point:salesOrder.coin + customerPoint.point }, userId)
+            await CustomerService.editCustomerPoint(portal, companyId, customerPoint._id, { point: salesOrder.coin + customerPoint.point }, userId)
         }
     }
 
@@ -266,7 +266,7 @@ exports.editSalesOrder = async (userId, companyId, id, data, portal) => {
             path: 'creator', select: 'name'
         }, {
             path: 'customer', select: 'name taxNumber'
-        },{
+        }, {
             path: 'goods.good', select: 'code name baseUnit'
         }]);
 
@@ -335,9 +335,11 @@ exports.getSalesOrdersByManufacturingWorks = async (currentRole, portal) => {
             path: 'goods.good',
             populate: [{
                 path: 'manufacturingMills.manufacturingMill'
-            },{
+            }, {
                 path: 'goods.discounts.bonusGoods.good', select: 'code name baseUnit'
             }]
+        }, {
+            path: 'customer', select: 'name taxNumber'
         }]);
     //Lọc đơn hàng theo nhà máy
     let salesOrders = [];
@@ -437,9 +439,9 @@ exports.getSalesOrderDetail = async (id, portal) => {
             }]
         }, {
             path: 'goods.manufacturingWorks', select: 'code name address description'
-        },{
+        }, {
             path: 'goods.manufacturingPlan', select: 'code status startDate endDate'
-        } , {
+        }, {
             path: 'goods.discounts.bonusGoods.good', select: 'code name baseUnit'
         }, {
             path: 'goods.discounts.discountOnGoods.good', select: 'code name baseUnit'
@@ -453,6 +455,6 @@ exports.getSalesOrderDetail = async (id, portal) => {
         throw Error("Sales Order is not existing")
     }
 
-    return {salesOrder}
+    return { salesOrder }
 
 }

@@ -113,10 +113,10 @@ class ManufacturingPlanDetailInfo extends Component {
                                             currentPlan.salesOrders.map((x, index) => {
                                                 if (index === (currentPlan.salesOrders.length - 1))
                                                     return (
-                                                        <a href="#" onClick={() => this.showDetailSalesOrder(x)}>{x.code}</a>
+                                                        <a key={index} href="#" onClick={() => this.showDetailSalesOrder(x)}>{x.code}</a>
                                                     )
                                                 return (
-                                                    <a href="#" onClick={() => this.showDetailSalesOrder(x)}>{x.code}, </a>
+                                                    <a key={index} href="#" onClick={() => this.showDetailSalesOrder(x)}>{x.code}, </a>
                                                 )
                                             })
                                             :
