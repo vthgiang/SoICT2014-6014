@@ -22,9 +22,9 @@ exports.createNewSalesOrder = async (userId, companyId, data, portal) => {
         approvers: data.approvers ? data.approvers.map((approver) => {
             return {
                 approver: approver.approver,
-                approverRole: approver.approverRole,
             }
         }) : undefined,
+        organizationalUnit: data.organizationalUnit,
         priority: data.priority,
         goods: data.goods ? data.goods.map((item) => {
             return {
@@ -282,7 +282,6 @@ exports.approveSalesOrder = async (salesOrderId, approver, portal) => {
 
     salesOrder.approvers.push({
         approver: approver.approver,
-        approverRole: approver.approverRole,
         approveAt: new Date(),
         status: approver.status
     });

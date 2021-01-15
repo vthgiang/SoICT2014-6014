@@ -18,6 +18,7 @@ class SalesOrderCreateForm extends Component {
         super(props);
         this.state = {
             goods: [],
+            approvers: [],
             discountsOfOrderValue: [],
             discountsOfOrderValueChecked: {},
             currentSlasOfGood: [],
@@ -232,6 +233,38 @@ class SalesOrderCreateForm extends Component {
         this.validateOrganizationalUnit(value[0], true);
     };
 
+    validateApprovers = (value, willUpdateState = true) => {
+        let msg = undefined;
+        if (!value.length) {
+            msg = "Giá trị không được để trống";
+        } else {
+            for (let index = 0; index < value.length; value++) {
+                if (value[index] === "title") {
+                    msg = "Không được chọn tiêu đề";
+                }
+            }
+        }
+        if (willUpdateState) {
+            this.setState((state) => {
+                return {
+                    ...state,
+                    approversError: msg,
+                };
+            });
+        }
+        return msg;
+    };
+
+    handleApproversChange = (value) => {
+        this.setState((state) => {
+            return {
+                ...state,
+                approvers: value,
+            };
+        });
+        this.validateApprovers(value, true);
+    };
+
     setCurrentStep = (e, step) => {
         e.preventDefault();
         this.setState({
@@ -420,13 +453,14 @@ class SalesOrderCreateForm extends Component {
     };
 
     isValidateSalesOrderCreateInfo = () => {
-        let { customer, customerEmail, customerPhone, customerAddress, priority, organizationalUnit } = this.state;
+        let { customer, customerEmail, customerPhone, customerAddress, priority, organizationalUnit, approvers } = this.state;
         let { translate } = this.props;
 
         if (
             this.validateCustomer(customer, false) ||
             this.validatePriority(priority, false) ||
             this.validateOrganizationalUnit(organizationalUnit, false) ||
+            this.validateApprovers(approvers, false) ||
             !ValidationHelper.validateEmail(translate, customerEmail).status ||
             !ValidationHelper.validateEmpty(translate, customerPhone).status ||
             !ValidationHelper.validateEmpty(translate, customerAddress).status
@@ -528,6 +562,8 @@ class SalesOrderCreateForm extends Component {
                 discountsOfOrderValue,
                 paymentAmount,
                 note,
+                organizationalUnit,
+                approvers,
                 priority,
             } = this.state;
 
@@ -547,6 +583,10 @@ class SalesOrderCreateForm extends Component {
                 deliveryTime: deliveryTime ? new Date(formatToTimeZoneDate(deliveryTime)) : undefined,
                 coin,
                 allCoin,
+                organizationalUnit,
+                approvers: approvers.map((element) => {
+                    return { approver: element };
+                }),
                 paymentAmount,
                 note,
             };
@@ -568,11 +608,13 @@ class SalesOrderCreateForm extends Component {
                     shippingFee: "",
                     deliveryTime: "",
                     coin: "",
+                    allCoin: "",
                     goods: [],
                     discountsOfOrderValue: [],
+                    organizationalUnit: "",
+                    approvers: [],
                     paymentAmount: "",
                     note: "",
-                    paymentAmount: "",
                     step: 0,
                 };
             });
@@ -594,6 +636,7 @@ class SalesOrderCreateForm extends Component {
             customerEmail,
             priority,
             organizationalUnit,
+            approvers,
             step,
             goods,
             shippingFee,
@@ -611,7 +654,15 @@ class SalesOrderCreateForm extends Component {
             paymentAmount,
         } = this.state;
 
-        let { customerError, customerEmailError, customerPhoneError, customerAddressError, priorityError, organizationalUnitError } = this.state;
+        let {
+            customerError,
+            customerEmailError,
+            customerPhoneError,
+            customerAddressError,
+            priorityError,
+            organizationalUnitError,
+            approversError,
+        } = this.state;
 
         let enableStepOne = this.isValidateSalesOrderCreateInfo();
         let enableStepTwo = this.isValidateSalesOrderCreateGood();
@@ -702,6 +753,7 @@ class SalesOrderCreateForm extends Component {
                                     customerEmail={customerEmail}
                                     priority={priority}
                                     organizationalUnit={organizationalUnit}
+                                    approvers={approvers}
                                     isUseForeignCurrency={isUseForeignCurrency}
                                     foreignCurrency={foreignCurrency}
                                     //handle
@@ -716,6 +768,7 @@ class SalesOrderCreateForm extends Component {
                                     handleSymbolOfForreignCurrencyChange={this.handleSymbolOfForreignCurrencyChange}
                                     handlePriorityChange={this.handlePriorityChange}
                                     handleOrganizationalUnitChange={this.handleOrganizationalUnitChange}
+                                    handleApproversChange={this.handleApproversChange}
                                     //Error Status
                                     customerError={customerError}
                                     customerEmailError={customerEmailError}
@@ -723,6 +776,7 @@ class SalesOrderCreateForm extends Component {
                                     customerAddressError={customerAddressError}
                                     priorityError={priorityError}
                                     organizationalUnitError={organizationalUnitError}
+                                    approversError={approversError}
                                 />
                             )}
                             {step === 1 && (
