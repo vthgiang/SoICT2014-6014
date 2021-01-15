@@ -479,7 +479,7 @@ class TaskDashboard extends Component {
                                 <div className="box-title">{translate('task.task_management.dashboard_overdue')}</div>
                             </div>
 
-                            <div className="box-body" style={{ minHeight: "300px" }}>
+                            <div className="box-body" style={{ height: "300px", overflow: "auto" }}>
                                 {
                                     (tasks && tasks.tasksbyuser) ?
                                         <ul className="todo-list">
@@ -506,7 +506,7 @@ class TaskDashboard extends Component {
                             <div className="box-header with-border">
                                 <div className="box-title">{translate('task.task_management.dashboard_about_to_overdue')}</div>
                             </div>
-                            <div className="box-body" style={{ minHeight: "300px" }}>
+                            <div className="box-body" style={{ height: "300px", overflow: "auto" }}>
                                 {
                                     (tasks && tasks.tasksbyuser) ?
                                         <ul className="todo-list">
@@ -535,24 +535,26 @@ class TaskDashboard extends Component {
                 </div>
                 {/* <div className="row"> */}
                 {/*Biểu đồ dashboard tải công việc */}
-                <div className="col-xs-12">
-                    <div className="box box-primary">
-                        <div className="box-header with-border">
-                            <div className="box-title">Dashboard tải công việc</div>
-                            <ToolTip
-                                type={"icon_tooltip"} materialIcon={"help"}
-                                dataTooltip={['Tải công việc tính theo công thức tổng các tỉ số: số ngày thực hiện công việc trong tháng/(số người thực hiện + số người phê duyệt + số người hỗ trợ)']}
-                            />
-                        </div>
-
-                        <div className="box-body qlcv">
-                            {callAction &&
-                                <WeightTaskChart
-                                    callAction={!willUpdate}
-                                    startMonth={startMonth}
-                                    endMonth={endMonth}
+                <div className="row">
+                    <div className="col-xs-12">
+                        <div className="box box-primary">
+                            <div className="box-header with-border">
+                                <div className="box-title">Dashboard tải công việc</div>
+                                <ToolTip
+                                    type={"icon_tooltip"} materialIcon={"help"}
+                                    dataTooltip={['Tải công việc tính theo công thức tổng các tỉ số: số ngày thực hiện công việc trong tháng/(số người thực hiện + số người phê duyệt + số người hỗ trợ)']}
                                 />
-                            }
+                            </div>
+
+                            <div className="box-body qlcv">
+                                {callAction &&
+                                    <WeightTaskChart
+                                        callAction={!willUpdate}
+                                        startMonth={startMonth}
+                                        endMonth={endMonth}
+                                    />
+                                }
+                            </div>
                         </div>
                     </div>
                 </div>
