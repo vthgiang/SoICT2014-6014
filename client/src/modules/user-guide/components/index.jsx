@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 const UserGuide = () => {
     const url = `https://docs.google.com/gview?url=http://www.africau.edu/images/default/sample.pdf&embedded=true`;
-    const url1 = `https://docs.google.com/gview?url=${process.env.REACT_APP_SERVER}/upload/user-guide/user-guide.pdf&embedded=true`
+    const url1 = `https://docs.google.com/gview?url=${process.env.REACT_APP_SERVER}/upload/user-guide/asset-guide.pdf&embedded=true`
     return (
         <React.Fragment>
             <div style={{ maxWidth: '100%' }}>
