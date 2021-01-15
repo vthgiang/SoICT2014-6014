@@ -64,7 +64,7 @@ class PaymentVoucherManagementTable extends Component {
 
     getPaidForPayment = (item) => {
         let paid = item.purchaseOrders.reduce((accumulator, currentValue) => {
-            return accumulator + currentValue.money;
+            return accumulator + parseInt(currentValue.money);
         }, 0);
 
         return formatCurrency(paid);

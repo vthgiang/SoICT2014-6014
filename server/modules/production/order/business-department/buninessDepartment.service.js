@@ -86,8 +86,23 @@ exports.getAllBusinessDepartments = async (query, portal) => {
                         }]
                     }]
                 },
-                { path: 'deputyManagers' },
-                { path: 'employees' }]
+                {
+                    path: 'deputyManagers',
+                    populate: [{
+                        path: "users",
+                        populate: [{
+                            path: "userId"
+                        }]
+                    }]
+                },{
+                    path: 'employees',
+                    populate: [{
+                        path: "users",
+                        populate: [{
+                            path: "userId"
+                        }]
+                    }]
+                }]
             }]);
 
         return { allBusinessDepartments }
@@ -107,8 +122,24 @@ exports.getAllBusinessDepartments = async (query, portal) => {
                             }]
                         }]
                     },
-                    { path: 'deputyManagers' },
-                    { path: 'employees' }]
+                    {
+                        path: 'deputyManagers',
+                        populate: [{
+                            path: "users",
+                            populate: [{
+                                path: "userId"
+                            }]
+                        }]
+                    },
+                    {
+                        path: 'employees',
+                        populate: [{
+                            path: "users",
+                            populate: [{
+                                path: "userId"
+                            }]
+                        }]
+                    }]
                 }]
             })
         return { allBusinessDepartments }

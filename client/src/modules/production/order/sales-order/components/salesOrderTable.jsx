@@ -9,11 +9,13 @@ import { DepartmentActions } from "../../../../super-admin/organizational-unit/r
 import { RoleActions } from "../../../../super-admin/role/redux/actions";
 import { QuoteActions } from "../../quote/redux/actions";
 import { PaymentActions } from "../../payment/redux/actions";
+import { BusinessDepartmentActions } from "../../business-department/redux/actions";
 
 import { BillActions } from "../../../warehouse/bill-management/redux/actions";
 import { StockActions } from "../../../warehouse/stock-management/redux/actions";
 import { UserActions } from "../../../../super-admin/user/redux/actions";
 import { GoodActions } from "../../../common-production/good-management/redux/actions";
+
 //Helper Function
 import { formatCurrency } from "../../../../../helpers/formatCurrency";
 import { formatDate } from "../../../../../helpers/formatDate";
@@ -37,6 +39,7 @@ class SalesOrderTable extends Component {
             code: "",
             status: null,
             salesOrderDetail: {},
+            detailModalId: 1,
         };
     }
 
@@ -45,10 +48,8 @@ class SalesOrderTable extends Component {
         this.props.getAllSalesOrders({ page, limit });
         this.props.getDiscountForOrderValue();
         this.props.getCustomers();
-        this.props.getAllDepartments();
-        this.props.getAllRoles();
+        this.props.getAllBusinessDepartments({ page: 1, limit: 1000 });
 
-        //Create bill
         this.props.getAllStocks({ managementLocation: currentRole });
         this.props.getUser();
         this.props.getGoodsByType({ type: "product" });
@@ -91,7 +92,7 @@ class SalesOrderTable extends Component {
     handleOrderCodeChange = (e) => {
         let { value } = e.target;
         this.setState({
-            code: value,
+            codeQuery: value,
         });
     };
 
@@ -103,11 +104,11 @@ class SalesOrderTable extends Component {
     };
 
     handleSubmitSearch = () => {
-        let { limit, page, code, status, customer } = this.state;
+        let { limit, page, codeQuery, status, customer } = this.state;
         const data = {
             limit,
             page,
-            code,
+            code: codeQuery,
             status,
             customer,
         };
@@ -115,17 +116,18 @@ class SalesOrderTable extends Component {
     };
 
     handleShowDetailInfo = async (salesOrder) => {
+        const { detailModalId } = this.state;
         await this.props.getPaymentForOrder({ orderId: salesOrder._id, orderType: 1 });
         await this.props.getSalesOrderDetail(salesOrder._id);
-        await window.$("#modal-detail-sales-order").modal("show");
+        await window.$(`#modal-detail-sales-order-${detailModalId}`).modal("show");
     };
 
     reloadSalesOrderTable = () => {
-        let { limit, page, code, status, customer } = this.state;
+        let { limit, page, codeQuery, status, customer } = this.state;
         const data = {
             limit,
             page,
-            code,
+            code: codeQuery,
             status,
             customer,
         };
@@ -137,12 +139,6 @@ class SalesOrderTable extends Component {
     };
 
     handleEditSalesOrder = async (salesOrderEdit) => {
-        // await this.setState((state) => {
-        //     return {
-        //         ...state,
-        //         salesOrderEdit,
-        //     };
-        // });
         await this.props.getSalesOrderDetail(salesOrderEdit._id);
         window.$("#modal-edit-sales-order").modal("show");
     };
@@ -184,7 +180,7 @@ class SalesOrderTable extends Component {
     // }
 
     render() {
-        let { limit, salesOrderDetail, salesOrderEdit, code, salesOrderAddBill, billCode } = this.state;
+        let { limit, code, salesOrderAddBill, billCode, detailModalId } = this.state;
         const { translate, salesOrders } = this.props;
         const { totalPages, page } = salesOrders;
 
@@ -255,10 +251,6 @@ class SalesOrderTable extends Component {
             },
         ];
 
-        const { department, role, auth } = this.props;
-
-        console.log("salesOrders", this.props.salesOrders);
-
         return (
             <React.Fragment>
                 <div className="nav-tabs-custom">
@@ -294,7 +286,7 @@ class SalesOrderTable extends Component {
 
                         <SalesOrderCreateForm code={code} />
                         <SalesOrderCreateFormFromQuote code={code} />
-                        <SalesOrderDetailForm />
+                        <SalesOrderDetailForm modalID={detailModalId} />
                         <GoodIssueCreateForm
                             salesOrderAddBill={salesOrderAddBill}
                             createdSource={"salesOrder"}
@@ -311,7 +303,7 @@ class SalesOrderTable extends Component {
                                 <input
                                     type="text"
                                     className="form-control"
-                                    name="code"
+                                    name="codeQuery"
                                     onChange={this.handleOrderCodeChange}
                                     placeholder="Nhập vào mã đơn"
                                     autoComplete="off"
@@ -519,6 +511,7 @@ const mapDispatchToProps = {
     getAllRoles: RoleActions.get,
     getQuotesToMakeOrder: QuoteActions.getQuotesToMakeOrder,
     getSalesOrderDetail: SalesOrderActions.getSalesOrderDetail,
+    getAllBusinessDepartments: BusinessDepartmentActions.getAllBusinessDepartments,
 
     getBillsByType: BillActions.getBillsByType,
     getDetailBill: BillActions.getDetailBill,
