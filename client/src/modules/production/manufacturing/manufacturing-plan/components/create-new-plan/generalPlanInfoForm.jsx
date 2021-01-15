@@ -371,7 +371,7 @@ class PlanInfoForm extends Component {
         console.log(data);
         await this.props.getPaymentForOrder({ orderId: data._id, orderType: 1 });
         await this.props.getSalesOrderDetail(data._id);
-        await window.$("#modal-detail-sales-order").modal("show");
+        await window.$("#modal-detail-sales-order-2").modal("show");
     }
 
     render() {
@@ -445,7 +445,7 @@ class PlanInfoForm extends Component {
         ];
         return (
             <React.Fragment>
-                <SalesOrderDetailForm />
+                <SalesOrderDetailForm modalID={2} />
                 <div className="row">
                     <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                         <div className="form-group">

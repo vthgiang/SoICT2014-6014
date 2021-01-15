@@ -5343,7 +5343,8 @@ export default {
                         content: "Đủ"
                     }
                 },
-                create_purchasing_request: "Tạo phiếu đề nghị mua hàng"
+                create_purchasing_request: "Tạo phiếu đề nghị mua hàng",
+                approver_command: "Duyệt lệnh"
             },
             lot: {
                 index: "STT",

@@ -12,7 +12,8 @@ class PurchasingRequestCreateForm extends Component {
         this.EMPTY_GOOD = {
             goodId: "1",
             goodObject: "",
-            quantity: ""
+            quantity: "",
+            baseUnit: "",
         };
         this.state = {
             code: generateCode("PDN"),
@@ -109,6 +110,7 @@ class PurchasingRequestCreateForm extends Component {
             let goodArrFilter = listGoodsByType.filter(x => x._id === good.goodId);
             if (goodArrFilter) {
                 good.goodObject = goodArrFilter[0];
+                good.baseUnit = goodArrFilter[0].baseUnit;
             }
 
 
@@ -118,8 +120,6 @@ class PurchasingRequestCreateForm extends Component {
                 errorGood: msg
             }))
         }
-
-        console.log(this.state.good);
         return msg;
 
     }
@@ -284,7 +284,8 @@ class PurchasingRequestCreateForm extends Component {
                 code: this.state.code,
                 intendReceiveTime: this.state.intendReceiveTime,
                 description: this.state.description,
-                materials: materials
+                materials: materials,
+                manufacturingCommand: this.props.currentCommand ? this.props.currentCommand._id : null
             }
             this.props.createPurchasingRequest(data);
         }
@@ -377,7 +378,7 @@ class PurchasingRequestCreateForm extends Component {
                                                         currentCommand.good && currentCommand.good.materials && currentCommand.good.materials.length
                                                         &&
                                                         currentCommand.good.materials.map((x, index) => (
-                                                            <tr>
+                                                            <tr key={index}>
                                                                 <td> {index + 1}</td>
                                                                 <td>{x.good.code}</td>
                                                                 <td>{x.good.name}</td>
@@ -413,7 +414,10 @@ class PurchasingRequestCreateForm extends Component {
                                 />
                                 <ErrorLabel content={errorGood} />
                             </div>
-
+                            <div className={`form-group`}>
+                                <label>{translate('manufacturing.purchasing_request.good_base_unit')}</label>
+                                <input type="text" value={good.baseUnit} disabled={true} className="form-control" />
+                            </div>
                             <div className={`form-group ${!errorQuantity ? "" : "has-error"}`}>
                                 <label className="control-label">{translate('manufacturing.purchasing_request.quantity')}</label>
                                 <div>
