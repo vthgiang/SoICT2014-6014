@@ -50,19 +50,18 @@ const SalesOrderSchema = new Schema({
             ref: 'User',
             // required: true
         },
-        approverRole: {
-            type: Number,
-            enum: [1, 2] //1. Sales Admin, 2. Kế toán
-        },
         approveAt: {
             type: Date,
-            default: new Date()
         },
-        status: {
-            type: Boolean,
-            default: false
+        status: {//1. Chưa phê duyệt, 2. Đã phê duyệt, 3. Đã hủy
+            type: Number,
+            enum: [1, 2, 3],
         }
     }],
+    organizationalUnit: {//Đơn vị quản lý đơn
+        type: Schema.Types.ObjectId,
+        ref: "OrganizationalUnit"
+    },
     priority: { // 1: Thấp, 2: Trung bình, 3: Cao, 4: Đặc biệt
         type: Number,
         enum: [1, 2, 3, 4],

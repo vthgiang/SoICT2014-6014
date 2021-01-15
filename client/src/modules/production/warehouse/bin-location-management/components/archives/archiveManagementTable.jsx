@@ -207,7 +207,7 @@ class ArchiveManagementTable extends Component {
                                         <td style={{ color: translate(`manage_warehouse.bin_location_management.${x.status}.color`)}}>{translate(`manage_warehouse.bin_location_management.${x.status}.status`)}</td>
                                         <td>{x.capacity ? x.capacity : 0} {x.unit}</td>
                                         <td>{x.contained ? x.contained : 0} {x.unit}</td>
-                                        <td>{(x.enableGoods && x.enableGoods.length > 0) ? x.enableGoods.map((x, i) => { return <p key={i}>{ x.good.name }({x.contained}{x.good.baseUnit})</p> }) : []}</td>
+                                        <td>{(x.enableGoods && x.enableGoods.length > 0) && x.enableGoods.map((x, i) => { return <p key={i}>{ x.good.name }({x.contained}{x.good.baseUnit})</p> })}</td>
                                         <td style={{textAlign: 'center'}}>
                                             <a onClick={() => this.handleShowDetailInfo(x)}><i className="material-icons">view_list</i></a>
                                             <a onClick={() => this.handleEdit(x)} href={`#${x._id}`} className="text-yellow" ><i className="material-icons">edit</i></a>
