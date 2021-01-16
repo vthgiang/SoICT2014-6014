@@ -1,5 +1,5 @@
 const {
-    PurchasingRequest
+    PurchasingRequest, ManufacturingCommand
 } = require(`../../../../models`);
 
 const {
@@ -55,6 +55,11 @@ exports.createPurchasingRequest = async (userId, data, portal) => {
                 }]
             }]
         }]);
+    if (data.manufacturingCommand) {
+        let command = await ManufacturingCommand(connect(DB_CONNECTION, portal)).findById({ _id: data.manufacturingCommand });
+        command.purchasingRequest = purchasingRequest._id;
+        await command.save();
+    }
     return { purchasingRequest }
 }
 
@@ -100,7 +105,10 @@ exports.getAllPurchasingRequest = async (query, portal) => {
                         path: "materials.good",
                         select: "code name baseUnit",
                     }]
-                }]
+                }],
+                sort: {
+                    'updatedAt': 'desc'
+                }
             }]);
         let purchasingRequests = {};
         purchasingRequests.docs = docs;
@@ -124,7 +132,10 @@ exports.getAllPurchasingRequest = async (query, portal) => {
                             select: "code name baseUnit",
                         }]
                     }]
-                }]
+                }],
+                sort: {
+                    'updatedAt': 'desc'
+                }
             });
         return { purchasingRequests }
     }

@@ -3,15 +3,17 @@ import { connect } from 'react-redux';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import { DialogModal } from '../../../../../common-components';
 import { formatDate, formatFullDate } from '../../../../../helpers/formatDate';
+import { StockActions } from '../../../warehouse/stock-management/redux/actions';
+import { UserActions } from '../../../../super-admin/user/redux/actions';
 import { GoodActions } from '../../../common-production/good-management/redux/actions';
-import { PaymentActions } from '../../../order/payment/redux/actions';
-import SalesOrderDetailForm from '../../../order/sales-order/components/salesOrderDetailForm';
-import { SalesOrderActions } from '../../../order/sales-order/redux/actions';
 import { BillActions } from '../../../warehouse/bill-management/redux/actions';
 import { LotActions } from '../../../warehouse/inventory-management/redux/actions';
 import ManufacturingLotDetailForm from '../../manufacturing-lot/components/manufacturingLotDetailForm';
 import PurchasingRequestCreateForm from '../../purchasing-request/components/purchasingRequestCreateForm';
 import { commandActions } from '../redux/actions';
+import './manufacturingCommand.css';
+import GoodIssueCreateForm from './goodIssueCreateForm';
+import { generateCode } from '../../../../../helpers/generateCode';
 class ManufacturingCommandDetailInfo extends Component {
     constructor(props) {
         super(props);
@@ -87,6 +89,19 @@ class ManufacturingCommandDetailInfo extends Component {
         }
     }
 
+    handleApproverCommand = async (e, currentCommand) => {
+        e.preventDefault();
+        await this.props.getAllGoodsByType({ type: "material" })
+        await this.props.getAllStocks();
+        await this.props.getAllUserOfCompany();
+        await this.setState({
+            billCode: generateCode('BILL'),
+            commandIssue: currentCommand,
+            commandIssueId: currentCommand._id
+        });
+        window.$('#modal-create-bill-issue-material').modal('show');
+    }
+
     render() {
         const { translate, manufacturingCommand, idModal, bills } = this.props;
         let currentCommand = {};
@@ -111,8 +126,19 @@ class ManufacturingCommandDetailInfo extends Component {
                 >
                     {
                         this.state.commandPurchase &&
-                        <PurchasingRequestCreateForm bigModal={true} currentCommand={this.state.commandPurchase} NotHaveCreateButton={true} />
+                        <PurchasingRequestCreateForm
+                            bigModal={true}
+                            currentCommand={this.state.commandPurchase}
+                            NotHaveCreateButton={true}
+                            onReloadComandTable={this.props.onReloadCommandTable}
+                        />
                     }
+                    <GoodIssueCreateForm
+                        commandIssueId={this.state.commandIssueId}
+                        commandIssue={this.state.commandIssue}
+                        billCode={this.state.billCode}
+                        onReloadCommandTable={this.props.onReloadCommandTable}
+                    />
                     <ManufacturingLotDetailForm lotDetail={this.state.lotDetail} />
                     <form id={`form-detail-manufacturing-command`}>
                         <div className="row">
@@ -269,7 +295,7 @@ class ManufacturingCommandDetailInfo extends Component {
                                                             {
                                                                 this.checkApprovers(currentCommand) && (currentCommand.status === 1) &&
                                                                 <td>
-                                                                    <a style={{ width: '5px' }} title={translate('manufacturing.command.create_purchasing_request')} onClick={() => { this.handleAddPurchasingRequest(currentCommand) }}><i className="material-icons">add_shopping_cart</i></a>
+                                                                    <a className={currentCommand.purchasingRequest ? 'disabled' : ""} style={{ width: '5px' }} title={translate('manufacturing.command.create_purchasing_request')} onClick={() => { this.handleAddPurchasingRequest(currentCommand) }}><i className="material-icons">add_shopping_cart</i></a>
                                                                 </td>
                                                             }
                                                         </tr>
@@ -278,9 +304,14 @@ class ManufacturingCommandDetailInfo extends Component {
                                             </tbody>
                                         </table>
                                     </div>
-                                    <div className="pull-right" style={{ marginBottom: "10px" }}>
-                                        <button className="btn btn-success" style={{ marginLeft: "10px" }} onClick={this.handleClearCommand}>{translate('manufacturing.command.approver_command')}</button>
-                                    </div>
+                                    {
+                                        currentCommand &&
+                                        this.checkApprovers(currentCommand) && currentCommand.status === 1 &&
+                                        <div className="pull-right" style={{ marginBottom: "10px" }}>
+                                            <button className="btn btn-success" style={{ marginLeft: "10px" }} onClick={(e) => this.handleApproverCommand(e, currentCommand)}>{translate('manufacturing.command.approver_command')}</button>
+                                        </div>
+                                    }
+
                                 </fieldset>
                             </div>
                         </div>
@@ -341,34 +372,30 @@ class ManufacturingCommandDetailInfo extends Component {
                         <div className="row">
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                 <fieldset className="scheduler-border">
-                                    <legend className="scheduler-border">{translate('manufacturing.command.result')}</legend>
+                                    <legend className="scheduler-border">{translate('manufacturing.command.approvers')}</legend>
                                     {
-                                        (currentCommand.finishedProductQuantity
-                                            && currentCommand.finishedTime)
-                                            ?
-                                            <React.Fragment>
-                                                <p>
-                                                    {translate('manufacturing.command.finishedProductQuantity')}: &emsp;
-                                                    {currentCommand.finishedProductQuantity + " (" + currentCommand.good.baseUnit + ")"}
-                                                    &emsp;&emsp;&emsp;
-                                                    {translate('manufacturing.command.rateFinishedProductQuantity')}: &emsp;
-                                                    {Math.round(currentCommand.finishedProductQuantity * 100 / (currentCommand.finishedProductQuantity + (currentCommand.substandardProductQuantity ? currentCommand.substandardProductQuantity : 0)) * 100) / 100}%
-                                                </p>
-                                                <p>
-                                                    {translate('manufacturing.command.substandardProductQuantity')}: &emsp;
-                                                    {currentCommand.substandardProductQuantity ? currentCommand.substandardProductQuantity + " (" + currentCommand.good.baseUnit + ")" : 0 + " (" + currentCommand.good.baseUnit + ")"}
-                                                    &emsp;&emsp;&emsp;
-                                                    {translate('manufacturing.command.rateSubstandardProductQuantity')}: &emsp;
-                                                    {Math.round((currentCommand.substandardProductQuantity ? currentCommand.substandardProductQuantity : 0) * 100 / (currentCommand.finishedProductQuantity + (currentCommand.substandardProductQuantity ? currentCommand.substandardProductQuantity : 0)) * 100) / 100}%
+                                        currentCommand.approvers && currentCommand.approvers.length &&
+                                        currentCommand.approvers.map((x, index) => {
+                                            return (
+                                                <div className="form-group" key={index}>
+                                                    <p>
+                                                        {x.approver.name}
+                                                        {" - "}
+                                                        {x.approver.email}
+                                                        {
+                                                            x.approvedTime &&
+                                                            <React.Fragment>
+                                                                &emsp; &emsp; &emsp;
+                                                                {translate('manufacturing.command.approvedTime')}
+                                                                : &emsp;
+                                                                {formatFullDate(x.approvedTime)}
+                                                            </React.Fragment>
 
-                                                </p>
-                                                <p>
-                                                    {translate('manufacturing.command.finishedTime')}: &emsp;
-                                                    {formatFullDate(currentCommand.finishedTime)}
-                                                </p>
-                                            </React.Fragment>
-                                            :
-                                            translate("manufacturing.command.no_data")
+                                                        }
+                                                    </p>
+                                                </div>
+                                            )
+                                        })
                                     }
                                 </fieldset>
                             </div>
@@ -446,30 +473,34 @@ class ManufacturingCommandDetailInfo extends Component {
                         <div className="row">
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                 <fieldset className="scheduler-border">
-                                    <legend className="scheduler-border">{translate('manufacturing.command.approvers')}</legend>
+                                    <legend className="scheduler-border">{translate('manufacturing.command.result')}</legend>
                                     {
-                                        currentCommand.approvers && currentCommand.approvers.length &&
-                                        currentCommand.approvers.map((x, index) => {
-                                            return (
-                                                <div className="form-group" key={index}>
-                                                    <p>
-                                                        {x.approver.name}
-                                                        {" - "}
-                                                        {x.approver.email}
-                                                        {
-                                                            x.approvedTime &&
-                                                            <React.Fragment>
-                                                                &emsp; &emsp; &emsp;
-                                                                {translate('manufacturing.command.approvedTime')}
-                                                                : &emsp;
-                                                                {formatFullDate(x.approvedTime)}
-                                                            </React.Fragment>
+                                        (currentCommand.finishedProductQuantity
+                                            && currentCommand.finishedTime)
+                                            ?
+                                            <React.Fragment>
+                                                <p>
+                                                    {translate('manufacturing.command.finishedProductQuantity')}: &emsp;
+                                                    {currentCommand.finishedProductQuantity + " (" + currentCommand.good.baseUnit + ")"}
+                                                    &emsp;&emsp;&emsp;
+                                                    {translate('manufacturing.command.rateFinishedProductQuantity')}: &emsp;
+                                                    {Math.round(currentCommand.finishedProductQuantity * 100 / (currentCommand.finishedProductQuantity + (currentCommand.substandardProductQuantity ? currentCommand.substandardProductQuantity : 0)) * 100) / 100}%
+                                                </p>
+                                                <p>
+                                                    {translate('manufacturing.command.substandardProductQuantity')}: &emsp;
+                                                    {currentCommand.substandardProductQuantity ? currentCommand.substandardProductQuantity + " (" + currentCommand.good.baseUnit + ")" : 0 + " (" + currentCommand.good.baseUnit + ")"}
+                                                    &emsp;&emsp;&emsp;
+                                                    {translate('manufacturing.command.rateSubstandardProductQuantity')}: &emsp;
+                                                    {Math.round((currentCommand.substandardProductQuantity ? currentCommand.substandardProductQuantity : 0) * 100 / (currentCommand.finishedProductQuantity + (currentCommand.substandardProductQuantity ? currentCommand.substandardProductQuantity : 0)) * 100) / 100}%
 
-                                                        }
-                                                    </p>
-                                                </div>
-                                            )
-                                        })
+                                                </p>
+                                                <p>
+                                                    {translate('manufacturing.command.finishedTime')}: &emsp;
+                                                    {formatFullDate(currentCommand.finishedTime)}
+                                                </p>
+                                            </React.Fragment>
+                                            :
+                                            translate("manufacturing.command.no_data")
                                     }
                                 </fieldset>
                             </div>
@@ -500,7 +531,11 @@ const mapDispatchToProps = {
     getDetailManufacturingCommand: commandActions.getDetailManufacturingCommand,
     getBillsByCommand: BillActions.getBillsByCommand,
     getInventoryByGoodIds: LotActions.getInventoryByGoodIds,
-    getAllGoodsByType: GoodActions.getAllGoodsByType
+    getAllGoodsByType: GoodActions.getAllGoodsByType,
+
+    // Thêm để tạo phiếu xuất kho nguyên vật liệu
+    getAllStocks: StockActions.getAllStocks,
+    getAllUserOfCompany: UserActions.getAllUserOfCompany
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(ManufacturingCommandDetailInfo));

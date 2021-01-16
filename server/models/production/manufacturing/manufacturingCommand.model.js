@@ -89,6 +89,10 @@ const ManufacturingCommandSchema = new Schema({
             type: Date
         }
     }],
+    purchasingRequest: {
+        type: Schema.Types.ObjectId,
+        ref: "PurchasingRequest"
+    }
 }, {
     timestamps: true
 });

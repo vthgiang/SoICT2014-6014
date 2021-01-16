@@ -374,6 +374,24 @@ class PurchasingRequestDetailForm extends Component {
                             <label>{translate('manufacturing.purchasing_request.code')}<span className="text-red">*</span></label>
                             <input type="text" disabled={true} value={code} className="form-control"></input>
                         </div>
+                        {
+                            currentCommand &&
+                            <React.Fragment>
+                                <div className="form-group">
+                                    <label>{translate('manufacturing.purchasing_request.command_code')}</label>
+                                    <input type="text" value={currentCommand.code} disabled={true} className="form-control"></input>
+                                </div>
+                                <div className="form-group">
+                                    <label>{translate('manufacturing.command.start_date')}</label>
+                                    <input type="text" value={formatDate(currentCommand.startDate)} disabled={true} className="form-control"></input>
+                                </div>
+                                <div className="form-group">
+                                    <label>{translate('manufacturing.command.end_date')}</label>
+                                    <input type="text" value={formatDate(currentCommand.endDate)} disabled={true} className="form-control"></input>
+                                </div>
+                            </React.Fragment>
+
+                        }
                         <div className={`form-group ${!errorIntendReceiveTime ? "" : "has-error"}`}>
                             <label>{translate('manufacturing.purchasing_request.receiveTime')}<span className="text-red">*</span></label>
                             <DatePicker

@@ -4589,9 +4589,31 @@ export default {
                 choose_all_lot:
                     "Vui lòng nhập hết số lượng sản phẩm trong lô để tạo phiếu nhập kho",
                 create_product_bill_successfully:
-                    "Thêm phiếu nhập sản phẩm thành công",
-                create_product_bill_failed: "Thêm phiếu nhập sản phẩm thất bại",
+                    "Thêm phiếu thành công",
+                create_product_bill_failed: "Thêm phiếu thất bại",
                 add_product_bill: "Thêm phiếu nhập sản phẩm",
+
+                // Phần xuất kho nguyên vật liệu
+
+                material_name: "Tên nguyên vật liệu",
+                material_code: "Mã nguyên vật liệu",
+                command_info: "Thông tin nguyên vật liệu trong lệnh sản xuất",
+                quantity_needed_bill: "Số lượng chưa lên phiếu xuất",
+                add_material_bill: "Thêm phiếu xuất kho nguyên vật liệu",
+                create_material_bill_successfully: "Thêm phiếu xuất kho nguyên vật liệu thành công",
+                create_material_bill_failed: "Thêm phiếu xuất kho nguyên vật liệu thất bại",
+                bill_material_info: "Thông tin phiếu xuất kho nguyên vật liệu",
+                materials_in_bill: "Danh sách nguyên vật liệu trong phiếu",
+                number_inventory: "Số lượng tồn kho",
+                quality_control_staffs: "Người kiểm định chất lượng",
+                quality_control_staffs_error: "Vui lòng chọn người kiểm định chất lượng",
+                quantity: "Số lượng",
+                choose_material: "Chọn nguyên vật liệu",
+                command_code: "Mã lệnh sản xuất",
+                mill_request: "Xưởng yêu cầu",
+                quantity_needed_true: "Để duyệt lệnh sản xuất, vui lòng lên phiếu xuất kho cho đủ số lượng nguyên vật liệu cần thiết!"
+
+
             },
             inventory_management: {
                 product: "Sản phẩm",
@@ -5000,6 +5022,7 @@ export default {
                 purchasing_request_edit: "Sửa phiếu đề nghị",
                 edit_successfully: "Sửa phiếu dề nghị thành công",
                 edit_failed: "Sửa phiếu đề nghị thất bại",
+                cancel_purchasing_request: "Hủy phiếu đề nghị mua hàng"
             },
             work_schedule: {
                 //general
@@ -5179,7 +5202,7 @@ export default {
                 productity: "Số sản phẩm sản xuất / ca",
                 person_number: "Số công nhân / ca",
                 approvers: "Người phê duyệt",
-                qualityControlStaffs: "Người đảm bảo chất lượng",
+                qualityControlStaffs: "Người kiểm định chất lượng",
                 accountables: "Người giám sát",
                 command_code: "Mã lệnh",
                 created_all_command: "Vui lòng phân hết số lượng các sản phẩm vào lệnh sản xuất",

@@ -14,6 +14,7 @@ exports.createPurchasingRequest = async (req, res) => {
             content: purchasingRequest
         });
     } catch (error) {
+        console.log(error.message);
         await Log.error(req.user.email, "CREATE_PURCHASING_REQUEST", req.portal);
 
         res.status(400).json({

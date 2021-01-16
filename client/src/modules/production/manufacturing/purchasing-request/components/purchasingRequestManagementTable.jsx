@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { formatDate } from '../../../../../helpers/formatDate';
-import { DataTableSetting, DatePicker, PaginateBar, SelectMulti } from "../../../../../common-components";
+import { ConfirmNotification, DataTableSetting, DatePicker, PaginateBar, SelectMulti } from "../../../../../common-components";
 import PurchasingRequestDetailForm from './purchasingRequestDetailForm';
 import PurchasingRequestEditForm from './purchasingRequestEditForm';
 import PurchasingRequestCreateForm from './purchasingRequestCreateForm';
@@ -9,6 +9,7 @@ import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import { purchasingRequestActions } from '../redux/actions';
 import { GoodActions } from '../../../common-production/good-management/redux/actions';
 import { LotActions } from '../../../warehouse/inventory-management/redux/actions';
+import { purchasingRequest } from '../redux/reducers';
 class PurchasingRequestManagementTable extends Component {
     constructor(props) {
         super(props);
@@ -141,6 +142,13 @@ class PurchasingRequestManagementTable extends Component {
         window.$('#modal-edit-purchasing-request').modal('show');
     }
 
+    cancelPurchasingRequest = (purchasingRequest) => {
+        const data = {
+            status: 3
+        }
+        this.props.editPurchasingRequest(purchasingRequest._id, data);
+    }
+
     render() {
 
         const { translate, purchasingRequest } = this.props;
@@ -264,7 +272,18 @@ class PurchasingRequestManagementTable extends Component {
                                         <td style={{ color: translate(`manufacturing.purchasing_request.${purchasingRequest.status}.color`) }}>{translate(`manufacturing.purchasing_request.${purchasingRequest.status}.content`)}</td>
                                         <td style={{ textAlign: "center" }}>
                                             <a style={{ width: '5px' }} title={translate('manufacturing.purchasing_request.purchasing_request_detail')} onClick={() => { this.handleShowDetailPurchasingRequest(purchasingRequest) }}><i className="material-icons">view_list</i></a>
-                                            <a className="edit text-yellow" style={{ width: '5px' }} title={translate('manufacturing.purchasing_request.purchasing_request_edit')} onClick={() => this.handleEditPurchasingRequest(purchasingRequest)}><i className="material-icons">edit</i></a>
+                                            {
+                                                purchasingRequest.status !== 3 &&
+                                                <a className="edit text-yellow" style={{ width: '5px' }} title={translate('manufacturing.purchasing_request.purchasing_request_edit')} onClick={() => this.handleEditPurchasingRequest(purchasingRequest)}><i className="material-icons">edit</i></a>
+                                            }
+                                            <ConfirmNotification
+                                                icon="question"
+                                                title={translate('manufacturing.purchasing_request.cancel_purchasing_request')}
+                                                content={translate('manufacturing.purchasing_request.cancel_purchasing_request') + " " + purchasingRequest.code}
+                                                name="cancel"
+                                                className="text-red"
+                                                func={() => this.cancelPurchasingRequest(purchasingRequest)}
+                                            />
                                         </td>
                                     </tr>
                                 ))
@@ -290,7 +309,8 @@ function mapStateToProps(state) {
 const mapDispatchToProps = {
     getAllPurchasingRequests: purchasingRequestActions.getAllPurchasingRequests,
     getAllGoodsByType: GoodActions.getAllGoodsByType,
-    getInventoryByGoodIds: LotActions.getInventoryByGoodIds
+    getInventoryByGoodIds: LotActions.getInventoryByGoodIds,
+    editPurchasingRequest: purchasingRequestActions.editPurchasingRequest
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(PurchasingRequestManagementTable));

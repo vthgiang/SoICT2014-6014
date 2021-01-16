@@ -162,6 +162,7 @@ exports.createManyProductBills = async (req, res) => {
             content: bills
         })
     } catch (error) {
+        console.log(error.message);
         await Logger.error(req.user.email, 'CREATE_MANY_PRODUCT_BILL', req.portal);
 
         res.status(400).json({

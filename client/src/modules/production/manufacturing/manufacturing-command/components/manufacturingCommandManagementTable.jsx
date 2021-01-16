@@ -236,6 +236,16 @@ class ManufacturingCommandManagementTable extends Component {
         window.$('#modal-quality-control').modal('show');
     }
 
+    reloadCommandTable = () => {
+        const data = {
+            page: 1,
+            limit: 5,
+            currentRole: this.state.currentRole
+        }
+        this.props.getAllManufacturingCommands(data);
+        window.$('#modal-detail-info-manufacturing-command-1').modal('hide');
+    }
+
 
     render() {
         const { translate, manufacturingCommand } = this.props;
@@ -249,7 +259,11 @@ class ManufacturingCommandManagementTable extends Component {
         return (
             <React.Fragment>
                 {
-                    <ManufacturingCommandDetailInfo idModal={1} commandDetail={this.state.commandDetail} />
+                    <ManufacturingCommandDetailInfo
+                        idModal={1}
+                        commandDetail={this.state.commandDetail}
+                        onReloadCommandTable={this.reloadCommandTable}
+                    />
                 }
                 {
                     this.state.command &&

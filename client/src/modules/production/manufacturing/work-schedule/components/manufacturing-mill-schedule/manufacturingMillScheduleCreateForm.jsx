@@ -14,7 +14,7 @@ class ManufacturingMillScheduleCreateForm extends Component {
         this.state = {
             month: currentMonthYear,
             allDaysOfMonth: allDaysOfMonth,
-            numberOfTurns: 3,
+            numberOfTurns: 4,
             manufacturingMill: 'all'
         }
     }

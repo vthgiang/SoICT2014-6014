@@ -330,7 +330,7 @@ class ManufacturingLotDetailForm extends Component {
                                                         <tr key={index}>
                                                             <td>{index + 1}</td>
                                                             <td>{x.bill ? x.bill.code : ''}</td>
-                                                            <td>{this.formatDate(x.createdAt)}</td>
+                                                            <td>{formatDate(x.createdAt)}</td>
                                                             <td>{translate(`manage_warehouse.bill_management.billType.${x.type}`)}</td>
                                                             <td>{x.quantity ? x.quantity : 0}</td>
                                                             <td>{x.stock ? x.stock.name : ""}</td>
