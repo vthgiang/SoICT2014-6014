@@ -53,31 +53,31 @@ class QuoteEditForm extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.quoteEdit._id !== prevState.quoteId) {
+        if (nextProps.quoteDetail._id && nextProps.quoteDetail._id !== prevState.quoteId) {
             return {
                 ...prevState,
                 step: 0,
-                quoteId: nextProps.quoteEdit._id,
-                code: nextProps.quoteEdit.code,
-                effectiveDate: nextProps.quoteEdit.effectiveDate ? formatDate(nextProps.quoteEdit.effectiveDate) : "",
-                expirationDate: nextProps.quoteEdit.expirationDate ? formatDate(nextProps.quoteEdit.expirationDate) : "",
-                customer: nextProps.quoteEdit.customer._id,
-                customerName: nextProps.quoteEdit.customer.name,
-                customerPhone: nextProps.quoteEdit.customerPhone,
-                customerTaxNumber: nextProps.quoteEdit.customer.taxNumber,
-                customerRepresent: nextProps.quoteEdit.customerRepresent,
-                customerAddress: nextProps.quoteEdit.customerAddress,
-                customerEmail: nextProps.quoteEdit.customerEmail,
-                deliveryTime: nextProps.quoteEdit.deliveryTime ? formatDate(nextProps.quoteEdit.deliveryTime) : "",
-                discountsOfOrderValue: nextProps.quoteEdit.discounts,
+                quoteId: nextProps.quoteDetail._id,
+                code: nextProps.quoteDetail.code,
+                effectiveDate: nextProps.quoteDetail.effectiveDate ? formatDate(nextProps.quoteDetail.effectiveDate) : "",
+                expirationDate: nextProps.quoteDetail.expirationDate ? formatDate(nextProps.quoteDetail.expirationDate) : "",
+                customer: nextProps.quoteDetail.customer._id,
+                customerName: nextProps.quoteDetail.customer.name,
+                customerPhone: nextProps.quoteDetail.customerPhone,
+                customerTaxNumber: nextProps.quoteDetail.customer.taxNumber,
+                customerRepresent: nextProps.quoteDetail.customerRepresent,
+                customerAddress: nextProps.quoteDetail.customerAddress,
+                customerEmail: nextProps.quoteDetail.customerEmail,
+                deliveryTime: nextProps.quoteDetail.deliveryTime ? formatDate(nextProps.quoteDetail.deliveryTime) : "",
+                discountsOfOrderValue: nextProps.quoteDetail.discounts,
                 discountsOfOrderValueChecked: Object.assign({}),
-                note: nextProps.quoteEdit.note,
-                paymentAmount: nextProps.quoteEdit.paymentAmount,
-                shippingFee: nextProps.quoteEdit.shippingFee,
-                coin: nextProps.quoteEdit.coin,
-                status: nextProps.quoteEdit.status,
-                goods: nextProps.quoteEdit.goods
-                    ? nextProps.quoteEdit.goods.map((item) => {
+                note: nextProps.quoteDetail.note,
+                paymentAmount: nextProps.quoteDetail.paymentAmount,
+                shippingFee: nextProps.quoteDetail.shippingFee,
+                coin: nextProps.quoteDetail.coin,
+                status: nextProps.quoteDetail.status,
+                goods: nextProps.quoteDetail.goods
+                    ? nextProps.quoteDetail.goods.map((item) => {
                           return {
                               good: item.good,
                               pricePerBaseUnit: item.pricePerBaseUnit,
@@ -930,7 +930,8 @@ class QuoteEditForm extends Component {
 function mapStateToProps(state) {
     const { customers } = state.crm;
     const { discounts } = state;
-    return { discounts, customers };
+    const { quoteDetail } = state.quotes;
+    return { discounts, customers, quoteDetail };
 }
 
 const mapDispatchToProps = {

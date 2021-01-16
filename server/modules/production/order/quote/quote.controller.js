@@ -18,8 +18,6 @@ exports.createNewQuote = async (req, res) => {
     } catch (error) {
         await Log.error(req.user.email, "CREATED_NEW_QUOTE", req.portal);
 
-        console.log("Error", error);
-
         res.status(400).json({
             success: false,
             messages: ["create_failed"],
@@ -37,7 +35,7 @@ exports.getAllQuotes = async (req, res) => {
 
         res.status(200).json({
             success: true,
-            message: ["get_successfully"],
+            messages: ["get_successfully"],
             content: allQuotes
         })
         
@@ -67,8 +65,6 @@ exports.editQuote = async (req, res) => {
         });
     } catch (error) {
         await Log.error(req.user.email, "EDIT_QUOTE", req.portal);
-        console.log(error.message);
-
         res.status(400).json({
             success: false,
             messages: ["edit_failed"],
@@ -81,19 +77,18 @@ exports.approveQuote = async (req, res) => {
     try {
         let id = req.params.id;
         let data = req.body;
-        let quote = await QuoteService.approveQuote(req.user._id, id, data, req.portal);
+        let quote = await QuoteService.approveQuote(id, data, req.portal);
 
         await Log.info(req.user.email, "APPROVE_QUOTES", req.portal);
 
         res.status(200).json({
             success: true,
-            message: ["approve_successfully"],
+            messages: ["approve_successfully"],
             content: quote
         })
         
     } catch (error) {
         await Log.error(req.user.email, "APPROVE_QUOTES", req.portal);
-
         res.status(400).json({
             success: false,
             messages: ["approve_failed"],
@@ -111,7 +106,7 @@ exports.deleteQuote = async (req, res) => {
 
         res.status(200).json({
             success: true,
-            message: ["delete_successfully"],
+            messages: ["delete_successfully"],
             content: quote
         })
         
@@ -134,7 +129,7 @@ exports.getQuotesToMakeOrder = async (req, res) => {
 
         res.status(200).json({
             success: true,
-            message: ["get_quotes_to_make_order_successfully"],
+            messages: ["get_quotes_to_make_order_successfully"],
             content: quotes
         })
         
@@ -148,3 +143,25 @@ exports.getQuotesToMakeOrder = async (req, res) => {
         });
     }
 }
+
+exports.getQuoteDetail = async ( req, res ) => {
+    try {
+        let id = req.params.id;
+        let quote = await QuoteService.getQuoteDetail( id, req.portal)
+
+        await Log.info(req.user.email, "GET_QUOTE_DETAIL", req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ["get_detail_successfully"],
+            content: quote
+        });
+    } catch (error) {
+        await Log.error(req.user.email, "GET_QUOTE_DETAIL", req.portal);
+        res.status(400).json({
+            success: false,
+            messages: ["get_detail_failed"],
+            content: error.message
+        });
+    }
+}
+

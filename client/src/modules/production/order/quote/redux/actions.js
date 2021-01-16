@@ -7,7 +7,8 @@ export const QuoteActions = {
     editQuote,
     deleteQuote,
     approveQuote,
-    getQuotesToMakeOrder
+    getQuotesToMakeOrder,
+    getQuoteDetail
 }
 
 function createNewQuote (data) {
@@ -137,5 +138,27 @@ function getQuotesToMakeOrder() {
                 error
             })
         })
+    }
+}
+
+function getQuoteDetail(id) {
+    return (dispatch) => {
+        dispatch({
+            type: QuoteConstants.GET_QUOTE_DETAIL_REQUEST
+        })
+
+        QuoteServices.getQuoteDetail(id)
+            .then((res) => {
+                dispatch({
+                    type: QuoteConstants.GET_QUOTE_DETAIL_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch((error) => {
+                dispatch({
+                    type: QuoteConstants.GET_QUOTE_DETAIL_FAILURE,
+                    error
+                })
+            })
     }
 }

@@ -13,6 +13,7 @@ var findIndex = (array, id) => {
 const initState = {
     isLoading: false,
     listQuotes: [],
+    quoteDetail: {},
     quotesToMakeOrder: [],
     totalDocs: 0,
     limit: 0,
@@ -34,6 +35,7 @@ export function quotes(state = initState, action) {
         case QuoteConstants.DELETE_QUOTE_REQUEST:
         case QuoteConstants.APPROVE_QUOTE_REQUEST:
         case QuoteConstants.GET_QUOTES_TO_MAKE_ORDER_REQUEST:
+        case QuoteConstants.GET_QUOTE_DETAIL_REQUEST:
             return {
                 ...state,
                 isLoading: true
@@ -45,6 +47,7 @@ export function quotes(state = initState, action) {
         case QuoteConstants.DELETE_QUOTE_FAILURE:
         case QuoteConstants.APPROVE_QUOTE_FAILURE:
         case QuoteConstants.GET_QUOTES_TO_MAKE_ORDER_FAILURE:
+        case QuoteConstants.GET_QUOTE_DETAIL_FAILURE:
                 return {
                     ...state,
                     isLoading: false,
@@ -83,7 +86,16 @@ export function quotes(state = initState, action) {
             return {
                 ...state,
                 isLoading: false
-        }
+            }
+        case QuoteConstants.APPROVE_QUOTE_SUCCESS:
+            index = findIndex(state.listQuotes, action.payload.quote._id);
+            if (index !== -1) {
+                state.listQuotes[index] = action.payload.quote
+            }
+            return {
+                ...state,
+                isLoading: false
+            }
             
         case QuoteConstants.DELETE_QUOTE_SUCCESS:
                 index = findIndex(state.listQuotes, action.payload.quote._id);
@@ -101,6 +113,13 @@ export function quotes(state = initState, action) {
                 ...state,
                 isLoading: false,
                 quotesToMakeOrder: action.payload.quotes,
+            }
+        
+        case QuoteConstants.GET_QUOTE_DETAIL_SUCCESS:
+            return {
+                ...state,
+                quoteDetail: action.payload.quote,
+                isLoading: false
             }
         
         default:

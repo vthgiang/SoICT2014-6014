@@ -704,8 +704,6 @@ class PurchaseOrderCreateFormFromPurchasingRequest extends Component {
             priceErrorOnTable,
         } = this.state;
 
-        console.log("PURCHASING REQUEST", this.props.purchasingRequest.listPurchasingRequests);
-
         return (
             <React.Fragment>
                 <DialogModal

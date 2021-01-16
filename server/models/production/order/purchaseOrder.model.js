@@ -40,14 +40,18 @@ const PurchaseOrderShema = new Schema({
         approver: {
             type: Schema.Types.ObjectId,
             ref: 'User',
-            required: true
-        }, 
+            // required: true
+        },
         approveAt: {
             type: Date,
         },
-        status: {
-            type: Boolean,
-            default: false
+        status: {//1. Chưa phê duyệt, 2. Đã phê duyệt, 3. Đã hủy
+            type: Number,
+            enum: [1, 2, 3],
+            default: 1
+        },
+        note: {
+            type: String
         }
     }],
     supplier: {//Đối tác, tạm thời chưa có quản lý đối tác kinh doanh nên lấy Customer

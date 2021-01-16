@@ -23,6 +23,7 @@ import PurchaseDetailForm from "./purchaseOrderDetailForm";
 import PurchaseOrderEditForm from "./purchaseOrderEditForm";
 import GoodReceiptCreateForm from "../../../warehouse/bill-management/components/good-receipts/goodReceiptCreateForm";
 import BillDetailForm from "../../../warehouse/bill-management/components/genaral/billDetailForm";
+import PurchaseOrderApproveForm from "./purchaseOrderApproveForm";
 class PurchaseOrderTable extends Component {
     constructor(props) {
         super(props);
@@ -156,8 +157,26 @@ class PurchaseOrderTable extends Component {
         window.$("#modal-detail-bill").modal("show");
     };
 
+    checkUserForApprove = (purchaseOrder) => {
+        const { approvers } = purchaseOrder;
+        const userId = localStorage.getItem("userId");
+        let checkApprove = approvers.find((element) => element.approver._id === userId);
+        if (checkApprove) {
+            return parseInt(checkApprove.status);
+            //Trả về trạng thái 1. chưa phê duyệt, 2. Đã phê duyệt, 3. Đã hủy
+        }
+        return -1;
+    };
+
+    handleShowApprove = async (purchaseOrder) => {
+        await this.setState({
+            purchaseOrderApprove: purchaseOrder,
+        });
+        window.$("#modal-approve-purchase-order").modal("show");
+    };
+
     render() {
-        const { code, status, codeCreate, purchaseOrderEdit, purchaseOrderDetail, purchaseOrderAddBill, billCode } = this.state;
+        const { code, status, codeCreate, purchaseOrderEdit, purchaseOrderDetail, purchaseOrderAddBill, billCode, purchaseOrderApprove } = this.state;
 
         const { translate, purchaseOrders } = this.props;
         const { totalPages, page, listPurchaseOrders } = purchaseOrders;
@@ -227,7 +246,7 @@ class PurchaseOrderTable extends Component {
                         group={"1"}
                     />
                     <BillDetailForm />
-
+                    <PurchaseOrderApproveForm purchaseOrderApprove={purchaseOrderApprove} />
                     <div className="form-inline">
                         <div className="form-group">
                             <label className="form-control-static">Mã đơn</label>
@@ -340,6 +359,16 @@ class PurchaseOrderTable extends Component {
                                             <a onClick={() => this.handleShowDetail(item)}>
                                                 <i className="material-icons">view_list</i>
                                             </a>
+                                            {this.checkUserForApprove(item) === 1 && item.status === 1 && (
+                                                <a
+                                                    onClick={() => this.handleShowApprove(item)}
+                                                    className="add text-success"
+                                                    style={{ width: "5px" }}
+                                                    title="Phê duyệt đơn"
+                                                >
+                                                    <i className="material-icons">check_circle_outline</i>
+                                                </a>
+                                            )}
                                             <a
                                                 onClick={() => this.handleEdit(item)}
                                                 className="edit text-yellow"
