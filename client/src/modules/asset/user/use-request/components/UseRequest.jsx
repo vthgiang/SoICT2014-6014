@@ -281,7 +281,7 @@ class UseRequest extends Component {
                                             <td>{x.approver ? x.approver.email : ''}</td>
                                             <td>{this.formatStatus(x.status)}</td>
                                             <td style={{ textAlign: "center" }}>
-                                                {x.status == 'disapproved' &&
+                                                {(x.status === 'disapproved' || x.status === "waiting_for_approval") &&
                                                     <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={translate('asset.asset_info.edit_usage_info')}><i className="material-icons">edit</i></a>
                                                 }
                                                 <DeleteNotification

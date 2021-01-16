@@ -7,7 +7,6 @@ const {
 } = require(`../../../../helpers/dbHelper`);
 
 exports.createNewQuote = async (userId, data, portal) => {
-    console.log("data", data);
     let newQuote = await Quote(connect(DB_CONNECTION, portal)).create({
         code: data.code,
         status: data.status,
@@ -19,6 +18,12 @@ exports.createNewQuote = async (userId, data, portal) => {
         customerAddress: data.customerAddress,
         customerRepresent: data.customerRepresent,
         customerEmail: data.customerEmail,
+        approvers: data.approvers ? data.approvers.map((approver) => {
+            return {
+                approver: approver.approver,
+            }
+        }) : undefined,
+        organizationalUnit: data.organizationalUnit,
         goods: data.goods ? data.goods.map((item) => {
             return {
                 good: item.good,

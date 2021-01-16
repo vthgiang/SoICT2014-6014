@@ -4,7 +4,6 @@ import { withTranslate } from "react-redux-multilingual";
 import { QuoteActions } from "../redux/actions";
 import { DiscountActions } from "../../discount/redux/actions";
 import { CrmCustomerActions } from "../../../../crm/customer/redux/actions";
-import { DepartmentActions } from "../../../../super-admin/organizational-unit/redux/actions";
 import { RoleActions } from "../../../../super-admin/role/redux/actions";
 import { BusinessDepartmentActions } from "../../business-department/redux/actions";
 import { formatCurrency } from "../../../../../helpers/formatCurrency";
@@ -32,7 +31,7 @@ class QuoteManageTable extends Component {
         this.props.getDiscountForOrderValue();
         this.props.getCustomers();
         this.props.getAllBusinessDepartments({ page: 1, limit: 1000 });
-        this.props.getAllRoles();
+        // this.props.getAllRoles();
     };
 
     setPage = async (page) => {

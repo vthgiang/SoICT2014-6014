@@ -205,23 +205,6 @@ class SuperHome extends Component {
                     </div>
                 </div>
 
-                {/* Lịch công việc chi tiết */}
-                <div className="row">
-                    <div className="col-xs-12">
-                        <div className="box box-primary">
-                            <div className="box-header with-border">
-                                <div className="box-title">{translate('task.task_management.tasks_calendar')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
-                            </div>
-                            <CalendarEmployee
-                                startMonth={startMonth}
-                                endMonth={endMonth}
-                                home={true}
-                            />
-                        </div>
-
-                    </div>
-                </div>
-
                 <div className="row">
                     <div className="col-xs-6">
                         <div className="box box-primary">
@@ -276,6 +259,22 @@ class SuperHome extends Component {
                                         </ul> : "Đang tải dữ liệu"
                                 }
                             </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Lịch công việc chi tiết */}
+                <div className="row">
+                    <div className="col-xs-12">
+                        <div className="box box-primary">
+                            <div className="box-header with-border">
+                                <div className="box-title">{translate('task.task_management.tasks_calendar')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
+                            </div>
+                            <CalendarEmployee
+                                startMonth={startMonth}
+                                endMonth={endMonth}
+                                home={true}
+                            />
                         </div>
                     </div>
                 </div>

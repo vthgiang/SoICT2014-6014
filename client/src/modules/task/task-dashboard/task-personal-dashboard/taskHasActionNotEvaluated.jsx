@@ -67,7 +67,7 @@ class TaskHasActionNotEvaluated extends Component {
                         <div className="box-header with-border">
                             <div className="box-title">{translate('task.task_management.task_has_action_not_evaluated')}</div>
                         </div>
-                        <div className="box-body" style={{ minHeight: "300px" }}>
+                        <div className="box-body" style={{ height: "380px", overflow: "auto" }}>
                             {
                                 TaskHasActionsAccountable || TaskHasActionsResponsible ?
                                     <div>

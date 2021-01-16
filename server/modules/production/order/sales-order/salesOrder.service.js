@@ -273,20 +273,55 @@ exports.editSalesOrder = async (userId, companyId, id, data, portal) => {
     return { salesOrder: salesOrderUpdated }
 }
 
-exports.approveSalesOrder = async (salesOrderId, approver, portal) => {
-    let salesOrder = await SalesOrder(connect(DB_CONNECTION, portal)).findById(salesOrderId)
+function checkStatusApprove(approvers) {
+    let count = 0; //Đếm xem số người phê duyệt có trạng thái bằng 2
+    for (let index = 0; index < approvers.length; index++){
+        if (parseInt(approvers[index].status) === 2) {
+            count++;
+        } else if (parseInt(approvers[index].status) === 3) {
+            return 8;//Trả về trạng thái đơn là đã hủy
+        }
+    }
+
+    if (count === approvers.length) {
+        return 2; //Trả về trạng thái đơn là đã phê duyệt
+    }
+
+    return -1; //Chưa cần thay đổi trạng thái
+}
+
+exports.approveSalesOrder = async (salesOrderId, data, portal) => {
+    let salesOrder = await SalesOrder(connect(DB_CONNECTION, portal)).findById(salesOrderId).populate([{
+        path: 'creator', select: 'name'
+    }, {
+        path: 'customer', select: 'name taxNumber'
+    },{
+        path: 'goods.good', select: 'code name baseUnit'
+        }])
 
     if (!salesOrder) {
         throw Error("Sales Order is not existing")
     }
 
-    salesOrder.approvers.push({
-        approver: approver.approver,
-        approveAt: new Date(),
-        status: approver.status
-    });
+    let indexApprover = salesOrder.approvers.findIndex((element) => element.approver.toString() === data.approver.toString())
 
-    salesOrder.save();
+    if (indexApprover !== -1) {
+        salesOrder.approvers[indexApprover] = {
+            approver: data.approver,
+            approveAt: new Date(),
+            status: data.status,
+            note: data.note
+        }
+
+        let statusChange = checkStatusApprove(salesOrder.approvers);
+        if (statusChange !== -1) {
+            salesOrder.status = statusChange;
+        }
+
+        salesOrder.save();
+    } else {
+        throw Error("Can't find approver in sales order!")
+    }
 
     return { salesOrder }
 }
