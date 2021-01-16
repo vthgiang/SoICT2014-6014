@@ -522,7 +522,7 @@ exports.getInventoryByGoods = async (data, portal) => {
     for (let i = 0; i < array.length; i++) {
         let inventory = 0;
         let goodInventory = {};
-        const lots = await Lot(connect(DB_CONNECTION, portal)).find({ good: array[i] });
+        const lots = await Lot(connect(DB_CONNECTION, portal)).find({ good: array[i], quantity: { $ne: 0 } });
         if (lots.length > 0) {
             for (let j = 0; j < lots.length; j++) {
                 inventory += Number(lots[j].quantity);
@@ -724,4 +724,45 @@ exports.getInventories = async (query, portal) => {
         }
     }
     return data;
+}
+
+exports.getInventoryInStockByGoods = async (query, portal) => {
+    const { goodId, stockId } = query;
+    const group = '2';
+    const status = ['1', '3', '5'];
+    let goodInventory = {};
+    let inventory = 0;
+    const good = await Good(connect(DB_CONNECTION, portal)).findById({ _id: goodId});
+    const stock = await Stock(connect(DB_CONNECTION, portal)).findById({ _id: stockId });
+    goodInventory.good = good;
+    goodInventory.stock = stock;
+
+    const lots = await Lot(connect(DB_CONNECTION, portal)).find({ good: goodId, quantity: { $ne: 0 }, stocks: { $elemMatch: { stock: stockId } } });
+
+    if(lots.length > 0) {
+        for(let j = 0; j < lots.length; j) {
+            for(let k = 0; k < lots[j].stocks.length; k++) {
+                if(stockId.toString() === lots[j].stocks[k].stock.toString()) {
+                    inventory += Number(lots[j].stocks[k].quantity);
+                }
+            }
+        }
+
+        const bills = await Bill(connect(DB_CONNECTION, portal)).find({ goods: { $elemMatch: { good: good._id } }, group: group, status: { $in: status }, fromStock: stockId });
+        if (bills.length > 0) {
+            for (let x = 0; x < bills.length; k++) {
+                for (let y = 0; y < bills[x].goods.length; y++) {
+                    if (bills[x].goods[y].good.toString() === goodId.toString()) {
+                        inventory -= Number(bills[x].goods[y].quantity)
+                    }
+                }
+            }
+        }
+        goodInventory.inventory = inventory;
+    }
+    else {
+        goodInventory.inventory = 0;
+    }
+
+    return goodInventory;
 }
