@@ -59,12 +59,13 @@ const BillSchema = new Schema({
             type: Schema.Types.ObjectId,
             ref: 'User'
         },
-        
+
         approvedTime: {
             type: Date
         }
     }],
 
+    // LSX
     qualityControlStaffs: [{ // Danh sách người kiểm định chất lượng 
         staff: { // Người kiểm định
             type: Schema.Types.ObjectId,

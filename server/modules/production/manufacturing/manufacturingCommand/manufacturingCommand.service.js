@@ -401,6 +401,16 @@ function findIndexOfStaff(array, id) {
     return result;
 }
 
+function findIndexOfApprover(array, id) {
+    let result = -1;
+    array.forEach((element, index) => {
+        if (element.approver == id) {
+            result = index;
+        }
+    });
+    return result;
+}
+
 exports.editManufaturingCommand = async (id, data, portal) => {
     let oldManufacturingCommand = await ManufacturingCommand(connect(DB_CONNECTION, portal))
         .findById(id);
@@ -438,14 +448,47 @@ exports.editManufaturingCommand = async (id, data, portal) => {
     } else {
         oldManufacturingCommand.qualityControlStaffs = oldManufacturingCommand.qualityControlStaffs;
     }
-
     oldManufacturingCommand.status = data.status ? data.status : oldManufacturingCommand.status;
+    if (data.approver) {
+        let index = findIndexOfApprover(oldManufacturingCommand.approvers, data.approver);
+        if (index != -1) {
+            oldManufacturingCommand.approvers[index].approver = data.approver;
+            oldManufacturingCommand.approvers[index].approvedTime = new Date(Date.now());
+        }
+    }
     oldManufacturingCommand.finishedProductQuantity = data.finishedProductQuantity ? data.finishedProductQuantity : oldManufacturingCommand.finishedProductQuantity;
     oldManufacturingCommand.substandardProductQuantity = data.substandardProductQuantity ? data.substandardProductQuantity : oldManufacturingCommand.substandardProductQuantity;
     oldManufacturingCommand.finishedTime = data.finishedTime ? data.finishedTime : oldManufacturingCommand.finishedTime;
-
-
     await oldManufacturingCommand.save();
+
+    if (data.status == 3) {
+        let manufacturingPlan = await ManufacturingPlan(connect(DB_CONNECTION, portal)).findById({
+            _id: oldManufacturingCommand.manufacturingPlan
+        });
+        if (manufacturingPlan.status == 2) {
+            manufacturingPlan.status = 3;
+            await manufacturingPlan.save();
+        }
+    }
+    if (data.status == 4) {
+        let manufacturingPlan = await ManufacturingPlan(connect(DB_CONNECTION, portal)).findById({
+            _id: oldManufacturingCommand.manufacturingPlan
+        }).populate([{
+            path: 'manufacturingCommands'
+        }]);
+        if (manufacturingPlan.status == 3) {
+            let result = true;
+            for (let i = 0; i < manufacturingPlan.manufacturingCommands.length; i++) {
+                if (manufacturingPlan.manufacturingCommands[i].status != 4 && manufacturingPlan.manufacturingCommands[i].status != 5) {
+                    result = false;
+                }
+            }
+            if (result) {
+                manufacturingPlan.status = 4;
+                await manufacturingPlan.save();
+            }
+        }
+    }
 
     let manufacturingCommand = await ManufacturingCommand(connect(DB_CONNECTION, portal))
         .findById({ _id: oldManufacturingCommand._id })

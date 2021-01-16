@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import { DialogModal } from '../../../../../common-components';
 import { formatDate } from '../../../../../helpers/formatDate';
+import ManufacturingCommandDetailInfo from '../../manufacturing-command/components/manufacturingCommandDetailInfo';
 import { purchasingRequestActions } from '../redux/actions';
 class PurchasingRequestDetailForm extends Component {
     constructor(props) {
@@ -21,6 +22,12 @@ class PurchasingRequestDetailForm extends Component {
         // Nên trả true để render ra
         return true;
     }
+    handleShowDetailManufacturingCommand = async (commandDetail) => {
+        await this.setState({
+            commandDetail: commandDetail
+        });
+        window.$('#modal-detail-info-manufacturing-command-3').modal('show');
+    }
 
     render() {
         const { translate, purchasingRequest } = this.props;
@@ -28,8 +35,6 @@ class PurchasingRequestDetailForm extends Component {
         if (purchasingRequest.currentPurchasingRequest) {
             currentPurchasingRequest = purchasingRequest.currentPurchasingRequest
         }
-
-        console.log("rendering....");
         return (
             <React.Fragment>
                 <DialogModal
@@ -41,6 +46,10 @@ class PurchasingRequestDetailForm extends Component {
                     hasSaveButton={false}
                     hasNote={false}
                 >
+                    <ManufacturingCommandDetailInfo
+                        idModal={3}
+                        commandDetail={this.state.commandDetail}
+                    />
                     <form id={`form-detail-purchasing-request`}>
                         <div className="row">
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
@@ -50,7 +59,14 @@ class PurchasingRequestDetailForm extends Component {
                                 </div>
                                 <div className="form-group">
                                     <strong>{translate('manufacturing.purchasing_request.command_code')}:&emsp;</strong>
-                                    {currentPurchasingRequest.manufacturingCommand && currentPurchasingRequest.manufacturingCommand.code}
+                                    {
+                                        currentPurchasingRequest.manufacturingCommand &&
+                                        <a
+                                            href="#"
+                                            onClick={() => this.handleShowDetailManufacturingCommand(currentPurchasingRequest.manufacturingCommand)}>
+                                            {currentPurchasingRequest.manufacturingCommand.code}
+                                        </a>
+                                    }
                                 </div>
                                 <div className="form-group">
                                     <strong>{translate('manufacturing.purchasing_request.creator')}:&emsp;</strong>
