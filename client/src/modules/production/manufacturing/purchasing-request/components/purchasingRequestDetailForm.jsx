@@ -50,7 +50,7 @@ class PurchasingRequestDetailForm extends Component {
                                 </div>
                                 <div className="form-group">
                                     <strong>{translate('manufacturing.purchasing_request.command_code')}:&emsp;</strong>
-                                    {currentPurchasingRequest.planCode}
+                                    {currentPurchasingRequest.manufacturingCommand && currentPurchasingRequest.manufacturingCommand.code}
                                 </div>
                                 <div className="form-group">
                                     <strong>{translate('manufacturing.purchasing_request.creator')}:&emsp;</strong>

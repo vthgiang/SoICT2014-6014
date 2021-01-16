@@ -227,7 +227,7 @@ class ManufacturingPlanManagementTable extends Component {
         if (manufacturingPlan.listPlans && manufacturingPlan.isLoading === false) {
             listPlans = manufacturingPlan.listPlans;
         }
-        const { code, startDate, endDate, createdAt, commandCode, manufacturingOrderCode, salesOrderCode } = this.state;
+        const { code, startDate, endDate, createdAt, commandCode, salesOrderCode } = this.state;
         const { totalPages, page } = manufacturingPlan;
         return (
             <React.Fragment>

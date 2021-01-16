@@ -12,7 +12,8 @@ class PurchasingRequestDetailForm extends Component {
         this.EMPTY_GOOD = {
             goodId: "1",
             goodObject: "",
-            quantity: ""
+            quantity: "",
+            baseUnit: ""
         };
         this.state = {
             code: generateCode("PDN"),
@@ -109,6 +110,7 @@ class PurchasingRequestDetailForm extends Component {
             let goodArrFilter = listGoodsByType.filter(x => x._id === good.goodId);
             if (goodArrFilter) {
                 good.goodObject = goodArrFilter[0];
+                good.baseUnit = goodArrFilter[0].baseUnit;
             }
 
 
@@ -331,8 +333,28 @@ class PurchasingRequestDetailForm extends Component {
         return null;
     }
 
+    checkInventoryMaterials = (material, currentCommand) => {
+        if (material.quantity * currentCommand.quantity > material.inventory) {
+            return 0
+        }
+        return 1
+    }
+
+    getCurrentCommand = (currentCommand) => {
+        const { listInventories } = this.props.lots;
+        if (listInventories.length) {
+            listInventories.map((x, index) => {
+                if (currentCommand.good && currentCommand.good.materials[index]) {
+                    currentCommand.good.materials[index].inventory = x.inventory;
+                }
+            });
+        }
+        return currentCommand;
+    }
+
     render() {
         const { translate, purchasingRequest } = this.props;
+        let currentCommand = this.getCurrentCommand(this.props.currentCommand);
         const { code, intendReceiveTime, errorIntendReceiveTime, description, errorDescription, good, errorGood, errorQuantity, listGoods, goodOptions } = this.state;
         return (
             <React.Fragment>
@@ -368,6 +390,52 @@ class PurchasingRequestDetailForm extends Component {
                             <ErrorLabel content={errorDescription} />
                         </div>
 
+
+                        {
+                            currentCommand &&
+                            <div className="row">
+                                <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                    <fieldset className="scheduler-border">
+                                        <legend className="scheduler-border">{translate('manufacturing.command.material')}</legend>
+                                        <div className={`form-group`}>
+                                            <table className="table table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th>{translate('manufacturing.command.index')}</th>
+                                                        <th>{translate('manufacturing.command.material_code')}</th>
+                                                        <th>{translate('manufacturing.command.material_name')}</th>
+                                                        <th>{translate('manufacturing.command.good_base_unit')}</th>
+                                                        <th>{translate('manufacturing.command.quantity')}</th>
+                                                        <th>{translate('manufacturing.command.inventory')}</th>
+                                                        <th style={{ textAlign: "left" }}>{translate('manufacturing.command.status')}</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {
+                                                        currentCommand.good && currentCommand.good.materials && currentCommand.good.materials.length
+                                                        &&
+                                                        currentCommand.good.materials.map((x, index) => (
+                                                            <tr key={index}>
+                                                                <td> {index + 1}</td>
+                                                                <td>{x.good.code}</td>
+                                                                <td>{x.good.name}</td>
+                                                                <td>{x.good.baseUnit}</td>
+                                                                <td>{x.quantity * currentCommand.quantity}</td>
+                                                                <td>{x.inventory}</td>
+                                                                <td style={{ color: translate(`manufacturing.command.materials_info.${this.checkInventoryMaterials(x, currentCommand)}.color`) }}>
+                                                                    {translate(`manufacturing.command.materials_info.${this.checkInventoryMaterials(x, currentCommand)}.content`)}
+                                                                </td>
+                                                            </tr>
+                                                        ))
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </fieldset>
+                                </div>
+                            </div>
+                        }
+
                         <fieldset className="scheduler-border">
                             <legend className="scheduler-border">{translate('manufacturing.purchasing_request.material_info')}</legend>
                             <div className={`form-group ${!errorGood ? "" : "has-error"}`}>
@@ -382,6 +450,10 @@ class PurchasingRequestDetailForm extends Component {
                                     multiple={false}
                                 />
                                 <ErrorLabel content={errorGood} />
+                            </div>
+                            <div className={`form-group`}>
+                                <label>{translate('manufacturing.purchasing_request.good_base_unit')}</label>
+                                <input type="text" value={good.baseUnit} disabled={true} className="form-control" />
                             </div>
 
                             <div className={`form-group ${!errorQuantity ? "" : "has-error"}`}>
@@ -446,8 +518,8 @@ class PurchasingRequestDetailForm extends Component {
 }
 
 function mapStateToProps(state) {
-    const { purchasingRequest, goods } = state;
-    return { purchasingRequest, goods }
+    const { purchasingRequest, goods, lots } = state;
+    return { purchasingRequest, goods, lots }
 }
 
 const mapDispatchToProps = {

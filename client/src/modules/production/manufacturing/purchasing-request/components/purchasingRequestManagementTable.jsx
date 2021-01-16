@@ -8,6 +8,7 @@ import PurchasingRequestCreateForm from './purchasingRequestCreateForm';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import { purchasingRequestActions } from '../redux/actions';
 import { GoodActions } from '../../../common-production/good-management/redux/actions';
+import { LotActions } from '../../../warehouse/inventory-management/redux/actions';
 class PurchasingRequestManagementTable extends Component {
     constructor(props) {
         super(props);
@@ -120,6 +121,17 @@ class PurchasingRequestManagementTable extends Component {
             }
         });
 
+        if (purchasingRequest.manufacturingCommand) {
+            const materials = purchasingRequest.manufacturingCommand.good.materials;
+            let materialIds = [];
+            materials.map(x => {
+                materialIds.push(x.good._id)
+            });
+            await this.props.getInventoryByGoodIds({
+                array: materialIds,
+            });
+        }
+
         await this.setState((state) => ({
             ...state,
             currentRow: purchasingRequest,
@@ -151,6 +163,7 @@ class PurchasingRequestManagementTable extends Component {
                         intendReceiveTime={this.state.currentRow.intendReceiveTime}
                         description={this.state.currentRow.description}
                         listGoods={this.state.listGoods}
+                        currentCommand={this.state.currentRow.manufacturingCommand}
                     />
                 }
                 <div className="box-body qlcv">
@@ -244,7 +257,7 @@ class PurchasingRequestManagementTable extends Component {
                                     <tr key={index}>
                                         <td>{index + 1}</td>
                                         <td>{purchasingRequest.code}</td>
-                                        <td>{purchasingRequest.planCode}</td>
+                                        <td>{purchasingRequest.manufacturingCommand ? purchasingRequest.manufacturingCommand.code : ""}</td>
                                         <td>{purchasingRequest.creator && purchasingRequest.creator.name}</td>
                                         <td>{formatDate(purchasingRequest.createdAt)}</td>
                                         <td>{formatDate(purchasingRequest.intendReceiveTime)}</td>
@@ -276,7 +289,8 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = {
     getAllPurchasingRequests: purchasingRequestActions.getAllPurchasingRequests,
-    getAllGoodsByType: GoodActions.getAllGoodsByType
+    getAllGoodsByType: GoodActions.getAllGoodsByType,
+    getInventoryByGoodIds: LotActions.getInventoryByGoodIds
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(PurchasingRequestManagementTable));
