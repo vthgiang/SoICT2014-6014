@@ -1169,7 +1169,7 @@ export default {
             manage_discount: "Giảm giá",
             manage_tax: "Thuế",
             manage_sla: "Cam kết chất lượng",
-            manage_business_department: "Cấu hình đơn vị kinh doanh",
+            manage_business_department: "Phân vai trò đơn vị kinh doanh",
             manage_payment: "Quản lý thu chi",
             manage_bank_account: "Quản lý thông tin tài khoản ngân hàng",
 
@@ -4690,12 +4690,12 @@ export default {
                 get_all_failed: "Lấy danh sách tài khoản không thành công"
             },
             business_department: {
-                create_successfully: "Đã cấu hình đơn vị kinh doanh",
-                create_failed: "Cấu hình đơn vị kinh doanh không thành công",
-                edit_successfully: "Đã chỉnh sửa cấu hình đơn vị kinh doanh",
-                edit_failed: "Chưa cập nhật được cấu hình đơn vị",
-                get_successfully: "Lấy danh sách cấu hình đơn vị kinh doanh thành công",
-                get_failed: "Đã xảy ra lỗi khi lấy danh sách cấu hình đơn vị kinh doanh"
+                create_successfully: "Đã phân vai trò đơn vị kinh doanh",
+                create_failed: "Phân vai trò đơn vị kinh doanh không thành công",
+                edit_successfully: "Đã chỉnh sửa vai trò đơn vị kinh doanh",
+                edit_failed: "Chưa cập nhật được vai trò đơn vị",
+                get_successfully: "Lấy danh sách vai trò đơn vị kinh doanh thành công",
+                get_failed: "Đã xảy ra lỗi khi lấy danh sách vai trò đơn vị kinh doanh"
             },
             discount: {
                 create_successfully: "Tạo mới khuyến mãi thành công",
