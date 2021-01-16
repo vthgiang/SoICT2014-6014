@@ -7,9 +7,9 @@ const PurchaseOrderShema = new Schema({
         type: String,
         required: true
     },
-    status: {//1. Chờ phê duyệt, 2. Đã phê duyệt, 3. Đã nhập kho, 4. Đã hủy
+    status: {//1. Chờ phê duyệt, 2. Đã phê duyệt, 3.Yêu cầu nhập kho, 4. Đã nhập kho, 5. Đã hủy
         type: Number,
-        enum: [1, 2, 3, 4],
+        enum: [1, 2, 3, 4, 5],
         default: 1
     },
     creator: { // Người tạo

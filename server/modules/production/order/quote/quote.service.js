@@ -6,6 +6,8 @@ const {
     connect
 } = require(`../../../../helpers/dbHelper`);
 
+const BusinessDepartmentServices = require('../business-department/buninessDepartment.service');
+
 exports.createNewQuote = async (userId, data, portal) => {
     let newQuote = await Quote(connect(DB_CONNECTION, portal)).create({
         code: data.code,
@@ -119,7 +121,8 @@ exports.createNewQuote = async (userId, data, portal) => {
     return { quote }
 }
 
-exports.getAllQuotes = async (query, portal) => {
+exports.getAllQuotes = async (userId, query, portal) => {
+    await BusinessDepartmentServices.getAllRelationsUser(userId);
     let { page, limit, code, status, customer} = query;
     let option = {};
     if (code) {

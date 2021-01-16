@@ -197,7 +197,7 @@ function checkStatusApprove(approvers) {
         if (parseInt(approvers[index].status) === 2) {
             count++;
         } else if (parseInt(approvers[index].status) === 3) {
-            return 4;//Trả về trạng thái đơn là đã hủy
+            return 5;//Trả về trạng thái đơn là đã hủy
         }
     }
 

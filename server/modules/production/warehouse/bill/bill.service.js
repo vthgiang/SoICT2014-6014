@@ -341,6 +341,7 @@ exports.createBill = async (userId, data, portal) => {
     if (data.salesOrderId) {
         let salesOrder = await SalesOrder(connect(DB_CONNECTION, portal)).findById({ _id: data.salesOrderId });
         salesOrder.bill = bill._id; //Gắn bill vào đơn hàng
+        salesOrder.status = 5; //Thay đổi trạng thái đơn là yêu cầu xuất kho
         salesOrder.save();
     }
 
@@ -348,6 +349,7 @@ exports.createBill = async (userId, data, portal) => {
     if (data.purchaseOrderId) {
         let purchaseOrder = await PurchaseOrder(connect(DB_CONNECTION, portal)).findById({ _id: data.purchaseOrderId });
         purchaseOrder.bill = bill._id; //Gắn bill vào đơn hàng
+        purchaseOrder.status = 3; //Thay đổi trạng thái đơn là yêu cầu nhập kho
         purchaseOrder.save();
     }
 
@@ -499,7 +501,7 @@ exports.editBill = async (id, userId, data, portal, companyId) => {
         await PurchaseOrder(connect(DB_CONNECTION, portal)).findOneAndUpdate({
             bill: bill._id
         }, {
-            $set: { status: 3 }
+            $set: { status: 4 }
         });
 
         //Cập nhật trạng thái đơn mua hàng là đà hoàn thành khi bill xuất kho hoàn thành
@@ -520,7 +522,7 @@ exports.editBill = async (id, userId, data, portal, companyId) => {
         await PurchaseOrder(connect(DB_CONNECTION, portal)).findOneAndUpdate({
             bill: bill._id
         }, {
-            $set: { status: 4 }
+            $set: { status: 5 }
         });
 
         //Cập nhật trạng thái đơn mua hàng là đã hủy
@@ -537,7 +539,7 @@ exports.editBill = async (id, userId, data, portal, companyId) => {
                 await CustomerService.editCustomerPoint(portal, companyId, customerPoint._id, { point: salesOrder.coin + customerPoint.point }, userId)
             }
         }
-    }
+    } 
     //------------------KẾT THÚC PHẦN PHỤC VỤ CHO QUẢN LÝ ĐƠN HÀNG-----------------
 
     // Nếu trạng thái chuyển từ đang thực hiện sang trạng thái đã hoàn thành thì

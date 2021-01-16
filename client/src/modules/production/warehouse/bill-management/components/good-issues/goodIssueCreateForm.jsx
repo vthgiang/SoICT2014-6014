@@ -414,8 +414,8 @@ class GoodIssueCreateForm extends Component {
         let totalQuantity =
             data.length > 0
                 ? data.reduce(function (accumulator, currentValue) {
-                    return Number(accumulator) + Number(currentValue.quantity);
-                }, 0)
+                      return Number(accumulator) + Number(currentValue.quantity);
+                  }, 0)
                 : 0;
         this.state.good.quantity = totalQuantity;
         this.state.good.lots = data;
@@ -558,16 +558,16 @@ class GoodIssueCreateForm extends Component {
                 address: salesOrderAddBill.customerAddress,
                 listGood: salesOrderAddBill.goods
                     ? salesOrderAddBill.goods.map((good) => {
-                        return {
-                            good: {
-                                _id: good.good._id,
-                                code: good.good.code,
-                                name: good.good.name,
-                                baseUnit: good.good.baseUnit,
-                            },
-                            quantity: good.quantity,
-                        };
-                    })
+                          return {
+                              good: {
+                                  _id: good.good._id,
+                                  code: good.good.code,
+                                  name: good.good.name,
+                                  baseUnit: good.good.baseUnit,
+                              },
+                              quantity: good.quantity,
+                          };
+                      })
                     : "",
             };
         }
@@ -575,10 +575,7 @@ class GoodIssueCreateForm extends Component {
 
         //---Lập phiếu xuất nguyên vật liệu từ lệnh sản xuất---
 
-
         //---Kế thúc lập phiếu xuất nguyên liệu từ lệnh sản xuất---
-
-
 
         if (nextProps.group !== prevState.group) {
             return {
@@ -679,16 +676,14 @@ class GoodIssueCreateForm extends Component {
 
         return (
             <React.Fragment>
-                {createdSource !== "salesOrder" ? (
+                {createdSource !== "salesOrder" && (
                     <ButtonModal
                         onButtonCallBack={this.handleClickCreate}
                         modalID={`modal-create-bill-issue`}
                         button_name={translate("manage_warehouse.good_management.add")}
                         title={translate("manage_warehouse.good_management.add_title")}
                     />
-                ) : (
-                        ""
-                    )}
+                )}
 
                 <DialogModal
                     modalID={`modal-create-bill-issue`}
@@ -964,15 +959,15 @@ class GoodIssueCreateForm extends Component {
                                             </button>
                                         </React.Fragment>
                                     ) : (
-                                            <button
-                                                className="btn btn-success"
-                                                style={{ marginLeft: "10px" }}
-                                                disabled={!this.isGoodsValidated()}
-                                                onClick={this.handleAddGood}
-                                            >
-                                                {translate("task_template.add")}
-                                            </button>
-                                        )}
+                                        <button
+                                            className="btn btn-success"
+                                            style={{ marginLeft: "10px" }}
+                                            disabled={!this.isGoodsValidated()}
+                                            onClick={this.handleAddGood}
+                                        >
+                                            {translate("task_template.add")}
+                                        </button>
+                                    )}
                                     <button className="btn btn-primary" style={{ marginLeft: "10px" }} onClick={this.handleClearGood}>
                                         {translate("task_template.delete")}
                                     </button>
@@ -1011,35 +1006,35 @@ class GoodIssueCreateForm extends Component {
                                                     </td>
                                                 </tr>
                                             ) : (
-                                                    listGood.map((x, index) => (
-                                                        <tr key={index}>
-                                                            <td>{index + 1}</td>
-                                                            <td>{x.good.code}</td>
-                                                            <td>{x.good.name}</td>
-                                                            <td>{x.good.baseUnit}</td>
-                                                            <td>{x.quantity}</td>
-                                                            <td>{x.description}</td>
-                                                            <td>
-                                                                <a
-                                                                    href="#abc"
-                                                                    className="edit"
-                                                                    title={translate("general.edit")}
-                                                                    onClick={() => this.handleEditGood(x, index)}
-                                                                >
-                                                                    <i className="material-icons"></i>
-                                                                </a>
-                                                                <a
-                                                                    href="#abc"
-                                                                    className="delete"
-                                                                    title={translate("general.delete")}
-                                                                    onClick={() => this.handleDeleteGood(index)}
-                                                                >
-                                                                    <i className="material-icons"></i>
-                                                                </a>
-                                                            </td>
-                                                        </tr>
-                                                    ))
-                                                )}
+                                                listGood.map((x, index) => (
+                                                    <tr key={index}>
+                                                        <td>{index + 1}</td>
+                                                        <td>{x.good.code}</td>
+                                                        <td>{x.good.name}</td>
+                                                        <td>{x.good.baseUnit}</td>
+                                                        <td>{x.quantity}</td>
+                                                        <td>{x.description}</td>
+                                                        <td>
+                                                            <a
+                                                                href="#abc"
+                                                                className="edit"
+                                                                title={translate("general.edit")}
+                                                                onClick={() => this.handleEditGood(x, index)}
+                                                            >
+                                                                <i className="material-icons"></i>
+                                                            </a>
+                                                            <a
+                                                                href="#abc"
+                                                                className="delete"
+                                                                title={translate("general.delete")}
+                                                                onClick={() => this.handleDeleteGood(index)}
+                                                            >
+                                                                <i className="material-icons"></i>
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                ))
+                                            )}
                                         </tbody>
                                     </table>
                                 </div>

@@ -175,6 +175,15 @@ class PurchaseOrderTable extends Component {
         window.$("#modal-approve-purchase-order").modal("show");
     };
 
+    checkCreator = (purchaseOrder) => {
+        const { creator } = purchaseOrder;
+        const userId = localStorage.getItem("userId");
+        if (userId === creator._id) {
+            return true;
+        }
+        return false;
+    };
+
     render() {
         const { code, status, codeCreate, purchaseOrderEdit, purchaseOrderDetail, purchaseOrderAddBill, billCode, purchaseOrderApprove } = this.state;
 
@@ -190,8 +199,12 @@ class PurchaseOrderTable extends Component {
                 text: "Chờ phê duyệt",
             },
             {
-                className: "text-warning",
+                className: "text-success",
                 text: "Đã phê duyệt",
+            },
+            {
+                className: "text-warning",
+                text: "Yêu cầu nhập kho",
             },
             {
                 className: "text-success",
@@ -276,10 +289,14 @@ class PurchaseOrderTable extends Component {
                                     },
                                     {
                                         value: 3,
-                                        text: "Đã nhập kho",
+                                        text: "Yêu cầu nhập kho",
                                     },
                                     {
                                         value: 4,
+                                        text: "Đã nhập kho",
+                                    },
+                                    {
+                                        value: 5,
                                         text: "Đã hủy",
                                     },
                                 ]}
@@ -377,7 +394,7 @@ class PurchaseOrderTable extends Component {
                                             >
                                                 <i className="material-icons">edit</i>
                                             </a>
-                                            {!item.bill ? (
+                                            {!item.bill && item.status !== 1 && this.checkCreator(item) && (
                                                 <a
                                                     onClick={() => this.handleAddBill(item)}
                                                     className="add text-success"
@@ -386,7 +403,8 @@ class PurchaseOrderTable extends Component {
                                                 >
                                                     <i className="material-icons">add</i>
                                                 </a>
-                                            ) : (
+                                            )}
+                                            {item.bill && item.status !== 1 && (
                                                 <a
                                                     onClick={() => this.handleShowBillDetail(item.bill)}
                                                     className="add text-success"

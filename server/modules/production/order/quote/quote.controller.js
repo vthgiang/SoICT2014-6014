@@ -29,7 +29,7 @@ exports.createNewQuote = async (req, res) => {
 exports.getAllQuotes = async (req, res) => {
     try {
         let query = req.query;
-        let allQuotes = await QuoteService.getAllQuotes(query, req.portal);
+        let allQuotes = await QuoteService.getAllQuotes(req.user._id, query, req.portal);
 
         await Log.info(req.user.email, "GET_ALL_QUOTES", req.portal);
 
