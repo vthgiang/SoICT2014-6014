@@ -35,7 +35,8 @@ exports.createPurchasingRequest = async (userId, data, portal) => {
         intendReceiveTime: data.intendReceiveTime,
         planCode: data.planCode,
         description: data.description,
-        status: data.status
+        status: data.status,
+        manufacturingCommand: data.manufacturingCommand
     });
 
     let purchasingRequest = await PurchasingRequest(connect(DB_CONNECTION, portal)).findById({ _id: newPurchasingRequest._id })
@@ -43,6 +44,16 @@ exports.createPurchasingRequest = async (userId, data, portal) => {
             path: "creator", select: "name"
         }, {
             path: "materials.good", select: "_id code name baseUnit"
+        }, {
+            path: "manufacturingCommand",
+            populate: [{
+                path: "good",
+                select: "code name baseUnit materials",
+                populate: [{
+                    path: "materials.good",
+                    select: "code name baseUnit",
+                }]
+            }]
         }]);
     return { purchasingRequest }
 }
@@ -80,6 +91,16 @@ exports.getAllPurchasingRequest = async (query, portal) => {
                 path: "creator", select: "name"
             }, {
                 path: "materials.good", select: "_id code name baseUnit"
+            }, {
+                path: "manufacturingCommand",
+                populate: [{
+                    path: "good",
+                    select: "code name baseUnit materials",
+                    populate: [{
+                        path: "materials.good",
+                        select: "code name baseUnit",
+                    }]
+                }]
             }]);
         let purchasingRequests = {};
         purchasingRequests.docs = docs;
@@ -93,6 +114,16 @@ exports.getAllPurchasingRequest = async (query, portal) => {
                     path: "creator", select: "name"
                 }, {
                     path: "materials.good", select: "_id code name baseUnit"
+                }, {
+                    path: "manufacturingCommand",
+                    populate: [{
+                        path: "good",
+                        select: "code name baseUnit materials",
+                        populate: [{
+                            path: "materials.good",
+                            select: "code name baseUnit",
+                        }]
+                    }]
                 }]
             });
         return { purchasingRequests }
@@ -106,6 +137,16 @@ exports.getPurchasingRequestById = async (id, portal) => {
             path: "creator", select: "name"
         }, {
             path: "materials.good", select: "_id code name baseUnit"
+        }, {
+            path: "manufacturingCommand",
+            populate: [{
+                path: "good",
+                select: "code name baseUnit materials",
+                populate: [{
+                    path: "materials.good",
+                    select: "code name baseUnit",
+                }]
+            }]
         }]);
     if (!purchasingRequest) {
         throw Error("purchasingRequest is not existing");
@@ -145,6 +186,16 @@ exports.editPurchasingRequest = async (id, data, portal) => {
             path: "creator", select: "name"
         }, {
             path: "materials.good", select: "_id code name baseUnit"
+        }, {
+            path: "manufacturingCommand",
+            populate: [{
+                path: "good",
+                select: "code name baseUnit materials",
+                populate: [{
+                    path: "materials.good",
+                    select: "code name baseUnit",
+                }]
+            }]
         }]);
 
     return { purchasingRequest }

@@ -122,7 +122,7 @@ class HistoryCommandTable extends Component {
             ...state,
             commandDetail: command
         }));
-        window.$('#modal-detail-info-manufacturing-command-3').modal('show');
+        window.$('#modal-detail-info-manufacturing-command-20').modal('show');
     }
 
     render() {
@@ -144,9 +144,7 @@ class HistoryCommandTable extends Component {
                     hasSaveButton={false}
                     hasNote={false}
                 >
-                    {
-                        <ManufacturingCommandDetailInfo idModal={3} commandDetail={this.state.commandDetail} />
-                    }
+                    <ManufacturingCommandDetailInfo idModal={20} commandDetail={this.state.commandDetail} />
                     <form id={`form-history-command-table`}>
                         <div className="box-body qlcv">
                             <div className="form-inline">

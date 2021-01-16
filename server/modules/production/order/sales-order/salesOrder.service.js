@@ -22,9 +22,9 @@ exports.createNewSalesOrder = async (userId, companyId, data, portal) => {
         approvers: data.approvers ? data.approvers.map((approver) => {
             return {
                 approver: approver.approver,
-                approverRole: approver.approverRole,
             }
         }) : undefined,
+        organizationalUnit: data.organizationalUnit,
         priority: data.priority,
         goods: data.goods ? data.goods.map((item) => {
             return {
@@ -134,9 +134,9 @@ exports.createNewSalesOrder = async (userId, companyId, data, portal) => {
         path: 'creator', select: 'name'
     }, {
         path: 'customer', select: 'name taxNumber'
-    },{
+    }, {
         path: 'goods.good', select: 'code name baseUnit'
-    } ]);;
+    }]);;
     return { salesOrder }
 }
 
@@ -162,7 +162,7 @@ exports.getAllSalesOrders = async (query, portal) => {
                 path: 'creator', select: 'name'
             }, {
                 path: 'customer', select: 'name taxNumber'
-            },{
+            }, {
                 path: 'goods.good', select: 'code name baseUnit'
             }]);
         return { allSalesOrders }
@@ -174,7 +174,7 @@ exports.getAllSalesOrders = async (query, portal) => {
                 path: 'creator', select: 'name'
             }, {
                 path: 'customer', select: 'name taxNumber'
-            },{
+            }, {
                 path: 'goods.good', select: 'code name baseUnit'
             }]
         })
@@ -254,10 +254,10 @@ exports.editSalesOrder = async (userId, companyId, id, data, portal) => {
     }, { new: true });
 
     //Trả lại số xu đã sử dụng cho khách trong trường hợp hủy đơn
-    if (salesOrder && salesOrder.status===8) {
+    if (salesOrder && salesOrder.status === 8) {
         let customerPoint = await CustomerService.getCustomerPoint(portal, companyId, salesOrder.customer);
         if (customerPoint && salesOrder.coin) {
-            await CustomerService.editCustomerPoint(portal, companyId, customerPoint._id, {point:salesOrder.coin + customerPoint.point }, userId)
+            await CustomerService.editCustomerPoint(portal, companyId, customerPoint._id, { point: salesOrder.coin + customerPoint.point }, userId)
         }
     }
 
@@ -266,28 +266,62 @@ exports.editSalesOrder = async (userId, companyId, id, data, portal) => {
             path: 'creator', select: 'name'
         }, {
             path: 'customer', select: 'name taxNumber'
-        },{
+        }, {
             path: 'goods.good', select: 'code name baseUnit'
         }]);
 
     return { salesOrder: salesOrderUpdated }
 }
 
-exports.approveSalesOrder = async (salesOrderId, approver, portal) => {
-    let salesOrder = await SalesOrder(connect(DB_CONNECTION, portal)).findById(salesOrderId)
+function checkStatusApprove(approvers) {
+    let count = 0; //Đếm xem số người phê duyệt có trạng thái bằng 2
+    for (let index = 0; index < approvers.length; index++){
+        if (parseInt(approvers[index].status) === 2) {
+            count++;
+        } else if (parseInt(approvers[index].status) === 3) {
+            return 8;//Trả về trạng thái đơn là đã hủy
+        }
+    }
+
+    if (count === approvers.length) {
+        return 2; //Trả về trạng thái đơn là đã phê duyệt
+    }
+
+    return -1; //Chưa cần thay đổi trạng thái
+}
+
+exports.approveSalesOrder = async (salesOrderId, data, portal) => {
+    let salesOrder = await SalesOrder(connect(DB_CONNECTION, portal)).findById(salesOrderId).populate([{
+        path: 'creator', select: 'name'
+    }, {
+        path: 'customer', select: 'name taxNumber'
+    },{
+        path: 'goods.good', select: 'code name baseUnit'
+        }])
 
     if (!salesOrder) {
         throw Error("Sales Order is not existing")
     }
 
-    salesOrder.approvers.push({
-        approver: approver.approver,
-        approverRole: approver.approverRole,
-        approveAt: new Date(),
-        status: approver.status
-    });
+    let indexApprover = salesOrder.approvers.findIndex((element) => element.approver.toString() === data.approver.toString())
 
-    salesOrder.save();
+    if (indexApprover !== -1) {
+        salesOrder.approvers[indexApprover] = {
+            approver: data.approver,
+            approveAt: new Date(),
+            status: data.status,
+            note: data.note
+        }
+
+        let statusChange = checkStatusApprove(salesOrder.approvers);
+        if (statusChange !== -1) {
+            salesOrder.status = statusChange;
+        }
+
+        salesOrder.save();
+    } else {
+        throw Error("Can't find approver in sales order!")
+    }
 
     return { salesOrder }
 }
@@ -335,9 +369,11 @@ exports.getSalesOrdersByManufacturingWorks = async (currentRole, portal) => {
             path: 'goods.good',
             populate: [{
                 path: 'manufacturingMills.manufacturingMill'
-            },{
+            }, {
                 path: 'goods.discounts.bonusGoods.good', select: 'code name baseUnit'
             }]
+        }, {
+            path: 'customer', select: 'name taxNumber'
         }]);
     //Lọc đơn hàng theo nhà máy
     let salesOrders = [];
@@ -437,9 +473,9 @@ exports.getSalesOrderDetail = async (id, portal) => {
             }]
         }, {
             path: 'goods.manufacturingWorks', select: 'code name address description'
-        },{
+        }, {
             path: 'goods.manufacturingPlan', select: 'code status startDate endDate'
-        } , {
+        }, {
             path: 'goods.discounts.bonusGoods.good', select: 'code name baseUnit'
         }, {
             path: 'goods.discounts.discountOnGoods.good', select: 'code name baseUnit'
@@ -453,6 +489,6 @@ exports.getSalesOrderDetail = async (id, portal) => {
         throw Error("Sales Order is not existing")
     }
 
-    return {salesOrder}
+    return { salesOrder }
 
 }

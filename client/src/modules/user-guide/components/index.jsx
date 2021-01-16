@@ -1,21 +1,14 @@
-import React, { useEffect } from 'react';
-import { connect } from 'react-redux';
-import { withTranslate } from 'react-redux-multilingual';
-import FilePreviewer from 'react-file-previewer';
+import React, { useEffect } from "react";
+import { connect } from "react-redux";
+import { withTranslate } from "react-redux-multilingual";
+import DocViewer from "./doc.jsx";
 const UserGuide = () => {
-    const url = `https://docs.google.com/gview?url=http://www.africau.edu/images/default/sample.pdf&embedded=true`;
-    const url1 = `https://docs.google.com/gview?url=${process.env.REACT_APP_SERVER}/upload/user-guide/abc.pdf&embedded=true`
     return (
         <React.Fragment>
-            <div style={{ maxWidth: '100%' }}>
-                <iframe width="100%" height="500" className="doc" src={url1}></iframe>
-            </div>
-            {/* <div style={{ marginTop: '30px' }}>
-                <iframe width="100%" height="500" class="doc" src={}></iframe>
-            </div> */}
+            {/* <DocViewer source={`${process.env.REACT_APP_SERVER}/upload/user-guide/ns3.pdf`} /> */}
+            <DocViewer source={`https://www.nsnam.org/docs/release/3.18/tutorial/ns-3-tutorial.pdf`} />
         </React.Fragment>
-
-    )
-}
+    );
+};
 
 export default connect(null, null)(withTranslate(UserGuide));

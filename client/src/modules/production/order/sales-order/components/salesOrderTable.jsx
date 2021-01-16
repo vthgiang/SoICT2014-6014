@@ -21,13 +21,14 @@ import { formatCurrency } from "../../../../../helpers/formatCurrency";
 import { formatDate } from "../../../../../helpers/formatDate";
 import { generateCode } from "../../../../../helpers/generateCode";
 //Components Import
-import { PaginateBar, DataTableSetting, SelectMulti, SelectBox, DeleteNotification } from "../../../../../common-components";
+import { PaginateBar, DataTableSetting, SelectMulti, SelectBox, DeleteNotification, ConfirmNotification } from "../../../../../common-components";
 import SalesOrderDetailForm from "./salesOrderDetailForm";
 import SalesOrderCreateForm from "./salesOrderCreateForm";
 import SalesOrderCreateFormFromQuote from "./salesOrderCreateFormFromQuote";
 import SalesOrderEditForm from "./salesOrderEditForm";
 import GoodIssueCreateForm from "../../../warehouse/bill-management/components/good-issues/goodIssueCreateForm";
 import BillDetailForm from "../../../warehouse/bill-management/components/genaral/billDetailForm";
+import SalesOrderApproveForm from "./approveSalesOrder";
 
 class SalesOrderTable extends Component {
     constructor(props) {
@@ -134,10 +135,6 @@ class SalesOrderTable extends Component {
         this.props.getAllSalesOrders(data);
     };
 
-    handleCreate = () => {
-        window.$("#modal-add-sales-order").modal("show");
-    };
-
     handleEditSalesOrder = async (salesOrderEdit) => {
         await this.props.getSalesOrderDetail(salesOrderEdit._id);
         window.$("#modal-edit-sales-order").modal("show");
@@ -169,18 +166,25 @@ class SalesOrderTable extends Component {
         window.$("#modal-add-sales-order-from-quote").modal("show");
     };
 
-    // checkHasComponent = (name) => {
-    //     let { auth } = this.props;
-    //     let result = false;
-    //     auth.components.forEach(component => {
-    //         if (component.name === name) result = true;
-    //     });
+    checkUserForApprove = (salesOrder) => {
+        const { approvers } = salesOrder;
+        const userId = localStorage.getItem("userId");
+        let checkApprove = approvers.find((element) => element.approver === userId);
+        if (checkApprove) {
+            return parseInt(checkApprove.status);
+        }
+        return -1;
+    };
 
-    //     return result;
-    // }
+    handleShowApprove = async (salesOrder) => {
+        await this.setState({
+            salesOrderApprove: salesOrder,
+        });
+        window.$("#modal-approve-sales-order").modal("show");
+    };
 
     render() {
-        let { limit, code, salesOrderAddBill, billCode, detailModalId } = this.state;
+        let { limit, code, salesOrderAddBill, billCode, detailModalId, salesOrderApprove } = this.state;
         const { translate, salesOrders } = this.props;
         const { totalPages, page } = salesOrders;
 
@@ -297,6 +301,7 @@ class SalesOrderTable extends Component {
                         />
                         <BillDetailForm />
                         <SalesOrderEditForm />
+                        <SalesOrderApproveForm salesOrderApprove={salesOrderApprove} />
                         <div className="form-inline">
                             <div className="form-group">
                                 <label className="form-control-static">Mã đơn</label>
@@ -433,21 +438,16 @@ class SalesOrderTable extends Component {
                                             <td className={dataStatus[item.status].className}>{dataStatus[item.status].text}</td>
                                             <td className={dataPriority[item.priority].className}>{dataPriority[item.priority].text}</td>
                                             <td>{item.deliveryTime ? formatDate(item.deliveryTime) : "---"}</td>
-                                            {item.status === -1 ? (
-                                                <td>
-                                                    <a onClick={this.handleCreate}>
-                                                        <i className="fa fa-plus-square text-primary"></i>
-                                                    </a>
-                                                </td>
-                                            ) : (
-                                                <td
-                                                    style={{
-                                                        textAlign: "center",
-                                                    }}
-                                                >
-                                                    <a onClick={() => this.handleShowDetailInfo(item)}>
-                                                        <i className="material-icons">view_list</i>
-                                                    </a>
+                                            <td
+                                                style={{
+                                                    textAlign: "center",
+                                                }}
+                                            >
+                                                <a onClick={() => this.handleShowDetailInfo(item)}>
+                                                    <i className="material-icons">view_list</i>
+                                                </a>
+                                                {/* Chỉ được sửa khi đơn hàng chưa phê duyệt */}
+                                                {item.status === 1 && (
                                                     <a
                                                         onClick={() => this.handleEditSalesOrder(item)}
                                                         className="edit text-yellow"
@@ -456,27 +456,38 @@ class SalesOrderTable extends Component {
                                                     >
                                                         <i className="material-icons">edit</i>
                                                     </a>
-                                                    {!item.bill ? (
-                                                        <a
-                                                            onClick={() => this.handleAddBill(item)}
-                                                            className="add text-success"
-                                                            style={{ width: "5px" }}
-                                                            title="Yêu cầu xuất kho"
-                                                        >
-                                                            <i className="material-icons">add</i>
-                                                        </a>
-                                                    ) : (
-                                                        <a
-                                                            onClick={() => this.handleShowBillDetail(item.bill)}
-                                                            className="add text-success"
-                                                            style={{ width: "5px" }}
-                                                            title="Yêu cầu xuất kho"
-                                                        >
-                                                            <i className="material-icons">remove_red_eye</i>
-                                                        </a>
-                                                    )}
-                                                </td>
-                                            )}
+                                                )}
+                                                {!item.bill && item.status !== 1 && this.checkUserForApprove(item) === 2 && (
+                                                    <a
+                                                        onClick={() => this.handleAddBill(item)}
+                                                        className="add text-success"
+                                                        style={{ width: "5px" }}
+                                                        title="Yêu cầu xuất kho"
+                                                    >
+                                                        <i className="material-icons">add</i>
+                                                    </a>
+                                                )}
+                                                {item.bill && item.status !== 1 && (
+                                                    <a
+                                                        onClick={() => this.handleShowBillDetail(item.bill)}
+                                                        className="add text-success"
+                                                        style={{ width: "5px" }}
+                                                        title="Yêu cầu xuất kho"
+                                                    >
+                                                        <i className="material-icons">remove_red_eye</i>
+                                                    </a>
+                                                )}
+                                                {this.checkUserForApprove(item) === 1 && item.status === 1 && (
+                                                    <a
+                                                        onClick={() => this.handleShowApprove(item)}
+                                                        className="add text-success"
+                                                        style={{ width: "5px" }}
+                                                        title="Yêu cầu xuất kho"
+                                                    >
+                                                        <i className="material-icons">check_circle_outline</i>
+                                                    </a>
+                                                )}
+                                            </td>
                                         </tr>
                                     ))}
                             </tbody>

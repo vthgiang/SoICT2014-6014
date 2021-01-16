@@ -93,13 +93,14 @@ exports.getDetailLot = async (id, portal) => {
             { path: 'good' },
             { path: 'stocks.binLocations.binLocation', select: 'id path' },
             { path: 'stocks.stock' },
-            { path: "manufacturingCommand"},
-            { path: 'lotLogs.bill', 
+            { path: "manufacturingCommand" },
+            {
+                path: 'lotLogs.bill',
                 populate: [
-                    { path: 'supplier' }, 
-                    { path: 'customer'}, 
-                    { path: 'manufacturingMill'},
-                    { path: 'toStock'}
+                    { path: 'supplier' },
+                    { path: 'customer' },
+                    { path: 'manufacturingMill' },
+                    { path: 'toStock' }
                 ]
             },
             { path: 'lotLogs.binLocations.binLocation' },
@@ -466,7 +467,14 @@ exports.getAllManufacturingLot = async (query, user, portal) => {
                     path: "good"
                 }, {
                     path: "manufacturingCommand",
-                    select: "code manufacturingMill",
+                    populate: [{
+                        path: "good",
+                        select: "code name baseUnit numberExpirationDate materials",
+                        populate: [{
+                            path: "materials.good",
+                            select: "code name baseUnit",
+                        }]
+                    }]
                 }, {
                     path: "creator"
                 }],
@@ -498,6 +506,13 @@ exports.getDetailManufacturingLot = async (id, portal) => {
                 path: "accountables"
             }, {
                 path: "qualityControlStaffs.staff"
+            }, {
+                path: "good",
+                select: "code name baseUnit numberExpirationDate materials",
+                populate: [{
+                    path: "materials.good",
+                    select: "code name baseUnit",
+                }]
             }]
         }, {
             path: "creator"
@@ -560,7 +575,7 @@ exports.getInventories = async (query, portal) => {
     const status = ['1', '3', '5'];
     let data = [];
     let optionGood = { type: type };
-    if(category) {
+    if (category) {
         optionGood.category = category;
     }
 
@@ -576,8 +591,8 @@ exports.getInventories = async (query, portal) => {
     }
 
     const goods = await Good(connect(DB_CONNECTION, portal)).find(optionGood);
-    if(goods.length > 0) {
-        for(let i = 0; i < goods.length; i++) {
+    if (goods.length > 0) {
+        for (let i = 0; i < goods.length; i++) {
             let inventory = 0;
             let goodIssue = 0;
             let goodReceipt = 0;
@@ -586,7 +601,7 @@ exports.getInventories = async (query, portal) => {
             let goodInventory = {};
             let options = { good: goods[i]._id };
             let optionBill = {};
-            if(query.stock) {
+            if (query.stock) {
                 options.stocks = { $elemMatch: { stock: query.stock } };
                 optionBill.fromStock = query.stock;
             }
@@ -630,12 +645,12 @@ exports.getInventories = async (query, portal) => {
                         }
                     },
 
-                    options = {
-                        ...options,
-                        createdAt: {
-                            $lte: end
+                        options = {
+                            ...options,
+                            createdAt: {
+                                $lte: end
+                            }
                         }
-                    }
                 }
             }
 
@@ -643,13 +658,13 @@ exports.getInventories = async (query, portal) => {
             const lots = await Lot(connect(DB_CONNECTION, portal)).find(options);
             if (lots.length > 0) {
                 for (let j = 0; j < lots.length; j++) {
-                    if(stock === undefined) {
+                    if (stock === undefined) {
                         inventory += Number(lots[j].quantity);
                     }
                     else {
                         stock.map(stockId => {
                             lots[j].stocks.map(stockLot => {
-                                if(stockId.toString() === stockLot.stock.toString()) {
+                                if (stockId.toString() === stockLot.stock.toString()) {
                                     inventory += Number(stockLot.quantity);
                                 }
                             })
