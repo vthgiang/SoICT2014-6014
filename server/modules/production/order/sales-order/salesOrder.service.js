@@ -135,6 +135,12 @@ exports.createNewSalesOrder = async (userId, companyId, data, portal) => {
         path: 'creator', select: 'name'
     }, {
         path: 'customer', select: 'name taxNumber'
+    },{
+        path: 'goods.good', select: 'code name baseUnit'
+    },{
+        path: 'goods.manufacturingWorks', select: 'code name address description'
+    }, {
+        path: 'goods.manufacturingPlan', select: 'code status startDate endDate'
     }]);;
     return { salesOrder }
 }
@@ -173,6 +179,10 @@ exports.getAllSalesOrders = async (userId, query, portal) => {
                 path: 'customer', select: 'name taxNumber'
             }, {
                 path: 'goods.good', select: 'code name baseUnit'
+            },{
+                path: 'goods.manufacturingWorks', select: 'code name address description'
+            }, {
+                path: 'goods.manufacturingPlan', select: 'code status startDate endDate'
             }]);
         return { allSalesOrders }
     } else {
@@ -185,6 +195,10 @@ exports.getAllSalesOrders = async (userId, query, portal) => {
                 path: 'customer', select: 'name taxNumber'
             }, {
                 path: 'goods.good', select: 'code name baseUnit'
+            },{
+                path: 'goods.manufacturingWorks', select: 'code name address description'
+            }, {
+                path: 'goods.manufacturingPlan', select: 'code status startDate endDate'
             }]
         })
         return { allSalesOrders }
@@ -277,7 +291,11 @@ exports.editSalesOrder = async (userId, companyId, id, data, portal) => {
             path: 'customer', select: 'name taxNumber'
         }, {
             path: 'goods.good', select: 'code name baseUnit'
-        }]);
+        },{
+            path: 'goods.manufacturingWorks', select: 'code name address description'
+        }, {
+            path: 'goods.manufacturingPlan', select: 'code status startDate endDate'
+            }]);
 
     return { salesOrder: salesOrderUpdated }
 }
@@ -306,6 +324,10 @@ exports.approveSalesOrder = async (salesOrderId, data, portal) => {
         path: 'customer', select: 'name taxNumber'
     }, {
         path: 'goods.good', select: 'code name baseUnit'
+    },{
+        path: 'goods.manufacturingWorks', select: 'code name address description'
+    }, {
+        path: 'goods.manufacturingPlan', select: 'code status startDate endDate'
     }])
 
     if (!salesOrder) {
@@ -335,6 +357,18 @@ exports.approveSalesOrder = async (salesOrderId, data, portal) => {
     return { salesOrder }
 }
 
+//Kiểm tra yêu cầu sản xuất đã lên kế hoạch hết hay chưa
+function checkAndChangeSalesOrderStatus (goods){
+    for (let index = 0; index < goods.length; index++){
+        if (goods[index].manufacturingWorks && !goods[index].manufacturingPlan) {
+            //Yêu cầu nhà máy sản xuất mà chưa lên kế hoạch
+            return 3; 
+        }
+    }
+    //Tất cả yêu cầu sản xuất đều đã lên kế hoạch
+    return 4;
+}
+
 /**
  * Lên kế hoạch sản xuất cho từng hàng hóa trong đơn
  * @param {*} salesOrderId id đơn hàng
@@ -355,7 +389,7 @@ exports.addManufacturingPlanForGood = async (salesOrderId, manufacturingWorksId,
     })
 
     salesOrder.goods = goodsOfSalesOrder;
-    salesOrder.status = 4;
+    salesOrder.status = checkAndChangeSalesOrderStatus(goodsOfSalesOrder)
 
     await salesOrder.save();
 
@@ -377,7 +411,7 @@ exports.removeManufacturingPlanForGood = async (salesOrderId, manufacturingWorks
     })
 
     salesOrder.goods = goodsOfSalesOrder;
-    salesOrder.status = 3;
+    salesOrder.status = checkAndChangeSalesOrderStatus(goodsOfSalesOrder)
 
     await salesOrder.save();
 

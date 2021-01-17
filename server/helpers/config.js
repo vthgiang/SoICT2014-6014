@@ -180,6 +180,28 @@ const COMPONENTS = [{
     links: [
         '/stock-management'
     ]
+},
+{
+    name: 'create-quote',
+    description: 'Button thêm mới kho',
+    roles: [
+        ROOT_ROLES.SUPER_ADMIN.name,
+        ROOT_ROLES.ADMIN.name
+    ],
+    links: [
+        '/manage-quote'
+    ]
+},
+{
+    name: 'create-sales-order',
+    description: 'Button thêm mới kho',
+    roles: [
+        ROOT_ROLES.SUPER_ADMIN.name,
+        ROOT_ROLES.ADMIN.name
+    ],
+    links: [
+        '/manage-sales-order'
+    ]
 }];
 
 const getComponentsInLink = (link) => {
