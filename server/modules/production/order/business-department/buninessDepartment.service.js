@@ -6,6 +6,8 @@ const {
     connect
 } = require(`../../../../helpers/dbHelper`);
 
+const OrganizationalUnitServices =  require('../../../super-admin/organizational-unit/organizationalUnit.service');
+
 
 //Tạo phòng kinh doanh
 exports.createBusinessDepartment = async (data, portal) => {
@@ -147,6 +149,58 @@ exports.getAllBusinessDepartments = async (query, portal) => {
 }
 
 //Lấy id người hiện tại, cấp dưới của người đó
-exports.getAllRelationsUser = async (query, portal) => { 
-    console.log("OMG");
+//Lấy cả phòng ban hiện tại của người đó và phòng ban con
+exports.getAllRelationsUser = async (userId, currentRole, portal) => { 
+    //Lấy ra phòng ban người đó đang công tác
+    let department = await OrganizationalUnitServices.getOrganizationalUnitByUserRole(portal, currentRole)
+    let usersRelationship = [userId];
+    const { managers, deputyManagers, employees } = department;
+    let check = -1; //1. managers, 2. deputyManagers, 3. employees -- để check vai trò của người này
+    //Kiểm tra xem người này có phải là trưởng đơn vị hay không
+    for (let indexRole = 0; indexRole < managers.length; indexRole++){
+        for (let indexUser = 0; indexUser < managers[indexRole].users.length; indexUser++){
+            if (managers[indexRole].users[indexUser].userId.equals(userId)) {
+                check = 1;
+            }
+        }
+    }
+    if (check === 1) {//Nếu là trưởng đơn vị
+        //i. Lấy danh sách các phó đơn vị dưới quyền người này
+        for (let indexRole = 0; indexRole < deputyManagers.length; indexRole++){
+            for (let indexUser = 0; indexUser < deputyManagers[indexRole].users.length; indexUser++){
+                if (!usersRelationship.find(element => deputyManagers[indexRole].users[indexUser].userId.equals(element))) {
+                    usersRelationship.push(deputyManagers[indexRole].users[indexUser].userId.toString())
+                }
+            }
+        }
+        //ii. Lấy các nhân viên dưới quyền người này
+        for (let indexRole = 0; indexRole < employees.length; indexRole++){
+            for (let indexUser = 0; indexUser < employees[indexRole].users.length; indexUser++){
+                if (!usersRelationship.find(element => employees[indexRole].users[indexUser].userId.equals(element))) {
+                    usersRelationship.push(employees[indexRole].users[indexUser].userId.toString())
+                }
+            }
+        }
+    } else {//Kiểm tra xem người này có phải là phó đơn vị không
+        for (let indexRole = 0; indexRole < deputyManagers.length; indexRole++){
+            for (let indexUser = 0; indexUser < deputyManagers[indexRole].users.length; indexUser++){
+                if (deputyManagers[indexRole].users[indexUser].userId.equals(userId)) {
+                    check = 2;
+                }
+            }
+        }
+
+        if (check === 2) {//Nếu là phó đơn vị
+            //Lấy danh sách nhân viên người này quản lý
+            for (let indexRole = 0; indexRole < employees.length; indexRole++){
+                for (let indexUser = 0; indexUser < employees[indexRole].users.length; indexUser++){
+                    if (!usersRelationship.find(element => employees[indexRole].users[indexUser].userId.equals(element))) {
+                        usersRelationship.push(employees[indexRole].users[indexUser].userId.toString())
+                    }
+                }
+            }
+        }
+    }
+    console.log("usersRelationship", typeof usersRelationship[1])
+    return usersRelationship;
 }
