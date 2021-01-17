@@ -5463,6 +5463,28 @@ export default {
                 create_bill: "Lên phiếu nhập kho",
 
             },
+
+            dashboard: {
+                choose_works: "Chọn nhà máy",
+                from: "Từ",
+                to: "Đến",
+                plan_total: "Tổng số kế hoạch",
+                progress_1: "Số kế hoạch đúng tiến độ/ Tổng số kế hoạch",
+                progress_2: "Số kế hoạch chậm tiến độ/ Tổng số kế hoạch",
+                progress_3: "Số kế hoạch quá hạn / Tổng số tiến độ",
+                plan_number: "Số kế hoạch",
+                plan_number_1: "Số kế hoạch đúng tiến độ",
+                plan_number_2: "Số kế hoạch chậm tiến độ",
+                plan_number_3: "Số kế hoạch quá hạn",
+                see_more: "Xem thêm",
+                command_total: "Tổng số lệnh sản xuất",
+                command_number: "Số lệnh sản xuất",
+                command_number_1: "Số lệnh sản xuất đúng tiến độ / Tổng số lệnh sản xuất",
+                command_number_2: "Số lệnh sản xuất quá hạn / Tổng số lệnh sản xuất",
+                command_progress_1: "Số lệnh sản xuất đúng tiến độ",
+                command_progress_2: "Số lệnh sản xuất quá hạn",
+
+            }
         },
     },
 };

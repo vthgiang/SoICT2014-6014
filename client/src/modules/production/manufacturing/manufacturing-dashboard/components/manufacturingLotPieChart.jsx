@@ -85,7 +85,7 @@ class ManufacturingOrderPieChart extends Component {
                     <div className="box-header with-border">
                         <i className="fa fa-bar-chart-o" />
                         <h3 className="box-title">
-                            Số lượng từng loại đơn sản xuất
+                            Số lượng từng loại lô hàng sản xuất
                         </h3>
                         <div ref="quantityExpiratedDate"></div>
                     </div>

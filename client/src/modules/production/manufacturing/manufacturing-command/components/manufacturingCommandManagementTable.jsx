@@ -261,6 +261,16 @@ class ManufacturingCommandManagementTable extends Component {
         this.props.handleEditCommand(command._id, data);
     }
 
+    checkRoleApprovers = (command) => {
+        const userId = localStorage.getItem('userId');
+        const { approvers } = command;
+        let approverIds = approvers.map(x => x.approver._id)
+        if (approverIds.includes(userId)) {
+            return true;
+        }
+        return false;
+    }
+
 
     render() {
         const { translate, manufacturingCommand } = this.props;
@@ -488,7 +498,9 @@ class ManufacturingCommandManagementTable extends Component {
                                                 />
                                             }
                                             {
-                                                this.checkRoleCreator(command) && command.status === 6 &&
+                                                (((this.checkRoleCreator(command) && (command.status === 6 || command.status === 1)))
+                                                    || (this.checkRoleApprovers(command) && (command.status === 6 || command.status === 1 || command.status === 2)))
+                                                &&
                                                 <ConfirmNotification
                                                     icon="question"
                                                     title={translate('manufacturing.command.cancel_command')}
