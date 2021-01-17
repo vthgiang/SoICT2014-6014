@@ -32,12 +32,13 @@ class PurchaseOrderTable extends Component {
             page: 1,
             code: "",
             status: "",
+            currentRole: localStorage.getItem("currentRole"),
         };
     }
 
     componentDidMount() {
-        const { page, limit } = this.state;
-        this.props.getAllPurchaseOrders({ page, limit });
+        const { page, limit, currentRole } = this.state;
+        this.props.getAllPurchaseOrders({ page, limit, currentRole });
         this.props.getAllStocks();
         this.props.getCustomers();
         this.props.getUser();
@@ -60,37 +61,40 @@ class PurchaseOrderTable extends Component {
     };
 
     setPage = async (page) => {
-        const { limit } = this.state;
+        const { limit, currentRole } = this.state;
         await this.setState({
             page: page,
         });
         const data = {
             limit,
             page: page,
+            currentRole,
         };
         this.props.getAllPurchaseOrders(data);
     };
 
     setLimit = async (limit) => {
-        const { page } = this.state;
+        const { page, currentRole } = this.state;
         await this.setState({
             limit: limit,
         });
         const data = {
             limit: limit,
             page,
+            currentRole,
         };
         this.props.getAllPurchaseOrders(data);
     };
 
     reloadPurchaseOrderTable = () => {
-        const { page, limit, code, status, supplier } = this.state;
+        const { page, limit, code, status, supplier, currentRole } = this.state;
         const data = {
             limit,
             page,
             code,
             status,
             supplier,
+            currentRole,
         };
         this.props.getAllPurchaseOrders(data);
     };
@@ -115,13 +119,14 @@ class PurchaseOrderTable extends Component {
     };
 
     handleSubmitSearch = () => {
-        const { page, limit, code, status, supplier } = this.state;
+        const { page, limit, code, status, supplier, currentRole } = this.state;
         const data = {
             limit,
             page,
             code,
             status,
             supplier,
+            currentRole,
         };
         this.props.getAllPurchaseOrders(data);
     };

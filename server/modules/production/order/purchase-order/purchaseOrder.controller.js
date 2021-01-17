@@ -48,7 +48,7 @@ exports.editPurchaseOrder = async (req, res) => {
 exports.getAllPurchaseOrders = async ( req, res ) => {
     try {
         let query = req.query;
-        let allPurchaseOrders = await PurchaseOrderService.getAllPurchaseOrders( query , req.portal)
+        let allPurchaseOrders = await PurchaseOrderService.getAllPurchaseOrders(req.user._id, query , req.portal)
 
         await Log.info(req.user.email, "GET_ALL_PURCHASE_ORDERS", req.portal);
 

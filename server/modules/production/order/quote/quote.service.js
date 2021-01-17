@@ -122,6 +122,7 @@ exports.createNewQuote = async (userId, data, portal) => {
 }
 
 exports.getAllQuotes = async (userId, query, portal) => {
+    //Lấy cấp dưới người ngày quản lý (bao gồm cả người này và các nhân viên phòng ban con)
     let users = await BusinessDepartmentServices.getAllRelationsUser(userId, query.currentRole, portal);
     let { page, limit, code, status, customer} = query;
     let option = {};
@@ -314,8 +315,19 @@ exports.deleteQuote = async (id, portal) => {
 }
 
 //Lấy các báo giá để lập đơn hàng
-exports.getQuotesToMakeOrder = async (portal) => {
-    let quotes = await Quote(connect(DB_CONNECTION, portal)).find({ status: 2 })
+exports.getQuotesToMakeOrder = async (userId, query, portal) => {
+    //Lấy cấp dưới người ngày quản lý (bao gồm cả người này và các nhân viên phòng ban con)
+    let users = await BusinessDepartmentServices.getAllRelationsUser(userId, query.currentRole, portal);
+    let option = {};
+    if (users.length) {
+        option = {
+            $or: [{ creator: users},
+                { approvers: { $elemMatch: { approver: userId } } } ],
+        };
+    }
+    option.status = 2;
+
+    let quotes = await Quote(connect(DB_CONNECTION, portal)).find(option)
     .populate([{
         path: 'goods.good', select: 'code name baseUnit'
     }]);

@@ -8,6 +8,7 @@ const {
 
 const PaymentService = require('../payment/payment.service');
 const CustomerService = require('../../../crm/customer/customer.service');
+const BusinessDepartmentServices = require('../business-department/buninessDepartment.service');
 
 exports.createNewSalesOrder = async (userId, companyId, data, portal) => {
     let newSalesOrder = await SalesOrder(connect(DB_CONNECTION, portal)).create({
@@ -138,9 +139,19 @@ exports.createNewSalesOrder = async (userId, companyId, data, portal) => {
     return { salesOrder }
 }
 
-exports.getAllSalesOrders = async (query, portal) => {
-    let { page, limit, code, status, customer } = query;
+exports.getAllSalesOrders = async (userId, query, portal) => {
+    //Lấy cấp dưới người ngày quản lý (bao gồm cả người này và các nhân viên phòng ban con)
+    let users = await BusinessDepartmentServices.getAllRelationsUser(userId, query.currentRole, portal);
+
     let option = {};
+    let { page, limit, code, status, customer } = query;
+
+    if (users.length) {
+        option = {
+            $or: [{ creator: users},
+                { approvers: { $elemMatch: { approver: userId } } } ],
+        };
+    }
     if (code) {
         option.code = new RegExp(code, "i")
     }

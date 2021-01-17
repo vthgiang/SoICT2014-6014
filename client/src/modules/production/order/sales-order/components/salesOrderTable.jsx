@@ -46,7 +46,7 @@ class SalesOrderTable extends Component {
 
     componentDidMount = () => {
         const { page, limit, currentRole } = this.state;
-        this.props.getAllSalesOrders({ page, limit });
+        this.props.getAllSalesOrders({ page, limit, currentRole });
         this.props.getDiscountForOrderValue();
         this.props.getCustomers();
         this.props.getAllBusinessDepartments({ page: 1, limit: 1000 });
@@ -69,6 +69,7 @@ class SalesOrderTable extends Component {
         const data = {
             limit: this.state.limit,
             page: page,
+            currentRole: this.state.currentRole,
         };
         this.props.getAllSalesOrders(data);
     };
@@ -80,6 +81,7 @@ class SalesOrderTable extends Component {
         const data = {
             limit: limit,
             page: this.state.page,
+            currentRole: this.state.currentRole,
         };
         this.props.getAllSalesOrders(data);
     };
@@ -112,6 +114,7 @@ class SalesOrderTable extends Component {
             code: codeQuery,
             status,
             customer,
+            currentRole: this.state.currentRole,
         };
         this.props.getAllSalesOrders(data);
     };
@@ -124,13 +127,14 @@ class SalesOrderTable extends Component {
     };
 
     reloadSalesOrderTable = () => {
-        let { limit, page, codeQuery, status, customer } = this.state;
+        let { limit, page, codeQuery, status, customer, currentRole } = this.state;
         const data = {
             limit,
             page,
             code: codeQuery,
             status,
             customer,
+            currentRole,
         };
         this.props.getAllSalesOrders(data);
     };
@@ -161,8 +165,8 @@ class SalesOrderTable extends Component {
     };
 
     createFromQuote = () => {
-        this.props.getQuotesToMakeOrder();
-
+        const { currentRole } = this.state;
+        this.props.getQuotesToMakeOrder({ currentRole });
         window.$("#modal-add-sales-order-from-quote").modal("show");
     };
 
@@ -483,7 +487,7 @@ class SalesOrderTable extends Component {
                                                         onClick={() => this.handleShowApprove(item)}
                                                         className="add text-success"
                                                         style={{ width: "5px" }}
-                                                        title="Yêu cầu xuất kho"
+                                                        title="Phê duyệt đơn"
                                                     >
                                                         <i className="material-icons">check_circle_outline</i>
                                                     </a>
