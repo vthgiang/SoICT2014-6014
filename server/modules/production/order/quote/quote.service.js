@@ -122,7 +122,6 @@ exports.createNewQuote = async (userId, data, portal) => {
 }
 
 exports.getAllQuotes = async (userId, query, portal) => {
-    console.log("currentRole", query.currentRole);
     let users = await BusinessDepartmentServices.getAllRelationsUser(userId, query.currentRole, portal);
     let { page, limit, code, status, customer} = query;
     let option = {};

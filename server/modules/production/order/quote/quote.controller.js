@@ -41,7 +41,7 @@ exports.getAllQuotes = async (req, res) => {
         
     } catch (error) {
         await Log.error(req.user.email, "GET_ALL_QUOTES", req.portal);
-
+        console.log(error.message);
         res.status(400).json({
             success: false,
             messages: ["get_failed"],

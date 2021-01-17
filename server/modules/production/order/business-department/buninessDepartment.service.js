@@ -1,5 +1,5 @@
 const {
-    BusinessDepartment
+    BusinessDepartment, OrganizationalUnit
 } = require(`../../../../models`);
 
 const {
@@ -152,7 +152,18 @@ exports.getAllBusinessDepartments = async (query, portal) => {
 //Lấy cả phòng ban hiện tại của người đó và phòng ban con
 exports.getAllRelationsUser = async (userId, currentRole, portal) => { 
     //Lấy ra phòng ban người đó đang công tác
-    let department = await OrganizationalUnitServices.getOrganizationalUnitByUserRole(portal, currentRole)
+    let department = await OrganizationalUnitServices.getOrganizationalUnitByUserRole(portal, currentRole);
+    
+    if (!department) throw new Error("Department not avaiable");
+
+    //Lấy các phòng ban con của phòng ban người này công tác
+    let childDepartments = await OrganizationalUnit(connect(DB_CONNECTION, portal))
+        .find({ parent: department._id })
+        .populate([
+        { path: 'managers', populate: { path: 'users' } },
+        { path: 'deputyManagers', populate: { path: 'users' } },
+        { path: 'employees', populate: { path: 'users' } }
+    ]);
     let usersRelationship = [userId];
     const { managers, deputyManagers, employees } = department;
     let check = -1; //1. managers, 2. deputyManagers, 3. employees -- để check vai trò của người này
@@ -192,6 +203,36 @@ exports.getAllRelationsUser = async (userId, currentRole, portal) => {
 
         if (check === 2) {//Nếu là phó đơn vị
             //Lấy danh sách nhân viên người này quản lý
+            for (let indexRole = 0; indexRole < employees.length; indexRole++){
+                for (let indexUser = 0; indexUser < employees[indexRole].users.length; indexUser++){
+                    if (!usersRelationship.find(element => employees[indexRole].users[indexUser].userId.equals(element))) {
+                        usersRelationship.push(employees[indexRole].users[indexUser].userId.toString())
+                    }
+                }
+            }
+        }
+    }
+
+    if (childDepartments) {//Lấy hết các nhân viên phòng ban con
+        for (let indexDepartment = 0; indexDepartment < childDepartments.length; indexDepartment++) {
+            const { managers, deputyManagers, employees } = childDepartments[indexDepartment];
+            //i. Lấy danh sách các phó đơn vị dưới quyền người này
+            for (let indexRole = 0; indexRole < managers.length; indexRole++){
+                for (let indexUser = 0; indexUser < managers[indexRole].users.length; indexUser++){
+                    if (!usersRelationship.find(element => managers[indexRole].users[indexUser].userId.equals(element))) {
+                        usersRelationship.push(managers[indexRole].users[indexUser].userId.toString())
+                    }
+                }
+            }
+            //ii. Lấy danh sách các phó đơn vị dưới quyền người này
+            for (let indexRole = 0; indexRole < deputyManagers.length; indexRole++){
+                for (let indexUser = 0; indexUser < deputyManagers[indexRole].users.length; indexUser++){
+                    if (!usersRelationship.find(element => deputyManagers[indexRole].users[indexUser].userId.equals(element))) {
+                        usersRelationship.push(deputyManagers[indexRole].users[indexUser].userId.toString())
+                    }
+                }
+            }
+            //iii. Lấy các nhân viên dưới quyền người này
             for (let indexRole = 0; indexRole < employees.length; indexRole++){
                 for (let indexUser = 0; indexUser < employees[indexRole].users.length; indexUser++){
                     if (!usersRelationship.find(element => employees[indexRole].users[indexUser].userId.equals(element))) {
