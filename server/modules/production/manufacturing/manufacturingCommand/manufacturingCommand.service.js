@@ -1,6 +1,6 @@
 const {
     ManufacturingCommand, ManufacturingPlan, ManufacturingWorks, OrganizationalUnit,
-    ManufacturingOrder, SalesOrder, Lot, ManufacturingMill
+    ManufacturingOrder, SalesOrder, Lot, ManufacturingMill, PurchasingRequest
 } = require(`../../../../models`);
 const {
     connect
@@ -494,6 +494,15 @@ exports.editManufaturingCommand = async (id, data, portal) => {
     if (data.status == 5) {
         // Thực hiện xóa lịch của xưởng và của người
         await deleteCommandFromSchedule(oldManufacturingCommand, portal);
+        // Kiểm tra nếu đã lên phiếu đề nghị mua hàng cho lệnh này mà chưa xư lý thì cho thành hủy
+        const purchasingRequest = await PurchasingRequest(connect(DB_CONNECTION, portal)).findOne({
+            manufacturingCommand: oldManufacturingCommand._id
+        });
+        if (purchasingRequest && purchasingRequest.status == 1) {
+            purchasingRequest.status = 3;
+            await purchasingRequest.save();
+        }
+
     }
 
     let manufacturingCommand = await ManufacturingCommand(connect(DB_CONNECTION, portal))
