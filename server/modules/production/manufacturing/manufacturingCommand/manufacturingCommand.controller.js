@@ -86,7 +86,7 @@ exports.editManufaturingCommand = async (req, res) => {
         })
     } catch (error) {
         await Logger.error(req.user.email, "EDIT_MANUFACTURING_COMMAND", req.portal);
-
+        console.log(error.message);
         res.status(400).json({
             success: false,
             messages: ["edit_failed"],

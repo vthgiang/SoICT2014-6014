@@ -428,6 +428,16 @@ class NewPlanCreateForm extends Component {
         }
     }
 
+    checkHasComponent = (name) => {
+        let { auth } = this.props;
+        let result = false;
+        auth.components.forEach(component => {
+            if (component.name === name) result = true;
+        });
+
+        return result;
+    }
+
     render() {
         const { step, steps } = this.state;
         const { translate } = this.props;
@@ -445,12 +455,16 @@ class NewPlanCreateForm extends Component {
         } = this.state;
         return (
             <React.Fragment>
-                <ButtonModal
-                    onButtonCallBack={this.handleClickCreate}
-                    modalID="modal-create-new-plan"
-                    button_name={translate("manufacturing.plan.create_plan")}
-                    title={translate("manufacturing.plan.create_plan_title")}
-                />
+                {
+                    this.checkHasComponent('create-manufacturing-plan')
+                    &&
+                    <ButtonModal
+                        onButtonCallBack={this.handleClickCreate}
+                        modalID="modal-create-new-plan"
+                        button_name={translate("manufacturing.plan.create_plan")}
+                        title={translate("manufacturing.plan.create_plan_title")}
+                    />
+                }
                 <DialogModal
                     modalID="modal-create-new-plan"
                     isLoading={false}
@@ -537,8 +551,8 @@ class NewPlanCreateForm extends Component {
 }
 
 function mapStateToProps(state) {
-    const { salesOrders, manufacturingPlan, lots, goods, manufacturingMill, workSchedule } = state;
-    return { salesOrders, manufacturingPlan, lots, goods, manufacturingMill, workSchedule };
+    const { salesOrders, manufacturingPlan, lots, goods, manufacturingMill, workSchedule, auth } = state;
+    return { salesOrders, manufacturingPlan, lots, goods, manufacturingMill, workSchedule, auth };
 }
 
 const mapDispatchToProps = {

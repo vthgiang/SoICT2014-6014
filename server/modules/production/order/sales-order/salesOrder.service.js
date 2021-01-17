@@ -275,7 +275,7 @@ exports.editSalesOrder = async (userId, companyId, id, data, portal) => {
 
 function checkStatusApprove(approvers) {
     let count = 0; //Đếm xem số người phê duyệt có trạng thái bằng 2
-    for (let index = 0; index < approvers.length; index++){
+    for (let index = 0; index < approvers.length; index++) {
         if (parseInt(approvers[index].status) === 2) {
             count++;
         } else if (parseInt(approvers[index].status) === 3) {
@@ -295,9 +295,9 @@ exports.approveSalesOrder = async (salesOrderId, data, portal) => {
         path: 'creator', select: 'name'
     }, {
         path: 'customer', select: 'name taxNumber'
-    },{
+    }, {
         path: 'goods.good', select: 'code name baseUnit'
-        }])
+    }])
 
     if (!salesOrder) {
         throw Error("Sales Order is not existing")
@@ -352,6 +352,30 @@ exports.addManufacturingPlanForGood = async (salesOrderId, manufacturingWorksId,
 
     return { salesOrder }
 }
+
+exports.removeManufacturingPlanForGood = async (salesOrderId, manufacturingWorksId, portal) => {
+    //data: [{goodId, manufacturingPlanId}] 
+    let salesOrder = await SalesOrder(connect(DB_CONNECTION, portal)).findById(salesOrderId);
+    if (!salesOrder) {
+        throw Error("Sales Order is not existing")
+    }
+
+    let goodsOfSalesOrder = salesOrder.goods.map((good) => {
+        if (good.manufacturingWorks.equals(manufacturingWorksId)) {
+            good.manufacturingPlan = null
+        }
+        return good;
+    })
+
+    salesOrder.goods = goodsOfSalesOrder;
+    salesOrder.status = 3;
+
+    await salesOrder.save();
+
+    return { salesOrder }
+}
+
+
 
 /**
  * Lấy các đơn hàng cần lập kế hoạch sản xuất theo nhà máy (chỉ lấy những mặt hàng nhà máy có thể sản xuất)

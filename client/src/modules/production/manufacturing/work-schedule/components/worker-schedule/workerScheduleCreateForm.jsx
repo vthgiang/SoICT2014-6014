@@ -16,7 +16,7 @@ class WorkerScheduleCreateForm extends Component {
         this.state = {
             month: currentMonthYear,
             allDaysOfMonth: allDaysOfMonth,
-            numberOfTurns: 4,
+            numberOfTurns: 3,
             user: 'all',
             // Biến showModal được dùng để nhận biết lần đầu tiên ấn vào ButtonModal Create
             // Để gọi api lấy dữ liệu nhân viên

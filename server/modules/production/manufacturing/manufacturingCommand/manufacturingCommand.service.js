@@ -5,6 +5,7 @@ const {
 const {
     connect
 } = require(`../../../../helpers/dbHelper`);
+const { deleteCommandFromSchedule } = require('../workSchedule/workSchedule.service');
 
 function getArrayTimeFromString(stringDate) {
     arrayDate = stringDate.split('-');
@@ -490,6 +491,11 @@ exports.editManufaturingCommand = async (id, data, portal) => {
         }
     }
 
+    if (data.status == 5) {
+        // Thực hiện xóa lịch của xưởng và của người
+        await deleteCommandFromSchedule(oldManufacturingCommand, portal);
+    }
+
     let manufacturingCommand = await ManufacturingCommand(connect(DB_CONNECTION, portal))
         .findById({ _id: oldManufacturingCommand._id })
         .populate([{
@@ -502,6 +508,8 @@ exports.editManufaturingCommand = async (id, data, portal) => {
             path: "responsibles"
         }, {
             path: "accountables"
+        }, {
+            path: "approvers.approver"
         }, {
             path: "creator"
         }, {

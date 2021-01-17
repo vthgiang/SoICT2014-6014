@@ -5243,6 +5243,7 @@ export default {
                 choose_responisbles: "Vui lòng chọn người thực hiện",
                 edit_successfully: "Chỉnh sửa kế hoạch thành công",
                 edit_failed: "Chỉnh sửa kế hoạch thất bại",
+                cancel_plan: "Hủy kế hoạch"
 
 
 
@@ -5389,7 +5390,9 @@ export default {
                     }
                 },
                 create_purchasing_request: "Tạo phiếu đề nghị mua hàng",
-                approver_command: "Duyệt lệnh"
+                approver_command: "Duyệt lệnh",
+                approver_ccommand: "Người phê duyệt",
+                cancel_command: "Hủy lệnh sản xuất"
             },
             lot: {
                 index: "STT",
