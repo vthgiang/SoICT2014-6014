@@ -52,7 +52,7 @@ class SalesOrderEditForm extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.salesOrderDetail._id !== prevState.salesOrderId) {
+        if (nextProps.salesOrderDetail._id && nextProps.salesOrderDetail._id !== prevState.salesOrderId) {
             return {
                 ...prevState,
                 step: 0,

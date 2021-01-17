@@ -4753,7 +4753,9 @@ export default {
                 get_all_successfully: "Lấy danh sách đơn thành công",
                 get_all_failed: "Lấy danh sách đơn không thành công",
                 get_purchase_orders_for_payment_successfully: "Lấy các đơn còn nợ thành công",
-                get_purchase_orders_for_payment_failed: "Lấy các đơn còn nợ không thành công"
+                get_purchase_orders_for_payment_failed: "Lấy các đơn còn nợ không thành công",
+                approve_successfully: "Phê duyệt đơn thành công",
+                approve_failed: "Phê duyệt đơn không thành công"
             },
             quote: {
                 create_successfully: "Tạo báo giá thành công",
@@ -4767,7 +4769,9 @@ export default {
                 delete_successfully: "Xóa báo giá thành công",
                 delete_failed: "Xóa báo giá không thành công",
                 get_quotes_to_make_order_successfully: "Lấy các báo giá thành công",
-                get_quotes_to_make_order_failed: "Chưa lấy được danh sách báo giá để lên đơn hàng"
+                get_quotes_to_make_order_failed: "Chưa lấy được danh sách báo giá để lên đơn hàng",
+                get_detail_successfully: "Xem chi tiết thành công",
+                get_detail_failed: "Xem chi tiết không thành công"
             },
             sales_order: {
                 create_successfully: "Tạo đơn bán hàng thành công",
@@ -4783,7 +4787,9 @@ export default {
                 get_sales_order_by_manufacturing_works_successfully: "Lấy danh sách các đơn hàng cần sản xuất thành công",
                 get_sales_order_by_manufacturing_works_failed: "Lấy danh sách các đơn hàng cần sản xuất không thành công",
                 get_sales_orders_for_payment_successfully: "Lấy các đơn hàng dư nợ của khách hàng thành công",
-                get_sales_orders_for_payment_failed: "Lấy các đơn hàng còn dư nợ của khách hàng không thành công"
+                get_sales_orders_for_payment_failed: "Lấy các đơn hàng còn dư nợ của khách hàng không thành công",
+                get_detail_successfully: "Xem chi tiết thành công",
+                get_detail_failed: "Xem chi tiết không thành công"
             },
             sla: {
                 create_successfully: "Tạo cam kết chất lượng thành công",

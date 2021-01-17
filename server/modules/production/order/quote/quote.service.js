@@ -6,6 +6,8 @@ const {
     connect
 } = require(`../../../../helpers/dbHelper`);
 
+const BusinessDepartmentServices = require('../business-department/buninessDepartment.service');
+
 exports.createNewQuote = async (userId, data, portal) => {
     let newQuote = await Quote(connect(DB_CONNECTION, portal)).create({
         code: data.code,
@@ -115,19 +117,12 @@ exports.createNewQuote = async (userId, data, portal) => {
         path: 'creator', select: 'name'
     }, {
         path: 'customer', select: 'name taxNumber'
-    }, {
-        path: 'goods.good', select: 'code name baseUnit'
-    }, {
-        path: 'goods.discounts.bonusGoods.good', select: 'code name baseUnit'
-    }, {
-        path: 'goods.discounts.discountOnGoods.good', select: 'code name baseUnit'
-    }, {
-        path: 'discounts.bonusGoods.good', select: 'code name baseUnit'
     }]);;
     return { quote }
 }
 
-exports.getAllQuotes = async (query, portal) => {
+exports.getAllQuotes = async (userId, query, portal) => {
+    await BusinessDepartmentServices.getAllRelationsUser(userId);
     let { page, limit, code, status, customer} = query;
     let option = {};
     if (code) {
@@ -163,15 +158,6 @@ exports.getAllQuotes = async (query, portal) => {
             path: 'customer', select: 'name taxNumber'
         }, {
             path: 'goods.good', select: 'code name baseUnit'
-        },{
-            path: 'goods.discounts.bonusGoods.good', select: 'code name baseUnit'
-        },{
-            path: 'goods.discounts.discountOnGoods.good', select: 'code name baseUnit'
-        }, {
-            path: 'discounts.bonusGoods.good', select: 'code name baseUnit'
-        },
-        {
-            path: 'salesOrder', select: 'code createdAt'
         }]);
         return { allQuotes }
     } else {
@@ -182,16 +168,6 @@ exports.getAllQuotes = async (query, portal) => {
                 path: 'creator', select: 'name'
             }, {
                 path: 'customer', select: 'name taxNumber'
-            }, {
-                path: 'goods.good', select: 'code name baseUnit'
-            }, {
-                path: 'goods.discounts.bonusGoods.good', select: 'code name baseUnit'
-            }, {
-                path: 'goods.discounts.discountOnGoods.good', select: 'code name baseUnit'
-            }, {
-                path: 'discounts.bonusGoods.good', select: 'code name baseUnit'
-            },{
-                path: 'salesOrder', select: 'code createdAt'
             }]
             })
         return { allQuotes }    
@@ -259,8 +235,6 @@ exports.editQuote = async (userId, id, data, portal) => {
         })
         data = { ...data, goods };
     }
-
-    console.log("data", data);
     
     await Quote(connect(DB_CONNECTION, portal)).findByIdAndUpdate(id, {
         $set: data
@@ -271,36 +245,59 @@ exports.editQuote = async (userId, id, data, portal) => {
             path: 'creator', select: 'name'
         }, {
             path: 'customer', select: 'name taxNumber'
-        }, {
-            path: 'goods.good', select: 'code name baseUnit'
-        },{
-            path: 'goods.discounts.bonusGoods.good', select: 'code name baseUnit'
-        },{
-            path: 'goods.discounts.discountOnGoods.good', select: 'code name baseUnit'
-        }, {
-            path: 'discounts.bonusGoods.good', select: 'code name baseUnit'
-        },{
-            path: 'salesOrder', select: 'code createdAt'
         }]);
-    
-    console.log("quoteUpdated", quoteUpdated);
-    
+        
     return { quote: quoteUpdated }
 }
 
-exports.approveQuote = async (approverId, quoteId, data, portal) => {
-    let quote = await Quote(connect(DB_CONNECTION, portal)).findById(quoteId)
+function checkStatusApprove(approvers) {
+    let count = 0; //Đếm xem số người phê duyệt có trạng thái bằng 2
+    for (let index = 0; index < approvers.length; index++){
+        if (parseInt(approvers[index].status) === 2) {
+            count++;
+        } else if (parseInt(approvers[index].status) === 3) {
+            return 4;//Trả về trạng thái đơn là đã hủy
+        }
+    }
+
+    if (count === approvers.length) {
+        return 2; //Trả về trạng thái đơn là đã phê duyệt
+    }
+    return -1; //Chưa cần thay đổi trạng thái
+}
+
+exports.approveQuote = async ( quoteId, data, portal) => {
+
+    let quote = await Quote(connect(DB_CONNECTION, portal)).findById(quoteId).populate([{
+        path: 'creator', select: 'name'
+    }, {
+        path: 'customer', select: 'name taxNumber'
+    }])
 
     if (!quote) {
         throw Error("Quote is not existing")
     }
 
-    quote.status = data.status;
-    quote.approver = approverId; //Lưu ý approver
-        
-    quote.save();
-    
-    return {quote}
+    let indexApprover = quote.approvers.findIndex((element) => element.approver.toString() === data.approver.toString())
+
+    if (indexApprover !== -1) {
+        quote.approvers[indexApprover] = {
+            approver: data.approver,
+            approveAt: new Date(),
+            status: data.status,
+            note: data.note
+        }
+
+        let statusChange = checkStatusApprove(quote.approvers);
+        if (statusChange !== -1) {
+            quote.status = statusChange;
+        }
+
+        quote.save();
+    } else {
+        throw Error("Can't find approver in quote!")
+    }
+    return { quote }
 }
 
 exports.deleteQuote = async (id, portal) => {
@@ -315,4 +312,31 @@ exports.getQuotesToMakeOrder = async (portal) => {
         path: 'goods.good', select: 'code name baseUnit'
     }]);
     return {quotes};
+}
+
+exports.getQuoteDetail = async (id, portal) => {
+    let quote = await Quote(connect(DB_CONNECTION, portal))
+        .findById(id)
+        .populate([{
+            path: 'creator', select: 'name'
+        }, {
+            path: 'customer', select: 'name taxNumber'
+        }, {
+            path: 'goods.good', select: 'code name baseUnit'
+        },{
+            path: 'goods.discounts.bonusGoods.good', select: 'code name baseUnit'
+        },{
+            path: 'goods.discounts.discountOnGoods.good', select: 'code name baseUnit'
+        }, {
+            path: 'discounts.bonusGoods.good', select: 'code name baseUnit'
+        },{
+            path: 'salesOrder', select: 'code createdAt'
+        }])
+
+    if (!quote) {
+        throw Error("Quote Order is not existing")
+    }
+
+    return { quote }
+
 }

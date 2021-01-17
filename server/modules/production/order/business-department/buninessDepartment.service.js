@@ -145,3 +145,8 @@ exports.getAllBusinessDepartments = async (query, portal) => {
         return { allBusinessDepartments }
     }
 }
+
+//Lấy id người hiện tại, cấp dưới của người đó
+exports.getAllRelationsUser = async (query, portal) => { 
+    console.log("OMG");
+}

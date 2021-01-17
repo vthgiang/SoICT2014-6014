@@ -172,6 +172,7 @@ class SalesOrderTable extends Component {
         let checkApprove = approvers.find((element) => element.approver === userId);
         if (checkApprove) {
             return parseInt(checkApprove.status);
+            //Trả về trạng thái 1. chưa phê duyệt, 2. Đã phê duyệt, 3. Đã hủy
         }
         return -1;
     };

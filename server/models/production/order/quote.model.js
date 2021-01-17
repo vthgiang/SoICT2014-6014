@@ -58,6 +58,10 @@ const QuoteSchema = Schema({
         status: {//1. Chưa phê duyệt, 2. Đã phê duyệt, 3. Đã hủy
             type: Number,
             enum: [1, 2, 3],
+            default: 1
+        },
+        note: {
+            type: String
         }
     }],
     organizationalUnit: {//Đơn vị quản lý đơn

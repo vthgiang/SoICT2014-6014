@@ -4,6 +4,7 @@ const QuoteController = require('./quote.controller');
 const { auth } = require(`../../../../middleware`);
 
 router.post('/', auth, QuoteController.createNewQuote);
+router.get('/:id', auth, QuoteController.getQuoteDetail);
 router.get('/', auth, QuoteController.getAllQuotes);
 router.patch('/:id', auth, QuoteController.editQuote);
 router.patch('/approve/:id', auth, QuoteController.approveQuote);

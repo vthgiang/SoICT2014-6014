@@ -134,8 +134,6 @@ exports.createNewSalesOrder = async (userId, companyId, data, portal) => {
         path: 'creator', select: 'name'
     }, {
         path: 'customer', select: 'name taxNumber'
-    }, {
-        path: 'goods.good', select: 'code name baseUnit'
     }]);;
     return { salesOrder }
 }

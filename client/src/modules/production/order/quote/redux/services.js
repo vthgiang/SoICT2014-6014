@@ -6,7 +6,8 @@ export const QuoteServices = {
     editQuote,
     deleteQuote,
     approveQuote,
-    getQuotesToMakeOrder
+    getQuotesToMakeOrder,
+    getQuoteDetail
 }
 
 function createNewQuote(data) {
@@ -60,7 +61,7 @@ function approveQuote(id, data) {
         method: "PATCH",
         data
     },
-        false,
+        true,
         true,
     "manage_order.quote")
 }
@@ -68,6 +69,16 @@ function approveQuote(id, data) {
 function getQuotesToMakeOrder() {
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/quote/get-to-make-order`,
+        method: "GET",
+    },
+        false,
+        true,
+    "manage_order.quote")
+}
+
+function getQuoteDetail(id) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/quote/${id}`,
         method: "GET",
     },
         false,
