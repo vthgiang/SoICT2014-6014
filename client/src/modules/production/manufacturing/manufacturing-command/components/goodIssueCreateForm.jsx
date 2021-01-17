@@ -4,6 +4,7 @@ import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import { DialogModal, ErrorLabel, SelectBox } from '../../../../../common-components';
 import { generateCode } from '../../../../../helpers/generateCode';
 import { BillActions } from '../../../warehouse/bill-management/redux/actions';
+import { LotActions } from '../../../warehouse/inventory-management/redux/actions';
 import { commandActions } from '../redux/actions';
 
 class goodIssueCreateForm extends Component {
@@ -475,6 +476,15 @@ class goodIssueCreateForm extends Component {
     handleGoodChange = (value) => {
         const goodId = value[0];
         this.validateGoodChange(goodId, true);
+        if (goodId !== "1") {
+            console.log("vao day");
+            const data = {
+                goodId: goodId,
+                stockId: this.state.bill.fromStock
+            }
+            console.log(data);
+            this.props.getInventoryByGoodAndStock(data);
+        }
     }
 
     validateGoodChange = (value, willUpdateState = true) => {
@@ -678,7 +688,12 @@ class goodIssueCreateForm extends Component {
     }
 
     render() {
-        const { bills, translate } = this.props;
+
+        const { bills, translate, lots } = this.props;
+        let goodStockInventory = {};
+        if (lots.goodStockInventory && lots.isLoading === false) {
+            goodStockInventory = lots.goodStockInventory;
+        }
         const { commandIssue, bill, errorStock, errorApprovers, errorResponsibles, errorAccountables, errorName, errorPhone, listBills, errorQualityControlStaffs, good, errorQuantity, errorGood } = this.state;
         return (
             <React.Fragment>
@@ -879,7 +894,7 @@ class goodIssueCreateForm extends Component {
                                                             <div style={{ display: "flex" }}>
                                                                 <input
                                                                     className="form-control"
-                                                                    value={good.inventory}
+                                                                    value={goodStockInventory.inventory}
                                                                     disabled
                                                                     type="number"
                                                                 />
@@ -1108,13 +1123,14 @@ class goodIssueCreateForm extends Component {
 }
 
 function mapStateToProps(state) {
-    const { bills, stocks, user, goods } = state;
-    return { bills, stocks, user, goods }
+    const { bills, stocks, user, goods, lots } = state;
+    return { bills, stocks, user, goods, lots }
 }
 
 const mapDispatchToProps = {
     createManyProductBills: BillActions.createManyProductBills,
-    handleEditCommand: commandActions.handleEditCommand
+    handleEditCommand: commandActions.handleEditCommand,
+    getInventoryByGoodAndStock: LotActions.getInventoryByGoodAndStock
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(goodIssueCreateForm));

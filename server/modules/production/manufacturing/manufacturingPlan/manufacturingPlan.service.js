@@ -427,13 +427,14 @@ exports.editManufacturingPlan = async (id, data, portal) => {
             await listCommands[i].save();
         }
         const salesOrders = oldPlan.salesOrders;
-        const manufacturingWorks = oldPlan.manufacturingWorks;
-        for (let i = 0; i < salesOrders.length; i++) {
-            for (let j = 0; j < manufacturingWorks.length; j++) {
-                await removeManufacturingPlanForGood(salesOrders[i], manufacturingWorks[j], portal);
+        if (salesOrders.length) {
+            const manufacturingWorks = oldPlan.manufacturingWorks;
+            for (let i = 0; i < salesOrders.length; i++) {
+                for (let j = 0; j < manufacturingWorks.length; j++) {
+                    await removeManufacturingPlanForGood(salesOrders[i], manufacturingWorks[j], portal);
+                }
             }
         }
-
     }
 
     const manufacturingPlan = await ManufacturingPlan(connect(DB_CONNECTION, portal))
