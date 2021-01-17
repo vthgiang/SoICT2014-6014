@@ -123,7 +123,8 @@ exports.deleteQuote = async (req, res) => {
 
 exports.getQuotesToMakeOrder = async (req, res) => {
     try {
-        let quotes = await QuoteService.getQuotesToMakeOrder(req.portal);
+        let query = req.query;
+        let quotes = await QuoteService.getQuotesToMakeOrder(req.user._id, query, req.portal);
 
         await Log.info(req.user.email, "GET_QUOTES_TO_MAKE_ORDER", req.portal);
 
@@ -135,7 +136,7 @@ exports.getQuotesToMakeOrder = async (req, res) => {
         
     } catch (error) {
         await Log.error(req.user.email, "GET_QUOTES_TO_MAKE_ORDER", req.portal);
-
+        console.log(error.message);
         res.status(400).json({
             success: false,
             messages: ["get_quotes_to_make_order_failed"],
@@ -157,6 +158,7 @@ exports.getQuoteDetail = async ( req, res ) => {
         });
     } catch (error) {
         await Log.error(req.user.email, "GET_QUOTE_DETAIL", req.portal);
+        console.log(error.message);
         res.status(400).json({
             success: false,
             messages: ["get_detail_failed"],

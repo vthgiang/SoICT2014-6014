@@ -148,8 +148,8 @@ exports.getAllBusinessDepartments = async (query, portal) => {
     }
 }
 
-//Lấy id người hiện tại, cấp dưới của người đó
-//Lấy cả phòng ban hiện tại của người đó và phòng ban con
+//1. Lấy id người hiện tại, cấp dưới của người đó
+//2. Lấy cả phòng ban hiện tại của người đó và phòng ban con của phòng ban người đó công tác
 exports.getAllRelationsUser = async (userId, currentRole, portal) => { 
     //Lấy ra phòng ban người đó đang công tác
     let department = await OrganizationalUnitServices.getOrganizationalUnitByUserRole(portal, currentRole);
@@ -242,6 +242,7 @@ exports.getAllRelationsUser = async (userId, currentRole, portal) => {
             }
         }
     }
-    console.log("usersRelationship", typeof usersRelationship[1])
+
+    //Những người mà người này được phép quản lý
     return usersRelationship;
 }

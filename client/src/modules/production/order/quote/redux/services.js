@@ -66,10 +66,11 @@ function approveQuote(id, data) {
     "manage_order.quote")
 }
 
-function getQuotesToMakeOrder() {
+function getQuotesToMakeOrder(queryData) {
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/quote/get-to-make-order`,
         method: "GET",
+        params: queryData
     },
         false,
         true,

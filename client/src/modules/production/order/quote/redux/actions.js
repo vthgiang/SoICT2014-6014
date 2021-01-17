@@ -120,12 +120,12 @@ function approveQuote(id, data) {
 }
 
 //Lấy các báo giá đã được duyệt để tạo đơn hàng
-function getQuotesToMakeOrder() {
+function getQuotesToMakeOrder(queryData) {
     return (dispatch) => {
         dispatch({
             type: QuoteConstants.GET_QUOTES_TO_MAKE_ORDER_REQUEST
         })
-        QuoteServices.getQuotesToMakeOrder()
+        QuoteServices.getQuotesToMakeOrder(queryData)
             .then((res) => {
             dispatch({
                 type: QuoteConstants.GET_QUOTES_TO_MAKE_ORDER_SUCCESS,

@@ -7,6 +7,7 @@ const {
 } = require(`../../../../helpers/dbHelper`);
 
 const PaymentService = require('../payment/payment.service');
+const BusinessDepartmentServices = require('../business-department/buninessDepartment.service');
 
 exports.createPurchaseOrder = async (userId, data, portal) => {
     let newPurchaseOrder = await PurchaseOrder(connect(DB_CONNECTION, portal)).create({
@@ -59,10 +60,16 @@ exports.createPurchaseOrder = async (userId, data, portal) => {
     return {purchaseOrder};
 }
 
-exports.getAllPurchaseOrders = async (query, portal) => {
+exports.getAllPurchaseOrders = async (userId, query, portal) => {
     let { page, limit } = query;
     let option = {};
-
+    let users = await BusinessDepartmentServices.getAllRelationsUser(userId, query.currentRole, portal);
+    if (users.length) {
+        option = {
+            $or: [{ creator: users},
+                { approvers: { $elemMatch: { approver: userId } } } ],
+        };
+    }
     if (query.code) {
         option.code = new RegExp(query.code, "i")
     }
