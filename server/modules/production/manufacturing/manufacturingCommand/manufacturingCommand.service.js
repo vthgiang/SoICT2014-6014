@@ -535,3 +535,82 @@ exports.editManufaturingCommand = async (id, data, portal) => {
     return { manufacturingCommand }
 
 }
+
+exports.getNumberCommands = async (query, portal) => {
+    const { currentRole, manufacturingWorks, fromDate, toDate } = query;
+    if (!currentRole) {
+        throw Error("CurrentRole is not defined");
+    }
+    // Lấy ra list các nhà máy là currentRole là trưởng phòng hoặc currentRole là role quản lý khác
+    // Lấy ra list nhà máy mà currentRole là quản đốc nhà máy
+    let role = [currentRole];
+    const departments = await OrganizationalUnit(connect(DB_CONNECTION, portal)).find({ 'managers': { $in: role } });
+    let organizationalUnitId = departments.map(department => department._id);
+    let listManufacturingWorks = await ManufacturingWorks(connect(DB_CONNECTION, portal)).find({
+        organizationalUnit: {
+            $in: organizationalUnitId
+        }
+    });
+    // Lấy ra các nhà máy mà currentRole cũng quản lý
+    let listWorksByManageRole = await ManufacturingWorks(connect(DB_CONNECTION, portal)).find({
+        manageRoles: {
+            $in: role
+        }
+    })
+    listManufacturingWorks = [...listManufacturingWorks, ...listWorksByManageRole];
+
+    let listWorksId = listManufacturingWorks.map(x => x._id);
+
+    if (manufacturingWorks) {
+        listWorksId = manufacturingWorks;
+    }
+
+    let options = {};
+
+    let listManufacturingMills = await ManufacturingMill(connect(DB_CONNECTION, portal)).find({
+        manufacturingWorks: {
+            $in: listWorksId
+        }
+    });
+
+    let listMillIds = listManufacturingMills.map(x => x._id);
+
+    options.manufacturingMill = {
+        $in: listMillIds
+    }
+
+    if (fromDate) {
+        options.createdAt = {
+            $gte: getArrayTimeFromString(fromDate)[0]
+        }
+    }
+
+    if (toDate) {
+        options.createdAt = {
+            ...options.createdAt,
+            $lte: getArrayTimeFromString(toDate)[1]
+        }
+    }
+
+    let commands = await ManufacturingCommand(connect(DB_CONNECTION, portal))
+        .find(options);
+    const totalCommands = commands.length;
+    // Lọc ra Command chậm tiến độ
+    let moment = require('moment');
+    let date = new Date(moment().subtract(1, "days"));
+
+    let arrayslowCommands = [];
+    for (let i = 0; i < commands.length; i++) {
+        if ((commands[i].status == 1 || commands[i].status == 2 || commands[i].status == 6) && (commands[i].startDate < date)
+            || (commands[i].status == 3 && commands[i].endDate < date)
+        ) {
+            arrayslowCommands.push(commands[i])
+        }
+    }
+
+    const slowCommands = arrayslowCommands.length;
+    const trueCommands = totalCommands - slowCommands;
+
+    return { totalCommands, trueCommands, slowCommands }
+
+}

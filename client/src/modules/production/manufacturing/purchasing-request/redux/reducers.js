@@ -79,7 +79,6 @@ export const purchasingRequest = (state = initialState, action) => {
             if (index !== -1) {
                 state.listPurchasingRequests[index] = action.payload.purchasingRequest
             }
-            console.log(state.listPurchasingRequests)
             return {
                 ...state,
                 isLoading: false
