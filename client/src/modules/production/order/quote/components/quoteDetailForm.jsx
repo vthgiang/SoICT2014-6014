@@ -444,7 +444,7 @@ class QuoteDetailForm extends Component {
                                         </div>
                                     </div>
                                 </div>
-                                {discounts && discounts.length && (
+                                {discounts && discounts.length !== 0 && (
                                     <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12 shopping-discount">
                                         <div className="shopping-discount-title">
                                             <i className="fa  fa-shirtsinbulk"></i> Khuyến mãi toàn đơn
@@ -465,7 +465,7 @@ class QuoteDetailForm extends Component {
                                         </div>
                                     </div>
                                 )}
-                                {allOfBonusGood.length && (
+                                {allOfBonusGood.length !== 0 && (
                                     <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12 shopping-bonus-good">
                                         <div className="shopping-bonus-good-title">Các sản phẩm được tặng kèm</div>
                                         {allOfBonusGood.map((goodOfBonus, index) => (

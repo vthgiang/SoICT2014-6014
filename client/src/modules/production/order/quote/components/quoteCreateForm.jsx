@@ -47,7 +47,7 @@ class QuoteCreateForm extends Component {
             },
             currency: {
                 type: "standard",
-                symbol: "vnđ",
+                symbol: "",
                 ratio: "1",
             },
         };
