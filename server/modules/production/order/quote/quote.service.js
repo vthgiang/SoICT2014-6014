@@ -122,9 +122,15 @@ exports.createNewQuote = async (userId, data, portal) => {
 }
 
 exports.getAllQuotes = async (userId, query, portal) => {
-    await BusinessDepartmentServices.getAllRelationsUser(userId);
+    let users = await BusinessDepartmentServices.getAllRelationsUser(userId, query.currentRole, portal);
     let { page, limit, code, status, customer} = query;
     let option = {};
+    if (users.length) {
+        option = {
+            $or: [{ creator: users},
+                { approvers: { $elemMatch: { approver: userId } } } ],
+        };
+    }
     if (code) {
         option.code = new RegExp(code, "i")
     }
@@ -134,6 +140,8 @@ exports.getAllQuotes = async (userId, query, portal) => {
     if (customer) {
         option.customer = customer
     }
+
+    console.log("option",option);
 
     if (query.queryDate) {
         switch (query.queryDate) {

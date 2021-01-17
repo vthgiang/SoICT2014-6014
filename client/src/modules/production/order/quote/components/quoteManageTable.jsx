@@ -27,8 +27,9 @@ class QuoteManageTable extends Component {
     }
 
     componentDidMount = () => {
+        let currentRole = localStorage.getItem("currentRole");
         const { page, limit } = this.state;
-        this.props.getAllQuotes({ page, limit });
+        this.props.getAllQuotes({ page, limit, currentRole });
         this.props.getDiscountForOrderValue();
         this.props.getCustomers();
         this.props.getAllBusinessDepartments({ page: 1, limit: 1000 });
@@ -39,9 +40,11 @@ class QuoteManageTable extends Component {
         await this.setState({
             page: page,
         });
+        let currentRole = localStorage.getItem("currentRole");
         const data = {
             limit: this.state.limit,
             page: page,
+            currentRole,
         };
         this.props.getAllQuotes(data);
     };
@@ -50,9 +53,11 @@ class QuoteManageTable extends Component {
         await this.setState({
             limit: limit,
         });
+        let currentRole = localStorage.getItem("currentRole");
         const data = {
             limit: limit,
             page: this.state.page,
+            currentRole,
         };
         this.props.getAllQuotes(data);
     };
@@ -84,6 +89,7 @@ class QuoteManageTable extends Component {
 
     handleSubmitSearch = () => {
         let { limit, page, code, status, customer, queryDate } = this.state;
+        let currentRole = localStorage.getItem("currentRole");
         const data = {
             limit,
             page,
@@ -91,6 +97,7 @@ class QuoteManageTable extends Component {
             status,
             customer,
             queryDate,
+            currentRole,
         };
         this.props.getAllQuotes(data);
     };
