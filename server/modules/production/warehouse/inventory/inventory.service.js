@@ -742,7 +742,6 @@ exports.getInventories = async (query, portal) => {
 }
 
 exports.getInventoryInStockByGoods = async (query, portal) => {
-    console.log(query);
     const { goodId, stockId } = query;
     const group = '2';
     const status = ['1', '3', '5'];
@@ -756,7 +755,7 @@ exports.getInventoryInStockByGoods = async (query, portal) => {
     const lots = await Lot(connect(DB_CONNECTION, portal)).find({ good: goodId, quantity: { $ne: 0 }, stocks: { $elemMatch: { stock: stockId } } });
 
     if (lots.length > 0) {
-        for (let j = 0; j < lots.length; j) {
+        for (let j = 0; j < lots.length; j++) {
             for (let k = 0; k < lots[j].stocks.length; k++) {
                 if (stockId.toString() === lots[j].stocks[k].stock.toString()) {
                     inventory += Number(lots[j].stocks[k].quantity);
@@ -765,8 +764,9 @@ exports.getInventoryInStockByGoods = async (query, portal) => {
         }
 
         const bills = await Bill(connect(DB_CONNECTION, portal)).find({ goods: { $elemMatch: { good: good._id } }, group: group, status: { $in: status }, fromStock: stockId });
+        
         if (bills.length > 0) {
-            for (let x = 0; x < bills.length; k++) {
+            for (let x = 0; x < bills.length; x++) {
                 for (let y = 0; y < bills[x].goods.length; y++) {
                     if (bills[x].goods[y].good.toString() === goodId.toString()) {
                         inventory -= Number(bills[x].goods[y].quantity)
@@ -779,7 +779,5 @@ exports.getInventoryInStockByGoods = async (query, portal) => {
     else {
         goodInventory.inventory = 0;
     }
-
-    console.log(goodInventory);
     return goodInventory;
 }

@@ -94,3 +94,26 @@ exports.editManufaturingCommand = async (req, res) => {
         })
     }
 }
+
+exports.getNumberCommands = async (req, res) => {
+    try {
+        const data = req.query;
+        let commandNumber = await ManufacturingCommandServices.getNumberCommands(data, req.portal);
+
+        await Logger.info(req.user.email, "EDIT_MANUFACTURING_COMMAND", req.portal);
+
+        res.status(200).json({
+            success: true,
+            messages: ["get_number_successfully"],
+            content: commandNumber
+        })
+    } catch (error) {
+        await Logger.error(req.user.email, "EDIT_MANUFACTURING_COMMAND", req.portal);
+        console.log(error.message);
+        res.status(400).json({
+            success: false,
+            messages: ["get_number_failed"],
+            content: error.message
+        })
+    }
+}
