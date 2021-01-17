@@ -221,6 +221,21 @@ class ManufacturingPlanManagementTable extends Component {
         this.props.handleEditManufacturingPlan(data, plan._id);
     }
 
+    checkRoleCreator = (plan) => {
+        const userId = localStorage.getItem('userId');
+        if (plan.creator._id === userId) {
+            return true;
+        }
+        return false;
+    }
+
+    handleCancelPlan = (plan) => {
+        const data = {
+            status: 5
+        }
+        this.props.handleEditManufacturingPlan(data, plan._id);
+    }
+
     render() {
         const { translate, manufacturingPlan } = this.props;
         let listPlans = [];
@@ -407,6 +422,17 @@ class ManufacturingPlanManagementTable extends Component {
                                                 />
                                             }
                                             {/* <a className="edit text-yellow" style={{ width: '5px' }} title="Sửa kế hoạch sản xuất"><i className="material-icons">edit</i></a> */}
+                                            {
+                                                this.checkRoleCreator(plan) && plan.status === 1 &&
+                                                <ConfirmNotification
+                                                    icon="question"
+                                                    title={translate('manufacturing.plan.cancel_plan')}
+                                                    content={translate('manufacturing.plan.cancel_plan') + " " + plan.code}
+                                                    name="cancel"
+                                                    className="text-red"
+                                                    func={() => this.handleCancelPlan(plan)}
+                                                />
+                                            }
                                         </td>
                                     </tr>
                                 ))

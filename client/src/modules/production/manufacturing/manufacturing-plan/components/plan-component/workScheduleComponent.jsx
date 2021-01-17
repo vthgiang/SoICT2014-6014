@@ -10,7 +10,7 @@ import { translate } from 'react-redux-multilingual/lib/utils';
 class WorkScheduleComponent extends Component {
     constructor(props) {
         super(props);
-        this.TURNS_NUMBER = 4;
+        this.TURNS_NUMBER = 3;
         let currentDate = new Date(formatToTimeZoneDate(this.props.startDate));
         let currentMonthYear = formatYearMonth(currentDate);
         let allDaysOfMonth = this.getAllDaysOfMonth(currentMonthYear);

@@ -5572,48 +5572,48 @@ const initSampleCompanyDB = async () => {
     -----------------------------------------------------------------------------------------------
     ----------------------------------------------------------------------------------------------- */
 
-    const salesOrderData = [{
-        code: 'DKD20200001',
-        goods: [{
-            good: listProduct[0]._id,
-            packingRule: 'Baox10Thung',
-            conversionRate: '10',
-            quantity: 100
-        }, {
-            good: listProduct[1]._id,
-            packingRule: 'Thungx20Bao',
-            conversionRate: '12',
-            quantity: 150
-        }],
-        priority: 1
-    }, {
-        code: 'DKD20200002',
-        goods: [{
-            good: listProduct[0]._id,
-            packingRule: 'Baox10Thung',
-            conversionRate: '10',
-            quantity: 50
-        }, {
-            good: listProduct[1]._id,
-            packingRule: 'Thungx20Bao',
-            conversionRate: '12',
-            quantity: 100
-        }],
-        priority: 2
-    }, {
-        code: 'DKD20200003',
-        goods: [{
-            good: listProduct[0]._id,
-            packingRule: 'Baox10Thung',
-            conversionRate: '10',
-            quantity: 200
-        }],
-        priority: 3
-    }];
+    // const salesOrderData = [{
+    //     code: 'DKD20200001',
+    //     goods: [{
+    //         good: listProduct[0]._id,
+    //         packingRule: 'Baox10Thung',
+    //         conversionRate: '10',
+    //         quantity: 100
+    //     }, {
+    //         good: listProduct[1]._id,
+    //         packingRule: 'Thungx20Bao',
+    //         conversionRate: '12',
+    //         quantity: 150
+    //     }],
+    //     priority: 1
+    // }, {
+    //     code: 'DKD20200002',
+    //     goods: [{
+    //         good: listProduct[0]._id,
+    //         packingRule: 'Baox10Thung',
+    //         conversionRate: '10',
+    //         quantity: 50
+    //     }, {
+    //         good: listProduct[1]._id,
+    //         packingRule: 'Thungx20Bao',
+    //         conversionRate: '12',
+    //         quantity: 100
+    //     }],
+    //     priority: 2
+    // }, {
+    //     code: 'DKD20200003',
+    //     goods: [{
+    //         good: listProduct[0]._id,
+    //         packingRule: 'Baox10Thung',
+    //         conversionRate: '10',
+    //         quantity: 200
+    //     }],
+    //     priority: 3
+    // }];
 
-    const listSalesOrders = await SalesOrder(vnistDB).insertMany(salesOrderData);
+    // const listSalesOrders = await SalesOrder(vnistDB).insertMany(salesOrderData);
 
-    console.log("Tạo xong dữ liệu đơn hàng", listSalesOrders);
+    // console.log("Tạo xong dữ liệu đơn hàng", listSalesOrders);
 
 
     /*---------------------------------------------------------------------------------------------

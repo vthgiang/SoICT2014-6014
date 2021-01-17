@@ -9,8 +9,8 @@ const {
 
 const UserService = require('../../../super-admin/user/user.service');
 const { createManufacturingCommand } = require('../manufacturingCommand/manufacturingCommand.service');
-const { bookingManyManufacturingMills, bookingManyWorkerToCommand } = require('../workSchedule/workSchedule.service');
-const { addManufacturingPlanForGood } = require('../../order/sales-order/salesOrder.service');
+const { bookingManyManufacturingMills, bookingManyWorkerToCommand, deleteCommandFromSchedule } = require('../workSchedule/workSchedule.service');
+const { addManufacturingPlanForGood, removeManufacturingPlanForGood } = require('../../order/sales-order/salesOrder.service');
 
 
 function getArrayTimeFromString(stringDate) {
@@ -415,6 +415,27 @@ exports.editManufacturingPlan = async (id, data, portal) => {
     oldPlan.endDate = data.endDate ? data.endDate : oldPlan.endDate;
 
     await oldPlan.save();
+
+    if (data.status == 5) {
+        const listCommands = await ManufacturingCommand(connect(DB_CONNECTION, portal))
+            .find({
+                manufacturingPlan: oldPlan._id
+            });
+        for (let i = 0; i < listCommands.length; i++) {
+            await deleteCommandFromSchedule(listCommands[i], portal);
+            listCommands[i].status = 5;
+            await listCommands[i].save();
+        }
+        const salesOrders = oldPlan.salesOrders;
+        const manufacturingWorks = oldPlan.manufacturingWorks;
+        for (let i = 0; i < salesOrders.length; i++) {
+            for (let j = 0; j < manufacturingWorks.length; j++) {
+                await removeManufacturingPlanForGood(salesOrders[i], manufacturingWorks[j], portal);
+            }
+        }
+
+    }
+
     const manufacturingPlan = await ManufacturingPlan(connect(DB_CONNECTION, portal))
         .findById({ _id: oldPlan._id })
         .populate([{
