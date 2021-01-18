@@ -5030,7 +5030,8 @@ export default {
                 purchasing_request_edit: "Sửa phiếu đề nghị",
                 edit_successfully: "Sửa phiếu dề nghị thành công",
                 edit_failed: "Sửa phiếu đề nghị thất bại",
-                cancel_purchasing_request: "Hủy phiếu đề nghị mua hàng"
+                cancel_purchasing_request: "Hủy phiếu đề nghị mua hàng",
+                number_purchasing_status: "Số lượng phiếu đề nghị mua hàng theo trạng thái"
             },
             work_schedule: {
                 //general
@@ -5173,8 +5174,8 @@ export default {
                     b: "Chờ phê duyệt",
                     c: "Đã phê duyệt",
                     d: "Yêu cầu sản xuất",
-                    e: "Đang sản xuất",
-                    f: "Đã sẵn sàng",
+                    e: "Đã lên kế hoạch sản xuất",
+                    f: "Đã yêu cầu xuất kho",
                     g: "Đang giao hàng",
                     h: "Đã giao hàng",
                     i: "Đã hủy",
@@ -5251,7 +5252,8 @@ export default {
                 choose_responisbles: "Vui lòng chọn người thực hiện",
                 edit_successfully: "Chỉnh sửa kế hoạch thành công",
                 edit_failed: "Chỉnh sửa kế hoạch thất bại",
-                cancel_plan: "Hủy kế hoạch"
+                cancel_plan: "Hủy kế hoạch",
+                quantity_by_status: "Số lượng kế hoạch theo trạng thái"
 
 
 
@@ -5400,7 +5402,11 @@ export default {
                 create_purchasing_request: "Tạo phiếu đề nghị mua hàng",
                 approver_command: "Duyệt lệnh",
                 approver_ccommand: "Người phê duyệt",
-                cancel_command: "Hủy lệnh sản xuất"
+                cancel_command: "Hủy lệnh sản xuất",
+                command_number_status: "Số lượng lệnh sản xuất theo trạng thái",
+
+
+
             },
             lot: {
                 index: "STT",
@@ -5463,6 +5469,7 @@ export default {
                 material: "Thông tin nguyên vật liệu",
                 lot_edit: "Chỉnh sửa lô sản xuất",
                 create_bill: "Lên phiếu nhập kho",
+                lot_quantity_status: "Số lượng lô hàng sản xuất theo trạng thái"
 
             },
 

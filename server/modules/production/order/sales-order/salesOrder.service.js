@@ -1,5 +1,5 @@
 const {
-    SalesOrder, Quote, OrganizationalUnit, ManufacturingWorks
+    SalesOrder, Quote, OrganizationalUnit, ManufacturingWorks, BusinessDepartment
 } = require(`../../../../models`);
 
 const {
@@ -559,3 +559,171 @@ exports.getSalesOrderDetail = async (id, portal) => {
     return { salesOrder }
 
 }
+
+//PHẦN SERVICE PHỤC VỤ THỐNG KÊ
+exports.countSalesOrder = async (userId, query, portal) => {
+    let users = await BusinessDepartmentServices.getAllRelationsUser(userId, query.currentRole, portal);
+    let { startDate, endDate} = query;
+    let option = {};
+    if (users.length) {
+        option = {
+            $or: [{ creator: users},
+                { approvers: { $elemMatch: { approver: userId } } } ],
+        };
+    }
+    if (startDate && endDate) {
+        option = {
+            ...option,
+            createdAt: {
+                $gte: startDate,
+                $lte: endDate
+            }
+        }
+    }
+
+    let allSalesOrders = await SalesOrder(connect(DB_CONNECTION, portal)).find(option);
+    let totalMoneyWithStatus = [0, 0, 0, 0, 0, 0, 0, 0, 0]; //Lấy tổng tiền theo trạng thái
+    let totalNumberWithStauts = [0, 0, 0, 0, 0, 0, 0, 0, 0]; //Lấy số lượng đơn theo trạng thái
+    let totalMoney = 0;
+
+    for (let index = 0; index < allSalesOrders.length; index++) {
+        totalMoneyWithStatus[allSalesOrders[index].status] += allSalesOrders[index].paymentAmount;
+        totalNumberWithStauts[allSalesOrders[index].status] += 1;
+        if (allSalesOrders[index].status === 7) {
+            totalMoney += allSalesOrders[index].paymentAmount
+        }
+    }
+    
+    return { salesOrdersCounter: { count: allSalesOrders.length, totalMoneyWithStatus, totalNumberWithStauts, totalMoney }}
+}
+
+//Lấy danh sách các sản phẩm bán chạy
+exports.getTopGoodsSold = async (userId, query, portal) => {
+    let users = await BusinessDepartmentServices.getAllRelationsUser(userId, query.currentRole, portal);
+    let { startDate, endDate, status} = query;
+    let option = {};
+    if (users.length) {
+        option = {
+            $or: [{ creator: users},
+                { approvers: { $elemMatch: { approver: userId } } } ],
+        };
+    }
+    if (startDate && endDate) {
+        option = {
+            ...option,
+            createdAt: {
+                $gte: startDate,
+                $lte: endDate
+            }
+        }
+    }
+
+    if (status) {
+        option.status = status;
+    }
+
+    let salesOrders = await SalesOrder(connect(DB_CONNECTION, portal)).find(option).populate([{
+        path: 'goods.good', select: 'code name baseUnit'
+    }]);
+
+    //Dữ liệu dạng {good: id, code, name, baseUnit, quantity}
+    let listGoods = [];
+
+    for (let index = 0; index < salesOrders.length; index++) {
+        let { goods } = salesOrders[index];
+        for (let indexGood = 0; indexGood < goods.length; indexGood++) {
+            let indexInListGoods = listGoods.findIndex(element => element.good.equals(goods[indexGood].good._id));
+            if (indexInListGoods !== -1) {
+                let quantity = listGoods[indexInListGoods].quantity + goods[indexGood].quantity;
+                listGoods[indexInListGoods] = {
+                    good: goods[indexGood].good._id,
+                    code: goods[indexGood].good.code,
+                    name: goods[indexGood].good.name,
+                    baseUnit: goods[indexGood].good.baseUnit,
+                    quantity
+                }
+            } else {
+                listGoods.push({
+                    good: goods[indexGood].good._id,
+                    code: goods[indexGood].good.code,
+                    name: goods[indexGood].good.name,
+                    baseUnit: goods[indexGood].good.baseUnit,
+                    quantity: goods[indexGood].quantity
+                })
+            }
+        }
+    }
+
+    let topGoodsSold = listGoods.sort((a, b) => {
+        return b.quantity - a.quantity
+    })
+
+    return {topGoodsSold}
+}
+
+//Lấy doanh số tất cả các phòng kinh doanh
+exports.getSalesForDepartments = async ( query, portal) => {
+    let { startDate, endDate, status} = query;
+    let option = {};
+
+    if (startDate && endDate) {
+        option = {
+            ...option,
+            createdAt: {
+                $gte: startDate,
+                $lte: endDate
+            }
+        }
+    }
+    
+    if (status) {
+        option.status = status;
+    }
+
+    //Lấy các đơn vị bán hàng
+    let salesDepartments = await BusinessDepartment(connect(DB_CONNECTION, portal)).find({ role: 1 }).populate([{
+        path: 'organizationalUnit', select: "name"
+    }]);
+
+    //Lấy tất cả đơn bán hàng trong giai đoạn này
+    let allSalesOrders = await SalesOrder(connect(DB_CONNECTION, portal)).find(option);
+
+    let salesForDepartments = [];
+
+    for (let index = 0; index < salesDepartments.length; index++) {
+        //Lấy danh sách tất cả mọi người trong từng phòng ban
+        let salesOrDepartment = {
+            organizationalUnit: salesDepartments[index].organizationalUnit,
+            users: [] // Dữ liệu dạng { user, sales} gồm dữ liệu người dùng và doanh số bán hàng của người đó
+        }
+
+        //Lấy danh sách người dùng trong phòng ban
+        let listUsers = await BusinessDepartmentServices.getAllUsersInDepartments(salesDepartments[index].organizationalUnit._id, portal)
+        
+        for (let indexUser = 0; indexUser < listUsers.length; indexUser++) {
+            let userData = { //Thông tin doanh số của 1 người
+                user: listUsers[indexUser],
+                sales: 0
+            }
+            let salesOrderOfUser = allSalesOrders.filter(element => element.creator.equals(listUsers[indexUser]._id));
+            for (let indexSalesOrder = 0; indexSalesOrder < salesOrderOfUser.length; indexSalesOrder++) {
+                userData.sales += salesOrderOfUser[indexSalesOrder].paymentAmount
+            }
+
+            //Thêm thông tin bán hàng của người đó vào thông tin bán hàng của phòng ban
+            salesOrDepartment.users.push(userData)
+        }
+
+        //Thêm thông tin bán hàng của phòng ban vào thông tin bán hàng của danh sách tất cả các phòng ban
+        salesForDepartments.push(salesOrDepartment)
+    }
+
+    return {salesForDepartments}
+}
+
+
+
+
+
+
+

@@ -360,3 +360,104 @@ exports.getQuoteDetail = async (id, portal) => {
     return { quote }
 
 }
+
+//PHẦN SERVICE PHỤC VỤ THỐNG KÊ
+exports.countQuote = async (userId, query, portal) => {
+    let users = await BusinessDepartmentServices.getAllRelationsUser(userId, query.currentRole, portal);
+    let { startDate, endDate} = query;
+    let option = {};
+    if (users.length) {
+        option = {
+            $or: [{ creator: users},
+                { approvers: { $elemMatch: { approver: userId } } } ],
+        };
+    }
+    if (startDate && endDate) {
+        option = {
+            ...option,
+            createdAt: {
+                $gte: startDate,
+                $lte: endDate
+            }
+        }
+    }
+
+    let allQuotes = await Quote(connect(DB_CONNECTION, portal)).find(option);
+    let totalMoneyWithStatus = [0, 0, 0, 0, 0]; //Lấy tổng tiền theo trạng thái
+    let totalNumberWithStauts = [0, 0, 0, 0, 0]; //Lấy số lượng đơn theo trạng thái
+    let totalMoney = 0;
+
+    for (let index = 0; index < allQuotes.length; index++) {
+        totalMoneyWithStatus[allQuotes[index].status] += allQuotes[index].paymentAmount;
+        totalNumberWithStauts[allQuotes[index].status] += 1;
+        if (allQuotes[index].status === 7) {
+            totalMoney += allQuotes[index].paymentAmount
+        }
+    }
+    
+    return { quoteCounter: { count: allQuotes.length, totalMoneyWithStatus, totalNumberWithStauts, totalMoney }}
+}
+
+//Lấy danh sách các sản phẩm được quan tâm
+exports.getTopGoodsCare = async (userId, query, portal) => {
+    let users = await BusinessDepartmentServices.getAllRelationsUser(userId, query.currentRole, portal);
+    let { startDate, endDate, status} = query;
+    let option = {};
+    if (users.length) {
+        option = {
+            $or: [{ creator: users},
+                { approvers: { $elemMatch: { approver: userId } } } ],
+        };
+    }
+    if (startDate && endDate) {
+        option = {
+            ...option,
+            createdAt: {
+                $gte: startDate,
+                $lte: endDate
+            }
+        }
+    }
+
+    if (status) {
+        option.status = status;
+    }
+
+    let quotes = await Quote(connect(DB_CONNECTION, portal)).find(option).populate([{
+        path: 'goods.good', select: 'code name baseUnit'
+    }]);
+
+    //Dữ liệu dạng {good: id, code, name, baseUnit, quantity}
+    let listGoods = [];
+
+    for (let index = 0; index < quotes.length; index++) {
+        let { goods } = quotes[index];
+        for (let indexGood = 0; indexGood < goods.length; indexGood++) {
+            let indexInListGoods = listGoods.findIndex(element => element.good.equals(goods[indexGood].good._id));
+            if (indexInListGoods !== -1) {
+                let quantity = listGoods[indexInListGoods].quantity + goods[indexGood].quantity;
+                listGoods[indexInListGoods] = {
+                    good: goods[indexGood].good._id,
+                    code: goods[indexGood].good.code,
+                    name: goods[indexGood].good.name,
+                    baseUnit: goods[indexGood].good.baseUnit,
+                    quantity
+                }
+            } else {
+                listGoods.push({
+                    good: goods[indexGood].good._id,
+                    code: goods[indexGood].good.code,
+                    name: goods[indexGood].good.name,
+                    baseUnit: goods[indexGood].good.baseUnit,
+                    quantity: goods[indexGood].quantity
+                })
+            }
+        }
+    }
+
+    let topGoodsCare = listGoods.sort((a, b) => {
+        return b.quantity - a.quantity
+    })
+
+    return {topGoodsCare}
+}
