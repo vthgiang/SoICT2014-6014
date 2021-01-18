@@ -691,3 +691,197 @@ exports.getNumberCommandsStatus = async (query, portal) => {
         .find(options).count();
     return { command6, command1, command2, command3, command4, command5 }
 }
+
+exports.getTopTenProduct = async (query, portal) => {
+    const { currentRole, manufacturingWorks, fromDate, toDate } = query;
+    if (!currentRole) {
+        throw Error("CurrentRole is not defined");
+    }
+    // Lấy ra list các nhà máy là currentRole là trưởng phòng hoặc currentRole là role quản lý khác
+    // Lấy ra list nhà máy mà currentRole là quản đốc nhà máy
+    let role = [currentRole];
+    const departments = await OrganizationalUnit(connect(DB_CONNECTION, portal)).find({ 'managers': { $in: role } });
+    let organizationalUnitId = departments.map(department => department._id);
+    let listManufacturingWorks = await ManufacturingWorks(connect(DB_CONNECTION, portal)).find({
+        organizationalUnit: {
+            $in: organizationalUnitId
+        }
+    });
+    // Lấy ra các nhà máy mà currentRole cũng quản lý
+    let listWorksByManageRole = await ManufacturingWorks(connect(DB_CONNECTION, portal)).find({
+        manageRoles: {
+            $in: role
+        }
+    })
+    listManufacturingWorks = [...listManufacturingWorks, ...listWorksByManageRole];
+
+    let listWorksId = listManufacturingWorks.map(x => x._id);
+
+    if (manufacturingWorks) {
+        listWorksId = manufacturingWorks;
+    }
+
+    let options = {};
+
+    let listManufacturingMills = await ManufacturingMill(connect(DB_CONNECTION, portal)).find({
+        manufacturingWorks: {
+            $in: listWorksId
+        }
+    });
+
+    let listMillIds = listManufacturingMills.map(x => x._id);
+
+    options.manufacturingMill = {
+        $in: listMillIds
+    }
+
+    if (fromDate) {
+        options.createdAt = {
+            $gte: getArrayTimeFromString(fromDate)[0]
+        }
+    }
+
+    if (toDate) {
+        options.createdAt = {
+            ...options.createdAt,
+            $lte: getArrayTimeFromString(toDate)[1]
+        }
+    }
+    options.status = {
+        $in: [3, 4]
+    }
+
+    const listCommands = await ManufacturingCommand(connect(DB_CONNECTION, portal))
+        .find(options).populate([{
+            path: 'good',
+            select: 'code name baseUnit'
+        }]);
+
+    let topTenProduct = [];
+
+    for (let i = 0; i < listCommands.length; i++) {
+        let index = topTenProduct.findIndex(x => x._id.equals(listCommands[i].good._id));
+        if (index != -1) {
+            let quantity = topTenProduct[index].quantity + listCommands[i].quantity;
+            topTenProduct[index].quantity = quantity;
+        } else {
+            topTenProduct.push({
+                _id: listCommands[i].good._id,
+                code: listCommands[i].good.code,
+                name: listCommands[i].good.name,
+                baseUnit: listCommands[i].good.baseUnit,
+                quantity: listCommands[i].quantity
+            });
+        }
+    }
+
+    topTenProduct = topTenProduct.sort((a, b) => {
+        return b.quantity - a.quantity
+    });
+    return topTenProduct;
+}
+
+exports.getFluctuatingProduct = async (query, portal) => {
+    const { currentRole, manufacturingWorks, fromMonth, toMonth, good } = query;
+    if (!currentRole) {
+        throw Error("CurrentRole is not defined");
+    }
+    // Lấy ra list các nhà máy là currentRole là trưởng phòng hoặc currentRole là role quản lý khác
+    // Lấy ra list nhà máy mà currentRole là quản đốc nhà máy
+    let role = [currentRole];
+    const departments = await OrganizationalUnit(connect(DB_CONNECTION, portal)).find({ 'managers': { $in: role } });
+    let organizationalUnitId = departments.map(department => department._id);
+    let listManufacturingWorks = await ManufacturingWorks(connect(DB_CONNECTION, portal)).find({
+        organizationalUnit: {
+            $in: organizationalUnitId
+        }
+    });
+    // Lấy ra các nhà máy mà currentRole cũng quản lý
+    let listWorksByManageRole = await ManufacturingWorks(connect(DB_CONNECTION, portal)).find({
+        manageRoles: {
+            $in: role
+        }
+    })
+    listManufacturingWorks = [...listManufacturingWorks, ...listWorksByManageRole];
+
+    let listWorksId = listManufacturingWorks.map(x => x._id);
+
+    if (manufacturingWorks) {
+        listWorksId = manufacturingWorks;
+    }
+
+    let options = {};
+
+    let listManufacturingMills = await ManufacturingMill(connect(DB_CONNECTION, portal)).find({
+        manufacturingWorks: {
+            $in: listWorksId
+        }
+    });
+
+    let listMillIds = listManufacturingMills.map(x => x._id);
+
+    options.manufacturingMill = {
+        $in: listMillIds
+    }
+
+    if (good) {
+        options.good = good
+    }
+
+    options.status = 4;
+
+    YearMonthfrom = formatToTimeZoneDate(fromMonth);
+    YearMonthto = formatToTimeZoneDate(toMonth);
+    let listMonths = dateRange(YearMonthfrom, YearMonthto);
+
+
+    let fluatingProduct = [];
+    for (let i = 0; i < listMonths.length; i++) {
+        let currentMonth = listMonths[i];
+        let yearMonth = currentMonth.split("-");
+        let startMonth = new Date(yearMonth[0], yearMonth[1] - 1, 1);
+        let endMonth = new Date(yearMonth[0], yearMonth[1], 0);
+        options.updatedAt = {
+            $gte: startMonth,
+            $lte: endMonth
+        }
+
+        let manufacturingCommands = await ManufacturingCommand(connect(DB_CONNECTION, portal))
+            .find(options);
+        let fluatingMonth = getFluatingMonthFromCommands(manufacturingCommands, listMonths[i]);
+        fluatingProduct.push(fluatingMonth);
+    }
+    return fluatingProduct;
+}
+
+function getFluatingMonthFromCommands(listCommands, month) {
+    let fluatingMonth = {
+        finishedProductQuantity: 0,
+        substandardProductQuantity: 0,
+        month: month
+    };
+    for (let i = 0; i < listCommands.length; i++) {
+        fluatingMonth.finishedProductQuantity += listCommands[i].finishedProductQuantity ? listCommands[i].finishedProductQuantity : 0;
+        fluatingMonth.substandardProductQuantity += listCommands[i].substandardProductQuantity ? listCommands[i].substandardProductQuantity : 0;
+    }
+    return fluatingMonth;
+}
+
+function dateRange(startDate, endDate) {
+    var start = startDate.split('-');
+    var end = endDate.split('-');
+    var startYear = parseInt(start[0]);
+    var endYear = parseInt(end[0]);
+    var dates = [];
+
+    for (var i = startYear; i <= endYear; i++) {
+        var endMonth = i != endYear ? 11 : parseInt(end[1]) - 1;
+        var startMon = i === startYear ? parseInt(start[1]) - 1 : 0;
+        for (var j = startMon; j <= endMonth; j = j > 12 ? j % 12 || 11 : j + 1) {
+            var month = j + 1;
+            var displayMonth = month < 10 ? '0' + month : month;
+            dates.push([i, displayMonth].join('-'));
+        }
+    }
+    return dates;
+}

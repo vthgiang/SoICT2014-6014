@@ -4,10 +4,8 @@ import ManufacturingDashboardHeader from './manufacturingDashboardHeader';
 import ManufacturingLotPieChart from './manufacturingLotPieChart';
 import PlanPieChart from './planPieChart';
 import CommandPieChart from './commandPieChart';
-import ManufacturingQuantityChart from './manufacturingQuantityChart';
 import TopTenProductBarChart from './topTenProductBarChart';
-import TopTenCommandBarChart from './topTenCommandBarChart';
-import FluctuatingProductLineChart from './fluctuatingProductLineChart';
+import FluctuatingProductChart from './fluctuatingProductChart';
 import PurchasingRequestPieChart from './purchasingRequestPieChart'
 class ManufacturingDashboard extends Component {
     constructor(props) {
@@ -50,19 +48,13 @@ class ManufacturingDashboard extends Component {
 
                     </div>
                     <div className="row">
-                        <div className=" col-lg-6 col-md-6 col-md-sm-12 col-xs-12">
+                        <div className="col-lg-12 col-md-12 col-md-sm-12 col-xs-12">
                             <TopTenProductBarChart />
                         </div>
-                        <div className=" col-lg-6 col-md-6 col-md-sm-12 col-xs-12">
-                            <TopTenCommandBarChart />
-                        </div>
                     </div>
-                    {/* <div className=" col-lg-12 col-md-12 col-md-sm-12 col-xs-12">
-                            <ManufacturingQuantityChart />
-                        </div> */}
                     <div className="row">
                         <div className=" col-lg-12 col-md-12 col-md-sm-12 col-xs-12">
-                            <FluctuatingProductLineChart />
+                            <FluctuatingProductChart />
                         </div>
                     </div>
                 </div>
