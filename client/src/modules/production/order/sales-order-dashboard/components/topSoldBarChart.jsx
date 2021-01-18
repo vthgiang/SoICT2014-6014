@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
+import { withTranslate } from "react-redux-multilingual";
 
 import c3 from "c3";
 import "c3/c3.css";
@@ -17,10 +19,14 @@ class TopSoldBarChart extends Component {
     }
 
     setDataBarChart = () => {
+        let topGoodsSoldValue = ["Top sản phẩm bán chạy theo số lượng"];
+
+        if (this.props.salesOrders && this.props.salesOrders.topGoodsSold) {
+            let topGoodsSoldMap = this.props.salesOrders.topGoodsSold.map((element) => element.quantity);
+            topGoodsSoldValue = topGoodsSoldValue.concat(topGoodsSoldMap);
+        }
         let dataBarChart = {
-            columns: [
-                ["Top 5 sản phẩm được mua nhiều nhất", 300, 280, 259, 233, 157],
-            ],
+            columns: [topGoodsSoldValue && topGoodsSoldValue.length ? topGoodsSoldValue : []],
             type: "bar",
         };
         return dataBarChart;
@@ -44,6 +50,12 @@ class TopSoldBarChart extends Component {
     // Khởi tạo PieChart bằng C3
     barChart = () => {
         let dataBarChart = this.setDataBarChart();
+
+        let topGoodsSoldTitle = [];
+        if (this.props.salesOrders && this.props.salesOrders.topGoodsSold) {
+            topGoodsSoldTitle = this.props.salesOrders.topGoodsSold.map((element) => element.name);
+        }
+
         this.removePreviousChart();
         let chart = c3.generate({
             bindto: this.refs.topSoldBarChart,
@@ -60,21 +72,13 @@ class TopSoldBarChart extends Component {
             axis: {
                 y: {
                     label: {
-                        text: `${
-                            this.state.typeGood ? "Triệu đồng" : " Đơn vị"
-                        }`,
+                        text: `${"Đơn vị tính"}`,
                         position: "outer-middle",
                     },
                 },
                 x: {
                     type: "category",
-                    categories: [
-                        "Sản phẩm A",
-                        "Sản phẩm B",
-                        "Sản phẩm C",
-                        "Sản phẩm D",
-                        "Sản phẩm E",
-                    ],
+                    categories: topGoodsSoldTitle && topGoodsSoldTitle.length ? topGoodsSoldTitle : [],
                 },
             },
 
@@ -101,9 +105,7 @@ class TopSoldBarChart extends Component {
             <div className="box">
                 <div className="box-header with-border">
                     <i className="fa fa-bar-chart-o" />
-                    <h3 className="box-title">
-                        Top 5 sản phẩm được mua nhiều nhất
-                    </h3>
+                    <h3 className="box-title">Top sản phẩm bán chạy (theo số lượng)</h3>
                     <div className="form-inline">
                         <div className="form-group">
                             <label className="form-control-static">Từ</label>
@@ -125,7 +127,7 @@ class TopSoldBarChart extends Component {
                                 style={{ width: "120px", borderRadius: "4px" }}
                             />
                         </div>
-                        <div className="form-group">
+                        {/* <div className="form-group">
                             <label className="form-control-static">
                                 Chọn Top
                             </label>
@@ -135,49 +137,9 @@ class TopSoldBarChart extends Component {
                                 placeholder="Mặc định bằng 5"
                                 style={{ width: "175px" }}
                             />
-                        </div>
-                        <div
-                            className="form-group"
-                            style={{ marginLeft: "20px" }}
-                        >
-                            <button className="btn btn-success">
-                                Tìm kiếm
-                            </button>
-                        </div>
-                    </div>
-                    <div className="box-tools pull-right">
-                        <div
-                            className="btn-group pull-rigth"
-                            style={{
-                                position: "absolute",
-                                right: "5px",
-                                top: "5px",
-                            }}
-                        >
-                            <button
-                                type="button"
-                                className={`btn btn-xs ${
-                                    this.state.typeGood
-                                        ? "active"
-                                        : "btn-danger"
-                                }`}
-                                onClick={() =>
-                                    this.handleChangeViewChart(false)
-                                }
-                            >
-                                Số lượng
-                            </button>
-                            <button
-                                type="button"
-                                className={`btn btn-xs ${
-                                    this.state.typeGood
-                                        ? "btn-danger"
-                                        : "active"
-                                }`}
-                                onClick={() => this.handleChangeViewChart(true)}
-                            >
-                                Doanh số
-                            </button>
+                        </div> */}
+                        <div className="form-group" style={{ marginLeft: "20px" }}>
+                            <button className="btn btn-success">Tìm kiếm</button>
                         </div>
                     </div>
                     <div ref="topSoldBarChart"></div>
@@ -187,4 +149,11 @@ class TopSoldBarChart extends Component {
     }
 }
 
-export default TopSoldBarChart;
+function mapStateToProps(state) {
+    const { salesOrders } = state;
+    return { salesOrders };
+}
+
+const mapDispatchToProps = {};
+
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(TopSoldBarChart));
