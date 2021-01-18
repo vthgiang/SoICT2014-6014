@@ -196,3 +196,73 @@ exports.getSalesOrderDetail = async ( req, res ) => {
     }
 }
 
+exports.countSalesOrder = async (req, res) => {
+    console.log("OKE");
+    try {
+        let query = req.query;
+        let  salesOrdersCounter = await SalesOrderServices.countSalesOrder( req.user._id, query, req.portal)
+
+        await Log.info(req.user.email, "COUNT_SALES_ORDER", req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ["count_sales_order_successfully"],
+            content: salesOrdersCounter
+        });
+    } catch (error) {
+        await Log.error(req.user.email, "COUNT_SALES_ORDER", req.portal);
+        console.log(error.message);
+        res.status(400).json({
+            success: false,
+            messages: ["count_sales_order_failed"],
+            content: error.message
+        });
+    }
+}
+
+exports.getTopGoodsSold = async (req, res) => {
+    console.log("OKE1");
+    try {
+        let query = req.query;
+        let topGoodsSold = await SalesOrderServices.getTopGoodsSold(  req.user._id, query, req.portal)
+
+        await Log.info(req.user.email, "GET_TOP_GOODS_SOLD", req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ["get_top_goods_sold_successfully"],
+            content: topGoodsSold
+        });
+    } catch (error) {
+        await Log.error(req.user.email, "GET_TOP_GOODS_SOLD", req.portal);
+        console.log(error.message);
+        res.status(400).json({
+            success: false,
+            messages: ["get_top_goods_sold_failed"],
+            content: error.message
+        });
+    }
+}
+
+exports.getSalesForDepartments = async (req, res) => {
+    console.log("OKE2");
+    try {
+        let query = req.query;
+        let salesForDepartments = await SalesOrderServices.getSalesForDepartments( query, req.portal)
+
+        await Log.info(req.user.email, "GET_SALES_FOR_DEPARTMENTS", req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ["get_sales_for_departments_successfully"],
+            content: salesForDepartments
+        });
+    } catch (error) {
+        await Log.error(req.user.email, "get_sales_for_departments_DEPARTMENTS", req.portal);
+        console.log(error.message);
+        res.status(400).json({
+            success: false,
+            messages: ["get_sales_for_departments_failed"],
+            content: error.message
+        });
+    }
+}
+
+

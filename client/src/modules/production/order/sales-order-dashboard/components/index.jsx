@@ -1,4 +1,7 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
+import { withTranslate } from "react-redux-multilingual";
+import { SalesOrderActions } from "../../sales-order/redux/actions";
 
 import QuoteSummaryChart from "./quoteSummaryChart";
 import QuoteSalesMappingAreaChart from "./quoteSalesMappingAreaChart";
@@ -12,16 +15,26 @@ import { DatePicker, SelectBox } from "../../../../../common-components";
 import AverageQuoteToSales from "./averageQuoteToSales";
 
 class SalesOrderDashboard extends Component {
-    onchangeDate = () => {};
+    constructor(props) {
+        super(props);
+        this.state = {
+            currentRole: localStorage.getItem("currentRole"),
+        };
+    }
+
+    componentDidMount() {
+        const { currentRole } = this.state;
+        this.props.countSalesOrder({ currentRole });
+        this.props.getTopGoodsSold({ currentRole });
+        this.props.getSalesForDepartments();
+    }
 
     render() {
+        console.log("SALES ORDER DASHBOARD", this.props.salesOrders);
         return (
             <React.Fragment>
                 <div className="qlcv">
-                    <div
-                        className="form-inline"
-                        style={{ marginBottom: "10px" }}
-                    >
+                    <div className="form-inline" style={{ marginBottom: "10px" }}>
                         <div className="form-group">
                             <label style={{ width: "auto" }}>Định dạng</label>
                             <SelectBox
@@ -59,12 +72,7 @@ class SalesOrderDashboard extends Component {
                         </div>
 
                         <div className="form-group">
-                            <button
-                                type="button"
-                                className="btn btn-success"
-                                title="Tìm kiếm"
-                                onClick={() => this.handleSunmitSearch()}
-                            >
+                            <button type="button" className="btn btn-success" title="Tìm kiếm" onClick={() => this.handleSunmitSearch()}>
                                 Tìm kiếm
                             </button>
                         </div>
@@ -112,4 +120,15 @@ class SalesOrderDashboard extends Component {
     }
 }
 
-export default SalesOrderDashboard;
+function mapStateToProps(state) {
+    const { salesOrders } = state;
+    return { salesOrders };
+}
+
+const mapDispatchToProps = {
+    countSalesOrder: SalesOrderActions.countSalesOrder,
+    getTopGoodsSold: SalesOrderActions.getTopGoodsSold,
+    getSalesForDepartments: SalesOrderActions.getSalesForDepartments,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(SalesOrderDashboard));
