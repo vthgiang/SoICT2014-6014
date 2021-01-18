@@ -248,7 +248,7 @@ class SalesOrderTable extends Component {
             },
             {
                 className: "text-warning",
-                text: "Đã lập lệnh sản xuất",
+                text: "Đã lập kế hoạch sản xuất",
             },
             {
                 className: "text-dark",
@@ -399,7 +399,7 @@ class SalesOrderTable extends Component {
                                         },
                                         {
                                             value: 4,
-                                            text: "Đã lập lệnh sản xuất",
+                                            text: "Đã lập kế hoạch sản xuất",
                                         },
                                         {
                                             value: 5,
@@ -500,7 +500,7 @@ class SalesOrderTable extends Component {
                                                     </a>
                                                 )}
                                                 {/* Sửa đơn sau khi đã phê duyệt */}
-                                                {item.status !== 1 && item.status !== 8 && (
+                                                {item.status !== 1 && item.status !== 8 && item.status !== 7 && (
                                                     <a
                                                         onClick={() => this.handleEditSalesOrderAfterApprove(item)}
                                                         className="edit text-yellow"
@@ -510,7 +510,7 @@ class SalesOrderTable extends Component {
                                                         <i className="material-icons">edit</i>
                                                     </a>
                                                 )}
-                                                {!item.bill && item.status !== 1 && this.checkUserForApprove(item) === 2 && (
+                                                {!item.bill && item.status !== 1 && this.checkUserForApprove(item) === 2 && item.status !== 8 && (
                                                     <a
                                                         onClick={() => this.handleAddBill(item)}
                                                         className="add text-success"
@@ -520,7 +520,7 @@ class SalesOrderTable extends Component {
                                                         <i className="material-icons">add</i>
                                                     </a>
                                                 )}
-                                                {item.bill && item.status !== 1 && (
+                                                {item.bill && item.status !== 1 && item.status !== 8 && (
                                                     <a
                                                         onClick={() => this.handleShowBillDetail(item.bill)}
                                                         className="add text-success"

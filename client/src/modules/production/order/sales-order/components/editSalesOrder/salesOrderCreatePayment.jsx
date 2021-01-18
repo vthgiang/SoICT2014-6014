@@ -285,7 +285,7 @@ class SalesOrderCreatePayment extends Component {
                             <div style={{ color: "#888", fontSize: "13px" }}>{code}</div>
                         </div>
                         <div className="shopping-quote-info-element">
-                            <div style={{ fontWeight: 600 }}>Thời gian hiệu lực &ensp;</div>
+                            <div style={{ fontWeight: 600 }}>Độ ưu tiên &ensp;</div>
                             <div style={{ color: "#888", fontSize: "13px" }}>{priority ? priorityConvert[priority] : "Trung bình"}</div>
                         </div>
                     </div>
