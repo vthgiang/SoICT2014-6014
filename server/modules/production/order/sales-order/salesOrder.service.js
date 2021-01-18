@@ -534,7 +534,9 @@ exports.getSalesOrderDetail = async (id, portal) => {
             path: 'creator', select: 'name'
         }, {
             path: 'customer', select: 'name taxNumber'
-        }, {
+        },{
+            path: 'approvers.approver', select: 'name'
+        },  {
             path: 'goods.good',
             populate: [{
                 path: 'manufacturingMills.manufacturingMill'
@@ -619,9 +621,11 @@ exports.getTopGoodsSold = async (userId, query, portal) => {
         }
     }
 
-    if (status) {
-        option.status = status;
-    }
+    // if (status) {
+    //     option.status = status;
+    // }
+
+    option.status = 7;
 
     let salesOrders = await SalesOrder(connect(DB_CONNECTION, portal)).find(option).populate([{
         path: 'goods.good', select: 'code name baseUnit'
