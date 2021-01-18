@@ -197,7 +197,6 @@ exports.getSalesOrderDetail = async ( req, res ) => {
 }
 
 exports.countSalesOrder = async (req, res) => {
-    console.log("OKE");
     try {
         let query = req.query;
         let  salesOrdersCounter = await SalesOrderServices.countSalesOrder( req.user._id, query, req.portal)
@@ -220,7 +219,6 @@ exports.countSalesOrder = async (req, res) => {
 }
 
 exports.getTopGoodsSold = async (req, res) => {
-    console.log("OKE1");
     try {
         let query = req.query;
         let topGoodsSold = await SalesOrderServices.getTopGoodsSold(  req.user._id, query, req.portal)
@@ -243,7 +241,6 @@ exports.getTopGoodsSold = async (req, res) => {
 }
 
 exports.getSalesForDepartments = async (req, res) => {
-    console.log("OKE2");
     try {
         let query = req.query;
         let salesForDepartments = await SalesOrderServices.getSalesForDepartments( query, req.portal)

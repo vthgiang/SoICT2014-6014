@@ -105,7 +105,6 @@ function getSalesOrderDetail(id) {
 
 //SERVICE CHO DASHBOARD
 function countSalesOrder(queryData) {
-    console.log("queryData", queryData);
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/sales-order/count`,
         method: "GET",
@@ -117,7 +116,6 @@ function countSalesOrder(queryData) {
 }
 
 function getTopGoodsSold(queryData) {
-    console.log("queryData1", queryData);
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/sales-order/get-top-good-sold`,
         method: "GET",
@@ -129,7 +127,6 @@ function getTopGoodsSold(queryData) {
 }
 
 function getSalesForDepartments(queryData) {
-    console.log("queryData2", queryData);
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/sales-order/get-sales-for-departments`,
         method: "GET",
