@@ -1001,7 +1001,7 @@ class SalesOrderCreateGood extends Component {
                                 <th title={"Thuế"}>Thuế</th>
                                 <th title={"Tổng tiền"}>Tổng tiền</th>
                                 <th>Cam kết chất lượng</th>
-                                <th title={"Yêu cầu sản xuất"}>Yêu cầu s/x</th>
+                                {/* <th title={"Yêu cầu sản xuất"}>Yêu cầu s/x</th> */}
                                 <th title={"Ghi chú"}>Ghi chú</th>
                                 <th title={"Hành động"}>Hành động</th>
                             </tr>
@@ -1062,7 +1062,7 @@ class SalesOrderCreateGood extends Component {
                                                 </a>
                                             </div>
                                         </td>
-                                        <td>
+                                        {/* <td>
                                             {item.manufacturingWorks ? (
                                                 <div
                                                     style={{
@@ -1087,7 +1087,7 @@ class SalesOrderCreateGood extends Component {
                                             ) : (
                                                 ""
                                             )}
-                                        </td>
+                                        </td> */}
                                         <td>{item.note}</td>
                                         <td>
                                             <a className="edit text-yellow">
@@ -1136,7 +1136,7 @@ class SalesOrderCreateGood extends Component {
                                             }, 0)
                                         )}
                                     </td>
-                                    <td colSpan={4}></td>
+                                    <td colSpan={3}></td>
                                 </tr>
                             )}
                         </tbody>

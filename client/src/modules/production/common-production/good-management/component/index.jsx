@@ -413,18 +413,21 @@ class GoodManagement extends Component {
                                                 categoryToTree.list.length &&
                                                 categoryToTree.list.filter((item) => item._id === x.category).pop()
                                                 ? categoryToTree.list.filter((item) => item._id === x.category).pop().name
-                                                : ""}
+                                                : "category is deleted"}
                                         </td>
                                         <td>{x.baseUnit}</td>
-                                        <td>{
-                                            type === "product" && x.materials.length > 0 &&
+                                        {
+                                            type === "product" && 
+                                            <td>{
+                                            x.materials.length > 0 &&
                                             x.materials.map((y, i)  => {
                                                 if(x.materials.length === i + 1){
                                                     return y.good.name
                                                 }
                                                 return y.good.name + ", "
                                             })
-                                        }</td>
+                                            }</td>
+                                        }
                                         <td>{x.description}</td>
                                         <td style={{ textAlign: "center" }}>
                                             <a onClick={() => this.handleShowDetailInfo(x)}>

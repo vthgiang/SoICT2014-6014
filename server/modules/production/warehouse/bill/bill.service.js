@@ -498,42 +498,41 @@ exports.editBill = async (id, userId, data, portal, companyId) => {
 
     //--------------------PHẦN PHỤC VỤ CHO QUẢN LÝ ĐƠN HÀNG------------------------
     if (parseInt(bill.status) === 2) {//Nếu bill đã hoàn thành
-        await PurchaseOrder(connect(DB_CONNECTION, portal)).findOneAndUpdate({
-            bill: bill._id
-        }, {
-            $set: { status: 4 }
-        });
+        let purchaseOrder = await PurchaseOrder(connect(DB_CONNECTION, portal)).findOne({bill: bill._id.toString() })
+        if (purchaseOrder) {
+            purchaseOrder.status = 4;
+            purchaseOrder.save()
+        }
 
         //Cập nhật trạng thái đơn mua hàng là đà hoàn thành khi bill xuất kho hoàn thành
-        let salesOrder = await SalesOrder(connect(DB_CONNECTION, portal)).findOneAndUpdate({
-            bill: bill._id
-        }, {
-            $set: { status: 7 }
+        let salesOrder = await SalesOrder(connect(DB_CONNECTION, portal)).findOne({
+            bill: bill._id.toString()
         });
-
-        //Cập nhật số xu cho khách hàng
         if (salesOrder) {
+            salesOrder.status = 7;
+            salesOrder.save();
+            //Cập nhật số xu cho khách hàng
             let customerPoint = await CustomerService.getCustomerPoint(portal, companyId, salesOrder.customer);
             if (customerPoint && salesOrder.allCoin) {
                 await CustomerService.editCustomerPoint(portal, companyId, customerPoint._id, { point: salesOrder.allCoin + customerPoint.point }, userId)
             }
         }
     } else if (parseInt(bill.status) === 4) {//Nếu bill bị hủy
-        await PurchaseOrder(connect(DB_CONNECTION, portal)).findOneAndUpdate({
-            bill: bill._id
-        }, {
-            $set: { status: 5 }
-        });
+        let purchaseOrder = await PurchaseOrder(connect(DB_CONNECTION, portal)).findOne({bill: bill._id.toString() })
+        if (purchaseOrder) {
+            purchaseOrder.status = 5;
+            purchaseOrder.save()
+        }
 
         //Cập nhật trạng thái đơn mua hàng là đã hủy
-        let salesOrder = await SalesOrder(connect(DB_CONNECTION, portal)).findOneAndUpdate({
-            bill: bill._id
-        }, {
-            $set: { status: 8 }
+        let salesOrder = await SalesOrder(connect(DB_CONNECTION, portal)).findOne({
+            bill: bill._id.toString()
         });
 
-        //Trả lại số xu đã sử dụng cho khách
         if (salesOrder) {
+            salesOrder.status = 8;
+            salesOrder.save();
+            //Cập nhật số xu cho khách hàng
             let customerPoint = await CustomerService.getCustomerPoint(portal, companyId, salesOrder.customer);
             if (customerPoint && salesOrder.coin) {
                 await CustomerService.editCustomerPoint(portal, companyId, customerPoint._id, { point: salesOrder.coin + customerPoint.point }, userId)
@@ -853,7 +852,7 @@ exports.editBill = async (id, userId, data, portal, companyId) => {
     //Nếu nhập kho thành phẩm từ xưởng sản xuất
     //Chuyển trạng thái đơn hàng từ đang thực hiện sang hoàn Thành
     //Thay đổi trạng thái lô sản xuất thành đã nhập kho
-    if (data.type === '2') {
+    if (data.group === '1') {
         if (data.oldStatus === '5' && data.status === '2') {
             if (data.goods && data.goods.length > 0) {
                 for (let i = 0; i < data.goods.length; i++) {
@@ -861,8 +860,11 @@ exports.editBill = async (id, userId, data, portal, companyId) => {
                         for (let j = 0; j < data.goods[i].lots.length; j++) {
                             let lotId = data.goods[i].lots[j].lot._id;
                             let lot = await Lot(connect(DB_CONNECTION, portal)).findById(lotId);
-                            lot.status = '3';
-                            await lot.save();
+                            if(lot && lot.status) {
+                                lot.status = '3';
+                                await lot.save();
+                            }
+                            
                         }
                     }
                 }
@@ -871,7 +873,7 @@ exports.editBill = async (id, userId, data, portal, companyId) => {
     }
 
     //Nhập kho: Chuyển trạng thái từ đã hoàn thành sang đã Hủy
-    if (data.type === '1') {
+    if (data.group === '1') {
         if (data.oldStatus === '2' && data.status === '4') {
             if (data.goods && data.goods.length > 0) {
                 for (let i = 0; i < data.goods.length; i++) {

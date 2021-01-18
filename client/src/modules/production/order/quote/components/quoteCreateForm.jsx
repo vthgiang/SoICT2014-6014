@@ -470,7 +470,7 @@ class QuoteCreateForm extends Component {
     };
 
     isValidateQuoteCreateInfo = () => {
-        let { customer, customerEmail, customerPhone, customerAddress, effectiveDate, expirationDate, organizationalUnit, approvers } = this.state;
+        let { customer, customerEmail, customerPhone, customerAddress, effectiveDate, expirationDate, approvers } = this.state;
         let { translate } = this.props;
 
         if (
@@ -478,7 +478,6 @@ class QuoteCreateForm extends Component {
             !ValidationHelper.validateEmail(translate, customerEmail).status ||
             !ValidationHelper.validateEmpty(translate, customerPhone).status ||
             !ValidationHelper.validateEmpty(translate, customerAddress).status ||
-            this.validateOrganizationalUnit(organizationalUnit, false) ||
             this.validateApprovers(approvers, false) ||
             this.validateDateStage(effectiveDate, expirationDate, false) ||
             !ValidationHelper.validateEmpty(translate, effectiveDate).status ||
@@ -582,7 +581,6 @@ class QuoteCreateForm extends Component {
                 discountsOfOrderValue,
                 paymentAmount,
                 note,
-                organizationalUnit,
                 approvers,
             } = this.state;
 
@@ -605,7 +603,6 @@ class QuoteCreateForm extends Component {
                 allCoin,
                 paymentAmount,
                 note,
-                organizationalUnit,
                 approvers: approvers.map((element) => {
                     return { approver: element };
                 }),
@@ -633,7 +630,6 @@ class QuoteCreateForm extends Component {
                     discountsOfOrderValue: [],
                     paymentAmount: "",
                     note: "",
-                    organizationalUnit: "",
                     approvers: [],
                     paymentAmount: "",
                     step: 0,
