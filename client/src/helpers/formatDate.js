@@ -101,3 +101,19 @@ export const compareLteDate = (startDate, endDate) => { //Ngày bắt đầu tr�
         }
     }
 }
+
+export const compareLteMonth = (startMonth, toMonth) => {
+    let startTimeZoneDate = new Date(formatToTimeZoneDate(startMonth));
+    let endTimeZoneDate = new Date(formatToTimeZoneDate(toMonth));
+    if (startTimeZoneDate.getTime() > endTimeZoneDate.getTime()) {
+        return {
+            status: false,
+            message: "Tháng bắt đầu phải trước hoặc cùng ngày kết thúc"
+        }
+    } else {
+        return {
+            status: true,
+            message: undefined
+        }
+    }
+}

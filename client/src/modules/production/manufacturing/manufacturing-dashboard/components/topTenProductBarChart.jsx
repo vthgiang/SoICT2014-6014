@@ -6,39 +6,123 @@ import 'c3/c3.css';
 
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import { SelectMulti, DatePicker, SelectBox } from '../../../../../common-components';
+import { compareLteDate } from '../../../../../helpers/formatDate';
+import { worksActions } from '../../manufacturing-works/redux/actions';
+import { connect } from 'react-redux';
+import { commandActions } from '../../manufacturing-command/redux/actions';
 
 class TopTenProductBarChart extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            barChart: true
+            currentRole: localStorage.getItem('currentRole'),
+            fromDate: '',
+            toDate: '',
+            manufacturingWorks: [],
         }
     }
 
     componentDidMount() {
-        this.barAndChart();
+        this.props.getTopTenProduct({ currentRole: this.state.currentRole });
     }
 
-    handleChangeViewChart = (value) => {
-        this.setState({
-            ...this.state,
-            barChart: value
+    getListManufacturingWorksArr = () => {
+        const { manufacturingWorks } = this.props;
+        const { listWorks } = manufacturingWorks;
+        let listManufacturingWorksArr = [];
+        if (listWorks) {
+            listWorks.map((works) => {
+                listManufacturingWorksArr.push({
+                    value: works._id,
+                    text: works.name
+                });
+            });
+        }
+        return listManufacturingWorksArr;
+    }
+
+    handleFromDateChange = (value) => {
+        this.validateFromDateChange(value, true);
+    };
+
+    validateFromDateChange = (value, willUpdateState = true) => {
+        let msg = undefined;
+        const { translate } = this.props;
+        if (value && this.state.toDate) {
+            let obj = compareLteDate(value, this.state.toDate);
+            console.log(obj.status);
+            if (!obj.status) {
+                msg = translate("manufacturing.plan.choose_date_error");
+            }
+        }
+        if (willUpdateState) {
+            this.setState((state) => ({
+                ...state,
+                fromDate: value,
+                errorTime: msg
+            }));
+        }
+        return msg;
+    }
+
+
+    handleToDateChange = (value) => {
+        this.validateToDateChange(value, true);
+    };
+
+    validateToDateChange = (value, willUpdateState = true) => {
+        let msg = undefined;
+        const { translate } = this.props;
+        if (value && this.state.fromDate) {
+            console.log("to Date")
+            let obj = compareLteDate(this.state.fromDate, value);
+            if (!obj.status) {
+                msg = translate("manufacturing.plan.choose_date_error");
+            }
+        }
+        if (willUpdateState) {
+            this.setState((state) => ({
+                ...state,
+                toDate: value,
+                errorTime: msg
+            }));
+        }
+        return msg;
+    }
+
+    handleManufacturingWorksChange = (value) => {
+        this.setState((state) => ({
+            ...state,
+            manufacturingWorks: value
+        }))
+    }
+
+    handleSubmitSearch = () => {
+        const data = {
+            currentRole: this.state.currentRole,
+            manufacturingWorks: this.state.manufacturingWorks,
+            fromDate: this.state.fromDate,
+            toDate: this.state.toDate
+        }
+        this.props.getTopTenProduct(data);
+    }
+
+    barAndChart = (translate, topTenProduct) => {
+        let arrayContent = ['x'];
+        let arrayQuantity = [translate('manufacturing.dashboard.quantity_pill')];
+        topTenProduct.map(x => {
+            arrayContent.push(x.name);
+            arrayQuantity.push(x.quantity);
         })
-    }
-
-    // Khởi tạo BarChart bằng C3
-    barAndChart = () => {
-        let { translate } = this.props;
-        const { barChart } = this.state;
         let chart = c3.generate({
-            bindto: this.refs.goodIssueReceipt,
+            bindto: this.refs.topTenProduct,
             data: {
                 x: 'x',
                 columns: [
-                    ['x', 'Thuốc Cúm gà', 'Thuốc bột trẻ em', 'Thuốc tiêm lợn', 'Hanceft', 'Paracetamol', 'tiffy', 'paradol', 'Thuốc bạc hà', 'C sủi', 'Insulin'],
-                    ['Số lượng thuốc', 3000, 4000, 5000, 4500, 6000, 8000, 6000, 7000, 6000, 4000, 5000],
+                    arrayContent,
+                    arrayQuantity
                 ],
-                type: barChart ? 'bar' : 'line',
+                type: 'bar',
             },
             axis: {
                 x: {
@@ -51,7 +135,7 @@ class TopTenProductBarChart extends Component {
                 },
                 y: {
                     label: {
-                        text: "Số lượng",
+                        text: translate('manufacturing.command.quantity'),
                         position: "outer-middle"
                     }
                 }
@@ -60,61 +144,55 @@ class TopTenProductBarChart extends Component {
     }
 
     render() {
-        const { translate } = this.props;
-        const { barChart } = this.state;
-        this.barAndChart();
+        const { translate, manufacturingCommand } = this.props;
+        const { fromDate, toDate, errorTime } = this.state;
+        let topTenProduct = [];
+        if (manufacturingCommand.topTenProduct && manufacturingCommand.isLoading === false) {
+            topTenProduct = manufacturingCommand.topTenProduct;
+        }
+        this.barAndChart(translate, topTenProduct);
         return (
             <React.Fragment>
                 <div className="box">
                     <div className="box-header with-border">
                         <i className="fa fa-bar-chart-o" />
                         <h3 className="box-title">
-                            Top 10 SP sản xuất nhiều nhất trong 2/2020 - 10/2020
+                            Top {topTenProduct.length} {translate('manufacturing.dashboard.top_ten_product')}
                         </h3>
-                        <div className="form-inline">
-                            <div className="form-group">
-                                <SelectBox id="selectBoxDay"
-                                    items={[
-                                        { value: '0', text: 'Tháng' },
-                                        { value: '1', text: 'Ngày' },
-                                        { value: '2', text: 'Tuần' },
-                                        { value: '3', text: 'Năm' },
-                                    ]}
-                                    onChange={this.handleSelectOrganizationalUnit}
-                                />
-                            </div>
+                        <div className="form-group">
+                            <label style={{ width: "auto" }}>{translate('manufacturing.dashboard.choose_works')}</label>
+                            <SelectMulti
+                                id={`select-multi-works-top-ten`}
+                                multiple="multiple"
+                                options={{ nonSelectedText: translate('manufacturing.plan.choose_works'), allSelectedText: translate('manufacturing.plan.choose_all') }}
+                                className="form-control select2"
+                                style={{ width: "100%" }}
+                                items={this.getListManufacturingWorksArr()}
+                                onChange={this.handleManufacturingWorksChange}
+                            />
                         </div>
                         <div className="form-inline">
                             <div className="form-group">
-                                <label className="form-control-static">Từ</label>
+                                <label className="form-control-static">{translate('manufacturing.dashboard.from')}</label>
                                 <DatePicker
-                                    id="purchase-month"
-                                    dateFormat="month-year"
-                                    value=""
-                                    onChange={this.handlePurchaseMonthChange}
+                                    id="top-ten-from-date"
+                                    value={fromDate}
+                                    onChange={this.handleFromDateChange}
                                 />
                             </div>
                             <div className="form-group">
-                                <label className="form-control-static">Đến</label>
+                                <label className="form-control-static">{translate('manufacturing.dashboard.to')}</label>
                                 <DatePicker
-                                    id="purchase-month"
-                                    dateFormat="month-year"
-                                    value=""
-                                    onChange={this.handlePurchaseMonthChange}
+                                    id="top-ten-to-date"
+                                    value={toDate}
+                                    onChange={this.handleToDateChange}
                                 />
                             </div>
                             <div className="form-group">
-                                <button className="btn btn-success">Lọc</button>
+                                <button className="btn btn-success" disabled={errorTime} onClick={this.handleSubmitSearch}>{translate('manufacturing.dashboard.filter')}</button>
                             </div>
                         </div>
-                        {/* <div className="box-tools pull-right">
-                                <div className="btn-group pull-rigth">
-                                    <button type="button" className={`btn ${barChart === true ? 'btn-danger' : null}`} onClick={() => this.handleChangeViewChart(true)}>Bar chart</button>
-                                    <button type="button" className={`btn ${barChart === false ? 'btn-danger' : null}`} onClick={() => this.handleChangeViewChart(false)}>Line chart</button>
-                                </div>
-                            </div> */}
-
-                        <div ref="goodIssueReceipt"></div>
+                        <div ref="topTenProduct"></div>
                     </div>
                 </div>
             </React.Fragment >
@@ -122,4 +200,14 @@ class TopTenProductBarChart extends Component {
     }
 }
 
-export default withTranslate(TopTenProductBarChart);
+function mapStateToProps(state) {
+    const { manufacturingWorks, manufacturingCommand } = state;
+    return { manufacturingWorks, manufacturingCommand }
+}
+
+const mapDispatchToProps = {
+    getAllManufacturingWorks: worksActions.getAllManufacturingWorks,
+    getTopTenProduct: commandActions.getTopTenProduct
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(TopTenProductBarChart));

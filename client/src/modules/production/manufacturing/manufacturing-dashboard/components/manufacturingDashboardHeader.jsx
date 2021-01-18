@@ -9,6 +9,7 @@ import { manufacturingPlanActions } from '../../manufacturing-plan/redux/actions
 import { commandActions } from '../../manufacturing-command/redux/actions';
 import { LotActions } from '../../../warehouse/inventory-management/redux/actions';
 import { SalesOrderActions } from '../../../order/sales-order/redux/actions';
+import { purchasingRequestActions } from '../../purchasing-request/redux/actions';
 
 class ManufacturingDashboardHeader extends Component {
     constructor(props) {
@@ -128,6 +129,7 @@ class ManufacturingDashboardHeader extends Component {
         this.props.getNumberCommandsStatus(data);
         this.props.getNumberLotsStatus(data);
         this.props.getNumberWorksSalesOrder(data);
+        this.props.getNumberPurchasingStatus(data);
     }
 
 
@@ -267,9 +269,9 @@ class ManufacturingDashboardHeader extends Component {
                 <div className="row" style={{ marginTop: "10px" }}>
                     <div className="col-md-4 col-sm-4 col-xs-4">
                         <div className="info-box with-border">
-                            <span className="info-box-icon bg-green"><i className="fa fa-file-text"></i></span>
-                            <div className="info-box-content">
-                                <span className="info-box-text">Số đơn sản xuất cần lên kế hoạch</span>
+                            <span className="info-box-icon bg-aqua"><i className="fa fa-file-text"></i></span>
+                            <div className="info-box-content" title={translate('manufacturing.dashboard.sales_order_number_1')}>
+                                <span className="info-box-text">{translate('manufacturing.dashboard.sales_order_progress_1')}</span>
                                 <span className="info-box-number">
                                     {numberSalesOrdersWorks.salesOrder1}
                                 </span>
@@ -280,8 +282,8 @@ class ManufacturingDashboardHeader extends Component {
                     <div className="col-md-4 col-sm-4 col-xs-4">
                         <div className="info-box with-border">
                             <span className="info-box-icon bg-green"><i className="fa fa-file-text"></i></span>
-                            <div className="info-box-content">
-                                <span className="info-box-text">Số đơn sản xuất đã xong lên kế hoạch</span>
+                            <div className="info-box-content" title={translate('manufacturing.dashboard.sales_order_number_2')}>
+                                <span className="info-box-text">{translate('manufacturing.dashboard.sales_order_progress_2')}</span>
                                 <span className="info-box-number">
                                     {numberSalesOrdersWorks.salesOrder2}/{numberSalesOrdersWorks.salesOrder1}
                                 </span>
@@ -292,8 +294,8 @@ class ManufacturingDashboardHeader extends Component {
                     <div className="col-md-4 col-sm-4 col-xs-4">
                         <div className="info-box with-border">
                             <span className="info-box-icon bg-red"><i className="fa fa-file-text"></i></span>
-                            <div className="info-box-content">
-                                <span className="info-box-text">Số đơn sản xuất chưa lên xong kế hoạch</span>
+                            <div className="info-box-content" title={translate('manufacturing.dashboard.sales_order_number_3')}>
+                                <span className="info-box-text">{translate('manufacturing.dashboard.sales_order_progress_3')}</span>
                                 <span className="info-box-number">
                                     {numberSalesOrdersWorks.salesOrder3}/{numberSalesOrdersWorks.salesOrder1}
                                 </span>
@@ -320,6 +322,7 @@ const mapDispatchToProps = {
     getNumberCommandsStatus: commandActions.getNumberCommandsStatus,
     getNumberLotsStatus: LotActions.getNumberLotsStatus,
     getNumberWorksSalesOrder: SalesOrderActions.getNumberWorksSalesOrder,
+    getNumberPurchasingStatus: purchasingRequestActions.getNumberPurchasingStatus
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(ManufacturingDashboardHeader));

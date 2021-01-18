@@ -726,7 +726,10 @@ exports.getSalesForDepartments = async (query, portal) => {
 function checkValueInArrayNumber(array, value) {
     let result = false;
     for (let i = 0; i < array.length; i++) {
-        if (value.equals(array[i])) {
+        if (!value) {
+            return false;
+        }
+        else if (value.equals(array[i])) {
             result = true
         }
     }
@@ -756,14 +759,6 @@ exports.getNumberWorksSalesOrder = async (query, portal) => {
             $lte: getArrayTimeFromString(toDate)[1]
         }
     }
-    options = {
-        ...options,
-        $or: [{
-            status: 3
-        }, {
-            status: 4
-        }]
-    }
 
     const listSalesOrders = await SalesOrder(connect(DB_CONNECTION, portal)).find(options);
 
@@ -779,29 +774,34 @@ exports.getNumberWorksSalesOrder = async (query, portal) => {
     }
 
     // Số đơn sản xuất đã lên xong kế hoạch
-    let salesOrder2 = 0;
-    if (listWorksId.length > 1) { //Quyền này là quyền tất cả
-        for (let i = 0; i < listSalesOrders.length; i++) {
-            let check = true;
-            for (let j = 0; j < listSalesOrders[i].goods.length; j++) {
-                if (checkValueInArrayNumber(listWorksId, listSalesOrders[i].goods[j].manufacturingWorks) && !listSalesOrders[i].goods[j].manufacturingPlan) {
-                    check = false
-                }
-            }
-            if (check) {
-                salesOrder2 += 1;
-            }
-        }
-    } else {
-        for (let i = 0; i < listSalesOrders.length; i++) {
-            for (let j = 0; j < listSalesOrders[i].goods.length; j++) {
-                if (checkValueInArrayNumber(listWorksId, listSalesOrders[i].goods[j].manufacturingWorks) && listSalesOrders[i].goods[j].manufacturingPlan) {
-                    salesOrder2 += 1;
-                    break;
-                }
-            }
-        }
-    }
+    // let salesOrder2 = 0;
+    // if (listWorksId.length > 1) { //Quyền này là quyền tất cả
+    //     for (let i = 0; i < listSalesOrders.length; i++) {
+    //         let check = true;
+    //         let a = 0;
+    //         for (let j = 0; j < listSalesOrders[i].goods.length; j++) {
+    //             if (listSalesOrders[i].goods[j].manufacturingWorks) {
+    //                 a += 1;
+    //                 if (checkValueInArrayNumber(listWorksId, listSalesOrders[i].goods[j].manufacturingWorks) && !listSalesOrders[i].goods[j].manufacturingPlan) {
+    //                     check = false
+    //                     break;
+    //                 }
+    //             }
+    //         }
+    //         if (check && !a) {
+    //             salesOrder2 += 1
+    //         }
+    //     }
+    // } else {
+    //     for (let i = 0; i < listSalesOrders.length; i++) {
+    //         for (let j = 0; j < listSalesOrders[i].goods.length; j++) {
+    //             if (checkValueInArrayNumber(listWorksId, listSalesOrders[i].goods[j].manufacturingWorks) && listSalesOrders[i].goods[j].manufacturingPlan) {
+    //                 salesOrder2 += 1;
+    //                 break;
+    //             }
+    //         }
+    //     }
+    // }
 
     // Số đơn sản xuất chưa lên xong kế hoạch
     let salesOrder3 = 0;
@@ -813,6 +813,8 @@ exports.getNumberWorksSalesOrder = async (query, portal) => {
             }
         }
     }
+
+    let salesOrder2 = salesOrder1 - salesOrder3;
 
     return { salesOrder1, salesOrder2, salesOrder3 }
 
