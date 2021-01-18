@@ -70,6 +70,8 @@ function handleEditCommand(id, data) {
 }
 
 function getNumberCommands(query) {
+    console.log(query);
+    console.log('aaa')
     return dispatch => {
         dispatch({
             type: commandConstants.GET_NUMBER_COMMAND_REQUEST

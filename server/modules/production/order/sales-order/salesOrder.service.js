@@ -9,6 +9,7 @@ const {
 const PaymentService = require('../payment/payment.service');
 const CustomerService = require('../../../crm/customer/customer.service');
 const BusinessDepartmentServices = require('../business-department/buninessDepartment.service');
+const { query } = require('express');
 
 exports.createNewSalesOrder = async (userId, companyId, data, portal) => {
     let newSalesOrder = await SalesOrder(connect(DB_CONNECTION, portal)).create({
@@ -135,9 +136,9 @@ exports.createNewSalesOrder = async (userId, companyId, data, portal) => {
         path: 'creator', select: 'name'
     }, {
         path: 'customer', select: 'name taxNumber'
-    },{
+    }, {
         path: 'goods.good', select: 'code name baseUnit'
-    },{
+    }, {
         path: 'goods.manufacturingWorks', select: 'code name address description'
     }, {
         path: 'goods.manufacturingPlan', select: 'code status startDate endDate'
@@ -154,8 +155,8 @@ exports.getAllSalesOrders = async (userId, query, portal) => {
 
     if (users.length) {
         option = {
-            $or: [{ creator: users},
-                { approvers: { $elemMatch: { approver: userId } } } ],
+            $or: [{ creator: users },
+            { approvers: { $elemMatch: { approver: userId } } }],
         };
     }
     if (code) {
@@ -179,7 +180,7 @@ exports.getAllSalesOrders = async (userId, query, portal) => {
                 path: 'customer', select: 'name taxNumber'
             }, {
                 path: 'goods.good', select: 'code name baseUnit'
-            },{
+            }, {
                 path: 'goods.manufacturingWorks', select: 'code name address description'
             }, {
                 path: 'goods.manufacturingPlan', select: 'code status startDate endDate'
@@ -195,7 +196,7 @@ exports.getAllSalesOrders = async (userId, query, portal) => {
                 path: 'customer', select: 'name taxNumber'
             }, {
                 path: 'goods.good', select: 'code name baseUnit'
-            },{
+            }, {
                 path: 'goods.manufacturingWorks', select: 'code name address description'
             }, {
                 path: 'goods.manufacturingPlan', select: 'code status startDate endDate'
@@ -291,11 +292,11 @@ exports.editSalesOrder = async (userId, companyId, id, data, portal) => {
             path: 'customer', select: 'name taxNumber'
         }, {
             path: 'goods.good', select: 'code name baseUnit'
-        },{
+        }, {
             path: 'goods.manufacturingWorks', select: 'code name address description'
         }, {
             path: 'goods.manufacturingPlan', select: 'code status startDate endDate'
-            }]);
+        }]);
 
     return { salesOrder: salesOrderUpdated }
 }
@@ -324,7 +325,7 @@ exports.approveSalesOrder = async (salesOrderId, data, portal) => {
         path: 'customer', select: 'name taxNumber'
     }, {
         path: 'goods.good', select: 'code name baseUnit'
-    },{
+    }, {
         path: 'goods.manufacturingWorks', select: 'code name address description'
     }, {
         path: 'goods.manufacturingPlan', select: 'code status startDate endDate'
@@ -358,11 +359,11 @@ exports.approveSalesOrder = async (salesOrderId, data, portal) => {
 }
 
 //Kiểm tra yêu cầu sản xuất đã lên kế hoạch hết hay chưa
-function checkAndChangeSalesOrderStatus (goods){
-    for (let index = 0; index < goods.length; index++){
+function checkAndChangeSalesOrderStatus(goods) {
+    for (let index = 0; index < goods.length; index++) {
         if (goods[index].manufacturingWorks && !goods[index].manufacturingPlan) {
             //Yêu cầu nhà máy sản xuất mà chưa lên kế hoạch
-            return 3; 
+            return 3;
         }
     }
     //Tất cả yêu cầu sản xuất đều đã lên kế hoạch
@@ -563,12 +564,12 @@ exports.getSalesOrderDetail = async (id, portal) => {
 //PHẦN SERVICE PHỤC VỤ THỐNG KÊ
 exports.countSalesOrder = async (userId, query, portal) => {
     let users = await BusinessDepartmentServices.getAllRelationsUser(userId, query.currentRole, portal);
-    let { startDate, endDate} = query;
+    let { startDate, endDate } = query;
     let option = {};
     if (users.length) {
         option = {
-            $or: [{ creator: users},
-                { approvers: { $elemMatch: { approver: userId } } } ],
+            $or: [{ creator: users },
+            { approvers: { $elemMatch: { approver: userId } } }],
         };
     }
     if (startDate && endDate) {
@@ -593,19 +594,19 @@ exports.countSalesOrder = async (userId, query, portal) => {
             totalMoney += allSalesOrders[index].paymentAmount
         }
     }
-    
-    return { salesOrdersCounter: { count: allSalesOrders.length, totalMoneyWithStatus, totalNumberWithStauts, totalMoney }}
+
+    return { salesOrdersCounter: { count: allSalesOrders.length, totalMoneyWithStatus, totalNumberWithStauts, totalMoney } }
 }
 
 //Lấy danh sách các sản phẩm bán chạy
 exports.getTopGoodsSold = async (userId, query, portal) => {
     let users = await BusinessDepartmentServices.getAllRelationsUser(userId, query.currentRole, portal);
-    let { startDate, endDate, status} = query;
+    let { startDate, endDate, status } = query;
     let option = {};
     if (users.length) {
         option = {
-            $or: [{ creator: users},
-                { approvers: { $elemMatch: { approver: userId } } } ],
+            $or: [{ creator: users },
+            { approvers: { $elemMatch: { approver: userId } } }],
         };
     }
     if (startDate && endDate) {
@@ -658,12 +659,12 @@ exports.getTopGoodsSold = async (userId, query, portal) => {
         return b.quantity - a.quantity
     })
 
-    return {topGoodsSold}
+    return { topGoodsSold }
 }
 
 //Lấy doanh số tất cả các phòng kinh doanh
-exports.getSalesForDepartments = async ( query, portal) => {
-    let { startDate, endDate, status} = query;
+exports.getSalesForDepartments = async (query, portal) => {
+    let { startDate, endDate, status } = query;
     let option = {};
 
     if (startDate && endDate) {
@@ -675,7 +676,7 @@ exports.getSalesForDepartments = async ( query, portal) => {
             }
         }
     }
-    
+
     if (status) {
         option.status = status;
     }
@@ -699,7 +700,7 @@ exports.getSalesForDepartments = async ( query, portal) => {
 
         //Lấy danh sách người dùng trong phòng ban
         let listUsers = await BusinessDepartmentServices.getAllUsersInDepartments(salesDepartments[index].organizationalUnit._id, portal)
-        
+
         for (let indexUser = 0; indexUser < listUsers.length; indexUser++) {
             let userData = { //Thông tin doanh số của 1 người
                 user: listUsers[indexUser],
@@ -718,7 +719,120 @@ exports.getSalesForDepartments = async ( query, portal) => {
         salesForDepartments.push(salesOrDepartment)
     }
 
-    return {salesForDepartments}
+    return { salesForDepartments }
+}
+
+// Kiểm tra value có trong array hay ko 
+function checkValueInArrayNumber(array, value) {
+    let result = false;
+    for (let i = 0; i < array.length; i++) {
+        if (value.equals(array[i])) {
+            result = true
+        }
+    }
+    return result
+}
+
+exports.getNumberWorksSalesOrder = async (query, portal) => {
+    const { currentRole, manufacturingWorks, fromDate, toDate } = query;
+    if (!currentRole) {
+        throw Error("CurrentRole is not defined");
+    }
+    let listWorksId = await getListWorksIdsByCurrentRole(currentRole, portal);
+    if (manufacturingWorks) {
+        listWorksId = manufacturingWorks;
+    }
+    let options = {};
+
+    if (fromDate) {
+        options.createdAt = {
+            $gte: getArrayTimeFromString(fromDate)[0]
+        }
+    }
+
+    if (toDate) {
+        options.createdAt = {
+            ...options.createdAt,
+            $lte: getArrayTimeFromString(toDate)[1]
+        }
+    }
+    options = {
+        ...options,
+        $or: [{
+            status: 3
+        }, {
+            status: 4
+        }]
+    }
+
+    const listSalesOrders = await SalesOrder(connect(DB_CONNECTION, portal)).find(options);
+
+    //  Số đơn sản xuất cần lên KH
+    let salesOrder1 = 0;
+    for (let i = 0; i < listSalesOrders.length; i++) {
+        for (let j = 0; j < listSalesOrders[i].goods.length; j++) {
+            if (checkValueInArrayNumber(listWorksId, listSalesOrders[i].goods[j].manufacturingWorks)) {
+                salesOrder1 += 1;
+                break;
+            }
+        }
+    }
+
+    // Số đơn sản xuất đã lên xong kế hoạch
+    let salesOrder2 = 0;
+    if (listWorksId.length > 1) { //Quyền này là quyền tất cả
+        for (let i = 0; i < listSalesOrders.length; i++) {
+            let check = true;
+            for (let j = 0; j < listSalesOrders[i].goods.length; j++) {
+                if (checkValueInArrayNumber(listWorksId, listSalesOrders[i].goods[j].manufacturingWorks) && !listSalesOrders[i].goods[j].manufacturingPlan) {
+                    check = false
+                }
+            }
+            if (check) {
+                salesOrder2 += 1;
+            }
+        }
+    } else {
+        for (let i = 0; i < listSalesOrders.length; i++) {
+            for (let j = 0; j < listSalesOrders[i].goods.length; j++) {
+                if (checkValueInArrayNumber(listWorksId, listSalesOrders[i].goods[j].manufacturingWorks) && listSalesOrders[i].goods[j].manufacturingPlan) {
+                    salesOrder2 += 1;
+                    break;
+                }
+            }
+        }
+    }
+
+    // Số đơn sản xuất chưa lên xong kế hoạch
+    let salesOrder3 = 0;
+    for (let i = 0; i < listSalesOrders.length; i++) {
+        for (let j = 0; j < listSalesOrders[i].goods.length; j++) {
+            if (checkValueInArrayNumber(listWorksId, listSalesOrders[i].goods[j].manufacturingWorks) && !listSalesOrders[i].goods[j].manufacturingPlan) {
+                salesOrder3 += 1;
+                break;
+            }
+        }
+    }
+
+    return { salesOrder1, salesOrder2, salesOrder3 }
+
+}
+
+
+function getArrayTimeFromString(stringDate) {
+    arrayDate = stringDate.split('-');
+    let year = arrayDate[2];
+    let month = arrayDate[1];
+    let day = arrayDate[0];
+    const date = new Date(year, month - 1, day);
+    const moment = require('moment');
+
+    // start day of createdAt
+    var start = moment(date).startOf('day');
+    // end day of createdAt
+    var end = moment(date).endOf('day');
+
+    return [start, end];
 }
 
 

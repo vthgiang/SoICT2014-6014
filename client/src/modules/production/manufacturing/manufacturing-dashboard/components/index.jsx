@@ -15,6 +15,16 @@ class ManufacturingDashboard extends Component {
         this.state = {}
     }
 
+    checkHasComponent = (name) => {
+        let { auth } = this.props;
+        let result = false;
+        auth.components.forEach(component => {
+            if (component.name === name) result = true;
+        });
+
+        return result;
+    }
+
     render() {
         return (
             <React.Fragment>
@@ -30,9 +40,14 @@ class ManufacturingDashboard extends Component {
                         <div className=" col-lg-6 col-md-6 col-md-sm-12 col-xs-12">
                             <ManufacturingLotPieChart />
                         </div>
-                        <div className=" col-lg-6 col-md-6 col-md-sm-12 col-xs-12">
-                            <PurchasingRequestPieChart />
-                        </div>
+                        {
+                            this.checkHasComponent('view-pie-chart-purchasing')
+                            &&
+                            <div className=" col-lg-6 col-md-6 col-md-sm-12 col-xs-12">
+                                <PurchasingRequestPieChart />
+                            </div>
+                        }
+
                     </div>
                     <div className="row">
                         <div className=" col-lg-6 col-md-6 col-md-sm-12 col-xs-12">
@@ -55,4 +70,9 @@ class ManufacturingDashboard extends Component {
         );
     }
 }
-export default connect(null, null)((ManufacturingDashboard));
+
+function mapStateToProps(state) {
+    const { auth } = state;
+    return { auth }
+}
+export default connect(mapStateToProps, null)((ManufacturingDashboard));
