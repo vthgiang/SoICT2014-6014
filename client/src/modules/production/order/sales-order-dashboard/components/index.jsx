@@ -11,6 +11,7 @@ import SalesOrderStatusChart from "./salesOrderStatusChart";
 import TopSoldBarChart from "./topSoldBarChart";
 import InfoBox from "./infoBox";
 import SalesOfEmployee from "./salesOfEmployee";
+import { formatToTimeZoneDate } from "../../../../../helpers/formatDate";
 // import QuoteSalesMappingAreaChart from "./quoteSalesMappingAreaChart";
 // import RevenueAndSalesBarChart from "./revenueAndSalesBarChart";
 // import AverageQuoteToSales from "./averageQuoteToSales";
@@ -32,6 +33,38 @@ class SalesOrderDashboard extends Component {
         this.props.getTopGoodsCare({ currentRole });
     }
 
+    handleStartDateChange = (value) => {
+        this.setState((state) => {
+            return {
+                ...state,
+                startDate: value,
+            };
+        });
+    };
+
+    handleEndDateChange = (value) => {
+        this.setState((state) => {
+            return {
+                ...state,
+                endDate: value,
+            };
+        });
+    };
+
+    handleSunmitSearch = () => {
+        let { startDate, endDate, currentRole } = this.state;
+        let data = {
+            currentRole,
+            startDate: startDate ? formatToTimeZoneDate(startDate) : "",
+            endDate: endDate ? formatToTimeZoneDate(endDate) : "",
+        };
+        this.props.countSalesOrder(data);
+        this.props.getTopGoodsSold(data);
+        this.props.getSalesForDepartments(data);
+        this.props.countQuote(data);
+        this.props.getTopGoodsCare(data);
+    };
+
     render() {
         console.log("SALES ORDER DASHBOARD", this.props.salesOrders);
         console.log("QUOTE DASHBOARD", this.props.quotes);
@@ -40,25 +73,11 @@ class SalesOrderDashboard extends Component {
                 <div className="qlcv">
                     <div className="form-inline" style={{ marginBottom: "10px" }}>
                         <div className="form-group">
-                            <label style={{ width: "auto" }}>Định dạng</label>
-                            <SelectBox
-                                id="selectBoxDay"
-                                items={[
-                                    { value: "1", text: "Ngày" },
-                                    { value: "0", text: "Tháng" },
-                                    { value: "3", text: "Năm" },
-                                ]}
-                                style={{ width: "10rem" }}
-                                onChange={this.onchangeDate}
-                            />
-                        </div>
-                        <div className="form-group">
                             <label style={{ width: "auto" }}>Từ</label>
                             <DatePicker
-                                id="monthStartInHome"
-                                dateFormat="month-year"
-                                value={"02-2020"}
-                                onChange={this.onchangeDate}
+                                id="date_picker_dashboard_start_index"
+                                value={this.state.startDate}
+                                onChange={this.handleStartDateChange}
                                 disabled={false}
                             />
                         </div>
@@ -67,10 +86,9 @@ class SalesOrderDashboard extends Component {
                         <div className="form-group">
                             <label style={{ width: "auto" }}>Đến</label>
                             <DatePicker
-                                id="monthEndInHome"
-                                dateFormat="month-year"
-                                value={"10-2020"}
-                                onChange={this.handleSelectMonthEnd}
+                                id="date_picker_dashboard_end_index"
+                                value={this.state.endDate}
+                                onChange={this.handleEndDateChange}
                                 disabled={false}
                             />
                         </div>

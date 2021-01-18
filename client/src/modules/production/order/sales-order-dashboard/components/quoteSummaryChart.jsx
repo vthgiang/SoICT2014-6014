@@ -41,9 +41,6 @@ class QuoteSummaryChart extends Component {
             ];
         }
 
-        console.log("TUƠE", type);
-        console.log(typeof type);
-
         if (quoteCounter && type === 2) {
             dataPieChart = [
                 ["Chờ phê duyệt", quoteCounter.totalMoneyWithStatus[1]],
