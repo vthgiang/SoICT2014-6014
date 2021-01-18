@@ -8,6 +8,7 @@ import { compareLtDate, compareLteDate, formatDate } from '../../../../../helper
 import { manufacturingPlanActions } from '../../manufacturing-plan/redux/actions';
 import { commandActions } from '../../manufacturing-command/redux/actions';
 import { LotActions } from '../../../warehouse/inventory-management/redux/actions';
+import { SalesOrderActions } from '../../../order/sales-order/redux/actions';
 
 class ManufacturingDashboardHeader extends Component {
     constructor(props) {
@@ -40,6 +41,7 @@ class ManufacturingDashboardHeader extends Component {
         this.props.getAllManufacturingWorks(data)
         this.props.getNumberPlans(data)
         this.props.getNumberCommands(data)
+        this.props.getNumberWorksSalesOrder(data)
     }
 
     getListManufacturingWorksArr = () => {
@@ -122,14 +124,16 @@ class ManufacturingDashboardHeader extends Component {
         }
         this.props.getNumberPlans(data);
         this.props.getNumberPlansByStatus(data);
+        this.props.getNumberCommands(data);
         this.props.getNumberCommandsStatus(data);
         this.props.getNumberLotsStatus(data);
+        this.props.getNumberWorksSalesOrder(data);
     }
 
 
 
     render() {
-        const { translate, manufacturingPlan, manufacturingCommand } = this.props;
+        const { translate, manufacturingPlan, manufacturingCommand, salesOrders } = this.props;
         const { fromDate, toDate, errorTime } = this.state;
         let planNumber = {};
         if (manufacturingPlan.planNumber && manufacturingPlan.isLoading === false) {
@@ -139,6 +143,13 @@ class ManufacturingDashboardHeader extends Component {
         if (manufacturingCommand.commandNumber && manufacturingCommand.isLoading === false) {
             commandNumber = manufacturingCommand.commandNumber
         }
+
+        let numberSalesOrdersWorks = {}
+
+        if (salesOrders.numberSalesOrdersWorks && salesOrders.isLoading === false) {
+            numberSalesOrdersWorks = salesOrders.numberSalesOrdersWorks
+        }
+
         return (
             <React.Fragment>
                 <div className="form-inline">
@@ -254,37 +265,37 @@ class ManufacturingDashboardHeader extends Component {
                     </div>
                 </div>
                 <div className="row" style={{ marginTop: "10px" }}>
-                    <div className="col-md-4 col-sm-6 col-xs-6">
-                        <div className="info-box with-border">
-                            <span className="info-box-icon bg-aqua"><i className="fa fa-file-text"></i></span>
-                            <div className="info-box-content">
-                                <span className="info-box-text">Số đơn sản xuất</span>
-                                <span className="info-box-number">
-                                    300
-                                </span>
-                                <a href={`/manage-manufacturing-plan`} target="_blank" >{translate('manufacturing.dashboard.see_more')} <i className="fa fa-arrow-circle-right"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="col-md-4 col-sm-6 col-xs-6">
+                    <div className="col-md-4 col-sm-4 col-xs-4">
                         <div className="info-box with-border">
                             <span className="info-box-icon bg-green"><i className="fa fa-file-text"></i></span>
                             <div className="info-box-content">
-                                <span className="info-box-text">Số đơn sản xuất đã lên kế hoạch</span>
+                                <span className="info-box-text">Số đơn sản xuất cần lên kế hoạch</span>
                                 <span className="info-box-number">
-                                    300
+                                    {numberSalesOrdersWorks.salesOrder1}
                                 </span>
                                 <a href={`/manage-manufacturing-plan`} target="_blank" >{translate('manufacturing.dashboard.see_more')} <i className="fa fa-arrow-circle-right"></i></a>
                             </div>
                         </div>
                     </div>
-                    <div className="col-md-4 col-sm-6 col-xs-6">
+                    <div className="col-md-4 col-sm-4 col-xs-4">
+                        <div className="info-box with-border">
+                            <span className="info-box-icon bg-green"><i className="fa fa-file-text"></i></span>
+                            <div className="info-box-content">
+                                <span className="info-box-text">Số đơn sản xuất đã xong lên kế hoạch</span>
+                                <span className="info-box-number">
+                                    {numberSalesOrdersWorks.salesOrder2}/{numberSalesOrdersWorks.salesOrder1}
+                                </span>
+                                <a href={`/manage-manufacturing-plan`} target="_blank" >{translate('manufacturing.dashboard.see_more')} <i className="fa fa-arrow-circle-right"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="col-md-4 col-sm-4 col-xs-4">
                         <div className="info-box with-border">
                             <span className="info-box-icon bg-red"><i className="fa fa-file-text"></i></span>
                             <div className="info-box-content">
-                                <span className="info-box-text">Số đơn sản xuất chưa lên kế hoạch</span>
+                                <span className="info-box-text">Số đơn sản xuất chưa lên xong kế hoạch</span>
                                 <span className="info-box-number">
-                                    300
+                                    {numberSalesOrdersWorks.salesOrder3}/{numberSalesOrdersWorks.salesOrder1}
                                 </span>
                                 <a href={`/manage-manufacturing-plan`} target="_blank" >{translate('manufacturing.dashboard.see_more')} <i className="fa fa-arrow-circle-right"></i></a>
                             </div>
@@ -297,8 +308,8 @@ class ManufacturingDashboardHeader extends Component {
 }
 
 function mapStateToProps(state) {
-    const { manufacturingWorks, manufacturingPlan, manufacturingCommand } = state;
-    return { manufacturingWorks, manufacturingPlan, manufacturingCommand }
+    const { manufacturingWorks, manufacturingPlan, manufacturingCommand, salesOrders } = state;
+    return { manufacturingWorks, manufacturingPlan, manufacturingCommand, salesOrders }
 }
 
 const mapDispatchToProps = {
@@ -307,7 +318,8 @@ const mapDispatchToProps = {
     getNumberCommands: commandActions.getNumberCommands,
     getNumberPlansByStatus: manufacturingPlanActions.getNumberPlansByStatus,
     getNumberCommandsStatus: commandActions.getNumberCommandsStatus,
-    getNumberLotsStatus: LotActions.getNumberLotsStatus
+    getNumberLotsStatus: LotActions.getNumberLotsStatus,
+    getNumberWorksSalesOrder: SalesOrderActions.getNumberWorksSalesOrder,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(ManufacturingDashboardHeader));

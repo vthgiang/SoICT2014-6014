@@ -12,27 +12,28 @@ export const SalesOrderActions = {
     getSalesOrderDetail,
     countSalesOrder,
     getTopGoodsSold,
-    getSalesForDepartments
+    getSalesForDepartments,
+    getNumberWorksSalesOrder
 }
 
-function createNewSalesOrder (data) {
+function createNewSalesOrder(data) {
     return (dispatch) => {
         dispatch({
             type: SalesOrderConstants.CREATE_SALES_ORDER_REQUEST
         });
         SalesOrderSevices.createNewSalesOrder(data)
-        .then((res) => {
-            dispatch({
-                type: SalesOrderConstants.CREATE_SALES_ORDER_SUCCESS,
-                payload: res.data.content
+            .then((res) => {
+                dispatch({
+                    type: SalesOrderConstants.CREATE_SALES_ORDER_SUCCESS,
+                    payload: res.data.content
+                });
+            })
+            .catch((error) => {
+                dispatch({
+                    type: SalesOrderConstants.CREATE_SALES_ORDER_FAILURE,
+                    error
+                });
             });
-        })
-        .catch((error) => {
-            dispatch({
-                type: SalesOrderConstants.CREATE_SALES_ORDER_FAILURE,
-                error
-            });
-        });
     }
 }
 
@@ -43,39 +44,39 @@ function getAllSalesOrders(queryData) {
         })
         SalesOrderSevices.getAllSalesOrders(queryData)
             .then((res) => {
-            dispatch({
-                type: SalesOrderConstants.GET_ALL_SALES_ORDERS_SUCCESS,
-                payload: res.data.content
+                dispatch({
+                    type: SalesOrderConstants.GET_ALL_SALES_ORDERS_SUCCESS,
+                    payload: res.data.content
+                })
             })
-        })
-        .catch((error) => {
-            dispatch({
-                type: SalesOrderConstants.GET_ALL_SALES_ORDERS_FAILURE,
-                error
+            .catch((error) => {
+                dispatch({
+                    type: SalesOrderConstants.GET_ALL_SALES_ORDERS_FAILURE,
+                    error
+                })
             })
-        })
     }
 }
 
-function editSalesOrder (id, data) {
+function editSalesOrder(id, data) {
     return (dispatch) => {
         dispatch({
             type: SalesOrderConstants.EDIT_SALES_ORDER_REQUEST
         })
 
         SalesOrderSevices.editSalesOrder(id, data)
-        .then((res) => {
-            dispatch({
-                type: SalesOrderConstants.EDIT_SALES_ORDER_SUCCESS,
-                payload: res.data.content
+            .then((res) => {
+                dispatch({
+                    type: SalesOrderConstants.EDIT_SALES_ORDER_SUCCESS,
+                    payload: res.data.content
+                })
             })
-        })
-        .catch((error) => {
-            dispatch({
-                type: SalesOrderConstants.EDIT_SALES_ORDER_FAILURE,
-                error
+            .catch((error) => {
+                dispatch({
+                    type: SalesOrderConstants.EDIT_SALES_ORDER_FAILURE,
+                    error
+                })
             })
-        })
     }
 }
 
@@ -86,18 +87,18 @@ function approveSalesOrder(id, data) {
         })
 
         SalesOrderSevices.approveSalesOrder(id, data)
-        .then((res) => {
-            dispatch({
-                type: SalesOrderConstants.APPROVE_SALES_ORDER_SUCCESS,
-                payload: res.data.content
+            .then((res) => {
+                dispatch({
+                    type: SalesOrderConstants.APPROVE_SALES_ORDER_SUCCESS,
+                    payload: res.data.content
+                })
             })
-        })
-        .catch((error) => {
-            dispatch({
-                type: SalesOrderConstants.APPROVE_SALES_ORDER_FAILURE,
-                error
+            .catch((error) => {
+                dispatch({
+                    type: SalesOrderConstants.APPROVE_SALES_ORDER_FAILURE,
+                    error
+                })
             })
-        })
     }
 }
 
@@ -107,25 +108,25 @@ function approveSalesOrder(id, data) {
  * @param {*} id id đơn hàng
  * @param {*} data là 1 array: [{goodId: ObjecId, manufacturingPlanId: ObjectId}] 
  */
-function addManufacturingPlanForGood (id, data) {
+function addManufacturingPlanForGood(id, data) {
     return (dispatch) => {
         dispatch({
             type: SalesOrderConstants.ADD_MANUFACTURING_PLAN_FOR_GOOD_REQUEST
         })
 
         SalesOrderSevices.addManufacturingPlanForGood(id, data)
-        .then((res) => {
-            dispatch({
-                type: SalesOrderConstants.ADD_MANUFACTURING_PLAN_FOR_GOOD_SUCCESS,
-                payload: res.data.content
+            .then((res) => {
+                dispatch({
+                    type: SalesOrderConstants.ADD_MANUFACTURING_PLAN_FOR_GOOD_SUCCESS,
+                    payload: res.data.content
+                })
             })
-        })
-        .catch((error) => {
-            dispatch({
-                type: SalesOrderConstants.ADD_MANUFACTURING_PLAN_FOR_GOOD_FAILURE,
-                error
+            .catch((error) => {
+                dispatch({
+                    type: SalesOrderConstants.ADD_MANUFACTURING_PLAN_FOR_GOOD_FAILURE,
+                    error
+                })
             })
-        })
     }
 }
 
@@ -133,47 +134,47 @@ function addManufacturingPlanForGood (id, data) {
  * Lấy các đơn hàng cần lập kế hoạch sản xuất theo nhà máy (chỉ lấy những mặt hàng nhà máy có thể sản xuất)
  * @param {*} id id nhà máy
  */
-function getSalesOrdersByManufacturingWorks (id) {
+function getSalesOrdersByManufacturingWorks(id) {
     return (dispatch) => {
         dispatch({
             type: SalesOrderConstants.GET_SALES_ORDER_BY_MANUFACTURING_WORKS_REQUEST
         })
 
         SalesOrderSevices.getSalesOrdersByManufacturingWorks(id)
-        .then((res) => {
-            dispatch({
-                type: SalesOrderConstants.GET_SALES_ORDER_BY_MANUFACTURING_WORKS_SUCCESS,
-                payload: res.data.content
+            .then((res) => {
+                dispatch({
+                    type: SalesOrderConstants.GET_SALES_ORDER_BY_MANUFACTURING_WORKS_SUCCESS,
+                    payload: res.data.content
+                })
             })
-        })
-        .catch((error) => {
-            dispatch({
-                type: SalesOrderConstants.GET_SALES_ORDER_BY_MANUFACTURING_WORKS_FAILURE,
-                error
+            .catch((error) => {
+                dispatch({
+                    type: SalesOrderConstants.GET_SALES_ORDER_BY_MANUFACTURING_WORKS_FAILURE,
+                    error
+                })
             })
-        })
     }
 }
 
-function getSalesOrdersForPayment (customerId) {
+function getSalesOrdersForPayment(customerId) {
     return (dispatch) => {
         dispatch({
             type: SalesOrderConstants.GET_SALES_ORDERS_FOR_PAYMENT_REQUEST
         })
 
         SalesOrderSevices.getSalesOrdersForPayment(customerId)
-        .then((res) => {
-            dispatch({
-                type: SalesOrderConstants.GET_SALES_ORDERS_FOR_PAYMENT_SUCCESS,
-                payload: res.data.content
+            .then((res) => {
+                dispatch({
+                    type: SalesOrderConstants.GET_SALES_ORDERS_FOR_PAYMENT_SUCCESS,
+                    payload: res.data.content
+                })
             })
-        })
-        .catch((error) => {
-            dispatch({
-                type: SalesOrderConstants.GET_SALES_ORDERS_FOR_PAYMENT_FAILURE,
-                error
+            .catch((error) => {
+                dispatch({
+                    type: SalesOrderConstants.GET_SALES_ORDERS_FOR_PAYMENT_FAILURE,
+                    error
+                })
             })
-        })
     }
 }
 
@@ -261,6 +262,29 @@ function getSalesForDepartments(queryData) {
             .catch((error) => {
                 dispatch({
                     type: SalesOrderConstants.GET_SALES_FOR_DEPARTMENTS_FAILURE,
+                    error
+                })
+            })
+    }
+}
+
+
+function getNumberWorksSalesOrder(data) {
+    return (dispatch) => {
+        dispatch({
+            type: SalesOrderConstants.GET_NUMBER_SALES_ORDER_WORKS_REQUEST
+        })
+
+        SalesOrderSevices.getNumberWorksSalesOrder(data)
+            .then((res) => {
+                dispatch({
+                    type: SalesOrderConstants.GET_NUMBER_SALES_ORDER_WORKS_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch((error) => {
+                dispatch({
+                    type: SalesOrderConstants.GET_NUMBER_SALES_ORDER_WORKS_FAILURE,
                     error
                 })
             })
