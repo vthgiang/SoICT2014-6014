@@ -514,7 +514,7 @@ class SalesOrderCreateFormFromQuote extends Component {
                                     <th title={"Số lượng"}>Số lượng mua</th>
                                     <th title={"Số lượng tồn kho"}>Số lượng tồn kho</th>
                                     <th title={"Đơn vị tính"}>Đơn vị tính</th>
-                                    <th title={"Yêu cầu sản xuất"}>Yêu cầu s/x</th>
+                                    {/* <th title={"Yêu cầu sản xuất"}>Yêu cầu s/x</th> */}
                                 </tr>
                             </thead>
                             <tbody>
@@ -528,7 +528,7 @@ class SalesOrderCreateFormFromQuote extends Component {
                                                 <td>{item.quantity}</td>
                                                 <td>{item.inventory}</td>
                                                 <td>{item.good.baseUnit}</td>
-                                                <td>
+                                                {/* <td>
                                                     <a onClick={() => this.handleGetManufacturingList(item)}>
                                                         {item.manufacturingWorks ? (
                                                             <span className="text-success">Đang thiết lập</span>
@@ -536,7 +536,7 @@ class SalesOrderCreateFormFromQuote extends Component {
                                                             <span>Click để yêu cầu</span>
                                                         )}
                                                     </a>
-                                                </td>
+                                                </td> */}
                                             </tr>
                                         );
                                     })}

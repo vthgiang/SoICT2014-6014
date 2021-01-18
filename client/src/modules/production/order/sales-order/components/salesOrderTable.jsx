@@ -142,7 +142,6 @@ class SalesOrderTable extends Component {
     };
 
     handleEditSalesOrder = async (salesOrderEdit) => {
-        console.log("salesOrderEdit", salesOrderEdit);
         await this.props.getSalesOrderDetail(salesOrderEdit._id);
         window.$("#modal-edit-sales-order").modal("show");
     };
@@ -249,11 +248,11 @@ class SalesOrderTable extends Component {
             },
             {
                 className: "text-warning",
-                text: "Đang sản xuất",
+                text: "Đã lập lệnh sản xuất",
             },
             {
                 className: "text-dark",
-                text: "Đã sẵn hàng",
+                text: "Đã yêu cầu xuất kho",
             },
             {
                 className: "text-secondary",
@@ -400,11 +399,11 @@ class SalesOrderTable extends Component {
                                         },
                                         {
                                             value: 4,
-                                            text: "Đang sản xuất",
+                                            text: "Đã lập lệnh sản xuất",
                                         },
                                         {
                                             value: 5,
-                                            text: "Đã sẵn hàng",
+                                            text: "Đã yêu cầu xuất kho",
                                         },
                                         {
                                             value: 6,

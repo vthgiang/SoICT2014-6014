@@ -140,6 +140,25 @@ class SalesOrderEditAfterApproveForm extends Component {
         }
     };
 
+    getStatusOptions = () => {
+        let options = [];
+        const { salesOrderEditAfterApprove } = this.props;
+        if (salesOrderEditAfterApprove && (salesOrderEditAfterApprove.status === 2 || salesOrderEditAfterApprove.status == 3)) {
+            options = [
+                { value: "title", text: "---Bỏ chọn---" },
+                { value: 2, text: "Đã phê duyệt" },
+                { value: 3, text: "Yêu cầu sản xuất" },
+                { value: 8, text: "Hủy đơn" },
+            ];
+        } else {
+            options = [
+                { value: "title", text: "---Bỏ chọn---" },
+                { value: 8, text: "Hủy đơn" },
+            ];
+        }
+        return options;
+    };
+
     render() {
         let { goods, status, code, currentManufacturingWorks, currentGood } = this.state;
         const { listInventories } = this.props.lots;
@@ -189,10 +208,7 @@ class SalesOrderEditAfterApproveForm extends Component {
                             className="form-control select2"
                             style={{ width: "100%" }}
                             value={status}
-                            items={[
-                                { value: "title", text: "---Bỏ chọn---" },
-                                { value: 8, text: "Hủy đơn" },
-                            ]}
+                            items={this.getStatusOptions()}
                             onChange={this.handleStatusChange}
                             multiple={false}
                         />
@@ -226,7 +242,7 @@ class SalesOrderEditAfterApproveForm extends Component {
                                                 <td>
                                                     <a onClick={() => this.handleGetManufacturingList(item)}>
                                                         {item.manufacturingWorks ? (
-                                                            <span className="text-success">Đang thiết lập</span>
+                                                            <span className="text-success">Đang gửi yêu cầu</span>
                                                         ) : (
                                                             <span>Click để yêu cầu</span>
                                                         )}
