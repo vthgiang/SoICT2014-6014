@@ -3,6 +3,9 @@ const router = express.Router();
 const { auth } = require(`../../../../middleware`);
 const ManufacturingPlanController = require('./manufacturingPlan.controller');
 
+
+router.get('/get-number-plans', auth, ManufacturingPlanController.getNumberPlans);
+router.get('/get-number-plans-by-status', auth, ManufacturingPlanController.getNumberPlansByStatus);
 router.post('/', auth, ManufacturingPlanController.createManufacturingPlan);
 // Lấy danh sách kế hoạch theo role truyền vào
 router.get('/', auth, ManufacturingPlanController.getAllManufacturingPlans);

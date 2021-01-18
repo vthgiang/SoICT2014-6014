@@ -36,6 +36,8 @@ export function quotes(state = initState, action) {
         case QuoteConstants.APPROVE_QUOTE_REQUEST:
         case QuoteConstants.GET_QUOTES_TO_MAKE_ORDER_REQUEST:
         case QuoteConstants.GET_QUOTE_DETAIL_REQUEST:
+        case QuoteConstants.COUNT_QUOTE_REQUEST:
+        case QuoteConstants.GET_TOP_GOODS_CARE_REQUEST:
             return {
                 ...state,
                 isLoading: true
@@ -48,6 +50,8 @@ export function quotes(state = initState, action) {
         case QuoteConstants.APPROVE_QUOTE_FAILURE:
         case QuoteConstants.GET_QUOTES_TO_MAKE_ORDER_FAILURE:
         case QuoteConstants.GET_QUOTE_DETAIL_FAILURE:
+        case QuoteConstants.COUNT_QUOTE_FAILURE:
+        case QuoteConstants.GET_TOP_GOODS_CARE_FAILURE:
                 return {
                     ...state,
                     isLoading: false,
@@ -122,9 +126,21 @@ export function quotes(state = initState, action) {
                 isLoading: false
             }
         
+        case QuoteConstants.COUNT_QUOTE_SUCCESS:
+            return {
+                ...state,
+                quoteCounter: action.payload.quoteCounter,
+                isLoading: false
+            }
+        case QuoteConstants.GET_TOP_GOODS_CARE_SUCCESS:
+            return {
+                ...state,
+                topGoodsCare: action.payload.topGoodsCare,
+                isLoading: false
+        }
+        
         default:
         return state
-        
     
     }
 }

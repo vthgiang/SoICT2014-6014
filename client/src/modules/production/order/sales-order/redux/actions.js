@@ -9,7 +9,10 @@ export const SalesOrderActions = {
     addManufacturingPlanForGood,
     getSalesOrdersByManufacturingWorks,
     getSalesOrdersForPayment,
-    getSalesOrderDetail
+    getSalesOrderDetail,
+    countSalesOrder,
+    getTopGoodsSold,
+    getSalesForDepartments
 }
 
 function createNewSalesOrder (data) {
@@ -196,3 +199,70 @@ function getSalesOrderDetail(id) {
     }
 }
 
+// PHẦN SERVICE CHO DASHBOARD
+
+function countSalesOrder(queryData) {
+    return (dispatch) => {
+        dispatch({
+            type: SalesOrderConstants.COUNT_SALES_ORDER_REQUEST
+        })
+
+        SalesOrderSevices.countSalesOrder(queryData)
+            .then((res) => {
+                dispatch({
+                    type: SalesOrderConstants.COUNT_SALES_ORDER_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch((error) => {
+                dispatch({
+                    type: SalesOrderConstants.COUNT_SALES_ORDER_FAILURE,
+                    error
+                })
+            })
+    }
+}
+
+function getTopGoodsSold(queryData) {
+    return (dispatch) => {
+        dispatch({
+            type: SalesOrderConstants.GET_TOP_GOODS_SOLD_REQUEST
+        })
+
+        SalesOrderSevices.getTopGoodsSold(queryData)
+            .then((res) => {
+                dispatch({
+                    type: SalesOrderConstants.GET_TOP_GOODS_SOLD_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch((error) => {
+                dispatch({
+                    type: SalesOrderConstants.GET_TOP_GOODS_SOLD_FAILURE,
+                    error
+                })
+            })
+    }
+}
+
+function getSalesForDepartments(queryData) {
+    return (dispatch) => {
+        dispatch({
+            type: SalesOrderConstants.GET_SALES_FOR_DEPARTMENTS_REQUEST
+        })
+
+        SalesOrderSevices.getSalesForDepartments(queryData)
+            .then((res) => {
+                dispatch({
+                    type: SalesOrderConstants.GET_SALES_FOR_DEPARTMENTS_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch((error) => {
+                dispatch({
+                    type: SalesOrderConstants.GET_SALES_FOR_DEPARTMENTS_FAILURE,
+                    error
+                })
+            })
+    }
+}

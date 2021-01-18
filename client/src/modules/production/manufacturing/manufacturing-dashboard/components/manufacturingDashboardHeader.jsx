@@ -1,19 +1,25 @@
 import React, { Component } from 'react';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import { connect } from 'react-redux';
-import { DatePicker, SelectMulti } from '../../../../../common-components';
+import { DatePicker, ErrorLabel, SelectMulti } from '../../../../../common-components';
 import { worksActions } from '../../manufacturing-works/redux/actions';
-import moment from 'moment';
-import { formatDate } from '../../../../../helpers/formatDate';
+// import moment from 'moment';
+import { compareLtDate, compareLteDate, formatDate } from '../../../../../helpers/formatDate';
+import { manufacturingPlanActions } from '../../manufacturing-plan/redux/actions';
+import { commandActions } from '../../manufacturing-command/redux/actions';
+import { LotActions } from '../../../warehouse/inventory-management/redux/actions';
 
 class ManufacturingDashboardHeader extends Component {
     constructor(props) {
         super(props);
-        let currentDate = Date.now();
+        // let currentDate = Date.now();
         this.state = {
             currentRole: localStorage.getItem('currentRole'),
-            fromDate: formatDate(moment(currentDate).startOf('month')),
-            toDate: formatDate(moment(currentDate).endOf('month'))
+            // fromDate: formatDate(moment(currentDate).startOf('month')),
+            // toDate: formatDate(moment(currentDate).endOf('month')),
+            manufacturingWorks: [],
+            fromDate: '',
+            toDate: ''
         }
     }
 
@@ -32,6 +38,8 @@ class ManufacturingDashboardHeader extends Component {
             currentRole: this.state.currentRole
         }
         this.props.getAllManufacturingWorks(data)
+        this.props.getNumberPlans(data)
+        this.props.getNumberCommands(data)
     }
 
     getListManufacturingWorksArr = () => {
@@ -49,12 +57,88 @@ class ManufacturingDashboardHeader extends Component {
         return listManufacturingWorksArr;
     }
 
+    handleFromDateChange = (value) => {
+        this.validateFromDateChange(value, true);
+    };
+
+    validateFromDateChange = (value, willUpdateState = true) => {
+        let msg = undefined;
+        const { translate } = this.props;
+        if (value && this.state.toDate) {
+            let obj = compareLteDate(value, this.state.toDate);
+            console.log(obj.status);
+            if (!obj.status) {
+                msg = translate("manufacturing.plan.choose_date_error");
+            }
+        }
+        if (willUpdateState) {
+            this.setState((state) => ({
+                ...state,
+                fromDate: value,
+                errorTime: msg
+            }));
+        }
+        return msg;
+    }
+
+
+    handleToDateChange = (value) => {
+        this.validateToDateChange(value, true);
+    };
+
+    validateToDateChange = (value, willUpdateState = true) => {
+        let msg = undefined;
+        const { translate } = this.props;
+        if (value && this.state.fromDate) {
+            console.log("to Date")
+            let obj = compareLteDate(this.state.fromDate, value);
+            if (!obj.status) {
+                msg = translate("manufacturing.plan.choose_date_error");
+            }
+        }
+        if (willUpdateState) {
+            this.setState((state) => ({
+                ...state,
+                toDate: value,
+                errorTime: msg
+            }));
+        }
+        return msg;
+    }
+
+    handleManufacturingWorksChange = (value) => {
+        this.setState((state) => ({
+            ...state,
+            manufacturingWorks: value
+        }))
+    }
+
+    handleSubmitSearch = () => {
+        const data = {
+            currentRole: this.state.currentRole,
+            manufacturingWorks: this.state.manufacturingWorks,
+            fromDate: this.state.fromDate,
+            toDate: this.state.toDate
+        }
+        this.props.getNumberPlans(data);
+        this.props.getNumberPlansByStatus(data);
+        this.props.getNumberCommandsStatus(data);
+        this.props.getNumberLotsStatus(data);
+    }
 
 
 
     render() {
-        const { translate } = this.props;
-        const { fromDate, toDate } = this.state;
+        const { translate, manufacturingPlan, manufacturingCommand } = this.props;
+        const { fromDate, toDate, errorTime } = this.state;
+        let planNumber = {};
+        if (manufacturingPlan.planNumber && manufacturingPlan.isLoading === false) {
+            planNumber = manufacturingPlan.planNumber
+        }
+        let commandNumber = {};
+        if (manufacturingCommand.commandNumber && manufacturingCommand.isLoading === false) {
+            commandNumber = manufacturingCommand.commandNumber
+        }
         return (
             <React.Fragment>
                 <div className="form-inline">
@@ -70,29 +154,29 @@ class ManufacturingDashboardHeader extends Component {
                             onChange={this.handleManufacturingWorksChange}
                         />
                     </div>
-                    <div className="form-group">
+                    {/**Chọn ngày bắt đầu */}
+                    <div className={`form-group`}>
                         <label style={{ width: "auto" }}>{translate('manufacturing.dashboard.from')}</label>
                         <DatePicker
-                            id="start-day-manufacturing-dashboard-header"
+                            id="from-date-manufacturing-dashboard-header"
                             value={fromDate}
-                            onChange={this.handleSelectMonthStart}
+                            onChange={this.handleFromDateChange}
                             disabled={false}
                         />
                     </div>
-
                     {/**Chọn ngày kết thúc */}
-                    <div className="form-group">
+                    <div className={`form-group`}>
                         <label style={{ width: "auto" }}>{translate('manufacturing.dashboard.to')}</label>
                         <DatePicker
                             id="end-day-manufacturing-dashboard-header"
                             value={toDate}
-                            onChange={this.handleSelectMonthEnd}
+                            onChange={this.handleToDateChange}
                             disabled={false}
                         />
                     </div>
 
                     <div className="form-group">
-                        <button type="button" className="btn btn-success" title={translate('general.search')} onClick={() => this.handleSunmitSearch()} >{translate('general.search')}</button>
+                        <button type="button" disabled={errorTime} className="btn btn-success" title={translate('general.search')} onClick={() => this.handleSubmitSearch()} >{translate('general.search')}</button>
                     </div>
                 </div>
                 <div className="row" style={{ marginTop: 10 }}>
@@ -101,7 +185,7 @@ class ManufacturingDashboardHeader extends Component {
                             <span className="info-box-icon bg-aqua"><i className="fa fa-file"></i></span>
                             <div className="info-box-content" title={translate('manufacturing.dashboard.plan_total')} >
                                 <span className="info-box-text">{translate('manufacturing.dashboard.plan_number')}</span>
-                                <span className="info-box-number">100</span>
+                                <span className="info-box-number">{planNumber.totalPlans}</span>
                                 <a href={`/manage-manufacturing-plan`} target="_blank" >{translate('manufacturing.dashboard.see_more')} <i className="fa fa-arrow-circle-right"></i></a>
                             </div>
                         </div>
@@ -111,7 +195,7 @@ class ManufacturingDashboardHeader extends Component {
                             <span className="info-box-icon bg-green"><i className="fa fa-file"></i></span>
                             <div className="info-box-content" title={translate('manufacturing.dashboard.progress_1')} >
                                 <span className="info-box-text">{translate('manufacturing.dashboard.plan_number_1')}</span>
-                                <span className="info-box-number">100</span>
+                                <span className="info-box-number">{planNumber.truePlans}/{planNumber.totalPlans}</span>
                                 <a href={`/manage-manufacturing-plan`} target="_blank" >{translate('manufacturing.dashboard.see_more')} <i className="fa fa-arrow-circle-right"></i></a>
                             </div>
                         </div>
@@ -121,7 +205,7 @@ class ManufacturingDashboardHeader extends Component {
                             <span className="info-box-icon bg-yellow"><i className="fa fa-file"></i></span>
                             <div className="info-box-content" title={translate('manufacturing.dashboard.progress_2')} >
                                 <span className="info-box-text">{translate('manufacturing.dashboard.plan_number_2')}</span>
-                                <span className="info-box-number">100</span>
+                                <span className="info-box-number">{planNumber.slowPlans}/{planNumber.totalPlans}</span>
                                 <a href={`/manage-manufacturing-plan`} target="_blank" >{translate('manufacturing.dashboard.see_more')} <i className="fa fa-arrow-circle-right"></i></a>
                             </div>
                         </div>
@@ -131,7 +215,7 @@ class ManufacturingDashboardHeader extends Component {
                             <span className="info-box-icon bg-red"><i className="fa fa-file"></i></span>
                             <div className="info-box-content" title={translate('manufacturing.dashboard.progress_3')} >
                                 <span className="info-box-text">{translate('manufacturing.dashboard.plan_number_3')}</span>
-                                <span className="info-box-number">100</span>
+                                <span className="info-box-number">{planNumber.expiredPlans}/{planNumber.totalPlans}</span>
                                 <a href={`/manage-manufacturing-plan`} target="_blank" >{translate('manufacturing.dashboard.see_more')} <i className="fa fa-arrow-circle-right"></i></a>
                             </div>
                         </div>
@@ -143,7 +227,7 @@ class ManufacturingDashboardHeader extends Component {
                             <span className="info-box-icon bg-blue"><i className="fa  fa-gavel"></i></span>
                             <div className="info-box-content" title={translate('manufacturing.dashboard.command_total')}>
                                 <span className="info-box-text">{translate('manufacturing.dashboard.command_number')}</span>
-                                <span className="info-box-number">200</span>
+                                <span className="info-box-number">{commandNumber.totalCommands}</span>
                                 <a href={`/manage-manufacturing-command`} target="_blank" >{translate('manufacturing.dashboard.see_more')} <i className="fa fa-arrow-circle-right"></i></a>
                             </div>
                         </div>
@@ -153,7 +237,7 @@ class ManufacturingDashboardHeader extends Component {
                             <span className="info-box-icon bg-green"><i className="fa  fa-hourglass-half"></i></span>
                             <div className="info-box-content" title={translate('manufacturing.dashboard.command_number_1')}>
                                 <span className="info-box-text">{translate('manufacturing.dashboard.command_progress_1')}</span>
-                                <span className="info-box-number">200</span>
+                                <span className="info-box-number">{commandNumber.trueCommands}/{commandNumber.totalCommands}</span>
                                 <a href={`/manage-manufacturing-command`} target="_blank" >{translate('manufacturing.dashboard.see_more')} <i className="fa fa-arrow-circle-right"></i></a>
                             </div>
                         </div>
@@ -163,7 +247,7 @@ class ManufacturingDashboardHeader extends Component {
                             <span className="info-box-icon bg-red"><i className="fa fa-exclamation"></i></span>
                             <div className="info-box-content" title={translate('manufacturing.dashboard.command_number_2')}>
                                 <span className="info-box-text">{translate('manufacturing.dashboard.command_progress_2')}</span>
-                                <span className="info-box-number">6</span>
+                                <span className="info-box-number">{commandNumber.slowCommands}/{commandNumber.totalCommands}</span>
                                 <a href={`/manage-manufacturing-command`} target="_blank" >{translate('manufacturing.dashboard.see_more')} <i className="fa  fa-arrow-circle-o-right"></i></a>
                             </div>
                         </div>
@@ -213,12 +297,17 @@ class ManufacturingDashboardHeader extends Component {
 }
 
 function mapStateToProps(state) {
-    const { manufacturingWorks } = state;
-    return { manufacturingWorks }
+    const { manufacturingWorks, manufacturingPlan, manufacturingCommand } = state;
+    return { manufacturingWorks, manufacturingPlan, manufacturingCommand }
 }
 
 const mapDispatchToProps = {
-    getAllManufacturingWorks: worksActions.getAllManufacturingWorks
+    getAllManufacturingWorks: worksActions.getAllManufacturingWorks,
+    getNumberPlans: manufacturingPlanActions.getNumberPlans,
+    getNumberCommands: commandActions.getNumberCommands,
+    getNumberPlansByStatus: manufacturingPlanActions.getNumberPlansByStatus,
+    getNumberCommandsStatus: commandActions.getNumberCommandsStatus,
+    getNumberLotsStatus: LotActions.getNumberLotsStatus
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(ManufacturingDashboardHeader));

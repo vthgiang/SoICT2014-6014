@@ -32,6 +32,7 @@ export const purchasingRequest = (state = initialState, action) => {
         case purchasingRequestConstants.CREATE_PURCHASING_REQUEST_REQUEST:
         case purchasingRequestConstants.GET_DETAIL_PURCHASING_REQUEST_REQUEST:
         case purchasingRequestConstants.UPDATE_PURCHASING_REQUEST_REQUEST:
+        case purchasingRequestConstants.GET_NUMBER_PURCHASING_REQUEST_REQUEST:
             return {
                 ...state,
                 isLoading: true
@@ -40,6 +41,7 @@ export const purchasingRequest = (state = initialState, action) => {
         case purchasingRequestConstants.CREATE_PURCHASING_REQUEST_FAILURE:
         case purchasingRequestConstants.GET_DETAIL_PURCHASING_REQUEST_FAILURE:
         case purchasingRequestConstants.UPDATE_PURCHASING_REQUEST_FAILURE:
+        case purchasingRequestConstants.GET_NUMBER_PURCHASING_REQUEST_FAILURE:
             return {
                 ...state,
                 isLoading: false,
@@ -79,11 +81,18 @@ export const purchasingRequest = (state = initialState, action) => {
             if (index !== -1) {
                 state.listPurchasingRequests[index] = action.payload.purchasingRequest
             }
-            console.log(state.listPurchasingRequests)
             return {
                 ...state,
                 isLoading: false
             }
+        case purchasingRequestConstants.GET_NUMBER_PURCHASING_REQUEST_SUCCESS: {
+            console.log(action.payload + "xxx")
+            return {
+                ...state,
+                purchasingNumber: action.payload,
+                isLoading: false
+            }
+        }
         default:
             return state
     }

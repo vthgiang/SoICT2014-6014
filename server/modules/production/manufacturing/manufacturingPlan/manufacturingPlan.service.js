@@ -448,3 +448,149 @@ exports.editManufacturingPlan = async (id, data, portal) => {
         }]);
     return { manufacturingPlan }
 }
+
+exports.getNumberPlans = async (data, portal) => {
+    const { currentRole, manufacturingWorks, fromDate, toDate } = data;
+    if (!currentRole) {
+        throw Error("CurrentRole is not defined");
+    }
+    // Lấy ra list các nhà máy là currentRole là trưởng phòng hoặc currentRole là role quản lý khác
+    // Lấy ra list nhà máy mà currentRole là quản đốc nhà máy
+    let role = [currentRole];
+    const departments = await OrganizationalUnit(connect(DB_CONNECTION, portal)).find({ 'managers': { $in: role } });
+    let organizationalUnitId = departments.map(department => department._id);
+    let listManufacturingWorks = await ManufacturingWorks(connect(DB_CONNECTION, portal)).find({
+        organizationalUnit: {
+            $in: organizationalUnitId
+        }
+    });
+    // Lấy ra các nhà máy mà currentRole cũng quản lý
+    let listWorksByManageRole = await ManufacturingWorks(connect(DB_CONNECTION, portal)).find({
+        manageRoles: {
+            $in: role
+        }
+    })
+    listManufacturingWorks = [...listManufacturingWorks, ...listWorksByManageRole];
+
+    let listWorksId = listManufacturingWorks.map(x => x._id);
+
+    let options = {};
+
+    options.manufacturingWorks = {
+        $in: listWorksId
+    }
+
+    if (manufacturingWorks) {
+        options.manufacturingWorks = {
+            $in: manufacturingWorks
+        }
+    }
+
+    if (fromDate) {
+        options.createdAt = {
+            $gte: getArrayTimeFromString(fromDate)[0]
+        }
+    }
+
+    if (toDate) {
+        options.createdAt = {
+            ...options.createdAt,
+            $lte: getArrayTimeFromString(toDate)[1]
+        }
+    }
+
+    // Tra ve tong so ke hoach
+    let plans = await ManufacturingPlan(connect(DB_CONNECTION, portal))
+        .find(options)
+        .populate([{
+            path: "creator"
+        }, {
+            path: "manufacturingCommands"
+        }, {
+            path: "approvers.approver"
+        }]).sort({
+            "updatedAt": "desc"
+        });
+
+
+    const totalPlans = plans.length;
+    // 1 Đúng tiến độ 2 Chậm tiến độ 3 Quá hạn
+    // Tra ve ke hoach qua han
+    let expiredPlans = filterPlansWithProgress(plans, 3).length;
+    // Tra ve ke hoach cham tien do
+    let slowPlans = filterPlansWithProgress(plans, 2).length;
+    // Tra ve ke hoach dung tien do
+    let truePlans = totalPlans - expiredPlans - slowPlans;
+
+    return { totalPlans, truePlans, slowPlans, expiredPlans }
+
+}
+
+exports.getNumberPlansByStatus = async (query, portal) => {
+    const { currentRole, manufacturingWorks, fromDate, toDate } = query;
+    if (!currentRole) {
+        throw Error("CurrentRole is not defined");
+    }
+    // Lấy ra list các nhà máy là currentRole là trưởng phòng hoặc currentRole là role quản lý khác
+    // Lấy ra list nhà máy mà currentRole là quản đốc nhà máy
+    let role = [currentRole];
+    const departments = await OrganizationalUnit(connect(DB_CONNECTION, portal)).find({ 'managers': { $in: role } });
+    let organizationalUnitId = departments.map(department => department._id);
+    let listManufacturingWorks = await ManufacturingWorks(connect(DB_CONNECTION, portal)).find({
+        organizationalUnit: {
+            $in: organizationalUnitId
+        }
+    });
+    // Lấy ra các nhà máy mà currentRole cũng quản lý
+    let listWorksByManageRole = await ManufacturingWorks(connect(DB_CONNECTION, portal)).find({
+        manageRoles: {
+            $in: role
+        }
+    })
+    listManufacturingWorks = [...listManufacturingWorks, ...listWorksByManageRole];
+
+    let listWorksId = listManufacturingWorks.map(x => x._id);
+
+    let options = {};
+
+    options.manufacturingWorks = {
+        $in: listWorksId
+    }
+
+    if (manufacturingWorks) {
+        options.manufacturingWorks = {
+            $in: manufacturingWorks
+        }
+    }
+
+    if (fromDate) {
+        options.createdAt = {
+            $gte: getArrayTimeFromString(fromDate)[0]
+        }
+    }
+
+    if (toDate) {
+        options.createdAt = {
+            ...options.createdAt,
+            $lte: getArrayTimeFromString(toDate)[1]
+        }
+    }
+    // Tra ve tong so ke hoach
+    options.status = 1;
+    const plan1 = await ManufacturingPlan(connect(DB_CONNECTION, portal))
+        .find(options).count();
+    options.status = 2;
+    const plan2 = await ManufacturingPlan(connect(DB_CONNECTION, portal))
+        .find(options).count();
+    options.status = 3;
+    const plan3 = await ManufacturingPlan(connect(DB_CONNECTION, portal))
+        .find(options).count();
+    options.status = 4;
+    const plan4 = await ManufacturingPlan(connect(DB_CONNECTION, portal))
+        .find(options).count();
+    options.status = 5;
+    const plan5 = await ManufacturingPlan(connect(DB_CONNECTION, portal))
+        .find(options).count();
+    return { plan1, plan2, plan3, plan4, plan5 }
+
+}

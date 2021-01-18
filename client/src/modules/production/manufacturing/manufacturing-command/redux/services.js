@@ -3,7 +3,9 @@ import { sendRequest } from "../../../../../helpers/requestHelper"
 export const commandServices = {
     getAllManufacturingCommands,
     getDetailManufacturingCommand,
-    handleEditCommand
+    handleEditCommand,
+    getNumberCommands,
+    getNumberCommandsStatus
 }
 
 function getAllManufacturingCommands(query) {
@@ -39,6 +41,32 @@ function handleEditCommand(id, data) {
             data
         },
         true,
+        true,
+        'manufacturing.command'
+    )
+}
+
+function getNumberCommands(query) {
+    return sendRequest(
+        {
+            url: `${process.env.REACT_APP_SERVER}/manufacturing-command/get-number-commands`,
+            method: "GET",
+            params: query
+        },
+        false,
+        true,
+        'manufacturing.command'
+    )
+}
+
+function getNumberCommandsStatus(query) {
+    return sendRequest(
+        {
+            url: `${process.env.REACT_APP_SERVER}/manufacturing-command/get-number-commands-by-status`,
+            method: "GET",
+            params: query
+        },
+        false,
         true,
         'manufacturing.command'
     )

@@ -167,3 +167,48 @@ exports.getQuoteDetail = async ( req, res ) => {
     }
 }
 
+exports.countQuote = async (req, res) => {
+    try {
+        let query = req.query;
+        let  quoteCounter = await QuoteService.countQuote( req.user._id, query, req.portal)
+
+        await Log.info(req.user.email, "COUNT_QUOTE", req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ["count_quote_successfully"],
+            content: quoteCounter
+        });
+    } catch (error) {
+        await Log.error(req.user.email, "COUNT_QUOTE", req.portal);
+        console.log(error.message);
+        res.status(400).json({
+            success: false,
+            messages: ["count_quote_failed"],
+            content: error.message
+        });
+    }
+}
+
+exports.getTopGoodsCare = async (req, res) => {
+    try {
+        let query = req.query;
+        let topGoodsCare = await QuoteService.getTopGoodsCare(  req.user._id, query, req.portal)
+
+        await Log.info(req.user.email, "GET_TOP_GOODS_CARE", req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ["get_top_goods_care_successfully"],
+            content: topGoodsCare
+        });
+    } catch (error) {
+        await Log.error(req.user.email, "GET_TOP_GOODS_CARE", req.portal);
+        console.log(error.message);
+        res.status(400).json({
+            success: false,
+            messages: ["get_top_goods_care_failed"],
+            content: error.message
+        });
+    }
+}
+
+

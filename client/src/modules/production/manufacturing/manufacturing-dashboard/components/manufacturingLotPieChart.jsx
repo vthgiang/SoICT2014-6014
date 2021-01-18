@@ -6,44 +6,41 @@ import 'c3/c3.css';
 
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import { SelectMulti, DatePicker, SelectBox } from '../../../../../common-components';
+import { translate } from 'react-redux-multilingual/lib/utils';
+import { LotActions } from '../../../warehouse/inventory-management/redux/actions';
+import { connect } from 'react-redux';
 
 class ManufacturingOrderPieChart extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            pieChart: true
+            currentRole: localStorage.getItem('currentRole')
         }
     }
 
     componentDidMount() {
-        this.pieChart();
+        this.props.getNumberLotsStatus({ currentRole: this.state.currentRole })
     }
 
-    // Thiết lập dữ liệu biểu đồ
-    setDataBarChart = () => {
-        let data = {
-            count: ["5", "6", "7", "8", "9", "10"],
-            type: ["Thắng", "Phương", "Tài", "An", "Sang"],
-            shortName: ["T", "P", "T", "A", "S"]
-        }
-
-        return data;
-    }
-
-    pieChart = () => {
+    pieChart = (translate, manufacturingLotNumberStatus) => {
         let chart = c3.generate({
-            bindto: this.refs.quantityExpiratedDate,
+            bindto: this.refs.quantityLotStatus,
 
             data: {
                 columns: [
-                    ['Chưa được duyệt', 30],
-                    ['Chưa lập kế hoạch', 120],
-                    ['Đang lập kế hoạch', 90],
-                    ['Lập kế hoạch xong', 90],
-                    ['Đã hoàn thành', 80],
-                    ['Đã hủy', 40],
+                    [translate('manufacturing.lot.1.content'), manufacturingLotNumberStatus.lot1 ? manufacturingLotNumberStatus.lot1 : 0],
+                    [translate('manufacturing.lot.2.content'), manufacturingLotNumberStatus.lot2 ? manufacturingLotNumberStatus.lot2 : 0],
+                    [translate('manufacturing.lot.3.content'), manufacturingLotNumberStatus.lot3 ? manufacturingLotNumberStatus.lot3 : 0],
                 ],
                 type: 'pie',
+            },
+
+            color: {
+                pattern: [
+                    translate('manufacturing.command.1.color'),
+                    translate('manufacturing.command.2.color'),
+                    translate('manufacturing.command.3.color')
+                ]
             },
 
             pie: {
@@ -77,17 +74,21 @@ class ManufacturingOrderPieChart extends Component {
     }
 
     render() {
-        const { translate } = this.props;
-        this.pieChart();
+        const { translate, lots } = this.props;
+        let manufacturingLotNumberStatus = {}
+        if (lots.manufacturingLotNumberStatus && lots.isLoading === false) {
+            manufacturingLotNumberStatus = lots.manufacturingLotNumberStatus
+        }
+        this.pieChart(translate, manufacturingLotNumberStatus);
         return (
             <React.Fragment>
                 <div className="box">
                     <div className="box-header with-border">
                         <i className="fa fa-bar-chart-o" />
                         <h3 className="box-title">
-                            Số lượng từng loại lô hàng sản xuất
+                            {translate('manufacturing.lot.lot_quantity_status')}
                         </h3>
-                        <div ref="quantityExpiratedDate"></div>
+                        <div ref="quantityLotStatus"></div>
                     </div>
                 </div>
             </React.Fragment>
@@ -95,4 +96,13 @@ class ManufacturingOrderPieChart extends Component {
     }
 }
 
-export default withTranslate(ManufacturingOrderPieChart);
+function mapStateToProps(state) {
+    const { lots } = state;
+    return { lots }
+}
+
+const mapDispatchToProps = {
+    getNumberLotsStatus: LotActions.getNumberLotsStatus
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(ManufacturingOrderPieChart));

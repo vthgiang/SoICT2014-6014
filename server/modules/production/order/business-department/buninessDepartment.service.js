@@ -246,3 +246,70 @@ exports.getAllRelationsUser = async (userId, currentRole, portal) => {
     //Những người mà người này được phép quản lý
     return usersRelationship;
 }
+
+//Lấy tất cả người dùng trong 1 phòng ban
+exports.getAllUsersInDepartments = async (departmentId, portal) => { 
+    let department = await OrganizationalUnit(connect(DB_CONNECTION, portal))
+        .findById(departmentId)
+        .populate([
+            {
+                path: 'managers',
+                populate: {
+                    path: 'users',
+                    populate: [{
+                        path: "userId"
+                                }]
+                }
+            },
+            {
+                path: 'deputyManagers',
+                populate: {
+                    path: 'users',
+                    populate: [{
+                        path: "userId"
+                                }]
+                }
+            },
+            {
+                path: 'employees',
+                populate: {
+                    path: 'users',
+                    populate: [{
+                        path: "userId"
+                                }]
+                }
+            }
+        ]);
+        
+    if (!department) throw new Error("Department not avaiable");
+    
+    let listUsers = [];
+
+    const { managers, deputyManagers, employees } = department;
+        //i. Lấy danh sách các phó đơn vị dưới quyền người này
+        for (let indexRole = 0; indexRole < managers.length; indexRole++){
+            for (let indexUser = 0; indexUser < managers[indexRole].users.length; indexUser++){
+                if (!listUsers.find(element => managers[indexRole].users[indexUser].userId._id.equals(element._id))) {
+                    listUsers.push(managers[indexRole].users[indexUser].userId)
+                }
+            }
+        }
+        //ii. Lấy danh sách các phó đơn vị dưới quyền người này
+        for (let indexRole = 0; indexRole < deputyManagers.length; indexRole++){
+            for (let indexUser = 0; indexUser < deputyManagers[indexRole].users.length; indexUser++){
+                if (!listUsers.find(element => deputyManagers[indexRole].users[indexUser].userId._id.equals(element._id))) {
+                    listUsers.push(deputyManagers[indexRole].users[indexUser].userId)
+                }
+            }
+        }
+        //iii. Lấy các nhân viên dưới quyền người này
+        for (let indexRole = 0; indexRole < employees.length; indexRole++){
+            for (let indexUser = 0; indexUser < employees[indexRole].users.length; indexUser++){
+                if (!listUsers.find(element => employees[indexRole].users[indexUser].userId._id.equals(element._id))) {
+                    listUsers.push(employees[indexRole].users[indexUser].userId)
+                }
+            }
+        }
+    return listUsers
+}
+

@@ -180,7 +180,41 @@ const COMPONENTS = [{
     links: [
         '/stock-management'
     ]
-}];
+},
+{
+    name: 'create-quote',
+    description: 'Button thêm mới kho',
+    roles: [
+        ROOT_ROLES.SUPER_ADMIN.name,
+        ROOT_ROLES.ADMIN.name
+    ],
+    links: [
+        '/manage-quote'
+    ]
+},
+{
+    name: 'create-sales-order',
+    description: 'Button thêm mới kho',
+    roles: [
+        ROOT_ROLES.SUPER_ADMIN.name,
+        ROOT_ROLES.ADMIN.name
+    ],
+    links: [
+        '/manage-sales-order'
+    ]
+    },
+{
+    name: 'view-sales-order-dashboard',
+    description: 'Button thêm mới kho',
+    roles: [
+        ROOT_ROLES.SUPER_ADMIN.name,
+        ROOT_ROLES.ADMIN.name
+    ],
+    links: [
+        '/manage-sales-order-dashboard'
+    ]
+}
+];
 
 const getComponentsInLink = (link) => {
     return COMPONENTS

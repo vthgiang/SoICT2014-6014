@@ -1,48 +1,47 @@
 
 import React, { Component } from 'react';
-
 import c3 from 'c3';
 import 'c3/c3.css';
-
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
-import { SelectMulti, DatePicker, SelectBox } from '../../../../../common-components';
-
+import { manufacturingPlanActions } from '../../manufacturing-plan/redux/actions';
+import { connect } from 'react-redux';
 class PlanPieChart extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            pieChart: true
+            currentRole: localStorage.getItem("currentRole")
         }
     }
 
     componentDidMount() {
-        this.pieChart();
-    }
-
-    // Thiết lập dữ liệu biểu đồ
-    setDataBarChart = () => {
-        let data = {
-            count: ["5", "6", "7", "8", "9", "10"],
-            type: ["Thắng", "Phương", "Tài", "An", "Sang"],
-            shortName: ["T", "P", "T", "A", "S"]
+        const data = {
+            currentRole: this.state.currentRole
         }
-
-        return data;
+        this.props.getNumberPlansByStatus(data);
     }
 
-    pieChart = () => {
+    pieChart = (translate, planNumberStatus) => {
         let chart = c3.generate({
-            bindto: this.refs.quantityExpiratedDate,
-
+            bindto: this.refs.quantityPlanByStatus,
             data: {
                 columns: [
-                    ['Chưa được duyệt', 20],
-                    ['Đã được duyệt', 20],
-                    ['Đang thực hiện', 30],
-                    ['Đã hoàn thành', 10],
-                    ['Đã hủy', 10],
+                    [translate('manufacturing.plan.1.content'), planNumberStatus.plan1 ? planNumberStatus.plan1 : 0],
+                    [translate('manufacturing.plan.2.content'), planNumberStatus.plan2 ? planNumberStatus.plan2 : 0],
+                    [translate('manufacturing.plan.3.content'), planNumberStatus.plan3 ? planNumberStatus.plan3 : 0],
+                    [translate('manufacturing.plan.4.content'), planNumberStatus.plan4 ? planNumberStatus.plan4 : 0],
+                    [translate('manufacturing.plan.5.content'), planNumberStatus.plan5 ? planNumberStatus.plan5 : 0]
                 ],
                 type: 'pie',
+            },
+
+            color: {
+                pattern: [
+                    translate('manufacturing.plan.1.color'),
+                    translate('manufacturing.plan.2.color'),
+                    translate('manufacturing.plan.3.color'),
+                    translate('manufacturing.plan.4.color'),
+                    translate('manufacturing.plan.5.color'),
+                ]
             },
 
             pie: {
@@ -76,17 +75,21 @@ class PlanPieChart extends Component {
     }
 
     render() {
-        const { translate } = this.props;
-        this.pieChart();
+        const { translate, manufacturingPlan } = this.props;
+        let planNumberStatus = {};
+        if (manufacturingPlan.planNumberStatus && manufacturingPlan.isLoading === false) {
+            planNumberStatus = manufacturingPlan.planNumberStatus;
+        }
+        this.pieChart(translate, planNumberStatus);
         return (
             <React.Fragment>
                 <div className="box">
                     <div className="box-header with-border">
                         <i className="fa fa-bar-chart-o" />
                         <h3 className="box-title">
-                            Số lượng từng loại kế hoạch
+                            {translate('manufacturing.plan.quantity_by_status')}
                         </h3>
-                        <div ref="quantityExpiratedDate"></div>
+                        <div ref="quantityPlanByStatus"></div>
                     </div>
                 </div>
             </React.Fragment>
@@ -94,4 +97,13 @@ class PlanPieChart extends Component {
     }
 }
 
-export default withTranslate(PlanPieChart);
+function mapStateToProps(state) {
+    const { manufacturingPlan } = state;
+    return { manufacturingPlan }
+}
+
+const mapDispatchToProps = {
+    getNumberPlansByStatus: manufacturingPlanActions.getNumberPlansByStatus,
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(PlanPieChart));
