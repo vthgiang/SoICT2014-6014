@@ -748,9 +748,6 @@ exports.getInventoryInStockByGoods = async (query, portal) => {
     let goodInventory = {};
     let inventory = 0;
     const good = await Good(connect(DB_CONNECTION, portal)).findById({ _id: goodId });
-    const stock = await Stock(connect(DB_CONNECTION, portal)).findById({ _id: stockId });
-    goodInventory.good = good;
-    goodInventory.stock = stock;
 
     const lots = await Lot(connect(DB_CONNECTION, portal)).find({ good: goodId, quantity: { $ne: 0 }, stocks: { $elemMatch: { stock: stockId } } });
 
@@ -764,7 +761,7 @@ exports.getInventoryInStockByGoods = async (query, portal) => {
         }
 
         const bills = await Bill(connect(DB_CONNECTION, portal)).find({ goods: { $elemMatch: { good: good._id } }, group: group, status: { $in: status }, fromStock: stockId });
-        
+
         if (bills.length > 0) {
             for (let x = 0; x < bills.length; x++) {
                 for (let y = 0; y < bills[x].goods.length; y++) {
@@ -780,4 +777,78 @@ exports.getInventoryInStockByGoods = async (query, portal) => {
         goodInventory.inventory = 0;
     }
     return goodInventory;
+}
+
+exports.getManufacturingLotNumber = async (query, portal) => {
+    const { currentRole, manufacturingWorks, fromDate, toDate } = query;
+    if (!currentRole) {
+        throw Error("CurrentRole is not defined");
+    }
+    // Lấy ra list các nhà máy là currentRole là trưởng phòng hoặc currentRole là role quản lý khác
+    // Lấy ra list nhà máy mà currentRole là quản đốc nhà máy
+    let role = [currentRole];
+    const departments = await OrganizationalUnit(connect(DB_CONNECTION, portal)).find({ 'managers': { $in: role } });
+    let organizationalUnitId = departments.map(department => department._id);
+    let listManufacturingWorks = await ManufacturingWorks(connect(DB_CONNECTION, portal)).find({
+        organizationalUnit: {
+            $in: organizationalUnitId
+        }
+    });
+    // Lấy ra các nhà máy mà currentRole cũng quản lý
+    let listWorksByManageRole = await ManufacturingWorks(connect(DB_CONNECTION, portal)).find({
+        manageRoles: {
+            $in: role
+        }
+    })
+    listManufacturingWorks = [...listManufacturingWorks, ...listWorksByManageRole];
+
+    let listWorksId = listManufacturingWorks.map(x => x._id);
+
+    if (manufacturingWorks) {
+        listWorksId = manufacturingWorks;
+    }
+
+    let listManufacturingMills = await ManufacturingMill(connect(DB_CONNECTION, portal)).find({
+        manufacturingWorks: {
+            $in: listWorksId
+        }
+    });
+
+    let listMillIds = listManufacturingMills.map(x => x._id);
+    // Lấy ra tất cả các lệnh của các xưởng này
+    let listManufacturingCommands = await ManufacturingCommand(connect(DB_CONNECTION, portal))
+        .find({
+            manufacturingMill: {
+                $in: listMillIds
+            }
+        });
+    let listManufacturingCommandIds = listManufacturingCommands.map(x => x._id);
+
+    let options = {};
+    options.manufacturingCommand = {
+        $in: listManufacturingCommandIds
+    }
+    if (fromDate) {
+        options.createdAt = {
+            $gte: getArrayTimeFromString(fromDate)[0]
+        }
+    }
+
+    if (toDate) {
+        options.createdAt = {
+            ...options.createdAt,
+            $lte: getArrayTimeFromString(toDate)[1]
+        }
+    }
+
+    options.status = 1;
+    const lot1 = await Lot(connect(DB_CONNECTION, portal)).find(options).count();
+
+    options.status = 2;
+    const lot2 = await Lot(connect(DB_CONNECTION, portal)).find(options).count();
+
+    options.status = 3;
+    const lot3 = await Lot(connect(DB_CONNECTION, portal)).find(options).count();
+
+    return { lot1, lot2, lot3 }
 }

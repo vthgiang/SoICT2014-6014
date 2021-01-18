@@ -3222,6 +3222,7 @@ export default {
                 evaluation: "Đánh giá",
                 attach_file: "Đính kèm file",
                 comment: "Bình luận",
+                result: "Báo cáo kết quả hoạt động",
                 re_evaluation: "Đánh giá lại",
                 question_delete_file: "Bạn có chắc chắn muốn xóa file",
                 edit_comment: "Sửa bình luận",
@@ -3241,6 +3242,7 @@ export default {
                 time: "Thời gian",
                 none_subtask: "Không có công việc liên quan",
                 enter_comment_action: "Nhập bình luận cho hoạt động",
+                enter_result_action: "Nhập kết quả cho hoạt động",
                 create_comment_action: "Thêm bình luận",
                 stop_timer: "Dừng bấm giờ",
                 edit: "Chỉnh sửa",
@@ -5028,7 +5030,8 @@ export default {
                 purchasing_request_edit: "Sửa phiếu đề nghị",
                 edit_successfully: "Sửa phiếu dề nghị thành công",
                 edit_failed: "Sửa phiếu đề nghị thất bại",
-                cancel_purchasing_request: "Hủy phiếu đề nghị mua hàng"
+                cancel_purchasing_request: "Hủy phiếu đề nghị mua hàng",
+                number_purchasing_status: "Số lượng phiếu đề nghị mua hàng theo trạng thái"
             },
             work_schedule: {
                 //general
@@ -5249,7 +5252,8 @@ export default {
                 choose_responisbles: "Vui lòng chọn người thực hiện",
                 edit_successfully: "Chỉnh sửa kế hoạch thành công",
                 edit_failed: "Chỉnh sửa kế hoạch thất bại",
-                cancel_plan: "Hủy kế hoạch"
+                cancel_plan: "Hủy kế hoạch",
+                quantity_by_status: "Số lượng kế hoạch theo trạng thái"
 
 
 
@@ -5398,7 +5402,11 @@ export default {
                 create_purchasing_request: "Tạo phiếu đề nghị mua hàng",
                 approver_command: "Duyệt lệnh",
                 approver_ccommand: "Người phê duyệt",
-                cancel_command: "Hủy lệnh sản xuất"
+                cancel_command: "Hủy lệnh sản xuất",
+                command_number_status: "Số lượng lệnh sản xuất theo trạng thái",
+
+
+
             },
             lot: {
                 index: "STT",
@@ -5461,6 +5469,7 @@ export default {
                 material: "Thông tin nguyên vật liệu",
                 lot_edit: "Chỉnh sửa lô sản xuất",
                 create_bill: "Lên phiếu nhập kho",
+                lot_quantity_status: "Số lượng lô hàng sản xuất theo trạng thái"
 
             },
 

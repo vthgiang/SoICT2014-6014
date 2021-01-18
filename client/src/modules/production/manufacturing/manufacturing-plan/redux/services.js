@@ -6,7 +6,8 @@ export const manufacturingPlanServices = {
     createManufacturingPlan,
     getDetailManufacturingPlan,
     handleEditManufacturingPlan,
-    getNumberPlans
+    getNumberPlans,
+    getNumberPlansByStatus
 }
 
 function getAllManufacturingPlans(query) {
@@ -73,6 +74,18 @@ function getNumberPlans(data) {
     return sendRequest(
         {
             url: `${process.env.REACT_APP_SERVER}/manufacturing-plan/get-number-plans`,
+            method: "GET",
+            params: data
+        },
+        false,
+        true,
+        "manufacturing.plan")
+}
+
+function getNumberPlansByStatus(data) {
+    return sendRequest(
+        {
+            url: `${process.env.REACT_APP_SERVER}/manufacturing-plan/get-number-plans-by-status`,
             method: "GET",
             params: data
         },

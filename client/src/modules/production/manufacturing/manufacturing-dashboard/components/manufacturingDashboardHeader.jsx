@@ -7,6 +7,7 @@ import { worksActions } from '../../manufacturing-works/redux/actions';
 import { compareLtDate, compareLteDate, formatDate } from '../../../../../helpers/formatDate';
 import { manufacturingPlanActions } from '../../manufacturing-plan/redux/actions';
 import { commandActions } from '../../manufacturing-command/redux/actions';
+import { LotActions } from '../../../warehouse/inventory-management/redux/actions';
 
 class ManufacturingDashboardHeader extends Component {
     constructor(props) {
@@ -120,6 +121,9 @@ class ManufacturingDashboardHeader extends Component {
             toDate: this.state.toDate
         }
         this.props.getNumberPlans(data);
+        this.props.getNumberPlansByStatus(data);
+        this.props.getNumberCommandsStatus(data);
+        this.props.getNumberLotsStatus(data);
     }
 
 
@@ -300,7 +304,10 @@ function mapStateToProps(state) {
 const mapDispatchToProps = {
     getAllManufacturingWorks: worksActions.getAllManufacturingWorks,
     getNumberPlans: manufacturingPlanActions.getNumberPlans,
-    getNumberCommands: commandActions.getNumberCommands
+    getNumberCommands: commandActions.getNumberCommands,
+    getNumberPlansByStatus: manufacturingPlanActions.getNumberPlansByStatus,
+    getNumberCommandsStatus: commandActions.getNumberCommandsStatus,
+    getNumberLotsStatus: LotActions.getNumberLotsStatus
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(ManufacturingDashboardHeader));

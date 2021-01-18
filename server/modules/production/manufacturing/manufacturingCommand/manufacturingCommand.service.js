@@ -614,3 +614,80 @@ exports.getNumberCommands = async (query, portal) => {
     return { totalCommands, trueCommands, slowCommands }
 
 }
+
+exports.getNumberCommandsStatus = async (query, portal) => {
+    const { currentRole, manufacturingWorks, fromDate, toDate } = query;
+    if (!currentRole) {
+        throw Error("CurrentRole is not defined");
+    }
+    // Lấy ra list các nhà máy là currentRole là trưởng phòng hoặc currentRole là role quản lý khác
+    // Lấy ra list nhà máy mà currentRole là quản đốc nhà máy
+    let role = [currentRole];
+    const departments = await OrganizationalUnit(connect(DB_CONNECTION, portal)).find({ 'managers': { $in: role } });
+    let organizationalUnitId = departments.map(department => department._id);
+    let listManufacturingWorks = await ManufacturingWorks(connect(DB_CONNECTION, portal)).find({
+        organizationalUnit: {
+            $in: organizationalUnitId
+        }
+    });
+    // Lấy ra các nhà máy mà currentRole cũng quản lý
+    let listWorksByManageRole = await ManufacturingWorks(connect(DB_CONNECTION, portal)).find({
+        manageRoles: {
+            $in: role
+        }
+    })
+    listManufacturingWorks = [...listManufacturingWorks, ...listWorksByManageRole];
+
+    let listWorksId = listManufacturingWorks.map(x => x._id);
+
+    if (manufacturingWorks) {
+        listWorksId = manufacturingWorks;
+    }
+
+    let options = {};
+
+    let listManufacturingMills = await ManufacturingMill(connect(DB_CONNECTION, portal)).find({
+        manufacturingWorks: {
+            $in: listWorksId
+        }
+    });
+
+    let listMillIds = listManufacturingMills.map(x => x._id);
+
+    options.manufacturingMill = {
+        $in: listMillIds
+    }
+
+    if (fromDate) {
+        options.createdAt = {
+            $gte: getArrayTimeFromString(fromDate)[0]
+        }
+    }
+
+    if (toDate) {
+        options.createdAt = {
+            ...options.createdAt,
+            $lte: getArrayTimeFromString(toDate)[1]
+        }
+    }
+
+    options.status = 6;
+    const command6 = await ManufacturingCommand(connect(DB_CONNECTION, portal))
+        .find(options).count();
+    options.status = 1;
+    const command1 = await ManufacturingCommand(connect(DB_CONNECTION, portal))
+        .find(options).count();
+    options.status = 2;
+    const command2 = await ManufacturingCommand(connect(DB_CONNECTION, portal))
+        .find(options).count();
+    options.status = 3;
+    const command3 = await ManufacturingCommand(connect(DB_CONNECTION, portal))
+        .find(options).count();
+    options.status = 4;
+    const command4 = await ManufacturingCommand(connect(DB_CONNECTION, portal))
+        .find(options).count();
+    options.status = 5;
+    const command5 = await ManufacturingCommand(connect(DB_CONNECTION, portal))
+        .find(options).count();
+    return { command6, command1, command2, command3, command4, command5 }
+}

@@ -4,7 +4,8 @@ export const commandServices = {
     getAllManufacturingCommands,
     getDetailManufacturingCommand,
     handleEditCommand,
-    getNumberCommands
+    getNumberCommands,
+    getNumberCommandsStatus
 }
 
 function getAllManufacturingCommands(query) {
@@ -49,6 +50,19 @@ function getNumberCommands(query) {
     return sendRequest(
         {
             url: `${process.env.REACT_APP_SERVER}/manufacturing-command/get-number-commands`,
+            method: "GET",
+            params: query
+        },
+        false,
+        true,
+        'manufacturing.command'
+    )
+}
+
+function getNumberCommandsStatus(query) {
+    return sendRequest(
+        {
+            url: `${process.env.REACT_APP_SERVER}/manufacturing-command/get-number-commands-by-status`,
             method: "GET",
             params: query
         },

@@ -97,3 +97,27 @@ exports.editPurchasingRequest = async (req, res) => {
         })
     }
 }
+
+exports.getNumberPurchasingRequest = async (req, res) => {
+    try {
+        let query = req.query;
+
+        let purchasingNumber = await PurchasingRequestService.getNumberPurchasingRequest(query, req.portal);
+
+        await Log.info(req.user.email, "GET_NUMBER_PURCHASING_REQUEST", req.portal);
+
+        res.status(200).json({
+            success: true,
+            messages: ["get_number_successfully"],
+            content: purchasingNumber
+        })
+    } catch (error) {
+        await Log.error(req.user.email, "GET_NUMBER_PURCHASING_REQUEST", req.portal);
+
+        res.status(400).json({
+            success: false,
+            messages: ["get_number_failed"],
+            content: error.message
+        })
+    }
+}

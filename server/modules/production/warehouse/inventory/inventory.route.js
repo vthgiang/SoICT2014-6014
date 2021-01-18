@@ -3,6 +3,7 @@ const router = express.Router();
 const { auth } = require(`../../../../middleware`);;
 const LotController = require('./inventory.controller');
 
+router.get('/get-manufacturing-lot-number-status', auth, LotController.getManufacturingLotNumber)
 router.get('/', auth, LotController.getAllLots);
 router.get('/get-inventory-dashboard', auth, LotController.getInventories);
 router.get('/get-lot-by-good', auth, LotController.getLotsByGood);
