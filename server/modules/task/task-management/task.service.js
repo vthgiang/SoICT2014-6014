@@ -2412,9 +2412,8 @@ exports.getTaskAnalysOfUser = async (portal, userId, type) => {
  * @param {*} year 
  */
 exports.getUserTimeSheet = async (portal, userId, month, year) => {
-    console.log("my", month, year)
-    let beginOfMonth = new Date(`${year}-${month}`);
-    let endOfMonth = new Date(year, month);
+    let beginOfMonth = new Date(`${year}-${month}`); // cần chỉnh lại 
+    let endOfMonth = new Date(year, month); // cần chỉnh lại
 
     let tsl = await Task(connect(DB_CONNECTION, portal)).aggregate([
         { $match: { 
@@ -2436,4 +2435,32 @@ exports.getUserTimeSheet = async (portal, userId, month, year) => {
     ]);
 
     return tsl;
+}
+
+/**
+ * Lấy thống kê bấm giờ của tất cả các tài khoản trong hệ thống
+ * @param {*} portal 
+ * @param {*} month 
+ * @param {*} year 
+ */
+exports.getAllUserTimeSheet = async (portal, month, year) => {
+    let beginOfMonth = new Date(`${year}-${month}`); // cần chỉnh lại 
+    let endOfMonth = new Date(year, month); // cần chỉnh lại
+
+    let tsl = await Task(connect(DB_CONNECTION, portal)).aggregate([
+        { $match: { 
+            "timesheetLogs.startedAt": { $exists: true },
+            "timesheetLogs.startedAt": { $gte: beginOfMonth },
+            "timesheetLogs.stoppedAt": { $exists: true },
+            "timesheetLogs.stoppedAt": { $lte: endOfMonth }
+        } },
+        { $unwind: "$timesheetLogs" },
+        { $replaceRoot: { newRoot: "$timesheetLogs" } },
+        { $match: { 
+            "startedAt": { $exists: true },
+            "startedAt": { $gte: beginOfMonth },
+            "stoppedAt": { $exists: true },
+            "stoppedAt": { $lte: endOfMonth }
+        } },
+    ]);
 }
