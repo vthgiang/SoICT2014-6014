@@ -8,7 +8,9 @@ export const QuoteActions = {
     deleteQuote,
     approveQuote,
     getQuotesToMakeOrder,
-    getQuoteDetail
+    getQuoteDetail,
+    countQuote,
+    getTopGoodsCare
 }
 
 function createNewQuote (data) {
@@ -157,6 +159,51 @@ function getQuoteDetail(id) {
             .catch((error) => {
                 dispatch({
                     type: QuoteConstants.GET_QUOTE_DETAIL_FAILURE,
+                    error
+                })
+            })
+    }
+}
+
+// PHẦN SERVICE CHO DASHBOARD
+function countQuote(queryData) {
+    return (dispatch) => {
+        dispatch({
+            type: QuoteConstants.COUNT_QUOTE_REQUEST
+        })
+
+        QuoteServices.countQuote(queryData)
+            .then((res) => {
+                dispatch({
+                    type: QuoteConstants.COUNT_QUOTE_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch((error) => {
+                dispatch({
+                    type: QuoteConstants.COUNT_QUOTE_FAILURE,
+                    error
+                })
+            })
+    }
+}
+
+function getTopGoodsCare(queryData) {
+    return (dispatch) => {
+        dispatch({
+            type: QuoteConstants.GET_TOP_GOODS_CARE_REQUEST
+        })
+
+        QuoteServices.getTopGoodsCare(queryData)
+            .then((res) => {
+                dispatch({
+                    type: QuoteConstants.GET_TOP_GOODS_CARE_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch((error) => {
+                dispatch({
+                    type: QuoteConstants.GET_TOP_GOODS_CARE_FAILURE,
                     error
                 })
             })

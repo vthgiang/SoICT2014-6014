@@ -8,7 +8,10 @@ export const SalesOrderSevices = {
     addManufacturingPlanForGood,
     getSalesOrdersByManufacturingWorks,
     getSalesOrdersForPayment,
-    getSalesOrderDetail
+    getSalesOrderDetail,
+    countSalesOrder,
+    getTopGoodsSold,
+    getSalesForDepartments
 }
 
 function createNewSalesOrder(data) {
@@ -94,6 +97,40 @@ function getSalesOrderDetail(id) {
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/sales-order/${id}`,
         method: "GET",
+    },
+        false,
+        true,
+    "manage_order.sales_order")
+}
+
+//SERVICE CHO DASHBOARD
+function countSalesOrder(queryData) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/sales-order/count`,
+        method: "GET",
+        params: queryData
+    },
+        false,
+        true,
+    "manage_order.sales_order")
+}
+
+function getTopGoodsSold(queryData) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/sales-order/get-top-good-sold`,
+        method: "GET",
+        params: queryData
+    },
+        false,
+        true,
+    "manage_order.sales_order")
+}
+
+function getSalesForDepartments(queryData) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/sales-order/get-sales-for-departments`,
+        method: "GET",
+        params: queryData
     },
         false,
         true,

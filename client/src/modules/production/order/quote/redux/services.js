@@ -7,7 +7,9 @@ export const QuoteServices = {
     deleteQuote,
     approveQuote,
     getQuotesToMakeOrder,
-    getQuoteDetail
+    getQuoteDetail,
+    countQuote,
+    getTopGoodsCare
 }
 
 function createNewQuote(data) {
@@ -81,6 +83,29 @@ function getQuoteDetail(id) {
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/quote/${id}`,
         method: "GET",
+    },
+        false,
+        true,
+    "manage_order.quote")
+}
+
+//SERVICE CHO DASHBOARD
+function countQuote(queryData) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/quote/count`,
+        method: "GET",
+        params: queryData
+    },
+        false,
+        true,
+    "manage_order.quote")
+}
+
+function getTopGoodsCare(queryData) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/quote/get-top-good-care`,
+        method: "GET",
+        params: queryData
     },
         false,
         true,

@@ -15,6 +15,7 @@ import { BillActions } from "../../../warehouse/bill-management/redux/actions";
 import { StockActions } from "../../../warehouse/stock-management/redux/actions";
 import { UserActions } from "../../../../super-admin/user/redux/actions";
 import { GoodActions } from "../../../common-production/good-management/redux/actions";
+import { LotActions } from "../../../warehouse/inventory-management/redux/actions";
 
 //Helper Function
 import { formatCurrency } from "../../../../../helpers/formatCurrency";
@@ -29,6 +30,7 @@ import SalesOrderEditForm from "./salesOrderEditForm";
 import GoodIssueCreateForm from "../../../warehouse/bill-management/components/good-issues/goodIssueCreateForm";
 import BillDetailForm from "../../../warehouse/bill-management/components/genaral/billDetailForm";
 import SalesOrderApproveForm from "./approveSalesOrder";
+import SalesOrderEditAfterApproveForm from "./editAfterApprove/salesOrderEditAfterApproveForm";
 
 class SalesOrderTable extends Component {
     constructor(props) {
@@ -140,8 +142,28 @@ class SalesOrderTable extends Component {
     };
 
     handleEditSalesOrder = async (salesOrderEdit) => {
+        console.log("salesOrderEdit", salesOrderEdit);
         await this.props.getSalesOrderDetail(salesOrderEdit._id);
         window.$("#modal-edit-sales-order").modal("show");
+    };
+
+    handleEditSalesOrderAfterApprove = async (salesOrderEdit) => {
+        let goodIds = [];
+        if (salesOrderEdit) {
+            goodIds = salesOrderEdit.goods.map((good) => good.good._id);
+        }
+        //Lấy số lượng tồn kho
+        await this.props.getInventoryByGoodIds({ array: goodIds });
+        await this.setState({
+            salesOrderEditAfterApprove: salesOrderEdit,
+        });
+        window.$("#modal-edit-sales-order-after-aprrove").modal("show");
+    };
+
+    setEditSalesOrderAfterApproveState = async (data) => {
+        await this.setState({
+            salesOrderEditAfterApprove: data,
+        });
     };
 
     handleAddBill = async (salesOrderAddBill) => {
@@ -188,8 +210,18 @@ class SalesOrderTable extends Component {
         window.$("#modal-approve-sales-order").modal("show");
     };
 
+    checkHasComponent = (name) => {
+        let { auth } = this.props;
+        let result = false;
+        auth.components.forEach((component) => {
+            if (component.name === name) result = true;
+        });
+
+        return result;
+    };
+
     render() {
-        let { limit, code, salesOrderAddBill, billCode, detailModalId, salesOrderApprove } = this.state;
+        let { limit, code, salesOrderAddBill, billCode, detailModalId, salesOrderApprove, salesOrderEditAfterApprove } = this.state;
         const { translate, salesOrders } = this.props;
         const { totalPages, page } = salesOrders;
 
@@ -306,6 +338,12 @@ class SalesOrderTable extends Component {
                         />
                         <BillDetailForm />
                         <SalesOrderEditForm />
+                        {salesOrderEditAfterApprove && (
+                            <SalesOrderEditAfterApproveForm
+                                salesOrderEditAfterApprove={salesOrderEditAfterApprove}
+                                setEditSalesOrderAfterApproveState={(data) => this.setEditSalesOrderAfterApproveState(data)}
+                            />
+                        )}
                         <SalesOrderApproveForm salesOrderApprove={salesOrderApprove} />
                         <div className="form-inline">
                             <div className="form-group">
@@ -462,6 +500,17 @@ class SalesOrderTable extends Component {
                                                         <i className="material-icons">edit</i>
                                                     </a>
                                                 )}
+                                                {/* Sửa đơn sau khi đã phê duyệt */}
+                                                {item.status !== 1 && item.status !== 8 && (
+                                                    <a
+                                                        onClick={() => this.handleEditSalesOrderAfterApprove(item)}
+                                                        className="edit text-yellow"
+                                                        style={{ width: "5px" }}
+                                                        title="Sửa đơn"
+                                                    >
+                                                        <i className="material-icons">edit</i>
+                                                    </a>
+                                                )}
                                                 {!item.bill && item.status !== 1 && this.checkUserForApprove(item) === 2 && (
                                                     <a
                                                         onClick={() => this.handleAddBill(item)}
@@ -534,6 +583,7 @@ const mapDispatchToProps = {
     getAllStocks: StockActions.getAllStocks,
     getUser: UserActions.get,
     getGoodsByType: GoodActions.getGoodsByType,
+    getInventoryByGoodIds: LotActions.getInventoryByGoodIds,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(SalesOrderTable));

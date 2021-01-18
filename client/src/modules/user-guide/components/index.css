@@ -1,0 +1,10 @@
+
+.wrapper .pg-viewer-wrapper{
+    height: calc(100vh - 52px - 56px)!important;
+    overflow: auto;
+}
+
+.wrapper .pg-viewer{
+    display: flex;
+    justify-content: center;
+}
