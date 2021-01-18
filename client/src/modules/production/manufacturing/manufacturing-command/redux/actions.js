@@ -6,6 +6,7 @@ export const commandActions = {
     getDetailManufacturingCommand,
     handleEditCommand,
     getNumberCommands,
+    getNumberCommandsStatus
 }
 
 function getAllManufacturingCommands(query) {
@@ -82,6 +83,26 @@ function getNumberCommands(query) {
             }).catch((error) => {
                 dispatch({
                     type: commandConstants.GET_NUMBER_COMMAND_FAILURE,
+                    error
+                });
+            });
+    }
+}
+
+function getNumberCommandsStatus(query) {
+    return dispatch => {
+        dispatch({
+            type: commandConstants.GET_NUMBER_COMMAND_BY_STATUS_REQUEST
+        });
+        commandServices.getNumberCommandsStatus(query)
+            .then((res) => {
+                dispatch({
+                    type: commandConstants.GET_NUMBER_COMMAND_BY_STATUS_SUCCESS,
+                    payload: res.data.content
+                });
+            }).catch((error) => {
+                dispatch({
+                    type: commandConstants.GET_NUMBER_COMMAND_BY_STATUS_FAILURE,
                     error
                 });
             });

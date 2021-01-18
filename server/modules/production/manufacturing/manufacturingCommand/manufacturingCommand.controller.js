@@ -100,7 +100,7 @@ exports.getNumberCommands = async (req, res) => {
         const data = req.query;
         let commandNumber = await ManufacturingCommandServices.getNumberCommands(data, req.portal);
 
-        await Logger.info(req.user.email, "EDIT_MANUFACTURING_COMMAND", req.portal);
+        await Logger.info(req.user.email, "GET_NUMBER_COMMAND", req.portal);
 
         res.status(200).json({
             success: true,
@@ -108,11 +108,34 @@ exports.getNumberCommands = async (req, res) => {
             content: commandNumber
         })
     } catch (error) {
-        await Logger.error(req.user.email, "EDIT_MANUFACTURING_COMMAND", req.portal);
+        await Logger.error(req.user.email, "GET_NUMBER_COMMAND", req.portal);
         console.log(error.message);
         res.status(400).json({
             success: false,
             messages: ["get_number_failed"],
+            content: error.message
+        })
+    }
+}
+
+exports.getNumberCommandsStatus = async (req, res) => {
+    try {
+        const data = req.query;
+        let commandNumberStatus = await ManufacturingCommandServices.getNumberCommandsStatus(data, req.portal);
+
+        await Logger.info(req.user.email, "GET_NUMBER_COMMAND_STATUS", req.portal);
+
+        res.status(200).json({
+            success: true,
+            messages: ["get_number_status_successfully"],
+            content: commandNumberStatus
+        })
+    } catch (error) {
+        await Logger.error(req.user.email, "GET_NUMBER_COMMAND_STATUS", req.portal);
+        console.log(error.message);
+        res.status(400).json({
+            success: false,
+            messages: ["get_number_status_failed"],
             content: error.message
         })
     }

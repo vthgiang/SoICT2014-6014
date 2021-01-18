@@ -476,15 +476,14 @@ class goodIssueCreateForm extends Component {
     handleGoodChange = (value) => {
         const goodId = value[0];
         this.validateGoodChange(goodId, true);
-        // if (goodId !== "1") {
-        //     console.log("vao day");
-        //     const data = {
-        //         goodId: goodId,
-        //         stockId: this.state.bill.fromStock
-        //     }
-        //     console.log(data);
-        //     this.props.getInventoryByGoodAndStock(data);
-        // }
+        if (goodId !== "1") {
+            const data = {
+                goodId: goodId,
+                stockId: this.state.bill.fromStock
+            }
+            console.log(data);
+            this.props.getInventoryByGoodAndStock(data);
+        }
     }
 
     validateGoodChange = (value, willUpdateState = true) => {
@@ -894,7 +893,7 @@ class goodIssueCreateForm extends Component {
                                                             <div style={{ display: "flex" }}>
                                                                 <input
                                                                     className="form-control"
-                                                                    value={goodStockInventory.inventory}
+                                                                    value={good.goodId === "1" ? "" : goodStockInventory.inventory}
                                                                     disabled
                                                                     type="number"
                                                                 />

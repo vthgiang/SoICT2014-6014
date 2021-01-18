@@ -138,3 +138,24 @@ exports.getNumberPlans = async (req, res) => {
         })
     }
 }
+
+exports.getNumberPlansByStatus = async (req, res) => {
+    try {
+        let data = req.query;
+        let planNumberStatus = await ManufacturingPlanService.getNumberPlansByStatus(data, req.portal);
+        await Logger.info(req.user.email, "GET_NUMBER_PLANS_BY_STATUS", req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ['get_number_status_successfully'],
+            content: planNumberStatus
+        })
+    } catch (error) {
+        await Logger.error(req.user.email, "GET_NUMBER_PLANS_BY_STATUS", req.portal);
+        console.log(error.message);
+        res.status(400).json({
+            success: false,
+            messages: ['get_number_status_failed'],
+            content: error.message
+        })
+    }
+}

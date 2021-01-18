@@ -18,6 +18,7 @@ export const LotActions = {
     getInventoryByGoodId,
     getInventoriesDashboard,
     getInventoryByGoodAndStock,
+    getNumberLotsStatus,
 
 }
 
@@ -315,19 +316,39 @@ function getInventoryByGoodAndStock(data) {
         dispatch({
             type: LotConstants.GET_INVENTORY_BY_GOOD_AND_STOCK_REQUEST
         })
-        console.log("kakkaa")
         LotServices.getInventoryByGoodAndStock(data)
             .then(res => {
                 dispatch({
                     type: LotConstants.GET_INVENTORY_BY_GOOD_AND_STOCK_SUCCESS,
                     payload: res.data.content
-                })
+                });
             })
             .catch(error => {
                 dispatch({
                     type: LotConstants.GET_INVENTORY_BY_GOOD_AND_STOCK_FAILURE,
                     error
-                })
+                });
+            });
+    }
+}
+
+function getNumberLotsStatus(data) {
+    return dispatch => {
+        dispatch({
+            type: LotConstants.GET_MANUFACTURING_LOT_NUMBER_BY_STATUS_REQUEST
+        })
+        LotServices.getNumberLotsStatus(data)
+            .then(res => {
+                dispatch({
+                    type: LotConstants.GET_MANUFACTURING_LOT_NUMBER_BY_STATUS_SUCCESS,
+                    payload: res.data.content
+                });
             })
+            .catch(error => {
+                dispatch({
+                    type: LotConstants.GET_MANUFACTURING_LOT_NUMBER_BY_STATUS_FAILURE,
+                    error
+                });
+            });
     }
 }
