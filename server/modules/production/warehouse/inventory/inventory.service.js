@@ -115,25 +115,25 @@ exports.createOrUpdateLots = async (data, portal) => {
         for (let i = 0; i < data.lots.length; i++) {
             let date = data.lots[i].expirationDate.split("-");
             let expirationDate = new Date(date[2], date[1] - 1, date[0]);
-            let lot = await Lot(connect(DB_CONNECTION, portal)).find({ code: data.lots[i].code });
-            if (lot && lot.length > 0) {
-                lot[0].stocks[0].stock = data.stock;
-                lot[0].stocks[0].quantity = data.lots[i].quantity;
-                lot[0].originalQuantity = data.lots[i].quantity;
-                lot[0].quantity = data.lots[i].quantity;
-                lot[0].expirationDate = expirationDate;
-                lot[0].code = lot[0].code;
-                lot[0].good = lot[0].good;
-                lot[0].type = data.type;
-                lot[0].description = data.lots[i].note;
-                lot[0].lotLogs[0].bill = data.bill;
-                lot[0].lotLogs[0].quantity = data.lots[i].quantity;
-                lot[0].lotLogs[0].description = data.lots[0].note;
-                lot[0].lotLogs[0].type = data.typeBill;
-                lot[0].lotLogs[0].stock = data.stock;
+            let lot = await Lot(connect(DB_CONNECTION, portal)).findOne({ code: data.lots[i].code });
+            if (lot) {
+                lot.stocks[0].stock = data.stock;
+                lot.stocks[0].quantity = data.lots[i].quantity;
+                lot.originalQuantity = data.lots[i].quantity;
+                lot.quantity = data.lots[i].quantity;
+                lot.expirationDate = expirationDate;
+                lot.code = lot.code;
+                lot.good = lot.good;
+                lot.type = data.type;
+                lot.description = data.lots[i].note;
+                lot.lotLogs[0].bill = data.bill;
+                lot.lotLogs[0].quantity = data.lots[i].quantity;
+                lot.lotLogs[0].description = data.lots[0].note;
+                lot.lotLogs[0].type = data.typeBill;
+                lot.lotLogs[0].stock = data.stock;
 
-                await lot[0].save();
-                lots.push(lot[0]);
+                await lot.save();
+                lots.push(lot);
             }
             else {
                 let stock = {

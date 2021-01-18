@@ -123,7 +123,8 @@ const COMPONENTS = [{
     links: [
         '/notifications'
     ]
-}, {
+},
+{
     name: 'create-task-template-button',
     description: 'Button thêm mới mẫu công việc',
     roles: [
@@ -132,7 +133,8 @@ const COMPONENTS = [{
     links: [
         '/task-template'
     ]
-}, {
+},
+{
     name: 'create-task-process-button',
     description: 'Button thêm mới mẫu quy trình công việc',
     roles: [
@@ -202,7 +204,7 @@ const COMPONENTS = [{
     links: [
         '/manage-sales-order'
     ]
-    },
+},
 {
     name: 'view-sales-order-dashboard',
     description: 'Button thêm mới kho',
@@ -213,8 +215,15 @@ const COMPONENTS = [{
     links: [
         '/manage-sales-order-dashboard'
     ]
-}
-];
+}, {
+    name: 'view-pie-chart-purchasing',
+    description: 'Xem biều đồ phiếu mua hàng theo trạng thái',
+    roles: [
+    ],
+    links: [
+        '/manufacturing-dashboard'
+    ]
+}];
 
 const getComponentsInLink = (link) => {
     return COMPONENTS
@@ -1346,7 +1355,7 @@ const LINKS = [{
         ROOT_ROLES.SUPER_ADMIN.name,
         ROOT_ROLES.ADMIN.name
     ],
-    components: getComponentsInLink('/track-order'),
+    components: getComponentsInLink('/manufacturing-dashboard'),
 },
 {
     url: "/analysis-manufacturing-performance",
