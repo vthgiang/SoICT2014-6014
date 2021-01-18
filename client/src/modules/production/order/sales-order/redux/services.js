@@ -47,12 +47,13 @@ function editSalesOrder(id, data) {
 }
 
 function approveSalesOrder(id, data) {
+    console.log("DATA", data);
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/sales-order/approve/${id}`,
         method: "PATCH",
         data
     },
-        false,
+        true,
         true,
     "manage_order.sales_order")
 }

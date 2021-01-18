@@ -299,8 +299,8 @@ class SalesOrderCreatePayment extends Component {
                                     <th title={"Mã sản phẩm"}>Mã sản phẩm</th>
                                     <th title={"Tên sản phẩm"}>Tên sản phẩm</th>
                                     <th title={"Đơn vị tính"}>Đ/v tính</th>
-                                    <th title={"Giá niêm yết"}>Giá niêm yết (vnđ)</th>
-                                    <th title={"giá tính tiền"}>giá tính tiền (vnđ)</th>
+                                    <th title={"Giá niêm yết"}>Giá niêm yết </th>
+                                    <th title={"giá tính tiền"}>giá tính tiền </th>
                                     <th title={"Số lượng"}>Số lượng</th>
                                     <th title={"Khuyến mãi"}>Khuyến mãi</th>
                                     <th title={"Thành tiền"}>Thành tiền</th>
@@ -320,10 +320,8 @@ class SalesOrderCreatePayment extends Component {
                                             <td>{item.good ? item.good.code : ""}</td>
                                             <td>{item.good ? item.good.name : ""}</td>
                                             <td>{item.good ? item.good.baseUnit : ""}</td>
-                                            <td>
-                                                {item.pricePerBaseUnitOrigin ? formatCurrency(item.pricePerBaseUnitOrigin) + " (vnđ)" : " 0 (vnđ)"}
-                                            </td>
-                                            <td>{item.pricePerBaseUnit ? formatCurrency(item.pricePerBaseUnit) + "(vnđ)" : " 0 (vnđ)"}</td>
+                                            <td>{item.pricePerBaseUnitOrigin ? formatCurrency(item.pricePerBaseUnitOrigin) : " 0"}</td>
+                                            <td>{item.pricePerBaseUnit ? formatCurrency(item.pricePerBaseUnit) : " 0 "}</td>
                                             <td>{item.quantity}</td>
                                             <td>
                                                 <a
@@ -337,18 +335,18 @@ class SalesOrderCreatePayment extends Component {
                                                     title="Click để xem chi tiết"
                                                 >
                                                     {item.amount && item.amountAfterDiscount
-                                                        ? formatCurrency(item.amount - item.amountAfterDiscount) + " (vnđ)"
-                                                        : " 0 (vnđ)"}
+                                                        ? formatCurrency(item.amount - item.amountAfterDiscount)
+                                                        : " 0"}
                                                 </a>
                                             </td>
                                             <td>{item.amountAfterDiscount ? formatCurrency(item.amountAfterDiscount) : ""}</td>
                                             <td>
                                                 {item.amountAfterDiscount && item.amountAfterTax
-                                                    ? formatCurrency(item.amountAfterTax - item.amountAfterDiscount) + " (vnđ)"
-                                                    : " 0 (vnđ)"}
+                                                    ? formatCurrency(item.amountAfterTax - item.amountAfterDiscount)
+                                                    : " 0"}
                                                 ({item.taxs.length ? item.taxs[0].percent : "0"}%)
                                             </td>
-                                            <td>{item.amountAfterTax ? formatCurrency(item.amountAfterTax) + " (vnđ)" : "0 (vnđ)"}</td>
+                                            <td>{item.amountAfterTax ? formatCurrency(item.amountAfterTax) : "0 "}</td>
                                             <td>
                                                 <div
                                                     style={{
@@ -407,28 +405,28 @@ class SalesOrderCreatePayment extends Component {
                                                 listGoods.reduce((accumulator, currentValue) => {
                                                     return accumulator + (currentValue.amount - currentValue.amountAfterDiscount);
                                                 }, 0)
-                                            ) + " (vnđ)"}
+                                            )}
                                         </td>
                                         <td style={{ fontWeight: 600 }}>
                                             {formatCurrency(
                                                 listGoods.reduce((accumulator, currentValue) => {
                                                     return accumulator + currentValue.amountAfterDiscount;
                                                 }, 0)
-                                            ) + " (vnđ)"}
+                                            )}
                                         </td>
                                         <td style={{ fontWeight: 600 }}>
                                             {formatCurrency(
                                                 listGoods.reduce((accumulator, currentValue) => {
                                                     return accumulator + (currentValue.amountAfterTax - currentValue.amountAfterDiscount);
                                                 }, 0)
-                                            ) + " (vnđ)"}
+                                            )}
                                         </td>
                                         <td style={{ fontWeight: 600 }}>
                                             {formatCurrency(
                                                 listGoods.reduce((accumulator, currentValue) => {
                                                     return accumulator + currentValue.amountAfterTax;
                                                 }, 0)
-                                            ) + " (vnđ)"}
+                                            )}
                                         </td>
                                         <td colSpan={2}></td>
                                     </tr>
@@ -444,7 +442,7 @@ class SalesOrderCreatePayment extends Component {
                         <div className="shoppe-shipping-content">
                             <div className="shopping-shipping-fee">
                                 <div>Phí giao hàng &ensp;</div>
-                                <input type="number" value={shippingFee} placeholder="Phí giao hàng... (vnđ)" onChange={handleShippingFeeChange} />
+                                <input type="number" value={shippingFee} placeholder="Phí giao hàng..." onChange={handleShippingFeeChange} />
                             </div>
                             <div className="shopping-shipping-time">
                                 <div className="shopping-shipping-time-title">Thời gian giao hàng dự kiến &ensp;</div>

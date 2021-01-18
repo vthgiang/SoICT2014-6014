@@ -89,7 +89,6 @@ class SalesOrderCreateInfo extends Component {
                                 users.push({ user: managers[indexRole].users[indexUser].userId, roleName: managers[indexRole].name });
                             } else {
                                 //Nếu người dùng đã có trong danh sách thì thêm role vào
-                                console.log("availableCheckedIndex", availableCheckedIndex);
                                 users[availableCheckedIndex].roleName = users[availableCheckedIndex].roleName + ", " + managers[indexRole].name;
                             }
                         }
@@ -144,7 +143,6 @@ class SalesOrderCreateInfo extends Component {
                 },
             ];
             let users = this.getUsersInDepartments();
-            console.log("USER", users);
             let mapOptions = users.map((item) => {
                 return {
                     value: item.user._id,

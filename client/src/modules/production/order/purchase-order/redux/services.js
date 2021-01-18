@@ -4,7 +4,8 @@ export const PurchaseOrderServices = {
     createPurchaseOrder,
     getAllPurchaseOrders,
     updatePurchaseOrder,
-    getPurchaseOrdersForPayment
+    getPurchaseOrdersForPayment,
+    approvePurchaseOrder
 }
 
 function createPurchaseOrder(data) {
@@ -47,6 +48,17 @@ function getPurchaseOrdersForPayment(supplierId) {
         params: {supplierId}
     },
         false,
+        true,
+    "manage_order.purchase_order")
+}
+
+function approvePurchaseOrder(id, data) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/purchase-order/approve/${id}`,
+        method: "PATCH",
+        data
+    },
+        true,
         true,
     "manage_order.purchase_order")
 }

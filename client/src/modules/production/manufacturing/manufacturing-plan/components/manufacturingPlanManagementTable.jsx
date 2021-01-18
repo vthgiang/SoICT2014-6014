@@ -212,11 +212,36 @@ class ManufacturingPlanManagementTable extends Component {
         // return false;
     }
 
+    isApproverPlan = (plan) => {
+        const userId = localStorage.getItem('userId');
+        const { approvers } = plan;
+        let approverIds = approvers.map(x => x.approver._id)
+        if (approverIds.includes(userId)) {
+            return true;
+        }
+        return false;
+    }
+
     handleApprovePlan = (plan) => {
         const data = {
             approvers: {
                 approver: localStorage.getItem('userId')
             }
+        }
+        this.props.handleEditManufacturingPlan(data, plan._id);
+    }
+
+    checkRoleCreator = (plan) => {
+        const userId = localStorage.getItem('userId');
+        if (plan.creator._id === userId) {
+            return true;
+        }
+        return false;
+    }
+
+    handleCancelPlan = (plan) => {
+        const data = {
+            status: 5
         }
         this.props.handleEditManufacturingPlan(data, plan._id);
     }
@@ -407,6 +432,20 @@ class ManufacturingPlanManagementTable extends Component {
                                                 />
                                             }
                                             {/* <a className="edit text-yellow" style={{ width: '5px' }} title="Sửa kế hoạch sản xuất"><i className="material-icons">edit</i></a> */}
+                                            {
+                                                (
+                                                    (this.checkRoleCreator(plan) && plan.status === 1)
+                                                    || (this.isApproverPlan(plan) && (plan.status === 1 || plan.status === 2))
+                                                ) &&
+                                                <ConfirmNotification
+                                                    icon="question"
+                                                    title={translate('manufacturing.plan.cancel_plan')}
+                                                    content={translate('manufacturing.plan.cancel_plan') + " " + plan.code}
+                                                    name="cancel"
+                                                    className="text-red"
+                                                    func={() => this.handleCancelPlan(plan)}
+                                                />
+                                            }
                                         </td>
                                     </tr>
                                 ))

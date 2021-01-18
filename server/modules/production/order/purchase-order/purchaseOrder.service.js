@@ -7,6 +7,7 @@ const {
 } = require(`../../../../helpers/dbHelper`);
 
 const PaymentService = require('../payment/payment.service');
+const BusinessDepartmentServices = require('../business-department/buninessDepartment.service');
 
 exports.createPurchaseOrder = async (userId, data, portal) => {
     let newPurchaseOrder = await PurchaseOrder(connect(DB_CONNECTION, portal)).create({
@@ -59,10 +60,16 @@ exports.createPurchaseOrder = async (userId, data, portal) => {
     return {purchaseOrder};
 }
 
-exports.getAllPurchaseOrders = async (query, portal) => {
+exports.getAllPurchaseOrders = async (userId, query, portal) => {
     let { page, limit } = query;
     let option = {};
-
+    let users = await BusinessDepartmentServices.getAllRelationsUser(userId, query.currentRole, portal);
+    if (users.length) {
+        option = {
+            $or: [{ creator: users},
+                { approvers: { $elemMatch: { approver: userId } } } ],
+        };
+    }
     if (query.code) {
         option.code = new RegExp(query.code, "i")
     }
@@ -190,4 +197,65 @@ exports.getPurchaseOrdersForPayment = async (supplierId, portal) => {
 
     return {purchaseOrders}
 }
+
+function checkStatusApprove(approvers) {
+    let count = 0; //Đếm xem số người phê duyệt có trạng thái bằng 2
+    for (let index = 0; index < approvers.length; index++){
+        if (parseInt(approvers[index].status) === 2) {
+            count++;
+        } else if (parseInt(approvers[index].status) === 3) {
+            return 5;//Trả về trạng thái đơn là đã hủy
+        }
+    }
+
+    if (count === approvers.length) {
+        return 2; //Trả về trạng thái đơn là đã phê duyệt
+    }
+    return -1; //Chưa cần thay đổi trạng thái
+}
+
+exports.approvePurchaseOrder = async ( purchaseOrderId, data, portal) => {
+
+    let purchaseOrder = await PurchaseOrder(connect(DB_CONNECTION, portal)).findById(purchaseOrderId).populate([{
+        path: "creator", select: "code name"
+    }, 
+    {
+        path: "materials.material", select: "code name baseUnit"
+    },{
+        path: "stock", select: "code name address"
+    }, {
+        path: "approvers.approver", select: "code name"
+    },{
+        path: "supplier", select: "code name"
+    },{
+        path: "purchasingRequest", select: "code"
+    }])
+
+    if (!purchaseOrder) {
+        throw Error("Purchase Order is not existing")
+    }
+
+    let indexApprover = purchaseOrder.approvers.findIndex((element) => element.approver._id.toString() === data.approver.toString())
+
+    if (indexApprover !== -1) {
+        purchaseOrder.approvers[indexApprover] = {
+            approver: data.approver,
+            approveAt: new Date(),
+            status: data.status,
+            note: data.note
+        }
+
+        let statusChange = checkStatusApprove(purchaseOrder.approvers);
+        if (statusChange !== -1) {
+            purchaseOrder.status = statusChange;
+        }
+
+        purchaseOrder.save();
+    } else {
+        throw Error("Can't find approver in purchase order!")
+    }
+    return { purchaseOrder }
+}
+
+
 

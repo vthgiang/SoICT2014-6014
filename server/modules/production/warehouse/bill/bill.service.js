@@ -8,7 +8,7 @@ exports.getBillsByType = async (query, userId, portal) => {
     if (!managementLocation) throw new Error("roles not avaiable");
 
     //lấy id các kho của role hiện tại
-    const stocks = await Stock(connect(DB_CONNECTION, portal)).find({ managementLocation: { $elemMatch: { role: managementLocation }} })
+    const stocks = await Stock(connect(DB_CONNECTION, portal)).find({ managementLocation: { $elemMatch: { role: managementLocation } } })
     var arrayStock = [];
     if (stocks && stocks.length > 0) {
         for (let i = 0; i < stocks.length; i++) {
@@ -17,11 +17,11 @@ exports.getBillsByType = async (query, userId, portal) => {
     }
 
     if (!page || !limit) {
-        let options = {fromStock: { $in: arrayStock }};
-        if(query.group) {
+        let options = { fromStock: { $in: arrayStock } };
+        if (query.group) {
             options.group = query.group;
         }
-        return await Bill(connect(DB_CONNECTION, portal)).find( options )
+        return await Bill(connect(DB_CONNECTION, portal)).find(options)
             .populate([
                 { path: 'creator' },
                 { path: 'approvers.approver' },
@@ -41,8 +41,8 @@ exports.getBillsByType = async (query, userId, portal) => {
             ])
             .sort({ 'updatedAt': 'desc' })
     } else {
-        let option = { 
-            fromStock: arrayStock,  
+        let option = {
+            fromStock: arrayStock,
             $or: [
                 {
                     creator: userId,
@@ -60,113 +60,113 @@ exports.getBillsByType = async (query, userId, portal) => {
                     accountables: { $in: userId }
                 }
             ]
-         };
+        };
 
-            if(query.group) {
-                option.group = query.group;
+        if (query.group) {
+            option.group = query.group;
+        }
+
+        if (query.stock) {
+            option.fromStock = query.stock
+        }
+
+        if (query.toStock) {
+            option.toStock = query.toStock
+        }
+
+        if (query.supplier) {
+            option.supplier = query.supplier
+        }
+
+        if (query.creator) {
+            option.creator = query.creator
+        }
+
+        if (query.type) {
+            option.type = query.type
+        }
+
+        if (query.startDate && query.endDate) {
+            let date1 = query.startDate.split("-");
+            let date2 = query.endDate.split("-");
+            let start = new Date(date1[1], date1[0] - 1, 1);
+            let end = new Date(date2[1], date2[0], 1);
+
+            option = {
+                ...option,
+                createdAt: {
+                    $gt: start,
+                    $lte: end
+                }
             }
-
-            if (query.stock) {
-                option.fromStock = query.stock
-            }
-
-            if (query.toStock) {
-                option.toStock = query.toStock
-            }
-
-            if (query.supplier) {
-                option.supplier = query.supplier
-            }
-
-            if (query.creator) {
-                option.creator = query.creator
-            }
-
-            if (query.type) {
-                option.type = query.type
-            }
-
-            if (query.startDate && query.endDate) {
+        } else {
+            if (query.startDate) {
                 let date1 = query.startDate.split("-");
-                let date2 = query.endDate.split("-");
                 let start = new Date(date1[1], date1[0] - 1, 1);
+
+                option = {
+                    ...option,
+                    createdAt: {
+                        $gt: start
+                    }
+                }
+            }
+            if (query.endDate) {
+                let date2 = query.endDate.split("-");
                 let end = new Date(date2[1], date2[0], 1);
 
                 option = {
                     ...option,
                     createdAt: {
-                        $gt: start,
                         $lte: end
                     }
                 }
-            } else {
-                if (query.startDate) {
-                    let date1 = query.startDate.split("-");
-                    let start = new Date(date1[1], date1[0] - 1, 1);
-
-                    option = {
-                        ...option,
-                        createdAt: {
-                            $gt: start
-                        }
-                    }
-                }
-                if (query.endDate) {
-                    let date2 = query.endDate.split("-");
-                    let end = new Date(date2[1], date2[0], 1);
-
-                    option = {
-                        ...option,
-                        createdAt: {
-                            $lte: end
-                        }
-                    }
-                }
             }
+        }
 
-            if (query.code) {
-                option.code = new RegExp(query.code, "i")
-            }
+        if (query.code) {
+            option.code = new RegExp(query.code, "i")
+        }
 
-            if (query.status) {
-                option.status = query.status
-            }
+        if (query.status) {
+            option.status = query.status
+        }
 
-            if (query.customer) {
-                option.customer = query.customer
-            }
+        if (query.customer) {
+            option.customer = query.customer
+        }
 
-            if (query.toStock) {
-                option.toStock = query.toStock
-            }
+        if (query.toStock) {
+            option.toStock = query.toStock
+        }
 
-            if (query.supplier) {
-                option.supplier = query.supplier
-            }
+        if (query.supplier) {
+            option.supplier = query.supplier
+        }
 
-            return await Bill(connect(DB_CONNECTION, portal))
-                .paginate(option, {
-                    page,
-                    limit,
-                    populate: [
-                        { path: 'creator' },
-                        { path: 'approvers.approver' },
-                        { path: 'qualityControlStaffs.staff' },
-                        { path: 'responsibles' },
-                        { path: 'accountables' },
-                        { path: 'manufacturingMill' },
-                        { path: 'manufacturingCommand' },
-                        { path: 'fromStock' },
-                        { path: 'toStock' },
-                        { path: 'customer' },
-                        { path: 'supplier' },
-                        { path: 'bill' },
-                        { path: 'goods.lots.lot' },
-                        { path: 'goods.good' },
-                        { path: 'logs.creator' }
-                    ],
-                    sort: { 'updatedAt': 'desc' }
-                })
+        return await Bill(connect(DB_CONNECTION, portal))
+            .paginate(option, {
+                page,
+                limit,
+                populate: [
+                    { path: 'creator' },
+                    { path: 'approvers.approver' },
+                    { path: 'qualityControlStaffs.staff' },
+                    { path: 'responsibles' },
+                    { path: 'accountables' },
+                    { path: 'manufacturingMill' },
+                    { path: 'manufacturingCommand' },
+                    { path: 'fromStock' },
+                    { path: 'toStock' },
+                    { path: 'customer' },
+                    { path: 'supplier' },
+                    { path: 'bill' },
+                    { path: 'goods.lots.lot' },
+                    { path: 'goods.good' },
+                    { path: 'logs.creator' }
+                ],
+                sort: { 'updatedAt': 'desc' }
+            })
     }
 }
 
@@ -341,6 +341,7 @@ exports.createBill = async (userId, data, portal) => {
     if (data.salesOrderId) {
         let salesOrder = await SalesOrder(connect(DB_CONNECTION, portal)).findById({ _id: data.salesOrderId });
         salesOrder.bill = bill._id; //Gắn bill vào đơn hàng
+        salesOrder.status = 5; //Thay đổi trạng thái đơn là yêu cầu xuất kho
         salesOrder.save();
     }
 
@@ -348,6 +349,7 @@ exports.createBill = async (userId, data, portal) => {
     if (data.purchaseOrderId) {
         let purchaseOrder = await PurchaseOrder(connect(DB_CONNECTION, portal)).findById({ _id: data.purchaseOrderId });
         purchaseOrder.bill = bill._id; //Gắn bill vào đơn hàng
+        purchaseOrder.status = 3; //Thay đổi trạng thái đơn là yêu cầu nhập kho
         purchaseOrder.save();
     }
 
@@ -499,45 +501,45 @@ exports.editBill = async (id, userId, data, portal, companyId) => {
         await PurchaseOrder(connect(DB_CONNECTION, portal)).findOneAndUpdate({
             bill: bill._id
         }, {
-                $set: { status: 3 }
+            $set: { status: 4 }
         });
 
         //Cập nhật trạng thái đơn mua hàng là đà hoàn thành khi bill xuất kho hoàn thành
         let salesOrder = await SalesOrder(connect(DB_CONNECTION, portal)).findOneAndUpdate({
             bill: bill._id
         }, {
-                $set: { status: 7 }
+            $set: { status: 7 }
         });
 
         //Cập nhật số xu cho khách hàng
         if (salesOrder) {
             let customerPoint = await CustomerService.getCustomerPoint(portal, companyId, salesOrder.customer);
             if (customerPoint && salesOrder.allCoin) {
-                await CustomerService.editCustomerPoint(portal, companyId, customerPoint._id, {point:salesOrder.allCoin + customerPoint.point }, userId)
+                await CustomerService.editCustomerPoint(portal, companyId, customerPoint._id, { point: salesOrder.allCoin + customerPoint.point }, userId)
             }
         }
     } else if (parseInt(bill.status) === 4) {//Nếu bill bị hủy
         await PurchaseOrder(connect(DB_CONNECTION, portal)).findOneAndUpdate({
             bill: bill._id
         }, {
-                $set: { status: 4 }
+            $set: { status: 5 }
         });
 
         //Cập nhật trạng thái đơn mua hàng là đã hủy
         let salesOrder = await SalesOrder(connect(DB_CONNECTION, portal)).findOneAndUpdate({
             bill: bill._id
         }, {
-                $set: { status: 8 }
+            $set: { status: 8 }
         });
 
-         //Trả lại số xu đã sử dụng cho khách
-         if (salesOrder) {
+        //Trả lại số xu đã sử dụng cho khách
+        if (salesOrder) {
             let customerPoint = await CustomerService.getCustomerPoint(portal, companyId, salesOrder.customer);
             if (customerPoint && salesOrder.coin) {
-                await CustomerService.editCustomerPoint(portal, companyId, customerPoint._id, {point:salesOrder.coin + customerPoint.point }, userId)
+                await CustomerService.editCustomerPoint(portal, companyId, customerPoint._id, { point: salesOrder.coin + customerPoint.point }, userId)
             }
         }
-    }
+    } 
     //------------------KẾT THÚC PHẦN PHỤC VỤ CHO QUẢN LÝ ĐƠN HÀNG-----------------
 
     // Nếu trạng thái chuyển từ đang thực hiện sang trạng thái đã hoàn thành thì
@@ -574,7 +576,7 @@ exports.editBill = async (id, userId, data, portal, companyId) => {
             }
         }
 
-        if(data.group === '1' && data.type === '2'){
+        if (data.group === '1' && data.type === '2') {
             if (data.goods && data.goods.length > 0) {
                 for (let i = 0; i < data.goods.length; i++) {
                     if (data.goods[i].lots && data.goods[i].lots.length > 0) {
@@ -586,7 +588,7 @@ exports.editBill = async (id, userId, data, portal, companyId) => {
                             stock.stock = data.fromStock;
                             stock.quantity = quantity;
                             stock.binLocation = [];
-                            lot.stocks = [ ...lot.stocks, stock ];
+                            lot.stocks = [...lot.stocks, stock];
                             let lotLog = {};
                             lotLog.bill = bill._id;
                             lotLog.quantity = quantity;
@@ -600,7 +602,7 @@ exports.editBill = async (id, userId, data, portal, companyId) => {
                     }
                 }
             }
-            
+
         }
 
         //Nếu là phiếu trả hàng
@@ -851,7 +853,7 @@ exports.editBill = async (id, userId, data, portal, companyId) => {
     //Nếu nhập kho thành phẩm từ xưởng sản xuất
     //Chuyển trạng thái đơn hàng từ đang thực hiện sang hoàn Thành
     //Thay đổi trạng thái lô sản xuất thành đã nhập kho
-    if(data.type === '2') {
+    if (data.type === '2') {
         if (data.oldStatus === '5' && data.status === '2') {
             if (data.goods && data.goods.length > 0) {
                 for (let i = 0; i < data.goods.length; i++) {
@@ -869,7 +871,7 @@ exports.editBill = async (id, userId, data, portal, companyId) => {
     }
 
     //Nhập kho: Chuyển trạng thái từ đã hoàn thành sang đã Hủy
-    if(data.type === '1') {
+    if (data.type === '1') {
         if (data.oldStatus === '2' && data.status === '4') {
             if (data.goods && data.goods.length > 0) {
                 for (let i = 0; i < data.goods.length; i++) {
@@ -911,7 +913,7 @@ exports.getBillsByCommand = async (query, portal) => {
     return await Bill(connect(DB_CONNECTION, portal))
         .find({
             manufacturingCommand: manufacturingCommandId,
-            type: "4"
+            type: "3"
         })
         .populate([
             { path: 'creator' },
@@ -962,7 +964,7 @@ exports.createManyProductBills = async (data, portal) => {
             qualityControlStaffs: x.qualityControlStaffs ? x.qualityControlStaffs.map(item => {
                 return {
                     staff: item.staff,
-                    time: item.time
+                    status: item.status
                 }
             }) : [],
             customer: x.customer ? x.customer : null,
@@ -982,7 +984,7 @@ exports.createManyProductBills = async (data, portal) => {
                     realQuantity: item.realQuantity,
                     damagedQuantity: item.damagedQuantity,
                     description: item.description,
-                    lots: item.lots.map(x => {
+                    lots: item.lots ? item.lots.map(x => {
                         return {
                             lot: x.lot,
                             quantity: x.quantity,
@@ -991,7 +993,7 @@ exports.createManyProductBills = async (data, portal) => {
                             realQuantity: x.realQuantity,
                             note: x.note
                         }
-                    })
+                    }) : []
                 }
             }),
             manufacturingMill: x.manufacturingMill,
@@ -1001,16 +1003,18 @@ exports.createManyProductBills = async (data, portal) => {
     });
 
     const bills = await Bill(connect(DB_CONNECTION, portal)).insertMany(query);
-    const lotId = data[0].goods[0].lots[0].lot;
-    const lot = await Lot(connect(DB_CONNECTION, portal)).findById(lotId);
-    lot.bills = bills.map(bill => bill._id);
-    await lot.save();
+    if (data[0].goods[0].lots && data[0].goods[0].lots[0].lot) {
+        const lotId = data[0].goods[0].lots[0].lot;
+        const lot = await Lot(connect(DB_CONNECTION, portal)).findById(lotId);
+        lot.bills = bills.map(bill => bill._id);
+        await lot.save();
+    }
     return { bills }
 }
 
 exports.getNumberBills = async (query, portal) => {
     let options = {};
-    if(query.stock) {
+    if (query.stock) {
         options.fromStock = query.stock
     }
 

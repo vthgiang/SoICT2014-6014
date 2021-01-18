@@ -29,7 +29,7 @@ exports.createNewSalesOrder = async (req, res) => {
 exports.getAllSalesOrders = async (req, res) => {
     try {
         let query = req.query;
-        let salesOrders = await SalesOrderServices.getAllSalesOrders(query, req.portal);
+        let salesOrders = await SalesOrderServices.getAllSalesOrders(req.user._id, query, req.portal);
 
 
         await Log.info(req.user.email, "GET_ALL_SALES_ORDERS", req.portal);
@@ -41,7 +41,7 @@ exports.getAllSalesOrders = async (req, res) => {
         })
     } catch (error) {
         await Log.error(req.user.email, "GET_ALL_SALES_ORDERS", req.portal);
-
+        console.log(error.message);
         res.status(400).json({
             success: false,
             messages: ["get_sales_orders_failed"],

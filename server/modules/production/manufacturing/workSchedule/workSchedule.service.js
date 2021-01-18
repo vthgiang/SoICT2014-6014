@@ -635,3 +635,43 @@ exports.bookingManyWorkerToCommand = async (arrayWorkerSchedules, portal) => {
     }
     return null;
 }
+
+
+function getStartMonthEndMonthFromDate(startDate, endDate) {
+    const moment = require('moment');
+    var startMonth = moment(startDate).startOf('month');
+    var endMonth = moment(endDate).endOf('month');
+    return [startMonth, endMonth];
+}
+
+exports.deleteCommandFromSchedule = async (command, portal) => {
+    // Tìm ra khoảng tháng
+    let arrayMonth = getStartMonthEndMonthFromDate(command.startDate, command.endDate);
+    // Tìm ra các lịch thỏa mãn
+    const workSchedules = await WorkSchedule(connect(DB_CONNECTION, portal)).find({
+        month: {
+            '$gte': arrayMonth[0],
+            '$lte': arrayMonth[1]
+        },
+        $or: [{
+            manufacturingMill: command.manufacturingMill
+        }, {
+            user: {
+                $in: command.responsibles
+            }
+        }]
+    });
+
+    for (let i = 0; i < workSchedules.length; i++) {
+        for (let j = 0; j < workSchedules[i].turns.length; j++) {
+            for (let k = 0; k < workSchedules[i].turns[j].length; k++) {
+                if (command._id.equals(workSchedules[i].turns[j][k])) {
+                    workSchedules[i].turns[j][k] = null;
+                    await workSchedules[i].markModified("turns");
+                    await workSchedules[i].save();
+                }
+            }
+        }
+    }
+    // Xóa các lệnh khỏi lịch sản xuất
+}

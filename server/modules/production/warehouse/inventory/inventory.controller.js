@@ -238,3 +238,26 @@ exports.getInventories = async (req, res) => {
         })
     }
 }
+
+exports.getInventoryInStockByGoods = async (req, res) => {
+    try {
+        console.log("call serer")
+        const invetory = await LotService.getInventoryInStockByGoods(req.query, req.portal);
+
+        await Logger.info(req.user.email, 'GET_INVENTORY_SUCCESS', req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ['get_inventory_success'],
+            content: invetory
+        })
+    }
+    catch (error) {
+        console.log(error.message);
+        await Logger.error(req.user.email, 'GET_INVENTORY_FAILED', req.portal);
+        res.status(400).json({
+            success: false,
+            messages: ['get_inventory_failed'],
+            error: error.message
+        })
+    }
+}

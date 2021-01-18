@@ -11,7 +11,7 @@ const SalesOrderSchema = new Schema({
         //2: Đã phê duyệt
         //3: Yêu cầu sản xuất, 
         //4: Đang sản xuất
-        //5: Đã sẵn hàng, 
+        //5: Đã sẵn hàng,  -> hoặc yêu cầu xuất kho
         //6: Đang giao hàng , 7: Đã giao hàng, 
         //8: Đã hủy
         type: Number,
@@ -55,7 +55,11 @@ const SalesOrderSchema = new Schema({
         },
         status: {//1. Chưa phê duyệt, 2. Đã phê duyệt, 3. Đã hủy
             type: Number,
+            default: 1,
             enum: [1, 2, 3],
+        },
+        note: {
+            type: String
         }
     }],
     organizationalUnit: {//Đơn vị quản lý đơn

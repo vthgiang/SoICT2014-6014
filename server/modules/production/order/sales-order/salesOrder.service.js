@@ -8,6 +8,7 @@ const {
 
 const PaymentService = require('../payment/payment.service');
 const CustomerService = require('../../../crm/customer/customer.service');
+const BusinessDepartmentServices = require('../business-department/buninessDepartment.service');
 
 exports.createNewSalesOrder = async (userId, companyId, data, portal) => {
     let newSalesOrder = await SalesOrder(connect(DB_CONNECTION, portal)).create({
@@ -134,15 +135,29 @@ exports.createNewSalesOrder = async (userId, companyId, data, portal) => {
         path: 'creator', select: 'name'
     }, {
         path: 'customer', select: 'name taxNumber'
-    }, {
+    },{
         path: 'goods.good', select: 'code name baseUnit'
+    },{
+        path: 'goods.manufacturingWorks', select: 'code name address description'
+    }, {
+        path: 'goods.manufacturingPlan', select: 'code status startDate endDate'
     }]);;
     return { salesOrder }
 }
 
-exports.getAllSalesOrders = async (query, portal) => {
-    let { page, limit, code, status, customer } = query;
+exports.getAllSalesOrders = async (userId, query, portal) => {
+    //Lấy cấp dưới người ngày quản lý (bao gồm cả người này và các nhân viên phòng ban con)
+    let users = await BusinessDepartmentServices.getAllRelationsUser(userId, query.currentRole, portal);
+
     let option = {};
+    let { page, limit, code, status, customer } = query;
+
+    if (users.length) {
+        option = {
+            $or: [{ creator: users},
+                { approvers: { $elemMatch: { approver: userId } } } ],
+        };
+    }
     if (code) {
         option.code = new RegExp(code, "i")
     }
@@ -164,6 +179,10 @@ exports.getAllSalesOrders = async (query, portal) => {
                 path: 'customer', select: 'name taxNumber'
             }, {
                 path: 'goods.good', select: 'code name baseUnit'
+            },{
+                path: 'goods.manufacturingWorks', select: 'code name address description'
+            }, {
+                path: 'goods.manufacturingPlan', select: 'code status startDate endDate'
             }]);
         return { allSalesOrders }
     } else {
@@ -176,6 +195,10 @@ exports.getAllSalesOrders = async (query, portal) => {
                 path: 'customer', select: 'name taxNumber'
             }, {
                 path: 'goods.good', select: 'code name baseUnit'
+            },{
+                path: 'goods.manufacturingWorks', select: 'code name address description'
+            }, {
+                path: 'goods.manufacturingPlan', select: 'code status startDate endDate'
             }]
         })
         return { allSalesOrders }
@@ -268,27 +291,82 @@ exports.editSalesOrder = async (userId, companyId, id, data, portal) => {
             path: 'customer', select: 'name taxNumber'
         }, {
             path: 'goods.good', select: 'code name baseUnit'
-        }]);
+        },{
+            path: 'goods.manufacturingWorks', select: 'code name address description'
+        }, {
+            path: 'goods.manufacturingPlan', select: 'code status startDate endDate'
+            }]);
 
     return { salesOrder: salesOrderUpdated }
 }
 
-exports.approveSalesOrder = async (salesOrderId, approver, portal) => {
-    let salesOrder = await SalesOrder(connect(DB_CONNECTION, portal)).findById(salesOrderId)
+function checkStatusApprove(approvers) {
+    let count = 0; //Đếm xem số người phê duyệt có trạng thái bằng 2
+    for (let index = 0; index < approvers.length; index++) {
+        if (parseInt(approvers[index].status) === 2) {
+            count++;
+        } else if (parseInt(approvers[index].status) === 3) {
+            return 8;//Trả về trạng thái đơn là đã hủy
+        }
+    }
+
+    if (count === approvers.length) {
+        return 2; //Trả về trạng thái đơn là đã phê duyệt
+    }
+
+    return -1; //Chưa cần thay đổi trạng thái
+}
+
+exports.approveSalesOrder = async (salesOrderId, data, portal) => {
+    let salesOrder = await SalesOrder(connect(DB_CONNECTION, portal)).findById(salesOrderId).populate([{
+        path: 'creator', select: 'name'
+    }, {
+        path: 'customer', select: 'name taxNumber'
+    }, {
+        path: 'goods.good', select: 'code name baseUnit'
+    },{
+        path: 'goods.manufacturingWorks', select: 'code name address description'
+    }, {
+        path: 'goods.manufacturingPlan', select: 'code status startDate endDate'
+    }])
 
     if (!salesOrder) {
         throw Error("Sales Order is not existing")
     }
 
-    salesOrder.approvers.push({
-        approver: approver.approver,
-        approveAt: new Date(),
-        status: approver.status
-    });
+    let indexApprover = salesOrder.approvers.findIndex((element) => element.approver.toString() === data.approver.toString())
 
-    salesOrder.save();
+    if (indexApprover !== -1) {
+        salesOrder.approvers[indexApprover] = {
+            approver: data.approver,
+            approveAt: new Date(),
+            status: data.status,
+            note: data.note
+        }
+
+        let statusChange = checkStatusApprove(salesOrder.approvers);
+        if (statusChange !== -1) {
+            salesOrder.status = statusChange;
+        }
+
+        salesOrder.save();
+    } else {
+        throw Error("Can't find approver in sales order!")
+    }
 
     return { salesOrder }
+}
+
+//Kiểm tra yêu cầu sản xuất đã lên kế hoạch hết hay chưa
+function checkAndChangeSalesOrderStatus (goods){
+    for (let index = 0; index < goods.length; index++){
+        if (goods[index].manufacturingWorks && !goods[index].manufacturingPlan) {
+            //Yêu cầu nhà máy sản xuất mà chưa lên kế hoạch
+            return 3; 
+        }
+    }
+    //Tất cả yêu cầu sản xuất đều đã lên kế hoạch
+    return 4;
 }
 
 /**
@@ -311,12 +389,36 @@ exports.addManufacturingPlanForGood = async (salesOrderId, manufacturingWorksId,
     })
 
     salesOrder.goods = goodsOfSalesOrder;
-    salesOrder.status = 4;
+    salesOrder.status = checkAndChangeSalesOrderStatus(goodsOfSalesOrder)
 
     await salesOrder.save();
 
     return { salesOrder }
 }
+
+exports.removeManufacturingPlanForGood = async (salesOrderId, manufacturingWorksId, portal) => {
+    //data: [{goodId, manufacturingPlanId}] 
+    let salesOrder = await SalesOrder(connect(DB_CONNECTION, portal)).findById(salesOrderId);
+    if (!salesOrder) {
+        throw Error("Sales Order is not existing")
+    }
+
+    let goodsOfSalesOrder = salesOrder.goods.map((good) => {
+        if (good.manufacturingWorks.equals(manufacturingWorksId)) {
+            good.manufacturingPlan = null
+        }
+        return good;
+    })
+
+    salesOrder.goods = goodsOfSalesOrder;
+    salesOrder.status = checkAndChangeSalesOrderStatus(goodsOfSalesOrder)
+
+    await salesOrder.save();
+
+    return { salesOrder }
+}
+
+
 
 /**
  * Lấy các đơn hàng cần lập kế hoạch sản xuất theo nhà máy (chỉ lấy những mặt hàng nhà máy có thể sản xuất)

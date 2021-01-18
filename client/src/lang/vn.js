@@ -1169,7 +1169,7 @@ export default {
             manage_discount: "Giảm giá",
             manage_tax: "Thuế",
             manage_sla: "Cam kết chất lượng",
-            manage_business_department: "Cấu hình đơn vị kinh doanh",
+            manage_business_department: "Phân vai trò đơn vị kinh doanh",
             manage_payment: "Quản lý thu chi",
             manage_bank_account: "Quản lý thông tin tài khoản ngân hàng",
 
@@ -4589,9 +4589,31 @@ export default {
                 choose_all_lot:
                     "Vui lòng nhập hết số lượng sản phẩm trong lô để tạo phiếu nhập kho",
                 create_product_bill_successfully:
-                    "Thêm phiếu nhập sản phẩm thành công",
-                create_product_bill_failed: "Thêm phiếu nhập sản phẩm thất bại",
+                    "Thêm phiếu thành công",
+                create_product_bill_failed: "Thêm phiếu thất bại",
                 add_product_bill: "Thêm phiếu nhập sản phẩm",
+
+                // Phần xuất kho nguyên vật liệu
+
+                material_name: "Tên nguyên vật liệu",
+                material_code: "Mã nguyên vật liệu",
+                command_info: "Thông tin nguyên vật liệu trong lệnh sản xuất",
+                quantity_needed_bill: "Số lượng chưa lên phiếu xuất",
+                add_material_bill: "Thêm phiếu xuất kho nguyên vật liệu",
+                create_material_bill_successfully: "Thêm phiếu xuất kho nguyên vật liệu thành công",
+                create_material_bill_failed: "Thêm phiếu xuất kho nguyên vật liệu thất bại",
+                bill_material_info: "Thông tin phiếu xuất kho nguyên vật liệu",
+                materials_in_bill: "Danh sách nguyên vật liệu trong phiếu",
+                number_inventory: "Số lượng tồn kho",
+                quality_control_staffs: "Người kiểm định chất lượng",
+                quality_control_staffs_error: "Vui lòng chọn người kiểm định chất lượng",
+                quantity: "Số lượng",
+                choose_material: "Chọn nguyên vật liệu",
+                command_code: "Mã lệnh sản xuất",
+                mill_request: "Xưởng yêu cầu",
+                quantity_needed_true: "Để duyệt lệnh sản xuất, vui lòng lên phiếu xuất kho cho đủ số lượng nguyên vật liệu cần thiết!"
+
+
             },
             inventory_management: {
                 product: "Sản phẩm",
@@ -4690,12 +4712,12 @@ export default {
                 get_all_failed: "Lấy danh sách tài khoản không thành công"
             },
             business_department: {
-                create_successfully: "Đã cấu hình đơn vị kinh doanh",
-                create_failed: "Cấu hình đơn vị kinh doanh không thành công",
-                edit_successfully: "Đã chỉnh sửa cấu hình đơn vị kinh doanh",
-                edit_failed: "Chưa cập nhật được cấu hình đơn vị",
-                get_successfully: "Lấy danh sách cấu hình đơn vị kinh doanh thành công",
-                get_failed: "Đã xảy ra lỗi khi lấy danh sách cấu hình đơn vị kinh doanh"
+                create_successfully: "Đã phân vai trò đơn vị kinh doanh",
+                create_failed: "Phân vai trò đơn vị kinh doanh không thành công",
+                edit_successfully: "Đã chỉnh sửa vai trò đơn vị kinh doanh",
+                edit_failed: "Chưa cập nhật được vai trò đơn vị",
+                get_successfully: "Lấy danh sách vai trò đơn vị kinh doanh thành công",
+                get_failed: "Đã xảy ra lỗi khi lấy danh sách vai trò đơn vị kinh doanh"
             },
             discount: {
                 create_successfully: "Tạo mới khuyến mãi thành công",
@@ -4731,7 +4753,9 @@ export default {
                 get_all_successfully: "Lấy danh sách đơn thành công",
                 get_all_failed: "Lấy danh sách đơn không thành công",
                 get_purchase_orders_for_payment_successfully: "Lấy các đơn còn nợ thành công",
-                get_purchase_orders_for_payment_failed: "Lấy các đơn còn nợ không thành công"
+                get_purchase_orders_for_payment_failed: "Lấy các đơn còn nợ không thành công",
+                approve_successfully: "Phê duyệt đơn thành công",
+                approve_failed: "Phê duyệt đơn không thành công"
             },
             quote: {
                 create_successfully: "Tạo báo giá thành công",
@@ -4745,7 +4769,9 @@ export default {
                 delete_successfully: "Xóa báo giá thành công",
                 delete_failed: "Xóa báo giá không thành công",
                 get_quotes_to_make_order_successfully: "Lấy các báo giá thành công",
-                get_quotes_to_make_order_failed: "Chưa lấy được danh sách báo giá để lên đơn hàng"
+                get_quotes_to_make_order_failed: "Chưa lấy được danh sách báo giá để lên đơn hàng",
+                get_detail_successfully: "Xem chi tiết thành công",
+                get_detail_failed: "Xem chi tiết không thành công"
             },
             sales_order: {
                 create_successfully: "Tạo đơn bán hàng thành công",
@@ -4761,7 +4787,9 @@ export default {
                 get_sales_order_by_manufacturing_works_successfully: "Lấy danh sách các đơn hàng cần sản xuất thành công",
                 get_sales_order_by_manufacturing_works_failed: "Lấy danh sách các đơn hàng cần sản xuất không thành công",
                 get_sales_orders_for_payment_successfully: "Lấy các đơn hàng dư nợ của khách hàng thành công",
-                get_sales_orders_for_payment_failed: "Lấy các đơn hàng còn dư nợ của khách hàng không thành công"
+                get_sales_orders_for_payment_failed: "Lấy các đơn hàng còn dư nợ của khách hàng không thành công",
+                get_detail_successfully: "Xem chi tiết thành công",
+                get_detail_failed: "Xem chi tiết không thành công"
             },
             sla: {
                 create_successfully: "Tạo cam kết chất lượng thành công",
@@ -5000,6 +5028,7 @@ export default {
                 purchasing_request_edit: "Sửa phiếu đề nghị",
                 edit_successfully: "Sửa phiếu dề nghị thành công",
                 edit_failed: "Sửa phiếu đề nghị thất bại",
+                cancel_purchasing_request: "Hủy phiếu đề nghị mua hàng"
             },
             work_schedule: {
                 //general
@@ -5179,7 +5208,7 @@ export default {
                 productity: "Số sản phẩm sản xuất / ca",
                 person_number: "Số công nhân / ca",
                 approvers: "Người phê duyệt",
-                qualityControlStaffs: "Người đảm bảo chất lượng",
+                qualityControlStaffs: "Người kiểm định chất lượng",
                 accountables: "Người giám sát",
                 command_code: "Mã lệnh",
                 created_all_command: "Vui lòng phân hết số lượng các sản phẩm vào lệnh sản xuất",
@@ -5220,6 +5249,7 @@ export default {
                 choose_responisbles: "Vui lòng chọn người thực hiện",
                 edit_successfully: "Chỉnh sửa kế hoạch thành công",
                 edit_failed: "Chỉnh sửa kế hoạch thất bại",
+                cancel_plan: "Hủy kế hoạch"
 
 
 
@@ -5366,7 +5396,9 @@ export default {
                     }
                 },
                 create_purchasing_request: "Tạo phiếu đề nghị mua hàng",
-                approver_command: "Duyệt lệnh"
+                approver_command: "Duyệt lệnh",
+                approver_ccommand: "Người phê duyệt",
+                cancel_command: "Hủy lệnh sản xuất"
             },
             lot: {
                 index: "STT",
@@ -5431,6 +5463,28 @@ export default {
                 create_bill: "Lên phiếu nhập kho",
 
             },
+
+            dashboard: {
+                choose_works: "Chọn nhà máy",
+                from: "Từ",
+                to: "Đến",
+                plan_total: "Tổng số kế hoạch",
+                progress_1: "Số kế hoạch đúng tiến độ/ Tổng số kế hoạch",
+                progress_2: "Số kế hoạch chậm tiến độ/ Tổng số kế hoạch",
+                progress_3: "Số kế hoạch quá hạn / Tổng số tiến độ",
+                plan_number: "Số kế hoạch",
+                plan_number_1: "Số kế hoạch đúng tiến độ",
+                plan_number_2: "Số kế hoạch chậm tiến độ",
+                plan_number_3: "Số kế hoạch quá hạn",
+                see_more: "Xem thêm",
+                command_total: "Tổng số lệnh sản xuất",
+                command_number: "Số lệnh sản xuất",
+                command_number_1: "Số lệnh sản xuất đúng tiến độ / Tổng số lệnh sản xuất",
+                command_number_2: "Số lệnh sản xuất quá hạn / Tổng số lệnh sản xuất",
+                command_progress_1: "Số lệnh sản xuất đúng tiến độ",
+                command_progress_2: "Số lệnh sản xuất quá hạn",
+
+            }
         },
     },
 };

@@ -45,14 +45,14 @@ class SalesOrderEditForm extends Component {
             },
             currency: {
                 type: "standard",
-                symbol: "vnđ",
+                symbol: "",
                 ratio: "1",
             },
         };
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.salesOrderDetail._id !== prevState.salesOrderId) {
+        if (nextProps.salesOrderDetail._id && nextProps.salesOrderDetail._id !== prevState.salesOrderId) {
             return {
                 ...prevState,
                 step: 0,

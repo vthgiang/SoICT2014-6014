@@ -288,6 +288,9 @@ class PurchasingRequestCreateForm extends Component {
                 manufacturingCommand: this.props.currentCommand ? this.props.currentCommand._id : null
             }
             this.props.createPurchasingRequest(data);
+            if (this.props.onReloadComandTable) {
+                this.props.onReloadComandTable();
+            }
         }
     }
 

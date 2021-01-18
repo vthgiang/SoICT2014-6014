@@ -30,6 +30,7 @@ export function manufacturingCommand(state = initState, action) {
         case commandConstants.GET_ALL_MANUFACTURING_COMMAND_REQUEST:
         case commandConstants.GET_DETAIL_MANUFACTURING_COMMAND_REQUEST:
         case commandConstants.EDIT_MANUFACTURING_COMMAND_REQUEST:
+        case commandConstants.GET_NUMBER_COMMAND_REQUEST:
             return {
                 ...state,
                 isLoading: true
@@ -37,6 +38,7 @@ export function manufacturingCommand(state = initState, action) {
         case commandConstants.GET_ALL_MANUFACTURING_COMMAND_FAILURE:
         case commandConstants.GET_DETAIL_MANUFACTURING_COMMAND_FAILURE:
         case commandConstants.EDIT_MANUFACTURING_COMMAND_FAILURE:
+        case commandConstants.GET_NUMBER_COMMAND_FAILURE:
             return {
                 ...state,
                 isLoading: false
@@ -70,6 +72,12 @@ export function manufacturingCommand(state = initState, action) {
             return {
                 ...state,
                 isLoading: false
+            }
+        case commandConstants.GET_NUMBER_COMMAND_SUCCESS:
+            return {
+                ...state,
+                isLoading: false,
+                commandNumber: action.payload
             }
         default:
             return state

@@ -23,6 +23,7 @@ import PurchaseDetailForm from "./purchaseOrderDetailForm";
 import PurchaseOrderEditForm from "./purchaseOrderEditForm";
 import GoodReceiptCreateForm from "../../../warehouse/bill-management/components/good-receipts/goodReceiptCreateForm";
 import BillDetailForm from "../../../warehouse/bill-management/components/genaral/billDetailForm";
+import PurchaseOrderApproveForm from "./purchaseOrderApproveForm";
 class PurchaseOrderTable extends Component {
     constructor(props) {
         super(props);
@@ -31,12 +32,13 @@ class PurchaseOrderTable extends Component {
             page: 1,
             code: "",
             status: "",
+            currentRole: localStorage.getItem("currentRole"),
         };
     }
 
     componentDidMount() {
-        const { page, limit } = this.state;
-        this.props.getAllPurchaseOrders({ page, limit });
+        const { page, limit, currentRole } = this.state;
+        this.props.getAllPurchaseOrders({ page, limit, currentRole });
         this.props.getAllStocks();
         this.props.getCustomers();
         this.props.getUser();
@@ -59,37 +61,40 @@ class PurchaseOrderTable extends Component {
     };
 
     setPage = async (page) => {
-        const { limit } = this.state;
+        const { limit, currentRole } = this.state;
         await this.setState({
             page: page,
         });
         const data = {
             limit,
             page: page,
+            currentRole,
         };
         this.props.getAllPurchaseOrders(data);
     };
 
     setLimit = async (limit) => {
-        const { page } = this.state;
+        const { page, currentRole } = this.state;
         await this.setState({
             limit: limit,
         });
         const data = {
             limit: limit,
             page,
+            currentRole,
         };
         this.props.getAllPurchaseOrders(data);
     };
 
     reloadPurchaseOrderTable = () => {
-        const { page, limit, code, status, supplier } = this.state;
+        const { page, limit, code, status, supplier, currentRole } = this.state;
         const data = {
             limit,
             page,
             code,
             status,
             supplier,
+            currentRole,
         };
         this.props.getAllPurchaseOrders(data);
     };
@@ -114,13 +119,14 @@ class PurchaseOrderTable extends Component {
     };
 
     handleSubmitSearch = () => {
-        const { page, limit, code, status, supplier } = this.state;
+        const { page, limit, code, status, supplier, currentRole } = this.state;
         const data = {
             limit,
             page,
             code,
             status,
             supplier,
+            currentRole,
         };
         this.props.getAllPurchaseOrders(data);
     };
@@ -156,8 +162,35 @@ class PurchaseOrderTable extends Component {
         window.$("#modal-detail-bill").modal("show");
     };
 
+    checkUserForApprove = (purchaseOrder) => {
+        const { approvers } = purchaseOrder;
+        const userId = localStorage.getItem("userId");
+        let checkApprove = approvers.find((element) => element.approver._id === userId);
+        if (checkApprove) {
+            return parseInt(checkApprove.status);
+            //Trả về trạng thái 1. chưa phê duyệt, 2. Đã phê duyệt, 3. Đã hủy
+        }
+        return -1;
+    };
+
+    handleShowApprove = async (purchaseOrder) => {
+        await this.setState({
+            purchaseOrderApprove: purchaseOrder,
+        });
+        window.$("#modal-approve-purchase-order").modal("show");
+    };
+
+    checkCreator = (purchaseOrder) => {
+        const { creator } = purchaseOrder;
+        const userId = localStorage.getItem("userId");
+        if (userId === creator._id) {
+            return true;
+        }
+        return false;
+    };
+
     render() {
-        const { code, status, codeCreate, purchaseOrderEdit, purchaseOrderDetail, purchaseOrderAddBill, billCode } = this.state;
+        const { code, status, codeCreate, purchaseOrderEdit, purchaseOrderDetail, purchaseOrderAddBill, billCode, purchaseOrderApprove } = this.state;
 
         const { translate, purchaseOrders } = this.props;
         const { totalPages, page, listPurchaseOrders } = purchaseOrders;
@@ -171,8 +204,12 @@ class PurchaseOrderTable extends Component {
                 text: "Chờ phê duyệt",
             },
             {
-                className: "text-warning",
+                className: "text-success",
                 text: "Đã phê duyệt",
+            },
+            {
+                className: "text-warning",
+                text: "Yêu cầu nhập kho",
             },
             {
                 className: "text-success",
@@ -227,7 +264,7 @@ class PurchaseOrderTable extends Component {
                         group={"1"}
                     />
                     <BillDetailForm />
-
+                    <PurchaseOrderApproveForm purchaseOrderApprove={purchaseOrderApprove} />
                     <div className="form-inline">
                         <div className="form-group">
                             <label className="form-control-static">Mã đơn</label>
@@ -257,10 +294,14 @@ class PurchaseOrderTable extends Component {
                                     },
                                     {
                                         value: 3,
-                                        text: "Đã nhập kho",
+                                        text: "Yêu cầu nhập kho",
                                     },
                                     {
                                         value: 4,
+                                        text: "Đã nhập kho",
+                                    },
+                                    {
+                                        value: 5,
                                         text: "Đã hủy",
                                     },
                                 ]}
@@ -340,6 +381,16 @@ class PurchaseOrderTable extends Component {
                                             <a onClick={() => this.handleShowDetail(item)}>
                                                 <i className="material-icons">view_list</i>
                                             </a>
+                                            {this.checkUserForApprove(item) === 1 && item.status === 1 && (
+                                                <a
+                                                    onClick={() => this.handleShowApprove(item)}
+                                                    className="add text-success"
+                                                    style={{ width: "5px" }}
+                                                    title="Phê duyệt đơn"
+                                                >
+                                                    <i className="material-icons">check_circle_outline</i>
+                                                </a>
+                                            )}
                                             <a
                                                 onClick={() => this.handleEdit(item)}
                                                 className="edit text-yellow"
@@ -348,7 +399,7 @@ class PurchaseOrderTable extends Component {
                                             >
                                                 <i className="material-icons">edit</i>
                                             </a>
-                                            {!item.bill ? (
+                                            {!item.bill && item.status !== 1 && this.checkCreator(item) && (
                                                 <a
                                                     onClick={() => this.handleAddBill(item)}
                                                     className="add text-success"
@@ -357,7 +408,8 @@ class PurchaseOrderTable extends Component {
                                                 >
                                                     <i className="material-icons">add</i>
                                                 </a>
-                                            ) : (
+                                            )}
+                                            {item.bill && item.status !== 1 && (
                                                 <a
                                                     onClick={() => this.handleShowBillDetail(item.bill)}
                                                     className="add text-success"

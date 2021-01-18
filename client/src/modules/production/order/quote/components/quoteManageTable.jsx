@@ -1,19 +1,20 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
+//Actions
 import { QuoteActions } from "../redux/actions";
 import { DiscountActions } from "../../discount/redux/actions";
 import { CrmCustomerActions } from "../../../../crm/customer/redux/actions";
-import { DepartmentActions } from "../../../../super-admin/organizational-unit/redux/actions";
 import { RoleActions } from "../../../../super-admin/role/redux/actions";
 import { BusinessDepartmentActions } from "../../business-department/redux/actions";
 import { formatCurrency } from "../../../../../helpers/formatCurrency";
 import { formatDate } from "../../../../../helpers/formatDate";
+//Components
 import { PaginateBar, DataTableSetting, SelectMulti, SelectBox, DeleteNotification } from "../../../../../common-components";
 import QuoteDetailForm from "./quoteDetailForm";
 import QuoteCreateForm from "./quoteCreateForm";
 import QuoteEditForm from "./quoteEditForm";
-
+import QuoteApproveForm from "./approveQuote/index";
 class QuoteManageTable extends Component {
     constructor(props) {
         super(props);
@@ -22,17 +23,16 @@ class QuoteManageTable extends Component {
             limit: 5,
             code: "",
             status: null,
-            quoteDetail: {},
+            currentRole: localStorage.getItem("currentRole"),
         };
     }
 
     componentDidMount = () => {
-        const { page, limit } = this.state;
-        this.props.getAllQuotes({ page, limit });
+        const { page, limit, currentRole } = this.state;
+        this.props.getAllQuotes({ page, limit, currentRole });
         this.props.getDiscountForOrderValue();
         this.props.getCustomers();
         this.props.getAllBusinessDepartments({ page: 1, limit: 1000 });
-        this.props.getAllRoles();
     };
 
     setPage = async (page) => {
@@ -42,6 +42,7 @@ class QuoteManageTable extends Component {
         const data = {
             limit: this.state.limit,
             page: page,
+            currentRole: this.state.currentRole,
         };
         this.props.getAllQuotes(data);
     };
@@ -53,6 +54,7 @@ class QuoteManageTable extends Component {
         const data = {
             limit: limit,
             page: this.state.page,
+            currentRole: this.state.currentRole,
         };
         this.props.getAllQuotes(data);
     };
@@ -83,7 +85,7 @@ class QuoteManageTable extends Component {
     };
 
     handleSubmitSearch = () => {
-        let { limit, page, code, status, customer, queryDate } = this.state;
+        let { limit, page, code, status, customer, queryDate, currentRole } = this.state;
         const data = {
             limit,
             page,
@@ -91,17 +93,13 @@ class QuoteManageTable extends Component {
             status,
             customer,
             queryDate,
+            currentRole,
         };
         this.props.getAllQuotes(data);
     };
 
-    handleShowDetailInfo = (data) => {
-        this.setState((state) => {
-            return {
-                ...state,
-                quoteDetail: data,
-            };
-        });
+    handleShowDetailInfo = async (quoteDetail) => {
+        await this.props.getQuoteDetail(quoteDetail._id);
         window.$("#modal-detail-quote").modal("show");
     };
 
@@ -110,13 +108,7 @@ class QuoteManageTable extends Component {
     };
 
     handleEditQuote = async (quoteEdit) => {
-        console.log("quoteEdit", quoteEdit);
-        await this.setState((state) => {
-            return {
-                ...state,
-                quoteEdit,
-            };
-        });
+        await this.props.getQuoteDetail(quoteEdit._id);
         window.$("#modal-edit-quote").modal("show");
     };
 
@@ -124,18 +116,26 @@ class QuoteManageTable extends Component {
         this.props.deleteQuote(id);
     };
 
-    // checkHasComponent = (name) => {
-    //     let { auth } = this.props;
-    //     let result = false;
-    //     auth.components.forEach(component => {
-    //         if (component.name === name) result = true;
-    //     });
+    checkUserForApprove = (quote) => {
+        const { approvers } = quote;
+        const userId = localStorage.getItem("userId");
+        let checkApprove = approvers.find((element) => element.approver === userId);
+        if (checkApprove) {
+            return parseInt(checkApprove.status);
+            //Trả về trạng thái 1. chưa phê duyệt, 2. Đã phê duyệt, 3. Đã hủy
+        }
+        return -1;
+    };
 
-    //     return result;
-    // }
+    handleShowApprove = async (quote) => {
+        await this.setState({
+            quoteApprove: quote,
+        });
+        window.$("#modal-approve-quote").modal("show");
+    };
 
     render() {
-        let { limit, quoteDetail, quoteEdit } = this.state;
+        let { limit, quoteApprove } = this.state;
         const { translate, quotes } = this.props;
         const { totalPages, page } = quotes;
 
@@ -167,15 +167,14 @@ class QuoteManageTable extends Component {
             },
         ];
 
-        const { department, role, auth } = this.props;
-
         return (
             <React.Fragment>
                 <div className="nav-tabs-custom">
                     <div className="box-body qlcv">
-                        <QuoteDetailForm quoteDetail={quoteDetail} />
+                        <QuoteDetailForm />
                         <QuoteCreateForm />
-                        {quoteEdit && <QuoteEditForm quoteEdit={quoteEdit} />}
+                        <QuoteEditForm />
+                        <QuoteApproveForm quoteApprove={quoteApprove} />
                         <div className="form-inline">
                             <div className="form-group">
                                 <label className="form-control-static">Mã đơn</label>
@@ -218,19 +217,19 @@ class QuoteManageTable extends Component {
                                     style={{ width: "100%" }}
                                     items={[
                                         {
-                                            value: 0,
+                                            value: 1,
                                             text: "Chờ phê duyệt",
                                         },
                                         {
-                                            value: 1,
+                                            value: 2,
                                             text: "Đã duyệt",
                                         },
                                         {
-                                            value: 2,
+                                            value: 3,
                                             text: "Đã chốt đơn",
                                         },
                                         {
-                                            value: 3,
+                                            value: 4,
                                             text: "Hủy đơn",
                                         },
                                     ]}
@@ -310,45 +309,45 @@ class QuoteManageTable extends Component {
                                             <td>{item.expirationDate ? formatDate(item.expirationDate) : "---"}</td>
                                             <td>{item.paymentAmount ? formatCurrency(item.paymentAmount) : "---"}</td>
                                             <td className={dataStatus[item.status].className}>{dataStatus[item.status].text}</td>
-                                            {item.status === -1 ? (
-                                                <td>
-                                                    <a onClick={this.handleCreate}>
-                                                        <i className="fa fa-plus-square text-primary"></i>
+                                            <td
+                                                style={{
+                                                    textAlign: "center",
+                                                }}
+                                            >
+                                                <a onClick={() => this.handleShowDetailInfo(item)}>
+                                                    <i className="material-icons">view_list</i>
+                                                </a>
+                                                {this.checkUserForApprove(item) === 1 && item.status === 1 && (
+                                                    <a
+                                                        onClick={() => this.handleShowApprove(item)}
+                                                        className="add text-success"
+                                                        style={{ width: "5px" }}
+                                                        title="Phê duyệt báo giá"
+                                                    >
+                                                        <i className="material-icons">check_circle_outline</i>
                                                     </a>
-                                                </td>
-                                            ) : (
-                                                <td
-                                                    style={{
-                                                        textAlign: "center",
-                                                    }}
-                                                >
-                                                    <a onClick={() => this.handleShowDetailInfo(item)}>
-                                                        <i className="material-icons">view_list</i>
-                                                    </a>
-                                                    {item.status !== 3 ? (
-                                                        <React.Fragment>
-                                                            <a
-                                                                onClick={() => this.handleEditQuote(item)}
-                                                                className="edit text-yellow"
-                                                                style={{ width: "5px" }}
-                                                                title="Sửa đơn"
-                                                            >
-                                                                <i className="material-icons">edit</i>
-                                                            </a>
-                                                            <DeleteNotification
-                                                                content={"Bạn có chắc chắn muốn xóa báo giá này"}
-                                                                data={{
-                                                                    id: item._id,
-                                                                    info: item.code,
-                                                                }}
-                                                                func={() => this.deleteQuote(item._id)}
-                                                            />
-                                                        </React.Fragment>
-                                                    ) : (
-                                                        ""
-                                                    )}
-                                                </td>
-                                            )}
+                                                )}
+                                                {item.status === 1 && (
+                                                    <React.Fragment>
+                                                        <a
+                                                            onClick={() => this.handleEditQuote(item)}
+                                                            className="edit text-yellow"
+                                                            style={{ width: "5px" }}
+                                                            title="Sửa đơn"
+                                                        >
+                                                            <i className="material-icons">edit</i>
+                                                        </a>
+                                                        <DeleteNotification
+                                                            content={"Bạn có chắc chắn muốn xóa báo giá này"}
+                                                            data={{
+                                                                id: item._id,
+                                                                info: item.code,
+                                                            }}
+                                                            func={() => this.deleteQuote(item._id)}
+                                                        />
+                                                    </React.Fragment>
+                                                )}
+                                            </td>
                                         </tr>
                                     ))}
                             </tbody>
@@ -376,6 +375,7 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = {
     getAllQuotes: QuoteActions.getAllQuotes,
+    getQuoteDetail: QuoteActions.getQuoteDetail,
     deleteQuote: QuoteActions.deleteQuote,
     getDiscountForOrderValue: DiscountActions.getDiscountForOrderValue,
     getCustomers: CrmCustomerActions.getCustomers,

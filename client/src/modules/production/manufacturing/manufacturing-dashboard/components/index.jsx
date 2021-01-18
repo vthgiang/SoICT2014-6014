@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import ManufacturingDashboardHeader from './manufacturingDashboardHeader';
-import ManufacturingOrderPieChart from './manufacturingOrderPieChart';
+import ManufacturingLotPieChart from './manufacturingLotPieChart';
 import PlanPieChart from './planPieChart';
 import CommandPieChart from './commandPieChart';
 import ManufacturingQuantityChart from './manufacturingQuantityChart';
@@ -22,14 +22,13 @@ class ManufacturingDashboard extends Component {
                     <ManufacturingDashboardHeader />
                     <div className="row">
                         <div className=" col-lg-6 col-md-6 col-md-sm-12 col-xs-12">
-                            <ManufacturingOrderPieChart />
-                        </div>
-
-                        <div className=" col-lg-6 col-md-6 col-md-sm-12 col-xs-12">
                             <PlanPieChart />
                         </div>
                         <div className=" col-lg-6 col-md-6 col-md-sm-12 col-xs-12">
                             <CommandPieChart />
+                        </div>
+                        <div className=" col-lg-6 col-md-6 col-md-sm-12 col-xs-12">
+                            <ManufacturingLotPieChart />
                         </div>
                         <div className=" col-lg-6 col-md-6 col-md-sm-12 col-xs-12">
                             <PurchasingRequestPieChart />
