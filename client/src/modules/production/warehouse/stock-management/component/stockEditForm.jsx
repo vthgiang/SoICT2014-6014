@@ -35,6 +35,7 @@ class StockEditForm extends Component {
 
     static getDerivedStateFromProps(nextProps, prevState){
         if(nextProps.stockId !== prevState.stockId){
+            console.log(nextProps.status);
             return {
                 ...prevState,
                 stockId: nextProps.stockId,
@@ -514,6 +515,7 @@ class StockEditForm extends Component {
         const departmentManagement = this.getAllDepartment();
         const listGoods = this.getAllGoods();
         const listRoles = this.getAllRoles();
+        console.log(status);
         return (
             <React.Fragment>
                 <DialogModal
@@ -561,7 +563,7 @@ class StockEditForm extends Component {
                                 <div className="form-group">
                                     <label>{translate('manage_warehouse.stock_management.status')}<span className="attention"> * </span></label>
                                     <SelectBox
-                                        id={`select-status-edit-stock`}
+                                        id={`select-status-edit-stock-${status}`}
                                         className="form-control select2"
                                         style={{ width: "100%" }}
                                         value={status}
