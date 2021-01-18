@@ -505,7 +505,8 @@ async function getListWorksIdsByCurrentRole(currentRole, portal) {
 
 //Lấy các đơn hàng chưa thanh toán của khách hàng
 exports.getSalesOrdersForPayment = async (customerId, portal) => {
-    let salesOrdersForPayment = await SalesOrder(connect(DB_CONNECTION, portal)).find({ customer: customerId });
+
+    let salesOrdersForPayment = await SalesOrder(connect(DB_CONNECTION, portal)).find({ customer: customerId, status: [1,2,3,4,5,6,7] });
     let salesOrders = [];
     if (salesOrdersForPayment.length) {
         for (let index = 0; index < salesOrdersForPayment.length; index++) {
