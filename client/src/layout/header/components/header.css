@@ -3,3 +3,45 @@
     height: 170px;
     margin-bottom: 10px;
 }
+
+.notify-wrapper{
+    width: 100%;
+    padding: 10px;
+    border-bottom: 1px solid #f4f4f4;
+
+}
+.notify-wrapper:hover{
+    background-color: #f4f4f4;
+}
+.notify-wrapper .notify-title{
+    margin-left: 10px;
+    color: #444444;
+    letter-spacing: .3px;
+}
+.notify-tabs {
+    display: flex;
+    padding: 10px;
+    align-items: center;
+    border-bottom: 1px solid #e8e5e5;
+    flex-grow: 1;
+    justify-content: space-between;
+    box-shadow: 0 4px 2px -2px #e8e7e7;
+}
+.notify-action{
+    margin: 0 10px;
+    display: inline-block;
+    font-size: 1em;
+    font-weight: 500;
+}
+
+.notify-action:not(.active){
+    color: #444;
+}
+
+.notifications-menu .tab-content{
+    overflow: scroll;
+    overflow-x: hidden;
+    max-height: 500px;
+}
+
+

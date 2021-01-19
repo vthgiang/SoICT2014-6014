@@ -490,7 +490,9 @@ exports.createTask = async (req, res) => {
             content: html,
             sender: task.organizationalUnit.name,
             users: user,
-            associatedDataObject: associatedDataObject
+            associatedDataObject: associatedDataObject,
+            type: 1,
+            shortContent: `<p>${req.user.name} đã tạo mới công việc: <strong>${task.name}</strong> có sự tham gia của bạn.</p>`
         };
 
         // Gửi mail cho trưởng đơn vị phối hợp thực hiện công việc
@@ -502,7 +504,9 @@ exports.createTask = async (req, res) => {
             level: "general",
             content: collaboratedHtml,
             sender: task.organizationalUnit.name,
-            users: tasks.managersOfOrganizationalUnitThatHasCollaborated
+            users: tasks.managersOfOrganizationalUnitThatHasCollaborated,
+            type: 1,
+            shortContent: `Đơn vị bạn được mời phối hợp thực hiện trong công việc: <strong>${task.name}</strong></p>`
         };
 
         await NotificationServices.createNotification(req.portal, req.user.company._id, data);
@@ -581,7 +585,16 @@ exports.editTaskByResponsibleEmployees = async (req, res) => {
         var task = await TaskManagementService.editTaskByResponsibleEmployees(req.portal, req.body, req.params.id);
         var user = task.user;
         var tasks = task.tasks;
-        var data = { "organizationalUnits": tasks.organizationalUnit, "title": "Cập nhật thông tin công việc", "level": "general", "content": `${user.name} đã cập nhật thông tin công việc với vai trò người phê duyệt`, "sender": tasks.name, "users": tasks.accountableEmployees };
+        var data = {
+            "organizationalUnits": tasks.organizationalUnit,
+            "title": "Cập nhật thông tin công việc",
+            "level": "general",
+            "content": `${user.name} đã cập nhật thông tin công việc với vai trò người phê duyệt`,
+            "sender": tasks.name,
+            "users": tasks.accountableEmployees,
+            type: 1,
+            shortContent: `<p><strong>${tasks.name}:</strong> ${user.name} đã cập nhật thông tin công việc với vai trò người thực hiện</p>`
+        };
         NotificationServices.createNotification(req.portal, tasks.organizationalUnit, data,);
         let title = "Cập nhật thông tin công việc:" + task.name;
         sendEmail(task.email, title, '', `<p><strong>${user.name}</strong> đã cập nhật thông tin công việc với vai trò người phê duyệt <a href="${process.env.WEBSITE}/task?taskId=${req.params.id}">${process.env.WEBSITE}/task?taskId=${req.params.id}</a></p>`);
@@ -608,7 +621,16 @@ exports.editTaskByAccountableEmployees = async (req, res) => {
         var task = await TaskManagementService.editTaskByAccountableEmployees(req.portal, req.body, req.params.id);
         var user = task.user;
         var tasks = task.tasks;
-        var data = { "organizationalUnits": tasks.organizationalUnit, "title": "Cập nhật thông tin công việc", "level": "general", "content": `${user.name} đã cập nhật thông tin công việc với vai trò người phê duyệt`, "sender": tasks.name, "users": tasks.responsibleEmployees };
+        var data = {
+            "organizationalUnits": tasks.organizationalUnit,
+            "title": "Cập nhật thông tin công việc",
+            "level": "general",
+            "content": `${user.name} đã cập nhật thông tin công việc với vai trò người phê duyệt`,
+            "sender": tasks.name,
+            "users": tasks.responsibleEmployees,
+            type: 1,
+            shortContent: `<p><strong>${tasks.name}:</strong> ${user.name} đã cập nhật thông tin công việc với vai trò người phê duyệt</p>`
+        };
         NotificationServices.createNotification(req.portal, tasks.organizationalUnit, data,);
         let title = "Cập nhật thông tin công việc:" + task.name;
         sendEmail(task.email, title, '', `<p><strong>${user.name}</strong> đã cập nhật thông tin công việc với vai trò người phê duyệt <a href="${process.env.WEBSITE}/task?taskId=${req.params.id}">${process.env.WEBSITE}/task?taskId=${req.params.id}</a></p>`);
