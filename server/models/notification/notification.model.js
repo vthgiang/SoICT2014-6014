@@ -14,6 +14,9 @@ const NotificationSchema = new Schema({
     content: {
         type: String
     },
+    shortContent: {
+        type: String
+    },
     associatedDataObject: { // Chỉ dùng cho app mobile
         dataType: { // Task: 1, 
             type: Number
@@ -50,6 +53,9 @@ const NotificationSchema = new Schema({
             type: String
         }
     }],
+    type: { // loại thông báo theo module: 1: công việc, 2: tài sản, 3: tài liệu
+        type: Number
+    }
 },{
     timestamps: true,
     toJSON: { virtuals: true }

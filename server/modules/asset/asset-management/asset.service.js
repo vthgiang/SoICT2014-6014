@@ -41,6 +41,7 @@ exports.sendEmailToManager = async (portal, oldAsset, userId, type) => {
         }
     }
     let body = `<p>Mô tả : ${currentUser.name} đã ${type} trong tài sản mã ${oldAsset.code}  </p>`;
+    let shortContent = `<p><strong>${currentUser.name}</strong> đã <strong>${type}</strong> trong tài sản mã <strong>${oldAsset.code}</strong></p>`;
     let html = `<p>Bạn có thông báo mới: ` + body;
     return {
         oldAsset: oldAsset,
@@ -48,6 +49,7 @@ exports.sendEmailToManager = async (portal, oldAsset, userId, type) => {
         user: currentUser,
         email: email,
         html: html,
+        shortContent
     };
 };
 /**

@@ -203,12 +203,14 @@ exports.createNotification = async (
             title: data.title,
             level: data.level,
             content: data.content,
+            shortContent: data.shortContent,
             creator: data.creator,
             sender: data.sender,
             user: usersArr[i],
             files: data.files,
             manualNotification,
             associatedDataObject: data.associatedDataObject,
+            type: data.type,
         });
 
         const notify = { ...data, _id: noti._id };
