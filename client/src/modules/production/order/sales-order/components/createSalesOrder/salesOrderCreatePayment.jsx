@@ -307,7 +307,7 @@ class SalesOrderCreatePayment extends Component {
                                     <th title={"Thuế"}>Thuế</th>
                                     <th title={"Tổng tiền"}>Tổng tiền</th>
                                     <th title={"Cam kết chất lượng"}>Cam kết chất lượng</th>
-                                    <th title={"Yêu cầu sản xuất"}>Yêu cầu s/x</th>
+                                    {/* <th title={"Yêu cầu sản xuất"}>Yêu cầu s/x</th> */}
                                     <th title={"Ghi chú"}>Ghi chú</th>
                                 </tr>
                             </thead>
@@ -367,7 +367,7 @@ class SalesOrderCreatePayment extends Component {
                                                     </a>
                                                 </div>
                                             </td>
-                                            <td>
+                                            {/* <td>
                                                 {item.manufacturingWorks ? (
                                                     <div
                                                         style={{
@@ -389,7 +389,7 @@ class SalesOrderCreatePayment extends Component {
                                                 ) : (
                                                     ""
                                                 )}
-                                            </td>
+                                            </td> */}
                                             <td>{item.note}</td>
                                         </tr>
                                     ))}
@@ -426,7 +426,7 @@ class SalesOrderCreatePayment extends Component {
                                                 }, 0)
                                             )}
                                         </td>
-                                        <td colSpan={3}></td>
+                                        <td colSpan={2}></td>
                                     </tr>
                                 )}
                             </tbody>

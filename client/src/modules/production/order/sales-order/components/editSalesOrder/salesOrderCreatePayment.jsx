@@ -285,7 +285,7 @@ class SalesOrderCreatePayment extends Component {
                             <div style={{ color: "#888", fontSize: "13px" }}>{code}</div>
                         </div>
                         <div className="shopping-quote-info-element">
-                            <div style={{ fontWeight: 600 }}>Thời gian hiệu lực &ensp;</div>
+                            <div style={{ fontWeight: 600 }}>Độ ưu tiên &ensp;</div>
                             <div style={{ color: "#888", fontSize: "13px" }}>{priority ? priorityConvert[priority] : "Trung bình"}</div>
                         </div>
                     </div>
@@ -307,7 +307,7 @@ class SalesOrderCreatePayment extends Component {
                                     <th title={"Thuế"}>Thuế</th>
                                     <th title={"Tổng tiền"}>Tổng tiền</th>
                                     <th>Cam kết chất lượng</th>
-                                    <th title={"Yêu cầu sản xuất"}>Yêu cầu s/x</th>
+                                    {/* <th title={"Yêu cầu sản xuất"}>Yêu cầu s/x</th> */}
                                     <th title={"Ghi chú"}>Ghi chú</th>
                                 </tr>
                             </thead>
@@ -367,7 +367,7 @@ class SalesOrderCreatePayment extends Component {
                                                     </a>
                                                 </div>
                                             </td>
-                                            <td>
+                                            {/* <td>
                                                 {item.manufacturingWorks ? (
                                                     <div
                                                         style={{
@@ -391,7 +391,7 @@ class SalesOrderCreatePayment extends Component {
                                                 ) : (
                                                     ""
                                                 )}
-                                            </td>
+                                            </td> */}
                                             <td>{item.note}</td>
                                         </tr>
                                     ))}

@@ -3,6 +3,8 @@ const router = express.Router();
 const SalesOrderController = require('./salesOrder.controller');
 const { auth } = require(`../../../../middleware`);
 
+
+router.get('/get-number-works-sales-order', auth, SalesOrderController.getNumberWorksSalesOrder);
 router.post('/', auth, SalesOrderController.createNewSalesOrder);
 router.patch('/:id', auth, SalesOrderController.editSalesOrder);
 router.patch('/approve/:id', auth, SalesOrderController.approveSalesOrder);

@@ -32,6 +32,8 @@ export function manufacturingCommand(state = initState, action) {
         case commandConstants.EDIT_MANUFACTURING_COMMAND_REQUEST:
         case commandConstants.GET_NUMBER_COMMAND_REQUEST:
         case commandConstants.GET_NUMBER_COMMAND_BY_STATUS_REQUEST:
+        case commandConstants.GET_TOP_TEN_PRODUCT_REQUEST:
+        case commandConstants.GET_FLUCTUATING_PRODUCT_REQUEST:
             return {
                 ...state,
                 isLoading: true
@@ -41,6 +43,8 @@ export function manufacturingCommand(state = initState, action) {
         case commandConstants.EDIT_MANUFACTURING_COMMAND_FAILURE:
         case commandConstants.GET_NUMBER_COMMAND_FAILURE:
         case commandConstants.GET_NUMBER_COMMAND_BY_STATUS_FAILURE:
+        case commandConstants.GET_TOP_TEN_PRODUCT_FAILURE:
+        case commandConstants.GET_FLUCTUATING_PRODUCT_FAILURE:
             return {
                 ...state,
                 isLoading: false
@@ -86,6 +90,18 @@ export function manufacturingCommand(state = initState, action) {
                 ...state,
                 isLoading: false,
                 commandNumberStatus: action.payload
+            }
+        case commandConstants.GET_TOP_TEN_PRODUCT_SUCCESS:
+            return {
+                ...state,
+                isLoading: false,
+                topTenProduct: action.payload
+            }
+        case commandConstants.GET_FLUCTUATING_PRODUCT_SUCCESS:
+            return {
+                ...state,
+                isLoading: false,
+                fluctuatingProduct: action.payload
             }
         default:
             return state

@@ -142,8 +142,6 @@ exports.getAllQuotes = async (userId, query, portal) => {
         option.customer = customer
     }
 
-    console.log("option",option);
-
     if (query.queryDate) {
         switch (query.queryDate) {
             case "expire": option.expirationDate = { $lt: new Date(), $exists: true }; break;
@@ -342,6 +340,8 @@ exports.getQuoteDetail = async (id, portal) => {
         }, {
             path: 'customer', select: 'name taxNumber'
         }, {
+            path: 'approvers.approver', select: 'name'
+        },{
             path: 'goods.good', select: 'code name baseUnit'
         },{
             path: 'goods.discounts.bonusGoods.good', select: 'code name baseUnit'

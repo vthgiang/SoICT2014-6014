@@ -87,24 +87,40 @@ class QuantityInventoryDashboard extends Component {
         let chart = c3.generate({
             bindto: this.refs.quantityInventoryDashboard,
             data: {
-                x : 'x',
                 columns: [
-                    name,
                     inventory,
                     goodReceipt,
                     goodIssue
                 ],
                 type: 'bar'
             },
+            padding: {
+                bottom: 20,
+                right: 20
+            },
             axis: {
                 x: {
                     type: 'category',
+                    categories: name,
                     tick: {
-                        rotate: 75,
                         multiline: false
                     },
                     height: 100
-                }
+                },
+                y: {
+                    label: {
+                        text: "Số lượng",
+                        position: 'outer-right'
+                    }
+                },
+                rotated: true
+            },
+            size: {
+                height: 500
+            },
+
+            legend: {
+                show: false
             },
         });
     }
@@ -117,7 +133,7 @@ class QuantityInventoryDashboard extends Component {
         const dataCategory = this.getAllCategory();
         const { type, category } = this.state;
 
-        let name = ['x'];
+        let name = [];
         let inventory = ['Số lượng tồn kho'];
         let goodReceipt = ['Số lượng sắp nhập'];
         let goodIssue = ['Số lượng sắp xuất'];

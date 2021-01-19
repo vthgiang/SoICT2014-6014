@@ -250,6 +250,16 @@ class SalesOrderDetailForm extends Component {
         }
         let paymentTypeConvert = ["", "Tiền mặt", "Chuyển khoản"];
         let priorityConvert = ["", "Thấp", "Trung Bình", "Cao", "Đặc biệt"];
+        const manufactuingPlanStatusConvert = [
+            { text: "Chưa cập nhật trạng thái", className: "text-primary" },
+            { text: "Đang chờ duyệt", className: "text-primary" },
+            { text: "Đã phê duyệt", className: "text-warning" },
+            { text: "Đang thực hiện", className: "text-info" },
+            { text: "Đã hoàn thành", className: "text-success" },
+            { text: "Đã hủy", className: "text-danger" },
+        ];
+
+        const approveStatusConvert = ["", "Chưa phê duyệt", "Đã phê duyệt", "Đã hủy"];
 
         return (
             <React.Fragment>
@@ -327,7 +337,7 @@ class SalesOrderDetailForm extends Component {
                                         <span>Thông tin chung</span>
                                     </div>
                                     <div className="shopping-quote-info-element">
-                                        <div style={{ fontWeight: 600 }}>Mã báo giá &ensp;</div>
+                                        <div style={{ fontWeight: 600 }}>Mã đơn hàng &ensp;</div>
                                         <div style={{ color: "#888", fontSize: "13px" }}>{salesOrderDetail.code}</div>
                                     </div>
                                     <div className="shopping-quote-info-element">
@@ -342,6 +352,26 @@ class SalesOrderDetailForm extends Component {
                                             <div style={{ color: "#671303", fontSize: "14px" }}>{salesOrderDetail.quote.code}</div>
                                         </div>
                                     )}
+                                    <div
+                                        className="shopping-quote-info-element"
+                                        style={{ display: "flex", flexDirection: "column", alignItems: "start" }}
+                                    >
+                                        <div style={{ fontWeight: 600 }}>Thông tin phê duyệt &ensp;</div>
+                                        {salesOrderDetail.approvers.map((element) => {
+                                            return (
+                                                <div>
+                                                    <span style={{ fontSize: "13px" }}>Người phê duyệt: &ensp;</span>
+                                                    <span style={{ color: "#888", fontSize: "13px" }}>{element.approver.name}&ensp;&ensp;</span>
+                                                    <span style={{ fontSize: "13px" }}>Trạng thái: &ensp;</span>
+                                                    <span style={{ color: "#888", fontSize: "13px" }}>
+                                                        {approveStatusConvert[element.status]}&ensp;&ensp;
+                                                    </span>
+                                                    {element.note && <span style={{ fontSize: "13px" }}>Ghi chú: &ensp;</span>}
+                                                    <span style={{ color: "#888", fontSize: "13px" }}>{element.note}&ensp;</span>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
                                 </div>
                                 <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12 shopping-products">
                                     <div className="shopping-products-title">Các sản phẩm</div>
@@ -433,7 +463,10 @@ class SalesOrderDetailForm extends Component {
                                                                             )
                                                                         }
                                                                     >
-                                                                        Đã gửi yêu cầu &ensp;
+                                                                        {item.manufacturingPlan
+                                                                            ? manufactuingPlanStatusConvert[item.manufacturingPlan.status].text
+                                                                            : "Đã gửi yêu cầu"}
+                                                                        &ensp;
                                                                     </a>
                                                                 </div>
                                                             ) : (

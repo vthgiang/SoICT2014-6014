@@ -5492,7 +5492,22 @@ export default {
                 command_number_2: "Số lệnh sản xuất quá hạn / Tổng số lệnh sản xuất",
                 command_progress_1: "Số lệnh sản xuất đúng tiến độ",
                 command_progress_2: "Số lệnh sản xuất quá hạn",
-
+                sales_order_number_1: "Tổng số đơn sản xuất cần lên kế hoạch",
+                sales_order_progress_1: "Số đơn sản xuất cần lên kế hoạch",
+                sales_order_number_2: "Số đơn sản xuất đã xong lên kế hoạch / Tổng số đơn sản xuất cần lên kế hoạch",
+                sales_order_progress_2: "Số đơn sản xuất đã xong lên kế hoạch",
+                sales_order_number_3: "Số đơn sản xuất chưa lên xong lên kế hoạch / Tổng số  đơn sản xuất cần lên kế hoạch",
+                sales_order_progress_3: "Số đơn sản xuất chưa lên xong lên kế hoạch",
+                top_ten_product: "sản phẩm được sản xuất nhiều nhất",
+                filter: "Lọc",
+                line: "Đường",
+                bar: "Cột",
+                quantity_pill: "Số lượng sản phẩm",
+                choose_all_good: "Tất cả sản phẩm",
+                product_quantity_change: "Biểu đồ biến động số lượng của sản phẩm sản xuất",
+                total_product: "Tổng số lượng",
+                finished_product: "Số lượng thành phẩm",
+                sub_product: "số lượng phế phẩm"
             }
         },
     },

@@ -181,6 +181,7 @@ class QuoteDetailForm extends Component {
         const { quoteDetail } = this.props;
         const {
             customerPhone,
+            approvers,
             customer,
             customerAddress,
             customerRepresent,
@@ -222,6 +223,8 @@ class QuoteDetailForm extends Component {
             amountAfterApplyTax = this.getAmountAfterApplyTax();
             discountsOfQuote = this.getDiscountsValueQuote(amountAfterApplyTax); // Chưa tính miễn phí vận chuyển và sử dụng xu
         }
+
+        const approveStatusConvert = ["", "Chưa phê duyệt", "Đã phê duyệt", "Đã hủy"];
 
         return (
             <React.Fragment>
@@ -312,6 +315,27 @@ class QuoteDetailForm extends Component {
                                             </div>
                                         </React.Fragment>
                                     )}
+                                    <div
+                                        className="shopping-quote-info-element"
+                                        style={{ display: "flex", flexDirection: "column", alignItems: "start" }}
+                                    >
+                                        <div style={{ fontWeight: 600 }}>Thông tin phê duyệt &ensp;</div>
+                                        {approvers &&
+                                            approvers.map((element) => {
+                                                return (
+                                                    <div>
+                                                        <span style={{ fontSize: "13px" }}>Người phê duyệt: &ensp;</span>
+                                                        <span style={{ color: "#888", fontSize: "13px" }}>{element.approver.name}&ensp;&ensp;</span>
+                                                        <span style={{ fontSize: "13px" }}>Trạng thái: &ensp;</span>
+                                                        <span style={{ color: "#888", fontSize: "13px" }}>
+                                                            {approveStatusConvert[element.status]}&ensp;&ensp;
+                                                        </span>
+                                                        {element.note && <span style={{ fontSize: "13px" }}>Ghi chú: &ensp;</span>}
+                                                        <span style={{ color: "#888", fontSize: "13px" }}>{element.note}&ensp;</span>
+                                                    </div>
+                                                );
+                                            })}
+                                    </div>
                                 </div>
                                 <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12 shopping-products">
                                     <div className="shopping-products-title">Các sản phẩm</div>

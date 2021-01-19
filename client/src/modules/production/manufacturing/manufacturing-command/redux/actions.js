@@ -6,7 +6,9 @@ export const commandActions = {
     getDetailManufacturingCommand,
     handleEditCommand,
     getNumberCommands,
-    getNumberCommandsStatus
+    getNumberCommandsStatus,
+    getTopTenProduct,
+    getFuctuatingProduct
 }
 
 function getAllManufacturingCommands(query) {
@@ -70,6 +72,8 @@ function handleEditCommand(id, data) {
 }
 
 function getNumberCommands(query) {
+    console.log(query);
+    console.log('aaa')
     return dispatch => {
         dispatch({
             type: commandConstants.GET_NUMBER_COMMAND_REQUEST
@@ -103,6 +107,46 @@ function getNumberCommandsStatus(query) {
             }).catch((error) => {
                 dispatch({
                     type: commandConstants.GET_NUMBER_COMMAND_BY_STATUS_FAILURE,
+                    error
+                });
+            });
+    }
+}
+
+function getTopTenProduct(query) {
+    return dispatch => {
+        dispatch({
+            type: commandConstants.GET_TOP_TEN_PRODUCT_REQUEST
+        });
+        commandServices.getTopTenProduct(query)
+            .then((res) => {
+                dispatch({
+                    type: commandConstants.GET_TOP_TEN_PRODUCT_SUCCESS,
+                    payload: res.data.content
+                });
+            }).catch((error) => {
+                dispatch({
+                    type: commandConstants.GET_TOP_TEN_PRODUCT_FAILURE,
+                    error
+                });
+            });
+    }
+}
+
+function getFuctuatingProduct(data) {
+    return dispatch => {
+        dispatch({
+            type: commandConstants.GET_FLUCTUATING_PRODUCT_REQUEST
+        });
+        commandServices.getFuctuatingProduct(data)
+            .then((res) => {
+                dispatch({
+                    type: commandConstants.GET_FLUCTUATING_PRODUCT_SUCCESS,
+                    payload: res.data.content
+                });
+            }).catch((error) => {
+                dispatch({
+                    type: commandConstants.GET_FLUCTUATING_PRODUCT_FAILURE,
                     error
                 });
             });

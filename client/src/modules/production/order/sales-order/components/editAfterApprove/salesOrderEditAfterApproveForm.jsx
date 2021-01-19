@@ -6,6 +6,7 @@ import { LotActions } from "../../../../warehouse/inventory-management/redux/act
 import { GoodActions } from "../../../../common-production/good-management/redux/actions";
 import { DialogModal, SelectBox, ErrorLabel } from "../../../../../../common-components";
 import AddManufacturingWorkForGood from "./addManufacturingWorkForGood";
+import ManufacturingWorksOfGoodDetail from "./manufacturingWorksOfGoodDetail";
 
 class SalesOrderEditAfterApproveForm extends Component {
     constructor(props) {
@@ -88,6 +89,17 @@ class SalesOrderEditAfterApproveForm extends Component {
         window.$(`#modal-edit-sales-order-and-add-manufacturing-for-good`).modal("show");
     };
 
+    setCurrentManufacturingWorksOfGoods = async (item) => {
+        await this.setState((state) => {
+            return {
+                ...state,
+                currentManufacturingWorksOfGood: item.manufacturingWorks,
+                currentManufacturingPlanOfGood: item.manufacturingPlan,
+            };
+        });
+        window.$("#modal-sales-order-edit-after-aprrove-manufacturing-works-of-good-detail").modal("show");
+    };
+
     handleChangeManufacturingWorksForGood = (value) => {
         let { goods, currentGood } = this.state;
         if (value[0] !== "title") {
@@ -140,6 +152,25 @@ class SalesOrderEditAfterApproveForm extends Component {
         }
     };
 
+    getStatusOptions = () => {
+        let options = [];
+        const { salesOrderEditAfterApprove } = this.props;
+        if (salesOrderEditAfterApprove && (salesOrderEditAfterApprove.status === 2 || salesOrderEditAfterApprove.status == 3)) {
+            options = [
+                { value: "title", text: "---Bỏ chọn---" },
+                { value: 2, text: "Đã phê duyệt" },
+                { value: 3, text: "Yêu cầu sản xuất" },
+                { value: 8, text: "Hủy đơn" },
+            ];
+        } else {
+            options = [
+                { value: "title", text: "---Bỏ chọn---" },
+                { value: 8, text: "Hủy đơn" },
+            ];
+        }
+        return options;
+    };
+
     render() {
         let { goods, status, code, currentManufacturingWorks, currentGood } = this.state;
         const { listInventories } = this.props.lots;
@@ -157,6 +188,15 @@ class SalesOrderEditAfterApproveForm extends Component {
             goods = goodsMap;
         }
 
+        const { salesOrderEditAfterApprove } = this.props;
+        const manufacturingStatusConvert = [
+            { text: "Chưa cập nhật trạng thái", className: "text-primary" },
+            { text: "Đang chờ duyệt", className: "text-primary" },
+            { text: "Đã phê duyệt", className: "text-warning" },
+            { text: "Đang thực hiện", className: "text-info" },
+            { text: "Đã hoàn thành", className: "text-success" },
+            { text: "Đã hủy", className: "text-danger" },
+        ];
         return (
             <React.Fragment>
                 <DialogModal
@@ -175,6 +215,10 @@ class SalesOrderEditAfterApproveForm extends Component {
                         currentManufacturingWorks={currentManufacturingWorks}
                         handleChangeManufacturingWorksForGood={this.handleChangeManufacturingWorksForGood}
                     />
+                    <ManufacturingWorksOfGoodDetail
+                        currentManufacturingWorksOfGood={this.state.currentManufacturingWorksOfGood}
+                        currentManufacturingPlanOfGood={this.state.currentManufacturingPlanOfGood}
+                    />
                     <div className="form-group">
                         <label>
                             Mã đơn
@@ -189,55 +233,67 @@ class SalesOrderEditAfterApproveForm extends Component {
                             className="form-control select2"
                             style={{ width: "100%" }}
                             value={status}
-                            items={[
-                                { value: "title", text: "---Bỏ chọn---" },
-                                { value: 8, text: "Hủy đơn" },
-                            ]}
+                            items={this.getStatusOptions()}
                             onChange={this.handleStatusChange}
                             multiple={false}
                         />
                     </div>
-                    <fieldset className="scheduler-border">
-                        <legend className="scheduler-border">Yêu cầu sản xuất</legend>
-                        <table id={`sales-order-table-create-from-quote`} className="table table-bordered not-sort">
-                            <thead>
-                                <tr>
-                                    <th title={"STT"}>STT</th>
-                                    <th title={"Mã sản phẩm"}>Mã sản phẩm</th>
-                                    <th title={"Tên sản phẩm"}>Tên sản phẩm</th>
-                                    <th title={"Số lượng"}>Số lượng mua</th>
-                                    <th title={"Số lượng tồn kho"}>Số lượng tồn kho</th>
-                                    <th title={"Đơn vị tính"}>Đơn vị tính</th>
-                                    <th title={"Yêu cầu sản xuất"}>Yêu cầu s/x</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {goods &&
-                                    goods.length !== 0 &&
-                                    goods.map((item, index) => {
-                                        return (
-                                            <tr key={index}>
-                                                <td>{index + 1}</td>
-                                                <td>{item.good.code}</td>
-                                                <td>{item.good.name}</td>
-                                                <td>{item.quantity}</td>
-                                                <td>{item.inventory}</td>
-                                                <td>{item.good.baseUnit}</td>
-                                                <td>
-                                                    <a onClick={() => this.handleGetManufacturingList(item)}>
-                                                        {item.manufacturingWorks ? (
-                                                            <span className="text-success">Đang thiết lập</span>
-                                                        ) : (
-                                                            <span>Click để yêu cầu</span>
-                                                        )}
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                        );
-                                    })}
-                            </tbody>
-                        </table>
-                    </fieldset>
+                    {salesOrderEditAfterApprove &&
+                        (salesOrderEditAfterApprove.status === 2 ||
+                            salesOrderEditAfterApprove.status === 3 ||
+                            salesOrderEditAfterApprove.status === 4) && (
+                            <fieldset className="scheduler-border">
+                                <legend className="scheduler-border">Yêu cầu sản xuất</legend>
+                                <table id={`sales-order-table-create-from-quote`} className="table table-bordered not-sort">
+                                    <thead>
+                                        <tr>
+                                            <th title={"STT"}>STT</th>
+                                            <th title={"Mã sản phẩm"}>Mã sản phẩm</th>
+                                            <th title={"Tên sản phẩm"}>Tên sản phẩm</th>
+                                            <th title={"Số lượng"}>Số lượng mua</th>
+                                            <th title={"Số lượng tồn kho"}>Số lượng tồn kho</th>
+                                            <th title={"Đơn vị tính"}>Đơn vị tính</th>
+                                            <th title={"Yêu cầu sản xuất"}>Yêu cầu s/x</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {goods &&
+                                            goods.length !== 0 &&
+                                            goods.map((item, index) => {
+                                                return (
+                                                    <tr key={index}>
+                                                        <td>{index + 1}</td>
+                                                        <td>{item.good.code}</td>
+                                                        <td>{item.good.name}</td>
+                                                        <td>{item.quantity}</td>
+                                                        <td>{item.inventory}</td>
+                                                        <td>{item.good.baseUnit}</td>
+                                                        <td>
+                                                            {!item.manufacturingWorks && (
+                                                                <a onClick={() => this.handleGetManufacturingList(item)}>
+                                                                    <span className="text-success">Click để yêu cầu</span>
+                                                                </a>
+                                                            )}
+                                                            {item.manufacturingWorks && !item.manufacturingPlan && (
+                                                                <a onClick={() => this.handleGetManufacturingList(item)}>
+                                                                    <span className="text-success">Đã gửi yêu cầu</span>
+                                                                </a>
+                                                            )}
+                                                            {item.manufacturingWorks && item.manufacturingPlan && (
+                                                                <a onClick={() => this.setCurrentManufacturingWorksOfGoods(item)}>
+                                                                    <span className="text-success">
+                                                                        {manufacturingStatusConvert[item.manufacturingPlan.status].text}
+                                                                    </span>
+                                                                </a>
+                                                            )}
+                                                        </td>
+                                                    </tr>
+                                                );
+                                            })}
+                                    </tbody>
+                                </table>
+                            </fieldset>
+                        )}
                 </DialogModal>
             </React.Fragment>
         );

@@ -174,10 +174,10 @@ exports.getSalesOrdersForPayment = async (req, res) => {
 }
 
 
-exports.getSalesOrderDetail = async ( req, res ) => {
+exports.getSalesOrderDetail = async (req, res) => {
     try {
         let id = req.params.id;
-        let salesOrder = await SalesOrderServices.getSalesOrderDetail( id, req.portal)
+        let salesOrder = await SalesOrderServices.getSalesOrderDetail(id, req.portal)
 
         await Log.info(req.user.email, "GET_SALES_ORDER_DETAIL", req.portal);
         res.status(200).json({
@@ -199,7 +199,7 @@ exports.getSalesOrderDetail = async ( req, res ) => {
 exports.countSalesOrder = async (req, res) => {
     try {
         let query = req.query;
-        let  salesOrdersCounter = await SalesOrderServices.countSalesOrder( req.user._id, query, req.portal)
+        let salesOrdersCounter = await SalesOrderServices.countSalesOrder(req.user._id, query, req.portal)
 
         await Log.info(req.user.email, "COUNT_SALES_ORDER", req.portal);
         res.status(200).json({
@@ -221,7 +221,7 @@ exports.countSalesOrder = async (req, res) => {
 exports.getTopGoodsSold = async (req, res) => {
     try {
         let query = req.query;
-        let topGoodsSold = await SalesOrderServices.getTopGoodsSold(  req.user._id, query, req.portal)
+        let topGoodsSold = await SalesOrderServices.getTopGoodsSold(req.user._id, query, req.portal)
 
         await Log.info(req.user.email, "GET_TOP_GOODS_SOLD", req.portal);
         res.status(200).json({
@@ -243,7 +243,7 @@ exports.getTopGoodsSold = async (req, res) => {
 exports.getSalesForDepartments = async (req, res) => {
     try {
         let query = req.query;
-        let salesForDepartments = await SalesOrderServices.getSalesForDepartments( query, req.portal)
+        let salesForDepartments = await SalesOrderServices.getSalesForDepartments(query, req.portal)
 
         await Log.info(req.user.email, "GET_SALES_FOR_DEPARTMENTS", req.portal);
         res.status(200).json({
@@ -257,6 +257,28 @@ exports.getSalesForDepartments = async (req, res) => {
         res.status(400).json({
             success: false,
             messages: ["get_sales_for_departments_failed"],
+            content: error.message
+        });
+    }
+}
+
+exports.getNumberWorksSalesOrder = async (req, res) => {
+    try {
+        let query = req.query;
+        let numberSalesOrder = await SalesOrderServices.getNumberWorksSalesOrder(query, req.portal)
+
+        await Log.info(req.user.email, "GET_NUMBER_SALES_ORDERS", req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ["get_number_successfully"],
+            content: numberSalesOrder
+        });
+    } catch (error) {
+        await Log.error(req.user.email, "GET_NUMBER_SALES_ORDERS", req.portal);
+        console.log(error.message);
+        res.status(400).json({
+            success: false,
+            messages: ["get_number_failed"],
             content: error.message
         });
     }
