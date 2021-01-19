@@ -1,10 +1,11 @@
 const {
     ManufacturingCommand, ManufacturingPlan, ManufacturingWorks, OrganizationalUnit,
-    ManufacturingOrder, SalesOrder, Lot, ManufacturingMill
+    ManufacturingOrder, SalesOrder, Lot, ManufacturingMill, PurchasingRequest
 } = require(`../../../../models`);
 const {
     connect
 } = require(`../../../../helpers/dbHelper`);
+const { deleteCommandFromSchedule } = require('../workSchedule/workSchedule.service');
 
 function getArrayTimeFromString(stringDate) {
     arrayDate = stringDate.split('-');
@@ -327,7 +328,11 @@ exports.getAllManufacturingCommands = async (query, user, portal) => {
                     path: "creator"
                 }, {
                     path: "good",
-                    select: "code name baseUnit numberExpirationDate"
+                    select: "code name baseUnit numberExpirationDate materials",
+                    populate: [{
+                        path: "materials.good",
+                        select: "code name baseUnit",
+                    }]
                 }, {
                     path: "qualityControlStaffs.staff"
                 }, {
@@ -350,31 +355,7 @@ exports.getManufacturingCommandById = async (id, portal) => {
             select: "code",
             populate: [{
                 path: "salesOrders",
-                populate: [{
-                    path: 'creator', select: 'name'
-                }, {
-                    path: 'customer', select: 'name taxNumber'
-                }, {
-                    path: 'goods.good',
-                    populate: [{
-                        path: 'manufacturingMills.manufacturingMill'
-                    }]
-                }, {
-                    path: 'goods.manufacturingWorks', select: 'code name address description'
-                }, , {
-                    path: 'goods.discounts.bonusGoods.good', select: 'code name baseUnit'
-                }, {
-                    path: 'goods.discounts.discountOnGoods.good', select: 'code name baseUnit'
-                }, {
-                    path: 'discounts.bonusGoods.good', select: 'code name baseUnit'
-                }, {
-                    path: 'quote', select: 'code createdAt'
-                }]
-            }, {
-                path: "approvers",
-                populate: [{
-                    path: "approver"
-                }]
+                select: "code"
             }]
         }, {
             path: "manufacturingMill",
@@ -389,7 +370,11 @@ exports.getManufacturingCommandById = async (id, portal) => {
             path: "approvers.approver"
         }, {
             path: "good",
-            select: "code name baseUnit"
+            select: "code name baseUnit materials",
+            populate: [{
+                path: "materials.good",
+                select: "code name baseUnit",
+            }]
         }, {
             path: "qualityControlStaffs.staff"
         }]);
@@ -411,6 +396,16 @@ function findIndexOfStaff(array, id) {
     let result = -1;
     array.forEach((element, index) => {
         if (element.staff == id) {
+            result = index;
+        }
+    });
+    return result;
+}
+
+function findIndexOfApprover(array, id) {
+    let result = -1;
+    array.forEach((element, index) => {
+        if (element.approver == id) {
             result = index;
         }
     });
@@ -454,14 +449,61 @@ exports.editManufaturingCommand = async (id, data, portal) => {
     } else {
         oldManufacturingCommand.qualityControlStaffs = oldManufacturingCommand.qualityControlStaffs;
     }
-
     oldManufacturingCommand.status = data.status ? data.status : oldManufacturingCommand.status;
+    if (data.approver) {
+        let index = findIndexOfApprover(oldManufacturingCommand.approvers, data.approver);
+        if (index != -1) {
+            oldManufacturingCommand.approvers[index].approver = data.approver;
+            oldManufacturingCommand.approvers[index].approvedTime = new Date(Date.now());
+        }
+    }
     oldManufacturingCommand.finishedProductQuantity = data.finishedProductQuantity ? data.finishedProductQuantity : oldManufacturingCommand.finishedProductQuantity;
     oldManufacturingCommand.substandardProductQuantity = data.substandardProductQuantity ? data.substandardProductQuantity : oldManufacturingCommand.substandardProductQuantity;
     oldManufacturingCommand.finishedTime = data.finishedTime ? data.finishedTime : oldManufacturingCommand.finishedTime;
-
-
     await oldManufacturingCommand.save();
+
+    if (data.status == 3) {
+        let manufacturingPlan = await ManufacturingPlan(connect(DB_CONNECTION, portal)).findById({
+            _id: oldManufacturingCommand.manufacturingPlan
+        });
+        if (manufacturingPlan.status == 2) {
+            manufacturingPlan.status = 3;
+            await manufacturingPlan.save();
+        }
+    }
+    if (data.status == 4) {
+        let manufacturingPlan = await ManufacturingPlan(connect(DB_CONNECTION, portal)).findById({
+            _id: oldManufacturingCommand.manufacturingPlan
+        }).populate([{
+            path: 'manufacturingCommands'
+        }]);
+        if (manufacturingPlan.status == 3) {
+            let result = true;
+            for (let i = 0; i < manufacturingPlan.manufacturingCommands.length; i++) {
+                if (manufacturingPlan.manufacturingCommands[i].status != 4 && manufacturingPlan.manufacturingCommands[i].status != 5) {
+                    result = false;
+                }
+            }
+            if (result) {
+                manufacturingPlan.status = 4;
+                await manufacturingPlan.save();
+            }
+        }
+    }
+
+    if (data.status == 5) {
+        // Thực hiện xóa lịch của xưởng và của người
+        await deleteCommandFromSchedule(oldManufacturingCommand, portal);
+        // Kiểm tra nếu đã lên phiếu đề nghị mua hàng cho lệnh này mà chưa xư lý thì cho thành hủy
+        const purchasingRequest = await PurchasingRequest(connect(DB_CONNECTION, portal)).findOne({
+            manufacturingCommand: oldManufacturingCommand._id
+        });
+        if (purchasingRequest && purchasingRequest.status == 1) {
+            purchasingRequest.status = 3;
+            await purchasingRequest.save();
+        }
+
+    }
 
     let manufacturingCommand = await ManufacturingCommand(connect(DB_CONNECTION, portal))
         .findById({ _id: oldManufacturingCommand._id })
@@ -476,14 +518,370 @@ exports.editManufaturingCommand = async (id, data, portal) => {
         }, {
             path: "accountables"
         }, {
+            path: "approvers.approver"
+        }, {
             path: "creator"
         }, {
             path: "qualityControlStaffs.staff"
         }, {
             path: "good",
-            select: "code name baseUnit numberExpirationDate"
+            select: "code name baseUnit numberExpirationDate materials",
+            populate: [{
+                path: "materials.good",
+                select: "code name baseUnit",
+            }]
         }]);
 
     return { manufacturingCommand }
 
+}
+
+exports.getNumberCommands = async (query, portal) => {
+    const { currentRole, manufacturingWorks, fromDate, toDate } = query;
+    if (!currentRole) {
+        throw Error("CurrentRole is not defined");
+    }
+    // Lấy ra list các nhà máy là currentRole là trưởng phòng hoặc currentRole là role quản lý khác
+    // Lấy ra list nhà máy mà currentRole là quản đốc nhà máy
+    let role = [currentRole];
+    const departments = await OrganizationalUnit(connect(DB_CONNECTION, portal)).find({ 'managers': { $in: role } });
+    let organizationalUnitId = departments.map(department => department._id);
+    let listManufacturingWorks = await ManufacturingWorks(connect(DB_CONNECTION, portal)).find({
+        organizationalUnit: {
+            $in: organizationalUnitId
+        }
+    });
+    // Lấy ra các nhà máy mà currentRole cũng quản lý
+    let listWorksByManageRole = await ManufacturingWorks(connect(DB_CONNECTION, portal)).find({
+        manageRoles: {
+            $in: role
+        }
+    })
+    listManufacturingWorks = [...listManufacturingWorks, ...listWorksByManageRole];
+
+    let listWorksId = listManufacturingWorks.map(x => x._id);
+
+    if (manufacturingWorks) {
+        listWorksId = manufacturingWorks;
+    }
+
+    let options = {};
+
+    let listManufacturingMills = await ManufacturingMill(connect(DB_CONNECTION, portal)).find({
+        manufacturingWorks: {
+            $in: listWorksId
+        }
+    });
+
+    let listMillIds = listManufacturingMills.map(x => x._id);
+
+    options.manufacturingMill = {
+        $in: listMillIds
+    }
+
+    if (fromDate) {
+        options.createdAt = {
+            $gte: getArrayTimeFromString(fromDate)[0]
+        }
+    }
+
+    if (toDate) {
+        options.createdAt = {
+            ...options.createdAt,
+            $lte: getArrayTimeFromString(toDate)[1]
+        }
+    }
+
+    let commands = await ManufacturingCommand(connect(DB_CONNECTION, portal))
+        .find(options);
+    const totalCommands = commands.length;
+    // Lọc ra Command chậm tiến độ
+    let moment = require('moment');
+    let date = new Date(moment().subtract(1, "days"));
+
+    let arrayslowCommands = [];
+    for (let i = 0; i < commands.length; i++) {
+        if ((commands[i].status == 1 || commands[i].status == 2 || commands[i].status == 6) && (commands[i].startDate < date)
+            || (commands[i].status == 3 && commands[i].endDate < date)
+        ) {
+            arrayslowCommands.push(commands[i])
+        }
+    }
+
+    const slowCommands = arrayslowCommands.length;
+    const trueCommands = totalCommands - slowCommands;
+
+    return { totalCommands, trueCommands, slowCommands }
+
+}
+
+exports.getNumberCommandsStatus = async (query, portal) => {
+    const { currentRole, manufacturingWorks, fromDate, toDate } = query;
+    if (!currentRole) {
+        throw Error("CurrentRole is not defined");
+    }
+    // Lấy ra list các nhà máy là currentRole là trưởng phòng hoặc currentRole là role quản lý khác
+    // Lấy ra list nhà máy mà currentRole là quản đốc nhà máy
+    let role = [currentRole];
+    const departments = await OrganizationalUnit(connect(DB_CONNECTION, portal)).find({ 'managers': { $in: role } });
+    let organizationalUnitId = departments.map(department => department._id);
+    let listManufacturingWorks = await ManufacturingWorks(connect(DB_CONNECTION, portal)).find({
+        organizationalUnit: {
+            $in: organizationalUnitId
+        }
+    });
+    // Lấy ra các nhà máy mà currentRole cũng quản lý
+    let listWorksByManageRole = await ManufacturingWorks(connect(DB_CONNECTION, portal)).find({
+        manageRoles: {
+            $in: role
+        }
+    })
+    listManufacturingWorks = [...listManufacturingWorks, ...listWorksByManageRole];
+
+    let listWorksId = listManufacturingWorks.map(x => x._id);
+
+    if (manufacturingWorks) {
+        listWorksId = manufacturingWorks;
+    }
+
+    let options = {};
+
+    let listManufacturingMills = await ManufacturingMill(connect(DB_CONNECTION, portal)).find({
+        manufacturingWorks: {
+            $in: listWorksId
+        }
+    });
+
+    let listMillIds = listManufacturingMills.map(x => x._id);
+
+    options.manufacturingMill = {
+        $in: listMillIds
+    }
+
+    if (fromDate) {
+        options.createdAt = {
+            $gte: getArrayTimeFromString(fromDate)[0]
+        }
+    }
+
+    if (toDate) {
+        options.createdAt = {
+            ...options.createdAt,
+            $lte: getArrayTimeFromString(toDate)[1]
+        }
+    }
+
+    options.status = 6;
+    const command6 = await ManufacturingCommand(connect(DB_CONNECTION, portal))
+        .find(options).count();
+    options.status = 1;
+    const command1 = await ManufacturingCommand(connect(DB_CONNECTION, portal))
+        .find(options).count();
+    options.status = 2;
+    const command2 = await ManufacturingCommand(connect(DB_CONNECTION, portal))
+        .find(options).count();
+    options.status = 3;
+    const command3 = await ManufacturingCommand(connect(DB_CONNECTION, portal))
+        .find(options).count();
+    options.status = 4;
+    const command4 = await ManufacturingCommand(connect(DB_CONNECTION, portal))
+        .find(options).count();
+    options.status = 5;
+    const command5 = await ManufacturingCommand(connect(DB_CONNECTION, portal))
+        .find(options).count();
+    return { command6, command1, command2, command3, command4, command5 }
+}
+
+exports.getTopTenProduct = async (query, portal) => {
+    const { currentRole, manufacturingWorks, fromDate, toDate } = query;
+    if (!currentRole) {
+        throw Error("CurrentRole is not defined");
+    }
+    // Lấy ra list các nhà máy là currentRole là trưởng phòng hoặc currentRole là role quản lý khác
+    // Lấy ra list nhà máy mà currentRole là quản đốc nhà máy
+    let role = [currentRole];
+    const departments = await OrganizationalUnit(connect(DB_CONNECTION, portal)).find({ 'managers': { $in: role } });
+    let organizationalUnitId = departments.map(department => department._id);
+    let listManufacturingWorks = await ManufacturingWorks(connect(DB_CONNECTION, portal)).find({
+        organizationalUnit: {
+            $in: organizationalUnitId
+        }
+    });
+    // Lấy ra các nhà máy mà currentRole cũng quản lý
+    let listWorksByManageRole = await ManufacturingWorks(connect(DB_CONNECTION, portal)).find({
+        manageRoles: {
+            $in: role
+        }
+    })
+    listManufacturingWorks = [...listManufacturingWorks, ...listWorksByManageRole];
+
+    let listWorksId = listManufacturingWorks.map(x => x._id);
+
+    if (manufacturingWorks) {
+        listWorksId = manufacturingWorks;
+    }
+
+    let options = {};
+
+    let listManufacturingMills = await ManufacturingMill(connect(DB_CONNECTION, portal)).find({
+        manufacturingWorks: {
+            $in: listWorksId
+        }
+    });
+
+    let listMillIds = listManufacturingMills.map(x => x._id);
+
+    options.manufacturingMill = {
+        $in: listMillIds
+    }
+
+    if (fromDate) {
+        options.createdAt = {
+            $gte: getArrayTimeFromString(fromDate)[0]
+        }
+    }
+
+    if (toDate) {
+        options.createdAt = {
+            ...options.createdAt,
+            $lte: getArrayTimeFromString(toDate)[1]
+        }
+    }
+    options.status = {
+        $in: [3, 4]
+    }
+
+    const listCommands = await ManufacturingCommand(connect(DB_CONNECTION, portal))
+        .find(options).populate([{
+            path: 'good',
+            select: 'code name baseUnit'
+        }]);
+
+    let topTenProduct = [];
+
+    for (let i = 0; i < listCommands.length; i++) {
+        let index = topTenProduct.findIndex(x => x._id.equals(listCommands[i].good._id));
+        if (index != -1) {
+            let quantity = topTenProduct[index].quantity + listCommands[i].quantity;
+            topTenProduct[index].quantity = quantity;
+        } else {
+            topTenProduct.push({
+                _id: listCommands[i].good._id,
+                code: listCommands[i].good.code,
+                name: listCommands[i].good.name,
+                baseUnit: listCommands[i].good.baseUnit,
+                quantity: listCommands[i].quantity
+            });
+        }
+    }
+
+    topTenProduct = topTenProduct.sort((a, b) => {
+        return b.quantity - a.quantity
+    });
+    return topTenProduct;
+}
+
+exports.getFluctuatingProduct = async (query, portal) => {
+    const { currentRole, manufacturingWorks, fromMonth, toMonth, good } = query;
+    if (!currentRole) {
+        throw Error("CurrentRole is not defined");
+    }
+    // Lấy ra list các nhà máy là currentRole là trưởng phòng hoặc currentRole là role quản lý khác
+    // Lấy ra list nhà máy mà currentRole là quản đốc nhà máy
+    let role = [currentRole];
+    const departments = await OrganizationalUnit(connect(DB_CONNECTION, portal)).find({ 'managers': { $in: role } });
+    let organizationalUnitId = departments.map(department => department._id);
+    let listManufacturingWorks = await ManufacturingWorks(connect(DB_CONNECTION, portal)).find({
+        organizationalUnit: {
+            $in: organizationalUnitId
+        }
+    });
+    // Lấy ra các nhà máy mà currentRole cũng quản lý
+    let listWorksByManageRole = await ManufacturingWorks(connect(DB_CONNECTION, portal)).find({
+        manageRoles: {
+            $in: role
+        }
+    })
+    listManufacturingWorks = [...listManufacturingWorks, ...listWorksByManageRole];
+
+    let listWorksId = listManufacturingWorks.map(x => x._id);
+
+    if (manufacturingWorks) {
+        listWorksId = manufacturingWorks;
+    }
+
+    let options = {};
+
+    let listManufacturingMills = await ManufacturingMill(connect(DB_CONNECTION, portal)).find({
+        manufacturingWorks: {
+            $in: listWorksId
+        }
+    });
+
+    let listMillIds = listManufacturingMills.map(x => x._id);
+
+    options.manufacturingMill = {
+        $in: listMillIds
+    }
+
+    if (good) {
+        options.good = good
+    }
+
+    options.status = 4;
+
+    YearMonthfrom = formatToTimeZoneDate(fromMonth);
+    YearMonthto = formatToTimeZoneDate(toMonth);
+    let listMonths = dateRange(YearMonthfrom, YearMonthto);
+
+
+    let fluatingProduct = [];
+    for (let i = 0; i < listMonths.length; i++) {
+        let currentMonth = listMonths[i];
+        let yearMonth = currentMonth.split("-");
+        let startMonth = new Date(yearMonth[0], yearMonth[1] - 1, 1);
+        let endMonth = new Date(yearMonth[0], yearMonth[1], 0);
+        options.updatedAt = {
+            $gte: startMonth,
+            $lte: endMonth
+        }
+
+        let manufacturingCommands = await ManufacturingCommand(connect(DB_CONNECTION, portal))
+            .find(options);
+        let fluatingMonth = getFluatingMonthFromCommands(manufacturingCommands, listMonths[i]);
+        fluatingProduct.push(fluatingMonth);
+    }
+    return fluatingProduct;
+}
+
+function getFluatingMonthFromCommands(listCommands, month) {
+    let fluatingMonth = {
+        finishedProductQuantity: 0,
+        substandardProductQuantity: 0,
+        month: month
+    };
+    for (let i = 0; i < listCommands.length; i++) {
+        fluatingMonth.finishedProductQuantity += listCommands[i].finishedProductQuantity ? listCommands[i].finishedProductQuantity : 0;
+        fluatingMonth.substandardProductQuantity += listCommands[i].substandardProductQuantity ? listCommands[i].substandardProductQuantity : 0;
+    }
+    return fluatingMonth;
+}
+
+function dateRange(startDate, endDate) {
+    var start = startDate.split('-');
+    var end = endDate.split('-');
+    var startYear = parseInt(start[0]);
+    var endYear = parseInt(end[0]);
+    var dates = [];
+
+    for (var i = startYear; i <= endYear; i++) {
+        var endMonth = i != endYear ? 11 : parseInt(end[1]) - 1;
+        var startMon = i === startYear ? parseInt(start[1]) - 1 : 0;
+        for (var j = startMon; j <= endMonth; j = j > 12 ? j % 12 || 11 : j + 1) {
+            var month = j + 1;
+            var displayMonth = month < 10 ? '0' + month : month;
+            dates.push([i, displayMonth].join('-'));
+        }
+    }
+    return dates;
 }

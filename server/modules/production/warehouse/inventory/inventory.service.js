@@ -93,12 +93,14 @@ exports.getDetailLot = async (id, portal) => {
             { path: 'good' },
             { path: 'stocks.binLocations.binLocation', select: 'id path' },
             { path: 'stocks.stock' },
-            { path: 'lotLogs.bill', 
+            { path: "manufacturingCommand" },
+            {
+                path: 'lotLogs.bill',
                 populate: [
-                    { path: 'supplier' }, 
-                    { path: 'customer'}, 
-                    { path: 'manufacturingMill'},
-                    { path: 'toStock'}
+                    { path: 'supplier' },
+                    { path: 'customer' },
+                    { path: 'manufacturingMill' },
+                    { path: 'toStock' }
                 ]
             },
             { path: 'lotLogs.binLocations.binLocation' },
@@ -113,25 +115,25 @@ exports.createOrUpdateLots = async (data, portal) => {
         for (let i = 0; i < data.lots.length; i++) {
             let date = data.lots[i].expirationDate.split("-");
             let expirationDate = new Date(date[2], date[1] - 1, date[0]);
-            let lot = await Lot(connect(DB_CONNECTION, portal)).find({ code: data.lots[i].code });
-            if (lot && lot.length > 0) {
-                lot[0].stocks[0].stock = data.stock;
-                lot[0].stocks[0].quantity = data.lots[i].quantity;
-                lot[0].originalQuantity = data.lots[i].quantity;
-                lot[0].quantity = data.lots[i].quantity;
-                lot[0].expirationDate = expirationDate;
-                lot[0].code = lot[0].code;
-                lot[0].good = lot[0].good;
-                lot[0].type = data.type;
-                lot[0].description = data.lots[i].note;
-                lot[0].lotLogs[0].bill = data.bill;
-                lot[0].lotLogs[0].quantity = data.lots[i].quantity;
-                lot[0].lotLogs[0].description = data.lots[0].note;
-                lot[0].lotLogs[0].type = data.typeBill;
-                lot[0].lotLogs[0].stock = data.stock;
+            let lot = await Lot(connect(DB_CONNECTION, portal)).findOne({ code: data.lots[i].code });
+            if (lot) {
+                lot.stocks[0].stock = data.stock;
+                lot.stocks[0].quantity = data.lots[i].quantity;
+                lot.originalQuantity = data.lots[i].quantity;
+                lot.quantity = data.lots[i].quantity;
+                lot.expirationDate = expirationDate;
+                lot.code = lot.code;
+                lot.good = lot.good;
+                lot.type = data.type;
+                lot.description = data.lots[i].note;
+                lot.lotLogs[0].bill = data.bill;
+                lot.lotLogs[0].quantity = data.lots[i].quantity;
+                lot.lotLogs[0].description = data.lots[0].note;
+                lot.lotLogs[0].type = data.typeBill;
+                lot.lotLogs[0].stock = data.stock;
 
-                await lot[0].save();
-                lots.push(lot[0]);
+                await lot.save();
+                lots.push(lot);
             }
             else {
                 let stock = {
@@ -465,7 +467,14 @@ exports.getAllManufacturingLot = async (query, user, portal) => {
                     path: "good"
                 }, {
                     path: "manufacturingCommand",
-                    select: "code manufacturingMill",
+                    populate: [{
+                        path: "good",
+                        select: "code name baseUnit numberExpirationDate materials",
+                        populate: [{
+                            path: "materials.good",
+                            select: "code name baseUnit",
+                        }]
+                    }]
                 }, {
                     path: "creator"
                 }],
@@ -497,6 +506,13 @@ exports.getDetailManufacturingLot = async (id, portal) => {
                 path: "accountables"
             }, {
                 path: "qualityControlStaffs.staff"
+            }, {
+                path: "good",
+                select: "code name baseUnit numberExpirationDate materials",
+                populate: [{
+                    path: "materials.good",
+                    select: "code name baseUnit",
+                }]
             }]
         }, {
             path: "creator"
@@ -521,7 +537,7 @@ exports.getInventoryByGoods = async (data, portal) => {
     for (let i = 0; i < array.length; i++) {
         let inventory = 0;
         let goodInventory = {};
-        const lots = await Lot(connect(DB_CONNECTION, portal)).find({ good: array[i] });
+        const lots = await Lot(connect(DB_CONNECTION, portal)).find({ good: array[i], quantity: { $ne: 0 } });
         if (lots.length > 0) {
             for (let j = 0; j < lots.length; j++) {
                 inventory += Number(lots[j].quantity);
@@ -559,7 +575,7 @@ exports.getInventories = async (query, portal) => {
     const status = ['1', '3', '5'];
     let data = [];
     let optionGood = { type: type };
-    if(category) {
+    if (category) {
         optionGood.category = category;
     }
 
@@ -575,8 +591,8 @@ exports.getInventories = async (query, portal) => {
     }
 
     const goods = await Good(connect(DB_CONNECTION, portal)).find(optionGood);
-    if(goods.length > 0) {
-        for(let i = 0; i < goods.length; i++) {
+    if (goods.length > 0) {
+        for (let i = 0; i < goods.length; i++) {
             let inventory = 0;
             let goodIssue = 0;
             let goodReceipt = 0;
@@ -585,7 +601,7 @@ exports.getInventories = async (query, portal) => {
             let goodInventory = {};
             let options = { good: goods[i]._id };
             let optionBill = {};
-            if(query.stock) {
+            if (query.stock) {
                 options.stocks = { $elemMatch: { stock: query.stock } };
                 optionBill.fromStock = query.stock;
             }
@@ -629,12 +645,12 @@ exports.getInventories = async (query, portal) => {
                         }
                     },
 
-                    options = {
-                        ...options,
-                        createdAt: {
-                            $lte: end
+                        options = {
+                            ...options,
+                            createdAt: {
+                                $lte: end
+                            }
                         }
-                    }
                 }
             }
 
@@ -642,13 +658,13 @@ exports.getInventories = async (query, portal) => {
             const lots = await Lot(connect(DB_CONNECTION, portal)).find(options);
             if (lots.length > 0) {
                 for (let j = 0; j < lots.length; j++) {
-                    if(stock === undefined) {
+                    if (stock === undefined) {
                         inventory += Number(lots[j].quantity);
                     }
                     else {
                         stock.map(stockId => {
                             lots[j].stocks.map(stockLot => {
-                                if(stockId.toString() === stockLot.stock.toString()) {
+                                if (stockId.toString() === stockLot.stock.toString()) {
                                     inventory += Number(stockLot.quantity);
                                 }
                             })
@@ -723,4 +739,116 @@ exports.getInventories = async (query, portal) => {
         }
     }
     return data;
+}
+
+exports.getInventoryInStockByGoods = async (query, portal) => {
+    const { goodId, stockId } = query;
+    const group = '2';
+    const status = ['1', '3', '5'];
+    let goodInventory = {};
+    let inventory = 0;
+    const good = await Good(connect(DB_CONNECTION, portal)).findById({ _id: goodId });
+
+    const lots = await Lot(connect(DB_CONNECTION, portal)).find({ good: goodId, quantity: { $ne: 0 }, stocks: { $elemMatch: { stock: stockId } } });
+
+    if (lots.length > 0) {
+        for (let j = 0; j < lots.length; j++) {
+            for (let k = 0; k < lots[j].stocks.length; k++) {
+                if (stockId.toString() === lots[j].stocks[k].stock.toString()) {
+                    inventory += Number(lots[j].stocks[k].quantity);
+                }
+            }
+        }
+
+        const bills = await Bill(connect(DB_CONNECTION, portal)).find({ goods: { $elemMatch: { good: good._id } }, group: group, status: { $in: status }, fromStock: stockId });
+
+        if (bills.length > 0) {
+            for (let x = 0; x < bills.length; x++) {
+                for (let y = 0; y < bills[x].goods.length; y++) {
+                    if (bills[x].goods[y].good.toString() === goodId.toString()) {
+                        inventory -= Number(bills[x].goods[y].quantity)
+                    }
+                }
+            }
+        }
+        goodInventory.inventory = inventory;
+    }
+    else {
+        goodInventory.inventory = 0;
+    }
+    return goodInventory;
+}
+
+exports.getManufacturingLotNumber = async (query, portal) => {
+    const { currentRole, manufacturingWorks, fromDate, toDate } = query;
+    if (!currentRole) {
+        throw Error("CurrentRole is not defined");
+    }
+    // Lấy ra list các nhà máy là currentRole là trưởng phòng hoặc currentRole là role quản lý khác
+    // Lấy ra list nhà máy mà currentRole là quản đốc nhà máy
+    let role = [currentRole];
+    const departments = await OrganizationalUnit(connect(DB_CONNECTION, portal)).find({ 'managers': { $in: role } });
+    let organizationalUnitId = departments.map(department => department._id);
+    let listManufacturingWorks = await ManufacturingWorks(connect(DB_CONNECTION, portal)).find({
+        organizationalUnit: {
+            $in: organizationalUnitId
+        }
+    });
+    // Lấy ra các nhà máy mà currentRole cũng quản lý
+    let listWorksByManageRole = await ManufacturingWorks(connect(DB_CONNECTION, portal)).find({
+        manageRoles: {
+            $in: role
+        }
+    })
+    listManufacturingWorks = [...listManufacturingWorks, ...listWorksByManageRole];
+
+    let listWorksId = listManufacturingWorks.map(x => x._id);
+
+    if (manufacturingWorks) {
+        listWorksId = manufacturingWorks;
+    }
+
+    let listManufacturingMills = await ManufacturingMill(connect(DB_CONNECTION, portal)).find({
+        manufacturingWorks: {
+            $in: listWorksId
+        }
+    });
+
+    let listMillIds = listManufacturingMills.map(x => x._id);
+    // Lấy ra tất cả các lệnh của các xưởng này
+    let listManufacturingCommands = await ManufacturingCommand(connect(DB_CONNECTION, portal))
+        .find({
+            manufacturingMill: {
+                $in: listMillIds
+            }
+        });
+    let listManufacturingCommandIds = listManufacturingCommands.map(x => x._id);
+
+    let options = {};
+    options.manufacturingCommand = {
+        $in: listManufacturingCommandIds
+    }
+    if (fromDate) {
+        options.createdAt = {
+            $gte: getArrayTimeFromString(fromDate)[0]
+        }
+    }
+
+    if (toDate) {
+        options.createdAt = {
+            ...options.createdAt,
+            $lte: getArrayTimeFromString(toDate)[1]
+        }
+    }
+
+    options.status = 1;
+    const lot1 = await Lot(connect(DB_CONNECTION, portal)).find(options).count();
+
+    options.status = 2;
+    const lot2 = await Lot(connect(DB_CONNECTION, portal)).find(options).count();
+
+    options.status = 3;
+    const lot3 = await Lot(connect(DB_CONNECTION, portal)).find(options).count();
+
+    return { lot1, lot2, lot3 }
 }

@@ -341,10 +341,14 @@ exports.getWorkSchedules = async (query, portal) => {
                     for (let k = 0; k < workSchedules.docs[i].turns[j].length; k++) {
                         if (workSchedules.docs[i].turns[j][k] != null) {
                             let manufacturingCommand = await ManufacturingCommand(connect(DB_CONNECTION, portal)).findById(workSchedules.docs[i].turns[j][k])
-                            // .populate([{
-                            //     path: "good.good",
-                            //     select: "code name"
-                            // }]);
+                                .populate([{
+                                    path: "good",
+                                    select: "code name baseUnit numberExpirationDate materials",
+                                    populate: [{
+                                        path: "materials.good",
+                                        select: "code name baseUnit",
+                                    }]
+                                }]);
                             workSchedules.docs[i].turns[j][k] = manufacturingCommand;
                         }
                     }
@@ -398,10 +402,14 @@ exports.getWorkSchedules = async (query, portal) => {
                     for (k = 0; k < workSchedules.docs[i].turns[j].length; k++) {
                         if (workSchedules.docs[i].turns[j][k] != null) {
                             let manufacturingCommand = await ManufacturingCommand(connect(DB_CONNECTION, portal)).findById(workSchedules.docs[i].turns[j][k])
-                            // .populate([{
-                            //     path: "good.good",
-                            //     select: "code name"
-                            // }]);
+                                .populate([{
+                                    path: "good",
+                                    select: "code name baseUnit numberExpirationDate materials",
+                                    populate: [{
+                                        path: "materials.good",
+                                        select: "code name baseUnit",
+                                    }]
+                                }]);
                             workSchedules.docs[i].turns[j][k] = manufacturingCommand;
                         }
                     }
@@ -424,7 +432,11 @@ exports.getWorkSchedulesByMillId = async (id, portal) => {
                     let manufacturingCommand = await ManufacturingCommand(connect(DB_CONNECTION, portal)).findById(workSchedules[i].turns[j][k])
                         .populate([{
                             path: "good",
-                            select: "code name"
+                            select: "code name baseUnit numberExpirationDate materials",
+                            populate: [{
+                                path: "materials.good",
+                                select: "code name baseUnit",
+                            }]
                         }]);
                     workSchedules[i].turns[j][k] = manufacturingCommand;
                 }
@@ -483,7 +495,11 @@ exports.getWorkSchedulesOfManufacturingWork = async (query, portal) => {
                     let manufacturingCommand = await ManufacturingCommand(connect(DB_CONNECTION, portal)).findById(workSchedules[i].turns[j][k])
                         .populate([{
                             path: "good",
-                            select: "code name"
+                            select: "code name baseUnit numberExpirationDate materials",
+                            populate: [{
+                                path: "materials.good",
+                                select: "code name baseUnit",
+                            }]
                         }]);
                     workSchedules[i].turns[j][k] = manufacturingCommand;
                 }
@@ -618,4 +634,44 @@ exports.bookingManyWorkerToCommand = async (arrayWorkerSchedules, portal) => {
         }
     }
     return null;
+}
+
+
+function getStartMonthEndMonthFromDate(startDate, endDate) {
+    const moment = require('moment');
+    var startMonth = moment(startDate).startOf('month');
+    var endMonth = moment(endDate).endOf('month');
+    return [startMonth, endMonth];
+}
+
+exports.deleteCommandFromSchedule = async (command, portal) => {
+    // Tìm ra khoảng tháng
+    let arrayMonth = getStartMonthEndMonthFromDate(command.startDate, command.endDate);
+    // Tìm ra các lịch thỏa mãn
+    const workSchedules = await WorkSchedule(connect(DB_CONNECTION, portal)).find({
+        month: {
+            '$gte': arrayMonth[0],
+            '$lte': arrayMonth[1]
+        },
+        $or: [{
+            manufacturingMill: command.manufacturingMill
+        }, {
+            user: {
+                $in: command.responsibles
+            }
+        }]
+    });
+
+    for (let i = 0; i < workSchedules.length; i++) {
+        for (let j = 0; j < workSchedules[i].turns.length; j++) {
+            for (let k = 0; k < workSchedules[i].turns[j].length; k++) {
+                if (command._id.equals(workSchedules[i].turns[j][k])) {
+                    workSchedules[i].turns[j][k] = null;
+                    await workSchedules[i].markModified("turns");
+                    await workSchedules[i].save();
+                }
+            }
+        }
+    }
+    // Xóa các lệnh khỏi lịch sản xuất
 }

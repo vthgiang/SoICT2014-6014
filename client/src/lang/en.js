@@ -1037,6 +1037,8 @@ export default {
                 "Analysis manufacturing performance",
             manage_manufacturing_works: "Manage manufacturing works",
             manage_manufacturing_mill: "Manage manufacturing mill",
+
+            user_guide: "User guide",
         },
 
         manage_system: {
@@ -2947,6 +2949,7 @@ export default {
                 evaluation: "Evaluation",
                 attach_file: "Attach file",
                 comment: "Comment",
+                result: "Result",
                 re_evaluation: "Re-evaluation",
                 question_delete_file: "Are you sure to delete",
                 edit_comment: "Edit comment",
@@ -2966,6 +2969,7 @@ export default {
                 time: "Time",
                 none_subtask: "No subtask",
                 enter_comment_action: "Comment of action",
+                enter_result_action: "Result of action",
                 create_comment_action: "Create comment",
                 stop_timer: "Stop timer",
                 edit: "Edit",

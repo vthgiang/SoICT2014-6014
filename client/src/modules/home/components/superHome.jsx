@@ -164,7 +164,7 @@ class SuperHome extends Component {
         }
         if (startMonthDefault < 10)
             startMonthDefault = '0' + startMonthDefault;
-        
+
         let defaultStartMonth = [startMonthDefault, startYear].join('-');
         let defaultEndMonth = month < 10 ? ['0' + month, year].join('-') : [month, year].join('-');
 
@@ -205,23 +205,6 @@ class SuperHome extends Component {
                     </div>
                 </div>
 
-                {/* Lịch công việc chi tiết */}
-                <div className="row">
-                    <div className="col-xs-12">
-                        <div className="box box-primary">
-                            <div className="box-header with-border">
-                                <div className="box-title">{translate('task.task_management.tasks_calendar')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
-                            </div>
-                            <CalendarEmployee
-                                startMonth={startMonth}
-                                endMonth={endMonth}
-                                home={true}
-                            />
-                        </div>
-
-                    </div>
-                </div>
-
                 <div className="row">
                     <div className="col-xs-6">
                         <div className="box box-primary">
@@ -229,7 +212,7 @@ class SuperHome extends Component {
                                 <div className="box-title">{translate('task.task_management.dashboard_overdue')}</div>
                             </div>
 
-                            <div className="box-body" style={{ minHeight: "300px" }}>
+                            <div className="box-body" style={{ height: "380px", overflow: "auto" }}>
                                 {
                                     (tasks && tasks.tasksbyuser) ?
                                         <ul className="todo-list">
@@ -256,7 +239,7 @@ class SuperHome extends Component {
                             <div className="box-header with-border">
                                 <div className="box-title">{translate('task.task_management.dashboard_about_to_overdue')}</div>
                             </div>
-                            <div className="box-body" style={{ minHeight: "300px" }}>
+                            <div className="box-body" style={{ height: "380px", overflow: "auto" }}>
                                 {
                                     (tasks && tasks.tasksbyuser) ?
                                         <ul className="todo-list">
@@ -276,6 +259,22 @@ class SuperHome extends Component {
                                         </ul> : "Đang tải dữ liệu"
                                 }
                             </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Lịch công việc chi tiết */}
+                <div className="row">
+                    <div className="col-xs-12">
+                        <div className="box box-primary">
+                            <div className="box-header with-border">
+                                <div className="box-title">{translate('task.task_management.tasks_calendar')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
+                            </div>
+                            <CalendarEmployee
+                                startMonth={startMonth}
+                                endMonth={endMonth}
+                                home={true}
+                            />
                         </div>
                     </div>
                 </div>

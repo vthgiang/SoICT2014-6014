@@ -7,11 +7,11 @@ const SalesOrderSchema = new Schema({
         type: String,
         // required: true
     },
-    status: { //1: Chờ xác nhận (bộ phận Sales Admin và bộ phận kế toán xác nhận)
+    status: { //1: Chờ phê duyệt (bộ phận Sales Admin và bộ phận kế toán xác nhận)
         //2: Đã phê duyệt
         //3: Yêu cầu sản xuất, 
-        //4: Đang sản xuất
-        //5: Đã sẵn hàng, 
+        //4: Đã lập kế hoạch sản xuất
+        //5: Đã yêu cầu sản xuất
         //6: Đang giao hàng , 7: Đã giao hàng, 
         //8: Đã hủy
         type: Number,
@@ -50,19 +50,22 @@ const SalesOrderSchema = new Schema({
             ref: 'User',
             // required: true
         },
-        approverRole: {
-            type: Number,
-            enum: [1, 2] //1. Sales Admin, 2. Kế toán
-        },
         approveAt: {
             type: Date,
-            default: new Date()
         },
-        status: {
-            type: Boolean,
-            default: false
+        status: {//1. Chưa phê duyệt, 2. Đã phê duyệt, 3. Đã hủy
+            type: Number,
+            default: 1,
+            enum: [1, 2, 3],
+        },
+        note: {
+            type: String
         }
     }],
+    organizationalUnit: {//Đơn vị quản lý đơn
+        type: Schema.Types.ObjectId,
+        ref: "OrganizationalUnit"
+    },
     priority: { // 1: Thấp, 2: Trung bình, 3: Cao, 4: Đặc biệt
         type: Number,
         enum: [1, 2, 3, 4],

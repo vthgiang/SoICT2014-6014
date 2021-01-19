@@ -37,6 +37,10 @@ export function salesOrders(state = initState, action) {
         case SalesOrderConstants.GET_SALES_ORDER_BY_MANUFACTURING_WORKS_REQUEST:
         case SalesOrderConstants.GET_SALES_ORDERS_FOR_PAYMENT_REQUEST:
         case SalesOrderConstants.GET_SALES_ORDER_DETAIL_REQUEST:
+        case SalesOrderConstants.COUNT_SALES_ORDER_REQUEST:
+        case SalesOrderConstants.GET_TOP_GOODS_SOLD_REQUEST:
+        case SalesOrderConstants.GET_SALES_FOR_DEPARTMENTS_REQUEST:
+        case SalesOrderConstants.GET_NUMBER_SALES_ORDER_WORKS_REQUEST:
             return {
                 ...state,
                 isLoading: true
@@ -50,6 +54,10 @@ export function salesOrders(state = initState, action) {
         case SalesOrderConstants.GET_SALES_ORDER_BY_MANUFACTURING_WORKS_FAILURE:
         case SalesOrderConstants.GET_SALES_ORDERS_FOR_PAYMENT_FAILURE:
         case SalesOrderConstants.GET_SALES_ORDER_DETAIL_FAILURE:
+        case SalesOrderConstants.COUNT_SALES_ORDER_FAILURE:
+        case SalesOrderConstants.GET_TOP_GOODS_SOLD_FAILURE:
+        case SalesOrderConstants.GET_SALES_FOR_DEPARTMENTS_FAILURE:
+        case SalesOrderConstants.GET_NUMBER_SALES_ORDER_WORKS_FAILURE:
             return {
                 ...state,
                 isLoading: false,
@@ -128,6 +136,30 @@ export function salesOrders(state = initState, action) {
             return {
                 ...state,
                 salesOrderDetail: action.payload.salesOrder,
+                isLoading: false
+            }
+        case SalesOrderConstants.COUNT_SALES_ORDER_SUCCESS:
+            return {
+                ...state,
+                salesOrdersCounter: action.payload.salesOrdersCounter,
+                isLoading: false
+            }
+        case SalesOrderConstants.GET_TOP_GOODS_SOLD_SUCCESS:
+            return {
+                ...state,
+                topGoodsSold: action.payload.topGoodsSold,
+                isLoading: false
+            }
+        case SalesOrderConstants.GET_SALES_FOR_DEPARTMENTS_SUCCESS:
+            return {
+                ...state,
+                salesForDepartments: action.payload.salesForDepartments,
+                isLoading: false
+            }
+        case SalesOrderConstants.GET_NUMBER_SALES_ORDER_WORKS_SUCCESS:
+            return {
+                ...state,
+                numberSalesOrdersWorks: action.payload,
                 isLoading: false
             }
         default:

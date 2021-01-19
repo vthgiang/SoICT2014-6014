@@ -6,7 +6,10 @@ export const QuoteServices = {
     editQuote,
     deleteQuote,
     approveQuote,
-    getQuotesToMakeOrder
+    getQuotesToMakeOrder,
+    getQuoteDetail,
+    countQuote,
+    getTopGoodsCare
 }
 
 function createNewQuote(data) {
@@ -60,15 +63,49 @@ function approveQuote(id, data) {
         method: "PATCH",
         data
     },
+        true,
+        true,
+    "manage_order.quote")
+}
+
+function getQuotesToMakeOrder(queryData) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/quote/get-to-make-order`,
+        method: "GET",
+        params: queryData
+    },
         false,
         true,
     "manage_order.quote")
 }
 
-function getQuotesToMakeOrder() {
+function getQuoteDetail(id) {
     return sendRequest({
-        url: `${process.env.REACT_APP_SERVER}/quote/get-to-make-order`,
+        url: `${process.env.REACT_APP_SERVER}/quote/${id}`,
         method: "GET",
+    },
+        false,
+        true,
+    "manage_order.quote")
+}
+
+//SERVICE CHO DASHBOARD
+function countQuote(queryData) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/quote/count`,
+        method: "GET",
+        params: queryData
+    },
+        false,
+        true,
+    "manage_order.quote")
+}
+
+function getTopGoodsCare(queryData) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/quote/get-top-good-care`,
+        method: "GET",
+        params: queryData
     },
         false,
         true,

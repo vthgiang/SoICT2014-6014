@@ -573,6 +573,10 @@ class GoodIssueCreateForm extends Component {
         }
         //---Kết thúc phần lập phiếu từ đơn bán hàng---
 
+        //---Lập phiếu xuất nguyên vật liệu từ lệnh sản xuất---
+
+        //---Kế thúc lập phiếu xuất nguyên liệu từ lệnh sản xuất---
+
         if (nextProps.group !== prevState.group) {
             return {
                 ...prevState,
@@ -672,15 +676,13 @@ class GoodIssueCreateForm extends Component {
 
         return (
             <React.Fragment>
-                {createdSource !== "salesOrder" ? (
+                {createdSource !== "salesOrder" && (
                     <ButtonModal
                         onButtonCallBack={this.handleClickCreate}
                         modalID={`modal-create-bill-issue`}
                         button_name={translate("manage_warehouse.good_management.add")}
                         title={translate("manage_warehouse.good_management.add_title")}
                     />
-                ) : (
-                    ""
                 )}
 
                 <DialogModal

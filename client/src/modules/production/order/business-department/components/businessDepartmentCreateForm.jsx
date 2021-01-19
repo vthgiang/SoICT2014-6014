@@ -109,14 +109,14 @@ class BusinessDepartmentCreateForm extends Component {
         const { organizationalUnitError, organizationalUnit, role, roleError } = this.state;
         return (
             <React.Fragment>
-                <ButtonModal modalID="modal-create-business-department" button_name={"Thêm cấu hình đơn vị"} title={"Thêm cấu hình đơn vị"} />
+                <ButtonModal modalID="modal-create-business-department" button_name={"Thêm cấu hình đơn vị"} title={"Phân vai trò đơn vị"} />
                 <DialogModal
                     modalID="modal-create-business-department"
                     isLoading={false}
                     formID="form-create-business-department"
-                    title={"Cấu hình đơn vị kinh doanh"}
-                    msg_success={"Cấu hình đơn vị kinh doanh thành công"}
-                    msg_faile={"Cấu hình đơn vị kinh doanh không thành công"}
+                    title={"Phân vai trò đơn vị kinh doanh"}
+                    msg_success={"Phân vai trò đơn vị kinh doanh thành công"}
+                    msg_faile={"Phân vai trò đơn vị kinh doanh không thành công"}
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
                     size={50}
@@ -125,7 +125,7 @@ class BusinessDepartmentCreateForm extends Component {
                     <form id="form-create-business-department">
                         <div className={`form-group ${!organizationalUnitError ? "" : "has-error"}`}>
                             <label>
-                                {"Đơn vị được cấu hình"}
+                                {"Đơn vị"}
                                 <span className="text-red">*</span>
                             </label>
                             <SelectBox

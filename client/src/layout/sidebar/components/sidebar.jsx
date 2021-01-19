@@ -555,7 +555,7 @@ class SideBar extends Component {
                                         },
                                         {
                                             name: "menu.manage_bank_account",
-                                            icon: "fa fa-sitemap",
+                                            icon: "fa fa-bank",
                                             path: "/manage-bank-account",
                                         },
                                     ],
@@ -710,6 +710,14 @@ class SideBar extends Component {
                                             path: "/manage-manufacturing-mill",
                                         },
                                     ],
+                                }}
+                            />
+                            {/* Hướng dẫn sử dụng */}
+                            <Item
+                                item={{
+                                    name: "menu.user_guide",
+                                    path: "/user-guide",
+                                    icon: "fa fa-newspaper-o",
                                 }}
                             />
                         </ul>

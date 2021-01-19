@@ -6,7 +6,7 @@ import { formatDate } from "../../../../../../helpers/formatDate";
 class PaymentVoucherDetailForm extends Component {
     getPaidForPayment = (salesOrders) => {
         let paid = salesOrders.reduce((accumulator, currentValue) => {
-            return accumulator + currentValue.money;
+            return accumulator + parseInt(currentValue.money);
         }, 0);
 
         return formatCurrency(paid);

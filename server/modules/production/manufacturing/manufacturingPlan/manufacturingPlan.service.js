@@ -9,8 +9,8 @@ const {
 
 const UserService = require('../../../super-admin/user/user.service');
 const { createManufacturingCommand } = require('../manufacturingCommand/manufacturingCommand.service');
-const { bookingManyManufacturingMills, bookingManyWorkerToCommand } = require('../workSchedule/workSchedule.service');
-const { addManufacturingPlanForGood } = require('../../order/sales-order/salesOrder.service');
+const { bookingManyManufacturingMills, bookingManyWorkerToCommand, deleteCommandFromSchedule } = require('../workSchedule/workSchedule.service');
+const { addManufacturingPlanForGood, removeManufacturingPlanForGood } = require('../../order/sales-order/salesOrder.service');
 
 
 function getArrayTimeFromString(stringDate) {
@@ -339,26 +339,7 @@ exports.getManufacturingPlanById = async (id, portal) => {
         .findById(id)
         .populate([{
             path: 'salesOrders',
-            populate: [{
-                path: 'creator', select: 'name'
-            }, {
-                path: 'customer', select: 'name taxNumber'
-            }, {
-                path: 'goods.good',
-                populate: [{
-                    path: 'manufacturingMills.manufacturingMill'
-                }]
-            }, {
-                path: 'goods.manufacturingWorks', select: 'code name address description'
-            }, , {
-                path: 'goods.discounts.bonusGoods.good', select: 'code name baseUnit'
-            }, {
-                path: 'goods.discounts.discountOnGoods.good', select: 'code name baseUnit'
-            }, {
-                path: 'discounts.bonusGoods.good', select: 'code name baseUnit'
-            }, {
-                path: 'quote', select: 'code createdAt'
-            }]
+            select: 'code'
         }, {
             path: 'manufacturingWorks',
             select: 'code name'
@@ -434,6 +415,28 @@ exports.editManufacturingPlan = async (id, data, portal) => {
     oldPlan.endDate = data.endDate ? data.endDate : oldPlan.endDate;
 
     await oldPlan.save();
+
+    if (data.status == 5) {
+        const listCommands = await ManufacturingCommand(connect(DB_CONNECTION, portal))
+            .find({
+                manufacturingPlan: oldPlan._id
+            });
+        for (let i = 0; i < listCommands.length; i++) {
+            await deleteCommandFromSchedule(listCommands[i], portal);
+            listCommands[i].status = 5;
+            await listCommands[i].save();
+        }
+        const salesOrders = oldPlan.salesOrders;
+        if (salesOrders.length) {
+            const manufacturingWorks = oldPlan.manufacturingWorks;
+            for (let i = 0; i < salesOrders.length; i++) {
+                for (let j = 0; j < manufacturingWorks.length; j++) {
+                    await removeManufacturingPlanForGood(salesOrders[i], manufacturingWorks[j], portal);
+                }
+            }
+        }
+    }
+
     const manufacturingPlan = await ManufacturingPlan(connect(DB_CONNECTION, portal))
         .findById({ _id: oldPlan._id })
         .populate([{
@@ -444,4 +447,150 @@ exports.editManufacturingPlan = async (id, data, portal) => {
             path: "approvers.approver"
         }]);
     return { manufacturingPlan }
+}
+
+exports.getNumberPlans = async (data, portal) => {
+    const { currentRole, manufacturingWorks, fromDate, toDate } = data;
+    if (!currentRole) {
+        throw Error("CurrentRole is not defined");
+    }
+    // Lấy ra list các nhà máy là currentRole là trưởng phòng hoặc currentRole là role quản lý khác
+    // Lấy ra list nhà máy mà currentRole là quản đốc nhà máy
+    let role = [currentRole];
+    const departments = await OrganizationalUnit(connect(DB_CONNECTION, portal)).find({ 'managers': { $in: role } });
+    let organizationalUnitId = departments.map(department => department._id);
+    let listManufacturingWorks = await ManufacturingWorks(connect(DB_CONNECTION, portal)).find({
+        organizationalUnit: {
+            $in: organizationalUnitId
+        }
+    });
+    // Lấy ra các nhà máy mà currentRole cũng quản lý
+    let listWorksByManageRole = await ManufacturingWorks(connect(DB_CONNECTION, portal)).find({
+        manageRoles: {
+            $in: role
+        }
+    })
+    listManufacturingWorks = [...listManufacturingWorks, ...listWorksByManageRole];
+
+    let listWorksId = listManufacturingWorks.map(x => x._id);
+
+    let options = {};
+
+    options.manufacturingWorks = {
+        $in: listWorksId
+    }
+
+    if (manufacturingWorks) {
+        options.manufacturingWorks = {
+            $in: manufacturingWorks
+        }
+    }
+
+    if (fromDate) {
+        options.createdAt = {
+            $gte: getArrayTimeFromString(fromDate)[0]
+        }
+    }
+
+    if (toDate) {
+        options.createdAt = {
+            ...options.createdAt,
+            $lte: getArrayTimeFromString(toDate)[1]
+        }
+    }
+
+    // Tra ve tong so ke hoach
+    let plans = await ManufacturingPlan(connect(DB_CONNECTION, portal))
+        .find(options)
+        .populate([{
+            path: "creator"
+        }, {
+            path: "manufacturingCommands"
+        }, {
+            path: "approvers.approver"
+        }]).sort({
+            "updatedAt": "desc"
+        });
+
+
+    const totalPlans = plans.length;
+    // 1 Đúng tiến độ 2 Chậm tiến độ 3 Quá hạn
+    // Tra ve ke hoach qua han
+    let expiredPlans = filterPlansWithProgress(plans, 3).length;
+    // Tra ve ke hoach cham tien do
+    let slowPlans = filterPlansWithProgress(plans, 2).length;
+    // Tra ve ke hoach dung tien do
+    let truePlans = totalPlans - expiredPlans - slowPlans;
+
+    return { totalPlans, truePlans, slowPlans, expiredPlans }
+
+}
+
+exports.getNumberPlansByStatus = async (query, portal) => {
+    const { currentRole, manufacturingWorks, fromDate, toDate } = query;
+    if (!currentRole) {
+        throw Error("CurrentRole is not defined");
+    }
+    // Lấy ra list các nhà máy là currentRole là trưởng phòng hoặc currentRole là role quản lý khác
+    // Lấy ra list nhà máy mà currentRole là quản đốc nhà máy
+    let role = [currentRole];
+    const departments = await OrganizationalUnit(connect(DB_CONNECTION, portal)).find({ 'managers': { $in: role } });
+    let organizationalUnitId = departments.map(department => department._id);
+    let listManufacturingWorks = await ManufacturingWorks(connect(DB_CONNECTION, portal)).find({
+        organizationalUnit: {
+            $in: organizationalUnitId
+        }
+    });
+    // Lấy ra các nhà máy mà currentRole cũng quản lý
+    let listWorksByManageRole = await ManufacturingWorks(connect(DB_CONNECTION, portal)).find({
+        manageRoles: {
+            $in: role
+        }
+    })
+    listManufacturingWorks = [...listManufacturingWorks, ...listWorksByManageRole];
+
+    let listWorksId = listManufacturingWorks.map(x => x._id);
+
+    let options = {};
+
+    options.manufacturingWorks = {
+        $in: listWorksId
+    }
+
+    if (manufacturingWorks) {
+        options.manufacturingWorks = {
+            $in: manufacturingWorks
+        }
+    }
+
+    if (fromDate) {
+        options.createdAt = {
+            $gte: getArrayTimeFromString(fromDate)[0]
+        }
+    }
+
+    if (toDate) {
+        options.createdAt = {
+            ...options.createdAt,
+            $lte: getArrayTimeFromString(toDate)[1]
+        }
+    }
+    // Tra ve tong so ke hoach
+    options.status = 1;
+    const plan1 = await ManufacturingPlan(connect(DB_CONNECTION, portal))
+        .find(options).count();
+    options.status = 2;
+    const plan2 = await ManufacturingPlan(connect(DB_CONNECTION, portal))
+        .find(options).count();
+    options.status = 3;
+    const plan3 = await ManufacturingPlan(connect(DB_CONNECTION, portal))
+        .find(options).count();
+    options.status = 4;
+    const plan4 = await ManufacturingPlan(connect(DB_CONNECTION, portal))
+        .find(options).count();
+    options.status = 5;
+    const plan5 = await ManufacturingPlan(connect(DB_CONNECTION, portal))
+        .find(options).count();
+    return { plan1, plan2, plan3, plan4, plan5 }
+
 }

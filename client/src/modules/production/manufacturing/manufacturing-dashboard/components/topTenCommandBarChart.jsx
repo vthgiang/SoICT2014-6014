@@ -19,12 +19,6 @@ class TopTenCommandBarChart extends Component {
         this.barAndChart();
     }
 
-    handleChangeViewChart = (value) => {
-        this.setState({
-            ...this.state,
-            barChart: value
-        })
-    }
 
     // Khởi tạo BarChart bằng C3
     barAndChart = () => {
@@ -35,7 +29,7 @@ class TopTenCommandBarChart extends Component {
             data: {
                 x: 'x',
                 columns: [
-                    ['x', 'LSX001', 'LSX002', 'LSX007', 'LSX012', 'LSX003', 'LSX004', 'LSX111', 'LSX222', 'LSX100', 'LSX112'],
+                    ['x', 'LSX001', 'LSX20210118.179885', 'LSX007', 'LSX012', 'LSX003', 'LSX004', 'LSX111', 'LSX222', 'LSX100', 'LSX112'],
                     ['Lượng sản phẩm', 3000, 4000, 5000, 4500, 6000, 8000, 6000, 7000, 6000, 4000, 5000],
                 ],
                 type: barChart ? 'bar' : 'line',

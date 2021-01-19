@@ -7,6 +7,7 @@ import { compareLtDate, compareLteDate, formatDate } from "../../../../../../hel
 import { PaymentActions } from "../../../../order/payment/redux/actions";
 import SalesOrderDetailForm from "../../../../order/sales-order/components/salesOrderDetailForm";
 import { formatCurrency } from "../../../../../../helpers/formatCurrency";
+import { SalesOrderActions } from "../../../../order/sales-order/redux/actions";
 
 class PlanInfoForm extends Component {
     constructor(props) {
@@ -353,27 +354,24 @@ class PlanInfoForm extends Component {
     getListSalesOrdersChoosed = (salesOrderIds) => {
         const { salesOrders } = this.props;
         let listSalesOrderChoosed = [];
-        const { listSalesOrders } = salesOrders;
-        if (listSalesOrders && listSalesOrders.length) {
-            listSalesOrders.map(x => {
+        const { listSalesOrdersWorks } = salesOrders;
+        if (listSalesOrdersWorks && listSalesOrdersWorks.length) {
+            listSalesOrdersWorks.map(x => {
                 if (salesOrderIds.includes(x._id)) {
                     listSalesOrderChoosed.push(x);
                 }
             });
+            console.log(listSalesOrdersWorks);
             return listSalesOrderChoosed;
         }
         return [];
     }
 
     handleShowDetailSalesOrder = async (data) => {
+        console.log(data);
         await this.props.getPaymentForOrder({ orderId: data._id, orderType: 1 });
-        await this.setState((state) => {
-            return {
-                ...state,
-                salesOrderDetail: data,
-            };
-        });
-        await window.$("#modal-detail-sales-order").modal("show");
+        await this.props.getSalesOrderDetail(data._id);
+        await window.$("#modal-detail-sales-order-2").modal("show");
     }
 
     render() {
@@ -411,6 +409,14 @@ class PlanInfoForm extends Component {
                 className: "text-danger",
                 text: translate('manufacturing.plan.sales_order.g')
             },
+            {
+                className: "text-danger",
+                text: translate('manufacturing.plan.sales_order.h')
+            },
+            {
+                className: "text-danger",
+                text: translate('manufacturing.plan.sales_order.i')
+            },
         ];
 
 
@@ -439,7 +445,7 @@ class PlanInfoForm extends Component {
         ];
         return (
             <React.Fragment>
-                {this.state.salesOrderDetail && <SalesOrderDetailForm salesOrderDetail={this.state.salesOrderDetail} />}
+                <SalesOrderDetailForm modalID={2} />
                 <div className="row">
                     <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                         <div className="form-group">
@@ -745,6 +751,7 @@ function mapStateToProps(state) {
 const mapDispatchToProps = {
     getInventoryByGoodId: LotActions.getInventoryByGoodId,
     getPaymentForOrder: PaymentActions.getPaymentForOrder,
+    getSalesOrderDetail: SalesOrderActions.getSalesOrderDetail,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(PlanInfoForm));

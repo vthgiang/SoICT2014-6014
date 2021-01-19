@@ -198,7 +198,7 @@ class BillManagement extends Component {
 
     handleSubmitSearch = () => {
         let data = {
-            page: this.state.page,
+            page: '1',
             limit: this.state.limit,
             managementLocation: this.state.currentRole,
             code: this.state.code,

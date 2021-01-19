@@ -5,6 +5,7 @@ import { DataTableSetting, DialogModal, PaginateBar } from '../../../../../commo
 import { formatDate, formatFullDate } from '../../../../../helpers/formatDate';
 import { PaymentActions } from '../../../order/payment/redux/actions';
 import SalesOrderDetailForm from '../../../order/sales-order/components/salesOrderDetailForm';
+import { SalesOrderActions } from '../../../order/sales-order/redux/actions';
 import ManufacturingCommandDetailInfo from '../../manufacturing-command/components/manufacturingCommandDetailInfo';
 import { commandActions } from '../../manufacturing-command/redux/actions';
 import { manufacturingPlanActions } from '../redux/actions';
@@ -36,13 +37,8 @@ class ManufacturingPlanDetailInfo extends Component {
 
     showDetailSalesOrder = async (data) => {
         await this.props.getPaymentForOrder({ orderId: data._id, orderType: 1 });
-        await this.setState((state) => {
-            return {
-                ...state,
-                salesOrderDetail: data,
-            };
-        });
-        await window.$("#modal-detail-sales-order").modal("show");
+        await this.props.getSalesOrderDetail(data._id);
+        await window.$("#modal-detail-sales-order-1").modal("show");
     }
 
     setPage = async (page) => {
@@ -97,7 +93,7 @@ class ManufacturingPlanDetailInfo extends Component {
                     hasSaveButton={false}
                     hasNote={false}
                 >
-                    {this.state.salesOrderDetail && <SalesOrderDetailForm salesOrderDetail={this.state.salesOrderDetail} />}
+                    <SalesOrderDetailForm modalID={1} />
                     {
                         <ManufacturingCommandDetailInfo idModal={3} commandDetail={this.state.commandDetail} />
                     }
@@ -117,10 +113,10 @@ class ManufacturingPlanDetailInfo extends Component {
                                             currentPlan.salesOrders.map((x, index) => {
                                                 if (index === (currentPlan.salesOrders.length - 1))
                                                     return (
-                                                        <a href="#" onClick={() => this.showDetailSalesOrder(x)}>{x.code}</a>
+                                                        <a key={index} href="#" onClick={() => this.showDetailSalesOrder(x)}>{x.code}</a>
                                                     )
                                                 return (
-                                                    <a href="#" onClick={() => this.showDetailSalesOrder(x)}>{x.code}, </a>
+                                                    <a key={index} href="#" onClick={() => this.showDetailSalesOrder(x)}>{x.code}, </a>
                                                 )
                                             })
                                             :
@@ -343,7 +339,8 @@ function mapStateToProps(state) {
 const mapDispatchToProps = {
     getDetailManufacturingPlan: manufacturingPlanActions.getDetailManufacturingPlan,
     getPaymentForOrder: PaymentActions.getPaymentForOrder,
-    getAllManufacturingCommands: commandActions.getAllManufacturingCommands
+    getAllManufacturingCommands: commandActions.getAllManufacturingCommands,
+    getSalesOrderDetail: SalesOrderActions.getSalesOrderDetail
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(ManufacturingPlanDetailInfo));

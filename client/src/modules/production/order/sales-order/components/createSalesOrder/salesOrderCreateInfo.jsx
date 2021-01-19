@@ -32,6 +32,130 @@ class SalesOrderCreateInfo extends Component {
 
         return options;
     };
+
+    getOrganizationalUnitOptions = () => {
+        let options = [];
+
+        const { listBusinessDepartments } = this.props;
+        if (listBusinessDepartments.length) {
+            options = [
+                {
+                    value: "title", //Title không được chọn
+                    text: "---Chọn đơn vị---",
+                },
+            ];
+
+            for (let index = 0; index < listBusinessDepartments.length; index++) {
+                if (listBusinessDepartments[index].role === 1) {
+                    //Chỉ lấy đơn vị bán hàng, lấy trường organizationalUnit trong bảng businessDepartment
+                    let option = {
+                        value: `${listBusinessDepartments[index].organizationalUnit._id}`,
+                        text: `${listBusinessDepartments[index].organizationalUnit.name}`,
+                    };
+
+                    options.push(option);
+                }
+            }
+        }
+
+        return options;
+    };
+
+    checkAvailableUser = (listUsers, id) => {
+        var result = -1;
+        listUsers.forEach((value, index) => {
+            if (value.user._id === id) {
+                result = index;
+            }
+        });
+        return result;
+    };
+
+    getUsersInDepartments = () => {
+        let users = [];
+        const { listBusinessDepartments } = this.props;
+        for (let indexDepartment = 0; indexDepartment < listBusinessDepartments.length; indexDepartment++) {
+            if (listBusinessDepartments[indexDepartment].role === 2 || listBusinessDepartments[indexDepartment].role === 3) {
+                //Chỉ lấy đơn vị quản lý bán hàng và đơn vị kế toán
+                const { managers, deputyManagers, employees } = listBusinessDepartments[indexDepartment].organizationalUnit;
+                //Thềm các trưởng đơn vị vào danh sách
+                for (let indexRole = 0; indexRole < managers.length; indexRole++) {
+                    //Lấy ra các role trong phòng ban
+                    if (managers[indexRole].users) {
+                        for (let indexUser = 0; indexUser < managers[indexRole].users.length; indexUser++) {
+                            //Check nếu user chưa tồn tại trong danh sách thì cho vào danh sách
+                            let availableCheckedIndex = this.checkAvailableUser(users, managers[indexRole].users[indexUser].userId._id);
+                            if (availableCheckedIndex === -1) {
+                                users.push({ user: managers[indexRole].users[indexUser].userId, roleName: managers[indexRole].name });
+                            } else {
+                                //Nếu người dùng đã có trong danh sách thì thêm role vào
+                                users[availableCheckedIndex].roleName = users[availableCheckedIndex].roleName + ", " + managers[indexRole].name;
+                            }
+                        }
+                    }
+                }
+                //Thềm các phó đơn vị vào danh sách
+                for (let indexRole = 0; indexRole < deputyManagers.length; indexRole++) {
+                    //Lấy ra các role trong phòng ban
+                    if (deputyManagers[indexRole].users) {
+                        for (let indexUser = 0; indexUser < deputyManagers[indexRole].users.length; indexUser++) {
+                            //Check nếu user chưa tồn tại trong danh sách thì cho vào danh sách
+                            let availableCheckedIndex = this.checkAvailableUser(users, deputyManagers[indexRole].users[indexUser].userId._id);
+                            if (availableCheckedIndex === -1) {
+                                users.push({ user: deputyManagers[indexRole].users[indexUser].userId, roleName: deputyManagers[indexRole].name });
+                            } else {
+                                //Nếu người dùng đã có trong danh sách thì thêm role vào
+                                users[availableCheckedIndex].roleName = users[availableCheckedIndex].roleName + ", " + deputyManagers[indexRole].name;
+                            }
+                        }
+                    }
+                }
+                //Thềm nhân viên vào danh sách
+                for (let indexRole = 0; indexRole < employees.length; indexRole++) {
+                    //Lấy ra các role trong phòng ban
+                    if (employees[indexRole].users) {
+                        for (let indexUser = 0; indexUser < employees[indexRole].users.length; indexUser++) {
+                            //Check nếu user chưa tồn tại trong danh sách thì cho vào danh sách
+                            let availableCheckedIndex = this.checkAvailableUser(users, employees[indexRole].users[indexUser].userId._id);
+                            if (availableCheckedIndex === -1) {
+                                users.push({ user: employees[indexRole].users[indexUser].userId, roleName: employees[indexRole].name });
+                            } else {
+                                //Nếu người dùng đã có trong danh sách thì thêm role vào
+                                users[availableCheckedIndex].roleName = users[availableCheckedIndex].roleName + ", " + employees[indexRole].name;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return users;
+    };
+
+    getApproversOptions = () => {
+        let options = [];
+
+        const { listBusinessDepartments } = this.props;
+        if (listBusinessDepartments.length) {
+            options = [
+                {
+                    value: "title", //Title không được chọn
+                    text: "---Chọn người phê duyệt---",
+                },
+            ];
+            let users = this.getUsersInDepartments();
+            let mapOptions = users.map((item) => {
+                return {
+                    value: item.user._id,
+                    text: item.user.name + " - " + item.roleName,
+                };
+            });
+
+            options = options.concat(mapOptions);
+        }
+
+        return options;
+    };
+
     render() {
         let {
             code,
@@ -44,11 +168,21 @@ class SalesOrderCreateInfo extends Component {
             customerTaxNumber,
             customerEmail,
             priority,
+            organizationalUnit,
+            approvers,
             isUseForeignCurrency,
             foreignCurrency,
         } = this.props;
 
-        let { customerError, customerEmailError, customerPhoneError, customerAddressError, priorityError } = this.props;
+        let {
+            customerError,
+            customerEmailError,
+            customerPhoneError,
+            customerAddressError,
+            priorityError,
+            organizationalUnitError,
+            approversError,
+        } = this.props;
 
         const {
             handleCustomerChange,
@@ -61,7 +195,10 @@ class SalesOrderCreateInfo extends Component {
             handleSymbolOfForreignCurrencyChange,
             handleCustomerEmailChange,
             handlePriorityChange,
+            handleOrganizationalUnitChange,
+            handleApproversChange,
         } = this.props;
+
         return (
             <React.Fragment>
                 <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -162,6 +299,39 @@ class SalesOrderCreateInfo extends Component {
                                 <input type="text" className="form-control" value={code} disabled={true} />
                             </div>
 
+                            {/* <div className={`form-group ${!organizationalUnitError ? "" : "has-error"}`}>
+                                <label>
+                                    Đơn vị bán hàng
+                                    <span className="attention"> * </span>
+                                </label>
+                                <SelectBox
+                                    id={`select-create-sales-order-organizational-unit`}
+                                    className="form-control select2"
+                                    style={{ width: "100%" }}
+                                    value={organizationalUnit}
+                                    items={this.getOrganizationalUnitOptions()}
+                                    onChange={handleOrganizationalUnitChange}
+                                    multiple={false}
+                                />
+                                <ErrorLabel content={organizationalUnitError} />
+                            </div> */}
+                            <div className={`form-group ${!approversError ? "" : "has-error"}`}>
+                                <label>
+                                    Người phê duyệt
+                                    <span className="attention"> * </span>
+                                </label>
+                                <SelectBox
+                                    id={`select-create-sales-order-aprrovers`}
+                                    className="form-control select2"
+                                    style={{ width: "100%" }}
+                                    value={approvers}
+                                    items={this.getApproversOptions()}
+                                    onChange={handleApproversChange}
+                                    multiple={true}
+                                />
+                                <ErrorLabel content={approversError} />
+                            </div>
+
                             <div className={`form-group ${!priorityError ? "" : "has-error"}`}>
                                 <label>
                                     Độ ưu tiên
@@ -257,14 +427,6 @@ class SalesOrderCreateInfo extends Component {
                             ) : (
                                 ""
                             )}
-
-                            {/* <div className="form-group">
-                                        <label>
-                                            Nhân viên bán hàng
-                                            <span className="attention"> * </span>
-                                        </label>
-                                        <input type="text" className="form-control" value={"Phạm Đại Tài"} disabled={true} />
-                                    </div> */}
                         </fieldset>
                     </div>
                 </div>
@@ -274,8 +436,9 @@ class SalesOrderCreateInfo extends Component {
 }
 
 function mapStateToProps(state) {
+    const { listBusinessDepartments } = state.businessDepartments;
     const { customers } = state.crm;
-    return { customers };
+    return { customers, listBusinessDepartments };
 }
 
 const mapDispatchToProps = {};
