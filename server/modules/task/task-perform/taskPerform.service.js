@@ -1924,7 +1924,6 @@ exports.editTaskByResponsibleEmployees = async (portal, data, taskId) => {
         _id: { $in: userId },
     });
     let email = user1.map((item) => item.email);
-    email.push("trinhhong102@gmail.com");
     user = await User(connect(DB_CONNECTION, portal)).findById(data.user);
     newTask.evaluations.reverse();
 
