@@ -1126,12 +1126,7 @@ class ActionTab extends Component {
                                                                                 <a style={{ cursor: "pointer" }} className="link-black text-sm" onClick={() => this.handleShowFile(item._id)}><i className="fa fa-paperclip" aria-hidden="true"></i> {translate("task.task_perform.file_attach")} ({item.files && item.files.length})</a>
                                                                             </li>
                                                                         }
-                                                                        {
-                                                                            (role === "responsible") ?
-                                                                                <li><a style={{ cursor: "pointer" }} className="link-black text-sm" onClick={() => this.handleShowChildComment(item._id)}><i className="fa fa-comments-o margin-r-5"></i> {translate("task.task_perform.result")} ({item.comments.length}) &nbsp;</a></li>
-                                                                                :
-                                                                                <li><a style={{ cursor: "pointer" }} className="link-black text-sm" onClick={() => this.handleShowChildComment(item._id)}><i className="fa fa-comments-o margin-r-5"></i> {translate("task.task_perform.comment")} ({item.comments.length}) &nbsp;</a></li>
-                                                                        }
+                                                                        <li><a style={{ cursor: "pointer" }} className="link-black text-sm" onClick={() => this.handleShowChildComment(item._id)}><i className="fa fa-comments-o margin-r-5"></i> {translate("task.task_perform.comment")} ({item.comments.length}) &nbsp;</a></li>
                                                                     </React.Fragment>
                                                                 }
                                                             </ul>}
@@ -1325,8 +1320,8 @@ class ActionTab extends Component {
                                                                     onFilesError={this.onFilesError}
                                                                     files={newCommentOfAction[`${item._id}`]?.files}
                                                                     text={newCommentOfAction[`${item._id}`]?.descriptionDefault}
-                                                                    placeholder={role === "responsible" ? translate("task.task_perform.enter_result_action") : translate("task.task_perform.enter_comment_action")}
-                                                                    submitButtonText={role === "responsible" ? translate("general.add") : translate("task.task_perform.create_comment_action")}
+                                                                    placeholder={translate("task.task_perform.enter_comment_action")}
+                                                                    submitButtonText={translate("task.task_perform.create_comment_action")}
                                                                     onTextChange={(value, imgs) => {
                                                                         this.setState(state => {
                                                                             state.newCommentOfAction[`${item._id}`] = {
@@ -1378,8 +1373,8 @@ class ActionTab extends Component {
                                                 onFilesError={this.onFilesError}
                                                 files={newAction.files}
                                                 text={newAction.descriptionDefault}
-                                                placeholder={translate("task.task_perform.enter_action")}
-                                                submitButtonText={translate("task.task_perform.create_action")}
+                                                placeholder={role === "responsible" ? translate("task.task_perform.result") : translate("task.task_perform.enter_action")}
+                                                submitButtonText={role === "responsible" ? translate("general.add") : translate("task.task_perform.create_action")}
                                                 onTextChange={(value, imgs) => {
                                                     this.setState(state => {
                                                         return { ...state, newAction: { ...state.newAction, description: value, descriptionDefault: null } }
