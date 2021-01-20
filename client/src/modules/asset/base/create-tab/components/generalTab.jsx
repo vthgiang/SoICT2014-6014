@@ -566,13 +566,10 @@ class GeneralTab extends Component {
             }
         }
         else {
-            console.log("run else", assetTypes);
             for (let i in assetTypes) {
                 typeInTreeSelect.push(assetTypes[i]._id);
             }
         }
-        console.log("type", typeInTreeSelect);
-        console.log("props", assetTypes);
 
         let assetbuilding = assetsManager && assetsManager.buildingAssets;
         let assetbuildinglist = assetbuilding && assetbuilding.list;
