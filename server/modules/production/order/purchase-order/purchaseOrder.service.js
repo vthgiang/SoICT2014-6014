@@ -176,7 +176,7 @@ exports.editPurchaseOrder = async (userId, id, data, portal) => {
 //Lấy các đơn hàng chưa thanh toán cho 1 nhà cung cấp
 exports.getPurchaseOrdersForPayment = async (supplierId, portal) => {
     //Lấy tất cả các đơn hàng theo nhà cung cấp
-    let purchaseOrdersForPayment = await PurchaseOrder(connect(DB_CONNECTION, portal)).find({ supplier: supplierId });
+    let purchaseOrdersForPayment = await PurchaseOrder(connect(DB_CONNECTION, portal)).find({ supplier: supplierId, status: [1,2,3,4] });
     let purchaseOrders = [];
     if (purchaseOrdersForPayment.length) {
         for (let index = 0; index < purchaseOrdersForPayment.length; index++){

@@ -52,6 +52,7 @@ class SalesOrderEditForm extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
+        console.log("extProps.salesOrderDetail", nextProps.salesOrderDetail);
         if (nextProps.salesOrderDetail._id && nextProps.salesOrderDetail._id !== prevState.salesOrderId) {
             return {
                 ...prevState,

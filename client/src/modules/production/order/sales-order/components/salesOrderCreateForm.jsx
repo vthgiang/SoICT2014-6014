@@ -61,9 +61,9 @@ class SalesOrderCreateForm extends Component {
         }
     }
 
-    componentDidMount() {
-        this.props.getCustomers();
-    }
+    // componentDidMount() {
+    //     this.props.getCustomers();
+    // }
 
     validateCustomer = (value, willUpdateState = true) => {
         let msg = undefined;
@@ -459,7 +459,7 @@ class SalesOrderCreateForm extends Component {
         if (
             this.validateCustomer(customer, false) ||
             this.validatePriority(priority, false) ||
-            this.validateOrganizationalUnit(organizationalUnit, false) ||
+            // this.validateOrganizationalUnit(organizationalUnit, false) ||
             this.validateApprovers(approvers, false) ||
             !ValidationHelper.validateEmail(translate, customerEmail).status ||
             !ValidationHelper.validateEmpty(translate, customerPhone).status ||
@@ -562,7 +562,7 @@ class SalesOrderCreateForm extends Component {
                 discountsOfOrderValue,
                 paymentAmount,
                 note,
-                organizationalUnit,
+                // organizationalUnit,
                 approvers,
                 priority,
             } = this.state;
@@ -583,7 +583,7 @@ class SalesOrderCreateForm extends Component {
                 deliveryTime: deliveryTime ? new Date(formatToTimeZoneDate(deliveryTime)) : undefined,
                 coin,
                 allCoin,
-                organizationalUnit,
+                // organizationalUnit,
                 approvers: approvers.map((element) => {
                     return { approver: element };
                 }),
@@ -611,7 +611,7 @@ class SalesOrderCreateForm extends Component {
                     allCoin: "",
                     goods: [],
                     discountsOfOrderValue: [],
-                    organizationalUnit: "",
+                    // organizationalUnit: "",
                     approvers: [],
                     paymentAmount: "",
                     note: "",

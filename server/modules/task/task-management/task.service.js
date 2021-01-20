@@ -1758,7 +1758,6 @@ exports.sendEmailForCreateTask = async (portal, task) => {
 
     email = user.map(item => item.email); // Lấy ra tất cả email của người dùng
     collaboratedEmail = managersOfOrganizationalUnitThatHasCollaborated.map(item => item.userId && item.userId.email) // Lấy email trưởng đơn vị phối hợp 
-    email.push("trinhhong102@gmail.com");
 
     var body = `<a href="${process.env.WEBSITE}/task?taskId=${task._id}" target="_blank" title="${process.env.WEBSITE}/task?taskId=${task._id}"><strong>${task.name}</strong></a></p> ` +
         `<h3>Nội dung công việc</h3>` +
@@ -2323,7 +2322,6 @@ exports.sendEmailCheckTaskLastMonth = async () => {
             }
             if (flag) {  // gui email
                 let userEmail = [email[j]];
-                userEmail.push("trinhhong102@gmail.com");
                 let html = `<h1>Thông báo danh sách công việc tháng ${new Date().getMonth() + 1} </h1> ` +
                     `<h3>Thông tin công việc</h3>` +
                     `${tasksByUser.expire.length > 0 ? `<p>Công việc quá hạn</p> ` +

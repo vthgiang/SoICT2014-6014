@@ -993,17 +993,16 @@ exports.updateEmployeeInformation = async (portal, id, data, fileInfor, company)
     oldEmployee.files = deleteEditCreateObjectInArrayObject(oldEmployee.files, deleteFiles, editFiles, createFiles, file);
 
     let x = oldEmployee.career;
-    console.log('xxxx', x);
     let careerEdit = {
         ...x,
-        package: x.position && x.position.package,
+        package: x.package,
         field: x.field && x.field._id,
         position: x.position && x.position._id,
         action: x.action && x.action.length > 0 && x.action.map(e => e._id),
     }
 
     // oldEmployee.career = careerEdit;
-    console.log("====\n\n", oldEmployee.career);
+    console.log("==oldEmployee.career==\n\n", oldEmployee.career);
 
     oldEmployee.avatar = avatar;
     oldEmployee.fullName = employee.fullName;
@@ -1908,7 +1907,7 @@ exports.searchEmployeeForPackage = async (portal, params, company) => {
             {
                 $match: {
                     "certificates.endDate": {
-                        "$lte": date,
+                        "$gte": date,
                     }
                 }
             }

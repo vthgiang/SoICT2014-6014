@@ -142,7 +142,6 @@ class SalesOrderTable extends Component {
     };
 
     handleEditSalesOrder = async (salesOrderEdit) => {
-        console.log("salesOrderEdit", salesOrderEdit);
         await this.props.getSalesOrderDetail(salesOrderEdit._id);
         window.$("#modal-edit-sales-order").modal("show");
     };
@@ -249,11 +248,11 @@ class SalesOrderTable extends Component {
             },
             {
                 className: "text-warning",
-                text: "Đang sản xuất",
+                text: "Đã lập kế hoạch sản xuất",
             },
             {
                 className: "text-dark",
-                text: "Đã sẵn hàng",
+                text: "Đã yêu cầu xuất kho",
             },
             {
                 className: "text-secondary",
@@ -400,11 +399,11 @@ class SalesOrderTable extends Component {
                                         },
                                         {
                                             value: 4,
-                                            text: "Đang sản xuất",
+                                            text: "Đã lập kế hoạch sản xuất",
                                         },
                                         {
                                             value: 5,
-                                            text: "Đã sẵn hàng",
+                                            text: "Đã yêu cầu xuất kho",
                                         },
                                         {
                                             value: 6,
@@ -501,7 +500,7 @@ class SalesOrderTable extends Component {
                                                     </a>
                                                 )}
                                                 {/* Sửa đơn sau khi đã phê duyệt */}
-                                                {item.status !== 1 && item.status !== 8 && (
+                                                {item.status !== 1 && item.status !== 8 && item.status !== 7 && (
                                                     <a
                                                         onClick={() => this.handleEditSalesOrderAfterApprove(item)}
                                                         className="edit text-yellow"
@@ -511,7 +510,7 @@ class SalesOrderTable extends Component {
                                                         <i className="material-icons">edit</i>
                                                     </a>
                                                 )}
-                                                {!item.bill && item.status !== 1 && this.checkUserForApprove(item) === 2 && (
+                                                {!item.bill && item.status !== 1 && this.checkUserForApprove(item) === 2 && item.status !== 8 && (
                                                     <a
                                                         onClick={() => this.handleAddBill(item)}
                                                         className="add text-success"
@@ -521,7 +520,7 @@ class SalesOrderTable extends Component {
                                                         <i className="material-icons">add</i>
                                                     </a>
                                                 )}
-                                                {item.bill && item.status !== 1 && (
+                                                {item.bill && item.status !== 1 && item.status !== 8 && (
                                                     <a
                                                         onClick={() => this.handleShowBillDetail(item.bill)}
                                                         className="add text-success"

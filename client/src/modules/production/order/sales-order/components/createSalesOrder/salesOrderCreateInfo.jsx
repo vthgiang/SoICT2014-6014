@@ -299,7 +299,7 @@ class SalesOrderCreateInfo extends Component {
                                 <input type="text" className="form-control" value={code} disabled={true} />
                             </div>
 
-                            <div className={`form-group ${!organizationalUnitError ? "" : "has-error"}`}>
+                            {/* <div className={`form-group ${!organizationalUnitError ? "" : "has-error"}`}>
                                 <label>
                                     Đơn vị bán hàng
                                     <span className="attention"> * </span>
@@ -314,7 +314,7 @@ class SalesOrderCreateInfo extends Component {
                                     multiple={false}
                                 />
                                 <ErrorLabel content={organizationalUnitError} />
-                            </div>
+                            </div> */}
                             <div className={`form-group ${!approversError ? "" : "has-error"}`}>
                                 <label>
                                     Người phê duyệt

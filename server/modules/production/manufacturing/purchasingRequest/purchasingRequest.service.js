@@ -1,5 +1,5 @@
 const {
-    PurchasingRequest, ManufacturingCommand
+    PurchasingRequest, ManufacturingCommand, ManufacturingMill
 } = require(`../../../../models`);
 
 const {
@@ -222,11 +222,14 @@ exports.getNumberPurchasingRequest = async (query, portal) => {
             }
         });
         let listMillIds = listManufacturingMills.map(x => x._id);
-        let manufacturingCommands = await ManufacturingCommand.find({
+        let manufacturingCommands = await ManufacturingCommand(connect(DB_CONNECTION, portal)).find({
             manufacturingMill: {
                 $in: listMillIds
             }
         });
+        if (manufacturingCommands.length == 0) {
+            manufacturingCommands = [1]
+        }
         options.manufacturingCommand = {
             $in: manufacturingCommands
         }

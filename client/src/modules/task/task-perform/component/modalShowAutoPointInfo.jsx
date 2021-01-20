@@ -196,7 +196,7 @@ class ModalShowAutoPointInfo extends Component {
                                 {checkFormulaHasDaysOverdue && <li>daysOverdue - {translate('task.task_management.calc_overdue_date')}: {daysOverdue} ({translate('task.task_management.calc_days')})</li>}
                                 {
                                     taskInformations && taskInformations.map((e, index) => {
-                                        if (e.type === 'Number') {
+                                        if (e.type === 'number') {
                                             return <li key={index}>{e.code} - {e.name}: {(info[`${e.code}`] && info[`${e.code}`].value) ? info[`${e.code}`].value : translate('task.task_management.calc_no_value')}</li>
                                         }
                                     })
@@ -218,8 +218,6 @@ class ModalShowAutoPointInfo extends Component {
                                 {checkFormulaHasTotalDays && <li>totalDays - {translate('task.task_management.calc_total_day')}: {totalDays} ({translate('task.task_management.calc_days')})</li>}
                                 {checkFormulaHasDaysUsed && <li>daysUsed - {translate('task.task_management.calc_day_used')}: {daysUsed} ({translate('task.task_management.calc_days')})</li>}
                                 {checkFormulaHasDaysOverdue && <li>daysOverdue - {translate('task.task_management.calc_overdue_date')}: {daysOverdue} ({translate('task.task_management.calc_days')})</li>}
-                                {/* <li>daysUsed - {translate('task.task_management.calc_day_used')}: {daysUsed} ({translate('task.task_management.calc_days')})</li>
-                                <li>totalDays - {translate('task.task_management.calc_total_day')}: {totalDays} ({translate('task.task_management.calc_days')})</li> */}
                             </ul>
                             <p><strong>{translate('task.task_management.calc_new_formula')}: </strong> {formula} = {result}</p>
                             {/* {progressTask}/({daysUsed}/{totalDays}) - {0.5}*({10}-{averageActionRating})*{10} */}

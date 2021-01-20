@@ -1,16 +1,18 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
+import { SalesOrderActions } from "../../sales-order/redux/actions";
 
 import c3 from "c3";
 import "c3/c3.css";
 
 import { DatePicker, SelectBox } from "../../../../../common-components";
+import { formatToTimeZoneDate } from "../../../../../helpers/formatDate";
 class TopSoldBarChart extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            typeGood: true, //de xem hien thi theo doanh so hay so luong san pham
+            currentRole: localStorage.getItem("currentRole"),
         };
     }
 
@@ -99,6 +101,34 @@ class TopSoldBarChart extends Component {
         });
     };
 
+    handleStartDateChange = (value) => {
+        this.setState((state) => {
+            return {
+                ...state,
+                startDate: value,
+            };
+        });
+    };
+
+    handleEndDateChange = (value) => {
+        this.setState((state) => {
+            return {
+                ...state,
+                endDate: value,
+            };
+        });
+    };
+
+    handleSunmitSearch = async () => {
+        let { startDate, endDate, currentRole } = this.state;
+        let data = {
+            currentRole,
+            startDate: startDate ? formatToTimeZoneDate(startDate) : "",
+            endDate: endDate ? formatToTimeZoneDate(endDate) : "",
+        };
+        await this.props.getTopGoodsSold(data);
+    };
+
     render() {
         this.barChart();
         return (
@@ -108,23 +138,23 @@ class TopSoldBarChart extends Component {
                     <h3 className="box-title">Top sản phẩm bán chạy (theo số lượng)</h3>
                     <div className="form-inline">
                         <div className="form-group">
-                            <label className="form-control-static">Từ</label>
+                            <label style={{ width: "auto" }}>Từ</label>
                             <DatePicker
-                                id="incident_before"
-                                onChange={this.onchangeDate}
+                                id="date_picker_dashboard_start_top_sold"
+                                value={this.state.startDate}
+                                onChange={this.handleStartDateChange}
                                 disabled={false}
-                                placeholder="start date"
-                                style={{ width: "120px", borderRadius: "4px" }}
                             />
                         </div>
+
+                        {/**Chọn ngày kết thúc */}
                         <div className="form-group">
-                            <label className="form-control-static">Đến</label>
+                            <label style={{ width: "auto" }}>Đến</label>
                             <DatePicker
-                                id="incident_end"
-                                onChange={this.onchangeDate}
+                                id="date_picker_dashboard_end_top_sold"
+                                value={this.state.endDate}
+                                onChange={this.handleEndDateChange}
                                 disabled={false}
-                                placeholder="end date"
-                                style={{ width: "120px", borderRadius: "4px" }}
                             />
                         </div>
                         {/* <div className="form-group">
@@ -139,7 +169,9 @@ class TopSoldBarChart extends Component {
                             />
                         </div> */}
                         <div className="form-group" style={{ marginLeft: "20px" }}>
-                            <button className="btn btn-success">Tìm kiếm</button>
+                            <button className="btn btn-success" onClick={() => this.handleSunmitSearch()}>
+                                Tìm kiếm
+                            </button>
                         </div>
                     </div>
                     <div ref="topSoldBarChart"></div>
@@ -154,6 +186,8 @@ function mapStateToProps(state) {
     return { salesOrders };
 }
 
-const mapDispatchToProps = {};
+const mapDispatchToProps = {
+    getTopGoodsSold: SalesOrderActions.getTopGoodsSold,
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(TopSoldBarChart));

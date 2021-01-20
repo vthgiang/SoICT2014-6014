@@ -133,7 +133,7 @@ class UsageLogTab extends Component {
                 assignedToOrganizationalUnit: assignedToOrganizationalUnit
             });
         } else {
-            await this.props.handleAddUsage(usageLogsData);
+            await this.props.handleAddUsage(usageLogsData, { status: "in_use" });
         }
     }
 
@@ -167,12 +167,16 @@ class UsageLogTab extends Component {
             assignedToUser: assignedToUser,
             assignedToOrganizationalUnit: assignedToOrganizationalUnit,
         }
-        await this.props.updateUsage(this.props.assetId, updateUsage)
-        await this.props.handleEditUsage({
-            usageLogs: usageLogs,
-            assignedToUser: assignedToUser,
-            assignedToOrganizationalUnit: assignedToOrganizationalUnit,
-        });
+        if (this.props.assetId) {
+            await this.props.updateUsage(this.props.assetId, updateUsage)
+            await this.props.handleEditUsage({
+                usageLogs: usageLogs,
+                assignedToUser: assignedToUser,
+                assignedToOrganizationalUnit: assignedToOrganizationalUnit,
+            });
+        } else {
+            await this.props.handleEditUsage(usageLogs)
+        }
     }
 
     // Function bắt sự kiện xoá thông tin phiếu
@@ -184,8 +188,9 @@ class UsageLogTab extends Component {
             ...this.state,
             usageLogs: [...usageLogs]
         })
-
-        await this.props.deleteUsage(this.props.assetId, data._id)
+        if (this.props.assetId) {
+            await this.props.deleteUsage(this.props.assetId, data._id)
+        }
     }
 
     handleRecallAsset = async () => {

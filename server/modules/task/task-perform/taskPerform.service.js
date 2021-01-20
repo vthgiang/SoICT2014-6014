@@ -784,9 +784,11 @@ exports.createCommentOfTaskAction = async (portal, params, body, files, user) =>
         title: "Cập nhật thông tin công việc ",
         level: "general",
         content: `<p><strong>${user.name}</strong> đã bình luận về hoạt động trong công việc: <a href="${process.env.WEBSITE}/task?taskId=${params.taskId}">${process.env.WEBSITE}/task?taskId=${params.taskId}</a></p>`,
+        shortContent: `<p><strong>${commentOfTaskAction.name}</strong>: ${user.name} đã bình luận về hoạt động mà bạn tham gia.`,
         sender: `${user.name}`,
         users: userReceive,
         associatedData: associatedData,
+        type: 1,
     };
 
     if (userReceive && userReceive.length > 0)
@@ -1065,9 +1067,11 @@ exports.createTaskComment = async (portal, params, body, files, user) => {
         title: "Cập nhật thông tin công việc ",
         level: "general",
         content: `<p><strong>${user.name}</strong> đã thêm một bình luận trong công việc: <a href="${process.env.WEBSITE}/task?taskId=${params.taskId}">${process.env.WEBSITE}/task?taskId=${params.taskId}</a></p>`,
+        shortContent: `<p><strong>${taskComment.name}:</strong> ${user.name} đã thêm một bình luận mới trong mục trao đổi.</p>`,
         sender: `${user.name} (${taskComment.organizationalUnit.name})`,
         users: userReceive,
         associatedData: associatedData,
+        type: 1,
     };
 
     if (userReceive && userReceive.length > 0)
@@ -1209,9 +1213,11 @@ exports.createCommentOfTaskComment = async (portal, params, body, files, user) =
         title: "Cập nhật thông tin công việc ",
         level: "general",
         content: `<p><strong>${user.name}</strong> đã trả lời bình luận của bạn trong công việc: <a href="${process.env.WEBSITE}/task?taskId=${params.taskId}">${process.env.WEBSITE}/task?taskId=${params.taskId}</a></p>`,
+        shortContent:`<p><strong>${taskcomment.name}:</strong> ${user.name} đã trả lời bình luận của bạn trong mục trao đổi.</p>`,
         sender: `${user.name}`,
         users: userReceive,
         associatedData: associatedData,
+        type: 1,
     };
     if (userReceive && userReceive.length > 0)
         NotificationServices.createNotification(portal, user.company._id, data)
@@ -1660,6 +1666,48 @@ async function checkEvaluations(portal, date, taskId, storeDate) {
     return evaluateId;
 }
 
+exports.getIdEvaluationOfThisMonth = async (portal, taskId) => {
+    let evaluateId;
+    let dateISO = new Date();
+    let monthOfParams = dateISO.getMonth();
+    let yearOfParams = dateISO.getFullYear();
+    let testCase;
+
+    // kiểm tra evaluations
+    let initTask = await Task(connect(DB_CONNECTION, portal)).findById(taskId);
+
+    // kiểm tra điều kiện của evaluations
+    if (initTask.evaluations.length === 0) {
+        testCase = "TH1";
+    } else {
+        let chk = initTask.evaluations.find(
+            (e) =>
+                monthOfParams === e.date.getMonth() &&
+                yearOfParams === e.date.getFullYear()
+        );
+        if (!chk) {
+            // có evaluate nhưng k có tháng này
+            testCase = "TH2";
+        } else {
+            // có evaluate đúng tháng này
+            testCase = "TH3";
+        }
+    }
+
+    // TH3: Có evaluations của tháng giống date => cập nhật evaluations
+    if (testCase === "TH3") {
+        let taskV3 = initTask;
+        evaluateId = taskV3.evaluations.find(
+            (e) =>
+                monthOfParams === e.date.getMonth() &&
+                yearOfParams === e.date.getFullYear()
+        )._id;
+    }
+
+    return evaluateId;
+}
+
+
 /**
  * edit task by responsible employee
  */
@@ -1707,57 +1755,6 @@ exports.editTaskByResponsibleEmployees = async (portal, data, taskId) => {
         },
         { $new: true }
     );
-
-    // let task = await Task(connect(DB_CONNECTION, portal)).findById(taskId);
-
-    // cập nhật task infomation
-    for (let i in listInfoTask) {
-        await Task(connect(DB_CONNECTION, portal)).updateOne(
-            {
-                _id: taskId,
-                "taskInformations._id": listInfoTask[i]._id,
-            },
-            {
-                $set: {
-                    "taskInformations.$.name": listInfoTask[i].name,
-                    "taskInformations.$.filledByAccountableEmployeesOnly": listInfoTask[i].filledByAccountableEmployeesOnly,
-                    "taskInformations.$.description": listInfoTask[i].description,
-                    "taskInformations.$.extra": listInfoTask[i].extra,
-                },
-            },
-            {
-                $new: true,
-            }
-        );
-    }
-
-    let evalList = task.evaluations;
-    for (let x in evalList) {
-        for (let i in listInfoTask) {
-            await Task(connect(DB_CONNECTION, portal)).updateOne(
-                {
-                    _id: taskId,
-                    "evaluations._id": evalList[x],
-                },
-                {
-                    $set: {
-                        "evaluations.$.taskInformations.$[elem].name": listInfoTask[i].name,
-                        "evaluations.$.taskInformations.$[elem].filledByAccountableEmployeesOnly": listInfoTask[i].filledByAccountableEmployeesOnly,
-                        "evaluations.$.taskInformations.$[elem].description": listInfoTask[i].description,
-                        "evaluations.$.taskInformations.$[elem].extra": listInfoTask[i].extra,
-                    },
-                },
-                {
-                    arrayFilters: [
-                        {
-                            "elem._id": listInfoTask[i]._id,
-                        },
-                    ],
-                }
-            );
-        }
-    }
-
 
     // cập nhật giá trị info
     for (let item in info) {
@@ -1924,7 +1921,6 @@ exports.editTaskByResponsibleEmployees = async (portal, data, taskId) => {
         _id: { $in: userId },
     });
     let email = user1.map((item) => item.email);
-    email.push("trinhhong102@gmail.com");
     user = await User(connect(DB_CONNECTION, portal)).findById(data.user);
     newTask.evaluations.reverse();
 
@@ -2058,55 +2054,224 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
     if (listInfo) {
         listInfoTask = listInfo;
     }
+    let evaluateId;
+    let listChangeTypeInfo = [];
 
-    // cập nhật task infomation
-    for (let i in listInfoTask) {
-        await Task(connect(DB_CONNECTION, portal)).updateOne(
-            {
-                _id: taskId,
-                "taskInformations._id": listInfoTask[i]._id,
-            },
-            {
-                $set: {
-                    "taskInformations.$.name": listInfoTask[i].name,
-                    "taskInformations.$.filledByAccountableEmployeesOnly": listInfoTask[i].filledByAccountableEmployeesOnly,
-                    "taskInformations.$.description": listInfoTask[i].description,
-                    "taskInformations.$.extra": listInfoTask[i].extra,
-                },
-            },
-            {
-                $new: true,
-            }
-        );
-    }
+    
+    evaluateId = await this.getIdEvaluationOfThisMonth(portal, taskId);
+    console.log('evaluateId', evaluateId);
 
-    let evalList = task.evaluations;
-    for (let x in evalList) {
-        for (let i in listInfoTask) {
+    // tìm ra info ở thông tin chung bị xóa
+    let deletedInfoItems = task.taskInformations.filter(x => 
+        listInfoTask.find(e => String(e._id) === String(x._id)) === undefined // không tìm được phần tử nào có id giống với x._id, tức là x là deleted info 
+    ).map(el => el._id);
+
+    let evaluation = task.evaluations.find(e => String(e._id) === String(evaluateId));
+
+    console.log('deleted info ', deletedInfoItems);
+
+    if(listInfoTask && listInfoTask.length > 0) {
+        // xóa info ở thông tin chung
+        for(let i in deletedInfoItems) {
             await Task(connect(DB_CONNECTION, portal)).updateOne(
                 {
                     _id: taskId,
-                    "evaluations._id": evalList[x],
+                    "taskInformations._id": deletedInfoItems[i] 
                 },
                 {
-                    $set: {
-                        "evaluations.$.taskInformations.$[elem].name": listInfoTask[i].name,
-                        "evaluations.$.taskInformations.$[elem].filledByAccountableEmployeesOnly": listInfoTask[i].filledByAccountableEmployeesOnly,
-                        "evaluations.$.taskInformations.$[elem].description": listInfoTask[i].description,
-                        "evaluations.$.taskInformations.$[elem].extra": listInfoTask[i].extra,
+                    $pull: {
+                        "taskInformations": {_id: deletedInfoItems[i] },
                     },
                 },
+                { safe: true }
+            );
+        }
+
+        // Xóa info ở đánh giá tháng hiện tại
+        for(let i in deletedInfoItems) {
+            await Task(connect(DB_CONNECTION, portal)).updateOne(
                 {
-                    arrayFilters: [
-                        {
-                            "elem._id": listInfoTask[i]._id,
-                        },
-                    ],
-                }
+                    _id: taskId,
+                    "evaluations._id": evaluateId,
+                    "evaluations.taskInformations._id": deletedInfoItems[i]
+                },
+                {
+                    $pull: {
+                        "evaluations.$.taskInformations": {_id: deletedInfoItems[i] },
+                    },
+                },
+                { safe: true }
             );
         }
     }
 
+    // cập nhật task infomation ở thông tin chung
+    for (let i in listInfoTask) {
+        if (listInfoTask[i]._id) {
+            for (let x in task.taskInformations) {
+                if (String(listInfoTask[i]._id) === String(task.taskInformations[x]._id)) {
+                    if (listInfoTask[i].type === task.taskInformations[x].type) {
+                        // console.log('1 - ', 'tìm thấy cái task info có sẵn - sửa thông tin task info');
+                        await Task(connect(DB_CONNECTION, portal)).updateOne(
+                            {
+                                _id: taskId,
+                                "taskInformations._id": listInfoTask[i]._id,
+                            },
+                            {
+                                $set: {
+                                    "taskInformations.$.code": "p" + parseInt(Number(i) + 1),
+                                    "taskInformations.$.name": listInfoTask[i].name,
+                                    "taskInformations.$.filledByAccountableEmployeesOnly": listInfoTask[i].filledByAccountableEmployeesOnly,
+                                    "taskInformations.$.description": listInfoTask[i].description,
+                                    "taskInformations.$.extra": listInfoTask[i].extra,
+                                },
+                            },
+                            {
+                                $new: true,
+                            }
+                        );
+                    }
+                    else {
+                        // console.log('2 - ', 'có thấy task info có sẵn - nhưng kiểu dữ liệu thay đổi, xóa giá trị của thông tin');
+                        listChangeTypeInfo.push(listInfoTask[i]._id);
+                        await Task(connect(DB_CONNECTION, portal)).updateOne(
+                            {
+                                _id: taskId,
+                                "taskInformations._id": listInfoTask[i]._id,
+                            },
+                            {
+                                $set: {
+                                    "taskInformations.$.code": "p" + parseInt(Number(i) + 1),
+                                    "taskInformations.$.name": listInfoTask[i].name,
+                                    "taskInformations.$.filledByAccountableEmployeesOnly": listInfoTask[i].filledByAccountableEmployeesOnly,
+                                    "taskInformations.$.description": listInfoTask[i].description,
+                                    "taskInformations.$.extra": listInfoTask[i].extra,
+                                    "taskInformations.$.type": listInfoTask[i].type,
+                                    "taskInformations.$.value": null
+                                },
+                            },
+                            {
+                                $new: true,
+                            }
+                        );
+                    }
+
+                }
+            }
+        }
+        else {
+            console.log('3 - thêm mới task info');
+            console.log('"code": "p" ', i, "p" + parseInt(Number(i) + 1));
+            await Task(connect(DB_CONNECTION, portal)).updateOne(
+                {
+                    _id: taskId,
+                },
+                {
+                    $push: {
+                        taskInformations: {
+                            "code": "p" + parseInt(Number(i) + 1),
+                            "name": listInfoTask[i].name,
+                            "filledByAccountableEmployeesOnly": listInfoTask[i].filledByAccountableEmployeesOnly,
+                            "description": listInfoTask[i].description,
+                            "type": listInfoTask[i].type,
+                            "extra": listInfoTask[i].extra,
+                        }
+                    }
+                },
+            );
+        }
+    }
+
+    // cập nhật task infomation ở đánh giá tháng hiện tại
+    if (evaluateId) {
+        for (let i in listInfoTask) {
+            if (listInfoTask[i]._id) {
+                for (let x in task.taskInformations) {
+                    // do các thông tin như _id, type, code,... ở trong task.taskInformations giống với evaluation.taskInformations 
+                    // nên có thể dùng task.taskInformations để cập nhật thông tin của evaluation.taskInformations
+                    if (String(listInfoTask[i]._id) === String(task.taskInformations[x]._id)) {
+                        // console.log('eval 1');
+                        if (listInfoTask[i].type === task.taskInformations[x].type) {
+                            await Task(connect(DB_CONNECTION, portal)).updateOne(
+                                {
+                                    _id: taskId,
+                                    "evaluations._id": evaluateId,
+                                },
+                                {
+                                    $set: {
+                                        "evaluations.$.taskInformations.$[elem].code": "p" + parseInt(Number(i) + 1),
+                                        "evaluations.$.taskInformations.$[elem].name": listInfoTask[i].name,
+                                        "evaluations.$.taskInformations.$[elem].filledByAccountableEmployeesOnly": listInfoTask[i].filledByAccountableEmployeesOnly,
+                                        "evaluations.$.taskInformations.$[elem].description": listInfoTask[i].description,
+                                        "evaluations.$.taskInformations.$[elem].extra": listInfoTask[i].extra,
+                                    },
+                                },
+                                {
+                                    arrayFilters: [
+                                        {
+                                            "elem._id": listInfoTask[i]._id,
+                                        },
+                                    ],
+                                }
+                            );
+                        }
+                        else {
+                            // console.log('eval 2');
+                            await Task(connect(DB_CONNECTION, portal)).updateOne(
+                                {
+                                    _id: taskId,
+                                    "evaluations._id": evaluateId,
+                                },
+                                {
+                                    $set: {
+                                        "evaluations.$.taskInformations.$[elem].code": "p" + parseInt(Number(i) + 1),
+                                        "evaluations.$.taskInformations.$[elem].name": listInfoTask[i].name,
+                                        "evaluations.$.taskInformations.$[elem].filledByAccountableEmployeesOnly": listInfoTask[i].filledByAccountableEmployeesOnly,
+                                        "evaluations.$.taskInformations.$[elem].description": listInfoTask[i].description,
+                                        "evaluations.$.taskInformations.$[elem].extra": listInfoTask[i].extra,
+                                        "evaluations.$.taskInformations.$[elem].type": listInfoTask[i].type,
+                                        "evaluations.$.taskInformations.$[elem].value": null
+                                    },
+                                },
+                                {
+                                    arrayFilters: [
+                                        {
+                                            "elem._id": listInfoTask[i]._id,
+                                        },
+                                    ],
+                                }
+                            );
+                        }
+    
+                    }
+                }
+            }
+            else {
+                // console.log('eval 3');
+                console.log('"code": "p" ', i, "p" + parseInt(Number(i) + 1));
+                let updatedItem = await Task(connect(DB_CONNECTION, portal)).findById(taskId);
+                let codeOfNewItem = "p" + parseInt(Number(i) + 1);
+                let newInfoItem = updatedItem.taskInformations.find(e => e.code === codeOfNewItem);
+                if(newInfoItem){
+                    await Task(connect(DB_CONNECTION, portal)).updateOne(
+                        {
+                            _id: taskId,
+                            "evaluations._id": evaluateId,
+                        },
+                        {
+                            $push: {
+                                "evaluations.$.taskInformations": newInfoItem
+                            }
+                        },
+                    );
+                }
+            }
+        }    
+    }
+
+    console.log('task info old', task.taskInformations.length); 
+    task = await Task(connect(DB_CONNECTION, portal)).findById(taskId);
+    console.log('task info new', task.taskInformations.length); 
     // cập nhật value cho info
     for (let item in info) {
         for (let i in task.taskInformations) {

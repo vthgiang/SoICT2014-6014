@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 import { DatePicker, SelectBox, ErrorLabel } from "../../../../../../common-components";
+import "../quote.css";
 
 class QuoteCreateInfo extends Component {
     constructor(props) {
@@ -301,34 +302,37 @@ class QuoteCreateInfo extends Component {
                                 </label>
                                 <input type="text" className="form-control" value={code} disabled={true} />
                             </div>
-                            <div className={`form-group ${!effectiveDateError ? "" : "has-error"}`}>
-                                <label>
-                                    Ngày báo giá
-                                    <span className="attention"> * </span>
-                                </label>
-                                <DatePicker
-                                    id="date_picker_create_discount_effectiveDate"
-                                    value={effectiveDate}
-                                    onChange={handleChangeEffectiveDate}
-                                    disabled={false}
-                                />
-                                <ErrorLabel content={effectiveDateError} />
+                            <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6 padding-0px" style={{ paddingRight: "5px" }}>
+                                <div className={`form-group ${!effectiveDateError ? "" : "has-error"}`}>
+                                    <label>
+                                        Ngày báo giá
+                                        <span className="attention"> * </span>
+                                    </label>
+                                    <DatePicker
+                                        id="date_picker_create_discount_effectiveDate"
+                                        value={effectiveDate}
+                                        onChange={handleChangeEffectiveDate}
+                                        disabled={false}
+                                    />
+                                    <ErrorLabel content={effectiveDateError} />
+                                </div>
                             </div>
-
-                            <div className={`form-group ${!expirationDateError ? "" : "has-error"}`}>
-                                <label>
-                                    Hiệu lực đến
-                                    <span className="attention"> * </span>
-                                </label>
-                                <DatePicker
-                                    id="date_picker_create_discount_expirationDate"
-                                    value={expirationDate}
-                                    onChange={handleChangeExpirationDate}
-                                    disabled={false}
-                                />
-                                <ErrorLabel content={expirationDateError} />
+                            <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6 padding-0px">
+                                <div className={`form-group ${!expirationDateError ? "" : "has-error"}`}>
+                                    <label>
+                                        Hiệu lực đến
+                                        <span className="attention"> * </span>
+                                    </label>
+                                    <DatePicker
+                                        id="date_picker_create_discount_expirationDate"
+                                        value={expirationDate}
+                                        onChange={handleChangeExpirationDate}
+                                        disabled={false}
+                                    />
+                                    <ErrorLabel content={expirationDateError} />
+                                </div>
                             </div>
-                            <div className={`form-group ${!organizationalUnitError ? "" : "has-error"}`}>
+                            {/* <div className={`form-group ${!organizationalUnitError ? "" : "has-error"}`}>
                                 <label>
                                     Đơn vị bán hàng
                                     <span className="attention"> * </span>
@@ -343,7 +347,7 @@ class QuoteCreateInfo extends Component {
                                     multiple={false}
                                 />
                                 <ErrorLabel content={organizationalUnitError} />
-                            </div>
+                            </div> */}
                             <div className={`form-group ${!approversError ? "" : "has-error"}`}>
                                 <label>
                                     Người phê duyệt

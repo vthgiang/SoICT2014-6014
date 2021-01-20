@@ -84,13 +84,12 @@ class CreateForm extends Component {
                     func={this.save}
                 >
                     <form id="form-create-career-action">
-                        {parent.length === 0 &&
+                        {/* {parent.length === 0 &&
                             <div className={`form-group `}>
                                 <label>Gói thầu</label>
                                 <input type="text" className="form-control" onChange={this.handlePackage} />
-                                {/* <ErrorLabel content={nameError} /> */}
                             </div>
-                        } 
+                        }  */}
                         <div className={`form-group ${!nameError ? "" : "has-error"}`}>
                             <label>Tên<span className="text-red">*</span></label>
                             <input type="text" className="form-control" onChange={this.handleName} />

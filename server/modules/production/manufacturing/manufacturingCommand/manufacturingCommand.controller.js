@@ -140,3 +140,49 @@ exports.getNumberCommandsStatus = async (req, res) => {
         })
     }
 }
+
+exports.getTopTenProduct = async (req, res) => {
+    try {
+        const data = req.query;
+        let topTenProduct = await ManufacturingCommandServices.getTopTenProduct(data, req.portal);
+
+        await Logger.info(req.user.email, "GET_TOP_TEN_PRODUCT", req.portal);
+
+        res.status(200).json({
+            success: true,
+            messages: ["get_top_ten_successfully"],
+            content: topTenProduct
+        })
+    } catch (error) {
+        await Logger.error(req.user.email, "GET_TOP_TEN_PRODUCT", req.portal);
+        console.log(error.message);
+        res.status(400).json({
+            success: false,
+            messages: ["get_top_ten_failed"],
+            content: error.message
+        })
+    }
+}
+
+exports.getFluctuatingProduct = async (req, res) => {
+    try {
+        const data = req.query;
+        let fluctuatingProduct = await ManufacturingCommandServices.getFluctuatingProduct(data, req.portal);
+
+        await Logger.info(req.user.email, "GET_FLUCTUATING_PRODUCT", req.portal);
+
+        res.status(200).json({
+            success: true,
+            messages: ["get_fluctuating_successfully"],
+            content: fluctuatingProduct
+        })
+    } catch (error) {
+        await Logger.error(req.user.email, "GET_FLUCTUATING_PRODUCT", req.portal);
+        console.log(error.message);
+        res.status(400).json({
+            success: false,
+            messages: ["get_fluctuating_failed"],
+            content: error.message
+        })
+    }
+}

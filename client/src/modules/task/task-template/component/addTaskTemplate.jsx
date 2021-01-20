@@ -81,7 +81,7 @@ class AddTaskTemplate extends Component {
 
         if (willUpdateState) {
             this.state.newTemplate.formula = value;
-            // this.state.newTemplate.errorOnFormula = msg;
+            this.state.newTemplate.errorOnFormula = msg;
             this.setState(state => {
                 return {
                     ...state,

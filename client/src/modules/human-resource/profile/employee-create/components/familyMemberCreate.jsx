@@ -125,7 +125,7 @@ const FamilyMemberModal = ({
 
     return (
         <React.Fragment>
-            <button className="btn btn-success pull-right" style={{ cursor: 'pointer' }} onClick={_openModalAddFamilyMember}>{translate('general.add')}</button>
+            <button className="btn btn-success pull-right" style={{ cursor: 'pointer', marginBottom: '10px' }} onClick={_openModalAddFamilyMember}>{translate('general.add')}</button>
             <div style={{ marginTop: 40, display: 'none' }} id="form-add-family-members">
                 <form>
                     <div className="row">
