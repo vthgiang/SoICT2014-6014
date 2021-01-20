@@ -171,7 +171,8 @@ class WorkPlanEditForm extends Component {
                                 value={type}
                                 items={[{ value: "time_for_holiday", text: translate('human_resource.work_plan.time_for_holiday') },
                                 { value: 'time_allow_to_leave', text: translate('human_resource.work_plan.time_allow_to_leave') },
-                                { value: 'time_not_allow_to_leave', text: translate('human_resource.work_plan.time_not_allow_to_leave') }]}
+                                { value: 'time_not_allow_to_leave', text: translate('human_resource.work_plan.time_not_allow_to_leave') },
+                                { value: 'other', text: translate('human_resource.work_plan.other') }]}
                                 onChange={this.handleTypetChange}
                             />
                         </div>

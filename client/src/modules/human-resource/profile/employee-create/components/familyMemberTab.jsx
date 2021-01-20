@@ -137,21 +137,21 @@ const FamilyMemberTab = ({
                         <table className="table table-hover table-striped table-bordered" id="table-employee-family-member" style={{ marginBottom: 0 }}>
                             <thead>
                                 <tr>
-                                    <th style={{ width: 20 }}>{translate('human_resource.profile.house_hold.members.stt')}</th>
-                                    <th>{translate('human_resource.profile.house_hold.members.name')}</th>
-                                    <th>{translate('human_resource.profile.house_hold.members.code_social_insurance')}</th>
-                                    <th>{translate('human_resource.profile.house_hold.members.book_nci')}</th>
-                                    <th>{translate('human_resource.profile.house_hold.members.gender')}</th>
-                                    <th>{translate('human_resource.profile.house_hold.members.is_hh')}</th>
-                                    <th>{translate('human_resource.profile.house_hold.members.rwhh')}</th>
-                                    <th>{translate('human_resource.profile.house_hold.members.cnss')}</th>
-                                    <th>{translate('human_resource.profile.house_hold.members.birth')}</th>
-                                    <th>{translate('human_resource.profile.house_hold.members.pob')}</th>
-                                    <th>{translate('human_resource.profile.house_hold.members.nationality')}</th>
-                                    <th>{translate('human_resource.profile.house_hold.members.nation')}</th>
-                                    <th>{translate('human_resource.profile.house_hold.members.npp')}</th>
-                                    <th>{translate('human_resource.profile.house_hold.members.note')}</th>
-                                    <th>{translate('general.action')}
+                                    <th className="not-sort" style={{ width: 20 }}>{translate('human_resource.profile.house_hold.members.stt')}</th>
+                                    <th className="not-sort">{translate('human_resource.profile.house_hold.members.name')}</th>
+                                    <th className="not-sort">{translate('human_resource.profile.house_hold.members.code_social_insurance')}</th>
+                                    <th className="not-sort">{translate('human_resource.profile.house_hold.members.book_nci')}</th>
+                                    <th className="not-sort">{translate('human_resource.profile.house_hold.members.gender')}</th>
+                                    <th className="not-sort">{translate('human_resource.profile.house_hold.members.is_hh')}</th>
+                                    <th className="not-sort">{translate('human_resource.profile.house_hold.members.rwhh')}</th>
+                                    <th className="not-sort">{translate('human_resource.profile.house_hold.members.cnss')}</th>
+                                    <th className="not-sort">{translate('human_resource.profile.house_hold.members.birth')}</th>
+                                    <th className="not-sort">{translate('human_resource.profile.house_hold.members.pob')}</th>
+                                    <th className="not-sort">{translate('human_resource.profile.house_hold.members.nationality')}</th>
+                                    <th className="not-sort">{translate('human_resource.profile.house_hold.members.nation')}</th>
+                                    <th className="not-sort">{translate('human_resource.profile.house_hold.members.npp')}</th>
+                                    <th className="not-sort">{translate('human_resource.profile.house_hold.members.note')}</th>
+                                    <th className="not-sort">{translate('general.action')}
                                         <DataTableSetting
                                             tableId="table-employee-family-member"
                                             tableContainerId="container-employee-family-member"
