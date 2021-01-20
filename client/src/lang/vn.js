@@ -2988,6 +2988,8 @@ export default {
                 detail_hide_info: "Ẩn thông tin",
                 detail_show_info: "Hiện thông tin",
                 detail_choose_role: "Chọn vai trò",
+                detail_copy_task: "Nhân bản công việc",
+                detail_save_as_template: "Lưu thành mẫu",
                 detail_route: "Điều hướng",
                 detail_route_task: "Điều hướng công việc",
 

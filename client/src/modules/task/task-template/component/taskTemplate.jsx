@@ -346,7 +346,7 @@ class TaskTemplate extends Component {
     /**Mở modal thêm mới 1 mẫu công việc */
     handleAddTaskTemplate = (event) => {
         event.preventDefault();
-        window.$('#modal-add-task-template').modal('show');
+        window.$('#modal-add-task-template-undefined').modal('show');
     }
 
     // Function chyển đổi dữ liệu mẫu công việc thành dạng dữ liệu dùng export

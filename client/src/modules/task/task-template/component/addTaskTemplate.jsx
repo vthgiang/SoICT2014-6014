@@ -224,6 +224,7 @@ class AddTaskTemplate extends Component {
         const { department, user } = this.props;
         const { newTemplate } = this.state;
 
+        // dùng cho chức năng tạo task process
         if (nextProps.isProcess && nextProps.id !== this.state.id) {
             let { info, listOrganizationalUnit } = nextProps;
             this.setState(state => {
@@ -262,6 +263,58 @@ class AddTaskTemplate extends Component {
                 defaultUnit = user.organizationalUnitsOfUser[0]
             }
             // this.props.getChildrenOfOrganizationalUnits(defaultUnit && defaultUnit._id); // => user.usersOfChildrenOrganizationalUnit
+            return false;
+        }
+
+        // dùng cho chức năng lưu task thành template
+        if (nextProps.savedTaskAsTemplate && nextProps.savedTaskId !== this.state.savedTaskId) {
+            this.setState(state => {
+                return {
+                    savedTaskId: nextProps.savedTaskId,
+                    newTemplate: {
+                        organizationalUnit: nextProps.savedTaskItem.organizationalUnit._id,
+                        collaboratedWithOrganizationalUnits: nextProps.savedTaskItem.collaboratedWithOrganizationalUnits.map(e => e.organizationalUnit._id),
+                        name: nextProps.savedTaskItem.name,
+                        // readByEmployees: nextProps.savedTaskItem.readByEmployees,
+                        responsibleEmployees: nextProps.savedTaskItem.responsibleEmployees.map(e => e._id),
+                        accountableEmployees: nextProps.savedTaskItem.accountableEmployees.map(e => e._id),
+                        consultedEmployees: nextProps.savedTaskItem.consultedEmployees.map(e => e._id),
+                        informedEmployees: nextProps.savedTaskItem.informedEmployees.map(e => e._id),
+                        description: nextProps.savedTaskItem.description,
+                        // numberOfDaysTaken: nextProps.savedTaskItem.numberOfDaysTaken,
+                        formula: nextProps.savedTaskItem.formula,
+                        priority: nextProps.savedTaskItem.priority,
+                        taskActions: nextProps.savedTaskItem.taskActions.map(e => {
+                            return {
+                                mandatory: e.mandatory,
+                                name: e.name,
+                                description: e.description,
+                            }
+                        }),
+                        taskInformations: nextProps.savedTaskItem.taskInformations.map(e => {
+                            return {
+                                filledByAccountableEmployeesOnly: e.filledByAccountableEmployeesOnly,
+                                code: e.code,
+                                name: e.name,
+                                description: e.description,
+                                type: e.type,
+                                extra: e.extra,
+                            }
+                        }),
+                        creator: getStorage("userId"),
+                    },
+                }
+            })
+
+            let defaultUnit;
+            if (user && user.organizationalUnitsOfUser) defaultUnit = user.organizationalUnitsOfUser.find(item =>
+                item.manager === this.state.currentRole
+                || item.deputyManager === this.state.currentRole
+                || item.employee === this.state.currentRole);
+            if (!defaultUnit && user.organizationalUnitsOfUser && user.organizationalUnitsOfUser.length > 0) {
+                // Khi không tìm được default unit, mặc định chọn là đơn vị đầu tiên
+                defaultUnit = user.organizationalUnitsOfUser[0]
+            }
             return false;
         }
 
