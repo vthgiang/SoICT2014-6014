@@ -11,6 +11,8 @@ import { DepartmentActions } from '../../../../super-admin/organizational-unit/r
 import { CareerReduxAction } from '../../../career/redux/actions';
 import { MajorActions } from '../../../major/redux/actions';
 import { SearchDataImportForm } from './searchDataImportForm';
+import { ViewEmployeeCVForm } from './viewEmployeeCVForm';
+import { formatDate } from '../../../../../helpers/formatDate';
 
 
 class SearchEmployeeForPackage extends Component {
@@ -84,7 +86,7 @@ class SearchEmployeeForPackage extends Component {
                 currentRowView: value
             }
         });
-        window.$(`#modal-detail-employee${value._id}`).modal('show');
+        window.$(`#modal-view-cv-form-employee${value._id}`).modal('show');
     }
 
     /**
@@ -183,23 +185,14 @@ class SearchEmployeeForPackage extends Component {
      */
 
     handleAction = (value) => {
-        // let { career } = this.props;
-        // let listAction = career?.listAction.map(elm => { return { ...elm, id: elm._id } });
-
-        // let action = listAction?.filter(e => value.indexOf(e._id) !== -1);
-
         let action = this.state.action;
-        if(!this.state.action){
+        if (!this.state.action) {
             action = [];
         }
-        // if(action.indexOf(value[value.length-1]) === -1){
-            console.log('quangyDsd');
-            this.setState({ action: value });
-        // } else {
-        //     this.forceUpdate();
-        // }
 
-        console.log('value', value, value[value.length-1], action.indexOf(value[value.length-1]));
+        this.setState({ action: value });
+
+        console.log('value', value, value[value.length - 1], action.indexOf(value[value.length - 1]));
     };
 
     handleField = (value) => {
@@ -207,26 +200,15 @@ class SearchEmployeeForPackage extends Component {
     };
 
     handlePosition = (value) => {
-        // let { career } = this.props;
-        // let listPosition = career?.listPosition.map(elm => { return { ...elm, id: elm._id } });
-        // let position = listPosition?.find(e => e._id === value[0]);
         console.log('value', value);
         this.setState({ position: value[0] });
     };
-
-    // handleCareer = (value) => {
-    //     this.setState({ careerInfo: value[0] });
-    // }
 
     /**
      * Function lưu giá trị ngày hết hạn hợp đồng vào state khi thay đổi
      * @param {*} value : Tháng hết hạn hợp đồng
      */
     handleEndDateOfCertificateChange = (value) => {
-        // if (value) {
-        //     let partMonth = value.split('-');
-        //     value = [partMonth[1], partMonth[0]].join('-');
-        // }
         this.setState({
             ...this.state,
             certificatesEndDate: value
@@ -296,7 +278,6 @@ class SearchEmployeeForPackage extends Component {
         let { position, professionalSkill, majorInfo,
             certificatesName, certificatesType, certificatesEndDate,
             exp, sameExp, field, action } = this.state;
-            console.log('state', this.state);
         let out = {
             STT: 1,
             position: position,
@@ -314,7 +295,7 @@ class SearchEmployeeForPackage extends Component {
         datas = [...datas, out];
 
         let res = {
-            fileName: "Mẫu thông tin tìm kiếm",
+            fileName: "Mẫu thông tin tìm kiếm mẫu",
             dataSheets: [{
                 sheetName: "Sheet1",
                 sheetTitle: 'Mẫu thông tin tìm kiếm',
@@ -333,6 +314,69 @@ class SearchEmployeeForPackage extends Component {
                         { key: "field", value: "Lĩnh vực công việc" },
                         { key: "package", value: "Gói thầu" },
                         { key: "action", value: "Hoạt động công việc" },
+                    ],
+                    data: datas
+                }]
+            }]
+        }
+        return res;
+    }
+
+    convertExportSearchResult = () => {
+        let datas = [];
+        const { employeesManager } = this.props;
+        let listEmployees = [];
+        if (employeesManager.listEmployees) {
+            listEmployees = employeesManager.listEmployees;
+        }
+        for (let i in listEmployees) {
+            let x = listEmployees[i];
+            let out = {
+                STT: Number(i) + 1,
+                fullName: x.fullName,
+                emailInCompany: x.emailInCompany,
+                birthdate: this.formatDate(x.birthdate),
+
+                degree: x.degrees?.length > 0 ? x.degrees?.map((e, key) => {
+                    return `- ${e?.name} - Năm: ${e?.year} - Loại: ${this.formatDegreeType(e?.degreeType)}`
+                }).join("\n\n") : "Chưa có dữ liệu",
+
+                professionalSkill: this.formatSkill(x.professionalSkill),
+
+                major: x.major?.length > 0 ? (x.major?.map((e, key) => {
+                    return `- ${e?.group?.name} - ${e?.specialized?.name}`
+                })).join("\n\n") : `Chưa có dữ liệu`,
+
+                certificates: x.certificates?.length > 0 ? x.certificates?.map((e, key) => {
+                    return `- ${e?.name} - ${e?.issuedBy} - Hiệu lực: ${this.formatDate(e?.endDate)}`
+                }).join("\n\n") : <p>Chưa có dữ liệu</p>,
+
+                career: x.career?.length > 0 ? (x.career?.map((e, key) => {
+                    return `- (${this.formatDate(e.startDate)} >> ${this.formatDate(e.endDate)}):\nDự án: ${e?.package}\nChức vụ: ${e?.position?.name}\nKinh nghiệm chuyên môn và quản lý có liên quan:\n${e?.action.map(act => `  + ${act?.name}`).join("\n")}`
+                })).join("\n\n").split("\n").join("\n") : `Chưa có dữ liệu`,
+            }
+            datas = [...datas, out];
+        }
+
+
+        let res = {
+            fileName: "Danh sách tìm kiếm nhân viên",
+            dataSheets: [{
+                sheetName: "Sheet1",
+                sheetTitle: 'Danh sách tìm kiếm nhân viên',
+                tables: [{
+                    rowHeader: 1,
+                    merges: [],
+                    columns: [
+                        { key: "STT", value: "STT", width: 7  },
+                        { key: "fullName", value: "Họ và tên", width: 20 },
+                        { key: "emailInCompany", value: "Email", width: 25 },
+                        { key: "birthdate", value: "Ngày sinh", width: 25 },
+                        { key: "degree", value: "Bằng cấp", width: 25 },
+                        { key: "professionalSkill", value: "Trình độ chuyên môn", width: 25 },
+                        { key: "major", value: "Chuyên ngành", width: 25 },
+                        { key: "certificates", value: "Chứng chỉ", width: 25 },
+                        { key: "career", value: "Vị trí công việc", width: 60 },
                     ],
                     data: datas
                 }]
@@ -361,25 +405,25 @@ class SearchEmployeeForPackage extends Component {
         });
 
     }
-    
+
     formatSkill = (item) => {
-        if(item === "intermediate_degree") return "Trung cấp";
-        if(item === "colleges") return "Cao đẳng";
-        if(item === "university") return "Đại học";
-        if(item === "bachelor") return "Cử nhân";
-        if(item === "engineer") return "Kỹ sư";
-        if(item === "master_degree") return "Thạc sĩ";
-        if(item === "phd") return "Tiến sĩ";
-        if(item === "unavailable") return "Không có";
+        if (item === "intermediate_degree") return "Trung cấp";
+        if (item === "colleges") return "Cao đẳng";
+        if (item === "university") return "Đại học";
+        if (item === "bachelor") return "Cử nhân";
+        if (item === "engineer") return "Kỹ sư";
+        if (item === "master_degree") return "Thạc sĩ";
+        if (item === "phd") return "Tiến sĩ";
+        if (item === "unavailable") return "Không có";
     }
-    
+
     formatDegreeType = (item) => {
-         //excellent-Xuất sắc, very_good-Giỏi, good-Khá, average_good-Trung bình khá, ordinary-Trung bình
-        if(item === "excellent") return "Xuất sắc";
-        if(item === "very_good") return "Giỏi";
-        if(item === "good") return "Khá";
-        if(item === "average_good") return "Trung bình khá";
-        if(item === "ordinary") return "Trung bình";
+        //excellent-Xuất sắc, very_good-Giỏi, good-Khá, average_good-Trung bình khá, ordinary-Trung bình
+        if (item === "excellent") return "Xuất sắc";
+        if (item === "very_good") return "Giỏi";
+        if (item === "good") return "Khá";
+        if (item === "average_good") return "Trung bình khá";
+        if (item === "ordinary") return "Trung bình";
     }
 
 
@@ -387,9 +431,9 @@ class SearchEmployeeForPackage extends Component {
         const { employeesManager, translate, department, career, major } = this.props;
 
         const { showMore, importEmployee, limit, page, currentRow, currentRowView,
-                certificatesEndDate, certificatesType, certificatesName, 
-                professionalSkill, majorInfo, exp, sameExp, majorID, 
-                field, position, action } = this.state; // filterField, filterPosition, filterAction, 
+            certificatesEndDate, certificatesType, certificatesName,
+            professionalSkill, majorInfo, exp, sameExp, majorID,
+            field, position, action } = this.state; // filterField, filterPosition, filterAction, 
 
         let listEmployees = [];
         if (employeesManager.listEmployees) {
@@ -427,12 +471,12 @@ class SearchEmployeeForPackage extends Component {
         });
         dataTreePosition = [...dataTreePosition, ...pos];
 
-        if(field) {
-            let listPos = listField.find(e => String(e._id) === String(field) )?.position?.map(elm => elm.position._id)
+        if (field) {
+            let listPos = listField.find(e => String(e._id) === String(field))?.position?.map(elm => elm.position._id)
             let tmp = dataTreePosition.filter(e => listPos.indexOf(String(e.id)) !== -1);
             dataTreePosition = tmp;
         }
-        
+
         let listAction = career.listAction.filter(e => e.isLabel !== 1);
         let dataTreeAction = []
         let acts = listAction.map(elm => {
@@ -460,20 +504,20 @@ class SearchEmployeeForPackage extends Component {
         }
 
         let listSelectAction = career.listAction.filter(e => e.isLabel === 1).map(e => {
-            return { id: e._id, text: e.name, value: []}
+            return { id: e._id, text: e.name, value: [] }
         });
 
-        for(let i in listSelectAction) {
-            for(let x in listAction){
-                if( listAction[x].label.map(lb => lb._id).indexOf(String(listSelectAction[i].id)) !== -1 ){
+        for (let i in listSelectAction) {
+            for (let x in listAction) {
+                if (listAction[x].label.map(lb => lb._id).indexOf(String(listSelectAction[i].id)) !== -1) {
                     listSelectAction[i].value.push(
-                        {text: listAction[x].name, value: listAction[x]._id}
+                        { text: listAction[x].name, value: listAction[x]._id }
                     )
                 }
             }
         }
 
-        let additionalItems = career.listAction.filter(e => e.isLabel !== 1 && e.label.length === 0).map(x => {return {text: x.name, value: x._id}})
+        let additionalItems = career.listAction.filter(e => e.isLabel !== 1 && e.label.length === 0).map(x => { return { text: x.name, value: x._id } })
 
         listSelectAction = [...listSelectAction, ...additionalItems];
 
@@ -555,11 +599,16 @@ class SearchEmployeeForPackage extends Component {
             };
         }
 
-        console.log('listEmployees', career, );
+        console.log('listEmployees', career,);
 
         return (
             <div className="box">
                 <div className="box-body qlcv">
+                    <div className="form-inline">
+                        {/* Button export nhân viên */}
+                        {<ExportExcel id="export-process-template" exportData={this.convertExportSearchResult()} buttonName={"Xuất file tìm kiếm"} style={{ marginLeft: 5, marginTop: 5 }} />}
+                    </div>
+
                     <div className="form-inline">
                         {/* Vị trí công việc  */}
                         <div className="form-group">
@@ -672,10 +721,10 @@ class SearchEmployeeForPackage extends Component {
                             <button type="button" className="btn btn-primary" title={translate('general.search')} onClick={this.clickShowMore} >
                                 {showMore ?
                                     <span>
-                                        Show less <i className="fa fa-angle-double-up"></i>
+                                        Ẩn bớt <i className="fa fa-angle-double-up"></i>
                                     </span>
                                     : <span>
-                                        Show more <i className="fa fa-angle-double-down"></i>
+                                        Hiện thêm <i className="fa fa-angle-double-down"></i>
                                     </span>
                                 }
                             </button>
@@ -723,8 +772,7 @@ class SearchEmployeeForPackage extends Component {
                                         <td>
                                             {x.career?.length > 0 ? (x.career?.map((e, key) => {
                                                 return <li key={key}>{new Date(e.startDate).getFullYear()} - {new Date(e.endDate).getFullYear()} : {e?.position?.name}</li>
-                                            })) : <p>Chưa có dữ liệu</p>
-                                            }
+                                            })) : <p>Chưa có dữ liệu</p>}
                                         </td>
                                         <td>{this.formatSkill(x.professionalSkill)}</td>
                                         <td>{x.major?.length > 0 ? (x.major?.map((e, key) => {
@@ -764,7 +812,7 @@ class SearchEmployeeForPackage extends Component {
                 }
 
                 {/* From xem thông tin nhân viên */
-                    <EmployeeDetailForm
+                    <ViewEmployeeCVForm
                         _id={currentRowView ? currentRowView._id : ""}
                     />
                 }

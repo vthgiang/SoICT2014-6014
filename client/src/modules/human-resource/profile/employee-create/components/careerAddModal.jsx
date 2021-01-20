@@ -64,7 +64,12 @@ class CareerAddModal extends Component {
         let position = listPosition?.find(e => e._id === value[0]);
 
         let pkg = position?.package;
-        this.setState({ position: position, package: pkg });
+        this.setState({ position: position });
+    };
+
+    handleChangePackage = (e) => {
+        let { value } = e.target;
+        this.setState({ package: value });
     };
 
     /** Bắt sự kiện thay đổi file đính kèm */
@@ -185,6 +190,8 @@ class CareerAddModal extends Component {
         // }
         // return this.props.handleChange(career);
 
+        console.log('Data', this.state);
+
         return this.props.handleChange({ ...this.state, startDate: startDateNew, endDate: endDateNew });
     }
 
@@ -220,9 +227,11 @@ class CareerAddModal extends Component {
                             <label>Lĩnh vực công việc</label>
                             <TreeSelect data={listField} value={field?._id} handleChange={this.handleField} mode="radioSelect" />
                         </div>
-                        {/* <div className="form-group">
-                            <label>Gói thầu: </label> {this.state.package ? this.state.package : "Chưa có"}
-                        </div> */}
+                        <div className="form-group">
+                            <label>Gói thầu</label> 
+                            {/* {this.state.package ? this.state.package : "Chưa có"} */}
+                            <input type="text" className="form-control" name="package" value={this.state.package} onChange={this.handleChangePackage} />
+                        </div>
                         <div className="form-group">
                             <label>Vị trí công việc</label>
                             <TreeSelect data={listPosition} value={position?._id} handleChange={this.handlePosition} mode="radioSelect" />

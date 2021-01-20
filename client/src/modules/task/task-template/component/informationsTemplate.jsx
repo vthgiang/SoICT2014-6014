@@ -75,9 +75,11 @@ class InformationForm extends Component{
     handleEditInformation = (information, indexInfo) => {
         this.setState({
             editInfo: true,
+            warning: false,
             indexInfo,
             information,
-            quillValueDefault: information && information.description
+            quillValueDefault: information && information.description,
+            oldType: information.type
         });
     }
 
@@ -106,6 +108,7 @@ class InformationForm extends Component{
         event.preventDefault(); // Ngăn không submit
         this.setState({
             editInfo: false,
+            warning: false,
             information: {...this.EMPTY_INFORMATION},
             quillValueDefault: this.EMPTY_INFORMATION.description
         });        
@@ -114,7 +117,15 @@ class InformationForm extends Component{
     /**Xóa trắng các ô input */
     handleClearInformation = (event) => {
         event.preventDefault(); // Ngăn không submit
+        
+        let warning = false;
+        if(this.state.oldType && this.state.editInfo === true){
+            if(this.INFO_TYPE.TEXT !== this.state.oldType){
+                warning = true;
+            }
+        }
         this.setState({
+            warning: warning,
             information: {...this.EMPTY_INFORMATION},
             quillValueDefault: this.EMPTY_INFORMATION.description
         })
@@ -196,9 +207,17 @@ class InformationForm extends Component{
     handleChangeInfoType = (event) => { 
         let value = event.target.value;
         this.state.information.type = value;
+        let warning = false;
+        if(this.state.oldType && this.state.editInfo === true){
+            if(value !== this.state.oldType){
+                warning = true;
+            }
+        }
+
         this.setState(state =>{
             return{
-                ...state
+                ...state,
+                warning: warning,
             };
         });
     }
@@ -277,8 +296,11 @@ class InformationForm extends Component{
 
                     {/**Kiểu dữ liệu trường thông tin */}
                     <label className=" control-label">{translate('task_template.datatypes')}</label>
+                    {
+                        this.state.warning && <p style={{color: "#FF6A00"}}>Đổi kiểu dữ liệu sẽ xóa dữ liệu ở tháng hiện tại và đánh giá tháng hiện tại</p>
+                    }
                     <div style={{ width: '100%' }}>
-                        <select disabled={this.props.disabled} onChange={this.handleChangeInfoType} className="form-control" id="seltype" value={information.type} name="type" >
+                        <select onChange={this.handleChangeInfoType} className="form-control" id="seltype" value={information.type} name="type" >
                             <option value={this.INFO_TYPE.TEXT}>{translate('task_template.text')}</option>
                             <option value={this.INFO_TYPE.NUMBER}>{translate('task_template.number')}</option>
                             <option value={this.INFO_TYPE.DATE}>{translate('task_template.date')}</option>
