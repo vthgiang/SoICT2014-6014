@@ -5,7 +5,10 @@ export const workScheduleActions = {
     getAllWorkSchedules,
     createWorkSchedule,
     setCurrentMonth,
-    getAllWorkSchedulesWorker
+    getAllWorkSchedulesWorker,
+    getAllWorkSchedulesByMillId,
+    getAllWorkSchedulesOfManufacturingWork,
+    getAllWorkerByArrayWorkSchedules,
 }
 
 
@@ -72,6 +75,67 @@ function getAllWorkSchedulesWorker(query) {
             }).catch((error) => {
                 dispatch({
                     type: workScheduleConstants.GET_ALL_WORK_SCHEDULE_WORKER_FAILURE,
+                    error
+                });
+            });
+    }
+}
+
+function getAllWorkSchedulesByMillId(id) {
+    return dispatch => {
+        dispatch({
+            type: workScheduleConstants.GET_ALL_WORK_SCHEDULE_BY_MILL_ID_REQUEST
+        });
+        workScheduleSevices.getAllWorkSchedulesByMillId(id)
+            .then((res) => {
+                dispatch({
+                    type: workScheduleConstants.GET_ALL_WORK_SCHEDULE_BY_MILL_ID_SUCCESS,
+                    payload: res.data.content
+                });
+            }).catch((error) => {
+                dispatch({
+                    type: workScheduleConstants.GET_ALL_WORK_SCHEDULE_BY_MILL_ID_FAILURE,
+                    error
+                });
+            });
+    }
+}
+
+function getAllWorkSchedulesOfManufacturingWork(query) {
+    return dispatch => {
+        dispatch({
+            type: workScheduleConstants.GEt_ALL_WORK_SCHEDULE_OF_MANUFACTURING_WORK_REQUEST
+        });
+        workScheduleSevices.getAllWorkSchedulesOfManufacturingWork(query)
+            .then((res) => {
+                dispatch({
+                    type: workScheduleConstants.GEt_ALL_WORK_SCHEDULE_OF_MANUFACTURING_WORK_SUCCESS,
+                    payload: res.data.content
+                });
+            }).catch((error) => {
+                dispatch({
+                    type: workScheduleConstants.GEt_ALL_WORK_SCHEDULE_OF_MANUFACTURING_WORK_FAILURE,
+                    error
+                });
+            });
+    }
+}
+
+
+function getAllWorkerByArrayWorkSchedules(query) {
+    return dispatch => {
+        dispatch({
+            type: workScheduleConstants.GET_ALL_WORKER_BY_ARRAY_WORK_SCHEDULES_REQUEST
+        });
+        workScheduleSevices.getAllWorkerByArrayWorkSchedules(query)
+            .then((res) => {
+                dispatch({
+                    type: workScheduleConstants.GET_ALL_WORKER_BY_ARRAY_WORK_SCHEDULES_SUCCEESS,
+                    payload: res.data.content
+                });
+            }).catch((error) => {
+                dispatch({
+                    type: workScheduleConstants.GET_ALL_WORKER_BY_ARRAY_WORK_SCHEDULES_FAILURE,
                     error
                 });
             });

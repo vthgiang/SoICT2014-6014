@@ -93,7 +93,8 @@ exports.getTaskTemplate = async (portal, id) => {
  * Tạo mới mẫu công việc
  * @body dữ liệu tạo mới mẫu công việc
  */
-exports.createTaskTemplate = async (portal, body) => {
+exports.createTaskTemplate = async (portal, body, userId) => {
+    console.log("22", body);
     //kiểm tra tên mẫu công việc đã tồn tại hay chưa ?
     let checkTaskTemplate = await TaskTemplate(connect(DB_CONNECTION, portal)).findOne({ name: body.name });
     if(checkTaskTemplate) throw ['task_template_name_exist'];
@@ -155,11 +156,12 @@ exports.createTaskTemplate = async (portal, body) => {
         }
     }
     //Tạo dữ liệu mẫu công việc
+    console.log("body", body);
     var tasktemplate = await TaskTemplate(connect(DB_CONNECTION, portal)).create({
         organizationalUnit: body.organizationalUnit,
         collaboratedWithOrganizationalUnits: body.collaboratedWithOrganizationalUnits,
         name: body.name,
-        creator: body.creator, //id của người tạo
+        creator: userId, //id của người tạo
         readByEmployees: Array.isArray(body.readByEmployees) ? body.readByEmployees : [], //role của người có quyền xem
         responsibleEmployees: body.responsibleEmployees,
         accountableEmployees: body.accountableEmployees,
@@ -225,7 +227,7 @@ exports.createTaskTemplate = async (portal, body) => {
             roleId: roleId[i], //id của người cấp quyền xem
             resourceId: tasktemplate._id,
             resourceType: "TaskTemplate",
-            action: readByEmployee //quyền READ
+            action: read //quyền READ
         });
     }
     tasktemplate = await tasktemplate.populate([
@@ -255,6 +257,42 @@ exports.deleteTaskTemplate = async (portal, id) => {
  * @id id mẫu công việc cập nhật
  */
 exports.editTaskTemplate = async (portal, data, id) => {
+    // thêm quyền xem mẫu công việc cho trưởng đơn vị của công việc
+    let units = await OrganizationalUnit(connect(DB_CONNECTION, portal)).findById(data.organizationalUnit);
+    let roleManagers = units.managers;
+    let readByEmployee = data.readByEmployees;
+    for (let i in roleManagers) {
+        let flag = true;
+        for (let x in readByEmployee) {
+            if (JSON.stringify(readByEmployee[x]) === JSON.stringify(roleManagers[i])) {
+                flag = false;
+                break;
+            }
+        }
+        if (flag) {
+            readByEmployee.push(roleManagers[i]);
+        }
+    }
+    
+    // thêm quyền xem mẫu công việc cho đơn vị phối hợp (neu co)
+    if (data.collaboratedWithOrganizationalUnits.length) {
+        units = await OrganizationalUnit(connect(DB_CONNECTION, portal)).findById(data.collaboratedWithOrganizationalUnits);
+        roleManagers = units.managers;
+        readByEmployee = data.readByEmployees;
+        for (let i in roleManagers) {
+            let flag = true;
+            for (let x in readByEmployee) {
+                if (JSON.stringify(readByEmployee[x]) === JSON.stringify(roleManagers[i])) {
+                    flag = false;
+                    break;
+                }
+            }
+            if (flag) {
+                readByEmployee.push(roleManagers[i]);
+            }
+        }
+    }
+
     var taskTemplate = await TaskTemplate(connect(DB_CONNECTION, portal)).findByIdAndUpdate(id,
         {
             $set: {
@@ -329,7 +367,7 @@ exports.editTaskTemplate = async (portal, data, id) => {
             roleId: roleId[i], //id của người cấp quyền xem
             resourceId: id,
             resourceType: "TaskTemplate",
-            action: data.readByEmployees //quyền READ
+            action: read //quyền READ
         });
     }
     return taskTemplate;
@@ -344,6 +382,7 @@ exports.importTaskTemplate = async (portal, data, id) => {
     let results = [];
     for (let i = 0; i < data.length; i++) {
         data[i]["creator"] = id;
+
         // chuyen dia chi email sang id
         if (data[i].accountableEmployees[0]) {
             for (let j = 0; j < data[i].accountableEmployees.length; j++) {
@@ -365,12 +404,24 @@ exports.importTaskTemplate = async (portal, data, id) => {
         }
         
         let read = [];
-        for (let j = 0; j < data[i].readByEmployees.length; j++) {
-            let readByEmployees = await Role(connect(DB_CONNECTION, portal)).findOne({ name: data[i].readByEmployees[j] });
-            readByEmployees = readByEmployees._id;
-            read = [...read, readByEmployees];
+        if (data[i].readByEmployees[0]) {
+            for (let j = 0; j < data[i].readByEmployees.length; j++) {
+                // Đổi tên "Trưởng đơn vị, phó đơn vị, nhân viên đơn vị trùng tên trong database"
+                switch (data[i].readByEmployees[j]) {
+                    case "Trưởng đơn vị": data[i].readByEmployees[j] = "Manager"; break;
+                    case "Phó đơn vị": data[i].readByEmployees[j] = "Deputy Manager"; break;
+                    case "Nhân viên đơn vị": data[i].readByEmployees[j] = "Employee"; break;
+                    default: break;
+                }
+                let readByEmployees = await Role(connect(DB_CONNECTION, portal)).findOne({ name: data[i].readByEmployees[j] });
+                readByEmployees = readByEmployees._id;
+                read = [...read, readByEmployees];
+            }
+            data[i].readByEmployees = read;
+        } else {
+            data[i].readByEmployees = [];
         }
-        data[i].readByEmployees = read;
+        
 
         if (data[i].consultedEmployees[0]) {
             for (let j = 0; j < data[i].consultedEmployees.length; j++) {
@@ -390,7 +441,7 @@ exports.importTaskTemplate = async (portal, data, id) => {
         } else {
             data[i].consultedEmployees = [];
         }
-        
+
         if (data[i].informedEmployees[0]) {
             for (let j = 0; j < data[i].informedEmployees.length; j++) {
                 let informedEmployees = await User(connect(DB_CONNECTION, portal)).findOne({ name: data[i].informedEmployees[j] });
@@ -471,22 +522,30 @@ exports.importTaskTemplate = async (portal, data, id) => {
                 j--;
             }
         }
+        switch (data[i].priority) {
+            case "Cao" : data[i].priority = 3; break;
+            case "Thấp" : data[i].priority = 2; break;
+            default : data[i].priority = 1 ;
+        }
+
         let unit = await OrganizationalUnit(connect(DB_CONNECTION, portal)).findOne({ name: data[i].organizationalUnit });
         data[i].organizationalUnit = String(unit._id);
-
-        if (data[i].collaboratedWithOrganizationalUnits[0]) {
-            let collaboratedWithOrganizationalUnit = [];
-            for (let j = 0; j < data[i].collaboratedWithOrganizationalUnits.length; j++) {
-                let collaboratedWithOrganizationalUnits = await OrganizationalUnit(connect(DB_CONNECTION, portal)).findOne({ name: data[i].collaboratedWithOrganizationalUnits });
-                collaboratedWithOrganizationalUnits = collaboratedWithOrganizationalUnits._id;
-                collaboratedWithOrganizationalUnit = [...collaboratedWithOrganizationalUnit, collaboratedWithOrganizationalUnits];
+        if (data[i].collaboratedWithOrganizationalUnits){
+            if (data[i].collaboratedWithOrganizationalUnits[0]) {
+                let collaboratedWithOrganizationalUnit = [];
+                for (let j = 0; j < data[i].collaboratedWithOrganizationalUnits.length; j++) {
+                    let collaboratedWithOrganizationalUnits = await OrganizationalUnit(connect(DB_CONNECTION, portal)).findOne({ name: data[i].collaboratedWithOrganizationalUnits });
+                    collaboratedWithOrganizationalUnits = collaboratedWithOrganizationalUnits._id;
+                    collaboratedWithOrganizationalUnit = [...collaboratedWithOrganizationalUnit, collaboratedWithOrganizationalUnits];
+                }
+                data[i].collaboratedWithOrganizationalUnits = collaboratedWithOrganizationalUnit;
+            } else {
+                data[i].collaboratedWithOrganizationalUnits = undefined;
             }
-            data[i].collaboratedWithOrganizationalUnits = collaboratedWithOrganizationalUnit;
         } else {
             data[i].collaboratedWithOrganizationalUnits = undefined;
         }
         
-
         let result = await this.createTaskTemplate(portal, data[i]);
         results = [...results, result];
     };

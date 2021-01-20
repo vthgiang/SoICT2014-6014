@@ -106,6 +106,10 @@ const LINK_CATEGORY = {
     MANUFACTURING: {
         name: "manufacturing-management",
         description: "Quản lý sản xuất"
+    },
+    USERGUIDE: {
+        name: "user_guide",
+        description: "Hướng dẫn sử dụng",
     }
 };
 
@@ -119,7 +123,8 @@ const COMPONENTS = [{
     links: [
         '/notifications'
     ]
-}, {
+},
+{
     name: 'create-task-template-button',
     description: 'Button thêm mới mẫu công việc',
     roles: [
@@ -128,7 +133,8 @@ const COMPONENTS = [{
     links: [
         '/task-template'
     ]
-}, {
+},
+{
     name: 'create-task-process-button',
     description: 'Button thêm mới mẫu quy trình công việc',
     roles: [
@@ -158,6 +164,15 @@ const COMPONENTS = [{
         '/manage-work-schedule',
     ],
 }, {
+    name: 'create-manufacturing-plan',
+    description: 'Button tạo kế hoạch sản xuất',
+    roles: [
+    ],
+    links: [
+        '/manage-manufacturing-plan',
+    ],
+},
+{
     name: 'create-stock-button',
     description: 'Button thêm mới kho',
     roles: [
@@ -166,6 +181,47 @@ const COMPONENTS = [{
     ],
     links: [
         '/stock-management'
+    ]
+},
+{
+    name: 'create-quote',
+    description: 'Button thêm mới kho',
+    roles: [
+        ROOT_ROLES.SUPER_ADMIN.name,
+        ROOT_ROLES.ADMIN.name
+    ],
+    links: [
+        '/manage-quote'
+    ]
+},
+{
+    name: 'create-sales-order',
+    description: 'Button thêm mới kho',
+    roles: [
+        ROOT_ROLES.SUPER_ADMIN.name,
+        ROOT_ROLES.ADMIN.name
+    ],
+    links: [
+        '/manage-sales-order'
+    ]
+},
+{
+    name: 'view-sales-order-dashboard',
+    description: 'Button thêm mới kho',
+    roles: [
+        ROOT_ROLES.SUPER_ADMIN.name,
+        ROOT_ROLES.ADMIN.name
+    ],
+    links: [
+        '/manage-sales-order-dashboard'
+    ]
+}, {
+    name: 'view-pie-chart-purchasing',
+    description: 'Xem biều đồ phiếu mua hàng theo trạng thái',
+    roles: [
+    ],
+    links: [
+        '/manufacturing-dashboard'
     ]
 }];
 
@@ -992,19 +1048,6 @@ const LINKS = [{
     components: getComponentsInLink('/manage-sales-order'),
 },
 {
-    url: "/manage-manufacturing-order",
-    description: "Đơn hàng sản xuất",
-    category: LINK_CATEGORY.ORDER.name,
-    roles: [
-        ROOT_ROLES.SUPER_ADMIN.name,
-        ROOT_ROLES.ADMIN.name,
-        ROOT_ROLES.MANAGER.name,
-        ROOT_ROLES.DEPUTY_MANAGER.name,
-        ROOT_ROLES.EMPLOYEE.name,
-    ],
-    components: getComponentsInLink('/manage-manufacturing-order'),
-},
-{
     url: "/manage-purchase-order",
     description: "Đơn mua hàng",
     category: LINK_CATEGORY.ORDER.name,
@@ -1042,19 +1085,6 @@ const LINKS = [{
         ROOT_ROLES.EMPLOYEE.name,
     ],
     components: getComponentsInLink('/manage-sales-order-dashboard'),
-},
-{
-    url: "/manage-manufacturing-order-dashboard",
-    description: "Dashboard đơn sản xuất",
-    category: LINK_CATEGORY.ORDER.name,
-    roles: [
-        ROOT_ROLES.SUPER_ADMIN.name,
-        ROOT_ROLES.ADMIN.name,
-        ROOT_ROLES.MANAGER.name,
-        ROOT_ROLES.DEPUTY_MANAGER.name,
-        ROOT_ROLES.EMPLOYEE.name,
-    ],
-    components: getComponentsInLink('/manage-manufacturing-order-dashboard'),
 },
 {
     url: "/manage-discount",
@@ -1097,6 +1127,19 @@ const LINKS = [{
     components: getComponentsInLink('/manage-sla'),
 },
 {
+    url: "/manage-payment",
+    description: "Quản lý thu chi",
+    category: LINK_CATEGORY.ORDER.name,
+    roles: [
+        ROOT_ROLES.SUPER_ADMIN.name,
+        ROOT_ROLES.ADMIN.name,
+        ROOT_ROLES.MANAGER.name,
+        ROOT_ROLES.DEPUTY_MANAGER.name,
+        ROOT_ROLES.EMPLOYEE.name,
+    ],
+    components: getComponentsInLink('/manage-payment'),
+},
+{
     url: "/manage-business-department",
     description: "Phòng ban liên quan quản lý đơn hàng",
     category: LINK_CATEGORY.ORDER.name,
@@ -1110,17 +1153,17 @@ const LINKS = [{
     components: getComponentsInLink('/manage-business-department'),
 },
 {
-    url: "/manage-admin-department",
-    description: "Phòng kế toán bán hàng",
+    url: "/manage-bank-account",
+    description: "Số tài khoản ngân hàng",
     category: LINK_CATEGORY.ORDER.name,
     roles: [
-        ROOT_ROLES.SUPER_ADMIN.name,
+        // ROOT_ROLES.SUPER_ADMIN.name,
         ROOT_ROLES.ADMIN.name,
-        ROOT_ROLES.MANAGER.name,
-        ROOT_ROLES.DEPUTY_MANAGER.name,
-        ROOT_ROLES.EMPLOYEE.name,
+        // ROOT_ROLES.MANAGER.name,
+        // ROOT_ROLES.DEPUTY_MANAGER.name,
+        // ROOT_ROLES.EMPLOYEE.name,
     ],
-    components: getComponentsInLink('/manage-admin-department'),
+    components: getComponentsInLink('/manage-bank-account'),
 },
 {
     url: '/crm/dashboard',
@@ -1312,7 +1355,7 @@ const LINKS = [{
         ROOT_ROLES.SUPER_ADMIN.name,
         ROOT_ROLES.ADMIN.name
     ],
-    components: getComponentsInLink('/track-order'),
+    components: getComponentsInLink('/manufacturing-dashboard'),
 },
 {
     url: "/analysis-manufacturing-performance",
@@ -1354,6 +1397,19 @@ const LINKS = [{
     ],
     components: getComponentsInLink('/manage-manufacturing-lot'),
 },
+{
+    url: "/user-guide",
+    description: "Hướng dẫn sử dụng",
+    category: LINK_CATEGORY.USERGUIDE.name,
+    roles: [
+        ROOT_ROLES.SUPER_ADMIN.name,
+        ROOT_ROLES.ADMIN.name,
+        ROOT_ROLES.MANAGER.name,
+        ROOT_ROLES.DEPUTY_MANAGER.name,
+        ROOT_ROLES.EMPLOYEE.name,
+    ],
+    components: getComponentsInLink('/user-guide')
+}
 ];
 
 module.exports = {

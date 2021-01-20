@@ -290,6 +290,7 @@ class InformationForm extends Component{
                         id={`informationsTemplate${type}`}
                         getTextData={this.handleChangeInfoDesc}
                         quillValueDefault={quillValueDefault}
+                        embeds={false}
                     />
                 </div>
                 <div className="form-group" >

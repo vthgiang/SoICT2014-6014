@@ -13,6 +13,7 @@ class SalesOrderCreateFormFromQuote extends Component {
         this.state = {
             code: "",
             goods: [],
+            approvers: [],
         };
     }
 
@@ -40,6 +41,101 @@ class SalesOrderCreateFormFromQuote extends Component {
                 return {
                     value: item._id,
                     text: item.code,
+                };
+            });
+
+            options = options.concat(mapOptions);
+        }
+
+        return options;
+    };
+
+    checkAvailableUser = (listUsers, id) => {
+        var result = -1;
+        listUsers.forEach((value, index) => {
+            if (value.user._id === id) {
+                result = index;
+            }
+        });
+        return result;
+    };
+
+    getUsersInDepartments = () => {
+        let users = [];
+        const { listBusinessDepartments } = this.props;
+        for (let indexDepartment = 0; indexDepartment < listBusinessDepartments.length; indexDepartment++) {
+            if (listBusinessDepartments[indexDepartment].role === 2 || listBusinessDepartments[indexDepartment].role === 3) {
+                //Chỉ lấy đơn vị quản lý bán hàng và đơn vị kế toán
+                const { managers, deputyManagers, employees } = listBusinessDepartments[indexDepartment].organizationalUnit;
+                //Thềm các trưởng đơn vị vào danh sách
+                for (let indexRole = 0; indexRole < managers.length; indexRole++) {
+                    //Lấy ra các role trong phòng ban
+                    if (managers[indexRole].users) {
+                        for (let indexUser = 0; indexUser < managers[indexRole].users.length; indexUser++) {
+                            //Check nếu user chưa tồn tại trong danh sách thì cho vào danh sách
+                            let availableCheckedIndex = this.checkAvailableUser(users, managers[indexRole].users[indexUser].userId._id);
+                            if (availableCheckedIndex === -1) {
+                                users.push({ user: managers[indexRole].users[indexUser].userId, roleName: managers[indexRole].name });
+                            } else {
+                                //Nếu người dùng đã có trong danh sách thì thêm role vào
+                                users[availableCheckedIndex].roleName = users[availableCheckedIndex].roleName + ", " + managers[indexRole].name;
+                            }
+                        }
+                    }
+                }
+                //Thềm các phó đơn vị vào danh sách
+                for (let indexRole = 0; indexRole < deputyManagers.length; indexRole++) {
+                    //Lấy ra các role trong phòng ban
+                    if (deputyManagers[indexRole].users) {
+                        for (let indexUser = 0; indexUser < deputyManagers[indexRole].users.length; indexUser++) {
+                            //Check nếu user chưa tồn tại trong danh sách thì cho vào danh sách
+                            let availableCheckedIndex = this.checkAvailableUser(users, deputyManagers[indexRole].users[indexUser].userId._id);
+                            if (availableCheckedIndex === -1) {
+                                users.push({ user: deputyManagers[indexRole].users[indexUser].userId, roleName: deputyManagers[indexRole].name });
+                            } else {
+                                //Nếu người dùng đã có trong danh sách thì thêm role vào
+                                users[availableCheckedIndex].roleName = users[availableCheckedIndex].roleName + ", " + deputyManagers[indexRole].name;
+                            }
+                        }
+                    }
+                }
+                //Thềm nhân viên vào danh sách
+                for (let indexRole = 0; indexRole < employees.length; indexRole++) {
+                    //Lấy ra các role trong phòng ban
+                    if (employees[indexRole].users) {
+                        for (let indexUser = 0; indexUser < employees[indexRole].users.length; indexUser++) {
+                            //Check nếu user chưa tồn tại trong danh sách thì cho vào danh sách
+                            let availableCheckedIndex = this.checkAvailableUser(users, employees[indexRole].users[indexUser].userId._id);
+                            if (availableCheckedIndex === -1) {
+                                users.push({ user: employees[indexRole].users[indexUser].userId, roleName: employees[indexRole].name });
+                            } else {
+                                //Nếu người dùng đã có trong danh sách thì thêm role vào
+                                users[availableCheckedIndex].roleName = users[availableCheckedIndex].roleName + ", " + employees[indexRole].name;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return users;
+    };
+
+    getApproversOptions = () => {
+        let options = [];
+
+        const { listBusinessDepartments } = this.props;
+        if (listBusinessDepartments.length) {
+            options = [
+                {
+                    value: "title", //Title không được chọn
+                    text: "---Chọn người phê duyệt---",
+                },
+            ];
+            let users = this.getUsersInDepartments();
+            let mapOptions = users.map((item) => {
+                return {
+                    value: item.user._id,
+                    text: item.user.name + " - " + item.roleName,
                 };
             });
 
@@ -122,10 +218,42 @@ class SalesOrderCreateFormFromQuote extends Component {
         this.validatePriority(value[0], true);
     };
 
-    isFormValidated = () => {
-        let { priority, quote } = this.state;
+    validateApprovers = (value, willUpdateState = true) => {
+        let msg = undefined;
+        if (!value.length) {
+            msg = "Giá trị không được để trống";
+        } else {
+            for (let index = 0; index < value.length; value++) {
+                if (value[index] === "title") {
+                    msg = "Không được chọn tiêu đề";
+                }
+            }
+        }
+        if (willUpdateState) {
+            this.setState((state) => {
+                return {
+                    ...state,
+                    approversError: msg,
+                };
+            });
+        }
+        return msg;
+    };
 
-        if (this.validateQuote(quote, false) || this.validatePriority(priority, false)) {
+    handleApproversChange = (value) => {
+        this.setState((state) => {
+            return {
+                ...state,
+                approvers: value,
+            };
+        });
+        this.validateApprovers(value, true);
+    };
+
+    isFormValidated = () => {
+        let { priority, quote, approvers } = this.state;
+
+        if (this.validateQuote(quote, false) || this.validatePriority(priority, false) || this.validateApprovers(approvers, false)) {
             return false;
         } else {
             return true;
@@ -151,7 +279,7 @@ class SalesOrderCreateFormFromQuote extends Component {
 
     save = async () => {
         if (this.isFormValidated()) {
-            let { priority, code, quote, goods } = this.state;
+            let { priority, code, quote, approvers } = this.state;
 
             const { quotesToMakeOrder } = this.props.quotes;
             let quoteInfo = quotesToMakeOrder.find((element) => element._id === quote);
@@ -170,7 +298,11 @@ class SalesOrderCreateFormFromQuote extends Component {
                 shippingFee: quoteInfo.shippingFee,
                 deliveryTime: quoteInfo.deliveryTime,
                 coin: quoteInfo.coin,
+                allCoin: quoteInfo.allCoin,
                 paymentAmount: quoteInfo.paymentAmount,
+                approvers: approvers.map((element) => {
+                    return { approver: element };
+                }),
                 note: quoteInfo.note,
             };
 
@@ -191,6 +323,7 @@ class SalesOrderCreateFormFromQuote extends Component {
                         description: "",
                         address: "",
                     },
+                    approvers: [],
                 };
             });
         }
@@ -271,8 +404,8 @@ class SalesOrderCreateFormFromQuote extends Component {
     };
 
     render() {
-        let { quote, goods, priority, code, currentManufacturingWorks, currentGood } = this.state;
-        const { quoteError, priorityError } = this.state;
+        let { quote, goods, priority, code, currentManufacturingWorks, currentGood, approvers } = this.state;
+        const { quoteError, priorityError, approversError } = this.state;
 
         const { listInventories } = this.props.lots;
         if (goods.length && listInventories.length) {
@@ -354,6 +487,22 @@ class SalesOrderCreateFormFromQuote extends Component {
                         />
                         <ErrorLabel content={priorityError} />
                     </div>
+                    <div className={`form-group ${!approversError ? "" : "has-error"}`}>
+                        <label>
+                            Người phê duyệt
+                            <span className="attention"> * </span>
+                        </label>
+                        <SelectBox
+                            id={`select-create-sales-order-from-quote-approvers`}
+                            className="form-control select2"
+                            style={{ width: "100%" }}
+                            value={approvers}
+                            items={this.getApproversOptions()}
+                            onChange={this.handleApproversChange}
+                            multiple={true}
+                        />
+                        <ErrorLabel content={approversError} />
+                    </div>
                     <fieldset className="scheduler-border">
                         <legend className="scheduler-border">Thông tin sản phẩm</legend>
                         <table id={`sales-order-table-create-from-quote`} className="table table-bordered not-sort">
@@ -365,7 +514,7 @@ class SalesOrderCreateFormFromQuote extends Component {
                                     <th title={"Số lượng"}>Số lượng mua</th>
                                     <th title={"Số lượng tồn kho"}>Số lượng tồn kho</th>
                                     <th title={"Đơn vị tính"}>Đơn vị tính</th>
-                                    <th title={"Yêu cầu sản xuất"}>Yêu cầu s/x</th>
+                                    {/* <th title={"Yêu cầu sản xuất"}>Yêu cầu s/x</th> */}
                                 </tr>
                             </thead>
                             <tbody>
@@ -379,7 +528,7 @@ class SalesOrderCreateFormFromQuote extends Component {
                                                 <td>{item.quantity}</td>
                                                 <td>{item.inventory}</td>
                                                 <td>{item.good.baseUnit}</td>
-                                                <td>
+                                                {/* <td>
                                                     <a onClick={() => this.handleGetManufacturingList(item)}>
                                                         {item.manufacturingWorks ? (
                                                             <span className="text-success">Đang thiết lập</span>
@@ -387,7 +536,7 @@ class SalesOrderCreateFormFromQuote extends Component {
                                                             <span>Click để yêu cầu</span>
                                                         )}
                                                     </a>
-                                                </td>
+                                                </td> */}
                                             </tr>
                                         );
                                     })}
@@ -401,8 +550,9 @@ class SalesOrderCreateFormFromQuote extends Component {
 }
 
 function mapStateToProps(state) {
+    const { listBusinessDepartments } = state.businessDepartments;
     const { quotes, lots, goods } = state;
-    return { quotes, lots, goods };
+    return { quotes, lots, goods, listBusinessDepartments };
 }
 
 const mapDispatchToProps = {

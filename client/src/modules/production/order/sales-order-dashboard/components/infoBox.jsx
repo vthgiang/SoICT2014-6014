@@ -1,85 +1,61 @@
 import React, { Component } from "react";
-
+import { connect } from "react-redux";
+import { withTranslate } from "react-redux-multilingual";
+import { formatCurrency } from "../../../../../helpers/formatCurrency";
 class InfoBox extends Component {
     render() {
+        let salesOrdersCounter = {};
+
+        if (this.props.salesOrders) {
+            salesOrdersCounter = this.props.salesOrders.salesOrdersCounter;
+        }
+
+        let quoteCounter = {};
+
+        if (this.props.quotes) {
+            quoteCounter = this.props.quotes.quoteCounter;
+        }
+
         return (
             <div className="col-xs-12">
-                <div className="col-md-3 col-sm-6 col-xs-6">
+                <div className="col-md-4 col-sm-6 col-xs-6">
                     <div className="info-box with-border">
                         <span className="info-box-icon bg-aqua">
                             <i className="fa fa-hand-o-right"></i>
                         </span>
-                        <div
-                            className="info-box-content"
-                            title="Tổng tiền mua hàng"
-                        >
-                            <span className="info-box-text">
-                                Số đơn báo giá
-                            </span>
-                            <span className="info-box-number">1893 đơn</span>
+                        <div className="info-box-content" title="Số báo giá">
+                            <span className="info-box-text">Số báo giá</span>
+                            <span className="info-box-number">{quoteCounter ? quoteCounter.count : ""} báo giá</span>
                             <a href={`/manage-purchase-order`} target="_blank">
-                                Xem thêm{" "}
-                                <i className="fa fa-arrow-circle-right"></i>
+                                Xem thêm <i className="fa fa-arrow-circle-right"></i>
                             </a>
                         </div>
                     </div>
                 </div>
-                <div className="col-md-3 col-sm-6 col-xs-6">
+                <div className="col-md-4 col-sm-6 col-xs-6">
                     <div className="info-box with-border">
                         <span className="info-box-icon bg-green">
                             <i className="fa fa-hand-o-right"></i>
                         </span>
-                        <div
-                            className="info-box-content"
-                            title="Tổng tiền mua hàng"
-                        >
-                            <span className="info-box-text">
-                                Số đơn kinh doanh
-                            </span>
-                            <span className="info-box-number">983 đơn</span>
+                        <div className="info-box-content" title="Tổng tiền mua hàng">
+                            <span className="info-box-text">Số đơn kinh doanh</span>
+                            <span className="info-box-number">{salesOrdersCounter ? salesOrdersCounter.count : ""} đơn</span>
                             <a href={`/manage-sales-order`} target="_blank">
-                                Xem thêm{" "}
-                                <i className="fa fa-arrow-circle-right"></i>
+                                Xem thêm <i className="fa fa-arrow-circle-right"></i>
                             </a>
                         </div>
                     </div>
                 </div>
-                <div className="col-md-3 col-sm-6 col-xs-6">
+                <div className="col-md-4 col-sm-6 col-xs-6">
                     <div className="info-box with-border">
                         <span className="info-box-icon bg-red">
                             <i className="fa fa-hand-o-right"></i>
                         </span>
-                        <div
-                            className="info-box-content"
-                            title="Tổng tiền mua hàng"
-                        >
+                        <div className="info-box-content" title="Tổng tiền mua hàng">
                             <span className="info-box-text">Doanh số</span>
-                            <span className="info-box-number">
-                                1,334,553,332.00 vnđ
-                            </span>
+                            <span className="info-box-number">{formatCurrency(salesOrdersCounter ? salesOrdersCounter.totalMoney : 0)} vnđ</span>
                             <a href={`/manage-sales-order`} target="_blank">
-                                Xem thêm{" "}
-                                <i className="fa fa-arrow-circle-right"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                <div className="col-md-3 col-sm-6 col-xs-6">
-                    <div className="info-box with-border">
-                        <span className="info-box-icon bg-yellow">
-                            <i className="fa fa-hand-o-right"></i>
-                        </span>
-                        <div
-                            className="info-box-content"
-                            title="Tổng tiền mua hàng"
-                        >
-                            <span className="info-box-text">Doanh thu</span>
-                            <span className="info-box-number">
-                                893,425,500.00 vnđ
-                            </span>
-                            <a href={`/manage-sales-order`} target="_blank">
-                                Xem thêm{" "}
-                                <i className="fa fa-arrow-circle-right"></i>
+                                Xem thêm <i className="fa fa-arrow-circle-right"></i>
                             </a>
                         </div>
                     </div>
@@ -89,4 +65,11 @@ class InfoBox extends Component {
     }
 }
 
-export default InfoBox;
+function mapStateToProps(state) {
+    const { salesOrders, quotes } = state;
+    return { salesOrders, quotes };
+}
+
+const mapDispatchToProps = {};
+
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(InfoBox));

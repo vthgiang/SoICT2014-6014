@@ -122,7 +122,7 @@ class DiscountManagementTable extends Component {
         const { discounts } = this.props;
         const { totalPages, page, listDiscounts } = discounts;
         const { currentRow, discountDetail } = this.state;
-        console.log("DISCOUNT", discounts);
+        const typeConvert = ["Giảm trên toàn đơn", "Giảm giá từng mặt hàng"];
         return (
             <React.Fragment>
                 <div className="box-body qlcv">
@@ -193,7 +193,7 @@ class DiscountManagementTable extends Component {
                                         <td>{index + 1}</td>
                                         <td>{discount.code}</td>
                                         <td>{discount.name}</td>
-                                        <td>{discount.type}</td>
+                                        <td>{discount.type !== undefined ? typeConvert[discount.type] : ""}</td>
                                         <td>{discount.effectiveDate ? formatDate(discount.effectiveDate) : "---"}</td>
                                         <td>{discount.expirationDate ? formatDate(discount.expirationDate) : "---"}</td>
                                         {/* <td>

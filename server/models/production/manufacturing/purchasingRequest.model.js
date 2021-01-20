@@ -35,6 +35,10 @@ const PurchasingRequestSchema = new Schema({
     },
     description: { // Mô tả phiếu đề nghị mua nguyên vật liệu
         type: String
+    },
+    manufacturingCommand: { // Phiếu thuộc lệnh sản xuất nào
+        type: Schema.Types.ObjectId,
+        ref: "ManufacturingCommand"
     }
 }, {
     // Thời gian tạo, sửa phiếu đề nghị mua nguyên vật liệu

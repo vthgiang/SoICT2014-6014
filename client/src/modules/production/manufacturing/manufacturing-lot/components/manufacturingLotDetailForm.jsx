@@ -17,7 +17,7 @@ class ManufacturingLotDetailForm extends Component {
     shouldComponentUpdate = (nextProps) => {
         if (this.props.lotDetail !== nextProps.lotDetail) {
             this.props.getDetailManufacturingLot(nextProps.lotDetail._id);
-            this.props.getBillsByCommand({ manufacturingCommandId: nextProps.lotDetail.manufacturingCommand._id });
+            // this.props.getBillsByCommand({ manufacturingCommandId: nextProps.lotDetail.manufacturingCommand._id });
             return false;
         }
         return true;
@@ -143,7 +143,7 @@ class ManufacturingLotDetailForm extends Component {
                                 </fieldset>
                             </div>
                         </div>
-                        <div className="row">
+                        {/* <div className="row">
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                 <fieldset className="scheduler-border">
                                     <legend className="scheduler-border">{translate('manufacturing.command.material')}</legend>
@@ -189,6 +189,46 @@ class ManufacturingLotDetailForm extends Component {
                                                         ))
                                                     ))
 
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </fieldset>
+                            </div>
+                        </div> */}
+                        <div className="row">
+                            <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <fieldset className="scheduler-border">
+                                    <legend className="scheduler-border">{translate('manufacturing.command.material')}</legend>
+                                    <div className={`form-group`}>
+                                        <table className="table table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th>{translate('manufacturing.command.index')}</th>
+                                                    <th>{translate('manufacturing.command.material_code')}</th>
+                                                    <th>{translate('manufacturing.command.material_name')}</th>
+                                                    <th>{translate('manufacturing.command.good_base_unit')}</th>
+                                                    <th>{translate('manufacturing.command.quantity')}</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {
+                                                    currentLot.manufacturingCommand && currentLot.manufacturingCommand
+                                                        && currentLot.manufacturingCommand.good && currentLot.manufacturingCommand.good.materials && currentLot.manufacturingCommand.good.materials.length
+                                                        ?
+                                                        currentLot.manufacturingCommand.good.materials.map((x, index) => (
+                                                            <tr key={index}>
+                                                                <td> {index + 1}</td>
+                                                                <td>{x.good.code}</td>
+                                                                <td>{x.good.name}</td>
+                                                                <td>{x.good.baseUnit}</td>
+                                                                <td>{x.quantity * currentLot.manufacturingCommand.quantity}</td>
+                                                            </tr>
+                                                        ))
+                                                        :
+                                                        <tr>
+                                                            <td colSpan={5}>{translate('general.no_data')}</td>
+                                                        </tr>
                                                 }
                                             </tbody>
                                         </table>
@@ -268,7 +308,7 @@ class ManufacturingLotDetailForm extends Component {
                         </div>
                         <div className="row">
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                {/* <fieldset className="scheduler-border">
+                                <fieldset className="scheduler-border">
                                     <legend className="scheduler-border">{translate('manufacturing.lot.lot_diary')}</legend>
                                     <div className={`form-group`}>
                                         <table className="table table-bordered">
@@ -289,12 +329,17 @@ class ManufacturingLotDetailForm extends Component {
                                                     currentLot.lotLogs.map((x, index) =>
                                                         <tr key={index}>
                                                             <td>{index + 1}</td>
-                                                            {x.bill ? <td><a href="#" onClick={() => this.handleShowDetailInfo(x.bill._id)}>{x.bill.code}</a></td> : <td></td>}
+                                                            <td>{x.bill ? x.bill.code : ''}</td>
                                                             <td>{formatDate(x.createdAt)}</td>
-                                                            <td>{x.bill ? translate(`manage_warehouse.bill_management.billType.${x.bill.type}`) : ''}</td>
+                                                            <td>{translate(`manage_warehouse.bill_management.billType.${x.type}`)}</td>
                                                             <td>{x.quantity ? x.quantity : 0}</td>
                                                             <td>{x.stock ? x.stock.name : ""}</td>
-                                                            <td></td>
+                                                            {/* <td>{x.binLocations ? x.binLocations.map((item, index) => <p key={index}>{item.binLocation.path} ({item.quantity})</p>) : ""}</td> */}
+                                                            {x.type === '1' ? <td>{(x.bill && x.bill.supplier) ? x.bill.supplier.name : ''}</td> :
+                                                                (x.type === '2' || x.type === '4') ? <td>{(x.bill && x.bill.manufacturingMill) ? x.bill.manufacturingMill.name : ''}</td> :
+                                                                    (x.type === '3' || x.type === '7') ? <td>{(x.bill && x.bill.customer) ? x.bill.customer.name : ''}</td> :
+                                                                        x.type === '8' ? <td>{(x.bill && x.bill.toStock) ? x.bill.toStock.name : ''}</td> : <td></td>
+                                                            }
                                                             <td>{x.description}</td>
                                                         </tr>
                                                     )
@@ -302,8 +347,8 @@ class ManufacturingLotDetailForm extends Component {
                                             </tbody>
                                         </table>
                                     </div>
-                                </fieldset> */}
-                                <LogLots logs={currentLot.lotLogs} />
+                                </fieldset>
+                                {/* <LogLots logs={currentLot.lotLogs} /> */}
                             </div>
                         </div>
                     </form>
@@ -320,7 +365,7 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = {
     getDetailManufacturingLot: LotActions.getDetailManufacturingLot,
-    getBillsByCommand: BillActions.getBillsByCommand,
+    // getBillsByCommand: BillActions.getBillsByCommand,
     getDetailBill: BillActions.getDetailBill,
 }
 

@@ -20,19 +20,25 @@ class ShowMoreShowLess extends Component {
     }
 
     componentDidMount = () => {
-        const { isText = true } = this.props;
+        const { isText = false, isHtmlElement = false } = this.props;
         if (isText) {
             this.addReadMoreText();
         } else {
+            if (isHtmlElement) {
+               this.addClassHideComponentToHtml(); 
+            }
             this.addReadMoreComponent();
         }
     }
 
     componentDidUpdate = () => {
-        const { isText = true } = this.props;
+        const { isText = false, isHtmlElement = false } = this.props;
         if (isText) {
             this.addReadMoreText();
         } else {
+            if (isHtmlElement) {
+                this.addClassHideComponentToHtml(); 
+            }
             this.addReadMoreComponent();
         }
     }
@@ -75,8 +81,27 @@ class ShowMoreShowLess extends Component {
         window.$(`#showmore-showless${id}`).toggleClass("showless-content showmore-content");
     }
 
+    addClassHideComponentToHtml = () => {
+        const { id, characterLimit = 200 } = this.props;
+
+        let lengthText = 0;
+        let allElement = window.$(`#showmore-showless${id} > *`);
+
+        window.$(allElement).map((index, item) => {
+            if (item.id !== `span${id}`) {
+                if (lengthText > characterLimit || index > 3) {
+                    window.$(item).addClass('hide-component');
+                }
+                
+                // Cộng thêm số ký tự của string, lần tới nếu vượt qá characterLimit sẽ thêm class hide-component
+                let str = window.$(item).text();
+                lengthText = lengthText + str.length;
+            }
+        })
+    }
+    
     render() {
-        const { id, value, isText = true, classShowMoreLess = "", styleShowMoreLess = {} } = this.props;
+        const { id, value, isText = false, classShowMoreLess = "", styleShowMoreLess = {} } = this.props;
         const { showMore, showLess, titleShowMore, titleShowLess } = this.state;
 
         return (

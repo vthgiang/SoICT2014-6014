@@ -129,6 +129,8 @@ import SalesOrderDashboard from "../modules/production/order/sales-order-dashboa
 import Tax from "../modules/production/order/tax/components";
 import ServiceLevelAgreement from "../modules/production/order/service-level-agreement/components";
 import BusinessDepartment from "../modules/production/order/business-department/components";
+import Payment from "../modules/production/order/payment/components";
+import BankAccount from "../modules/production/order/bank-account/components";
 
 // plans
 import PlanManagement from "../modules/plan/components";
@@ -153,6 +155,8 @@ import ManufacturingDashboard from "../modules/production/manufacturing/manufact
 import ManufacturingLot from "../modules/production/manufacturing/manufacturing-lot/components";
 
 import AnswerAuthQuestionPage from '../modules/auth/components/answerAuthQuestion';
+
+import UserGuide from '../modules/user-guide/components';
 class Routes extends Component {
     render() {
         const {
@@ -2065,6 +2069,46 @@ class Routes extends Component {
                         pageName={"manage_business_department"}
                         layout={Layout}
                         component={BusinessDepartment}
+                    /> 
+
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"/manage-bank-account"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/manage-bank-account",
+                                name: "manage_bank_account",
+                                icon: "fa fa-address-card",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/manage-bank-account"}
+                        path={"/manage-bank-account"}
+                        pageName={"manage_bank_account"}
+                        layout={Layout}
+                        component={BankAccount}
+                    />
+
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"/manage-payment"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/manage-payment",
+                                name: "manage_payment",
+                                icon: "fa fa-address-card",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/manage-payment"}
+                        path={"/manage-payment"}
+                        pageName={"manage_payment"}
+                        layout={Layout}
+                        component={Payment}
                     />
 
                     {/* Plans Management */}
@@ -2350,6 +2394,26 @@ class Routes extends Component {
                         pageName={"manage_manufacturing_lot"}
                         layout={Layout}
                         component={ManufacturingLot}
+                    />
+
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"user-guide"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/user-guide",
+                                name: "user_guide",
+                                icon: "fa fa-newspaper-o",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/user-guide"}
+                        path={"/user-guide"}
+                        pageName={"user_guide"}
+                        layout={Layout}
+                        component={UserGuide}
                     />
 
                     {/* NOT FOUND */}

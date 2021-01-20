@@ -243,6 +243,7 @@ class CreateCareForm extends Component {
                             <QuillEditor
                                 id={'createCare'}
                                 getTextData={this.handleChangeDescription}
+                                table={false}
                             />
                         </div>
 

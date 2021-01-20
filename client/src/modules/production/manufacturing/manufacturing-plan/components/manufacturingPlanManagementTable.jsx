@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
 import { formatDate } from '../../../../../helpers/formatDate';
-import { DataTableSetting, DatePicker, PaginateBar, SelectMulti } from "../../../../../common-components";
+import { ConfirmNotification, DataTableSetting, DatePicker, PaginateBar, SelectMulti } from "../../../../../common-components";
 import NewPlanCreateForm from './create-new-plan/newPlanCreateForm';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { manufacturingPlanActions } from '../redux/actions';
 import { worksActions } from '../../manufacturing-works/redux/actions';
+import { millActions } from '../../manufacturing-mill/redux/actions';
+import ManufacturingPlanDetailInfo from './manufacturingPlanDetailInfo';
 class ManufacturingPlanManagementTable extends Component {
     constructor(props) {
         super(props);
@@ -35,6 +37,7 @@ class ManufacturingPlanManagementTable extends Component {
         }
         this.props.getAllManufacturingPlans(data);
         this.props.getAllManufacturingWorks({ currentRole: currentRole });
+        this.props.getAllManufacturingMills({ status: 1, currentRole: currentRole });
     }
 
     handleShowDetailInfo = async (id) => {
@@ -183,16 +186,77 @@ class ManufacturingPlanManagementTable extends Component {
         }))
     }
 
+    handleShowDetailManufacturingPlan = async (plan) => {
+        await this.setState((state) => ({
+            ...state,
+            planDetail: plan
+        }));
+        window.$('#modal-detail-info-manufacturing-plan').modal('show');
+    }
+
+    checkRoleApprovers = (plan) => {
+        const userId = localStorage.getItem('userId');
+        const { approvers } = plan;
+        for (let i = 0; i < approvers.length; i++) {
+            if (userId === approvers[i].approver._id && !approvers[i].approvedTime) {
+                return true
+            }
+        }
+        return false;
+        // map bất đồng bộ nên luôn trả về false
+        // approvers.map(x => {
+        //     if (x.approver._id === userId && !x.approvedTime) {
+        //         return true;
+        //     }
+        // });
+        // return false;
+    }
+
+    isApproverPlan = (plan) => {
+        const userId = localStorage.getItem('userId');
+        const { approvers } = plan;
+        let approverIds = approvers.map(x => x.approver._id)
+        if (approverIds.includes(userId)) {
+            return true;
+        }
+        return false;
+    }
+
+    handleApprovePlan = (plan) => {
+        const data = {
+            approvers: {
+                approver: localStorage.getItem('userId')
+            }
+        }
+        this.props.handleEditManufacturingPlan(data, plan._id);
+    }
+
+    checkRoleCreator = (plan) => {
+        const userId = localStorage.getItem('userId');
+        if (plan.creator._id === userId) {
+            return true;
+        }
+        return false;
+    }
+
+    handleCancelPlan = (plan) => {
+        const data = {
+            status: 5
+        }
+        this.props.handleEditManufacturingPlan(data, plan._id);
+    }
+
     render() {
         const { translate, manufacturingPlan } = this.props;
         let listPlans = [];
         if (manufacturingPlan.listPlans && manufacturingPlan.isLoading === false) {
             listPlans = manufacturingPlan.listPlans;
         }
-        const { code, startDate, endDate, createdAt, commandCode, manufacturingOrderCode, salesOrderCode } = this.state;
+        const { code, startDate, endDate, createdAt, commandCode, salesOrderCode } = this.state;
         const { totalPages, page } = manufacturingPlan;
         return (
             <React.Fragment>
+                <ManufacturingPlanDetailInfo planDetail={this.state.planDetail} />
                 <div className="box-body qlcv">
                     <NewPlanCreateForm />
                     <div className="form-inline">
@@ -310,6 +374,7 @@ class ManufacturingPlanManagementTable extends Component {
                                 <th>{translate('manufacturing.plan.index')}</th>
                                 <th>{translate('manufacturing.plan.code')}</th>
                                 <th>{translate('manufacturing.plan.creator')}</th>
+                                <th>{translate('manufacturing.plan.approver')}</th>
                                 <th>{translate('manufacturing.plan.created_at')}</th>
                                 <th>{translate('manufacturing.plan.start_date')}</th>
                                 <th>{translate('manufacturing.plan.end_date')}</th>
@@ -321,6 +386,7 @@ class ManufacturingPlanManagementTable extends Component {
                                             translate('manufacturing.plan.index'),
                                             translate('manufacturing.plan.code'),
                                             translate('manufacturing.plan.creator'),
+                                            translate('manufacturing.plan.approver'),
                                             translate('manufacturing.plan.created_at'),
                                             translate('manufacturing.plan.start_date'),
                                             translate('manufacturing.plan.end_date'),
@@ -340,13 +406,46 @@ class ManufacturingPlanManagementTable extends Component {
                                         <td>{index + 1}</td>
                                         <td>{plan.code}</td>
                                         <td>{plan.creator && plan.creator.name}</td>
+                                        <td>{plan.approvers && plan.approvers.length &&
+                                            plan.approvers.map((x, index) => {
+                                                if (plan.approvers.length === index + 1) {
+                                                    return x.approver.name
+                                                }
+                                                return x.approver.name + ", "
+                                            })
+                                        }</td>
                                         <td>{formatDate(plan.createdAt)}</td>
                                         <td>{formatDate(plan.startDate)}</td>
                                         <td>{formatDate(plan.endDate)}</td>
                                         <td style={{ color: translate(`manufacturing.plan.${plan.status}.color`) }}>{translate(`manufacturing.plan.${plan.status}.content`)}</td>
                                         <td style={{ textAlign: "center" }}>
-                                            <a style={{ width: '5px' }} title={translate('manufacturing.purchasing_request.purchasing_request_detail')} onClick={() => { this.handleShowDetailPurchasingRequest(plan) }}><i className="material-icons">view_list</i></a>
-                                            <a className="edit text-yellow" style={{ width: '5px' }} title="Sửa kế hoạch sản xuất"><i className="material-icons">edit</i></a>
+                                            <a style={{ width: '5px' }} title={translate('manufacturing.plan.plan_detail')} onClick={() => { this.handleShowDetailManufacturingPlan(plan) }}><i className="material-icons">view_list</i></a>
+                                            {
+                                                this.checkRoleApprovers(plan) && plan.status === 1 &&
+                                                <ConfirmNotification
+                                                    icon="question"
+                                                    title={translate('manufacturing.plan.approve_plan')}
+                                                    content={translate('manufacturing.plan.approve_plan') + " " + plan.code}
+                                                    name="done"
+                                                    className="text-green"
+                                                    func={() => this.handleApprovePlan(plan)}
+                                                />
+                                            }
+                                            {/* <a className="edit text-yellow" style={{ width: '5px' }} title="Sửa kế hoạch sản xuất"><i className="material-icons">edit</i></a> */}
+                                            {
+                                                (
+                                                    (this.checkRoleCreator(plan) && plan.status === 1)
+                                                    || (this.isApproverPlan(plan) && (plan.status === 1 || plan.status === 2))
+                                                ) &&
+                                                <ConfirmNotification
+                                                    icon="question"
+                                                    title={translate('manufacturing.plan.cancel_plan')}
+                                                    content={translate('manufacturing.plan.cancel_plan') + " " + plan.code}
+                                                    name="cancel"
+                                                    className="text-red"
+                                                    func={() => this.handleCancelPlan(plan)}
+                                                />
+                                            }
                                         </td>
                                     </tr>
                                 ))
@@ -371,7 +470,9 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = {
     getAllManufacturingPlans: manufacturingPlanActions.getAllManufacturingPlans,
-    getAllManufacturingWorks: worksActions.getAllManufacturingWorks
+    getAllManufacturingWorks: worksActions.getAllManufacturingWorks,
+    getAllManufacturingMills: millActions.getAllManufacturingMills,
+    handleEditManufacturingPlan: manufacturingPlanActions.handleEditManufacturingPlan
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(ManufacturingPlanManagementTable));

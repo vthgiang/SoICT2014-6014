@@ -17,6 +17,7 @@ class QuoteCreateForm extends Component {
         super(props);
         this.state = {
             goods: [],
+            approvers: [],
             discountsOfOrderValue: [],
             discountsOfOrderValueChecked: {},
             currentSlasOfGood: [],
@@ -46,7 +47,7 @@ class QuoteCreateForm extends Component {
             },
             currency: {
                 type: "standard",
-                symbol: "vnđ",
+                symbol: "",
                 ratio: "1",
             },
         };
@@ -230,6 +231,66 @@ class QuoteCreateForm extends Component {
         }
     };
 
+    validateOrganizationalUnit = (value, willUpdateState = true) => {
+        let msg = undefined;
+        if (!value) {
+            msg = "Giá trị không được để trống";
+        } else if (value === "title") {
+            msg = "Giá trị không được để trống";
+        }
+        if (willUpdateState) {
+            this.setState((state) => {
+                return {
+                    ...state,
+                    organizationalUnitError: msg,
+                };
+            });
+        }
+        return msg;
+    };
+
+    handleOrganizationalUnitChange = (value) => {
+        this.setState((state) => {
+            return {
+                ...state,
+                organizationalUnit: value[0],
+            };
+        });
+        this.validateOrganizationalUnit(value[0], true);
+    };
+
+    validateApprovers = (value, willUpdateState = true) => {
+        let msg = undefined;
+        if (!value.length) {
+            msg = "Giá trị không được để trống";
+        } else {
+            for (let index = 0; index < value.length; value++) {
+                if (value[index] === "title") {
+                    msg = "Không được chọn tiêu đề";
+                }
+            }
+        }
+        if (willUpdateState) {
+            this.setState((state) => {
+                return {
+                    ...state,
+                    approversError: msg,
+                };
+            });
+        }
+        return msg;
+    };
+
+    handleApproversChange = (value) => {
+        this.setState((state) => {
+            return {
+                ...state,
+                approvers: value,
+            };
+        });
+        this.validateApprovers(value, true);
+    };
+
     setCurrentStep = (e, step) => {
         e.preventDefault();
         this.setState({
@@ -378,6 +439,27 @@ class QuoteCreateForm extends Component {
         });
     };
 
+    getCoinOfAll = () => {
+        let coinOfAll = 0;
+        let { goods } = this.state;
+        let { discountsOfOrderValue } = this.state;
+
+        goods.forEach((good) => {
+            good.discountsOfGood.forEach((discount) => {
+                if (discount.formality == "2") {
+                    coinOfAll += discount.loyaltyCoin;
+                }
+            });
+        });
+
+        discountsOfOrderValue.forEach((discount) => {
+            if (discount.formality == "2") {
+                coinOfAll += discount.loyaltyCoin;
+            }
+        });
+        return coinOfAll;
+    };
+
     setPaymentAmount = (paymentAmount) => {
         this.setState((state) => {
             return {
@@ -388,7 +470,7 @@ class QuoteCreateForm extends Component {
     };
 
     isValidateQuoteCreateInfo = () => {
-        let { customer, customerEmail, customerPhone, customerAddress, effectiveDate, expirationDate } = this.state;
+        let { customer, customerEmail, customerPhone, customerAddress, effectiveDate, expirationDate, approvers } = this.state;
         let { translate } = this.props;
 
         if (
@@ -396,6 +478,7 @@ class QuoteCreateForm extends Component {
             !ValidationHelper.validateEmail(translate, customerEmail).status ||
             !ValidationHelper.validateEmpty(translate, customerPhone).status ||
             !ValidationHelper.validateEmpty(translate, customerAddress).status ||
+            this.validateApprovers(approvers, false) ||
             this.validateDateStage(effectiveDate, expirationDate, false) ||
             !ValidationHelper.validateEmpty(translate, effectiveDate).status ||
             !ValidationHelper.validateEmpty(translate, expirationDate).status
@@ -485,11 +568,9 @@ class QuoteCreateForm extends Component {
         if (this.isValidateForm()) {
             let {
                 customer,
-                // customerName,
                 customerAddress,
                 customerPhone,
                 customerRepresent,
-                // customerTaxNumber,
                 customerEmail,
                 code,
                 effectiveDate,
@@ -500,26 +581,31 @@ class QuoteCreateForm extends Component {
                 discountsOfOrderValue,
                 paymentAmount,
                 note,
+                approvers,
             } = this.state;
+
+            let allCoin = this.getCoinOfAll(); //Lấy tất cả các xu được tặng trong đơn
 
             let data = {
                 code,
                 effectiveDate: effectiveDate ? new Date(formatToTimeZoneDate(effectiveDate)) : undefined,
                 expirationDate: expirationDate ? new Date(formatToTimeZoneDate(expirationDate)) : undefined,
                 customer,
-                // customerName,
                 customerPhone,
                 customerAddress,
                 customerRepresent,
-                // customerTaxNumber,
                 customerEmail,
                 goods: this.formatGoodForSubmit(),
                 discounts: discountsOfOrderValue.length ? this.formatDiscountForSubmit(discountsOfOrderValue) : [],
                 shippingFee,
                 deliveryTime: deliveryTime ? new Date(formatToTimeZoneDate(deliveryTime)) : undefined,
                 coin,
+                allCoin,
                 paymentAmount,
                 note,
+                approvers: approvers.map((element) => {
+                    return { approver: element };
+                }),
             };
 
             await this.props.createNewQuote(data);
@@ -544,6 +630,7 @@ class QuoteCreateForm extends Component {
                     discountsOfOrderValue: [],
                     paymentAmount: "",
                     note: "",
+                    approvers: [],
                     paymentAmount: "",
                     step: 0,
                 };
@@ -566,6 +653,8 @@ class QuoteCreateForm extends Component {
             customerEmail,
             effectiveDate,
             expirationDate,
+            organizationalUnit,
+            approvers,
             step,
             goods,
             shippingFee,
@@ -582,11 +671,22 @@ class QuoteCreateForm extends Component {
             paymentAmount,
         } = this.state;
 
-        let { customerError, customerEmailError, customerPhoneError, customerAddressError, effectiveDateError, expirationDateError } = this.state;
+        let {
+            customerError,
+            customerEmailError,
+            customerPhoneError,
+            customerAddressError,
+            effectiveDateError,
+            expirationDateError,
+            organizationalUnitError,
+            approversError,
+        } = this.state;
 
         let enableStepOne = this.isValidateQuoteCreateInfo();
         let enableStepTwo = this.isValidateQuoteCreateGood();
         let enableFormSubmit = enableStepOne && enableStepTwo;
+
+        console.log("businessDepartments", this.props.businessDepartments);
 
         return (
             <React.Fragment>
@@ -695,6 +795,8 @@ class QuoteCreateForm extends Component {
                                     customerEmail={customerEmail}
                                     effectiveDate={effectiveDate}
                                     expirationDate={expirationDate}
+                                    organizationalUnit={organizationalUnit}
+                                    approvers={approvers}
                                     isUseForeignCurrency={isUseForeignCurrency}
                                     foreignCurrency={foreignCurrency}
                                     //handle
@@ -709,6 +811,8 @@ class QuoteCreateForm extends Component {
                                     handleUseForeignCurrencyChange={this.handleUseForeignCurrencyChange}
                                     handleRatioOfCurrencyChange={this.handleRatioOfCurrencyChange}
                                     handleSymbolOfForreignCurrencyChange={this.handleSymbolOfForreignCurrencyChange}
+                                    handleOrganizationalUnitChange={this.handleOrganizationalUnitChange}
+                                    handleApproversChange={this.handleApproversChange}
                                     //Error Status
                                     customerError={customerError}
                                     customerEmailError={customerEmailError}
@@ -716,6 +820,8 @@ class QuoteCreateForm extends Component {
                                     customerAddressError={customerAddressError}
                                     effectiveDateError={effectiveDateError}
                                     expirationDateError={expirationDateError}
+                                    organizationalUnitError={organizationalUnitError}
+                                    approversError={approversError}
                                 />
                             )}
                             {step === 1 && (
@@ -805,8 +911,8 @@ class QuoteCreateForm extends Component {
 }
 
 function mapStateToProps(state) {
-    const { customers } = state.crm;
-    return { customers };
+    const { customers, businessDepartments } = state.crm;
+    return { customers, businessDepartments };
 }
 
 const mapDispatchToProps = {

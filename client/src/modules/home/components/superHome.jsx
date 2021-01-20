@@ -24,25 +24,24 @@ class SuperHome extends Component {
         if (month > 3) {
             startMonth = month - 3;
             startYear = year;
-            if (month < 9) {
-                endMonth = '0' + (month + 1);
-            } else {
-                endMonth = month + 1;
-            }
         } else {
             startMonth = month - 3 + 12;
             startYear = year - 1;
         }
         if (startMonth < 10)
             startMonth = '0' + startMonth;
+        if (month < 10) {
+            endMonth = '0' + month;
+        } else {
+            endMonth = month;
+        }
 
         this.INFO_SEARCH = {
-            startMonth: [year, month - 3].join('-'),
             startMonth: [startYear, startMonth].join('-'),
-            endMonth: month === 12 ? [year + 1, '01'].join('-') : [year, endMonth].join('-'),
+            endMonth: [year, endMonth].join('-'),
 
             startMonthTitle: [startMonth, startYear].join('-'),
-            endMonthTitle: month < 10 ? ['0' + month, year].join('-') : [month, year].join('-'),
+            endMonthTitle: [endMonth, year].join('-'),
         }
 
         this.state = {
@@ -101,14 +100,8 @@ class SuperHome extends Component {
     }
 
     handleSelectMonthEnd = (value) => {
-        let month, monthtitle;
-
-        if (value.slice(0, 2) < 9) {
-            month = value.slice(3, 7) + '-0' + (new Number(value.slice(0, 2)));
-        } else {
-            month = value.slice(3, 7) + '-' + (new Number(value.slice(0, 2)));
-        }
-        monthtitle = value.slice(0, 2) + '-' + value.slice(3, 7);
+        let month = value.slice(3, 7) + '-' + (new Number(value.slice(0, 2)));
+        let monthtitle = value.slice(0, 2) + '-' + (new Number(value.slice(3, 7)));
 
         this.INFO_SEARCH.endMonth = month;
         this.INFO_SEARCH.endMonthTitle = monthtitle;
@@ -118,7 +111,7 @@ class SuperHome extends Component {
         let startMonth = new Date(this.INFO_SEARCH.startMonth);
         let endMonth = new Date(this.INFO_SEARCH.endMonth);
 
-        if (startMonth.getTime() >= endMonth.getTime()) {
+        if (startMonth.getTime() > endMonth.getTime()) {
             const { translate } = this.props;
             Swal.fire({
                 title: translate('kpi.evaluation.employee_evaluation.wrong_time'),
@@ -171,7 +164,7 @@ class SuperHome extends Component {
         }
         if (startMonthDefault < 10)
             startMonthDefault = '0' + startMonthDefault;
-        
+
         let defaultStartMonth = [startMonthDefault, startYear].join('-');
         let defaultEndMonth = month < 10 ? ['0' + month, year].join('-') : [month, year].join('-');
 
@@ -212,23 +205,6 @@ class SuperHome extends Component {
                     </div>
                 </div>
 
-                {/* Lịch công việc chi tiết */}
-                <div className="row">
-                    <div className="col-xs-12">
-                        <div className="box box-primary">
-                            <div className="box-header with-border">
-                                <div className="box-title">{translate('task.task_management.tasks_calendar')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
-                            </div>
-                            <CalendarEmployee
-                                startMonth={startMonth}
-                                endMonth={endMonth}
-                                home={true}
-                            />
-                        </div>
-
-                    </div>
-                </div>
-
                 <div className="row">
                     <div className="col-xs-6">
                         <div className="box box-primary">
@@ -236,7 +212,7 @@ class SuperHome extends Component {
                                 <div className="box-title">{translate('task.task_management.dashboard_overdue')}</div>
                             </div>
 
-                            <div className="box-body" style={{ minHeight: "300px" }}>
+                            <div className="box-body" style={{ height: "380px", overflow: "auto" }}>
                                 {
                                     (tasks && tasks.tasksbyuser) ?
                                         <ul className="todo-list">
@@ -263,7 +239,7 @@ class SuperHome extends Component {
                             <div className="box-header with-border">
                                 <div className="box-title">{translate('task.task_management.dashboard_about_to_overdue')}</div>
                             </div>
-                            <div className="box-body" style={{ minHeight: "300px" }}>
+                            <div className="box-body" style={{ height: "380px", overflow: "auto" }}>
                                 {
                                     (tasks && tasks.tasksbyuser) ?
                                         <ul className="todo-list">
@@ -283,6 +259,22 @@ class SuperHome extends Component {
                                         </ul> : "Đang tải dữ liệu"
                                 }
                             </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Lịch công việc chi tiết */}
+                <div className="row">
+                    <div className="col-xs-12">
+                        <div className="box box-primary">
+                            <div className="box-header with-border">
+                                <div className="box-title">{translate('task.task_management.tasks_calendar')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
+                            </div>
+                            <CalendarEmployee
+                                startMonth={startMonth}
+                                endMonth={endMonth}
+                                home={true}
+                            />
                         </div>
                     </div>
                 </div>

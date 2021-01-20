@@ -5,6 +5,7 @@ import { DialogModal, SelectBox, ErrorLabel, ButtonModal } from '../../../../../
 import QuantityLotGoodIssueEdit from './quantityLotGoodIssueEdit';
 import { LotActions } from '../../../inventory-management/redux/actions';
 import { BillActions } from '../../redux/actions';
+import { GoodActions } from "../../../../common-production/good-management/redux/actions";
 
 class GoodIssueEditForm extends Component {
     constructor(props) {
@@ -34,10 +35,10 @@ class GoodIssueEditForm extends Component {
         let { translate } = this.props;
         let goodArr = [{ value: '', text: translate('manage_warehouse.bill_management.choose_good') }];
 
-        this.props.goods.listALLGoods.map(item => {
+        this.props.goods.listGoods.map(item => {
             goodArr.push({
                 value: item._id,
-                text: item.code + " -- " + item.name,
+                text: item.code + " -- " + item.name + " (" + item.baseUnit + ")",
                 code: item.code,
                 name: item.name,
                 baseUnit: item.baseUnit
@@ -576,6 +577,13 @@ class GoodIssueEditForm extends Component {
             prevState.good.good = '';
             prevState.good.description = '';
             prevState.good.lots = [];
+
+            if (nextProps.type === "3") {
+                nextProps.getGoodsByType({ type: "material" });
+            } else if (nextProps.type === "4") {
+                nextProps.getGoodsByType({ type: "product" });
+            }
+
             return {
                 ...prevState,
                 billId: nextProps.billId,
@@ -659,14 +667,14 @@ class GoodIssueEditForm extends Component {
 
     render() {
         const { translate, group } = this.props;
-        const { lots, listGood, good, code, approvers, approver, listQualityControlStaffs, accountables, responsibles, qualityControlStaffs, status, customer, fromStock, type, name, phone, email, address, description, errorStock, errorType, errorApprover, errorCustomer, quantity, errorQualityControlStaffs, errorAccountables, errorResponsibles } = this.state;
+        const { billId, lots, listGood, good, code, approvers, approver, listQualityControlStaffs, accountables, responsibles, qualityControlStaffs, status, customer, fromStock, type, name, phone, email, address, description, errorStock, errorType, errorApprover, errorCustomer, quantity, errorQualityControlStaffs, errorAccountables, errorResponsibles } = this.state;
         const listGoods = this.getAllGoods();
         const dataApprover = this.getApprover();
         const dataCustomer = this.getCustomer();
         const dataStock = this.getStock();
         const dataType = this.getType();
         const dataStatus = this.getStatus();
-        const checkApproved = this.checkApproved(approvers, listQualityControlStaffs)
+        const checkApproved = this.checkApproved(approvers, listQualityControlStaffs);
 
         return (
             <React.Fragment>
@@ -694,7 +702,7 @@ class GoodIssueEditForm extends Component {
                                     <div className={`form-group ${!errorType ? "" : "has-error"}`}>
                                         <label>{translate('manage_warehouse.bill_management.type')}<span className="attention"> * </span></label>
                                         <SelectBox
-                                            id={`select-type-issue-edit`}
+                                            id={`select-type-issue-edit-${billId}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             value={type}
@@ -708,7 +716,7 @@ class GoodIssueEditForm extends Component {
                                     <div className={`form-group`}>
                                         <label>{translate('manage_warehouse.bill_management.status')}</label>
                                         <SelectBox
-                                            id={`select-status-issue-edit`}
+                                            id={`select-status-issue-edit-${billId}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             value={status}
@@ -723,7 +731,7 @@ class GoodIssueEditForm extends Component {
                                     <div className={`form-group ${!errorStock ? "" : "has-error"}`}>
                                         <label>{translate('manage_warehouse.bill_management.stock')}<span className="attention"> * </span></label>
                                         <SelectBox
-                                            id={`select-stock-bill-issue-edit`}
+                                            id={`select-stock-bill-issue-edit-${billId}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             value={fromStock}
@@ -737,7 +745,7 @@ class GoodIssueEditForm extends Component {
                                     <div className={`form-group ${!errorCustomer ? "" : "has-error"}`}>
                                         <label>{translate('manage_warehouse.bill_management.customer')}<span className="attention"> * </span></label>
                                         <SelectBox
-                                            id={`select-customer-issue-edit`}
+                                            id={`select-customer-issue-edit-${billId}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             value={customer}
@@ -764,7 +772,7 @@ class GoodIssueEditForm extends Component {
                                         <div className={`form-group ${!errorApprover ? "" : "has-error"}`}>
                                             <label>{translate('manage_warehouse.bill_management.approved')}<span className="attention"> * </span></label>
                                             <SelectBox
-                                                id={`select-approver-bill-issue-edit`}
+                                                id={`select-approver-bill-issue-edit-${billId}`}
                                                 className="form-control select2"
                                                 style={{ width: "100%" }}
                                                 value={approver}
@@ -777,7 +785,7 @@ class GoodIssueEditForm extends Component {
                                         <div className={`form-group ${!errorResponsibles ? "" : "has-error"}`}>
                                             <label>{translate('manage_warehouse.bill_management.users')}<span className="attention"> * </span></label>
                                             <SelectBox
-                                                id={`select-accountables-bill-issue-edit`}
+                                                id={`select-accountables-bill-issue-edit-${billId}`}
                                                 className="form-control select2"
                                                 style={{ width: "100%" }}
                                                 value={responsibles}
@@ -792,7 +800,7 @@ class GoodIssueEditForm extends Component {
                                         <div className={`form-group ${!errorQualityControlStaffs ? "" : "has-error"}`}>
                                             <label>{translate('manage_warehouse.bill_management.qualityControlStaffs')}<span className="attention"> * </span></label>
                                             <SelectBox
-                                                id={`select-qualityControlStaffs-bill-issue-edit`}
+                                                id={`select-qualityControlStaffs-bill-issue-edit-${billId}`}
                                                 className="form-control select2"
                                                 style={{ width: "100%" }}
                                                 value={qualityControlStaffs}
@@ -805,7 +813,7 @@ class GoodIssueEditForm extends Component {
                                         <div className={`form-group ${!errorAccountables ? "" : "has-error"}`}>
                                             <label>{translate('manage_warehouse.bill_management.accountables')}<span className="attention"> * </span></label>
                                             <SelectBox
-                                                id={`select-responsibles-bill-issue-edit`}
+                                                id={`select-responsibles-bill-issue-edit-${billId}`}
                                                 className="form-control select2"
                                                 style={{ width: "100%" }}
                                                 value={accountables}
@@ -852,7 +860,7 @@ class GoodIssueEditForm extends Component {
                                     <div className="form-group">
                                         <label>{translate('manage_warehouse.bill_management.choose_good')}</label>
                                         <SelectBox
-                                            id={`select-good-issue-edit`}
+                                            id={`select-good-issue-edit-${billId}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             value={good.good ? good.good._id : '1'}
@@ -932,6 +940,7 @@ const mapStateToProps = state => state;
 
 const mapDispatchToProps = {
     getLotsByGood: LotActions.getLotsByGood,
-    editBill: BillActions.editBill
+    editBill: BillActions.editBill,
+    getGoodsByType: GoodActions.getGoodsByType,
 }
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(GoodIssueEditForm));

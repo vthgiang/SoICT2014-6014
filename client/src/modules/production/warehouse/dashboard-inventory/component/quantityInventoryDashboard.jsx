@@ -1,214 +1,151 @@
 
 import React, { Component } from 'react';
-
+import { connect } from 'react-redux';
 import c3 from 'c3';
 import 'c3/c3.css';
 
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import { SelectMulti, DatePicker, SelectBox, TreeSelect } from '../../../../../common-components';
+import { LotActions } from '../../inventory-management/redux/actions';
+import { StockActions } from '../../stock-management/redux/actions';
+import { CategoryActions } from '../../../common-production/category-management/redux/actions';
 
 class QuantityInventoryDashboard extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            barChart: true
+            barChart: true,
+            type: 'product',
+            currentRole: localStorage.getItem("currentRole"),
+            category: []
         }
     }
 
     componentDidMount() {
-        this.barChart();
+        const { type } = this.state;
+        this.props.getInventoriesDashboard({ type, managementLocation: this.state.currentRole });
+        this.props.getAllStocks({ managementLocation: this.state.currentRole });
+        this.props.getCategoryToTree();
     }
 
-    // Thiết lập dữ liệu biểu đồ
-    setDataBarChart = () => {
+    handleStockChange = (value) => {
+        this.setState(state => {
+            return {
+                ...state,
+                stock: value
+            }
+        })
+    }
+
+    handleCategoryChange = (value) => {
+        this.setState(state => {
+            return {
+                ...state,
+                category: value
+            }
+        })
+    };
+
+    handleTypeChange = (value) => {
+        this.setState(state => {
+            return {
+                ...state,
+                type: value
+            }
+        })
+    }
+
+    handleSubmitSearch = () => {
         let data = {
-            count: ["5", "6", "7", "8", "9", "10"],
-            type: ["Thắng", "Phương", "Tài", "An", "Sang"],
-            shortName: ["T", "P","T", "A", "S"]
+            stock: this.state.stock,
+            category: this.state.category,
+            type: this.state.type,
+            managementLocation: this.state.currentRole,
         }
-
-        return data;
+        this.props.getInventoriesDashboard(data);
     }
+
+    getAllCategory = () => {
+        let { categories } = this.props;
+        let categoryArr = [];
+        if (categories.categoryToTree.list.length > 0) {
+            categories.categoryToTree.list.map((item) => {
+                categoryArr.push({
+                    _id: item._id,
+                    id: item._id,
+                    state: { open: true },
+                    name: item.name,
+                    parent: item.parent ? item.parent.toString() : null,
+                });
+            });
+        }
+        return categoryArr;
+    };
 
     // Khởi tạo BarChart bằng C3
-    barChart = () => {
-        let { translate } = this.props;
-        let dataPieChart = this.setDataBarChart();
-        let count = dataPieChart.count;
-        let heightCalc = dataPieChart.type.length * 24.8;
-        let height = heightCalc < 320 ? 320 : heightCalc;
+    barChart = (name, inventory, goodReceipt, goodIssue) => {
         let chart = c3.generate({
             bindto: this.refs.quantityInventoryDashboard,
             data: {
-                x : 'x',
                 columns: [
-                    ['x', 'Albendazole', 'Afatinib', 'Zoledronic Acid', 'Abobotulinum', 'Acid Thioctic', 'Mometasone (bôi)', 'Capecitabine', 'Mytomycin C'],
-                    ['Số lượng tồn', 100, 200, 140, 200, 600, 228, 600, 200, 100],
-                    ['Số lượng sắp nhập', 50, 150, 70, 30, 50, 228, 200, 60, 40],
-                    ['Số lượng sắp xuất', 200, 100, 100, 100, 400, 128, 270, 130, 230]
+                    inventory,
+                    goodReceipt,
+                    goodIssue
                 ],
                 type: 'bar'
+            },
+            padding: {
+                bottom: 20,
+                right: 20
             },
             axis: {
                 x: {
                     type: 'category',
+                    categories: name,
                     tick: {
-                        rotate: 75,
                         multiline: false
                     },
                     height: 100
-                }
+                },
+                y: {
+                    label: {
+                        text: "Số lượng",
+                        position: 'outer-right'
+                    }
+                },
+                rotated: true
+            },
+            size: {
+                height: 500
+            },
+
+            legend: {
+                show: false
             },
         });
     }
 
     render() {
-        const { translate } = this.props;
-        const dataTree = [
-            {
-                id: "1",
-                code: "B1",
-                name: "Sản phẩm",
-                description: "Nơi lưu trữ kho số 1",
-                stock: "Tạ Quang Bửu",
-                status: "Đang trống",
-                users: ["Nguyễn Văn Thắng"],
-                text: "Sản phẩm",
-                state: { "open": true },
-                parent: "#",
-                child: "3"
-            },
-            {
-                id: "2",
-                code: "D5",
-                name: "Nguyên vật liệu",
-                description: "Nơi lưu trữ kho số 2",
-                stock: "Trần Đại Nghĩa",
-                status: "Đang trống",
-                users: ["Nguyễn Văn Thắng"],
-                text: "Nguyên vật liệu",
-                state: { "open": true },
-                parent: "#",
-                child: "5"
-            },
-            {
-                id: "3",
-                code: "T1",
-                name: "Dạng viên",
-                description: "Nơi lưu trữ kho số B1",
-                stock: "Tạ Quang Bửu",
-                status: "Đang trống",
-                users: ["Nguyễn Văn Thắng"],
-                text: "Dạng viên",
-                state: { "open": true },
-                parent: "1",
-                child: "4"
-            },
-            {
-                id: "7",
-                code: "T1",
-                name: "Dạng bột",
-                description: "Nơi lưu trữ kho số B1",
-                stock: "Tạ Quang Bửu",
-                status: "Đang trống",
-                users: ["Nguyễn Văn Thắng"],
-                text: "Dạng bột",
-                state: { "open": true },
-                parent: "1",
-                child: "4"
-            },
-            {
-                id: "8",
-                code: "T1",
-                name: "Dạng siro",
-                description: "Nơi lưu trữ kho số B1",
-                stock: "Tạ Quang Bửu",
-                status: "Đang trống",
-                users: ["Nguyễn Văn Thắng"],
-                text: "Dạng siro",
-                state: { "open": true },
-                parent: "1",
-                child: "4"
-            },
-            {
-                id: "4",
-                code: "P101",
-                name: "Phòng 101",
-                description: "Nơi lưu trữ kho số 1",
-                stock: "Tạ Quang Bửu",
-                status: "Đang trống",
-                users: ["Nguyễn Văn Thắng"],
-                enableGoods: [
-                    {
-                        good: "Jucca Nước",
-                        type: "Nguyên Vật liệu",
-                        capacity: "50 thùng",
-                        contained: "10 thùng"
-                    },
-                    {
-                        good: "Jucca",
-                        type: "Nguyên Vật liệu",
-                        capacity: "50 thùng",
-                        contained: "10 thùng"
-                    },
-                ],
-                text: "Phòng 101",
-                state: { "open": true },
-                parent: "3",
-                child: "#"
-            },
-            {
-                id: "5",
-                code: "T2",
-                name: "Tầng 2",
-                description: "Nơi lưu trữ kho số 1",
-                stock: "Tạ Quang Bửu",
-                status: "Đang trống",
-                users: ["Nguyễn Văn Thắng"],
-                enableGoods: [
-                    {
-                        good: "Jucca Nước",
-                        type: "Nguyên Vật liệu",
-                        capacity: "50 thùng",
-                        contained: "10 thùng"
-                    },
-                    {
-                        good: "Jucca",
-                        type: "Nguyên Vật liệu",
-                        capacity: "50 thùng",
-                        contained: "10 thùng"
-                    },
-                ],
-                text: "Tầng 2",
-                state: { "open": true },
-                parent: "2",
-                child: "#"
-            },
-            {
-                id: "6",
-                code: "C1",
-                name: "Công cụ dụng cụ",
-                description: "Nơi lưu trữ kho số 1",
-                stock: "Tạ Quang Bửu",
-                status: "Đang trống",
-                users: ["Nguyễn Văn Thắng"],
-                text: "Công cụ dụng cụ",
-                state: { "open": true },
-                parent: "#",
-                child: "#"
-            }
-        ]
+        const { translate, lots, stocks, categories } = this.props;
+        const { inventoryDashboard } = lots;
+        const { listStocks } = stocks;
+        const { categoryToTree } = categories;
+        const dataCategory = this.getAllCategory();
+        const { type, category } = this.state;
 
-        let typeArr = [];
-        dataTree.map(item => {
-            typeArr.push({
-                _id: item.id,
-                id: item.id,
-                name: item.name,
-                parent: item.parent ? item.parent : null
-            })
-        })
-        this.barChart();
+        let name = [];
+        let inventory = ['Số lượng tồn kho'];
+        let goodReceipt = ['Số lượng sắp nhập'];
+        let goodIssue = ['Số lượng sắp xuất'];
+        if(inventoryDashboard.length > 0) {
+            for(let i = 0; i < inventoryDashboard.length; i++) {
+                name = [...name, inventoryDashboard[i].name];
+                inventory = [...inventory, inventoryDashboard[i].inventory];
+                goodReceipt = [...goodReceipt, inventoryDashboard[i].goodReceipt];
+                goodIssue = [...goodIssue, inventoryDashboard[i].goodIssue];
+            }
+        }
+        this.barChart(name, inventory, goodReceipt, goodIssue);
         return (
             <React.Fragment>
                 <div className="box">
@@ -217,64 +154,53 @@ class QuantityInventoryDashboard extends Component {
                         <h3 className="box-title">
                             Số lượng tồn kho của các mặt hàng
                         </h3>
-                        <div className="form-inline" style={{display: 'flex'}}>
-                            <div className="form-group" style={{display: 'flex', marginRight: '20px'}}>
-                                <label>Kho</label>
-                                <SelectMulti id="multiSelectOrganizatio"
-                                    items={[
-                                        { value: '1', text: 'Tạ Quang Bửu'},
-                                        { value: '2', text: 'Trần Đại Nghĩa'},
-                                        { value: '3', text: 'Đại Cồ Việt'},
-                                        { value: '4', text: 'Lê Thanh Nghị'}
-                                    ]}
-                                    options={{ nonSelectedText: "Tất cả kho(4)", allSelectedText: "Tất cả kho(4)" }}
-                                    onChange={this.handleSelectOrganizationalUnit}
-                                >
-                                </SelectMulti>
-                            </div>
-                            <div className="form-group" style={{display: 'flex'}}>
-                                    <label>Danh mục</label>
-                                    <TreeSelect
-                                    data={typeArr}
-                                    value=""
-                                    handleChange={this.handleAssetTypeChange}
-                                    mode="hierarchical"
+                        <div className="box-body qlcv" >
+                            <div className="form-inline">
+                                <div className="form-group">
+                                    <label>Kho</label>
+                                    <SelectMulti
+                                    id={`select-multi-stock-dashboard-inventory`}
+                                    multiple="multiple"
+                                    options={{ nonSelectedText: "Tổng các kho", allSelectedText: "Tổng các kho" }}
+                                    className="form-control select2"
+                                    style={{ width: "100%" }}
+                                    items={listStocks.map((x, index) => { return { value: x._id, text: x.name }})}
+                                    onChange={this.handleStockChange}
                                 />
+                                </div>
+                                <div className="form-group">
+                                    <label>Loại hàng hóa</label>
+                                    <SelectMulti
+                                    id={`select-multi-type-dashboard-inventory`}
+                                    multiple="multiple"
+                                    options={{ nonSelectedText: "Loại hàng hóa", allSelectedText: "Chọn tất cả" }}
+                                    className="form-control select2"
+                                    style={{ width: "100%" }}
+                                    items={[
+                                        { value: 'product', text: 'Sản phẩm'},
+                                        { value: 'material', text: 'Nguyên vật liệu'},
+                                    ]}
+                                    onChange={this.handleTypeChange}
+                                />
+                                </div>
                             </div>
-                        </div>
-                        <div className="form-inline" style={{marginTop: '10px'}}>
-                            <div className="form-group">
-                                    <label className="form-control-static">Từ ngày</label>
-                                    <DatePicker
-                                        id="purchase-month"
-                                        value=""
-                                        onChange={this.handlePurchaseMonthChange}
+                            <div className="form-inline">
+                                <div className="form-group">
+                                    <label>Danh mục</label>
+                                    <TreeSelect 
+                                        data={dataCategory} 
+                                        value={category} 
+                                        handleChange={this.handleCategoryChange} 
+                                        mode="hierarchical" 
                                     />
                                 </div>
                                 <div className="form-group">
-                                    <label className="form-control-static">Đến ngày</label>
-                                    <DatePicker
-                                        id="purchase-month"
-                                        value=""
-                                        onChange={this.handlePurchaseMonthChange}
-                                    />
+                                <label></label>
+                                    <button type="button" className="btn btn-success" title={translate('general.search')} onClick={() => this.handleSubmitSearch()} >{translate('general.search')}</button>
                                 </div>
-                                <div className="form-group">
-                                    <button type="button" className="btn btn-success" title={translate('manage_warehouse.bill_management.search')} onClick={this.handleSubmitSearch}>{translate('manage_warehouse.bill_management.search')}</button>
-                                </div>
+                            </div>
                         </div>
                         <div ref="quantityInventoryDashboard"></div>
-                        <div  style={{marginLeft: '70%'}}>
-                        <ul class="pagination">
-                            <li class="page-item"><a class="page-link" href="#">Trước</a></li>
-                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                            <li class="page-item"><a class="page-link" href="#">2</a></li>
-                            <li class="page-item"><a class="page-link" href="#">3</a></li>
-                            <li class="page-item"><a class="page-link" href="#">4</a></li>
-                            <li class="page-item"><a class="page-link" href="#">5</a></li>
-                            <li class="page-item"><a class="page-link" href="#">Sau</a></li>
-                        </ul>
-                        </div>
                     </div>
                 </div>
             </React.Fragment>
@@ -282,4 +208,12 @@ class QuantityInventoryDashboard extends Component {
     }
 }
 
-export default withTranslate(QuantityInventoryDashboard);
+const mapStateToProps = state => state;
+
+const mapDispatchToProps = {
+    getInventoriesDashboard: LotActions.getInventoriesDashboard,
+    getAllStocks: StockActions.getAllStocks,
+    getCategoryToTree: CategoryActions.getCategoryToTree,
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(QuantityInventoryDashboard));

@@ -50,13 +50,24 @@ const QuoteSchema = Schema({
         approver: {
             type: Schema.Types.ObjectId,
             ref: 'User',
-            required: true
+            // required: true
         },
         approveAt: {
             type: Date,
-            default: new Date()
+        },
+        status: {//1. Chưa phê duyệt, 2. Đã phê duyệt, 3. Đã hủy
+            type: Number,
+            enum: [1, 2, 3],
+            default: 1
+        },
+        note: {
+            type: String
         }
     }],
+    organizationalUnit: {//Đơn vị quản lý đơn
+        type: Schema.Types.ObjectId,
+        ref: "OrganizationalUnit"
+    },
     goods: [{
         good: {
             type: Schema.Types.ObjectId,
@@ -240,6 +251,9 @@ const QuoteSchema = Schema({
     },
      //Số coin trừ vào đơn hàng, lúc thanh toán sẽ check, nếu đủ thì trừ, không thì thôi
     coin: {
+        type: Number
+    },
+    allCoin: {
         type: Number
     },
     //Tổng thuế cho toàn đơn

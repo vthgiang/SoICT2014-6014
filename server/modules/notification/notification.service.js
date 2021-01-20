@@ -74,13 +74,24 @@ exports.getUrl = (destination, filename) => {
  * @data thông tin về thông báo muốn tạo
  */
 exports.createManualNotification = async (portal, data, files) => {
-    if (files) {
-        files = files.map(obj => ({
+    if (files && files.notificationFiles) {
+        const notificationFiles = files.notificationFiles.map(obj => ({
             fileName: obj.originalname,
             url: this.getUrl(obj.destination, obj.filename),
         }))
-        data = {...data, files }
+        data = {...data, files: notificationFiles }
     }
+    if (files && files.notificationContentImage) {
+        const notificationContentImage = files.notificationContentImage.map(obj => ({
+            url: this.getUrl(obj.destination, obj.filename)
+        }))
+        if (data.files) {
+            data = {...data, files: [...data.files, ...notificationContentImage] }
+        } else {
+            data = {...data, files: notificationContentImage }
+        }
+    }
+    
 
     const notify = await ManualNotification(connect(DB_CONNECTION, portal)).create(data)
 
@@ -192,12 +203,14 @@ exports.createNotification = async (
             title: data.title,
             level: data.level,
             content: data.content,
+            shortContent: data.shortContent,
             creator: data.creator,
             sender: data.sender,
             user: usersArr[i],
             files: data.files,
             manualNotification,
             associatedDataObject: data.associatedDataObject,
+            type: data.type,
         });
 
         const notify = { ...data, _id: noti._id };

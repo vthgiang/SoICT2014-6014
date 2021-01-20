@@ -17,6 +17,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use("/upload/avatars", express.static("upload/avatars"));
+app.use("/upload/user-guide", express.static("upload/user-guide"));
 
 const router = express.Router();
 
@@ -263,6 +264,7 @@ app.use(
 );
 app.use("/sla", require("./modules/production/order/sla/sla.route"));
 app.use("/tax", require("./modules/production/order/tax/tax.route"));
+app.use("/payment", require("./modules/production/order/payment/payment.route"));
 app.use("/business-department", require("./modules/production/order/business-department/businessDepartment.route"));
 
 app.use(router);

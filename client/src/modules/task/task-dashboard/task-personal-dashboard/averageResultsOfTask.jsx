@@ -43,15 +43,14 @@ function AverageResultsOfTask(props) {
     const [state, setState] = useState({
         userId: localStorage.getItem("userId"),
 
-        role: [ROLE.RESPONSIBLE],
-        criteria: CRITERIA.NOT_COEFFICIENT,
-
         startMonth: null,
-        endMonth: null
+        endMonth: null,
     });
+    const [role, setRole] = useState([ROLE.RESPONSIBLE]);
+    const [criteria, setCriteria] = useState(CRITERIA.NOT_COEFFICIENT);
 
     // Khai báo state
-    const { role, criteria, userId, startMonth, endMonth } = state;
+    const { userId, startMonth, endMonth } = state;
 
     // Khởi tạo ref lưu infosearch cũ
     const ref = useRef({
@@ -61,7 +60,6 @@ function AverageResultsOfTask(props) {
     const currentState = ref.current;
 
     useEffect(() => {
-        console.log("test",currentState.role, role)
         if (currentState.criteria === criteria && currentState.role === role) {
             if (tasks.responsibleTasks
                 && tasks.accountableTasks
@@ -88,17 +86,11 @@ function AverageResultsOfTask(props) {
 
     const handleSelectRole = (value) => {
         let roleSelect = value.map(item => Number(item));
-        setState({
-            ...state,
-            role: roleSelect
-        })
+        setRole(roleSelect);
     }
 
     const handleSelectCriteria = (value) => {
-        setState({
-            ...state,
-            criteria: Number(value[0])
-        })
+        setCriteria(Number(value[0]));
     }
 
     const handleSearchData = () => {
@@ -158,7 +150,6 @@ function AverageResultsOfTask(props) {
             }
 
             listTask = filterDuplicateTask(listTask);
-            console.log(listTask)
         };
 
         if (listTask) {
@@ -187,7 +178,7 @@ function AverageResultsOfTask(props) {
                         }
                         return 0;
                     }).map(result => {
-                        if (criteria) {
+                        if (criteria === CRITERIA.COEFFICIENT) {
                             let totalDay = 0;
                             let startDate = task.startDate && new Date(task.startDate);
                             let endDate = task.endDate && new Date(task.endDate);
@@ -243,7 +234,7 @@ function AverageResultsOfTask(props) {
             });
         }
 
-        if (criteria) {
+        if (criteria === CRITERIA.COEFFICIENT) {
             averageAutomatic = averageFunction(sumAutomaticPointCoefficient, sumCoefficientAutomatic);
             averageEmployee = averageFunction(sumEmployeePointCoefficient, sumCoefficientEmployee);
             averageApproved = averageFunction(sumApprovedPointCoefficient, sumCoefficientApproved);
@@ -353,6 +344,7 @@ function AverageResultsOfTask(props) {
                 <div className="form-group">
                     <label>{translate('task.task_management.role')}</label>
                     <SelectMulti
+                        key="multiSelectAverageRole"
                         id="multiSelectAverageRole"
                         items={ROLE_SELECTBOX}
                         onChange={handleSelectRole}
@@ -366,6 +358,7 @@ function AverageResultsOfTask(props) {
                 <div className="form-group">
                     <label>Tiêu chí</label>
                     <SelectBox
+                        key="criteriaOfAverageSelectBox"
                         id={`criteriaOfAverageSelectBox`}
                         className="form-control select2"
                         style={{ width: "100%" }}

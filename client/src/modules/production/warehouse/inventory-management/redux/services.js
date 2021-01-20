@@ -10,7 +10,10 @@ export const LotServices = {
     createManufacturingLot,
     getDetailManufacturingLot,
     handleEditManufacturingLot,
-    getInventoryByGoodIds
+    getInventoryByGoodIds,
+    getInventoriesDashboard,
+    getInventoryByGoodAndStock,
+    getNumberLotsStatus
 }
 
 function getAllLots(params) {
@@ -107,6 +110,30 @@ function handleEditManufacturingLot(id, data) {
 function getInventoryByGoodIds(data) {
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/lot/get-inventory`,
+        method: 'GET',
+        params: data
+    }, false, true, 'manage_warehouse.inventory_management')
+}
+
+function getInventoriesDashboard(data) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/lot/get-inventory-dashboard`,
+        method: 'GET',
+        params: data
+    }, false, false, 'manage_warehouse.inventory_management')
+}
+
+function getInventoryByGoodAndStock(data) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/lot/get-inventory-in-stock`,
+        method: 'GET',
+        params: data
+    }, false, true, 'manage_warehouse.inventory_management')
+}
+
+function getNumberLotsStatus(data) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/lot/get-manufacturing-lot-number-status`,
         method: 'GET',
         params: data
     }, false, true, 'manage_warehouse.inventory_management')

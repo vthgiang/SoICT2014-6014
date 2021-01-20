@@ -202,3 +202,23 @@ exports.getManufacturingWorksByProductId = async (req, res) => {
         })
     }
 }
+
+exports.numberGoods = async (req, res) => {
+    try {
+        let numberGoods = await GoodService.numberGoods(req.portal);
+        await Logger.info(req.user.email, 'GET_GOOD', req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ['get_success'],
+            content: numberGoods
+        })
+    }
+    catch (error) {
+        await Logger.error(req.user.email, 'GET_GOOD', req.portal);
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['get_faile'],
+            content: error.message
+        })
+    }
+}

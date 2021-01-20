@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
-import { DialogModal, ErrorLabel, SelectBox } from '../../../../common-components/';
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
+
+import { DialogModal, ErrorLabel, QuillEditor } from '../../../../common-components/';
 import { getStorage } from "../../../../config";
+
 import { TaskInformationForm } from './taskInformationForm';
+
 import { managerKpiActions } from '../../../kpi/employee/management/redux/actions';
 import { performTaskAction } from '../redux/actions';
 
@@ -21,6 +24,7 @@ class ModalEditTaskByResponsibleEmployee extends Component {
             userId: data.idUser,
             taskName: data.task.name,
             taskDescription: data.task.description,
+            taskDescriptionDefault: data.task.description,
             idUser: data.idUser,
             info: data.info,
             date: data.date,
@@ -330,8 +334,7 @@ class ModalEditTaskByResponsibleEmployee extends Component {
         return errorMessage === undefined;
     }
 
-    handleTaskDescriptionChange = event => {
-        let value = event.target.value;
+    handleTaskDescriptionChange = (value, imgs) => {
         this.validateTaskDescription(value, true);
     }
 
@@ -353,8 +356,8 @@ class ModalEditTaskByResponsibleEmployee extends Component {
         return errorMessage === undefined;
     }
 
-    handleChangeListInfo = async (data) => {
-        await this.setState({ listInfo: data })
+    handleChangeListInfo = (data) => {
+        this.setState({ listInfo: data })
     }
 
     isFormValidated = () => {
@@ -458,7 +461,7 @@ class ModalEditTaskByResponsibleEmployee extends Component {
     render() {
         const { KPIPersonalManager, translate } = this.props
         const { task, taskName, taskDescription, kpi } = this.state;
-        const { errorTaskName, errorTaskDescription } = this.state;
+        const { errorTaskName, errorTaskDescription, taskDescriptionDefault } = this.state;
         const { title, id, role, perform } = this.props;
 
         let listKpi = [];
@@ -496,10 +499,13 @@ class ModalEditTaskByResponsibleEmployee extends Component {
                                     <div
                                         className={`form-group ${errorTaskDescription === undefined ? "" : "has-error"}`}>
                                         <label>{translate('task.task_management.detail_description')}<span className="text-red">*</span></label>
-                                        <textarea
-                                            row="4"
-                                            value={taskDescription}
-                                            className="form-control" onChange={this.handleTaskDescriptionChange}
+                                        <QuillEditor
+                                            id={"task-edit-by-responsible"}
+                                            toolbar={false}
+                                            quillValueDefault={taskDescriptionDefault}
+                                            getTextData={this.handleTaskDescriptionChange}
+                                            height={80}
+                                            placeholder={"Mô tả công việc"}
                                         />
                                         <ErrorLabel content={errorTaskDescription} />
                                     </div>

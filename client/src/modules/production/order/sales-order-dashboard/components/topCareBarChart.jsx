@@ -1,15 +1,19 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
+import { withTranslate } from "react-redux-multilingual";
+import { QuoteActions } from "../../quote/redux/actions";
 
 import c3 from "c3";
 import "c3/c3.css";
 
 import { DatePicker, SelectBox } from "../../../../../common-components";
+import { formatToTimeZoneDate } from "../../../../../helpers/formatDate";
 
 class TopCareBarChart extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            typeGood: true, //de xem hien thi theo doanh so hay so luong san pham
+            currentRole: localStorage.getItem("currentRole"),
         };
     }
 
@@ -18,10 +22,15 @@ class TopCareBarChart extends Component {
     }
 
     setDataBarChart = () => {
+        let topGoodsCareValue = ["Top sản phẩm được quan tâm theo số lượng"];
+
+        if (this.props.quotes && this.props.quotes.topGoodsCare) {
+            let topGoodsCareMap = this.props.quotes.topGoodsCare.map((element) => element.quantity);
+            topGoodsCareValue = topGoodsCareValue.concat(topGoodsCareMap);
+        }
+
         let dataBarChart = {
-            columns: [
-                ["Top 5 sản phẩm được quan tâm", 300, 280, 259, 233, 157],
-            ],
+            columns: [topGoodsCareValue && topGoodsCareValue.length ? topGoodsCareValue : []],
             type: "bar",
         };
         return dataBarChart;
@@ -45,6 +54,12 @@ class TopCareBarChart extends Component {
     // Khởi tạo PieChart bằng C3
     barChart = () => {
         let dataBarChart = this.setDataBarChart();
+
+        let topGoodsCareTitle = [];
+        if (this.props.quotes && this.props.quotes.topGoodsCare) {
+            topGoodsCareTitle = this.props.quotes.topGoodsCare.map((element) => element.name);
+        }
+
         this.removePreviousChart();
         let chart = c3.generate({
             bindto: this.refs.topCareBarChart,
@@ -61,21 +76,13 @@ class TopCareBarChart extends Component {
             axis: {
                 y: {
                     label: {
-                        text: `${
-                            this.state.typeGood ? "Triệu đồng" : " Đơn vị"
-                        }`,
+                        text: `${"Đơn vị tính"}`,
                         position: "outer-middle",
                     },
                 },
                 x: {
                     type: "category",
-                    categories: [
-                        "Sản phẩm A",
-                        "Sản phẩm B",
-                        "Sản phẩm C",
-                        "Sản phẩm D",
-                        "Sản phẩm E",
-                    ],
+                    categories: topGoodsCareTitle && topGoodsCareTitle.length ? topGoodsCareTitle : [],
                 },
             },
 
@@ -96,88 +103,69 @@ class TopCareBarChart extends Component {
         });
     };
 
+    handleStartDateChange = (value) => {
+        this.setState((state) => {
+            return {
+                ...state,
+                startDate: value,
+            };
+        });
+    };
+
+    handleEndDateChange = (value) => {
+        this.setState((state) => {
+            return {
+                ...state,
+                endDate: value,
+            };
+        });
+    };
+
+    handleSunmitSearch = async () => {
+        let { startDate, endDate, currentRole } = this.state;
+        let data = {
+            currentRole,
+            startDate: startDate ? formatToTimeZoneDate(startDate) : "",
+            endDate: endDate ? formatToTimeZoneDate(endDate) : "",
+        };
+        await this.props.getTopGoodsCare(data);
+    };
+
     render() {
         this.barChart();
         return (
             <div className="box">
                 <div className="box-header with-border">
                     <i className="fa fa-bar-chart-o" />
-                    <h3 className="box-title">
-                        Top 5 sản phẩm được quan tâm nhất
-                    </h3>
+                    <h3 className="box-title">Top sản phẩm được quan tâm (theo số lượng)</h3>
                     <div className="form-inline">
                         <div className="form-group">
-                            <label className="form-control-static">Từ</label>
+                            <label style={{ width: "auto" }}>Từ</label>
                             <DatePicker
-                                id="incident_before"
-                                onChange={this.onchangeDate}
+                                id="date_picker_dashboard_start_top_care"
+                                value={this.state.startDate}
+                                onChange={this.handleStartDateChange}
                                 disabled={false}
-                                placeholder="start date"
-                                style={{ width: "120px", borderRadius: "4px" }}
                             />
                         </div>
+
+                        {/**Chọn ngày kết thúc */}
                         <div className="form-group">
-                            <label className="form-control-static">Đến</label>
+                            <label style={{ width: "auto" }}>Đến</label>
                             <DatePicker
-                                id="incident_end"
-                                onChange={this.onchangeDate}
+                                id="date_picker_dashboard_end_top_care"
+                                value={this.state.endDate}
+                                onChange={this.handleEndDateChange}
                                 disabled={false}
-                                placeholder="end date"
-                                style={{ width: "120px", borderRadius: "4px" }}
                             />
                         </div>
-                        <div className="form-group">
-                            <label className="form-control-static">
-                                Chọn Top
-                            </label>
-                            <input
-                                className="form-control"
-                                type="number"
-                                placeholder="Mặc định bằng 5"
-                                style={{ width: "175px" }}
-                            />
-                        </div>
-                        <div
-                            className="form-group"
-                            style={{ marginLeft: "20px" }}
-                        >
-                            <button className="btn btn-success">
+                        {/* <div className="form-group">
+                            <label className="form-control-static">Chọn Top</label>
+                            <input className="form-control" type="number" placeholder="Mặc định bằng 5" style={{ width: "175px" }} />
+                        </div> */}
+                        <div className="form-group" style={{ marginLeft: "20px" }}>
+                            <button className="btn btn-success" onClick={() => this.handleSunmitSearch()}>
                                 Tìm kiếm
-                            </button>
-                        </div>
-                    </div>
-                    <div className="box-tools pull-right">
-                        <div
-                            className="btn-group pull-rigth"
-                            style={{
-                                position: "absolute",
-                                right: "5px",
-                                top: "5px",
-                            }}
-                        >
-                            <button
-                                type="button"
-                                className={`btn btn-xs ${
-                                    this.state.typeGood
-                                        ? "active"
-                                        : "btn-danger"
-                                }`}
-                                onClick={() =>
-                                    this.handleChangeViewChart(false)
-                                }
-                            >
-                                Số lượng
-                            </button>
-                            <button
-                                type="button"
-                                className={`btn btn-xs ${
-                                    this.state.typeGood
-                                        ? "btn-danger"
-                                        : "active"
-                                }`}
-                                onClick={() => this.handleChangeViewChart(true)}
-                            >
-                                Doanh số
                             </button>
                         </div>
                     </div>
@@ -188,4 +176,13 @@ class TopCareBarChart extends Component {
     }
 }
 
-export default TopCareBarChart;
+function mapStateToProps(state) {
+    const { quotes } = state;
+    return { quotes };
+}
+
+const mapDispatchToProps = {
+    getTopGoodsCare: QuoteActions.getTopGoodsCare,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(TopCareBarChart));

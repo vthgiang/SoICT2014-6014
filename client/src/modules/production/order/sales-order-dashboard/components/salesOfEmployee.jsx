@@ -1,14 +1,20 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
+import { withTranslate } from "react-redux-multilingual";
+import { SalesOrderActions } from "../../sales-order/redux/actions";
 
 import c3 from "c3";
 import "c3/c3.css";
 
-import { DatePicker, SelectBox } from "../../../../../common-components";
+import { DatePicker, SelectBox, SelectMulti } from "../../../../../common-components";
+import { formatToTimeZoneDate } from "../../../../../helpers/formatDate";
 class SalesOfEmployee extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            typeChart: true,
+            type: 1,
+            organizationalUnit: "",
+            currentRole: localStorage.getItem("currentRole"),
         };
     }
 
@@ -16,33 +22,38 @@ class SalesOfEmployee extends Component {
         this.barChart();
     }
 
+    handleOrganizationChange = (value) => {
+        this.setState({
+            organizationalUnit: value[0],
+        });
+    };
+
     setDataBarChart = () => {
+        let { organizationalUnit, type } = this.state;
+        let salesForDepartmentsValue = ["Doanh số bán hàng"];
+        if (this.props.salesOrders && this.props.salesOrders.salesForDepartments) {
+            const { salesForDepartments } = this.props.salesOrders;
+            if (type === 1) {
+                for (let index = 0; index < salesForDepartments.length; index++) {
+                    let totalMoney = 0; //Tổng tiền của phòng
+                    for (let indexUser = 0; indexUser < salesForDepartments[index].users.length; indexUser++) {
+                        totalMoney += salesForDepartments[index].users[indexUser].sales;
+                    }
+                    salesForDepartmentsValue.push(totalMoney);
+                }
+            } else if (type === 2 && organizationalUnit !== "") {
+                for (let index = 0; index < salesForDepartments.length; index++) {
+                    if (salesForDepartments[index].organizationalUnit._id === organizationalUnit) {
+                        for (let indexUser = 0; indexUser < salesForDepartments[index].users.length; indexUser++) {
+                            salesForDepartmentsValue.push(salesForDepartments[index].users[indexUser].sales);
+                        }
+                    }
+                }
+            }
+        }
+
         let dataBarChart = {
-            columns: this.state.typeChart
-                ? [
-                      [
-                          "Doanh số bán hàng của nhân viên phòng kinh doanh 247",
-                          300,
-                          280,
-                          259,
-                          233,
-                          157,
-                          154,
-                          148,
-                          145,
-                          133,
-                      ],
-                  ]
-                : [
-                      [
-                          "Doanh số bán hàng của các phòng",
-                          300,
-                          280,
-                          259,
-                          233,
-                          157,
-                      ],
-                  ],
+            columns: [salesForDepartmentsValue],
             type: "bar",
         };
         return dataBarChart;
@@ -57,16 +68,49 @@ class SalesOfEmployee extends Component {
         }
     }
 
-    handleChangeViewChart() {
+    getDepartmentOptions = () => {
+        let salesForDepartments = [];
+        if (this.props.salesOrders && this.props.salesOrders.salesForDepartments) {
+            salesForDepartments = this.props.salesOrders.salesForDepartments.map((element) => {
+                return {
+                    value: element.organizationalUnit._id,
+                    text: element.organizationalUnit.name,
+                };
+            });
+        }
+
+        return salesForDepartments;
+    };
+
+    handleTypeChange(type) {
         this.setState({
-            typeChart: !this.state.typeChart,
+            type,
         });
     }
 
     // Khởi tạo PieChart bằng C3
     barChart = () => {
+        let { organizationalUnit, type } = this.state;
         let dataBarChart = this.setDataBarChart();
         this.removePreviousChart();
+        let salesForDepartmentsTitle = [];
+        if (this.props.salesOrders && this.props.salesOrders.salesForDepartments) {
+            const { salesForDepartments } = this.props.salesOrders;
+            if (type === 1) {
+                for (let index = 0; index < salesForDepartments.length; index++) {
+                    salesForDepartmentsTitle.push(salesForDepartments[index].organizationalUnit.name);
+                }
+            } else if (type === 2 && organizationalUnit !== "") {
+                for (let index = 0; index < salesForDepartments.length; index++) {
+                    if (salesForDepartments[index].organizationalUnit._id === organizationalUnit) {
+                        for (let indexUser = 0; indexUser < salesForDepartments[index].users.length; indexUser++) {
+                            salesForDepartmentsTitle.push(salesForDepartments[index].users[indexUser].user.name);
+                        }
+                    }
+                }
+            }
+        }
+
         let chart = c3.generate({
             bindto: this.refs.salesOfEmployee,
 
@@ -79,47 +123,18 @@ class SalesOfEmployee extends Component {
                 // or
                 //width: 100 // this makes bar width 100px
             },
-            axis: this.state.typeChart
-                ? {
-                      y: {
-                          label: {
-                              text: "Triệu đồng",
-                              position: "outer-middle",
-                          },
-                      },
-                      x: {
-                          type: "category",
-                          categories: [
-                              "Nguyễn Văn A",
-                              "Nguyễn Văn B",
-                              "Nguyễn Văn C",
-                              "Nguyễn Văn D",
-                              "Nguyễn Văn E",
-                              "Nguyễn Văn F",
-                              "Nguyễn Văn G",
-                              "Nguyễn Văn H",
-                              "Nguyễn Văn K",
-                          ],
-                      },
-                  }
-                : {
-                      y: {
-                          label: {
-                              text: "Triệu đồng",
-                              position: "outer-middle",
-                          },
-                      },
-                      x: {
-                          type: "category",
-                          categories: [
-                              "Phòng 247",
-                              "Phòng Guni",
-                              "Phòng Hunter",
-                              "Phòng AB",
-                              "Phòng XY",
-                          ],
-                      },
-                  },
+            axis: {
+                y: {
+                    label: {
+                        text: "Đơn vị tiền",
+                        position: "outer-middle",
+                    },
+                },
+                x: {
+                    type: "category",
+                    categories: salesForDepartmentsTitle && salesForDepartmentsTitle.length ? salesForDepartmentsTitle : [],
+                },
+            },
 
             tooltip: {
                 format: {
@@ -138,70 +153,127 @@ class SalesOfEmployee extends Component {
         });
     };
 
+    handleStartDateChange = (value) => {
+        this.setState((state) => {
+            return {
+                ...state,
+                startDate: value,
+            };
+        });
+    };
+
+    handleEndDateChange = (value) => {
+        this.setState((state) => {
+            return {
+                ...state,
+                endDate: value,
+            };
+        });
+    };
+
+    handleSunmitSearch = () => {
+        let { startDate, endDate, currentRole, status } = this.state;
+        let data = {
+            currentRole,
+            status,
+            startDate: startDate ? formatToTimeZoneDate(startDate) : "",
+            endDate: endDate ? formatToTimeZoneDate(endDate) : "",
+        };
+        this.props.getSalesForDepartments(data);
+    };
+
+    handleStatusChange = (value) => {
+        this.setState({
+            status: value,
+        });
+    };
+
     render() {
         this.barChart();
         return (
             <div className="box">
                 <div className="box-header with-border">
                     <i className="fa fa-bar-chart-o" />
-                    <h3 className="box-title">
-                        {this.state.typeChart
-                            ? "Doanh số bán hàng của nhân viên phòng kinh doanh 247"
-                            : "Doanh số bán hàng của các phòng"}
-                    </h3>
+                    <h3 className="box-title">{this.state.chart === 1 ? "Doanh số bán hàng tất cả các đơn vị" : "Doanh số bán hàng từng đơn vị"}</h3>
                     <div className="form-inline">
-                        {this.state.typeChart ? (
+                        {this.state.type === 2 && (
                             <div className="form-group">
-                                <label style={{ width: "auto" }}>
-                                    Phòng kinh doanh
-                                </label>
+                                <label style={{ width: "auto" }}>Đơn vị</label>
                                 <SelectBox
                                     id="chart-select-sales-room"
-                                    items={[
-                                        {
-                                            value: "Phòng 247",
-                                            text: "Phòng 247",
-                                        },
-                                        {
-                                            value: "Phòng Guni",
-                                            text: "Phòng Guni",
-                                        },
-                                        {
-                                            value: "Phòng Hunter",
-                                            text: "Phòng Hunter",
-                                        },
-                                        { value: "Phòng AB", text: "Phòng AB" },
-                                        { value: "Phòng XY", text: "Phòng XY" },
-                                    ]}
+                                    items={this.getDepartmentOptions()}
                                     style={{ width: "10rem" }}
-                                    onChange={this.onchangeDate}
+                                    onChange={this.handleOrganizationChange}
                                 />
                             </div>
-                        ) : (
-                            ""
                         )}
                         <div className="form-group">
-                            <label className="form-control-static">Từ</label>
+                            <label style={{ width: "auto" }}>Từ</label>
                             <DatePicker
-                                id="incident_start"
-                                onChange={this.onchangeDate}
+                                id="date_picker_dashboard_start_sales_of_employee"
+                                value={this.state.startDate}
+                                onChange={this.handleStartDateChange}
                                 disabled={false}
-                                placeholder="start date"
-                                style={{ width: "120px", borderRadius: "4px" }}
                             />
                         </div>
+
+                        {/**Chọn ngày kết thúc */}
                         <div className="form-group">
-                            <label className="form-control-static">Đến</label>
+                            <label style={{ width: "auto" }}>Đến</label>
                             <DatePicker
-                                id="incident_end"
-                                onChange={this.onchangeDate}
+                                id="date_picker_dashboard_end_sales_of_employee"
+                                value={this.state.endDate}
+                                onChange={this.handleEndDateChange}
                                 disabled={false}
-                                placeholder="end date"
-                                style={{ width: "120px", borderRadius: "4px" }}
                             />
                         </div>
+                        {/* <div className="form-group">
+                            <label className="form-control-static">Trạng thái đơn</label>
+                            <SelectMulti
+                                id={`selectMulti-dasboard-filter-status-sales-order`}
+                                className="form-control select2"
+                                style={{ width: "100%" }}
+                                items={[
+                                    {
+                                        value: 1,
+                                        text: "Chờ phê duyệt",
+                                    },
+                                    {
+                                        value: 2,
+                                        text: "Đã phê duyệt",
+                                    },
+                                    {
+                                        value: 3,
+                                        text: "Yêu cầu sản xuất",
+                                    },
+                                    {
+                                        value: 4,
+                                        text: "Đã lập kế hoạch sản xuất",
+                                    },
+                                    {
+                                        value: 5,
+                                        text: "Đã yêu cầu nhập kho",
+                                    },
+                                    {
+                                        value: 6,
+                                        text: "Đang giao hàng",
+                                    },
+                                    {
+                                        value: 7,
+                                        text: "Đã giao hàng",
+                                    },
+                                    {
+                                        value: 8,
+                                        text: "Hủy đơn",
+                                    },
+                                ]}
+                                multiple="multiple"
+                                options={{ nonSelectedText: "Chọn trạng thái đơn", allSelectedText: "Đã chọn tất cả" }}
+                                onChange={this.handleStatusChange}
+                            />
+                        </div> */}
                         <div className="form-group">
-                            <button className="btn btn-success">
+                            <button className="btn btn-success" onClick={() => this.handleSunmitSearch()}>
                                 Tìm kiếm
                             </button>
                         </div>
@@ -217,27 +289,17 @@ class SalesOfEmployee extends Component {
                         >
                             <button
                                 type="button"
-                                className={`btn btn-xs ${
-                                    this.state.typeChart
-                                        ? "active"
-                                        : "btn-danger"
-                                }`}
-                                onClick={() =>
-                                    this.handleChangeViewChart(false)
-                                }
+                                className={`btn btn-xs ${this.state.type === 2 ? "active" : "btn-danger"}`}
+                                onClick={() => this.handleTypeChange(1)}
                             >
-                                Xem chung
+                                Xem tất cả
                             </button>
                             <button
                                 type="button"
-                                className={`btn btn-xs ${
-                                    this.state.typeChart
-                                        ? "btn-danger"
-                                        : "active"
-                                }`}
-                                onClick={() => this.handleChangeViewChart(true)}
+                                className={`btn btn-xs ${this.state.type === 2 ? "btn-danger" : "active"}`}
+                                onClick={() => this.handleTypeChange(2)}
                             >
-                                Chi tiết từng phòng
+                                Chi tiết đơn vị
                             </button>
                         </div>
                     </div>
@@ -248,4 +310,13 @@ class SalesOfEmployee extends Component {
     }
 }
 
-export default SalesOfEmployee;
+function mapStateToProps(state) {
+    const { salesOrders } = state;
+    return { salesOrders };
+}
+
+const mapDispatchToProps = {
+    getSalesForDepartments: SalesOrderActions.getSalesForDepartments,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(SalesOfEmployee));

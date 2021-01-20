@@ -6,7 +6,13 @@ export const SalesOrderSevices = {
     editSalesOrder,
     approveSalesOrder,
     addManufacturingPlanForGood,
-    getSalesOrdersByManufacturingWorks
+    getSalesOrdersByManufacturingWorks,
+    getSalesOrdersForPayment,
+    getSalesOrderDetail,
+    countSalesOrder,
+    getTopGoodsSold,
+    getSalesForDepartments,
+    getNumberWorksSalesOrder
 }
 
 function createNewSalesOrder(data) {
@@ -21,7 +27,7 @@ function createNewSalesOrder(data) {
         "manage_order.sales_order")
 }
 
-function getAllSalesOrders(queryData){
+function getAllSalesOrders(queryData) {
     return sendRequest(
         {
             url: `${process.env.REACT_APP_SERVER}/sales-order`,
@@ -41,18 +47,19 @@ function editSalesOrder(id, data) {
     },
         true,
         true,
-    "manage_order.sales_order")
+        "manage_order.sales_order")
 }
 
 function approveSalesOrder(id, data) {
+    console.log("DATA", data);
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/sales-order/approve/${id}`,
         method: "PATCH",
         data
     },
-        false,
         true,
-    "manage_order.sales_order")
+        true,
+        "manage_order.sales_order")
 }
 
 function addManufacturingPlanForGood(id, data) {
@@ -63,7 +70,7 @@ function addManufacturingPlanForGood(id, data) {
     },
         false,
         true,
-    "manage_order.sales_order")
+        "manage_order.sales_order")
 }
 
 function getSalesOrdersByManufacturingWorks(id) {
@@ -73,6 +80,71 @@ function getSalesOrdersByManufacturingWorks(id) {
     },
         false,
         true,
-    "manage_order.sales_order")
+        "manage_order.sales_order")
 }
 
+function getSalesOrdersForPayment(customerId) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/sales-order/get-for-payment`,
+        method: "GET",
+        params: { customerId }
+    },
+        false,
+        true,
+        "manage_order.sales_order")
+}
+
+function getSalesOrderDetail(id) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/sales-order/${id}`,
+        method: "GET",
+    },
+        false,
+        true,
+        "manage_order.sales_order")
+}
+
+//SERVICE CHO DASHBOARD
+function countSalesOrder(queryData) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/sales-order/count`,
+        method: "GET",
+        params: queryData
+    },
+        false,
+        true,
+        "manage_order.sales_order")
+}
+
+function getTopGoodsSold(queryData) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/sales-order/get-top-good-sold`,
+        method: "GET",
+        params: queryData
+    },
+        false,
+        true,
+        "manage_order.sales_order")
+}
+
+function getSalesForDepartments(queryData) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/sales-order/get-sales-for-departments`,
+        method: "GET",
+        params: queryData
+    },
+        false,
+        true,
+        "manage_order.sales_order")
+}
+
+function getNumberWorksSalesOrder(data) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/sales-order/get-number-works-sales-order`,
+        method: "GET",
+        params: data
+    },
+        false,
+        true,
+        "manage_order.sales_order")
+}

@@ -103,11 +103,11 @@ function TaskStatusChart(props) {
             }
 
             listTask = filterDuplicateTask(listTask);
-            console.log("listTask",listTask, role )
         };
-
-        listTask = TaskOrganizationUnitDashboard ? listTask.tasks : listTask;
+        
         if (listTask) {
+            listTask = TaskOrganizationUnitDashboard ? listTask.tasks : listTask; // neu la listTask cua organizationUnit
+
             listTask.map(task => {
                 switch (task.status) {
                     case "inprocess":
@@ -168,9 +168,14 @@ function TaskStatusChart(props) {
                 right: 20,
                 left: 20
             },
-
-            legend: {                             // Ẩn chú thích biểu đồ
-                show: true
+            
+            tooltip: {
+                format: {
+                    value: function (value, ratio, id, index) { 
+                        return value; 
+                        
+                    }
+                }
             }
         });
     }

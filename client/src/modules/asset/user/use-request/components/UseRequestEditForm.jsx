@@ -233,7 +233,8 @@ class UseRequestEditForm extends Component {
         const { translate, recommendDistribute, user, assetsManager, auth } = this.props;
         const {
             recommendNumber, dateCreate, proponent, asset, reqContent, dateStartUse, dateEndUse,
-            errorOnRecommendNumber, errorOnDateCreate, errorOnReqContent, errorOnDateStartUse, errorOnDateEndUse, startTime, stopTime
+            errorOnRecommendNumber, errorOnDateCreate, errorOnReqContent, errorOnDateStartUse,
+            errorOnDateEndUse, startTime, stopTime, status, note
         } = this.state;
 
         var assetlist = assetsManager.listAssets;
@@ -298,6 +299,12 @@ class UseRequestEditForm extends Component {
                                     <textarea className="form-control" rows="3" name="reqContent" value={reqContent} onChange={this.handleReqContentChange} autoComplete="off" placeholder="Nội dung đề nghị"></textarea>
                                     <ErrorLabel content={errorOnReqContent} />
                                 </div>
+
+                                {/* Ghi chú */}
+                                <div className="form-group">
+                                    <label>{translate('asset.usage.note')}</label>
+                                    <textarea className="form-control" rows="3" name="note" value={note} onChange={this.handleNoteChange} disabled></textarea>
+                                </div>
                             </div>
 
                             <div className="col-sm-6">
@@ -358,6 +365,23 @@ class UseRequestEditForm extends Component {
                                         />
                                     }
                                     <ErrorLabel content={errorOnDateEndUse} />
+                                </div>
+
+                                {/* Trạng thái */}
+                                <div className="form-group">
+                                    <label>{translate('asset.general_information.status')}</label>
+                                    <SelectBox
+                                        id={`status${_id}`}
+                                        className="form-control select2"
+                                        style={{ width: "100%" }}
+                                        value={status}
+                                        items={[
+                                            { value: 'approved', text: translate('asset.usage.approved') },
+                                            { value: 'waiting_for_approval', text: translate('asset.usage.waiting_approval') },
+                                            { value: 'disapproved', text: translate('asset.usage.not_approved') },
+                                        ]}
+                                        disabled
+                                    />
                                 </div>
                             </div>
                         </div>

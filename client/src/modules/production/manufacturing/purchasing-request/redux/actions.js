@@ -5,7 +5,8 @@ export const purchasingRequestActions = {
     getAllPurchasingRequests,
     createPurchasingRequest,
     getDetailPurchasingRequest,
-    editPurchasingRequest
+    editPurchasingRequest,
+    getNumberPurchasingStatus
 }
 
 function getAllPurchasingRequests(query = {}) {
@@ -71,7 +72,6 @@ function getDetailPurchasingRequest(id) {
 }
 
 function editPurchasingRequest(id, data) {
-    console.log(data);
     return dispatch => {
         dispatch({
             type: purchasingRequestConstants.UPDATE_PURCHASING_REQUEST_REQUEST
@@ -85,6 +85,26 @@ function editPurchasingRequest(id, data) {
             }).catch((error) => {
                 dispatch({
                     type: purchasingRequestConstants.UPDATE_PURCHASING_REQUEST_FAILURE,
+                    error
+                });
+            });
+    }
+}
+
+function getNumberPurchasingStatus(query) {
+    return dispatch => {
+        dispatch({
+            type: purchasingRequestConstants.GET_NUMBER_PURCHASING_REQUEST_REQUEST
+        });
+        purchasingRequestServices.getNumberPurchasingStatus(query)
+            .then((res) => {
+                dispatch({
+                    type: purchasingRequestConstants.GET_NUMBER_PURCHASING_REQUEST_SUCCESS,
+                    payload: res.data.content
+                });
+            }).catch((error) => {
+                dispatch({
+                    type: purchasingRequestConstants.GET_NUMBER_PURCHASING_REQUEST_FAILURE,
                     error
                 });
             });

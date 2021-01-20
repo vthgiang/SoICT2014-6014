@@ -8,7 +8,6 @@ const {
 
 
 exports.createNewSLA = async (userId, data, portal) => {
-    console.log(userId);
     let newSLA = await ServiceLevelAgreement(connect(DB_CONNECTION, portal)).create({
         code: data.code,
         goods: data.goods.map((item) => {

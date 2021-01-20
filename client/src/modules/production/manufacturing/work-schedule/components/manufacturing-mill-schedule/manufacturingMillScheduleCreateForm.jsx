@@ -107,7 +107,6 @@ class ManufacturingMillScheduleCreateForm extends Component {
         for (let i = 1; i <= numberOfTurns; i++) {
             turns.push(i)
         }
-        console.log(workSchedule.listWorkSchedules);
         return (
             < React.Fragment >
                 <ButtonModal modalID="modal-create-mill-work-schedule" button_name={translate('manufacturing.work_schedule.add_work_schedule_button')} title={translate('manufacturing.work_schedule.add_work_schedule')} />

@@ -22,16 +22,16 @@ class DiscountDetailForm extends Component {
     }
 
     getTitleDiscountTable = (formality) => {
-        switch (formality) {
-            case "0" || 0:
+        switch (parseInt(formality)) {
+            case 0:
                 return "Mức giảm tiền mặt";
-            case "1" || 1:
+            case 1:
                 return "Mức phần trăm";
-            case "2" || 2:
+            case 2:
                 return "Mức xu được tặng";
-            case "3" || 3:
+            case 3:
                 return "Phí v/c được giảm tối đa";
-            case "4" || 4:
+            case 4:
                 return "Các sản phẩm được tặng kèm";
             default:
                 return "";
@@ -39,16 +39,16 @@ class DiscountDetailForm extends Component {
     };
 
     getContentDiscountTable = (formality, discount) => {
-        switch (formality) {
-            case "0" || 0:
+        switch (parseInt(formality)) {
+            case 0:
                 return discount.discountedCash;
-            case "1" || 1:
+            case 1:
                 return discount.discountedPercentage;
-            case "2" || 2:
+            case 2:
                 return discount.loyaltyCoin;
-            case "3" || 3:
+            case 3:
                 return discount.maximumFreeShippingCost;
-            case "4" || 4:
+            case 4:
                 return <a>{"Có " + discount.bonusGoods.length + " mặt hàng"}</a>;
             default:
                 return "";
@@ -57,6 +57,15 @@ class DiscountDetailForm extends Component {
 
     render() {
         const { code, name, creator, description, status, type, formality, discounts, effectiveDate, expirationDate } = this.props.discountDetail;
+        const typeConvert = ["Giảm trên toàn đơn", "Giảm giá từng mặt hàng"];
+        const formalityConvert = [
+            "Giảm tiền mặt",
+            "Giảm theo phần trăm",
+            "Tặng xu",
+            "Miễn phí vận chuyển",
+            "Tặng kèm hàng hóa",
+            "Giảm giá bán sản phẩm",
+        ];
         return (
             <React.Fragment>
                 <DialogModal
@@ -80,11 +89,11 @@ class DiscountDetailForm extends Component {
                             </div>
                             <div className="form-group">
                                 <strong>Loại giảm giá:&emsp;</strong>
-                                {type}
+                                {type !== undefined ? typeConvert[type] : ""}
                             </div>
                             <div className="form-group">
                                 <strong>Hình thức giảm giá:&emsp;</strong>
-                                {formality}
+                                {formality !== undefined ? formalityConvert[formality] : ""}
                             </div>
                         </div>
                         <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
@@ -144,6 +153,7 @@ class DiscountDetailForm extends Component {
                                                                 <a>{"Có " + item.discountOnGoods.length + " mặt hàng"}</a>
                                                             </td>
                                                         ) : null}
+                                                        {console.log("getContentDiscountTable", this.getContentDiscountTable(formality, item))}
                                                         {formality != "5" ? <td>{this.getContentDiscountTable(formality, item)}</td> : ""}
                                                         {formality == "1" ? (
                                                             <td>{item.maximumDiscountedCash ? formatCurrency(item.maximumDiscountedCash) : ""}</td>

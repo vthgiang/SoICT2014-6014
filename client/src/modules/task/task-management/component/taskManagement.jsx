@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import Swal from 'sweetalert2';
-import { DataTableSetting, DatePicker, PaginateBar, SelectMulti, Tree, TreeTable } from '../../../../common-components';
+import { DataTableSetting, DatePicker, PaginateBar, SelectBox, SelectMulti, Tree, TreeTable } from '../../../../common-components';
 import { convertTime, getFormatDateFromTime } from '../../../../helpers/stringMethod';
 import { getStorage } from '../../../../config';
 
@@ -51,7 +51,6 @@ class TaskManagement extends Component {
         this.props.getAllDepartment();
         this.props.getPaginateTasks(this.state.currentTab, [], '1', '20', this.state.status, null, null, null, null, null);
         this.props.getAllTaskProject();
-        this.getUserTimeSheetLogs()
     }
 
     shouldComponentUpdate(nextProps, nextState) {
@@ -121,12 +120,35 @@ class TaskManagement extends Component {
         }
     }
 
-    startTimer = async (taskId) => {
+    startTimer = async (taskId, overrideTSLog = 'no') => {
         let userId = getStorage("userId");
         let timer = {
             creator: userId,
+            overrideTSLog
         };
-        this.props.startTimer(taskId, timer);
+        this.props.startTimer(taskId, timer).catch(err => {
+            let warning = Array.isArray(err.response.data.messages) ? err.response.data.messages : [err.response.data.messages];
+            if (warning[0] === 'time_overlapping') {
+                Swal.fire({
+                    title: `Bạn đã hẹn tắt bấm giờ cho công việc [ ${warning[1]} ]`,
+                    html: `<h4 class="text-red">Hủy bỏ bấm giờ làm việc và bấm giờ công việc mới</h4>`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Bấm giờ mới',
+                    cancelButtonText: 'Hủy'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        let timer = {
+                            creator: userId,
+                            overrideTSLog: 'yes'
+                        };
+                        this.props.startTimer(taskId, timer)
+                    }
+                })
+            }
+        })
     }
 
     // Hàm xử lý trạng thái lưu kho
@@ -340,8 +362,8 @@ class TaskManagement extends Component {
      * Mở modal thêm task mới
      * @id task cha của task sẽ thêm (là "" nếu không có cha)
      */
-    handleAddTask = async (id) => {
-        await this.setState({
+    handleAddTask = (id) => {
+        this.setState({
             parentTask: id
         });
         window.$(`#addNewTask`).modal('show')
@@ -460,17 +482,6 @@ class TaskManagement extends Component {
         });
     }
 
-    getUserTimeSheetLogs = () => {
-        let { monthTimeSheetLog } = this.state;
-        if (monthTimeSheetLog) {
-            let d = monthTimeSheetLog.split('-');
-            let month = d[0];
-            let year = d[1];
-            let userId = getStorage('userId');
-            this.props.getTimeSheetOfUser(userId, month, year);
-        }
-    }
-
     getTotalTimeSheet = (ts) => {
         let total = 0;
         for (let i = 0; i < ts.length; i++) {
@@ -491,8 +502,6 @@ class TaskManagement extends Component {
         }
         // kiểm tra vai trò của người dùng
         let userId = getStorage("userId");
-        let { userTimeSheetLogs } = tasks;
-        console.log("USER TIME SHEET LOG", userTimeSheetLogs.userTimeSheetLogs)
 
         if (user) units = user.organizationalUnitsOfUser;
 
@@ -528,7 +537,7 @@ class TaskManagement extends Component {
                 if (dataTemp[0].isArchived === true) {
                     archived = "restore";
                 }
-                if (dataTemp[n].creator._id === userId || dataTemp[n].informedEmployees.indexOf(userId) !== -1) {
+                if (dataTemp[n].creator && dataTemp[n].creator._id === userId || dataTemp[n].informedEmployees.indexOf(userId) !== -1) {
                     let del = null;
                     if (dataTemp[n].creator._id === userId) {
                         del = "delete";
@@ -633,9 +642,9 @@ class TaskManagement extends Component {
                 <div className="box">
                     <div className="box-body qlcv">
                         <div style={{ height: "40px" }}>
-                            <button type="button" style={{ borderRadius: 0, marginLeft: 10 }} className="btn btn-default" title="Dạng bảng" onClick={() => this.handleDisplayType('table')}><i className="fa fa-list"></i> Dạng bảng</button>
-                            <button type="button" style={{ borderRadius: 0, marginLeft: 10 }} className="btn btn-default" title="Dạng cây" onClick={() => this.handleDisplayType('tree')}><i className="fa fa-sitemap"></i> Dạng cây</button>
-                            <button type="button" style={{ borderRadius: 0, marginLeft: 10 }} className="btn btn-default" onClick={() => { window.$('#tasks-filter').slideToggle() }}><i className="fa fa-filter"></i> Lọc</button>
+                            <button className="btn btn-primary" type="button" style={{ borderRadius: 0, marginLeft: 10, backgroundColor: 'transparent', borderRadius: '4px', color: '#367fa9' }} title="Dạng bảng" onClick={() => this.handleDisplayType('table')}><i className="fa fa-list"></i> Dạng bảng</button>
+                            <button className="btn btn-primary" type="button" style={{ borderRadius: 0, marginLeft: 10, backgroundColor: 'transparent', borderRadius: '4px', color: '#367fa9' }} title="Dạng cây" onClick={() => this.handleDisplayType('tree')}><i className="fa fa-sitemap"></i> Dạng cây</button>
+                            <button className="btn btn-primary" type="button" style={{ borderRadius: 0, marginLeft: 10, backgroundColor: 'transparent', borderRadius: '4px', color: '#367fa9' }} onClick={() => { window.$('#tasks-filter').slideToggle() }}><i className="fa fa-filter"></i> Lọc</button>
                             {currentTab !== "informed" &&
                                 <button type="button" onClick={() => { this.handleAddTask("") }} className="btn btn-success pull-right" title={translate('task.task_management.add_title')}>{translate('task.task_management.add_task')}</button>
                             }
@@ -812,6 +821,8 @@ class TaskManagement extends Component {
                         </div>
 
                         <PaginateBar
+                            display={tasks.tasks?.length}
+                            total={tasks.totalCount}
                             pageTotal={tasks.pages}
                             currentPage={currentPage}
                             func={this.handleGetDataPagination}
@@ -819,32 +830,6 @@ class TaskManagement extends Component {
 
                     </div>
                 </div >
-
-                <div className="box" style={{ padding: 20 }}>
-                    <div className="box-body qlcv">
-                        <h4>THỐNG KÊ BÁM GIỜ THEO THÁNG</h4>
-                        <div className="form-inline">
-                            <div className="form-group">
-                                <label>Tháng</label>
-                                <DatePicker
-                                    id="month-time-sheet-log"
-                                    dateFormat="month-year"
-                                    value={monthTimeSheetLog}
-                                    onChange={this.handleChangeMonthTimeSheetLog}
-                                    disabled={false}
-                                />
-                            </div>
-                            <button className="btn btn-primary" onClick={this.getUserTimeSheetLogs}>Thống kê</button>
-                            {
-                                !tasks.isLoading ?
-                                    <span style={{ fontWeight: 'bold', fontSize: 24, marginLeft: 50 }}>
-                                        {this.getTotalTimeSheet(userTimeSheetLogs)}
-                                    </span> : translate('general.loading')
-                            }
-
-                        </div>
-                    </div>
-                </div>
             </React.Fragment>
         );
     }
@@ -870,7 +855,6 @@ const actionCreators = {
     deleteTaskById: taskManagementActions._delete,
     getAllDepartment: DepartmentActions.get,
     getAllTaskProject: TaskProjectAction.get,
-    getTimeSheetOfUser: taskManagementActions.getTimeSheetOfUser
 };
 const translateTaskManagement = connect(mapState, actionCreators)(withTranslate(TaskManagement));
 export { translateTaskManagement as TaskManagement };

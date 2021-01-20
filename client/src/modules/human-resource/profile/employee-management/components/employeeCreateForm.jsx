@@ -35,7 +35,7 @@ class EmployeeCreateForm extends Component {
                 avatar: '/upload/human-resource/avatars/avatar5.png',
                 gender: "male",
                 maritalStatus: "single",
-                educationalLevel: "12/12",
+                educationalLevel: "",
                 professionalSkill: "unavailable",
                 status: 'active',
                 identityCardDate: this.formatDate2(Date.now()),
@@ -501,9 +501,9 @@ class EmployeeCreateForm extends Component {
                             <li><a title={translate('human_resource.profile.tab_name.menu_contract_training_title')} data-toggle="tab" href="#contract">{translate('human_resource.profile.tab_name.menu_contract_training')}</a></li>
                             <li><a title={translate('human_resource.profile.tab_name.menu_reward_discipline_title')} data-toggle="tab" href="#reward">{translate('human_resource.profile.tab_name.menu_reward_discipline')}</a></li>
                             <li><a title={translate('menu.annual_leave_personal')} data-toggle="tab" href="#salary">{translate('menu.annual_leave_personal')}</a></li>
-                            <li><a title={translate('human_resource.profile.tab_name.menu_attachments_title')} data-toggle="tab" href="#attachments">{translate('human_resource.profile.tab_name.menu_attachments')}</a></li>
                             <li><a title={"Công việc - chuyên ngành tương đương"} data-toggle="tab" href="#major_career">Công việc - chuyên ngành tương đương</a></li>
                             <li><a title={"Thành viên hộ gia đình"} data-toggle="tab" href="#family_member">Thành viên hộ gia đình</a></li>
+                            <li><a title={translate('human_resource.profile.tab_name.menu_attachments_title')} data-toggle="tab" href="#attachments">{translate('human_resource.profile.tab_name.menu_attachments')}</a></li>
                         </ul>
                         < div className="tab-content">
                             {/* Tab thông tin chung */}
