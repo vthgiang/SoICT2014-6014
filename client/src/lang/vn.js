@@ -3224,7 +3224,7 @@ export default {
                 evaluation: "Đánh giá",
                 attach_file: "Đính kèm file",
                 comment: "Bình luận",
-                result: "Báo cáo kết quả hoạt động",
+                result: "Báo cáo kết quả công việc",
                 re_evaluation: "Đánh giá lại",
                 question_delete_file: "Bạn có chắc chắn muốn xóa file",
                 edit_comment: "Sửa bình luận",

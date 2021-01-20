@@ -5,6 +5,8 @@ import { withTranslate } from 'react-redux-multilingual';
 import { NotificationActions } from '../../../modules/notification/redux/actions';
 import parse from 'html-react-parser';
 import { DateTimeConverter } from '../../../common-components';
+import audioFile from './sound.mp3';
+
 class Notification extends Component {
     constructor(props) {
         super(props);
@@ -21,6 +23,8 @@ class Notification extends Component {
         this.props.getAllManualNotifications();
         this.props.getAllNotifications();
         this.props.socket.io.on('new notifications', data => {
+            const audio = new Audio(audioFile);
+            audio.play();
             this.props.receiveNofitication(data);
         });
     }
@@ -51,7 +55,6 @@ class Notification extends Component {
         let notifyUnRead = notify.filter(notification => !notification.readed);
         const count = notifyUnRead.length;
         let notifyTaskUnRead = [], notifyAssetUnRead = [], notifyKPIUnRead = [], notifyDefault = [];
-
         notifyUnRead.forEach(obj => {
             let type = parseInt(obj.type);
             switch (type) {
@@ -86,8 +89,8 @@ class Notification extends Component {
                             <a className="notify-action" href="#allNotificationOfTask" data-toggle="tab">{`Công việc (${notifyTaskUnRead.length})`}</a>
                             <a className="notify-action" href="#allNotificationOfAsset" data-toggle="tab">{`Tài sản (${notifyAssetUnRead.length})`}</a>
                             <a className="notify-action" href="#allNotificationOfKPI" data-toggle="tab">{`KPI (${notifyKPIUnRead.length})`}</a>
-                            <a style={{ display: 'flex', alignItems: 'center' }}>
-                                <span className="material-icons">
+                            <a style={{ display: 'flex', alignItems: 'center', }} title={'âm thông báo đang bật'}>
+                                <span className="material-icons" style={{ cursor: 'pointer' }}>
                                     volume_up
                                 </span></a>
                         </div>
