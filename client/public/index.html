@@ -65,6 +65,10 @@
       }
     });
 
+    // ngăn tắt modal dropdown thông báo khi click vào tab bên trong menu dropdown
+    $(document).on('click.bs.dropdown.data-api', '.dropdown.mega-dropdown', function (e) {
+      e.stopPropagation();
+    });
   </script>
 
 

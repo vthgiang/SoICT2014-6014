@@ -16,7 +16,9 @@ export const LotActions = {
     handleEditManufacturingLot,
     getInventoryByGoodIds,
     getInventoryByGoodId,
-    getInventoriesDashboard
+    getInventoriesDashboard,
+    getInventoryByGoodAndStock,
+    getNumberLotsStatus,
 
 }
 
@@ -294,17 +296,59 @@ function getInventoriesDashboard(data) {
             type: LotConstants.GET_INVENTORY_DASHBOARD_REQUEST
         })
         LotServices.getInventoriesDashboard(data)
-        .then(res => {
-            dispatch({
-                type: LotConstants.GET_INVENTORY_DASHBOARD_SUCCESS,
-                payload: res.data.content
+            .then(res => {
+                dispatch({
+                    type: LotConstants.GET_INVENTORY_DASHBOARD_SUCCESS,
+                    payload: res.data.content
+                })
             })
-        })
-        .catch(error => {
-            dispatch({
-                type: LotConstants.GET_INVENTORY_DASHBOARD_FAILURE,
-                error
+            .catch(error => {
+                dispatch({
+                    type: LotConstants.GET_INVENTORY_DASHBOARD_FAILURE,
+                    error
+                })
             })
+    }
+}
+
+function getInventoryByGoodAndStock(data) {
+    return dispatch => {
+        dispatch({
+            type: LotConstants.GET_INVENTORY_BY_GOOD_AND_STOCK_REQUEST
         })
+        LotServices.getInventoryByGoodAndStock(data)
+            .then(res => {
+                dispatch({
+                    type: LotConstants.GET_INVENTORY_BY_GOOD_AND_STOCK_SUCCESS,
+                    payload: res.data.content
+                });
+            })
+            .catch(error => {
+                dispatch({
+                    type: LotConstants.GET_INVENTORY_BY_GOOD_AND_STOCK_FAILURE,
+                    error
+                });
+            });
+    }
+}
+
+function getNumberLotsStatus(data) {
+    return dispatch => {
+        dispatch({
+            type: LotConstants.GET_MANUFACTURING_LOT_NUMBER_BY_STATUS_REQUEST
+        })
+        LotServices.getNumberLotsStatus(data)
+            .then(res => {
+                dispatch({
+                    type: LotConstants.GET_MANUFACTURING_LOT_NUMBER_BY_STATUS_SUCCESS,
+                    payload: res.data.content
+                });
+            })
+            .catch(error => {
+                dispatch({
+                    type: LotConstants.GET_MANUFACTURING_LOT_NUMBER_BY_STATUS_FAILURE,
+                    error
+                });
+            });
     }
 }

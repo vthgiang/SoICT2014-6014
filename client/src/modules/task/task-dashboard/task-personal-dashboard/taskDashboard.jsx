@@ -19,6 +19,7 @@ import { LoadTaskChart } from './loadTaskChart';
 import { convertTime } from '../../../../helpers/stringMethod';
 import { getStorage } from '../../../../config';
 import LoadTaskInformation from './loadTaskInformation'
+import moment from 'moment';
 class TaskDashboard extends Component {
 
     constructor(props) {
@@ -480,7 +481,7 @@ class TaskDashboard extends Component {
                                 <div className="box-title">{translate('task.task_management.dashboard_overdue')}</div>
                             </div>
 
-                            <div className="box-body" style={{ minHeight: "300px" }}>
+                            <div className="box-body" style={{ height: "300px", overflow: "auto" }}>
                                 {
                                     (tasks && tasks.tasksbyuser) ?
                                         <ul className="todo-list">
@@ -507,7 +508,7 @@ class TaskDashboard extends Component {
                             <div className="box-header with-border">
                                 <div className="box-title">{translate('task.task_management.dashboard_about_to_overdue')}</div>
                             </div>
-                            <div className="box-body" style={{ minHeight: "300px" }}>
+                            <div className="box-body" style={{ height: "300px", overflow: "auto" }}>
                                 {
                                     (tasks && tasks.tasksbyuser) ?
                                         <ul className="todo-list">
@@ -583,18 +584,39 @@ class TaskDashboard extends Component {
 
                                 <div className="box-body" >
                                     <div className="col-md-12">
-                                        <div style={{ display: 'flex', alignItems: 'center', marginTop: '10px' }}>
-                                            <p className="pull-left" style={{ fontWeight: 'bold' }}>Kết quả</p >
-                                            {
-                                                !tasks.isLoading ?
-                                                    <p style={{ fontWeight: 'bold', fontSize: 20, marginLeft: 20 }}>
-                                                        {this.getTotalTimeSheet(userTimeSheetLogs)}
-                                                    </p> :
-                                                    <p style={{ fontWeight: 'bold', fontSize: 20, marginLeft: 20 }}>
-                                                        {translate('general.loading')}
-                                                    </p>
-                                            }
+                                        <div>
+                                            <p className="pull-right" style={{ fontWeight: 'bold' }}>Kết quả
+                                            <span style={{ fontWeight: 'bold', marginLeft: 10 }}>
+                                                    {
+                                                        !tasks.isLoading ? this.getTotalTimeSheet(userTimeSheetLogs) : translate('general.loading')
+                                                    }
+                                                </span>
+                                            </p >
                                         </div>
+                                        <table className="table table-hover table-striped table-bordered" id="table-user-timesheetlogs">
+                                            <thead>
+                                                <tr>
+                                                    <th style={{ width: 80 }}>STT</th>
+                                                    <th>Thời gian bắt đầu</th>
+                                                    <th>Thời gian kết thúc</th>
+                                                    <th>Bấm giờ</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {
+                                                    userTimeSheetLogs.map((tsl, index) => {
+                                                        return (
+                                                            <tr>
+                                                                <td>{index + 1}</td>
+                                                                <td>{moment(tsl.startedAt).format("HH:mm:ss DD/MM/YYYY")}</td>
+                                                                <td>{moment(tsl.stoppedAt).format("HH:mm:ss DD/MM/YYYY")}</td>
+                                                                <td>{convertTime(tsl.duration)}</td>
+                                                            </tr>
+                                                        )
+                                                    })
+                                                }
+                                            </tbody>
+                                        </table>
                                     </div>
                                 </div>
                             </div>

@@ -18,8 +18,6 @@ exports.createNewQuote = async (req, res) => {
     } catch (error) {
         await Log.error(req.user.email, "CREATED_NEW_QUOTE", req.portal);
 
-        console.log("Error", error);
-
         res.status(400).json({
             success: false,
             messages: ["create_failed"],
@@ -30,21 +28,20 @@ exports.createNewQuote = async (req, res) => {
 
 exports.getAllQuotes = async (req, res) => {
     try {
-        console.log("query:",req.query)
         let query = req.query;
-        let allQuotes = await QuoteService.getAllQuotes(query, req.portal);
+        let allQuotes = await QuoteService.getAllQuotes(req.user._id, query, req.portal);
 
         await Log.info(req.user.email, "GET_ALL_QUOTES", req.portal);
 
         res.status(200).json({
             success: true,
-            message: ["get_successfully"],
+            messages: ["get_successfully"],
             content: allQuotes
         })
         
     } catch (error) {
         await Log.error(req.user.email, "GET_ALL_QUOTES", req.portal);
-
+        console.log(error.message);
         res.status(400).json({
             success: false,
             messages: ["get_failed"],
@@ -68,8 +65,6 @@ exports.editQuote = async (req, res) => {
         });
     } catch (error) {
         await Log.error(req.user.email, "EDIT_QUOTE", req.portal);
-        console.log(error.message);
-
         res.status(400).json({
             success: false,
             messages: ["edit_failed"],
@@ -82,19 +77,18 @@ exports.approveQuote = async (req, res) => {
     try {
         let id = req.params.id;
         let data = req.body;
-        let quote = await QuoteService.approveQuote(req.user._id, id, data, req.portal);
+        let quote = await QuoteService.approveQuote(id, data, req.portal);
 
         await Log.info(req.user.email, "APPROVE_QUOTES", req.portal);
 
         res.status(200).json({
             success: true,
-            message: ["approve_successfully"],
+            messages: ["approve_successfully"],
             content: quote
         })
         
     } catch (error) {
         await Log.error(req.user.email, "APPROVE_QUOTES", req.portal);
-
         res.status(400).json({
             success: false,
             messages: ["approve_failed"],
@@ -112,7 +106,7 @@ exports.deleteQuote = async (req, res) => {
 
         res.status(200).json({
             success: true,
-            message: ["delete_successfully"],
+            messages: ["delete_successfully"],
             content: quote
         })
         
@@ -129,19 +123,20 @@ exports.deleteQuote = async (req, res) => {
 
 exports.getQuotesToMakeOrder = async (req, res) => {
     try {
-        let quotes = await QuoteService.getQuotesToMakeOrder(req.portal);
+        let query = req.query;
+        let quotes = await QuoteService.getQuotesToMakeOrder(req.user._id, query, req.portal);
 
         await Log.info(req.user.email, "GET_QUOTES_TO_MAKE_ORDER", req.portal);
 
         res.status(200).json({
             success: true,
-            message: ["get_quotes_to_make_order_successfully"],
+            messages: ["get_quotes_to_make_order_successfully"],
             content: quotes
         })
         
     } catch (error) {
         await Log.error(req.user.email, "GET_QUOTES_TO_MAKE_ORDER", req.portal);
-
+        console.log(error.message);
         res.status(400).json({
             success: false,
             messages: ["get_quotes_to_make_order_failed"],
@@ -149,3 +144,71 @@ exports.getQuotesToMakeOrder = async (req, res) => {
         });
     }
 }
+
+exports.getQuoteDetail = async ( req, res ) => {
+    try {
+        let id = req.params.id;
+        let quote = await QuoteService.getQuoteDetail( id, req.portal)
+
+        await Log.info(req.user.email, "GET_QUOTE_DETAIL", req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ["get_detail_successfully"],
+            content: quote
+        });
+    } catch (error) {
+        await Log.error(req.user.email, "GET_QUOTE_DETAIL", req.portal);
+        console.log(error.message);
+        res.status(400).json({
+            success: false,
+            messages: ["get_detail_failed"],
+            content: error.message
+        });
+    }
+}
+
+exports.countQuote = async (req, res) => {
+    try {
+        let query = req.query;
+        let  quoteCounter = await QuoteService.countQuote( req.user._id, query, req.portal)
+
+        await Log.info(req.user.email, "COUNT_QUOTE", req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ["count_quote_successfully"],
+            content: quoteCounter
+        });
+    } catch (error) {
+        await Log.error(req.user.email, "COUNT_QUOTE", req.portal);
+        console.log(error.message);
+        res.status(400).json({
+            success: false,
+            messages: ["count_quote_failed"],
+            content: error.message
+        });
+    }
+}
+
+exports.getTopGoodsCare = async (req, res) => {
+    try {
+        let query = req.query;
+        let topGoodsCare = await QuoteService.getTopGoodsCare(  req.user._id, query, req.portal)
+
+        await Log.info(req.user.email, "GET_TOP_GOODS_CARE", req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ["get_top_goods_care_successfully"],
+            content: topGoodsCare
+        });
+    } catch (error) {
+        await Log.error(req.user.email, "GET_TOP_GOODS_CARE", req.portal);
+        console.log(error.message);
+        res.status(400).json({
+            success: false,
+            messages: ["get_top_goods_care_failed"],
+            content: error.message
+        });
+    }
+}
+
+

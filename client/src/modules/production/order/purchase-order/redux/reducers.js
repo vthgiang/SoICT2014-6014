@@ -29,6 +29,8 @@ export function purchaseOrders(state = initState, action) {
         case PurchaseOrderConstants.CREATE_PURCHASE_ORDER_REQUEST:
         case PurchaseOrderConstants.UPDATE_PURCHASE_ORDER_REQUEST:
         case PurchaseOrderConstants.GET_ALL_PURCHASE_ORDERS_REQUEST:
+        case PurchaseOrderConstants.GET_PURCHASE_ORDERS_FOR_PAYMENT_REQUEST:
+        case PurchaseOrderConstants.APPROVE_PURCHASE_ORDER_REQUEST:
             return {
                 ...state,
                 isLoading: true
@@ -36,6 +38,8 @@ export function purchaseOrders(state = initState, action) {
         case PurchaseOrderConstants.CREATE_PURCHASE_ORDER_FAILURE:
         case PurchaseOrderConstants.UPDATE_PURCHASE_ORDER_FAILURE:
         case PurchaseOrderConstants.GET_ALL_PURCHASE_ORDERS_FAILURE:
+        case PurchaseOrderConstants.GET_PURCHASE_ORDERS_FOR_PAYMENT_FAILURE:
+        case PurchaseOrderConstants.APPROVE_PURCHASE_ORDER_FAILURE:
             return {
                 ...state,
                 isLoading: false,
@@ -66,6 +70,21 @@ export function purchaseOrders(state = initState, action) {
                 isLoading: false
             }
         case PurchaseOrderConstants.UPDATE_PURCHASE_ORDER_SUCCESS:
+            index = findIndex(state.listPurchaseOrders, action.payload.purchaseOrder._id);
+            if (index !== -1) {
+                state.listPurchaseOrders[index] = action.payload.purchaseOrder
+            }
+            return {
+                ...state,
+                isLoading: false
+            }
+        case PurchaseOrderConstants.GET_PURCHASE_ORDERS_FOR_PAYMENT_SUCCESS:
+            return {
+                ...state,
+                purchaseOrdersForPayment: action.payload.purchaseOrders,
+                isLoading: false
+            }
+        case PurchaseOrderConstants.APPROVE_PURCHASE_ORDER_SUCCESS:
             index = findIndex(state.listPurchaseOrders, action.payload.purchaseOrder._id);
             if (index !== -1) {
                 state.listPurchaseOrders[index] = action.payload.purchaseOrder

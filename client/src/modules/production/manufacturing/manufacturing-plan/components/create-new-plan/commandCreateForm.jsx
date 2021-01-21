@@ -506,7 +506,7 @@ class CommandCreateForm extends Component {
                             <div className="row">
                                 <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                     <div className={`form-group`}>
-                                        <label>{translate('manufacturing.plan.quantity_not_commmanded')}</label>
+                                        <label>{translate('manufacturing.plan.quantity_need_planned')}</label>
                                         <input type="number" value={this.getRemainingQuantityFromGoodId(command.goodId)} disabled={true} className="form-control" />
                                     </div>
                                 </div>

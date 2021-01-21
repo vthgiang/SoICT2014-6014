@@ -157,18 +157,27 @@ class ModalAddTaskTemplate extends Component {
     }
 
     render() {
-        const { user, translate } = this.props;
+        const { user, translate, savedTaskAsTemplate, savedTaskItem, savedTaskId } = this.props;
 
         return (
             <React.Fragment>
                 <DialogModal
-                    modalID="modal-add-task-template" isLoading={user.isLoading}
-                    formID="form-add-task-template"
+                    modalID={`modal-add-task-template-${savedTaskId}`} isLoading={user.isLoading}
+                    formID={`form-add-task-template-${savedTaskId}`}
                     title={translate('task_template.add_tasktemplate')}
                     func={this.handleSubmit}
                     size={100}
                 >
-                    <AddTaskTemplate onChangeTemplateData={this.onChangeTemplateData} />
+                    <AddTaskTemplate 
+                        onChangeTemplateData={this.onChangeTemplateData} 
+
+                        // dùng cho chức năng lưu task thành template
+                        savedTaskAsTemplate={savedTaskAsTemplate} 
+                        savedTaskItem={savedTaskItem}
+                        savedTaskId={savedTaskId}
+                        // end
+                        
+                    />
                 </DialogModal>
             </React.Fragment>
         );

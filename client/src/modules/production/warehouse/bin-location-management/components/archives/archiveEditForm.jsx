@@ -26,9 +26,11 @@ class ArchiveEditForm extends Component {
                 ...state,
                 binId: props.binId,
                 binStatus: props.binStatus,
+                binCapacity: props.binCapacity,
                 binContained: props.binContained,
                 binEnableGoods: props.binEnableGoods,
                 binParent: props.binParent,
+                binUnit: props.binUnit,
                 page: props.page,
                 limit: props.limit,
                 errorGood: undefined,
@@ -127,12 +129,18 @@ class ArchiveEditForm extends Component {
                 }
             })
         }
-        return msg = undefined;
+        return msg === undefined;
     }
 
     isGoodsValidated = () => {
         let result = 
             this.validateGood(this.state.good.good, false)
+        return result;
+    }
+
+    isFormValidated = () => {
+        let result =
+            this.validateContainedTotal(this.state.binContained, false)
         return result;
     }
 
@@ -226,13 +234,31 @@ class ArchiveEditForm extends Component {
 
     handleContainedTotalChange = (e) => {
         let value = e.target.value;
-        console.log(value);
-        this.setState(state => {
-            return {
-                ...state,
-                binContained: value
-            }
-        })
+        this.validateContainedTotal(value, true);
+    }
+
+    validateContainedTotal = (value, willUpdateState = true) => {
+        let msg = undefined;
+        const { translate } = this.props;
+        
+        if(!value) {
+            msg = translate('manage_warehouse.bin_location_management.validate_capacity');
+        }
+
+        if(Number(value) > Number(this.state.binCapacity)) {
+            msg = `Không thể vượt qua công suất chứa ${this.state.binCapacity} ${this.state.binUnit}`;
+        }
+
+        if(willUpdateState){
+            this.setState(state => {
+                return {
+                    ...state,
+                    binContained: value,
+                    errorContained: msg
+                }
+            })
+        }
+        return msg === undefined;
     }
 
     save = async () => {
@@ -253,7 +279,7 @@ class ArchiveEditForm extends Component {
 
     render() {
         const { translate, binLocations } = this.props;
-        const { binStatus, binContained, binEnableGoods, errorCapacity, errorGood, good } = this.state;
+        const { binStatus, binContained, binEnableGoods, errorCapacity, errorGood, good, errorContained } = this.state;
         const dataGoods = this.getAllGoods();
 
         return (
@@ -264,6 +290,7 @@ class ArchiveEditForm extends Component {
                     title={translate('manage_warehouse.bin_location_management.edit_title')}
                     msg_success={translate('manage_warehouse.bin_location_management.edit_success')}
                     msg_faile={translate('manage_warehouse.bin_location_management.edit_faile')}
+                    disableSubmit={!this.isFormValidated()}
                     func={this.save}
                     size={75}
                 >
@@ -290,9 +317,10 @@ class ArchiveEditForm extends Component {
                                 </div>
                             </div>
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                <div className="form-group">
+                                <div className={`form-group ${!errorContained ? "" : "has-error"}`}>
                                     <label>{translate('manage_warehouse.bin_location_management.contained')}<span className="attention"> * </span></label>
                                     <input type="number" className="form-control" value={binContained ? binContained : ""} onChange={this.handleContainedTotalChange} />
+                                    <ErrorLabel content = { errorContained }/>
                                 </div>
                             </div>
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">

@@ -6,30 +6,30 @@ import moment from 'moment';
 class DateTimeConverter extends Component {
     constructor(props) {
         super(props);
-        this.state = {  }
+        this.state = {}
     }
 
     convertDateTime = (time, type) => {
         var dateNow = new Date();
         var date = new Date(time);
-        var diff = (dateNow - date)/3600000; // đơn vị là giờ
-        if(type === 'DD-MM-YYYY'){
+        var diff = (dateNow - date) / 3600000; // đơn vị là giờ
+        if (type === 'DD-MM-YYYY') {
             return moment(time).format('DD-MM-YYYY');
-        }else {
-            if(diff < 24) // cách biệt không quá 24 giờ
+        } else {
+            if (diff < 24) // cách biệt không quá 24 giờ
                 return moment(time).fromNow();
-            else    
+            else
                 return moment(time).format('LLL');
         }
     }
 
-    render() { 
-        const {dateTime, type} = this.props;
+    render() {
+        const { dateTime, type, style } = this.props;
 
-        return <span>{this.convertDateTime(dateTime, type)}</span>;
+        return <span style={style}>{this.convertDateTime(dateTime, type)}</span>;
     }
 }
- 
+
 
 const mapState = state => state;
 const DateTimeConverterExport = connect(mapState, null)(withTranslate(DateTimeConverter));

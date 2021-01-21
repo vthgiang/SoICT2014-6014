@@ -6,7 +6,7 @@ import { formatDate } from "../../../../../../helpers/formatDate";
 class ReceiptVoucherDetailForm extends Component {
     getPaidForPayment = (salesOrders) => {
         let paid = salesOrders.reduce((accumulator, currentValue) => {
-            return accumulator + currentValue.money;
+            return accumulator + parseInt(currentValue.money);
         }, 0);
 
         return formatCurrency(paid);
@@ -29,6 +29,12 @@ class ReceiptVoucherDetailForm extends Component {
                 <form id={`form-receipt-voucher-detail-form`}>
                     <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                         <div className={`form-group`}>
+                            <strong>Mã phiếu :&emsp;</strong>
+                            {paymentDetail.code}
+                        </div>
+                    </div>
+                    <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                        <div className={`form-group`}>
                             <strong>Khách hàng :&emsp;</strong>
                             {paymentDetail.customer ? paymentDetail.customer.code + " - " + paymentDetail.customer.name : ""}
                         </div>
@@ -36,7 +42,7 @@ class ReceiptVoucherDetailForm extends Component {
                     <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                         <div className={`form-group`}>
                             <strong>Người nhận thanh toán :&emsp;</strong>
-                            {paymentDetail.customer ? paymentDetail.curator.name : ""}
+                            {paymentDetail.curator ? paymentDetail.curator.name : ""}
                         </div>
                     </div>
                     <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
@@ -47,8 +53,8 @@ class ReceiptVoucherDetailForm extends Component {
                     </div>
                     <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                         <div className={`form-group`}>
-                            <strong>Tổng tiền thanh toán :&emsp;</strong>
-                            {paymentDetail.salesOrders ? this.getPaidForPayment(paymentDetail.salesOrders) : ""}
+                            <strong>Ngày thanh toán :&emsp;</strong>
+                            {paymentDetail.paymentAt ? formatDate(paymentDetail.paymentAt) : ""}
                         </div>
                     </div>
                     {paymentDetail.bankAccountReceived ? (
@@ -75,12 +81,6 @@ class ReceiptVoucherDetailForm extends Component {
                     ) : (
                         ""
                     )}
-                    <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                        <div className={`form-group`}>
-                            <strong>Ngày thanh toán :&emsp;</strong>
-                            {paymentDetail.paymentAt ? formatDate(paymentDetail.paymentAt) : ""}
-                        </div>
-                    </div>
                     <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <fieldset className="scheduler-border">
                             <legend className="scheduler-border">Thanh toán cho từng đơn</legend>
@@ -109,11 +109,7 @@ class ReceiptVoucherDetailForm extends Component {
                                                 <center>Tổng thanh toán</center>
                                             </td>
                                             <td style={{ fontWeight: 600 }}>
-                                                {formatCurrency(
-                                                    paymentDetail.salesOrders.reduce((accumulator, currentValue) => {
-                                                        return accumulator + currentValue.money;
-                                                    }, 0)
-                                                )}
+                                                {paymentDetail.salesOrders ? this.getPaidForPayment(paymentDetail.salesOrders) : ""}
                                             </td>
                                         </tr>
                                     )}

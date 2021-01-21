@@ -3,6 +3,10 @@ const router = express.Router();
 const { auth } = require(`../../../../middleware`);
 const ManufacturingCommandController = require('./manufacturingCommand.controller');
 
+router.get('/get-fluctuating-product', auth, ManufacturingCommandController.getFluctuatingProduct);
+router.get('/get-top-ten-product', auth, ManufacturingCommandController.getTopTenProduct);
+router.get('/get-number-commands-by-status', auth, ManufacturingCommandController.getNumberCommandsStatus);
+router.get('/get-number-commands', auth, ManufacturingCommandController.getNumberCommands);
 router.post('/', auth, ManufacturingCommandController.createManufacturingCommand);
 router.get('/', auth, ManufacturingCommandController.getAllManufacturingCommands);
 router.get('/:id', auth, ManufacturingCommandController.getManufacturingCommandById);

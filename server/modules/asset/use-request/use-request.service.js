@@ -1,6 +1,6 @@
 const Models = require('../../../models');
 const { connect } = require(`../../../helpers/dbHelper`);
-const { RecommendDistribute, User, Asset } = Models;
+const { RecommendDistribute, User, Asset, Link, Privilege, UserRole } = Models;
 const mongoose = require("mongoose");
 
 
@@ -10,14 +10,38 @@ const mongoose = require("mongoose");
  * @param {*} assetIncident tài sản gặp sự cố
  */
 exports.sendEmailToManager = async (portal, asset, userId, type) => {
-    let idManager = asset.managedBy;
-    let manager = await User(connect(DB_CONNECTION, portal)).findById(
-        idManager
-    );
+    let idManager = [], privilege, roleIds = [], userRoles, email = [];
+
+    idManager.push(asset.managedBy);
+    let link = await Link(connect(DB_CONNECTION, portal)).find({ url: "/manage-info-asset" });
+    if (link.length) {
+        privilege = await Privilege(connect(DB_CONNECTION, portal)).find({ resourceId: link[0]._id });
+        if (privilege.length) {
+            for (let i in privilege) {
+                roleIds.push(privilege[i].roleId);
+            }
+            userRoles = await UserRole(connect(DB_CONNECTION, portal)).find({ roleId: { $in: roleIds } })
+            if (userRoles.length) {
+                for (let j in userRoles) {
+                    if (userRoles[j].userId != asset.managedBy) {
+                        idManager.push(userRoles[j].userId);
+                    }
+                }
+            }
+        }
+    }
+
+    let manager = await User(connect(DB_CONNECTION, portal)).find({ _id: { $in: idManager } });
     let currentUser = await User(connect(DB_CONNECTION, portal)).findById(
         userId
     );
-    let email = manager ? [manager.email] : [];
+
+    if (manager.length) {
+        for (i in manager) {
+            email.push(manager.email)
+        }
+    }
+
     let body = `<p>Mô tả : ${currentUser.name} đã ${type} tài sản mã ${asset.code}  </p>`;
     let html = `<p>Bạn có thông báo mới: ` + body;
 
@@ -113,19 +137,17 @@ exports.searchUseRequests = async (portal, company, query) => {
         .limit(limit ? parseInt(limit) : 0);
 
     if (managedBy) {
-        listRecommendDistributes = await RecommendDistribute(connect(DB_CONNECTION, portal)).find(keySearch)
+        recommendDistributes = await RecommendDistribute(connect(DB_CONNECTION, portal)).find(keySearch)
             .populate({ path: 'asset proponent approver' }).sort({ 'createdAt': 'desc' });
 
-        let tempListRecommendDistributes = listRecommendDistributes.filter(item =>
+        let tempListRecommendDistributes = recommendDistributes.filter(item =>
             item.asset && item.asset.managedBy && item.asset.managedBy.toString() === managedBy);
 
-        listRecommendDistributes = tempListRecommendDistributes.length && tempListRecommendDistributes.slice(page, page + limit);
-        totalList = listRecommendDistributes.length;
+        listRecommendDistributes = tempListRecommendDistributes.length && tempListRecommendDistributes.slice(parseInt(page), parseInt(page) + parseInt(limit));
+        totalList = tempListRecommendDistributes.length;
     }
-
-    return { totalList, listRecommendDistributes };
+    return { totalList, listRecommendDistributes};
 }
-
 
 
 /**

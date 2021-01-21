@@ -360,7 +360,7 @@ class TaskOrganizationUnitDashboard extends Component {
                                     <div className="box-header with-border">
                                         <div className="box-title">{translate('task.task_management.detail_status')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
                                     </div>
-                                    <div className="box-body qlcv">
+                                    <div className="box-body qlcv" style={{ height: '384px' }}>
                                         {this.state.callAction &&
                                             <TaskStatusChart
                                                 callAction={!this.state.willUpdate}
@@ -399,7 +399,7 @@ class TaskOrganizationUnitDashboard extends Component {
                                         <div className="box-title">{translate('task.task_management.dashboard_overdue')}</div>
                                     </div>
 
-                                    <div className="box-body" style={{ height: "300px", overflow: "auto" }}>
+                                    <div className="box-body" style={{ height: "380px", overflow: "auto" }}>
                                         {
                                             (tasks && tasks.tasksbyuser) ?
                                                 <ul className="todo-list">
@@ -426,7 +426,7 @@ class TaskOrganizationUnitDashboard extends Component {
                                     <div className="box-header with-border">
                                         <div className="box-title">{translate('task.task_management.dashboard_about_to_overdue')}</div>
                                     </div>
-                                    <div className="box-body" style={{ minHeight: "300px" }}>
+                                    <div className="box-body" style={{ height: "380px", overflow: "auto" }}>
                                         {
                                             (tasks && tasks.tasksbyuser) ?
                                                 <ul className="todo-list">

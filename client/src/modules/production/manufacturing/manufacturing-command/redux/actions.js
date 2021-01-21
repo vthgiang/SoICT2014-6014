@@ -5,6 +5,10 @@ export const commandActions = {
     getAllManufacturingCommands,
     getDetailManufacturingCommand,
     handleEditCommand,
+    getNumberCommands,
+    getNumberCommandsStatus,
+    getTopTenProduct,
+    getFuctuatingProduct
 }
 
 function getAllManufacturingCommands(query) {
@@ -61,6 +65,88 @@ function handleEditCommand(id, data) {
             }).catch((error) => {
                 dispatch({
                     type: commandConstants.EDIT_MANUFACTURING_COMMAND_FAILURE,
+                    error
+                });
+            });
+    }
+}
+
+function getNumberCommands(query) {
+    console.log(query);
+    console.log('aaa')
+    return dispatch => {
+        dispatch({
+            type: commandConstants.GET_NUMBER_COMMAND_REQUEST
+        });
+        commandServices.getNumberCommands(query)
+            .then((res) => {
+                dispatch({
+                    type: commandConstants.GET_NUMBER_COMMAND_SUCCESS,
+                    payload: res.data.content
+                });
+            }).catch((error) => {
+                dispatch({
+                    type: commandConstants.GET_NUMBER_COMMAND_FAILURE,
+                    error
+                });
+            });
+    }
+}
+
+function getNumberCommandsStatus(query) {
+    return dispatch => {
+        dispatch({
+            type: commandConstants.GET_NUMBER_COMMAND_BY_STATUS_REQUEST
+        });
+        commandServices.getNumberCommandsStatus(query)
+            .then((res) => {
+                dispatch({
+                    type: commandConstants.GET_NUMBER_COMMAND_BY_STATUS_SUCCESS,
+                    payload: res.data.content
+                });
+            }).catch((error) => {
+                dispatch({
+                    type: commandConstants.GET_NUMBER_COMMAND_BY_STATUS_FAILURE,
+                    error
+                });
+            });
+    }
+}
+
+function getTopTenProduct(query) {
+    return dispatch => {
+        dispatch({
+            type: commandConstants.GET_TOP_TEN_PRODUCT_REQUEST
+        });
+        commandServices.getTopTenProduct(query)
+            .then((res) => {
+                dispatch({
+                    type: commandConstants.GET_TOP_TEN_PRODUCT_SUCCESS,
+                    payload: res.data.content
+                });
+            }).catch((error) => {
+                dispatch({
+                    type: commandConstants.GET_TOP_TEN_PRODUCT_FAILURE,
+                    error
+                });
+            });
+    }
+}
+
+function getFuctuatingProduct(data) {
+    return dispatch => {
+        dispatch({
+            type: commandConstants.GET_FLUCTUATING_PRODUCT_REQUEST
+        });
+        commandServices.getFuctuatingProduct(data)
+            .then((res) => {
+                dispatch({
+                    type: commandConstants.GET_FLUCTUATING_PRODUCT_SUCCESS,
+                    payload: res.data.content
+                });
+            }).catch((error) => {
+                dispatch({
+                    type: commandConstants.GET_FLUCTUATING_PRODUCT_FAILURE,
                     error
                 });
             });

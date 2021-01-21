@@ -6,6 +6,7 @@ import { SalesOrderActions } from "../../../sales-order/redux/actions";
 import ValidationHelper from "../../../../../../helpers/validationHelper";
 import { formatCurrency } from "../../../../../../helpers/formatCurrency";
 import { DialogModal, ButtonModal, ErrorLabel, SelectBox } from "../../../../../../common-components";
+import { generateCode } from "../../../../../../helpers/generateCode";
 
 class ReceiptVoucherCreateForm extends Component {
     constructor(props) {
@@ -20,6 +21,7 @@ class ReceiptVoucherCreateForm extends Component {
             code: "", //Mã sales order
             totalMoney: "",
             indexEditting: -1,
+            receiptVoucherCode: "",
         };
     }
 
@@ -127,6 +129,7 @@ class ReceiptVoucherCreateForm extends Component {
             customer: value[0],
             money: "",
             salesOrder: "title",
+            salesOrders: [],
             paymentType: "title",
             bankAccountReceived: "title",
         });
@@ -341,6 +344,7 @@ class ReceiptVoucherCreateForm extends Component {
             this.setState((state) => {
                 return {
                     ...state,
+                    salesOrders,
                     salesOrder: "title",
                     money: "",
                     code: "",
@@ -451,8 +455,9 @@ class ReceiptVoucherCreateForm extends Component {
 
     save = async () => {
         if (this.isFormValidated()) {
-            let { customer, paymentType, bankAccountReceived, salesOrders } = this.state;
+            let { customer, paymentType, bankAccountReceived, salesOrders, receiptVoucherCode } = this.state;
             let data = {
+                code: receiptVoucherCode,
                 customer,
                 paymentType,
                 bankAccountReceived: bankAccountReceived !== "" ? bankAccountReceived : undefined,
@@ -471,6 +476,12 @@ class ReceiptVoucherCreateForm extends Component {
         }
     };
 
+    handleClickCreateCode = () => {
+        this.setState((state) => {
+            return { ...state, receiptVoucherCode: generateCode("RV_") };
+        });
+    };
+
     render() {
         let {
             customer,
@@ -479,6 +490,7 @@ class ReceiptVoucherCreateForm extends Component {
             salesOrder,
             money,
             totalMoney,
+            receiptVoucherCode,
             customerError,
             paymentTypeError,
             bankAccountReceivedError,
@@ -499,7 +511,12 @@ class ReceiptVoucherCreateForm extends Component {
 
         return (
             <React.Fragment>
-                <ButtonModal modalID={`modal-create-receipt-voucher`} button_name={"Tạo phiếu thu"} title={"Tạo phiếu thu"} />
+                <ButtonModal
+                    onButtonCallBack={this.handleClickCreateCode}
+                    modalID={`modal-create-receipt-voucher`}
+                    button_name={"Tạo phiếu thu"}
+                    title={"Tạo phiếu thu"}
+                />
                 <DialogModal
                     modalID={`modal-create-receipt-voucher`}
                     isLoading={false}
@@ -513,6 +530,13 @@ class ReceiptVoucherCreateForm extends Component {
                     style={{ backgroundColor: "green" }}
                 >
                     <form id={`form-create-receipt-voucher`}>
+                        <div className={`form-group`}>
+                            <label>
+                                {"Mã phiếu"}
+                                <span className="attention"> * </span>
+                            </label>
+                            <input type="text" value={receiptVoucherCode} className="form-control" disabled={true} />
+                        </div>
                         <div className={`form-group ${!customerError ? "" : "has-error"}`}>
                             <label>
                                 Khách hàng
@@ -699,7 +723,7 @@ class ReceiptVoucherCreateForm extends Component {
                                             <td style={{ fontWeight: 600 }}>
                                                 {formatCurrency(
                                                     salesOrders.reduce((accumulator, currentValue) => {
-                                                        return accumulator + currentValue.money;
+                                                        return accumulator + parseInt(currentValue.money);
                                                     }, 0)
                                                 )}
                                             </td>

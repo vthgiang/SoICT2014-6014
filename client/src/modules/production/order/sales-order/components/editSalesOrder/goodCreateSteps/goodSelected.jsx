@@ -46,7 +46,7 @@ class GoodSelected extends Component {
     };
 
     render() {
-        let { good, goodName, pricePerBaseUnit, baseUnit, inventory, quantity, manufacturingWorks } = this.props;
+        let { good, goodName, pricePerBaseUnit, baseUnit, inventory, quantity, manufacturingWorks, manufacturingPlan } = this.props;
         let { pricePerBaseUnitError, goodError, quantityError } = this.props;
         const { handleGoodChange, handlePriceChange, handleQuantityChange, handleManufacturingWorkChange } = this.props;
 
@@ -86,7 +86,7 @@ class GoodSelected extends Component {
                         <input type="text" className="form-control" value={baseUnit} disabled="true" />
                     </div>
 
-                    <div className={`form-group`}>
+                    {/* <div className={`form-group`}>
                         <label>Yêu cầu sản xuất</label>
                         <SelectBox
                             id={`select-manufacturing-works-code-sales-order-edit`}
@@ -96,8 +96,9 @@ class GoodSelected extends Component {
                             items={this.getManufacturingWorksOptions()}
                             onChange={handleManufacturingWorkChange}
                             multiple={false}
+                            disabled={manufacturingPlan}
                         />
-                    </div>
+                    </div> */}
                 </div>
                 <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6" style={{ padding: 10, height: "100%" }}>
                     <div className={`form-group ${!pricePerBaseUnitError ? "" : "has-error"}`}>

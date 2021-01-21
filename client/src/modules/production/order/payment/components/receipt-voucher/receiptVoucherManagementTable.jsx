@@ -63,7 +63,7 @@ class ReceiptVoucherManagementTable extends Component {
 
     getPaidForPayment = (item) => {
         let paid = item.salesOrders.reduce((accumulator, currentValue) => {
-            return accumulator + currentValue.money;
+            return accumulator + parseInt(currentValue.money);
         }, 0);
 
         return formatCurrency(paid);
@@ -76,13 +76,21 @@ class ReceiptVoucherManagementTable extends Component {
         });
     };
 
+    handleCodeChange = (e) => {
+        let { value } = e.target;
+        this.setState({
+            code: value,
+        });
+    };
+
     handleSubmitSearch = () => {
-        let { limit, page, customer } = this.state;
+        let { limit, code, page, customer, type } = this.state;
         const data = {
             limit,
             page,
+            code,
             customer,
-            type: 1,
+            type,
         };
         this.props.getAllPayments(data);
     };
@@ -100,9 +108,20 @@ class ReceiptVoucherManagementTable extends Component {
                     {paymentDetail && <ReceiptVoucherDetailForm paymentDetail={paymentDetail} />}
                     <div className="form-inline">
                         <div className="form-group">
+                            <label className="form-control-static">Mã phiếu</label>
+                            <input
+                                type="text"
+                                className="form-control"
+                                name="code"
+                                onChange={this.handleCodeChange}
+                                placeholder="Mã phiếu"
+                                autoComplete="off"
+                            />
+                        </div>
+                        <div className="form-group">
                             <label className="form-control-static">Khách hàng</label>
                             <SelectMulti
-                                id={`selectMulti-filter-customer-quote`}
+                                id={`selectMulti-filter-customer-receipt-voucher`}
                                 className="form-control select2"
                                 style={{ width: "100%" }}
                                 items={
@@ -131,6 +150,7 @@ class ReceiptVoucherManagementTable extends Component {
                         <thead>
                             <tr>
                                 <th>STT</th>
+                                <th>Mã phiếu</th>
                                 <th>Khách hàng</th>
                                 <th>Người nhận thanh toán</th>
                                 <th>Số tiền thanh toán</th>
@@ -144,7 +164,7 @@ class ReceiptVoucherManagementTable extends Component {
                                     Hành động
                                     <DataTableSetting
                                         tableId="bank-account-table"
-                                        columnArr={["STT", "Khách hàng", "Người nhận thanh toán", "Số tiền thanh toán", "Thanh toán lúc"]}
+                                        columnArr={["STT", "Khách hàng", "Người nhận thanh toán", "Số tiền thanh toán", "Ngày thanh toán"]}
                                         limit={this.state.limit}
                                         hideColumnOption={true}
                                         setLimit={this.setLimit}
@@ -158,6 +178,7 @@ class ReceiptVoucherManagementTable extends Component {
                                 listPayments.map((item, index) => (
                                     <tr key={index}>
                                         <td>{index + 1}</td>
+                                        <td>{item.code}</td>
                                         <td>{item.customer ? item.customer.name : "---"}</td>
                                         <td>{item.curator ? item.curator.name : "---"}</td>
                                         <td>{this.getPaidForPayment(item)}</td>

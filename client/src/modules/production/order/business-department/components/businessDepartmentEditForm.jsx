@@ -12,40 +12,31 @@ class BusinessDepartmentEditForm extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        console.log("nextProps", nextProps.businessDepartmentEdit._id !== prevState.businessDepartmentId);
         if (nextProps.businessDepartmentEdit._id !== prevState.businessDepartmentId) {
-            console.log("nextProps", nextProps.businessDepartmentEdit.code);
             return {
                 ...prevState,
                 businessDepartmentId: nextProps.businessDepartmentEdit._id,
-                code: nextProps.businessDepartmentEdit.code,
-                organizationalUnitValue: nextProps.businessDepartmentEdit.organizationalUnit
+                organizationalUnit: nextProps.businessDepartmentEdit.organizationalUnit
                     ? nextProps.businessDepartmentEdit.organizationalUnit._id
                     : undefined,
-                status: nextProps.businessDepartmentEdit.status,
                 currentDepartment: nextProps.businessDepartmentEdit.organizationalUnit,
-                managers: nextProps.businessDepartmentEdit.managers
-                    ? nextProps.businessDepartmentEdit.managers.map((manager) => manager._id)
-                    : undefined,
-                description: nextProps.businessDepartmentEdit.description,
-                type: nextProps.businessDepartmentEdit.type,
+                role: nextProps.businessDepartmentEdit.role,
                 organizationalUnitError: undefined,
-                statusError: undefined,
-                typeError: undefined,
+                roleError: undefined,
             };
         }
         return null;
     }
 
     getListDepartmentArr = () => {
-        const { translate, department, businessDepartments } = this.props;
+        const { department, businessDepartments } = this.props;
         const { currentDepartment } = this.state;
         const { list } = department;
         const { listBusinessDepartments } = businessDepartments;
         let listDepartmentArr = [
             {
                 value: "",
-                text: "Chọn đơn vị",
+                text: "---Chọn đơn vị---",
             },
         ];
 
@@ -60,6 +51,7 @@ class BusinessDepartmentEditForm extends Component {
                 text: list[i].name,
             });
         }
+
         listDepartmentArr.push({
             value: currentDepartment._id,
             text: currentDepartment.name,
@@ -68,165 +60,69 @@ class BusinessDepartmentEditForm extends Component {
         return listDepartmentArr;
     };
 
-    handleOrganizationalUnitValueChange = (value) => {
-        let organizationalUnitValue = value[0];
-        this.validateOrganizationalUnitValue(organizationalUnitValue, true);
+    handleOrganizationalUnitChange = (value) => {
+        this.validateOrganizationalUnit(value[0], true);
     };
 
-    validateOrganizationalUnitValue = (value, willUpdateState = true) => {
+    validateOrganizationalUnit = (value, willUpdateState = true) => {
         let msg = undefined;
-        const { translate, department } = this.props;
         if (value === "") {
-            msg = "Đơn vị không được để trống";
+            msg = "Vui lòng chọn đơn vị!";
         }
 
         if (willUpdateState) {
-            const { list } = department;
-            let currentDepartment;
-            const listDepartment = list.filter((x) => x._id === value);
-            if (listDepartment.length > 0) {
-                currentDepartment = listDepartment[0];
-            } else {
-                currentDepartment = {
-                    name: "",
-                    description: "",
-                };
-            }
             this.setState((state) => ({
                 ...state,
                 organizationalUnitError: msg,
-                organizationalUnitValue: value,
-                currentDepartment: currentDepartment,
+                organizationalUnit: value,
             }));
         }
         return msg;
     };
 
-    getListRolesArr = () => {
-        const { role } = this.props;
-        let { list } = role;
-        let listRolesArr = [];
-        const { currentDepartment } = this.state;
-        // Lấy ra các role trưởng đơn vị của đơn vị hiện tại
-        let currentRolesManagerIds = currentDepartment.managers.map((role) => role._id);
-        if (list) {
-            // Lọc các role hiện tại ra khỏi list
-            list = list.filter((role) => !currentRolesManagerIds.includes(role._id));
-            list.map((role) => {
-                listRolesArr.push({
-                    value: role._id,
-                    text: role.name,
-                });
-            });
-        }
-        return listRolesArr;
-    };
-
-    handleChangeManagers = (value) => {
-        console.log(value);
-        this.setState((state) => ({
-            ...state,
-            managers: value,
-        }));
-    };
-
-    handleStatusChange = (value) => {
-        let status = value[0];
-        this.validateStatus(status, true);
-    };
-
-    validateStatus = (value, willUpdateState = true) => {
+    validateRole = (value, willUpdateState = true) => {
         let msg = undefined;
         const { translate } = this.props;
         if (value === "" || value === "title") {
-            msg = "Trạng thái không được để trống";
+            msg = "Vai trò không được để trống";
         }
         if (willUpdateState) {
             this.setState((state) => {
                 return {
                     ...state,
-                    status: value,
-                    statusError: msg,
+                    role: value,
+                    roleError: msg,
                 };
             });
         }
         return msg;
     };
 
-    validateType = (value, willUpdateState = true) => {
-        let msg = undefined;
-        const { translate } = this.props;
-        if (value === "" || value === "title") {
-            msg = "Bộ phận không được để trống";
-        }
-        if (willUpdateState) {
-            this.setState((state) => {
-                return {
-                    ...state,
-                    type: value,
-                    typeError: msg,
-                };
-            });
-        }
-        return msg;
-    };
-
-    handleChangeType = (value) => {
-        this.validateType(value[0], true);
-    };
-
-    handleDescriptionChange = (e) => {
-        const { value } = e.target;
-        this.setState({
-            description: value,
-        });
+    handleRoleChange = (value) => {
+        this.validateRole(value[0], true);
     };
 
     isFormValidated = () => {
-        const { organizationalUnitValue, status, type } = this.state;
-        let { translate } = this.props;
-        if (
-            this.validateOrganizationalUnitValue(organizationalUnitValue, false) ||
-            this.validateStatus(status, false) ||
-            this.validateType(type, false)
-        ) {
+        const { organizationalUnit, role } = this.state;
+        if (this.validateOrganizationalUnit(organizationalUnit, false) || this.validateRole(role, false)) {
             return false;
         }
         return true;
     };
 
     save = () => {
+        let { organizationalUnit, role, businessDepartmentId } = this.state;
         if (this.isFormValidated()) {
-            const { code, organizationalUnitValue, status, description, managers, businessDepartmentId, type } = this.state;
             const data = {
-                code: code,
-                organizationalUnit: organizationalUnitValue,
-                status: status,
-                description: description,
-                managers: managers,
-                type: type,
+                role: role,
+                organizationalUnit,
             };
             this.props.editBusinessDepartment(businessDepartmentId, data);
         }
     };
 
     render() {
-        const { translate, businessDepartments } = this.props;
-        const {
-            organizationalUnitValue,
-            businessDepartmentId,
-            organizationalUnitError,
-            currentDepartment,
-            status,
-            statusError,
-            description,
-            code,
-            managers,
-            type,
-            typeError,
-        } = this.state;
-
-        console.log("state", type);
+        const { organizationalUnit, organizationalUnitError, role, roleError, businessDepartmentId } = this.state;
         return (
             <React.Fragment>
                 <DialogModal
@@ -241,110 +137,43 @@ class BusinessDepartmentEditForm extends Component {
                     size={50}
                     maxWidth={500}
                 >
-                    <form id="form-business-department">
-                        <div className="form-group">
-                            <label>
-                                {"Mã phòng "}
-                                <span className="text-red">*</span>
-                            </label>
-                            <input type="text" className="form-control" value={code} disabled={true}></input>
-                        </div>
+                    <form id="form-edit-business-department">
                         <div className={`form-group ${!organizationalUnitError ? "" : "has-error"}`}>
                             <label>
                                 {"Đơn vị"}
                                 <span className="text-red">*</span>
                             </label>
                             <SelectBox
-                                id={`select-organizational-unit-edit-for-business-department`}
+                                id={`select-organizational-unit-edit-for-business-department-${businessDepartmentId}`}
                                 className="form-control select2"
                                 style={{ width: "100%" }}
-                                value={organizationalUnitValue}
+                                value={organizationalUnit}
                                 items={this.getListDepartmentArr()}
-                                onChange={this.handleOrganizationalUnitValueChange}
+                                onChange={this.handleOrganizationalUnitChange}
                                 multiple={false}
                             />
                             <ErrorLabel content={organizationalUnitError} />
                         </div>
-                        {currentDepartment && currentDepartment.managers && (
-                            <React.Fragment>
-                                <fieldset className="scheduler-border">
-                                    <legend className="scheduler-border">{translate("Trưởng đơn vị")}</legend>
-                                    {currentDepartment.managers.map((role, index) => {
-                                        return (
-                                            <div className={`form-group`} key={index}>
-                                                <strong>{role.name}: &emsp;</strong>
-                                                {role.users.map((user, index) => {
-                                                    if (index === role.users.length - 1) {
-                                                        return user.userId.name;
-                                                    }
-                                                    return user.userId.name + ", ";
-                                                })}
-                                            </div>
-                                        );
-                                    })}
-                                </fieldset>
-                                <div className="form-group">
-                                    <label>{"Người quản lý"}</label>
-                                    <div>
-                                        <SelectBox
-                                            id={`select-managers-for-business-department-${businessDepartmentId}`}
-                                            className="form-control select2"
-                                            style={{ width: "100%" }}
-                                            items={this.getListRolesArr()}
-                                            value={managers}
-                                            onChange={this.handleChangeManagers}
-                                            multiple={true}
-                                        />
-                                    </div>
-                                </div>
-                                <div className={`form-group ${!typeError ? "" : "has-error"}`}>
-                                    <label>
-                                        {"Thuộc bộ phận"}
-                                        <span className="text-red">*</span>
-                                    </label>
-                                    <div>
-                                        <SelectBox
-                                            id={`select-type-for-business-department-edit`}
-                                            className="form-control select2"
-                                            style={{ width: "100%" }}
-                                            value={type}
-                                            items={[
-                                                { value: "title", text: "---Chọn bộ phận---" },
-                                                { value: "1", text: "Bộ phận kinh doanh" },
-                                                { value: "2", text: "Bộ phận kế toán" },
-                                                { value: "3", text: "Bộ phận thu mua nguyên vật liệu" },
-                                            ]}
-                                            onChange={this.handleChangeType}
-                                            multiple={false}
-                                        />
-                                    </div>
-                                    <ErrorLabel content={typeError} />
-                                </div>
-                            </React.Fragment>
-                        )}
-                        <div className={`form-group ${!statusError ? "" : "has-error"}`}>
+                        <div className={`form-group ${!roleError ? "" : "has-error"}`}>
                             <label>
-                                {"Trạng thái hoạt động"}
+                                {"Vai trò của đơn vị"}
                                 <span className="text-red">*</span>
                             </label>
                             <SelectBox
-                                id={`select-status-for-business-department-edit`}
+                                id={`select-role-for-business-department-edit-${businessDepartmentId}`}
                                 className="form-control select2"
                                 style={{ width: "100%" }}
-                                value={status}
+                                value={role}
                                 items={[
-                                    { value: "title", text: "---Chọn trạng thái phòng ban---" },
-                                    { value: "1", text: "Đang hoạt động" },
-                                    { value: "0", text: "Ngừng hoạt động" },
+                                    { value: "title", text: "---Chọn vai trò cho đơn vị---" },
+                                    { value: 1, text: "Kinh doanh" },
+                                    { value: 2, text: "Quản lý bán hàng" },
+                                    { value: 3, text: "Kế toán" },
                                 ]}
-                                onChange={this.handleStatusChange}
+                                onChange={this.handleRoleChange}
                                 multiple={false}
                             />
-                            <ErrorLabel content={statusError} />
-                        </div>
-                        <div className="form-group">
-                            <label>{"Mô tả"}</label>
-                            <textarea type="text" value={description} onChange={this.handleDescriptionChange} className="form-control"></textarea>
+                            <ErrorLabel content={roleError} />
                         </div>
                     </form>
                 </DialogModal>

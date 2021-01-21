@@ -162,7 +162,17 @@ exports.createTaskAction = async (req, res) => {
             value: [taskAction[taskAction.length - 1]]
         }
         const accountableFilter = tasks.accountableEmployees.filter(obj => obj.toString() !== req.user._id.toString());
-        const  associatedDataforAccountable = { "organizationalUnits": tasks.organizationalUnit, "title": "Phê duyệt hoạt động", "level": "general", "content": `<p><strong>${userCreator.name}</strong> đã thêm mới hoạt động cho công việc <strong>${tasks.name}</strong>, bạn có thể vào để phê duyệt hoạt động này <a href="${process.env.WEBSITE}/task?taskId=${tasks._id}" target="_blank">${process.env.WEBSITE}/task?taskId=${tasks._id}</a></p>`, "sender": userCreator.name, "users": accountableFilter ,"associatedData":associatedData };
+        const associatedDataforAccountable = {
+            "organizationalUnits": tasks.organizationalUnit,
+            "title": "Phê duyệt hoạt động",
+            "level": "general",
+            "content": `<p><strong>${userCreator.name}</strong> đã thêm mới hoạt động cho công việc <strong>${tasks.name}</strong>, bạn có thể vào để phê duyệt hoạt động này <a href="${process.env.WEBSITE}/task?taskId=${tasks._id}" target="_blank">${process.env.WEBSITE}/task?taskId=${tasks._id}</a></p>`,
+            "sender": userCreator.name,
+            "users": accountableFilter,
+            "associatedData": associatedData,
+            type: 1,
+            shortContent: `<p><strong>${tasks.name}:</strong> ${userCreator.name} đã thêm mới hoạt động, phê duyệt ngay! </p>`
+        };
         NotificationServices.createNotification(req.portal, tasks.organizationalUnit, associatedDataforAccountable,);
        
         // message gửi cho người thực hiện
@@ -172,7 +182,17 @@ exports.createTaskAction = async (req, res) => {
         let accountable = tasks.accountableEmployees.map(acc => acc.toString());
         // Lọc trong danh sách userReceive có chứa người phê duyệt hay ko.. 1 người có thể có nhiều vai trò(mục đích gửi 1 lần thông báo tới ngươi phê duyệt)
         userReceive = difference(userReceive, accountable)
-        const associatedDataforResponsible = { "organizationalUnits": tasks.organizationalUnit, "title": "Thêm mới hoạt động", "level": "general", "content": `<p><strong>${userCreator.name}</strong> đã thêm mới hoạt động cho công việc <strong>${tasks.name}</strong>, chi tiết công việc: <a href="${process.env.WEBSITE}/task?taskId=${tasks._id}" target="_blank">${process.env.WEBSITE}/task?taskId=${tasks._id}</a></p>`, "sender": userCreator.name, "users": userReceive, "associatedData": associatedData };
+        const associatedDataforResponsible = {
+            "organizationalUnits": tasks.organizationalUnit,
+            "title": "Thêm mới hoạt động",
+            "level": "general",
+            "content": `<p><strong>${userCreator.name}</strong> đã thêm mới hoạt động cho công việc <strong>${tasks.name}</strong>, chi tiết công việc: <a href="${process.env.WEBSITE}/task?taskId=${tasks._id}" target="_blank">${process.env.WEBSITE}/task?taskId=${tasks._id}</a></p>`,
+            "sender": userCreator.name,
+            "users": userReceive,
+            "associatedData": associatedData,
+            type: 1,
+            shortContent: `<p><strong>${tasks.name}:</strong> ${userCreator.name} đã thêm mới một hoạt động.</p>`
+        };
 
         NotificationServices.createNotification(req.portal, tasks.organizationalUnit, associatedDataforResponsible,);
         sendEmail(task.email, "Phê duyệt hoạt động", '', `<p><strong>${userCreator.name}</strong> đã thêm mới hoạt động, bạn có thể vào để phê duyệt hoạt động này <a href="${process.env.WEBSITE}/task?taskId=${tasks._id}" target="_blank">${process.env.WEBSITE}/task?taskId=${tasks._id}</a></p>`);
@@ -764,7 +784,16 @@ editTaskByResponsibleEmployees = async (req, res) => {
         var task = await PerformTaskService.editTaskByResponsibleEmployees(req.portal, req.body.data, req.params.taskId);
         var user = task.user;
         var tasks = task.tasks;
-        var data = { "organizationalUnits": tasks.organizationalUnit, "title": "Cập nhật thông tin công việc", "level": "general", "content": `<p><strong>${user.name}</strong> đã cập nhật thông tin công việc <strong>${tasks.name}</strong> với vai trò người phê duyệt <a href="${process.env.WEBSITE}/task?taskId=${req.params.taskId}" target="_blank">${process.env.WEBSITE}/task?taskId=${req.params.taskId}</a></p>`, "sender": user.name, "users": tasks.accountableEmployees };
+        var data = {
+            "organizationalUnits": tasks.organizationalUnit,
+            "title": "Cập nhật thông tin công việc",
+            "level": "general",
+            "content": `<p><strong>${user.name}</strong> đã cập nhật thông tin công việc <strong>${tasks.name}</strong> với vai trò người thực hiện <a href="${process.env.WEBSITE}/task?taskId=${req.params.taskId}" target="_blank">${process.env.WEBSITE}/task?taskId=${req.params.taskId}</a></p>`,
+            "sender": user.name,
+            "users": tasks.accountableEmployees,
+            type: 1,
+            shortContent: `<p><strong>${tasks.name}:</strong> ${user.name} đã cập nhật thông tin công việc với vai trò người thực hiện</p>`
+        };
         NotificationServices.createNotification(req.portal, tasks.organizationalUnit, data,);
 
         // sendEmail(task.email, "Cập nhật thông tin công việc", '', `<p><strong>${user.name}</strong> đã cập nhật thông tin công việc với vai trò người phê duyệt <a href="${process.env.WEBSITE}/task?taskId=${req.params.taskId}" target="_blank">${process.env.WEBSITE}/task?taskId=${req.params.taskId}</a></p>`);
@@ -794,7 +823,16 @@ editTaskByAccountableEmployees = async (req, res) => {
         var task = await PerformTaskService.editTaskByAccountableEmployees(req.portal, req.body.data, req.params.taskId);
         var user = task.user;
         var tasks = task.tasks;
-        var data = { "organizationalUnits": tasks.organizationalUnit, "title": "Cập nhật thông tin công việc", "level": "general", "content": `<p><strong>${user.name}</strong> đã cập nhật thông tin công việc <strong>${tasks.name}</strong> với vai trò người phê duyệt <a href="${process.env.WEBSITE}/task?taskId=${req.params.taskId}">${process.env.WEBSITE}/task?taskId=${req.params.taskId}</a></p>`, "sender": user.name, "users": tasks.responsibleEmployees };
+        var data = {
+            "organizationalUnits": tasks.organizationalUnit,
+            "title": "Cập nhật thông tin công việc",
+            "level": "general",
+            "content": `<p><strong>${user.name}</strong> đã cập nhật thông tin công việc <strong>${tasks.name}</strong> với vai trò người phê duyệt <a href="${process.env.WEBSITE}/task?taskId=${req.params.taskId}">${process.env.WEBSITE}/task?taskId=${req.params.taskId}</a></p>`,
+            "sender": user.name,
+            "users": tasks.responsibleEmployees,
+            type: 1,
+            shortContent: `<p><strong>${tasks.name}:</strong> ${user.name} đã cập nhật thông tin công việc với vai trò người phê duyệt</p>`
+        };
         NotificationServices.createNotification(req.portal, tasks.organizationalUnit, data,);
         // sendEmail(task.email, "Cập nhật thông tin công việc", '', `<p><strong>${user.name}</strong> đã cập nhật thông tin công việc với vai trò người phê duyệt <a href="${process.env.WEBSITE}/task?taskId=${req.params.taskId}">${process.env.WEBSITE}/task?taskId=${req.params.taskId}</a></p>`);
         let title = "Cập nhật thông tin công việc: " + task.tasks.name;
@@ -811,7 +849,9 @@ editTaskByAccountableEmployees = async (req, res) => {
             level: "general",
             content: deletedCollabHtml,
             sender: task.newTask.organizationalUnit.name,
-            users: task.managersOfDeletedCollab
+            users: task.managersOfDeletedCollab,
+            type: 1,
+            shortContent: `<p>Đơn vị của bạn đã bị xóa khỏi công việc: <strong>${tasks.name}:</strong>.</p>`
         };
 
         await NotificationServices.createNotification(req.portal, tasks.organizationalUnit.company, deletedCollabData);
@@ -826,7 +866,9 @@ editTaskByAccountableEmployees = async (req, res) => {
             level: "general",
             content: additionalCollabHtml,
             sender: task.newTask.organizationalUnit.name,
-            users: task.managersOfAdditionalCollab
+            users: task.managersOfAdditionalCollab,
+            type: 1,
+            shortContent: `<p>Đơn vị bạn được mời phối hợp thực hiện trong công việc: <strong>${tasks.name}</strong> </p>`
         };
 
         await NotificationServices.createNotification(req.portal, tasks.organizationalUnit.company, additionalCollabData);
@@ -870,7 +912,8 @@ editEmployeeCollaboratedWithOrganizationalUnits = async (req, res) => {
             level: "general",
             content: data.html,
             sender: data.task && data.task.organizationalUnit.name,
-            users: data.newEmployees
+            users: data.newEmployees,
+            type: 1,
         };
         await NotificationServices.createNotification(req.portal, data.task.organizationalUnit.company, notification);
         data.email && data.email.length !== 0
@@ -1062,7 +1105,7 @@ editActivateOfTask = async (req, res) => {
             let email = mails[i].email;
             let html = mails[i].html;
 
-            let mailData = { "organizationalUnits": task.organizationalUnit._id, "title": "Kích hoạt công việc", "level": "general", "content": html, "sender": task.organizationalUnit.name, "users": user };
+            let mailData = { "organizationalUnits": task.organizationalUnit._id, "title": "Kích hoạt công việc", "level": "general", "content": html, "sender": task.organizationalUnit.name, "users": user, type: 1 };
             NotificationServices.createNotification(req.portal, task.organizationalUnit.company, mailData,);
             sendEmail(email, "Kích hoạt công việc hành công", '', html);
         }

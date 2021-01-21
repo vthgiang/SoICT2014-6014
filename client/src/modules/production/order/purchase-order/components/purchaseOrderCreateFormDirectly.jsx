@@ -357,7 +357,7 @@ class PurchaseOrderCreateFormDirectly extends Component {
         });
     };
 
-    getPaymentAmount = () => {
+    getPaymentAmount = (isSubmit = false) => {
         let { materials, discount } = this.state;
         let paymentAmount = 0;
 
@@ -368,7 +368,9 @@ class PurchaseOrderCreateFormDirectly extends Component {
         if (discount) {
             paymentAmount = paymentAmount - discount >= 0 ? paymentAmount - discount : 0;
         }
-
+        if (isSubmit) {
+            return paymentAmount;
+        }
         return formatCurrency(paymentAmount);
     };
 
@@ -535,6 +537,7 @@ class PurchaseOrderCreateFormDirectly extends Component {
             discount,
             desciption,
             materials,
+            paymentAmount: this.getPaymentAmount(true),
         };
         await this.props.createPurchaseOrder(data);
 

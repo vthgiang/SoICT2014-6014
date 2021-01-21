@@ -1758,7 +1758,6 @@ exports.sendEmailForCreateTask = async (portal, task) => {
 
     email = user.map(item => item.email); // Lấy ra tất cả email của người dùng
     collaboratedEmail = managersOfOrganizationalUnitThatHasCollaborated.map(item => item.userId && item.userId.email) // Lấy email trưởng đơn vị phối hợp 
-    email.push("trinhhong102@gmail.com");
 
     var body = `<a href="${process.env.WEBSITE}/task?taskId=${task._id}" target="_blank" title="${process.env.WEBSITE}/task?taskId=${task._id}"><strong>${task.name}</strong></a></p> ` +
         `<h3>Nội dung công việc</h3>` +
@@ -1825,7 +1824,7 @@ exports.createTask = async (portal, task) => {
     let taskTemplate, cloneActions = [];
     if (task.taskTemplate) {
         taskTemplate = await TaskTemplate(connect(DB_CONNECTION, portal)).findById(task.taskTemplate);
-        var taskActions = taskTemplate.taskActions;
+        let taskActions = taskTemplate.taskActions;
 
         for (let i in taskActions) {
             cloneActions[i] = {
@@ -1837,16 +1836,49 @@ exports.createTask = async (portal, task) => {
     }
 
     let formula;
-    if (taskTemplate) {
-        formula = taskTemplate.formula;
-    } else if (task.formula) {
-        formula = "progress / (daysUsed / totalDays) - (numberOfFailedActions / (numberOfFailedActions + numberOfPassedActions)) * 100"
+    if(task.formula) {
+        formula = task.formula;
+    } else {
+        if (taskTemplate) {
+            formula = taskTemplate.formula;
+        } else if (task.formula) {
+            formula = "progress / (daysUsed / totalDays) - (numberOfFailedActions / (numberOfFailedActions + numberOfPassedActions)) * 100"
+        }
     }
 
     let getValidObjectId = (value) => {
         return mongoose.Types.ObjectId.isValid(value) ? value : undefined;
     }
     let taskProject = (taskTemplate && taskTemplate.taskProject) ? getValidObjectId(taskTemplate.taskProject) : getValidObjectId(task.taskProject);
+
+    let taskActions = [];
+    if(task.taskActions) {
+        taskActions = task.taskActions.map(e => {
+            return {
+                mandatory: e.mandatory,
+                name: e.name,
+                description: e.description,
+            }
+        });
+    } else {
+        taskActions = taskTemplate ? cloneActions : [];
+    }
+
+    let taskInformations = [];
+    if(task.taskInformations) {
+        taskInformations = task.taskInformations.map(e => {
+            return {
+                filledByAccountableEmployeesOnly: e.filledByAccountableEmployeesOnly,
+                code: e.code,
+                name: e.name,
+                description: e.description,
+                type: e.type,
+                extra: e.extra,
+            }
+        });
+    } else {
+        taskInformations = taskTemplate ? taskTemplate.taskInformations : [];
+    }
 
     var newTask = await Task(connect(DB_CONNECTION, portal)).create({ //Tạo dữ liệu mẫu công việc
         organizationalUnit: task.organizationalUnit,
@@ -1859,8 +1891,8 @@ exports.createTask = async (portal, task) => {
         priority: task.priority,
         formula: formula,
         taskTemplate: taskTemplate ? taskTemplate : null,
-        taskInformations: taskTemplate ? taskTemplate.taskInformations : [],
-        taskActions: taskTemplate ? cloneActions : [],
+        taskInformations: taskInformations,
+        taskActions: taskActions,
         parent: (task.parent === "") ? null : task.parent,
         level: level,
         responsibleEmployees: task.responsibleEmployees,
@@ -2323,7 +2355,6 @@ exports.sendEmailCheckTaskLastMonth = async () => {
             }
             if (flag) {  // gui email
                 let userEmail = [email[j]];
-                userEmail.push("trinhhong102@gmail.com");
                 let html = `<h1>Thông báo danh sách công việc tháng ${new Date().getMonth() + 1} </h1> ` +
                     `<h3>Thông tin công việc</h3>` +
                     `${tasksByUser.expire.length > 0 ? `<p>Công việc quá hạn</p> ` +
@@ -2412,9 +2443,8 @@ exports.getTaskAnalysOfUser = async (portal, userId, type) => {
  * @param {*} year 
  */
 exports.getUserTimeSheet = async (portal, userId, month, year) => {
-    console.log("my", month, year)
-    let beginOfMonth = new Date(`${year}-${month}`);
-    let endOfMonth = new Date(year, month);
+    let beginOfMonth = new Date(`${year}-${month}`); // cần chỉnh lại 
+    let endOfMonth = new Date(year, month); // cần chỉnh lại
 
     let tsl = await Task(connect(DB_CONNECTION, portal)).aggregate([
         { $match: { 
@@ -2436,4 +2466,32 @@ exports.getUserTimeSheet = async (portal, userId, month, year) => {
     ]);
 
     return tsl;
+}
+
+/**
+ * Lấy thống kê bấm giờ của tất cả các tài khoản trong hệ thống
+ * @param {*} portal 
+ * @param {*} month 
+ * @param {*} year 
+ */
+exports.getAllUserTimeSheet = async (portal, month, year) => {
+    let beginOfMonth = new Date(`${year}-${month}`); // cần chỉnh lại 
+    let endOfMonth = new Date(year, month); // cần chỉnh lại
+
+    let tsl = await Task(connect(DB_CONNECTION, portal)).aggregate([
+        { $match: { 
+            "timesheetLogs.startedAt": { $exists: true },
+            "timesheetLogs.startedAt": { $gte: beginOfMonth },
+            "timesheetLogs.stoppedAt": { $exists: true },
+            "timesheetLogs.stoppedAt": { $lte: endOfMonth }
+        } },
+        { $unwind: "$timesheetLogs" },
+        { $replaceRoot: { newRoot: "$timesheetLogs" } },
+        { $match: { 
+            "startedAt": { $exists: true },
+            "startedAt": { $gte: beginOfMonth },
+            "stoppedAt": { $exists: true },
+            "stoppedAt": { $lte: endOfMonth }
+        } },
+    ]);
 }

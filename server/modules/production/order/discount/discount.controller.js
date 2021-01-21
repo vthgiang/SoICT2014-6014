@@ -119,7 +119,7 @@ exports.getDiscountByGoodsId = async (req, res) => {
         await Log.info(req.user.email, "GET_DISCOUNT_BY_GOOD_ID", req.portal);
         res.status(200).json({
             success: true,
-            messages: ["get_successfully"],
+            messages: ["get_by_good_successfully"],
             content: discounts
         });
     } catch (error) {
@@ -127,7 +127,7 @@ exports.getDiscountByGoodsId = async (req, res) => {
 
         res.status(400).json({
             success: false,
-            messages: ["get_failed"],
+            messages: ["get_by_good_failed"],
             content: error.message
         });
     }
@@ -140,7 +140,7 @@ exports.getDiscountForOrderValue = async (req, res) => {
         await Log.info(req.user.email, "GET_DISCOUNT_BY_ORDER_VALUE", req.portal);
         res.status(200).json({
             success: true,
-            messages: ["get_successfully"],
+            messages: ["get_for_order_successfully"],
             content: discounts
         });
     } catch (error) {
@@ -148,7 +148,7 @@ exports.getDiscountForOrderValue = async (req, res) => {
 
         res.status(400).json({
             success: false,
-            messages: ["get_failed"],
+            messages: ["get_for_order_failed"],
             content: error.message
         });
     }

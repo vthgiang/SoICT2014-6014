@@ -42,6 +42,7 @@ class EvaluateByResponsibleEmployee extends Component {
             dataStatus: this.DATA_STATUS.NOT_AVAILABLE,
             indexReRender: 0,
             unit: data.unit,
+            evaluation: data.evaluation,
         }
 
         currentTask = data;
@@ -97,6 +98,7 @@ class EvaluateByResponsibleEmployee extends Component {
                     prevDate: data.prevDate,
                     dentaDate: data.dentaDate,
                     indexReRender: state.indexReRender + 1,
+                    evaluation: data.evaluation,
                 }
             });
             return false;
@@ -309,6 +311,7 @@ class EvaluateByResponsibleEmployee extends Component {
             checkSave: checkSave,
             prevDate: prevDate,
             dentaDate: dentaDate,
+            evaluation: evaluation,
         }
     }
 
@@ -860,7 +863,7 @@ class EvaluateByResponsibleEmployee extends Component {
 
     render() {
         const { translate, KPIPersonalManager, user } = this.props;
-        const { progress, info, task, point, oldAutoPoint, autoPoint, date, unit, kpi, showAutoPointInfo, dentaDate, prevDate, indexReRender } = this.state;
+        const { progress, info, task, point, oldAutoPoint, autoPoint, date, unit, kpi, showAutoPointInfo, dentaDate, prevDate, indexReRender, evaluation } = this.state;
         const { errorOnDate, errorOnPoint } = this.state;
         const { role, id, perform } = this.props;
 
@@ -1005,6 +1008,7 @@ class EvaluateByResponsibleEmployee extends Component {
                                 <TaskInformationForm
                                     legendText={translate('task.task_management.info_eval_month')}
                                     task={task && task}
+                                    evaluationInfo={evaluation? evaluation : task}
 
                                     handleChangeProgress={this.handleChangeProgress}
                                     handleInfoBooleanChange={this.handleInfoBooleanChange}

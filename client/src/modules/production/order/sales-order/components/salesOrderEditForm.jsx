@@ -45,37 +45,38 @@ class SalesOrderEditForm extends Component {
             },
             currency: {
                 type: "standard",
-                symbol: "vnđ",
+                symbol: "",
                 ratio: "1",
             },
         };
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.salesOrderEdit._id !== prevState.salesOrderId) {
+        console.log("extProps.salesOrderDetail", nextProps.salesOrderDetail);
+        if (nextProps.salesOrderDetail._id && nextProps.salesOrderDetail._id !== prevState.salesOrderId) {
             return {
                 ...prevState,
                 step: 0,
-                salesOrderId: nextProps.salesOrderEdit._id,
-                code: nextProps.salesOrderEdit.code,
-                customer: nextProps.salesOrderEdit.customer._id,
-                customerName: nextProps.salesOrderEdit.customer.name,
-                customerPhone: nextProps.salesOrderEdit.customerPhone,
-                customerTaxNumber: nextProps.salesOrderEdit.customer.taxNumber,
-                customerRepresent: nextProps.salesOrderEdit.customerRepresent,
-                customerAddress: nextProps.salesOrderEdit.customerAddress,
-                customerEmail: nextProps.salesOrderEdit.customerEmail,
-                priority: nextProps.salesOrderEdit.priority,
-                deliveryTime: nextProps.salesOrderEdit.deliveryTime ? formatDate(nextProps.salesOrderEdit.deliveryTime) : "",
-                discountsOfOrderValue: nextProps.salesOrderEdit.discounts,
+                salesOrderId: nextProps.salesOrderDetail._id,
+                code: nextProps.salesOrderDetail.code,
+                customer: nextProps.salesOrderDetail.customer._id,
+                customerName: nextProps.salesOrderDetail.customer.name,
+                customerPhone: nextProps.salesOrderDetail.customerPhone,
+                customerTaxNumber: nextProps.salesOrderDetail.customer.taxNumber,
+                customerRepresent: nextProps.salesOrderDetail.customerRepresent,
+                customerAddress: nextProps.salesOrderDetail.customerAddress,
+                customerEmail: nextProps.salesOrderDetail.customerEmail,
+                priority: nextProps.salesOrderDetail.priority,
+                deliveryTime: nextProps.salesOrderDetail.deliveryTime ? formatDate(nextProps.salesOrderDetail.deliveryTime) : "",
+                discountsOfOrderValue: nextProps.salesOrderDetail.discounts,
                 discountsOfOrderValueChecked: Object.assign({}),
-                note: nextProps.salesOrderEdit.note,
-                paymentAmount: nextProps.salesOrderEdit.paymentAmount,
-                shippingFee: nextProps.salesOrderEdit.shippingFee,
-                coin: nextProps.salesOrderEdit.coin,
-                status: nextProps.salesOrderEdit.status,
-                goods: nextProps.salesOrderEdit.goods
-                    ? nextProps.salesOrderEdit.goods.map((item) => {
+                note: nextProps.salesOrderDetail.note,
+                paymentAmount: nextProps.salesOrderDetail.paymentAmount,
+                shippingFee: nextProps.salesOrderDetail.shippingFee,
+                coin: nextProps.salesOrderDetail.coin,
+                status: nextProps.salesOrderDetail.status,
+                goods: nextProps.salesOrderDetail.goods
+                    ? nextProps.salesOrderDetail.goods.map((item) => {
                           return {
                               good: item.good,
                               pricePerBaseUnit: item.pricePerBaseUnit,
@@ -85,6 +86,7 @@ class SalesOrderEditForm extends Component {
                               slasOfGood: item.serviceLevelAgreements,
                               taxs: item.taxs,
                               manufacturingWorks: item.manufacturingWorks,
+                              manufacturingPlan: item.manufacturingPlan,
                               note: item.note,
                               amount: item.amount,
                               amountAfterDiscount: item.amountAfterDiscount,
@@ -477,11 +479,12 @@ class SalesOrderEditForm extends Component {
         });
     };
 
-    setCurrentManufacturingWorksOfGoods = (data) => {
+    setCurrentManufacturingWorksOfGoods = (manufacturingWorks, manufacturingPlan) => {
         this.setState((state) => {
             return {
                 ...state,
-                currentManufacturingWorksOfGood: data,
+                currentManufacturingWorksOfGood: manufacturingWorks,
+                currentManufacturingPlanOfGood: manufacturingPlan,
             };
         });
     };
@@ -493,6 +496,27 @@ class SalesOrderEditForm extends Component {
                 coin: this.state.coin ? "" : coin, //Nếu đang checked thì bỏ checked
             };
         });
+    };
+
+    getCoinOfAll = () => {
+        let coinOfAll = 0;
+        let { goods } = this.state;
+        let { discountsOfOrderValue } = this.state;
+
+        goods.forEach((good) => {
+            good.discountsOfGood.forEach((discount) => {
+                if (discount.formality == "2") {
+                    coinOfAll += discount.loyaltyCoin;
+                }
+            });
+        });
+
+        discountsOfOrderValue.forEach((discount) => {
+            if (discount.formality == "2") {
+                coinOfAll += discount.loyaltyCoin;
+            }
+        });
+        return coinOfAll;
     };
 
     setPaymentAmount = (paymentAmount) => {
@@ -595,6 +619,7 @@ class SalesOrderEditForm extends Component {
                 amountAfterDiscount: item.amountAfterDiscount,
                 amountAfterTax: item.amountAfterTax,
                 manufacturingWorks: item.manufacturingWorks ? item.manufacturingWorks._id : undefined,
+                manufacturingPlan: item.manufacturingPlan,
             };
         });
         return goodMap;
@@ -620,6 +645,8 @@ class SalesOrderEditForm extends Component {
                 salesOrderId,
             } = this.state;
 
+            let allCoin = this.getCoinOfAll(); //Lấy tất cả các xu được tặng trong đơn
+
             let data = {
                 code,
                 customer,
@@ -633,6 +660,7 @@ class SalesOrderEditForm extends Component {
                 shippingFee,
                 deliveryTime: deliveryTime ? new Date(formatToTimeZoneDate(deliveryTime)) : undefined,
                 coin,
+                allCoin,
                 paymentAmount,
                 note,
             };
@@ -676,6 +704,7 @@ class SalesOrderEditForm extends Component {
             currentSlasOfGood,
             currentDiscountsOfGood,
             currentManufacturingWorksOfGood,
+            currentManufacturingPlanOfGood,
             paymentAmount,
         } = this.state;
 
@@ -749,7 +778,10 @@ class SalesOrderEditForm extends Component {
                     </div>
                     <SlasOfGoodDetail currentSlasOfGood={currentSlasOfGood} />
                     <DiscountOfGoodDetail currentDiscounts={currentDiscountsOfGood} />
-                    <ManufacturingWorksOfGoodDetail currentManufacturingWorksOfGood={currentManufacturingWorksOfGood} />
+                    <ManufacturingWorksOfGoodDetail
+                        currentManufacturingWorksOfGood={currentManufacturingWorksOfGood}
+                        currentManufacturingPlanOfGood={currentManufacturingPlanOfGood}
+                    />
                     <form id={`form-add-sales-order`}>
                         <div className="row row-equal-height" style={{ marginTop: 0 }}>
                             {step === 0 && (
@@ -800,8 +832,8 @@ class SalesOrderEditForm extends Component {
                                     setCurrentDiscountsOfGood={(data) => {
                                         this.setCurrentDiscountsOfGood(data);
                                     }}
-                                    setCurrentManufacturingWorksOfGoods={(data) => {
-                                        this.setCurrentManufacturingWorksOfGoods(data);
+                                    setCurrentManufacturingWorksOfGoods={(manufacturingWorks, manufacturingPlan) => {
+                                        this.setCurrentManufacturingWorksOfGoods(manufacturingWorks, manufacturingPlan);
                                     }}
                                 />
                             )}
@@ -836,8 +868,8 @@ class SalesOrderEditForm extends Component {
                                     setCurrentDiscountsOfGood={(data) => {
                                         this.setCurrentDiscountsOfGood(data);
                                     }}
-                                    setCurrentManufacturingWorksOfGoods={(data) => {
-                                        this.setCurrentManufacturingWorksOfGoods(data);
+                                    setCurrentManufacturingWorksOfGoods={(manufacturingWorks, manufacturingPlan) => {
+                                        this.setCurrentManufacturingWorksOfGoods(manufacturingWorks, manufacturingPlan);
                                     }}
                                     setPaymentAmount={(data) => this.setPaymentAmount(data)}
                                     saveSalesOrder={this.save}
@@ -852,9 +884,10 @@ class SalesOrderEditForm extends Component {
 }
 
 function mapStateToProps(state) {
+    const { discounts, salesOrders } = state;
     const { customers } = state.crm;
-    const { discounts } = state;
-    return { discounts, customers };
+    const { salesOrderDetail } = salesOrders;
+    return { discounts, customers, salesOrderDetail };
 }
 
 const mapDispatchToProps = {

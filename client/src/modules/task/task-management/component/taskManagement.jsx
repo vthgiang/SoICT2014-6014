@@ -362,11 +362,11 @@ class TaskManagement extends Component {
      * Mở modal thêm task mới
      * @id task cha của task sẽ thêm (là "" nếu không có cha)
      */
-    handleAddTask = async (id) => {
-        await this.setState({
+    handleAddTask = (id) => {
+        this.setState({
             parentTask: id
         });
-        window.$(`#addNewTask`).modal('show')
+        window.$(`#addNewTask-undefined`).modal('show')
     }
 
 

@@ -428,7 +428,6 @@ class TaxCreateForm extends Component {
                 code: this.state.code,
                 name: this.state.taxName,
                 description: this.state.description,
-                creator: this.state.creator.id,
                 goods: dataGoods,
             };
             await this.props.createNewTax(data);
@@ -456,7 +455,6 @@ class TaxCreateForm extends Component {
             taxName,
             code,
             description,
-            creator,
             goodsSelected,
             allGoodsSelected,
             currentRow,
@@ -518,14 +516,6 @@ class TaxCreateForm extends Component {
                                 <span className="attention"> </span>
                             </label>
                             <textarea type="text" className="form-control" value={description} onChange={this.handleDescriptionChange} />
-                        </div>
-
-                        <div className="form-group">
-                            <label>
-                                {translate("manage_order.tax.creator")}
-                                <span className="attention"> </span>
-                            </label>
-                            <input type="text" className="form-control" value={creator.name} disabled="true" />
                         </div>
 
                         <fieldset className="scheduler-border">

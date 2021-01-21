@@ -11,12 +11,14 @@ const { Logform } = require("winston");
 
 exports.createPayment = async (userId, data, portal) => {
     let newPayment = await Payment(connect(DB_CONNECTION, portal)).create({
+        code: data.code,
         type: data.type,
         paymentType: data.paymentType,
         customer: data.customer,
+        supplier: data.supplier,
         curator: userId,
         bankAccountReceived: data.bankAccountReceived,
-        bankAccountPaid: data.bankAccountPaid,
+        bankAccountPartner: data.bankAccountPartner,
         salesOrders: data.salesOrders ? data.salesOrders.map((item) => {
             return {
                 salesOrder: item.salesOrder,
@@ -35,15 +37,18 @@ exports.createPayment = async (userId, data, portal) => {
     let payment = await Payment(connect(DB_CONNECTION, portal)).findById({ _id: newPayment._id }) .populate([
         {
             path: "customer", select: "code name"
-        }, 
+        }, {
+            path: "supplier", select: "code name"
+        },
         {
             path: "curator", select: "code name"
         },{
             path: "salesOrders.salesOrder", select: "code paymentAmount"
-        }, {
-            path: "bankAccountReceived", select: "account owner bankName bankAcronym"
+        },
+        {
+            path: "purchaseOrders.purchaseOrder", select: "code paymentAmount"
         },{
-            path: "bankAccountPaid", select: "account owner bankName bankAcronym"
+            path: "bankAccountReceived", select: "account owner bankName bankAcronym"
         } ])
     return {payment};
 }
@@ -56,8 +61,15 @@ exports.getAllPayments = async (query, portal) => {
         option.type = query.type
     }
 
+    if (query.code) {
+        option.code = new RegExp(query.code, "i")
+    }
+
     if (query.customer) {
         option.customer = query.customer
+    }
+    if (query.supplier) {
+        option.supplier = query.supplier
     }
 
     if ( !page || !limit ){
@@ -68,13 +80,16 @@ exports.getAllPayments = async (query, portal) => {
                     path: "customer", select: "code name"
                 },
                 {
+                    path: "supplier", select: "code name"
+                },
+                {
                     path: "curator", select: "code name"
                 }, {
                     path: "salesOrders.salesOrder", select: "code paymentAmount"
                 },{
-                    path: "bankAccountReceived", select: "account owner bankName bankAcronym"
+                    path: "purchaseOrders.purchaseOrder", select: "code paymentAmount"
                 },{
-                    path: "bankAccountPaid", select: "account owner bankName bankAcronym"
+                    path: "bankAccountReceived", select: "account owner bankName bankAcronym"
                 }])
         return { allPayments }
     } else {
@@ -83,15 +98,18 @@ exports.getAllPayments = async (query, portal) => {
             limit,
             populate: [ {
                 path: "customer", select: "code name"
-            }, 
+            },
+            {
+                path: "supplier", select: "code name"
+            },    
             {
                 path: "curator", select: "code name"
             }, {
                 path: "salesOrders.salesOrder", select: "code paymentAmount"
             },{
-                path: "bankAccountReceived", select: "account owner bankName bankAcronym"
+                path: "purchaseOrders.purchaseOrder", select: "code paymentAmount"
             },{
-                path: "bankAccountPaid", select: "account owner bankName bankAcronym"
+                path: "bankAccountReceived", select: "account owner bankName bankAcronym"
             }]
         })
         return { allPayments }
@@ -105,19 +123,22 @@ exports.getPaymentDetail = async(PaymentId, portal) => {
             path: "customer", select: "code name"
         },
         {
+            path: "supplier", select: "code name"
+        },
+        {
             path: "curator", select: "code name"
         }, {
             path: "salesOrders.salesOrder", select: "code paymentAmount"
         },{
-            path: "bankAccountReceived", select: "account owner bankName bankAcronym"
+            path: "purchaseOrders.purchaseOrder", select: "code paymentAmount"
         },{
-            path: "bankAccountPaid", select: "account owner bankName bankAcronym"
+            path: "bankAccountReceived", select: "account owner bankName bankAcronym"
         }])
 
     return {payment: paymentDetail}
 }
 
-//Tính số tiền đã thanh toán cho 1 đơn hàng 
+//Tính số tiền đã thanh toán cho 1 đơn bán hàng hàng 
 exports.getPaidForSalesOrder = async (orderId, portal) => {
     let paymentsForOrder = await Payment(connect(DB_CONNECTION, portal)).find({ salesOrders: { $elemMatch: { salesOrder: orderId } } });
     let paid = 0;
@@ -134,30 +155,70 @@ exports.getPaidForSalesOrder = async (orderId, portal) => {
     return paid;
 }
 
-//Lấy các thanh toán cho đơn hàng
-exports.getPaymentForOrder = async (orderId, orderType, portal) => {
-    //Tìm các payment của Sales Order
-    let paymentsForOrder = await Payment(connect(DB_CONNECTION, portal)).find({ salesOrders: { $elemMatch: { salesOrder: orderId } } }).populate([
-        {
-            path: "curator", select: "code name"
-        },{
-            path: "bankAccountReceived", select: "account owner bankName bankAcronym"
-        },{
-            path: "bankAccountPaid", select: "account owner bankName bankAcronym"
-        }]);
+//Tính số tiền đã thanh toán cho 1 đơn mua nguyên vật liệu
+exports.getPaidForPurchaseOrder = async (orderId, portal) => {
+    //Lấy các payments
+    let paymentsForOrder = await Payment(connect(DB_CONNECTION, portal)).find({ purchaseOrders: { $elemMatch: { purchaseOrder: orderId } } });
+    let paid = 0;
 
-    //Tìm số tiền thanh toán trong Payment
     for (let index = 0; index < paymentsForOrder.length; index++){
-        let { salesOrders } = paymentsForOrder[index];
-        console.log(salesOrders);
+        let { purchaseOrders } = paymentsForOrder[index];
 
-        //Lấy chi tiết số tiền cho đơn hàng trong 1 phiếu thu tiền
-        let paymentForSalesOrder = salesOrders.find((element) => element.salesOrder.toString() === orderId.toString())
+        //populate đến purchaseOrders.purchaseOrder
+        let paymentForPurchaseOrder = purchaseOrders.find((element) => element.purchaseOrder.toString() === orderId.toString())
 
-        if (paymentForSalesOrder) {
-            paymentsForOrder[index].salesOrders = paymentForSalesOrder;
+        if (paymentForPurchaseOrder) {
+            paid += paymentForPurchaseOrder.money;
         }
     }
+    return paid;
+}
 
-    return {payments: paymentsForOrder}
+//Lấy các thanh toán cho đơn hàng và đơn mua nguyên vật liệu
+exports.getPaymentForOrder = async (orderId, orderType, portal) => {
+    //Tìm các payment của Sales Order
+    //orderType: 1. Sales Order, 2. Purchase Order
+    if (parseInt(orderType) === 1) {
+        let paymentsForOrder = await Payment(connect(DB_CONNECTION, portal)).find({ salesOrders: { $elemMatch: { salesOrder: orderId } } }).populate([
+            {
+                path: "curator", select: "code name"
+            },{
+                path: "bankAccountReceived", select: "account owner bankName bankAcronym"
+            }]);
+    
+        //Tìm số tiền thanh toán trong Payment
+        for (let index = 0; index < paymentsForOrder.length; index++){
+            let { salesOrders } = paymentsForOrder[index];
+    
+            //Lấy chi tiết số tiền cho đơn hàng trong 1 phiếu thu tiền
+            let paymentForSalesOrder = salesOrders.find((element) => element.salesOrder.toString() === orderId.toString())
+    
+            if (paymentForSalesOrder) {
+                paymentsForOrder[index].salesOrders = paymentForSalesOrder;
+            }
+        }
+    
+        return {payments: paymentsForOrder}
+    } else {
+        let paymentsForOrder = await Payment(connect(DB_CONNECTION, portal)).find({ purchaseOrders: { $elemMatch: { purchaseOrder: orderId } } }).populate([
+            {
+                path: "curator", select: "code name"
+            },{
+                path: "bankAccountReceived", select: "account owner bankName bankAcronym"
+            }]);
+    
+        //Tìm số tiền thanh toán trong Payment
+        for (let index = 0; index < paymentsForOrder.length; index++){
+            let { purchaseOrders } = paymentsForOrder[index];
+    
+            //Lấy chi tiết số tiền cho đơn hàng trong 1 phiếu thu tiền
+            let paymentForSalesOrder = purchaseOrders.find((element) => element.purchaseOrder.toString() === orderId.toString())
+    
+            if (paymentForSalesOrder) {
+                paymentsForOrder[index].purchaseOrders = paymentForSalesOrder;
+            }
+        }
+    
+        return {payments: paymentsForOrder}
+    }
 }

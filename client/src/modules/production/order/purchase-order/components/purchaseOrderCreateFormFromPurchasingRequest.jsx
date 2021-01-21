@@ -456,7 +456,7 @@ class PurchaseOrderCreateFormFromPurchasingRequest extends Component {
         });
     };
 
-    getPaymentAmount = () => {
+    getPaymentAmount = (isSubmit = false) => {
         let { materials, discount } = this.state;
         let paymentAmount = 0;
 
@@ -467,8 +467,10 @@ class PurchaseOrderCreateFormFromPurchasingRequest extends Component {
         if (discount) {
             paymentAmount = paymentAmount - discount >= 0 ? paymentAmount - discount : 0;
         }
-
-        return paymentAmount ? formatCurrency(paymentAmount) : "";
+        if (isSubmit) {
+            return paymentAmount;
+        }
+        return formatCurrency(paymentAmount);
     };
 
     isSubmitMaterial = () => {
@@ -653,6 +655,7 @@ class PurchaseOrderCreateFormFromPurchasingRequest extends Component {
             desciption,
             materials,
             purchasingRequest,
+            paymentAmount: this.getPaymentAmount(true),
         };
         await this.props.createPurchaseOrder(data);
 
@@ -700,8 +703,6 @@ class PurchaseOrderCreateFormFromPurchasingRequest extends Component {
             priceErrorPosition,
             priceErrorOnTable,
         } = this.state;
-
-        console.log("PURCHASING REQUEST", this.props.purchasingRequest.listPurchasingRequests);
 
         return (
             <React.Fragment>

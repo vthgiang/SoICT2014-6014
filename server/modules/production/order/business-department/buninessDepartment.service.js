@@ -1,21 +1,19 @@
 const {
-    BusinessDepartment
+    BusinessDepartment, OrganizationalUnit
 } = require(`../../../../models`);
 
 const {
     connect
 } = require(`../../../../helpers/dbHelper`);
 
+const OrganizationalUnitServices =  require('../../../super-admin/organizational-unit/organizationalUnit.service');
+
 
 //Tạo phòng kinh doanh
 exports.createBusinessDepartment = async (data, portal) => {
     let newBusinessDepartment = await BusinessDepartment(connect(DB_CONNECTION, portal)).create({
-        code: data.code,
-        managers: data.managers,
         organizationalUnit: data.organizationalUnit,
-        status: data.status,
-        description: data.description,
-        type: data.type
+        role: data.role
     })
 
     let businessDepartment = await BusinessDepartment(connect(DB_CONNECTION, portal)).findById({ _id: newBusinessDepartment._id })
@@ -32,8 +30,6 @@ exports.createBusinessDepartment = async (data, portal) => {
             },
             { path: 'deputyManagers' },
             { path: 'employees' }]
-        }, {
-            path: 'managers'
         }]);
 
     return {businessDepartment};
@@ -45,13 +41,8 @@ exports.editBusinessDepartment = async (id, data, portal) => {
     if (!oldBusinessDepartment) {
         throw Error("Business Department is not existing")
     }
-
-    oldBusinessDepartment.code = data.code;
-    oldBusinessDepartment.managers = data.managers;
     oldBusinessDepartment.organizationalUnit = data.organizationalUnit;
-    oldBusinessDepartment.status = data.status;
-    oldBusinessDepartment.description = data.description;
-    oldBusinessDepartment.type = data.type;
+    oldBusinessDepartment.role = data.role;
 
     await oldBusinessDepartment.save();
 
@@ -69,8 +60,6 @@ exports.editBusinessDepartment = async (id, data, portal) => {
             },
             { path: 'deputyManagers' },
             { path: 'employees' }]
-        }, {
-            path: 'managers'
         }]);
 
     return {businessDepartment};
@@ -81,18 +70,8 @@ exports.getAllBusinessDepartments = async (query, portal) => {
     let { page, limit } = query;
 
     let option = {};
-    if (query.code) {
-        option.code = new RegExp(query.code, "i")
-    }
-    if (query.name) {
-        option.name = new RegExp(query.name, "i")
-    }
-    if (query.status) {
-        option.status = query.status
-    }
-
-    if (query.type) {
-        option.type = query.type
+    if (query.role) {
+        option.role = query.role
     }
 
     if (!page || !limit) {
@@ -109,10 +88,23 @@ exports.getAllBusinessDepartments = async (query, portal) => {
                         }]
                     }]
                 },
-                { path: 'deputyManagers' },
-                { path: 'employees' }]
-            }, {
-                path: 'managers'
+                {
+                    path: 'deputyManagers',
+                    populate: [{
+                        path: "users",
+                        populate: [{
+                            path: "userId"
+                        }]
+                    }]
+                },{
+                    path: 'employees',
+                    populate: [{
+                        path: "users",
+                        populate: [{
+                            path: "userId"
+                        }]
+                    }]
+                }]
             }]);
 
         return { allBusinessDepartments }
@@ -132,12 +124,196 @@ exports.getAllBusinessDepartments = async (query, portal) => {
                             }]
                         }]
                     },
-                    { path: 'deputyManagers' },
-                    { path: 'employees' }]
-                }, {
-                    path: 'managers'
+                    {
+                        path: 'deputyManagers',
+                        populate: [{
+                            path: "users",
+                            populate: [{
+                                path: "userId"
+                            }]
+                        }]
+                    },
+                    {
+                        path: 'employees',
+                        populate: [{
+                            path: "users",
+                            populate: [{
+                                path: "userId"
+                            }]
+                        }]
+                    }]
                 }]
             })
         return { allBusinessDepartments }
     }
 }
+
+//1. Lấy id người hiện tại, cấp dưới của người đó
+//2. Lấy cả phòng ban hiện tại của người đó và phòng ban con của phòng ban người đó công tác
+exports.getAllRelationsUser = async (userId, currentRole, portal) => { 
+    //Lấy ra phòng ban người đó đang công tác
+    let department = await OrganizationalUnitServices.getOrganizationalUnitByUserRole(portal, currentRole);
+    
+    // if (!department) throw new Error("Department not avaiable");
+    let usersRelationship = [userId];
+    if (department) {
+
+        //Lấy các phòng ban con của phòng ban người này công tác
+        let childDepartments = await OrganizationalUnit(connect(DB_CONNECTION, portal))
+            .find({ parent: department._id })
+            .populate([
+                { path: 'managers', populate: { path: 'users' } },
+                { path: 'deputyManagers', populate: { path: 'users' } },
+                { path: 'employees', populate: { path: 'users' } }
+            ]);
+        const { managers, deputyManagers, employees } = department;
+        let check = -1; //1. managers, 2. deputyManagers, 3. employees -- để check vai trò của người này
+        //Kiểm tra xem người này có phải là trưởng đơn vị hay không
+        for (let indexRole = 0; indexRole < managers.length; indexRole++) {
+            for (let indexUser = 0; indexUser < managers[indexRole].users.length; indexUser++) {
+                if (managers[indexRole].users[indexUser].userId.equals(userId)) {
+                    check = 1;
+                }
+            }
+        }
+        if (check === 1) {//Nếu là trưởng đơn vị
+            //i. Lấy danh sách các phó đơn vị dưới quyền người này
+            for (let indexRole = 0; indexRole < deputyManagers.length; indexRole++) {
+                for (let indexUser = 0; indexUser < deputyManagers[indexRole].users.length; indexUser++) {
+                    if (!usersRelationship.find(element => deputyManagers[indexRole].users[indexUser].userId.equals(element))) {
+                        usersRelationship.push(deputyManagers[indexRole].users[indexUser].userId.toString())
+                    }
+                }
+            }
+            //ii. Lấy các nhân viên dưới quyền người này
+            for (let indexRole = 0; indexRole < employees.length; indexRole++) {
+                for (let indexUser = 0; indexUser < employees[indexRole].users.length; indexUser++) {
+                    if (!usersRelationship.find(element => employees[indexRole].users[indexUser].userId.equals(element))) {
+                        usersRelationship.push(employees[indexRole].users[indexUser].userId.toString())
+                    }
+                }
+            }
+        } else {//Kiểm tra xem người này có phải là phó đơn vị không
+            for (let indexRole = 0; indexRole < deputyManagers.length; indexRole++) {
+                for (let indexUser = 0; indexUser < deputyManagers[indexRole].users.length; indexUser++) {
+                    if (deputyManagers[indexRole].users[indexUser].userId.equals(userId)) {
+                        check = 2;
+                    }
+                }
+            }
+
+            if (check === 2) {//Nếu là phó đơn vị
+                //Lấy danh sách nhân viên người này quản lý
+                for (let indexRole = 0; indexRole < employees.length; indexRole++) {
+                    for (let indexUser = 0; indexUser < employees[indexRole].users.length; indexUser++) {
+                        if (!usersRelationship.find(element => employees[indexRole].users[indexUser].userId.equals(element))) {
+                            usersRelationship.push(employees[indexRole].users[indexUser].userId.toString())
+                        }
+                    }
+                }
+            }
+        }
+
+        if (childDepartments) {//Lấy hết các nhân viên phòng ban con
+            for (let indexDepartment = 0; indexDepartment < childDepartments.length; indexDepartment++) {
+                const { managers, deputyManagers, employees } = childDepartments[indexDepartment];
+                //i. Lấy danh sách các phó đơn vị dưới quyền người này
+                for (let indexRole = 0; indexRole < managers.length; indexRole++) {
+                    for (let indexUser = 0; indexUser < managers[indexRole].users.length; indexUser++) {
+                        if (!usersRelationship.find(element => managers[indexRole].users[indexUser].userId.equals(element))) {
+                            usersRelationship.push(managers[indexRole].users[indexUser].userId.toString())
+                        }
+                    }
+                }
+                //ii. Lấy danh sách các phó đơn vị dưới quyền người này
+                for (let indexRole = 0; indexRole < deputyManagers.length; indexRole++) {
+                    for (let indexUser = 0; indexUser < deputyManagers[indexRole].users.length; indexUser++) {
+                        if (!usersRelationship.find(element => deputyManagers[indexRole].users[indexUser].userId.equals(element))) {
+                            usersRelationship.push(deputyManagers[indexRole].users[indexUser].userId.toString())
+                        }
+                    }
+                }
+                //iii. Lấy các nhân viên dưới quyền người này
+                for (let indexRole = 0; indexRole < employees.length; indexRole++) {
+                    for (let indexUser = 0; indexUser < employees[indexRole].users.length; indexUser++) {
+                        if (!usersRelationship.find(element => employees[indexRole].users[indexUser].userId.equals(element))) {
+                            usersRelationship.push(employees[indexRole].users[indexUser].userId.toString())
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    //Những người mà người này được phép quản lý
+    return usersRelationship;
+}
+
+//Lấy tất cả người dùng trong 1 phòng ban
+exports.getAllUsersInDepartments = async (departmentId, portal) => { 
+    let department = await OrganizationalUnit(connect(DB_CONNECTION, portal))
+        .findById(departmentId)
+        .populate([
+            {
+                path: 'managers',
+                populate: {
+                    path: 'users',
+                    populate: [{
+                        path: "userId"
+                                }]
+                }
+            },
+            {
+                path: 'deputyManagers',
+                populate: {
+                    path: 'users',
+                    populate: [{
+                        path: "userId"
+                                }]
+                }
+            },
+            {
+                path: 'employees',
+                populate: {
+                    path: 'users',
+                    populate: [{
+                        path: "userId"
+                                }]
+                }
+            }
+        ]);
+        
+    // if (!department) throw new Error("Department not avaiable");
+    
+    let listUsers = [];
+
+    if (department) {
+        const { managers, deputyManagers, employees } = department;
+        //i. Lấy danh sách các phó đơn vị dưới quyền người này
+        for (let indexRole = 0; indexRole < managers.length; indexRole++) {
+            for (let indexUser = 0; indexUser < managers[indexRole].users.length; indexUser++) {
+                if (!listUsers.find(element => managers[indexRole].users[indexUser].userId._id.equals(element._id))) {
+                    listUsers.push(managers[indexRole].users[indexUser].userId)
+                }
+            }
+        }
+        //ii. Lấy danh sách các phó đơn vị dưới quyền người này
+        for (let indexRole = 0; indexRole < deputyManagers.length; indexRole++) {
+            for (let indexUser = 0; indexUser < deputyManagers[indexRole].users.length; indexUser++) {
+                if (!listUsers.find(element => deputyManagers[indexRole].users[indexUser].userId._id.equals(element._id))) {
+                    listUsers.push(deputyManagers[indexRole].users[indexUser].userId)
+                }
+            }
+        }
+        //iii. Lấy các nhân viên dưới quyền người này
+        for (let indexRole = 0; indexRole < employees.length; indexRole++) {
+            for (let indexUser = 0; indexUser < employees[indexRole].users.length; indexUser++) {
+                if (!listUsers.find(element => employees[indexRole].users[indexUser].userId._id.equals(element._id))) {
+                    listUsers.push(employees[indexRole].users[indexUser].userId)
+                }
+            }
+        }
+    }
+    return listUsers
+}
+

@@ -3,12 +3,14 @@ const router = express.Router();
 const { auth } = require(`../../../../middleware`);;
 const LotController = require('./inventory.controller');
 
+router.get('/get-manufacturing-lot-number-status', auth, LotController.getManufacturingLotNumber)
 router.get('/', auth, LotController.getAllLots);
 router.get('/get-inventory-dashboard', auth, LotController.getInventories);
 router.get('/get-lot-by-good', auth, LotController.getLotsByGood);
 router.post('/create-or-edit-lot', auth, LotController.createOrUpdateLots);
 router.post('/delete-many', auth, LotController.deleteManyLots);
 router.get('/get-inventory', auth, LotController.getInventoryByGoods);
+router.get('/get-inventory-in-stock', auth, LotController.getInventoryInStockByGoods);
 router.get('/get-detail/:id', auth, LotController.getDetailLot);
 router.patch('/:id', auth, LotController.editLot);
 

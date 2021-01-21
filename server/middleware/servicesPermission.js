@@ -504,6 +504,7 @@ exports.links = [
             { path: '/lot/create-or-edit-lot', method: 'POST' },
             { path: '/lot/delete-many', method: 'POST' },
             { path: '/lot/get-inventory', method: 'GET' },
+            { path: '/lot/get-inventory-in-stock', method: 'GET' },
             { path: '/lot/get-detail/:id', method: 'GET' },
             { path: '/lot/:id', method: 'PATCH' },
 
@@ -927,8 +928,13 @@ exports.links = [
     }, {
         url: '/answer-auth-questions',
         apis: ['@all']
-    }, {
+    },
+    {
         url: '/projects-management',
+        apis: ['@all']
+    }, {
+
+        url: '/user-guide',
         apis: ['@all']
     }
 ];

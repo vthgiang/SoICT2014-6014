@@ -4,7 +4,8 @@ export const purchasingRequestServices = {
     getAllPurchasingRequests,
     createPurchasingRequest,
     getDetailPurchasingRequest,
-    editPurchasingRequest
+    editPurchasingRequest,
+    getNumberPurchasingStatus
 }
 
 function getAllPurchasingRequests(query) {
@@ -53,6 +54,19 @@ function editPurchasingRequest(id, data) {
             data
         },
         true,
+        true,
+        'manufacturing.purchasing_request'
+    )
+}
+
+function getNumberPurchasingStatus(query) {
+    return sendRequest(
+        {
+            url: `${process.env.REACT_APP_SERVER}/purchasing-request/get-number-purchasing-request`,
+            method: "GET",
+            params: query
+        },
+        false,
         true,
         'manufacturing.purchasing_request'
     )

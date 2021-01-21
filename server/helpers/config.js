@@ -110,6 +110,10 @@ const LINK_CATEGORY = {
     PROJECT: {
         name: "projects-manager",
         description: "Quản lý dự án",
+    },
+    USERGUIDE: {
+        name: "user_guide",
+        description: "Hướng dẫn sử dụng",
     }
 };
 
@@ -123,7 +127,8 @@ const COMPONENTS = [{
     links: [
         '/notifications'
     ]
-}, {
+},
+{
     name: 'create-task-template-button',
     description: 'Button thêm mới mẫu công việc',
     roles: [
@@ -132,7 +137,8 @@ const COMPONENTS = [{
     links: [
         '/task-template'
     ]
-}, {
+},
+{
     name: 'create-task-process-button',
     description: 'Button thêm mới mẫu quy trình công việc',
     roles: [
@@ -162,6 +168,15 @@ const COMPONENTS = [{
         '/manage-work-schedule',
     ],
 }, {
+    name: 'create-manufacturing-plan',
+    description: 'Button tạo kế hoạch sản xuất',
+    roles: [
+    ],
+    links: [
+        '/manage-manufacturing-plan',
+    ],
+},
+{
     name: 'create-stock-button',
     description: 'Button thêm mới kho',
     roles: [
@@ -170,6 +185,47 @@ const COMPONENTS = [{
     ],
     links: [
         '/stock-management'
+    ]
+},
+{
+    name: 'create-quote',
+    description: 'Button thêm mới kho',
+    roles: [
+        ROOT_ROLES.SUPER_ADMIN.name,
+        ROOT_ROLES.ADMIN.name
+    ],
+    links: [
+        '/manage-quote'
+    ]
+},
+{
+    name: 'create-sales-order',
+    description: 'Button thêm mới kho',
+    roles: [
+        ROOT_ROLES.SUPER_ADMIN.name,
+        ROOT_ROLES.ADMIN.name
+    ],
+    links: [
+        '/manage-sales-order'
+    ]
+},
+{
+    name: 'view-sales-order-dashboard',
+    description: 'Button thêm mới kho',
+    roles: [
+        ROOT_ROLES.SUPER_ADMIN.name,
+        ROOT_ROLES.ADMIN.name
+    ],
+    links: [
+        '/manage-sales-order-dashboard'
+    ]
+}, {
+    name: 'view-pie-chart-purchasing',
+    description: 'Xem biều đồ phiếu mua hàng theo trạng thái',
+    roles: [
+    ],
+    links: [
+        '/manufacturing-dashboard'
     ]
 }];
 
@@ -1303,7 +1359,7 @@ const LINKS = [{
         ROOT_ROLES.SUPER_ADMIN.name,
         ROOT_ROLES.ADMIN.name
     ],
-    components: getComponentsInLink('/track-order'),
+    components: getComponentsInLink('/manufacturing-dashboard'),
 },
 {
     url: "/analysis-manufacturing-performance",
@@ -1352,13 +1408,29 @@ const LINKS = [{
     description: 'Dự án',
     category: LINK_CATEGORY.PROJECT.name,
     roles: [
+        ROOT_ROLES.SUPER_ADMIN.name,
+        ROOT_ROLES.ADMIN.name,
         ROOT_ROLES.MANAGER.name,
         ROOT_ROLES.DEPUTY_MANAGER.name,
         ROOT_ROLES.EMPLOYEE.name,
     ],
     components: getComponentsInLink('/projects-management'),
 },
+{
+    url: "/user-guide",
+    description: "Hướng dẫn sử dụng",
+    category: LINK_CATEGORY.USERGUIDE.name,
+    roles: [
+        ROOT_ROLES.SUPER_ADMIN.name,
+        ROOT_ROLES.ADMIN.name,
+        ROOT_ROLES.MANAGER.name,
+        ROOT_ROLES.DEPUTY_MANAGER.name,
+        ROOT_ROLES.EMPLOYEE.name,
+    ],
 
+
+    components: getComponentsInLink('/user-guide')
+}
 ];
 
 module.exports = {

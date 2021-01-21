@@ -1039,6 +1039,8 @@ export default {
             manage_manufacturing_mill: "Manage manufacturing mill",
             manage_project: "Manage Project",
 
+
+            user_guide: "User guide",
         },
 
         manage_system: {
@@ -2725,6 +2727,8 @@ export default {
                 detail_hide_info: "Hide information",
                 detail_show_info: "Show information",
                 detail_choose_role: "Change role",
+                detail_copy_task: "Copy task",
+                detail_save_as_template: "Save as template",
                 detail_route: "Navigate",
                 detail_route_task: "Navigate tasks",
 
@@ -2954,6 +2958,7 @@ export default {
                 evaluation: "Evaluation",
                 attach_file: "Attach file",
                 comment: "Comment",
+                result: "Result",
                 re_evaluation: "Re-evaluation",
                 question_delete_file: "Are you sure to delete",
                 edit_comment: "Edit comment",
@@ -2973,6 +2978,7 @@ export default {
                 time: "Time",
                 none_subtask: "No subtask",
                 enter_comment_action: "Comment of action",
+                enter_result_action: "Result of action",
                 create_comment_action: "Create comment",
                 stop_timer: "Stop timer",
                 edit: "Edit",

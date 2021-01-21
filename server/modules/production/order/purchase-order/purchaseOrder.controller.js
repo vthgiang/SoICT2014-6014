@@ -37,7 +37,6 @@ exports.editPurchaseOrder = async (req, res) => {
         });
     } catch (error) {
         await Log.error(req.user.email, "EDIT_PURCHASE_ORDER", req.portal);
-        console.log(error.message);
         res.status(400).json({
             success: false,
             messages: ["edit_failed"],
@@ -49,7 +48,7 @@ exports.editPurchaseOrder = async (req, res) => {
 exports.getAllPurchaseOrders = async ( req, res ) => {
     try {
         let query = req.query;
-        let allPurchaseOrders = await PurchaseOrderService.getAllPurchaseOrders( query , req.portal)
+        let allPurchaseOrders = await PurchaseOrderService.getAllPurchaseOrders(req.user._id, query , req.portal)
 
         await Log.info(req.user.email, "GET_ALL_PURCHASE_ORDERS", req.portal);
 
@@ -64,6 +63,57 @@ exports.getAllPurchaseOrders = async ( req, res ) => {
         res.status(400).json({
             success: false,
             messages: ["get_all_failed"],
+            content: error.message
+        });
+    }
+}
+
+//Lấy các đơn hàng chưa thanh toán hết của theo nhà cùng cấp
+exports.getPurchaseOrdersForPayment = async (req, res) => {
+    try {
+
+        let supplierId = req.query.supplierId;
+
+        let purchaseOrders = await PurchaseOrderService.getPurchaseOrdersForPayment(supplierId, req.portal)
+
+        await Log.info(req.user.email, "GET_PURCHASE_ORDERS_FOR_PAYMENT", req.portal);
+
+        res.status(200).json({
+            success: true,
+            messages: ["get_purchase_orders_for_payment_successfully"],
+            content: purchaseOrders
+        });
+    } catch (error) {
+        await Log.error(req.user.email, "GET_PURCHASE_ORDERS_FOR_PAYMENT", req.portal);
+        console.log(error.message);
+        res.status(400).json({
+            success: false,
+            messages: ["get_purchase_orders_for_payment_failed"],
+            content: error.message
+        });
+    }
+}
+
+exports.approvePurchaseOrder = async (req, res) => {
+    try {
+        let id = req.params.id;
+        let data = req.body;
+        let purchaseOrder = await PurchaseOrderService.approvePurchaseOrder( id, data, req.portal);
+
+        await Log.info(req.user.email, "APPROVE_PURCHASE_ORDER", req.portal);
+
+        res.status(200).json({
+            success: true,
+            messages: ["approve_successfully"],
+            content: purchaseOrder
+        })
+        
+    } catch (error) {
+        await Log.error(req.user.email, "APPROVE_PURCHASE_ORDER", req.portal);
+        console.log(error.message);
+        res.status(400).json({
+            success: false,
+            messages: ["approve_failed"],
             content: error.message
         });
     }

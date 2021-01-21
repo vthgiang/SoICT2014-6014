@@ -122,7 +122,7 @@ class HistoryCommandTable extends Component {
             ...state,
             commandDetail: command
         }));
-        window.$('#modal-detail-info-manufacturing-command-3').modal('show');
+        window.$('#modal-detail-info-manufacturing-command-20').modal('show');
     }
 
     render() {
@@ -144,9 +144,7 @@ class HistoryCommandTable extends Component {
                     hasSaveButton={false}
                     hasNote={false}
                 >
-                    {
-                        <ManufacturingCommandDetailInfo idModal={3} commandDetail={this.state.commandDetail} />
-                    }
+                    <ManufacturingCommandDetailInfo idModal={20} commandDetail={this.state.commandDetail} />
                     <form id={`form-history-command-table`}>
                         <div className="box-body qlcv">
                             <div className="form-inline">
@@ -241,9 +239,9 @@ class HistoryCommandTable extends Component {
                                                 <td>{index + 1}</td>
                                                 <td>{command.code}</td>
                                                 {/* <td>{command.manufacturingPlan !== undefined && command.manufacturingPlan.code}</td> */}
-                                                <td>{command.good && command.good.good.name}</td>
-                                                <td>{command.good && command.good.good.baseUnit}</td>
-                                                <td>{command.good && command.good.quantity}</td>
+                                                <td>{command.good && command.good.name}</td>
+                                                <td>{command.good && command.good.baseUnit}</td>
+                                                <td>{command.quantity}</td>
                                                 <td>{command.accountables && command.accountables.map((acc, index) => {
                                                     if (command.accountables.length === index + 1)
                                                         return acc.name;

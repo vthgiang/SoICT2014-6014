@@ -258,9 +258,9 @@ class SalesOrderCreateGood extends Component {
         } else if (parseInt(value) < 0) {
             msg = "Giá không được âm";
         } else if (parseInt(value) < pricePerBaseUnitOrigin - salesPriceVariance && !checkDiscountOnGoods) {
-            msg = `Giá không được chênh lệch quá ${salesPriceVariance ? formatCurrency(salesPriceVariance) : 0} (vnđ) so với giá gốc: ${
+            msg = `Giá không được chênh lệch quá ${salesPriceVariance ? formatCurrency(salesPriceVariance) : 0}  so với giá gốc: ${
                 pricePerBaseUnitOrigin ? formatCurrency(pricePerBaseUnitOrigin) : 0
-            } (vnđ)`;
+            } `;
         }
 
         if (willUpdateState) {
@@ -479,7 +479,7 @@ class SalesOrderCreateGood extends Component {
                 amountAfterDiscount,
                 amountAfterTax,
                 salesPriceVariance,
-                manufacturingWorks: manufacturingWorks._id !== "title" ? manufacturingWorks : undefined,
+                manufacturingWorks: manufacturingWorks ? (manufacturingWorks._id !== "title" ? manufacturingWorks : undefined) : undefined,
             };
 
             listGoods.push(additionGood);
@@ -637,6 +637,7 @@ class SalesOrderCreateGood extends Component {
             discountsOfGood: item.discountsOfGood,
             slasOfGood: slasForEdit,
             manufacturingWorks: item.manufacturingWorks,
+            manufacturingPlan: item.manufacturingPlan,
         });
 
         this.getCheckedForGood(this.props.goods.goodItems); //gọi để checked trong trường hợp không thay đổi goodId
@@ -697,6 +698,7 @@ class SalesOrderCreateGood extends Component {
                 salesPriceVariance,
                 indexEditting,
                 manufacturingWorks,
+                manufacturingPlan,
             } = this.state;
 
             let { listGoods } = this.props;
@@ -741,7 +743,8 @@ class SalesOrderCreateGood extends Component {
                 amountAfterDiscount,
                 amountAfterTax,
                 salesPriceVariance,
-                manufacturingWorks: manufacturingWorks._id !== "title" ? manufacturingWorks : undefined,
+                manufacturingWorks: manufacturingWorks ? (manufacturingWorks._id !== "title" ? manufacturingWorks : undefined) : undefined,
+                manufacturingPlan,
             };
 
             listGoods[indexEditting] = additionGood;
@@ -798,6 +801,7 @@ class SalesOrderCreateGood extends Component {
             step,
             editGood,
             manufacturingWorks,
+            manufacturingPlan,
         } = this.state;
 
         let { goodError, pricePerBaseUnitError, quantityError } = this.state;
@@ -850,6 +854,7 @@ class SalesOrderCreateGood extends Component {
                                         inventory={inventory}
                                         quantity={quantity}
                                         manufacturingWorks={manufacturingWorks}
+                                        manufacturingPlan={manufacturingPlan}
                                         handleGoodChange={this.handleGoodChange}
                                         handlePriceChange={this.handlePriceChange}
                                         handleQuantityChange={this.handleQuantityChange}
@@ -906,43 +911,35 @@ class SalesOrderCreateGood extends Component {
                             <div style={{ padding: 10, backgroundColor: "white" }}>
                                 <div className="form-group">
                                     <strong>Thành tiền: </strong>
-                                    <span style={{ float: "right" }}>
-                                        {originAmount ? formatCurrency(originAmount) + ` (${currency.symbol})` : `0 (${currency.symbol})`}
-                                    </span>
+                                    <span style={{ float: "right" }}>{originAmount ? formatCurrency(originAmount) : `0 `}</span>
                                 </div>
                                 <div className="form-group">
                                     <strong>Khuyến mãi: </strong>
                                     <span style={{ float: "right" }} className="text-red">
                                         {amountAfterApplyDiscount
-                                            ? formatCurrency(Math.round((amountAfterApplyDiscount - originAmount) * 100) / 100) +
-                                              ` (${currency.symbol})`
-                                            : `0 (${currency.symbol})`}
+                                            ? formatCurrency(Math.round((amountAfterApplyDiscount - originAmount) * 100) / 100)
+                                            : `0 `}
                                     </span>
                                 </div>
                                 <div className="form-group">
                                     <strong>Tổng tiền trước thuế: </strong>
                                     <span style={{ float: "right" }}>
-                                        {amountAfterApplyDiscount
-                                            ? formatCurrency(amountAfterApplyDiscount) + ` (${currency.symbol})`
-                                            : `0 (${currency.symbol})`}
+                                        {amountAfterApplyDiscount ? formatCurrency(amountAfterApplyDiscount) : `0 `}
                                     </span>
                                 </div>
                                 <div className="form-group">
                                     <strong>Thuế: </strong>
                                     <span style={{ float: "right" }}>
                                         {amountAfterApplyTax
-                                            ? formatCurrency(Math.round((amountAfterApplyTax - amountAfterApplyDiscount) * 100) / 100) +
-                                              ` (${currency.symbol})`
-                                            : `0 (${currency.symbol})`}
+                                            ? formatCurrency(Math.round((amountAfterApplyTax - amountAfterApplyDiscount) * 100) / 100)
+                                            : `0`}
                                     </span>
                                 </div>
 
                                 <div className="form-group" style={{ borderTop: "solid 0.3px #c5c5c5", padding: "10px 0px" }}>
                                     <strong>Tổng tiền sau thuế: </strong>
                                     <span style={{ float: "right", fontSize: "18px" }} className="text-red">
-                                        {amountAfterApplyTax
-                                            ? formatCurrency(amountAfterApplyTax) + ` (${currency.symbol})`
-                                            : `0 (${currency.symbol})`}
+                                        {amountAfterApplyTax ? formatCurrency(amountAfterApplyTax) : `0 `}
                                     </span>
                                 </div>
 
@@ -996,15 +993,15 @@ class SalesOrderCreateGood extends Component {
                                 <th title={"Mã sản phẩm"}>Mã sản phẩm</th>
                                 <th title={"Tên sản phẩm"}>Tên sản phẩm</th>
                                 <th title={"Đơn vị tính"}>Đ/v tính</th>
-                                <th title={"Giá niêm yết"}>Giá niêm yết (vnđ)</th>
-                                <th title={"giá tính tiền"}>giá tính tiền (vnđ)</th>
+                                <th title={"Giá niêm yết"}>Giá niêm yết </th>
+                                <th title={"giá tính tiền"}>giá tính tiền</th>
                                 <th title={"Số lượng"}>Số lượng</th>
                                 <th title={"Khuyến mãi"}>Khuyến mãi</th>
                                 <th title={"Thành tiền"}>Thành tiền</th>
                                 <th title={"Thuế"}>Thuế</th>
                                 <th title={"Tổng tiền"}>Tổng tiền</th>
                                 <th>Cam kết chất lượng</th>
-                                <th title={"Yêu cầu sản xuất"}>Yêu cầu s/x</th>
+                                {/* <th title={"Yêu cầu sản xuất"}>Yêu cầu s/x</th> */}
                                 <th title={"Ghi chú"}>Ghi chú</th>
                                 <th title={"Hành động"}>Hành động</th>
                             </tr>
@@ -1018,16 +1015,8 @@ class SalesOrderCreateGood extends Component {
                                         <td>{item.good ? item.good.code : ""}</td>
                                         <td>{item.good ? item.good.name : ""}</td>
                                         <td>{item.good ? item.good.baseUnit : ""}</td>
-                                        <td>
-                                            {item.pricePerBaseUnitOrigin
-                                                ? formatCurrency(item.pricePerBaseUnitOrigin) + ` (${currency.symbol})`
-                                                : `0 (${currency.symbol})`}
-                                        </td>
-                                        <td>
-                                            {item.pricePerBaseUnit
-                                                ? formatCurrency(item.pricePerBaseUnit) + ` (${currency.symbol})`
-                                                : `0 (${currency.symbol})`}
-                                        </td>
+                                        <td>{item.pricePerBaseUnitOrigin ? formatCurrency(item.pricePerBaseUnitOrigin) : `0 `}</td>
+                                        <td>{item.pricePerBaseUnit ? formatCurrency(item.pricePerBaseUnit) : `0 `}</td>
                                         <td>{item.quantity}</td>
                                         <td>
                                             <a
@@ -1041,22 +1030,18 @@ class SalesOrderCreateGood extends Component {
                                                 title="Click để xem chi tiết"
                                             >
                                                 {item.amount && item.amountAfterDiscount
-                                                    ? formatCurrency(item.amount - item.amountAfterDiscount) + ` (${currency.symbol})`
-                                                    : `0 (${currency.symbol})`}
+                                                    ? formatCurrency(item.amount - item.amountAfterDiscount)
+                                                    : `0 `}
                                             </a>
                                         </td>
                                         <td>{item.amountAfterDiscount ? formatCurrency(item.amountAfterDiscount) : ""}</td>
                                         <td>
                                             {item.amountAfterDiscount && item.amountAfterTax
-                                                ? formatCurrency(item.amountAfterTax - item.amountAfterDiscount) + ` (${currency.symbol})`
-                                                : `0 (${currency.symbol})`}
+                                                ? formatCurrency(item.amountAfterTax - item.amountAfterDiscount)
+                                                : `0 `}
                                             ({item.taxs.length && item.taxs[0] ? item.taxs[0].percent : "0"}%)
                                         </td>
-                                        <td>
-                                            {item.amountAfterTax
-                                                ? formatCurrency(item.amountAfterTax) + ` (${currency.symbol})`
-                                                : `0 (${currency.symbol})`}
-                                        </td>
+                                        <td>{item.amountAfterTax ? formatCurrency(item.amountAfterTax) + ` ` : `0 `}</td>
                                         <td>
                                             <div
                                                 style={{
@@ -1077,7 +1062,7 @@ class SalesOrderCreateGood extends Component {
                                                 </a>
                                             </div>
                                         </td>
-                                        <td>
+                                        {/* <td>
                                             {item.manufacturingWorks ? (
                                                 <div
                                                     style={{
@@ -1091,15 +1076,18 @@ class SalesOrderCreateGood extends Component {
                                                         data-toggle="modal"
                                                         data-backdrop="static"
                                                         href={"#modal-edit-sales-order-manufacturing-works-of-good-detail"}
-                                                        onClick={() => setCurrentManufacturingWorksOfGoods(item.manufacturingWorks)}
+                                                        onClick={() =>
+                                                            setCurrentManufacturingWorksOfGoods(item.manufacturingWorks, item.manufacturingPlan)
+                                                        }
                                                     >
+                                                        {console.log("item.manufacturingPlan", item.manufacturingPlan)}
                                                         Đang thiết lập &ensp;
                                                     </a>
                                                 </div>
                                             ) : (
                                                 ""
                                             )}
-                                        </td>
+                                        </td> */}
                                         <td>{item.note}</td>
                                         <td>
                                             <a className="edit text-yellow">
@@ -1125,30 +1113,30 @@ class SalesOrderCreateGood extends Component {
                                             listGoods.reduce((accumulator, currentValue) => {
                                                 return accumulator + (currentValue.amount - currentValue.amountAfterDiscount);
                                             }, 0)
-                                        ) + ` (${currency.symbol})`}
+                                        )}
                                     </td>
                                     <td style={{ fontWeight: 600 }}>
                                         {formatCurrency(
                                             listGoods.reduce((accumulator, currentValue) => {
                                                 return accumulator + currentValue.amountAfterDiscount;
                                             }, 0)
-                                        ) + ` (${currency.symbol})`}
+                                        )}
                                     </td>
                                     <td style={{ fontWeight: 600 }}>
                                         {formatCurrency(
                                             listGoods.reduce((accumulator, currentValue) => {
                                                 return accumulator + (currentValue.amountAfterTax - currentValue.amountAfterDiscount);
                                             }, 0)
-                                        ) + ` (${currency.symbol})`}
+                                        )}
                                     </td>
                                     <td style={{ fontWeight: 600 }}>
                                         {formatCurrency(
                                             listGoods.reduce((accumulator, currentValue) => {
                                                 return accumulator + currentValue.amountAfterTax;
                                             }, 0)
-                                        ) + ` (${currency.symbol})`}
+                                        )}
                                     </td>
-                                    <td colSpan={4}></td>
+                                    <td colSpan={3}></td>
                                 </tr>
                             )}
                         </tbody>

@@ -90,7 +90,7 @@ class TasksIsNotLinked extends Component {
                         <div className="box-header with-border">
                             <div className="box-title">{translate('task.task_management.task_is_not_linked_up_with_monthly_kpi')}</div>
                         </div>
-                        <div className="box-body" style={{ minHeight: "300px" }}>
+                        <div className="box-body" style={{ height: "380px", overflow: "auto" }}>
                             {
                                 notLinkedTasks ?
                                     <ul className="todo-list">
