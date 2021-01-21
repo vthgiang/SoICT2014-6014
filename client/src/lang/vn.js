@@ -1194,6 +1194,7 @@ export default {
             manage_manufacturing_works: "Quản lý nhà máy sản xuất",
             manage_manufacturing_mill: "Quản lý xưởng sản xuất",
             manage_manufacturing_lot: "Quản lý lô sản xuất",
+            manage_project: "Quản lý dự án",
         },
 
         manage_system: {
@@ -3202,6 +3203,10 @@ export default {
                 warning_minutes: "phút",
 
                 project: 'Thuộc dự án (nếu có)',
+                load_task: "Tải công việc",
+                time: "Thời gian",
+                load_task_chart: "Dashboard tải công việc",
+                load_task_chart_unit: "Dashboard tải công việc của đơn vị",
             },
             task_perform: {
                 actions: "Hoạt động",

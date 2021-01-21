@@ -106,6 +106,10 @@ const LINK_CATEGORY = {
     MANUFACTURING: {
         name: "manufacturing-management",
         description: "Quản lý sản xuất"
+    },
+    PROJECT: {
+        name: "projects-manager",
+        description: "Quản lý dự án",
     }
 };
 
@@ -1095,20 +1099,20 @@ const LINKS = [{
         // ROOT_ROLES.EMPLOYEE.name,
     ],
     components: getComponentsInLink('/manage-business-department'),
-    },
-    {
-        url: "/manage-bank-account",
-        description: "Số tài khoản ngân hàng",
-        category: LINK_CATEGORY.ORDER.name,
-        roles: [
-            // ROOT_ROLES.SUPER_ADMIN.name,
-            ROOT_ROLES.ADMIN.name,
-            // ROOT_ROLES.MANAGER.name,
-            // ROOT_ROLES.DEPUTY_MANAGER.name,
-            // ROOT_ROLES.EMPLOYEE.name,
-        ],
-        components: getComponentsInLink('/manage-bank-account'),
-    },
+},
+{
+    url: "/manage-bank-account",
+    description: "Số tài khoản ngân hàng",
+    category: LINK_CATEGORY.ORDER.name,
+    roles: [
+        // ROOT_ROLES.SUPER_ADMIN.name,
+        ROOT_ROLES.ADMIN.name,
+        // ROOT_ROLES.MANAGER.name,
+        // ROOT_ROLES.DEPUTY_MANAGER.name,
+        // ROOT_ROLES.EMPLOYEE.name,
+    ],
+    components: getComponentsInLink('/manage-bank-account'),
+},
 {
     url: '/crm/dashboard',
     description: `Bảng tin quản lý khách hàng`,
@@ -1341,6 +1345,20 @@ const LINKS = [{
     ],
     components: getComponentsInLink('/manage-manufacturing-lot'),
 },
+
+// Quan li du an
+{
+    url: '/projects-management',
+    description: 'Dự án',
+    category: LINK_CATEGORY.PROJECT.name,
+    roles: [
+        ROOT_ROLES.MANAGER.name,
+        ROOT_ROLES.DEPUTY_MANAGER.name,
+        ROOT_ROLES.EMPLOYEE.name,
+    ],
+    components: getComponentsInLink('/projects-management'),
+},
+
 ];
 
 module.exports = {

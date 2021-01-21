@@ -9,7 +9,7 @@ import { DistributionOfEmployee } from './distributionOfEmployee';
 import { DomainOfTaskResultsChart } from '../task-personal-dashboard/domainOfTaskResultsChart';
 import { TaskStatusChart } from '../task-personal-dashboard/taskStatusChart';
 import { CalendarOrganizationUnit } from './calendarOrganizationUnit';
-import { WeightTaskOrganizationChart } from './weightTaskOrganizationChart';
+import { LoadTaskOrganizationChart } from './loadTaskOrganizationChart';
 import { AverageResultsOfTaskInOrganizationalUnit } from './averageResultsOfTaskInOrganizationalUnit';
 
 import { withTranslate } from 'react-redux-multilingual';
@@ -456,7 +456,7 @@ class TaskOrganizationUnitDashboard extends Component {
                             <div className="col-xs-12">
                                 <div className="box box-primary">
                                     <div className="box-header with-border">
-                                        <div className="box-title">Dashboard tải công việc của đơn vị {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
+                                        <div className="box-title">{translate('task.task_management.load_task_chart_unit')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
                                         <ToolTip
                                             type={"icon_tooltip"} materialIcon={"help"}
                                             dataTooltip={['Tải công việc tính theo công thức tổng các tỉ số: số ngày thực hiện công việc trong tháng/(số người thực hiện + số người phê duyệt + số người hỗ trợ)']}
@@ -464,7 +464,7 @@ class TaskOrganizationUnitDashboard extends Component {
                                     </div>
                                     <div className="box-body qlcv">
                                         {this.state.callAction && tasks && tasks.organizationUnitTasks &&
-                                            <WeightTaskOrganizationChart
+                                            <LoadTaskOrganizationChart
                                                 tasks={tasks.organizationUnitTasks}
                                                 listEmployee={user && user.employees}
                                                 units={childrenOrganizationalUnit}

@@ -15,9 +15,10 @@ import Swal from 'sweetalert2';
 import { TasksIsNotLinked } from './tasksIsNotLinked';
 import { TaskHasActionNotEvaluated } from './taskHasActionNotEvaluated';
 import { InprocessTask } from './inprocessTask';
-import { WeightTaskChart } from './weightTaskChart';
+import { LoadTaskChart } from './loadTaskChart';
 import { convertTime } from '../../../../helpers/stringMethod';
 import { getStorage } from '../../../../config';
+import LoadTaskInformation from './loadTaskInformation'
 class TaskDashboard extends Component {
 
     constructor(props) {
@@ -538,16 +539,13 @@ class TaskDashboard extends Component {
                 <div className="col-xs-12">
                     <div className="box box-primary">
                         <div className="box-header with-border">
-                            <div className="box-title">Dashboard tải công việc</div>
-                            <ToolTip
-                                type={"icon_tooltip"} materialIcon={"help"}
-                                dataTooltip={['Tải công việc tính theo công thức tổng các tỉ số: số ngày thực hiện công việc trong tháng/(số người thực hiện + số người phê duyệt + số người hỗ trợ)']}
-                            />
+                            <div className="box-title">{translate('task.task_management.load_task_chart')}</div>
+                            <LoadTaskInformation />
                         </div>
 
                         <div className="box-body qlcv">
                             {callAction &&
-                                <WeightTaskChart
+                                <LoadTaskChart
                                     callAction={!willUpdate}
                                     startMonth={startMonth}
                                     endMonth={endMonth}

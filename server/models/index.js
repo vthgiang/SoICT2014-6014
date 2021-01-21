@@ -116,4 +116,10 @@ module.exports = {
     ManufacturingCommand: require('./production/manufacturing/manufacturingCommand.model'),
     PurchasingRequest: require('./production/manufacturing/purchasingRequest.model'),
     WorkSchedule: require('./production/manufacturing/workSchedule.model'),
+
+    // project
+
+    Project: require('./project/project.model'),
+
+
 }

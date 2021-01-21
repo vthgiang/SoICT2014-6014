@@ -265,7 +265,7 @@ app.use("/sla", require("./modules/production/order/sla/sla.route"));
 app.use("/tax", require("./modules/production/order/tax/tax.route"));
 app.use("/payment", require("./modules/production/order/payment/payment.route"));
 app.use("/business-department", require("./modules/production/order/business-department/businessDepartment.route"));
-
+app.use("/projects", require("./modules/project/project.route"));
 app.use(router);
 
 /**
