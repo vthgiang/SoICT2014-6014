@@ -580,7 +580,7 @@ class UserDocumentsData extends Component {
                                             <td>{doc.versions.length ? this.formatDate(doc.versions[doc.versions.length - 1].effectiveDate) : null}</td>
                                             <td>{doc.versions.length ? this.formatDate(doc.versions[doc.versions.length - 1].expiredDate) : null}</td>
                                             <td>
-                                                <a href="#" onClick={() => this.requestDownloadDocumentFile(doc._id, doc.name, doc.versions.length - 1)}>
+                                                <a href="#" onClick={() => this.requestDownloadDocumentFile(doc._id, doc.name, doc.versions.length - 1, false)}>
                                                     <u>{doc.versions.length && doc.versions[doc.versions.length - 1].file ? translate('document.download') : ""}</u>
                                                 </a>
                                             </td>
