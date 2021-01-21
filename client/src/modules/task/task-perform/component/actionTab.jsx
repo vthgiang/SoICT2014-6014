@@ -7,7 +7,7 @@ import moment from 'moment';
 import 'moment/locale/vi';
 import './actionTab.css';
 
-import { ContentMaker, DateTimeConverter, ApiImage, ShowMoreShowLess } from '../../../../common-components';
+import { ContentMaker, DateTimeConverter, ApiImage, ShowMoreShowLess, SelectBox } from '../../../../common-components';
 
 import { getStorage } from '../../../../config';
 
@@ -29,6 +29,7 @@ class ActionTab extends Component {
         let lang = getStorage("lang")
         moment.locale(lang)
         this.state = {
+            filterLogAutoStopped: 'all',
             taskActions: [],
             currentUser: idUser,
             selected: "taskAction",
@@ -987,6 +988,12 @@ class ActionTab extends Component {
         }
     }
 
+    filterLogAutoStopped = (e) => {
+        this.setState({
+            filterLogAutoStopped: e.target.value
+        })
+    }
+
     render() {
         let task, informations, statusTask, documents, actionComments, taskComments, logTimer, logs;
         let idUser = getStorage("userId");
@@ -1012,6 +1019,17 @@ class ActionTab extends Component {
         if (performtasks.logs) {
             logs = performtasks.logs;
         };
+
+        switch (this.state.filterLogAutoStopped) {
+            case 'auto':
+                logTimer = logTimer.filter(item => item.autoStopped)
+                break;
+            case 'hand':
+                logTimer = logTimer.filter(item => !item.autoStopped)
+                break;
+            default:
+                break;
+        }
 
         return (
             <div>
@@ -1764,6 +1782,14 @@ class ActionTab extends Component {
 
                         {/* Chuyển qua tab Bấm giờ */}
                         <div className={selected === "logTimer" ? "active tab-pane" : "tab-pane"} id="logTimer">
+                            <div className="form-group">
+                                <label>Hình thức bấm giờ</label>
+                                <select className="form-control" value={this.state.filterLogAutoStopped} onChange={this.filterLogAutoStopped}>
+                                    <option value="all">Tất cả</option>
+                                    <option value="auto">Tắt tự động</option>
+                                    <option value="hand">Tắt bằng tay</option>
+                                </select>
+                            </div>
                             {logTimer && logTimer.map((item, index) =>
                                 <React.Fragment key={index}>
                                     {item.stoppedAt &&

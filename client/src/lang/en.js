@@ -2725,6 +2725,8 @@ export default {
                 detail_hide_info: "Hide information",
                 detail_show_info: "Show information",
                 detail_choose_role: "Change role",
+                detail_copy_task: "Copy task",
+                detail_save_as_template: "Save as template",
                 detail_route: "Navigate",
                 detail_route_task: "Navigate tasks",
 
