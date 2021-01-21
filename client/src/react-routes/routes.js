@@ -156,6 +156,7 @@ import ManufacturingLot from "../modules/production/manufacturing/manufacturing-
 
 import AnswerAuthQuestionPage from '../modules/auth/components/answerAuthQuestion';
 
+import { Project } from '../modules/project/component/managerTableProject';
 import UserGuide from '../modules/user-guide/components';
 class Routes extends Component {
     render() {
@@ -2069,7 +2070,7 @@ class Routes extends Component {
                         pageName={"manage_business_department"}
                         layout={Layout}
                         component={BusinessDepartment}
-                    /> 
+                    />
 
                     <PrivateRoute
                         isLoading={false}
@@ -2396,6 +2397,26 @@ class Routes extends Component {
                         component={ManufacturingLot}
                     />
 
+
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"/projects-management"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/projects-management",
+                                name: "manage_project",
+                                icon: "fa fa-folder-open",
+                            }
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/projects-management"}
+                        path={"/projects-management"}
+                        pageName={"manage_project"}
+                        layout={Layout}
+                        component={Project}
+                    />
                     <PrivateRoute
                         isLoading={false}
                         key={"user-guide"}

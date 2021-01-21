@@ -55,10 +55,10 @@ class SideBar extends Component {
                                         </Link>
                                     </React.Fragment>
                                 ) : (
-                                    <p style={{ fontSize: "10px" }}>
-                                        <i className="fa fa-circle text-success"></i> Online{" "}
-                                    </p>
-                                )}
+                                        <p style={{ fontSize: "10px" }}>
+                                            <i className="fa fa-circle text-success"></i> Online{" "}
+                                        </p>
+                                    )}
                             </div>
                         </div>
                         <ul className="sidebar-menu" data-widget="tree" ref="sideBarMenu">
@@ -567,6 +567,13 @@ class SideBar extends Component {
                                     name: "menu.task_template",
                                     icon: "fa fa-flash",
                                     path: "/task-template",
+                                }}
+                            />
+                            <Item
+                                item={{
+                                    name: "menu.manage_project",
+                                    icon: "fa fa-folder-open",
+                                    path: "/projects-management",
                                 }}
                             />
 
