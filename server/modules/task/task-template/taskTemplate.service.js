@@ -86,7 +86,7 @@ exports.getTaskTemplate = async (portal, id) => {
         .populate([
             { path: "organizationalUnit collaboratedWithOrganizationalUnits", select: "name managers" },
             { path: "readByEmployees", select: "name" },
-            { path: "creator responsibleEmployees accountableEmployees consultedEmployees informedEmployees", select: "name email" }]);
+            { path: "creator responsibleEmployees accountableEmployees consultedEmployees informedEmployees", select: "name email avatar" }]);
 }
 
 /**
