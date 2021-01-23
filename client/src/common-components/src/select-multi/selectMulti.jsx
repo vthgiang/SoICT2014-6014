@@ -1,4 +1,7 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { withTranslate } from 'react-redux-multilingual';
+
 import './selectMulti.css';
 
 class SelectMulti extends Component {
@@ -24,15 +27,45 @@ class SelectMulti extends Component {
 
     componentDidMount() {
         const { id, options, onChange, disabled = false } = this.props;
-        window.$("#" + id).multiselect(options);
 
+        window.$("#" + id).multiselect(options);
+       
         window.$("#" + id).on("change", () => {
-            let value = [].filter.call(this.refs.selectmulti.options, o => o.selected).map(o => o.value);
-            this.state.value = value;
+            let allItem = [].filter.call(this.refs.selectmulti.options, o => o).map(o => o.value);
+            let valueTemp = [].filter.call(this.refs.selectmulti.options, o => o.selected).map(o => o.value);
+            if (valueTemp[0] === 'selectAll') {
+                console.log(this.state.value, allItem, this.state.value.indexOf('selectAll') === -1)
+                if (this.state.value.indexOf('selectAll') === -1) {
+                    valueTemp = allItem;
+                    console.log("valueTemp", valueTemp)
+                } else {
+                    valueTemp.shift();
+                }
+                
+                this.setState(state => {
+                    return {
+                        ...state,
+                        value: valueTemp
+                    }
+                })
+            } else {
+                console.log(this.state.value.indexOf('selectAll') !== -1)
+                if (this.state.value.indexOf('selectAll') !== -1) {
+                    valueTemp = [];
+                }
+                this.setState(state => {
+                    return {
+                        ...state,
+                        value: valueTemp
+                    }
+                })
+            }
+
             if (onChange !== undefined) {
-                onChange(value);
+                onChange(valueTemp);
             }
         })
+
         if (disabled) {
             window.$("#" + id).multiselect("disable");
         }
@@ -73,12 +106,16 @@ class SelectMulti extends Component {
     }
 
     render() {
-        const { id, items, display = "" } = this.props;
+        const { id, items, display = "", options, translate } = this.props;
         const { value } = this.state;
+
         return (
             <React.Fragment>
                 <div className={`selectmulti ${display}`}>
                     <select className="form-control" style={{ display: "none" }} ref="selectmulti" id={id} multiple="multiple" value={value} onChange={() => { }}>
+                        { options && options.selectAllButton
+                            && <option key={`all-${id}`} value={'selectAll'} disabled={false}>{translate('task_template.select_all_units')}</option>
+                        }
                         {items.map(item => {
                             return <option key={item.value} value={item.value} disabled={item.disabled ? true : false}>{item.text}</option>
                         })}
@@ -89,4 +126,5 @@ class SelectMulti extends Component {
     }
 }
 
-export { SelectMulti };
+const connectedSelectMulti = connect(null, null)(withTranslate(SelectMulti));
+export { connectedSelectMulti as SelectMulti };

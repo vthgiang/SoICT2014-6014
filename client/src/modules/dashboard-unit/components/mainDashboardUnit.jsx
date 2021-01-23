@@ -273,11 +273,18 @@ class MainDashboardUnit extends Component {
     }
 
     handleUpdateData = () => {
-        let { currentDate, arrayUnitForUrgentChart } = this.state;
+        const { currentDate, arrayUnitForUrgentChart } = this.state;
+        
         let partDate = currentDate.split('-');
         let newDate = [partDate[2], partDate[1], partDate[0]].join('-');
+        let listUnitForUrgentChart = arrayUnitForUrgentChart;
 
-        this.props.getTaskInOrganizationUnitByDateNow(arrayUnitForUrgentChart, newDate)
+        if (listUnitForUrgentChart[0] === 'selectAll') {
+            listUnitForUrgentChart.shift();
+        }
+
+        console.log(listUnitForUrgentChart)
+        this.props.getTaskInOrganizationUnitByDateNow(listUnitForUrgentChart, newDate)
     }
 
     static getDerivedStateFromProps(props, state) {
@@ -347,6 +354,9 @@ class MainDashboardUnit extends Component {
         let listAllEmployees = (!organizationalUnits || organizationalUnits.length === department.list.length) ?
             employeesManager.listAllEmployees : employeesManager.listEmployeesOfOrganizationalUnits;
 
+        // Item select box chọn đơn vị
+        let listUnitSelect = listUnit.map(item => ({ value: item.id, text: item.name }));
+
         /* Lấy dữ liệu công việc của nhân viên trong đơn vị */
         let taskListByStatus = tasks.organizationUnitTasksInMonth ? tasks.organizationUnitTasksInMonth.tasks : null;
         let listEmployee = user.employees;
@@ -407,8 +417,12 @@ class MainDashboardUnit extends Component {
                                             <div className="form-group">
                                                 <label style={{ width: "auto" }}>{translate('kpi.organizational_unit.dashboard.organizational_unit')}</label>
                                                 <SelectMulti id="multiSelectOrganizationalUnitInpriority"
-                                                    items={listUnit.map(item => ({ value: item.id, text: item.name }))}
-                                                    options={{ nonSelectedText: translate('page.non_unit'), allSelectedText: translate('page.all_unit') }}
+                                                    items={listUnitSelect}
+                                                    options={{
+                                                        nonSelectedText: translate('page.non_unit'),
+                                                        allSelectedText: translate('page.all_unit'),
+                                                        selectAllButton: true
+                                                    }}
                                                     onChange={this.handleSelectOrganizationalUnitUrgent}
                                                     value={arrayUnitForUrgentChart}
                                                 >
