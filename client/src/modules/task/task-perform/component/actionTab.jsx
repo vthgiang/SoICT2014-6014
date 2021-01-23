@@ -1852,7 +1852,7 @@ class ActionTab extends Component {
                                     {item.title ? item.title : translate("task.task_perform.none_description")}&nbsp;
                                     ({moment(item.createdAt).format("HH:mm:ss DD/MM/YYYY")})
                                     <div>
-                                        {item.description ? item.description : translate("task.task_perform.none_description")}
+                                        {item.description ? parse(item.description) : translate("task.task_perform.none_description")}
                                     </div>
                                 </div>
                             )}

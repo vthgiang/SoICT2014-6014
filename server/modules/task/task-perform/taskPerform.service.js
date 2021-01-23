@@ -1504,14 +1504,16 @@ exports.addTaskLog = async (portal, params, body) => {
         title: title,
         description: description,
     };
-    let task = await Task(connect(DB_CONNECTION, portal))
+
+    await Task(connect(DB_CONNECTION, portal))
         .updateOne(
             { '_id': params.taskId },
             { $push: { logs: log } },
             { new: true }
         )
         .populate("logs.creator");
-    let taskLog = task.logs && task.logs.reverse();
+    
+    let taskLog = await this.getTaskLog(portal, params);
 
     return taskLog;
 };
