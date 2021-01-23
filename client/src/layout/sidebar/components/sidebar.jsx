@@ -569,6 +569,13 @@ class SideBar extends Component {
                                     path: "/task-template",
                                 }}
                             />
+                            <Item
+                                item={{
+                                    name: "menu.manage_project",
+                                    icon: "fa fa-folder-open",
+                                    path: "/projects-management",
+                                }}
+                            />
 
                             {/* Task management */}
                             <GroupItem

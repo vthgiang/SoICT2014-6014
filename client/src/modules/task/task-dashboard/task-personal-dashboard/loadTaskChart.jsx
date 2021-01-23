@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from 'react'
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { SelectMulti } from '../../../../common-components';
-import { taskManagementActions } from '../../task-management/redux/actions';
 import c3 from 'c3';
 import 'c3/c3.css';
 
@@ -10,7 +9,7 @@ const CHART_INFO = {
     currentRoles: []
 }
 
-const WeightTaskChart = (props) => {
+const LoadTaskChart = (props) => {
     const [role, setRole] = useState(["res", "acc", "con"]);
     const { translate } = props;
     let { startMonth, endMonth } = props;
@@ -115,7 +114,7 @@ const WeightTaskChart = (props) => {
             axis: {
                 x: {
                     label: {
-                        text: 'Thời gian',
+                        text: translate('task.task_management.time'),
                         position: 'outer-right',
                     },
 
@@ -124,7 +123,7 @@ const WeightTaskChart = (props) => {
                 },
                 y: {
                     label: {
-                        text: "Tải công việc",
+                        text: translate('task.task_management.load_task'),
                         position: 'outer-top',
                     },
 
@@ -178,5 +177,5 @@ function mapState(state) {
 const actions = {
 }
 
-const connectedWeightTask = connect(mapState, actions)(withTranslate(WeightTaskChart));
-export { connectedWeightTask as WeightTaskChart };
+const connectedLoadTask = connect(mapState, actions)(withTranslate(LoadTaskChart));
+export { connectedLoadTask as LoadTaskChart };

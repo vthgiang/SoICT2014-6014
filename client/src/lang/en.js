@@ -1038,6 +1038,8 @@ export default {
                 "Analysis manufacturing performance",
             manage_manufacturing_works: "Manage manufacturing works",
             manage_manufacturing_mill: "Manage manufacturing mill",
+            manage_project: "Manage Project",
+
 
             user_guide: "User guide",
         },
@@ -2726,6 +2728,8 @@ export default {
                 detail_hide_info: "Hide information",
                 detail_show_info: "Show information",
                 detail_choose_role: "Change role",
+                detail_copy_task: "Copy task",
+                detail_save_as_template: "Save as template",
                 detail_route: "Navigate",
                 detail_route_task: "Navigate tasks",
 
@@ -2931,7 +2935,12 @@ export default {
                 warning_hours: "hours",
                 warning_minutes: "minutes",
 
-                project: 'Project name (if you have)'
+                project: 'Project name (if you have)',
+
+                load_task: "Load task",
+                time: "Time",
+                load_task_chart: "Dashboard load task",
+                load_task_chart_unit: "Dashboard load task of unit",
             },
             task_perform: {
                 actions: "Actions",

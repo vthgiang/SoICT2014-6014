@@ -32,7 +32,7 @@ exports.links = [
             { path: '/system-admin/company/companies/:companyId/components', method: 'GET' },
             { path: '/system-admin/company/companies/:companyId/components', method: 'POST' },
             { path: '/system-admin/company/companies/:companyId/components/:componentId', method: 'DELETE' },
-            
+
             { path: '/system-admin/company/organizationalUnitImage', method: 'PATCH' },
             { path: '/system-admin/company/organizationalUnitImage', method: 'get' },
 
@@ -403,7 +403,7 @@ exports.links = [
             { path: '/task/task-templates', method: 'GET' },
             { path: '/task/task-templates/:id', method: 'GET' },
             { path: '/task/task-templates', method: 'POST' },
-            { path: '/task/task-templates/:id', method: 'DELETE'},
+            { path: '/task/task-templates/:id', method: 'DELETE' },
             { path: '/task/task-templates/:id', method: 'PATCH' },
             { path: '/task/task-templates/import', method: 'POST' },
 
@@ -498,7 +498,7 @@ exports.links = [
             { path: '/goods/:id', method: 'GET' },
             { path: '/goods/:id', method: 'DELETE' },
             { path: '/goods/by-category/:id', method: 'GET' },
-            
+
             { path: '/lot', method: 'GET' },
             { path: '/lot/get-inventory-dashboard', method: 'GET' },
             { path: '/lot/get-lot-by-good', method: 'GET' },
@@ -572,269 +572,282 @@ exports.links = [
             { path: "/plans/:id", method: "DELETE" },
             { path: "/plans/:id", method: "PATCH" },
             { path: "/plans/:id", method: "GET" },
+
+            //project
+            { path: "/projects/project", method: "GET" },
+            { path: "/projects/project", method: "POST" },
+            { path: "/projects/project/:id", method: "DELETE" },
+            { path: "/projects/project/:id", method: "PATCH" },
+
+            // router.get('/project', auth, ProjectController.get);
+            // router.get('/project/:id', auth, ProjectController.show);
+            // router.post('/project', auth, ProjectController.create);
+            // router.patch('/project/:id', auth, ProjectController.edit);
+            // router.delete('/project/:id', auth, ProjectController.delete);
+
         ]
-    },{
+    }, {
         url: '/system/settings',
         apis: ['@all']
-    },{
+    }, {
         url: '/system/components-default-management',
         apis: ['@all']
-    },{
+    }, {
         url: '/system/roles-default-management',
         apis: ['@all']
-    },{
+    }, {
         url: '/system/links-default-management',
         apis: ['@all']
-    },{
+    }, {
         url: '/home',
         apis: ['@all']
-    },{
+    }, {
         url: '/notifications',
         apis: ['@all']
-    },{
+    }, {
         url: '/manage-configuration',
         apis: ['@all']
-    },{
+    }, {
         url: '/system-management',
         apis: ['@all']
-    },{
+    }, {
         url: '/departments-management',
         apis: ['@all']
-    },{
+    }, {
         url: '/users-management',
         apis: ['@all']
-    },{
+    }, {
         url: '/roles-management',
         apis: ['@all']
-    },{
+    }, {
         url: '/links-management',
         apis: ['@all']
-    },{
+    }, {
         url: '/components-management',
         apis: ['@all']
-    },{
+    }, {
         url: '/documents-management',
         apis: ['@all']
-    },{
+    }, {
         url: '/documents/organizational-unit',
         apis: ['@all']
-    },{
+    }, {
         url: '/documents',
         apis: ['@all']
-    },{
+    }, {
         url: '/hr-employee-capacity',
         apis: ['@all']
-    },{
+    }, {
         url: '/hr-manage-work-plan',
         apis: ['@all']
-    },{
+    }, {
         url: '/hr-add-employee',
         apis: ['@all']
-    },{
+    }, {
         url: '/hr-list-employee',
         apis: ['@all']
-    },{
+    }, {
         url: '/hr-manage-department',
         apis: ['@all']
-    },{
+    }, {
         url: '/hr-update-employee',
         apis: ['@all']
-    },{
+    }, {
         url: '/hr-detail-employee',
         apis: ['@all']
-    },{
+    }, {
         url: '/hr-annual-leave-personal',
         apis: ['@all']
-    },{
+    }, {
         url: '/dashboard-personal',
         apis: ['@all']
-    },{
+    }, {
         url: '/dashboard-unit',
         apis: ['@all']
-    },{
+    }, {
         url: '/hr-manage-leave-application',
         apis: ['@all']
-    },{
+    }, {
         url: '/hr-salary-employee',
         apis: ['@all']
-    },{
+    }, {
         url: '/hr-annual-leave',
         apis: ['@all']
-    },{
+    }, {
         url: '/hr-discipline',
         apis: ['@all']
-    },{
+    }, {
         url: '/hr-dashboard-employee',
         apis: ['@all']
-    },{
+    }, {
         url: '/hr-time-keeping',
         apis: ['@all']
-    },{
+    }, {
         url: '/hr-trainning-course',
         apis: ['@all']
-    },{
+    }, {
         url: '/hr-account',
         apis: ['@all']
-    },{
+    }, {
         url: '/hr-training-plan',
         apis: ['@all']
-    },{
+    }, {
         url: '/hr-list-education',
         apis: ['@all']
-    },{
+    }, {
         url: '/hr-list-major',
         apis: ['@all']
-    },{
+    }, {
         url: '/hr-list-career-position',
         apis: ['@all']
-    },{
+    }, {
         url: '/hr-search-for-package',
         apis: ['@all']
-    },{
+    }, {
         url: '/kpi-units/create',
         apis: ['@all']
-    },{
+    }, {
         url: '/kpi-units/dashboard',
         apis: ['@all']
-    },{
+    }, {
         url: '/kpi-units/manager',
         apis: ['@all']
-    },{
+    }, {
         url: '/kpi-units/statistic',
         apis: ['@all']
-    },{
+    }, {
         url: '/kpi-member/manager',
         apis: ['@all']
-    },{
+    }, {
         url: '/kpi-member/dashboard',
         apis: ['@all']
-    },{
+    }, {
         url: '/kpi-personals/dashboard',
         apis: ['@all']
-    },{
+    }, {
         url: '/kpi-personals/create',
         apis: ['@all']
-    },{
+    }, {
         url: '/kpi-personals/manager',
         apis: ['@all']
-    },{
+    }, {
         url: '/task-template',
         apis: ['@all']
-    },{
+    }, {
         url: '/task-management',
         apis: ['@all']
-    },{
+    }, {
         url: '/task-management-unit',
         apis: ['@all']
-    },{
+    }, {
         url: '/task-process-management',
         apis: ['@all']
-    },{
+    }, {
         url: '/task-process-template',
         apis: ['@all']
-    },{
+    }, {
         url: '/task-management-dashboard',
         apis: ['@all']
-    },{
+    }, {
         url: '/task-organization-management-dashboard',
         apis: ['@all']
-    },{
+    }, {
         url: '/task',
         apis: ['@all']
-    },{
+    }, {
         url: '/dashboard-asset',
         apis: ['@all']
-    },{
+    }, {
         url: '/manage-type-asset',
         apis: ['@all']
-    },{
+    }, {
         url: '/manage-info-asset',
         apis: ['@all']
-    },{
+    }, {
         url: '/manage-maintainance-asset',
         apis: ['@all']
-    },{
+    }, {
         url: '/manage-usage-asset',
         apis: ['@all']
-    },{
+    }, {
         url: '/manage-depreciation-asset',
         apis: ['@all']
-    },{
+    }, {
         url: '/manage-incident-asset',
         apis: ['@all']
-    },{
+    }, {
         url: '/manage-asset-purchase-request',
         apis: ['@all']
-    },{
+    }, {
         url: '/manage-asset-use-request',
         apis: ['@all']
-    },{
+    }, {
         url: '/employee-manage-info-asset',
         apis: ['@all']
-    },{
+    }, {
         url: '/employee-manage-incident-asset',
         apis: ['@all']
-    },{
+    }, {
         url: '/employee-manage-asset-use-request',
         apis: ['@all']
-    },{
+    }, {
         url: '/asset-purchase-request',
         apis: ['@all']
-    },{
+    }, {
         url: '/asset-use-request',
         apis: ['@all']
-    },{
+    }, {
         url: '/manage-assigned-asset',
         apis: ['@all']
-    },{
+    }, {
         url: '/view-building-list',
         apis: ['@all']
-    },{
+    }, {
         url: '/task-report',
         apis: ['@all']
-    },{
+    }, {
         url: '/dashboard-inventory',
         apis: ['@all']
-    },{
+    }, {
         url: '/dashboard-bill',
         apis: ['@all']
-    },{
+    }, {
         url: '/stock-management',
         apis: ['@all']
-    },{
+    }, {
         url: '/bin-location-management',
         apis: ['@all']
-    },{
+    }, {
         url: '/category-management',
         apis: ['@all']
-    },{
+    }, {
         url: '/good-management',
         apis: ['@all']
-    },{
+    }, {
         url: '/bill-management',
         apis: ['@all']
-    },{
+    }, {
         url: '/inventory-management',
         apis: ['@all']
-    },{
+    }, {
         url: '/manage-sales-order',
         apis: ['@all']
-    },{
+    }, {
         url: '/manage-purchase-order',
         apis: ['@all']
-    },{
+    }, {
         url: '/manage-quote',
         apis: ['@all']
-    },{
+    }, {
         url: '/manage-sales-order-dashboard',
         apis: ['@all']
-    },{
+    }, {
         url: '/manage-discount',
         apis: ['@all']
-    },{
+    }, {
         url: '/manage-tax',
         apis: ['@all']
-    },{
+    }, {
         url: '/manage-sla',
         apis: ['@all']
     },
@@ -853,70 +866,75 @@ exports.links = [
     {
         url: '/crm/dashboard',
         apis: ['@all']
-    },{
+    }, {
         url: '/crm/customer',
         apis: ['@all']
-    },{
+    }, {
         url: '/crm/lead',
         apis: ['@all']
-    },{
+    }, {
         url: '/crm/group',
         apis: ['@all']
-    },{
+    }, {
         url: '/crm/care',
         apis: ['@all']
-    },{
+    }, {
         url: '/crm/generalConfiguration',
         apis: ['@all']
-    },{
+    }, {
         url: '/manage-plans',
         apis: ['@all']
-    },{
+    }, {
         url: '/manage-examples-1',
         apis: ['@all']
-    },{
+    }, {
         url: '/manage-examples-2',
         apis: ['@all']
-    },{
+    }, {
         url: '/manage-examples-hooks-1',
         apis: ['@all']
-    },{
+    }, {
         url: '/manage-examples-hooks-2',
         apis: ['@all']
-    },{
+    }, {
         url: '/manage-manufacturing-plan',
         apis: ['@all']
-    },{
+    }, {
         url: '/manage-manufacturing-command',
         apis: ['@all']
-    },{
+    }, {
         url: '/manage-work-schedule',
         apis: ['@all']
-    },{
+    }, {
         url: '/manage-purchasing-request',
         apis: ['@all']
-    },{
+    }, {
         url: '/manufacturing-dashboard',
         apis: ['@all']
-    },{
+    }, {
         url: '/analysis-manufacturing-performance',
         apis: ['@all']
-    },{
+    }, {
         url: '/manage-manufacturing-works',
         apis: ['@all']
-    },{
+    }, {
         url: '/manage-manufacturing-mill',
         apis: ['@all']
-    },{
+    }, {
         url: '/manage-manufacturing-lot',
         apis: ['@all']
-    },{
+    }, {
         url: '/hr-manage-field',
         apis: ['@all']
-    },{
+    }, {
         url: '/answer-auth-questions',
         apis: ['@all']
+    },
+    {
+        url: '/projects-management',
+        apis: ['@all']
     }, {
+
         url: '/user-guide',
         apis: ['@all']
     }, {

@@ -366,7 +366,7 @@ class TaskManagement extends Component {
         this.setState({
             parentTask: id
         });
-        window.$(`#addNewTask`).modal('show')
+        window.$(`#addNewTask-undefined`).modal('show')
     }
 
 

@@ -15,9 +15,10 @@ import Swal from 'sweetalert2';
 import { TasksIsNotLinked } from './tasksIsNotLinked';
 import { TaskHasActionNotEvaluated } from './taskHasActionNotEvaluated';
 import { InprocessTask } from './inprocessTask';
-import { WeightTaskChart } from './weightTaskChart';
+import { LoadTaskChart } from './loadTaskChart';
 import { convertTime } from '../../../../helpers/stringMethod';
 import { getStorage } from '../../../../config';
+import LoadTaskInformation from './loadTaskInformation'
 import moment from 'moment';
 class TaskDashboard extends Component {
 
@@ -536,26 +537,21 @@ class TaskDashboard extends Component {
                 </div>
                 {/* <div className="row"> */}
                 {/*Biểu đồ dashboard tải công việc */}
-                <div className="row">
-                    <div className="col-xs-12">
-                        <div className="box box-primary">
-                            <div className="box-header with-border">
-                                <div className="box-title">Dashboard tải công việc</div>
-                                <ToolTip
-                                    type={"icon_tooltip"} materialIcon={"help"}
-                                    dataTooltip={['Tải công việc tính theo công thức tổng các tỉ số: số ngày thực hiện công việc trong tháng/(số người thực hiện + số người phê duyệt + số người hỗ trợ)']}
-                                />
-                            </div>
+                <div className="col-xs-12">
+                    <div className="box box-primary">
+                        <div className="box-header with-border">
+                            <div className="box-title">{translate('task.task_management.load_task_chart')}</div>
+                            <LoadTaskInformation />
+                        </div>
 
-                            <div className="box-body qlcv">
-                                {callAction &&
-                                    <WeightTaskChart
-                                        callAction={!willUpdate}
-                                        startMonth={startMonth}
-                                        endMonth={endMonth}
-                                    />
-                                }
-                            </div>
+                        <div className="box-body qlcv">
+                            {callAction &&
+                                <LoadTaskChart
+                                    callAction={!willUpdate}
+                                    startMonth={startMonth}
+                                    endMonth={endMonth}
+                                />
+                            }
                         </div>
                     </div>
                 </div>
