@@ -24,6 +24,7 @@ export const taskManagementService = {
     getTaskAnalysOfUser,
     getTaskByPriorityInOrganizationUnit,
     getTimeSheetOfUser,
+    getAllUserTimeSheet
 };
 
 /**
@@ -476,5 +477,14 @@ function getTimeSheetOfUser(userId, month, year) {
         url: `${process.env.REACT_APP_SERVER}/task/time-sheet`,
         method: 'GET',
         params: { userId, month, year }
+    }, false, true, 'task.task_management');
+}
+
+
+function getAllUserTimeSheet(month, year) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/task/time-sheet/all`,
+        method: 'GET',
+        params: { month, year }
     }, false, true, 'task.task_management');
 }

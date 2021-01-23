@@ -30,6 +30,7 @@ export const taskManagementActions = {
     getTaskAnalysOfUser,
     getTaskByPriorityInOrganizationUnit,
     getTimeSheetOfUser,
+    getAllUserTimeSheet,
 };
 
 /**
@@ -681,6 +682,23 @@ function getTimeSheetOfUser(userId, month, year) {
             })
             .catch(error => {
                 dispatch({ type: taskManagementConstants.GET_TIME_SHEET_OF_USER_FAILE });
+            });
+    };
+}
+
+function getAllUserTimeSheet(month, year) {
+    console.log("thheheheh")
+    return dispatch => {
+        dispatch({ type: taskManagementConstants.GET_ALL_USER_TIME_SHEET_LOG_REQUEST });
+        taskManagementService.getAllUserTimeSheet(month, year)
+            .then(res => {
+                dispatch({
+                    type: taskManagementConstants.GET_ALL_USER_TIME_SHEET_LOG_SUCCESS,
+                    payload: res.data.content
+                });
+            })
+            .catch(error => {
+                dispatch({ type: taskManagementConstants.GET_ALL_USER_TIME_SHEET_LOG_FAILE });
             });
     };
 }

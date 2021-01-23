@@ -1797,8 +1797,8 @@ class ActionTab extends Component {
                                             <h3 className={`pull-right ${item.acceptLog ? 'text-green' : 'text-red'}`}>{this.convertTime(item.duration)}</h3>
                                             <a style={{ fontWeight: 700, cursor: "pointer" }}>{item.creator?.name} </a>
                                             <div>
-                                                <i className="fa fa-clock-o"> </i> {moment(item.startedAt).format("HH:mm:ss DD/MM/YYYY")}{" - "}
-                                                <i className="fa fa-clock-o"> </i> {moment(item.stoppedAt).format("HH:mm:ss DD/MM/YYYY")})
+                                                <i className="fa fa-clock-o"> </i> {moment(item.startedAt).format("DD/MM/YYYY HH:mm:ss")}{" - "}
+                                                <i className="fa fa-clock-o"> </i> {moment(item.stoppedAt).format("DD/MM/YYYY HH:mm:ss")})
                                             </div>
                                             <div>
                                                 <i className={`${item.autoStopped ? 'text-red fa fa-clock-o' : 'text-green fa fa-hand-pointer-o'}`}> {item.autoStopped ? 'Tự động' : 'Tắt bằng tay'}</i><br />

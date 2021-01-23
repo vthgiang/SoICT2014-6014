@@ -1122,6 +1122,7 @@ export default {
                 "Dashboard công việc đơn vị",
             task_management_process: "Danh sách quy trình",
             task_process_template: "Mẫu quy trình",
+            all_time_sheet_log: 'Thống kê bấm giờ',
 
             //*******START */
             // Quản lý tài sản

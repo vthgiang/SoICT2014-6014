@@ -2436,12 +2436,14 @@ exports.getUserTimeSheet = async (portal, userId, month, year) => {
 }
 
 /**
- * Lấy thống kê bấm giờ của tất cả các tài khoản trong hệ thống
+ * Lấy thống kê bấm giờ của tất cả các tài khoản trong hệ thống (lấy thóng kê tổng số bấm giờ hợp lệ)
  * @param {*} portal 
  * @param {*} month 
  * @param {*} year 
  */
 exports.getAllUserTimeSheet = async (portal, month, year) => {
+    let users = await User(connect(DB_CONNECTION, portal)).find().select("_id name email");
+
     let beginOfMonth = new Date(`${year}-${month}`); // cần chỉnh lại 
     let endOfMonth = new Date(year, month); // cần chỉnh lại
 
@@ -2450,7 +2452,7 @@ exports.getAllUserTimeSheet = async (portal, month, year) => {
             "timesheetLogs.startedAt": { $exists: true },
             "timesheetLogs.startedAt": { $gte: beginOfMonth },
             "timesheetLogs.stoppedAt": { $exists: true },
-            "timesheetLogs.stoppedAt": { $lte: endOfMonth }
+            "timesheetLogs.stoppedAt": { $lte: endOfMonth },
         } },
         { $unwind: "$timesheetLogs" },
         { $replaceRoot: { newRoot: "$timesheetLogs" } },
@@ -2458,7 +2460,27 @@ exports.getAllUserTimeSheet = async (portal, month, year) => {
             "startedAt": { $exists: true },
             "startedAt": { $gte: beginOfMonth },
             "stoppedAt": { $exists: true },
-            "stoppedAt": { $lte: endOfMonth }
+            "stoppedAt": { $lte: endOfMonth },
+            "acceptLog": true
         } },
+        {
+            $group: {
+                _id: "$creator",
+                total: { $sum: "$duration" }
+            }
+        },
     ]);
+
+    let allTS = [];
+    for(let i=0; i<tsl.length; i++){
+        let user = users.find(user => user?._id?.toString() === tsl[i]?._id?.toString());
+        if(user) {
+            allTS.push({
+                creator: user,
+                duration: tsl[i].total
+            })
+        }
+    }
+
+    return allTS;
 }

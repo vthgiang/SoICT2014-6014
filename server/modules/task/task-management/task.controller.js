@@ -873,3 +873,27 @@ exports.getUserTimeSheet = async(req, res) => {
         })
     }
 }
+
+exports.getAllUserTimeSheet = async(req, res) => {
+    try {
+        let portal = req.portal;
+        let {month, year} = req.query;
+        let timesheetlogs = await TaskManagementService.getAllUserTimeSheet(portal, month, year);
+        console.log("data", timesheetlogs)
+        await Logger.info(req.user.email, 'get_all_user_time_sheet_success', req.portal)
+        res.status(200).json({
+            success: true,
+            messages: ['get_all_user_time_sheet_success'],
+            content: timesheetlogs
+        })
+    } catch (error) {
+        console.log('Error', error)
+        await Logger.error(req.user.email, 'get_all_user_time_sheet_faile', req.portal)
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['get_all_user_time_sheet_faile'],
+            content: error
+        })
+    }
+}
+

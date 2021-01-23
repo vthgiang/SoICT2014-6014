@@ -157,6 +157,8 @@ import ManufacturingLot from "../modules/production/manufacturing/manufacturing-
 import AnswerAuthQuestionPage from '../modules/auth/components/answerAuthQuestion';
 
 import UserGuide from '../modules/user-guide/components';
+import AllTimeSheetLog from '../modules/task/task-dashboard/statistic/allTimeSheetLog';
+
 class Routes extends Component {
     render() {
         const {
@@ -2414,6 +2416,26 @@ class Routes extends Component {
                         pageName={"user_guide"}
                         layout={Layout}
                         component={UserGuide}
+                    />
+
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"all-time-sheet-log"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/time-sheet-log/all",
+                                name: "all_time_sheet_log",
+                                icon: "fa fa-newspaper-o",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/time-sheet-log/all"}
+                        path={"/time-sheet-log/all"}
+                        pageName={"all_time_sheet_log"}
+                        layout={Layout}
+                        component={AllTimeSheetLog}
                     />
 
                     {/* NOT FOUND */}

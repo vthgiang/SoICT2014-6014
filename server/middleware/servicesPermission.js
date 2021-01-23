@@ -308,6 +308,7 @@ exports.links = [
             { path: '/task/task-evaluations', method: 'GET' },
             { path: '/task/analys/user/:userId', method: 'GET' },
             { path: '/task/time-sheet', method: 'GET' },
+            { path: '/task/time-sheet/all', method: 'GET' },
 
             // Perform-task
             { path: '/performtask/tasks/:taskId', method: 'GET' },
@@ -917,6 +918,9 @@ exports.links = [
         apis: ['@all']
     }, {
         url: '/user-guide',
+        apis: ['@all']
+    }, {
+        url: '/time-sheet-log/all',
         apis: ['@all']
     }
 ];

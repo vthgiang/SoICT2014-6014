@@ -966,6 +966,7 @@ export default {
             task_organization_management_dashboard: "Unit task dashboard",
             task_management_process: "Process list",
             task_process_template: "Process template",
+            all_time_sheet_log: 'All Timesheetlogs',
             //*******START */
             // Quản lý tài sản
             // QUẢN LÝ
