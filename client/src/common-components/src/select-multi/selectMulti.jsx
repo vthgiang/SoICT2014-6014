@@ -35,7 +35,7 @@ class SelectMulti extends Component {
             let valueTemp = [].filter.call(this.refs.selectmulti.options, o => o.selected).map(o => o.value);
             
             if (valueTemp[0] === 'selectAll') {
-                if (this.state.value.indexOf('selectAll') === -1) {
+                if (this.state.value && this.state.value.indexOf('selectAll') === -1) {
                     valueTemp = allItem;
                 } else {
                     valueTemp.shift();
@@ -48,7 +48,7 @@ class SelectMulti extends Component {
                     }
                 })
             } else {
-                if (this.state.value.indexOf('selectAll') !== -1) {
+                if (this.state.value && this.state.value.indexOf('selectAll') !== -1) {
                     valueTemp = [];
                 }
                 this.setState(state => {
