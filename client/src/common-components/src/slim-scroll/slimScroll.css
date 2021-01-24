@@ -3,6 +3,12 @@
 	overflow: auto;
 }
 
+.StyleScrollDiv.StyleScrollDiv-y {
+	width: 100%;
+	overflow-y: scroll;
+    overflow-x: hidden;
+}
+
 /* Lưu ý: Một số trình duyệt có thể không hỗ trợ đổi style scroll bar */
 
 .StyleScrollDiv:hover::-webkit-scrollbar-track

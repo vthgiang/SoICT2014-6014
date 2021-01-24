@@ -26,18 +26,17 @@ class SelectMulti extends Component {
     }
 
     componentDidMount() {
-        const { id, options, onChange, disabled = false } = this.props;
+        const { id, options, onChange, disabled = false, slimScroll=true, height=200 } = this.props;
 
         window.$("#" + id).multiselect(options);
        
         window.$("#" + id).on("change", () => {
             let allItem = [].filter.call(this.refs.selectmulti.options, o => o).map(o => o.value);
             let valueTemp = [].filter.call(this.refs.selectmulti.options, o => o.selected).map(o => o.value);
+            
             if (valueTemp[0] === 'selectAll') {
-                console.log(this.state.value, allItem, this.state.value.indexOf('selectAll') === -1)
                 if (this.state.value.indexOf('selectAll') === -1) {
                     valueTemp = allItem;
-                    console.log("valueTemp", valueTemp)
                 } else {
                     valueTemp.shift();
                 }
@@ -49,7 +48,6 @@ class SelectMulti extends Component {
                     }
                 })
             } else {
-                console.log(this.state.value.indexOf('selectAll') !== -1)
                 if (this.state.value.indexOf('selectAll') !== -1) {
                     valueTemp = [];
                 }
@@ -68,6 +66,16 @@ class SelectMulti extends Component {
 
         if (disabled) {
             window.$("#" + id).multiselect("disable");
+        }
+
+        // Thêm css slim scroll
+        if (slimScroll) {
+            let multiSelect = window.$('.multiselect-container');
+
+            if (multiSelect.height() > height) {
+                multiSelect.addClass('StyleScrollDiv StyleScrollDiv-y');
+                multiSelect.height(height);
+            }
         }
     }
 
