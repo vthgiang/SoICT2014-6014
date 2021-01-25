@@ -1498,14 +1498,15 @@ exports.getPaginatedTasksByUser = async (portal, task, type = "paginated_task_by
         .skip(perPage * (page - 1)).limit(perPage)
         .populate({ path: "organizationalUnit creator parent" });
 
-    var totalCount = await Task(connect(DB_CONNECTION, portal)).countDocuments({
+    let totalCount = await Task(connect(DB_CONNECTION, portal)).countDocuments({
         $and: [
             keySearch,
             keySearchSpecial,
             keySearchPeriod
         ]
     });
-    var totalPages = Math.ceil(totalCount / perPage);
+
+    let totalPages = Math.ceil(totalCount / perPage);
     return {
         "tasks": tasks,
         "totalPage": totalPages,

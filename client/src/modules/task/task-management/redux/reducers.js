@@ -234,6 +234,7 @@ export function tasks(state = {
             return {
                 ...state,
                 tasks: action.payload.tasks,
+                totalCount: action.payload.totalCount,
                 pages: action.payload.totalPage,
                 isLoading: false
             };
