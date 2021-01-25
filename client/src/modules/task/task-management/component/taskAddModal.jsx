@@ -72,7 +72,7 @@ class TaskAddModal extends Component {
     isTaskFormValidated = () => {
         let result =
             this.validateTaskName(this.state.newTask.name, false) &&
-            this.validateTaskDescription(this.state.newTask.description, false) &&
+            this.validateTaskDescription(this.state.newTask.quillDescriptionDefault, false) &&
             this.validateTaskStartDate(this.state.newTask.startDate, false) &&
             this.validateTaskEndDate(this.state.newTask.endDate, false) &&
             this.validateTaskAccountableEmployees(this.state.newTask.accountableEmployees, false) &&
@@ -121,7 +121,7 @@ class TaskAddModal extends Component {
         let msg = TaskFormValidator.validateTaskDescription(value, translate);
 
         if (willUpdateState) {
-            this.state.newTask.description = value;
+            this.state.newTask.quillDescriptionDefault = value;
             this.state.newTask.errorOnDescription = msg;
             this.setState(state => {
                 return {
@@ -259,6 +259,7 @@ class TaskAddModal extends Component {
                         collaboratedWithOrganizationalUnits: taskTemplate.collaboratedWithOrganizationalUnits.map(item => { return { organizationalUnit: item._id, isAssigned: false } }),
                         name: taskTemplate.name,
                         description: taskTemplate.description,
+                        quillDescriptionDefault: taskTemplate.description,
                         priority: taskTemplate.priority,
                         responsibleEmployees: taskTemplate.responsibleEmployees.map(item => item.id),
                         accountableEmployees: taskTemplate.accountableEmployees.map(item => item.id),

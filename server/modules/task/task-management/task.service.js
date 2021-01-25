@@ -2506,13 +2506,13 @@ exports.getAllUserTimeSheet = async (portal, month, year) => {
 
     let allTS = [];
     for(let i=0; i<tsl.length; i++){
-        let user = users.find(user => user?._id?.toString() === tsl[i]?._id?.toString());
+        /*let user = users.find(user => user?._id?.toString() === tsl[i]?._id?.toString());
         if(user) {
             allTS.push({
                 creator: user,
                 duration: tsl[i].total
             })
-        }
+        }*/
     }
 
     return allTS;
