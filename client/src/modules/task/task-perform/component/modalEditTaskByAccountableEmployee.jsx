@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 
-import { DialogModal, ErrorLabel, SelectBox, DatePicker, QuillEditor } from '../../../../common-components/';
+import { DialogModal, ErrorLabel, SelectBox, DatePicker, QuillEditor, TreeSelect } from '../../../../common-components/';
 import { getStorage } from "../../../../config";
 
 import { UserActions } from "../../../super-admin/user/redux/actions";
@@ -35,6 +35,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
         let formula = task && task.formula;
         let parent = (task && task.parent) ? task.parent._id : "";
         let parentTask = task && task.parent;
+        let taskProject = task && task.taskProject;
 
         let info = {}, taskInfo = task && task.taskInformations;
         for (let i in taskInfo) {
@@ -130,6 +131,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
             formula: formula,
             parent: parent,
             parentTask: parentTask,
+            taskProjectName: taskProject,
             startDate: startDate,
             endDate: endDate,
             responsibleEmployees: responsibleEmployees,
@@ -1007,13 +1009,20 @@ class ModalEditTaskByAccountableEmployee extends Component {
         else if (data === "canceled") return translate('task.task_management.canceled');
     }
 
+    handleTaskProject = (value) => {
+        value = value.toString();
+        this.setState({
+            taskProjectName: value
+        })
+    }
+
     render() {
         console.log('new edit Task', this.state);
 
-        const { user, tasktemplates, department, translate } = this.props;
+        const { user, tasktemplates, department, translate, taskProject } = this.props;
         const { task, organizationalUnit, collaboratedWithOrganizationalUnits, errorOnEndDate, errorOnStartDate, errorTaskName, errorTaskDescription, errorOnFormula, taskName, taskDescription, statusOptions, priorityOptions, taskDescriptionDefault,
             startDate, endDate, formula, responsibleEmployees, accountableEmployees, consultedEmployees, informedEmployees, inactiveEmployees, parent, parentTask
-        } = this.state;
+            , taskProjectName } = this.state;
 
         const { tasks, perform, id, role, title, hasAccountable } = this.props;
 
@@ -1118,6 +1127,19 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                             value={parent}
                                             onChange={this.handleSelectedParent}
                                             onSearch={this.onSearch}
+                                        />
+                                    </div>
+
+                                    <div className="form-group">
+                                        <label>
+                                            {translate('task.task_management.project')}
+                                        </label>
+                                        <TreeSelect
+                                            id={`select-task-project-task-edit-by-accountable-${id}`}
+                                            mode='radioSelect'
+                                            data={taskProject.list}
+                                            handleChange={this.handleTaskProject}
+                                            value={[taskProjectName]}
                                         />
                                     </div>
                                 </div>
@@ -1393,8 +1415,8 @@ class ModalEditTaskByAccountableEmployee extends Component {
 }
 
 function mapStateToProps(state) {
-    const { tasks, user, tasktemplates, performtasks, department } = state;
-    return { tasks, user, tasktemplates, performtasks, department };
+    const { tasks, user, tasktemplates, performtasks, department, taskProject } = state;
+    return { tasks, user, tasktemplates, performtasks, department, taskProject };
 }
 
 const actionGetState = { //dispatchActionToProps

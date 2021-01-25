@@ -1714,7 +1714,7 @@ exports.getIdEvaluationOfThisMonth = async (portal, taskId) => {
  * edit task by responsible employee
  */
 exports.editTaskByResponsibleEmployees = async (portal, data, taskId) => {
-    let { name, description, kpi, user, progress, info, date, listInfo } = data;
+    let { name, description, kpi, user, progress, info, date, listInfo , taskProject} = data;
     let evaluateId;
 
     let listInfoTask = [];
@@ -1753,6 +1753,7 @@ exports.editTaskByResponsibleEmployees = async (portal, data, taskId) => {
                 name: name,
                 description: description,
                 progress: progress,
+                taskProject: taskProject,
             },
         },
         { $new: true }
@@ -1953,7 +1954,8 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
         informedEmployees,
         inactiveEmployees,
         collaboratedWithOrganizationalUnits,
-        listInfo
+        listInfo,
+        taskProject,
     } = data;
 
     // Chuẩn hóa parent
@@ -2033,6 +2035,7 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
                 status: status[0],
                 formula: formula,
                 parent: parent,
+                taskProject: taskProject,
 
                 startDate: startOfTask,
                 endDate: endOfTask,

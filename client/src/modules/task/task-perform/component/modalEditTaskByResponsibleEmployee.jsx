@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 
-import { DialogModal, ErrorLabel, QuillEditor } from '../../../../common-components/';
+import { DialogModal, ErrorLabel, QuillEditor, TreeSelect } from '../../../../common-components/';
 import { getStorage } from "../../../../config";
 
 import { TaskInformationForm } from './taskInformationForm';
@@ -28,7 +28,8 @@ class ModalEditTaskByResponsibleEmployee extends Component {
             idUser: data.idUser,
             info: data.info,
             date: data.date,
-            progress: data.task.progress
+            progress: data.task.progress,
+            taskProjectName: data.task.taskProject,
         }
     }
 
@@ -356,6 +357,13 @@ class ModalEditTaskByResponsibleEmployee extends Component {
         return errorMessage === undefined;
     }
 
+    handleTaskProject = (value) => {
+        value = value.toString();
+        this.setState({
+            taskProjectName: value
+        })
+    }
+
     handleChangeListInfo = (data) => {
         this.setState({ listInfo: data })
     }
@@ -443,8 +451,8 @@ class ModalEditTaskByResponsibleEmployee extends Component {
             progress: this.state.progress,
             // kpi: this.state.kpi ? this.state.kpi : [],
             info: this.state.info,
+            taskProject: this.state.taskProjectName,
         }
-        console.log('data', data);
 
         this.props.editTaskByResponsibleEmployees(data, taskId);
 
@@ -459,15 +467,14 @@ class ModalEditTaskByResponsibleEmployee extends Component {
     }
 
     render() {
-        const { KPIPersonalManager, translate } = this.props
-        const { task, taskName, taskDescription, kpi } = this.state;
+        const { KPIPersonalManager, translate, taskProject } = this.props
+        const { task, taskName, taskDescription, kpi, taskProjectName } = this.state;
         const { errorTaskName, errorTaskDescription, taskDescriptionDefault } = this.state;
         const { title, id, role, perform } = this.props;
 
         let listKpi = [];
         if (KPIPersonalManager && KPIPersonalManager.kpiSets) listKpi = KPIPersonalManager.kpiSets.kpis;
 
-        console.log('data edit', this.state);
         return (
             <div>
                 <React.Fragment>
@@ -508,6 +515,18 @@ class ModalEditTaskByResponsibleEmployee extends Component {
                                             placeholder={"Mô tả công việc"}
                                         />
                                         <ErrorLabel content={errorTaskDescription} />
+                                    </div>
+                                    <div className="form-group">
+                                        <label>
+                                            {translate('task.task_management.project')}
+                                        </label>
+                                        <TreeSelect
+                                            id={`select-task-project-task-edit-by-responsible-${id}`}
+                                            mode='radioSelect'
+                                            data={taskProject.list}
+                                            handleChange={this.handleTaskProject}
+                                            value={[taskProjectName]}
+                                        />
                                     </div>
                                 </div>
 
@@ -553,8 +572,8 @@ class ModalEditTaskByResponsibleEmployee extends Component {
 }
 
 function mapStateToProps(state) {
-    const { tasks, KPIPersonalManager } = state;
-    return { tasks, KPIPersonalManager };
+    const { tasks, KPIPersonalManager, taskProject } = state;
+    return { tasks, KPIPersonalManager, taskProject };
 }
 
 const actionGetState = { //dispatchActionToProps
