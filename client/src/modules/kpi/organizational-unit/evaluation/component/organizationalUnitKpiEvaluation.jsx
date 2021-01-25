@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { evaluateActions } from '../redux/actions';
 // import { kpiUnitActions } from '../../../../redux-actions/CombineActions';
 import { ModalDataResultTask } from './taskResultDataModal';
+import parse from 'html-react-parser';
 
 class KPIUnitEvaluate extends Component {
     componentDidMount() {
@@ -76,7 +77,7 @@ class KPIUnitEvaluate extends Component {
                                                             <tr key={item._id}>
                                                                 <td>{index + 1}</td>
                                                                 <td>{item.name}</td>
-                                                                <td>{item.criteria}</td>
+                                                                <td>{parse(item.criteria)}</td>
                                                                 <td>{item.time}</td>
                                                                 <td>{item.weight}</td>
                                                                 <td>{item.confirm ? "Đã kích hoạt" : "Chưa kích hoạt"}</td>
