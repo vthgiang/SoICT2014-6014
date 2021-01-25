@@ -84,22 +84,17 @@ class MainDashboardUnit extends Component {
         let partMonth = month.split('-');
         let newMonth = [partMonth[1], partMonth[0]].join('-');
 
-        let listUnit = arrayUnitShow;
-        if (listUnit[0] === 'selectAll') {
-            listUnit.shift();
-        }
-
         this.setState({
-            organizationalUnits: listUnit,
+            organizationalUnits: arrayUnitShow,
             monthShow: month
         });
 
-        let arrayUnit = listUnit;
-        if (listUnit.length === department.list.length) {
-            listUnit = department.list.map(x => x._id);
+        let arrayUnit = arrayUnitShow;
+        if (arrayUnitShow.length === department.list.length) {
+            arrayUnitShow = department.list.map(x => x._id);
             arrayUnit = undefined;
-        } else if (listUnit.length === 0) {
-            listUnit = childOrganizationalUnit.map(x => x.id);
+        } else if (arrayUnitShow.length === 0) {
+            arrayUnitShow = childOrganizationalUnit.map(x => x.id);
             arrayUnit = childOrganizationalUnit.map(x => x.id);
         }
 
@@ -112,23 +107,23 @@ class MainDashboardUnit extends Component {
         this.props.getAllEmployee({ status: ["active", 'maternity_leave', 'unpaid_leave', 'probationary', 'sick_leave'], page: 0, limit: 10000, birthdate: newMonth, organizationalUnits: arrayUnitShow });
 
         /* Lấy dữ liệu công việc của nhân viên trong đơn vị */
-        this.props.getAllEmployeeOfUnitByIds(listUnit);
-        this.props.getTaskInOrganizationUnitByMonth(listUnit, newMonth, newMonth, "in_month");
+        this.props.getAllEmployeeOfUnitByIds(arrayUnitShow);
+        this.props.getTaskInOrganizationUnitByMonth(arrayUnitShow, newMonth, newMonth, "in_month");
 
         /** Lấy dữ liệu công việc sắp hết hạn */
-        this.props.getTaskByUser({ organizationUnitId: listUnit, type: "organizationUnit", })
+        this.props.getTaskByUser({ organizationUnitId: arrayUnitShow, type: "organizationUnit", })
 
-        // this.props.searchAnnualLeaves({ organizationalUnits: listUnit, month: newMonth });
+        // this.props.searchAnnualLeaves({ organizationalUnits: arrayUnitShow, month: newMonth });
         /* Lấy dánh sách khen thưởng, kỷ luật */
-        this.props.getListPraise({ organizationalUnits: listUnit, month: newMonth });
-        this.props.getListDiscipline({ organizationalUnits: listUnit, month: newMonth });
+        this.props.getListPraise({ organizationalUnits: arrayUnitShow, month: newMonth });
+        this.props.getListDiscipline({ organizationalUnits: arrayUnitShow, month: newMonth });
 
         /* Lấy dữ liệu lương nhân viên*/
-        this.props.searchSalary({ callApiDashboard: true, organizationalUnits: listUnit, month: newMonth });
+        this.props.searchSalary({ callApiDashboard: true, organizationalUnits: arrayUnitShow, month: newMonth });
         this.props.searchSalary({ callApiDashboard: true, month: newMonth });
 
         /* Lấy dữ liệu nghỉ phép, tăng ca của nhân viên */
-        this.props.getTimesheets({ organizationalUnits: listUnit, startDate: newMonth, endDate: newMonth });
+        this.props.getTimesheets({ organizationalUnits: arrayUnitShow, startDate: newMonth, endDate: newMonth });
 
     }
 
@@ -282,13 +277,8 @@ class MainDashboardUnit extends Component {
         
         let partDate = currentDate.split('-');
         let newDate = [partDate[2], partDate[1], partDate[0]].join('-');
-        let listUnitForUrgentChart = arrayUnitForUrgentChart;
 
-        if (listUnitForUrgentChart[0] === 'selectAll') {
-            listUnitForUrgentChart.shift();
-        }
-
-        this.props.getTaskInOrganizationUnitByDateNow(listUnitForUrgentChart, newDate)
+        this.props.getTaskInOrganizationUnitByDateNow(arrayUnitForUrgentChart, newDate)
     }
 
     static getDerivedStateFromProps(props, state) {
@@ -425,7 +415,8 @@ class MainDashboardUnit extends Component {
                                                     options={{
                                                         nonSelectedText: translate('page.non_unit'),
                                                         allSelectedText: translate('page.all_unit'),
-                                                        selectAllButton: true
+                                                        includeSelectAllOption: true,
+                                                        maxHeight: 200
                                                     }}
                                                     onChange={this.handleSelectOrganizationalUnitUrgent}
                                                     value={arrayUnitForUrgentChart}
@@ -475,7 +466,8 @@ class MainDashboardUnit extends Component {
                                 options={{
                                     nonSelectedText: translate('page.non_unit'),
                                     allSelectedText: translate('page.all_unit'),
-                                    selectAllButton: true
+                                    includeSelectAllOption: true,
+                                    maxHeight: 200
                                 }}
                                 onChange={this.handleSelectOrganizationalUnit}
                                 value={arrayUnitShow}

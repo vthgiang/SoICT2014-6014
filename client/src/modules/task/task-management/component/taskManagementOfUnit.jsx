@@ -80,7 +80,7 @@ class TaskManagementOfUnit extends Component {
             this.setState((state) => {
                 return {
                     ...state,
-                    organizationalUnit: ['selectAll', ...units],
+                    organizationalUnit: units,
                     selectBoxUnit: childrenOrganizationalUnit
                 }
             });
@@ -227,12 +227,8 @@ class TaskManagementOfUnit extends Component {
     handleUpdateData = () => {
         let { organizationalUnit, status, priority, special, name, startDate, endDate, perPage, isAssigned } = this.state;
 
-        let organizationalUnitTemp = organizationalUnit;
-        if (organizationalUnitTemp[0] === 'selectAll') {
-            organizationalUnitTemp.shift();
-        }
-        if (organizationalUnitTemp && organizationalUnitTemp.length !== 0) {
-            this.props.getPaginatedTasksByOrganizationalUnit(organizationalUnitTemp, 1, perPage, status, priority, special, name, startDate, endDate, isAssigned);
+        if (organizationalUnit && organizationalUnit.length !== 0) {
+            this.props.getPaginatedTasksByOrganizationalUnit(organizationalUnit, 1, perPage, status, priority, special, name, startDate, endDate, isAssigned);
         }
         this.setState(state => {
             return {
@@ -437,7 +433,8 @@ class TaskManagementOfUnit extends Component {
                                             options={{
                                                 nonSelectedText: organizationalUnit.length !== 0 ? translate('task.task_management.select_department') : translate('general.not_org_unit'),
                                                 allSelectedText: translate(`task.task_management.select_all_department`),
-                                                selectAllButton: true
+                                                includeSelectAllOption: true,
+                                                maxHeight: 200
                                             }}
                                             value={organizationalUnit}
                                         >

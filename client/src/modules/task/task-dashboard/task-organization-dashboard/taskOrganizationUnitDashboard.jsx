@@ -125,7 +125,7 @@ class TaskOrganizationUnitDashboard extends Component {
                     startMonth: nextState.startMonth,
                     endMonth: nextState.endMonth,
                     checkUnit: nextState.checkUnit,
-                    idsUnit: !idsUnit.length ? ['selectAll', ...units] : nextState.idsUnit,
+                    idsUnit: !idsUnit.length ? units : nextState.idsUnit,
                     selectBoxUnit: childrenOrganizationalUnit
                 }
             });
@@ -217,11 +217,7 @@ class TaskOrganizationUnitDashboard extends Component {
                 }
             })
 
-            let organizationalUnitTemp = this.state.idsUnit;
-            if (organizationalUnitTemp[0] === 'selectAll') {
-                organizationalUnitTemp.shift();
-            }
-            await this.props.getTaskInOrganizationUnitByMonth(organizationalUnitTemp, this.state.startMonth, this.state.endMonth);
+            await this.props.getTaskInOrganizationUnitByMonth(this.state.idsUnit, this.state.startMonth, this.state.endMonth);
         }
     }
     render() {
@@ -274,7 +270,8 @@ class TaskOrganizationUnitDashboard extends Component {
                                             options={{
                                                 nonSelectedText: idsUnit.length !== 0 ? translate('task.task_management.select_department') : translate('general.not_org_unit'),
                                                 allSelectedText: translate('kpi.evaluation.dashboard.all_unit'),
-                                                selectAllButton: true
+                                                includeSelectAllOption: true,
+                                                maxHeight: 200
                                             }}
                                             onChange={this.handleChangeOrganizationUnit}
                                             value={idsUnit}
