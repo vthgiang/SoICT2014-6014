@@ -167,6 +167,13 @@ class Content extends Component {
                             date = [date[2], date[1], date[0]].join("-")
                             str = date + " " + time[0]
                         }
+
+                        if (moment(str, 'HH:mm:SS DD/MM/YYYY', true).isValid()) {
+                            let time = str.split(" ")
+                            let date = time[1].split("/")
+                            date = [date[2], date[1], date[0]].join("-")
+                            str = date + " " + time[0]
+                        }
                         return str;
                     }
 
