@@ -435,7 +435,7 @@ class TaskManagementOfUnit extends Component {
                                             items={selectBoxUnit.map(item => { return { value: item.id, text: item.name } })}
                                             onChange={this.handleSelectOrganizationalUnit}
                                             options={{
-                                                nonSelectedText: organizationalUnit.length !== 0 ? translate('task.task_management.select_department') : "Bạn chưa có đơn vị",
+                                                nonSelectedText: organizationalUnit.length !== 0 ? translate('task.task_management.select_department') : translate('general.not_org_unit'),
                                                 allSelectedText: translate(`task.task_management.select_all_department`),
                                                 selectAllButton: true
                                             }}
@@ -610,7 +610,7 @@ class TaskManagementOfUnit extends Component {
                     : currentOrganizationalUnitLoading
                     && <div className="box">
                         <div className="box-body">
-                            <h4>Bạn chưa có đơn vị</h4>
+                            <h4>{translate('general.not_org_unit')}</h4>
                         </div>
                     </div>
                 }

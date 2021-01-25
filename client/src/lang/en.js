@@ -61,6 +61,7 @@ export default {
                 not_existing_error: "Value not existing",
                 existing_error: "Value existing",
             },
+            not_org_unit: "Not have organizational unit",
         },
 
         intro: {

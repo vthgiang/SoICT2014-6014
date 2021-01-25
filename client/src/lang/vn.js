@@ -62,6 +62,7 @@ export default {
                 not_existing_error: "Giá trị không tồn tại",
                 existing_error: "Giá trị đã tồn tại",
             },
+            not_org_unit: "Bạn chưa có đơn vị",
         },
 
         intro: {
