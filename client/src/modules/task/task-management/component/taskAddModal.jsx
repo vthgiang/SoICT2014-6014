@@ -72,7 +72,7 @@ class TaskAddModal extends Component {
     isTaskFormValidated = () => {
         let result =
             this.validateTaskName(this.state.newTask.name, false) &&
-            this.validateTaskDescription(this.state.newTask.quillDescriptionDefault, false) &&
+            this.validateTaskDescription(this.state.newTask.description, false) &&
             this.validateTaskStartDate(this.state.newTask.startDate, false) &&
             this.validateTaskEndDate(this.state.newTask.endDate, false) &&
             this.validateTaskAccountableEmployees(this.state.newTask.accountableEmployees, false) &&
@@ -121,11 +121,14 @@ class TaskAddModal extends Component {
         let msg = TaskFormValidator.validateTaskDescription(value, translate);
 
         if (willUpdateState) {
-            this.state.newTask.quillDescriptionDefault = value;
-            this.state.newTask.errorOnDescription = msg;
             this.setState(state => {
                 return {
                     ...state,
+                    newTask: {
+                        ...state.newTask,
+                        description: value,
+                        errorOnDescription: msg
+                    }
                 };
             });
         }
@@ -562,8 +565,9 @@ class TaskAddModal extends Component {
                                 <div className={`form-group ${newTask.errorOnDescription === undefined ? "" : "has-error"}`}>
                                     <label className="control-label">{translate('task.task_management.detail_description')}<span className="text-red">*</span></label>
                                     <QuillEditor
-                                        // id={`task-add-modal-${id}`}
-                                        toolbar={false}
+                                        id={`task-add-modal`}
+                                        table={false}
+                                        embeds={false}
                                         getTextData={this.handleChangeTaskDescription}
                                         height={80}
                                         quillValueDefault={newTask.quillDescriptionDefault}
