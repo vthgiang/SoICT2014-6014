@@ -7,11 +7,23 @@ class SlimScroll extends Component {
         this.state = {};
     }
     componentDidUpdate() {
-        this.addStyleCSS();
+        const { verticalScroll=false } = this.props
+
+        if (verticalScroll) {
+            this.addVerticalScrollStyleCss();
+        } else {
+            this.addStyleCSS();
+        }
     }
 
     componentDidMount() {
-        this.addStyleCSS();
+        const { verticalScroll=false } = this.props
+
+        if (verticalScroll) {
+            this.addVerticalScrollStyleCss();
+        } else {
+            this.addStyleCSS();
+        }
     }
 
     addStyleCSS = () => {
@@ -29,6 +41,22 @@ class SlimScroll extends Component {
                 outer.removeClass("StyleScrollDiv");
                 inner.width("");
                 inner.css("maxWidth", ""); // Safari
+            }
+        }
+    }
+
+    addVerticalScrollStyleCss = () => {
+        const { outerComponentId, maxHeight=200, activate } = this.props;
+
+        let outer = window.$(`#${outerComponentId}`);
+        console.log("outerComponentId", outerComponentId, outer)
+        if (outer) {
+            if (activate) {
+                outer.addClass("StyleScrollDiv StyleScrollDiv-y");
+                outer.css("maxHeight", maxHeight); 
+            } else {
+                outer.removeClass("StyleScrollDiv StyleScrollDiv-y");
+                outer.css("maxHeight", "");
             }
         }
     }

@@ -548,7 +548,7 @@ class TrendsInChildrenOrganizationalUnitKpiChart extends Component {
             dataChart.unshift(titleX);
         }
 
-        this.chart = c3.generate({
+        let chart = c3.generate({
             bindto: this.refs.chart,                
 
             size: {                                 
@@ -588,8 +588,31 @@ class TrendsInChildrenOrganizationalUnitKpiChart extends Component {
                         outer: true
                     }
                 }
+            },
+
+            legend: {
+                show: false
             }
         });
+
+        d3.select('#trendsInUnit').insert('div', '.chart').attr('class', 'legend StyleScrollDiv StyleScrollDiv-y').selectAll('span')
+            .data(dataChart.filter((item, index) => index > 0).map(item => item[0]))
+            .enter().append('div')
+            .attr('data-id', function (id) { return id; })
+            .html(function (id) { return id; })
+            .each(function (id) {
+                d3.select(this).style('border-left', `5px solid ${chart.color(id)}`);
+                d3.select(this).style('padding-left', `5px`);
+            })
+            .on('mouseover', function (id) {
+                chart.focus(id);
+            })
+            .on('mouseout', function (id) {
+                chart.revert();
+            })
+            .on('click', function (id) {
+                chart.toggle(id);
+            });
     }
     
     render() {
@@ -604,7 +627,10 @@ class TrendsInChildrenOrganizationalUnitKpiChart extends Component {
         return (
             <React.Fragment>
                 {currentKpi ?
-                    <section ref="chart"></section>
+                    <section id={"trendsInUnit"} className="c3-chart-container">
+                        <div ref="chart"></div>
+                        <label><i className="fa fa-exclamation-circle" style={{ color: '#06c', paddingRight: '5px' }}/>{translate('kpi.evaluation.employee_evaluation.KPI_list')}</label>
+                    </section>
                     : organizationalUnitKpiLoading && <section>{translate('kpi.organizational_unit.dashboard.no_data')}</section>
                 }
             </React.Fragment>

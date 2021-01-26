@@ -5,6 +5,7 @@ import { createUnitKpiActions } from '../../creation/redux/actions';
 
 import { withTranslate } from 'react-redux-multilingual';
 
+import * as d3 from "d3";
 import c3 from 'c3';
 import 'c3/c3.css';
 
@@ -147,7 +148,7 @@ class DistributionOfOrganizationalUnitKpiChart extends Component {
         let dataPieChart;
         dataPieChart = this.setDataPieChart();
 
-        this.chart = c3.generate({
+        let chart = c3.generate({
             bindto: this.refs.chart,
 
             data: {
@@ -161,8 +162,31 @@ class DistributionOfOrganizationalUnitKpiChart extends Component {
                         return value;
                     }
                 }
+            },
+
+            legend: {
+                show: false
             }
         });
+
+        d3.select('#distributionOfUnit').insert('div', '.chart').attr('class', 'legend StyleScrollDiv StyleScrollDiv-y').selectAll('span')
+            .data(dataPieChart.map(item => item[0]))
+            .enter().append('div')
+            .attr('data-id', function (id) { return id; })
+            .html(function (id) { return id; })
+            .each(function (id) {
+                d3.select(this).style('border-left', `5px solid ${chart.color(id)}`);
+                d3.select(this).style('padding-left', `5px`);
+            })
+            .on('mouseover', function (id) {
+                chart.focus(id);
+            })
+            .on('mouseout', function (id) {
+                chart.revert();
+            })
+            .on('click', function (id) {
+                chart.toggle(id);
+            });
     }
 
     render() {
@@ -177,7 +201,10 @@ class DistributionOfOrganizationalUnitKpiChart extends Component {
         return (
             <React.Fragment>
                 {currentKpi ?
-                    <section ref="chart"></section>
+                    <section id={"distributionOfUnit"} className="c3-chart-container">
+                        <div ref="chart"></div>
+                        <label><i className="fa fa-exclamation-circle" style={{ color: '#06c', paddingRight: '5px' }}/>{translate('kpi.evaluation.employee_evaluation.KPI_list')}</label>
+                    </section>
                     : organizationalUnitKpiLoading && <section>{translate('kpi.organizational_unit.dashboard.no_data')}</section>
                 }
             </React.Fragment>
