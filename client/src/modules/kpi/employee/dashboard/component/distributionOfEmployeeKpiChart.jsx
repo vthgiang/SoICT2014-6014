@@ -203,6 +203,7 @@ class DistributionOfEmployeeKpiChart extends Component {
                 {currentEmployeeKpiSet ?
                     <section className="c3-chart-container">
                         <div ref="chart"></div>
+                        <label><i className="fa fa-exclamation-circle" style={{ color: '#06c', paddingRight: '5px' }}/>{translate('kpi.evaluation.employee_evaluation.KPI_list')}</label>
                     </section>
                     : <section>{translate('kpi.organizational_unit.dashboard.no_data')}</section>
                 }

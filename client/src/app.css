@@ -134,6 +134,7 @@ text.c3-axis-x-label, text.c3-axis-y-label {
     white-space: nowrap; 
     overflow: hidden;
     text-overflow: ellipsis; 
+    cursor: pointer;
 }
 
 /*
