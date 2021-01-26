@@ -10,8 +10,16 @@ import audioFile from './sound.mp3';
 class Notification extends Component {
     constructor(props) {
         super(props);
+        let sound;
+        if (!localStorage.getItem("sound")) {
+            localStorage.setItem("sound", JSON.stringify(true));
+            sound = JSON.parse(localStorage.getItem("sound"));
+        } else {
+            sound = JSON.parse(localStorage.getItem("sound"));
+        }
         this.state = {
-            notify: []
+            notify: [],
+            sound,
         }
     }
 
@@ -23,8 +31,11 @@ class Notification extends Component {
         this.props.getAllManualNotifications();
         this.props.getAllNotifications();
         this.props.socket.io.on('new notifications', data => {
-            const audio = new Audio(audioFile);
-            audio.play();
+            const { sound } = this.state;
+            if (sound) {
+                const audio = new Audio(audioFile);
+                audio.play();
+            }
             this.props.receiveNofitication(data);
         });
     }
@@ -49,9 +60,22 @@ class Notification extends Component {
         if (valueConvert === 5) return "#ff0707"
     }
 
+    handleOnOffSound = () => {
+        this.setState({
+            ...this.state,
+            sound: !this.state.sound,
+        })
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        if (prevState.sound !== this.state.sound) {
+            localStorage.setItem("sound", JSON.stringify(this.state.sound));
+        }
+    }
+
     render() {
         const { translate } = this.props;
-        const { notify } = this.state;
+        const { notify, sound } = this.state;
         let notifyUnRead = notify.filter(notification => !notification.readed);
         const count = notifyUnRead.length;
         let notifyTaskUnRead = [], notifyAssetUnRead = [], notifyKPIUnRead = [], notifyDefault = [];
@@ -89,9 +113,11 @@ class Notification extends Component {
                             <a className="notify-action" href="#allNotificationOfTask" data-toggle="tab">{`Công việc (${notifyTaskUnRead.length})`}</a>
                             <a className="notify-action" href="#allNotificationOfAsset" data-toggle="tab">{`Tài sản (${notifyAssetUnRead.length})`}</a>
                             <a className="notify-action" href="#allNotificationOfKPI" data-toggle="tab">{`KPI (${notifyKPIUnRead.length})`}</a>
-                            <a style={{ display: 'flex', alignItems: 'center', }} title={'âm thông báo đang bật'}>
-                                <span className="material-icons" style={{ cursor: 'pointer' }}>
-                                    volume_up
+                            <a style={{ display: 'flex', alignItems: 'center', }}>
+                                <span className="material-icons" style={{ cursor: 'pointer' }} onClick={this.handleOnOffSound}>
+                                    {
+                                        sound ? `volume_up` : `volume_off`
+                                    }
                                 </span></a>
                         </div>
 
