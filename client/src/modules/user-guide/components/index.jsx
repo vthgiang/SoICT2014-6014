@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
-import { UserGuideSystem, UserGuideKpi, UserGuideTask } from './config.js'
+import { UserGuideSystem, UserGuideKpi, UserGuideTask, UserGuideDocument, UserGuideAsset, UserGuideHr } from './config.js'
 const UserGuide = (props) => {
 
 
@@ -92,7 +92,7 @@ const UserGuide = (props) => {
                                                             <span className="material-icons" style={{ marginRight: '10px' }}>
                                                                 link
                                                             </span>
-                                                            <a href={`${process.env.REACT_APP_WEBSITE + obj.detailPage}?name=task&type=manager&id=${obj.id}&fileType=${obj.fileType}`} title="Xem chi tiet" target="_blank">{obj.pageName}</a>
+                                                            <a href={`${process.env.REACT_APP_WEBSITE + obj.detailPage}?name=task&type=manager&id=${obj.id}&fileName=${obj.fileName}`} title="Xem chi tiet" target="_blank">{obj.pageName}</a>
                                                         </div>
                                                     </li>
                                                 ))
@@ -115,7 +115,7 @@ const UserGuide = (props) => {
                                                             <span className="material-icons" style={{ marginRight: '10px' }}>
                                                                 link
                                                     </span>
-                                                            <a href={`${process.env.REACT_APP_WEBSITE + obj.detailPage}?name=task&type=user&id=${obj.id}&fileType=${obj.fileType}`} title="Xem chi tiet" target="_blank">{obj.pageName}</a>
+                                                            <a href={`${process.env.REACT_APP_WEBSITE + obj.detailPage}?name=task&type=user&id=${obj.id}&fileName=${obj.fileName}`} title="Xem chi tiet" target="_blank">{obj.pageName}</a>
                                                         </div>
                                                     </li>
                                                 ))
@@ -150,7 +150,7 @@ const UserGuide = (props) => {
                                                             <span className="material-icons" style={{ marginRight: '10px' }}>
                                                                 link
                                                             </span>
-                                                            <a href={`${process.env.REACT_APP_WEBSITE + obj.detailPage}?name=KPI&type=manager&id=${obj.id}&fileType=${obj.fileType}`} title="Xem chi tiet" target="_blank">{obj.pageName}</a>
+                                                            <a href={`${process.env.REACT_APP_WEBSITE + obj.detailPage}?name=KPI&type=manager&id=${obj.id}&fileName=${obj.fileName}`} title="Xem chi tiet" target="_blank">{obj.pageName}</a>
                                                         </div>
                                                     </li>
                                                 ))
@@ -173,7 +173,7 @@ const UserGuide = (props) => {
                                                             <span className="material-icons" style={{ marginRight: '10px' }}>
                                                                 link
                                                     </span>
-                                                            <a href={`${process.env.REACT_APP_WEBSITE + obj.detailPage}?name=KPI&type=user&id=${obj.id}&fileType=${obj.fileType}`} title="Xem chi tiet" target="_blank">{obj.pageName}</a>
+                                                            <a href={`${process.env.REACT_APP_WEBSITE + obj.detailPage}?name=KPI&type=user&id=${obj.id}&fileName=${obj.fileName}`} title="Xem chi tiet" target="_blank">{obj.pageName}</a>
                                                         </div>
                                                     </li>
                                                 })
@@ -195,39 +195,49 @@ const UserGuide = (props) => {
                                     </h3>
                                 </div>
                                 <div className="box-body">
+                                    {/* Quanr lys */}
                                     <p data-toggle="collapse" data-target="#show-asset-guide-document-for-manager" aria-expanded="false" style={{ display: "flex", alignItems: "center", fontWeight: "bold", cursor: "pointer" }} onClick={() => showUserGuideDocumentForManager()}>
                                         <span className="material-icons" style={{ fontWeight: "bold", marginRight: '10px' }}>
                                             {documentForManager ? `keyboard_arrow_down` : `keyboard_arrow_up`}
 
-                                        </span>Manager</p>
+                                        </span>{`Manager (${UserGuideDocument.manager.length})`}</p>
                                     <div className="collapse" data-toggle="collapse " id="show-asset-guide-document-for-manager">
                                         <ul className="todo-list" data-widget="todo-list">
-                                            <li style={{ borderLeft: 'none', cursor: "pointer" }}>
-                                                <div className="icheck-primary" style={{ display: "flex" }}>
-                                                    <span className="material-icons" style={{ marginRight: '10px' }}>
-                                                        link
-                                                    </span>
-                                                    <a href="#" title="Xem chi tiet" target="_blank">Thông tin hệ điều hành 1</a>
-                                                </div>
-                                            </li>
+                                            {
+                                                UserGuideDocument.manager.length > 0 && UserGuideDocument.manager.map((obj, index) => (
+                                                    <li style={{ borderLeft: 'none', cursor: "pointer" }} key={index}>
+                                                        <div className="icheck-primary" style={{ display: "flex" }}>
+                                                            <span className="material-icons" style={{ marginRight: '10px' }}>
+                                                                link
+                                                            </span>
+                                                            <a href={`${process.env.REACT_APP_WEBSITE + obj.detailPage}?name=document&type=manager&id=${obj.id}&fileName=${obj.fileName}`} title="Xem chi tiet" target="_blank">{obj.pageName}</a>
+                                                        </div>
+                                                    </li>
+                                                ))
+                                            }
                                         </ul>
                                     </div>
 
+                                    {/* Nguoiwf dung */}
                                     <p data-toggle="collapse" data-target="#show-asset-guide-document-for-user" aria-expanded="false" style={{ display: "flex", alignItems: "center", fontWeight: "bold", cursor: "pointer" }} onClick={() => showUserGuideDocumentForUser()}>
                                         <span className="material-icons" style={{ fontWeight: "bold", marginRight: '10px' }}>
                                             {documentForUser ? `keyboard_arrow_down` : `keyboard_arrow_up`}
 
-                                        </span>User</p>
+                                        </span>{`User (${UserGuideDocument.user.length})`}</p>
                                     <div className="collapse" data-toggle="collapse " id="show-asset-guide-document-for-user">
                                         <ul className="todo-list" data-widget="todo-list">
-                                            <li style={{ borderLeft: 'none', cursor: "pointer" }}>
-                                                <div className="icheck-primary" style={{ display: "flex" }}>
-                                                    <span className="material-icons" style={{ marginRight: '10px' }}>
-                                                        link
-                                                    </span>
-                                                    <a href="#" title="Xem chi tiet" target="_blank">Thông tin hệ điều hành 1</a>
-                                                </div>
-                                            </li>
+                                            {
+                                                UserGuideDocument.manager.length > 0 && UserGuideDocument.manager.map((obj, index) => (
+                                                    <li style={{ borderLeft: 'none', cursor: "pointer" }} key={index}>
+                                                        <div className="icheck-primary" style={{ display: "flex" }}>
+                                                            <span className="material-icons" style={{ marginRight: '10px' }}>
+                                                                link
+                                                            </span>
+                                                            <a href={`${process.env.REACT_APP_WEBSITE + obj.detailPage}?name=document&type=user&id=${obj.id}&fileName=${obj.fileName}`} title="Xem chi tiet" target="_blank">{obj.pageName}</a>
+                                                        </div>
+                                                    </li>
+                                                ))
+                                            }
                                         </ul>
                                     </div>
                                 </div>
@@ -247,17 +257,21 @@ const UserGuide = (props) => {
                                         <span className="material-icons" style={{ fontWeight: "bold", marginRight: '10px' }}>
                                             {assetForManager ? `keyboard_arrow_down` : `keyboard_arrow_up`}
 
-                                        </span>Manager</p>
+                                        </span>{`Manager (${UserGuideAsset.manager.length})`}</p>
                                     <div className="collapse" data-toggle="collapse " id="show-asset-guide-asset-for-manager">
                                         <ul className="todo-list" data-widget="todo-list">
-                                            <li style={{ borderLeft: 'none', cursor: "pointer" }}>
-                                                <div className="icheck-primary" style={{ display: "flex" }}>
-                                                    <span className="material-icons" style={{ marginRight: '10px' }}>
-                                                        link
+                                            {
+                                                UserGuideAsset.manager.length > 0 && UserGuideAsset.manager.map((obj, index) => (
+                                                    <li style={{ borderLeft: 'none', cursor: "pointer" }} key={index}>
+                                                        <div className="icheck-primary" style={{ display: "flex" }}>
+                                                            <span className="material-icons" style={{ marginRight: '10px' }}>
+                                                                link
                                                     </span>
-                                                    <a href="#" title="Xem chi tiet" target="_blank">Thông tin hệ điều hành 1</a>
-                                                </div>
-                                            </li>
+                                                            <a href={`${process.env.REACT_APP_WEBSITE + obj.detailPage}?name=asset&type=manager&id=${obj.id}&fileName=${obj.fileName}`} title="Xem chi tiet" target="_blank">{obj.pageName}</a>
+                                                        </div>
+                                                    </li>
+                                                ))
+                                            }
                                         </ul>
                                     </div>
 
@@ -265,17 +279,21 @@ const UserGuide = (props) => {
                                         <span className="material-icons" style={{ fontWeight: "bold", marginRight: '10px' }}>
                                             {assetForUser ? `keyboard_arrow_down` : `keyboard_arrow_up`}
 
-                                        </span>User</p>
+                                        </span>{`User (${UserGuideAsset.user.length})`}</p>
                                     <div className="collapse" data-toggle="collapse " id="show-asset-guide-asset-for-user">
                                         <ul className="todo-list" data-widget="todo-list">
-                                            <li style={{ borderLeft: 'none', cursor: "pointer" }}>
-                                                <div className="icheck-primary" style={{ display: "flex" }}>
-                                                    <span className="material-icons" style={{ marginRight: '10px' }}>
-                                                        link
-                                                    </span>
-                                                    <a href="#" title="Xem chi tiet" target="_blank">Thông tin hệ điều hành 1</a>
-                                                </div>
-                                            </li>
+                                            {
+                                                UserGuideAsset.user.length > 0 && UserGuideAsset.user.map((obj, index) => (
+                                                    <li style={{ borderLeft: 'none', cursor: "pointer" }} key={index}>
+                                                        <div className="icheck-primary" style={{ display: "flex" }}>
+                                                            <span className="material-icons" style={{ marginRight: '10px' }}>
+                                                                link
+                                                            </span>
+                                                            <a href={`${process.env.REACT_APP_WEBSITE + obj.detailPage}?name=asset&type=user&id=${obj.id}&fileName=${obj.fileName}`} title="Xem chi tiet" target="_blank">{obj.pageName}</a>
+                                                        </div>
+                                                    </li>
+                                                ))
+                                            }
                                         </ul>
                                     </div>
                                 </div>
@@ -297,17 +315,21 @@ const UserGuide = (props) => {
                                         <span className="material-icons" style={{ fontWeight: "bold", marginRight: '10px' }}>
                                             {humanResourceForManager ? `keyboard_arrow_down` : `keyboard_arrow_up`}
 
-                                        </span>Manager</p>
+                                        </span>{`Manager (${UserGuideHr.manager.length})`}</p>
                                     <div className="collapse" data-toggle="collapse " id="show-asset-guide-hr-for-manager">
                                         <ul className="todo-list" data-widget="todo-list">
-                                            <li style={{ borderLeft: 'none', cursor: "pointer" }}>
-                                                <div className="icheck-primary" style={{ display: "flex" }}>
-                                                    <span className="material-icons" style={{ marginRight: '10px' }}>
-                                                        link
-                                                    </span>
-                                                    <a href="#" title="Xem chi tiet" target="_blank">Thông tin hệ điều hành 1</a>
-                                                </div>
-                                            </li>
+                                            {
+                                                UserGuideHr.manager.length > 0 && UserGuideHr.manager.map((obj, index) => (
+                                                    <li style={{ borderLeft: 'none', cursor: "pointer" }} key={index}>
+                                                        <div className="icheck-primary" style={{ display: "flex" }}>
+                                                            <span className="material-icons" style={{ marginRight: '10px' }}>
+                                                                link
+                                                            </span>
+                                                            <a href={`${process.env.REACT_APP_WEBSITE + obj.detailPage}?name=hr&type=manager&id=${obj.id}&fileName=${obj.fileName}`} title="Xem chi tiet" target="_blank">{obj.pageName}</a>
+                                                        </div>
+                                                    </li>
+                                                ))
+                                            }
                                         </ul>
                                     </div>
 
@@ -323,7 +345,7 @@ const UserGuide = (props) => {
                                                     <span className="material-icons" style={{ marginRight: '10px' }}>
                                                         link
                                                     </span>
-                                                    <a href="#" title="Xem chi tiet" target="_blank">Thông tin hệ điều hành 1</a>
+                                                    <a href="#" title="Xem chi tiet" target="_blank">Chưa có dữ liệu</a>
                                                 </div>
                                             </li>
                                         </ul>
@@ -355,7 +377,7 @@ const UserGuide = (props) => {
                                                             <span className="material-icons" style={{ marginRight: '10px' }}>
                                                                 link
                                                         </span>
-                                                            <a href={`${process.env.REACT_APP_WEBSITE + obj.detailPage}?name=System&id=${obj.id}&fileType=${obj.fileType}`} title="Xem chi tiet" target="_blank">{obj.pageName}</a>
+                                                            <a href={`${process.env.REACT_APP_WEBSITE + obj.detailPage}?name=System&id=${obj.id}&fileName=${obj.fileName}`} title="Xem chi tiet" target="_blank">{obj.pageName}</a>
                                                         </div>
                                                     </li>
                                                 ))
