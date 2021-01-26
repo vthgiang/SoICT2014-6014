@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { NotificationActions } from '../../../modules/notification/redux/actions';
 import parse from 'html-react-parser';
-import { DateTimeConverter } from '../../../common-components';
+import { DateTimeConverter, SlimScroll } from '../../../common-components';
 import audioFile from './sound.mp3';
 
 class Notification extends Component {
@@ -95,7 +95,7 @@ class Notification extends Component {
                                 </span></a>
                         </div>
 
-                        <div className="tab-content">
+                        <div className="tab-content" id="notificationComponent">
                             <div className="tab-pane active" id="allNotificationDefault">
                                 {
                                     notifyDefault.length > 0 ? notifyDefault.map((notification, index) => {
@@ -187,6 +187,12 @@ class Notification extends Component {
                             </div>
 
                         </div>
+                        <SlimScroll
+                            outerComponentId={"notificationComponent"}
+                            maxHeight={300}
+                            verticalScroll={true}
+                            activate={true}
+                        />
                         <li className="footer"><Link to="/notifications">{translate('notification.see_all')}</Link></li>
                     </ul>
                 </li>

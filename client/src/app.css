@@ -128,7 +128,7 @@ text.c3-axis-x-label, text.c3-axis-y-label {
     font-size: 120%
 }
 .c3-chart-container > .legend {
-    height: 100px;
+    max-height: 100px;
 }
 .c3-chart-container > .legend > div {
     white-space: nowrap; 
