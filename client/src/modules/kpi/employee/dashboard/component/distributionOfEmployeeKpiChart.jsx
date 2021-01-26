@@ -6,6 +6,7 @@ import { createKpiSetActions } from '../../creation/redux/actions';
 
 import { DatePicker } from '../../../../../common-components';
 
+import * as d3 from "d3";
 import c3 from 'c3';
 import 'c3/c3.css';
 
@@ -114,7 +115,7 @@ class DistributionOfEmployeeKpiChart extends Component {
         let dataPieChart;
         dataPieChart = this.setDataPieChart(); 
 
-        this.chart = c3.generate({
+        let chart = c3.generate({
             bindto: this.refs.chart,             // Đẩy chart vào thẻ div có id="pieChart"
 
             // Căn lề biểu đồ
@@ -128,8 +129,31 @@ class DistributionOfEmployeeKpiChart extends Component {
             data: {                                 // Dữ liệu biểu đồ
                 columns: dataPieChart,
                 type : 'pie',
+            },
+
+            legend: {
+                show: false
             }
         });
+
+        d3.select('.c3-chart-container').insert('div', '.chart').attr('class', 'legend StyleScrollDiv StyleScrollDiv-y').selectAll('span')
+            .data(dataPieChart.map(item => item[0]))
+            .enter().append('div')
+            .attr('data-id', function (id) { return id; })
+            .html(function (id) { return id; })
+            .each(function (id) {
+                d3.select(this).style('border-left', `5px solid ${chart.color(id)}`);
+                d3.select(this).style('padding-left', `5px`);
+            })
+            .on('mouseover', function (id) {
+                chart.focus(id);
+            })
+            .on('mouseout', function (id) {
+                chart.revert();
+            })
+            .on('click', function (id) {
+                chart.toggle(id);
+            });
     }
 
     handleSelectMonth = async (value) => {
@@ -177,7 +201,9 @@ class DistributionOfEmployeeKpiChart extends Component {
                 </section>
 
                 {currentEmployeeKpiSet ?
-                    <section ref="chart"></section>
+                    <section className="c3-chart-container">
+                        <div ref="chart"></div>
+                    </section>
                     : <section>{translate('kpi.organizational_unit.dashboard.no_data')}</section>
                 }
             </React.Fragment>
