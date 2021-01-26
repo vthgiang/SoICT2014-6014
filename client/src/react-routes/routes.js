@@ -158,6 +158,7 @@ import AnswerAuthQuestionPage from '../modules/auth/components/answerAuthQuestio
 
 import { Project } from '../modules/project/component/managerTableProject';
 import UserGuide from '../modules/user-guide/components';
+import DetailUserGuide from '../modules/user-guide/components/detailUserGuide';
 import AllTimeSheetLog from '../modules/task/task-dashboard/statistic/allTimeSheetLog';
 
 class Routes extends Component {
@@ -2437,6 +2438,26 @@ class Routes extends Component {
                         pageName={"user_guide"}
                         layout={Layout}
                         component={UserGuide}
+                    />
+
+                    <PrivateRoute // Trang chi tiết hướng dẫn sử dụng (không có trên menu)
+                        isLoading={false}
+                        key={"user-guide-detail"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/user-guide",
+                                name: "user_guide",
+                                icon: "",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/user-guide-detail"}
+                        path={"/user-guide-detail"}
+                        pageName={"user_guide_detail"}
+                        layout={Layout}
+                        component={DetailUserGuide}
                     />
 
                     <PrivateRoute

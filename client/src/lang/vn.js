@@ -1199,6 +1199,7 @@ export default {
             manage_project: "Quản lý dự án",
 
             user_guide: "Hướng dẫn sử dụng",
+            user_guide_detail: "Chi tiết hướng dẫn sử dụng",
         },
 
         manage_system: {

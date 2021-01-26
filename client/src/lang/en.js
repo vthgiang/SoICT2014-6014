@@ -1043,6 +1043,7 @@ export default {
 
 
             user_guide: "User guide",
+            user_guide_detail: "User guide detail",
         },
 
         manage_system: {

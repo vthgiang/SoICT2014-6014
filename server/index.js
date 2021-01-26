@@ -16,8 +16,11 @@ app.use(require("cors")());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cookieParser());
+
 app.use("/upload/avatars", express.static("upload/avatars"));
-app.use("/upload/user-guide", express.static("upload/user-guide"));
+app.use("/upload/user-guide/task", express.static("upload/user-guide/task"));
+app.use("/upload/user-guide/kpi", express.static("upload/user-guide/kpi"));
+app.use("/upload/user-guide/system", express.static("upload/user-guide/system"));
 
 const router = express.Router();
 
