@@ -70,8 +70,10 @@ exports.createUseRequest = async (req, res) => {
                 content: html,
                 sender: newRecommendDistribute.user.name,
                 users: newRecommendDistribute.manager,
-                type: 2,
-                shortContent: `<p><strong>${newRecommendDistribute.user.name}</strong> xin đăng kí sử dụng tài sản:  <strong>${newRecommendDistribute.assetName}</strong>.</p>`
+                associatedDataObject: {
+                    dataType: 2,
+                    description: `<p><strong>${newRecommendDistribute.user.name}</strong> xin đăng kí sử dụng tài sản:  <strong>${newRecommendDistribute.assetName}</strong>.</p>`
+                }
             };
 
             await NotificationServices.createNotification(req.portal, req.user.company._id, noti);

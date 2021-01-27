@@ -3,7 +3,7 @@ const Models = require('../../../../models');
 const fs = require('fs');
 const { EmployeeKpi, EmployeeKpiSet, OrganizationalUnit, OrganizationalUnitKpiSet, User, taskCommentModel } = Models;
 const { connect } = require(`../../../../helpers/dbHelper`);
-
+const NotificationServices = require(`../../../notification/notification.service`);
 // File này làm nhiệm vụ thao tác với cơ sở dữ liệu của module quản lý kpi cá nhân
 
 /*Lấy tập KPI cá nhân hiện tại theo người dùng */
@@ -261,7 +261,7 @@ exports.deleteEmployeeKpi = async (portal, id, employeeKpiSetId) => {
 }
 
 /* Chỉnh sửa trạng thái KPI: yêu cầu phê duyệt, hủy bỏ yêu cầu phê duyệt, khóa KPI */
-exports.updateEmployeeKpiSetStatus = async (portal, id, statusId) => {
+exports.updateEmployeeKpiSetStatus = async (portal, id, statusId, companyId) => {
 
     let employeeKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
         .findByIdAndUpdate(id, { $set: { status: statusId } }, { new: true })
@@ -274,6 +274,20 @@ exports.updateEmployeeKpiSetStatus = async (portal, id, statusId) => {
             { path: 'comments.comments.creator', select: 'name email avatar' }
         ])
         .execPopulate();
+    
+    const data = {
+        organizationalUnits: employeeKpiSet.organizationalUnit._id,
+        title: "Xin phê duyệt KPI",
+        level: "general",
+        content: `<p><strong>${employeeKpiSet.creator.name}</strong> đã gửi yêu cầu phê duyệt KPI, xem ngay: <a href="${process.env.WEBSITE}/kpi-member/manager></a></p>`,
+        sender: `${employeeKpiSet.creator.name}`,
+        users: [employeeKpiSet.approver._id],
+        associatedDataObject: {
+            dataType: 3,
+            description: `<p><strong>${employeeKpiSet.creator.name}</strong>: Đã gửi yêu cầu phê duyệt KPI.</p>`
+        }
+    };
+    NotificationServices.createNotification(portal, companyId, data)
 
     return employeeKpiSet;
 }

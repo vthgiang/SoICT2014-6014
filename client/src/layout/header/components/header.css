@@ -4,10 +4,16 @@
     margin-bottom: 10px;
 }
 
+.notifications-menu .notify-dropdown{
+    width: 400px !important;
+    border: 1px solid rgba(0,0,0,.15) !important;
+    border-radius: 0.5rem ;
+    box-shadow: 0 0.5rem 1rem rgb(0 0 0 / 18%) !important;
+}
 .notify-wrapper{
     width: 100%;
     padding: 10px 10px 3px 15px;
-    border-bottom: 1px solid #f4f4f4;
+    border-bottom: 1px solid #ececec;
 }
 
 .notify-wrapper:hover{
