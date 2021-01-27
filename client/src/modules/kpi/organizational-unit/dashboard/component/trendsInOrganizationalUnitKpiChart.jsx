@@ -5,20 +5,19 @@ import { withTranslate } from 'react-redux-multilingual';
 import { dashboardOrganizationalUnitKpiActions } from '../redux/actions';
 import { createUnitKpiActions } from '../../creation/redux/actions';
 
-import { SlimScroll } from '../../../../../common-components';
+import { CustomLegendC3js } from '../../../../../common-components';
 
 import c3 from 'c3';
 import 'c3/c3.css';
-import * as d3 from "d3";
-
-
 class TrendsInOrganizationalUnitKpiChart extends Component {
 
     constructor(props) {
         super(props);
 
         this.DATA_STATUS = {NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3};
-        
+        this.chart = null;
+        this.dataChart = null;
+
         this.state = {
             currentRole: null,
             dataStatus: this.DATA_STATUS.NOT_AVAILABLE
@@ -399,7 +398,7 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
         this.removePreviousBarChart();
 
         const { createKpiUnit } = this.props;
-        let numberOfParticipants, numberOfEmployeeKpis, executionTimes, numberOfTasks, weight, data, dataChart, listOrganizationalUnitKpi, titleX;
+        let numberOfParticipants, numberOfEmployeeKpis, executionTimes, numberOfTasks, weight, data, listOrganizationalUnitKpi, titleX;
            
         if(createKpiUnit.currentKPI) {
             listOrganizationalUnitKpi = createKpiUnit.currentKPI.kpis;
@@ -425,7 +424,7 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
         }
 
         if(listOrganizationalUnitKpi) {
-            dataChart = listOrganizationalUnitKpi.map(kpis => {
+            this.dataChart = listOrganizationalUnitKpi.map(kpis => {
                 let temporary;
                 temporary = data.map(x => {
                     return x[kpis.name] ? x[kpis.name] : 0;
@@ -437,8 +436,8 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
             })
         }
 
-        dataChart.unshift(titleX);
-        let chart = c3.generate({
+        this.dataChart.unshift(titleX);
+        this.chart = c3.generate({
             bindto: this.refs.chart,                
 
             size: {                                 
@@ -454,7 +453,7 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
 
             data: {                             
                 x: 'x',
-                columns: dataChart,
+                columns: this.dataChart,
                 type: 'bar',
                 groups: [
                     listOrganizationalUnitKpi.map(x => x.name)
@@ -484,28 +483,6 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
                 show: false
             }
         });
-
-        d3.select('#trendsInChildrenUnit').insert('div', '.chart')
-            .attr('id', 'trendsInUnitLegend')
-            .attr('class', 'legend')
-            .selectAll('span')
-            .data(dataChart.filter((item, index) => index > 0).map(item => item[0]))
-            .enter().append('div')
-            .attr('data-id', function (id) { return id; })
-            .html(function (id) { return id; })
-            .each(function (id) {
-                d3.select(this).style('border-left', `5px solid ${chart.color(id)}`);
-                d3.select(this).style('padding-left', `5px`);
-            })
-            .on('mouseover', function (id) {
-                chart.focus(id);
-            })
-            .on('mouseout', function (id) {
-                chart.revert();
-            })
-            .on('click', function (id) {
-                chart.toggle(id);
-            });
     }
     
     render() {
@@ -520,14 +497,15 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
         return (
             <React.Fragment>
                 {currentKpi ?
-                    <section id={"trendsInChildrenUnit"} className="c3-chart-container">
+                    <section id={"trendsInUnit"} className="c3-chart-container">
                         <div ref="chart"></div>
-                        <label><i className="fa fa-exclamation-circle" style={{ color: '#06c', paddingRight: '5px' }}/>{translate('kpi.evaluation.employee_evaluation.KPI_list')}</label>
-                        <SlimScroll
-                            outerComponentId={"trendsInUnitLegend"}
-                            maxHeight={100}
-                            activate={true}
-                            verticalScroll={true}
+                       
+                        <CustomLegendC3js
+                            chart={this.chart}
+                            chartId={"trendsInUnit"}
+                            legendId={"trendsInUnitLegend"}
+                            title={`${translate('kpi.evaluation.employee_evaluation.KPI_list')}(${currentKpi.kpis && currentKpi.kpis.length})`}
+                            dataChartLegend={this.dataChart && this.dataChart.filter((item, index) => index > 0).map(item => item[0])}
                         />
                     </section>
                     : organizationalUnitKpiLoading && <section>{translate('kpi.organizational_unit.dashboard.no_data')}</section>
