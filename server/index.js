@@ -18,9 +18,13 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 
 app.use("/upload/avatars", express.static("upload/avatars"));
+
 app.use("/upload/user-guide/task", express.static("upload/user-guide/task"));
 app.use("/upload/user-guide/kpi", express.static("upload/user-guide/kpi"));
+app.use("/upload/user-guide/hr", express.static("upload/user-guide/hr"));
 app.use("/upload/user-guide/system", express.static("upload/user-guide/system"));
+app.use("/upload/user-guide/document", express.static("upload/user-guide/document"));
+app.use("/upload/user-guide/asset", express.static("upload/user-guide/asset"));
 
 const router = express.Router();
 

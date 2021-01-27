@@ -10,8 +10,16 @@ import audioFile from './sound.mp3';
 class Notification extends Component {
     constructor(props) {
         super(props);
+        let sound;
+        if (!localStorage.getItem("sound")) {
+            localStorage.setItem("sound", JSON.stringify(true));
+            sound = JSON.parse(localStorage.getItem("sound"));
+        } else {
+            sound = JSON.parse(localStorage.getItem("sound"));
+        }
         this.state = {
-            notify: []
+            notify: [],
+            sound,
         }
     }
 
@@ -23,8 +31,11 @@ class Notification extends Component {
         this.props.getAllManualNotifications();
         this.props.getAllNotifications();
         this.props.socket.io.on('new notifications', data => {
-            const audio = new Audio(audioFile);
-            audio.play();
+            const { sound } = this.state;
+            if (sound) {
+                const audio = new Audio(audioFile);
+                audio.play();
+            }
             this.props.receiveNofitication(data);
         });
     }
@@ -49,9 +60,22 @@ class Notification extends Component {
         if (valueConvert === 5) return "#ff0707"
     }
 
+    handleOnOffSound = () => {
+        this.setState({
+            ...this.state,
+            sound: !this.state.sound,
+        })
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        if (prevState.sound !== this.state.sound) {
+            localStorage.setItem("sound", JSON.stringify(this.state.sound));
+        }
+    }
+
     render() {
         const { translate } = this.props;
-        const { notify } = this.state;
+        const { notify, sound } = this.state;
         let notifyUnRead = notify.filter(notification => !notification.readed);
         const count = notifyUnRead.length;
         let notifyTaskUnRead = [], notifyAssetUnRead = [], notifyKPIUnRead = [], notifyDefault = [];
@@ -81,111 +105,113 @@ class Notification extends Component {
                             count > 0 && <span className="label label-warning">{count}</span>
                         }
                     </a>
-                    <ul className="dropdown-menu" style={{ borderColor: 'gray', width: '400px' }}>
+                    <ul className="dropdown-menu notify-dropdown" style={{ borderColor: 'gray', width: '400px' }}>
                         <li className="header text-center"><strong className="text-red">{notify.filter(notification => !notification.readed).length}</strong> {translate('notification.news')}</li>
+                        <div className="nav-tabs-custom">
+                            <ul className="notify-tabs nav nav-tabs">
+                                <li className="active"><a className="notify-action" href="#allNotificationDefault" data-toggle="tab">{`Chung (${notifyDefault.length})`}</a></li>
+                                <li><a className="notify-action" href="#allNotificationOfTask" data-toggle="tab">{`Công việc (${notifyTaskUnRead.length})`}</a></li>
+                                <li><a className="notify-action" href="#allNotificationOfAsset" data-toggle="tab">{`Tài sản (${notifyAssetUnRead.length})`}</a></li>
+                                <li><a className="notify-action" href="#allNotificationOfKPI" data-toggle="tab">{`KPI (${notifyKPIUnRead.length})`}</a></li>
+                                <a style={{ display: 'flex', alignItems: 'center', marginRight: '5px' }}>
+                                    <span className="material-icons" style={{ cursor: 'pointer' }} onClick={this.handleOnOffSound}>
+                                        {
+                                            sound ? `volume_up` : `volume_off`
+                                        }
+                                    </span></a>
+                            </ul>
 
-                        <div id="dropdown-menu" className="notify-tabs">
-                            <a className="notify-action active" href="#allNotificationDefault" data-toggle="tab">{`Chung (${notifyDefault.length})`}</a>
-                            <a className="notify-action" href="#allNotificationOfTask" data-toggle="tab">{`Công việc (${notifyTaskUnRead.length})`}</a>
-                            <a className="notify-action" href="#allNotificationOfAsset" data-toggle="tab">{`Tài sản (${notifyAssetUnRead.length})`}</a>
-                            <a className="notify-action" href="#allNotificationOfKPI" data-toggle="tab">{`KPI (${notifyKPIUnRead.length})`}</a>
-                            <a style={{ display: 'flex', alignItems: 'center', }} title={'âm thông báo đang bật'}>
-                                <span className="material-icons" style={{ cursor: 'pointer' }}>
-                                    volume_up
-                                </span></a>
-                        </div>
+                            <div className="tab-content" id="notificationComponent">
+                                <div className="tab-pane active" id="allNotificationDefault">
+                                    {
+                                        notifyDefault.length > 0 ? notifyDefault.map((notification, index) => {
+                                            return <div className="notify-wrapper" key={index}>
+                                                <Link to="/notifications">
+                                                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                                                        {
+                                                            notification.level === 'info' ? <i className="fa fa-info-circle text-blue" /> :
+                                                                notification.level === 'general' ? <i className="fa fa-bell " style={{ color: `${this.checkPriority(notification.associatedDataObject && notification.associatedDataObject.value)}`, fontSize: '15px' }} /> :
+                                                                    notification.level === 'important' ? <i className="fa fa-warning text-yellow" /> :
+                                                                        <i className="fa fa-bomb text-red" />
+                                                        }
+                                                        <p className="notify-title" >
+                                                            {notification.shortContent ? parse(notification.shortContent) : notification.title}
+                                                            <DateTimeConverter dateTime={notification.createdAt} style={{ display: 'block', fontSize: '12px', color: '#d47979' }} />
+                                                        </p>
+                                                    </div>
+                                                </Link>
+                                            </div>
+                                        }) : <p style={{ textAlign: 'center', padding: '10px' }}>Không có thông báo nào</p>
+                                    }
+                                </div>
+                                <div className="tab-pane" id="allNotificationOfTask">
+                                    {
+                                        notifyTaskUnRead.length > 0 ? notifyTaskUnRead.map((notification, index) => {
+                                            return <div className="notify-wrapper" key={index}>
+                                                <Link to="/notifications">
+                                                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                                                        {
+                                                            notification.level === 'info' ? <i className="fa fa-info-circle text-blue" /> :
+                                                                notification.level === 'general' ? <i className="fa fa-bell " style={{ color: `${this.checkPriority(notification.associatedDataObject && notification.associatedDataObject.value)}`, fontSize: '15px' }} /> :
+                                                                    notification.level === 'important' ? <i className="fa fa-warning text-yellow" /> :
+                                                                        <i className="fa fa-bomb text-red" />
+                                                        }
+                                                        <p className="notify-title" >
+                                                            {notification.shortContent ? parse(notification.shortContent) : notification.title}
+                                                            <DateTimeConverter dateTime={notification.createdAt} style={{ display: 'block', fontSize: '12px', color: '#d47979' }} />
+                                                        </p>
+                                                    </div>
+                                                </Link>
+                                            </div>
 
-                        <div className="tab-content" id="notificationComponent">
-                            <div className="tab-pane active" id="allNotificationDefault">
-                                {
-                                    notifyDefault.length > 0 ? notifyDefault.map((notification, index) => {
-                                        return <div className="notify-wrapper" key={index}>
-                                            <Link to="/notifications">
-                                                <div style={{ display: 'flex', alignItems: 'center' }}>
-                                                    {
-                                                        notification.level === 'info' ? <i className="fa fa-info-circle text-blue" /> :
-                                                            notification.level === 'general' ? <i className="fa fa-bell " style={{ color: `${this.checkPriority(notification.associatedDataObject && notification.associatedDataObject.value)}`, fontSize: '15px' }} /> :
-                                                                notification.level === 'important' ? <i className="fa fa-warning text-yellow" /> :
-                                                                    <i className="fa fa-bomb text-red" />
-                                                    }
-                                                    <p className="notify-title" >
-                                                        {notification.shortContent ? parse(notification.shortContent) : notification.title}
-                                                        <DateTimeConverter dateTime={notification.createdAt} style={{ display: 'block', fontSize: '12px', color: '#d47979' }} />
-                                                    </p>
-                                                </div>
-                                            </Link>
-                                        </div>
-                                    }) : <p style={{ textAlign: 'center' }}>Không có thông báo nào</p>
-                                }
+                                        }) : <p style={{ textAlign: 'center', padding: '10px' }}>Không có thông báo nào</p>
+                                    }
+                                </div>
+                                <div className="tab-pane" id="allNotificationOfAsset">
+                                    {
+                                        notifyAssetUnRead.length > 0 ? notifyAssetUnRead.map((notification, index) => {
+                                            return <div className="notify-wrapper" key={index}>
+                                                <Link to="/notifications">
+                                                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                                                        {
+                                                            notification.level === 'info' ? <i className="fa fa-info-circle text-blue" /> :
+                                                                notification.level === 'general' ? <i className="fa fa-bell " style={{ color: `${this.checkPriority(notification.associatedDataObject && notification.associatedDataObject.value)}`, fontSize: '15px' }} /> :
+                                                                    notification.level === 'important' ? <i className="fa fa-warning text-yellow" /> :
+                                                                        <i className="fa fa-bomb text-red" />
+                                                        }
+                                                        <p className="notify-title" >
+                                                            {notification.shortContent ? parse(notification.shortContent) : notification.title}
+                                                            <DateTimeConverter dateTime={notification.createdAt} style={{ display: 'block', fontSize: '12px', color: '#d47979' }} />
+                                                        </p>
+                                                    </div>
+                                                </Link>
+                                            </div>
+                                        }) : <p style={{ textAlign: 'center', padding: '10px' }}>Không có thông báo nào</p>
+                                    }
+                                </div>
+                                <div className="tab-pane" id="allNotificationOfKPI">
+                                    {
+                                        notifyKPIUnRead.length > 0 ? notifyKPIUnRead.map((notification, index) => {
+                                            return <div className="notify-wrapper" key={index}>
+                                                <Link to="/notifications">
+                                                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                                                        {
+                                                            notification.level === 'info' ? <i className="fa fa-info-circle text-blue" /> :
+                                                                notification.level === 'general' ? <i className="fa fa-bell " style={{ color: `${this.checkPriority(notification.associatedDataObject && notification.associatedDataObject.value)}`, fontSize: '15px' }} /> :
+                                                                    notification.level === 'important' ? <i className="fa fa-warning text-yellow" /> :
+                                                                        <i className="fa fa-bomb text-red" />
+                                                        }
+                                                        <p className="notify-title" >
+                                                            {notification.shortContent ? parse(notification.shortContent) : notification.title}
+                                                            <DateTimeConverter dateTime={notification.createdAt} style={{ display: 'block', fontSize: '12px', color: '#d47979' }} />
+                                                        </p>
+                                                    </div>
+                                                </Link>
+                                            </div>
+                                        }) : <p style={{ textAlign: 'center', padding: '10px' }}>Không có thông báo nào</p>
+                                    }
+                                </div>
                             </div>
-                            <div className="tab-pane" id="allNotificationOfTask">
-                                {
-                                    notifyTaskUnRead.length > 0 ? notifyTaskUnRead.map((notification, index) => {
-                                        return <div className="notify-wrapper" key={index}>
-                                            <Link to="/notifications">
-                                                <div style={{ display: 'flex', alignItems: 'center' }}>
-                                                    {
-                                                        notification.level === 'info' ? <i className="fa fa-info-circle text-blue" /> :
-                                                            notification.level === 'general' ? <i className="fa fa-bell " style={{ color: `${this.checkPriority(notification.associatedDataObject && notification.associatedDataObject.value)}`, fontSize: '15px' }} /> :
-                                                                notification.level === 'important' ? <i className="fa fa-warning text-yellow" /> :
-                                                                    <i className="fa fa-bomb text-red" />
-                                                    }
-                                                    <p className="notify-title" >
-                                                        {notification.shortContent ? parse(notification.shortContent) : notification.title}
-                                                        <DateTimeConverter dateTime={notification.createdAt} style={{ display: 'block', fontSize: '12px', color: '#d47979' }} />
-                                                    </p>
-                                                </div>
-                                            </Link>
-                                        </div>
-
-                                    }) : <p style={{ textAlign: 'center' }}>Không có thông báo nào</p>
-                                }
-                            </div>
-                            <div className="tab-pane" id="allNotificationOfAsset">
-                                {
-                                    notifyAssetUnRead.length > 0 ? notifyAssetUnRead.map((notification, index) => {
-                                        return <div className="notify-wrapper" key={index}>
-                                            <Link to="/notifications">
-                                                <div style={{ display: 'flex', alignItems: 'center' }}>
-                                                    {
-                                                        notification.level === 'info' ? <i className="fa fa-info-circle text-blue" /> :
-                                                            notification.level === 'general' ? <i className="fa fa-bell " style={{ color: `${this.checkPriority(notification.associatedDataObject && notification.associatedDataObject.value)}`, fontSize: '15px' }} /> :
-                                                                notification.level === 'important' ? <i className="fa fa-warning text-yellow" /> :
-                                                                    <i className="fa fa-bomb text-red" />
-                                                    }
-                                                    <p className="notify-title" >
-                                                        {notification.shortContent ? parse(notification.shortContent) : notification.title}
-                                                        <DateTimeConverter dateTime={notification.createdAt} style={{ display: 'block', fontSize: '12px', color: '#d47979' }} />
-                                                    </p>
-                                                </div>
-                                            </Link>
-                                        </div>
-                                    }) : <p style={{ textAlign: 'center' }}>Không có thông báo nào</p>
-                                }
-                            </div>
-                            <div className="tab-pane" id="allNotificationOfKPI">
-                                {
-                                    notifyKPIUnRead.length > 0 ? notifyKPIUnRead.map((notification, index) => {
-                                        return <div className="notify-wrapper" key={index}>
-                                            <Link to="/notifications">
-                                                <div style={{ display: 'flex', alignItems: 'center' }}>
-                                                    {
-                                                        notification.level === 'info' ? <i className="fa fa-info-circle text-blue" /> :
-                                                            notification.level === 'general' ? <i className="fa fa-bell " style={{ color: `${this.checkPriority(notification.associatedDataObject && notification.associatedDataObject.value)}`, fontSize: '15px' }} /> :
-                                                                notification.level === 'important' ? <i className="fa fa-warning text-yellow" /> :
-                                                                    <i className="fa fa-bomb text-red" />
-                                                    }
-                                                    <p className="notify-title" >
-                                                        {notification.shortContent ? parse(notification.shortContent) : notification.title}
-                                                        <DateTimeConverter dateTime={notification.createdAt} style={{ display: 'block', fontSize: '12px', color: '#d47979' }} />
-                                                    </p>
-                                                </div>
-                                            </Link>
-                                        </div>
-                                    }) : <p style={{ textAlign: 'center' }}>Không có thông báo nào</p>
-                                }
-                            </div>
-
                         </div>
                         <SlimScroll
                             outerComponentId={"notificationComponent"}
