@@ -51,6 +51,29 @@ class Notification extends Component {
             return null;
         }
     }
+
+    componentDidUpdate(prevProps, prevState) {
+        if (prevState.sound !== this.state.sound) {
+            localStorage.setItem("sound", JSON.stringify(this.state.sound));
+        }
+    }
+
+    checkTabPaneScroll = (idTabPane) => {
+        let tabPaneScroll = window.$('.StyleScrollDiv.StyleScrollDiv-y');
+
+        if (tabPaneScroll) {
+            tabPaneScroll.removeClass("StyleScrollDiv StyleScrollDiv-y");
+            tabPaneScroll.css("maxHeight", "");
+        }
+        
+        this.setState(state => {
+            return {
+                ...state,
+                idTabPaneActive: idTabPane
+            }
+        })
+    }
+
     checkPriority = (value) => {
         const valueConvert = parseInt(value);
         if (!value || valueConvert === 1) return "#808080"
@@ -67,15 +90,10 @@ class Notification extends Component {
         })
     }
 
-    componentDidUpdate(prevProps, prevState) {
-        if (prevState.sound !== this.state.sound) {
-            localStorage.setItem("sound", JSON.stringify(this.state.sound));
-        }
-    }
 
     render() {
         const { translate } = this.props;
-        const { notify, sound } = this.state;
+        const { notify, sound, idTabPaneActive } = this.state;
         let notifyUnRead = notify.filter(notification => !notification.readed);
         const count = notifyUnRead.length;
         let notifyTaskUnRead = [], notifyAssetUnRead = [], notifyKPIUnRead = [], notifyDefault = [];
@@ -100,6 +118,8 @@ class Notification extends Component {
                     break
             }
         })
+
+
         return (
             <React.Fragment>
                 <li className="dropdown mega-dropdown notifications-menu">
@@ -113,10 +133,10 @@ class Notification extends Component {
                         <li className="header text-center"><strong className="text-red">{notify.filter(notification => !notification.readed).length}</strong> {translate('notification.news')}</li>
                         <div className="nav-tabs-custom">
                             <ul className="notify-tabs nav nav-tabs">
-                                <li className="active"><a className="notify-action" href="#allNotificationDefault" data-toggle="tab">{`Chung (${notifyDefault.length})`}</a></li>
-                                <li><a className="notify-action" href="#allNotificationOfTask" data-toggle="tab">{`Công việc (${notifyTaskUnRead.length})`}</a></li>
-                                <li><a className="notify-action" href="#allNotificationOfAsset" data-toggle="tab">{`Tài sản (${notifyAssetUnRead.length})`}</a></li>
-                                <li><a className="notify-action" href="#allNotificationOfKPI" data-toggle="tab">{`KPI (${notifyKPIUnRead.length})`}</a></li>
+                                <li className="active"><a className="notify-action" href="#allNotificationDefault" data-toggle="tab" onClick={() => this.checkTabPaneScroll("allNotificationDefault")}>{`Chung (${notifyDefault.length})`}</a></li>
+                                <li><a className="notify-action" href="#allNotificationOfTask" data-toggle="tab" onClick={() => this.checkTabPaneScroll("allNotificationOfTask")}>{`Công việc (${notifyTaskUnRead.length})`}</a></li>
+                                <li><a className="notify-action" href="#allNotificationOfAsset" data-toggle="tab" onClick={() => this.checkTabPaneScroll("allNotificationOfAsset")}>{`Tài sản (${notifyAssetUnRead.length})`}</a></li>
+                                <li><a className="notify-action" href="#allNotificationOfKPI" data-toggle="tab" onClick={() => this.checkTabPaneScroll("allNotificationOfKPI")}>{`KPI (${notifyKPIUnRead.length})`}</a></li>
                                 <a style={{ display: 'flex', alignItems: 'center', marginRight: '5px' }}>
                                     <span className="material-icons" style={{ cursor: 'pointer' }} onClick={this.handleOnOffSound}>
                                         {
@@ -125,7 +145,7 @@ class Notification extends Component {
                                     </span></a>
                             </ul>
 
-                            <div className="tab-content" id="notificationComponent">
+                            <div className="tab-content">
                                 <div className="tab-pane active" id="allNotificationDefault">
                                     {
                                         notifyDefault.length > 0 ? notifyDefault.map((notification, index) => {
@@ -222,7 +242,7 @@ class Notification extends Component {
                             </div>
                         </div>
                         <SlimScroll
-                            outerComponentId={"notificationComponent"}
+                            outerComponentId={idTabPaneActive}
                             maxHeight={300}
                             verticalScroll={true}
                             activate={true}

@@ -51,7 +51,7 @@ class SlimScroll extends Component {
         let outer = window.$(`#${outerComponentId}`);
 
         if (outer) {
-            if (activate && outer.width > maxHeight) {
+            if (activate && outer.height() > maxHeight) {
                 outer.addClass("StyleScrollDiv StyleScrollDiv-y");
                 outer.css("maxHeight", maxHeight); 
             } else {
