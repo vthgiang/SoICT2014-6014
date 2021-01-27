@@ -691,6 +691,7 @@ exports.deleteFileTaskComment = async (req, res) => {
 exports.addTaskLog = async (req, res) => {
     try {
         let task = await PerformTaskService.addTaskLog(req.portal, req.params, req.body);
+
         await Logger.info(req.user.email, ` CREATE_TASK_LOG  `, req.portal);
         res.status(200).json({
             success: true,

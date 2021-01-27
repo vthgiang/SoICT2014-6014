@@ -25,6 +25,7 @@ class TaskAddModal extends Component {
             newTask: {
                 name: "",
                 description: "",
+                quillDescriptionDefault: "",
                 startDate: "",
                 endDate: "",
                 priority: 3,
@@ -37,7 +38,7 @@ class TaskAddModal extends Component {
                 collaboratedWithOrganizationalUnits: [],
                 taskTemplate: "",
                 parent: "",
-                taskProject: ""
+                taskProject: "",
             },
 
             currentRole: getStorage('currentRole'),
@@ -120,11 +121,14 @@ class TaskAddModal extends Component {
         let msg = TaskFormValidator.validateTaskDescription(value, translate);
 
         if (willUpdateState) {
-            this.state.newTask.description = value;
-            this.state.newTask.errorOnDescription = msg;
             this.setState(state => {
                 return {
                     ...state,
+                    newTask: {
+                        ...state.newTask,
+                        description: value,
+                        errorOnDescription: msg
+                    }
                 };
             });
         }
@@ -258,6 +262,7 @@ class TaskAddModal extends Component {
                         collaboratedWithOrganizationalUnits: taskTemplate.collaboratedWithOrganizationalUnits.map(item => { return { organizationalUnit: item._id, isAssigned: false } }),
                         name: taskTemplate.name,
                         description: taskTemplate.description,
+                        quillDescriptionDefault: taskTemplate.description,
                         priority: taskTemplate.priority,
                         responsibleEmployees: taskTemplate.responsibleEmployees.map(item => item.id),
                         accountableEmployees: taskTemplate.accountableEmployees.map(item => item.id),
@@ -361,9 +366,52 @@ class TaskAddModal extends Component {
         })
     }
 
+    // convert ISODate to String dd-mm-yyyy
+    formatDate(date) {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+
+        return [day, month, year].join('-');
+    }
+
     shouldComponentUpdate = (nextProps, nextState) => {
         const { user, department } = this.props;
         const { newTask } = this.state;
+
+        if (nextProps.task && nextProps.id !== this.state.id) {
+            this.setState({
+                id: nextProps.id,
+                newTask: {
+                    name: nextProps.task.name,
+                    description: nextProps.task.description,
+                    quillDescriptionDefault: nextProps.task.description,
+                    startDate: this.formatDate(nextProps.task.startDate),
+                    endDate: this.formatDate(nextProps.task.endDate),
+                    priority: nextProps.task.priority,
+                    responsibleEmployees: nextProps.task.responsibleEmployees.map(e => e._id),
+                    accountableEmployees: nextProps.task.accountableEmployees.map(e => e._id),
+                    consultedEmployees: nextProps.task.consultedEmployees.map(e => e._id),
+                    informedEmployees: nextProps.task.informedEmployees.map(e => e._id),
+                    creator: getStorage("userId"),
+                    organizationalUnit: nextProps.task.organizationalUnit._id,
+                    collaboratedWithOrganizationalUnits: nextProps.task.collaboratedWithOrganizationalUnits.map(e => { return { organizationalUnit: e.organizationalUnit._id } }),
+                    // taskTemplate: nextProps.task.taskTemplate._id,
+                    parent: nextProps.task.parent,
+                    taskProject: nextProps.task.taskProject,
+                    formula: nextProps.task.formula,
+                    taskInformations: nextProps.task.taskInformations,
+                    taskActions: nextProps.task.taskActions,
+                }
+            });
+            return false;
+        }
 
         if (nextProps.parentTask !== this.props.parentTask) { // Khi đổi nhấn add new task sang nhấn add subtask hoặc ngược lại
             this.setState(state => {
@@ -411,8 +459,9 @@ class TaskAddModal extends Component {
 
 
     render() {
-        const { newTask } = this.state;
+        const { id, newTask } = this.state;
         const { tasktemplates, user, KPIPersonalManager, translate, tasks, department, taskProject } = this.props;
+        const { task } = this.props;
 
         let units, userdepartments, listTaskTemplate, listKPIPersonal, usercompanys;
         let listDepartment = department?.list;
@@ -462,8 +511,8 @@ class TaskAddModal extends Component {
         return (
             <React.Fragment>
                 <DialogModal
-                    size='100' modalID={`addNewTask`} isLoading={false}
-                    formID="form-add-new-task"
+                    size='100' modalID={`addNewTask-${id}`} isLoading={false}
+                    formID={`form-add-new-task-${id}`}
                     disableSubmit={!this.isTaskFormValidated()}
                     func={this.handleSubmit}
                     title={translate('task.task_management.add_new_task')}
@@ -516,10 +565,12 @@ class TaskAddModal extends Component {
                                 <div className={`form-group ${newTask.errorOnDescription === undefined ? "" : "has-error"}`}>
                                     <label className="control-label">{translate('task.task_management.detail_description')}<span className="text-red">*</span></label>
                                     <QuillEditor
-                                        id={"task-add-modal"}
-                                        toolbar={false}
+                                        id={`task-add-modal`}
+                                        table={false}
+                                        embeds={false}
                                         getTextData={this.handleChangeTaskDescription}
                                         height={80}
+                                        quillValueDefault={newTask.quillDescriptionDefault}
                                         placeholder={translate('task.task_management.detail_description')}
                                     />
                                     <ErrorLabel content={newTask.errorOnDescription} />
@@ -530,7 +581,7 @@ class TaskAddModal extends Component {
                                     <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 ${newTask.errorOnStartDate === undefined ? "" : "has-error"}`}>
                                         <label className="control-label">{translate('task.task_management.start_date')}<span className="text-red">*</span></label>
                                         <DatePicker
-                                            id="datepicker1"
+                                            id={`datepicker1-${id}`}
                                             dateFormat="day-month-year"
                                             value={newTask.startDate}
                                             onChange={this.handleChangeTaskStartDate}
@@ -540,7 +591,7 @@ class TaskAddModal extends Component {
                                     <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 ${newTask.errorOnEndDate === undefined ? "" : "has-error"}`}>
                                         <label className="control-label">{translate('task.task_management.end_date')}<span className="text-red">*</span></label>
                                         <DatePicker
-                                            id="datepicker2"
+                                            id={`datepicker2-${id}`}
                                             value={newTask.endDate}
                                             onChange={this.handleChangeTaskEndDate}
                                         />
@@ -562,7 +613,7 @@ class TaskAddModal extends Component {
                                     <label className="control-label">{translate('task.task_management.responsible')}<span className="text-red">*</span></label>
                                     {allUnitsMember &&
                                         <SelectBox
-                                            id={`responsible-select-box${newTask.taskTemplate}`}
+                                            id={`responsible-select-box${newTask.taskTemplate}-${id}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             items={allUnitsMember}
@@ -580,7 +631,7 @@ class TaskAddModal extends Component {
                                     <label className="control-label">{translate('task.task_management.accountable')}<span className="text-red">*</span></label>
                                     {allUnitsMember &&
                                         <SelectBox
-                                            id={`accounatable-select-box${newTask.taskTemplate}`}
+                                            id={`accounatable-select-box${newTask.taskTemplate}-${id}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             items={allUnitsMember}
@@ -598,7 +649,7 @@ class TaskAddModal extends Component {
                                     <label className="control-label">{translate('task.task_management.consulted')}</label>
                                     {allUnitsMember &&
                                         <SelectBox
-                                            id={`consulted-select-box${newTask.taskTemplate}`}
+                                            id={`consulted-select-box${newTask.taskTemplate}-${id}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             items={allUnitsMember}
@@ -615,7 +666,7 @@ class TaskAddModal extends Component {
                                     <label className="control-label">{translate('task.task_management.informed')}</label>
                                     {allUnitsMember &&
                                         <SelectBox
-                                            id={`informed-select-box${newTask.taskTemplate}`}
+                                            id={`informed-select-box${newTask.taskTemplate}-${id}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             items={allUnitsMember}
@@ -663,7 +714,7 @@ class TaskAddModal extends Component {
                                     </label>
 
                                     <SelectBox
-                                        id={`select-parent-new-task`}
+                                        id={`select-parent-new-task-${id}`}
                                         className="form-control select2"
                                         style={{ width: "100%" }}
                                         items={listParentTask}
@@ -680,7 +731,7 @@ class TaskAddModal extends Component {
                                     <div className="form-group">
                                         <label>{translate('task.task_management.collaborated_with_organizational_units')}</label>
                                         <SelectBox
-                                            id="multiSelectUnitThatHaveCollaborated"
+                                            id={`multiSelectUnitThatHaveCollaborated-${id}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             items={listDepartment.filter(item => newTask && item._id !== newTask.organizationalUnit).map(x => {
@@ -701,7 +752,7 @@ class TaskAddModal extends Component {
                                         {/* <a className="text-purple" style={{ cursor: 'pointer' }} title="Thêm dự án mới" onClick={}><i className="fa fa-plus-square"></i></a> */}
                                     </label>
                                     <TreeSelect
-                                        id='select-task-project-task'
+                                        id={`select-task-project-task-${id}`}
                                         mode='radioSelect'
                                         data={taskProject.list}
                                         handleChange={this.handleTaskProject}

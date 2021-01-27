@@ -41,20 +41,8 @@ class TaskManagementOfUnit extends Component {
         const { dashboardEvaluationEmployeeKpiSet } = this.props;
         let { currentTab, organizationalUnit, status, priority, special, name, startDate, endDate, isAssigned } = this.state;
 
-        if (organizationalUnit && organizationalUnit.length === 0 && dashboardEvaluationEmployeeKpiSet && dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit) {
-            let units = [dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit.id];
-            this.setState((state) => {
-                return {
-                    ...state,
-                    organizationalUnit: units
-                }
-            });
-
-            await this.props.getPaginatedTasksByOrganizationalUnit(units, 1, 20, status, [], [], null, null, null, isAssigned);
-            return true;
-        }
-
-        if (currentTab !== nextState.currentTab ||
+        if (organizationalUnit !== nextState.organizationalUnit ||
+            currentTab !== nextState.currentTab ||
             status !== nextState.status ||
             priority !== nextState.priority ||
             special !== nextState.special ||
@@ -64,6 +52,41 @@ class TaskManagementOfUnit extends Component {
             isAssigned !== nextState.isAssigned
         ) {
             return false;
+        }
+
+        if (organizationalUnit && organizationalUnit.length === 0 && dashboardEvaluationEmployeeKpiSet && dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit) {
+            let childrenOrganizationalUnit = [], queue = [], currentOrganizationalUnit;
+
+            // Khởi tạo selectbox đơn vị
+            if (dashboardEvaluationEmployeeKpiSet) {
+                currentOrganizationalUnit = dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit;
+            }
+            if (currentOrganizationalUnit) {
+                childrenOrganizationalUnit.push(currentOrganizationalUnit);
+                queue.push(currentOrganizationalUnit);
+                while (queue.length > 0) {
+                    let v = queue.shift();
+                    if (v.children) {
+                        for (let i = 0; i < v.children.length; i++) {
+                            let u = v.children[i];
+                            queue.push(u);
+                            childrenOrganizationalUnit.push(u);
+                        }
+                    }
+                }
+            }
+            
+            let units = childrenOrganizationalUnit.map(item => item.id);
+            this.setState((state) => {
+                return {
+                    ...state,
+                    organizationalUnit: units,
+                    selectBoxUnit: childrenOrganizationalUnit
+                }
+            });
+
+            await this.props.getPaginatedTasksByOrganizationalUnit(units, 1, 20, status, [], [], null, null, null, isAssigned);
+            return true;
         }
 
         return true;
@@ -203,6 +226,7 @@ class TaskManagementOfUnit extends Component {
 
     handleUpdateData = () => {
         let { organizationalUnit, status, priority, special, name, startDate, endDate, perPage, isAssigned } = this.state;
+
         if (organizationalUnit && organizationalUnit.length !== 0) {
             this.props.getPaginatedTasksByOrganizationalUnit(organizationalUnit, 1, perPage, status, priority, special, name, startDate, endDate, isAssigned);
         }
@@ -341,7 +365,7 @@ class TaskManagementOfUnit extends Component {
 
     render() {
         const { tasks, user, translate, dashboardEvaluationEmployeeKpiSet } = this.props;
-        const { currentTaskId, currentPage, startDate, endDate, perPage, status, isAssigned, organizationalUnit } = this.state;
+        const { selectBoxUnit, currentTaskId, currentPage, startDate, endDate, perPage, status, isAssigned, organizationalUnit } = this.state;
         let currentTasks, units = [];
         let data = [];
         let childrenOrganizationalUnit = [], queue = [];
@@ -386,24 +410,9 @@ class TaskManagementOfUnit extends Component {
             }
         }
 
-        // Khởi tạo selectbox đơn vị
         if (dashboardEvaluationEmployeeKpiSet) {
             currentOrganizationalUnit = dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit;
             currentOrganizationalUnitLoading = dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnitLoading;
-        }
-        if (currentOrganizationalUnit) {
-            childrenOrganizationalUnit.push(currentOrganizationalUnit);
-            queue.push(currentOrganizationalUnit);
-            while (queue.length > 0) {
-                let v = queue.shift();
-                if (v.children) {
-                    for (let i = 0; i < v.children.length; i++) {
-                        let u = v.children[i];
-                        queue.push(u);
-                        childrenOrganizationalUnit.push(u);
-                    }
-                }
-            }
         }
 
         return (
@@ -415,13 +424,18 @@ class TaskManagementOfUnit extends Component {
                                 {/* Đợn vị tham gia công việc */}
                                 <div className="form-group">
                                     <label>{translate('task.task_management.department')}</label>
-                                    {childrenOrganizationalUnit && childrenOrganizationalUnit.length !== 0
+                                    {selectBoxUnit && selectBoxUnit.length !== 0
                                         && <SelectMulti
                                             key="multiSelectUnit1"
                                             id="multiSelectUnit1"
-                                            items={childrenOrganizationalUnit.map(item => { return { value: item.id, text: item.name } })}
+                                            items={selectBoxUnit.map(item => { return { value: item.id, text: item.name } })}
                                             onChange={this.handleSelectOrganizationalUnit}
-                                            options={{ nonSelectedText: organizationalUnit.length !== 0 ? translate('task.task_management.select_department') : "Bạn chưa có đơn vị", allSelectedText: translate(`task.task_management.select_all_department`) }}
+                                            options={{
+                                                nonSelectedText: organizationalUnit.length !== 0 ? translate('task.task_management.select_department') : translate('general.not_org_unit'),
+                                                allSelectedText: translate(`task.task_management.select_all_department`),
+                                                includeSelectAllOption: true,
+                                                maxHeight: 200
+                                            }}
                                             value={organizationalUnit}
                                         >
                                         </SelectMulti>
@@ -593,7 +607,7 @@ class TaskManagementOfUnit extends Component {
                     : currentOrganizationalUnitLoading
                     && <div className="box">
                         <div className="box-body">
-                            <h4>Bạn chưa có đơn vị</h4>
+                            <h4>{translate('general.not_org_unit')}</h4>
                         </div>
                     </div>
                 }

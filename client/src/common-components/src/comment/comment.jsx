@@ -6,6 +6,7 @@ import { ContentMaker, DialogModal, ApiImage } from '../../index';
 import { getStorage } from '../../../config';
 import moment from 'moment';
 import { AuthActions } from '../../../modules/auth/redux/actions';
+import parse from 'html-react-parser';
 
 class Comment extends Component {
     constructor(props) {
@@ -368,7 +369,7 @@ class Comment extends Component {
                                             {item.description.split('\n').map((item, idx) => {
                                                 return (
                                                     <span key={idx}>
-                                                        {item}
+                                                        {parse(item)}
                                                         <br />
                                                     </span>
                                                 );
@@ -464,7 +465,7 @@ class Comment extends Component {
                                                             {child?.description?.split('\n').map((item, idx) => {
                                                                 return (
                                                                     <span key={idx}>
-                                                                        {item}
+                                                                        {parse(item)}
                                                                         <br />
                                                                     </span>
                                                                 );

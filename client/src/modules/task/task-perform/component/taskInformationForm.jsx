@@ -7,15 +7,28 @@ class TaskInformationForm extends Component {
 
     constructor(props) {
         super(props);
-        let { task } = props;
-        console.log('task', task);
+        let { task, evaluationInfo } = props;
+
+        let initialInfo = task && task.taskInformations;
+        if(props.perform === 'evaluate'){
+            initialInfo = evaluationInfo && evaluationInfo.taskInformations;
+        }
+
         this.state = {
-            listInfo: task && task.taskInformations
+            listInfo: initialInfo
         }
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.task !== prevState.task) {
+        if(nextProps.perform === 'evaluate'){
+            if (nextProps.evaluationInfo?._id !== prevState.evaluationInfo?._id){
+                return {
+                    ...prevState,
+                    listInfo: nextProps.evaluationInfo && nextProps.evaluationInfo.taskInformations,
+                    evaluationInfo: nextProps.evaluationInfo,
+                }
+            }
+        } else if (nextProps.task !== prevState.task) {
             return {
                 ...prevState,
 
@@ -79,13 +92,13 @@ class TaskInformationForm extends Component {
                             <ErrorLabel content={value.errorOnProgress} />
 
                         </div>
-                        {(perform !== 'evaluate' && !disabled) &&
+                        {(perform !== 'evaluate' && !disabled) && role === "accountable" &&
                             <div className="pull-right">
                                 <a onClick={this.clickEditInfo} style={{ cursor: 'pointer', fontWeight: "normal" }}>Chỉnh sửa thông tin</a>
                             </div>
                         }
                         {
-                            (listInfo.length !== 0) &&
+                            (listInfo?.length !== 0) &&
                             listInfo.map((info, index) => {
                                 if (info.type === 'text') {
                                     return <div className={`form-group ${value.errorInfo && value.errorInfo[info.code] === undefined ? "" : "has-error"}`} key={index}>
@@ -109,7 +122,7 @@ class TaskInformationForm extends Component {
                                 {
                                     if (info.type === 'number') {
                                         return <div className={`form-group ${value.errorInfo && value.errorInfo[info.code] === undefined ? "" : "has-error"}`} key={index}>
-                                            <label>{info.name} (0 - 100)</label>
+                                            <label>{info.name}</label>
                                             <input
                                                 className="form-control"
                                                 type="number"

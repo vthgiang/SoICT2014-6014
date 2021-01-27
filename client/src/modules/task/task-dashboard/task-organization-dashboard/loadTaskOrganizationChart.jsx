@@ -10,7 +10,7 @@ const CHART_INFO = {
     currentRoles: []
 }
 
-const WeightTaskOrganizationChart = (props) => {
+const LoadTaskOrganizationChart = (props) => {
     const [unit, setUnit] = useState();
     const { translate, units, idsUnit } = props;
     let { startMonth, endMonth } = props;
@@ -51,7 +51,10 @@ const WeightTaskOrganizationChart = (props) => {
                 data[i] = [];
                 array.fill(0, 0);
                 let findUnit = units.find(elem => elem.id === selectedUnit[i])
-                data[i].push(findUnit.name);
+                if (findUnit) {
+                    data[i].push(findUnit.name);
+                }
+                
                 for (let k in improcessTask) {
                     if (improcessTask[k] && improcessTask[k].organizationalUnit && improcessTask[k].organizationalUnit._id === selectedUnit[i]) {
                         let improcessDay = 0;
@@ -113,7 +116,7 @@ const WeightTaskOrganizationChart = (props) => {
             axis: {
                 x: {
                     label: {
-                        text: 'Thời gian',
+                        text: translate('task.task_management.time'),
                         position: 'outer-right',
                     },
 
@@ -122,7 +125,7 @@ const WeightTaskOrganizationChart = (props) => {
                 },
                 y: {
                     label: {
-                        text: "Tải công việc",
+                        text: translate('task.task_management.load_task'),
                         position: 'outer-top',
                     },
 
@@ -165,5 +168,5 @@ function mapState(state) {
 const actions = {
 }
 
-const connectedWeightTaskOrganization = connect(mapState, actions)(withTranslate(WeightTaskOrganizationChart));
-export { connectedWeightTaskOrganization as WeightTaskOrganizationChart };
+const connectedWeightTaskOrganization = connect(mapState, actions)(withTranslate(LoadTaskOrganizationChart));
+export { connectedWeightTaskOrganization as LoadTaskOrganizationChart };

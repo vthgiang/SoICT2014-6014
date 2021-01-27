@@ -5,21 +5,27 @@ import { CrmGroupActions } from '../redux/actions';
 import { SearchBar, PaginateBar, DataTableSetting, ConfirmNotification } from '../../../../common-components';
 import CreateGroupForm from './createForm';
 import EditGroupForm from './editForm';
+import { getTableConfiguration } from '../../../../helpers/tableConfiguration'
 class CrmGroup extends Component {
     constructor(props) {
         super(props);
+        const tableId = "table-manage-crm-group";
+        const defaultConfig = { limit: 5 }
+        const limit = getTableConfiguration(tableId, defaultConfig).limit;
+
         this.state = {
-            limit: 5,
+            limit: limit,
             page: 0,
             option: 'name',
-            value: ''
+            value: '',
+            tableId,
         }
     }
 
     render() {
         const { crm, translate } = this.props;
         const { list } = crm.groups;
-        const { option, limit, page, groupIdEdit } = this.state;
+        const { option, limit, page, groupIdEdit, tableId } = this.state;
 
         let pageTotal = (crm.groups.totalDocs % limit === 0) ?
             parseInt(crm.groups.totalDocs / limit) :
@@ -58,7 +64,7 @@ class CrmGroup extends Component {
                                         ]}
                                         limit={this.state.limit}
                                         setLimit={this.setLimit}
-                                        tableId="table-manage-crm-group"
+                                        tableId={tableId}
                                     />
                                 </th>
                             </tr>

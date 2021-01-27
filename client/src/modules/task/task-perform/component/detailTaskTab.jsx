@@ -19,6 +19,8 @@ import { ShowMoreShowLess } from '../../../../common-components';
 import Swal from 'sweetalert2';
 
 import parse from 'html-react-parser';
+import { TaskAddModal } from '../../task-management/component/taskAddModal';
+import { ModalAddTaskTemplate } from '../../task-template/component/addTaskTemplateModal';
 
 class DetailTaskTab extends Component {
 
@@ -260,6 +262,30 @@ class DetailTaskTab extends Component {
         window.$(`#task-evaluation-modal-${id}-`).modal('show');
 
     }
+
+    handleCopyTask = async (id, role) => {
+        console.log('copy');
+        await this.setState(state => {
+            return {
+                ...state,
+                showCopy: `copy-task-${id}`
+            }
+        });
+        window.$(`#addNewTask-copy-task-${id}`).modal('show');
+
+    }
+
+    handleSaveAsTemplate = async (id, role) => {
+        await this.setState(state => {
+            return {
+                ...state,
+                showSaveAsTemplate: id
+            }
+        });
+        window.$(`#modal-add-task-template-${id}`).modal('show');
+
+    }
+
     refresh = async () => {
         this.props.getTaskById(this.state.id);
         this.props.getSubTask(this.state.id);
@@ -609,7 +635,7 @@ class DetailTaskTab extends Component {
     render() {
         const { tasks, performtasks, user, translate } = this.props;
         const { showToolbar, id, isProcess } = this.props; // props form parent component ( task, id, showToolbar, onChangeTaskRole() )
-        const { currentUser, roles, currentRole, collapseInfo, showEdit, showEndTask, showEvaluate, showMore } = this.state
+        const { currentUser, roles, currentRole, collapseInfo, showEdit, showEndTask, showEvaluate, showMore, showCopy, showSaveAsTemplate } = this.state
 
         let task;
         let codeInProcess, typeOfTask, statusTask, checkInactive = true, evaluations, evalList = [];
@@ -735,6 +761,7 @@ class DetailTaskTab extends Component {
             employeeCollaboratedWithUnitSelectBox = this.setSelectBoxOfUserSameDepartmentCollaborated(task);
         }
 
+        console.log('taskkk', task);
         return (
             <React.Fragment>
                 {(showToolbar) &&
@@ -776,6 +803,16 @@ class DetailTaskTab extends Component {
                             <React.Fragment>
                                 <a className="btn btn-app" onClick={() => this.handleShowEvaluate(id, currentRole)} title={translate('task.task_management.detail_evaluate')}>
                                     <i className="fa fa-calendar-check-o" style={{ fontSize: "16px" }}></i>{translate('task.task_management.detail_evaluate')}
+                                </a>
+                            </React.Fragment>
+                        }
+                        {((currentRole === "responsible" || currentRole === "accountable") && checkInactive) &&
+                            <React.Fragment>
+                                <a className="btn btn-app" onClick={() => this.handleCopyTask(id, currentRole)} title={translate('task.task_management.detail_copy_task')}>
+                                    <i className="fa fa-clone" style={{ fontSize: "16px" }}></i>{translate('task.task_management.detail_copy_task')}
+                                </a>
+                                <a className="btn btn-app" onClick={() => this.handleSaveAsTemplate(id, currentRole)} title={translate('task.task_management.detail_save_as_template')}>
+                                    <i className="fa fa-floppy-o" style={{ fontSize: "16px" }}></i>{translate('task.task_management.detail_save_as_template')}
                                 </a>
                             </React.Fragment>
                         }
@@ -1229,8 +1266,14 @@ class DetailTaskTab extends Component {
                         refresh={this.refresh}
                     />
                 }
-
-
+                {
+                    (id && showCopy === `copy-task-${id}`) &&
+                    <TaskAddModal id={`copy-task-${id}`} task={task}/>
+                }
+                {
+                    (id && showSaveAsTemplate === `${id}`) &&
+                    <ModalAddTaskTemplate savedTaskAsTemplate={true} savedTaskItem={task} savedTaskId={`${id}`} task={task}/>
+                }
             </React.Fragment>
         );
     }

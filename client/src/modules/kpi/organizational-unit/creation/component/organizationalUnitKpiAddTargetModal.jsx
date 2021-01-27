@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DialogModal, ErrorLabel, SelectBox } from '../../../../../common-components';
+import { DialogModal, ErrorLabel, SelectBox, QuillEditor } from '../../../../../common-components';
 import ValidationHelper from '../../../../../helpers/validationHelper';
 
 import { createUnitKpiActions } from '../redux/actions';
@@ -87,8 +87,7 @@ class OrganizationalUnitKpiAddTargetModal extends Component {
         });
     }
 
-    handleCriteriaChange = (e) => {
-        let value = e.target.value;
+    handleCriteriaChange = (value, imgs) => {
         let validation = ValidationHelper.validateDescription(this.props.translate, value);
 
         this.setState(state => {
@@ -209,8 +208,12 @@ class OrganizationalUnitKpiAddTargetModal extends Component {
                         {/* Tiêu chí đánh giá */}
                         <div className={`form-group ${!errorOnCriteria? "": "has-error"}`}>
                             <label>{translate('kpi.organizational_unit.create_organizational_unit_kpi_modal.evaluation_criteria')}<span className="text-red">*</span></label>
-                            <textarea rows={4} className="form-control" value={criteria} onChange = {this.handleCriteriaChange}/>
-                            <ErrorLabel content={errorOnCriteria}/>
+                            <QuillEditor
+                                id={'create-organizational-unit-kpi'}
+                                getTextData={this.handleCriteriaChange}
+                                toolbar={false}
+                            />
+                            <ErrorLabel content={errorOnCriteria} />
                         </div>
 
                         {/* Trọng số */}

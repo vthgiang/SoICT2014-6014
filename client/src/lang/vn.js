@@ -62,6 +62,7 @@ export default {
                 not_existing_error: "Giá trị không tồn tại",
                 existing_error: "Giá trị đã tồn tại",
             },
+            not_org_unit: "Bạn chưa có đơn vị",
         },
 
         intro: {
@@ -1122,6 +1123,7 @@ export default {
                 "Dashboard công việc đơn vị",
             task_management_process: "Danh sách quy trình",
             task_process_template: "Mẫu quy trình",
+            all_time_sheet_log: 'Thống kê bấm giờ',
 
             //*******START */
             // Quản lý tài sản
@@ -1194,8 +1196,10 @@ export default {
             manage_manufacturing_works: "Quản lý nhà máy sản xuất",
             manage_manufacturing_mill: "Quản lý xưởng sản xuất",
             manage_manufacturing_lot: "Quản lý lô sản xuất",
+            manage_project: "Quản lý dự án",
 
             user_guide: "Hướng dẫn sử dụng",
+            user_guide_detail: "Chi tiết hướng dẫn sử dụng",
         },
 
         manage_system: {
@@ -2988,6 +2992,8 @@ export default {
                 detail_hide_info: "Ẩn thông tin",
                 detail_show_info: "Hiện thông tin",
                 detail_choose_role: "Chọn vai trò",
+                detail_copy_task: "Nhân bản công việc",
+                detail_save_as_template: "Lưu thành mẫu",
                 detail_route: "Điều hướng",
                 detail_route_task: "Điều hướng công việc",
 
@@ -3204,6 +3210,10 @@ export default {
                 warning_minutes: "phút",
 
                 project: 'Thuộc dự án (nếu có)',
+                load_task: "Tải công việc",
+                time: "Thời gian",
+                load_task_chart: "Dashboard tải công việc",
+                load_task_chart_unit: "Dashboard tải công việc của đơn vị",
             },
             task_perform: {
                 actions: "Hoạt động",
@@ -3222,7 +3232,7 @@ export default {
                 evaluation: "Đánh giá",
                 attach_file: "Đính kèm file",
                 comment: "Bình luận",
-                result: "Báo cáo kết quả hoạt động",
+                result: "Báo cáo kết quả công việc",
                 re_evaluation: "Đánh giá lại",
                 question_delete_file: "Bạn có chắc chắn muốn xóa file",
                 edit_comment: "Sửa bình luận",

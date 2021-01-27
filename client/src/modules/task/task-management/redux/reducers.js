@@ -1,6 +1,7 @@
 import { taskManagementConstants } from "./constants";
 
 export function tasks(state = {
+    allTimeSheetLogs: [],
     userTimeSheetLogs: [],
     totalCount: 0,
     tasks: [],
@@ -233,6 +234,7 @@ export function tasks(state = {
             return {
                 ...state,
                 tasks: action.payload.tasks,
+                totalCount: action.payload.totalCount,
                 pages: action.payload.totalPage,
                 isLoading: false
             };
@@ -564,6 +566,26 @@ export function tasks(state = {
             return {
                 ...state,
                 userTimeSheetLogs: action.payload,
+                isLoading: false
+            };
+
+        
+        case taskManagementConstants.GET_ALL_USER_TIME_SHEET_LOG_REQUEST:
+            return {
+                ...state,
+                isLoading: true
+            };
+
+        case taskManagementConstants.GET_ALL_USER_TIME_SHEET_LOG_FAILE:
+            return {
+                ...state,
+                isLoading: false
+            };
+
+        case taskManagementConstants.GET_ALL_USER_TIME_SHEET_LOG_SUCCESS:
+            return {
+                ...state,
+                allTimeSheetLogs: action.payload,
                 isLoading: false
             };
 

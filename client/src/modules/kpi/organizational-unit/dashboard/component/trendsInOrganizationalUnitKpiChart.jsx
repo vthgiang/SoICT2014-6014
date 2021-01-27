@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { withTranslate } from 'react-redux-multilingual';
 
 import { dashboardOrganizationalUnitKpiActions } from '../redux/actions';
 import { createUnitKpiActions } from '../../creation/redux/actions';
 
-import { withTranslate } from 'react-redux-multilingual';
+import { SlimScroll } from '../../../../../common-components';
 
 import c3 from 'c3';
 import 'c3/c3.css';
@@ -437,7 +438,7 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
         }
 
         dataChart.unshift(titleX);
-        this.chart = c3.generate({
+        let chart = c3.generate({
             bindto: this.refs.chart,                
 
             size: {                                 
@@ -477,8 +478,34 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
                         outer: true
                     }
                 }
+            },
+
+            legend: {
+                show: false
             }
         });
+
+        d3.select('#trendsInChildrenUnit').insert('div', '.chart')
+            .attr('id', 'trendsInUnitLegend')
+            .attr('class', 'legend')
+            .selectAll('span')
+            .data(dataChart.filter((item, index) => index > 0).map(item => item[0]))
+            .enter().append('div')
+            .attr('data-id', function (id) { return id; })
+            .html(function (id) { return id; })
+            .each(function (id) {
+                d3.select(this).style('border-left', `5px solid ${chart.color(id)}`);
+                d3.select(this).style('padding-left', `5px`);
+            })
+            .on('mouseover', function (id) {
+                chart.focus(id);
+            })
+            .on('mouseout', function (id) {
+                chart.revert();
+            })
+            .on('click', function (id) {
+                chart.toggle(id);
+            });
     }
     
     render() {
@@ -493,7 +520,16 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
         return (
             <React.Fragment>
                 {currentKpi ?
-                    <section ref="chart"></section>
+                    <section id={"trendsInChildrenUnit"} className="c3-chart-container">
+                        <div ref="chart"></div>
+                        <label><i className="fa fa-exclamation-circle" style={{ color: '#06c', paddingRight: '5px' }}/>{translate('kpi.evaluation.employee_evaluation.KPI_list')}</label>
+                        <SlimScroll
+                            outerComponentId={"trendsInUnitLegend"}
+                            maxHeight={100}
+                            activate={true}
+                            verticalScroll={true}
+                        />
+                    </section>
                     : organizationalUnitKpiLoading && <section>{translate('kpi.organizational_unit.dashboard.no_data')}</section>
                 }
             </React.Fragment>

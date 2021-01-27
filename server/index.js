@@ -16,8 +16,15 @@ app.use(require("cors")());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cookieParser());
+
 app.use("/upload/avatars", express.static("upload/avatars"));
-app.use("/upload/user-guide", express.static("upload/user-guide"));
+
+app.use("/upload/user-guide/task", express.static("upload/user-guide/task"));
+app.use("/upload/user-guide/kpi", express.static("upload/user-guide/kpi"));
+app.use("/upload/user-guide/hr", express.static("upload/user-guide/hr"));
+app.use("/upload/user-guide/system", express.static("upload/user-guide/system"));
+app.use("/upload/user-guide/document", express.static("upload/user-guide/document"));
+app.use("/upload/user-guide/asset", express.static("upload/user-guide/asset"));
 
 const router = express.Router();
 
@@ -266,7 +273,7 @@ app.use("/sla", require("./modules/production/order/sla/sla.route"));
 app.use("/tax", require("./modules/production/order/tax/tax.route"));
 app.use("/payment", require("./modules/production/order/payment/payment.route"));
 app.use("/business-department", require("./modules/production/order/business-department/businessDepartment.route"));
-
+app.use("/projects", require("./modules/project/project.route"));
 app.use(router);
 
 /**

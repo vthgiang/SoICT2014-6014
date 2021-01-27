@@ -8,6 +8,7 @@ import { DataTableSetting, ExportExcel } from '../../../../../common-components'
 import { TaskDialog } from '../../../evaluation/employee-evaluation/component/taskImpotanceDialog';
 import { ModalDetailTask } from '../../../../task/task-dashboard/task-personal-dashboard/modalDetailTask';
 import { kpiMemberActions } from '../../../evaluation/employee-evaluation/redux/actions';
+import parse from 'html-react-parser';
 
 class ModalDetailKPIPersonal extends Component {
     constructor(props) {
@@ -129,7 +130,7 @@ class ModalDetailKPIPersonal extends Component {
             fileName += " " + dataKpi.name;
             let dataObject = {
                 kpiName: dataKpi.name,
-                kpiCriteria: dataKpi.criteria,
+                kpiCriteria: parse(dataKpi.criteria),
                 kpiWeight: parseInt(dataKpi.weight),
                 automaticPoint: (dataKpi.automaticPoint === null) ? "Chưa đánh giá" : parseInt(dataKpi.automaticPoint),
                 employeePoint: (dataKpi.employeePoint === null) ? "Chưa đánh giá" : parseInt(dataKpi.employeePoint),
@@ -300,7 +301,7 @@ class ModalDetailKPIPersonal extends Component {
                                     <div style={{ lineHeight: 2 }}>
                                         <div>
                                             <label>{translate('kpi.evaluation.employee_evaluation.criteria')}:</label>
-                                            <span> {item.criteria}</span>
+                                            <span> {parse(item.criteria)}</span>
                                         </div>
 
                                         <div>

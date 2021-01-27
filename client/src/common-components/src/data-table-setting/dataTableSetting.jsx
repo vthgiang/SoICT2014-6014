@@ -5,14 +5,18 @@ import { withTranslate } from 'react-redux-multilingual';
 import { SelectMulti } from '../..';
 import { SlimScroll } from '../..';
 import './dataTableSetting.css';
+import { getTableConfiguration } from '../../../helpers/tableConfiguration';
+import { setTableConfiguration } from '../../../helpers/tableConfiguration';
 
 class DataTableSetting extends Component {
     constructor(props) {
         super(props);
         this.record = React.createRef();
+        const getConfiguration = getTableConfiguration(this.props.tableId);
         this.state = {
             useScrollBar: false,
-            hiddenColumns: [],
+            hiddenColumns: getConfiguration.hiddenColumns,
+            limit: getConfiguration.limit,
         };
     }
 
@@ -26,6 +30,7 @@ class DataTableSetting extends Component {
     }
 
     componentDidUpdate() {
+        const { hiddenColumns, limit } = this.state;
         window.$(`#${this.props.tableId} td`).show();
         window.$(`#${this.props.tableId} th`).show();
 
@@ -37,11 +42,16 @@ class DataTableSetting extends Component {
             }
         }
 
-        const { hiddenColumns } = this.state;
         for (var j = 0, len = hiddenColumns.length; j < len; j++) {
             window.$(`#${this.props.tableId} td:nth-child(` + hiddenColumns[j] + `)`).hide();
             window.$(`#${this.props.tableId} thead th:nth-child(` + hiddenColumns[j] + `)`).hide();
         }
+
+        let config = {};
+        config = { ...config, limit: limit, hiddenColumns: hiddenColumns }
+        setTableConfiguration(this.props.tableId, config);
+
+
     }
 
     adjustSize = async () => {
@@ -76,7 +86,11 @@ class DataTableSetting extends Component {
         await window.$(`#setting-${this.props.tableId}`).collapse("hide");
 
         if (this.props.setLimit && Number(this.props.limit) !== Number(this.record.current.value)) {
-            await this.props.setLimit(this.record.current.value);
+            await this.setState({
+                ...this.state,
+                limit: this.record.current.value,
+            })
+            this.props.setLimit(this.record.current.value);
         }
     }
 
@@ -93,7 +107,7 @@ class DataTableSetting extends Component {
 
     render() {
         const { text, fontSize = 19, className, style, translate, columnArr = [], hideColumnOption = true, tableContainerId, tableId, tableWidth, limit = 5 } = this.props;
-
+        const { hiddenColumns } = this.state;
         return (
             <React.Fragment>
                 <button type="button" data-toggle="collapse" data-target={`#setting-${tableId}`} className={className ? className : 'pull-right'} style={style ? style : { border: "none", background: "none", padding: "0px" }}><i className="fa fa-gear" style={{ fontSize }}></i> {text}</button>
@@ -110,6 +124,7 @@ class DataTableSetting extends Component {
                             <SelectMulti id={`multiSelectHideColumn-${tableId}`} multiple="multiple"
                                 options={{ nonSelectedText: translate('table.choose_hidden_columns'), allSelectedText: translate('table.hide_all_columns') }}
                                 items={columnArr.map((col, i) => { return { value: i + 1, text: col } })}
+                                value={hiddenColumns}
                                 onChange={this.handleChangeHiddenColumns}>
                             </SelectMulti>
                         </div>

@@ -156,7 +156,11 @@ import ManufacturingLot from "../modules/production/manufacturing/manufacturing-
 
 import AnswerAuthQuestionPage from '../modules/auth/components/answerAuthQuestion';
 
+import { Project } from '../modules/project/component/managerTableProject';
 import UserGuide from '../modules/user-guide/components';
+import DetailUserGuide from '../modules/user-guide/components/detailUserGuide';
+import AllTimeSheetLog from '../modules/task/task-dashboard/statistic/allTimeSheetLog';
+
 class Routes extends Component {
     render() {
         const {
@@ -2069,7 +2073,7 @@ class Routes extends Component {
                         pageName={"manage_business_department"}
                         layout={Layout}
                         component={BusinessDepartment}
-                    /> 
+                    />
 
                     <PrivateRoute
                         isLoading={false}
@@ -2396,6 +2400,26 @@ class Routes extends Component {
                         component={ManufacturingLot}
                     />
 
+
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"/projects-management"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/projects-management",
+                                name: "manage_project",
+                                icon: "fa fa-folder-open",
+                            }
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/projects-management"}
+                        path={"/projects-management"}
+                        pageName={"manage_project"}
+                        layout={Layout}
+                        component={Project}
+                    />
                     <PrivateRoute
                         isLoading={false}
                         key={"user-guide"}
@@ -2414,6 +2438,46 @@ class Routes extends Component {
                         pageName={"user_guide"}
                         layout={Layout}
                         component={UserGuide}
+                    />
+
+                    <PrivateRoute // Trang chi tiết hướng dẫn sử dụng (không có trên menu)
+                        isLoading={false}
+                        key={"user-guide-detail"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/user-guide",
+                                name: "user_guide",
+                                icon: "",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/user-guide-detail"}
+                        path={"/user-guide-detail"}
+                        pageName={"user_guide_detail"}
+                        layout={Layout}
+                        component={DetailUserGuide}
+                    />
+
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"all-time-sheet-log"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/time-sheet-log/all",
+                                name: "all_time_sheet_log",
+                                icon: "fa fa-newspaper-o",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/time-sheet-log/all"}
+                        path={"/time-sheet-log/all"}
+                        pageName={"all_time_sheet_log"}
+                        layout={Layout}
+                        component={AllTimeSheetLog}
                     />
 
                     {/* NOT FOUND */}

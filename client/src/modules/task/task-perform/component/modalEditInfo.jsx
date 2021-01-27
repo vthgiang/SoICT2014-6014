@@ -13,6 +13,14 @@ class ModalEditInfo extends Component {
 
     handleTaskInformationChange = (data) => {
         console.log('data', data);
+        for(let i in data) {
+            let code = "p" + (Number(i) + 1);
+            data[i] = {
+                ...data[i],
+                code: code,
+            }
+        }
+        console.log('new data', data);
         this.setState(state => {
             return {
                 ...state,
@@ -39,7 +47,7 @@ class ModalEditInfo extends Component {
                     hasSaveButton={false}
                 >
                     <div>
-                        <InformationForm disabled={true} initialData={taskInformation} onDataChange={this.handleTaskInformationChange} />
+                        <InformationForm isEdit={true} initialData={taskInformation} onDataChange={this.handleTaskInformationChange} />
                     </div>
                 </DialogModal>
             </React.Fragment>
