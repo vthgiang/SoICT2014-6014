@@ -18,13 +18,13 @@ module.exports = {
     path: path.join(__dirname, 'build'),
     filename: 'backend.js'
   },
-  externals: nodeModules,
+  // externals: nodeModules,
   module: {
     rules: [
       {
         test: /\.txt$/i,
         use: 'raw-loader',
-      },
+      },                 
       {
         test: /\.log$/i,
         use: 'raw-loader',
@@ -45,5 +45,5 @@ module.exports = {
     //                          { raw: true, entryOnly: false })
   ],
   mode:'production',
-  devtool: 'inline-source-map'
+  devtool: 'inline-source-map'         
 }

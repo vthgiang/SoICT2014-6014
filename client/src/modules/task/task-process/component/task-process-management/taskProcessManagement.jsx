@@ -9,6 +9,7 @@ import { TaskProcessActions } from '../../redux/actions';
 import { ModalViewProcess } from './modalViewProcess';
 import { ModalEditProcess } from './modalEditProcess';
 import { forwardRef } from 'react';
+import { ModalCreateTaskByProcess } from './modalCreateTaskByProcess';
 
 class TaskProcessManagement extends Component {
 	constructor(props) {
@@ -50,14 +51,14 @@ class TaskProcessManagement extends Component {
 		window.$(`#modal-view-process-task-list`).modal("show");
 	}
 
-	showModalCreateProcess = async () => {
+	showModalCreateTaskByProcess = async () => {
 		await this.setState(state => {
 			return {
 				...state,
-				showModalCreateProcess: true
+				showModalCreateTaskByProcess: true
 			}
 		});
-		window.$(`#modal-create-process-task`).modal("show");
+		window.$(`#modal-create-task-by-process`).modal("show");
 	}
 
 	setPage = async (pageTotal) => {
@@ -99,7 +100,7 @@ class TaskProcessManagement extends Component {
 
 	render() {
 		const { translate, taskProcess, department } = this.props
-		const { currentRow, currentRole, currentUser } = this.state
+		const { currentRow, currentRole, currentUser,showModalCreateTaskByProcess } = this.state
 		let listTaskProcess = [];
 		if (taskProcess && taskProcess.listTaskProcess) {
 			listTaskProcess = taskProcess.listTaskProcess
@@ -138,6 +139,16 @@ class TaskProcessManagement extends Component {
 							creator={currentRow.creator}
 						/>
 					}
+					{/* Button thêm mới */}
+					<div className="pull-right" style={{ marginTop: 5 }}>
+						<button type="button" className="btn btn-success pull-right" data-toggle="dropdown" aria-expanded="true" title='Thêm' onClick={(event) => { this.showModalCreateTaskByProcess(event) }}>{translate('task_template.add')}</button>
+					</div>
+					{ showModalCreateTaskByProcess &&
+						<ModalCreateTaskByProcess
+							title={"Quy trình không theo mẫu"}
+							listOrganizationalUnit={listOrganizationalUnit}
+						/>
+					}
 					<div className="form-inline">
 						<div className="form-group">
 							<label className="form-control-static">{translate('task_template.name')}</label>
@@ -145,7 +156,7 @@ class TaskProcessManagement extends Component {
 							<button type="button" className="btn btn-success" title={translate('task_template.search')} onClick={this.handleUpdateData}>{translate('task_template.search')}</button>
 						</div>
 					</div>
-
+					
 					<DataTableSetting
 						tableId="table-task-process-template"
 						columnArr={[

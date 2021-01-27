@@ -426,8 +426,7 @@ class FormCreateTaskByProcess extends Component {
 
         var units, taskActions, taskInformations, listRole, departmentsThatUserIsManager, listRoles, usercompanys, userdepartments = [];
         var { taskItem, id, showMore } = this.state;
-
-        console.log('taskItem', taskItem);
+        console.log(taskItem)
         if (taskItem && taskItem.taskActions) taskActions = taskItem.taskActions;
         if (taskItem && taskItem.taskInformations) taskInformations = taskItem.taskInformations;
 
@@ -449,9 +448,7 @@ class FormCreateTaskByProcess extends Component {
             usersInUnitsOfCompany = user.usersInUnitsOfCompany;
         }
 
-        var allUnitsMember = getEmployeeSelectBoxItems(usersInUnitsOfCompany);
-        let unitMembers = getEmployeeSelectBoxItems(usersOfChildrenOrganizationalUnit);
-
+        let allUnitsMember = getEmployeeSelectBoxItems(usersInUnitsOfCompany);
         return (
             <React.Fragment>
                 {/**Form chứa thông tin của mẫu công việc đang sửa */}
@@ -581,12 +578,12 @@ class FormCreateTaskByProcess extends Component {
 
                             {/**Người thực hiện mẫu công việc này */}
                             <label className="control-label" >{translate('task_template.performer')} <span style={{ color: "red" }}>*</span></label>
-                            {unitMembers && taskItem.responsibleEmployees &&
+                            {allUnitsMember &&
                                 <SelectBox
                                     id={isProcess ? `create-task-responsible-select-box-${taskItem._id}-${id}` : "edit-responsible-select-box"}
                                     className="form-control select2"
                                     style={{ width: "100%" }}
-                                    items={unitMembers}
+                                    items={allUnitsMember}
                                     onChange={this.handleTaskTemplateResponsible}
                                     value={taskItem.responsibleEmployees}
                                     multiple={true}
@@ -598,12 +595,12 @@ class FormCreateTaskByProcess extends Component {
 
                             {/**Người phê duyệt mẫu công việc này */}
                             <label className="control-label">{translate('task_template.approver')} <span style={{ color: "red" }}>*</span></label>
-                            {unitMembers && taskItem.accountableEmployees &&
+                            {allUnitsMember &&
                                 <SelectBox
                                     id={isProcess ? `create-task-accountable-select-box-${taskItem._id}-${id}` : "edit-accountable-select-box"}
                                     className="form-control select2"
                                     style={{ width: "100%" }}
-                                    items={unitMembers}
+                                    items={allUnitsMember}
                                     onChange={this.handleTaskTemplateAccountable}
                                     value={taskItem.accountableEmployees}
                                     multiple={true}
@@ -617,7 +614,7 @@ class FormCreateTaskByProcess extends Component {
                                 <div className='form-group' >
                                     {/**Người hỗ trọ mẫu công việc này */}
                                     <label className="control-label">{translate('task_template.consultant')}</label>
-                                    {allUnitsMember && taskItem.consultedEmployees &&
+                                    {allUnitsMember &&
                                         <SelectBox
                                             id={isProcess ? `create-task-consulted-select-box-${taskItem._id}-${id}` : "edit-consulted-select-box"}
                                             className="form-control select2"
@@ -634,7 +631,7 @@ class FormCreateTaskByProcess extends Component {
 
                                     {/**Người quan sát mẫu công việc này */}
                                     <label className="control-label">{translate('task_template.observer')}</label>
-                                    {allUnitsMember && taskItem.informedEmployees &&
+                                    {allUnitsMember &&
                                         <SelectBox
                                             id={isProcess ? `create-task-informed-select-box-${taskItem._id}-${id}` : "edit-informed-select-box"}
                                             className="form-control select2"
