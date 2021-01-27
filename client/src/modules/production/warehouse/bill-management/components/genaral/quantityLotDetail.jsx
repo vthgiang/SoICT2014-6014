@@ -67,7 +67,7 @@ class QuantityLotDetailForm extends Component {
                                         quantityDetail.lots.map((x, index) =>
                                             <tr key={index}>
                                                 <td>{x.lot ? x.lot.code : ''}</td>
-                                                <td>{this.formatDate(x.lot.expirationDate)}</td>
+                                                <td>{ x.lot ? x.lot.expirationDate ? this.formatDate(x.lot.expirationDate) : "" : "" }</td>
                                                 <td>{x.quantity}</td>
                                                 {group === '3' && <td>{x.returnQuantity}</td>}
                                                 {group === '4' && <td>{x.realQuantity}</td>}
