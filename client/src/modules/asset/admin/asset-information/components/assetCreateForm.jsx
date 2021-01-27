@@ -115,16 +115,28 @@ class AssetCreateForm extends Component {
 
     // Function thêm, chỉnh sửa thông tin cấp phát, điều chuyển, thu hồi
     handleChangeUsageLog = (data, addData) => {
+        const { asset } = this.state;
+        let status = addData ? addData.status : asset.status;
         this.setState({
-            usageLogs: data
+            usageLogs: data,
+            asset: {
+                ...asset,
+                assignedToUser: data ? data[data.length - 1].usedByUser : null,
+                assignedToOrganizationalUnit: data ? data[data.length - 1].usedByOrganizationalUnit : null,
+                status: status,
+            },
         })
     }
 
     handleRecallAsset = (data) => {
+        const { asset } = this.state;
         this.setState({
-            assignedToUser: data.assignedToUser,
-            assignedToOrganizationalUnit: data.assignedToOrganizationalUnit,
-            status: data.status
+            asset: {
+                ...asset,
+                assignedToUser: data.assignedToUser,
+                assignedToOrganizationalUnit: data.assignedToOrganizationalUnit,
+                status: data.status
+            }
         })
     }
     // Function thêm, chỉnh sửa thông tin sự cố thiết bị
@@ -154,7 +166,7 @@ class AssetCreateForm extends Component {
 
     // function kiểm tra các trường bắt buộc phải nhập
     validatorInput = (value) => {
-        if (value) {
+        if (value && value.length > 0) {
             return true;
         } else {
             return false;
@@ -230,6 +242,10 @@ class AssetCreateForm extends Component {
                                 avatar={avatar}
                                 handleChange={this.handleChange}
                                 handleUpload={this.handleUpload}
+                                assignedToUser={asset.assignedToUser}
+                                assignedToOrganizationalUnit={asset.assignedToOrganizationalUnit}
+                                usageLogs={usageLogs}
+                                status={asset.status}
                                 asset={asset}
                                 detailInfo={asset.detailInfo}
                             />

@@ -5,7 +5,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import { TabEmployeeCapacity, TabIntegratedStatistics, TabTask } from './combinedContent';
 import { TabHumanResource, TabSalary, TabAnualLeave } from '../../human-resource/employee-dashboard/components/combinedContent';
 
-import { DatePicker, SelectMulti, LazyLoadComponent, forceCheckOrVisible } from '../../../common-components';
+import { DatePicker, SelectMulti, LazyLoadComponent, forceCheckOrVisible, ToolTip } from '../../../common-components';
 
 import { EmployeeManagerActions } from '../../human-resource/profile/employee-management/redux/actions';
 import { TimesheetsActions } from '../../human-resource/timesheets/redux/actions';
@@ -13,7 +13,10 @@ import { DisciplineActions } from '../../human-resource/commendation-discipline/
 import { SalaryActions } from '../../human-resource/salary/redux/actions';
 import { taskManagementActions } from '../../task/task-management/redux/actions';
 import { UserActions } from '../../super-admin/user/redux/actions';
-
+import c3 from 'c3';
+import ViewAllTaskUrgent from './viewAllTaskUrgent';
+import ViewAllTaskNeedToDo from './viewAllTaskNeedToDo';
+import "./dashboardUnit.css";
 class MainDashboardUnit extends Component {
     constructor(props) {
         super(props);
@@ -22,40 +25,17 @@ class MainDashboardUnit extends Component {
             monthShow: this.formatDate(Date.now(), true),
             organizationalUnits: [this.props.childOrganizationalUnit[0].id],
             arrayUnitShow: [this.props.childOrganizationalUnit[0].id],
+
+            // Biểu đồ khẩn cấp / cần làm
+            currentDate: this.formatDate(Date.now(), false),
+            listUnit: [],
+            urgent: [],
+            taskNeedToDo: [],
+            arrayUnitForUrgentChart: [this.props.childOrganizationalUnit[0].id],
+            TaskUrgentIsHovering: false,
+            TaskNeedToDoIsHovering: false,
         }
     };
-
-    componentDidMount() {
-        const { organizationalUnits, month } = this.state;
-        let partMonth = month.split('-');
-        let newMonth = [partMonth[1], partMonth[0]].join('-');
-
-        /* Lấy danh sách nhân viên  */
-        this.props.getAllEmployee({ organizationalUnits: organizationalUnits, status: ["active", 'maternity_leave', 'unpaid_leave', 'probationary', 'sick_leave'] });
-
-        /* Lấy danh sách nhân viên theo tháng sinh*/
-        this.props.getAllEmployee({ status: ["active", 'maternity_leave', 'unpaid_leave', 'probationary', 'sick_leave'], page: 0, limit: 10000, birthdate: newMonth, organizationalUnits: organizationalUnits });
-
-        /* Lấy dữ liệu công việc của nhân viên trong đơn vị */
-        this.props.getAllEmployeeOfUnitByIds(organizationalUnits);
-        this.props.getTaskInOrganizationUnitByMonth(organizationalUnits, newMonth, newMonth, "in_month");
-
-        /** Lấy dữ liệu công việc sắp hết hạn */
-        this.props.getTaskByUser({ organizationUnitId: organizationalUnits, type: "organizationUnit", })
-
-        /* Lấy dánh sách khen thưởng, kỷ luật */
-        this.props.getListPraise({ organizationalUnits: organizationalUnits, month: newMonth });
-        this.props.getListDiscipline({ organizationalUnits: organizationalUnits, month: newMonth });
-
-        /* Lấy dữ liệu lương nhân viên*/
-        this.props.searchSalary({ callApiDashboard: true, organizationalUnits: organizationalUnits, month: newMonth });
-        this.props.searchSalary({ callApiDashboard: true, month: newMonth });
-
-        /* Lấy dữ liệu nghỉ phép, tăng ca của nhân viên */
-        this.props.getTimesheets({ organizationalUnits: organizationalUnits, startDate: newMonth, endDate: newMonth });
-    }
-
-
 
     /**
      * Function format dữ liệu Date thành string
@@ -160,16 +140,248 @@ class MainDashboardUnit extends Component {
         window.dispatchEvent(new Event('resize')); // Fix lỗi chart bị resize khi đổi tab
     }
 
+    removePreviousUrgentPieChart() {
+        const chart = this.refs.pieCharUrgent;
+        if (chart) {
+            while (chart.hasChildNodes()) {
+                chart.removeChild(chart.lastChild);
+            }
+        }
+    }
+    removePreviousNeedToDoPieChart() {
+        const chart = this.refs.pieCharTaskNeedToDo;
+        if (chart) {
+            while (chart.hasChildNodes()) {
+                chart.removeChild(chart.lastChild);
+            }
+        }
+    }
 
+    pieChartUrgent = (data) => {
+        this.removePreviousUrgentPieChart();
+        let dataChart = this.convertDataUrgentPieChart(data);
+        this.chart = c3.generate({
+            bindto: this.refs.pieCharUrgent,
+            data: { // Dữ liệu biểu đồ
+                columns: dataChart,
+                type: 'pie',
+                labels: true,
+                onclick: function (d, e) {
+                    this.setState({
+                        ...this.state,
+                        clickUrgentChart: d,
+                    })
+                    window.$('#modal-view-all-task-urgent').modal('show');
+                }.bind(this)
+            },
+            pie: {
+                label: {
+                    format: function (value, ratio, id) {
+                        return value;
+                    }
+                }
+            },
+
+            padding: {
+                top: 20,
+                bottom: 20,
+                right: 20,
+                left: 20
+            },
+
+            tooltip: {
+                format: {
+                    title: function (d) { return d; },
+                    value: function (value) {
+                        return value;
+                    }
+                }
+            },
+
+            legend: {
+                show: true
+            }
+        })
+    }
+
+    pieChartNeedTodo = (data) => {
+        this.removePreviousNeedToDoPieChart();
+        let dataChart = this.convertDataTaskNeedToDoPieChart(data);
+        this.chart = c3.generate({
+            bindto: this.refs.pieCharTaskNeedToDo,
+            data: { // Dữ liệu biểu đồ
+                columns: dataChart,
+                type: 'pie',
+                labels: true,
+                onclick: function (d, e) {
+                    this.setState({
+                        ...this.state,
+                        clickNeedTodoChart: d,
+                    })
+                    window.$('#modal-view-all-task-need-to-do').modal('show');
+                }.bind(this)
+            },
+            pie: {
+                label: {
+                    format: function (value, ratio, id) {
+                        return value;
+                    }
+                }
+            },
+
+            padding: {
+                top: 20,
+                bottom: 20,
+                right: 20,
+                left: 20
+            },
+
+            tooltip: {
+                format: {
+                    title: function (d) { return d; },
+                    value: function (value) {
+                        return value;
+                    }
+                }
+            },
+
+            legend: {
+                show: true
+            }
+        })
+    }
+
+    handleSelectOrganizationalUnitUrgent = (value) => {
+        this.setState({
+            arrayUnitForUrgentChart: value,
+        });
+    }
+
+    convertDataUrgentPieChart = (data) => {
+        let urgentPieChartData = [];
+
+        // convert công việc khẩn cấp qua dạng c3js
+        if (data && data.length > 0) {
+            const result = data.reduce((total, value) => {
+                total[value.organizationalUnit.name] = (total[value.organizationalUnit.name] || 0) + 1;
+                return total;
+            }, [])
+
+            for (let key in result) {
+                urgentPieChartData = [...urgentPieChartData, [key, result[key]]]
+            }
+        }
+        return urgentPieChartData;
+    }
+
+    convertDataTaskNeedToDoPieChart = (data) => {
+        let taskNeedToDoPieChart = [];
+        // convert công việc cần làm qua dạng c3js
+        if (data && data.length > 0) {
+            const result2 = data.reduce((total, value) => {
+                total[value.organizationalUnit.name] = (total[value.organizationalUnit.name] || 0) + 1;
+                return total;
+            }, [])
+
+            for (let key in result2) {
+                taskNeedToDoPieChart = [...taskNeedToDoPieChart, [key, result2[key]]]
+            }
+        }
+
+        return taskNeedToDoPieChart;
+    }
+
+    handleUpdateDataUrgent = () => {
+        const { currentDate, arrayUnitForUrgentChart } = this.state;
+
+        let partDate = currentDate.split('-');
+        let newDate = [partDate[2], partDate[1], partDate[0]].join('-');
+
+        this.props.getTaskInOrganizationUnitByDateNow(arrayUnitForUrgentChart, newDate)
+    }
+
+    static getDerivedStateFromProps(props, state) {
+        const { tasks } = props;
+
+        if (tasks && tasks.organizationUnitTasksChart && props.childOrganizationalUnit) {
+            return {
+                ...state,
+                listUnit: props.childOrganizationalUnit,
+                urgent: tasks.organizationUnitTasksChart.urgent,
+                taskNeedToDo: tasks.organizationUnitTasksChart.taskNeedToDo,
+            }
+        } else {
+            return null;
+        }
+    }
+
+    componentDidUpdate() {
+        if (this.state.taskNeedToDo || this.state.urgent) {
+            this.pieChartNeedTodo(this.state.taskNeedToDo);
+            this.pieChartUrgent(this.state.urgent);
+        }
+    }
+
+    componentDidMount() {
+        const { organizationalUnits, month, currentDate, arrayUnitForUrgentChart } = this.state;
+        let partMonth = month.split('-');
+        let newMonth = [partMonth[1], partMonth[0]].join('-');
+
+        /* Lấy danh sách nhân viên  */
+        this.props.getAllEmployee({ organizationalUnits: organizationalUnits, status: ["active", 'maternity_leave', 'unpaid_leave', 'probationary', 'sick_leave'] });
+
+        /* Lấy danh sách nhân viên theo tháng sinh*/
+        this.props.getAllEmployee({ status: ["active", 'maternity_leave', 'unpaid_leave', 'probationary', 'sick_leave'], page: 0, limit: 10000, birthdate: newMonth, organizationalUnits: organizationalUnits });
+
+        /* Lấy dữ liệu công việc của nhân viên trong đơn vị */
+        this.props.getAllEmployeeOfUnitByIds(organizationalUnits);
+        this.props.getTaskInOrganizationUnitByMonth(organizationalUnits, newMonth, newMonth, "in_month");
+
+        /** Lấy dữ liệu công việc sắp hết hạn */
+        this.props.getTaskByUser({ organizationUnitId: organizationalUnits, type: "organizationUnit", })
+
+        /* Lấy dánh sách khen thưởng, kỷ luật */
+        this.props.getListPraise({ organizationalUnits: organizationalUnits, month: newMonth });
+        this.props.getListDiscipline({ organizationalUnits: organizationalUnits, month: newMonth });
+
+        /* Lấy dữ liệu lương nhân viên*/
+        this.props.searchSalary({ callApiDashboard: true, organizationalUnits: organizationalUnits, month: newMonth });
+        this.props.searchSalary({ callApiDashboard: true, month: newMonth });
+
+        /* Lấy dữ liệu nghỉ phép, tăng ca của nhân viên */
+        this.props.getTimesheets({ organizationalUnits: organizationalUnits, startDate: newMonth, endDate: newMonth });
+
+
+        let partDate = currentDate.split('-');
+        let newDate = [partDate[2], partDate[1], partDate[0]].join('-');
+        this.props.getTaskInOrganizationUnitByDateNow(arrayUnitForUrgentChart, newDate)
+    }
+
+    handleMouseHovershowTaskUrgent = () => {
+        this.setState({
+            ...this.state,
+            TaskUrgentIsHovering: !this.state.TaskUrgentIsHovering
+        })
+    }
+
+    handleMouseHovershowTaskNeedToDo = () => {
+        this.setState({
+            ...this.state,
+            TaskNeedToDoIsHovering: !this.state.TaskNeedToDoIsHovering
+        })
+    }
     render() {
         const { translate, department, employeesManager, user, tasks, discipline } = this.props;
 
         const { childOrganizationalUnit } = this.props;
 
-        const { monthShow, month, organizationalUnits, arrayUnitShow } = this.state;
+        const { monthShow, month, organizationalUnits, arrayUnitShow, listUnit, taskNeedToDo, urgent, arrayUnitForUrgentChart, TaskUrgentIsHovering, TaskNeedToDoIsHovering, clickUrgentChart, clickNeedTodoChart } = this.state;
 
         let listAllEmployees = (!organizationalUnits || organizationalUnits.length === department.list.length) ?
             employeesManager.listAllEmployees : employeesManager.listEmployeesOfOrganizationalUnits;
+
+        // Item select box chọn đơn vị
+        let listUnitSelect = listUnit.map(item => ({ value: item.id, text: item.name }));
 
         /* Lấy dữ liệu công việc của nhân viên trong đơn vị */
         let taskListByStatus = tasks.organizationUnitTasksInMonth ? tasks.organizationUnitTasksInMonth.tasks : null;
@@ -206,12 +418,126 @@ class MainDashboardUnit extends Component {
         return (
             <React.Fragment>
                 <div className="qlcv">
+                    <ViewAllTaskUrgent data={this.state.urgent} clickUrgentChart={clickUrgentChart} />
+                    <ViewAllTaskNeedToDo data={this.state.taskNeedToDo} clickNeedTodoChart={clickNeedTodoChart} />
+                    {/* Biểu đồ só công việc khẩn cấp /  cần làm */}
+                    <div className="row">
+                        <div className="col-md-12">
+                            <div className="box box-solid">
+                                <div className="box-header with-border">
+                                    <div className="box-title" >
+                                        Biểu đồ thể hiện số công việc khẩn cấp/Cần làm
+                                    </div>
+                                </div>
+
+                                <div className="box-body" style={{ marginBottom: 15 }}>
+                                    {/* Seach theo thời gian */}
+                                    <div className="qlcv">
+                                        <div className="form-inline" >
+                                            <div className="form-group">
+                                                <label style={{ width: "auto" }}>{translate('kpi.organizational_unit.dashboard.organizational_unit')}</label>
+                                                <SelectMulti id="multiSelectOrganizationalUnitInpriority"
+                                                    items={listUnitSelect}
+                                                    options={{
+                                                        nonSelectedText: translate('page.non_unit'),
+                                                        allSelectedText: translate('page.all_unit'),
+                                                        includeSelectAllOption: true,
+                                                        maxHeight: 200
+                                                    }}
+                                                    onChange={this.handleSelectOrganizationalUnitUrgent}
+                                                    value={arrayUnitForUrgentChart}
+                                                >
+                                                </SelectMulti>
+                                            </div>
+                                            <button type="button" className="btn btn-success" onClick={this.handleUpdateDataUrgent}>{translate('general.search')}</button>
+                                        </div>
+                                    </div>
+
+                                    <div className="row " >
+                                        <div className="dashboard_box_body" >
+                                            <div className="col-md-6">
+                                                <p className="pull-left" style={{ display: 'flex', alignItems: 'center' }}> < b style={{ marginTop: '10px', marginRight: '5px' }}> Số công việc khẩn cấp</b>
+                                                    <span className="material-icons title-urgent " style={{ zIndex: 999, cursor: "pointer", fontSize: '15px', marginTop: '10px' }}
+                                                        onMouseEnter={this.handleMouseHovershowTaskUrgent}
+                                                        onMouseLeave={this.handleMouseHovershowTaskUrgent}>
+                                                        help
+                                                    </span>
+                                                </p >
+                                                {
+                                                    TaskUrgentIsHovering &&
+                                                    <div className="menu-list-item urgent">
+                                                        <span style={{ fontWeight: 'bold' }}>Công việc được gọi là khẩn cấp nếu:</span>
+                                                        <ul className="guide-list">
+                                                            <li className="guide-list-item">
+                                                                Quá hạn, công việc có độ ưu tiên lần lượt là 1, 2, 3, 4, 5
+                                                                chỉ được chậm 25 %, 20%, 15%,10%, 5% số ngày đã quá.
+                                                        </li>
+                                                            <li className="guide-list-item">
+                                                                {`và công việc có độ ưu tiên 1, 2 , 3, 4, 5 chậm tiến độ quá >=50, >=40,  >=30%, >=20%, >=10%`}
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                }
+
+                                                {
+                                                    tasks.isLoading ? <p style={{ marginTop: '60px', textAlign: "center" }}>Đang tải dữ liệu</p>
+                                                        : urgent && urgent.length > 0 ?
+                                                            <div ref="pieCharUrgent" /> :
+                                                            <p style={{ marginTop: '60px', textAlign: "center" }}>không có công việc nào khẩn cấp</p>
+                                                }
+                                            </div>
+
+                                            <div className="col-md-6">
+                                                <p className="pull-left" style={{ marginRight: '10px', display: 'flex', alignItems: 'center' }}> < b style={{ marginTop: '10px', marginRight: '5px' }} > Số công việc cần làm
+                                                </b>
+                                                    <span className="material-icons title-urgent " style={{ zIndex: 999, cursor: "pointer", fontSize: '15px', marginTop: '10px' }}
+                                                        onMouseEnter={this.handleMouseHovershowTaskNeedToDo}
+                                                        onMouseLeave={this.handleMouseHovershowTaskNeedToDo}>
+                                                        help
+                                                    </span>
+                                                </p >
+                                                {
+                                                    TaskNeedToDoIsHovering &&
+                                                    <div className="menu-list-item needtodo">
+                                                        <span style={{ fontWeight: 'bold', zIndex: 1000 }}>Công việc được gọi là cần lam nếu:</span>
+                                                        <ul className="guide-list">
+                                                            <li className="guide-list-item">
+                                                                Công việc đó quá hạn và không ở khẩn cấp.
+                                                            </li>
+                                                            <li className="guide-list-item">
+                                                                {` chậm tiến độ của mức:  5: 0<x<10, 4: 10 <= x <20, 3: 20<x<30, 2: <x<40, 1: <x<50`}
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                }
+                                                {
+                                                    tasks.isLoading ?
+                                                        <p style={{ marginTop: '60px', textAlign: "center" }}>Đang tải dữ liệu</p>
+                                                        :
+                                                        taskNeedToDo && taskNeedToDo.length > 0 ?
+                                                            <div ref="pieCharTaskNeedToDo" /> :
+                                                            <p style={{ marginTop: '60px', textAlign: "center" }}>không có công việc nào cần làm</p>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
                     <div className="form-inline" style={{ marginBottom: 10 }}>
                         <div className="form-group">
                             <label style={{ width: "auto" }}>{translate('kpi.organizational_unit.dashboard.organizational_unit')}</label>
                             <SelectMulti id="multiSelectOrganizationalUnitInDashboardUnit"
                                 items={childOrganizationalUnit.map(item => { return { value: item.id, text: item.name } })}
-                                options={{ nonSelectedText: translate('page.non_unit'), allSelectedText: translate('page.all_unit') }}
+                                options={{
+                                    nonSelectedText: translate('page.non_unit'),
+                                    allSelectedText: translate('page.all_unit'),
+                                    includeSelectAllOption: true,
+                                    maxHeight: 200
+                                }}
                                 onChange={this.handleSelectOrganizationalUnit}
                                 value={arrayUnitShow}
                             >
@@ -388,6 +714,7 @@ const actionCreators = {
     getAllEmployeeOfUnitByIds: UserActions.getAllEmployeeOfUnitByIds,
     getTaskInOrganizationUnitByMonth: taskManagementActions.getTaskInOrganizationUnitByMonth,
     getTaskByUser: taskManagementActions.getTasksByUser,
+    getTaskInOrganizationUnitByDateNow: taskManagementActions.getTaskByPriorityInOrganizationUnit,
 };
 
 const mainDashboardUnit = connect(mapState, actionCreators)(withTranslate(MainDashboardUnit));

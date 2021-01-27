@@ -212,7 +212,7 @@ exports.increaseNumberView = async (id, viewer, portal) => {
  * Tạo một tài liệu văn bản mới
  */
 exports.createDocument = async (portal, data, company) => {
-    // console.log('dtaaaaaaaa', data);
+    console.log('dtaaaaaaaa', data);
     let numberFile = 0,
         numberFileScan = 0;
     const existedName = await Document(connect(DB_CONNECTION, portal)).findOne({
@@ -237,7 +237,7 @@ exports.createDocument = async (portal, data, company) => {
         signer: data.signer,
         officialNumber: data.officialNumber,
         relationshipDocuments: data.relationshipDocuments,
-
+        userCanView: data.userCanView,
         roles: data.roles,
         relationshipDescription: data.relationshipDescription,
         archivedRecordPlaceOrganizationalUnit: data.archivedRecordPlaceOrganizationalUnit,
@@ -245,6 +245,7 @@ exports.createDocument = async (portal, data, company) => {
     let versions = [];
     if (data.versionName) {
         if (!Array.isArray(data.versionName)) {
+            console.log('rrrrr', data.files, data.scannedFileOfSignedDocument)
             versions = [
                 {
                     versionName: data.versionName,
@@ -252,8 +253,9 @@ exports.createDocument = async (portal, data, company) => {
                     issuingDate: dateParse(data.issuingDate),
                     effectiveDate: dateParse(data.effectiveDate),
                     expiredDate: dateParse(data.expiredDate),
-                    file: data.file,
-                    scannedFileOfSignedDocument: data.scannedFileOfSignedDocument,
+                    file: data.files && Array.isArray(data.files) ? data.files[0] : data.files,
+                    scannedFileOfSignedDocument: data.scannedFileOfSignedDocument && Array.isArray(data.scannedFileOfSignedDocument) ?
+                        data.scannedFileOfSignedDocument[0] : data.scannedFileOfSignedDocument,
                 },
             ];
         } else {
@@ -404,6 +406,9 @@ exports.editDocument = async (id, data, query = undefined, portal) => {
         if (data.roles) {
             doc.roles = data.roles;
         }
+        if (data.userCanView) {
+            doc.userCanView = data.userCanView;
+        }
 
         if (
             data.archivedRecordPlaceOrganizationalUnit &&
@@ -415,6 +420,7 @@ exports.editDocument = async (id, data, query = undefined, portal) => {
         }
         if (data.archivedRecordPlaceManagerd)
             doc.archivedRecordPlaceManager = data.archivedRecordPlaceManager;
+
 
         await doc.save();
         return doc;
@@ -737,7 +743,7 @@ exports.createDocumentDomain = async (portal, data, company) => {
     return await this.getDocumentDomains(portal, company);
 };
 
-exports.getDocumentsThatRoleCanView = async (portal, query, company) => {
+exports.getDocumentsThatRoleCanView = async (portal, query, id, company) => {
     let page = query.page;
     let limit = query.limit;
     let role = await Role(connect(DB_CONNECTION, portal)).findById(
@@ -753,7 +759,10 @@ exports.getDocumentsThatRoleCanView = async (portal, query, company) => {
             );
     } else {
         let option = {
-            roles: { $in: roleArr },
+            $or: [
+                { roles: { $in: roleArr } },
+                { userCanView: id }
+            ]
         };
 
         if (query.category) {
@@ -788,6 +797,7 @@ exports.getDocumentsThatRoleCanView = async (portal, query, company) => {
         if (query.name) {
             option.name = new RegExp(query.name, "i");
         }
+        console.log('oooooo', option);
 
         // let list = await Document(connect(DB_CONNECTION, portal)).paginate(option, {
         //     page,
@@ -828,9 +838,11 @@ exports.getDocumentsThatRoleCanView = async (portal, query, company) => {
         let prevPage = page > 1 ? page - 1 : null;
         let nextPage = totalDocs > page * limit ? page + 1 : null;
         allDocs.sort((a, b) => {
-            let tmpA = a.versions[a.versions.length - 1].issuingDate ? a.versions[a.versions.length - 1].issuingDate : new Date(1900, 1, 1, 0, 3, 3, 0);
-            let tmpB = b.versions[b.versions.length - 1].issuingDate ? b.versions[b.versions.length - 1].issuingDate : new Date(1900, 1, 1, 0, 3, 3, 0);;
+            let tmpA = a.versions.length && a.versions[a.versions.length - 1].issuingDate ?
+                a.versions[a.versions.length - 1].issuingDate : new Date(1900, 1, 1, 0, 3, 3, 0);
 
+            let tmpB = b.versions.length && b.versions[b.versions.length - 1].issuingDate ?
+                b.versions[b.versions.length - 1].issuingDate : new Date(1900, 1, 1, 0, 3, 3, 0);;
             return new Date(tmpB) - new Date(tmpA);
         });
         let doc = allDocs.slice((page - 1) * limit, page * limit > allDocs.length ? allDocs.length : page * limit);
@@ -899,6 +911,7 @@ exports.getDocumentsUserStatistical = async (userId, query, portal) => {
         condition.name = new RegExp(query.name, "i");
     }
     let { option } = query;
+    console.log('connn', condition);
     switch (option) {
         case "downloaded": //những tài liệu văn bản mà người dùng đã tải xuống
             condition = { ...condition, "downloads.downloader": userId };
@@ -924,9 +937,11 @@ exports.getDocumentsUserStatistical = async (userId, query, portal) => {
             let prevPageDown = page > 1 ? page - 1 : null;
             let nextPageDown = totalDocsDown > page * limit ? page + 1 : null;
             allDocsDown.sort((a, b) => {
-                let tmpA = a.versions[a.versions.length - 1].issuingDate ? a.versions[a.versions.length - 1].issuingDate : new Date(1900, 1, 1, 0, 3, 3, 0);
-                let tmpB = b.versions[b.versions.length - 1].issuingDate ? b.versions[b.versions.length - 1].issuingDate : new Date(1900, 1, 1, 0, 3, 3, 0);;
+                let tmpA = a.versions.length && a.versions[a.versions.length - 1].issuingDate ?
+                    a.versions[a.versions.length - 1].issuingDate : new Date(1900, 1, 1, 0, 3, 3, 0);
 
+                let tmpB = b.versions.length && b.versions[b.versions.length - 1].issuingDate ?
+                    b.versions[b.versions.length - 1].issuingDate : new Date(1900, 1, 1, 0, 3, 3, 0);;
                 return new Date(tmpB) - new Date(tmpA);
             });
             let doc = allDocsDown.slice((page - 1) * limit, page * limit > allDocsDown.length ? allDocsDown.length : page * limit);
@@ -1003,8 +1018,11 @@ exports.getDocumentsUserStatistical = async (userId, query, portal) => {
             let nextPageLast = totalDocsLast > page * limit ? page + 1 : null;
 
             allDocsLast.sort((a, b) => {
-                let tmpA = a.versions[a.versions.length - 1].issuingDate ? a.versions[a.versions.length - 1].issuingDate : new Date(1900, 1, 1, 0, 3, 3, 0);
-                let tmpB = b.versions[b.versions.length - 1].issuingDate ? b.versions[b.versions.length - 1].issuingDate : new Date(1900, 1, 1, 0, 3, 3, 0);;
+                let tmpA = a.versions.length && a.versions[a.versions.length - 1].issuingDate ?
+                    a.versions[a.versions.length - 1].issuingDate : new Date(1900, 1, 1, 0, 3, 3, 0);
+
+                let tmpB = b.versions.length && b.versions[b.versions.length - 1].issuingDate ?
+                    b.versions[b.versions.length - 1].issuingDate : new Date(1900, 1, 1, 0, 3, 3, 0);;
 
                 return new Date(tmpB) - new Date(tmpA);
             });

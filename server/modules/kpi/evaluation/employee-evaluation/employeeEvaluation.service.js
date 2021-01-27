@@ -2,7 +2,7 @@ const Models = require(`../../../../models`);
 const { EmployeeKpiSet, OrganizationalUnit, Task, EmployeeKpi, User } = Models;
 const mongoose = require("mongoose");
 const { connect } = require(`../../../../helpers/dbHelper`);
-
+const NotificationServices = require(`../../../notification/notification.service`);
 
 /**
  * Lấy tất cả tập KPI hiện tại
@@ -81,7 +81,7 @@ exports.getEmployeeKPISets = async (portal, data) => {
             }
         }
     }
-    
+
     if (startdate && enddate) {
         keySearch = {
             ...keySearch,
@@ -143,7 +143,7 @@ exports.getKpisByMonth = async (portal, data) => {
  * @param {*} id id của kpi set
  */
 
-exports.approveAllKpis = async (portal, id) => {
+exports.approveAllKpis = async (portal, id, companyId) => {
     let employee_kpi_set = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
         .findByIdAndUpdate(id, { $set: { status: 2 } }, { new: true });
     let targets;
@@ -163,6 +163,23 @@ exports.approveAllKpis = async (portal, id) => {
             { path: 'comments.comments.creator', select: 'name email avatar' }
         ])
         .execPopulate();
+
+    if (employee_kpi_set) {
+        const dataNotify = {
+            organizationalUnits: employee_kpi_set.organizationalUnit._id,
+            title: "Phê duyệt KPI",
+            level: "general",
+            content: `<p><strong>${employee_kpi_set.approver.name}</strong> đã phê duyệt tất cả mục tiêu kpi của bạn.</p>`,
+            sender: `${employee_kpi_set.approver._id}`,
+            users: [employee_kpi_set.creator._id],
+            associatedDataObject: {
+                dataType: 3,
+                description: `<p><strong>${employee_kpi_set.approver.name}</strong> đã phê duyệt tất cả mục tiêu kpi của bạn.</p>`
+            }
+        };
+
+        NotificationServices.createNotification(portal, companyId, dataNotify)
+    }
     return employee_kpi_set;
 }
 
@@ -172,8 +189,7 @@ exports.approveAllKpis = async (portal, id) => {
  * @param {*} status: trạng thái
  */
 
-exports.editStatusKpi = async (portal, data, query) => {
-
+exports.editStatusKpi = async (portal, data, query, companyId) => {
     let target = await EmployeeKpi(connect(DB_CONNECTION, portal))
         .findByIdAndUpdate(data.id, { $set: { status: query.status } }, { new: true });
     let employee_kpi_set = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
@@ -193,6 +209,7 @@ exports.editStatusKpi = async (portal, data, query) => {
         }
         return true;
     })
+    console.log('checkFullApprove',checkFullApprove)
     employee_kpi_set = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
         .findByIdAndUpdate(employee_kpi_set._id, { $set: { status: checkFullApprove } }, { new: true })
 
@@ -204,7 +221,34 @@ exports.editStatusKpi = async (portal, data, query) => {
             { path: 'comments.comments.creator', select: 'name email avatar' }
         ])
         .execPopulate();
+    
+    if (employee_kpi_set) {
+        let getKpiApprove = employee_kpi_set.kpis.filter(obj => obj._id.toString() === data.id.toString());
+        getKpiApprove = getKpiApprove[0];
 
+        let content = "";
+        if (checkFullApprove === 2) {
+            content = `<p><strong>${employee_kpi_set.approver.name}</strong> đã phê duyệt mục tiêu <strong>${getKpiApprove.name}</strong> của bạn.</p>`
+        }
+        if (checkFullApprove === 0) {
+            content = `<p><strong>${employee_kpi_set.approver.name}</strong> đã hủy bỏ mục tiêu <strong>${getKpiApprove.name}</strong> của bạn.</p>`
+        }
+        const dataNotify = {
+            organizationalUnits: employee_kpi_set.organizationalUnit._id,
+            title: "Phê duyệt KPI",
+            level: "general",
+            content: content,
+            sender: `${employee_kpi_set.approver._id}`,
+            users: [employee_kpi_set.creator._id],
+            associatedDataObject: {
+                dataType: 3,
+                description: content
+            }
+        };
+
+        NotificationServices.createNotification(portal, companyId, dataNotify)
+    }
+    
     return employee_kpi_set;
 }
 
@@ -262,13 +306,13 @@ exports.getTasksByKpiId = async (portal, data) => {
             difference_In_Time = date2.getTime() - date1.getTime();
             daykpi = Math.ceil(difference_In_Time / (1000 * 3600 * 24));
         }
-        
+
         if (daykpi && daykpi > 30) {
             daykpi = 30;
         } else if (!daykpi) {
             daykpi = 0;
         }
-           
+
         task[i].taskImportanceLevelCal = Math.round(3 * (task[i].priority / 3) + 3 * (task[i].results.contribution / 100) + 4 * (daykpi / 30));
 
         if (task[i].results.taskImportanceLevel === -1 || task[i].results.taskImportanceLevel === null)
@@ -310,10 +354,17 @@ exports.setTaskImportanceLevel = async (portal, id, kpiType, data) => {
 
         let date1 = element.preEvaDate;
         let date2 = element.date;
-        let difference_In_Time = date2.getTime() - date1.getTime();
+        let difference_In_Time;
+        
+        if (date2 && date1) {
+            difference_In_Time = date2.getTime() - date1.getTime();
+        } else {
+            difference_In_Time = 0;
+        }
+        
         let daykpi = Math.ceil(difference_In_Time / (1000 * 3600 * 24));
         if (daykpi > 30) daykpi = 30;
-        element.taskImportanceLevelCal = Math.round(3 * (element.priority / 3) + 3 * (element.results.contribution / 100) + 4 * (daykpi / 30));
+        element.taskImportanceLevelCal = Math.round(3 * (element.priority / 5) + 3 * (element.results.contribution / 100) + 4 * (daykpi / 30));
         if (element.results.taskImportanceLevel === -1 || element.results.taskImportanceLevel === null)
             element.results.taskImportanceLevel = element.taskImportanceLevelCal;
         element.daykpi = daykpi;
@@ -348,10 +399,10 @@ exports.setTaskImportanceLevel = async (portal, id, kpiType, data) => {
             autoPointSet = -1;
         }
     };
-    
-    if (autoPointSet !== -1) {
 
-        let updateKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
+    let updateKpiSet
+    if (autoPointSet !== -1) {
+        updateKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
             .findByIdAndUpdate(kpiSet._id,
                 {
                     $set: {
@@ -365,8 +416,7 @@ exports.setTaskImportanceLevel = async (portal, id, kpiType, data) => {
 
     }
 
-
-    return { task, result };
+    return { task, result, updateKpiSet };
 
 }
 

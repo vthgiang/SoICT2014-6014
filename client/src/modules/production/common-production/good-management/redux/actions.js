@@ -1,4 +1,5 @@
 import { GoodServices } from './services';
+import { LotServices } from '../../../warehouse/inventory-management/redux/services';
 import { GoodConstants } from './constants';
 
 export const GoodActions = {
@@ -12,7 +13,8 @@ export const GoodActions = {
     deleteGood,
     getItemsForGood,
     getGoodByManageWorkRole,
-    getManufacturingWorksByProductId
+    getManufacturingWorksByProductId,
+    getNumberGoods
 }
 
 function getGoodsByType(data = undefined) {
@@ -227,6 +229,22 @@ function getDiscountByGoodsId(goodId) {
     })
 }
 
+function getManufacturingWorksByProductIdPromise(goodId) {
+    return new Promise((resolve, reject) => {
+        GoodServices.getManufacturingWorksByProductId(goodId)
+            .then(res => { resolve(res.data.content) })
+            .catch(err => { reject(err) })
+    })
+}
+
+function getInventoryByGoodIdPromise(data) {
+    return new Promise((resolve, reject) => {
+        LotServices.getInventoryByGoodIds(data)
+            .then(res => { resolve(res.data.content) })
+            .catch(err => { reject(err) })
+    })
+}
+
 function getItemsForGood(goodId) {
     return dispatch => {
         dispatch({
@@ -235,7 +253,9 @@ function getItemsForGood(goodId) {
         Promise.all([
             getTaxByGoodsId(goodId),
             getSlaByGoodsId(goodId),
-            getDiscountByGoodsId(goodId)
+            getDiscountByGoodsId(goodId),
+            getManufacturingWorksByProductIdPromise(goodId),
+            getInventoryByGoodIdPromise({ array: [goodId] })
         ])
             .then(res => {
                 dispatch({
@@ -244,7 +264,9 @@ function getItemsForGood(goodId) {
                         goodId: goodId,
                         listTaxsByGoodId: res[0].taxs,
                         listSlasByGoodId: res[1].slas,
-                        listDiscountsByGoodId: res[2].discounts
+                        listDiscountsByGoodId: res[2].discounts,
+                        listManufacturingWorks: res[3].manufacturingWorks,
+                        inventoryByGoodId: res[4].length ? res[4][0].inventory : 0
                     }
                 })
             })
@@ -294,5 +316,26 @@ function getManufacturingWorksByProductId(productId) {
                     error
                 });
             });
+    }
+}
+
+function getNumberGoods() {
+    return dispatch => {
+        dispatch({
+            type: GoodConstants.GET_NUMBER_GOODS_REQUEST
+        })
+        GoodServices.getNumberGoods()
+        .then((res) => {
+            dispatch({
+                type: GoodConstants.GET_NUMBER_GOODS_SUCCESS,
+                payload: res.data.content
+            })
+        })
+        .catch((error) => {
+            dispatch({
+                type: GoodConstants.GET_NUMBER_GOODS_FAILURE,
+                error
+            })
+        })
     }
 }

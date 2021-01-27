@@ -6,14 +6,20 @@ import { taskManagementActions } from '../../task-management/redux/actions';
 import { TaskStatusChart } from './taskStatusChart';
 import { DomainOfTaskResultsChart } from './domainOfTaskResultsChart';
 import { CalendarEmployee } from './calendarEmployee';
+import { AverageResultsOfTask } from './averageResultsOfTask';
 
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DatePicker } from '../../../../common-components';
+import { DatePicker, ToolTip } from '../../../../common-components';
 import Swal from 'sweetalert2';
 import { TasksIsNotLinked } from './tasksIsNotLinked';
 import { TaskHasActionNotEvaluated } from './taskHasActionNotEvaluated';
-
+import { InprocessTask } from './inprocessTask';
+import { LoadTaskChart } from './loadTaskChart';
+import { convertTime } from '../../../../helpers/stringMethod';
+import { getStorage } from '../../../../config';
+import LoadTaskInformation from './loadTaskInformation'
+import moment from 'moment';
 class TaskDashboard extends Component {
 
     constructor(props) {
@@ -29,25 +35,32 @@ class TaskDashboard extends Component {
         if (month > 3) {
             startMonth = month - 3;
             startYear = year;
-            if (month < 9) {
-                endMonth = '0' + (month + 1);
-            } else {
-                endMonth = month + 1;
-            }
         } else {
             startMonth = month - 3 + 12;
             startYear = year - 1;
         }
         if (startMonth < 10)
             startMonth = '0' + startMonth;
-
+        if (month < 10) {
+            endMonth = '0' + month;
+        } else {
+            endMonth = month;
+        }
 
         this.INFO_SEARCH = {
             startMonth: [startYear, startMonth].join('-'),
-            endMonth: month === 12 ? [year + 1, '01'].join('-') : [year, endMonth].join('-'),
+            endMonth: [year, endMonth].join('-'),
 
             startMonthTitle: [startMonth, startYear].join('-'),
-            endMonthTitle: month < 10 ? ['0' + month, year].join('-') : [month, year].join('-'),
+            endMonthTitle: [endMonth, year].join('-'),
+        }
+
+        this.SEARCH_FOR_WEIGHT_TASK = {
+            taskStartMonth: [startYear, startMonth].join('-'),
+            taskEndMonth: [year, endMonth].join('-'),
+
+            startMonthTitle: [startMonth, startYear].join('-'),
+            endMonthTitle: [endMonth, year].join('-'),
         }
 
         this.state = {
@@ -62,7 +75,9 @@ class TaskDashboard extends Component {
             endMonthTitle: this.INFO_SEARCH.endMonthTitle,
 
             willUpdate: false,       // Khi true sẽ cập nhật dữ liệu vào props từ redux
-            callAction: false
+            callAction: false,
+            type: 'status',
+            monthTimeSheetLog: '',
         };
     }
 
@@ -78,7 +93,6 @@ class TaskDashboard extends Component {
             type: "user"
         }
         await this.props.getTaskByUser(data);
-
         await this.setState(state => {
             return {
                 ...state,
@@ -109,7 +123,7 @@ class TaskDashboard extends Component {
             });
         } else if (nextState.dataStatus === this.DATA_STATUS.AVAILABLE && nextState.willUpdate) {
             this.setState(state => {
-                
+
                 return {
                     ...state,
                     dataStatus: this.DATA_STATUS.FINISHED,
@@ -135,45 +149,28 @@ class TaskDashboard extends Component {
     }
 
     handleSelectMonthStart = (value) => {
-        let month, monthtitle;
-
-        if (value.slice(0, 2) < 10) {
-            month = value.slice(3, 7) + '-0' + (new Number(value.slice(0, 2)));
-        } else {
-            month = value.slice(3, 7) + '-' + (new Number(value.slice(0, 2)));
-        }
-
-        monthtitle = value.slice(0, 2) + '-' + value.slice(3, 7)
+        let month = value.slice(3, 7) + '-' + value.slice(0, 2);
+        let startMonthTitle = value.slice(0, 2) + '-' + value.slice(3, 7);
 
         this.INFO_SEARCH.startMonth = month;
-        this.INFO_SEARCH.startMonthTitle = monthtitle;
+        this.INFO_SEARCH.startMonthTitle = startMonthTitle;
     }
 
     handleSelectMonthEnd = (value) => {
-        let month, monthtitle;
-
-        if (value.slice(0, 2) < 12) {
-            if (value.slice(0, 2) < 9) {
-                month = value.slice(3, 7) + '-0' + (new Number(value.slice(0, 2)) + 1);
-            } else {
-                month = value.slice(3, 7) + '-' + (new Number(value.slice(0, 2)) + 1);
-            }
-
-            monthtitle = value.slice(0, 2) + '-' + value.slice(3, 7);
-        } else {
-            month = (new Number(value.slice(3, 7)) + 1) + '-' + '01';
-            monthtitle = '12' + '-' + (new Number(value.slice(3, 7)));
-        }
+        let month = value.slice(3, 7) + '-' + value.slice(0, 2);
+        let endMonthTitle = value.slice(0, 2) + '-' + value.slice(3, 7);
 
         this.INFO_SEARCH.endMonth = month;
-        this.INFO_SEARCH.endMonthTitle = monthtitle;
+        this.INFO_SEARCH.endMonthTitle = endMonthTitle;
     }
+
+
 
     handleSearchData = async () => {
         let startMonth = new Date(this.INFO_SEARCH.startMonth);
         let endMonth = new Date(this.INFO_SEARCH.endMonth);
 
-        if (startMonth.getTime() >= endMonth.getTime()) {
+        if (startMonth.getTime() > endMonth.getTime()) {
             const { translate } = this.props;
             Swal.fire({
                 title: translate('kpi.evaluation.employee_evaluation.wrong_time'),
@@ -182,24 +179,57 @@ class TaskDashboard extends Component {
                 confirmButtonText: translate('kpi.evaluation.employee_evaluation.confirm'),
             })
         } else {
-            await this.setState(state => {
+            this.setState(state => {
                 return {
                     ...state,
                     startMonth: this.INFO_SEARCH.startMonth,
                     endMonth: this.INFO_SEARCH.endMonth
                 }
             })
+
+            await this.props.getResponsibleTaskByUser([], 1, 1000, [], [], [], null, this.INFO_SEARCH.startMonth, this.INFO_SEARCH.endMonth, null, null, true);
+            await this.props.getAccountableTaskByUser([], 1, 1000, [], [], [], null, this.INFO_SEARCH.startMonth, this.INFO_SEARCH.endMonth, null, null, true);
+            await this.props.getConsultedTaskByUser([], 1, 1000, [], [], [], null, this.INFO_SEARCH.startMonth, this.INFO_SEARCH.endMonth, null, null, true);
+            await this.props.getInformedTaskByUser([], 1, 1000, [], [], [], null, this.INFO_SEARCH.startMonth, this.INFO_SEARCH.endMonth, null, null, true);
+            await this.props.getCreatorTaskByUser([], 1, 1000, [], [], [], null, this.INFO_SEARCH.startMonth, this.INFO_SEARCH.endMonth, null, null, true);
         }
+    }
+
+    handleChangeMonthTimeSheetLog = (value) => {
+        this.setState({
+            monthTimeSheetLog: value
+        });
+    }
+
+    getUserTimeSheetLogs = () => {
+        let { monthTimeSheetLog } = this.state;
+        if (monthTimeSheetLog) {
+            let d = monthTimeSheetLog.split('-');
+            let month = d[0];
+            let year = d[1];
+            let userId = getStorage('userId');
+            this.props.getTimeSheetOfUser(userId, month, year);
+        }
+    }
+
+    getTotalTimeSheet = (ts) => {
+        let total = 0;
+        for (let i = 0; i < ts.length; i++) {
+            let tslog = ts[i];
+            if (typeof (tslog.duration) === 'number' && tslog.acceptLog) {
+                total = total + Number(tslog.duration);
+            }
+        }
+        return convertTime(total);
     }
 
     render() {
         const { tasks, translate } = this.props;
-        const { startMonth, endMonth, willUpdate, callAction } = this.state;
+        const { startMonth, endMonth, willUpdate, callAction, taskAnalys, monthTimeSheetLog } = this.state;
 
         let amountResponsibleTask = 0, amountTaskCreated = 0, amountAccountableTasks = 0, amountConsultedTasks = 0;
         let numTask = [];
         let totalTasks = 0;
-
         // Tinh so luong tat ca cac task 
         if (tasks && tasks.responsibleTasks) {
             let task = tasks.responsibleTasks;
@@ -263,19 +293,34 @@ class TaskDashboard extends Component {
 
         }
 
+        // Config ngày mặc định cho datePiker
         let d = new Date(),
-            month = '' + (d.getMonth() + 1),
-            day = '' + d.getDate(),
+            month = d.getMonth() + 1,
             year = d.getFullYear();
+        let startMonthDefault, endMonthDefault, startYear;
 
-        if (month.length < 2)
-            month = '0' + month;
-        if (day.length < 2)
-            day = '0' + day;
-        let defaultEndMonth = [month, year].join('-');
-        let defaultStartMonth = '0' + (month - 3) + '-' + year;
+        if (month > 3) {
+            startMonthDefault = month - 3;
+            startYear = year;
+            if (month < 9) {
+                endMonthDefault = '0' + (month + 1);
+            } else {
+                endMonthDefault = month + 1;
+            }
+        } else {
+            startMonthDefault = month - 3 + 12;
+            startYear = year - 1;
+        }
+        if (startMonthDefault < 10)
+            startMonthDefault = '0' + startMonthDefault;
+
+        let defaultStartMonth = [startMonthDefault, startYear].join('-');
+        let defaultEndMonth = month < 10 ? ['0' + month, year].join('-') : [month, year].join('-');
 
         let { startMonthTitle, endMonthTitle } = this.INFO_SEARCH;
+        // Thống kê bấm giờ
+        let { userTimeSheetLogs } = tasks;
+        console.log("USER TIME SHEET LOG", userTimeSheetLogs.userTimeSheetLogs)
         return (
             <React.Fragment>
                 <div className="qlcv" style={{ textAlign: "right" }}>
@@ -350,6 +395,7 @@ class TaskDashboard extends Component {
                         </div>
                     </div>
                 </div>
+
                 {/* Lịch công việc chi tiết */}
                 <div className="row">
                     <div className="col-xs-12">
@@ -365,6 +411,7 @@ class TaskDashboard extends Component {
                     </div>
                 </div>
                 <div className="row">
+                    {/* Biểu đồ miền kết quả công việc */}
                     <div className="col-xs-12">
                         <div className="box box-primary">
                             <div className="box-header with-border">
@@ -381,19 +428,47 @@ class TaskDashboard extends Component {
                             </div>
                         </div>
                     </div>
+
+                    {/* Biểu đồ kết quả trung bình công việc */}
                     <div className="col-xs-12">
+                        <div className="box box-primary">
+                            <div className="box-header with-border">
+                                <div className="box-title">{translate('task.task_management.detail_average_results')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
+                            </div>
+                            <div className="box-body qlcv">
+                                <AverageResultsOfTask
+                                    startMonth={startMonth}
+                                    endMonth={endMonth}
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Biểu đồ trạng thái công việc */}
+                    <div className="col-xs-6">
                         <div className="box box-primary">
                             <div className="box-header with-border">
                                 <div className="box-title">{translate('task.task_management.detail_status')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
                             </div>
                             <div className="box-body qlcv">
-                                {callAction &&
-                                    <TaskStatusChart
-                                        callAction={!willUpdate}
-                                        startMonth={startMonth}
-                                        endMonth={endMonth}
-                                    />
-                                }
+                                <TaskStatusChart
+                                    startMonth={startMonth}
+                                    endMonth={endMonth}
+                                />
+                            </div>
+                        </div>
+                    </div>
+                    <div className="col-xs-6">
+                        <div className="box box-primary">
+                            <div className="box-header with-border">
+                                <div className="box-title">{translate('task.task_management.calc_progress')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
+                            </div>
+                            <div className="box-body qlcv">
+                                <InprocessTask
+                                    startMonth={startMonth}
+                                    endMonth={endMonth}
+                                    tasks={tasks}
+                                />
                             </div>
                         </div>
                     </div>
@@ -406,7 +481,7 @@ class TaskDashboard extends Component {
                                 <div className="box-title">{translate('task.task_management.dashboard_overdue')}</div>
                             </div>
 
-                            <div className="box-body" style={{ minHeight: "300px" }}>
+                            <div className="box-body" style={{ height: "300px", overflow: "auto" }}>
                                 {
                                     (tasks && tasks.tasksbyuser) ?
                                         <ul className="todo-list">
@@ -433,7 +508,7 @@ class TaskDashboard extends Component {
                             <div className="box-header with-border">
                                 <div className="box-title">{translate('task.task_management.dashboard_about_to_overdue')}</div>
                             </div>
-                            <div className="box-body" style={{ minHeight: "300px" }}>
+                            <div className="box-body" style={{ height: "300px", overflow: "auto" }}>
                                 {
                                     (tasks && tasks.tasksbyuser) ?
                                         <ul className="todo-list">
@@ -460,6 +535,96 @@ class TaskDashboard extends Component {
                     <TaskHasActionNotEvaluated />
 
                 </div>
+                {/* <div className="row"> */}
+                {/*Biểu đồ dashboard tải công việc */}
+                <div className="col-xs-12">
+                    <div className="box box-primary">
+                        <div className="box-header with-border">
+                            <div className="box-title">{translate('task.task_management.load_task_chart')}</div>
+                            <LoadTaskInformation />
+                        </div>
+
+                        <div className="box-body qlcv">
+                            {callAction &&
+                                <LoadTaskChart
+                                    callAction={!willUpdate}
+                                    startMonth={startMonth}
+                                    endMonth={endMonth}
+                                />
+                            }
+                        </div>
+                    </div>
+                </div>
+                {/* </div> */}
+                <div className="row">
+                    <div className="col-md-12">
+                        <div className="box box-solid">
+                            <div className="box-header with-border">
+                                <div className="box-title">
+                                    Thống kê bấm giờ theo tháng
+                                </div>
+                            </div>
+                            <div className="box-body" style={{ marginBottom: 15 }}>
+                                {/* Seach theo thời gian */}
+                                <div className="qlcv">
+                                    <div className="form-inline" >
+                                        <div className="form-group">
+                                            <label style={{ width: "auto" }}>Tháng</label>
+                                            <DatePicker
+                                                id="month-time-sheet-log"
+                                                dateFormat="month-year"
+                                                value={monthTimeSheetLog}
+                                                onChange={this.handleChangeMonthTimeSheetLog}
+                                                disabled={false}
+                                            />
+                                        </div>
+                                        <button className="btn btn-primary" onClick={this.getUserTimeSheetLogs}>Thống kê</button>
+                                    </div>
+                                </div>
+
+                                <div className="box-body" >
+                                    <div className="col-md-12">
+                                        <div>
+                                            <p className="pull-right" style={{ fontWeight: 'bold' }}>Kết quả
+                                            <span style={{ fontWeight: 'bold', marginLeft: 10 }}>
+                                                    {
+                                                        !tasks.isLoading ? this.getTotalTimeSheet(userTimeSheetLogs) : translate('general.loading')
+                                                    }
+                                                </span>
+                                            </p >
+                                        </div>
+                                        <table className="table table-hover table-striped table-bordered" id="table-user-timesheetlogs">
+                                            <thead>
+                                                <tr>
+                                                    <th style={{ width: 80 }}>STT</th>
+                                                    <th>Thời gian bắt đầu</th>
+                                                    <th>Thời gian kết thúc</th>
+                                                    <th>Bấm giờ</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {
+                                                    userTimeSheetLogs.map((tsl, index) => {
+                                                        return (
+                                                            <tr>
+                                                                <td>{index + 1}</td>
+                                                                <td>{moment(tsl.startedAt).format("HH:mm:ss DD/MM/YYYY")}</td>
+                                                                <td>{moment(tsl.stoppedAt).format("HH:mm:ss DD/MM/YYYY")}</td>
+                                                                <td>{convertTime(tsl.duration)}</td>
+                                                            </tr>
+                                                        )
+                                                    })
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
 
             </React.Fragment>
         );
@@ -478,7 +643,7 @@ const actionCreators = {
     getInformedTaskByUser: taskManagementActions.getInformedTaskByUser,
     getCreatorTaskByUser: taskManagementActions.getCreatorTaskByUser,
     getTaskByUser: taskManagementActions.getTasksByUser,
-
+    getTimeSheetOfUser: taskManagementActions.getTimeSheetOfUser,
 };
 
 const connectedTaskDashboard = connect(mapState, actionCreators)(withTranslate(TaskDashboard));

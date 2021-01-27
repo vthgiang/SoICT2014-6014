@@ -134,13 +134,13 @@ class EditForm extends Component {
         const disabled = !this.isValidateForm();
         return (
             <div id="edit-career-position">
-                {!showParent &&
+                {/* {!showParent &&
                     <div className={`form-group ${nameError === undefined ? "" : "has-error"}`}>
-                        <label>Gói thầu<span className="text-red">*</span></label>
+                        <label>Gói thầu</label>
                         <input type="text" className="form-control" onChange={this.handlePackage} value={this.state.package} />
                         <ErrorLabel content={nameError} />
                     </div>
-                }
+                } */}
                 <div className={`form-group ${nameError === undefined ? "" : "has-error"}`}>
                     <label>Tên<span className="text-red">*</span></label>
                     <input type="text" className="form-control" onChange={this.handleName} value={name} />

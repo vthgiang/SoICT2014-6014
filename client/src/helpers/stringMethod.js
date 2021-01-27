@@ -124,3 +124,12 @@ export const getTimeFromFormatDate = (time, format='date', subTime=null) => {
     if(!formatedTime) return null;
     return formatedTime;
 }
+
+export const convertTime = (ms) => {
+    if (!ms) return '00:00:00';
+    let hour = Math.floor(ms / (60 * 60 * 1000));
+    let minute = Math.floor((ms - hour * 60 * 60 * 1000) / (60 * 1000));
+    let second = Math.floor((ms - hour * 60 * 60 * 1000 - minute * 60 * 1000) / 1000);
+
+    return `${hour > 9 ? hour : `0${hour}`}:${minute > 9 ? minute : `0${minute}`}:${second > 9 ? second : `0${second}`}`;
+}

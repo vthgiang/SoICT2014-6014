@@ -9,7 +9,7 @@ import { UserActions } from '../../../../super-admin/user/redux/actions';
 import { AssetTypeActions } from '../../../admin/asset-type/redux/actions';
 import { string2literal } from '../../../../../helpers/handleResponse';
 import { generateCode } from "../../../../../helpers/generateCode";
-
+import ValidationHelper from '../../../../../helpers/validationHelper';
 class GeneralTab extends Component {
     constructor(props) {
         super(props);
@@ -165,9 +165,9 @@ class GeneralTab extends Component {
      */
 
     handleAssetTypeChange = async (value) => {
-        let { assetType } = this.props;
-        let { detailInfo } = this.state;
-        let arr = [...detailInfo];
+        // let { assetType } = this.props;
+        // let { detailInfo } = this.state;
+        // let arr = [...detailInfo];
 
         // if (value && value.length !== 0) {
         //     let assetTypeList = assetType.listAssetTypes;
@@ -191,13 +191,15 @@ class GeneralTab extends Component {
         //         }
         //     }
         // }
-
+        const { translate } = this.props;
+        let { message } = ValidationHelper.validateEmpty(translate, value[0]);
         await this.setState(state => {
             return {
                 ...state,
                 assetType: value,
                 // detailInfo: arr,
-                isObj: false
+                isObj: false,
+                errorOnAssetType: message,
             }
         });
         this.props.handleChange("assetType", value);
@@ -539,7 +541,7 @@ class GeneralTab extends Component {
     }
 
     render() {
-        const { id, translate, user, assetsManager, role, department } = this.props;
+        const { id, translate, user, assetsManager, role, department, assetTypes } = this.props;
         const {
             img, defaultAvatar, code, assetName, assetType, group, serial, purchaseDate, warrantyExpirationDate, managedBy, isObj,
             assignedToUser, assignedToOrganizationalUnit, location, description, status, typeRegisterForUse, detailInfo,
@@ -554,7 +556,7 @@ class GeneralTab extends Component {
         let types = this.state.assetType;
         let listtypes = this.props.assetType.listAssetTypes;
 
-        if (types && listtypes.length) {
+        if (types.length && listtypes.length) {
             for (let i in types) {
                 for (let j in listtypes) {
                     if (types[i] === listtypes[j]._id) {
@@ -564,7 +566,9 @@ class GeneralTab extends Component {
             }
         }
         else {
-            typeInTreeSelect = listtypes;
+            for (let i in assetTypes) {
+                typeInTreeSelect.push(assetTypes[i]._id);
+            }
         }
 
         let assetbuilding = assetsManager && assetsManager.buildingAssets;
@@ -655,6 +659,7 @@ class GeneralTab extends Component {
                                         handleChange={this.handleAssetTypeChange}
                                         mode="hierarchical"
                                     />
+                                    <ErrorLabel content={errorOnAssetType} />
                                 </div>
 
                                 {/* Ngày nhập */}

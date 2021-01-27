@@ -22,6 +22,9 @@ export const workSchedule = (state = initialState, action) => {
         case workScheduleConstants.GET_ALL_WORK_SCHEDULE_REQUEST:
         case workScheduleConstants.CREATE_WORK_SCHEDULE_REQUEST:
         case workScheduleConstants.GET_ALL_WORK_SCHEDULE_WORKER_REQUEST:
+        case workScheduleConstants.GET_ALL_WORK_SCHEDULE_BY_MILL_ID_REQUEST:
+        case workScheduleConstants.GEt_ALL_WORK_SCHEDULE_OF_MANUFACTURING_WORK_REQUEST:
+        case workScheduleConstants.GET_ALL_WORKER_BY_ARRAY_WORK_SCHEDULES_REQUEST:
             return {
                 ...state,
                 isLoading: true
@@ -29,6 +32,9 @@ export const workSchedule = (state = initialState, action) => {
         case workScheduleConstants.GET_ALL_WORK_SCHEDULE_FAILURE:
         case workScheduleConstants.CREATE_WORK_SCHEDULE_FAILURE:
         case workScheduleConstants.GET_ALL_WORK_SCHEDULE_WORKER_FAILURE:
+        case workScheduleConstants.GET_ALL_WORK_SCHEDULE_BY_MILL_ID_FAILURE:
+        case workScheduleConstants.GEt_ALL_WORK_SCHEDULE_OF_MANUFACTURING_WORK_FAILURE:
+        case workScheduleConstants.GET_ALL_WORKER_BY_ARRAY_WORK_SCHEDULES_FAILURE:
             return {
                 ...state,
                 isLoading: false,
@@ -88,6 +94,24 @@ export const workSchedule = (state = initialState, action) => {
                 hasNextPage: action.payload.workSchedules.hasNextPage,
                 prevPage: action.payload.workSchedules.prevPage,
                 nextPage: action.payload.workSchedules.nextPage
+            }
+        case workScheduleConstants.GET_ALL_WORK_SCHEDULE_BY_MILL_ID_SUCCESS:
+            return {
+                ...state,
+                isLoading: false,
+                listWorkSchedulesOfMill: action.payload.workSchedules
+            }
+        case workScheduleConstants.GEt_ALL_WORK_SCHEDULE_OF_MANUFACTURING_WORK_SUCCESS:
+            return {
+                ...state,
+                isLoading: false,
+                listWorkSchedulesOfWorks: action.payload.workSchedules
+            }
+        case workScheduleConstants.GET_ALL_WORKER_BY_ARRAY_WORK_SCHEDULES_SUCCEESS:
+            return {
+                ...state,
+                isLoading: false,
+                listWorkers: action.payload.workers
             }
         default:
             return state

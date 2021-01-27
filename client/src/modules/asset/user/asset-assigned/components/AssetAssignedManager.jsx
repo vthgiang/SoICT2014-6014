@@ -17,7 +17,7 @@ class AssetAssignedManager extends Component {
         this.state = {
             code: "",
             assetName: "",
-            assetType: null,
+            // assetType: null,
             month: null,
             status: "",
             page: 0,
@@ -115,9 +115,11 @@ class AssetAssignedManager extends Component {
             value = null
         }
 
-        this.setState({
-            ...this.state,
-            assetType: value
+        this.setState(state => {
+            return {
+                ...state,
+                assetType: JSON.stringify(value),
+            }
         })
     }
 
@@ -256,6 +258,11 @@ class AssetAssignedManager extends Component {
         let typeArr = this.getAssetTypes();
         let dataSelectBox = this.getUserAndDepartment();
 
+        let listAssetAssigns;
+        if (lists && lists.length !== 0) {
+            listAssetAssigns = lists.filter(item => item.assignedToUser === auth.user._id)
+        }
+
         return (
             <div id="assetassigned" className="tab-pane active">
                 <div className="box-body qlcv">
@@ -357,8 +364,8 @@ class AssetAssignedManager extends Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {(lists && lists.length !== 0) ?
-                                lists.filter(item => item.assignedToUser === auth.user._id).map((x, index) => (
+                            {(listAssetAssigns && listAssetAssigns.length !== 0) ?
+                                listAssetAssigns.map((x, index) => (
                                     <tr key={index}>
                                         <td>{x.code}</td>
                                         <td>{x.assetName}</td>
@@ -377,7 +384,7 @@ class AssetAssignedManager extends Component {
                     </table>
                     {assetsManager.isLoading ?
                         <div className="table-info-panel">{translate('confirm.loading')}</div> :
-                        (typeof lists === 'undefined' || lists.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                        (typeof listAssetAssigns === 'undefined' || listAssetAssigns.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                     }
 
                     {/* PaginateBar */}

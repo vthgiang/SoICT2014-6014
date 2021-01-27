@@ -46,37 +46,38 @@ class QuoteEditForm extends Component {
             },
             currency: {
                 type: "standard",
-                symbol: "vnđ",
+                symbol: "",
                 ratio: "1",
             },
         };
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.quoteEdit._id !== prevState.quoteId) {
+        if (nextProps.quoteDetail._id && nextProps.quoteDetail._id !== prevState.quoteId) {
             return {
                 ...prevState,
-                quoteId: nextProps.quoteEdit._id,
-                code: nextProps.quoteEdit.code,
-                effectiveDate: nextProps.quoteEdit.effectiveDate ? formatDate(nextProps.quoteEdit.effectiveDate) : "",
-                expirationDate: nextProps.quoteEdit.expirationDate ? formatDate(nextProps.quoteEdit.expirationDate) : "",
-                customer: nextProps.quoteEdit.customer._id,
-                customerName: nextProps.quoteEdit.customer.name,
-                customerPhone: nextProps.quoteEdit.customerPhone,
-                customerTaxNumber: nextProps.quoteEdit.customer.taxNumber,
-                customerRepresent: nextProps.quoteEdit.customerRepresent,
-                customerAddress: nextProps.quoteEdit.customerAddress,
-                customerEmail: nextProps.quoteEdit.customerEmail,
-                deliveryTime: nextProps.quoteEdit.deliveryTime ? formatDate(nextProps.quoteEdit.effectiveDate) : "",
-                discountsOfOrderValue: nextProps.quoteEdit.discounts,
+                step: 0,
+                quoteId: nextProps.quoteDetail._id,
+                code: nextProps.quoteDetail.code,
+                effectiveDate: nextProps.quoteDetail.effectiveDate ? formatDate(nextProps.quoteDetail.effectiveDate) : "",
+                expirationDate: nextProps.quoteDetail.expirationDate ? formatDate(nextProps.quoteDetail.expirationDate) : "",
+                customer: nextProps.quoteDetail.customer._id,
+                customerName: nextProps.quoteDetail.customer.name,
+                customerPhone: nextProps.quoteDetail.customerPhone,
+                customerTaxNumber: nextProps.quoteDetail.customer.taxNumber,
+                customerRepresent: nextProps.quoteDetail.customerRepresent,
+                customerAddress: nextProps.quoteDetail.customerAddress,
+                customerEmail: nextProps.quoteDetail.customerEmail,
+                deliveryTime: nextProps.quoteDetail.deliveryTime ? formatDate(nextProps.quoteDetail.deliveryTime) : "",
+                discountsOfOrderValue: nextProps.quoteDetail.discounts,
                 discountsOfOrderValueChecked: Object.assign({}),
-                note: nextProps.quoteEdit.note,
-                paymentAmount: nextProps.quoteEdit.paymentAmount,
-                shippingFee: nextProps.quoteEdit.shippingFee,
-                coin: nextProps.quoteEdit.coin,
-                status: nextProps.quoteEdit.status,
-                goods: nextProps.quoteEdit.goods
-                    ? nextProps.quoteEdit.goods.map((item) => {
+                note: nextProps.quoteDetail.note,
+                paymentAmount: nextProps.quoteDetail.paymentAmount,
+                shippingFee: nextProps.quoteDetail.shippingFee,
+                coin: nextProps.quoteDetail.coin,
+                status: nextProps.quoteDetail.status,
+                goods: nextProps.quoteDetail.goods
+                    ? nextProps.quoteDetail.goods.map((item) => {
                           return {
                               good: item.good,
                               pricePerBaseUnit: item.pricePerBaseUnit,
@@ -519,6 +520,27 @@ class QuoteEditForm extends Component {
         });
     };
 
+    getCoinOfAll = () => {
+        let coinOfAll = 0;
+        let { goods } = this.state;
+        let { discountsOfOrderValue } = this.state;
+
+        goods.forEach((good) => {
+            good.discountsOfGood.forEach((discount) => {
+                if (discount.formality == "2") {
+                    coinOfAll += discount.loyaltyCoin;
+                }
+            });
+        });
+
+        discountsOfOrderValue.forEach((discount) => {
+            if (discount.formality == "2") {
+                coinOfAll += discount.loyaltyCoin;
+            }
+        });
+        return coinOfAll;
+    };
+
     setPaymentAmount = (paymentAmount) => {
         this.setState((state) => {
             return {
@@ -645,6 +667,8 @@ class QuoteEditForm extends Component {
                 quoteId,
             } = this.state;
 
+            let allCoin = this.getCoinOfAll(); //Lấy tất cả các xu được tặng trong đơn
+
             let data = {
                 code,
                 effectiveDate: effectiveDate ? new Date(formatToTimeZoneDate(effectiveDate)) : undefined,
@@ -659,6 +683,7 @@ class QuoteEditForm extends Component {
                 shippingFee,
                 deliveryTime: deliveryTime ? new Date(formatToTimeZoneDate(deliveryTime)) : undefined,
                 coin,
+                allCoin,
                 paymentAmount,
                 note,
             };
@@ -905,7 +930,8 @@ class QuoteEditForm extends Component {
 function mapStateToProps(state) {
     const { customers } = state.crm;
     const { discounts } = state;
-    return { discounts, customers };
+    const { quoteDetail } = state.quotes;
+    return { discounts, customers, quoteDetail };
 }
 
 const mapDispatchToProps = {

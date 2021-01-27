@@ -45,6 +45,13 @@ class QuoteCreateGood extends Component {
             await this.getCheckedForGood(nextProps.goods.goodItems);
             return false;
         }
+
+        //Lấy số lượng hàng tồn kho cho các mặt hàng
+        if (nextProps.goods.goodItems.inventoryByGoodId !== nextState.inventory && nextState.good !== "title") {
+            this.setState({
+                inventory: nextProps.goods.goodItems.inventoryByGoodId,
+            });
+        }
         return true;
     };
 
@@ -157,7 +164,6 @@ class QuoteCreateGood extends Component {
                         baseUnit: goodInfo[0].baseUnit,
                         pricePerBaseUnit: goodInfo[0].pricePerBaseUnit,
                         pricePerBaseUnitOrigin: goodInfo[0].pricePerBaseUnit, //giá gốc
-                        inventory: goodInfo[0].quantity,
                         salesPriceVariance: goodInfo[0].salesPriceVariance ? goodInfo[0].salesPriceVariance : 0,
                         pricePerBaseUnitError: undefined,
                         taxs: [],
@@ -352,7 +358,7 @@ class QuoteCreateGood extends Component {
         let amountAfterApplyTax = this.getAmountAfterApplyDiscount();
         const { taxs } = this.state;
         let listTaxs = taxs.map((item) => {
-            let tax = listTaxsByGoodId.find((element) => element._id == item);
+            let tax = listTaxsByGoodId.find((element) => element.code == item);
             if (tax) {
                 return tax;
             }
@@ -402,7 +408,7 @@ class QuoteCreateGood extends Component {
             let amountAfterTax = this.getAmountAfterApplyTax();
 
             let listTaxs = taxs.map((item) => {
-                let tax = listTaxsByGoodId.find((element) => element._id == item);
+                let tax = listTaxsByGoodId.find((element) => element.code == item);
                 if (tax) {
                     return tax;
                 }
@@ -461,7 +467,7 @@ class QuoteCreateGood extends Component {
                     note: "",
                     inventory: "",
                     baseUnit: "",
-                    good: "",
+                    good: "title",
                     code: "",
                     goodName: "",
                     step: 0,
@@ -566,7 +572,7 @@ class QuoteCreateGood extends Component {
         await this.setState({
             editGood: true,
             indexEditting: index,
-            taxs: item.taxs.map((tax) => tax._id),
+            taxs: item.taxs.map((tax) => tax.code),
             quantity: item.quantity,
             pricePerBaseUnit: item.pricePerBaseUnit,
             pricePerBaseUnitError: undefined,
@@ -610,7 +616,7 @@ class QuoteCreateGood extends Component {
                 note: "",
                 inventory: "",
                 baseUnit: "",
-                good: "",
+                good: "title",
                 code: "",
                 goodName: "",
                 step: 0,
@@ -647,7 +653,7 @@ class QuoteCreateGood extends Component {
             let amountAfterTax = this.getAmountAfterApplyTax();
 
             let listTaxs = taxs.map((item) => {
-                let tax = listTaxsByGoodId.find((element) => element._id == item);
+                let tax = listTaxsByGoodId.find((element) => element.code == item);
                 if (tax) {
                     return tax;
                 }
@@ -708,7 +714,7 @@ class QuoteCreateGood extends Component {
                     note: "",
                     inventory: "",
                     baseUnit: "",
-                    good: "",
+                    good: "title",
                     code: "",
                     goodName: "",
                     step: 0,
@@ -841,43 +847,35 @@ class QuoteCreateGood extends Component {
                             <div style={{ padding: 10, backgroundColor: "white" }}>
                                 <div className="form-group">
                                     <strong>Thành tiền: </strong>
-                                    <span style={{ float: "right" }}>
-                                        {originAmount ? formatCurrency(originAmount) + ` (${currency.symbol})` : `0 (${currency.symbol})`}
-                                    </span>
+                                    <span style={{ float: "right" }}>{originAmount ? formatCurrency(originAmount) : `0 `}</span>
                                 </div>
                                 <div className="form-group">
                                     <strong>Khuyến mãi: </strong>
                                     <span style={{ float: "right" }} className="text-red">
                                         {amountAfterApplyDiscount
-                                            ? formatCurrency(Math.round((amountAfterApplyDiscount - originAmount) * 100) / 100) +
-                                              ` (${currency.symbol})`
-                                            : `0 (${currency.symbol})`}
+                                            ? formatCurrency(Math.round((amountAfterApplyDiscount - originAmount) * 100) / 100)
+                                            : `0 `}
                                     </span>
                                 </div>
                                 <div className="form-group">
                                     <strong>Tổng tiền trước thuế: </strong>
                                     <span style={{ float: "right" }}>
-                                        {amountAfterApplyDiscount
-                                            ? formatCurrency(amountAfterApplyDiscount) + ` (${currency.symbol})`
-                                            : `0 (${currency.symbol})`}
+                                        {amountAfterApplyDiscount ? formatCurrency(amountAfterApplyDiscount) : `0 `}
                                     </span>
                                 </div>
                                 <div className="form-group">
                                     <strong>Thuế: </strong>
                                     <span style={{ float: "right" }}>
                                         {amountAfterApplyTax
-                                            ? formatCurrency(Math.round((amountAfterApplyTax - amountAfterApplyDiscount) * 100) / 100) +
-                                              ` (${currency.symbol})`
-                                            : `0 (${currency.symbol})`}
+                                            ? formatCurrency(Math.round((amountAfterApplyTax - amountAfterApplyDiscount) * 100) / 100)
+                                            : `0 `}
                                     </span>
                                 </div>
 
                                 <div className="form-group" style={{ borderTop: "solid 0.3px #c5c5c5", padding: "10px 0px" }}>
                                     <strong>Tổng tiền sau thuế: </strong>
                                     <span style={{ float: "right", fontSize: "18px" }} className="text-red">
-                                        {amountAfterApplyTax
-                                            ? formatCurrency(amountAfterApplyTax) + ` (${currency.symbol})`
-                                            : `0 (${currency.symbol})`}
+                                        {amountAfterApplyTax ? formatCurrency(amountAfterApplyTax) : `0`}
                                     </span>
                                 </div>
 
@@ -924,7 +922,7 @@ class QuoteCreateGood extends Component {
                     </div>
 
                     {/* Hiển thị bảng */}
-                    <table className="table table-bordered">
+                    <table className="table table-bordered not-sort">
                         <thead>
                             <tr>
                                 <th title={"STT"}>STT</th>
@@ -952,16 +950,8 @@ class QuoteCreateGood extends Component {
                                         <td>{item.good ? item.good.code : ""}</td>
                                         <td>{item.good ? item.good.name : ""}</td>
                                         <td>{item.good ? item.good.baseUnit : ""}</td>
-                                        <td>
-                                            {item.pricePerBaseUnitOrigin
-                                                ? formatCurrency(item.pricePerBaseUnitOrigin) + ` (${currency.symbol})`
-                                                : `0 (${currency.symbol})`}
-                                        </td>
-                                        <td>
-                                            {item.pricePerBaseUnit
-                                                ? formatCurrency(item.pricePerBaseUnit) + ` (${currency.symbol})`
-                                                : `0 (${currency.symbol})`}
-                                        </td>
+                                        <td>{item.pricePerBaseUnitOrigin ? formatCurrency(item.pricePerBaseUnitOrigin) : `0 `}</td>
+                                        <td>{item.pricePerBaseUnit ? formatCurrency(item.pricePerBaseUnit) : `0`}</td>
                                         <td>{item.quantity}</td>
                                         <td>
                                             <a
@@ -975,22 +965,18 @@ class QuoteCreateGood extends Component {
                                                 title="Click để xem chi tiết"
                                             >
                                                 {item.amount && item.amountAfterDiscount
-                                                    ? formatCurrency(item.amount - item.amountAfterDiscount) + ` (${currency.symbol})`
-                                                    : `0 (${currency.symbol})`}
+                                                    ? formatCurrency(item.amount - item.amountAfterDiscount)
+                                                    : `0 `}
                                             </a>
                                         </td>
                                         <td>{item.amountAfterDiscount ? formatCurrency(item.amountAfterDiscount) : ""}</td>
                                         <td>
                                             {item.amountAfterDiscount && item.amountAfterTax
-                                                ? formatCurrency(item.amountAfterTax - item.amountAfterDiscount) + ` (${currency.symbol})`
-                                                : `0 (${currency.symbol})`}
-                                            ({item.taxs.length ? item.taxs[0].percent : "0"}%)
+                                                ? formatCurrency(item.amountAfterTax - item.amountAfterDiscount)
+                                                : `0`}
+                                            ({item.taxs.length && item.taxs[0] ? item.taxs[0].percent : "0"}%)
                                         </td>
-                                        <td>
-                                            {item.amountAfterTax
-                                                ? formatCurrency(item.amountAfterTax) + ` (${currency.symbol})`
-                                                : `0 (${currency.symbol})`}
-                                        </td>
+                                        <td>{item.amountAfterTax ? formatCurrency(item.amountAfterTax) : `0 `}</td>
                                         <td>
                                             <div
                                                 style={{
@@ -1036,28 +1022,28 @@ class QuoteCreateGood extends Component {
                                             listGoods.reduce((accumulator, currentValue) => {
                                                 return accumulator + (currentValue.amount - currentValue.amountAfterDiscount);
                                             }, 0)
-                                        ) + ` (${currency.symbol})`}
+                                        )}
                                     </td>
                                     <td style={{ fontWeight: 600 }}>
                                         {formatCurrency(
                                             listGoods.reduce((accumulator, currentValue) => {
                                                 return accumulator + currentValue.amountAfterDiscount;
                                             }, 0)
-                                        ) + ` (${currency.symbol})`}
+                                        )}
                                     </td>
                                     <td style={{ fontWeight: 600 }}>
                                         {formatCurrency(
                                             listGoods.reduce((accumulator, currentValue) => {
                                                 return accumulator + (currentValue.amountAfterTax - currentValue.amountAfterDiscount);
                                             }, 0)
-                                        ) + ` (${currency.symbol})`}
+                                        )}
                                     </td>
                                     <td style={{ fontWeight: 600 }}>
                                         {formatCurrency(
                                             listGoods.reduce((accumulator, currentValue) => {
                                                 return accumulator + currentValue.amountAfterTax;
                                             }, 0)
-                                        ) + ` (${currency.symbol})`}
+                                        )}
                                     </td>
                                     <td colSpan={3}></td>
                                 </tr>

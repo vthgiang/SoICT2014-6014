@@ -275,6 +275,7 @@ getPaginatedTasksCreatedByUser = async (req, res) => {
             content: creatorTasks
         })
     } catch (error) {
+        console.log(error)
 
         await Logger.error(req.user.email, 'paginated_tasks_created_by_user', req.portal)
         res.status(400).json({
@@ -362,7 +363,7 @@ getPaginatedTasksByUser = async (req, res) => {
  */
 getPaginatedTasks = async (req, res) => {
     try {
-        var task = {
+        let task = {
             perPage: req.query.perPage,
             number: req.query.number,
             user: req.query.user,
@@ -377,15 +378,15 @@ getPaginatedTasks = async (req, res) => {
             aPeriodOfTime: req.query.aPeriodOfTime
         };
 
-        var tasks = await TaskManagementService.getPaginatedTasks(req.portal, task);
-        await Logger.info(req.user.email, ` get task informed by user `, req.portal)
+        let tasks = await TaskManagementService.getPaginatedTasks(req.portal, task);
+        await Logger.info(req.user.email, 'get_task_success', req.portal)
         res.status(200).json({
             success: true,
             messages: ['get_task_success'],
             content: tasks
         })
     } catch (error) {
-        await Logger.error(req.user.email, ` get task informed by user  `, req.portal)
+        await Logger.error(req.user.email, 'get_task_fail', req.portal)
         res.status(400).json({
             success: false,
             messages: ['get_task_fail'],
@@ -475,10 +476,6 @@ exports.createTask = async (req, res) => {
         var task = tasks.task;
         var user = tasks.user.filter(user => user !== req.user._id); //lọc thông tin người tạo ra khỏi danh sách sẽ gửi thông báo
 
-        const associatedDataObject = {
-            dataType: 2,
-            value: task.priority
-        }
         // Gửi mail cho nhân viện tham gia công việc
         var email = tasks.email;
         var html = tasks.html;
@@ -489,7 +486,11 @@ exports.createTask = async (req, res) => {
             content: html,
             sender: task.organizationalUnit.name,
             users: user,
-            associatedDataObject: associatedDataObject
+            associatedDataObject: {
+                dataType: 1,
+                value: task.priority,
+                description: `<p>${req.user.name} đã tạo mới công việc: <strong>${task.name}</strong> có sự tham gia của bạn.</p>`
+            },
         };
 
         // Gửi mail cho trưởng đơn vị phối hợp thực hiện công việc
@@ -501,7 +502,11 @@ exports.createTask = async (req, res) => {
             level: "general",
             content: collaboratedHtml,
             sender: task.organizationalUnit.name,
-            users: tasks.managersOfOrganizationalUnitThatHasCollaborated
+            users: tasks.managersOfOrganizationalUnitThatHasCollaborated,
+            associatedDataObject: {
+                dataType: 1,
+                description: `Đơn vị bạn được mời phối hợp thực hiện trong công việc: <strong>${task.name}</strong></p>`
+            },
         };
 
         await NotificationServices.createNotification(req.portal, req.user.company._id, data);
@@ -517,7 +522,6 @@ exports.createTask = async (req, res) => {
             content: task
         });
     } catch (error) {
-        
         await Logger.error(req.user.email, 'create_task', req.portal)
         res.status(400).json({
             success: false,
@@ -581,7 +585,19 @@ exports.editTaskByResponsibleEmployees = async (req, res) => {
         var task = await TaskManagementService.editTaskByResponsibleEmployees(req.portal, req.body, req.params.id);
         var user = task.user;
         var tasks = task.tasks;
-        var data = { "organizationalUnits": tasks.organizationalUnit, "title": "Cập nhật thông tin công việc", "level": "general", "content": `${user.name} đã cập nhật thông tin công việc với vai trò người phê duyệt`, "sender": tasks.name, "users": tasks.accountableEmployees };
+        var data = {
+            "organizationalUnits": tasks.organizationalUnit,
+            "title": "Cập nhật thông tin công việc",
+            "level": "general",
+            "content": `${user.name} đã cập nhật thông tin công việc với vai trò người phê duyệt`,
+            "sender": tasks.name,
+            "users": tasks.accountableEmployees,
+            associatedDataObject: {
+                dataType: 1,
+                description: `<p><strong>${tasks.name}:</strong> ${user.name} đã cập nhật thông tin công việc với vai trò người thực hiện</p>`,
+            }
+        };
+
         NotificationServices.createNotification(req.portal, tasks.organizationalUnit, data,);
         let title = "Cập nhật thông tin công việc:" + task.name;
         sendEmail(task.email, title, '', `<p><strong>${user.name}</strong> đã cập nhật thông tin công việc với vai trò người phê duyệt <a href="${process.env.WEBSITE}/task?taskId=${req.params.id}">${process.env.WEBSITE}/task?taskId=${req.params.id}</a></p>`);
@@ -608,7 +624,19 @@ exports.editTaskByAccountableEmployees = async (req, res) => {
         var task = await TaskManagementService.editTaskByAccountableEmployees(req.portal, req.body, req.params.id);
         var user = task.user;
         var tasks = task.tasks;
-        var data = { "organizationalUnits": tasks.organizationalUnit, "title": "Cập nhật thông tin công việc", "level": "general", "content": `${user.name} đã cập nhật thông tin công việc với vai trò người phê duyệt`, "sender": tasks.name, "users": tasks.responsibleEmployees };
+        var data = {
+            "organizationalUnits": tasks.organizationalUnit,
+            "title": "Cập nhật thông tin công việc",
+            "level": "general",
+            "content": `${user.name} đã cập nhật thông tin công việc với vai trò người phê duyệt`,
+            "sender": tasks.name,
+            "users": tasks.responsibleEmployees,
+            associatedDataObject: {
+                dataType: 1,
+                description: `<p><strong>${tasks.name}:</strong> ${user.name} đã cập nhật thông tin công việc với vai trò người phê duyệt</p>`
+            }
+        };
+        
         NotificationServices.createNotification(req.portal, tasks.organizationalUnit, data,);
         let title = "Cập nhật thông tin công việc:" + task.name;
         sendEmail(task.email, title, '', `<p><strong>${user.name}</strong> đã cập nhật thông tin công việc với vai trò người phê duyệt <a href="${process.env.WEBSITE}/task?taskId=${req.params.id}">${process.env.WEBSITE}/task?taskId=${req.params.id}</a></p>`);
@@ -759,12 +787,12 @@ getAllTaskOfChildrenOrganizationalUnit = async (req, res) => {
 /** Lấy tất cả task của organizationalUnit trong một khoảng thời gian */
 getAllTaskOfOrganizationalUnitByMonth = async (req, res) => {
     try {
-        var task = {
+        let task = {
             organizationalUnitId: req.query.organizationUnitId,
-            startDateAfter: req.query.startDateAfter,
-            endDateBefore: req.query.endDateBefore,
+            startMonth: req.query.startDateAfter,
+            endMonth: req.query.endDateBefore,
         };
-        var responsibleTasks = await TaskManagementService.getAllTaskOfOrganizationalUnitByMonth(req.portal, task);
+        let responsibleTasks = await TaskManagementService.getAllTaskOfOrganizationalUnitByMonth(req.portal, task);
 
         await Logger.info(req.user.email, 'get_all_task_of_organizational_unit_by_month', req.portal)
         res.status(200).json({
@@ -782,11 +810,11 @@ getAllTaskOfOrganizationalUnitByMonth = async (req, res) => {
     }
 }
 
-exports.getTaskAnalysOfUser = async(req, res) => {
+exports.getTaskAnalysOfUser = async (req, res) => {
     try {
         let portal = req.portal;
-        let {userId} = req.params;
-        let {type} = req.query;
+        let { userId } = req.params;
+        let { type } = req.query;
         let taskAnalys = await TaskManagementService.getTaskAnalysOfUser(portal, userId, type);
 
         await Logger.info(req.user.email, 'get_task_analys_of_user_success', req.portal)
@@ -824,6 +852,52 @@ getAllTaskByPriorityOfOrganizationalUnit = async (req, res) => {
         res.status(400).json({
             success: false,
             messages: ['get_all_task_by_priority_of_organizational_unit_failure'],
+            content: error
+        })
+    }
+}
+
+exports.getUserTimeSheet = async(req, res) => {
+    try {
+        let portal = req.portal;
+        let {userId, month, year} = req.query;
+        let timesheetlogs = await TaskManagementService.getUserTimeSheet(portal, userId, month, year);
+
+        await Logger.info(req.user.email, 'get_user_time_sheet_success', req.portal)
+        res.status(200).json({
+            success: true,
+            messages: ['get_user_time_sheet_success'],
+            content: timesheetlogs
+        })
+    } catch (error) {
+        console.log('Error', error)
+        await Logger.error(req.user.email, 'get_user_time_sheet_faile', req.portal)
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['get_user_time_sheet_faile'],
+            content: error
+        })
+    }
+}
+
+exports.getAllUserTimeSheet = async(req, res) => {
+    try {
+        let portal = req.portal;
+        let {month, year} = req.query;
+        let timesheetlogs = await TaskManagementService.getAllUserTimeSheet(portal, month, year);
+        console.log("data", timesheetlogs)
+        await Logger.info(req.user.email, 'get_all_user_time_sheet_success', req.portal)
+        res.status(200).json({
+            success: true,
+            messages: ['get_all_user_time_sheet_success'],
+            content: timesheetlogs
+        })
+    } catch (error) {
+        console.log('Error', error)
+        await Logger.error(req.user.email, 'get_all_user_time_sheet_faile', req.portal)
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['get_all_user_time_sheet_faile'],
             content: error
         })
     }

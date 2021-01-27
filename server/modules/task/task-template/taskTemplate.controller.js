@@ -61,7 +61,7 @@ exports.getTaskTemplate = async (req, res) => {
  */
 exports.createTaskTemplate = async (req, res) => {
     try {
-        var data = await TaskTemplateService.createTaskTemplate(req.portal, req.body);
+        let data = await TaskTemplateService.createTaskTemplate(req.portal, req.body, req.user._id);
 
         await Logger.info(req.user.email, 'create_task_template', req.portal);
         res.status(200).json({
@@ -86,7 +86,7 @@ exports.createTaskTemplate = async (req, res) => {
  */
 exports.deleteTaskTemplate = async (req, res) => {
     try {
-        var data = await TaskTemplateService.deleteTaskTemplate(req.portal, req.params.id);
+        let data = await TaskTemplateService.deleteTaskTemplate(req.portal, req.params.id);
 
         await Logger.info(req.user.email, 'delete_task_template', req.portal);
         res.status(200).json({
@@ -112,7 +112,7 @@ exports.deleteTaskTemplate = async (req, res) => {
  */
 exports.editTaskTemplate = async (req, res) => {
     try {
-        var data = await TaskTemplateService.editTaskTemplate(req.portal, req.body, req.params.id);
+        let data = await TaskTemplateService.editTaskTemplate(req.portal, req.body, req.params.id);
 
         await Logger.info(req.user.email, 'edit_task_template', req.portal);
         res.status(200).json({
@@ -137,7 +137,7 @@ exports.editTaskTemplate = async (req, res) => {
  */
 exports.importTaskTemplate = async (req, res) => {
     try {
-        var data = await TaskTemplateService.importTaskTemplate(req.portal, req.body, req.user._id);
+        let data = await TaskTemplateService.importTaskTemplate(req.portal, req.body, req.user._id);
         
         await Logger.info(req.user.email, 'import_task_template', req.portal);
         res.status(200).json({

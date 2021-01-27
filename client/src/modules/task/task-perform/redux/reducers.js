@@ -64,6 +64,7 @@ export function performtasks(state = {}, action) {
             };
         case performTaskConstants.GET_TIMERSTATUS_FAILURE:
             return {
+                ...state,
                 error: action.error
             };
         case performTaskConstants.START_TIMER_REQUEST:
@@ -78,6 +79,7 @@ export function performtasks(state = {}, action) {
             };
         case performTaskConstants.START_TIMER_FAILURE:
             return {
+                ...state,
                 error: action.error
             };
         case performTaskConstants.STOP_TIMER_REQUEST:
@@ -96,6 +98,7 @@ export function performtasks(state = {}, action) {
             :{ ...state, currentTimer: null };
         case performTaskConstants.STOP_TIMER_FAILURE:
             return {
+                ...state,
                 error: action.error
             };
         case performTaskConstants.ABC:
@@ -112,6 +115,7 @@ export function performtasks(state = {}, action) {
             }
         case performTaskConstants.CREATE_ACTION_COMMENT_FAILURE:
             return {
+                ...state,
                 error: action.error
             };
         case performTaskConstants.CREATE_TASK_ACTION_REQUEST:
@@ -127,6 +131,7 @@ export function performtasks(state = {}, action) {
             }
         case performTaskConstants.CREATE_TASK_ACTION_FAILURE:
             return {
+                ...state,
                 error: action.error
             };
         case performTaskConstants.EDIT_ACTION_COMMENT_REQUEST:
@@ -142,6 +147,7 @@ export function performtasks(state = {}, action) {
             }
         case performTaskConstants.EDIT_ACTION_COMMENT_FAILURE:
             return {
+                ...state,
                 error: action.error
             };
         case performTaskConstants.EDIT_TASK_ACTION_REQUEST:
@@ -157,6 +163,7 @@ export function performtasks(state = {}, action) {
             }
         case performTaskConstants.EDIT_TASK_ACTION_FAILURE:
             return {
+                ...state,
                 error: action.error
             };
         case performTaskConstants.EDIT_TASK_INFORMATION_REQUEST:
@@ -228,6 +235,7 @@ export function performtasks(state = {}, action) {
             }
         case performTaskConstants.DELETE_TASK_ACTION_FAILURE:
             return {
+                ...state,
                 error: action.error
             }
         case performTaskConstants.CREATE_TASK_COMMENT_REQUEST:
@@ -258,6 +266,7 @@ export function performtasks(state = {}, action) {
             }
         case performTaskConstants.EDIT_TASK_COMMENT_FAILURE:
             return {
+                ...state,
                 error: action.error
             }
         case performTaskConstants.DELETE_TASK_COMMENT_REQUEST:
@@ -273,6 +282,7 @@ export function performtasks(state = {}, action) {
             }
         case performTaskConstants.DELETE_TASK_COMMENT_FAILURE:
             return {
+                ...state,
                 error: action.error
             }
         case performTaskConstants.CREATE_COMMENT_OF_TASK_COMMENT_REQUEST:
@@ -433,6 +443,7 @@ export function performtasks(state = {}, action) {
             };
         case performTaskConstants.ADD_TASK_LOG_FAILURE:
             return {
+                ...state,
                 error: action.error
             };
 
@@ -449,6 +460,7 @@ export function performtasks(state = {}, action) {
             };
         case performTaskConstants.GET_TASK_LOG_FAILURE:
             return {
+                ...state,
                 error: action.error,
                 isLoading: false,
             };
@@ -465,6 +477,7 @@ export function performtasks(state = {}, action) {
             };
         case performTaskConstants.DELETE_FILE_TASK_FAILURE:
             return {
+                ...state,
                 error: action.error,
                 isLoading: false,
             };
@@ -481,6 +494,7 @@ export function performtasks(state = {}, action) {
             };
         case performTaskConstants.EDIT_TASK_BY_ACCOUNTABLE_FAILURE:
             return {
+                ...state,
                 isLoading: false,
                 error: action.error
             };
@@ -497,6 +511,7 @@ export function performtasks(state = {}, action) {
             };
         case performTaskConstants.EDIT_TASK_BY_RESPONSIBLE_FAILURE:
             return {
+                ...state,
                 isLoading: false,
                 error: action.error
             };
@@ -513,6 +528,7 @@ export function performtasks(state = {}, action) {
             };
         case performTaskConstants.EVALUATE_TASK_BY_ACCOUNTABLE_FAILURE:
             return {
+                ...state,
                 isLoading: false,
                 error: action.error
             };
@@ -529,6 +545,7 @@ export function performtasks(state = {}, action) {
             };
         case performTaskConstants.EVALUATE_TASK_BY_RESPONSIBLE_FAILURE:
             return {
+                ...state,
                 isLoading: false,
                 error: action.error
             };
@@ -545,6 +562,7 @@ export function performtasks(state = {}, action) {
             };
         case performTaskConstants.EVALUATE_TASK_BY_CONSULTED_FAILURE:
             return {
+                ...state,
                 isLoading: false,
                 error: action.error
             };
@@ -562,6 +580,7 @@ export function performtasks(state = {}, action) {
             };
         case performTaskConstants.EDIT_HOURS_SPENT_IN_EVALUATION_FAILURE:
             return {
+                ...state,
                 isLoading: false,
                 error: action.error
             };
@@ -580,6 +599,7 @@ export function performtasks(state = {}, action) {
             };
         case performTaskConstants.DELETE_EVALUATION_FAILURE:
             return {
+                ...state,
                 isLoading: false,
                 error: action.error
             };
@@ -596,6 +616,7 @@ export function performtasks(state = {}, action) {
             };
         case performTaskConstants.DELETE_DOCUMENT_TASK_FAILURE:
             return {
+                ...state,
                 error: action.error,
                 isLoading: false,
             };
@@ -612,6 +633,7 @@ export function performtasks(state = {}, action) {
             };
         case performTaskConstants.EDIT_DOCUMENT_TASK_FAILURE:
             return {
+                ...state,
                 error: action.error,
                 isLoading: false,
             };
@@ -628,6 +650,7 @@ export function performtasks(state = {}, action) {
             };
         case performTaskConstants.EDIT_ACTIVATE_OF_TASK_FAILURE:
             return {
+                ...state,
                 isLoading: false,
                 error: action.error
             };
@@ -643,6 +666,7 @@ export function performtasks(state = {}, action) {
             }
         case performTaskConstants.CREATE_COMMENT_PROCESS_FAILURE:
             return {
+                ...state,
                 error: action.payload,
             }
         case performTaskConstants.CREATE_CHILD_COMMENT_REQUEST:
@@ -765,6 +789,7 @@ export function performtasks(state = {}, action) {
             }
         case performTaskConstants.CREATE_COMMENT_PROCESS_INCOMING_FAILURE:
             return {
+                ...state,
                 error: action.payload,
             }
         case performTaskConstants.EDIT_COMMENT_PROCESS_INCOMING_REQUEST:
@@ -859,6 +884,7 @@ export function performtasks(state = {}, action) {
             }
         case performTaskConstants.GET_ALL_PRECEEDING_TASKS_FAILURE:
             return {
+                ...state,
                 error: action.error
             };
         case performTaskConstants.SORT_ACTIONS_REQUEST:
@@ -874,6 +900,7 @@ export function performtasks(state = {}, action) {
             }
         case performTaskConstants.SORT_ACTIONS_FAILURE:
             return {
+                ...state,
                 error: action.error
             };
         case performTaskConstants.REFRESH_DATA_AFTER_COMMENT_SUCCESS:
@@ -885,6 +912,30 @@ export function performtasks(state = {}, action) {
             return {
                 ...state,
                 task: {...state.task, taskActions: action.payload},
+            }
+
+        case performTaskConstants.EDIT_TIME_SHEET_LOG_REQUEST:
+            return {
+                ...state,
+                isLoading: true
+            }
+
+        case performTaskConstants.EDIT_TIME_SHEET_LOG_FAILE:
+            return {
+                ...state,
+                isLoading: false
+            }
+
+        case performTaskConstants.EDIT_TIME_SHEET_LOG_SUCCESS:
+            return {
+                ...state,
+                logtimer: action.payload.timesheetLogs,
+                task: action.payload,
+                tasks: Array.isArray(state.tasks) ? state.tasks.map(t => {
+                    if(action.payload && t._id === action.payload._id){
+                        return action.payload
+                    } else return t;
+                }) : state.tasks
             }
         
         default:

@@ -134,6 +134,13 @@ const DocumentSchema = new Schema({
         },
     }],
 
+    // Mảng những người có quyền xem
+    userCanView: [{
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+    }],
+
+
 }, {
     timestamps: true, //ngày tạo và ngày sửa gần nhất
     toJSON: { virtuals: true }

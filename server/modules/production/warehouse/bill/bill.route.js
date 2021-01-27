@@ -4,6 +4,7 @@ const { auth } = require(`../../../../middleware`);
 const BillController = require('./bill.controller');
 
 router.get('/', auth, BillController.getBillsByType);
+router.get('/get-number-bill', auth, BillController.getNumberBills);
 router.get('/get-bill-by-good', auth, BillController.getBillByGood);
 router.get('/get-bill-by-status', auth, BillController.getBillsByStatus);
 router.get('/bill-by-command', auth, BillController.getBillsByCommand);

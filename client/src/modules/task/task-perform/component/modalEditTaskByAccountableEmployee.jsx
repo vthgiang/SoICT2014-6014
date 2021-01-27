@@ -1,18 +1,20 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
-import { DialogModal, ErrorLabel, SelectBox, DatePicker, ContentMaker } from '../../../../common-components/';
+
+import { DialogModal, ErrorLabel, SelectBox, DatePicker, QuillEditor, TreeSelect } from '../../../../common-components/';
 import { getStorage } from "../../../../config";
+
 import { UserActions } from "../../../super-admin/user/redux/actions";
 import { TaskInformationForm } from './taskInformationForm';
 import { performTaskAction } from '../redux/actions';
+import { taskManagementActions } from '../../task-management/redux/actions';
+
 import { TaskFormValidator } from '../../task-management/component/taskFormValidator';
+import { TaskTemplateFormValidator } from '../../task-template/component/taskTemplateFormValidator';
+
 import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
 import Swal from 'sweetalert2'
-import { TaskTemplateFormValidator } from '../../task-template/component/taskTemplateFormValidator';
-import { taskManagementActions } from '../../task-management/redux/actions';
-import TextareaAutosize from 'react-textarea-autosize';
-
 class ModalEditTaskByAccountableEmployee extends Component {
 
     constructor(props) {
@@ -33,6 +35,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
         let formula = task && task.formula;
         let parent = (task && task.parent) ? task.parent._id : "";
         let parentTask = task && task.parent;
+        let taskProject = task && task.taskProject;
 
         let info = {}, taskInfo = task && task.taskInformations;
         for (let i in taskInfo) {
@@ -119,6 +122,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
             info: info,
             taskName: taskName,
             taskDescription: taskDescription,
+            taskDescriptionDefault: taskDescription,
             organizationalUnit: organizationalUnit,
             collaboratedWithOrganizationalUnits: collaboratedWithOrganizationalUnits,
             statusOptions: statusOptions,
@@ -127,6 +131,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
             formula: formula,
             parent: parent,
             parentTask: parentTask,
+            taskProjectName: taskProject,
             startDate: startDate,
             endDate: endDate,
             responsibleEmployees: responsibleEmployees,
@@ -318,6 +323,10 @@ class ModalEditTaskByAccountableEmployee extends Component {
             msg = translate('task.task_perform.modal_approve_task.err_empty');
         }
         return msg;
+    }
+
+    handleChangeListInfo = async (data) => {
+        await this.setState({ listInfo: data })
     }
 
     changeActiveEmployees = async (listInactive) => {
@@ -585,8 +594,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
         return errorMessage === undefined;
     }
 
-    handleTaskDescriptionChange = event => {
-        let value = event.target.value;
+    handleTaskDescriptionChange = (value, imgs) => {
         this.validateTaskDescription(value, true);
     }
 
@@ -946,6 +954,8 @@ class ModalEditTaskByAccountableEmployee extends Component {
             }
         }
         let data = {
+            listInfo: this.state.listInfo,
+
             name: this.state.taskName,
             description: this.state.taskDescription,
             status: this.state.statusOptions,
@@ -965,7 +975,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
             responsibleEmployees: this.state.responsibleEmployees,
             informedEmployees: this.state.informedEmployees,
             inactiveEmployees: inactiveEmployees,
-
+            taskProject: this.state.taskProjectName,
             info: this.state.info,
         }
         console.log('data', data);
@@ -999,13 +1009,20 @@ class ModalEditTaskByAccountableEmployee extends Component {
         else if (data === "canceled") return translate('task.task_management.canceled');
     }
 
+    handleTaskProject = (value) => {
+        value = value.toString();
+        this.setState({
+            taskProjectName: value
+        })
+    }
+
     render() {
         console.log('new edit Task', this.state);
 
-        const { user, tasktemplates, department, translate } = this.props;
-        const { task, organizationalUnit, collaboratedWithOrganizationalUnits, errorOnEndDate, errorOnStartDate, errorTaskName, errorTaskDescription, errorOnFormula, taskName, taskDescription, statusOptions, priorityOptions,
+        const { user, tasktemplates, department, translate, taskProject } = this.props;
+        const { task, organizationalUnit, collaboratedWithOrganizationalUnits, errorOnEndDate, errorOnStartDate, errorTaskName, errorTaskDescription, errorOnFormula, taskName, taskDescription, statusOptions, priorityOptions, taskDescriptionDefault,
             startDate, endDate, formula, responsibleEmployees, accountableEmployees, consultedEmployees, informedEmployees, inactiveEmployees, parent, parentTask
-        } = this.state;
+            , taskProjectName } = this.state;
 
         const { tasks, perform, id, role, title, hasAccountable } = this.props;
 
@@ -1089,18 +1106,13 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                     <div
                                         className={`form-group ${errorTaskDescription === undefined ? "" : "has-error"}`}>
                                         <label>{translate('task.task_management.detail_description')}<span className="text-red">*</span></label>
-                                        {/* <textarea
-                                            rows="4"
-                                            value={taskDescription}
-                                            className="form-control" onChange={this.handleTaskDescriptionChange} /> */}
-
-                                        <TextareaAutosize
-                                            className={"form-control"}
+                                        <QuillEditor
+                                            id={"task-edit-by-accountable"}
+                                            toolbar={false}
+                                            quillValueDefault={taskDescriptionDefault}
+                                            getTextData={this.handleTaskDescriptionChange}
+                                            height={80}
                                             placeholder={"Mô tả công việc"}
-                                            minRows={2}
-                                            maxRows={4}
-                                            value={taskDescription}
-                                            onChange={this.handleTaskDescriptionChange}
                                         />
                                         <ErrorLabel content={errorTaskDescription} />
                                     </div>
@@ -1115,6 +1127,19 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                             value={parent}
                                             onChange={this.handleSelectedParent}
                                             onSearch={this.onSearch}
+                                        />
+                                    </div>
+
+                                    <div className="form-group">
+                                        <label>
+                                            {translate('task.task_management.project')}
+                                        </label>
+                                        <TreeSelect
+                                            id={`select-task-project-task-edit-by-accountable-${id}`}
+                                            mode='radioSelect'
+                                            data={taskProject.list}
+                                            handleChange={this.handleTaskProject}
+                                            value={[taskProjectName]}
                                         />
                                     </div>
                                 </div>
@@ -1231,6 +1256,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                 handleSetOfValueChange={this.handleSetOfValueChange}
                                 handleChangeNumberInfo={this.handleChangeNumberInfo}
                                 handleChangeTextInfo={this.handleChangeTextInfo}
+                                handleChangeListInfo={this.handleChangeListInfo}
 
                                 role={role}
                                 perform={perform}
@@ -1389,8 +1415,8 @@ class ModalEditTaskByAccountableEmployee extends Component {
 }
 
 function mapStateToProps(state) {
-    const { tasks, user, tasktemplates, performtasks, department } = state;
-    return { tasks, user, tasktemplates, performtasks, department };
+    const { tasks, user, tasktemplates, performtasks, department, taskProject } = state;
+    return { tasks, user, tasktemplates, performtasks, department, taskProject };
 }
 
 const actionGetState = { //dispatchActionToProps

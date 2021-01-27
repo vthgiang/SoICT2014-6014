@@ -328,15 +328,10 @@ class UseRequestManager extends Component {
                             <input type="text" className="form-control" name="receiptsCode" onChange={this.handleRecommendNumberChange} placeholder={translate('asset.general_information.form_code')} autoComplete="off" />
                         </div>
 
-                        {/* Tháng  lập phiếu*/}
+                        {/* Mã tài sản */}
                         <div className="form-group">
-                            <label className="form-control-static">Ngày lập phiếu</label>
-                            <DatePicker
-                                id="month"
-                                dateFormat="month-year"
-                                // value={this.formatDate(Date.now())}
-                                onChange={this.handleMonthChange}
-                            />
+                            <label className="form-control-static">{translate('asset.general_information.asset_code')}</label>
+                            <input type="text" className="form-control" name="codeAsset" onChange={this.handleCodeChange} placeholder={translate('asset.general_information.asset_code')} autoComplete="off" />
                         </div>
                     </div>
 
@@ -370,9 +365,19 @@ class UseRequestManager extends Component {
                             </SelectMulti>
                         </div>
 
+
+                        {/* Tháng  lập phiếu*/}
+                        <div className="form-group">
+                            <label className="form-control-static">Ngày lập phiếu</label>
+                            <DatePicker
+                                id="month"
+                                dateFormat="month-year"
+                                // value={this.formatDate(Date.now())}
+                                onChange={this.handleMonthChange}
+                            />
+                        </div>
                         {/* Button tìm kiếm */}
                         <div className="form-group">
-                            <label></label>
                             <button type="button" className="btn btn-success" title={translate('page.add_search')} onClick={() => this.handleSubmitSearch()} >{translate('page.add_search')}</button>
                         </div>
                         {exportData && <ExportExcel id="export-asset-recommened-distribute-management" exportData={exportData} style={{ marginRight: 10 }} />}

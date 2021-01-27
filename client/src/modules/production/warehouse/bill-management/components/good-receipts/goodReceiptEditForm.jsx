@@ -6,6 +6,7 @@ import QuantityLotGoodReceipt from './quantityLotGoodReceipt';
 import { generateCode } from '../../../../../../helpers/generateCode';
 import { LotActions } from '../../../inventory-management/redux/actions';
 import { BillActions } from '../../redux/actions';
+import { GoodActions } from "../../../../common-production/good-management/redux/actions";
 import './goodReceipt.css'
 
 class GoodReceiptEditForm extends Component {
@@ -37,10 +38,10 @@ class GoodReceiptEditForm extends Component {
         let { translate } = this.props;
         let goodArr = [{ value: '', text: translate('manage_warehouse.bill_management.choose_good') }];
 
-        this.props.goods.listALLGoods.map(item => {
+        this.props.goods.listGoods.map(item => {
             goodArr.push({
                 value: item._id,
-                text: item.code + " -- " + item.name,
+                text: item.code + " -- " + item.name + " (" + item.baseUnit + ")",
                 code: item.code,
                 name: item.name,
                 baseUnit: item.baseUnit,
@@ -689,6 +690,13 @@ class GoodReceiptEditForm extends Component {
             prevState.good.good = '';
             prevState.good.description = '';
             prevState.good.lots = [];
+
+            if (nextProps.type === "1") {
+                nextProps.getGoodsByType({ type: "material" });
+            } else if (nextProps.type === "2") {
+                nextProps.getGoodsByType({ type: "product" });
+            }
+
             return {
                 ...prevState,
                 billId: nextProps.billId,
@@ -829,7 +837,6 @@ class GoodReceiptEditForm extends Component {
         const dataType = this.getType();
         const dataStatus = this.getStatus();
         const checkApproved = this.checkApproved(approvers, listQualityControlStaffs);
-        console.log(manufacturingMill);
 
         return (
             <React.Fragment>
@@ -857,7 +864,7 @@ class GoodReceiptEditForm extends Component {
                                     <div className={`form-group ${!errorType ? "" : "has-error"}`}>
                                         <label>{translate('manage_warehouse.bill_management.type')}<span className="attention"> * </span></label>
                                         <SelectBox
-                                            id={`select-type-receipt-edit`}
+                                            id={`select-type-receipt-edit-${billId}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             value={type}
@@ -871,7 +878,7 @@ class GoodReceiptEditForm extends Component {
                                     <div className={`form-group`}>
                                         <label>{translate('manage_warehouse.bill_management.status')}</label>
                                         <SelectBox
-                                            id={`select-status-receipt-edit`}
+                                            id={`select-status-receipt-edit-${billId}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             value={status}
@@ -886,7 +893,7 @@ class GoodReceiptEditForm extends Component {
                                     <div className={`form-group ${!errorStock ? "" : "has-error"}`}>
                                         <label>{translate('manage_warehouse.bill_management.stock')}<span className="attention"> * </span></label>
                                         <SelectBox
-                                            id={`select-stock-bill-receipt-edit`}
+                                            id={`select-stock-bill-receipt-edit-${billId}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             value={fromStock}
@@ -900,7 +907,7 @@ class GoodReceiptEditForm extends Component {
                                     {type === '1' && <div className={`form-group ${!errorCustomer ? "" : "has-error"}`}>
                                         <label>{translate('manage_warehouse.bill_management.supplier')}<span className="attention"> * </span></label>
                                         <SelectBox
-                                            id={`select-supplier-receipt-edit`}
+                                            id={`select-supplier-receipt-edit-${billId}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             value={supplier}
@@ -914,7 +921,7 @@ class GoodReceiptEditForm extends Component {
                                     {type === '2' && <div className={`form-group ${!errorCustomer ? "" : "has-error"}`}>
                                         <label>{translate('manage_warehouse.bill_management.mill')}<span className="attention"> * </span></label>
                                         <SelectBox
-                                            id={`select-mill-receipt-edit`}
+                                            id={`select-mill-receipt-edit-${billId}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             value={manufacturingMill}
@@ -942,7 +949,7 @@ class GoodReceiptEditForm extends Component {
                                         <div className={`form-group ${!errorApprover ? "" : "has-error"}`}>
                                             <label>{translate('manage_warehouse.bill_management.approved')}<span className="attention"> * </span></label>
                                             <SelectBox
-                                                id={`select-approver-bill-receipt-edit`}
+                                                id={`select-approver-bill-receipt-edit-${billId}`}
                                                 className="form-control select2"
                                                 style={{ width: "100%" }}
                                                 value={approver}
@@ -955,7 +962,7 @@ class GoodReceiptEditForm extends Component {
                                         <div className={`form-group ${!errorResponsibles ? "" : "has-error"}`}>
                                             <label>{translate('manage_warehouse.bill_management.users')}<span className="attention"> * </span></label>
                                             <SelectBox
-                                                id={`select-accountables-bill-receipt-edit`}
+                                                id={`select-accountables-bill-receipt-edit-${billId}`}
                                                 className="form-control select2"
                                                 style={{ width: "100%" }}
                                                 value={responsibles}
@@ -970,7 +977,7 @@ class GoodReceiptEditForm extends Component {
                                         {type === '1' && <div className={`form-group ${!errorQualityControlStaffs ? "" : "has-error"}`}>
                                             <label>{translate('manage_warehouse.bill_management.qualityControlStaffs')}<span className="attention"> * </span></label>
                                             <SelectBox
-                                                id={`select-qualityControlStaffs-bill-receipt-edit`}
+                                                id={`select-qualityControlStaffs-bill-receipt-edit-${billId}`}
                                                 className="form-control select2"
                                                 style={{ width: "100%" }}
                                                 value={qualityControlStaffs}
@@ -983,7 +990,7 @@ class GoodReceiptEditForm extends Component {
                                         <div className={`form-group ${!errorAccountables ? "" : "has-error"}`}>
                                             <label>{translate('manage_warehouse.bill_management.accountables')}<span className="attention"> * </span></label>
                                             <SelectBox
-                                                id={`select-responsibles-bill-receipt-edit`}
+                                                id={`select-responsibles-bill-receipt-edit-${billId}`}
                                                 className="form-control select2"
                                                 style={{ width: "100%" }}
                                                 value={accountables}
@@ -1030,7 +1037,7 @@ class GoodReceiptEditForm extends Component {
                                     <div className="form-group">
                                         <label>{translate('manage_warehouse.bill_management.choose_good')}</label>
                                         <SelectBox
-                                            id={`select-good-receipt-edit`}
+                                            id={`select-good-receipt-edit-${billId}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             value={good.good ? good.good._id : '1'}
@@ -1116,6 +1123,7 @@ const mapDispatchToProps = {
     getLotsByGood: LotActions.getLotsByGood,
     createOrUpdateLots: LotActions.createOrUpdateLots,
     deleteLot: LotActions.deleteManyLots,
-    editBill: BillActions.editBill
+    editBill: BillActions.editBill,
+    getGoodsByType: GoodActions.getGoodsByType,
 }
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(GoodReceiptEditForm));

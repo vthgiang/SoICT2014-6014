@@ -32,7 +32,8 @@ class GoodReturnCreateForm extends Component {
             qualityControlStaffs: [],
             accountables: [],
             responsibles: [],
-            approver: []
+            approver: [],
+            type: '7'
         }
     }
 
@@ -63,7 +64,7 @@ class GoodReturnCreateForm extends Component {
         this.props.goods.listALLGoods.map(item => {
             goodArr.push({
                 value: item._id,
-                text: item.code + " -- " + item.name,
+                text: item.code + " -- " + item.name + " (" + item.baseUnit + ")",
                 code: item.code,
                 name: item.name,
                 baseUnit: item.baseUnit

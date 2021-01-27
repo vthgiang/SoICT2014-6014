@@ -8,7 +8,9 @@ import ValidationHelper from '../../../../../helpers/validationHelper';
 class CreateForm extends Component {
     constructor(props) {
         super(props);
-        this.state = {}
+        this.state = {
+            parent: [],
+        }
     }
 
     handleName = (e) => {
@@ -32,7 +34,7 @@ class CreateForm extends Component {
     }
 
     handleCode = (e) => {
-        const {value} = e.target;
+        const { value } = e.target;
         let msg;
         this.setState({
             code: value,
@@ -41,7 +43,7 @@ class CreateForm extends Component {
     }
 
     handleParent = (value) => {
-        this.setState({ parent: value[0] });
+        this.setState({ parent: value, position: [], package: undefined});
     };
 
     handlePosition = (value) => {
@@ -50,9 +52,9 @@ class CreateForm extends Component {
     };
 
     isValidateForm = () => {
-        let {name} = this.state;
-        let {translate} = this.props;
-        if(!ValidationHelper.validateName(translate, name, 1, 255).status) return false;
+        let { name } = this.state;
+        let { translate } = this.props;
+        if (!ValidationHelper.validateName(translate, name, 1, 255).status) return false;
         return true;
     }
 
@@ -62,6 +64,7 @@ class CreateForm extends Component {
             code: this.state.code,
             parent: this.state.parent,
             position: this.state.position,
+            package: this.state.package,
         }
         console.log('data', data);
         this.props.createCareerAction(data);
@@ -81,23 +84,41 @@ class CreateForm extends Component {
                     func={this.save}
                 >
                     <form id="form-create-career-action">
-                        <div className={`form-group `}>
-                            <label>Gói thầu<span className="text-red">*</span></label>
-                            <input type="text" className="form-control" onChange={this.handlePackage} />
-                            {/* <ErrorLabel content={nameError} /> */}
-                        </div>
+                        {/* {parent.length === 0 &&
+                            <div className={`form-group `}>
+                                <label>Gói thầu</label>
+                                <input type="text" className="form-control" onChange={this.handlePackage} />
+                            </div>
+                        }  */}
                         <div className={`form-group ${!nameError ? "" : "has-error"}`}>
                             <label>Tên<span className="text-red">*</span></label>
                             <input type="text" className="form-control" onChange={this.handleName} />
                             <ErrorLabel content={nameError} />
                         </div>
-                        <div className="form-group">
+                        {/* <div className="form-group">
                             <label>Chọn thông tin cha</label>
                             <TreeSelect data={list} value={parent} handleChange={this.handleParent} mode="radioSelect" />
-                        </div>
-                        { !parent &&
+                        </div> */}
+                        {
                             <div className="form-group">
-                                <label>Lĩnh vực</label>
+                                <label>Chọn hoạt động chi tiết</label>
+                                <SelectBox
+                                    id={`position-career-add-detail-label`}
+                                    lassName="form-control select2"
+                                    style={{ width: "100%" }}
+                                    items={list.map(x => {
+                                        return { text: x.name, value: x._id }
+                                    })}
+                                    options={{ placeholder: "Chọn hoạt động chi tiết" }}
+                                    onChange={this.handleParent}
+                                    value={parent}
+                                    multiple={true}
+                                />
+                            </div>
+                        }
+                        {parent.length === 0 &&
+                            <div className="form-group">
+                                <label>Vị trí công việc</label>
                                 <SelectBox
                                     id={`position-career-add`}
                                     lassName="form-control select2"

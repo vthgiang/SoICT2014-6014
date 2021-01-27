@@ -42,6 +42,7 @@ class EvaluateByAccountableEmployee extends Component {
             dentaDate: data.dentaDate,
             indexReRender: 0,
             hasAccountable: data.hasAccountable,
+            evaluation: data.evaluation,
 
             kpi: data.kpi,
             unit: data.unit,
@@ -114,6 +115,7 @@ class EvaluateByAccountableEmployee extends Component {
                     unit: data.unit,
 
                     dataStatus: this.DATA_STATUS.QUERYING,
+                    evaluation: data.evaluation,
                 }
             });
             return false;
@@ -426,7 +428,8 @@ class EvaluateByAccountableEmployee extends Component {
             dentaDate: dentaDate,
             unit: unit,
             kpi: cloneKpi,
-            hasAccountable: hasAccountable
+            hasAccountable: hasAccountable,
+            evaluation: evaluations,
         }
     }
 
@@ -1322,7 +1325,7 @@ class EvaluateByAccountableEmployee extends Component {
     render() {
         const { translate, user, KPIPersonalManager, performtasks } = this.props;
         const { task, date, status, oldAutoPoint, autoPoint, errorOnDate, showAutoPointInfo, dentaDate, prevDate, info, results, empPoint, progress,
-            errorInfo, errorApprovedPoint, errorContribute, errSumContribution, indexReRender, unit, kpi } = this.state;
+            errorInfo, errorApprovedPoint, errorContribute, errSumContribution, indexReRender, unit, kpi, evaluation } = this.state;
         const { id, perform, role, hasAccountable } = this.props;
 
         let listKpi = [];
@@ -1476,6 +1479,7 @@ class EvaluateByAccountableEmployee extends Component {
                                 <TaskInformationForm
                                     legendText={translate('task.task_management.info_eval_month')}
                                     task={task && task}
+                                    evaluationInfo={evaluation? evaluation : task}
 
                                     handleChangeProgress={this.handleChangeProgress}
                                     handleInfoBooleanChange={this.handleInfoBooleanChange}
@@ -1524,9 +1528,9 @@ class EvaluateByAccountableEmployee extends Component {
                                                             <span key={index}>
                                                                 ({index + 1})&nbsp;&nbsp;
                                                             <QuillEditor
-                                                                id={'evaluateByAccountable'}
+                                                                id={`evaluateByAccountable${item._id}`}
                                                                 quillValueDefault={item.description}
-                                                                edit={false}
+                                                                isText={true}
                                                             />
                                                             </span>
                                                         </div>

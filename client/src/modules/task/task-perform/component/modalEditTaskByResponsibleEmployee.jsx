@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
-import { DialogModal, ErrorLabel, SelectBox } from '../../../../common-components/';
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
+
+import { DialogModal, ErrorLabel, QuillEditor, TreeSelect } from '../../../../common-components/';
 import { getStorage } from "../../../../config";
+
 import { TaskInformationForm } from './taskInformationForm';
+
 import { managerKpiActions } from '../../../kpi/employee/management/redux/actions';
 import { performTaskAction } from '../redux/actions';
 
@@ -21,10 +24,12 @@ class ModalEditTaskByResponsibleEmployee extends Component {
             userId: data.idUser,
             taskName: data.task.name,
             taskDescription: data.task.description,
+            taskDescriptionDefault: data.task.description,
             idUser: data.idUser,
             info: data.info,
             date: data.date,
-            progress: data.task.progress
+            progress: data.task.progress,
+            taskProjectName: data.task.taskProject,
         }
     }
 
@@ -330,8 +335,7 @@ class ModalEditTaskByResponsibleEmployee extends Component {
         return errorMessage === undefined;
     }
 
-    handleTaskDescriptionChange = event => {
-        let value = event.target.value;
+    handleTaskDescriptionChange = (value, imgs) => {
         this.validateTaskDescription(value, true);
     }
 
@@ -353,6 +357,16 @@ class ModalEditTaskByResponsibleEmployee extends Component {
         return errorMessage === undefined;
     }
 
+    handleTaskProject = (value) => {
+        value = value.toString();
+        this.setState({
+            taskProjectName: value
+        })
+    }
+
+    handleChangeListInfo = (data) => {
+        this.setState({ listInfo: data })
+    }
 
     isFormValidated = () => {
         let { info, errorInfo } = this.state;
@@ -428,6 +442,8 @@ class ModalEditTaskByResponsibleEmployee extends Component {
         taskId = this.props.id;
 
         let data = {
+            listInfo: this.state.listInfo,
+
             date: this.formatDate(Date.now()),
             name: this.state.taskName,
             description: this.state.taskDescription,
@@ -435,6 +451,7 @@ class ModalEditTaskByResponsibleEmployee extends Component {
             progress: this.state.progress,
             // kpi: this.state.kpi ? this.state.kpi : [],
             info: this.state.info,
+            taskProject: this.state.taskProjectName,
         }
 
         this.props.editTaskByResponsibleEmployees(data, taskId);
@@ -450,9 +467,9 @@ class ModalEditTaskByResponsibleEmployee extends Component {
     }
 
     render() {
-        const { KPIPersonalManager, translate } = this.props
-        const { task, taskName, taskDescription, kpi } = this.state;
-        const { errorTaskName, errorTaskDescription } = this.state;
+        const { KPIPersonalManager, translate, taskProject } = this.props
+        const { task, taskName, taskDescription, kpi, taskProjectName } = this.state;
+        const { errorTaskName, errorTaskDescription, taskDescriptionDefault } = this.state;
         const { title, id, role, perform } = this.props;
 
         let listKpi = [];
@@ -489,12 +506,27 @@ class ModalEditTaskByResponsibleEmployee extends Component {
                                     <div
                                         className={`form-group ${errorTaskDescription === undefined ? "" : "has-error"}`}>
                                         <label>{translate('task.task_management.detail_description')}<span className="text-red">*</span></label>
-                                        <textarea
-                                            row="4"
-                                            value={taskDescription}
-                                            className="form-control" onChange={this.handleTaskDescriptionChange}
+                                        <QuillEditor
+                                            id={"task-edit-by-responsible"}
+                                            toolbar={false}
+                                            quillValueDefault={taskDescriptionDefault}
+                                            getTextData={this.handleTaskDescriptionChange}
+                                            height={80}
+                                            placeholder={"Mô tả công việc"}
                                         />
                                         <ErrorLabel content={errorTaskDescription} />
+                                    </div>
+                                    <div className="form-group">
+                                        <label>
+                                            {translate('task.task_management.project')}
+                                        </label>
+                                        <TreeSelect
+                                            id={`select-task-project-task-edit-by-responsible-${id}`}
+                                            mode='radioSelect'
+                                            data={taskProject.list}
+                                            handleChange={this.handleTaskProject}
+                                            value={[taskProjectName]}
+                                        />
                                     </div>
                                 </div>
 
@@ -524,6 +556,7 @@ class ModalEditTaskByResponsibleEmployee extends Component {
                                 handleSetOfValueChange={this.handleSetOfValueChange}
                                 handleChangeNumberInfo={this.handleChangeNumberInfo}
                                 handleChangeTextInfo={this.handleChangeTextInfo}
+                                handleChangeListInfo={this.handleChangeListInfo}
 
                                 role={role}
                                 perform={perform}
@@ -539,8 +572,8 @@ class ModalEditTaskByResponsibleEmployee extends Component {
 }
 
 function mapStateToProps(state) {
-    const { tasks, KPIPersonalManager } = state;
-    return { tasks, KPIPersonalManager };
+    const { tasks, KPIPersonalManager, taskProject } = state;
+    return { tasks, KPIPersonalManager, taskProject };
 }
 
 const actionGetState = { //dispatchActionToProps

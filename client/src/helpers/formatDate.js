@@ -60,7 +60,6 @@ export const formatToTimeZoneDate = (stringDate) => {
 
 export const formatYearMonth = (date) => {
     let d = new Date(date);
-    console.log(d);
     let month = d.getMonth() + 1;
     let year = d.getFullYear();
     if (month.length < 2 || month < 10) {
@@ -70,10 +69,26 @@ export const formatYearMonth = (date) => {
     return `${month}-${year}`
 }
 
-export const compareLteDate = (startDate, endDate) => { //Ngày bắt đầu trước hoặc cùng ngày kết thúc
+export const compareLtDate = (startDate, endDate) => { //Ngày bắt đầu trước hoặc cùng ngày kết thúc
     let startTimeZoneDate = new Date(formatToTimeZoneDate(startDate));
     let endTimeZoneDate = new Date(formatToTimeZoneDate(endDate));
 
+    if (startTimeZoneDate.getTime() >= endTimeZoneDate.getTime()) {
+        return {
+            status: false,
+            message: "Ngày bắt đầu phải trước hoặc cùng ngày kết thúc"
+        }
+    } else {
+        return {
+            status: true,
+            message: undefined
+        }
+    }
+}
+
+export const compareLteDate = (startDate, endDate) => { //Ngày bắt đầu trước ngày kết thúc
+    let startTimeZoneDate = new Date(formatToTimeZoneDate(startDate));
+    let endTimeZoneDate = new Date(formatToTimeZoneDate(endDate));
     if (startTimeZoneDate.getTime() > endTimeZoneDate.getTime()) {
         return {
             status: false,
@@ -87,14 +102,13 @@ export const compareLteDate = (startDate, endDate) => { //Ngày bắt đầu tr�
     }
 }
 
-export const compareLtDate = (startDate, endDate) => { //Ngày bắt đầu trước ngày kết thúc
-    let startTimeZoneDate = new Date(formatToTimeZoneDate(startDate));
-    let endTimeZoneDate = new Date(formatToTimeZoneDate(endDate));
-
-    if (startTimeZoneDate.getTime() >= endTimeZoneDate.getTime()) {
+export const compareLteMonth = (startMonth, toMonth) => {
+    let startTimeZoneDate = new Date(formatToTimeZoneDate(startMonth));
+    let endTimeZoneDate = new Date(formatToTimeZoneDate(toMonth));
+    if (startTimeZoneDate.getTime() > endTimeZoneDate.getTime()) {
         return {
             status: false,
-            message: "Ngày bắt đầu phải trước hoặc cùng ngày kết thúc"
+            message: "Tháng bắt đầu phải trước hoặc cùng ngày kết thúc"
         }
     } else {
         return {

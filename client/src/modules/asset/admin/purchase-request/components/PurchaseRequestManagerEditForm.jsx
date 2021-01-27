@@ -220,14 +220,17 @@ class PurchaseRequestEditForm extends Component {
     };
 
     save = () => {
-        const { dateCreate, recommendFiles } = this.state;
+        let { dateCreate, recommendFiles, oldFiles, files } = this.state;
         let slitDateCreate, dateCreateConvert;
         if (dateCreate) {
             slitDateCreate = dateCreate.split('-');
             dateCreateConvert = new Date([slitDateCreate[2], slitDateCreate[1], slitDateCreate[0]].join('-'))
         }
+        if (!recommendFiles && !oldFiles) {
+            oldFiles = files;
+        }
 
-        let dataToSubmit = { ...this.state, dateCreate: dateCreateConvert, approver: this.props.auth.user._id };
+        let dataToSubmit = { ...this.state, oldFiles, dateCreate: dateCreateConvert, approver: this.props.auth.user._id };
         if (this.isFormValidated()) {
             let formData = convertJsonObjectToFormData(dataToSubmit);
             if (recommendFiles) {

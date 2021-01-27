@@ -99,7 +99,7 @@ class TaskTemplateImportForm extends Component {
                         out.readByEmployees = x.readByEmployees;
                         valueShow[k].readByEmployees = [...valueShow[k].readByEmployees, x.readByEmployees];
                     }
-                    if (x.collaboratedWithOrganizationalUnits){
+                    if (x.collaboratedWithOrganizationalUnits) {
                         out.collaboratedWithOrganizationalUnits = x.collaboratedWithOrganizationalUnits;
                         valueShow[k].collaboratedWithOrganizationalUnits = [...valueShow[k].collaboratedWithOrganizationalUnits, x.collaboratedWithOrganizationalUnits];
                     }
@@ -155,7 +155,7 @@ class TaskTemplateImportForm extends Component {
             for (let i = 0; i < value.length; i++) {
                 let x = value[i];
                 let errorAlert = [];
-                if (x.name === null || x.description === null || x.organizationalUnit === null || x.readByEmployees === null || x.formula === null) {
+                if (x.name === null || x.organizationalUnit === null) {
                     rowError = [...rowError, i + 1];
                     x = { ...x, error: true };
                 }
@@ -165,15 +165,15 @@ class TaskTemplateImportForm extends Component {
                 if (x.organizationalUnit === null) {
                     errorAlert = [...errorAlert, 'Tên phòng ban không được để trống'];
                 }
-                if (x.description === null) {
-                    errorAlert = [...errorAlert, 'Tên mô tả mẫu công việc không được để trống'];
-                }
-                if (x.readByEmployees === null) {
-                    errorAlert = [...errorAlert, 'Tên người được xem không được để trống'];
-                }
-                if (x.formula === null) {
-                    errorAlert = [...errorAlert, 'Tên công thức tính điểm không được để trống'];
-                }
+                // if (x.description === null) {
+                //     errorAlert = [...errorAlert, 'Tên mô tả mẫu công việc không được để trống'];
+                // }
+                // if (x.readByEmployees === null) {
+                //     errorAlert = [...errorAlert, 'Tên người được xem không được để trống'];
+                // }
+                // if (x.formula === null) {
+                //     errorAlert = [...errorAlert, 'Tên công thức tính điểm không được để trống'];
+                // }
                 x = { ...x, errorAlert: errorAlert };
                 value[i] = x;
             };

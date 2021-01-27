@@ -65,7 +65,7 @@ class ToolTip extends Component {
             return null;
         else return <React.Fragment>
             <div className="tooltip2">
-                <u className="text-blue" style={{ marginLeft: '3px' }}>chi tiết</u>
+                <u className="text-blue" style={{ marginLeft: '3px' }}>Chi tiết</u>
                 <span className="tooltip2text">
                     {convertData.map((content, i) => {
                         return <p key={i} className="text-left" style={{

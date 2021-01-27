@@ -97,9 +97,9 @@ module.exports = {
     Tax: require('./production/order/tax.model'),
     SalesOrder: require('./production/order/salesOrder.model'),
     ServiceLevelAgreement: require('./production/order/serviceLevelAgreement.model'),
-    PurchaseOrder: require('./production/order/purchseOrder.model'),
+    PurchaseOrder: require('./production/order/purchaseOrder.model'),
     BusinessDepartment: require('./production/order/businessDepartment.model'),
-
+    Payment: require('./production/order/payment.model'),
 
     Location: require('./common/location.model'),
 
@@ -116,4 +116,10 @@ module.exports = {
     ManufacturingCommand: require('./production/manufacturing/manufacturingCommand.model'),
     PurchasingRequest: require('./production/manufacturing/purchasingRequest.model'),
     WorkSchedule: require('./production/manufacturing/workSchedule.model'),
+
+    // project
+
+    Project: require('./project/project.model'),
+
+
 }

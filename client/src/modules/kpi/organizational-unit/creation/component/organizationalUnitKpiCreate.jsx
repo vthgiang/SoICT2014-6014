@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import Swal from 'sweetalert2';
+import parse from 'html-react-parser';
 
 import { DatePicker, ToolTip } from '../../../../../common-components';
 
@@ -464,7 +465,7 @@ class OrganizationalUnitKpiCreate extends Component {
                                                     <tr key={item._id}>
                                                         <td>{index + 1}</td>
                                                         <td title={item.name}>{item.name}</td>
-                                                        <td title={item.criteria}>{item.criteria}</td>
+                                                        <td title={item.criteria}>{parse(item.criteria)}</td>
                                                         <td title={item.weight}>{item.weight}</td>
                                                         {this.checkPermisson(currentUnit && currentUnit[0].managers) &&
                                                             <td>

@@ -6,7 +6,11 @@ export const QuoteActions = {
     getAllQuotes,
     editQuote,
     deleteQuote,
-    approveQuote
+    approveQuote,
+    getQuotesToMakeOrder,
+    getQuoteDetail,
+    countQuote,
+    getTopGoodsCare
 }
 
 function createNewQuote (data) {
@@ -114,5 +118,94 @@ function approveQuote(id, data) {
                 error
             })
         })
+    }
+}
+
+//Lấy các báo giá đã được duyệt để tạo đơn hàng
+function getQuotesToMakeOrder(queryData) {
+    return (dispatch) => {
+        dispatch({
+            type: QuoteConstants.GET_QUOTES_TO_MAKE_ORDER_REQUEST
+        })
+        QuoteServices.getQuotesToMakeOrder(queryData)
+            .then((res) => {
+            dispatch({
+                type: QuoteConstants.GET_QUOTES_TO_MAKE_ORDER_SUCCESS,
+                payload: res.data.content
+            })
+        })
+        .catch((error) => {
+            dispatch({
+                type: QuoteConstants.GET_QUOTES_TO_MAKE_ORDER_FAILURE,
+                error
+            })
+        })
+    }
+}
+
+function getQuoteDetail(id) {
+    return (dispatch) => {
+        dispatch({
+            type: QuoteConstants.GET_QUOTE_DETAIL_REQUEST
+        })
+
+        QuoteServices.getQuoteDetail(id)
+            .then((res) => {
+                dispatch({
+                    type: QuoteConstants.GET_QUOTE_DETAIL_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch((error) => {
+                dispatch({
+                    type: QuoteConstants.GET_QUOTE_DETAIL_FAILURE,
+                    error
+                })
+            })
+    }
+}
+
+// PHẦN SERVICE CHO DASHBOARD
+function countQuote(queryData) {
+    return (dispatch) => {
+        dispatch({
+            type: QuoteConstants.COUNT_QUOTE_REQUEST
+        })
+
+        QuoteServices.countQuote(queryData)
+            .then((res) => {
+                dispatch({
+                    type: QuoteConstants.COUNT_QUOTE_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch((error) => {
+                dispatch({
+                    type: QuoteConstants.COUNT_QUOTE_FAILURE,
+                    error
+                })
+            })
+    }
+}
+
+function getTopGoodsCare(queryData) {
+    return (dispatch) => {
+        dispatch({
+            type: QuoteConstants.GET_TOP_GOODS_CARE_REQUEST
+        })
+
+        QuoteServices.getTopGoodsCare(queryData)
+            .then((res) => {
+                dispatch({
+                    type: QuoteConstants.GET_TOP_GOODS_CARE_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch((error) => {
+                dispatch({
+                    type: QuoteConstants.GET_TOP_GOODS_CARE_FAILURE,
+                    error
+                })
+            })
     }
 }

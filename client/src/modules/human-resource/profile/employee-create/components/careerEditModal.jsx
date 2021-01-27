@@ -57,7 +57,12 @@ class CareerEditModal extends Component {
         let position = listPosition?.find(e => e._id === value[0]);
 
         let pkg = position.package;
-        this.setState({ position: position, package: pkg });
+        this.setState({ position: position });
+    };
+
+    handleChangePackage = (e) => {
+        let { value } = e.target;
+        this.setState({ package: value });
     };
 
     /** Bắt sự kiện thay đổi file đính kèm */
@@ -218,7 +223,7 @@ class CareerEditModal extends Component {
         const { field, position, action, endDate, startDate, errorOnName, errorOnUnit, errorOnEndDate, errorOnStartDate } = this.state;
 
         let listAction = [], listPosition = [], listField = [];
-        listAction = career?.listAction.map(elm => { return { ...elm, id: elm._id } });
+        listAction = career?.listAction.filter(e => e.isLabel !== 1).map(elm => { return { ...elm, id: elm._id } });
         listPosition = career?.listPosition.map(elm => { return { ...elm, id: elm._id } });
         listField = career?.listField.map(elm => { return { ...elm, id: elm._id } });
 
@@ -236,8 +241,13 @@ class CareerEditModal extends Component {
                             <label>Lĩnh vực công việc</label>
                             <TreeSelect data={listField} value={field?._id} handleChange={this.handleField} mode="radioSelect" />
                         </div>
-                        <div className="form-group">
+                        {/* <div className="form-group">
                             <label>Gói thầu: </label> {this.state.package ? this.state.package : "Chưa có"}
+                        </div> */}
+                        <div className="form-group">
+                            <label>Gói thầu</label> 
+                            {/* {this.state.package ? this.state.package : "Chưa có"} */}
+                            <input type="text" className="form-control" name="package" value={this.state.package} onChange={this.handleChangePackage} />
                         </div>
                         <div className="form-group">
                             <label>Vị trí công việc</label>
@@ -262,7 +272,7 @@ class CareerEditModal extends Component {
                         <div className="row">
                             {/* Ngày cấp */}
                             <div className={`form-group col-sm-6 col-xs-12 ${errorOnStartDate && "has-error"}`}>
-                                <label>{translate('human_resource.profile.date_issued')}<span className="text-red">*</span></label>
+                                <label>Ngày bắt đầu<span className="text-red">*</span></label>
                                 <DatePicker
                                     id={`edit-start-date-${id}`}
                                     deleteValue={false}
@@ -273,7 +283,7 @@ class CareerEditModal extends Component {
                             </div>
                             {/* Ngày hết hạn */}
                             <div className={`form-group col-sm-6 col-xs-12 ${errorOnEndDate && "has-error"}`}>
-                                <label>{translate('human_resource.profile.end_date_certificate')}</label>
+                                <label>ngày kết thúc</label>
                                 <DatePicker
                                     id={`edit-end-date-${id}`}
                                     deleteValue={true}

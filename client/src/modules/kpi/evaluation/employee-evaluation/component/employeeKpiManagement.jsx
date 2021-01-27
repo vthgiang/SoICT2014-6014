@@ -22,18 +22,38 @@ class EmployeeKpiManagement extends Component {
         let currentYear = currentDate.getFullYear();
         let currentMonth = currentDate.getMonth();
 
+        let d = new Date(),
+            month = d.getMonth() + 1,
+            year = d.getFullYear();
+        let startMonth, endMonth, startYear;
+
+        if (month > 1) {
+            startMonth = month - 1;
+            startYear = year;
+        } else {
+            startMonth = month - 1 + 12;
+            startYear = year - 1;
+        }
+        if (startMonth < 10)
+            startMonth = '0' + startMonth;
+        if (month < 10) {
+            endMonth = '0' + month;
+        } else {
+            endMonth = month;
+        }
+
         this.state = {
             commenting: false,
             userId: '',
             status: -1,
-            startDate: currentMonth !== 0 ? ((currentMonth <= 9) ? (currentYear + '-0' + currentMonth) : (currentYear + '-' + currentMonth)) : ((currentYear - 1) + '-' + 12),
-            endDate: (currentMonth < 9) ? (currentYear + '-0' + currentMonth + 1) : (currentYear + '-' + (currentMonth + 1)),
+            startDate: [startYear, startMonth].join('-'),
+            endDate: [year, endMonth].join('-'),
             infosearch: {
                 role: localStorage.getItem("currentRole"),
                 user: '',
                 status: -1,
-                startDate: currentMonth !== 0 ? ((currentMonth <= 9) ? (currentYear + '-0' + currentMonth) : (currentYear + '-' + currentMonth)) : ((currentYear - 1) + '-' + 12),
-                endDate: (currentMonth < 9) ? (currentYear + '-0' + currentMonth + 1) : (currentYear + '-' + (currentMonth + 1)),
+                startDate: [startYear, startMonth].join('-'),
+                endDate: [year, endMonth].join('-'),
             },
             showApproveModal: null,
             showEvaluateModal: null,
@@ -593,10 +613,10 @@ class EmployeeKpiManagement extends Component {
 
     }
 
-    /*Chuyển đổi dữ liệu KPI nhân viên thành dữ liệu export to file excel */
+    /** Chuyển đổi dữ liệu KPI nhân viên thành dữ liệu export to file excel */
     convertDataToExportData = (data, unitName) => {
         let fileName = "Bảng theo dõi KPI nhân viên " + (unitName ? unitName : "");
-        if (data) {
+        if (data && data.length !== 0) {
             data = data.map((x, index) => {
 
                 let fullName = x.creator.name;
@@ -745,13 +765,19 @@ class EmployeeKpiManagement extends Component {
                             <div className="form-group">
                                 <button type="button" className="btn btn-success" onClick={() => this.handleSearchData()}>{translate('kpi.evaluation.employee_evaluation.search')}</button>
                             </div>
-                            {exportData && <ExportExcel id="export-employee-kpi-evaluation-management" buttonName="Báo cáo chung" exportData={exportData} style={{ marginRight: 15, marginTop: 5 }} />}
-                            {kpimember &&
-                                <ExportExcel buttonName="Báo cáo tổng hợp" onClick={() => this.handleExportTotalData(kpimember)} />
-                            }
+                            <div className="dropdown pull-right">
+                                <button type="button" className="btn btn-primary dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('menu.add_asset_title')} >Báo cáo</button>
+                                <ul className="dropdown-menu pull-right" style={{ marginTop: 0 }}>
+                                    <li>{exportData && <ExportExcel id="export-employee-kpi-evaluation-management" type='link' buttonName="Báo cáo chung" exportData={exportData} style={{ marginRight: 15, marginTop: 5 }} />}</li>
+                                    <li>{kpimember && <ExportExcel id="export-total-employee-kpi-evaluation-management" type='link' buttonName="Báo cáo tổng hợp" onClick={() => this.handleExportTotalData(kpimember)}/>}</li>
+                                </ul>
+                            </div>
                         </div>
 
-                        <DataTableSetting className="pull-right" tableId="kpiManagement" tableContainerId="tree-table-container" tableWidth="1300px"
+                        <DataTableSetting
+                            tableId="kpiManagement"
+                            tableContainerId="tree-table-container"
+                            tableWidth="1300px"
                             columnArr={[
                                 'STT',
                                 'Thời gian',
@@ -763,7 +789,11 @@ class EmployeeKpiManagement extends Component {
                                 'Đánh giá']}
                             limit={perPage}
                             setLimit={this.setLimit}
-                            hideColumnOption={true} />
+                            hideColumnOption={true}
+                            // style={{ borderRadius: 0 }}
+                            // fontSize={16}
+                            // text="Thiết lập"
+                        />
 
                         <table id="kpiManagement" className="table table-hover table-bordered">
                             <thead>

@@ -20,7 +20,8 @@ class ManufacturingMillScheduleManagentTable extends Component {
             page: 1,
             month: currentMonthYear,
             allDaysOfMonth: allDaysOfMonth,
-            code: ''
+            code: '',
+            currentRole: localStorage.getItem('currentRole')
         }
     }
 
@@ -30,10 +31,11 @@ class ManufacturingMillScheduleManagentTable extends Component {
             limit: limit,
             page: page,
             object: "manufacturingMill",
-            month: formatToTimeZoneDate(month)
+            month: formatToTimeZoneDate(month),
+            currentRole: this.state.currentRole
         }
         this.props.getAllWorkSchedules(data);
-        this.props.getAllManufacturingMills({ status: 1 });
+        this.props.getAllManufacturingMills({ status: 1, currentRole: this.state.currentRole });
         this.props.setCurrentMonth(month);
     }
 
@@ -66,7 +68,8 @@ class ManufacturingMillScheduleManagentTable extends Component {
             limit: limit,
             page: page,
             object: "manufacturingMill",
-            month: formatToTimeZoneDate(month)
+            month: formatToTimeZoneDate(month),
+            currentRole: this.state.currentRole
         }
         this.props.getAllWorkSchedules(data)
     }
@@ -81,7 +84,8 @@ class ManufacturingMillScheduleManagentTable extends Component {
             limit: limit,
             page: page,
             object: "manufacturingMill",
-            month: formatToTimeZoneDate(month)
+            month: formatToTimeZoneDate(month),
+            currentRole: this.state.currentRole
         }
         this.props.getAllWorkSchedules(data);
     }
@@ -107,7 +111,8 @@ class ManufacturingMillScheduleManagentTable extends Component {
             limit: limit,
             page: page,
             object: "manufacturingMill",
-            month: formatToTimeZoneDate(month)
+            month: formatToTimeZoneDate(month),
+            currentRole: this.state.currentRole
         }
         this.props.getAllWorkSchedules(data)
         this.props.setCurrentMonth(month);
@@ -130,7 +135,7 @@ class ManufacturingMillScheduleManagentTable extends Component {
         const { totalPages, page } = workSchedule;
         const { month, allDaysOfMonth, code } = this.state;
 
-        const arrayStatus = [0, 1, 2, 3, 4, 5]
+        const arrayStatus = [0, 6, 1, 2, 3, 4]
         return (
             <React.Fragment>
                 {
@@ -186,7 +191,7 @@ class ManufacturingMillScheduleManagentTable extends Component {
                 />
                 <div id="croll-table" className="form-inline">
                     <div className="col-lg-6 col-md-6 col-sm-7 col-xs-8" style={{ padding: 0 }}>
-                        <table id="info-mill-table" className="table table-bordered">
+                        <table id="info-mill-table" className="table table-bordered not-sort">
                             <thead>
                                 <tr>
                                     <th>{translate('manufacturing.work_schedule.mill_code')}</th>
@@ -229,7 +234,7 @@ class ManufacturingMillScheduleManagentTable extends Component {
                         </table>
                     </div>
                     <div className="col-lg-6 col-md-6 col-sm-5 col-xs-4" style={{ padding: 0 }}>
-                        <table id="work-schedule-table" className="table table-striped table-bordered table-hover">
+                        <table id="work-schedule-table" className="table table-striped table-bordered table-hover not-sort">
                             <thead>
                                 <tr>
                                     {
@@ -248,7 +253,7 @@ class ManufacturingMillScheduleManagentTable extends Component {
                                                 <tr key={index2}>
                                                     {
                                                         turn.map((command, index3) => {
-                                                            if (command !== null)
+                                                            if (command !== null && command.status)
                                                                 return (
                                                                     <td key={index3} className="tooltip-checkbox">
                                                                         {/* <input type="checkbox" disabled={true} style={{ backgroundColor: translate(`manufacturing.work_schedule.${command.status}.color`) }}>

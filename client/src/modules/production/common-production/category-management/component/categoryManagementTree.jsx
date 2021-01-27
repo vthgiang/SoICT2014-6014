@@ -86,6 +86,7 @@ class CategoryManagementTree extends Component {
             return {
                 ...node,
                 text: node.name,
+                icon: 'glyphicon glyphicon-book',
                 state: { "open": true },
                 id: node._id,
                 parent: node.parent ? node.parent.toString() : "#"

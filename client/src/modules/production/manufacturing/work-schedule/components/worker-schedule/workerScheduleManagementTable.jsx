@@ -21,7 +21,8 @@ class WorkerScheduleManagementTable extends Component {
             month: currentMonthYear,
             allDaysOfMonth: allDaysOfMonth,
             name: '',
-            works: []
+            works: [],
+            currentRole: localStorage.getItem('currentRole')
         }
     }
 
@@ -31,7 +32,8 @@ class WorkerScheduleManagementTable extends Component {
             limit: limit,
             page: page,
             object: "user",
-            month: formatToTimeZoneDate(month)
+            month: formatToTimeZoneDate(month),
+            currentRole: this.state.currentRole
         }
         this.props.getAllWorkSchedulesWorker(data);
         this.props.getAllManufacturingWorks({ status: 1 });
@@ -92,7 +94,8 @@ class WorkerScheduleManagementTable extends Component {
             limit: limit,
             page: page,
             object: "user",
-            month: formatToTimeZoneDate(month)
+            month: formatToTimeZoneDate(month),
+            currentRole: this.state.currentRole
         }
         this.props.getAllWorkSchedulesWorker(data)
     }
@@ -107,7 +110,8 @@ class WorkerScheduleManagementTable extends Component {
             limit: limit,
             page: page,
             object: "user",
-            month: formatToTimeZoneDate(month)
+            month: formatToTimeZoneDate(month),
+            currentRole: this.state.currentRole
         }
         this.props.getAllWorkSchedulesWorker(data);
     }
@@ -134,7 +138,8 @@ class WorkerScheduleManagementTable extends Component {
             limit: limit,
             page: page,
             object: "user",
-            month: formatToTimeZoneDate(month)
+            month: formatToTimeZoneDate(month),
+            currentRole: this.state.currentRole
         }
         this.props.getAllWorkSchedulesWorker(data)
         this.props.setCurrentMonth(month);
@@ -148,6 +153,16 @@ class WorkerScheduleManagementTable extends Component {
         window.$('#modal-detail-info-manufacturing-command-2').modal('show');
     }
 
+    checkHasComponent = (name) => {
+        let { auth } = this.props;
+        let result = false;
+        auth.components.forEach(component => {
+            if (component.name === name) result = true;
+        });
+
+        return result;
+    }
+
     render() {
         const { translate, workSchedule } = this.props;
         let listWorkSchedulesWorker = [];
@@ -158,7 +173,7 @@ class WorkerScheduleManagementTable extends Component {
 
         const { month, allDaysOfMonth, name } = this.state;
 
-        const arrayStatus = [0, 1, 2, 3, 4, 5];
+        const arrayStatus = [0, 6, 1, 2, 3, 4];
         return (
             <React.Fragment>
                 {
@@ -170,17 +185,20 @@ class WorkerScheduleManagementTable extends Component {
                             <label className="form-control-static">{translate('manufacturing.work_schedule.employee_name')}</label>
                             <input type="text" className="form-control" value={name} onChange={this.handleEmployeeNameChange} placeholder="Nguyễn Anh Phương" autoComplete="off" />
                         </div>
-                        <div className="form-group">
-                            <label className="form-control-static">{translate('manufacturing.work_schedule.works')}</label>
-                            <SelectMulti
-                                id={`multi-select-works`}
-                                multiple="multiple"
-                                options={{ nonSelectedText: translate("manufacturing.work_schedule.all_works"), allSelectedText: translate("manufacturing.work_schedule.all_works") }}
-                                onChange={this.handleWorksChange}
-                                items={this.getListWorksArray()}
-                            >
-                            </SelectMulti>
-                        </div>
+                        {
+                            this.checkHasComponent('select-manufacturing-works') &&
+                            <div className="form-group">
+                                <label className="form-control-static">{translate('manufacturing.work_schedule.works')}</label>
+                                <SelectMulti
+                                    id={`multi-select-works`}
+                                    multiple="multiple"
+                                    options={{ nonSelectedText: translate("manufacturing.work_schedule.all_works"), allSelectedText: translate("manufacturing.work_schedule.all_works") }}
+                                    onChange={this.handleWorksChange}
+                                    items={this.getListWorksArray()}
+                                >
+                                </SelectMulti>
+                            </div>
+                        }
                     </div>
                     <div className="form-inline">
                         <div className="form-group">
@@ -194,7 +212,7 @@ class WorkerScheduleManagementTable extends Component {
                             />
                         </div>
                         <div className="form-group">
-                            <label className="form-control-static"></label>
+                            {this.checkHasComponent('select-manufacturing-works') && <label className="form-control-static"></label>}
                             <button type="button" className="btn btn-success" title={translate('manufacturing.work_schedule.search')} onClick={this.handleSubmitSearch}>{translate('manufacturing.work_schedule.search')}</button>
                         </div>
                     </div>
@@ -224,7 +242,7 @@ class WorkerScheduleManagementTable extends Component {
                 />
                 <div id="croll-table-worker" className="form-inline">
                     <div className="col-lg-6 col-md-6 col-sm-7 col-xs-8" style={{ padding: 0 }}>
-                        <table id="info-mill-table-worker" className="table table-bordered">
+                        <table id="info-mill-table-worker" className="table table-bordered not-sort">
                             <thead>
                                 <tr>
                                     <th>{translate('manufacturing.work_schedule.employee_name')}</th>
@@ -267,7 +285,7 @@ class WorkerScheduleManagementTable extends Component {
                         </table>
                     </div>
                     <div className="col-lg-6 col-md-6 col-sm-5 col-xs-4" style={{ padding: 0 }}>
-                        <table id="work-schedule-table-worker" className="table table-striped table-bordered table-hover">
+                        <table id="work-schedule-table-worker" className="table table-striped table-bordered table-hover not-sort">
                             <thead>
                                 <tr>
                                     {
@@ -328,8 +346,8 @@ class WorkerScheduleManagementTable extends Component {
 }
 
 function mapStateToProps(state) {
-    const { workSchedule, manufacturingWorks } = state;
-    return { workSchedule, manufacturingWorks }
+    const { workSchedule, manufacturingWorks, auth } = state;
+    return { workSchedule, manufacturingWorks, auth }
 }
 
 const mapDispatchToProps = {

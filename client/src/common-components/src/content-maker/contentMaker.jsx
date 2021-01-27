@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
+import { QuillEditor } from '../quill-editor/quillEditor';
+
 import Files from 'react-files';
 import TextareaAutosize from 'react-textarea-autosize';
 
@@ -45,10 +47,10 @@ class ContentMaker extends Component {
     render() {
         const { translate } = this.props;
         const {
-            files, onFilesChange, onFilesError, multiple = true, maxFiles = 10, maxFileSize = 10000000, minFileSize = 0, clickable = false,
-            text, onTextChange, placeholder, minRows = 3, maxRows = 20,
+            idQuill, files, onFilesChange, onFilesError, multiple = true, maxFiles = 10, maxFileSize = 10000000, minFileSize = 0, clickable = false,
+            text, onTextChange, placeholder,
             onSubmit, submitButtonText, disabledSubmit,
-            inputCssClass, controlCssClass, defaultValue, handleEdit, cancelButtonText, styletext, onKeyPress, id
+            inputCssClass, controlCssClass, handleEdit, cancelButtonText
         } = this.props
         return (
             <React.Fragment>
@@ -63,25 +65,19 @@ class ContentMaker extends Component {
                     minFileSize={minFileSize}
                     clickable={clickable}
                 >
-                    <div className={inputCssClass} style={{ position: "relative" }} id={id}>
-                        <TextareaAutosize
-                            placeholder={placeholder}
-                            minRows={minRows}
-                            maxRows={maxRows}
-                            onDragEnter={this.handleDragEnter}
-                            onDragLeave={this.handleDragLeave}
-                            onDrop={this.handleDragLeave}
-                            value={text}
-                            defaultValue={defaultValue}
-                            onChange={onTextChange}
-                            onKeyPress={this.pressEnter}
-                        />
-                        {this.state.showDropFileHere &&
-                            <div style={{ fontSize: "2em", pointerEvents: "none", width: "100%", height: "100%", border: "2px dashed black", backgroundColor: "rgba(255, 255, 255, 0.3)", top: "0", left: 0, position: "absolute", textAlign: "center" }}>
+                    <QuillEditor
+                        id={idQuill}
+                        inputCssClass={inputCssClass}
+                        toolbar={false}
+                        getTextData={onTextChange}
+                        quillValueDefault={text}
+                        placeholder={placeholder}
+                    />
+                    {this.state.showDropFileHere &&
+                        <div style={{ fontSize: "2em", pointerEvents: "none", width: "100%", height: "100%", border: "2px dashed black", backgroundColor: "rgba(255, 255, 255, 0.3)", top: "0", left: 0, position: "absolute", textAlign: "center" }}>
                                 DROP FILES HERE
                         </div>
-                        }
-                    </div>
+                    }
                 </Files>
                 <div className={controlCssClass}>
                     <div className="" style={{ textAlign: "right" }}>

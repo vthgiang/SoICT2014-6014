@@ -16,85 +16,67 @@ class QuillEditor extends Component {
         }
 
     }
-    
-    componentDidUpdate = () => {
-        const { quillValueDefault, fileUrls } = this.props;
-        const { quill } = this.state;
-
-        // Insert value ban đầu
-        // Lưu ý: quillValueDefault phải được truyền vào 1 giá trị cố định, không thayđô
-        if (quillValueDefault || quillValueDefault === '') {
-            if (quill && quill.container && quill.container.firstChild) {
-                quill.container.firstChild.innerHTML = quillValueDefault;
-            }  
-            if (fileUrls) {
-                let imgs = Array.from(
-                    quill.container.querySelectorAll('img[src]')
-                );
-                if (imgs && imgs.length !== 0) {
-                    imgs = imgs.map((item, index) => {
-                        item.src = fileUrls[index];
-                        return item;
-                    })
-                }
-            }
-        }
-    }
-
+  
     componentDidMount = () => {
-        const { id, edit = true, quillValueDefault, fileUrls } = this.props;
-        if (edit) {
+        const { id, isText = false, quillValueDefault, fileDefault, toolbar = true, enableEdit = true, placeholder = null } = this.props;
+        if (!isText) {
             // Khởi tạo Quill Editor trong thẻ có id = id truyền vào
-            const quill = window.initializationQuill(`#editor-container${id}`, configQuillEditor(id));
-            
+            const quill = window.initializationQuill(`#editor-container${id}`, configQuillEditor(id, toolbar, enableEdit, placeholder));
+
             // Insert value ban đầu
             if (quillValueDefault || quillValueDefault === '') {
                 if (quill && quill.container && quill.container.firstChild) {
                     quill.container.firstChild.innerHTML = quillValueDefault;
                 } 
-                if (fileUrls) {
+                if (fileDefault) {
                     let imgs = Array.from(
                         quill.container.querySelectorAll('img[src]')
                     );
                     if (imgs && imgs.length !== 0) {
                         imgs = imgs.map((item, index) => {
-                            item.src = fileUrls[index];
+                            item.src = fileDefault[index];
                             return item;
                         })
                     }
                 }
             }
 
-            // Bắt sự kiện text-change
-            quill.on('text-change', () => {
-                let imgs, imageSources = [];
+            if (enableEdit && !isText) {
+                // Bắt sự kiện text-change
+                quill.on('text-change', () => {
+                    let imgs, imageSources = [];
 
-                imgs = Array.from(
-                    quill.container.querySelectorAll('img[src^="data:"]:not(.loading)')
-                );
+                    imgs = Array.from(
+                        quill.container.querySelectorAll('img[src^="data:"]:not(.loading)')
+                    );
 
-                if (imgs && imgs.length !== 0) {
-                    imgs = imgs.map((item, index) => {
-                        imageSources.push(item.getAttribute("src"));
-                        item.src = "image" + index;
-                        return item;
-                    })
-                }
-                this.props.getTextData(quill.root.innerHTML, imgs);
-                if (imgs && imgs.length !== 0) {
-                    imgs = imgs.map((item, index) => {
-                        item.src = imageSources[index];
-                        return item;
-                    })
-                }
-            });
+                    if (imgs && imgs.length !== 0) {
+                        imgs = imgs.map((item, index) => {
+                            imageSources.push(item.getAttribute("src"));
+                            item.src = "image" + index;
+                            return item;
+                        })
+                    }
 
-            // Custom insert table
-            window.$(`#insert-tabletoolbar${id}`).click(() => {
-                let table = quill.getModule('table');
-                table.insertTable(3, 3);
-            });
-            
+                    this.props.getTextData(quill.root.innerHTML, imageSources);
+                    if (imgs && imgs.length !== 0) {
+                        imgs = imgs.map((item, index) => {
+                            item.src = imageSources[index];
+                            return item;
+                        })
+                    }
+                });
+
+                // Custom insert table
+                window.$(`#insert-tabletoolbar${id}`).click(() => {
+                    let table = quill.getModule('table');
+                    table.insertTable(3, 3);
+                });
+            } else {
+                // Disable edit
+                quill.enable(enableEdit);
+            }
+
             this.setState(state => {
                 return {
                     ...state,
@@ -105,39 +87,71 @@ class QuillEditor extends Component {
         
     }
 
+    componentDidUpdate = () => {
+        const { quillValueDefault, fileDefault } = this.props;
+        const { quill } = this.state;
+
+        // Insert value ban đầu
+        // Lưu ý: quillValueDefault phải được truyền vào 1 giá trị cố định, không thayđô
+        if (quillValueDefault || quillValueDefault === '') {
+            if (quill && quill.container && quill.container.firstChild) {
+                quill.container.firstChild.innerHTML = quillValueDefault;
+            }  
+            if (fileDefault) {
+                let imgs = Array.from(
+                    quill.container.querySelectorAll('img[src]')
+                );
+                if (imgs && imgs.length !== 0) {
+                    imgs = imgs.map((item, index) => {
+                        item.src = fileDefault[index];
+                        return item;
+                    })
+                }
+            }
+        }
+    }
+
+    shouldComponentUpdate = (nextProps, nextState) => {
+        if (nextProps.quillValueDefault === this.props.quillValueDefault) {
+            return false;
+        }
+        return true;
+    }
+
     /** 
      * Chuyển đổi dữ liệu ảnh base64 sang FIle để upload lên server
      * @imgs mảng hình ảnh dạng base64
      * @names mảng tên các ảnh tương ứng
      * */ 
-    static convertImageBase64ToFile = (imgs) => {
+    static convertImageBase64ToFile = (imgs, sliceSize=512) => {
         let imageFile;
         if (imgs && imgs.length !== 0) {
             imageFile = imgs.map((item) => {
+                let block, contentType, realData;
                 // Split the base64 string in data and contentType
-                let block = item.getAttribute("src").split(";");
-                let contentType = block[0].split(":")[1];
-                let realData = block[1].split(",")[1];
+                block = item.split(";");
+                if (block && block.length !== 0) {
+                    contentType = block[0].split(":")[1];
+                    realData = block[1].split(",")[1];
+                }
                 contentType = contentType || '';
-                let sliceSize = 512;
             
                 let byteCharacters = atob(realData);
                 let byteArrays = [];
-            
+
                 for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
-                    let slice = byteCharacters.slice(offset, offset + sliceSize);
-            
-                    let byteNumbers = new Array(slice.length);
+                    const slice = byteCharacters.slice(offset, offset + sliceSize);
+
+                    const byteNumbers = new Array(slice.length);
                     for (let i = 0; i < slice.length; i++) {
-                        byteNumbers[i] = slice.charCodeAt(i);
+                    byteNumbers[i] = slice.charCodeAt(i);
                     }
-            
-                    let byteArray = new Uint8Array(byteNumbers);
-            
+
+                    const byteArray = new Uint8Array(byteNumbers);
                     byteArrays.push(byteArray);
                 }
-            
-                let blob = new Blob(byteArrays, { type: contentType });
+
+                const blob = new Blob(byteArrays, {type: ""});
                 return new File([blob], "png");
             })
         }
@@ -145,26 +159,30 @@ class QuillEditor extends Component {
     }
 
     render() {
-        const { id, edit = true, quillValueDefault, height = 200,
+        const { id, isText = false, quillValueDefault, height = 200, toolbar = true, inputCssClass = "",
             font = true, header = true, typography = true, fontColor = true, alignAndList = true, embeds = true, table = true
         } = this.props;
 
         return (
             <React.Fragment>
                 {
-                    edit
+                    !isText
                         ? <React.Fragment>
-                            <ToolbarQuillEditor
-                                id={`toolbar${id}`}
-                                font={font}
-                                header={header}
-                                typography={typography}
-                                fontColor={fontColor}
-                                alignAndList={alignAndList}
-                                embeds={embeds}
-                                table={table}
-                            />
-                            <div id={`editor-container${id}`} style={{ height: height }} />
+                            {
+                                toolbar &&
+                                <ToolbarQuillEditor
+                                    id={`toolbar${id}`}
+                                    font={font}
+                                    header={header}
+                                    typography={typography}
+                                    fontColor={fontColor}
+                                    alignAndList={alignAndList}
+                                    embeds={embeds}
+                                    table={table}
+                                    inputCssClass={inputCssClass}
+                                />
+                            }
+                            <div id={`editor-container${id}`} style={{ height: height }} className={`quill-editor ${inputCssClass}`}/>
                         </React.Fragment>
                         : parse(quillValueDefault)
                 }

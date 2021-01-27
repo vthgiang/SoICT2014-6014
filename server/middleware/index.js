@@ -16,9 +16,9 @@ const { decryptMessage } = require('../helpers/functionHelper');
  * 3.Kiểm tra xem người dùng có role hợp lệ hay không?
  * 4.Kiểm tra người dùng có được phép truy cập vào link hay không?
  * ****************************************
- */ 
+ */
 
-exports.authFunc = (checkPage = true, checkPassword2=true) => {
+exports.authFunc = (checkPage = true, checkPassword2 = true) => {
     return async (req, res, next) => {
         try {
             const crtp = decryptMessage(req.header("crtp")); // trang hiện tại
@@ -58,7 +58,7 @@ exports.authFunc = (checkPage = true, checkPassword2=true) => {
 
             // Kiểm tra người dùng đã nhập mật khẩu cấp 2 hay chưa?
             let password2 = userToken.password2;
-            if(checkPassword2 && !password2) throw ['auth_password2_not_complete']
+            if (checkPassword2 && !password2) throw ['auth_password2_not_complete']
 
             if (crtp !== "/") {
                 const fingerprint = fgp; //chữ ký của trình duyệt người dùng - fingerprint
@@ -115,13 +115,13 @@ exports.authFunc = (checkPage = true, checkPassword2=true) => {
                 //const url = req.headers.referer.substr(req.headers.origin.length, req.headers.referer.length - req.headers.origin.length);
                 const url = crtp;
                 const device = req.header("device");
-                
+
                 if (!device) {
                     if (checkPage) {
-                    const link = role.name !== "System Admin" ? 
-                    await Link(connect(DB_CONNECTION, req.portal)).findOne({ url, deleteSoft: false }):
-                    await Link(connect(DB_CONNECTION, req.portal)).findOne({ url });
-                    if (link === null) throw ["url_invalid"];
+                        const link = role.name !== "System Admin" ?
+                            await Link(connect(DB_CONNECTION, req.portal)).findOne({ url, deleteSoft: false }) :
+                            await Link(connect(DB_CONNECTION, req.portal)).findOne({ url });
+                        if (link === null) throw ["url_invalid"];
                         const roleArr = [role._id].concat(role.parents);
                         const privilege = await Privilege(connect(DB_CONNECTION, req.portal)).findOne({
                             resourceId: link._id,
@@ -132,15 +132,15 @@ exports.authFunc = (checkPage = true, checkPassword2=true) => {
                         });
                         if (privilege === null) throw ["page_access_denied"];
                     }
-                     /**
-                     * Kiểm tra xem user này có được gọi tới service này hay không?
-                     */
+                    /**
+                    * Kiểm tra xem user này có được gọi tới service này hay không?
+                    */
                     const apiCalled = req.route.path !== "/" ? req.baseUrl + req.route.path : req.baseUrl;
                     const perLink = links.find(l => l.url === url);
-                    if(!perLink) throw ['url_invalid_permission']
-                    if(perLink.apis[0] !== '@all'){
+                    if (!perLink) throw ['url_invalid_permission']
+                    if (perLink.apis[0] !== '@all') {
                         const perAPI = perLink.apis.some(api => api.path === apiCalled && api.method === req.method);
-                        if(!perAPI) throw ['api_permission_invalid'];
+                        if (!perAPI) throw ['api_permission_invalid'];
                     }
                 }
             }
@@ -261,8 +261,8 @@ exports.uploadFile = (arrData, type) => {
 
 // Middleware check quyền thay đổi thông tin tài khoản người dùng
 exports.authCUIP = async (req, res, next) => {
-    try{
-        const token = req.header("auth-token"); //JWT nhận từ người dùng
+    try {
+        const token = req.header("utk"); //JWT nhận từ người dùng
         if (!token) throw ["access_denied"];
         let verified;
         try {
@@ -274,7 +274,7 @@ exports.authCUIP = async (req, res, next) => {
         let userId = verified._id; // id người dùng lấy từ jwt
         let userRes = req.params.id; // id người dùng trong params
 
-        if(userId !== userRes) //người gửi yêu cầu không phải chủ nhân thật sự của tài khoản
+        if (userId !== userRes) //người gửi yêu cầu không phải chủ nhân thật sự của tài khoản
         {
             // check nếu như người gửi yêu cầu là super admin hoặc admin thì cho phép gọi api
             let portal = !verified.company
@@ -283,21 +283,21 @@ exports.authCUIP = async (req, res, next) => {
             initModels(connect(DB_CONNECTION, req.portal), Models);
 
             let ad = await Role(connect(DB_CONNECTION, portal)).find({
-                name: {$in: ['Super Admin', 'Admin']}
+                name: { $in: ['Super Admin', 'Admin'] }
             });
-            if(ad.length === 0) throw ['access_denied'];
+            if (ad.length === 0) throw ['access_denied'];
 
             // Check người gửi request có quyền là SuperAdmin, Admin hay không?
             let userrole = await UserRole(connect(DB_CONNECTION, portal)).find({
                 userId,
-                roleId: {$in: ad.map(r => r._id)}
+                roleId: { $in: ad.map(r => r._id) }
             });
-    
-            if(userrole.length === 0) throw ['access_denied'];
+
+            if (userrole.length === 0) throw ['access_denied'];
         }
 
         next();
-    } catch(err){
+    } catch (err) {
         res.status(400).json({
             success: false,
             messages: err,

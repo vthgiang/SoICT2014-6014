@@ -6,6 +6,7 @@ import moment from 'moment';
 import { DialogModal, ButtonModal, SelectBox, DatePicker, TreeSelect, ErrorLabel, UploadFile } from '../../../../../common-components';
 import { DocumentActions } from '../../../redux/actions';
 import { DocumentImportForm } from './documentImportForm';
+import { UserAction } from '../'
 import { AddVersion } from './addVerson';
 import EditVersionForm from './editVersionForm'
 
@@ -161,6 +162,9 @@ class CreateForm extends Component {
             }
         });
     }
+    handleUserCanView = (value) => {
+        this.setState({ documentUserCanView: value });
+    }
 
     validateName = (value, willUpdateState) => {
         let msg = undefined;
@@ -290,6 +294,7 @@ class CreateForm extends Component {
             documentRelationshipDescription,
             documentRelationshipDocuments,
             documentRoles,
+            documentUserCanView,
             documentArchivedRecordPlaceOrganizationalUnit,
             documentArchivedRecordPlaceManager,
 
@@ -366,6 +371,9 @@ class CreateForm extends Component {
         }
         if (documentRoles) for (let i = 0; i < documentRoles.length; i++) {
             formData.append('roles[]', documentRoles[i]);
+        }
+        if (documentUserCanView) for (let i = 0; i < documentUserCanView.length; i++) {
+            formData.append('userCanView[]', documentUserCanView[i]);
         }
         if (documentArchivedRecordPlaceOrganizationalUnit) {
             formData.append('archivedRecordPlaceOrganizationalUnit', documentArchivedRecordPlaceOrganizationalUnit);
@@ -556,13 +564,13 @@ class CreateForm extends Component {
     }
 
     render() {
-        const { translate, role, documents, department } = this.props;
+        const { translate, role, documents, department, user } = this.props;
         const { list } = documents.administration.domains;
 
         const {
             errorName, errorCategory, errorOfficialNumber,
             documentArchives, documentDomains, listDocumentRelationship,
-            documentVersions, currentVersion
+            documentVersions, currentVersion, documentUserCanView,
         } = this.state;
         const archives = documents.administration.archives.list;
 
@@ -570,7 +578,6 @@ class CreateForm extends Component {
         const documentRoles = role.list.map(role => { return { value: role._id, text: role.name } });
         const relationshipDocs = documents.administration.relationshipDocs.paginate.map(doc => { return { value: doc._id, text: doc.name } });
         let path = documentArchives ? this.findPath(archives, documentArchives) : "";
-
         return (
             <React.Fragment>
 
@@ -751,6 +758,20 @@ class CreateForm extends Component {
                                                     multiple={true}
                                                 />
                                             </div>
+                                            <div>
+                                                <label>{translate('manage_role.users')}</label>
+                                                <SelectBox
+                                                    id={`select-document-user-can-view`}
+                                                    className="form-control select2"
+                                                    style={{ width: "100%" }}
+                                                    items={
+                                                        user.list.map(user => { return { value: user ? user._id : null, text: user ? `${user.name} - ${user.email}` : "" } })
+                                                    }
+                                                    onChange={this.handleUserCanView}
+                                                    value={documentUserCanView}
+                                                    multiple={true}
+                                                />
+                                            </div>
                                             <div className="form-group">
                                                 <label>{translate('document.store.information')}</label>
                                                 <TreeSelect data={archives} handleChange={this.handleArchives} value={documentArchives} mode="hierarchical" />
@@ -788,7 +809,8 @@ const mapStateToProps = state => state;
 
 const mapDispatchToProps = {
     getAllDocuments: DocumentActions.getDocuments,
-    createDocument: DocumentActions.createDocument
+    createDocument: DocumentActions.createDocument,
+
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(CreateForm));

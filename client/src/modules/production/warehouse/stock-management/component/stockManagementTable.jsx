@@ -151,10 +151,10 @@ class StockManagementTable extends Component {
                                 className="form-control select2"
                                 style={{ width: "100%" }}
                                 items={[
-                                    { value: '1', text: translate('manage_warehouse.stock_management.1')},
-                                    { value: '2', text: translate('manage_warehouse.stock_management.2')},
-                                    { value: '3', text: translate('manage_warehouse.stock_management.3')},
-                                    { value: '4', text: translate('manage_warehouse.stock_management.4')},
+                                    { value: '1', text: translate('manage_warehouse.stock_management.1.status')},
+                                    { value: '2', text: translate('manage_warehouse.stock_management.2.status')},
+                                    { value: '3', text: translate('manage_warehouse.stock_management.3.status')},
+                                    { value: '4', text: translate('manage_warehouse.stock_management.4.status')},
                                 ]}
                                 onChange={this.handleStatusChange}
                             />
@@ -229,7 +229,7 @@ class StockManagementTable extends Component {
                                         <td>{index + 1}</td>
                                         <td>{x.code}</td>
                                         <td>{x.name}</td>
-                                        <td>{translate(`manage_warehouse.stock_management.${x.status}`)}</td>
+                                        <td style={{ color: translate(`manage_warehouse.stock_management.${x.status}.color`)}}>{translate(`manage_warehouse.stock_management.${x.status}.status`)}</td>
                                         <td>{x.address}</td>
                                         <td>{x.description}</td>
                                         <td style={{textAlign: 'center'}}>

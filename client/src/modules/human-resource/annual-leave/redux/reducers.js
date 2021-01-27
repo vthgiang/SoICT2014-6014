@@ -5,6 +5,7 @@ const initState = {
     isLoading: false,
     numberAnnulLeave: 0,
     listAnnualLeavesOfOneYear: [],
+    beforAndAfterOneWeeks: [],
 
     listAnnualLeaves: [],
     totalList: 0,
@@ -24,13 +25,27 @@ export function annualLeave(state = initState, action) {
         case AnnualLeaveConstants.DELETE_ANNUAL_LEAVE_REQUEST:
         case AnnualLeaveConstants.UPDATE_ANNUAL_LEAVE_REQUEST:
         case AnnualLeaveConstants.IMPORT_ANNUAL_LEAVE_REQUEST:
+            if(action.beforAndAfterOneWeek){
+                return {
+                    ...state,
+                    isLoading: true,
+                    beforAndAfterOneWeeks: [],
+                };
+            }
             return {
                 ...state,
                 isLoading: true,
                     arrMonth: [],
             };
+            
         case AnnualLeaveConstants.GET_ANNUAL_LEAVE_SUCCESS:
-            if (action.payload.numberAnnulLeave !== undefined) {
+            if(action.beforAndAfterOneWeek){
+                return {
+                    ...state,
+                    isLoading: false,
+                    beforAndAfterOneWeeks: action.payload,
+                }
+            } else if (action.payload.numberAnnulLeave !== undefined) {
                 return {
                     ...state,
                     isLoading: false,

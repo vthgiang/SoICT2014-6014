@@ -4,6 +4,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import { ButtonModal, DatePicker, DialogModal, SelectBox, SlimScroll } from '../../../../../../common-components';
 import { formatToTimeZoneDate, formatYearMonth } from '../../../../../../helpers/formatDate';
 import { UserActions } from '../../../../../super-admin/user/redux/actions';
+import { worksActions } from '../../../manufacturing-works/redux/actions';
 import { workScheduleActions } from '../../redux/actions';
 
 class WorkerScheduleCreateForm extends Component {
@@ -45,21 +46,45 @@ class WorkerScheduleCreateForm extends Component {
         }));
     }
 
-    getListUserOfAllWorks = () => {
-        const { translate, user, manufacturingWorks } = this.props;
-        // Lấy ra cá nhà máy đang hoạt động
-        const { employees } = user;
-        const { listWorks } = manufacturingWorks;
-        console.log(employees);
-        console.log(listWorks);
-        let arrayRoleIdManagers = [];
-        listWorks.map(works => {
-            arrayRoleIdManagers = [...arrayRoleIdManagers, ...works.organizationalUnit.managers]
-        });
-        arrayRoleIdManagers = arrayRoleIdManagers.map(role => role._id);
+    // getListUserOfAllWorks = () => {
+    //     const { translate, user, manufacturingWorks } = this.props;
+    //     // Lấy ra cá nhà máy đang hoạt động
+    //     const { employees } = user;
+    //     const { listWorks } = manufacturingWorks;
+    //     console.log(employees);
+    //     console.log(listWorks);
+    //     let arrayRoleIdManagers = [];
+    //     listWorks.map(works => {
+    //         arrayRoleIdManagers = [...arrayRoleIdManagers, ...works.organizationalUnit.managers]
+    //     });
+    //     arrayRoleIdManagers = arrayRoleIdManagers.map(role => role._id);
 
-        // Lấy ra tất cả các nhân viên trong 2 nhà máy đó
-        // Lấy ra các roleId của các trưởng phòng
+    //     // Lấy ra tất cả các nhân viên trong 2 nhà máy đó
+    //     // Lấy ra các roleId của các trưởng phòng
+
+    //     let listUserArray = [{
+    //         value: 'all',
+    //         text: translate('manufacturing.work_schedule.choose_all_user')
+    //     }];
+
+    //     if (employees) {
+    //         let arrayEmployees = employees.filter((employee) => !arrayRoleIdManagers.includes(employee.roleId._id))
+    //         console.log(arrayEmployees);
+    //         arrayEmployees.map((e) => {
+    //             listUserArray.push({
+    //                 value: e.userId._id,
+    //                 text: e.userId.name + " - " + e.userId.email
+    //             })
+    //         });
+    //     }
+
+    //     return listUserArray;
+
+    // }
+
+    getListUserOfAllWorks = () => {
+        const { translate, manufacturingWorks } = this.props;
+        const { employees } = manufacturingWorks;
 
         let listUserArray = [{
             value: 'all',
@@ -67,18 +92,14 @@ class WorkerScheduleCreateForm extends Component {
         }];
 
         if (employees) {
-            let arrayEmployees = employees.filter((employee) => !arrayRoleIdManagers.includes(employee.roleId._id))
-            console.log(arrayEmployees);
-            arrayEmployees.map((e) => {
+            employees.map((e) => {
                 listUserArray.push({
                     value: e.userId._id,
                     text: e.userId.name + " - " + e.userId.email
                 })
             });
         }
-
         return listUserArray;
-
     }
 
     handleUserChange = (value) => {
@@ -104,13 +125,15 @@ class WorkerScheduleCreateForm extends Component {
             data = {
                 allUser: true,
                 month: formatToTimeZoneDate(month),
-                numberOfTurns: numberOfTurns
+                numberOfTurns: numberOfTurns,
+                currentRole: localStorage.getItem("currentRole")
             }
         } else {
             data = {
                 user: user,
                 month: formatToTimeZoneDate(month),
-                numberOfTurns: numberOfTurns
+                numberOfTurns: numberOfTurns,
+                currentRole: localStorage.getItem("currentRole")
             }
         }
 
@@ -125,15 +148,16 @@ class WorkerScheduleCreateForm extends Component {
 
     shouldComponentUpdate = (nextPorps, nextState) => {
         if (nextState.showModal !== this.state.showModal) {
-            const { manufacturingWorks } = this.props;
-            const { listWorks } = manufacturingWorks;
-            let arrayOrganizationalUnitIds = []
-            if (listWorks.length) {
-                listWorks.map((works) => {
-                    arrayOrganizationalUnitIds.push(works.organizationalUnit._id)
-                });
-            }
-            this.props.getAllEmployeeOfUnitByIds(arrayOrganizationalUnitIds);
+            // const { manufacturingWorks } = this.props;
+            // const { listWorks } = manufacturingWorks;
+            // let arrayOrganizationalUnitIds = []
+            // if (listWorks.length) {
+            //     listWorks.map((works) => {
+            //         arrayOrganizationalUnitIds.push(works.organizationalUnit._id)
+            //     });
+            // }
+            // this.props.getAllEmployeeOfUnitByIds(arrayOrganizationalUnitIds);
+            this.props.getAllUsersByWorksManageRole({ currentRole: localStorage.getItem('currentRole') });
             return false;
         }
         return true;
@@ -142,14 +166,11 @@ class WorkerScheduleCreateForm extends Component {
     render() {
         const { translate, workSchedule } = this.props;
         const { user, month, allDaysOfMonth, numberOfTurns } = this.state;
-        const { employees } = this.props.user;
-        console.log(employees);
         // Tao mang cac ca
         let turns = []
         for (let i = 1; i <= numberOfTurns; i++) {
             turns.push(i)
         }
-        console.log(workSchedule.listWorkSchedules);
         return (
             < React.Fragment >
                 <ButtonModal onButtonCallBack={this.handleClickCreate} modalID="modal-create-worker-work-schedule" button_name={translate('manufacturing.work_schedule.add_work_schedule_button')} title={translate('manufacturing.work_schedule.add_work_schedule')} />
@@ -193,7 +214,7 @@ class WorkerScheduleCreateForm extends Component {
                             <input type="number" disabled={true} value={numberOfTurns} className="form-control" onChange={this.handleNumberOfTurnsChange}></input>
                         </div>
                         <div id="create-croll-table-worker" className="form-inline">
-                            <table id="create-work-schedule-table-worker" className="table table-striped table-bordered table-hover">
+                            <table id="create-work-schedule-table-worker" className="table table-striped table-bordered table-hover not-sort">
                                 <thead>
                                     <tr>
                                         <th style={{ width: 100 }}>{translate('manufacturing.work_schedule.work_turns')}</th>
@@ -214,11 +235,11 @@ class WorkerScheduleCreateForm extends Component {
                                                     <td>{translate(`manufacturing.work_schedule.turn_${turn}`)}</td>
                                                     {
                                                         allDaysOfMonth.map((day, index2) =>
-                                                        (
-                                                            <td key={index2}>
-                                                                <input type="checkbox" disabled={true} />
-                                                            </td>
-                                                        )
+                                                            (
+                                                                <td key={index2}>
+                                                                    <input type="checkbox" disabled={true} />
+                                                                </td>
+                                                            )
                                                         )
                                                     }
                                                 </tr>
@@ -246,7 +267,8 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = {
     createWorkSchedule: workScheduleActions.createWorkSchedule,
-    getAllEmployeeOfUnitByIds: UserActions.getAllEmployeeOfUnitByIds,
+    // getAllEmployeeOfUnitByIds: UserActions.getAllEmployeeOfUnitByIds,
+    getAllUsersByWorksManageRole: worksActions.getAllUsersByWorksManageRole
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(WorkerScheduleCreateForm));

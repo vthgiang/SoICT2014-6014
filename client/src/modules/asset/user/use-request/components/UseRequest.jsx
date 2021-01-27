@@ -14,9 +14,8 @@ class UseRequest extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            recommendNumber: "",
-            month: "",
-            status: null,
+            receiptsCode: "",
+            reqUseStatus: null,
             page: 0,
             limit: 10,
         }
@@ -121,7 +120,7 @@ class UseRequest extends Component {
     handleMonthChange = (value) => {
         this.setState({
             ...this.state,
-            month: value
+            createReceiptsDate: value
         });
     }
 
@@ -133,17 +132,12 @@ class UseRequest extends Component {
 
         this.setState({
             ...this.state,
-            status: value
+            reqUseStatus: value
         })
     }
 
     // Function bắt sự kiện tìm kiếm
     handleSubmitSearch = async () => {
-        if (this.state.month === "") {
-            await this.setState({
-                month: this.formatDate(Date.now())
-            })
-        }
         this.props.searchRecommendDistributes(this.state);
     }
 
@@ -201,16 +195,15 @@ class UseRequest extends Component {
                         {/* Mã phiếu */}
                         <div className="form-group">
                             <label className="form-control-static">{translate('asset.general_information.form_code')}</label>
-                            <input type="text" className="form-control" name="recommendNumber" onChange={this.handleRecommendNumberChange} placeholder={translate('asset.general_information.form_code')} autoComplete="off" />
+                            <input type="text" className="form-control" name="receiptsCode" onChange={this.handleRecommendNumberChange} placeholder={translate('asset.general_information.form_code')} autoComplete="off" />
                         </div>
 
                         {/* Tháng */}
                         <div className="form-group">
-                            <label className="form-control-static">{translate('page.month')}</label>
+                            <label className="form-control-static">{translate('asset.usage.time_created')}</label>
                             <DatePicker
                                 id="month"
                                 dateFormat="month-year"
-                                value={this.formatDate(Date.now())}
                                 onChange={this.handleMonthChange}
                             />
                         </div>
@@ -225,8 +218,8 @@ class UseRequest extends Component {
                                 onChange={this.handleStatusChange}
                                 items={[
                                     { value: "approved", text: translate('asset.usage.approved') },
-                                    { value: "waiting_approval", text: translate('asset.usage.waiting_approval') },
-                                    { value: "not_approved", text: translate('asset.usage.not_approved') }
+                                    { value: "waiting_for_approval", text: translate('asset.usage.waiting_approval') },
+                                    { value: "disapproved", text: translate('asset.usage.not_approved') }
                                 ]}
                             >
                             </SelectMulti>
@@ -274,7 +267,7 @@ class UseRequest extends Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {(listRecommendDistributes && listRecommendDistributes.length !== 0) &&
+                            {(listRecommendDistributes && listRecommendDistributes.length !== 0) ?
                                 listRecommendDistributes.filter(item => item.proponent && item.proponent._id === auth.user._id).map((x, index) => {
                                     return (
                                         <tr key={index}>
@@ -284,11 +277,13 @@ class UseRequest extends Component {
                                             <td>{x.asset ? x.asset.code : ''}</td>
                                             <td>{x.asset ? x.asset.assetName : ''}</td>
                                             <td>{x.asset ? this.formatDateTime(x.dateStartUse, x.asset.typeRegisterForUse) : ''}</td>
-                                            <td>{x.asset ? this.formatDateTime(x.dateEndUse, x.asset.typeRegisterForUse) : ''}</td>
+                                            <td>{x.asset && x.dateEndUse ? this.formatDateTime(x.dateEndUse, x.asset.typeRegisterForUse) : ''}</td>
                                             <td>{x.approver ? x.approver.email : ''}</td>
                                             <td>{this.formatStatus(x.status)}</td>
                                             <td style={{ textAlign: "center" }}>
-                                                <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={translate('asset.asset_info.edit_usage_info')}><i className="material-icons">edit</i></a>
+                                                {(x.status === 'disapproved' || x.status === "waiting_for_approval") &&
+                                                    <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={translate('asset.asset_info.edit_usage_info')}><i className="material-icons">edit</i></a>
+                                                }
                                                 <DeleteNotification
                                                     content={translate('asset.asset_info.delete_usage_info')}
                                                     data={{
@@ -300,7 +295,7 @@ class UseRequest extends Component {
                                             </td>
                                         </tr>
                                     )
-                                })
+                                }) : null
                             }
                         </tbody>
                     </table>

@@ -61,6 +61,8 @@ export default {
                 not_existing_error: "Value not existing",
                 existing_error: "Value existing",
             },
+            not_org_unit: "Not have organizational unit",
+            list_unit: "Organizational unit list"
         },
 
         intro: {
@@ -966,6 +968,7 @@ export default {
             task_organization_management_dashboard: "Unit task dashboard",
             task_management_process: "Process list",
             task_process_template: "Process template",
+            all_time_sheet_log: 'All Timesheetlogs',
             //*******START */
             // Quản lý tài sản
             // QUẢN LÝ
@@ -1012,6 +1015,8 @@ export default {
             manage_tax: "Tax",
             manage_sla: "Service Level Agreement",
             manage_business_department: "Business Department",
+            manage_payment: "Receipts And Payments",
+            manage_bank_account: "Bank Account",
 
             //QUẢN LÝ KẾ HOẠCH SẢN XUẤT
             manage_plans: "Manage Plans",
@@ -1035,6 +1040,11 @@ export default {
                 "Analysis manufacturing performance",
             manage_manufacturing_works: "Manage manufacturing works",
             manage_manufacturing_mill: "Manage manufacturing mill",
+            manage_project: "Manage Project",
+
+
+            user_guide: "User guide",
+            user_guide_detail: "User guide detail",
         },
 
         manage_system: {
@@ -1555,6 +1565,8 @@ export default {
                 intermediate_degree: "Intermediate degree",
                 colleges: "Colleges",
                 university: "University",
+                engineer: "Engineer",
+                bachelor: "Bachelor",
                 master_degree: "Maste degree",
                 engineer: 'Engineer',
                 bachelor: 'Bachelor',
@@ -2719,6 +2731,8 @@ export default {
                 detail_hide_info: "Hide information",
                 detail_show_info: "Show information",
                 detail_choose_role: "Change role",
+                detail_copy_task: "Copy task",
+                detail_save_as_template: "Save as template",
                 detail_route: "Navigate",
                 detail_route_task: "Navigate tasks",
 
@@ -2726,6 +2740,7 @@ export default {
                 detail_priority: "Priority",
                 detail_status: "Status",
                 detail_time: "Working duration",
+                detail_average_results: "Average results of task",
 
                 detail_general_info: "General infomation",
                 detail_description: "Description",
@@ -2741,6 +2756,8 @@ export default {
                 detail_not_auto: "Unset automatic point",
                 detail_not_emp: "Unset employee point",
                 detail_not_acc: "Unset accountable point",
+                detail_not_coefficient: "Not by coeficient",
+                detail_coefficient: "By coeficient",
 
                 detail_not_eval_on_month: "Not evaluate this month",
                 detail_not_eval: "Nobody evaluate this month",
@@ -2921,7 +2938,12 @@ export default {
                 warning_hours: "hours",
                 warning_minutes: "minutes",
 
-                project: 'Project name (if you have)'
+                project: 'Project name (if you have)',
+
+                load_task: "Load task",
+                time: "Time",
+                load_task_chart: "Dashboard load task",
+                load_task_chart_unit: "Dashboard load task of unit",
             },
             task_perform: {
                 actions: "Actions",
@@ -2940,6 +2962,7 @@ export default {
                 evaluation: "Evaluation",
                 attach_file: "Attach file",
                 comment: "Comment",
+                result: "Result",
                 re_evaluation: "Re-evaluation",
                 question_delete_file: "Are you sure to delete",
                 edit_comment: "Edit comment",
@@ -2959,6 +2982,7 @@ export default {
                 time: "Time",
                 none_subtask: "No subtask",
                 enter_comment_action: "Comment of action",
+                enter_result_action: "Result of action",
                 create_comment_action: "Create comment",
                 stop_timer: "Stop timer",
                 edit: "Edit",
@@ -3078,6 +3102,8 @@ export default {
                     "Edit information unsuccessfully",
                 edit_document_task_comment_failure:
                     "Edit document unsuccessfully",
+                time_overlapping: 'Start time invalid. Overlapping time with different time sheet log',
+
 
                 // error label
                 err_require: "Field is required",

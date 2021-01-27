@@ -1,13 +1,15 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { formatDate } from '../../../../../helpers/formatDate';
-import { DataTableSetting, DatePicker, PaginateBar, SelectMulti } from "../../../../../common-components";
+import { ConfirmNotification, DataTableSetting, DatePicker, PaginateBar, SelectMulti } from "../../../../../common-components";
 import PurchasingRequestDetailForm from './purchasingRequestDetailForm';
 import PurchasingRequestEditForm from './purchasingRequestEditForm';
 import PurchasingRequestCreateForm from './purchasingRequestCreateForm';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import { purchasingRequestActions } from '../redux/actions';
 import { GoodActions } from '../../../common-production/good-management/redux/actions';
+import { LotActions } from '../../../warehouse/inventory-management/redux/actions';
+import { purchasingRequest } from '../redux/reducers';
 class PurchasingRequestManagementTable extends Component {
     constructor(props) {
         super(props);
@@ -120,6 +122,17 @@ class PurchasingRequestManagementTable extends Component {
             }
         });
 
+        if (purchasingRequest.manufacturingCommand) {
+            const materials = purchasingRequest.manufacturingCommand.good.materials;
+            let materialIds = [];
+            materials.map(x => {
+                materialIds.push(x.good._id)
+            });
+            await this.props.getInventoryByGoodIds({
+                array: materialIds,
+            });
+        }
+
         await this.setState((state) => ({
             ...state,
             currentRow: purchasingRequest,
@@ -127,6 +140,13 @@ class PurchasingRequestManagementTable extends Component {
         }));
         console.log(this.state.listGoods);
         window.$('#modal-edit-purchasing-request').modal('show');
+    }
+
+    cancelPurchasingRequest = (purchasingRequest) => {
+        const data = {
+            status: 3
+        }
+        this.props.editPurchasingRequest(purchasingRequest._id, data);
     }
 
     render() {
@@ -151,6 +171,7 @@ class PurchasingRequestManagementTable extends Component {
                         intendReceiveTime={this.state.currentRow.intendReceiveTime}
                         description={this.state.currentRow.description}
                         listGoods={this.state.listGoods}
+                        currentCommand={this.state.currentRow.manufacturingCommand}
                     />
                 }
                 <div className="box-body qlcv">
@@ -214,7 +235,7 @@ class PurchasingRequestManagementTable extends Component {
                             <tr>
                                 <th>{translate('manufacturing.purchasing_request.index')}</th>
                                 <th>{translate('manufacturing.purchasing_request.code')}</th>
-                                <th>{translate('manufacturing.purchasing_request.planCode')}</th>
+                                <th>{translate('manufacturing.purchasing_request.command_code')}</th>
                                 <th>{translate('manufacturing.purchasing_request.creator')}</th>
                                 <th>{translate('manufacturing.purchasing_request.createdAt')}</th>
                                 <th>{translate('manufacturing.purchasing_request.receiveTime')}</th>
@@ -225,7 +246,7 @@ class PurchasingRequestManagementTable extends Component {
                                         columnArr={[
                                             translate('manufacturing.purchasing_request.index'),
                                             translate('manufacturing.purchasing_request.code'),
-                                            translate('manufacturing.purchasing_request.planCode'),
+                                            translate('manufacturing.purchasing_request.command_code'),
                                             translate('manufacturing.purchasing_request.creator'),
                                             translate('manufacturing.purchasing_request.createdAt'),
                                             translate('manufacturing.purchasing_request.receiveTime'),
@@ -244,14 +265,25 @@ class PurchasingRequestManagementTable extends Component {
                                     <tr key={index}>
                                         <td>{index + 1}</td>
                                         <td>{purchasingRequest.code}</td>
-                                        <td>{purchasingRequest.planCode}</td>
+                                        <td>{purchasingRequest.manufacturingCommand ? purchasingRequest.manufacturingCommand.code : ""}</td>
                                         <td>{purchasingRequest.creator && purchasingRequest.creator.name}</td>
                                         <td>{formatDate(purchasingRequest.createdAt)}</td>
                                         <td>{formatDate(purchasingRequest.intendReceiveTime)}</td>
                                         <td style={{ color: translate(`manufacturing.purchasing_request.${purchasingRequest.status}.color`) }}>{translate(`manufacturing.purchasing_request.${purchasingRequest.status}.content`)}</td>
                                         <td style={{ textAlign: "center" }}>
                                             <a style={{ width: '5px' }} title={translate('manufacturing.purchasing_request.purchasing_request_detail')} onClick={() => { this.handleShowDetailPurchasingRequest(purchasingRequest) }}><i className="material-icons">view_list</i></a>
-                                            <a className="edit text-yellow" style={{ width: '5px' }} title={translate('manufacturing.purchasing_request.purchasing_request_edit')} onClick={() => this.handleEditPurchasingRequest(purchasingRequest)}><i className="material-icons">edit</i></a>
+                                            {
+                                                purchasingRequest.status !== 3 &&
+                                                <a className="edit text-yellow" style={{ width: '5px' }} title={translate('manufacturing.purchasing_request.purchasing_request_edit')} onClick={() => this.handleEditPurchasingRequest(purchasingRequest)}><i className="material-icons">edit</i></a>
+                                            }
+                                            <ConfirmNotification
+                                                icon="question"
+                                                title={translate('manufacturing.purchasing_request.cancel_purchasing_request')}
+                                                content={translate('manufacturing.purchasing_request.cancel_purchasing_request') + " " + purchasingRequest.code}
+                                                name="cancel"
+                                                className="text-red"
+                                                func={() => this.cancelPurchasingRequest(purchasingRequest)}
+                                            />
                                         </td>
                                     </tr>
                                 ))
@@ -276,7 +308,9 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = {
     getAllPurchasingRequests: purchasingRequestActions.getAllPurchasingRequests,
-    getAllGoodsByType: GoodActions.getAllGoodsByType
+    getAllGoodsByType: GoodActions.getAllGoodsByType,
+    getInventoryByGoodIds: LotActions.getInventoryByGoodIds,
+    editPurchasingRequest: purchasingRequestActions.editPurchasingRequest
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(PurchasingRequestManagementTable));

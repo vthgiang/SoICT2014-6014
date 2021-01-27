@@ -80,7 +80,7 @@ getKpisByMonth = async (req, res) => {
 
 exports.approveAllKpis = async (req, res) => {
     try {
-        const kpimembers = await KPIMemberService.approveAllKpis(req.portal, req.params.id);
+        const kpimembers = await KPIMemberService.approveAllKpis(req.portal, req.params.id, req.user.company._id);
         await Logger.info(req.user.email, `Approve all target`, req.portal);
         res.status(200).json({
             success: true,
@@ -127,7 +127,7 @@ exports.editKpi = async (req, res) => {
 
 exports.editStatusKpi = async (req, res) => {
     try {
-        const kpimembers = await KPIMemberService.editStatusKpi(req.portal, req.params, req.query);
+        const kpimembers = await KPIMemberService.editStatusKpi(req.portal, req.params, req.query, req.user.company._id);
         await Logger.info(req.user.email, `Edit status target`, req.portal);
         res.status(200).json({
             success: true,

@@ -6,6 +6,7 @@ import { DataTableSetting, ExportExcel } from '../../../../../common-components'
 import { DialogModal } from '../../../../../common-components/index';
 import { ModalDetailTask } from '../../../../task/task-dashboard/task-personal-dashboard/modalDetailTask';
 import { withTranslate } from 'react-redux-multilingual';
+import parse from 'html-react-parser';
 
 class EmployeeKpiEvaluateModal extends Component {
     constructor(props) {
@@ -305,7 +306,7 @@ class EmployeeKpiEvaluateModal extends Component {
                             <div style={{ lineHeight: 2 }}>
                                 <div>
                                     <label>{translate('kpi.evaluation.employee_evaluation.criteria')}:</label>
-                                    <span> {item.criteria}</span>
+                                    <span> {parse(item.criteria)}</span>
                                 </div>
                                 <div>
                                     <label>{translate('kpi.evaluation.employee_evaluation.weight')}:</label>
@@ -353,7 +354,7 @@ class EmployeeKpiEvaluateModal extends Component {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {console.log(kpimembers.tasks)
+                                    {
                                         (kpimembers.tasks && Array.isArray(kpimembers.tasks)) ?
                                             (kpimembers.tasks.map((itemTask, index) =>
                                                 <tr key={index}>
@@ -367,7 +368,6 @@ class EmployeeKpiEvaluateModal extends Component {
                                                     <td>
                                                         {points && tasks &&
                                                             <React.Fragment>
-                                                                {console.log("task", itemTask)}
                                                                 <input type="range"
                                                                     min='0'
                                                                     max='10'

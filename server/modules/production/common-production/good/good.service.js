@@ -1,4 +1,4 @@
-const { Good, OrganizationalUnit, ManufacturingWorks, ManufacturingMill  } = require(`../../../../models`);
+const { Good, OrganizationalUnit, ManufacturingWorks, ManufacturingMill } = require(`../../../../models`);
 const { connect } = require(`../../../../helpers/dbHelper`);
 
 exports.getGoodsByType = async (company, query, portal) => {
@@ -171,7 +171,6 @@ exports.getAllGoods = async (company, portal) => {
 }
 
 exports.getGoodByManageWorksRole = async (roleId, portal) => {
-    console.log("Vao day day")
     // Xử  lý các quyền trước để tìm ra các kế hoạch trong các nhà máy được phân quyền
     let role = [roleId];
     const departments = await OrganizationalUnit(connect(DB_CONNECTION, portal)).find({ 'managers': { $in: role } });
@@ -181,14 +180,22 @@ exports.getGoodByManageWorksRole = async (roleId, portal) => {
             $in: organizationalUnitId
         }
     });
+    // Lấy ra các nhà máy mà currentRole cũng quản lý
+    let listWorksByManageRole = await ManufacturingWorks(connect(DB_CONNECTION, portal)).find({
+        manageRoles: {
+            $in: role
+        }
+    })
+    listManufacturingWorks = [...listManufacturingWorks, ...listWorksByManageRole];
+
     let listWorksId = listManufacturingWorks.map(x => x._id);
+
     let listManufacturingMills = await ManufacturingMill(connect(DB_CONNECTION, portal)).find({
         manufacturingWorks: {
             $in: listWorksId
         }
     });
     let listMillsId = listManufacturingMills.map(x => x._id);
-
     let goods = await Good(connect(DB_CONNECTION, portal))
         .find({
             manufacturingMills: {
@@ -218,4 +225,11 @@ exports.getManufacturingWorksByProductId = async (productId, portal) => {
         }
     });
     return { manufacturingWorks }
+}
+
+exports.numberGoods = async (portal) => {
+    const totalGoods = await Good(connect(DB_CONNECTION, portal)).find().count();
+    const totalProducts = await Good(connect(DB_CONNECTION, portal)).find({ type: 'product' }).count();
+    const totalMaterials = await Good(connect(DB_CONNECTION, portal)).find({ type: 'material' }).count();
+    return { totalGoods, totalProducts, totalMaterials };
 }

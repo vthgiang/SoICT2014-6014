@@ -2,15 +2,33 @@ import React, { Component } from 'react';
 import { DialogModal, ErrorLabel, DatePicker, SelectBox } from '../../../../common-components/index';
 import { withTranslate } from 'react-redux-multilingual';
 import { connect } from 'react-redux';
+import { ModalEditInfo } from './modalEditInfo';
 class TaskInformationForm extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {}
+        let { task, evaluationInfo } = props;
+
+        let initialInfo = task && task.taskInformations;
+        if(props.perform === 'evaluate'){
+            initialInfo = evaluationInfo && evaluationInfo.taskInformations;
+        }
+
+        this.state = {
+            listInfo: initialInfo
+        }
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.task !== prevState.task) {
+        if(nextProps.perform === 'evaluate'){
+            if (nextProps.evaluationInfo?._id !== prevState.evaluationInfo?._id){
+                return {
+                    ...prevState,
+                    listInfo: nextProps.evaluationInfo && nextProps.evaluationInfo.taskInformations,
+                    evaluationInfo: nextProps.evaluationInfo,
+                }
+            }
+        } else if (nextProps.task !== prevState.task) {
             return {
                 ...prevState,
 
@@ -25,15 +43,27 @@ class TaskInformationForm extends Component {
     }
 
     checkNullUndefined = (x) => {
-        if( x === null || x === undefined ) {
+        if (x === null || x === undefined) {
             return false;
         }
         else return true;
     }
 
+    clickEditInfo = async () => {
+        await this.setState({ showEdit: true });
+        window.$(`#modelEditInfo`).modal('show');
+    }
+
+    onEditListInfo = async (data) => {
+        await this.setState({ listInfo: data });
+        this.props.handleChangeListInfo(data);
+        // this.forceUpdate();
+    }
+
     render() {
         const { translate } = this.props;
-        const { value, task, perform, role, id, disabled, indexReRender, legendText = translate('task.task_management.detail_info')} = this.props;
+        const { value, task, perform, role, id, disabled, indexReRender, legendText = translate('task.task_management.detail_info') } = this.props;
+        const { listInfo } = this.state;
 
         return (
             <React.Fragment>
@@ -43,8 +73,8 @@ class TaskInformationForm extends Component {
                         <legend className="scheduler-border">{legendText}</legend>
 
                         {(perform === 'evaluate' && !disabled) &&
-                            <div className="pull-right" style={{marginTop: -20}}>
-                                <a style={{cursor: "pointer"}} onClick={this.props.updateInfo}>{translate('task.task_management.get_outside_info')}</a>
+                            <div className="pull-right" style={{ marginTop: -20 }}>
+                                <a style={{ cursor: "pointer" }} onClick={this.props.updateInfo}>{translate('task.task_management.get_outside_info')}</a>
                             </div>
                         }
 
@@ -57,17 +87,22 @@ class TaskInformationForm extends Component {
                                 placeholder={translate('task.task_management.edit_enter_progress')}
                                 onChange={this.props.handleChangeProgress}
                                 value={this.checkNullUndefined(value.progress) ? value.progress : ''}
-                                disabled={disabled} 
+                                disabled={disabled}
                             />
                             <ErrorLabel content={value.errorOnProgress} />
 
                         </div>
-
+                        {(perform !== 'evaluate' && !disabled) && role === "accountable" &&
+                            <div className="pull-right">
+                                <a onClick={this.clickEditInfo} style={{ cursor: 'pointer', fontWeight: "normal" }}>Chỉnh sửa thông tin</a>
+                            </div>
+                        }
                         {
-                            (task && task.taskInformations.length !== 0) &&
-                            task.taskInformations.map((info, index) => {
+                            (listInfo?.length !== 0) &&
+                            listInfo.map((info, index) => {
                                 if (info.type === 'text') {
                                     return <div className={`form-group ${value.errorInfo && value.errorInfo[info.code] === undefined ? "" : "has-error"}`} key={index}>
+                                        {/* style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", marginBottom: "-5px" }} */}
                                         <label>{info.name}</label>
                                         <textarea
                                             className="form-control"
@@ -76,18 +111,18 @@ class TaskInformationForm extends Component {
                                             name={info.code}
                                             placeholder={translate('task.task_management.edit_enter_value')}
                                             onChange={this.props.handleChangeTextInfo}
-                                            disabled={ disabled || (info.filledByAccountableEmployeesOnly && role !== "accountable")}
+                                            disabled={disabled || (info.filledByAccountableEmployeesOnly && role !== "accountable")}
                                             value={(value.info[`${info.code}`] && this.checkNullUndefined(value.info[`${info.code}`].value)) ? value.info[`${info.code}`].value : ''}
                                         />
 
-                                        <ErrorLabel content={value.errorInfo ? value.errorInfo[info.code] : ''}/>
+                                        <ErrorLabel content={value.errorInfo ? value.errorInfo[info.code] : ''} />
                                     </div>
                                 }
 
                                 {
                                     if (info.type === 'number') {
                                         return <div className={`form-group ${value.errorInfo && value.errorInfo[info.code] === undefined ? "" : "has-error"}`} key={index}>
-                                            <label>{info.name} (0 - 100)</label>
+                                            <label>{info.name}</label>
                                             <input
                                                 className="form-control"
                                                 type="number"
@@ -97,7 +132,7 @@ class TaskInformationForm extends Component {
                                                 disabled={disabled || (info.filledByAccountableEmployeesOnly && role !== "accountable")}
                                                 value={(value.info[`${info.code}`] && this.checkNullUndefined(value.info[`${info.code}`].value)) ? value.info[`${info.code}`].value : ''}
                                             />
-                                            <ErrorLabel content={value.errorInfo ? value.errorInfo[`${info.code}`] : ''}/>
+                                            <ErrorLabel content={value.errorInfo ? value.errorInfo[`${info.code}`] : ''} />
                                         </div>
                                     }
                                 }
@@ -171,14 +206,16 @@ class TaskInformationForm extends Component {
                                 <input
                                     type="checkbox"
                                     checked={value.checkSave === true}
-                                    disabled={disabled} 
+                                    disabled={disabled}
                                     name="checkSave" onChange={(e) => this.props.handleChangeSaveInfo(e)}
                                 /> {translate('task.task_management.store_info')}
                             </label>
                         }
-
                     </fieldset>
                 </div>
+                {
+                    this.state.showEdit && <ModalEditInfo taskInformation={listInfo} onEditListInfo={this.onEditListInfo} />
+                }
             </React.Fragment>
         );
     }

@@ -63,11 +63,15 @@ class LogLots extends Component {
                                         <td>{index + 1}</td>
                                         {x.bill ? <td><a href="#" onClick={() => this.handleShowDetailInfo(x.bill._id)}>{x.bill.code}</a></td> : <td></td>}
                                         <td>{this.formatDate(x.createdAt)}</td>
-                                        <td>{x.bill ? translate(`manage_warehouse.bill_management.billType.${x.bill.type}`) : ''}</td>
+                                        <td>{translate(`manage_warehouse.bill_management.billType.${x.type}`)}</td>
                                         <td>{x.quantity ? x.quantity : 0}</td>
                                         <td>{x.stock ? x.stock.name : ""}</td>
                                         {/* <td>{x.binLocations ? x.binLocations.map((item, index) => <p key={index}>{item.binLocation.path} ({item.quantity})</p>) : ""}</td> */}
-                                        <td></td>
+                                        { x.type === '1' ? <td>{(x.bill && x.bill.supplier) ? x.bill.supplier.name : ''}</td> : 
+                                        (x.type === '2' || x.type === '4') ? <td>{(x.bill && x.bill.manufacturingMill) ? x.bill.manufacturingMill.name : ''}</td> : 
+                                        (x.type === '3' || x.type === '7') ? <td>{(x.bill && x.bill.customer) ? x.bill.customer.name : ''}</td> :  
+                                        x.type === '8' ? <td>{(x.bill && x.bill.toStock) ? x.bill.toStock.name : ''}</td> : <td></td> 
+                                        }
                                         <td>{x.description}</td>
                                     </tr>
                                 )

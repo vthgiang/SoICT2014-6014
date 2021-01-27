@@ -129,6 +129,8 @@ import SalesOrderDashboard from "../modules/production/order/sales-order-dashboa
 import Tax from "../modules/production/order/tax/components";
 import ServiceLevelAgreement from "../modules/production/order/service-level-agreement/components";
 import BusinessDepartment from "../modules/production/order/business-department/components";
+import Payment from "../modules/production/order/payment/components";
+import BankAccount from "../modules/production/order/bank-account/components";
 
 // plans
 import PlanManagement from "../modules/plan/components";
@@ -153,6 +155,12 @@ import ManufacturingDashboard from "../modules/production/manufacturing/manufact
 import ManufacturingLot from "../modules/production/manufacturing/manufacturing-lot/components";
 
 import AnswerAuthQuestionPage from '../modules/auth/components/answerAuthQuestion';
+
+import { Project } from '../modules/project/component/managerTableProject';
+import UserGuide from '../modules/user-guide/components';
+import DetailUserGuide from '../modules/user-guide/components/detailUserGuide';
+import AllTimeSheetLog from '../modules/task/task-dashboard/statistic/allTimeSheetLog';
+
 class Routes extends Component {
     render() {
         const {
@@ -1908,7 +1916,7 @@ class Routes extends Component {
                     {/* Orders Management */}
 
                     <PrivateRoute
-                        isLoading={this.props.salesOrder.isLoading}
+                        isLoading={this.props.salesOrders.isLoading}
                         key={"/manage-sales-order"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
@@ -2065,6 +2073,46 @@ class Routes extends Component {
                         pageName={"manage_business_department"}
                         layout={Layout}
                         component={BusinessDepartment}
+                    />
+
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"/manage-bank-account"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/manage-bank-account",
+                                name: "manage_bank_account",
+                                icon: "fa fa-address-card",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/manage-bank-account"}
+                        path={"/manage-bank-account"}
+                        pageName={"manage_bank_account"}
+                        layout={Layout}
+                        component={BankAccount}
+                    />
+
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"/manage-payment"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/manage-payment",
+                                name: "manage_payment",
+                                icon: "fa fa-address-card",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/manage-payment"}
+                        path={"/manage-payment"}
+                        pageName={"manage_payment"}
+                        layout={Layout}
+                        component={Payment}
                     />
 
                     {/* Plans Management */}
@@ -2350,6 +2398,86 @@ class Routes extends Component {
                         pageName={"manage_manufacturing_lot"}
                         layout={Layout}
                         component={ManufacturingLot}
+                    />
+
+
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"/projects-management"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/projects-management",
+                                name: "manage_project",
+                                icon: "fa fa-folder-open",
+                            }
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/projects-management"}
+                        path={"/projects-management"}
+                        pageName={"manage_project"}
+                        layout={Layout}
+                        component={Project}
+                    />
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"user-guide"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/user-guide",
+                                name: "user_guide",
+                                icon: "fa fa-newspaper-o",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/user-guide"}
+                        path={"/user-guide"}
+                        pageName={"user_guide"}
+                        layout={Layout}
+                        component={UserGuide}
+                    />
+
+                    <PrivateRoute // Trang chi tiết hướng dẫn sử dụng (không có trên menu)
+                        isLoading={false}
+                        key={"user-guide-detail"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/user-guide",
+                                name: "user_guide",
+                                icon: "",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/user-guide-detail"}
+                        path={"/user-guide-detail"}
+                        pageName={"user_guide_detail"}
+                        layout={Layout}
+                        component={DetailUserGuide}
+                    />
+
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"all-time-sheet-log"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/time-sheet-log/all",
+                                name: "all_time_sheet_log",
+                                icon: "fa fa-newspaper-o",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/time-sheet-log/all"}
+                        path={"/time-sheet-log/all"}
+                        pageName={"all_time_sheet_log"}
+                        layout={Layout}
+                        component={AllTimeSheetLog}
                     />
 
                     {/* NOT FOUND */}

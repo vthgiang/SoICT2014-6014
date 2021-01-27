@@ -6,6 +6,7 @@ import { ContentMaker, DialogModal, ApiImage } from '../../index';
 import { getStorage } from '../../../config';
 import moment from 'moment';
 import { AuthActions } from '../../../modules/auth/redux/actions';
+import parse from 'html-react-parser';
 
 class Comment extends Component {
     constructor(props) {
@@ -22,21 +23,25 @@ class Comment extends Component {
                 creator: idUser,
                 description: '',
                 files: [],
+                descriptionDefault: ""
             },
             newComment: {
-                description: ''
+                description: '',
+                descriptionDefault: ""
             },
             childComment: {
             },
             newCommentEdited: {
                 creator: idUser,
                 description: "",
-                files: []
+                files: [],
+                descriptionDefault: ""
             },
             newChildCommentEdited: {
                 creator: idUser,
                 description: "",
-                files: []
+                files: [],
+                descriptionDefault: ""
             }
         }
         this.newComment = [];
@@ -111,20 +116,28 @@ class Comment extends Component {
     }
 
 
-    handleEditComment = async (id) => {
-        await this.setState(state => {
+    handleEditComment = (comment) => {
+        this.setState(state => {
             return {
                 ...state,
-                editComment: id
+                editComment: comment._id,
+                newCommentEdited: {
+                    ...state.newCommentEdited,
+                    descriptionDefault: comment.description
+                }
             }
         })
     }
 
-    handleEditChildComment = async (id) => {
-        await this.setState(state => {
+    handleEditChildComment = (childComment) => {
+        this.setState(state => {
             return {
                 ...state,
-                editChildComment: id
+                editChildComment: childComment._id,
+                newChildCommentEdited: {
+                    ...state.newChildCommentEdited,
+                    descriptionDefault: childComment.description
+                }
             }
         })
     }
@@ -181,7 +194,8 @@ class Comment extends Component {
                 newCommentEdited: {
                     ...state.newCommentEdited,
                     files: [],
-                    description: ""
+                    description: "",
+                    descriptionDefault: null
                 }
             }
         })
@@ -202,13 +216,14 @@ class Comment extends Component {
         if (newChildCommentEdited.description || newChildCommentEdited.files) {
             this.props.editChildComment(dataId, commentId, childCommentId, data, this.props.type);
         }
-        await this.setState(state => {
+        this.setState(state => {
             return {
                 ...state,
                 newChildCommentEdited: {
                     ...state.newChildCommentEdited,
                     description: "",
-                    files: []
+                    files: [],
+                    descriptionDefault: ''
                 },
                 editChildComment: ""
             }
@@ -234,6 +249,7 @@ class Comment extends Component {
                     ...state.comment,
                     description: "",
                     files: [],
+                    descriptionDefault: ''
                 },
             }
         })
@@ -254,6 +270,7 @@ class Comment extends Component {
             state.childComment[`${commentId}`] = {
                 description: "",
                 files: [],
+                descriptionDefault: ''
             }
             return {
                 ...state,
@@ -352,7 +369,7 @@ class Comment extends Component {
                                             {item.description.split('\n').map((item, idx) => {
                                                 return (
                                                     <span key={idx}>
-                                                        {item}
+                                                        {parse(item)}
                                                         <br />
                                                     </span>
                                                 );
@@ -364,7 +381,7 @@ class Comment extends Component {
                                                         <i className="fa fa-ellipsis-h"></i>
                                                     </span>
                                                     <ul className="dropdown-menu">
-                                                        <li><a style={{ cursor: "pointer" }} onClick={() => this.handleEditComment(item._id)} >{translate('task.task_perform.edit_comment')}</a></li>
+                                                        <li><a style={{ cursor: "pointer" }} onClick={() => this.handleEditComment(item)} >{translate('task.task_perform.edit_comment')}</a></li>
                                                         <li><a style={{ cursor: "pointer" }} onClick={() => this.props.deleteComment(data._id, item._id, this.props.type)} >{translate('task.task_perform.delete_comment')}</a></li>
                                                     </ul>
                                                 </div>}
@@ -407,16 +424,16 @@ class Comment extends Component {
                                     <React.Fragment>
                                         <div>
                                             <ContentMaker
+                                                idQuill={`edit-comment-${item._id}`}
                                                 inputCssClass="text-input-level1" controlCssClass="tool-level2 row"
                                                 onFilesChange={this.onEditCommentFilesChange}
                                                 onFilesError={this.onFilesError}
                                                 files={newCommentEdited.files}
-                                                defaultValue={item.description}
+                                                text={newCommentEdited.descriptionDefault}
                                                 submitButtonText={translate("task.task_perform.save_edit")}
                                                 cancelButtonText={translate("task.task_perform.cancel")}
                                                 handleEdit={(e) => this.handleEditComment(e)}
-                                                onTextChange={(e) => {
-                                                    let value = e.target.value;
+                                                onTextChange={(value, imgs) => {
                                                     this.setState(state => {
                                                         return { ...state, newCommentEdited: { ...state.newCommentEdited, description: value } }
                                                     })
@@ -448,7 +465,7 @@ class Comment extends Component {
                                                             {child?.description?.split('\n').map((item, idx) => {
                                                                 return (
                                                                     <span key={idx}>
-                                                                        {item}
+                                                                        {parse(item)}
                                                                         <br />
                                                                     </span>
                                                                 );
@@ -461,7 +478,7 @@ class Comment extends Component {
                                                                         <i className="fa fa-ellipsis-h"></i>
                                                                     </span>
                                                                     <ul className="dropdown-menu">
-                                                                        <li><a style={{ cursor: "pointer" }} onClick={() => this.handleEditChildComment(child._id)} >Sửa bình luận</a></li>
+                                                                        <li><a style={{ cursor: "pointer" }} onClick={() => this.handleEditChildComment(child)} >Sửa bình luận</a></li>
                                                                         <li><a style={{ cursor: "pointer" }} onClick={() => this.props.deleteChildComment(data._id, item._id, child._id, this.props.type)} >Xóa bình luận</a></li>
                                                                     </ul>
                                                                 </div>}
@@ -502,18 +519,18 @@ class Comment extends Component {
                                                     <React.Fragment>
                                                         <div>
                                                             <ContentMaker
+                                                                idQuill={`edit-child-comment-${child._id}`}
                                                                 inputCssClass="text-input-level2" controlCssClass="tool-level2 row"
                                                                 onFilesChange={this.onEditFileChildComment}
                                                                 onFilesError={this.onFilesError}
                                                                 files={newChildCommentEdited.files}
-                                                                defaultValue={child.description}
+                                                                text={newChildCommentEdited.descriptionDefault}
                                                                 submitButtonText={translate("task.task_perform.save_edit")}
                                                                 cancelButtonText={translate("task.task_perform.cancel")}
                                                                 handleEdit={(e) => this.handleEditChildComment(e)}
-                                                                onTextChange={(e) => {
-                                                                    let value = e.target.value;
+                                                                onTextChange={(value, imgs) => {
                                                                     this.setState(state => {
-                                                                        return { ...state, newChildCommentEdited: { ...state.newChildCommentEdited, description: value } }
+                                                                        return { ...state, newChildCommentEdited: { ...state.newChildCommentEdited, description: value, descriptionDefault: null } }
                                                                     })
                                                                 }}
                                                                 onSubmit={(e) => { this.editChildComment(e, child.description, child._id, item._id, data._id) }}
@@ -538,20 +555,21 @@ class Comment extends Component {
                                         <div>
                                             <img className="user-img-level2" src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="user avatar" />
                                             <ContentMaker
+                                                idQuill={`add-child-comment-${item._id}`}
                                                 inputCssClass="text-input-level2" controlCssClass="tool-level2"
                                                 onFilesChange={(files) => this.onCommentFilesChange(files, item._id)}
                                                 onFilesError={this.onFilesError}
                                                 files={childComment[`${item._id}`]?.files}
-                                                text={childComment[`${item._id}`]?.description}
+                                                text={childComment[`${item._id}`]?.descriptionDefault}
                                                 placeholder={translate('task.task_perform.enter_comment')}
                                                 submitButtonText={translate('task.task_perform.create_comment')}
-                                                onTextChange={(e) => {
-                                                    let value = e.target.value;
+                                                onTextChange={(value, imgs) => {
                                                     this.setState(state => {
                                                         state.childComment[`${item._id}`] = {
                                                             ...state.childComment[`${item._id}`],
                                                             description: value,
-                                                            creator: currentUser
+                                                            creator: currentUser,
+                                                            descriptionDefault: null
                                                         }
                                                         return {
                                                             ...state
@@ -569,17 +587,17 @@ class Comment extends Component {
                 }
                 <img className="user-img-level1" src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="User Image" />
                 <ContentMaker
+                    idQuill={`add-comment`}
                     inputCssClass="text-input-level1" controlCssClass="tool-level1"
                     onFilesChange={this.onFilesChange}
                     onFilesError={this.onFilesError}
                     files={this.state.comment.files}
-                    text={this.state.comment.description}
+                    text={this.state.comment.descriptionDefault}
                     placeholder={translate('task.task_perform.enter_comment')}
                     submitButtonText={translate('task.task_perform.create_comment')}
-                    onTextChange={(e) => {
-                        let value = e.target.value;
+                    onTextChange={(value, imgs) => {
                         this.setState(state => {
-                            return { ...state, comment: { ...state.comment, description: value } }
+                            return { ...state, comment: { ...state.comment, description: value, descriptionDefault: null } }
                         })
                     }}
                     onSubmit={(e) => this.submitComment(data?._id)}

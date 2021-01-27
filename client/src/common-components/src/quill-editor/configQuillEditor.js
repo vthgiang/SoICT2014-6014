@@ -1,12 +1,15 @@
-export function configQuillEditor(id) {
+export function configQuillEditor(id, toolbar, enableEdit, placeholder) {
+    if (!placeholder) {
+        placeholder = 'Start typing here...';
+    }
     return {
         modules: {
-            toolbar: `#toolbar${id}`,
-            imageDropAndPaste: true,
+            toolbar: toolbar ? `#toolbar${id}` : toolbar,
             table: true,
             tableUI: true,
         },
-        placeholder: 'Start typing here...',
-        theme: 'snow'
+        placeholder: enableEdit ? placeholder : null,
+        theme: 'snow',
+        imageDrop: false,
     }
 }

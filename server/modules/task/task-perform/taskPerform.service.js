@@ -68,7 +68,7 @@ exports.getTaskById = async (portal, id, userId) => {
                     },
                 ],
             },
-            { path: "timesheetLogs.creator", select: "name" },
+            { path: "timesheetLogs.creator", select: "name avatar _id email" },
             { path: "hoursSpentOnTask.contributions.employee", select: "name" },
             {
                 path: "process",
@@ -335,6 +335,46 @@ exports.startTimesheetLog = async (portal, params, body) => {
         startedAt: now,
         creator: body.creator,
     };
+    // Kiểm tra người dùng có đang bấm giờ một công việc nào đó không?
+    let check = await Task(connect(DB_CONNECTION, portal))
+        .findOne({ 
+            "timesheetLogs.creator": timerUpdate.creator,
+            "timesheetLogs.startedAt": { $exists: true },
+            "timesheetLogs.stoppedAt": { $exists: false }
+        });
+    if(check) throw ['task_dif_logging'];
+
+    // Kiểm tra thời điểm bắt đầu bấm giờ có nằm trong khoảng thời gian hẹn tắt bấm giờ tự động không?
+    if(body.overrideTSLog === 'yes'){
+        await Task(connect(DB_CONNECTION, portal))
+        .updateOne({
+            "timesheetLogs.creator": body.creator,
+            "timesheetLogs.stoppedAt": { $exists: true },
+            "timesheetLogs.stoppedAt": { $gt: timerUpdate.startedAt }
+        },{
+            $set: {
+                "timesheetLogs.$[i].acceptLog": false
+            },
+        },{
+            arrayFilters: [
+                {
+                    "i.creator": body.creator,
+                    "i.stoppedAt": { $exists: true },
+                    "i.stoppedAt": { $gt: timerUpdate.startedAt }
+                },
+            ],
+        });
+    }else{
+        let checkAutoTSLog = await Task(connect(DB_CONNECTION, portal)).findOne({
+            "timesheetLogs.creator": body.creator,
+            "timesheetLogs.stoppedAt": { $exists: true },
+            "timesheetLogs.stoppedAt": { $gt: timerUpdate.startedAt }
+        });
+        if(checkAutoTSLog) throw ['time_overlapping', checkAutoTSLog.name]
+    }
+
+    // if(autoTSLog) throw ['time_overlapping'];
+
     let timer = await Task(connect(DB_CONNECTION, portal)).findByIdAndUpdate(
         params.taskId,
         { $push: { timesheetLogs: timerUpdate } },
@@ -347,6 +387,148 @@ exports.startTimesheetLog = async (portal, params, body) => {
 
     return timer;
 };
+
+/**
+ * Chỉnh sửa lịch sử bấm giờ
+ */
+exports.editTimeSheetLog = async(portal, taskId, timesheetlogId, data) => {
+    await Task(connect(DB_CONNECTION, portal))
+        .updateOne({
+            "_id": taskId,
+            "timesheetLogs._id": timesheetlogId
+        },{
+            $set: {
+                "timesheetLogs.$[i].acceptLog": data.acceptLog
+            },
+        },{
+            arrayFilters: [
+                {
+                    "i._id": timesheetlogId
+                },
+            ],
+        });
+
+    return await Task(connect(DB_CONNECTION, portal))
+    .findById(taskId)
+    .populate([
+        { path: "parent", select: "name" },
+        { path: "taskTemplate", select: "formula" },
+        { path: "organizationalUnit" },
+        { path: "collaboratedWithOrganizationalUnits.organizationalUnit" },
+        {
+            path:
+                "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator",
+            select: "name email _id active avatar",
+        },
+        {
+            path: "evaluations.results.employee",
+            select: "name email _id active",
+        },
+        {
+            path: "evaluations.results.organizationalUnit",
+            select: "name _id",
+        },
+        { path: "evaluations.results.kpis" },
+        { path: "taskActions.creator", select: "name email avatar" },
+        {
+            path: "taskActions.comments.creator",
+            select: "name email avatar",
+        },
+        { path: "commentsInProcess.creator", select: "name email avatar" },
+        {
+            path: "commentsInProcess.comments.creator",
+            select: "name email avatar",
+        },
+        {
+            path: "taskActions.evaluations.creator",
+            select: "name email avatar ",
+        },
+        { path: "taskComments.creator", select: "name email avatar" },
+        {
+            path: "taskComments.comments.creator",
+            select: "name email avatar",
+        },
+        { path: "documents.creator", select: "name email avatar" },
+        { path: "followingTasks.task" },
+        {
+            path: "preceedingTasks.task",
+            populate: [
+                {
+                    path: "commentsInProcess.creator",
+                    select: "name email avatar",
+                },
+                {
+                    path: "commentsInProcess.comments.creator",
+                    select: "name email avatar",
+                },
+            ],
+        },
+        { path: "timesheetLogs.creator", select: "name avatar _id email" },
+        { path: "hoursSpentOnTask.contributions.employee", select: "name" },
+        {
+            path: "process",
+            populate: {
+                path: "tasks",
+                populate: [
+                    { path: "parent", select: "name" },
+                    { path: "taskTemplate", select: "formula" },
+                    { path: "organizationalUnit" },
+                    {
+                        path:
+                            "collaboratedWithOrganizationalUnits.organizationalUnit",
+                    },
+                    {
+                        path:
+                            "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator",
+                        select: "name email _id active avatar",
+                    },
+                    {
+                        path: "evaluations.results.employee",
+                        select: "name email _id active",
+                    },
+                    {
+                        path: "evaluations.results.organizationalUnit",
+                        select: "name _id",
+                    },
+                    { path: "evaluations.results.kpis" },
+                    {
+                        path: "taskActions.creator",
+                        select: "name email avatar",
+                    },
+                    {
+                        path: "taskActions.comments.creator",
+                        select: "name email avatar",
+                    },
+                    {
+                        path: "taskActions.evaluations.creator",
+                        select: "name email avatar ",
+                    },
+                    {
+                        path: "taskComments.creator",
+                        select: "name email avatar",
+                    },
+                    {
+                        path: "taskComments.comments.creator",
+                        select: "name email avatar",
+                    },
+                    {
+                        path: "documents.creator",
+                        select: "name email avatar",
+                    },
+                    { path: "process" },
+                    {
+                        path: "commentsInProcess.creator",
+                        select: "name email avatar",
+                    },
+                    {
+                        path: "commentsInProcess.comments.creator",
+                        select: "name email avatar",
+                    },
+                ],
+            },
+        },
+    ]);
+}
 
 /**
  * Dừng bấm giờ: Lưu thời gian kết thúc và số giờ chạy (endTime và time)
@@ -364,7 +546,7 @@ exports.stopTimesheetLog = async (portal, params, body) => {
 
     // Lưu vào timeSheetLog
     let duration = new Date(stoppedAt).getTime() - new Date(body.startedAt).getTime();
-    let checkDurationValid = duration / (60*60*1000);
+    let checkDurationValid = duration / (60 * 60 * 1000);
 
     let timer = await Task(connect(DB_CONNECTION, portal))
         .findOneAndUpdate(
@@ -375,7 +557,7 @@ exports.stopTimesheetLog = async (portal, params, body) => {
                     "timesheetLogs.$.duration": duration, // mileseconds
                     "timesheetLogs.$.description": body.description,
                     "timesheetLogs.$.autoStopped": body.autoStopped, // ghi nhận tắt bấm giờ tự động hay không?
-                    "timesheetLogs.$.acceptLog": checkDurationValid > 24 ? false : true , // tự động check nếu thời gian quá 24 tiếng thì đánh là không hợp lệ
+                    "timesheetLogs.$.acceptLog": checkDurationValid > 24 ? false : true, // tự động check nếu thời gian quá 24 tiếng thì đánh là không hợp lệ
                 },
             },
             { new: true }
@@ -387,7 +569,7 @@ exports.stopTimesheetLog = async (portal, params, body) => {
     let contributions = timer.hoursSpentOnTask.contributions;
     let check = true;
     let newContributions = contributions.map((item) => {
-        if (item.employee.toString() === body.employee) {
+        if (item.employee && item.employee.toString() === body.employee) {
             check = false;
             return {
                 employee: body.employee,
@@ -472,7 +654,7 @@ exports.stopTimesheetLog = async (portal, params, body) => {
                     },
                 ],
             },
-            { path: "timesheetLogs.creator", select: "name" },
+            { path: "timesheetLogs.creator", select: "name avatar _id email" },
             { path: "hoursSpentOnTask.contributions.employee", select: "name" },
             {
                 path: "process",
@@ -556,7 +738,7 @@ exports.createCommentOfTaskAction = async (portal, params, body, files, user) =>
                     files: files,
                 },
             },
-        },{ new: true }
+        }, { new: true }
     ).populate([
         { path: "taskActions.creator", select: "name email avatar" },
         {
@@ -568,8 +750,8 @@ exports.createCommentOfTaskAction = async (portal, params, body, files, user) =>
             select: "name email avatar",
         }])
     const { taskActions } = commentOfTaskAction;
-    
-     // Lấy ra hoạt động cha
+
+    // Lấy ra hoạt động cha
     let getTaskAction = [];
     const taskActionsLength = taskActions.length;
     for (let i = 0; i < taskActionsLength; i++) {
@@ -601,10 +783,14 @@ exports.createCommentOfTaskAction = async (portal, params, body, files, user) =>
         organizationalUnits: commentOfTaskAction.organizationalUnit._id,
         title: "Cập nhật thông tin công việc ",
         level: "general",
-        content:`<p><strong>${user.name}</strong> đã bình luận về hoạt động trong công việc: <a href="${process.env.WEBSITE}/task?taskId=${params.taskId}">${process.env.WEBSITE}/task?taskId=${params.taskId}</a></p>` ,
+        content: `<p><strong>${user.name}</strong> đã bình luận về hoạt động trong công việc: <a href="${process.env.WEBSITE}/task?taskId=${params.taskId}">${process.env.WEBSITE}/task?taskId=${params.taskId}</a></p>`,
         sender: `${user.name}`,
         users: userReceive,
         associatedData: associatedData,
+        associatedDataObject: {
+            dataType: 1,
+            description: `<p><strong>${commentOfTaskAction.name}</strong>: ${user.name} đã bình luận về hoạt động mà bạn tham gia.`
+        }
     };
 
     if (userReceive && userReceive.length > 0)
@@ -740,12 +926,12 @@ exports.createTaskAction = async (portal, params, body, files) => {
                         $each: [actionInformation],
                     },
                 },
-            },{ new: true })
-            .populate([
-                { path: "taskActions.creator", select: 'name email avatar company' },
-                { path: "taskActions.comments.creator", select: 'name email avatar' },
-                { path: "taskActions.evaluations.creator", select: 'name email avatar ' }])
-    
+            }, { new: true })
+        .populate([
+            { path: "taskActions.creator", select: 'name email avatar company' },
+            { path: "taskActions.comments.creator", select: 'name email avatar' },
+            { path: "taskActions.evaluations.creator", select: 'name email avatar ' }])
+
     // let user = await User(connect(DB_CONNECTION, portal)).findOne({ _id: body.creator }); // Thừa 
     let getUser;
     if (task) {
@@ -754,7 +940,7 @@ exports.createTaskAction = async (portal, params, body, files) => {
     }
 
     // let tasks = await Task(connect(DB_CONNECTION, portal)).findOne({ _id: params.taskId }); Thừa .. giá trị trả về giống trên
-    
+
     // Danh sách người phê duyệt được gửi mail
     let userEmail = await User(connect(DB_CONNECTION, portal)).find({ _id: { $in: task.accountableEmployees } });
     let email = userEmail.map(item => item.email);
@@ -844,7 +1030,7 @@ exports.deleteTaskAction = async (portal, params) => {
  * Tạo bình luận công việc
  */
 exports.createTaskComment = async (portal, params, body, files, user) => {
-   const commentInformation = {
+    const commentInformation = {
         creator: body.creator,
         description: body.description,
         files: files,
@@ -855,7 +1041,7 @@ exports.createTaskComment = async (portal, params, body, files, user) => {
             $push: {
                 taskComments: commentInformation,
             },
-        },{ new: true })
+        }, { new: true })
         .populate([
             { path: "taskComments.creator", select: "name email avatar" },
             {
@@ -867,12 +1053,12 @@ exports.createTaskComment = async (portal, params, body, files, user) => {
                 select: "name email avatar",
             },
             {
-                path:"organizationalUnit"
+                path: "organizationalUnit"
             }
         ]);
 
     const userReceive = [...taskComment.responsibleEmployees, ...taskComment.accountableEmployees].filter(obj => JSON.stringify(obj) !== JSON.stringify(user._id))
-    
+
     const associatedData = {
         dataType: "createTaskComment",
         value: [taskComment.taskComments[taskComment.taskComments.length - 1]]
@@ -882,10 +1068,14 @@ exports.createTaskComment = async (portal, params, body, files, user) => {
         organizationalUnits: taskComment.organizationalUnit._id,
         title: "Cập nhật thông tin công việc ",
         level: "general",
-        content:`<p><strong>${user.name}</strong> đã thêm một bình luận trong công việc: <a href="${process.env.WEBSITE}/task?taskId=${params.taskId}">${process.env.WEBSITE}/task?taskId=${params.taskId}</a></p>` ,
+        content: `<p><strong>${user.name}</strong> đã thêm một bình luận trong công việc: <a href="${process.env.WEBSITE}/task?taskId=${params.taskId}">${process.env.WEBSITE}/task?taskId=${params.taskId}</a></p>`,
         sender: `${user.name} (${taskComment.organizationalUnit.name})`,
         users: userReceive,
         associatedData: associatedData,
+        associatedDataObject: {
+            dataType: 1,
+            description: `<p><strong>${taskComment.name}:</strong> ${user.name} đã thêm một bình luận mới trong mục trao đổi.</p>`
+        }
     };
 
     if (userReceive && userReceive.length > 0)
@@ -994,7 +1184,7 @@ exports.createCommentOfTaskComment = async (portal, params, body, files, user) =
                 select: "name email avatar ",
             },
         ])
-   
+
     const { taskComments } = taskcomment;
     // Lấy ra bình luận cha
     let getTaskComment = [];
@@ -1026,12 +1216,16 @@ exports.createCommentOfTaskComment = async (portal, params, body, files, user) =
         organizationalUnits: taskcomment.organizationalUnit._id,
         title: "Cập nhật thông tin công việc ",
         level: "general",
-        content:`<p><strong>${user.name}</strong> đã trả lời bình luận của bạn trong công việc: <a href="${process.env.WEBSITE}/task?taskId=${params.taskId}">${process.env.WEBSITE}/task?taskId=${params.taskId}</a></p>` ,
+        content: `<p><strong>${user.name}</strong> đã trả lời bình luận của bạn trong công việc: <a href="${process.env.WEBSITE}/task?taskId=${params.taskId}">${process.env.WEBSITE}/task?taskId=${params.taskId}</a></p>`,
         sender: `${user.name}`,
         users: userReceive,
         associatedData: associatedData,
+        associatedDataObject: {
+            dataType: 1,
+            description: `<p><strong>${taskcomment.name}:</strong> ${user.name} đã trả lời bình luận của bạn trong mục trao đổi.</p>`
+        }
     };
-    if(userReceive && userReceive.length > 0)
+    if (userReceive && userReceive.length > 0)
         NotificationServices.createNotification(portal, user.company._id, data)
     return taskComments;
 };
@@ -1147,107 +1341,90 @@ exports.deleteCommentOfTaskComment = async (portal, params) => {
  * Đánh giá hoạt động
  */
 exports.evaluationAction = async (portal, params, body) => {
-    // đánh giá lần đầu
-    if (body.firstTime === 1) {
-        //cập nhật điểm người đánh giá
-        let evaluationAction = await Task(
-            connect(DB_CONNECTION, portal)
-        ).updateOne(
+    // Kiểm tra xem đánh giá hoạt động đã tồn tại hay chưa - nếu chưa tạo mới, nếu có ghi đè
+    let danhgia = await Task(connect(DB_CONNECTION, portal)).aggregate([
+        { $match: { _id: mongoose.Types.ObjectId(params.taskId) } },
+        { $unwind: "$taskActions" },
+        { $replaceRoot: { newRoot: "$taskActions" } },
+        { $match: { _id: mongoose.Types.ObjectId(params.actionId) } },
+        { $unwind: "$evaluations" },
+        { $replaceRoot: { newRoot: "$evaluations" } },
+        {
+            $match: {
+                creator: mongoose.Types.ObjectId(body.creator),
+                role: body.role
+            }
+        }
+    ]);
+
+    if(danhgia.length === 0){
+        await Task(connect(DB_CONNECTION, portal)).updateOne(
             { _id: params.taskId, "taskActions._id": params.actionId },
             {
                 $push: {
                     "taskActions.$.evaluations": {
                         creator: body.creator,
                         rating: body.rating,
+                        role: body.role
                     },
                 },
-            },
-            { $new: true }
-        );
-
-        //danh sách người phê duyệt
-        let task1 = await Task(connect(DB_CONNECTION, portal)).findOne({
-            _id: params.taskId,
-            "taskActions._id": params.actionId,
-        });
-        let accountableEmployees = task1.accountableEmployees;
-
-        //danh sách các đánh giá
-        let evaluations = await Task(connect(DB_CONNECTION, portal)).aggregate([
-            { $match: { _id: mongoose.Types.ObjectId(params.taskId) } },
-            { $unwind: "$taskActions" },
-            { $replaceRoot: { newRoot: "$taskActions" } },
-            { $match: { _id: mongoose.Types.ObjectId(params.actionId) } },
-            { $unwind: "$evaluations" },
-            { $replaceRoot: { newRoot: "$evaluations" } },
-        ]);
-
-        //tim xem trong danh sách đánh giá ai là người phê duyệt
-        let rating = [];
-        evaluations.forEach((x) => {
-            if (
-                accountableEmployees.some(
-                    (elem) => x.creator.toString() === elem.toString()
-                )
-            ) {
-                rating.push(x.rating);
             }
-        });
-
-        //tính điểm trung bình
-        let accountableRating;
-        if (rating.length > 0) {
-            accountableRating =
-                rating.reduce((accumulator, currentValue) => {
-                    return accumulator + currentValue;
-                }, 0) / rating.length;
-        }
-
-        //check xem th đấnh giá có là người phê duyệt không
-        let idAccountableEmployee = task1.accountableEmployees.some(
-            (elem) => body.creator === elem.toString()
         );
-        if (idAccountableEmployee) {
-            let evaluationActionRating = await Task(
-                connect(DB_CONNECTION, portal)
-            ).updateOne(
-                { _id: params.taskId, "taskActions._id": params.actionId },
-                {
-                    $set: {
-                        "taskActions.$.rating": accountableRating,
-                    },
-                },
-                { $new: true }
-            );
-        }
-
-        // đánh giá lại
-    } else if (body.firstTime === 0) {
-        let taskAction = await Task(connect(DB_CONNECTION, portal)).update(
+    } else {
+        await Task(connect(DB_CONNECTION, portal)).updateOne(
             {
-                $and: [
-                    { _id: params.taskId, "taskActions._id": params.actionId },
-                    { "taskActions.evaluations.creator": body.creator },
-                ],
-            },
-            {
-                $set: {
-                    "taskActions.$[item].evaluations.$[elem].rating":
-                        body.rating,
-                },
-            },
-            {
+                _id: params.taskId, 
+                "taskActions._id": params.actionId,
+                "taskActions.evaluations.creator": body.creator,
+                "taskActions.evaluations.role": body.role
+            },{
+                $set: { 
+                    "taskActions.$[item].evaluations.$[elem].rating": body.rating
+                }
+            },{
                 arrayFilters: [
-                    {
-                        "elem.creator": body.creator,
-                    },
-                    {
-                        "item._id": params.actionId,
-                    },
-                ],
+                    { "elem.creator": body.creator, "elem.role": body.role },
+                    { "item._id": params.actionId }
+                ]
             }
-        );
+        )
     }
+
+    // Lấy danh sách các đánh giá của hoạt động
+    let evaluations = await Task(connect(DB_CONNECTION, portal)).aggregate([
+        { $match: { _id: mongoose.Types.ObjectId(params.taskId) } },
+        { $unwind: "$taskActions" },
+        { $replaceRoot: { newRoot: "$taskActions" } },
+        { $match: { _id: mongoose.Types.ObjectId(params.actionId) } },
+        { $unwind: "$evaluations" },
+        { $replaceRoot: { newRoot: "$evaluations" } },
+    ]);
+    
+    //Lấy điểm đánh giá của người phê duyệt trong danh sách các danh sách các đánh giá của hoạt động
+    let rating = [];
+    for(let i=0; i<evaluations.length; i++){
+        let evaluation = evaluations[i];
+        if(evaluation.role === 'accountable') rating.push(evaluation.rating);
+    }
+
+    //tính điểm trung bình
+    let accountableRating;
+    if (rating.length > 0) {
+        accountableRating =
+            rating.reduce((accumulator, currentValue) => {
+                return accumulator + currentValue;
+            }, 0) / rating.length;
+    }
+
+    await Task(connect(DB_CONNECTION, portal)).updateOne(
+        { _id: params.taskId, "taskActions._id": params.actionId },
+        {
+            $set: {
+                "taskActions.$.rating": accountableRating,
+            },
+        },
+        { $new: true }
+    );
 
     let task = await Task(connect(DB_CONNECTION, portal))
         .findOne({ _id: params.taskId, "taskActions._id": params.actionId })
@@ -1333,14 +1510,16 @@ exports.addTaskLog = async (portal, params, body) => {
         title: title,
         description: description,
     };
-    let task = await Task(connect(DB_CONNECTION, portal))
+
+    await Task(connect(DB_CONNECTION, portal))
         .updateOne(
             { '_id': params.taskId },
             { $push: { logs: log } },
             { new: true }
         )
         .populate("logs.creator");
-    let taskLog = task.logs && task.logs.reverse();
+    
+    let taskLog = await this.getTaskLog(portal, params);
 
     return taskLog;
 };
@@ -1495,12 +1674,59 @@ async function checkEvaluations(portal, date, taskId, storeDate) {
     return evaluateId;
 }
 
+exports.getIdEvaluationOfThisMonth = async (portal, taskId) => {
+    let evaluateId;
+    let dateISO = new Date();
+    let monthOfParams = dateISO.getMonth();
+    let yearOfParams = dateISO.getFullYear();
+    let testCase;
+
+    // kiểm tra evaluations
+    let initTask = await Task(connect(DB_CONNECTION, portal)).findById(taskId);
+
+    // kiểm tra điều kiện của evaluations
+    if (initTask.evaluations.length === 0) {
+        testCase = "TH1";
+    } else {
+        let chk = initTask.evaluations.find(
+            (e) =>
+                monthOfParams === e.date.getMonth() &&
+                yearOfParams === e.date.getFullYear()
+        );
+        if (!chk) {
+            // có evaluate nhưng k có tháng này
+            testCase = "TH2";
+        } else {
+            // có evaluate đúng tháng này
+            testCase = "TH3";
+        }
+    }
+
+    // TH3: Có evaluations của tháng giống date => cập nhật evaluations
+    if (testCase === "TH3") {
+        let taskV3 = initTask;
+        evaluateId = taskV3.evaluations.find(
+            (e) =>
+                monthOfParams === e.date.getMonth() &&
+                yearOfParams === e.date.getFullYear()
+        )._id;
+    }
+
+    return evaluateId;
+}
+
+
 /**
  * edit task by responsible employee
  */
 exports.editTaskByResponsibleEmployees = async (portal, data, taskId) => {
-    let { name, description, kpi, user, progress, info, date } = data;
+    let { name, description, kpi, user, progress, info, date, listInfo , taskProject} = data;
     let evaluateId;
+
+    let listInfoTask = [];
+    if (listInfo) {
+        listInfoTask = listInfo;
+    }
 
     const endOfMonth = moment().endOf("month").format("DD-MM-YYYY");
 
@@ -1533,12 +1759,13 @@ exports.editTaskByResponsibleEmployees = async (portal, data, taskId) => {
                 name: name,
                 description: description,
                 progress: progress,
+                taskProject: taskProject,
             },
         },
         { $new: true }
     );
 
-    // let task = await Task(connect(DB_CONNECTION, portal)).findById(taskId);
+    // cập nhật giá trị info
     for (let item in info) {
         for (let i in task.taskInformations) {
             if (info[item].code === task.taskInformations[i].code) {
@@ -1630,6 +1857,7 @@ exports.editTaskByResponsibleEmployees = async (portal, data, taskId) => {
                     },
                 ],
             },
+            { path: "timesheetLogs.creator", select: "name avatar _id email" },
             { path: "hoursSpentOnTask.contributions.employee", select: "name" },
             {
                 path: "process",
@@ -1702,7 +1930,6 @@ exports.editTaskByResponsibleEmployees = async (portal, data, taskId) => {
         _id: { $in: userId },
     });
     let email = user1.map((item) => item.email);
-    email.push("trinhhong102@gmail.com");
     user = await User(connect(DB_CONNECTION, portal)).findById(data.user);
     newTask.evaluations.reverse();
 
@@ -1733,6 +1960,8 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
         informedEmployees,
         inactiveEmployees,
         collaboratedWithOrganizationalUnits,
+        listInfo,
+        taskProject,
     } = data;
 
     // Chuẩn hóa parent
@@ -1812,6 +2041,7 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
                 status: status[0],
                 formula: formula,
                 parent: parent,
+                taskProject: taskProject,
 
                 startDate: startOfTask,
                 endDate: endOfTask,
@@ -1830,6 +2060,230 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
     );
     let task = await Task(connect(DB_CONNECTION, portal)).findById(taskId);
 
+    // list info
+    let listInfoTask = [];
+    if (listInfo) {
+        listInfoTask = listInfo;
+    }
+    let evaluateId;
+    let listChangeTypeInfo = [];
+
+    
+    evaluateId = await this.getIdEvaluationOfThisMonth(portal, taskId);
+    console.log('evaluateId', evaluateId);
+
+    // tìm ra info ở thông tin chung bị xóa
+    let deletedInfoItems = task.taskInformations.filter(x => 
+        listInfoTask.find(e => String(e._id) === String(x._id)) === undefined // không tìm được phần tử nào có id giống với x._id, tức là x là deleted info 
+    ).map(el => el._id);
+
+    let evaluation = task.evaluations.find(e => String(e._id) === String(evaluateId));
+
+    console.log('deleted info ', deletedInfoItems);
+
+    if(listInfoTask && listInfoTask.length > 0) {
+        // xóa info ở thông tin chung
+        for(let i in deletedInfoItems) {
+            await Task(connect(DB_CONNECTION, portal)).updateOne(
+                {
+                    _id: taskId,
+                    "taskInformations._id": deletedInfoItems[i] 
+                },
+                {
+                    $pull: {
+                        "taskInformations": {_id: deletedInfoItems[i] },
+                    },
+                },
+                { safe: true }
+            );
+        }
+
+        // Xóa info ở đánh giá tháng hiện tại
+        for(let i in deletedInfoItems) {
+            await Task(connect(DB_CONNECTION, portal)).updateOne(
+                {
+                    _id: taskId,
+                    "evaluations._id": evaluateId,
+                    "evaluations.taskInformations._id": deletedInfoItems[i]
+                },
+                {
+                    $pull: {
+                        "evaluations.$.taskInformations": {_id: deletedInfoItems[i] },
+                    },
+                },
+                { safe: true }
+            );
+        }
+    }
+
+    // cập nhật task infomation ở thông tin chung
+    for (let i in listInfoTask) {
+        if (listInfoTask[i]._id) {
+            for (let x in task.taskInformations) {
+                if (String(listInfoTask[i]._id) === String(task.taskInformations[x]._id)) {
+                    if (listInfoTask[i].type === task.taskInformations[x].type) {
+                        // console.log('1 - ', 'tìm thấy cái task info có sẵn - sửa thông tin task info');
+                        await Task(connect(DB_CONNECTION, portal)).updateOne(
+                            {
+                                _id: taskId,
+                                "taskInformations._id": listInfoTask[i]._id,
+                            },
+                            {
+                                $set: {
+                                    "taskInformations.$.code": "p" + parseInt(Number(i) + 1),
+                                    "taskInformations.$.name": listInfoTask[i].name,
+                                    "taskInformations.$.filledByAccountableEmployeesOnly": listInfoTask[i].filledByAccountableEmployeesOnly,
+                                    "taskInformations.$.description": listInfoTask[i].description,
+                                    "taskInformations.$.extra": listInfoTask[i].extra,
+                                },
+                            },
+                            {
+                                $new: true,
+                            }
+                        );
+                    }
+                    else {
+                        // console.log('2 - ', 'có thấy task info có sẵn - nhưng kiểu dữ liệu thay đổi, xóa giá trị của thông tin');
+                        listChangeTypeInfo.push(listInfoTask[i]._id);
+                        await Task(connect(DB_CONNECTION, portal)).updateOne(
+                            {
+                                _id: taskId,
+                                "taskInformations._id": listInfoTask[i]._id,
+                            },
+                            {
+                                $set: {
+                                    "taskInformations.$.code": "p" + parseInt(Number(i) + 1),
+                                    "taskInformations.$.name": listInfoTask[i].name,
+                                    "taskInformations.$.filledByAccountableEmployeesOnly": listInfoTask[i].filledByAccountableEmployeesOnly,
+                                    "taskInformations.$.description": listInfoTask[i].description,
+                                    "taskInformations.$.extra": listInfoTask[i].extra,
+                                    "taskInformations.$.type": listInfoTask[i].type,
+                                    "taskInformations.$.value": null
+                                },
+                            },
+                            {
+                                $new: true,
+                            }
+                        );
+                    }
+
+                }
+            }
+        }
+        else {
+            console.log('3 - thêm mới task info');
+            console.log('"code": "p" ', i, "p" + parseInt(Number(i) + 1));
+            await Task(connect(DB_CONNECTION, portal)).updateOne(
+                {
+                    _id: taskId,
+                },
+                {
+                    $push: {
+                        taskInformations: {
+                            "code": "p" + parseInt(Number(i) + 1),
+                            "name": listInfoTask[i].name,
+                            "filledByAccountableEmployeesOnly": listInfoTask[i].filledByAccountableEmployeesOnly,
+                            "description": listInfoTask[i].description,
+                            "type": listInfoTask[i].type,
+                            "extra": listInfoTask[i].extra,
+                        }
+                    }
+                },
+            );
+        }
+    }
+
+    // cập nhật task infomation ở đánh giá tháng hiện tại
+    if (evaluateId) {
+        for (let i in listInfoTask) {
+            if (listInfoTask[i]._id) {
+                for (let x in task.taskInformations) {
+                    // do các thông tin như _id, type, code,... ở trong task.taskInformations giống với evaluation.taskInformations 
+                    // nên có thể dùng task.taskInformations để cập nhật thông tin của evaluation.taskInformations
+                    if (String(listInfoTask[i]._id) === String(task.taskInformations[x]._id)) {
+                        // console.log('eval 1');
+                        if (listInfoTask[i].type === task.taskInformations[x].type) {
+                            await Task(connect(DB_CONNECTION, portal)).updateOne(
+                                {
+                                    _id: taskId,
+                                    "evaluations._id": evaluateId,
+                                },
+                                {
+                                    $set: {
+                                        "evaluations.$.taskInformations.$[elem].code": "p" + parseInt(Number(i) + 1),
+                                        "evaluations.$.taskInformations.$[elem].name": listInfoTask[i].name,
+                                        "evaluations.$.taskInformations.$[elem].filledByAccountableEmployeesOnly": listInfoTask[i].filledByAccountableEmployeesOnly,
+                                        "evaluations.$.taskInformations.$[elem].description": listInfoTask[i].description,
+                                        "evaluations.$.taskInformations.$[elem].extra": listInfoTask[i].extra,
+                                    },
+                                },
+                                {
+                                    arrayFilters: [
+                                        {
+                                            "elem._id": listInfoTask[i]._id,
+                                        },
+                                    ],
+                                }
+                            );
+                        }
+                        else {
+                            // console.log('eval 2');
+                            await Task(connect(DB_CONNECTION, portal)).updateOne(
+                                {
+                                    _id: taskId,
+                                    "evaluations._id": evaluateId,
+                                },
+                                {
+                                    $set: {
+                                        "evaluations.$.taskInformations.$[elem].code": "p" + parseInt(Number(i) + 1),
+                                        "evaluations.$.taskInformations.$[elem].name": listInfoTask[i].name,
+                                        "evaluations.$.taskInformations.$[elem].filledByAccountableEmployeesOnly": listInfoTask[i].filledByAccountableEmployeesOnly,
+                                        "evaluations.$.taskInformations.$[elem].description": listInfoTask[i].description,
+                                        "evaluations.$.taskInformations.$[elem].extra": listInfoTask[i].extra,
+                                        "evaluations.$.taskInformations.$[elem].type": listInfoTask[i].type,
+                                        "evaluations.$.taskInformations.$[elem].value": null
+                                    },
+                                },
+                                {
+                                    arrayFilters: [
+                                        {
+                                            "elem._id": listInfoTask[i]._id,
+                                        },
+                                    ],
+                                }
+                            );
+                        }
+    
+                    }
+                }
+            }
+            else {
+                // console.log('eval 3');
+                console.log('"code": "p" ', i, "p" + parseInt(Number(i) + 1));
+                let updatedItem = await Task(connect(DB_CONNECTION, portal)).findById(taskId);
+                let codeOfNewItem = "p" + parseInt(Number(i) + 1);
+                let newInfoItem = updatedItem.taskInformations.find(e => e.code === codeOfNewItem);
+                if(newInfoItem){
+                    await Task(connect(DB_CONNECTION, portal)).updateOne(
+                        {
+                            _id: taskId,
+                            "evaluations._id": evaluateId,
+                        },
+                        {
+                            $push: {
+                                "evaluations.$.taskInformations": newInfoItem
+                            }
+                        },
+                    );
+                }
+            }
+        }    
+    }
+
+    console.log('task info old', task.taskInformations.length); 
+    task = await Task(connect(DB_CONNECTION, portal)).findById(taskId);
+    console.log('task info new', task.taskInformations.length); 
+    // cập nhật value cho info
     for (let item in info) {
         for (let i in task.taskInformations) {
             if (info[item].code === task.taskInformations[i].code) {
@@ -2031,6 +2485,7 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
                     },
                 ],
             },
+            { path: "timesheetLogs.creator", select: "name avatar _id email" },
             { path: "hoursSpentOnTask.contributions.employee", select: "name" },
             {
                 path: "process",
@@ -2285,6 +2740,7 @@ exports.editEmployeeCollaboratedWithOrganizationalUnits = async (portal, taskId,
                     },
                 ],
             },
+            { path: "timesheetLogs.creator", select: "name avatar _id email" },
             { path: "hoursSpentOnTask.contributions.employee", select: "name" },
             {
                 path: "process",
@@ -2390,9 +2846,9 @@ exports.editEmployeeCollaboratedWithOrganizationalUnits = async (portal, taskId,
         });
         email = newEmployees.map((item) => item.email);
     }
-    
-    
-    
+
+
+
 
     // Update nhật ký chỉnh sửa
     if (newEmployees && newEmployees.length !== 0) {
@@ -2533,6 +2989,7 @@ exports.evaluateTaskByConsultedEmployees = async (portal, data, taskId) => {
                     },
                 ],
             },
+            { path: "timesheetLogs.creator", select: "name avatar _id email" },
             { path: "hoursSpentOnTask.contributions.employee", select: "name" },
             {
                 path: "process",
@@ -2881,6 +3338,7 @@ exports.evaluateTaskByResponsibleEmployees = async (portal, data, taskId) => {
                     },
                 ],
             },
+            { path: "timesheetLogs.creator", select: "name avatar _id email" },
             { path: "hoursSpentOnTask.contributions.employee", select: "name" },
             {
                 path: "process",
@@ -3382,6 +3840,7 @@ exports.evaluateTaskByAccountableEmployees = async (portal, data, taskId) => {
                     },
                 ],
             },
+            { path: "timesheetLogs.creator", select: "name avatar _id email" },
             { path: "hoursSpentOnTask.contributions.employee", select: "name" },
             {
                 path: "process",
@@ -3451,6 +3910,13 @@ exports.evaluateTaskByAccountableEmployees = async (portal, data, taskId) => {
     return newTask;
 };
 
+/**
+ * Cập nhật kết quả bấm giờ vào kết quả đánh giá của nhân viên
+ * Chỉ tính những bấm giờ nằm trong thời gian đánh giá của tháng
+ * @param {*} portal 
+ * @param {*} data 
+ * @param {*} taskId 
+ */
 exports.editHoursSpentInEvaluate = async (portal, data, taskId) => {
     let { evaluateId, timesheetLogs } = data;
     let task = await Task(connect(DB_CONNECTION, portal)).findById(taskId);
@@ -3471,9 +3937,10 @@ exports.editHoursSpentInEvaluate = async (portal, data, taskId) => {
 
         if (results) {
             for (let j = 0; j < results.length; j++) {
+                
                 if (
                     results[j].employee &&
-                    results[j].employee.toString() === employee.id.toString()
+                    results[j].employee.toString() === employee.toString()
                 ) {
                     check = false;
                     results[j]["hoursSpent"] = hoursSpent;
@@ -3557,6 +4024,7 @@ exports.editHoursSpentInEvaluate = async (portal, data, taskId) => {
                     },
                 ],
             },
+            { path: "timesheetLogs.creator", select: "name avatar _id email" },
             { path: "hoursSpentOnTask.contributions.employee", select: "name" },
             {
                 path: "process",
@@ -3693,6 +4161,7 @@ exports.deleteEvaluation = async (portal, params) => {
                     },
                 ],
             },
+            { path: "timesheetLogs.creator", select: "name avatar _id email" },
             { path: "hoursSpentOnTask.contributions.employee", select: "name" },
             {
                 path: "process",
@@ -4118,6 +4587,7 @@ exports.editActivateOfTask = async (portal, taskID, body) => {
                     },
                 ],
             },
+            { path: "timesheetLogs.creator", select: "name avatar _id email" },
             { path: "hoursSpentOnTask.contributions.employee", select: "name" },
             {
                 path: "process",
@@ -4244,9 +4714,9 @@ exports.editArchivedOfTask = async (portal, taskID) => {
     let isArchived = t.isArchived;
     if (t.status === 'finished' || t.status === 'delayed' || t.status === 'canceled') {
         task = await Task(connect(DB_CONNECTION, portal)).findByIdAndUpdate(
-        taskID,
-        { $set: { isArchived: !isArchived } },
-        { new: true }
+            taskID,
+            { $set: { isArchived: !isArchived } },
+            { new: true }
         );
     } else {
         throw ['task_status_error']
@@ -4444,6 +4914,7 @@ exports.createComment = async (portal, params, body, files) => {
                     },
                 ],
             },
+            { path: "timesheetLogs.creator", select: "name avatar _id email" },
             { path: "hoursSpentOnTask.contributions.employee", select: "name" },
             {
                 path: "process",
@@ -4585,6 +5056,7 @@ exports.editComment = async (portal, params, body, files) => {
                     },
                 ],
             },
+            { path: "timesheetLogs.creator", select: "name avatar _id email" },
             { path: "hoursSpentOnTask.contributions.employee", select: "name" },
             {
                 path: "process",
@@ -4768,6 +5240,7 @@ exports.createChildComment = async (portal, params, body, files) => {
                     },
                 ],
             },
+            { path: "timesheetLogs.creator", select: "name avatar _id email" },
             { path: "hoursSpentOnTask.contributions.employee", select: "name" },
             {
                 path: "process",
@@ -4935,6 +5408,7 @@ exports.editChildComment = async (portal, params, body, files) => {
                     },
                 ],
             },
+            { path: "timesheetLogs.creator", select: "name avatar _id email" },
             { path: "hoursSpentOnTask.contributions.employee", select: "name" },
             {
                 path: "process",
@@ -5168,11 +5642,11 @@ exports.sortActions = async (portal, params, body) => {
     let taskId = params.taskId;
     let i;
     await Task(connect(DB_CONNECTION, portal)).update(
-        { _id: taskId},
-        { $set: {"taskActions" : []} }
+        { _id: taskId },
+        { $set: { "taskActions": [] } }
     )
     await Task(connect(DB_CONNECTION, portal)).update(
-        { _id: taskId},
+        { _id: taskId },
         {
             $set: {
                 "taskActions": body

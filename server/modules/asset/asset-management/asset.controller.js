@@ -160,7 +160,11 @@ exports.updateAssetInformation = async (req, res) => {
                     level: "general",
                     content: html,
                     sender: data.user.name,
-                    users: [data.manager]
+                    users: data.manager,
+                    associatedDataObject: {
+                        dataType: 2,
+                        description: data.shortContent
+                    }
                 };
                 await NotificationServices.createNotification(req.portal, req.user.company._id, noti);
                 await sendEmail(email, "Bạn có thông báo mới", '', html);

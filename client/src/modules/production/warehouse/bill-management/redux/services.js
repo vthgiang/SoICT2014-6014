@@ -8,7 +8,8 @@ export const BillServices = {
     editBill,
     getBillsByStatus,
     getBillsByCommand,
-    createManyProductBills
+    createManyProductBills,
+    getNumberBills
 }
 
 function getBillsByType(params) {
@@ -72,4 +73,12 @@ function createManyProductBills(data) {
         method: 'POST',
         data
     }, true, true, 'manage_warehouse.bill_management')
+}
+
+function getNumberBills(params) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/bills/get-number-bill`,
+        method: 'GET',
+        params
+    }, false, false, 'manage_warehouse.bill_management')
 }

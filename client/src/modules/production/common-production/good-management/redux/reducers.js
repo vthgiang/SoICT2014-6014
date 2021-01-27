@@ -14,6 +14,7 @@ const initState = {
     isLoading: false,
     listGoods: [],
     goodDetail: '',
+    numberGoods: null,
     listALLGoods: [],
     listGoodsByType: [],
     listGoodsByCategory: [],
@@ -31,7 +32,9 @@ const initState = {
     goodItems: {
         listTaxsByGoodId: [],
         listSlasByGoodId: [],
-        listDiscountsByGoodId: []
+        listDiscountsByGoodId: [],
+        listManufacturingWorks: [],
+        inventoryByGoodId: 0
     },
     listGoodsByRole: [],
     listManufacturingWorks: []
@@ -55,6 +58,7 @@ export function goods(state = initState, action) {
         case GoodConstants.GET_ITEMS_FOR_GOOD_REQUEST:
         case GoodConstants.GET_GOOD_BY_MANAGE_WORK_ROLE_REQUEST:
         case GoodConstants.GET_MANUFACTURING_WORKS_BY_PRODUCT_ID_REQUEST:
+        case GoodConstants.GET_NUMBER_GOODS_REQUEST:
             return {
                 ...state,
                 isLoading: true
@@ -72,6 +76,7 @@ export function goods(state = initState, action) {
         case GoodConstants.GET_ITEMS_FOR_GOOD_FAILURE:
         case GoodConstants.GET_GOOD_BY_MANAGE_WORK_ROLE_FAILURE:
         case GoodConstants.GET_MANUFACTURING_WORKS_BY_PRODUCT_ID_FAILURE:
+        case GoodConstants.GET_NUMBER_GOODS_FAILURE:
             return {
                 ...state,
                 isLoading: false
@@ -92,7 +97,6 @@ export function goods(state = initState, action) {
             };
 
         case GoodConstants.GET_GOOD_BY_TYPE_SUCCESS:
-            console.log("GOOD", action.payload);
             return {
                 ...state,
                 listGoods: action.payload,
@@ -190,6 +194,12 @@ export function goods(state = initState, action) {
             return {
                 ...state,
                 listManufacturingWorks: action.payload.manufacturingWorks,
+                isLoading: false
+            }
+        case GoodConstants.GET_NUMBER_GOODS_SUCCESS:
+            return {
+                ...state,
+                numberGoods: action.payload,
                 isLoading: false
             }
         default:

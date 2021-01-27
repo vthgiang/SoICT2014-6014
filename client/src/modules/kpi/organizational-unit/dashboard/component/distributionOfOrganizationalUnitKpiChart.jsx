@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { withTranslate } from 'react-redux-multilingual';
 
 import { createUnitKpiActions } from '../../creation/redux/actions';
 
-import { withTranslate } from 'react-redux-multilingual';
+import { CustomLegendC3js } from '../../../../../common-components';
 
 import c3 from 'c3';
 import 'c3/c3.css';
@@ -13,6 +14,8 @@ class DistributionOfOrganizationalUnitKpiChart extends Component {
         super(props);
 
         this.DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
+        this.chart = null;
+        this.dataPieChart = null;
 
         this.state = {
             currentRole: null,
@@ -144,14 +147,13 @@ class DistributionOfOrganizationalUnitKpiChart extends Component {
     pieChart = () => {
         this.removePreviousChart();
 
-        let dataPieChart;
-        dataPieChart = this.setDataPieChart();
+        this.dataPieChart = this.setDataPieChart();
 
         this.chart = c3.generate({
             bindto: this.refs.chart,
 
             data: {
-                columns: dataPieChart,
+                columns: this.dataPieChart,
                 type: 'pie',
             },
 
@@ -161,6 +163,10 @@ class DistributionOfOrganizationalUnitKpiChart extends Component {
                         return value;
                     }
                 }
+            },
+
+            legend: {
+                show: false
             }
         });
     }
@@ -177,7 +183,16 @@ class DistributionOfOrganizationalUnitKpiChart extends Component {
         return (
             <React.Fragment>
                 {currentKpi ?
-                    <section ref="chart"></section>
+                    <section id={"distributionOfUnit"} className="c3-chart-container">
+                        <div ref="chart"></div>
+                        <CustomLegendC3js
+                            chart={this.chart}
+                            chartId={"distributionOfUnit"}
+                            legendId={"distributionOfUnitLegend"}
+                            title={`${translate('kpi.evaluation.employee_evaluation.KPI_list')}(${currentKpi.kpis && currentKpi.kpis.length})`}
+                            dataChartLegend={this.dataPieChart && this.dataPieChart.map(item => item[0])}
+                        />
+                    </section>
                     : organizationalUnitKpiLoading && <section>{translate('kpi.organizational_unit.dashboard.no_data')}</section>
                 }
             </React.Fragment>

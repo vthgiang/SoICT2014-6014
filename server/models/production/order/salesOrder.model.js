@@ -1,40 +1,42 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-
 const mongoosePaginate = require('mongoose-paginate-v2')
 
 const SalesOrderSchema = new Schema({
     code: {
         type: String,
-        required: true
+        // required: true
     },
-    status: { //0: Chờ xác nhận, 1: Quản lý bán hàng đã xác nhận, 2: Bộ phận toán đã xác nhận
-        //3: Yêu cầu sản xuất, 4: Đã lập kế hoạch sản xuất, 5: Hoàn thành sản xuất,
-        //6: Yêu cầu xuất kho, 7: Xuất kho
-        //8: Đang giao hàng , 9: Đã giao hàng, 10: Đã hủy
+    status: { //1: Chờ phê duyệt (bộ phận Sales Admin và bộ phận kế toán xác nhận)
+        //2: Đã phê duyệt
+        //3: Yêu cầu sản xuất, 
+        //4: Đã lập kế hoạch sản xuất
+        //5: Đã yêu cầu sản xuất
+        //6: Đang giao hàng , 7: Đã giao hàng, 
+        //8: Đã hủy
         type: Number,
-        enum: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-        required: true,
-        default: 0
+        enum: [1, 2, 3, 4, 5, 6, 7, 8],
+        // required: true,
+        default: 1
     },
     creator: {
         type: Schema.Types.ObjectId,
         ref: 'User',
-        required: true
+        // required: true
     },
     //Khách hàng
     customer: {
         type: Schema.Types.ObjectId,
         ref: 'Customer',
-        required: true
+        // required: true
     },
     customerPhone: {
         type: String,
-        required: true
+        // required: true
     },
     customerAddress: {
         type: String,
-        required: true
+        // required: true
     },
     customerRepresent: { //người đại diện
         type: String
@@ -46,13 +48,24 @@ const SalesOrderSchema = new Schema({
         approver: {
             type: Schema.Types.ObjectId,
             ref: 'User',
-            required: true
+            // required: true
         },
         approveAt: {
             type: Date,
-            default: new Date()
+        },
+        status: {//1. Chưa phê duyệt, 2. Đã phê duyệt, 3. Đã hủy
+            type: Number,
+            default: 1,
+            enum: [1, 2, 3],
+        },
+        note: {
+            type: String
         }
     }],
+    organizationalUnit: {//Đơn vị quản lý đơn
+        type: Schema.Types.ObjectId,
+        ref: "OrganizationalUnit"
+    },
     priority: { // 1: Thấp, 2: Trung bình, 3: Cao, 4: Đặc biệt
         type: Number,
         enum: [1, 2, 3, 4],
@@ -62,11 +75,11 @@ const SalesOrderSchema = new Schema({
         good: {
             type: Schema.Types.ObjectId,
             ref: 'Good',
-            required: true
+            // required: true
         },
         pricePerBaseUnit: {
             type: Number,
-            required: true
+            // required: true
         },
         pricePerBaseUnitOrigin: {
             type: Number,
@@ -76,15 +89,15 @@ const SalesOrderSchema = new Schema({
         },
         quantity: {
             type: Number,
-            required: true
+            // required: true
         },
         manufacturingWorks: {
             type: Schema.Types.ObjectId,
             ref: 'ManufacturingWorks'
         },
-        planningStatus: {//1: Yêu cầu sản xuất, 2: Đã lập kế hoạch sản xuất, 3: Hoàn thành sản xuất, 4: Sẵn trong kho
-            type: Number,
-            enum: [1, 2, 3, 4]
+        manufacturingPlan: {//Lấy trạng thái từ kế hoạch SX
+            type: Schema.Types.ObjectId,
+            ref: 'ManufacturingPlan'
         },
         //service level agreement
         serviceLevelAgreements: [{
@@ -169,7 +182,7 @@ const SalesOrderSchema = new Schema({
                     },
                     expirationDate: {
                         type: Date
-                    }, 
+                    },
                     discountedPrice: {
                         type: Number
                     }
@@ -178,7 +191,7 @@ const SalesOrderSchema = new Schema({
         ],
         note: {
             type: String,
-        }, 
+        },
         amount: { //Tổng tiền hàng nguyên bản
             type: Number
         },
@@ -251,8 +264,12 @@ const SalesOrderSchema = new Schema({
     deliveryAt: {
         type: Date
     },
-     //Số coin trừ vào đơn hàng, lúc thanh toán sẽ check, nếu đủ thì trừ, không thì thôi
+    //Số coin trừ vào đơn hàng, lúc thanh toán sẽ check, nếu đủ thì trừ, không thì thôi
     coin: {
+        type: Number
+    },
+    //Số xu được cộng vào sau khi hoàn thành đơn
+    allCoin: {
         type: Number
     },
     //Tổng thuế cho toàn đơn
@@ -265,29 +282,6 @@ const SalesOrderSchema = new Schema({
     note: {
         type: String
     },
-    payments: [{
-        paymentType: {// 1: Tiền mặt, 2: Chuyển khoản
-            type: Number,
-            enum: [1, 2],
-            // required: true
-        },
-        money: {
-            type: Number,
-            // required: true
-        },
-        receiver: {
-            type: Schema.Types.ObjectId,
-            ref: 'User',
-            // required: true
-        },
-        bankAccount: {// Tài khoản nhận thanh toán về
-            type: Schema.Types.ObjectId,
-            ref: 'BankAccount'
-        },
-        paymentAt: {
-            type: Date
-        },
-    }],
     bill: {//Phiếu đề nghị xuất kho
         type: Schema.Types.ObjectId,
         ref: 'Bill',
@@ -302,6 +296,10 @@ const SalesOrderSchema = new Schema({
             default: false,
             require: true
         }
+    },
+    quote: { //Được lập từ báo giá nếu có
+        type: Schema.Types.ObjectId,
+        ref: 'Quote',
     }
 }, {
     timestamps: true,

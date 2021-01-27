@@ -82,11 +82,11 @@ class CreateForm extends Component {
                     func={this.save}
                 >
                     <form id="form-create-career-position">
-                        <div className={`form-group ${!nameError ? "" : "has-error"}`}>
-                            <label>Gói thầu<span className="text-red">*</span></label>
+                        {/* <div className={`form-group ${!nameError ? "" : "has-error"}`}>
+                            <label>Gói thầu</label>
                             <input type="text" className="form-control" onChange={this.handlePackage} />
                             <ErrorLabel content={nameError} />
-                        </div>
+                        </div> */}
                         <div className={`form-group ${!nameError ? "" : "has-error"}`}>
                             <label>Tên<span className="text-red">*</span></label>
                             <input type="text" className="form-control" onChange={this.handleName} />

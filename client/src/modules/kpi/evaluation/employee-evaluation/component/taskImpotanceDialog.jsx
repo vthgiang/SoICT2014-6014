@@ -9,7 +9,29 @@ class TaskImpartanceDialog extends Component {
         this.state = {}
     }
     render() {
-        const { translate } = this.props;
+        const { translate, task } = this.props;
+        let priority = "";
+        if (task.priority) {
+            switch (task.priority) {
+                case 1:
+                    priority = translate("task.task_management.low");
+                    break;
+                case 2:
+                    priority = translate("task.task_management.average");
+                    break;
+                case 3:
+                    priority = translate("task.task_management.standard");
+                    break;
+                case 4:
+                    priority = translate("task.task_management.high");
+                    break;
+                case 5:
+                    priority = translate("task.task_management.urgent");
+                    break;
+
+            }
+
+        }
         return (
             <React.Fragment>
                 <DialogModal
@@ -19,11 +41,11 @@ class TaskImpartanceDialog extends Component {
                     hasSaveButton={false}
                 >
                     <div>
-                        <div>{translate('kpi.evaluation.employee_evaluation.num_of_working_day')}: {this.props.task ? this.props.task.daykpi : ""}</div>
+                        <div>{translate('kpi.evaluation.employee_evaluation.num_of_working_day')}: {this.props.task ? this.props.task.daykpi : 0}</div>
                         <div>{translate('kpi.evaluation.employee_evaluation.contribution')}: {this.props.task ? this.props.task.results.contribution : ""}</div>
-                        <div>{translate('kpi.evaluation.employee_evaluation.priority')}: {this.props.task ? this.props.task.priority : ""}</div>
+                        <div>{translate('kpi.evaluation.employee_evaluation.priority')}: {priority}</div>
                         <div>{translate('kpi.evaluation.employee_evaluation.formula')}:</div>
-                        <div> 3 * ({this.props.task.priority} / 3) + 3 * ({this.props.task.results.contribution} / 100) + 4 * ({this.props.task.daykpi} / 30)</div>
+                        <div> 3 * ({this.props.task.priority} / 5) + 3 * ({this.props.task.results.contribution} / 100) + 4 * ({this.props.task.daykpi} / 30)</div>
                         <div> = {this.props.task.taskImportanceLevelCal}</div>
                     </div>
                 </DialogModal>

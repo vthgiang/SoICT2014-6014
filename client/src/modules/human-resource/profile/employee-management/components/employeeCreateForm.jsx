@@ -35,7 +35,7 @@ class EmployeeCreateForm extends Component {
                 avatar: '/upload/human-resource/avatars/avatar5.png',
                 gender: "male",
                 maritalStatus: "single",
-                educationalLevel: "12/12",
+                educationalLevel: "",
                 professionalSkill: "unavailable",
                 status: 'active',
                 identityCardDate: this.formatDate2(Date.now()),
@@ -347,7 +347,9 @@ class EmployeeCreateForm extends Component {
             formData.append("file", x.fileUpload);
         })
         formData.append("fileAvatar", avatar);
-
+        employee.healthInsuranceAttachment.forEach(x => {
+            formData.append('healthInsuranceAttachment', x.fileUpload)
+        })
         this.props.addNewEmployee(formData);
     }
 
@@ -364,7 +366,7 @@ class EmployeeCreateForm extends Component {
         this.setState({
             houseHold: {
                 ...this.state.houseHold,
-                houseHoldName: e.target.value
+                headHouseHoldName: e.target.value
             }
         });
     }
@@ -442,13 +444,14 @@ class EmployeeCreateForm extends Component {
     }
 
     _fm_openEditFamilyMemberModal = (index) => {
+        console.log("kkkk")
         this.setState({
             editMember: {
                 index,
                 ...this.state.houseHold.familyMembers[index]
             }
         });
-        window.$('#modal-edit-family-members').modal({ backdrop: 'static', display: 'show' });
+        window.$('#form-edit-family-members').slideToggle();
     }
 
     _fm_editMember = (index, data) => {
@@ -498,9 +501,9 @@ class EmployeeCreateForm extends Component {
                             <li><a title={translate('human_resource.profile.tab_name.menu_contract_training_title')} data-toggle="tab" href="#contract">{translate('human_resource.profile.tab_name.menu_contract_training')}</a></li>
                             <li><a title={translate('human_resource.profile.tab_name.menu_reward_discipline_title')} data-toggle="tab" href="#reward">{translate('human_resource.profile.tab_name.menu_reward_discipline')}</a></li>
                             <li><a title={translate('menu.annual_leave_personal')} data-toggle="tab" href="#salary">{translate('menu.annual_leave_personal')}</a></li>
-                            <li><a title={translate('human_resource.profile.tab_name.menu_attachments_title')} data-toggle="tab" href="#attachments">{translate('human_resource.profile.tab_name.menu_attachments')}</a></li>
                             <li><a title={"Công việc - chuyên ngành tương đương"} data-toggle="tab" href="#major_career">Công việc - chuyên ngành tương đương</a></li>
                             <li><a title={"Thành viên hộ gia đình"} data-toggle="tab" href="#family_member">Thành viên hộ gia đình</a></li>
+                            <li><a title={translate('human_resource.profile.tab_name.menu_attachments_title')} data-toggle="tab" href="#attachments">{translate('human_resource.profile.tab_name.menu_attachments')}</a></li>
                         </ul>
                         < div className="tab-content">
                             {/* Tab thông tin chung */}
@@ -629,6 +632,7 @@ class EmployeeCreateForm extends Component {
                             {/* Tab thành viên hộ gia đình */}
                             <FamilyMemberTab
                                 id="family_member"
+                                tabEditMember="modal-edit-member-c"
                                 editMember={editMember}
                                 _fm_openEditFamilyMemberModal={this._fm_openEditFamilyMemberModal}
                                 _fm_editMember={this._fm_editMember}

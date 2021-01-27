@@ -85,7 +85,10 @@ import { quotes } from '../modules/production/order/quote/redux/reducers';
 import { discounts } from "../modules/production/order/discount/redux/reducers";
 import { serviceLevelAgreements } from "../modules/production/order/service-level-agreement/redux/reducers";
 import { businessDepartments } from "../modules/production/order/business-department/redux/reducers";
-import { salesOrder } from "../modules/production/order/sales-order/redux/reducers";
+import { salesOrders } from "../modules/production/order/sales-order/redux/reducers";
+import { bankAccounts } from "../modules/production/order/bank-account/redux/reducers";
+import { payments } from "../modules/production/order/payment/redux/reducers";
+import { purchaseOrders } from "../modules/production/order/purchase-order/redux/reducers";
 
 //plan
 import { plan } from "../modules/plan/redux/reducers";
@@ -104,6 +107,8 @@ import { purchasingRequest } from "../modules/production/manufacturing/purchasin
 import { workSchedule } from "../modules/production/manufacturing/work-schedule/redux/reducers";
 import { manufacturingPlan } from "../modules/production/manufacturing/manufacturing-plan/redux/reducers";
 import { manufacturingCommand } from "../modules/production/manufacturing/manufacturing-command/redux/reducers";
+
+import { project } from "../modules/project/redux/reducers";
 
 
 const appReducer = combineReducers({
@@ -202,7 +207,10 @@ const appReducer = combineReducers({
     discounts,
     serviceLevelAgreements,
     businessDepartments,
-    salesOrder,
+    salesOrders,
+    bankAccounts,
+    payments,
+    purchaseOrders,
 
     //plane
     plan,
@@ -222,7 +230,11 @@ const appReducer = combineReducers({
     manufacturingPlan,
     manufacturingCommand,
 
+    // project
+    project,
     Intl
+
+
 
 });
 

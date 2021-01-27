@@ -37,7 +37,7 @@ class StockRotateEditForm extends Component {
         this.props.goods.listALLGoods.map(item => {
             goodArr.push({
                 value: item._id,
-                text: item.code + " -- " + item.name,
+                text: item.code + " -- " + item.name + " (" + item.baseUnit + ")",
                 code: item.code,
                 name: item.name,
                 baseUnit: item.baseUnit
@@ -660,7 +660,7 @@ class StockRotateEditForm extends Component {
 
     render() {
         const { translate, group } = this.props;
-        const { lots, listGood, good, code, approvers, approver, listQualityControlStaffs, accountables, responsibles,
+        const { billId, lots, listGood, good, code, approvers, approver, listQualityControlStaffs, accountables, responsibles,
             qualityControlStaffs, status, toStock, fromStock, type, name, phone, email, address, description,
             errorStock, errorType, errorApprover, errorToStock, quantity, errorQualityControlStaffs, errorAccountables, errorResponsibles } = this.state;
         const listGoods = this.getAllGoods();
@@ -697,7 +697,7 @@ class StockRotateEditForm extends Component {
                                     <div className={`form-group ${!errorType ? "" : "has-error"}`}>
                                         <label>{translate('manage_warehouse.bill_management.type')}<span className="attention"> * </span></label>
                                         <SelectBox
-                                            id={`select-type-rotate-edit`}
+                                            id={`select-type-rotate-edit-${billId}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             value={type}
@@ -711,7 +711,7 @@ class StockRotateEditForm extends Component {
                                     <div className={`form-group`}>
                                         <label>{translate('manage_warehouse.bill_management.status')}</label>
                                         <SelectBox
-                                            id={`select-status-rotate-edit`}
+                                            id={`select-status-rotate-edit-${billId}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             value={status}
@@ -732,7 +732,7 @@ class StockRotateEditForm extends Component {
                                     <div className={`form-group ${!errorStock ? "" : "has-error"}`}>
                                         <label>{translate('manage_warehouse.bill_management.stock')}<span className="attention"> * </span></label>
                                         <SelectBox
-                                            id={`select-stock-bill-rotate-edit`}
+                                            id={`select-stock-bill-rotate-edit-${billId}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             value={fromStock}
@@ -746,7 +746,7 @@ class StockRotateEditForm extends Component {
                                     <div className={`form-group ${!errorToStock ? "" : "has-error"}`}>
                                         <label>{translate('manage_warehouse.bill_management.rotate_stock')}<span className="attention"> * </span></label>
                                         <SelectBox
-                                            id={`select-customer-rotate-edit`}
+                                            id={`select-customer-rotate-edit-${billId}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             value={toStock}
@@ -773,7 +773,7 @@ class StockRotateEditForm extends Component {
                                         <div className={`form-group ${!errorApprover ? "" : "has-error"}`}>
                                             <label>{translate('manage_warehouse.bill_management.approved')}<span className="attention"> * </span></label>
                                             <SelectBox
-                                                id={`select-approver-bill-rotate-edit`}
+                                                id={`select-approver-bill-rotate-edit-${billId}`}
                                                 className="form-control select2"
                                                 style={{ width: "100%" }}
                                                 value={approver}
@@ -786,7 +786,7 @@ class StockRotateEditForm extends Component {
                                         <div className={`form-group ${!errorResponsibles ? "" : "has-error"}`}>
                                             <label>{translate('manage_warehouse.bill_management.users')}<span className="attention"> * </span></label>
                                             <SelectBox
-                                                id={`select-accountables-bill-rotate-edit`}
+                                                id={`select-accountables-bill-rotate-edit-${billId}`}
                                                 className="form-control select2"
                                                 style={{ width: "100%" }}
                                                 value={responsibles}
@@ -801,7 +801,7 @@ class StockRotateEditForm extends Component {
                                         <div className={`form-group ${!errorQualityControlStaffs ? "" : "has-error"}`}>
                                             <label>{translate('manage_warehouse.bill_management.qualityControlStaffs')}<span className="attention"> * </span></label>
                                             <SelectBox
-                                                id={`select-qualityControlStaffs-bill-rotate-edit`}
+                                                id={`select-qualityControlStaffs-bill-rotate-edit-${billId}`}
                                                 className="form-control select2"
                                                 style={{ width: "100%" }}
                                                 value={qualityControlStaffs}
@@ -814,7 +814,7 @@ class StockRotateEditForm extends Component {
                                         <div className={`form-group ${!errorAccountables ? "" : "has-error"}`}>
                                             <label>{translate('manage_warehouse.bill_management.accountables')}<span className="attention"> * </span></label>
                                             <SelectBox
-                                                id={`select-responsibles-bill-rotate-edit`}
+                                                id={`select-responsibles-bill-rotate-edit-${billId}`}
                                                 className="form-control select2"
                                                 style={{ width: "100%" }}
                                                 value={accountables}
@@ -861,7 +861,7 @@ class StockRotateEditForm extends Component {
                                     <div className="form-group">
                                         <label>{translate('manage_warehouse.bill_management.choose_good')}</label>
                                         <SelectBox
-                                            id={`select-good-rotate-edit`}
+                                            id={`select-good-rotate-edit-${billId}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             value={good.good ? good.good._id : '1'}
