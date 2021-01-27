@@ -14,6 +14,9 @@ import { SalaryActions } from '../../human-resource/salary/redux/actions';
 import { taskManagementActions } from '../../task/task-management/redux/actions';
 import { UserActions } from '../../super-admin/user/redux/actions';
 import c3 from 'c3';
+import ViewAllTaskUrgent from './viewAllTaskUrgent';
+import ViewAllTaskNeedToDo from './viewAllTaskNeedToDo';
+import "./dashboardUnit.css";
 class MainDashboardUnit extends Component {
     constructor(props) {
         super(props);
@@ -28,7 +31,9 @@ class MainDashboardUnit extends Component {
             listUnit: [],
             urgent: [],
             taskNeedToDo: [],
-            arrayUnitForUrgentChart: [this.props.childOrganizationalUnit[0].id]
+            arrayUnitForUrgentChart: [this.props.childOrganizationalUnit[0].id],
+            TaskUrgentIsHovering: false,
+            TaskNeedToDoIsHovering: false,
         }
     };
 
@@ -161,6 +166,13 @@ class MainDashboardUnit extends Component {
                 columns: dataChart,
                 type: 'pie',
                 labels: true,
+                onclick: function (d, e) {
+                    this.setState({
+                        ...this.state,
+                        clickUrgentChart: d,
+                    })
+                    window.$('#modal-view-all-task-urgent').modal('show');
+                }.bind(this)
             },
             pie: {
                 label: {
@@ -201,6 +213,13 @@ class MainDashboardUnit extends Component {
                 columns: dataChart,
                 type: 'pie',
                 labels: true,
+                onclick: function (d, e) {
+                    this.setState({
+                        ...this.state,
+                        clickNeedTodoChart: d,
+                    })
+                    window.$('#modal-view-all-task-need-to-do').modal('show');
+                }.bind(this)
             },
             pie: {
                 label: {
@@ -274,7 +293,7 @@ class MainDashboardUnit extends Component {
 
     handleUpdateDataUrgent = () => {
         const { currentDate, arrayUnitForUrgentChart } = this.state;
-        
+
         let partDate = currentDate.split('-');
         let newDate = [partDate[2], partDate[1], partDate[0]].join('-');
 
@@ -338,12 +357,25 @@ class MainDashboardUnit extends Component {
         this.props.getTaskInOrganizationUnitByDateNow(arrayUnitForUrgentChart, newDate)
     }
 
+    handleMouseHovershowTaskUrgent = () => {
+        this.setState({
+            ...this.state,
+            TaskUrgentIsHovering: !this.state.TaskUrgentIsHovering
+        })
+    }
+
+    handleMouseHovershowTaskNeedToDo = () => {
+        this.setState({
+            ...this.state,
+            TaskNeedToDoIsHovering: !this.state.TaskNeedToDoIsHovering
+        })
+    }
     render() {
         const { translate, department, employeesManager, user, tasks, discipline } = this.props;
 
         const { childOrganizationalUnit } = this.props;
 
-        const { monthShow, month, organizationalUnits, arrayUnitShow, listUnit, taskNeedToDo, urgent, arrayUnitForUrgentChart } = this.state;
+        const { monthShow, month, organizationalUnits, arrayUnitShow, listUnit, taskNeedToDo, urgent, arrayUnitForUrgentChart, TaskUrgentIsHovering, TaskNeedToDoIsHovering, clickUrgentChart, clickNeedTodoChart } = this.state;
 
         let listAllEmployees = (!organizationalUnits || organizationalUnits.length === department.list.length) ?
             employeesManager.listAllEmployees : employeesManager.listEmployeesOfOrganizationalUnits;
@@ -386,21 +418,15 @@ class MainDashboardUnit extends Component {
         return (
             <React.Fragment>
                 <div className="qlcv">
+                    <ViewAllTaskUrgent data={this.state.urgent} clickUrgentChart={clickUrgentChart} />
+                    <ViewAllTaskNeedToDo data={this.state.taskNeedToDo} clickNeedTodoChart={clickNeedTodoChart} />
                     {/* Biểu đồ só công việc khẩn cấp /  cần làm */}
                     <div className="row">
                         <div className="col-md-12">
                             <div className="box box-solid">
                                 <div className="box-header with-border">
-                                    <div className="box-title">
+                                    <div className="box-title" >
                                         Biểu đồ thể hiện số công việc khẩn cấp/Cần làm
-                                    <ToolTip
-                                            type={"icon_tooltip"}
-                                            dataTooltip={[
-                                                `Công việc được gọi là khẩn cấp/nghiêm trọng nếu:
-                                                Quá hạn, công việc có độ ưu tiên...
-                                            `
-                                            ]}
-                                        />
                                     </div>
                                 </div>
 
@@ -430,7 +456,29 @@ class MainDashboardUnit extends Component {
                                     <div className="row " >
                                         <div className="dashboard_box_body" >
                                             <div className="col-md-6">
-                                                <p className="pull-left" style={{ marginTop: '10px' }}> < b > Số công việc khẩn cấp </b></p >
+                                                <p className="pull-left" style={{ display: 'flex', alignItems: 'center' }}> < b style={{ marginTop: '10px', marginRight: '5px' }}> Số công việc khẩn cấp</b>
+                                                    <span className="material-icons title-urgent " style={{ zIndex: 999, cursor: "pointer", fontSize: '15px', marginTop: '10px' }}
+                                                        onMouseEnter={this.handleMouseHovershowTaskUrgent}
+                                                        onMouseLeave={this.handleMouseHovershowTaskUrgent}>
+                                                        help
+                                                    </span>
+                                                </p >
+                                                {
+                                                    TaskUrgentIsHovering &&
+                                                    <div className="menu-list-item urgent">
+                                                        <span style={{ fontWeight: 'bold' }}>Công việc được gọi là khẩn cấp nếu:</span>
+                                                        <ul className="guide-list">
+                                                            <li className="guide-list-item">
+                                                                Quá hạn, công việc có độ ưu tiên lần lượt là 1, 2, 3, 4, 5
+                                                                chỉ được chậm 25 %, 20%, 15%,10%, 5% số ngày đã quá.
+                                                        </li>
+                                                            <li className="guide-list-item">
+                                                                {`và công việc có độ ưu tiên 1, 2 , 3, 4, 5 chậm tiến độ quá >=50, >=40,  >=30%, >=20%, >=10%`}
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                }
+
                                                 {
                                                     tasks.isLoading ? <p style={{ marginTop: '60px', textAlign: "center" }}>Đang tải dữ liệu</p>
                                                         : urgent && urgent.length > 0 ?
@@ -440,7 +488,28 @@ class MainDashboardUnit extends Component {
                                             </div>
 
                                             <div className="col-md-6">
-                                                <p className="pull-left" style={{ marginTop: '10px' }}> < b > Số công việc cần làm </b></p >
+                                                <p className="pull-left" style={{ marginRight: '10px', display: 'flex', alignItems: 'center' }}> < b style={{ marginTop: '10px', marginRight: '5px' }} > Số công việc cần làm
+                                                </b>
+                                                    <span className="material-icons title-urgent " style={{ zIndex: 999, cursor: "pointer", fontSize: '15px', marginTop: '10px' }}
+                                                        onMouseEnter={this.handleMouseHovershowTaskNeedToDo}
+                                                        onMouseLeave={this.handleMouseHovershowTaskNeedToDo}>
+                                                        help
+                                                    </span>
+                                                </p >
+                                                {
+                                                    TaskNeedToDoIsHovering &&
+                                                    <div className="menu-list-item needtodo">
+                                                        <span style={{ fontWeight: 'bold', zIndex: 1000 }}>Công việc được gọi là cần lam nếu:</span>
+                                                        <ul className="guide-list">
+                                                            <li className="guide-list-item">
+                                                                Công việc đó quá hạn và không ở khẩn cấp.
+                                                            </li>
+                                                            <li className="guide-list-item">
+                                                                {` chậm tiến độ của mức:  5: 0<x<10, 4: 10 <= x <20, 3: 20<x<30, 2: <x<40, 1: <x<50`}
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                }
                                                 {
                                                     tasks.isLoading ?
                                                         <p style={{ marginTop: '60px', textAlign: "center" }}>Đang tải dữ liệu</p>
