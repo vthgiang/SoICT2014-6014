@@ -251,7 +251,7 @@ class TrendOfOvertime extends Component {
             <React.Fragment>
                 <div className="box box-solid">
                     <div className="box-header with-border">
-                        <h3 className="box-title">{`${nameChart} của ${(organizationalUnitsName.length === 0 || organizationalUnitsName.length === department.list.length) ? "công ty" : organizationalUnitsName.join(', ')} ${startDateShow}`}<i className="fa fa-fw fa-caret-right"></i>{endDateShow}</h3>
+                        <h3 className="box-title">{`${nameChart} công ty ${startDateShow}`}<i className="fa fa-fw fa-caret-right"></i>{endDateShow}</h3>
                     </div>
                     <div className="box-body">
                         <div className="qlcv" style={{ marginBottom: 15 }}>
@@ -260,7 +260,12 @@ class TrendOfOvertime extends Component {
                                     <label className="form-control-static">{translate('kpi.evaluation.dashboard.organizational_unit')}</label>
                                     <SelectMulti id="multiSelectUnitsOvertime"
                                         items={childOrganizationalUnit.map((p, i) => { return { value: p.id, text: p.name } })}
-                                        options={{ nonSelectedText: translate('page.non_unit'), allSelectedText: translate('page.all_unit') }}
+                                        options={{
+                                            nonSelectedText: translate('page.non_unit'),
+                                            allSelectedText: translate('page.all_unit'),
+                                            includeSelectAllOption: true,
+                                            maxHeight: 200
+                                        }}
                                         onChange={this.handleSelectOrganizationalUnit}
                                         value={organizationalUnits}
                                     >

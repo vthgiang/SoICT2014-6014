@@ -399,7 +399,12 @@ class EmployeeKpiEvaluationDashboard extends Component {
                                     {ids &&
                                         <SelectMulti id="multiSelectOrganizationalUnit"
                                             items={childrenOrganizationalUnit.map(item => { return { value: item.id, text: item.name } })}
-                                            options={{ nonSelectedText: translate('kpi.evaluation.dashboard.select_units'), allSelectedText: translate('kpi.evaluation.dashboard.all_unit') }}
+                                            options={{
+                                                nonSelectedText: translate('kpi.evaluation.dashboard.select_units'),
+                                                allSelectedText: translate('kpi.evaluation.dashboard.all_unit'),
+                                                includeSelectAllOption: true,
+                                                maxHeight: 200
+                                            }}
                                             onChange={this.handleSelectOrganizationalUnit}
                                             value={ids}
                                         >
