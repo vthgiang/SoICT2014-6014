@@ -62,7 +62,6 @@ class CrmGroup extends Component {
                                             translate('crm.group.code'),
                                             translate('crm.group.description'),
                                         ]}
-                                        limit={this.state.limit}
                                         setLimit={this.setLimit}
                                         tableId={tableId}
                                     />
