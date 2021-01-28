@@ -7,11 +7,36 @@ class SlimScroll extends Component {
         this.state = {};
     }
     componentDidUpdate() {
-        this.addStyleCSS();
+        const { verticalScroll=false, outerComponentId, maxHeight=200, activate } = this.props
+
+        if (verticalScroll) {
+            SlimScroll.addVerticalScrollStyleCSS(outerComponentId, maxHeight, activate);
+        } else {
+            this.addStyleCSS();
+        }
     }
 
     componentDidMount() {
-        this.addStyleCSS();
+        const { verticalScroll=false, outerComponentId, maxHeight=200, activate } = this.props
+
+        if (verticalScroll) {
+            SlimScroll.addVerticalScrollStyleCSS(outerComponentId, maxHeight, activate);
+        } else {
+            this.addStyleCSS();
+        }
+    }
+
+    shouldComponentUpdate(nextProps, nextState) {
+        const { maxHeight=200 } = this.props;
+
+        // Nếu height mới lớn hơn maxHeight mới re-render
+        let checkHeight = window.$(`#${nextProps.outerComponentId}`).height() > maxHeight;
+
+        if (!checkHeight) {
+            return false
+        }
+
+        return true;
     }
 
     addStyleCSS = () => {
@@ -29,6 +54,20 @@ class SlimScroll extends Component {
                 outer.removeClass("StyleScrollDiv");
                 inner.width("");
                 inner.css("maxWidth", ""); // Safari
+            }
+        }
+    }
+
+    static addVerticalScrollStyleCSS = (outerComponentId, maxHeight=200, activate) => {
+        let outer = window.$(`#${outerComponentId}`);
+
+        if (outer) {
+            if (activate && outer.height() > maxHeight) {
+                outer.addClass("StyleScrollDiv StyleScrollDiv-y");
+                outer.css("maxHeight", maxHeight); 
+            } else {
+                outer.removeClass("StyleScrollDiv StyleScrollDiv-y");
+                outer.css("maxHeight", "");
             }
         }
     }

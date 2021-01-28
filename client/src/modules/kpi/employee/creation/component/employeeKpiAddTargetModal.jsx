@@ -5,7 +5,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import { createUnitKpiActions } from '../../../organizational-unit/creation/redux/actions';
 import { createKpiSetActions } from "../redux/actions";
 
-import { DialogModal, ErrorLabel, SelectBox } from '../../../../../common-components';
+import { DialogModal, ErrorLabel, SelectBox, QuillEditor } from '../../../../../common-components';
 
 import ValidationHelper from '../../../../../helpers/validationHelper';
 
@@ -100,8 +100,7 @@ class ModalCreateEmployeeKpi extends Component {
         });
     }
 
-    handleCriteriaChange = (e) => {
-        let value = e.target.value;
+    handleCriteriaChange = (value, imgs) => {
         let validation = ValidationHelper.validateDescription(translate, value);
 
         this.setState(state => {
@@ -220,8 +219,12 @@ class ModalCreateEmployeeKpi extends Component {
                         {/**Mô tả của mục tiêu này */}
                         <div className={`form-group ${errorOnCriteria===undefined?"":"has-error"}`}>
                             <label>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_modal.evaluation_criteria')}<span className="text-red">*</span></label>
-                            <textarea rows={4} className="form-control" value={criteria} onChange = {this.handleCriteriaChange}/>
-                            <ErrorLabel content={errorOnCriteria}/>
+                            <QuillEditor
+                                id={'create-employee-kpi'}
+                                getTextData={this.handleCriteriaChange}
+                                toolbar={false}
+                            />
+                            <ErrorLabel content={errorOnCriteria} />
                         </div>
                         
                         {/**Trọng số của mục tiêu này */}

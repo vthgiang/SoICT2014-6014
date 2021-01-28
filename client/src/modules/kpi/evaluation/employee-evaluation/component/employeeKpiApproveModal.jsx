@@ -11,6 +11,7 @@ import { DialogModal, ErrorLabel, DatePicker, Comment } from '../../../../../com
 import { withTranslate } from 'react-redux-multilingual';
 import { getStorage } from '../../../../../config';
 import Swal from 'sweetalert2';
+import parse from 'html-react-parser';
 
 // import { Comment } from '../../../employee/creation/component/comment'
 var translate = '';
@@ -314,7 +315,7 @@ class EmployeeKpiApproveModal extends Component {
                                                     <td>{index + 1}</td>
                                                     <td>{item ? item.name : ""}</td>
                                                     <td>{item.parent ? item.parent.name : ""}</td>
-                                                    <td>{item ? item.criteria : ""}</td>
+                                                    <td>{item ? parse(item.criteria) : ""}</td>
                                                     <td>{edit === item._id ? <input min="0" max="100" defaultValue={item.weight} style={{ width: "60px" }} /> : item.weight}</td>
                                                     <td>{item ? item.approvedPoint : ""}</td>
                                                 </tr>
@@ -363,7 +364,7 @@ class EmployeeKpiApproveModal extends Component {
                                         <td>{index + 1}</td>
                                         <td>{item ? item.name : ""}</td>
                                         <td>{item.parent ? item.parent.name : ""}</td>
-                                        <td>{item ? item.criteria : ""}</td>
+                                        <td>{item ? parse(item.criteria) : ""}</td>
                                         <td>{edit === item._id ?
                                             <input min="0" max="100"
                                                 ref={input => this.newWeight[item._id] = input}

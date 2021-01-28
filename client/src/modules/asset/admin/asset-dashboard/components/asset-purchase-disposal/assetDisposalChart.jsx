@@ -12,27 +12,36 @@ class AssetDisposalChart extends Component {
         super(props);
 
         let d = new Date(),
-            month = '' + (d.getMonth() + 1),
-            day = '' + d.getDate(),
+            month = d.getMonth() + 1,
             year = d.getFullYear();
+        let startMonth, endMonth, startYear;
 
-        if (month.length < 2)
-            month = '0' + month;
-
-        if (day.length < 2)
-            day = '0' + day;
+        if (month > 3) {
+            startMonth = month - 3;
+            startYear = year;
+        } else {
+            startMonth = month - 3 + 12;
+            startYear = year - 1;
+        }
+        if (startMonth < 10)
+            startMonth = '0' + startMonth;
+        if (month < 10) {
+            endMonth = '0' + month;
+        } else {
+            endMonth = month;
+        }
 
         this.INFO_SEARCH = {
-            disposalDateAfter: year + '-' + (month - 3),
-            disposalDateBefore: [year, month].join('-'),
+            disposalDateAfter: [startYear, startMonth].join('-'),
+            disposalDateBefore: [year, endMonth].join('-'),
             type: []
         }
 
         this.state = {
             disposalDateAfter: this.INFO_SEARCH.disposalDateAfter,
             disposalDateBefore: this.INFO_SEARCH.disposalDateBefore,
-            defaultStartMonth: '0' + (month - 3) + '-' + year,
-            defaultEndMonth: [month, year].join('-'),
+            defaultStartMonth: [startMonth, startYear].join('-'),
+            defaultEndMonth: [endMonth, year].join('-'),
             year: "false",
             type: this.INFO_SEARCH.type,
         }

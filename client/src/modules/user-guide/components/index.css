@@ -1,10 +1,10 @@
 
-.wrapper .pg-viewer-wrapper{
-    height: calc(100vh - 52px - 56px)!important;
+.qlcv .pg-viewer-wrapper{
+    height: 100vh !important;
     overflow: auto;
 }
 
-.wrapper .pg-viewer{
+.qlcv .pg-viewer{
     display: flex;
     justify-content: center;
 }

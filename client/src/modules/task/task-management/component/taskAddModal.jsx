@@ -121,11 +121,14 @@ class TaskAddModal extends Component {
         let msg = TaskFormValidator.validateTaskDescription(value, translate);
 
         if (willUpdateState) {
-            this.state.newTask.description = value;
-            this.state.newTask.errorOnDescription = msg;
             this.setState(state => {
                 return {
                     ...state,
+                    newTask: {
+                        ...state.newTask,
+                        description: value,
+                        errorOnDescription: msg
+                    }
                 };
             });
         }
@@ -259,6 +262,7 @@ class TaskAddModal extends Component {
                         collaboratedWithOrganizationalUnits: taskTemplate.collaboratedWithOrganizationalUnits.map(item => { return { organizationalUnit: item._id, isAssigned: false } }),
                         name: taskTemplate.name,
                         description: taskTemplate.description,
+                        quillDescriptionDefault: taskTemplate.description,
                         priority: taskTemplate.priority,
                         responsibleEmployees: taskTemplate.responsibleEmployees.map(item => item.id),
                         accountableEmployees: taskTemplate.accountableEmployees.map(item => item.id),
@@ -561,8 +565,9 @@ class TaskAddModal extends Component {
                                 <div className={`form-group ${newTask.errorOnDescription === undefined ? "" : "has-error"}`}>
                                     <label className="control-label">{translate('task.task_management.detail_description')}<span className="text-red">*</span></label>
                                     <QuillEditor
-                                        // id={`task-add-modal-${id}`}
-                                        toolbar={false}
+                                        id={`task-add-modal`}
+                                        table={false}
+                                        embeds={false}
                                         getTextData={this.handleChangeTaskDescription}
                                         height={80}
                                         quillValueDefault={newTask.quillDescriptionDefault}

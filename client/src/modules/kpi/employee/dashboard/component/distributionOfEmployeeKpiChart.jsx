@@ -4,7 +4,7 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import { createKpiSetActions } from '../../creation/redux/actions';
 
-import { DatePicker } from '../../../../../common-components';
+import { DatePicker, CustomLegendC3js } from '../../../../../common-components';
 
 import c3 from 'c3';
 import 'c3/c3.css';
@@ -23,6 +23,8 @@ class DistributionOfEmployeeKpiChart extends Component {
         let currentMonth = currentDate.getMonth();
 
         this.DATA_STATUS = {NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3};
+        this.chart = null;
+        this.dataPieChart = null;
 
         this.state = {
             month: currentYear + '-' + (currentMonth + 1),
@@ -111,8 +113,7 @@ class DistributionOfEmployeeKpiChart extends Component {
         this.removePreviousChart();
 
         // Tạo mảng dữ liệu
-        let dataPieChart;
-        dataPieChart = this.setDataPieChart(); 
+        this.dataPieChart = this.setDataPieChart(); 
 
         this.chart = c3.generate({
             bindto: this.refs.chart,             // Đẩy chart vào thẻ div có id="pieChart"
@@ -126,8 +127,12 @@ class DistributionOfEmployeeKpiChart extends Component {
             },
 
             data: {                                 // Dữ liệu biểu đồ
-                columns: dataPieChart,
+                columns: this.dataPieChart,
                 type : 'pie',
+            },
+
+            legend: {
+                show: false
             }
         });
     }
@@ -177,7 +182,16 @@ class DistributionOfEmployeeKpiChart extends Component {
                 </section>
 
                 {currentEmployeeKpiSet ?
-                    <section ref="chart"></section>
+                   <section id={"distributionOfEmployeeKpi"} className="c3-chart-container">
+                        <div ref="chart"></div>
+                        <CustomLegendC3js
+                            chart={this.chart}
+                            chartId={"distributionOfEmployeeKpi"}
+                            legendId={"distributionOfEmployeeKpiLegend"}
+                            title={`${translate('kpi.evaluation.employee_evaluation.KPI_list')} (${currentEmployeeKpiSet.kpis && currentEmployeeKpiSet.kpis.length})`}
+                            dataChartLegend={this.dataPieChart && this.dataPieChart.map(item => item[0])}
+                        />
+                    </section>
                     : <section>{translate('kpi.organizational_unit.dashboard.no_data')}</section>
                 }
             </React.Fragment>

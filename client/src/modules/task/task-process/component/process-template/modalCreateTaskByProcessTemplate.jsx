@@ -54,7 +54,7 @@ PaletteProvider.prototype.getPaletteEntries = function (element) {
 }
 
 var zlevel = 1;
-class ModalCreateTaskByProcess extends Component {
+class ModalCreateTaskByProcessTemplate extends Component {
 
     constructor(props) {
         super(props);
@@ -618,8 +618,8 @@ class ModalCreateTaskByProcess extends Component {
         return (
             <React.Fragment>
                 <DialogModal
-                    size='100' modalID={`modal-create-task-by-process`} isLoading={false}
-                    formID="form-create-task-by-process"
+                    size='100' modalID={`modal-create-task-by-process-template`} isLoading={false}
+                    formID="form-create-task-by-process-template"
                     disableSubmit={!this.isTaskFormValidated()}
                     title={this.props.title}
                     func={this.save}
@@ -774,7 +774,6 @@ class ModalCreateTaskByProcess extends Component {
                                                     <div>
                                                         <h3>{translate("task.task_process.create_task_with_template")} {taskName}</h3>
                                                     </div>
-
                                                     <FormCreateTaskByProcess
                                                         isProcess={true}
                                                         id={id}
@@ -795,8 +794,6 @@ class ModalCreateTaskByProcess extends Component {
                             </div>
                         </div>
                     </div>
-
-
                 </DialogModal>
             </React.Fragment>
         )
@@ -819,5 +816,5 @@ const actionCreators = {
     createTaskByProcess: TaskProcessActions.createTaskByProcess,
     getAllUsersWithRole: UserActions.getAllUsersWithRole
 };
-const connectedModalCreateProcess = connect(mapState, actionCreators)(withTranslate(ModalCreateTaskByProcess));
-export { connectedModalCreateProcess as ModalCreateTaskByProcess };
+const connectedModalCreateProcess = connect(mapState, actionCreators)(withTranslate(ModalCreateTaskByProcessTemplate));
+export { connectedModalCreateProcess as ModalCreateTaskByProcessTemplate };

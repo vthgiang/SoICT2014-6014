@@ -62,6 +62,9 @@ export default {
                 not_existing_error: "Giá trị không tồn tại",
                 existing_error: "Giá trị đã tồn tại",
             },
+            not_org_unit: "Bạn chưa có đơn vị",
+            list_unit: "Danh sách đơn vị",
+            list_employee: "Danh sách nhân viên"
         },
 
         intro: {
@@ -1198,6 +1201,7 @@ export default {
             manage_project: "Quản lý dự án",
 
             user_guide: "Hướng dẫn sử dụng",
+            user_guide_detail: "Chi tiết hướng dẫn sử dụng",
         },
 
         manage_system: {

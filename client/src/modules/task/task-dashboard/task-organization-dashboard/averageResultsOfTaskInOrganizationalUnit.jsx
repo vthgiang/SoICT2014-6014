@@ -2,7 +2,7 @@ import React, { useState, useEffect, memo, useRef } from 'react'
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 
-import { SelectBox, SelectMulti } from '../../../../common-components';
+import { SelectBox, CustomLegendC3js } from '../../../../common-components';
 
 import c3 from 'c3';
 import 'c3/c3.css';
@@ -55,7 +55,7 @@ function AverageResultsOfTaskInOrganizationalUnit(props) {
     });
     
     // Khai báo state
-    const { criteria, typePoint, units, startMonth, endMonth, infoSearch } = state;
+    const { criteria, typePoint, units, startMonth, endMonth } = state;
 
     // Khởi tạo ref lưu infosearch cũ
     const ref = useRef({
@@ -63,6 +63,8 @@ function AverageResultsOfTaskInOrganizationalUnit(props) {
         typePoint: typePoint
     });
     const currentState = ref.current;
+    const chart = useRef();
+    const dataChart = useRef();
 
     useEffect(() => {
         if (currentState.criteria === criteria && currentState.typePoint === typePoint) {
@@ -323,7 +325,7 @@ function AverageResultsOfTaskInOrganizationalUnit(props) {
     }
 
     const removePreviosChart = () => {
-        const chart = document.getElementById('average-chart-unit');
+        let chart = document.getElementById('averageChartUnitChart');
         while (chart.hasChildNodes()) {
             chart.removeChild(chart.lastChild);
         }
@@ -331,13 +333,14 @@ function AverageResultsOfTaskInOrganizationalUnit(props) {
 
     const averageChart = () => {
         removePreviosChart();
-        let dataChart = setDataAverageChart();
-        let chart = c3.generate({
-            bindto: document.getElementById('average-chart-unit'),             // Đẩy chart vào thẻ div có id="chart"
+        dataChart.current = setDataAverageChart();
+        
+        chart.current = c3.generate({
+            bindto: document.getElementById('averageChartUnitChart'),             // Đẩy chart vào thẻ div có id="chart"
 
             data: {
                 x: 'x',
-                columns: dataChart,
+                columns: dataChart.current,
             },
 
             // Căn lề biểu đồ
@@ -374,11 +377,14 @@ function AverageResultsOfTaskInOrganizationalUnit(props) {
                         return value.toFixed(2);
                     }
                 }
+            },
+
+            legend: {
+                show: false
             }
         })
     }
 
-    
     return (
         <React.Fragment>
             <section className="form-inline">
@@ -411,7 +417,16 @@ function AverageResultsOfTaskInOrganizationalUnit(props) {
 
                 <button type="button" className="btn btn-success" onClick={handleSearchData}>{translate('kpi.evaluation.employee_evaluation.search')}</button>
             </section>
-            <div id="average-chart-unit"></div>
+            <section id={"averageChartUnit"} className="c3-chart-container">
+                <div id="averageChartUnitChart"></div>
+                <CustomLegendC3js
+                    chart={chart.current}
+                    chartId={"averageChartUnit"}
+                    legendId={"averageChartUnitLegend"}
+                    title={dataChart.current && `${translate('general.list_unit')} (${dataChart.current.length - 1})`}
+                    dataChartLegend={dataChart.current && dataChart.current.filter((item, index) => index !== 0).map(item => item[0])}
+                />
+            </section>
         </React.Fragment>
     )
 }

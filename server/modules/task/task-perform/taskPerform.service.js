@@ -784,11 +784,13 @@ exports.createCommentOfTaskAction = async (portal, params, body, files, user) =>
         title: "Cập nhật thông tin công việc ",
         level: "general",
         content: `<p><strong>${user.name}</strong> đã bình luận về hoạt động trong công việc: <a href="${process.env.WEBSITE}/task?taskId=${params.taskId}">${process.env.WEBSITE}/task?taskId=${params.taskId}</a></p>`,
-        shortContent: `<p><strong>${commentOfTaskAction.name}</strong>: ${user.name} đã bình luận về hoạt động mà bạn tham gia.`,
         sender: `${user.name}`,
         users: userReceive,
         associatedData: associatedData,
-        type: 1,
+        associatedDataObject: {
+            dataType: 1,
+            description: `<p><strong>${commentOfTaskAction.name}</strong>: ${user.name} đã bình luận về hoạt động mà bạn tham gia.`
+        }
     };
 
     if (userReceive && userReceive.length > 0)
@@ -1067,11 +1069,13 @@ exports.createTaskComment = async (portal, params, body, files, user) => {
         title: "Cập nhật thông tin công việc ",
         level: "general",
         content: `<p><strong>${user.name}</strong> đã thêm một bình luận trong công việc: <a href="${process.env.WEBSITE}/task?taskId=${params.taskId}">${process.env.WEBSITE}/task?taskId=${params.taskId}</a></p>`,
-        shortContent: `<p><strong>${taskComment.name}:</strong> ${user.name} đã thêm một bình luận mới trong mục trao đổi.</p>`,
         sender: `${user.name} (${taskComment.organizationalUnit.name})`,
         users: userReceive,
         associatedData: associatedData,
-        type: 1,
+        associatedDataObject: {
+            dataType: 1,
+            description: `<p><strong>${taskComment.name}:</strong> ${user.name} đã thêm một bình luận mới trong mục trao đổi.</p>`
+        }
     };
 
     if (userReceive && userReceive.length > 0)
@@ -1213,11 +1217,13 @@ exports.createCommentOfTaskComment = async (portal, params, body, files, user) =
         title: "Cập nhật thông tin công việc ",
         level: "general",
         content: `<p><strong>${user.name}</strong> đã trả lời bình luận của bạn trong công việc: <a href="${process.env.WEBSITE}/task?taskId=${params.taskId}">${process.env.WEBSITE}/task?taskId=${params.taskId}</a></p>`,
-        shortContent:`<p><strong>${taskcomment.name}:</strong> ${user.name} đã trả lời bình luận của bạn trong mục trao đổi.</p>`,
         sender: `${user.name}`,
         users: userReceive,
         associatedData: associatedData,
-        type: 1,
+        associatedDataObject: {
+            dataType: 1,
+            description: `<p><strong>${taskcomment.name}:</strong> ${user.name} đã trả lời bình luận của bạn trong mục trao đổi.</p>`
+        }
     };
     if (userReceive && userReceive.length > 0)
         NotificationServices.createNotification(portal, user.company._id, data)
@@ -1504,14 +1510,16 @@ exports.addTaskLog = async (portal, params, body) => {
         title: title,
         description: description,
     };
-    let task = await Task(connect(DB_CONNECTION, portal))
+
+    await Task(connect(DB_CONNECTION, portal))
         .updateOne(
             { '_id': params.taskId },
             { $push: { logs: log } },
             { new: true }
         )
         .populate("logs.creator");
-    let taskLog = task.logs && task.logs.reverse();
+    
+    let taskLog = await this.getTaskLog(portal, params);
 
     return taskLog;
 };
@@ -1712,7 +1720,7 @@ exports.getIdEvaluationOfThisMonth = async (portal, taskId) => {
  * edit task by responsible employee
  */
 exports.editTaskByResponsibleEmployees = async (portal, data, taskId) => {
-    let { name, description, kpi, user, progress, info, date, listInfo } = data;
+    let { name, description, kpi, user, progress, info, date, listInfo , taskProject} = data;
     let evaluateId;
 
     let listInfoTask = [];
@@ -1751,6 +1759,7 @@ exports.editTaskByResponsibleEmployees = async (portal, data, taskId) => {
                 name: name,
                 description: description,
                 progress: progress,
+                taskProject: taskProject,
             },
         },
         { $new: true }
@@ -1951,7 +1960,8 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
         informedEmployees,
         inactiveEmployees,
         collaboratedWithOrganizationalUnits,
-        listInfo
+        listInfo,
+        taskProject,
     } = data;
 
     // Chuẩn hóa parent
@@ -2031,6 +2041,7 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
                 status: status[0],
                 formula: formula,
                 parent: parent,
+                taskProject: taskProject,
 
                 startDate: startOfTask,
                 endDate: endOfTask,

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DialogModal, ErrorLabel, SelectBox } from '../../../../../common-components';
+import { DialogModal, ErrorLabel, SelectBox, QuillEditor } from '../../../../../common-components';
 import ValidationHelper from '../../../../../helpers/validationHelper';
 
 import { createUnitKpiActions } from '../redux/actions';
@@ -34,6 +34,7 @@ class OrganizationalUnitKpiEditTargetModal extends Component {
                 parent: nextProps.organizationalUnitKpi.parent ? nextProps.organizationalUnitKpi.parent._id : null,
                 weight: nextProps.organizationalUnitKpi.weight,
                 criteria: nextProps.organizationalUnitKpi.criteria,
+                quillValueDefault: nextProps.organizationalUnitKpi.criteria,
 
                 errorOnName: undefined, 
                 errorOnCriteria: undefined,
@@ -88,8 +89,7 @@ class OrganizationalUnitKpiEditTargetModal extends Component {
         });
     }
 
-    handleCriteriaChange = (e) => {
-        let value = e.target.value;
+    handleCriteriaChange = (value, imgs) => {
         let validation = ValidationHelper.validateDescription(this.props.translate, value);
 
         this.setState(state => {
@@ -156,7 +156,7 @@ class OrganizationalUnitKpiEditTargetModal extends Component {
     render() {
         const { createKpiUnit, translate } = this.props; 
         const { organizationalUnit } = this.props;
-        const { editing, newTarget, _id, name, parent, weight, criteria, errorOnName, errorOnCriteria, errorOnWeight } = this.state;
+        const { editing, newTarget, _id, name, parent, weight, criteria, errorOnName, errorOnCriteria, errorOnWeight, quillValueDefault } = this.state;
         
         let parentKPI;
         if (createKpiUnit.parent) {
@@ -182,7 +182,7 @@ class OrganizationalUnitKpiEditTargetModal extends Component {
                     func={this.handleEditTarget}
                     disableSubmit={!this.isFormValidated()}
                 >
-                    {/* Form chỉnh sửa tiêu */}
+                    {/* Form chỉnh sửa mục tiêu */}
                     <form id="form-edit-target" onSubmit={() => this.handleEditTarget(translate('kpi.organizational_unit.edit_target_kpi_modal.success'))}>
                         <div className={`form-group ${ !errorOnName ? "" : "has-error"}`}>
                             <label>{translate('kpi.organizational_unit.edit_target_kpi_modal.name')}<span className="text-red">*</span></label>
@@ -210,8 +210,13 @@ class OrganizationalUnitKpiEditTargetModal extends Component {
                         {/* Tiêu chí đánh giá */}
                         <div className={`form-group ${!errorOnCriteria? "": "has-error"}`}>
                             <label>{translate('kpi.organizational_unit.edit_target_kpi_modal.evaluation_criteria')}<span className="text-red">*</span></label>
-                            <textarea rows={4} type="text" className="form-control" value={criteria} onChange = {this.handleCriteriaChange}/>
-                            <ErrorLabel content={errorOnCriteria}/>
+                            <QuillEditor
+                                id={'edit-organizational-unit-kpi'}
+                                getTextData={this.handleCriteriaChange}
+                                quillValueDefault={quillValueDefault}
+                                toolbar={false}
+                            />
+                            <ErrorLabel content={errorOnCriteria} />
                         </div>
 
                         {/* Trọng số */}

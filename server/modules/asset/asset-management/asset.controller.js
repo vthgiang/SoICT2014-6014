@@ -161,8 +161,10 @@ exports.updateAssetInformation = async (req, res) => {
                     content: html,
                     sender: data.user.name,
                     users: data.manager,
-                    type: 2,
-                    shortContent: data.shortContent,
+                    associatedDataObject: {
+                        dataType: 2,
+                        description: data.shortContent
+                    }
                 };
                 await NotificationServices.createNotification(req.portal, req.user.company._id, noti);
                 await sendEmail(email, "Bạn có thông báo mới", '', html);
@@ -419,13 +421,19 @@ exports.deleteMaintainance = async (req, res) => {
 
 exports.getIncidents = async (req, res) => {
     try {
-        let data = await AssetService.getIncidents(req.portal, req.query);
+        let query = {
+            ...req.query,
+            userId: req.user._id
+        }
+        let data = await AssetService.getIncidents(req.portal, query);
+
         res.status(200).json({
             success: true,
             messages: ["get_incidents_success"],
             content: data
         });
     } catch (error) {
+        console.log(error)
         res.status(400).json({
             success: false,
             messages: ["get_incidents_false"],

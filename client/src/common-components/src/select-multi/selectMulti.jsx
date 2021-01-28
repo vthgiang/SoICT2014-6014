@@ -1,4 +1,7 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { withTranslate } from 'react-redux-multilingual';
+
 import './selectMulti.css';
 
 class SelectMulti extends Component {
@@ -23,16 +26,25 @@ class SelectMulti extends Component {
     }
 
     componentDidMount() {
-        const { id, options, onChange, disabled = false } = this.props;
-        window.$("#" + id).multiselect(options);
+        const { id, options, onChange, disabled = false, slimScroll=true, height=200 } = this.props;
 
+        window.$("#" + id).multiselect(options);
+       
         window.$("#" + id).on("change", () => {
             let value = [].filter.call(this.refs.selectmulti.options, o => o.selected).map(o => o.value);
-            this.state.value = value;
+           
+            this.setState(state => {
+                return {
+                    ...state,
+                    value: value
+                }
+            })
+
             if (onChange !== undefined) {
                 onChange(value);
             }
         })
+
         if (disabled) {
             window.$("#" + id).multiselect("disable");
         }
@@ -75,6 +87,7 @@ class SelectMulti extends Component {
     render() {
         const { id, items, display = "" } = this.props;
         const { value } = this.state;
+
         return (
             <React.Fragment>
                 <div className={`selectmulti ${display}`}>
@@ -89,4 +102,5 @@ class SelectMulti extends Component {
     }
 }
 
-export { SelectMulti };
+const connectedSelectMulti = connect(null, null)(withTranslate(SelectMulti));
+export { connectedSelectMulti as SelectMulti };
