@@ -65,7 +65,7 @@ class Notification extends Component {
             tabPaneScroll.removeClass("StyleScrollDiv StyleScrollDiv-y");
             tabPaneScroll.css("maxHeight", "");
         }
-        
+
         this.setState(state => {
             return {
                 ...state,
@@ -138,7 +138,7 @@ class Notification extends Component {
                                 <li><a className="notify-action" href="#allNotificationOfAsset" data-toggle="tab" onClick={() => this.checkTabPaneScroll("allNotificationOfAsset")}>{`Tài sản (${notifyAssetUnRead.length})`}</a></li>
                                 <li><a className="notify-action" href="#allNotificationOfKPI" data-toggle="tab" onClick={() => this.checkTabPaneScroll("allNotificationOfKPI")}>{`KPI (${notifyKPIUnRead.length})`}</a></li>
                                 <a style={{ display: 'flex', alignItems: 'center', marginRight: '5px' }}>
-                                    <span className="material-icons" style={{ cursor: 'pointer' }} onClick={this.handleOnOffSound}>
+                                    <span className="material-icons" style={{ cursor: 'pointer', marginLeft: '15px' }} onClick={this.handleOnOffSound}>
                                         {
                                             sound ? `volume_up` : `volume_off`
                                         }
