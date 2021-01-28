@@ -62,7 +62,8 @@ export default {
                 existing_error: "Value existing",
             },
             not_org_unit: "Not have organizational unit",
-            list_unit: "Organizational unit list"
+            list_unit: "Organizational unit list",
+            list_employee: "Employee list",
         },
 
         intro: {

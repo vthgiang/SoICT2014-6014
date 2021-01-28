@@ -189,7 +189,7 @@ class DistributionOfOrganizationalUnitKpiChart extends Component {
                             chart={this.chart}
                             chartId={"distributionOfUnit"}
                             legendId={"distributionOfUnitLegend"}
-                            title={`${translate('kpi.evaluation.employee_evaluation.KPI_list')}(${currentKpi.kpis && currentKpi.kpis.length})`}
+                            title={`${translate('kpi.evaluation.employee_evaluation.KPI_list')} (${currentKpi.kpis && currentKpi.kpis.length})`}
                             dataChartLegend={this.dataPieChart && this.dataPieChart.map(item => item[0])}
                         />
                     </section>
