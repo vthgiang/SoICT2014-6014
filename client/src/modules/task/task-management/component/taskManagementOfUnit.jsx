@@ -484,10 +484,12 @@ class TaskManagementOfUnit extends Component {
                                 {/* Đặc tính công việc */}
                                 <div className="form-group">
                                     <label>{translate('task.task_management.special')}</label>
-                                    <SelectMulti id="multiSelectCharacteristic" defaultValue={[
-                                        translate('task.task_management.store'),
-                                        translate('task.task_management.current_month')
-                                    ]}
+                                    <SelectMulti
+                                        id="multiSelectCharacteristic"
+                                        defaultValue={[
+                                            translate('task.task_management.store'),
+                                            translate('task.task_management.current_month')
+                                        ]}
                                         items={[
                                             { value: "stored", text: translate('task.task_management.stored') },
                                             { value: "currentMonth", text: translate('task.task_management.current_month') }

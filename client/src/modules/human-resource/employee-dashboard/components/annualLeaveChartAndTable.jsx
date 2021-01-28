@@ -263,7 +263,12 @@ class AnnualLeaveChartAndTable extends Component {
                                     <label className="form-control-static">{translate('kpi.evaluation.dashboard.organizational_unit')}</label>
                                     <SelectMulti id="multiSelectUnitsChartAndTable"
                                         items={childOrganizationalUnit.map((p, i) => { return { value: p.id, text: p.name } })}
-                                        options={{ nonSelectedText: translate('page.non_unit'), allSelectedText: translate('page.all_unit') }}
+                                        options={{
+                                            nonSelectedText: translate('page.non_unit'),
+                                            allSelectedText: translate('page.all_unit'),
+                                            includeSelectAllOption: true,
+                                            maxHeight: 200
+                                        }}
                                         onChange={this.handleSelectOrganizationalUnit}
                                         value={organizationalUnits}
                                     >
