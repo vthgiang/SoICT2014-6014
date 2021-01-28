@@ -552,7 +552,7 @@ class GeneralTab extends Component {
         var userlist = user.list, departmentlist = department.list;
         let startDate = status == "in_use" && usageLogs && usageLogs.length ? this.formatDate(usageLogs[usageLogs.length - 1].startDate) : '';
         let endDate = status == "in_use" && usageLogs && usageLogs.length ? this.formatDate(usageLogs[usageLogs.length - 1].endDate) : '';
-        let typeInTreeSelect = [];
+        let typeInTreeSelect = assetType && assetType.length ? assetType : [];
         let types = this.state.assetType;
         let listtypes = this.props.assetType.listAssetTypes;
 
