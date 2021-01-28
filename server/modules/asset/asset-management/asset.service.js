@@ -1403,7 +1403,7 @@ exports.deleteUsage = async (portal, assetId, usageId) => {
  */
 exports.getIncidents = async (portal, params) => {
     let incidents;
-    let { code, assetName, incidentCode, incidentType, incidentStatus, managedBy } = params;
+    let { code, assetName, incidentCode, incidentType, incidentStatus, managedBy, userId } = params;
     let page = parseInt(params.page);
     let limit = parseInt(params.limit);
     let assetSearch = [];
@@ -1435,7 +1435,7 @@ exports.getIncidents = async (portal, params) => {
         ];
     }
 
-    let aggregateQuery = [];
+    let aggregateQuery = [ { $match: { 'managedBy': mongoose.Types.ObjectId(userId) } } ];
     if (assetSearch && assetSearch.length !== 0) {
         aggregateQuery = [...aggregateQuery, { $match: { $and: assetSearch } }];
     }
@@ -1468,6 +1468,7 @@ exports.getIncidents = async (portal, params) => {
         incidents = await Asset(connect(DB_CONNECTION, portal)).aggregate(
             aggregateListQuery
         );
+
         // Tìm tài sản ứng với sự cố tài sản
         for (let i = 0; i < incidents.length; i++) {
             let item = incidents[i];
@@ -1479,10 +1480,15 @@ exports.getIncidents = async (portal, params) => {
                 managedBy : managedBy,
             });
 
-            incidents[i].asset = asset;
+            if (asset) {
+                incidents[i].asset = asset;
+            } else {
+                incidents = incidents.slice(i, i + 1);
+                i--;
+            }
         }
         var incidentList = incidents.filter(x => x.asset !== null);
-        incidentLength = incidentList.length;
+        incidentLength = incidentList.length;  
     }
 
     return {

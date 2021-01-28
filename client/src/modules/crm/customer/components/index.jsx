@@ -218,7 +218,6 @@ class CrmCustomer extends Component {
             exportData = this.convertDataToExportData(customers.list);
         }
 
-        console.log('tableId', tableId)
         return (
             <div className="box">
                 <div className="box-body qlcv">
@@ -326,7 +325,6 @@ class CrmCustomer extends Component {
                                             translate('crm.customer.mobilephoneNumber'),
                                             translate('crm.customer.address')
                                         ]}
-                                        limit={this.state.limit}
                                         setLimit={this.setLimit}
                                         tableId={tableId}
                                     />
@@ -376,7 +374,6 @@ class CrmCustomer extends Component {
     }
 
     componentDidMount() {
-        console.log('state', this.state)
         this.props.getCustomers(this.state);
         this.props.getDepartment();
         this.props.getGroups();

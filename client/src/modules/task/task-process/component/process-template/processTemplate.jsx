@@ -7,7 +7,7 @@ import { PaginateBar, SelectMulti, DataTableSetting, ConfirmNotification, Export
 import { ModalEditTaskProcess } from './modalEditTaskProcess'
 import { ModalCreateTaskProcess } from './modalCreateTaskProcess'
 import { ModalViewTaskProcess } from './modalViewTaskProcess';
-import { ModalCreateTaskByProcess } from './modalCreateTaskByProcess';
+import { ModalCreateTaskByProcessTemplate } from './modalCreateTaskByProcessTemplate';
 
 import { TaskProcessActions } from '../../redux/actions';
 import { RoleActions } from '../../../../super-admin/role/redux/actions';
@@ -90,7 +90,7 @@ class ProcessTemplate extends Component {
                 currentRow: item,
             }
         });
-        window.$(`#modal-create-task-by-process`).modal("show");
+        window.$(`#modal-create-task-by-process-template`).modal("show");
     }
     showCreateTask = (item) => {
         this.setState(state => {
@@ -404,7 +404,7 @@ class ProcessTemplate extends Component {
                     }
                     {
                         this.state.currentRow !== undefined &&
-                        <ModalCreateTaskByProcess
+                        <ModalCreateTaskByProcessTemplate
                             title={translate("task.task_process.add_task_process_modal")}
                             data={currentRow}
                             listOrganizationalUnit={listOrganizationalUnit}

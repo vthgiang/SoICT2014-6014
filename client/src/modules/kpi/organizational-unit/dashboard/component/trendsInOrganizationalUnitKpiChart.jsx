@@ -504,7 +504,7 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
                             chart={this.chart}
                             chartId={"trendsInUnit"}
                             legendId={"trendsInUnitLegend"}
-                            title={`${translate('kpi.evaluation.employee_evaluation.KPI_list')}(${currentKpi.kpis && currentKpi.kpis.length})`}
+                            title={`${translate('kpi.evaluation.employee_evaluation.KPI_list')} (${currentKpi.kpis && currentKpi.kpis.length})`}
                             dataChartLegend={this.dataChart && this.dataChart.filter((item, index) => index > 0).map(item => item[0])}
                         />
                     </section>
