@@ -54,7 +54,7 @@ const LoadTaskOrganizationChart = (props) => {
                 if (findUnit) {
                     data[i].push(findUnit.name);
                 }
-                
+
                 for (let k in improcessTask) {
                     if (improcessTask[k] && improcessTask[k].organizationalUnit && improcessTask[k].organizationalUnit._id === selectedUnit[i]) {
                         let improcessDay = 0;

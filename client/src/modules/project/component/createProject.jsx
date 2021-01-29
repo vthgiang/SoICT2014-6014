@@ -15,6 +15,7 @@ const ProjectCreateForm = (props) => {
         endDate: "",
         description: "",
         managerProject: [],
+        memberProject: [],
         projectNameError: undefined,
 
     });
@@ -35,7 +36,16 @@ const ProjectCreateForm = (props) => {
     const save = () => {
         if (isFormValidated()) {
             const { projectName, code, projectParent, startDate, endDate, managerProject } = state;
-            props.createProject({ name: projectName, code: code, parent: projectParent, startDate, endDate, managerProject, description });
+            props.createProject({
+                name: projectName,
+                code: code,
+                parent: projectParent,
+                startDate: startDate,
+                endDate: endDate,
+                projectManager: managerProject,
+                description: description,
+                projectMembers: memberProject,
+            });
         }
     }
 
@@ -87,6 +97,14 @@ const ProjectCreateForm = (props) => {
             managerProject: value,
         });
     }
+
+    const handleMemberProject = (value) => {
+        setState({
+            ...state,
+            memberProject: value,
+        });
+    }
+
     const handleProjectDescription = (value) => {
         setState({
             ...state,
@@ -95,11 +113,11 @@ const ProjectCreateForm = (props) => {
     }
 
     const { translate, project, user } = props;
-    const { projectName, code, projectNameError, projectParent, managerProject, startDate, endDate, description } = state;
+    const { projectName, code, projectNameError, projectParent, managerProject, startDate, endDate,
+        description, memberProject } = state;
     const list = project.data.list;
 
     console.log('aloooooooooo', props, user);
-    // console.log('llllllllllll', list)
     return (
         <React.Fragment>
             {/* <ButtonModal modalID="modal-create-example" button_name={translate('manage_example.add')} title={translate('manage_example.add_title')} /> */}
@@ -115,66 +133,119 @@ const ProjectCreateForm = (props) => {
                 maxWidth={500}
             >
                 <form id="form-create-project" onSubmit={() => save(translate('manage_example.add_success'))}>
-                    <div className="row">
-                        <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                            <div className={`form-group ${!projectNameError ? "" : "has-error"}`}>
-                                <label>Tên dự án<span className="text-red">*</span></label>
-                                <input type="text" className="form-control" value={projectName} onChange={handleProjectName}></input>
-                                <ErrorLabel content={projectNameError} />
+                    <div className="tab-content">
+                        <div className="tab-pane active">
+                            {/* <div className="row"> */}
+                            <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                <div className={`form-group ${!projectNameError ? "" : "has-error"}`}>
+                                    <label>Tên dự án<span className="text-red">*</span></label>
+                                    <input type="text" className="form-control" value={projectName} onChange={handleProjectName}></input>
+                                    <ErrorLabel content={projectNameError} />
+                                </div>
+                                <div className={`form-group`}>
+                                    <label>Mã dự án</label>
+                                    <input type="text" className="form-control" value={code} onChange={handleProjectCode}></input>
+                                </div>
+                                <div className="form-group">
+                                    <label>Ngày bắt đầu</label>
+                                    <DatePicker
+                                        id={`project-state-date`}
+                                        onChange={handleStartDate}
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <label>Ngày kết thúc</label>
+                                    <DatePicker
+                                        id={`project-end-date`}
+                                        onChange={handleEndDate}
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <label>Dự án cha</label>
+                                    <TreeSelect data={list} value={projectParent} handleChange={handleParent} mode="radioSelect" />
+                                </div>
+                                <div>
+                                    <label>Người quản trị dự án</label>
+                                    <SelectBox
+                                        id={`select-project-manager`}
+                                        className="form-control select2"
+                                        style={{ width: "100%" }}
+                                        items={
+                                            user.list.length ? user.list.map(user => { return { value: user ? user._id : null, text: user ? `${user.name} - ${user.email}` : "" } }) : []
+                                        }
+                                        onChange={handleManagerProject}
+                                        value={managerProject}
+                                        multiple={true}
+                                    />
+                                </div>
+                                <div className={`form-group`}>
+                                    <label>Mô tả</label>
+                                    <input type="text" className="form-control" value={description} onChange={handleProjectDescription}></input>
+                                </div>
+                                <div>
+                                    <label>Người tham gia dự án</label>
+                                    <SelectBox
+                                        id={`select-project-memember`}
+                                        className="form-control select2"
+                                        style={{ width: "100%" }}
+                                        items={
+                                            user.list.length ? user.list.map(user => { return { value: user ? user._id : null, text: user ? `${user.name} - ${user.email}` : "" } }) : []
+                                        }
+                                        onChange={handleMemberProject}
+                                        value={memberProject}
+                                        multiple={true}
+                                    />
+                                </div>
                             </div>
-                            <div className={`form-group`}>
-                                <label>Mã dự án</label>
-                                <input type="text" className="form-control" value={code} onChange={handleProjectCode}></input>
+                            {/* </div> */}
+                            <div>
+                                <div className="col-xs- 12 col-sm-5 col-md-5 col-lg-5">
+                                    {/* <div className="form-group">
+                                        <label>Ngày bắt đầu</label>
+                                        <DatePicker
+                                            id={`project-state-date`}
+                                            onChange={handleStartDate}
+                                        />
+                                    </div>
+                                    <div className="form-group">
+                                        <label>Ngày kết thúc</label>
+                                        <DatePicker
+                                            id={`project-end-date`}
+                                            onChange={handleEndDate}
+                                        />
+                                    </div> */}
+                                </div>
+                            </div>
+                            <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                {/* <div className="form-group">
+                                    <label>Dự án cha</label>
+                                    <TreeSelect data={list} value={projectParent} handleChange={handleParent} mode="radioSelect" />
+                                </div> */}
+                            </div>
+                            <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                {/* <div>
+                                    <label>Người quản trị dự án</label>
+                                    <SelectBox
+                                        id={`select-project-manager`}
+                                        className="form-control select2"
+                                        style={{ width: "100%" }}
+                                        items={
+                                            user.list.length ? user.list.map(user => { return { value: user ? user._id : null, text: user ? `${user.name} - ${user.email}` : "" } }) : []
+                                        }
+                                        onChange={handleManagerProject}
+                                        value={managerProject}
+                                        multiple={true}
+                                    />
+                                </div> */}
+                            </div>
+                            <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                {/* <div className={`form-group`}>
+                                    <label>Mô tả</label>
+                                    <input type="text" className="form-control" value={description} onChange={handleProjectDescription}></input>
+                                </div> */}
                             </div>
                         </div>
                     </div>
-                    <div>
-                        <div className="col-xs- 12 col-sm-5 col-md-5 col-lg-5">
-                            <div className="form-group">
-                                <label>Ngày bắt đầu</label>
-                                <DatePicker
-                                    id={`project-state-date`}
-                                    onChange={handleStartDate}
-                                />
-                            </div>
-                            <div className="form-group">
-                                <label>Ngày kết thúc</label>
-                                <DatePicker
-                                    id={`project-end-date`}
-                                    onChange={handleEndDate}
-                                />
-                            </div>
-                        </div>
-                    </div>
-                    <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                        <div className="form-group">
-                            <label>Dự án cha</label>
-                            <TreeSelect data={list} value={projectParent} handleChange={handleParent} mode="radioSelect" />
-                        </div>
-                    </div>
-                    <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                        <div>
-                            <label>Người quản trị dự án</label>
-                            <SelectBox
-                                id={`select-project-manager`}
-                                className="form-control select2"
-                                style={{ width: "100%" }}
-                                items={
-                                    user.list.length ? user.list.map(user => { return { value: user ? user._id : null, text: user ? `${user.name} - ${user.email}` : "" } }) : []
-                                }
-                                onChange={handleManagerProject}
-                                value={managerProject}
-                                multiple={true}
-                            />
-                        </div>
-                    </div>
-                    <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                        <div className={`form-group`}>
-                            <label>Mô tả</label>
-                            <input type="text" className="form-control" value={description} onChange={handleProjectDescription}></input>
-                        </div>
-                    </div>
-
                 </form>
             </DialogModal>
         </React.Fragment>
