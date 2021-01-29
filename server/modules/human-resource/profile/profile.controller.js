@@ -98,9 +98,8 @@ exports.searchEmployeeProfiles = async (req, res) => {
                 page: Number(req.query.page),
                 limit: Number(req.query.limit),
             }
-            console.log('qoaoaoao', params);
-            data = await EmployeeService.searchEmployeeForPackage(req.portal, params, req.user.company._id);
-    
+            console.log('search params', params);
+            data = await EmployeeService.searchEmployeeForPackage(req.portal, params, req.user.company);
         } else {
             let params = {
                 organizationalUnits: req.query.organizationalUnits,
@@ -125,6 +124,7 @@ exports.searchEmployeeProfiles = async (req, res) => {
             content: data
         });
     } catch (error) {
+        console.log(error);
         await Log.error(req.user.email, 'GET_EMPLOYEES', req.portal);
         res.status(400).json({
             success: false,

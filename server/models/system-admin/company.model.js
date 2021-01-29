@@ -29,6 +29,22 @@ const CompanySchema = new Schema({
     },
     organizationalUnitImage: {
         type: String,
+    },
+    address: {
+        type: String,
+    },
+    phone: {
+        type: String,
+    },
+    contactPerson:{
+        type: Schema.Types.ObjectId,
+        ref: 'User'
+    },
+    fax: {
+        type: String
+    },
+    email: {
+        type: String
     }
 },{
     timestamps: true

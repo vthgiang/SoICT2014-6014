@@ -38,6 +38,8 @@ class SearchEmployeeForPackage extends Component {
             status: 'active',
             page: 0,
             limit: 5,
+            listSuggest: {},
+            listSuggestForProps: {}
         }
     }
 
@@ -87,6 +89,38 @@ class SearchEmployeeForPackage extends Component {
             }
         });
         window.$(`#modal-view-cv-form-employee${value._id}`).modal('show');
+    }
+
+    /**
+     *  Xóa đề xuất
+     * @param {*} value : Thông tin nhân viên muốn xem
+     */
+    deleteSuggest = async (id) => {
+        console.log('state.listSuggest', id, this.state.listSuggest);
+        await this.setState(state => {
+            delete state.listSuggest[id];
+            state.listSuggestForProps[id] = {
+                ...state.listSuggestForProps[id],
+                suggested: false
+            }
+            return {
+                ...state,
+            }
+        });
+    }
+
+    /**
+     *  Thêm đề xuất
+     * @param {*} value : Thông tin nhân viên muốn xem
+     */
+    addSuggest = async (id, x) => {
+        await this.setState(state => {
+            state.listSuggest[id] = x;
+            state.listSuggestForProps[id] = x;
+            return {
+                ...state,
+            }
+        });
     }
 
     /**
@@ -200,8 +234,11 @@ class SearchEmployeeForPackage extends Component {
     };
 
     handlePosition = (value) => {
-        console.log('value', value);
-        this.setState({ position: value[0] });
+        let { career } = this.props;
+        let listPosition = career?.listPosition.map(elm => { return { ...elm, id: elm._id } });
+        let position = listPosition?.find(e => e._id === value[0]);
+        console.log('value', value, position);
+        this.setState({ position: value[0], posName: position?.name });
     };
 
     /**
@@ -224,7 +261,28 @@ class SearchEmployeeForPackage extends Component {
 
     /** Function bắt sự kiện tìm kiếm */
     handleSunmitSearch = async () => {
-        this.props.getAllEmployee(this.state);
+        console.log('state', this.state);
+        let data = this.state;
+        let keySearch = {
+            organizationalUnits: data.organizationalUnits,
+            professionalSkill: data.professionalSkill,
+            majorInfo: data.majorInfo,
+            certificatesName: data.certificatesName,
+            certificatesType: data.certificatesType,
+            certificatesEndDate: data.certificatesEndDate,
+            field: data.field,
+            package: data.package,
+            position: data.position,
+            action: data.action,
+            exp: data.exp,
+            sameExp: data.sameExp,
+            page: data.page,
+            limit: data.limit,
+            searchForPackage: true,
+            status: "active"
+        }
+        console.log('keysearch', keySearch, this.state);
+        this.props.getAllEmployee(keySearch);
     }
 
     /**
@@ -322,65 +380,160 @@ class SearchEmployeeForPackage extends Component {
         return res;
     }
 
+    getYear = (date) => {
+        let t1 = new Date(date).getTime();
+        let t2 = new Date().getTime();
+
+        let year = Math.round((t2 - t1) / (365 * 24 * 3600 * 1000) * 10) / 10;
+        return year;
+    }
+
     convertExportSearchResult = () => {
-        let datas = [];
+        let datasA = [];
+        let datasB = [];
+        let datasC = [];
         const { employeesManager } = this.props;
+        const { listSuggest } = this.state;
+
         let listEmployees = [];
         if (employeesManager.listEmployees) {
             listEmployees = employeesManager.listEmployees;
         }
-        for (let i in listEmployees) {
-            let x = listEmployees[i];
-            let out = {
-                STT: Number(i) + 1,
-                fullName: x.fullName,
-                emailInCompany: x.emailInCompany,
-                birthdate: this.formatDate(x.birthdate),
 
-                degree: x.degrees?.length > 0 ? x.degrees?.map((e, key) => {
-                    return `- ${e?.name} - Năm: ${e?.year} - Loại: ${this.formatDegreeType(e?.degreeType)}`
-                }).join("\n\n") : "Chưa có dữ liệu",
-
-                professionalSkill: this.formatSkill(x.professionalSkill),
-
-                major: x.major?.length > 0 ? (x.major?.map((e, key) => {
-                    return `- ${e?.group?.name} - ${e?.specialized?.name}`
-                })).join("\n\n") : `Chưa có dữ liệu`,
-
-                certificates: x.certificates?.length > 0 ? x.certificates?.map((e, key) => {
-                    return `- ${e?.name} - ${e?.issuedBy} - Hiệu lực: ${this.formatDate(e?.endDate)}`
-                }).join("\n\n") : <p>Chưa có dữ liệu</p>,
-
-                career: x.career?.length > 0 ? (x.career?.map((e, key) => {
-                    return `- (${this.formatDate(e.startDate)} >> ${this.formatDate(e.endDate)}):\nDự án: ${e?.package}\nChức vụ: ${e?.position?.name}\nKinh nghiệm chuyên môn và quản lý có liên quan:\n${e?.action.map(act => `  + ${act?.name}`).join("\n")}`
-                })).join("\n\n").split("\n").join("\n") : `Chưa có dữ liệu`,
+        let stt = 0
+        // mẫu 11A
+        for (let a in listSuggest) {
+            let x = listSuggest[a];
+            stt = stt + 1;
+            let outA = {
+                STT: stt,
+                fullName: x.emp?.fullName,
+                position: x.position,
             }
-            datas = [...datas, out];
+            datasA = [...datasA, outA];
+        }
+
+        stt = 0;
+        // mẫu 11B
+        for (let b in listSuggest) {
+            let x = listSuggest[b].emp;
+            stt = stt + 1;
+            let outB = {
+                STT: stt,
+                fullName: x?.fullName,
+                position: x?.roles?.map(e => e.roleId.name).join(", "),
+                birthdate: this.formatDate(x?.birthdate),
+
+                professionalSkill: (`- Trình độ: ${this.formatSkill(x?.professionalSkill)}\n- Chứng chỉ: ${x?.certificates?.length > 0 && x?.certificates?.map((e, key) => {
+                    return `- ${e?.name} - ${e?.issuedBy} - Hiệu lực: ${this.formatDate(e?.endDate)}`
+                }).join("\n")}`).split("\n").join("\n"),
+
+                boss: x?.company?.name,
+                address: x?.company?.address,
+                jobTitle: `${this.formatSkill(x?.professionalSkill)} ${x?.major?.length > 0 ? `về ${x?.major[0].specialized?.name}` : ""}`,
+                yearExp: this.getYear(x?.experiences[0].startDate),
+                contactPerson: x?.company?.contactPerson?.name,
+                phone: `- Điện thoại: ${x?.company?.phone}\n- Fax: ${x?.company?.fax}\n-Email: ${x?.company?.email}`,
+            }
+            datasB = [...datasB, outB];
+        }
+
+
+        stt = 0;
+        // mẫu 11C
+        for (let i in listSuggest) {
+            let x = listSuggest[i].emp;
+            stt = stt + 1;
+            let outC = {
+                STT: stt,
+                fullName: x?.fullName,
+                startDate: x?.career?.length > 0 ? this.formatDate(x?.career[0].startDate) : "Không có dữ liệu",
+                endDate: x?.career?.length > 0 ? this.formatDate(x?.career[0].startDate) : "Không có dữ liệu",
+                career: x?.career?.length > 0 ? `-Dự án: ${x?.career[0].package}\n-Chức vụ: ${x?.career[0].position?.name}\n-Kinh nghiệm chuyên môn và quản lý có liên quan:\n${x?.career[0].action.map(act => `  + ${act?.name}`).join("\n")}`.split("\n").join("\n") : `Chưa có dữ liệu`,
+            }
+            datasC = [...datasC, outC];
+            let lengthOfCareer = x?.career.length;
+            if (lengthOfCareer > 1) {
+                for (let k = 1; k < lengthOfCareer; k++) {
+                    outC = {
+                        STT: "",
+                        fullName: "",
+                        startDate: x?.career?.length > 0 ? this.formatDate(x.career[k].startDate) : "Không có dữ liệu",
+                        endDate: x?.career?.length > 0 ? this.formatDate(x.career[k].startDate) : "Không có dữ liệu",
+                        career: x?.career?.length > 0 ? `-Dự án: ${x?.career[k].package}\n-Chức vụ: ${x?.career[k].position?.name}\n-Kinh nghiệm chuyên môn và quản lý có liên quan:\n${x?.career[k].action.map(act => `  + ${act?.name}`).join("\n")}`.split("\n").join("\n") : `Chưa có dữ liệu`,
+                    }
+                    datasC = [...datasC, outC];
+                }
+            }
         }
 
 
         let res = {
             fileName: "Danh sách tìm kiếm nhân viên",
-            dataSheets: [{
-                sheetName: "Sheet1",
-                sheetTitle: 'Danh sách tìm kiếm nhân viên',
-                tables: [{
-                    rowHeader: 1,
-                    merges: [],
-                    columns: [
-                        { key: "STT", value: "STT", width: 7  },
-                        { key: "fullName", value: "Họ và tên", width: 20 },
-                        { key: "emailInCompany", value: "Email", width: 25 },
-                        { key: "birthdate", value: "Ngày sinh", width: 25 },
-                        { key: "degree", value: "Bằng cấp", width: 25 },
-                        { key: "professionalSkill", value: "Trình độ chuyên môn", width: 25 },
-                        { key: "major", value: "Chuyên ngành", width: 25 },
-                        { key: "certificates", value: "Chứng chỉ", width: 25 },
-                        { key: "career", value: "Vị trí công việc", width: 60 },
-                    ],
-                    data: datas
-                }]
-            }]
+            dataSheets: [
+                {
+                    sheetName: "A.Bảng đề xuất nhân sự chủ chốt",
+                    sheetTitle: 'Bảng đề xuất nhân sự chủ chốt',
+                    tables: [{
+                        rowHeader: 1,
+                        merges: [],
+                        columns: [
+                            { key: "STT", value: "STT", width: 7 },
+                            { key: "fullName", value: "Họ và tên", width: 20 },
+                            { key: "position", value: "Vị trí công việc", width: 30 },
+                        ],
+                        data: datasA
+                    }]
+                },
+                {
+                    sheetName: "B.Bảng lý lịch chuyên môn của nhân sự chủ chốt",
+                    sheetTitle: 'Bảng lý lịch chuyên môn của nhân sự chủ chốt',
+                    tables: [{
+                        rowHeader: 2,
+                        merges: [{
+                            key: "info",
+                            columnName: "Thông tin nhân sự",
+                            keyMerge: 'STT',
+                            colspan: 5
+                        }, {
+                            key: "career",
+                            columnName: "Công việc hiện tại",
+                            keyMerge: 'boss',
+                            colspan: 6
+                        }],
+                        columns: [
+                            { key: "STT", value: "STT", width: 7 },
+                            { key: "fullName", value: "Tên", width: 20 },
+                            { key: "position", value: "Vị trí", width: 25 },
+                            { key: "birthdate", value: "Ngày, tháng, năm sinh", width: 25 },
+                            { key: "professionalSkill", value: "Trình độ chuyên môn", width: 25 },
+                            { key: "boss", value: "Tên người sử dụng lao động", width: 30 },
+                            { key: "address", value: "Địa chi người sử dụng lao động", width: 30 },
+                            { key: "jobTitle", value: "Chức danh", width: 25 },
+                            { key: "yearExp", value: "Số năm làm việc cho người sủ dụng lao động hiện tại", width: 15 },
+                            { key: "contactPerson", value: "Người liên lạc (tưởng phòng / cán bộ phụ trách nhân sự)", width: 25 },
+                            { key: "phone", value: "Điện thoại/ Fax/ Email", width: 35 },
+                        ],
+                        data: datasB
+                    }]
+                },
+                {
+                    sheetName: "C.Bảng kinh nghiệm chuyên môn",
+                    sheetTitle: 'Bảng kinh nghiệm chuyên môn',
+                    tables: [{
+                        rowHeader: 1,
+                        merges: [],
+                        columns: [
+                            { key: "STT", value: "STT", width: 7 },
+                            { key: "fullName", value: "Tên nhân sự chủ chốt", width: 20 },
+                            { key: "startDate", value: "Từ ngày", width: 25 },
+                            { key: "endDate", value: "Đến ngày", width: 25 },
+                            { key: "career", value: "Dự án/ Chức vụ/ Kinh nghiệm chuyên môn và quản lý có liên quan", width: 60 },
+                        ],
+                        data: datasC
+                    }]
+                }
+            ]
         }
         return res;
     }
@@ -433,12 +586,13 @@ class SearchEmployeeForPackage extends Component {
         const { showMore, importEmployee, limit, page, currentRow, currentRowView,
             certificatesEndDate, certificatesType, certificatesName,
             professionalSkill, majorInfo, exp, sameExp, majorID,
-            field, position, action } = this.state; // filterField, filterPosition, filterAction, 
+            field, position, posName, action, listSuggest, listSuggestForProps } = this.state; // filterField, filterPosition, filterAction, 
 
         let listEmployees = [];
         if (employeesManager.listEmployees) {
             listEmployees = employeesManager.listEmployees;
         }
+        console.log('listEmployees1', listEmployees);
 
         let pageTotal = ((employeesManager.totalList % limit) === 0) ?
             parseInt(employeesManager.totalList / limit) :
@@ -599,16 +753,17 @@ class SearchEmployeeForPackage extends Component {
             };
         }
 
-        console.log('listEmployees', career,);
+        console.log('listEmployees2', listEmployees);
 
         return (
             <div className="box">
                 <div className="box-body qlcv">
-                    <div className="form-inline">
-                        {/* Button export nhân viên */}
-                        {<ExportExcel id="export-process-template" exportData={this.convertExportSearchResult()} buttonName={"Xuất file tìm kiếm"} style={{ marginLeft: 5, marginTop: 5 }} />}
-                    </div>
-
+                    { // Object.keys(listSuggest).length > 0 &&
+                        <div className="form-inline">
+                            {/* Button export nhân viên */}
+                            {<ExportExcel id="export-process-template" exportData={this.convertExportSearchResult()} buttonName={"Xuất file tìm kiếm"} style={{ marginLeft: 5, marginTop: 5 }} />}
+                        </div>
+                    }
                     <div className="form-inline">
                         {/* Vị trí công việc  */}
                         <div className="form-group">
@@ -737,6 +892,8 @@ class SearchEmployeeForPackage extends Component {
                         </div>
                     </div>
 
+
+                    <h4>Danh sách nhân viên tìm kiếm</h4>
                     <table id="employee-table" className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
@@ -771,7 +928,7 @@ class SearchEmployeeForPackage extends Component {
                                         <td>{x.fullName}</td>
                                         <td>
                                             {x.career?.length > 0 ? (x.career?.map((e, key) => {
-                                                return <li key={key}>{new Date(e.startDate).getFullYear()} - {new Date(e.endDate).getFullYear()} : {e?.position?.name}</li>
+                                                return <li key={key}>{new Date(e.startDate).getFullYear()} - {new Date(e.endDate).getFullYear()} : {e?.position? (e?.position?.name) : "Không có thông tin vị trí"}</li>
                                             })) : <p>Chưa có dữ liệu</p>}
                                         </td>
                                         <td>{this.formatSkill(x.professionalSkill)}</td>
@@ -803,7 +960,45 @@ class SearchEmployeeForPackage extends Component {
                     }
 
                     <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={currentPage} func={this.setPage} />
+
+                    <h4>Bảng đề xuất nhân sự chủ chốt</h4>
+                    <table id="employee-table-suggest" className="table table-striped table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th>{translate('human_resource.staff_name')}</th>
+                                <th>Vị trí công việc</th>
+                                <th style={{ width: '120px', textAlign: 'center' }}>{translate('general.action')}
+                                    <DataTableSetting
+                                        tableId="employee-table-suggest"
+                                        columnArr={[
+                                            translate('human_resource.staff_name'),
+                                            "Vị trí công việc",
+                                        ]}
+                                        limit={this.state.limit}
+                                        setLimit={this.setLimit}
+                                        hideColumnOption={true}
+                                    />
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {Object.keys(listSuggest).length !== 0 &&
+                                Object.values(listSuggest).map((x, index) => (
+                                    <tr key={index}>
+                                        <td>{x.emp.fullName}</td>
+                                        <td>{x.position}</td>
+                                        <td>
+                                            <a onClick={() => this.deleteSuggest(x.id)} style={{ width: '5px' }} title={"Xóa đề xuất nhân sự"}><i style={{ color: "red" }} className="material-icons">delete</i></a>
+                                        </td>
+                                    </tr>
+                                ))}
+                        </tbody>
+                    </table>
+                    {
+                        (Object.keys(listSuggest).length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                    }
                 </div>
+
                 {/* From thêm mới thông tin nhân viên */}
                 <EmployeeCreateForm />
 
@@ -814,6 +1009,14 @@ class SearchEmployeeForPackage extends Component {
                 {/* From xem thông tin nhân viên */
                     <ViewEmployeeCVForm
                         _id={currentRowView ? currentRowView._id : ""}
+                        company={currentRowView?.company}
+                        experiences={currentRowView?.experiences}
+                        suggestItem={listSuggestForProps[currentRowView?._id]}
+                        emp={currentRowView}
+                        position={posName}
+
+                        addSuggest={this.addSuggest}
+                        deleteSuggest={this.deleteSuggest}
                     />
                 }
                 {/* From chinh sửa thông tin nhân viên */

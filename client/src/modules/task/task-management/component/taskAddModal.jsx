@@ -410,7 +410,7 @@ class TaskAddModal extends Component {
                     taskActions: nextProps.task.taskActions,
                 }
             });
-            return false;
+            return true;
         }
 
         if (nextProps.parentTask !== this.props.parentTask) { // Khi đổi nhấn add new task sang nhấn add subtask hoặc ngược lại
@@ -565,7 +565,7 @@ class TaskAddModal extends Component {
                                 <div className={`form-group ${newTask.errorOnDescription === undefined ? "" : "has-error"}`}>
                                     <label className="control-label">{translate('task.task_management.detail_description')}<span className="text-red">*</span></label>
                                     <QuillEditor
-                                        id={`task-add-modal`}
+                                        id={`task-add-modal-quill-${this.props.id}`}
                                         table={false}
                                         embeds={false}
                                         getTextData={this.handleChangeTaskDescription}
