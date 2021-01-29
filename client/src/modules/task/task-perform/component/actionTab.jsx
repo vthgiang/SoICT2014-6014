@@ -191,7 +191,9 @@ class ActionTab extends Component {
             this.setState(state => {
                 return {
                     ...state,
-                    id: nextProps.id
+                    id: nextProps.id,
+                    showBoxAddLogTimer: false,
+                    checkDateAddLog: false,
                 }
             })
             this.props.getTimesheetLogs(nextProps.id);
