@@ -485,7 +485,7 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
                     return { top: 0, left: 240 };
                 },
                 contents: function (data) {
-                    let value = '<div style="overflow-y: scroll; max-height: 300px;">';
+                    let value = '<div style="overflow-y: scroll; max-height: 300px; pointer-events: auto;">';
                     value = value + '<table class=\'c3-tooltip\'>';
 
                     data.forEach((val) => {

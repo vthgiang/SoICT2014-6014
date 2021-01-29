@@ -599,7 +599,7 @@ class TrendsInChildrenOrganizationalUnitKpiChart extends Component {
                     return position;
                 },
                 contents: function (data) {
-                    let value = '<div style="overflow-y: scroll; max-height: 300px;">';
+                    let value = '<div style="overflow-y: scroll; max-height: 300px; pointer-events: auto;">';
                     value = value + '<table class=\'c3-tooltip\'>';
                     data.forEach((val) => {
                         value = value + '<tr><td class=\'name\'>' + val.name + '</td>'
