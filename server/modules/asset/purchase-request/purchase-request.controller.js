@@ -1,6 +1,7 @@
 const RecommendProcureService = require('./purchase-request.service');
 const Logger = require(`../../../logs`);
-
+const NotificationServices = require(`../../notification/notification.service`);
+const { sendEmail } = require(`../../../helpers/emailHelper`);
 /**
  * Lấy danh sách phiếu đề nghị mua sắm thiết bị
  */
@@ -32,11 +33,30 @@ exports.searchPurchaseRequests = async (req, res) => {
 exports.createPurchaseRequest = async (req, res) => {
     try {
         var newRecommendProcure = await RecommendProcureService.createPurchaseRequest(req.portal, req.user.company._id, req.body, req.files);
+
+        if (newRecommendProcure.email) {
+            var email = newRecommendProcure.email;
+            var html = newRecommendProcure.html;
+            var noti = {
+                organizationalUnits: [],
+                title: "Đăng ký mua sắm thiết bị" + " " + newRecommendProcure.equipmentName,
+                level: "general",
+                content: html,
+                sender: newRecommendProcure.user.name,
+                users: newRecommendProcure.manager,
+                type: 2,
+                shortContent: `<p><strong>${newRecommendProcure.user.name}</strong> xin đăng mua sắm thiết bị:  <strong>${newRecommendProcure.equipmentName}</strong>.</p>`
+            };
+
+            await NotificationServices.createNotification(req.portal, req.user.company._id, noti);
+            await sendEmail(email, "Bạn có thông báo mới", '', html);
+        }
+
         await Logger.info(req.user.email, 'CREATE_PURCHASE_REQUEST', req.portal);
         res.status(200).json({
             success: true,
             messages: ["create_purchase_request_success"],
-            content: newRecommendProcure
+            content: newRecommendProcure.createRecommendProcure
         });
 
     } catch (error) {
@@ -80,12 +100,30 @@ exports.deletePurchaseRequest = async (req, res) => {
  */
 exports.updatePurchaseRequest = async (req, res) => {
     try {
-        var recommendprocureUpdate = await RecommendProcureService.updatePurchaseRequest(req.portal, req.params.id, req.body, req.files);
+        var recommendprocureUpdate = await RecommendProcureService.updatePurchaseRequest(req.portal, req.params.id, req.body, req.files, req.user._id);
+        if (recommendprocureUpdate.email) {
+            var email = recommendprocureUpdate.email;
+            var html = recommendprocureUpdate.html;
+            var noti = {
+                organizationalUnits: [],
+                title: "Sửa đăng ký mua sắm thiết bị" + " " + recommendprocureUpdate.equipmentName,
+                level: "general",
+                content: html,
+                sender: recommendprocureUpdate.user.name,
+                users: recommendprocureUpdate.manager,
+                type: 2,
+                shortContent: `<p><strong>${recommendprocureUpdate.user.name}</strong> sửa đăng ký mua sắm thiết bị:  <strong>${recommendprocureUpdate.equipmentName}</strong>.</p>`
+            };
+
+            await NotificationServices.createNotification(req.portal, req.user.company._id, noti);
+            await sendEmail(email, "Bạn có thông báo mới", '', html);
+        }
+
         await Logger.info(req.user.email, 'EDIT_PURCHASE_REQUEST', req.portal);
         res.status(200).json({
             success: true,
             messages: ["edit_purchase_request_success"],
-            content: recommendprocureUpdate
+            content: recommendprocureUpdate.recommendProcure
         });
 
     } catch (error) {

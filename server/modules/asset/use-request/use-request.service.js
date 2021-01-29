@@ -7,7 +7,6 @@ const mongoose = require("mongoose");
 /**
  * Gửi email khi đăng ký sử dụng tài sản
  * @param {*} portal id công ty
- * @param {*} assetIncident tài sản gặp sự cố
  */
 exports.sendEmailToManager = async (portal, asset, userId, type) => {
     let idManager = [], privilege, roleIds = [], userRoles, email = [];
