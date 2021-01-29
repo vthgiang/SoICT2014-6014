@@ -391,7 +391,7 @@ class ComponentInfor extends Component {
                                                 <tr>
                                                     <th className="col-fixed" style={{ width: 80 }}>STT</th>
                                                     <th>{translate('human_resource.dashboard_personal.fullname')}</th>
-                                                    <th>{translate('human_resource.dashboard_personal.task_total')}</th>
+                                                    <th className="col-sort">{translate('human_resource.dashboard_personal.task_total')}</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -432,7 +432,7 @@ class ComponentInfor extends Component {
                                                 <tr>
                                                     <th className="col-fixed" style={{ width: 80 }}>STT</th>
                                                     <th>{translate('human_resource.dashboard_personal.fullname')}</th>
-                                                    <th>{translate('human_resource.dashboard_personal.reason_praise')}</th>
+                                                    <th className="col-sort">{translate('human_resource.dashboard_personal.reason_praise')}</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -468,7 +468,7 @@ class ComponentInfor extends Component {
                                                 <tr>
                                                     <th className="col-fixed" style={{ width: 80 }}>STT</th>
                                                     <th>{translate('human_resource.dashboard_personal.fullname')}</th>
-                                                    <th>{translate('human_resource.dashboard_personal.reason_discipline')}</th>
+                                                    <th className="col-sort">{translate('human_resource.dashboard_personal.reason_discipline')}</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -507,7 +507,7 @@ class ComponentInfor extends Component {
                                                 <tr>
                                                     <th>STT</th>
                                                     <th>{translate('human_resource.dashboard_personal.fullname')}</th>
-                                                    <th>{translate('human_resource.dashboard_personal.total_hours')}</th>
+                                                    <th className="col-sort">{translate('human_resource.dashboard_personal.total_hours')}</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -548,7 +548,7 @@ class ComponentInfor extends Component {
                                                 <tr>
                                                     <th>STT</th>
                                                     <th>{translate('human_resource.dashboard_personal.fullname')}</th>
-                                                    <th>{translate('human_resource.dashboard_personal.total_hours')}</th>
+                                                    <th className="col-sort">{translate('human_resource.dashboard_personal.total_hours')}</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
