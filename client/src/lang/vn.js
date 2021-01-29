@@ -572,7 +572,8 @@ export default {
             history_report: "Lịch sử thống kê",
             archive: "Lưu trữ",
 
-            roles: "Những vị trí có quyền xem mẫu này",
+            roles: "Những vị trí có quyền xem tài liệu này",
+            users: "Những người dùng có quyền xem tài liệu này",
             issuing_date: "Ngày ban hành",
             effective_date: "Ngày áp dụng",
             expired_date: "Ngày hết hạn",

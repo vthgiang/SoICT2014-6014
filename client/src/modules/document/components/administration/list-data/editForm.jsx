@@ -873,8 +873,8 @@ class EditForm extends Component {
                                                     multiple={true}
                                                 />
                                             </div>
-                                            <div>
-                                                <label>{translate('manage_role.users')}</label>
+                                            <div className="form-group">
+                                                <label>{translate('document.users')}</label>
                                                 <SelectBox
                                                     id={`select-edit-document-user-can-view`}
                                                     className="form-control select2"
