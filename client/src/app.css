@@ -109,6 +109,8 @@ a:hover, a:active, a:focus {
 .c3-tooltip-container {
     max-height: none !important;
     width: 50%;
+}
+.c3-chart-container.enable-pointer .c3-tooltip-container {
     pointer-events: auto !important;
 }
 

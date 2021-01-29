@@ -686,7 +686,7 @@ class DetailTaskTab extends Component {
                 let newMonth = dateOfPrevEval.getMonth() - 1;
                 if (newMonth < 0) {
                     newMonth += 12;
-                    dateOfPrevEval.setYear(dateOfPrevEval.getYear() - 1);
+                    dateOfPrevEval.setYear(dateOfPrevEval.getFullYear() - 1);
                 }
                 dateOfPrevEval.setDate(15);
                 dateOfPrevEval.setMonth(newMonth);

@@ -629,7 +629,7 @@ class TrendsInChildrenOrganizationalUnitKpiChart extends Component {
         return (
             <React.Fragment>
                 {currentKpi ?
-                    <section id={"trendsInChildrenUnit"} className="c3-chart-container">
+                    <section id={"trendsInChildrenUnit"} className="c3-chart-container enable-pointer">
                         <div ref="chart"></div>
                         <CustomLegendC3js
                             chart={this.chart}

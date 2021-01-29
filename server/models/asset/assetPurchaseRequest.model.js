@@ -63,16 +63,16 @@ const AssetPurchaseRequestSchema = new Schema({
         //ghi chú
         type: String,
     },
-    approver: {
+    approver: [{
         //người phê duyệt
         type: Schema.Types.ObjectId,
         ref: "User",
-    },
+    }],
     status: {
         //trạng thái, tình trạng: chờ phê duyệt || không chấp nhận || đã chấp nhận
         type: String,
     }
-},{
+}, {
     timestamps: true,
     toJSON: { virtuals: true },
 });
