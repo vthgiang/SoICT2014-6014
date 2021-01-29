@@ -254,7 +254,7 @@ class CareerMajorTab extends Component {
                                 {career && career.length !== 0 &&
                                     career.map((x, index) => (
                                         <tr key={index}>
-                                            <td>{x.field?.name}</td>
+                                            <td>{x.field.map(e=> e.name).join(", ")}</td>
                                             {(type === "view") && <td>{x.package}</td>}
                                             <td>{x.position?.name}</td>
                                             <td>{x.action?.map((e, key) => {

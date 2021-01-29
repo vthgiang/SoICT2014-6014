@@ -72,6 +72,7 @@ export const performTaskAction = {
     sortActions,
     refreshDataAfterComment,
     refreshDataAfterCreateAction,
+    evaluationAllAction,
 };
 
 
@@ -1133,4 +1134,15 @@ function refreshDataAfterComment(data) {
 function refreshDataAfterCreateAction(data) {
     return dispatch =>
         dispatch({ type: performTaskConstants.REFRESH_DATA_AFTER_CREATE_ACTION_SUCCESS, payload: data });
+}
+
+function evaluationAllAction(taskId, evaluation) {
+    return dispatch => {
+        dispatch({ type: performTaskConstants.EVALUATION_ALL_ACTION_REQUEST });
+        performTaskService.evaluationAllAction(taskId, evaluation)
+            .then(
+                payload => dispatch({ type: performTaskConstants.EVALUATION_ALL_ACTION_SUCCESS, payload }),
+                error => dispatch({ type: performTaskConstants.EVALUATION_ALL_ACTION_FAILURE, error })
+            );
+    }
 }

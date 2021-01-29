@@ -65,7 +65,7 @@ class Notification extends Component {
             tabPaneScroll.removeClass("StyleScrollDiv StyleScrollDiv-y");
             tabPaneScroll.css("maxHeight", "");
         }
-        
+
         this.setState(state => {
             return {
                 ...state,
@@ -97,8 +97,12 @@ class Notification extends Component {
         let notifyUnRead = notify.filter(notification => !notification.readed);
         const count = notifyUnRead.length;
         let notifyTaskUnRead = [], notifyAssetUnRead = [], notifyKPIUnRead = [], notifyDefault = [];
+
         notifyUnRead.forEach(obj => {
-            let type = parseInt(obj.type);
+            let type;
+            if (obj.associatedDataObject && obj.associatedDataObject.dataType) {
+                type = parseInt(obj.associatedDataObject.dataType);
+            }
             switch (type) {
                 case 1:
                     notifyTaskUnRead = [...notifyTaskUnRead, obj]
@@ -125,7 +129,7 @@ class Notification extends Component {
                             count > 0 && <span className="label label-warning">{count}</span>
                         }
                     </a>
-                    <ul className="dropdown-menu notify-dropdown" style={{ borderColor: 'gray', width: '400px' }}>
+                    <ul className="dropdown-menu notify-dropdown">
                         <li className="header text-center"><strong className="text-red">{notify.filter(notification => !notification.readed).length}</strong> {translate('notification.news')}</li>
                         <div className="nav-tabs-custom">
                             <ul className="notify-tabs nav nav-tabs">
@@ -134,7 +138,7 @@ class Notification extends Component {
                                 <li><a className="notify-action" href="#allNotificationOfAsset" data-toggle="tab" onClick={() => this.checkTabPaneScroll("allNotificationOfAsset")}>{`Tài sản (${notifyAssetUnRead.length})`}</a></li>
                                 <li><a className="notify-action" href="#allNotificationOfKPI" data-toggle="tab" onClick={() => this.checkTabPaneScroll("allNotificationOfKPI")}>{`KPI (${notifyKPIUnRead.length})`}</a></li>
                                 <a style={{ display: 'flex', alignItems: 'center', marginRight: '5px' }}>
-                                    <span className="material-icons" style={{ cursor: 'pointer' }} onClick={this.handleOnOffSound}>
+                                    <span className="material-icons" style={{ cursor: 'pointer', marginLeft: '15px' }} onClick={this.handleOnOffSound}>
                                         {
                                             sound ? `volume_up` : `volume_off`
                                         }
@@ -155,7 +159,8 @@ class Notification extends Component {
                                                                         <i className="fa fa-bomb text-red" />
                                                         }
                                                         <p className="notify-title" >
-                                                            {notification.shortContent ? parse(notification.shortContent) : notification.title}
+                                                            {notification.associatedDataObject && notification.associatedDataObject.description ?
+                                                                parse(notification.associatedDataObject.description) : notification.title}
                                                             <DateTimeConverter dateTime={notification.createdAt} style={{ display: 'block', fontSize: '12px', color: '#d47979' }} />
                                                         </p>
                                                     </div>
@@ -177,7 +182,8 @@ class Notification extends Component {
                                                                         <i className="fa fa-bomb text-red" />
                                                         }
                                                         <p className="notify-title" >
-                                                            {notification.shortContent ? parse(notification.shortContent) : notification.title}
+                                                            {notification.associatedDataObject && notification.associatedDataObject.description ?
+                                                                parse(notification.associatedDataObject.description) : notification.title}
                                                             <DateTimeConverter dateTime={notification.createdAt} style={{ display: 'block', fontSize: '12px', color: '#d47979' }} />
                                                         </p>
                                                     </div>
@@ -200,7 +206,8 @@ class Notification extends Component {
                                                                         <i className="fa fa-bomb text-red" />
                                                         }
                                                         <p className="notify-title" >
-                                                            {notification.shortContent ? parse(notification.shortContent) : notification.title}
+                                                            {notification.associatedDataObject && notification.associatedDataObject.description ?
+                                                                parse(notification.associatedDataObject.description) : notification.title}
                                                             <DateTimeConverter dateTime={notification.createdAt} style={{ display: 'block', fontSize: '12px', color: '#d47979' }} />
                                                         </p>
                                                     </div>
@@ -222,7 +229,8 @@ class Notification extends Component {
                                                                         <i className="fa fa-bomb text-red" />
                                                         }
                                                         <p className="notify-title" >
-                                                            {notification.shortContent ? parse(notification.shortContent) : notification.title}
+                                                            {notification.associatedDataObject && notification.associatedDataObject.description ?
+                                                                parse(notification.associatedDataObject.description) : notification.title}
                                                             <DateTimeConverter dateTime={notification.createdAt} style={{ display: 'block', fontSize: '12px', color: '#d47979' }} />
                                                         </p>
                                                     </div>

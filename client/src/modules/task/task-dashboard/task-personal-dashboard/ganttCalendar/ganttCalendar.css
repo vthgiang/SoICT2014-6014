@@ -1,0 +1,38 @@
+
+.notAchive {
+    border: 2px solid #d96c49;
+    color: #d96c49;
+    background: #d96c49;
+}
+
+.notAchive .gantt_task_progress {
+    background: #db2536;
+}
+
+.intime {
+    border: 2px solid #34c461;
+    color: #34c461;
+    background: #34c461;
+}
+
+.intime .gantt_task_progress {
+    background: #23964d;
+}
+
+.delay {
+    border: 2px solid #FAC547;
+    color: #FAC547;
+    background: #FAC547;
+}
+
+.delay .gantt_task_progress {
+    background: #F09A07;
+}
+
+.gantt_link_control.task_left, .gantt_link_control.task_right {
+    display: none;
+}
+
+.gantt_task_line.gantt_selected .gantt_link_control div {
+    display: none;
+}

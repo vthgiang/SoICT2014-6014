@@ -2,7 +2,7 @@ const Models = require(`../../../../models`);
 const { EmployeeKpiSet, OrganizationalUnit, Task, EmployeeKpi, User } = Models;
 const mongoose = require("mongoose");
 const { connect } = require(`../../../../helpers/dbHelper`);
-
+const NotificationServices = require(`../../../notification/notification.service`);
 
 /**
  * Lấy tất cả tập KPI hiện tại
@@ -143,7 +143,7 @@ exports.getKpisByMonth = async (portal, data) => {
  * @param {*} id id của kpi set
  */
 
-exports.approveAllKpis = async (portal, id) => {
+exports.approveAllKpis = async (portal, id, companyId) => {
     let employee_kpi_set = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
         .findByIdAndUpdate(id, { $set: { status: 2 } }, { new: true });
     let targets;
@@ -163,6 +163,23 @@ exports.approveAllKpis = async (portal, id) => {
             { path: 'comments.comments.creator', select: 'name email avatar' }
         ])
         .execPopulate();
+
+    if (employee_kpi_set) {
+        const dataNotify = {
+            organizationalUnits: employee_kpi_set.organizationalUnit._id,
+            title: "Phê duyệt KPI",
+            level: "general",
+            content: `<p><strong>${employee_kpi_set.approver.name}</strong> đã phê duyệt tất cả mục tiêu kpi của bạn.</p>`,
+            sender: `${employee_kpi_set.approver._id}`,
+            users: [employee_kpi_set.creator._id],
+            associatedDataObject: {
+                dataType: 3,
+                description: `<p><strong>${employee_kpi_set.approver.name}</strong> đã phê duyệt tất cả mục tiêu kpi của bạn.</p>`
+            }
+        };
+
+        NotificationServices.createNotification(portal, companyId, dataNotify)
+    }
     return employee_kpi_set;
 }
 
@@ -172,8 +189,7 @@ exports.approveAllKpis = async (portal, id) => {
  * @param {*} status: trạng thái
  */
 
-exports.editStatusKpi = async (portal, data, query) => {
-
+exports.editStatusKpi = async (portal, data, query, companyId) => {
     let target = await EmployeeKpi(connect(DB_CONNECTION, portal))
         .findByIdAndUpdate(data.id, { $set: { status: query.status } }, { new: true });
     let employee_kpi_set = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
@@ -193,6 +209,7 @@ exports.editStatusKpi = async (portal, data, query) => {
         }
         return true;
     })
+    console.log('checkFullApprove',checkFullApprove)
     employee_kpi_set = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
         .findByIdAndUpdate(employee_kpi_set._id, { $set: { status: checkFullApprove } }, { new: true })
 
@@ -204,7 +221,34 @@ exports.editStatusKpi = async (portal, data, query) => {
             { path: 'comments.comments.creator', select: 'name email avatar' }
         ])
         .execPopulate();
+    
+    if (employee_kpi_set) {
+        let getKpiApprove = employee_kpi_set.kpis.filter(obj => obj._id.toString() === data.id.toString());
+        getKpiApprove = getKpiApprove[0];
 
+        let content = "";
+        if (checkFullApprove === 2) {
+            content = `<p><strong>${employee_kpi_set.approver.name}</strong> đã phê duyệt mục tiêu <strong>${getKpiApprove.name}</strong> của bạn.</p>`
+        }
+        if (checkFullApprove === 0) {
+            content = `<p><strong>${employee_kpi_set.approver.name}</strong> đã hủy bỏ mục tiêu <strong>${getKpiApprove.name}</strong> của bạn.</p>`
+        }
+        const dataNotify = {
+            organizationalUnits: employee_kpi_set.organizationalUnit._id,
+            title: "Phê duyệt KPI",
+            level: "general",
+            content: content,
+            sender: `${employee_kpi_set.approver._id}`,
+            users: [employee_kpi_set.creator._id],
+            associatedDataObject: {
+                dataType: 3,
+                description: content
+            }
+        };
+
+        NotificationServices.createNotification(portal, companyId, dataNotify)
+    }
+    
     return employee_kpi_set;
 }
 

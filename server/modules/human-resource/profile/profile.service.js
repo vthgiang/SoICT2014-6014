@@ -10,6 +10,10 @@ const {
     EmployeeCourse,
     Notification,
     Timesheet,
+    Company,
+    CareerAction,
+    CareerPosition,
+    CareerField,
 } = require('../../../models');
 
 const {
@@ -568,7 +572,7 @@ exports.searchEmployeeProfiles = async (portal, params, company) => {
             }
         };
     };
-    
+
     // Bắt sự kiện tìm kiếm theo trạng thái
     if (params.status) {
         keySearch = {
@@ -717,6 +721,13 @@ exports.createEmployee = async (portal, data, company, fileInfor) => {
         contracts,
         files
     } = data;
+
+    for(let i in career) {
+        if(career[i] && career[i].position === "undefined") {
+            delete career[i].position;
+        }
+    }
+
     career = this.mergeUrlFileToObject(fileCareer, career);
     major = this.mergeUrlFileToObject(fileMajor, major);
     degrees = this.mergeUrlFileToObject(fileDegree, degrees);
@@ -923,7 +934,24 @@ exports.updateEmployeeInformation = async (portal, id, data, fileInfor, company)
         deleteSocialInsuranceDetails,
         houseHold // dữ liệu về hộ khẩu - thành viên hộ gia đình
     } = data;
-    console.log('dataatatatta\n\n\n\n', data.createCareer, data.editCareer, data.deleteCareer);
+    console.log('\n\n\n\ndataatatatta', data.createCareer, data.editCareer, data.deleteCareer);
+    
+    for(let i in data.createCareer) {
+        if(data.createCareer[i] && data.createCareer[i].position === "undefined") {
+            delete data.createCareer[i].position;
+        }
+    }
+    for(let i in data.editCareer) {
+        if(data.editCareer[i] && data.editCareer[i].position === "undefined") {
+            delete data.editCareer[i].position;
+        }
+    }
+    for(let i in data.deleteCareer) {
+        if(data.deleteCareer[i] && data.deleteCareer[i].position === "undefined") {
+            delete data.deleteCareer[i].position;
+        }
+    }
+
     let avatar = employee.avatar,
         fileDegree = fileInfor.fileDegree,
         fileCertificate = fileInfor.fileCertificate,
@@ -963,6 +991,7 @@ exports.updateEmployeeInformation = async (portal, id, data, fileInfor, company)
                         return x
                     } else {
                         let obj = arrEdit[n];
+                        console.log('pos', obj.position, typeof (obj.position));
                         if (x.urlFile && obj.urlFile && x.urlFile !== obj.urlFile) {
                             let deleteAvatar = `.${x.urlFile}`;
                             if (fs.existsSync(deleteAvatar)) {
@@ -992,17 +1021,17 @@ exports.updateEmployeeInformation = async (portal, id, data, fileInfor, company)
     oldEmployee.contracts = deleteEditCreateObjectInArrayObject(oldEmployee.contracts, deleteContracts, editContracts, createContracts, fileContract);
     oldEmployee.files = deleteEditCreateObjectInArrayObject(oldEmployee.files, deleteFiles, editFiles, createFiles, file);
 
-    let x = oldEmployee.career;
-    let careerEdit = {
-        ...x,
-        package: x.package,
-        field: x.field && x.field._id,
-        position: x.position && x.position._id,
-        action: x.action && x.action.length > 0 && x.action.map(e => e._id),
-    }
+    // let x = oldEmployee.career;
+    // let careerEdit = {
+    //     ...x,
+    //     package: x.package,
+    //     field: x.field && x.field._id,
+    //     position: x.position ? x.position._id : null,
+    //     action: x.action && x.action.length > 0 && x.action.map(e => e._id),
+    // }
 
     // oldEmployee.career = careerEdit;
-    console.log("==oldEmployee.career==\n\n", oldEmployee.career);
+    console.log("\n\n==oldEmployee.career==", oldEmployee.career);
 
     oldEmployee.avatar = avatar;
     oldEmployee.fullName = employee.fullName;
@@ -1837,11 +1866,12 @@ exports.calcSumOfExp = (data) => {
  * @params : Dữ liệu key tìm kiếm
  * @company : Id công ty người tìm kiếm
  */
-exports.searchEmployeeForPackage = async (portal, params, company) => {
+exports.searchEmployeeForPackage = async (portal, params, companyId) => {
     let noResultsPerPage = parseInt(params.limit);
     let pageNumber = parseInt(params.page);
     let keySearch = [
         { $match: { status: "active" } },
+        { $unwind: "$certificates"}
         // {
         //     $match: {
         //         "fullName": {
@@ -1948,12 +1978,27 @@ exports.searchEmployeeForPackage = async (portal, params, company) => {
 
     // Bắt sự kiện tìm kiếm theo action
     if (params.action) {
+        let label = [];
+        for (let i in params.action) {
+            let acts = await CareerAction(connect(DB_CONNECTION, portal)).findOne({
+                _id: params.action[i]
+            });
+            console.log('act', acts);
+            label = [...label, ...acts.label]
+        }
+
+        let listAct = await CareerAction(connect(DB_CONNECTION, portal)).find({
+            label: { $in: label }
+        });
+
+        console.log('list act', listAct, listAct.length);
+
         keySearch = [
             ...keySearch,
             {
                 $match: {
                     "career.action": {
-                        $in: params.action.map(e => mongoose.Types.ObjectId(e))
+                        $in: listAct.map(e => mongoose.Types.ObjectId(e._id))
                     }
                 }
             }
@@ -2072,87 +2117,104 @@ exports.searchEmployeeForPackage = async (portal, params, company) => {
 
 
     // Lấy danh sách nhân viên
-    let listData, listEmployees = [];
+    let listData = []; 
+    let listEmployees = [];
     let totalList = 1000;
 
     console.log('key_search\n', keySearch);
 
-    if (params.sameExp) {
+    // if (params.sameExp) {
+        listData = await Employee(connect(DB_CONNECTION, portal)).aggregate(keySearch);
 
-        listData = await Employee(connect(DB_CONNECTION, portal)).aggregate(keySearch)
-        let listEmpId = listData.map(e => e._id.employee);
+        let listEmpId = [];
+        if(params.sameExp) {
+            listEmpId = listData.map(e => e._id.employee);
+        } else {
+            listEmpId = listData.map(e => e._id);
+        }
         console.log('\n\nlistemp\n\n', listEmpId);
 
-        listEmployees = await Employee(connect(DB_CONNECTION, portal)).find(
-            {
-                _id: {
-                    $in: listEmpId,
-                }
-            },
-            {
-                field: 1,
-                employeeNumber: 1,
-                emailInCompany: 1,
-                birthdate: 1,
-                contracts: 1,
-                fullName: 1,
-                gender: 1,
-                contractEndDate: 1,
-                contractType: 1,
-                certificates: 1,
-                professionalSkill: 1,
-                status: 1,
-                degrees: 1,
-                career: 1,
-                major: 1,
-            }).populate([
-                { path: "career.field" },
-                { path: "career.position" },
-                { path: "career.action" },
-            ]).sort({
-                'createdAt': 1
-            }).skip(params.page).limit(params.limit);
+        listEmployees = await Employee(connect(DB_CONNECTION, portal)).find({
+            _id: {
+                $in: listEmpId,
+            }
+        }).populate([
+            { path: "career.field" },
+            { path: "career.position" },
+            { path: "career.action" },
+        ]).sort({
+            'createdAt': 1
+        }).skip(params.page * params.limit).limit(params.limit);
 
         totalList = await Employee(connect(DB_CONNECTION, portal)).countDocuments({
             _id: {
                 $in: listEmpId,
             }
         });
-    }
-    else {
-        console.log('không có KN tương đương');
-        // phân trang
-        keySearch = [
-            ...keySearch,
-            {
-                $facet: {
-                    listEmployee: [{ $sort: { 'createdAt': 1 } },
-                    ...noResultsPerPage === 0 ? [] : [{ $limit: noResultsPerPage * (pageNumber + 1) }],
-                    ...noResultsPerPage === 0 ? [] : [{ $skip: noResultsPerPage * pageNumber }]
-                    ],
-                    totalCount: [
-                        {
-                            $count: 'count'
-                        }
-                    ]
-                }
-            }
-        ];
+    // }
+    // else {
+    //     console.log('không có KN tương đương');
+    //     // phân trang
+    //     keySearch = [
+    //         ...keySearch,
+    //         {
+    //             $facet: {
+    //                 listEmployee: [{ $sort: { 'createdAt': 1 } },
+    //                 ...noResultsPerPage === 0 ? [] : [{ $limit: noResultsPerPage * (pageNumber + 1) }],
+    //                 ...noResultsPerPage === 0 ? [] : [{ $skip: noResultsPerPage * pageNumber }]
+    //                 ],
+    //                 totalCount: [
+    //                     {
+    //                         $count: 'count'
+    //                     }
+    //                 ]
+    //             }
+    //         }
+    //     ];
 
-        listData = await Employee(connect(DB_CONNECTION, portal)).aggregate(keySearch)
-        
-        listEmployees = listData[0].listEmployee;
-        console.log('list employee1', listEmployees.length);
-        await Employee(connect(DB_CONNECTION, portal)).populate(listEmployees, { path: "career.field career.position career.action" });
+    //     listData = await Employee(connect(DB_CONNECTION, portal)).aggregate(keySearch);
 
-        console.log('list employee2', listEmployees.length);
+    //     listEmployees = listData[0].listEmployee;
+    //     await Employee(connect(DB_CONNECTION, portal)).populate(listEmployees, [
+    //         { path: "career.field career.position career.action" },
+    //         // { path: "company", populate: {path: "contactPerson" }},
+    //     ]);
 
-        if(listData[0].totalCount[0]) {
-            totalList = listData[0].totalCount[0].count;
-        } else {
-            totalList = 1;
+    //     if (listData[0].totalCount[0]) {
+    //         totalList = listData[0].totalCount[0].count;
+    //     } else {
+    //         totalList = 1;
+    //     }
+    // }
+
+    let arrEmployee = [];
+    for (let i = 0; i < listEmployees.length; i++) {
+        let idCompany = listEmployees[i].company;
+        let company = await Company(connect(DB_CONNECTION, process.env.DB_NAME)).findById(idCompany);
+        let contactPerson = await User(
+            connect(DB_CONNECTION, company.shortName)
+        ).findById(company.contactPerson);
+        company.contactPerson = contactPerson;
+
+        let email = listEmployees[i].emailInCompany;
+        let value = await this.getAllPositionRolesAndOrganizationalUnitsOfUser(portal, email);
+
+        // listEmployees[i].company = company;
+        // listEmployees[i].roles = value.roles;
+        // listEmployees[i].organizationalUnits = value.organizationalUnits;
+
+        // console.log(' listEmployees[i].roles' , listEmployees[i].roles);
+        // let newItem = Object.assign(listEmployees[i], value);
+        // arrEmployee.push(newItem);
+
+        listEmployees[i] = {
+            ...listEmployees[i]._doc, // sua lỗi thừa thuộc tính
+            ...value,
+            company
         }
     }
+
+    // console.log('listemp', listEmployees);
 
     return {
         listEmployees,

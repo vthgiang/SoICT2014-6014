@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { withTranslate } from 'react-redux-multilingual';
 
 import { createUnitKpiActions } from '../../creation/redux/actions';
 
-import { withTranslate } from 'react-redux-multilingual';
+import { CustomLegendC3js } from '../../../../../common-components';
 
-import * as d3 from "d3";
 import c3 from 'c3';
 import 'c3/c3.css';
 
@@ -14,6 +14,8 @@ class DistributionOfOrganizationalUnitKpiChart extends Component {
         super(props);
 
         this.DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
+        this.chart = null;
+        this.dataPieChart = null;
 
         this.state = {
             currentRole: null,
@@ -145,14 +147,13 @@ class DistributionOfOrganizationalUnitKpiChart extends Component {
     pieChart = () => {
         this.removePreviousChart();
 
-        let dataPieChart;
-        dataPieChart = this.setDataPieChart();
+        this.dataPieChart = this.setDataPieChart();
 
-        let chart = c3.generate({
+        this.chart = c3.generate({
             bindto: this.refs.chart,
 
             data: {
-                columns: dataPieChart,
+                columns: this.dataPieChart,
                 type: 'pie',
             },
 
@@ -168,25 +169,6 @@ class DistributionOfOrganizationalUnitKpiChart extends Component {
                 show: false
             }
         });
-
-        d3.select('#distributionOfUnit').insert('div', '.chart').attr('class', 'legend StyleScrollDiv StyleScrollDiv-y').selectAll('span')
-            .data(dataPieChart.map(item => item[0]))
-            .enter().append('div')
-            .attr('data-id', function (id) { return id; })
-            .html(function (id) { return id; })
-            .each(function (id) {
-                d3.select(this).style('border-left', `5px solid ${chart.color(id)}`);
-                d3.select(this).style('padding-left', `5px`);
-            })
-            .on('mouseover', function (id) {
-                chart.focus(id);
-            })
-            .on('mouseout', function (id) {
-                chart.revert();
-            })
-            .on('click', function (id) {
-                chart.toggle(id);
-            });
     }
 
     render() {
@@ -203,7 +185,13 @@ class DistributionOfOrganizationalUnitKpiChart extends Component {
                 {currentKpi ?
                     <section id={"distributionOfUnit"} className="c3-chart-container">
                         <div ref="chart"></div>
-                        <label><i className="fa fa-exclamation-circle" style={{ color: '#06c', paddingRight: '5px' }}/>{translate('kpi.evaluation.employee_evaluation.KPI_list')}</label>
+                        <CustomLegendC3js
+                            chart={this.chart}
+                            chartId={"distributionOfUnit"}
+                            legendId={"distributionOfUnitLegend"}
+                            title={`${translate('kpi.evaluation.employee_evaluation.KPI_list')} (${currentKpi.kpis && currentKpi.kpis.length})`}
+                            dataChartLegend={this.dataPieChart && this.dataPieChart.map(item => item[0])}
+                        />
                     </section>
                     : organizationalUnitKpiLoading && <section>{translate('kpi.organizational_unit.dashboard.no_data')}</section>
                 }

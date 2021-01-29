@@ -231,7 +231,6 @@ class TaskOrganizationUnitDashboard extends Component {
             currentOrganizationalUnit = dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit;
             currentOrganizationalUnitLoading = dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnitLoading;
         }
-        console.log('aaaaaaaaaaaaaaa', currentOrganizationalUnit, selectBoxUnit)
         // Config ngày mặc định cho datePiker
         let d = new Date(),
             month = d.getMonth() + 1,
@@ -255,7 +254,6 @@ class TaskOrganizationUnitDashboard extends Component {
 
         let defaultStartMonth = [startMonthDefault, startYear].join('-');
         let defaultEndMonth = month < 10 ? ['0' + month, year].join('-') : [month, year].join('-');
-        console.log('ppp', this.props);
         return (
             <React.Fragment>
                 {currentOrganizationalUnit

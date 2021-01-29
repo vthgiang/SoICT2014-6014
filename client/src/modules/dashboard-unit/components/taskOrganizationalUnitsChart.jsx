@@ -5,7 +5,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import { taskManagementActions } from '../../task/task-management/redux/actions';
 import { UserActions } from '../../super-admin/user/redux/actions';
 
-import { DatePicker } from '../../../common-components';
+import { DatePicker, CustomLegendC3js } from '../../../common-components';
 import Swal from 'sweetalert2';
 
 import c3 from 'c3';
@@ -15,6 +15,10 @@ class TaskOrganizationalUnitsChart extends Component {
     constructor(props) {
         super(props);
         let startDate = ['01', new Date().getFullYear()].join('-');
+
+        this.chart = null;
+        this.dataChart = null;
+
         this.state = {
             totalTask: false,
             startDate: startDate,
@@ -157,7 +161,7 @@ class TaskOrganizationalUnitsChart extends Component {
      */
     renderChart = (data) => {
         this.removePreviousChart();
-        let chart = c3.generate({
+        this.chart = c3.generate({
             bindto: this.refs.taskUnitsChart,
             data: {
                 x: 'x',
@@ -189,9 +193,11 @@ class TaskOrganizationalUnitsChart extends Component {
         });
 
         setTimeout(function () {
-            chart.load({
-                columns: data,
-            });
+            if (this.chart) {
+                this.chart.load({
+                    columns: data,
+                });
+            }
         }, 0);
     };
 
@@ -295,6 +301,7 @@ class TaskOrganizationalUnitsChart extends Component {
             data = [...data, [x.name, ...row]]
         })
 
+        this.dataChart = data;
         this.renderChart(data)
 
         return (
@@ -331,7 +338,7 @@ class TaskOrganizationalUnitsChart extends Component {
                         </div>
 
                     </div>
-                    <div className="dashboard_box_body" >
+                    <div className="" >
                         <p className="pull-left" > < b > ĐV tính: Số công việc </b></p >
                         <div className="box-tools pull-right" >
                             <div className="btn-group pull-rigth">
@@ -340,6 +347,16 @@ class TaskOrganizationalUnitsChart extends Component {
                             </div>
                         </div>
                         <div ref="taskUnitsChart" ></div>
+                        <section id={"taskUnitsChart"} className="c3-chart-container">
+                            <div ref="taskUnitsChart"></div>
+                            <CustomLegendC3js
+                                chart={this.chart}
+                                chartId={"taskUnitsChart"}
+                                legendId={"taskUnitsChartLegend"}
+                                title={this.dataChart && `${translate('general.list_unit')} (${this.dataChart.length - 1})`}
+                                dataChartLegend={this.dataChart && this.dataChart.filter((item, index) => index > 0).map(item => item[0])}
+                            />
+                        </section>
                     </div>
                 </div>
             </div>

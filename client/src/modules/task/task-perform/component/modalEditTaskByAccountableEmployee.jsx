@@ -975,7 +975,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
             responsibleEmployees: this.state.responsibleEmployees,
             informedEmployees: this.state.informedEmployees,
             inactiveEmployees: inactiveEmployees,
-
+            taskProject: this.state.taskProjectName,
             info: this.state.info,
         }
         console.log('data', data);

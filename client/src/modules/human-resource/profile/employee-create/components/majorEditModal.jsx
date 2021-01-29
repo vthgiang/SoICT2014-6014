@@ -166,8 +166,12 @@ class MajorEditModal extends Component {
 
         const { id } = this.props;
 
-        const { group, specialized } = this.state;
+        const { group, specialized, file, fileUpload, urlFile } = this.state;
 
+        let files;
+        if (file) {
+            files = [{ fileName: file, urlFile: urlFile, fileUpload: fileUpload }]
+        }
         let list = major?.listMajor;
         let listGroup = [];
         let listSpecialized = [];
@@ -187,17 +191,17 @@ class MajorEditModal extends Component {
                 >
                     <form className="form-group" id={`form-edit-major-${id}`}>
                         <div className="form-group">
-                            <label>Nhóm ngành</label>
+                            <label>Nhóm ngành<span className="text-red">*</span></label>
                             <TreeSelect data={listGroup} value={group?.id} handleChange={this.handleGroup} mode="radioSelect" />
                         </div>
                         <div className="form-group">
-                            <label>Chuyên ngành</label>
+                            <label>Chuyên ngành<span className="text-red">*</span></label>
                             <TreeSelect data={listSpecialized} value={specialized?.id} handleChange={this.handleSpecialized} mode="radioSelect" />
                         </div>
                         {/* File đính kèm */}
                         <div className="form-group">
                             <label htmlFor="file">{translate('human_resource.profile.attached_files')}</label>
-                            <UploadFile onChange={this.handleChangeFile} />
+                            <UploadFile files={files} onChange={this.handleChangeFile} />
                         </div>
                     </form>
                 </DialogModal>
