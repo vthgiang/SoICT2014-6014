@@ -336,7 +336,7 @@ class TaskOrganizationUnitDashboard extends Component {
                             </div>
                         </div>
                         <div className="row">
-                            <div className="col-xs-6">
+                            <div className="col-xs-12 col-sm-12 col-md-6">
                                 <div className="box box-primary">
                                     <div className="box-header with-border">
                                         <div className="box-title">{translate('task.task_management.dashboard_area_result')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
@@ -354,7 +354,7 @@ class TaskOrganizationUnitDashboard extends Component {
                                     </div>
                                 </div>
                             </div>
-                            <div className="col-xs-6">
+                            <div className="col-xs-12 col-sm-12 col-md-6">
                                 <div className="box box-primary">
                                     <div className="box-header with-border">
                                         <div className="box-title">{translate('task.task_management.detail_status')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
@@ -392,7 +392,7 @@ class TaskOrganizationUnitDashboard extends Component {
                         </div>
 
                         <div className="row">
-                            <div className="col-xs-6">
+                            <div className="col-xs-12 col-sm-12 col-md-6">
                                 <div className="box box-primary">
                                     <div className="box-header with-border">
                                         <div className="box-title">{translate('task.task_management.dashboard_overdue')}</div>
@@ -420,7 +420,7 @@ class TaskOrganizationUnitDashboard extends Component {
                                     </div>
                                 </div>
                             </div>
-                            <div className="col-xs-6">
+                            <div className="col-xs-12 col-sm-12 col-md-6">
                                 <div className="box box-primary">
                                     <div className="box-header with-border">
                                         <div className="box-title">{translate('task.task_management.dashboard_about_to_overdue')}</div>
