@@ -7,7 +7,7 @@ import moment from 'moment';
 import 'moment/locale/vi';
 import './actionTab.css';
 
-import { ContentMaker, DateTimeConverter, ApiImage, ShowMoreShowLess, SelectBox } from '../../../../common-components';
+import { ContentMaker, DateTimeConverter, ApiImage, ShowMoreShowLess, SelectBox, DatePicker, TimePicker, ErrorLabel } from '../../../../common-components';
 
 import { getStorage } from '../../../../config';
 
@@ -20,7 +20,9 @@ import { ViewProcess } from '../../task-process/component/task-process-managemen
 import { IncomingDataTab } from './incomingDataTab';
 import { OutgoingDataTab } from './outgoingDataTab';
 import parse from 'html-react-parser';
-
+import TextareaAutosize from 'react-textarea-autosize';
+import ValidationHelper from '../../../../helpers/validationHelper';
+import { formatDate } from '../../../../helpers/formatDate';
 
 class ActionTab extends Component {
     constructor(props) {
@@ -117,7 +119,11 @@ class ActionTab extends Component {
             maxRows: 25,
             showFile: [],
             descriptionFile: "",
-            deleteFile: ''
+            deleteFile: '',
+
+            addLogTimeDate: this.formatDate(Date.now()),
+            showBoxAddLogTimer: false,
+            checkDateAddLog: false,
         };
         this.hover = [];
         this.contentTaskComment = [];
@@ -994,6 +1000,150 @@ class ActionTab extends Component {
         })
     }
 
+    checkValidateDate = (start, end) => {
+        let mStart = moment(start);
+        let mEnd = moment(end);
+        return mEnd.isAfter(mStart);
+    }
+
+    // Bấm giờ công việc 
+    handleChangeDateAddLog = (value) => {
+        const { translate } = this.props;
+        const DateSplit = value.split("-");
+        let addLogTimeDate = DateSplit[2] + '-' + DateSplit[1] + '-' + DateSplit[0];
+
+        let { message } = ValidationHelper.validateEmpty(translate, value);
+        const checkDateAddLog = this.checkValidateDate(this.formatDate(Date.now()), addLogTimeDate);
+        if (checkDateAddLog)
+            message = "Không được chọn ngày trong tương lai";
+
+        this.setState({
+            ...this.state,
+            addLogTimeDate,
+            errorDateAddLog: message,
+            checkDateAddLog,
+        })
+    }
+
+    handleChangeDateAddStartTime = (value) => {
+        const { translate } = this.props;
+        let { message } = ValidationHelper.validateEmpty(translate, value);
+        this.setState({
+            ...this.state,
+            addLogStartTime: value,
+            errorStartTimeAddLog: message,
+        })
+    }
+
+    getDefaultValueStartTime = (value) => {
+        this.setState({
+            ...this.state,
+            addLogStartTime: value,
+        })
+    }
+
+    handleChangeDateAddEndTime = (value) => {
+        const { translate } = this.props;
+        let { message } = ValidationHelper.validateEmpty(translate, value);
+        this.setState({
+            ...this.state,
+            addLogEndTime: value,
+            errorEndTimeAddLog: message
+        })
+    }
+
+    getDefaultValueEndTime = (value) => {
+        this.setState({
+            ...this.state,
+            addLogEndTime: value,
+        })
+    }
+
+    handleChangeAddLogDescription = (e) => {
+        const { value } = e.target;
+        this.setState({
+            ...this.state,
+            addLogDescription: value,
+        })
+    }
+
+    saveAddLogTime = () => {
+        const { performtasks } = this.props;
+        let { addLogTimeDate, addLogStartTime, addLogEndTime, addLogDescription } = this.state;
+        let startAt, stopAt;
+
+        if (addLogTimeDate && addLogStartTime) {
+            startAt = new Date(addLogTimeDate + " " + addLogStartTime);
+        }
+
+        if (addLogTimeDate && addLogEndTime) {
+            stopAt = new Date(addLogTimeDate + " " + addLogEndTime);
+        }
+
+        const timer = {
+            employee: localStorage.getItem("userId"),
+            addlogStartedAt: startAt,
+            addlogDescription: addLogDescription,
+            addlogStoppedAt: stopAt,
+            taskId: performtasks.task._id,
+            autoStopped: 3, // 3: add log timer
+        };
+        // Check kho cho phép add log timer trong tương lại (thời gian lớn hơn thời điểm hiện tại)
+        if (this.checkValidateDate(new Date(), stopAt)) {
+            Swal.fire({
+                title: 'Không được chỉ định thời gian kết thúc bấm giờ trong tương lai ',
+                type: 'warning',
+                confirmButtonColor: '#dd4b39',
+                confirmButtonText: "Đóng",
+            })
+        } else {
+            // Check thời gian kết thúc phải sau thời gian bắt đầu
+            if (!this.checkValidateDate(startAt, stopAt)) {
+                Swal.fire({
+                    title: 'Thời gian kết thúc phải sau thời gian bắt đầu',
+                    type: 'warning',
+                    confirmButtonColor: '#dd4b39',
+                    confirmButtonText: "Đóng",
+                })
+            } else {
+                this.props.stopTimer(performtasks.task._id, timer);
+                this.setState({
+                    ...this.state,
+                    showBoxAddLogTimer: false,
+                    addLogDescription: "",
+                })
+            }
+        }
+    }
+
+    formatDate = (date) => {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2) {
+            month = '0' + month;
+        }
+
+        if (day.length < 2) {
+            day = '0' + day;
+        }
+
+        return [year, month, day].join('-');
+    }
+
+    isFormValidated = () => {
+        const { addLogTimeDate, addLogStartTime, addLogEndTime, checkDateAddLog } = this.state;
+        const { translate } = this.props;
+
+        if (!ValidationHelper.validateEmpty(translate, addLogTimeDate).status
+            || !ValidationHelper.validateEmpty(translate, addLogStartTime).status
+            || !ValidationHelper.validateEmpty(translate, addLogEndTime).status || checkDateAddLog)
+            return false;
+        return true;
+    }
+
     render() {
         let task, informations, statusTask, documents, actionComments, taskComments, logTimer, logs;
         let idUser = getStorage("userId");
@@ -1004,8 +1154,11 @@ class ActionTab extends Component {
             editTaskComment, showEditTaskFile,
             editCommentOfTaskComment, valueRating, currentUser, hover, fileTaskEdited, showSort,
             showFile, deleteFile, taskFiles, newActionEdited, newCommentOfActionEdited, newAction,
-            newCommentOfAction, newTaskCommentEdited, newCommentOfTaskComment, newTaskComment, newCommentOfTaskCommentEdited,
+            newCommentOfAction, newTaskCommentEdited, newCommentOfTaskComment, newTaskComment, newCommentOfTaskCommentEdited, showBoxAddLogTimer, addLogStartTime, addLogEndTime
         } = this.state;
+
+        // error message
+        const { errorDateAddLog, errorStartTimeAddLog, errorEndTimeAddLog } = this.state;
         const checkUserId = obj => obj.creator._id === currentUser;
 
         if (typeof performtasks.task !== 'undefined' && performtasks.task !== null) {
@@ -1022,10 +1175,13 @@ class ActionTab extends Component {
 
         switch (this.state.filterLogAutoStopped) {
             case 'auto':
-                logTimer = logTimer.filter(item => item.autoStopped)
+                logTimer = logTimer.filter(item => item.autoStopped === 2)
                 break;
             case 'hand':
-                logTimer = logTimer.filter(item => !item.autoStopped)
+                logTimer = logTimer.filter(item => item.autoStopped === 1)
+                break;
+            case 'addlog':
+                logTimer = logTimer.filter(item => item.autoStopped === 3)
                 break;
             default:
                 break;
@@ -1156,10 +1312,9 @@ class ActionTab extends Component {
                                                                             <li>
                                                                                 {
                                                                                     Array.isArray(item.evaluations) &&
-                                                                                    item.evaluations.map(element => {
-                                                                                        console.log("element", element)
+                                                                                    item.evaluations.map((element, index) => {
                                                                                         return (
-                                                                                            <p>
+                                                                                            <p key={index}>
                                                                                                 <b> {element.creator.name} </b>
                                                                                                 {this.getRoleNameInTask(element.role)}
                                                                                                 <span className="text-red"> {element.rating}/10 </span>
@@ -1782,13 +1937,96 @@ class ActionTab extends Component {
 
                         {/* Chuyển qua tab Bấm giờ */}
                         <div className={selected === "logTimer" ? "active tab-pane" : "tab-pane"} id="logTimer">
-                            <div className="form-group">
-                                <label>Hình thức bấm giờ</label>
-                                <select className="form-control" value={this.state.filterLogAutoStopped} onChange={this.filterLogAutoStopped}>
-                                    <option value="all">Tất cả</option>
-                                    <option value="auto">Tắt tự động</option>
-                                    <option value="hand">Tắt bằng tay</option>
-                                </select>
+                            <div className="row" style={{ display: 'flex', alignItems: 'center' }}>
+                                <div className="col-md-6">
+                                    <div className="form-group">
+                                        <label>Hình thức bấm giờ</label>
+                                        <select className="form-control" value={this.state.filterLogAutoStopped} onChange={this.filterLogAutoStopped}>
+                                            <option value="all">Tất cả</option>
+                                            <option value="auto">Tắt tự động</option>
+                                            <option value="hand">Tắt bằng tay</option>
+                                            <option value="addlog">Giờ được thêm</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div className="col-md-6">
+                                    <button className="btn btn-success" style={{ float: 'right' }}
+                                        disabled={showBoxAddLogTimer}
+                                        onClick={() => {
+                                            this.setState({
+                                                ...this.state,
+                                                showBoxAddLogTimer: true,
+                                            })
+                                        }}>
+                                        Add log hours
+                                    </button>
+                                </div>
+
+                                {
+                                    showBoxAddLogTimer &&
+                                    <div className="addlog-box">
+                                        <h4 className="addlog-title">New Time Log</h4>
+                                        <p style={{ color: "#f96767" }}>(*) Ghi nhật ký thời gian không được phép cho các ngày trong tương lai</p>
+                                        <div>
+                                            <div className={`form-group ${!errorDateAddLog ? "" : "has-error"}`}>
+                                                <label>Ngày <span className="text-red">*</span></label>
+                                                <DatePicker
+                                                    id={`addlog-date`}
+                                                    onChange={this.handleChangeDateAddLog}
+                                                    defaultValue={formatDate(Date.now())}
+                                                />
+                                                <ErrorLabel content={errorDateAddLog} />
+                                            </div>
+                                            <div className="row">
+                                                <div className="col-sm-6 col-md-6">
+                                                    <div className={`form-group ${!errorStartTimeAddLog ? "" : "has-error"}`}>
+                                                        <label>Từ <span className="text-red">*</span></label>
+                                                        <TimePicker
+                                                            id={`addlog-startTime`}
+                                                            value={addLogStartTime}
+                                                            onChange={this.handleChangeDateAddStartTime}
+                                                            getDefaultValue={this.getDefaultValueStartTime}
+                                                        />
+                                                        <ErrorLabel content={errorStartTimeAddLog} />
+                                                    </div>
+                                                </div>
+                                                <div className="col-sm-6 col-md-6">
+                                                    <div className={`form-group ${!errorEndTimeAddLog ? "" : "has-error"}`}>
+                                                        <label>Đến <span className="text-red">*</span></label>
+                                                        <TimePicker
+                                                            id={`addlog-endtime`}
+                                                            value={addLogEndTime}
+                                                            onChange={this.handleChangeDateAddEndTime}
+                                                            getDefaultValue={this.getDefaultValueEndTime}
+                                                        />
+                                                        <ErrorLabel content={errorEndTimeAddLog} />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="form-group">
+                                                <label>Mô tả</label>
+                                                <TextareaAutosize
+                                                    style={{ width: '100%', border: '1px solid rgba(70, 68, 68, 0.15)', padding: '5px' }}
+                                                    minRows={3}
+                                                    maxRows={20}
+                                                    onChange={this.handleChangeAddLogDescription}
+                                                />
+                                            </div>
+                                            <div>
+                                                <button className="btn btn-success" style={{ marginRight: '10px' }} onClick={this.saveAddLogTime} disabled={!this.isFormValidated()} >Lưu</button>
+                                                <button className="btn btn-danger" onClick={() => {
+                                                    this.setState({
+                                                        ...this.state,
+                                                        showBoxAddLogTimer: false,
+                                                        addLogDescription: "",
+                                                    })
+                                                }}>Hủy</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+
                             </div>
                             {logTimer && logTimer.map((item, index) =>
                                 <React.Fragment key={index}>
@@ -1801,7 +2039,7 @@ class ActionTab extends Component {
                                                 <i className="fa fa-clock-o"> </i> {moment(item.stoppedAt).format("DD/MM/YYYY HH:mm:ss")})
                                             </div>
                                             <div>
-                                                <i className={`${item.autoStopped ? 'text-red fa fa-clock-o' : 'text-green fa fa-hand-pointer-o'}`}> {item.autoStopped ? 'Tự động' : 'Tắt bằng tay'}</i><br />
+                                                <i style={{ marginRight: '5px' }} className={`${item.autoStopped === 1 ? 'text-green fa fa-hand-pointer-o' : (item.autoStopped === 2 ? 'text-red fa fa-clock-o' : 'text-red fa fa-plus')}`}>{item.autoStopped === 1 ? 'Tắt bằng tay' : (item.autoStopped === 2 ? 'Tự động' : 'Add log timer')}</i>
                                                 {
                                                     role === "accountable" ?
                                                         (

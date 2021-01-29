@@ -536,33 +536,56 @@ exports.editTimeSheetLog = async(portal, taskId, timesheetlogId, data) => {
 exports.stopTimesheetLog = async (portal, params, body) => {
     const now = new Date();
     let stoppedAt;
+    let timer, duration;
+    // Add log timer
+    if (body.addlogStartedAt && body.addlogStoppedAt) {
+        let getAddlogStartedAt = new Date(body.addlogStartedAt);
+        let getAddlogStoppedAt = new Date(body.addlogStoppedAt);
+        
+        // Lưu vào timeSheetLog
+        duration = new Date(getAddlogStoppedAt).getTime() - new Date(getAddlogStartedAt).getTime();
+        const addLogTime = {
+            startedAt: getAddlogStartedAt,
+            stoppedAt: getAddlogStoppedAt,
+            duration,
+            autoStopped: body.autoStopped,
+            description: body.addlogDescription,
+        }
+        timer = await Task(connect(DB_CONNECTION, portal)).findByIdAndUpdate(
+            params.taskId,
+            { $push: { timesheetLogs: addLogTime } },
+            { new: true}
+        ).populate({ path: "timesheetLogs.creator", select: "name" });
 
-    if (body.stoppedAt) {
-        let getStoppedTime = new Date(body.stoppedAt);
-        stoppedAt = getStoppedTime;
     } else {
-        stoppedAt = now;
-    }
+        // tắt như bình thường hoặc hẹn giờ tắt bấm giờ
+        if (body.stoppedAt) {
+            let getStoppedTime = new Date(body.stoppedAt);
+            stoppedAt = getStoppedTime;
+        } else {
+            stoppedAt = now;
+        }
 
-    // Lưu vào timeSheetLog
-    let duration = new Date(stoppedAt).getTime() - new Date(body.startedAt).getTime();
-    let checkDurationValid = duration / (60 * 60 * 1000);
+        // Lưu vào timeSheetLog
+        duration = new Date(stoppedAt).getTime() - new Date(body.startedAt).getTime();
+        let checkDurationValid = duration / (60 * 60 * 1000);
 
-    let timer = await Task(connect(DB_CONNECTION, portal))
-        .findOneAndUpdate(
-            { _id: params.taskId, "timesheetLogs._id": body.timesheetLog },
-            {
-                $set: {
-                    "timesheetLogs.$.stoppedAt": stoppedAt, // Date
-                    "timesheetLogs.$.duration": duration, // mileseconds
-                    "timesheetLogs.$.description": body.description,
-                    "timesheetLogs.$.autoStopped": body.autoStopped, // ghi nhận tắt bấm giờ tự động hay không?
-                    "timesheetLogs.$.acceptLog": checkDurationValid > 24 ? false : true, // tự động check nếu thời gian quá 24 tiếng thì đánh là không hợp lệ
+        timer = await Task(connect(DB_CONNECTION, portal))
+            .findOneAndUpdate(
+                { _id: params.taskId, "timesheetLogs._id": body.timesheetLog },
+                {
+                    $set: {
+                        "timesheetLogs.$.stoppedAt": stoppedAt, // Date
+                        "timesheetLogs.$.duration": duration, // mileseconds
+                        "timesheetLogs.$.description": body.description,
+                        "timesheetLogs.$.autoStopped": body.autoStopped, // ghi nhận tắt bấm giờ tự động hay không?
+                        "timesheetLogs.$.acceptLog": checkDurationValid > 24 ? false : true, // tự động check nếu thời gian quá 24 tiếng thì đánh là không hợp lệ
+                    },
                 },
-            },
-            { new: true }
-        )
-        .populate({ path: "timesheetLogs.creator", select: "name" });
+                { new: true }
+            )
+            .populate({ path: "timesheetLogs.creator", select: "name" });
+    }
 
     // Lưu vào hoursSpentOnTask
     let newTotalHoursSpent = timer.hoursSpentOnTask.totalHoursSpent + duration;

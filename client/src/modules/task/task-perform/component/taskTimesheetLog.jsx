@@ -95,11 +95,11 @@ class TaskTimesheetLog extends Component {
     stopTimer = async () => {
         const { performtasks } = this.props;
         let stoppedAt = new Date(); // mặc định lấy thời điểm hiện tại
-        let autoStopped = false;
+        let autoStopped = 1;
         if (this.state.showEndDate) {
             if (this.state.dateStop && this.state.timeStop) {
                 stoppedAt = new Date(this.state.dateStop + " " + this.state.timeStop);
-                autoStopped = true;
+                autoStopped = 2;
             }
         }
         const timer = {
