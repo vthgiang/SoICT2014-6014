@@ -422,7 +422,7 @@ class TaskDashboard extends Component {
                     </div>
 
                     {/* Biểu đồ trạng thái công việc */}
-                    <div className="col-xs-6">
+                    <div className="col-xs-12 col-sm-12 col-md-6">
                         <div className="box box-primary">
                             <div className="box-header with-border">
                                 <div className="box-title">{translate('task.task_management.detail_status')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
@@ -435,7 +435,7 @@ class TaskDashboard extends Component {
                             </div>
                         </div>
                     </div>
-                    <div className="col-xs-6">
+                    <div className="col-xs-12 col-sm-12 col-md-6">
                         <div className="box box-primary">
                             <div className="box-header with-border">
                                 <div className="box-title">{translate('task.task_management.calc_progress')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
@@ -452,7 +452,7 @@ class TaskDashboard extends Component {
                 </div>
 
                 <div className="row">
-                    <div className="col-xs-6">
+                    <div className="col-xs-12 col-sm-12 col-md-6">
                         <div className="box box-primary">
                             <div className="box-header with-border">
                                 <div className="box-title">{translate('task.task_management.dashboard_overdue')}</div>
@@ -480,7 +480,7 @@ class TaskDashboard extends Component {
                             </div>
                         </div>
                     </div>
-                    <div className="col-xs-6">
+                    <div className="col-xs-12 col-sm-12 col-md-6">
                         <div className="box box-primary">
                             <div className="box-header with-border">
                                 <div className="box-title">{translate('task.task_management.dashboard_about_to_overdue')}</div>
@@ -508,11 +508,11 @@ class TaskDashboard extends Component {
 
                         </div>
                     </div>
-                    <TasksIsNotLinked />
-                    <TaskHasActionNotEvaluated />
-
                 </div>
-                {/* <div className="row"> */}
+
+                <TasksIsNotLinked />
+                <TaskHasActionNotEvaluated />
+
                 {/*Biểu đồ dashboard tải công việc */}
                 <div className="col-xs-12">
                     <div className="box box-primary">
@@ -532,77 +532,70 @@ class TaskDashboard extends Component {
                         </div>
                     </div>
                 </div>
-                {/* </div> */}
+
+
+                {/* Thống kê bấm giờ theo tháng */}
                 <div className="row">
-                    <div className="col-md-12">
-                        <div className="box box-solid">
+                    <div className="col-xs-12 col-md-12">
+                        <div className="box box-primary">
                             <div className="box-header with-border">
                                 <div className="box-title">
                                     Thống kê bấm giờ theo tháng
                                 </div>
                             </div>
-                            <div className="box-body" style={{ marginBottom: 15 }}>
+                            <div className="box-body qlcv">
                                 {/* Seach theo thời gian */}
-                                <div className="qlcv">
-                                    <div className="form-inline" >
-                                        <div className="form-group">
-                                            <label style={{ width: "auto" }}>Tháng</label>
-                                            <DatePicker
-                                                id="month-time-sheet-log"
-                                                dateFormat="month-year"
-                                                value={monthTimeSheetLog}
-                                                onChange={this.handleChangeMonthTimeSheetLog}
-                                                disabled={false}
-                                            />
-                                        </div>
-                                        <button className="btn btn-primary" onClick={this.getUserTimeSheetLogs}>Thống kê</button>
+                                <div className="form-inline" >
+                                    <div className="form-group">
+                                        <label style={{ width: "auto" }}>Tháng</label>
+                                        <DatePicker
+                                            id="month-time-sheet-log"
+                                            dateFormat="month-year"
+                                            value={monthTimeSheetLog}
+                                            onChange={this.handleChangeMonthTimeSheetLog}
+                                            disabled={false}
+                                        />
                                     </div>
+                                    <button className="btn btn-primary" onClick={this.getUserTimeSheetLogs}>Thống kê</button>
                                 </div>
 
-                                <div className="box-body" >
-                                    <div className="col-md-12">
-                                        <div>
-                                            <p className="pull-right" style={{ fontWeight: 'bold' }}>Kết quả
-                                            <span style={{ fontWeight: 'bold', marginLeft: 10 }}>
-                                                    {
-                                                        !tasks.isLoading ? this.getTotalTimeSheet(userTimeSheetLogs) : translate('general.loading')
-                                                    }
-                                                </span>
-                                            </p >
-                                        </div>
-                                        <table className="table table-hover table-striped table-bordered" id="table-user-timesheetlogs">
-                                            <thead>
-                                                <tr>
-                                                    <th style={{ width: 80 }}>STT</th>
-                                                    <th>Thời gian bắt đầu</th>
-                                                    <th>Thời gian kết thúc</th>
-                                                    <th>Bấm giờ</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {
-                                                    userTimeSheetLogs.map((tsl, index) => {
-                                                        return (
-                                                            <tr>
-                                                                <td>{index + 1}</td>
-                                                                <td>{moment(tsl.startedAt).format("HH:mm:ss DD/MM/YYYY")}</td>
-                                                                <td>{moment(tsl.stoppedAt).format("HH:mm:ss DD/MM/YYYY")}</td>
-                                                                <td>{convertTime(tsl.duration)}</td>
-                                                            </tr>
-                                                        )
-                                                    })
-                                                }
-                                            </tbody>
-                                        </table>
-                                    </div>
+                                <div>
+                                    <p className="pull-right" style={{ fontWeight: 'bold' }}>Kết quả
+                                    <span style={{ fontWeight: 'bold', marginLeft: 10 }}>
+                                            {
+                                                !tasks.isLoading ? this.getTotalTimeSheet(userTimeSheetLogs) : translate('general.loading')
+                                            }
+                                        </span>
+                                    </p >
                                 </div>
+                                <table className="table table-hover table-striped table-bordered" id="table-user-timesheetlogs">
+                                    <thead>
+                                        <tr>
+                                            <th style={{ width: 80 }}>STT</th>
+                                            <th>Thời gian bắt đầu</th>
+                                            <th>Thời gian kết thúc</th>
+                                            <th>Bấm giờ</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {
+                                            userTimeSheetLogs.map((tsl, index) => {
+                                                return (
+                                                    <tr>
+                                                        <td>{index + 1}</td>
+                                                        <td>{moment(tsl.startedAt).format("HH:mm:ss DD/MM/YYYY")}</td>
+                                                        <td>{moment(tsl.stoppedAt).format("HH:mm:ss DD/MM/YYYY")}</td>
+                                                        <td>{convertTime(tsl.duration)}</td>
+                                                    </tr>
+                                                )
+                                            })
+                                        }
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
                 </div>
-
-
-
             </React.Fragment>
         );
     }
