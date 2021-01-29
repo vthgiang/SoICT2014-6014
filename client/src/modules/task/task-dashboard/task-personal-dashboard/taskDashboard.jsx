@@ -227,11 +227,14 @@ class TaskDashboard extends Component {
     render() {
         const { tasks, translate } = this.props;
         const { startMonth, endMonth, willUpdate, callAction, taskAnalys, monthTimeSheetLog } = this.state;
-
+        
+        let { startMonthTitle, endMonthTitle } = this.INFO_SEARCH;
+        let { userTimeSheetLogs } = tasks;       // Thống kê bấm giờ
         let amountResponsibleTask = 0, amountTaskCreated = 0, amountAccountableTasks = 0, amountConsultedTasks = 0;
         let numTask = [];
         let totalTasks = 0;
-        // Tinh so luong tat ca cac task 
+        
+        // Tinh so luong tat ca cac task
         if (tasks && tasks.responsibleTasks) {
             let task = tasks.responsibleTasks;
             let i;
@@ -294,34 +297,6 @@ class TaskDashboard extends Component {
 
         }
 
-        // Config ngày mặc định cho datePiker
-        let d = new Date(),
-            month = d.getMonth() + 1,
-            year = d.getFullYear();
-        let startMonthDefault, endMonthDefault, startYear;
-
-        if (month > 3) {
-            startMonthDefault = month - 3;
-            startYear = year;
-            if (month < 9) {
-                endMonthDefault = '0' + (month + 1);
-            } else {
-                endMonthDefault = month + 1;
-            }
-        } else {
-            startMonthDefault = month - 3 + 12;
-            startYear = year - 1;
-        }
-        if (startMonthDefault < 10)
-            startMonthDefault = '0' + startMonthDefault;
-
-        let defaultStartMonth = [startMonthDefault, startYear].join('-');
-        let defaultEndMonth = month < 10 ? ['0' + month, year].join('-') : [month, year].join('-');
-
-        let { startMonthTitle, endMonthTitle } = this.INFO_SEARCH;
-        // Thống kê bấm giờ
-        let { userTimeSheetLogs } = tasks;
-        console.log("USER TIME SHEET LOG", userTimeSheetLogs.userTimeSheetLogs)
         return (
             <React.Fragment>
                 <div className="qlcv" style={{ textAlign: "right" }}>
@@ -332,7 +307,7 @@ class TaskDashboard extends Component {
                             <DatePicker
                                 id="monthStartInTaskDashBoard"
                                 dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm 
-                                value={defaultStartMonth}                 // giá trị mặc định cho datePicker    
+                                value={startMonthTitle}                 // giá trị mặc định cho datePicker    
                                 onChange={this.handleSelectMonthStart}
                                 disabled={false}                    // sử dụng khi muốn disabled, mặc định là false
                             />
@@ -344,7 +319,7 @@ class TaskDashboard extends Component {
                             <DatePicker
                                 id="monthEndInTaskDashBoard"
                                 dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm 
-                                value={defaultEndMonth}                 // giá trị mặc định cho datePicker    
+                                value={endMonthTitle}                 // giá trị mặc định cho datePicker    
                                 onChange={this.handleSelectMonthEnd}
                                 disabled={false}                    // sử dụng khi muốn disabled, mặc định là false
                             />

@@ -479,6 +479,24 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
                 }
             },
 
+            tooltip: {
+                position: function () {
+                    let position = c3.chart.internal.fn.tooltipPosition.apply(this, arguments);
+                    return position;
+                },
+                contents: function (data) {
+                    let value = '<div style="overflow-y: scroll; max-height: 300px;">';
+                    value = value + '<table class=\'c3-tooltip\'>';
+                    data.forEach((val) => {
+                        value = value + '<tr><td class=\'name\'>' + val.name + '</td>'
+                                    +'<td class=\'value\'>' + val.value + '</td></tr>';
+                    });
+                    value = value + '</table>';
+                    value = value + '</div>';
+                    return value;
+                }
+            },
+
             legend: {
                 show: false
             }
