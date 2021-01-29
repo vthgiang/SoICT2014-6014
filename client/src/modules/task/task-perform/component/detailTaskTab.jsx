@@ -263,9 +263,8 @@ class DetailTaskTab extends Component {
 
     }
 
-    handleCopyTask = async (id, role) => {
-        console.log('copy');
-        await this.setState(state => {
+    handleCopyTask = (id, role) => {
+        this.setState(state => {
             return {
                 ...state,
                 showCopy: `copy-task-${id}`
@@ -761,7 +760,6 @@ class DetailTaskTab extends Component {
             employeeCollaboratedWithUnitSelectBox = this.setSelectBoxOfUserSameDepartmentCollaborated(task);
         }
 
-        console.log('taskkk', task);
         return (
             <React.Fragment>
                 {(showToolbar) &&
