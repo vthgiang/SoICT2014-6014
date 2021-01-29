@@ -209,7 +209,7 @@ exports.editStatusKpi = async (portal, data, query, companyId) => {
         }
         return true;
     })
-    console.log('checkFullApprove',checkFullApprove)
+    console.log('checkFullApprove', checkFullApprove)
     employee_kpi_set = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
         .findByIdAndUpdate(employee_kpi_set._id, { $set: { status: checkFullApprove } }, { new: true })
 
@@ -221,7 +221,7 @@ exports.editStatusKpi = async (portal, data, query, companyId) => {
             { path: 'comments.comments.creator', select: 'name email avatar' }
         ])
         .execPopulate();
-    
+
     if (employee_kpi_set) {
         let getKpiApprove = employee_kpi_set.kpis.filter(obj => obj._id.toString() === data.id.toString());
         getKpiApprove = getKpiApprove[0];
@@ -248,7 +248,7 @@ exports.editStatusKpi = async (portal, data, query, companyId) => {
 
         NotificationServices.createNotification(portal, companyId, dataNotify)
     }
-    
+
     return employee_kpi_set;
 }
 
@@ -346,33 +346,43 @@ exports.setTaskImportanceLevel = async (portal, id, kpiType, data) => {
     let employPoint = 0;
     let sumTaskImportance = 0;
 
-    for (element of task) {
-        autoPoint += element.results.automaticPoint * element.results.taskImportanceLevel;
-        approvePoint += element.results.approvedPoint * element.results.taskImportanceLevel;
-        employPoint += element.results.employeePoint * element.results.taskImportanceLevel;
-        sumTaskImportance += element.results.taskImportanceLevel;
+    if (task.length) {
+        for (element of task) {
+            autoPoint += element.results.automaticPoint * element.results.taskImportanceLevel;
+            approvePoint += element.results.approvedPoint * element.results.taskImportanceLevel;
+            employPoint += element.results.employeePoint * element.results.taskImportanceLevel;
+            sumTaskImportance += element.results.taskImportanceLevel;
 
-        let date1 = element.preEvaDate;
-        let date2 = element.date;
-        let difference_In_Time;
+            let date1 = element.preEvaDate;
+            let date2 = element.date;
+            let difference_In_Time;
 
-        if (date2 && date1) {
-            difference_In_Time = date2.getTime() - date1.getTime();
-            if (element.startDate === element.endDate) {
-                difference_In_Time = 1;
+            if (date2 && date1) {
+                difference_In_Time = date2.getTime() - date1.getTime();
+                if (element.startDate === element.endDate) {
+                    difference_In_Time = 1;
+                }
+            } else {
+                difference_In_Time = 0;
             }
-        } else {
-            difference_In_Time = 0;
+
+            let daykpi = Math.ceil(difference_In_Time / (1000 * 3600 * 24));
+            if (daykpi > 30) daykpi = 30;
+            element.taskImportanceLevelCal = Math.round(3 * (element.priority / 5) + 3 * (element.results.contribution / 100) + 4 * (daykpi / 30));
+            if (element.results.taskImportanceLevel === -1 || element.results.taskImportanceLevel === null)
+                element.results.taskImportanceLevel = element.taskImportanceLevelCal;
+            element.daykpi = daykpi;
+
         }
 
-        let daykpi = Math.ceil(difference_In_Time / (1000 * 3600 * 24));
-        if (daykpi > 30) daykpi = 30;
-        element.taskImportanceLevelCal = Math.round(3 * (element.priority / 5) + 3 * (element.results.contribution / 100) + 4 * (daykpi / 30));
-        if (element.results.taskImportanceLevel === -1 || element.results.taskImportanceLevel === null)
-            element.results.taskImportanceLevel = element.taskImportanceLevelCal;
-        element.daykpi = daykpi;
-
     }
+    else {
+        autoPoint = 100;
+        employPoint = 100;
+        approvePoint = 100;
+        sumTaskImportance = 1;
+    }
+
     let n = task.length;
     let result = await EmployeeKpi(connect(DB_CONNECTION, portal))
         .findByIdAndUpdate(
