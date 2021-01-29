@@ -111,7 +111,12 @@ class TaskTemplate extends Component {
                                 <SelectMulti id="multiSelectUnit"
                                     defaultValue={units.map(item => { return item._id })}
                                     items={units.map(item => { return { value: item._id, text: item.name } })}
-                                    options={{ nonSelectedText: translate('task_template.select_all_units'), allSelectedText: "Tất cả các đơn vị" }}>
+                                    options={{
+                                        nonSelectedText: translate('task_template.select_all_units'),
+                                        allSelectedText: translate(`task.task_management.select_all_department`),
+                                        includeSelectAllOption: true,
+                                        maxHeight: 200
+                                    }}>
                                 </SelectMulti>
                             }
                             <button type="button" className="btn btn-success" title="Tìm tiếm mẫu công việc" onClick={this.handleUpdateData}>{translate('task_template.search')}</button>

@@ -55,17 +55,21 @@ class ToolTip extends Component {
     }
 
     displayTitleContent = (data) => {
-        var convertData = [];
-        var min = data.length > 5 ? data.length - 5 : 0;
+        const { translate } = this.props;
+
+        let convertData = [];
+        let min = data.length > 5 ? data.length - 5 : 0;
+
         for (let index = data.length - 1; index >= min; index--) {
             const element = data[index];
             convertData.push(element);
         }
+
         if (data.length <= 0)
             return null;
         else return <React.Fragment>
             <div className="tooltip2">
-                <u className="text-blue" style={{ marginLeft: '3px' }}>Chi tiết</u>
+                <u className="text-blue" style={{ marginLeft: '3px' }}>{translate("general.detail")}</u>
                 <span className="tooltip2text">
                     {convertData.map((content, i) => {
                         return <p key={i} className="text-left" style={{

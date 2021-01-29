@@ -24,10 +24,33 @@ class EmployeeKpiEvaluationDashboard extends Component {
         let currentYear = currentDate.getFullYear();
         let currentMonth = currentDate.getMonth();
 
+        let d = new Date(),
+            month = d.getMonth() + 1,
+            year = d.getFullYear();
+        let startMonth, endMonth, startYear;
+
+        if (month > 3) {
+            startMonth = month - 3;
+            startYear = year;
+        } else {
+            startMonth = month - 3 + 12;
+            startYear = year - 1;
+        }
+        if (startMonth < 10)
+            startMonth = '0' + startMonth;
+        if (month < 10) {
+            endMonth = '0' + month;
+        } else {
+            endMonth = month;
+        }
+        
         this.INFO_SEARCH = {
             userId: null,
-            startMonth: currentYear + '-0' + 1,
-            endMonth: (currentMonth < 9) ? (currentYear + '-0' + currentMonth + 1) : (currentYear + '-' + (currentMonth + 1))
+            startMonth: [startYear, startMonth].join('-'),
+            endMonth: [year, endMonth].join('-'),
+
+            startMonthTitle: [startMonth, startYear].join('-'),
+            endMonthTitle: [endMonth, year].join('-')
         }
         this.IDS = null;
 
@@ -221,19 +244,25 @@ class EmployeeKpiEvaluationDashboard extends Component {
 
     handleSelectMonthStart = (value) => {
         let month = value.slice(3,7) + '-' + value.slice(0,2);
+        let startMonthTitle = value.slice(0, 2) + '-' + value.slice(3, 7);
+
         this.INFO_SEARCH.startMonth = month;
+        this.INFO_SEARCH.startMonthTitle = startMonthTitle;
     }
 
     handleSelectMonthEnd = (value) => {
         let month = value.slice(3,7) + '-' + value.slice(0,2);
+        let endMonthTitle = value.slice(0, 2) + '-' + value.slice(3, 7);
+
         this.INFO_SEARCH.endMonth = month;
+        this.INFO_SEARCH.endMonthTitle = endMonthTitle;
     }
 
     handleSearchData = async () => {
         let startMonth = new Date(this.INFO_SEARCH.startMonth);
         let endMonth = new Date(this.INFO_SEARCH.endMonth);
 
-        if (startMonth.getTime() >= endMonth.getTime()) {
+        if (startMonth.getTime() > endMonth.getTime()) {
             const { translate } = this.props;
             Swal.fire({
                 title: translate('kpi.evaluation.employee_evaluation.wrong_time'),
@@ -279,8 +308,12 @@ class EmployeeKpiEvaluationDashboard extends Component {
         const { user, kpimembers, dashboardEvaluationEmployeeKpiSet } = this.props;
         const { translate } = this.props;
 
-        const { unitMembers, dateOfExcellentEmployees, numberOfExcellentEmployees, infosearch, ids, organizationalUnitIds, statisticsOfEmployeeKpiSetChartData, resultsOfAllEmployeeKpiSetChartData } = this.state;
+        const { unitMembers, dateOfExcellentEmployees,
+            numberOfExcellentEmployees, infosearch, ids,
+            organizationalUnitIds, statisticsOfEmployeeKpiSetChartData, resultsOfAllEmployeeKpiSetChartData
+        } = this.state;
 
+        let { startMonthTitle, endMonthTitle } = this.INFO_SEARCH;
         let employeeKpiSets, lastMonthEmployeeKpiSets, currentMonthEmployeeKpiSets, settingUpKpi, awaitingApprovalKpi, activatedKpi, totalKpi, numberOfEmployee;
         let queue = [], childrenOrganizationalUnit = [],userName;
         let kpimember;
@@ -376,18 +409,6 @@ class EmployeeKpiEvaluationDashboard extends Component {
             }).reverse();
         }
 
-        let d = new Date(),
-            month = '' + (d.getMonth() + 1),
-            day = '' + d.getDate(),
-            year = d.getFullYear();
-
-        if (month.length < 2)
-            month = '0' + month;
-        if (day.length < 2)
-            day = '0' + day;
-        let defaultEndMonth = [month, year].join('-');
-        let defaultStartMonth = ['01', year].join('-');
-
         return (
             <React.Fragment>
                 { currentUnit 
@@ -399,7 +420,12 @@ class EmployeeKpiEvaluationDashboard extends Component {
                                     {ids &&
                                         <SelectMulti id="multiSelectOrganizationalUnit"
                                             items={childrenOrganizationalUnit.map(item => { return { value: item.id, text: item.name } })}
-                                            options={{ nonSelectedText: translate('kpi.evaluation.dashboard.select_units'), allSelectedText: translate('kpi.evaluation.dashboard.all_unit') }}
+                                            options={{
+                                                nonSelectedText: translate('kpi.evaluation.dashboard.select_units'),
+                                                allSelectedText: translate('kpi.evaluation.dashboard.all_unit'),
+                                                includeSelectAllOption: true,
+                                                maxHeight: 200
+                                            }}
                                             onChange={this.handleSelectOrganizationalUnit}
                                             value={ids}
                                         >
@@ -521,7 +547,7 @@ class EmployeeKpiEvaluationDashboard extends Component {
                                                 <DatePicker
                                                     id="monthStartInEmployeeKpiEvaluation"
                                                     dateFormat="month-year"
-                                                    value={defaultStartMonth}
+                                                    value={startMonthTitle}
                                                     onChange={this.handleSelectMonthStart}
                                                     disabled={false}
                                                 />
@@ -531,7 +557,7 @@ class EmployeeKpiEvaluationDashboard extends Component {
                                                 <DatePicker
                                                     id="monthEndInEmployeeKpiEvaluation"
                                                     dateFormat="month-year"
-                                                    value={defaultEndMonth}
+                                                    value={endMonthTitle}
                                                     onChange={this.handleSelectMonthEnd}
                                                     disabled={false}
                                                 />

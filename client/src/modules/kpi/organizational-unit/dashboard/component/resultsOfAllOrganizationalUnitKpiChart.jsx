@@ -366,7 +366,6 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
         let defaultEndDate = [month, year].join('-');
         let defaultStartDate = ['01', year].join('-');
 
-        console.log("dataChart", this.dataChart)
         return (
             <React.Fragment>
                 {/* Search data trong một khoảng thời gian */}

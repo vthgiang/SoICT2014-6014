@@ -42,6 +42,7 @@ class TaskOrganizationUnitDashboard extends Component {
         } else {
             endMonth = month;
         }
+
         this.INFO_SEARCH = {
             idsUnit: [],
             checkUnit: 0,
@@ -232,30 +233,6 @@ class TaskOrganizationUnitDashboard extends Component {
             currentOrganizationalUnitLoading = dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnitLoading;
         }
 
-        // Config ngày mặc định cho datePiker
-        let d = new Date(),
-            month = d.getMonth() + 1,
-            year = d.getFullYear();
-        let startMonthDefault, endMonthDefault, startYear;
-
-        if (month > 3) {
-            startMonthDefault = month - 3;
-            startYear = year;
-            if (month < 9) {
-                endMonthDefault = '0' + (month + 1);
-            } else {
-                endMonthDefault = month + 1;
-            }
-        } else {
-            startMonthDefault = month - 3 + 12;
-            startYear = year - 1;
-        }
-        if (startMonthDefault < 10)
-            startMonthDefault = '0' + startMonthDefault;
-
-        let defaultStartMonth = [startMonthDefault, startYear].join('-');
-        let defaultEndMonth = month < 10 ? ['0' + month, year].join('-') : [month, year].join('-');
-
         return (
             <React.Fragment>
                 {currentOrganizationalUnit
@@ -284,7 +261,7 @@ class TaskOrganizationUnitDashboard extends Component {
                                     <DatePicker
                                         id="monthStartInOrganizationUnitDashboard"
                                         dateFormat="month-year"
-                                        value={startMonth}
+                                        value={startMonthTitle}
                                         onChange={this.handleSelectMonthStart}
                                         disabled={false}
                                     />
@@ -294,7 +271,7 @@ class TaskOrganizationUnitDashboard extends Component {
                                     <DatePicker
                                         id="monthEndInOrganizationUnitDashboard"
                                         dateFormat="month-year"
-                                        value={endMonth}
+                                        value={endMonthTitle}
                                         onChange={this.handleSelectMonthEnd}
                                         disabled={false}
                                     />
