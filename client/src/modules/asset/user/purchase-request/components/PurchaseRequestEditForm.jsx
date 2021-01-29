@@ -180,13 +180,31 @@ class PurchaseRequestEditForm extends Component {
         });
     }
 
+    handleApproverChange = (value) => {
+        this.validateApprover(value, true);
+    }
+
+    validateApprover = (value, willUpdateState = true) => {
+        let msg = PurchaseRequestFromValidator.validateApprover(value, this.props.translate)
+        if (willUpdateState) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    errorOnApprover: msg,
+                    approver: value,
+                }
+            });
+        }
+        return msg === undefined;
+    }
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
     isFormValidated = () => {
-        const { equipmentName, total, unit, recommendNumber } = this.state;
+        const { equipmentName, total, unit, recommendNumber, approver } = this.state;
         let result =
             this.validateEquipment(equipmentName, false) &&
             this.validateTotal(total, false) &&
-            this.validateUnit(unit, false)
+            this.validateUnit(unit, false) &&
+            this.validateApprover(approver, false)
         // &&this.validateRecommendNumber(recommendNumber, false);
 
         return result;
@@ -220,6 +238,12 @@ class PurchaseRequestEditForm extends Component {
 
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps._id !== prevState._id) {
+            let approver = []
+            if (nextProps.approver) {
+                for (let i in nextProps.approver) {
+                    approver.push(nextProps.approver[i]._id)
+                }
+            }
             return {
                 ...prevState,
                 _id: nextProps._id,
@@ -232,7 +256,7 @@ class PurchaseRequestEditForm extends Component {
                 total: nextProps.total,
                 unit: nextProps.unit,
                 estimatePrice: nextProps.estimatePrice,
-                approver: nextProps.approver,
+                approver: approver,
                 status: nextProps.status,
                 note: nextProps.note,
                 files: nextProps.files,
@@ -267,9 +291,9 @@ class PurchaseRequestEditForm extends Component {
     render() {
         const { _id, department } = this.props;
         const { translate, recommendProcure, user } = this.props;
-        const { recommendNumber, dateCreate, proponent, equipmentName, equipmentDescription, supplier, total, unit, estimatePrice, recommendUnits, files,
+        const { recommendNumber, dateCreate, proponent, equipmentName, equipmentDescription, supplier, total, unit, estimatePrice, recommendUnits, files, approver,
             errorOnEquipment, errorOnEquipmentDescription, errorOnTotal, errorOnUnit, errorOnRecommendNumber } = this.state;
-
+        console.log("aaa", approver)
         var userlist = user.list;
         const departmentlist = department.list && department.list.map(obj => ({ value: obj._id, text: obj.name }));
 
@@ -392,6 +416,27 @@ class PurchaseRequestEditForm extends Component {
                                 <div className="form-group">
                                     <label>{translate('human_resource.profile.attached_files')}</label>
                                     < UploadFile multiple={true} onChange={this.handleChangeFile} files={files} sendDataAfterDelete={true} />
+                                </div>
+
+                                {/* Người phê duyệt */}
+                                <div className={`form-group`}>
+                                    <label>Người phê duyệt<span className="text-red">*</span></label>
+                                    <div>
+                                        {userlist &&
+                                            <SelectBox
+                                                id={`add-approver${_id}`}
+                                                className="form-control select2"
+                                                style={{ width: "100%" }}
+                                                items={userlist && userlist.map(x => {
+                                                    return { value: x._id, text: x.name + " - " + x.email }
+                                                })}
+                                                onChange={this.handleApproverChange}
+                                                value={approver}
+                                                multiple={true}
+                                                options={{ placeholder: "Chọn người phê duyệt" }}
+                                            />
+                                        }
+                                    </div>
                                 </div>
                             </div>
                         </div>
