@@ -67,6 +67,7 @@ export const performTaskService = {
 
     getAllPreceedingTasks,
     sortActions,
+    evaluationAllAction,
 };
 
 /**
@@ -333,6 +334,14 @@ function deleteCommentOfTaskComment(commentId, taskId) {
 function evaluationAction(actionId, taskId, evaluation) {
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}/task-actions/${actionId}`,
+        method: 'PATCH',
+        data: evaluation,
+    }, false, true, 'task.task_perform')
+}
+
+function evaluationAllAction(taskId, evaluation) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}/task-actions/evaluation/all`,
         method: 'PATCH',
         data: evaluation,
     }, false, true, 'task.task_perform')

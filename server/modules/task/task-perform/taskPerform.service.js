@@ -1465,6 +1465,114 @@ exports.evaluationAction = async (portal, params, body) => {
 
     return task.taskActions;
 };
+
+exports.evaluationAllAction = async (portal, params, body, userId) => {
+    const { taskId } = params;
+    const taskActionLength = body.length;
+
+    for (let i = 0; i < taskActionLength; i++) {
+        // Kiểm tra xem đánh giá hoạt động đã tồn tại hay chưa - nếu chưa tạo mới, nếu có ghi đè
+        let danhgia = await Task(connect(DB_CONNECTION, portal)).aggregate([
+            { $match: { _id: mongoose.Types.ObjectId(taskId) } },
+            { $unwind: "$taskActions" },
+            { $replaceRoot: { newRoot: "$taskActions" } },
+            { $match: { _id: mongoose.Types.ObjectId(body[i].actionId) } },
+            { $unwind: "$evaluations" },
+            { $replaceRoot: { newRoot: "$evaluations" } },
+            {
+                $match: {
+                    creator: mongoose.Types.ObjectId(userId),
+                    role: body[i].role
+                }
+            }
+        ]);
+
+        if(danhgia.length === 0){
+            await Task(connect(DB_CONNECTION, portal)).updateOne(
+                { _id: taskId, "taskActions._id": body[i].actionId },
+                {
+                    $push: {
+                        "taskActions.$.evaluations": {
+                            creator: userId,
+                            rating: body[i].rating,
+                            role: body[i].role
+                        },
+                    },
+                }
+            );
+        } else {
+            await Task(connect(DB_CONNECTION, portal)).updateOne(
+                {
+                    _id: taskId, 
+                    "taskActions._id": body[i].actionId,
+                    "taskActions.evaluations.creator": userId,
+                    "taskActions.evaluations.role": body[i].role
+                },{
+                    $set: { 
+                        "taskActions.$[item].evaluations.$[elem].rating": body[i].rating
+                    }
+                },{
+                    arrayFilters: [
+                        { "elem.creator": userId, "elem.role": body[i].role },
+                        { "item._id": body[i].actionId }
+                    ]
+                }
+            )
+        }
+
+        // Lấy danh sách các đánh giá của hoạt động
+        let evaluations = await Task(connect(DB_CONNECTION, portal)).aggregate([
+            { $match: { _id: mongoose.Types.ObjectId(taskId) } },
+            { $unwind: "$taskActions" },
+            { $replaceRoot: { newRoot: "$taskActions" } },
+            { $match: { _id: mongoose.Types.ObjectId(body[i].actionId) } },
+            { $unwind: "$evaluations" },
+            { $replaceRoot: { newRoot: "$evaluations" } },
+        ]);
+
+        //Lấy điểm đánh giá của người phê duyệt trong danh sách các danh sách các đánh giá của hoạt động
+        let rating = [];
+        for(let i = 0; i < evaluations.length; i++){
+            let evaluation = evaluations[i];
+            if(evaluation.role === 'accountable') rating.push(evaluation.rating);
+        }
+
+        //tính điểm trung bình
+        let accountableRating;
+        if (rating.length > 0) {
+            accountableRating =
+                rating.reduce((accumulator, currentValue) => {
+                    return accumulator + currentValue;
+                }, 0) / rating.length;
+        } 
+
+        // Cập nhật điểm đánh giá trung bình của người phê duyệt của hành động
+        await Task(connect(DB_CONNECTION, portal)).updateOne(
+            { _id: taskId, "taskActions._id": body[i].actionId },
+            {
+                $set: {
+                    "taskActions.$.rating": accountableRating,
+                },
+            },{ $new: true }
+        );
+    }
+
+    let task = await Task(connect(DB_CONNECTION, portal))
+        .findOne({ _id: taskId})
+        .populate([
+            { path: "taskActions.creator", select: "name email avatar" },
+            {
+                path: "taskActions.comments.creator",
+                select: "name email avatar",
+            },
+            {
+                path: "taskActions.evaluations.creator",
+                select: "name email avatar ",
+            },
+        ]);
+    return task.taskActions;
+}
+
 /**
  * Xác nhận hành động
  */

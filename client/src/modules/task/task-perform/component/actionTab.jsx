@@ -248,6 +248,26 @@ class ActionTab extends Component {
             }
         })
     }
+
+    handleApproveAllAction = (taskId, taskActions, role, value = 10) => {
+        let evaluation = [], showEvaluations = [];
+
+        taskActions.forEach((obj, index) => {
+            evaluation = [...evaluation, {
+                actionId: obj._id,
+                role: 'accountable',
+                rating: 10,
+            }]
+            showEvaluations = [...showEvaluations, obj._id]
+        })
+
+        this.setState({
+            ...this.state,
+            showEvaluations,
+        }, () => this.props.evaluationAllAction(taskId, evaluation));
+    }
+
+
     handleChangeContent = async (content) => {
         await this.setState(state => {
             return {
@@ -1213,6 +1233,13 @@ class ActionTab extends Component {
                     </ul>
                     <div className="tab-content">
                         <div className={selected === "taskAction" ? "active tab-pane" : "tab-pane"} id="taskAction">
+                            {
+                                (taskActions.length !== 0 && role === "accountable") &&
+                                <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '10px' }}>
+                                    <button className="btn btn-success" onClick={() => this.handleApproveAllAction(task._id, taskActions, role)}>Đánh giá tất cả</button>
+                                </div>
+                            }
+
                             {typeof taskActions !== 'undefined' && taskActions.length !== 0 ?
                                 <ShowMoreShowLess
                                     id={`description${id}`}
@@ -2202,6 +2229,7 @@ const actionCreators = {
     editCommentOfTaskComment: performTaskAction.editCommentOfTaskComment,
     deleteCommentOfTaskComment: performTaskAction.deleteCommentOfTaskComment,
     evaluationAction: performTaskAction.evaluationAction,
+    evaluationAllAction: performTaskAction.evaluationAllAction,
     confirmAction: performTaskAction.confirmAction,
     downloadFile: AuthActions.downloadFile,
     getSubTask: taskManagementActions.getSubTask,
