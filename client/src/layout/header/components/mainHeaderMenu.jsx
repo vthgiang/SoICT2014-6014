@@ -7,6 +7,7 @@ import Profile from './profile';
 import Roles from './roles';
 import Language from './language';
 //import { getStorage } from '../../../config';
+import { Link } from 'react-router-dom';
 
 class MainHeaderMenu extends Component {
 
@@ -14,7 +15,7 @@ class MainHeaderMenu extends Component {
         super(props);
         this.state = {}
     }
-    
+
     checkURL = (urlName, linkArr) => {
         var result = false;
         if (linkArr !== undefined) {
@@ -35,9 +36,16 @@ class MainHeaderMenu extends Component {
                 <div className="navbar-custom-menu">
                     <ul className="nav navbar-nav">
                         <Roles />
+                        <li>
+                            <Link to="/user-guide">
+                                <i style={{ fontSize: '22px', color: 'rgb(76, 76, 76)' }} className="material-icons" >
+                                    help_outline
+                                </i>
+                            </Link>
+                        </li>
                         {
-                            this.checkURL('/notifications', auth.links) && 
-                            <Notifications/>
+                            this.checkURL('/notifications', auth.links) &&
+                            <Notifications />
                         }
                         <Language />
                         <Profile />

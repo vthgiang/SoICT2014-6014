@@ -938,6 +938,25 @@ export function performtasks(state = {}, action) {
                 }) : state.tasks
             }
         
+        case performTaskConstants.EVALUATION_ALL_ACTION_REQUEST:
+            return {
+                ...state,
+                evaluating: true
+            }
+        
+        case performTaskConstants.EVALUATION_ALL_ACTION_SUCCESS:
+            var taskActions = { ...state.task, taskActions: action.payload.data.content }
+            return {
+                ...state,
+                task: taskActions
+            }
+        
+        case performTaskConstants.EVALUATION_ALL_ACTION_FAILURE:
+            return {
+                ...state,
+                error: action.error
+            }
+        
         default:
             return state
     }

@@ -80,7 +80,7 @@ class TaskManagementOfUnit extends Component {
             this.setState((state) => {
                 return {
                     ...state,
-                    organizationalUnit: ['selectAll', ...units],
+                    organizationalUnit: units,
                     selectBoxUnit: childrenOrganizationalUnit
                 }
             });
@@ -227,12 +227,8 @@ class TaskManagementOfUnit extends Component {
     handleUpdateData = () => {
         let { organizationalUnit, status, priority, special, name, startDate, endDate, perPage, isAssigned } = this.state;
 
-        let organizationalUnitTemp = organizationalUnit;
-        if (organizationalUnitTemp[0] === 'selectAll') {
-            organizationalUnitTemp.shift();
-        }
-        if (organizationalUnitTemp && organizationalUnitTemp.length !== 0) {
-            this.props.getPaginatedTasksByOrganizationalUnit(organizationalUnitTemp, 1, perPage, status, priority, special, name, startDate, endDate, isAssigned);
+        if (organizationalUnit && organizationalUnit.length !== 0) {
+            this.props.getPaginatedTasksByOrganizationalUnit(organizationalUnit, 1, perPage, status, priority, special, name, startDate, endDate, isAssigned);
         }
         this.setState(state => {
             return {
@@ -435,9 +431,10 @@ class TaskManagementOfUnit extends Component {
                                             items={selectBoxUnit.map(item => { return { value: item.id, text: item.name } })}
                                             onChange={this.handleSelectOrganizationalUnit}
                                             options={{
-                                                nonSelectedText: organizationalUnit.length !== 0 ? translate('task.task_management.select_department') : "Bạn chưa có đơn vị",
+                                                nonSelectedText: organizationalUnit.length !== 0 ? translate('task.task_management.select_department') : translate('general.not_org_unit'),
                                                 allSelectedText: translate(`task.task_management.select_all_department`),
-                                                selectAllButton: true
+                                                includeSelectAllOption: true,
+                                                maxHeight: 200
                                             }}
                                             value={organizationalUnit}
                                         >
@@ -487,10 +484,12 @@ class TaskManagementOfUnit extends Component {
                                 {/* Đặc tính công việc */}
                                 <div className="form-group">
                                     <label>{translate('task.task_management.special')}</label>
-                                    <SelectMulti id="multiSelectCharacteristic" defaultValue={[
-                                        translate('task.task_management.store'),
-                                        translate('task.task_management.current_month')
-                                    ]}
+                                    <SelectMulti
+                                        id="multiSelectCharacteristic"
+                                        defaultValue={[
+                                            translate('task.task_management.store'),
+                                            translate('task.task_management.current_month')
+                                        ]}
                                         items={[
                                             { value: "stored", text: translate('task.task_management.stored') },
                                             { value: "currentMonth", text: translate('task.task_management.current_month') }
@@ -610,7 +609,7 @@ class TaskManagementOfUnit extends Component {
                     : currentOrganizationalUnitLoading
                     && <div className="box">
                         <div className="box-body">
-                            <h4>Bạn chưa có đơn vị</h4>
+                            <h4>{translate('general.not_org_unit')}</h4>
                         </div>
                     </div>
                 }

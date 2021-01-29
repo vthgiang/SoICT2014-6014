@@ -156,7 +156,7 @@ exports.editEmployeeKpiSet = async (req, res) => {
 exports.updateEmployeeKpiSetStatus = async (req, res) => {
     try {
 
-        var employeeKpiSet = await EmployeeKpiSetService.updateEmployeeKpiSetStatus(req.portal, req.params.id, req.query.status);
+        var employeeKpiSet = await EmployeeKpiSetService.updateEmployeeKpiSetStatus(req.portal, req.params.id, req.query.status, req.user.company._id);
         await Logger.info(req.user.email, ` edit employee kpi set status `, req.portal)
         res.status(200).json({
             success: true,

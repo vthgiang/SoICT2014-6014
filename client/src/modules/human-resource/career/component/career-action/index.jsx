@@ -100,7 +100,7 @@ class CareerAction extends Component {
                 ...elm,
                 id: elm._id,
                 text: elm.name,
-                state: { "opened": true },
+                // state: { "opened": true },
                 parent: "#",
             }
         });

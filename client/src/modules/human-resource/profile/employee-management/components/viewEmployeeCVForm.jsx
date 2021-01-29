@@ -11,6 +11,7 @@ import {
 } from '../../employee-info/components/combinedContent';
 
 import { EmployeeInfoActions } from '../../employee-info/redux/actions';
+import { ModalSetPositionSuggest } from './modalSetPositionSuggest';
 
 class ViewEmployeeCVForm extends Component {
     constructor(props) {
@@ -46,6 +47,11 @@ class ViewEmployeeCVForm extends Component {
                 roles: [],
                 career: [],
                 major: [],
+                company: {},
+                experiences: {},
+                suggestItem: {},
+                emp: {},
+                position: ''
             })
             return false;
         };
@@ -60,10 +66,18 @@ class ViewEmployeeCVForm extends Component {
                 roles: nextProps.employeesInfo.roles,
                 career: nextProps.employeesInfo.employees[0].career,
                 major: nextProps.employeesInfo.employees[0].major,
-
+                company: nextProps.company,
+                experiences: nextProps.experiences,
+                suggestItem: nextProps.suggestItem,
+                emp: nextProps.emp,
+                position: nextProps.position,
             });
             return true;
         };
+        if(this.state.suggestItem?.suggested !== nextProps.suggestItem?.suggested){
+            this.setState({ suggestItem: nextProps.suggestItem});
+            return true;
+        }
         return false;
     }
 
@@ -91,22 +105,57 @@ class ViewEmployeeCVForm extends Component {
             return date
         }
     }
-    
+
     formatSkill = (item) => {
-        if(item === "intermediate_degree") return "Trung cấp";
-        if(item === "colleges") return "Cao đẳng";
-        if(item === "university") return "Đại học";
-        if(item === "bachelor") return "Cử nhân";
-        if(item === "engineer") return "Kỹ sư";
-        if(item === "master_degree") return "Thạc sĩ";
-        if(item === "phd") return "Tiến sĩ";
-        if(item === "unavailable") return "Không có";
+        if (item === "intermediate_degree") return "Trung cấp";
+        if (item === "colleges") return "Cao đẳng";
+        if (item === "university") return "Đại học";
+        if (item === "bachelor") return "Cử nhân";
+        if (item === "engineer") return "Kỹ sư";
+        if (item === "master_degree") return "Thạc sĩ";
+        if (item === "phd") return "Tiến sĩ";
+        if (item === "unavailable") return "Không có";
+    }
+
+    getYear = (date) => {
+        let t1 = new Date(date).getTime();
+        let t2 = new Date().getTime();
+
+        let year = Math.round((t2 - t1) / (365 * 24 * 3600 * 1000) * 10) / 10;
+        return year;
+    }
+
+    addSuggest = async () => {
+        await this.setState(state => {
+            return {
+                ...state,
+                currentItem: state.emp
+            }
+        });
+        window.$(`#suggest-modal-view-cv-form-employee${this.state.emp._id}`).modal('show');
+    }
+
+    onChangeSuggest = async (x) => {
+        this.setState({suggestItem: x});
+    }
+
+    deleteSuggest = async (x) => {
+        await this.setState(state => {
+            return {
+                suggestItem: {
+                    ...state.suggestItem,
+                    suggested: false,
+                }
+            }
+        });
+        console.log('gọi2', this.state.suggestItem);
+        this.props.deleteSuggest(x)
     }
 
     render() {
         const { employeesInfo, translate } = this.props;
 
-        let { _id, employees, roles = [], career, major } = this.state;
+        let { _id, employees, roles = [], career, major, company, experiences, suggestItem, emp, currentItem, position } = this.state;
         return (
             <React.Fragment>
                 <DialogModal
@@ -117,6 +166,13 @@ class ViewEmployeeCVForm extends Component {
                     hasNote={false}
                 >
                     <form className="form-group" id={`modal-view-cv-form-employee${_id}`} style={{ marginTop: "-15px" }}>
+                        {
+                            suggestItem?.suggested ?
+                                <a onClick={() => this.deleteSuggest(_id)} className={`pull-right btn btn-danger`}> Bỏ đề xuất
+                                </a> :
+                                <a onClick={() => this.addSuggest()} className={`pull-right btn btn-success`}> Thêm đề xuất nhân sự
+                                </a>
+                        }
                         {employees && employees.length !== 0 &&
                             employees.map((x, index) => (
                                 <div key={index}>
@@ -174,6 +230,21 @@ class ViewEmployeeCVForm extends Component {
                                                         }) : <p>Chưa có dữ liệu</p>}
                                                     </div>
                                                 </div>
+
+                                                <div className="row">
+                                                    {/* Chứng chỉ */}
+                                                    <div className="form-group" style={{ lineHeight: 2 }}>
+                                                        <strong>Công việc hiện tại&emsp; </strong><br />
+                                                        <li>Tên của người sử dụng lao động: {company.name}</li>
+                                                        <li>Địa chỉ người sử dụng lao động: {company.address}</li>
+                                                        <li>Người liên lạc (trưởng phòng /cán bộ phụ trách nhân sự): {company?.contactPerson?.name}</li>
+                                                        <li>Số năm làm việc cho người sử dụng lao động hiện tại: {this.getYear(experiences[0].startDate)} năm</li>
+                                                        <li>Điện thoại: {company.phone}</li>
+                                                        <li>Email: {company.email}</li>
+                                                        <li>Fax: {company.fax}</li>
+                                                    </div>
+                                                </div>
+
                                             </div>
                                         </div>
                                     </div>
@@ -192,7 +263,7 @@ class ViewEmployeeCVForm extends Component {
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    {career && career.length !== 0 &&
+                                                    {career && career.length !== 0 ?
                                                         career.map((x, index) => (
                                                             <tr key={index}>
                                                                 <td>{this.formatDate(x.startDate)}</td>
@@ -214,7 +285,9 @@ class ViewEmployeeCVForm extends Component {
                                                                     </li>
                                                                 </td>
                                                             </tr>
-                                                        ))}
+                                                        )) : <tr>
+                                                            <td colspan="3">Chưa có thông tin</td>
+                                                        </tr>}
                                                 </tbody>
                                             </table>
                                         </div>
@@ -223,6 +296,19 @@ class ViewEmployeeCVForm extends Component {
                                 </div>
                             ))}
                     </form>
+                    {
+                        <ModalSetPositionSuggest
+                            _id={currentItem ? currentItem._id : ""}
+                            company={currentItem?.company}
+                            experiences={currentItem?.experiences}
+                            suggestItem={suggestItem}
+                            emp={currentItem}
+                            position={position}
+
+                            addSuggest={this.props.addSuggest}
+                            onChangeSuggest={this.onChangeSuggest}
+                        />
+                    }
                 </DialogModal>
             </React.Fragment>
         );

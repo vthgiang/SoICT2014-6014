@@ -150,8 +150,8 @@ class IncidentManagement extends Component {
     }
 
     // Function bắt sự kiện tìm kiếm
-    handleSubmitSearch = async () => {
-        await this.setState({
+    handleSubmitSearch = () => {
+        this.setState({
             ...this.state,
             page: 1
         })
@@ -192,7 +192,7 @@ class IncidentManagement extends Component {
             data = data.forEach((asset, dataIndex) => {
                 let item = asset.asset;
 
-                if (item.incidentLogs.length !== 0) {
+                if (item && item.incidentLogs && item.incidentLogs.length !== 0) {
                     let assetLog = item.incidentLogs.map((x, index) => {
                         let code = x.incidentCode;
                         let assetName = item.assetName;
@@ -408,7 +408,7 @@ class IncidentManagement extends Component {
                                 lists.map((x, index) => {
                                     return (
                                         <tr key={index}>
-                                            <td><a onClick={() => this.handleEditAsset(x.asset)}>{x.asset.code}</a></td>
+                                            <td><a onClick={() => this.handleEditAsset(x.asset)}>{x.asset && x.asset.code}</a></td>
                                             <td>{x.asset.assetName}</td>
                                             <td>{x.incidentCode}</td>
                                             <td>{this.convertIncidentType(x.type)}</td>

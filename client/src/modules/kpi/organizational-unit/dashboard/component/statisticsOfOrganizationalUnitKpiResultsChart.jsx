@@ -128,16 +128,19 @@ class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
             return a - b;
         });
 
-        point.map(x => {
-            let index = arrayPoint.indexOf(x);
-            let theSamePoints = [];
+        point = point.filter(point => point).map(point => {
+            if (point) {
+                let index = arrayPoint.indexOf(point);
+                let theSamePoints = [];
 
-            while (index !== -1) {
-                theSamePoints.push(index);
-                index = arrayPoint.indexOf(x, index + 1);
+                while (index !== -1) {
+                    theSamePoints.push(index);
+                    index = arrayPoint.indexOf(point, index + 1);
+                }
+
+                countEmployeeWithTheSamePoint.push(theSamePoints.length);
+                return point;
             }
-
-            countEmployeeWithTheSamePoint.push(theSamePoints.length);
         })
 
         point.unshift('x');
@@ -197,11 +200,10 @@ class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
         let countEmployeePoint =this.countEmployeeWithTheSamePoint(employeePoint);
         let countApprovedPoint =this.countEmployeeWithTheSamePoint(approvedPoint);
 
-        if(listEmployeeKpiSet&&month&&organizationalUnit){
+        if(listEmployeeKpiSet && month && organizationalUnit){
             let exportData =this.convertDataToExportData(listEmployeeKpiSet,organizationalUnit,organizationalUnitId,month,countAutomaticPoint,countEmployeePoint,countApprovedPoint)
             this.handleExportData(exportData);
         }
-        //
 
         return {
             'employeeWithTheSamePoints': employeeWithTheSamePoints,

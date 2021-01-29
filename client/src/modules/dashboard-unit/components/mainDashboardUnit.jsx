@@ -14,6 +14,9 @@ import { SalaryActions } from '../../human-resource/salary/redux/actions';
 import { taskManagementActions } from '../../task/task-management/redux/actions';
 import { UserActions } from '../../super-admin/user/redux/actions';
 import c3 from 'c3';
+import ViewAllTaskUrgent from './viewAllTaskUrgent';
+import ViewAllTaskNeedToDo from './viewAllTaskNeedToDo';
+import "./dashboardUnit.css";
 class MainDashboardUnit extends Component {
     constructor(props) {
         super(props);
@@ -28,7 +31,9 @@ class MainDashboardUnit extends Component {
             listUnit: [],
             urgent: [],
             taskNeedToDo: [],
-            arrayUnitForUrgentChart: [this.props.childOrganizationalUnit[0].id]
+            arrayUnitForUrgentChart: [this.props.childOrganizationalUnit[0].id],
+            TaskUrgentIsHovering: false,
+            TaskNeedToDoIsHovering: false,
         }
     };
 
@@ -161,6 +166,13 @@ class MainDashboardUnit extends Component {
                 columns: dataChart,
                 type: 'pie',
                 labels: true,
+                onclick: function (d, e) {
+                    this.setState({
+                        ...this.state,
+                        clickUrgentChart: d,
+                    })
+                    window.$('#modal-view-all-task-urgent').modal('show');
+                }.bind(this)
             },
             pie: {
                 label: {
@@ -201,6 +213,13 @@ class MainDashboardUnit extends Component {
                 columns: dataChart,
                 type: 'pie',
                 labels: true,
+                onclick: function (d, e) {
+                    this.setState({
+                        ...this.state,
+                        clickNeedTodoChart: d,
+                    })
+                    window.$('#modal-view-all-task-need-to-do').modal('show');
+                }.bind(this)
             },
             pie: {
                 label: {
@@ -272,19 +291,13 @@ class MainDashboardUnit extends Component {
         return taskNeedToDoPieChart;
     }
 
-    handleUpdateData = () => {
+    handleUpdateDataUrgent = () => {
         const { currentDate, arrayUnitForUrgentChart } = this.state;
-        
+
         let partDate = currentDate.split('-');
         let newDate = [partDate[2], partDate[1], partDate[0]].join('-');
-        let listUnitForUrgentChart = arrayUnitForUrgentChart;
 
-        if (listUnitForUrgentChart[0] === 'selectAll') {
-            listUnitForUrgentChart.shift();
-        }
-
-        console.log(listUnitForUrgentChart)
-        this.props.getTaskInOrganizationUnitByDateNow(listUnitForUrgentChart, newDate)
+        this.props.getTaskInOrganizationUnitByDateNow(arrayUnitForUrgentChart, newDate)
     }
 
     static getDerivedStateFromProps(props, state) {
@@ -344,12 +357,25 @@ class MainDashboardUnit extends Component {
         this.props.getTaskInOrganizationUnitByDateNow(arrayUnitForUrgentChart, newDate)
     }
 
+    handleMouseHovershowTaskUrgent = () => {
+        this.setState({
+            ...this.state,
+            TaskUrgentIsHovering: !this.state.TaskUrgentIsHovering
+        })
+    }
+
+    handleMouseHovershowTaskNeedToDo = () => {
+        this.setState({
+            ...this.state,
+            TaskNeedToDoIsHovering: !this.state.TaskNeedToDoIsHovering
+        })
+    }
     render() {
         const { translate, department, employeesManager, user, tasks, discipline } = this.props;
 
         const { childOrganizationalUnit } = this.props;
 
-        const { monthShow, month, organizationalUnits, arrayUnitShow, listUnit, taskNeedToDo, urgent, arrayUnitForUrgentChart } = this.state;
+        const { monthShow, month, organizationalUnits, arrayUnitShow, listUnit, taskNeedToDo, urgent, arrayUnitForUrgentChart, TaskUrgentIsHovering, TaskNeedToDoIsHovering, clickUrgentChart, clickNeedTodoChart } = this.state;
 
         let listAllEmployees = (!organizationalUnits || organizationalUnits.length === department.list.length) ?
             employeesManager.listAllEmployees : employeesManager.listEmployeesOfOrganizationalUnits;
@@ -389,24 +415,19 @@ class MainDashboardUnit extends Component {
 
         };
 
+        console.log('TaskUrgentIsHovering', TaskUrgentIsHovering)
         return (
             <React.Fragment>
                 <div className="qlcv">
+                    <ViewAllTaskUrgent data={this.state.urgent} clickUrgentChart={clickUrgentChart} />
+                    <ViewAllTaskNeedToDo data={this.state.taskNeedToDo} clickNeedTodoChart={clickNeedTodoChart} />
                     {/* Biểu đồ só công việc khẩn cấp /  cần làm */}
                     <div className="row">
                         <div className="col-md-12">
                             <div className="box box-solid">
                                 <div className="box-header with-border">
-                                    <div className="box-title">
+                                    <div className="box-title" >
                                         Biểu đồ thể hiện số công việc khẩn cấp/Cần làm
-                                    <ToolTip
-                                            type={"icon_tooltip"}
-                                            dataTooltip={[
-                                                `Công việc được gọi là khẩn cấp/nghiêm trọng nếu:
-                                                Quá hạn, công việc có độ ưu tiên...
-                                            `
-                                            ]}
-                                        />
                                     </div>
                                 </div>
 
@@ -421,39 +442,141 @@ class MainDashboardUnit extends Component {
                                                     options={{
                                                         nonSelectedText: translate('page.non_unit'),
                                                         allSelectedText: translate('page.all_unit'),
-                                                        selectAllButton: true
+                                                        includeSelectAllOption: true,
+                                                        maxHeight: 200
                                                     }}
                                                     onChange={this.handleSelectOrganizationalUnitUrgent}
                                                     value={arrayUnitForUrgentChart}
                                                 >
                                                 </SelectMulti>
                                             </div>
-                                            <button type="button" className="btn btn-success" onClick={this.handleUpdateData}>tìm kiếm</button>
+                                            <button type="button" className="btn btn-success" onClick={this.handleUpdateDataUrgent}>{translate('general.search')}</button>
                                         </div>
                                     </div>
 
                                     <div className="row " >
                                         <div className="dashboard_box_body" >
                                             <div className="col-md-6">
-                                                <p className="pull-left" style={{ marginTop: '10px' }}> < b > Số công việc khẩn cấp </b></p >
-                                                {
-                                                    tasks.isLoading ? <p style={{ marginTop: '60px', textAlign: "center" }}>Đang tải dữ liệu</p>
-                                                        : urgent && urgent.length > 0 ?
-                                                            <div ref="pieCharUrgent" /> :
-                                                            <p style={{ marginTop: '60px', textAlign: "center" }}>không có công việc nào khẩn cấp</p>
-                                                }
+                                                <div style={{ display: 'flex', flexDirection: 'column', marginTop: '10px', marginBottom: 0 }}>
+                                                    <p className="pull-left" style={{ display: 'flex', alignItems: 'center' }}> < b style={{ marginTop: '10px', marginRight: '5px' }}> Số công việc khẩn cấp</b>
+                                                        <span className="material-icons title-urgent " style={{ zIndex: 999, cursor: "pointer", fontSize: '15px', marginTop: '10px' }}
+                                                            onMouseEnter={this.handleMouseHovershowTaskUrgent}
+                                                            onMouseLeave={this.handleMouseHovershowTaskUrgent}>
+                                                            help
+                                                    </span>
+                                                    </p >
+                                                    {
+                                                        TaskUrgentIsHovering &&
+                                                        <div className="menu-list-item urgent">
+                                                            <div className="no-padding">
+                                                                <table className="table" style={{ marginBottom: 0 }}>
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <th className="not-sort" style={{ width: '100px' }}>Độ ưu tiên công việc</th>
+                                                                            <th className="not-sort" style={{ width: '43px' }}>Quá hạn</th>
+                                                                            <th className="not-sort" style={{ width: '61px' }}>Chậm tiến độ</th>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>Cv độ ưu tiên thấp</td>
+                                                                            <td>{`> 25%`} </td>
+                                                                            <td>{`>= 50%`}</td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>Cv độ ưu tiên trung bình</td>
+                                                                            <td>{`> 20%`} </td>
+                                                                            <td>{`>= 40%`}</td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>Cv độ ưu tiên tiêu chuẩn</td>
+                                                                            <td>{`> 15%`} </td>
+                                                                            <td>{`>= 30%`}</td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>Cv độ ưu tiên cao</td>
+                                                                            <td>{`> 10%`} </td>
+                                                                            <td>{`>= 20%`}</td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>Cv độ ưu tiên khẩn cấp</td>
+                                                                            <td>{`> 5%`} </td>
+                                                                            <td>{`>= 10%`}</td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                    }
+
+                                                    {
+                                                        tasks.isLoading ? <p style={{ marginTop: '60px', textAlign: "center" }}>Đang tải dữ liệu</p>
+                                                            : urgent && urgent.length > 0 ?
+                                                                <div ref="pieCharUrgent" /> :
+                                                                <p style={{ marginTop: '60px', textAlign: "center" }}>không có công việc nào khẩn cấp</p>
+                                                    }
+                                                </div>
                                             </div>
 
                                             <div className="col-md-6">
-                                                <p className="pull-left" style={{ marginTop: '10px' }}> < b > Số công việc cần làm </b></p >
-                                                {
-                                                    tasks.isLoading ?
-                                                        <p style={{ marginTop: '60px', textAlign: "center" }}>Đang tải dữ liệu</p>
-                                                        :
-                                                        taskNeedToDo && taskNeedToDo.length > 0 ?
-                                                            <div ref="pieCharTaskNeedToDo" /> :
-                                                            <p style={{ marginTop: '60px', textAlign: "center" }}>không có công việc nào cần làm</p>
-                                                }
+                                                <div style={{ display: 'flex', flexDirection: 'column', marginTop: '10px', marginBottom: 0 }}>
+                                                    <p className="pull-left" style={{ marginRight: '10px', display: 'flex', alignItems: 'center' }}>
+                                                        < b style={{ marginTop: '10px', marginRight: '5px' }} > Số công việc cần làm</b>
+                                                        <span className="material-icons title-urgent " style={{ zIndex: 999, cursor: "pointer", fontSize: '15px', marginTop: '10px' }}
+                                                            onMouseEnter={this.handleMouseHovershowTaskNeedToDo}
+                                                            onMouseLeave={this.handleMouseHovershowTaskNeedToDo}>
+                                                            help
+                                                        </span>
+                                                    </p >
+                                                    {
+                                                        TaskNeedToDoIsHovering &&
+                                                        <div className="menu-list-item needtodo">
+                                                            <div className="no-padding">
+                                                                <table className="table" style={{ marginBottom: 0 }}>
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <th className="not-sort" style={{ width: '100px' }}>Độ ưu tiên công việc</th>
+                                                                            <th className="not-sort" style={{ width: '43px' }}>Quá hạn</th>
+                                                                            <th className="not-sort" style={{ width: '61px' }}>Chậm tiến độ</th>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>Cv độ ưu tiên thấp</td>
+                                                                            <td>{`<= 25%`} </td>
+                                                                            <td>{`40% < x < 50%`}</td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>Cv độ ưu tiên trung bình</td>
+                                                                            <td>{`<= 20%`} </td>
+                                                                            <td>{`30% < x < 40%`}</td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>Cv độ ưu tiên tiêu chuẩn</td>
+                                                                            <td>{`<= 15%`} </td>
+                                                                            <td>{`20% < x < 30%`}</td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>Cv độ ưu tiên cao</td>
+                                                                            <td>{`<= 10%`} </td>
+                                                                            <td>{`10% < x < 20%`}</td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>Cv độ ưu tiên khẩn cấp</td>
+                                                                            <td>{`<= 5%`} </td>
+                                                                            <td>{`0% < x < 10%`}</td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                                <span style={{ marginLeft: '10px' }}><b>x</b> là phần trăm chậm tiến độ của cv</span>
+                                                            </div>
+                                                        </div>
+                                                    }
+                                                    {
+                                                        tasks.isLoading ?
+                                                            <p style={{ marginTop: '60px', textAlign: "center" }}>Đang tải dữ liệu</p>
+                                                            :
+                                                            taskNeedToDo && taskNeedToDo.length > 0 ?
+                                                                <div ref="pieCharTaskNeedToDo" /> :
+                                                                <p style={{ marginTop: '60px', textAlign: "center" }}>không có công việc nào cần làm</p>
+                                                    }
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -468,7 +591,12 @@ class MainDashboardUnit extends Component {
                             <label style={{ width: "auto" }}>{translate('kpi.organizational_unit.dashboard.organizational_unit')}</label>
                             <SelectMulti id="multiSelectOrganizationalUnitInDashboardUnit"
                                 items={childOrganizationalUnit.map(item => { return { value: item.id, text: item.name } })}
-                                options={{ nonSelectedText: translate('page.non_unit'), allSelectedText: translate('page.all_unit') }}
+                                options={{
+                                    nonSelectedText: translate('page.non_unit'),
+                                    allSelectedText: translate('page.all_unit'),
+                                    includeSelectAllOption: true,
+                                    maxHeight: 200
+                                }}
                                 onChange={this.handleSelectOrganizationalUnit}
                                 value={arrayUnitShow}
                             >

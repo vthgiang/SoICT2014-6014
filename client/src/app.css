@@ -108,7 +108,8 @@ a:hover, a:active, a:focus {
 /* CSS cho C3 Chart */
 .c3-tooltip-container {
     max-height: none !important;
-    width: 30%;;
+    width: 50%;
+    pointer-events: auto !important;
 }
 
 .c3-tooltip {
@@ -118,17 +119,21 @@ a:hover, a:active, a:focus {
 
 .c3-tooltip .name {
     text-align: left;
-    width: 70%;
+    width: 75%;
 }
 .c3-tooltip .value {
-    width: 30%;
+    width: 25% !important;
 }
 text.c3-axis-x-label, text.c3-axis-y-label {
     font-weight: bold;
     font-size: 120%
 }
-
-
+.c3-chart-container > .legend > div {
+    white-space: nowrap; 
+    overflow: hidden;
+    text-overflow: ellipsis; 
+    cursor: pointer;
+}
 
 /*
 CSS cho bảng dữ liệu
@@ -143,7 +148,7 @@ table thead tr th:not(:last-child) { /* Hiện con trỏ khi trỏ vào header b
     cursor: ew-resize;
 }
 td { /* Cho phép bảng hoạt động tốt với kích thước nhỏ, không bị vỡ chữ */
-    word-wrap: break-word;
+    word-break: break-word;
     white-space: normal;
 }
 .table>thead>tr>th { /* Hiện thông báo không có dữ liệu */

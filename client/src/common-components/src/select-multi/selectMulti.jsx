@@ -31,51 +31,22 @@ class SelectMulti extends Component {
         window.$("#" + id).multiselect(options);
        
         window.$("#" + id).on("change", () => {
-            let allItem = [].filter.call(this.refs.selectmulti.options, o => o).map(o => o.value);
-            let valueTemp = [].filter.call(this.refs.selectmulti.options, o => o.selected).map(o => o.value);
-            
-            if (valueTemp[0] === 'selectAll') {
-                if (this.state.value && this.state.value.indexOf('selectAll') === -1) {
-                    valueTemp = allItem;
-                } else {
-                    valueTemp.shift();
+            let value = [].filter.call(this.refs.selectmulti.options, o => o.selected).map(o => o.value);
+           
+            this.setState(state => {
+                return {
+                    ...state,
+                    value: value
                 }
-                
-                this.setState(state => {
-                    return {
-                        ...state,
-                        value: valueTemp
-                    }
-                })
-            } else {
-                if (this.state.value && this.state.value.indexOf('selectAll') !== -1) {
-                    valueTemp = [];
-                }
-                this.setState(state => {
-                    return {
-                        ...state,
-                        value: valueTemp
-                    }
-                })
-            }
+            })
 
             if (onChange !== undefined) {
-                onChange(valueTemp);
+                onChange(value);
             }
         })
 
         if (disabled) {
             window.$("#" + id).multiselect("disable");
-        }
-
-        // Thêm css slim scroll
-        if (slimScroll) {
-            let multiSelect = window.$('.multiselect-container');
-
-            if (multiSelect.height() > height) {
-                multiSelect.addClass('StyleScrollDiv StyleScrollDiv-y');
-                multiSelect.height(height);
-            }
         }
     }
 
@@ -114,16 +85,13 @@ class SelectMulti extends Component {
     }
 
     render() {
-        const { id, items, display = "", options, translate } = this.props;
+        const { id, items, display = "" } = this.props;
         const { value } = this.state;
 
         return (
             <React.Fragment>
                 <div className={`selectmulti ${display}`}>
                     <select className="form-control" style={{ display: "none" }} ref="selectmulti" id={id} multiple="multiple" value={value} onChange={() => { }}>
-                        { options && options.selectAllButton
-                            && <option key={`all-${id}`} value={'selectAll'} disabled={false}>{translate('task_template.select_all_units')}</option>
-                        }
                         {items.map(item => {
                             return <option key={item.value} value={item.value} disabled={item.disabled ? true : false}>{item.text}</option>
                         })}

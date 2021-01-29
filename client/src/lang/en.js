@@ -61,6 +61,10 @@ export default {
                 not_existing_error: "Value not existing",
                 existing_error: "Value existing",
             },
+            not_org_unit: "Not have organizational unit",
+            list_unit: "Organizational unit list",
+            list_employee: "Employee list",
+            detail: "Detail"
         },
 
         intro: {
@@ -1042,6 +1046,7 @@ export default {
 
 
             user_guide: "User guide",
+            user_guide_detail: "User guide detail",
         },
 
         manage_system: {

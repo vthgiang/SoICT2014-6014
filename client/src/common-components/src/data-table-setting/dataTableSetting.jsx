@@ -12,11 +12,11 @@ class DataTableSetting extends Component {
     constructor(props) {
         super(props);
         this.record = React.createRef();
-        const getConfiguration = getTableConfiguration(this.props.tableId);
+        const configuration = getTableConfiguration(this.props.tableId);
         this.state = {
             useScrollBar: false,
-            hiddenColumns: getConfiguration.hiddenColumns,
-            limit: getConfiguration.limit,
+            hiddenColumns: configuration.hiddenColumns,
+            limit: configuration.limit,
         };
     }
 
@@ -30,7 +30,7 @@ class DataTableSetting extends Component {
     }
 
     componentDidUpdate() {
-        const { hiddenColumns, limit } = this.state;
+        const { hiddenColumns } = this.state;
         window.$(`#${this.props.tableId} td`).show();
         window.$(`#${this.props.tableId} th`).show();
 
@@ -46,12 +46,6 @@ class DataTableSetting extends Component {
             window.$(`#${this.props.tableId} td:nth-child(` + hiddenColumns[j] + `)`).hide();
             window.$(`#${this.props.tableId} thead th:nth-child(` + hiddenColumns[j] + `)`).hide();
         }
-
-        let config = {};
-        config = { ...config, limit: limit, hiddenColumns: hiddenColumns }
-        setTableConfiguration(this.props.tableId, config);
-
-
     }
 
     adjustSize = async () => {
@@ -63,8 +57,13 @@ class DataTableSetting extends Component {
         })
     }
 
-    handleChangeHiddenColumns = async (value) => {
-        await this.setState(state => {
+    handleChangeHiddenColumns = (value) => {
+        const { limit } = this.state;
+        let config = {};
+        config = { ...config, limit: limit, hiddenColumns: value }
+        setTableConfiguration(this.props.tableId, config);
+
+        this.setState(state => {
             return {
                 ...state,
                 hiddenColumns: value,
@@ -84,6 +83,12 @@ class DataTableSetting extends Component {
 
     setLimit = async () => {
         await window.$(`#setting-${this.props.tableId}`).collapse("hide");
+
+        let config = {};
+        const { hiddenColumns } = this.state;
+        config = { ...config, limit: Number(this.record.current.value), hiddenColumns: hiddenColumns }
+        setTableConfiguration(this.props.tableId, config);
+
 
         if (this.props.setLimit && Number(this.props.limit) !== Number(this.record.current.value)) {
             await this.setState({
@@ -106,8 +111,8 @@ class DataTableSetting extends Component {
     }
 
     render() {
-        const { text, fontSize = 19, className, style, translate, columnArr = [], hideColumnOption = true, tableContainerId, tableId, tableWidth, limit = 5 } = this.props;
-        const { hiddenColumns } = this.state;
+        const { text, fontSize = 19, className, style, translate, columnArr = [], hideColumnOption = true, tableContainerId, tableId, tableWidth } = this.props;
+        const { hiddenColumns, limit } = this.state;
         return (
             <React.Fragment>
                 <button type="button" data-toggle="collapse" data-target={`#setting-${tableId}`} className={className ? className : 'pull-right'} style={style ? style : { border: "none", background: "none", padding: "0px" }}><i className="fa fa-gear" style={{ fontSize }}></i> {text}</button>

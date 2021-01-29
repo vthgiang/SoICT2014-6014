@@ -295,7 +295,7 @@ exports.createTaskByProcess = async (portal, processId, body) => {
     let endDateProcess = new Date(splitter[2], splitter[1] - 1, splitter[0]);
 
     let newTaskProcess = await TaskProcess(connect(DB_CONNECTION, portal)).create({
-        processTemplate: processId,
+        // processTemplate: processId ? processId : null,
         xmlDiagram: body.xmlDiagram,
         processName: body.processName,
         processDescription: body.processDescription,
@@ -305,7 +305,7 @@ exports.createTaskByProcess = async (portal, processId, body) => {
         viewer: body.viewer,
         manager: body.manager,
     })
-
+   
     let listTask = [];
     let mailInfoArr = [];
     let taskProcessId = newTaskProcess._id;
@@ -366,7 +366,7 @@ exports.createTaskByProcess = async (portal, processId, body) => {
             informedEmployees: data[i].informedEmployees,
             confirmedByEmployees: data[i].responsibleEmployees.concat(data[i].accountableEmployees).concat(data[i].consultedEmployees).includes(data[i].creator) ? data[i].creator : []
         });
-
+        
         let x = await TaskService.sendEmailForCreateTask(portal, newTaskItem);
 
         mailInfoArr.push(x);
@@ -419,10 +419,13 @@ exports.createTaskByProcess = async (portal, processId, body) => {
             { new: true }
         )
     }
-    await ProcessTemplate(connect(DB_CONNECTION, portal)).findByIdAndUpdate(processId, { $inc: { 'numberOfUse': 1 } }, { new: true });
+    console.log(processId)
+    if(processId !== "undefined") {
+        console.log("AHAHAHAHAHAHAH")
+        await ProcessTemplate(connect(DB_CONNECTION, portal)).findByIdAndUpdate(processId, { $inc: { 'numberOfUse': 1 } }, { new: true });
+    }
 
     await TaskProcess(connect(DB_CONNECTION, portal)).findByIdAndUpdate(taskProcessId, { $set: { tasks: listTask } }, { new: true });
-
     let myProcess = await ProcessTemplate(connect(DB_CONNECTION, portal)).find().populate([
         { path: 'creator', select: 'name' },
         { path: 'viewer', select: 'name' },
