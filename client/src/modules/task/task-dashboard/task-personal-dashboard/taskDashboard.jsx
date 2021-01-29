@@ -6,7 +6,7 @@ import { taskManagementActions } from '../../task-management/redux/actions';
 import { TaskStatusChart } from './taskStatusChart';
 import { DomainOfTaskResultsChart } from './domainOfTaskResultsChart';
 import { CalendarEmployee } from './calendarEmployee';
-import  GanttCalendar  from './ganttCalendar';
+import GanttCalendar from './ganttCalendar';
 import { AverageResultsOfTask } from './averageResultsOfTask';
 
 import { withTranslate } from 'react-redux-multilingual';
@@ -224,16 +224,34 @@ class TaskDashboard extends Component {
         return convertTime(total);
     }
 
+    showLoadTaskDoc = () => {
+        const { translate } = this.props;
+        Swal.fire({
+            //  icon: "help",
+            html: `<h3 style="color: red"><div>Cách tính tải công việc  ?</div> </h3>
+             <div style="size: 24; margin: 15">Lấy tất cả các công việc người đó đống một trong 3 vai trò: thực hiện,phê duyệt, hỗ trợ,  trong khoảng thời gian được chọn,</div>
+             <div style="size: 24; marginTop: 40">Tính lần lượt tải công việc theo từng tháng rồi cộng lại,</div>
+             <div style="size: 24; margin-top: 15px">Tải công việc theo từng tháng được tính bằng tỉ số: Số ngày thực hiện với  tổng số người thực hiện, phê duyệt, hỗ trợ</div>`,
+            // icon: 'warning',
+            // showCancelButton: true,
+            // confirmButtonColor: '#3085d6',
+            // cancelButtonColor: '#d33',
+            // cancelButtonText: translate('general.no'),
+            // confirmButtonText: translate('general.yes'),
+
+        })
+    }
+
     render() {
         const { tasks, translate } = this.props;
         const { startMonth, endMonth, willUpdate, callAction, taskAnalys, monthTimeSheetLog } = this.state;
-        
+
         let { startMonthTitle, endMonthTitle } = this.INFO_SEARCH;
         let { userTimeSheetLogs } = tasks;       // Thống kê bấm giờ
         let amountResponsibleTask = 0, amountTaskCreated = 0, amountAccountableTasks = 0, amountConsultedTasks = 0;
         let numTask = [];
         let totalTasks = 0;
-        
+
         // Tinh so luong tat ca cac task
         if (tasks && tasks.responsibleTasks) {
             let task = tasks.responsibleTasks;
@@ -296,6 +314,8 @@ class TaskDashboard extends Component {
             totalTasks = Object.keys(tempObj).length;
 
         }
+
+
 
         return (
             <React.Fragment>
@@ -518,8 +538,11 @@ class TaskDashboard extends Component {
                     <div className="box box-primary">
                         <div className="box-header with-border">
                             <div className="box-title">{translate('task.task_management.load_task_chart')}</div>
-                            <LoadTaskInformation />
+                            <a className="text-red" title={translate('document.delete')} onClick={() => this.showLoadTaskDoc()}>
+                                <i className="material-icons">help</i>
+                            </a>
                         </div>
+
 
                         <div className="box-body qlcv">
                             {callAction &&

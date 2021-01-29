@@ -485,14 +485,17 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
                     return { top: 0, left: 240 };
                 },
                 contents: function (data) {
-                    let value = '<div style="overflow-y: scroll; max-height: 300px;">';
+                    let value = '<div style="overflow-y: scroll; max-height: 300px; pointer-events: auto;">';
                     value = value + '<table class=\'c3-tooltip\'>';
+
                     data.forEach((val) => {
                         value = value + '<tr><td class=\'name\'>' + val.name + '</td>'
                                     +'<td class=\'value\'>' + val.value + '</td></tr>';
                     });
+
                     value = value + '</table>';
                     value = value + '</div>';
+                    
                     return value;
                 }
             },
@@ -515,7 +518,7 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
         return (
             <React.Fragment>
                 {currentKpi ?
-                    <section id={"trendsInUnit"} className="c3-chart-container">
+                    <section id={"trendsInUnit"} className="c3-chart-container enable-pointer">
                         <div ref="chart"></div>
                        
                         <CustomLegendC3js

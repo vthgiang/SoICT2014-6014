@@ -599,7 +599,7 @@ class TrendsInChildrenOrganizationalUnitKpiChart extends Component {
                     return position;
                 },
                 contents: function (data) {
-                    let value = '<div style="overflow-y: scroll; max-height: 300px;">';
+                    let value = '<div style="overflow-y: scroll; max-height: 300px; pointer-events: auto;">';
                     value = value + '<table class=\'c3-tooltip\'>';
                     data.forEach((val) => {
                         value = value + '<tr><td class=\'name\'>' + val.name + '</td>'
@@ -629,7 +629,7 @@ class TrendsInChildrenOrganizationalUnitKpiChart extends Component {
         return (
             <React.Fragment>
                 {currentKpi ?
-                    <section id={"trendsInChildrenUnit"} className="c3-chart-container">
+                    <section id={"trendsInChildrenUnit"} className="c3-chart-container enable-pointer">
                         <div ref="chart"></div>
                         <CustomLegendC3js
                             chart={this.chart}
