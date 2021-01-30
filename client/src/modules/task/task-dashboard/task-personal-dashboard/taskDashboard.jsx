@@ -6,7 +6,7 @@ import { taskManagementActions } from '../../task-management/redux/actions';
 import { TaskStatusChart } from './taskStatusChart';
 import { DomainOfTaskResultsChart } from './domainOfTaskResultsChart';
 import { CalendarEmployee } from './calendarEmployee';
-import  GanttCalendar  from './ganttCalendar';
+import GanttCalendar from './ganttCalendar';
 import { AverageResultsOfTask } from './averageResultsOfTask';
 
 import { withTranslate } from 'react-redux-multilingual';
@@ -224,14 +224,35 @@ class TaskDashboard extends Component {
         return convertTime(total);
     }
 
+    showLoadTaskDoc = () => {
+        const { translate } = this.props;
+        Swal.fire({
+            //  icon: "help",
+            html: `<h3 style="color: red"><div>Cách tính tải công việc  ?</div> </h3>
+             <div style="size: 24; margin: 15">Lấy tất cả các công việc người đó đống một trong 3 vai trò: thực hiện,phê duyệt, hỗ trợ,  trong khoảng thời gian được chọn,</div>
+             <div style="size: 24; marginTop: 40">Tính lần lượt tải công việc theo từng tháng rồi cộng lại,</div>
+             <div style="size: 24; margin-top: 15px">Tải công việc theo từng tháng được tính bằng tỉ số: Số ngày thực hiện với  tổng số người thực hiện, phê duyệt, hỗ trợ</div>`,
+            // icon: 'warning',
+            // showCancelButton: true,
+            // confirmButtonColor: '#3085d6',
+            // cancelButtonColor: '#d33',
+            // cancelButtonText: translate('general.no'),
+            // confirmButtonText: translate('general.yes'),
+
+        })
+    }
+
     render() {
         const { tasks, translate } = this.props;
         const { startMonth, endMonth, willUpdate, callAction, taskAnalys, monthTimeSheetLog } = this.state;
 
+        let { startMonthTitle, endMonthTitle } = this.INFO_SEARCH;
+        let { userTimeSheetLogs } = tasks;       // Thống kê bấm giờ
         let amountResponsibleTask = 0, amountTaskCreated = 0, amountAccountableTasks = 0, amountConsultedTasks = 0;
         let numTask = [];
         let totalTasks = 0;
-        // Tinh so luong tat ca cac task 
+
+        // Tinh so luong tat ca cac task
         if (tasks && tasks.responsibleTasks) {
             let task = tasks.responsibleTasks;
             let i;
@@ -294,33 +315,8 @@ class TaskDashboard extends Component {
 
         }
 
-        // Config ngày mặc định cho datePiker
-        let d = new Date(),
-            month = d.getMonth() + 1,
-            year = d.getFullYear();
-        let startMonthDefault, endMonthDefault, startYear;
 
-        if (month > 3) {
-            startMonthDefault = month - 3;
-            startYear = year;
-            if (month < 9) {
-                endMonthDefault = '0' + (month + 1);
-            } else {
-                endMonthDefault = month + 1;
-            }
-        } else {
-            startMonthDefault = month - 3 + 12;
-            startYear = year - 1;
-        }
-        if (startMonthDefault < 10)
-            startMonthDefault = '0' + startMonthDefault;
 
-        let defaultStartMonth = [startMonthDefault, startYear].join('-');
-        let defaultEndMonth = month < 10 ? ['0' + month, year].join('-') : [month, year].join('-');
-
-        let { startMonthTitle, endMonthTitle } = this.INFO_SEARCH;
-        // Thống kê bấm giờ
-        let { userTimeSheetLogs } = tasks;
         return (
             <React.Fragment>
                 <div className="qlcv" style={{ textAlign: "right" }}>
@@ -331,7 +327,7 @@ class TaskDashboard extends Component {
                             <DatePicker
                                 id="monthStartInTaskDashBoard"
                                 dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm 
-                                value={defaultStartMonth}                 // giá trị mặc định cho datePicker    
+                                value={startMonthTitle}                 // giá trị mặc định cho datePicker    
                                 onChange={this.handleSelectMonthStart}
                                 disabled={false}                    // sử dụng khi muốn disabled, mặc định là false
                             />
@@ -343,7 +339,7 @@ class TaskDashboard extends Component {
                             <DatePicker
                                 id="monthEndInTaskDashBoard"
                                 dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm 
-                                value={defaultEndMonth}                 // giá trị mặc định cho datePicker    
+                                value={endMonthTitle}                 // giá trị mặc định cho datePicker    
                                 onChange={this.handleSelectMonthEnd}
                                 disabled={false}                    // sử dụng khi muốn disabled, mặc định là false
                             />
@@ -450,7 +446,7 @@ class TaskDashboard extends Component {
                     </div>
 
                     {/* Biểu đồ trạng thái công việc */}
-                    <div className="col-xs-6">
+                    <div className="col-xs-12 col-sm-12 col-md-6">
                         <div className="box box-primary">
                             <div className="box-header with-border">
                                 <div className="box-title">{translate('task.task_management.detail_status')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
@@ -463,7 +459,7 @@ class TaskDashboard extends Component {
                             </div>
                         </div>
                     </div>
-                    <div className="col-xs-6">
+                    <div className="col-xs-12 col-sm-12 col-md-6">
                         <div className="box box-primary">
                             <div className="box-header with-border">
                                 <div className="box-title">{translate('task.task_management.calc_progress')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
@@ -480,7 +476,7 @@ class TaskDashboard extends Component {
                 </div>
 
                 <div className="row">
-                    <div className="col-xs-6">
+                    <div className="col-xs-12 col-sm-12 col-md-6">
                         <div className="box box-primary">
                             <div className="box-header with-border">
                                 <div className="box-title">{translate('task.task_management.dashboard_overdue')}</div>
@@ -508,7 +504,7 @@ class TaskDashboard extends Component {
                             </div>
                         </div>
                     </div>
-                    <div className="col-xs-6">
+                    <div className="col-xs-12 col-sm-12 col-md-6">
                         <div className="box box-primary">
                             <div className="box-header with-border">
                                 <div className="box-title">{translate('task.task_management.dashboard_about_to_overdue')}</div>
@@ -536,18 +532,21 @@ class TaskDashboard extends Component {
 
                         </div>
                     </div>
-                    <TasksIsNotLinked />
-                    <TaskHasActionNotEvaluated />
-
                 </div>
-                {/* <div className="row"> */}
+
+                <TasksIsNotLinked />
+                <TaskHasActionNotEvaluated />
+
                 {/*Biểu đồ dashboard tải công việc */}
                 <div className="col-xs-12">
                     <div className="box box-primary">
                         <div className="box-header with-border">
                             <div className="box-title">{translate('task.task_management.load_task_chart')}</div>
-                            <LoadTaskInformation />
+                            <a className="text-red" title={translate('document.delete')} onClick={() => this.showLoadTaskDoc()}>
+                                <i className="material-icons">help</i>
+                            </a>
                         </div>
+
 
                         <div className="box-body qlcv">
                             {callAction &&
@@ -560,77 +559,70 @@ class TaskDashboard extends Component {
                         </div>
                     </div>
                 </div>
-                {/* </div> */}
+
+
+                {/* Thống kê bấm giờ theo tháng */}
                 <div className="row">
-                    <div className="col-md-12">
-                        <div className="box box-solid">
+                    <div className="col-xs-12 col-md-12">
+                        <div className="box box-primary">
                             <div className="box-header with-border">
                                 <div className="box-title">
                                     Thống kê bấm giờ theo tháng
                                 </div>
                             </div>
-                            <div className="box-body" style={{ marginBottom: 15 }}>
+                            <div className="box-body qlcv">
                                 {/* Seach theo thời gian */}
-                                <div className="qlcv">
-                                    <div className="form-inline" >
-                                        <div className="form-group">
-                                            <label style={{ width: "auto" }}>Tháng</label>
-                                            <DatePicker
-                                                id="month-time-sheet-log"
-                                                dateFormat="month-year"
-                                                value={monthTimeSheetLog}
-                                                onChange={this.handleChangeMonthTimeSheetLog}
-                                                disabled={false}
-                                            />
-                                        </div>
-                                        <button className="btn btn-primary" onClick={this.getUserTimeSheetLogs}>Thống kê</button>
+                                <div className="form-inline" >
+                                    <div className="form-group">
+                                        <label style={{ width: "auto" }}>Tháng</label>
+                                        <DatePicker
+                                            id="month-time-sheet-log"
+                                            dateFormat="month-year"
+                                            value={monthTimeSheetLog}
+                                            onChange={this.handleChangeMonthTimeSheetLog}
+                                            disabled={false}
+                                        />
                                     </div>
+                                    <button className="btn btn-primary" onClick={this.getUserTimeSheetLogs}>Thống kê</button>
                                 </div>
 
-                                <div className="box-body" >
-                                    <div className="col-md-12">
-                                        <div>
-                                            <p className="pull-right" style={{ fontWeight: 'bold' }}>Kết quả
-                                            <span style={{ fontWeight: 'bold', marginLeft: 10 }}>
-                                                    {
-                                                        !tasks.isLoading ? this.getTotalTimeSheet(userTimeSheetLogs) : translate('general.loading')
-                                                    }
-                                                </span>
-                                            </p >
-                                        </div>
-                                        <table className="table table-hover table-striped table-bordered" id="table-user-timesheetlogs">
-                                            <thead>
-                                                <tr>
-                                                    <th style={{ width: 80 }}>STT</th>
-                                                    <th>Thời gian bắt đầu</th>
-                                                    <th>Thời gian kết thúc</th>
-                                                    <th>Bấm giờ</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {
-                                                    userTimeSheetLogs.map((tsl, index) => {
-                                                        return (
-                                                            <tr>
-                                                                <td>{index + 1}</td>
-                                                                <td>{moment(tsl.startedAt).format("HH:mm:ss DD/MM/YYYY")}</td>
-                                                                <td>{moment(tsl.stoppedAt).format("HH:mm:ss DD/MM/YYYY")}</td>
-                                                                <td>{convertTime(tsl.duration)}</td>
-                                                            </tr>
-                                                        )
-                                                    })
-                                                }
-                                            </tbody>
-                                        </table>
-                                    </div>
+                                <div>
+                                    <p className="pull-right" style={{ fontWeight: 'bold' }}>Kết quả
+                                    <span style={{ fontWeight: 'bold', marginLeft: 10 }}>
+                                            {
+                                                !tasks.isLoading ? this.getTotalTimeSheet(userTimeSheetLogs) : translate('general.loading')
+                                            }
+                                        </span>
+                                    </p >
                                 </div>
+                                <table className="table table-hover table-striped table-bordered" id="table-user-timesheetlogs">
+                                    <thead>
+                                        <tr>
+                                            <th style={{ width: 80 }}>STT</th>
+                                            <th>Thời gian bắt đầu</th>
+                                            <th>Thời gian kết thúc</th>
+                                            <th>Bấm giờ</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {
+                                            userTimeSheetLogs.map((tsl, index) => {
+                                                return (
+                                                    <tr>
+                                                        <td>{index + 1}</td>
+                                                        <td>{moment(tsl.startedAt).format("HH:mm:ss DD/MM/YYYY")}</td>
+                                                        <td>{moment(tsl.stoppedAt).format("HH:mm:ss DD/MM/YYYY")}</td>
+                                                        <td>{convertTime(tsl.duration)}</td>
+                                                    </tr>
+                                                )
+                                            })
+                                        }
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
                 </div>
-
-
-
             </React.Fragment>
         );
     }

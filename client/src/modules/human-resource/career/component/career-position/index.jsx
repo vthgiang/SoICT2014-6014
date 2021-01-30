@@ -19,6 +19,7 @@ class CareerPosition extends Component {
 
     componentDidMount() {
         this.props.getListCareerPosition({ name: '', page: 1, limit: 1000 });
+        this.props.getListCareerAction({ name: '', page: 1, limit: 1000 });
     }
     onChanged = async (e, data) => {
         console.log('data', data);
@@ -102,7 +103,7 @@ class CareerPosition extends Component {
                 id: elm._id,
                 code: elm.code,
                 text: elm.name,
-                state: { "opened": true },
+                // state: { "opened": true },
                 parent: "#",
             }
         });
@@ -182,6 +183,7 @@ const mapStateToProps = state => state;
 
 const mapDispatchToProps = {
     getListCareerPosition: CareerReduxAction.getListCareerPosition,
+    getListCareerAction: CareerReduxAction.getListCareerAction,
     deleteCareerPosition: CareerReduxAction.deleteCareerPosition,
 }
 

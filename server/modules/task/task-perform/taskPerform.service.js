@@ -536,33 +536,56 @@ exports.editTimeSheetLog = async(portal, taskId, timesheetlogId, data) => {
 exports.stopTimesheetLog = async (portal, params, body) => {
     const now = new Date();
     let stoppedAt;
+    let timer, duration;
+    // Add log timer
+    if (body.addlogStartedAt && body.addlogStoppedAt) {
+        let getAddlogStartedAt = new Date(body.addlogStartedAt);
+        let getAddlogStoppedAt = new Date(body.addlogStoppedAt);
+        
+        // Lưu vào timeSheetLog
+        duration = new Date(getAddlogStoppedAt).getTime() - new Date(getAddlogStartedAt).getTime();
+        const addLogTime = {
+            startedAt: getAddlogStartedAt,
+            stoppedAt: getAddlogStoppedAt,
+            duration,
+            autoStopped: body.autoStopped,
+            description: body.addlogDescription,
+        }
+        timer = await Task(connect(DB_CONNECTION, portal)).findByIdAndUpdate(
+            params.taskId,
+            { $push: { timesheetLogs: addLogTime } },
+            { new: true}
+        ).populate({ path: "timesheetLogs.creator", select: "name" });
 
-    if (body.stoppedAt) {
-        let getStoppedTime = new Date(body.stoppedAt);
-        stoppedAt = getStoppedTime;
     } else {
-        stoppedAt = now;
-    }
+        // tắt như bình thường hoặc hẹn giờ tắt bấm giờ
+        if (body.stoppedAt) {
+            let getStoppedTime = new Date(body.stoppedAt);
+            stoppedAt = getStoppedTime;
+        } else {
+            stoppedAt = now;
+        }
 
-    // Lưu vào timeSheetLog
-    let duration = new Date(stoppedAt).getTime() - new Date(body.startedAt).getTime();
-    let checkDurationValid = duration / (60 * 60 * 1000);
+        // Lưu vào timeSheetLog
+        duration = new Date(stoppedAt).getTime() - new Date(body.startedAt).getTime();
+        let checkDurationValid = duration / (60 * 60 * 1000);
 
-    let timer = await Task(connect(DB_CONNECTION, portal))
-        .findOneAndUpdate(
-            { _id: params.taskId, "timesheetLogs._id": body.timesheetLog },
-            {
-                $set: {
-                    "timesheetLogs.$.stoppedAt": stoppedAt, // Date
-                    "timesheetLogs.$.duration": duration, // mileseconds
-                    "timesheetLogs.$.description": body.description,
-                    "timesheetLogs.$.autoStopped": body.autoStopped, // ghi nhận tắt bấm giờ tự động hay không?
-                    "timesheetLogs.$.acceptLog": checkDurationValid > 24 ? false : true, // tự động check nếu thời gian quá 24 tiếng thì đánh là không hợp lệ
+        timer = await Task(connect(DB_CONNECTION, portal))
+            .findOneAndUpdate(
+                { _id: params.taskId, "timesheetLogs._id": body.timesheetLog },
+                {
+                    $set: {
+                        "timesheetLogs.$.stoppedAt": stoppedAt, // Date
+                        "timesheetLogs.$.duration": duration, // mileseconds
+                        "timesheetLogs.$.description": body.description,
+                        "timesheetLogs.$.autoStopped": body.autoStopped, // ghi nhận tắt bấm giờ tự động hay không?
+                        "timesheetLogs.$.acceptLog": checkDurationValid > 24 ? false : true, // tự động check nếu thời gian quá 24 tiếng thì đánh là không hợp lệ
+                    },
                 },
-            },
-            { new: true }
-        )
-        .populate({ path: "timesheetLogs.creator", select: "name" });
+                { new: true }
+            )
+            .populate({ path: "timesheetLogs.creator", select: "name" });
+    }
 
     // Lưu vào hoursSpentOnTask
     let newTotalHoursSpent = timer.hoursSpentOnTask.totalHoursSpent + duration;
@@ -1442,6 +1465,114 @@ exports.evaluationAction = async (portal, params, body) => {
 
     return task.taskActions;
 };
+
+exports.evaluationAllAction = async (portal, params, body, userId) => {
+    const { taskId } = params;
+    const taskActionLength = body.length;
+
+    for (let i = 0; i < taskActionLength; i++) {
+        // Kiểm tra xem đánh giá hoạt động đã tồn tại hay chưa - nếu chưa tạo mới, nếu có ghi đè
+        let danhgia = await Task(connect(DB_CONNECTION, portal)).aggregate([
+            { $match: { _id: mongoose.Types.ObjectId(taskId) } },
+            { $unwind: "$taskActions" },
+            { $replaceRoot: { newRoot: "$taskActions" } },
+            { $match: { _id: mongoose.Types.ObjectId(body[i].actionId) } },
+            { $unwind: "$evaluations" },
+            { $replaceRoot: { newRoot: "$evaluations" } },
+            {
+                $match: {
+                    creator: mongoose.Types.ObjectId(userId),
+                    role: body[i].role
+                }
+            }
+        ]);
+
+        if(danhgia.length === 0){
+            await Task(connect(DB_CONNECTION, portal)).updateOne(
+                { _id: taskId, "taskActions._id": body[i].actionId },
+                {
+                    $push: {
+                        "taskActions.$.evaluations": {
+                            creator: userId,
+                            rating: body[i].rating,
+                            role: body[i].role
+                        },
+                    },
+                }
+            );
+        } else {
+            await Task(connect(DB_CONNECTION, portal)).updateOne(
+                {
+                    _id: taskId, 
+                    "taskActions._id": body[i].actionId,
+                    "taskActions.evaluations.creator": userId,
+                    "taskActions.evaluations.role": body[i].role
+                },{
+                    $set: { 
+                        "taskActions.$[item].evaluations.$[elem].rating": body[i].rating
+                    }
+                },{
+                    arrayFilters: [
+                        { "elem.creator": userId, "elem.role": body[i].role },
+                        { "item._id": body[i].actionId }
+                    ]
+                }
+            )
+        }
+
+        // Lấy danh sách các đánh giá của hoạt động
+        let evaluations = await Task(connect(DB_CONNECTION, portal)).aggregate([
+            { $match: { _id: mongoose.Types.ObjectId(taskId) } },
+            { $unwind: "$taskActions" },
+            { $replaceRoot: { newRoot: "$taskActions" } },
+            { $match: { _id: mongoose.Types.ObjectId(body[i].actionId) } },
+            { $unwind: "$evaluations" },
+            { $replaceRoot: { newRoot: "$evaluations" } },
+        ]);
+
+        //Lấy điểm đánh giá của người phê duyệt trong danh sách các danh sách các đánh giá của hoạt động
+        let rating = [];
+        for(let i = 0; i < evaluations.length; i++){
+            let evaluation = evaluations[i];
+            if(evaluation.role === 'accountable') rating.push(evaluation.rating);
+        }
+
+        //tính điểm trung bình
+        let accountableRating;
+        if (rating.length > 0) {
+            accountableRating =
+                rating.reduce((accumulator, currentValue) => {
+                    return accumulator + currentValue;
+                }, 0) / rating.length;
+        } 
+
+        // Cập nhật điểm đánh giá trung bình của người phê duyệt của hành động
+        await Task(connect(DB_CONNECTION, portal)).updateOne(
+            { _id: taskId, "taskActions._id": body[i].actionId },
+            {
+                $set: {
+                    "taskActions.$.rating": accountableRating,
+                },
+            },{ $new: true }
+        );
+    }
+
+    let task = await Task(connect(DB_CONNECTION, portal))
+        .findOne({ _id: taskId})
+        .populate([
+            { path: "taskActions.creator", select: "name email avatar" },
+            {
+                path: "taskActions.comments.creator",
+                select: "name email avatar",
+            },
+            {
+                path: "taskActions.evaluations.creator",
+                select: "name email avatar ",
+            },
+        ]);
+    return task.taskActions;
+}
+
 /**
  * Xác nhận hành động
  */

@@ -62,7 +62,7 @@ class TaskHasActionNotEvaluated extends Component {
         return (
             <React.Fragment>
                 {/* Các công việc có hoạt động chưa đánh giá*/}
-                <div className="col-xs-6">
+                <div className="col-xs-12 col-md-6">
                     <div className="box box-primary">
                         <div className="box-header with-border">
                             <div className="box-title">{translate('task.task_management.task_has_action_not_evaluated')}</div>

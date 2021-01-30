@@ -37,14 +37,19 @@ const ProjectSchema = new Schema(
                 "canceled",
             ],
         },
-
+        // Những người quả trị dự án
         projectManager: [{
-            // Những người quả trị dự án
+
             type: Schema.Types.ObjectId,
             ref: "User",
 
         }],
+        // Những người tham gia dự án
+        projectMembers: [{
 
+            type: Schema.Types.ObjectId,
+            ref: "User",
+        }],
         responsibleEmployees: [
             {
                 //người thực hiện

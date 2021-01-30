@@ -32,7 +32,7 @@ function CustomLegendC3js(props) {
                 .attr('data-id', function (id) { return id; })
                 .html(function (id) { return id; })
                 .each(function (id) {
-                    d3.select(this).style('border-left', `5px solid ${chart.color(id)}`);
+                    d3.select(this).style('border-left', `8px solid ${chart.color(id)}`);
                     d3.select(this).style('padding-left', `5px`);
                 })
                 .on('mouseover',(id) => {

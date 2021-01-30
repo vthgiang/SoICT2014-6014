@@ -81,7 +81,7 @@ function validateUnit(value, translate) {
 // Kiểm tra "Người đề nghị" nhập vào
 function validateApprover(value, translate) {
     let msg = undefined;
-    if (value.trim() === "") {
+    if (!value || !value.length) {
         msg = "Người phê duyệt không được để trống";
     }
     return msg;

@@ -131,6 +131,12 @@ class Content extends Component {
         for (let i = 0; i < tables.length; ++i) {
             let table = window.$(tables[i]);
             let tableHeadings = table.find("th:not(:last-child)").not(".not-sort");
+            let tableHeadingsColSort = table.find("th.col-sort").not(".not-sort");
+            if (tableHeadingsColSort && tableHeadingsColSort.length) {
+                for (let k = 0; k < tableHeadingsColSort.length; ++k) {
+                    tableHeadings.push(tableHeadingsColSort[k])
+                }
+            }
             for (let j = 0; j < tableHeadings.length; ++j) {
                 let th = window.$(tableHeadings[j]);
 

@@ -20,6 +20,7 @@ const CareerActionSchema = new Schema({
         replies: this,
     }],
 
+    // detail hiện giờ k dùng, về sau sẽ xóa
     detail: [{ // detail chỉ có thằng con có vidu: con là vận hành giám sát hệ thống attt thì label là vận hành và giám sát
         label: {
             type: Schema.Types.ObjectId,

@@ -279,7 +279,7 @@ exports.updateEmployeeKpiSetStatus = async (portal, id, statusId, companyId) => 
         organizationalUnits: employeeKpiSet.organizationalUnit._id,
         title: "Xin phê duyệt KPI",
         level: "general",
-        content: `<p><strong>${employeeKpiSet.creator.name}</strong> đã gửi yêu cầu phê duyệt KPI, xem ngay: <a href="${process.env.WEBSITE}/kpi-member/manager></a></p>`,
+        content: `<p><strong>${employeeKpiSet.creator.name}</strong> đã gửi yêu cầu phê duyệt KPI, <a href="${process.env.WEBSITE}/kpi-member/manager">Xem ngay</a></p>`,
         sender: `${employeeKpiSet.creator.name}`,
         users: [employeeKpiSet.approver._id],
         associatedDataObject: {

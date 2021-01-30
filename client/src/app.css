@@ -110,12 +110,14 @@ a:hover, a:active, a:focus {
     max-height: none !important;
     width: 50%;
 }
+.c3-chart-container.enable-pointer .c3-tooltip-container {
+    pointer-events: auto !important;
+}
 
 .c3-tooltip {
     box-shadow: none;
     width: 100%;
 }
-
 .c3-tooltip .name {
     text-align: left;
     width: 75%;
@@ -123,9 +125,14 @@ a:hover, a:active, a:focus {
 .c3-tooltip .value {
     width: 25% !important;
 }
+
 text.c3-axis-x-label, text.c3-axis-y-label {
     font-weight: bold;
     font-size: 120%
+}
+
+.c3-chart-container > .legend {
+    margin-bottom: 5px;
 }
 .c3-chart-container > .legend > div {
     white-space: nowrap; 

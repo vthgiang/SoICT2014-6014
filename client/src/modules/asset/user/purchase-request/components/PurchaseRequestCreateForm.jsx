@@ -22,7 +22,7 @@ class PurchaseRequestCreateForm extends Component {
             unit: "",
             estimatePrice: "",
             status: "waiting_for_approval",
-            approver: null,
+            approver: [],
             note: "",
             recommendUnits: "",
         };
@@ -172,6 +172,23 @@ class PurchaseRequestCreateForm extends Component {
         return msg === undefined;
     }
 
+    handleApproverChange = (value) => {
+        this.validateApprover(value, true);
+    }
+
+    validateApprover = (value, willUpdateState = true) => {
+        let msg = PurchaseRequestFromValidator.validateApprover(value, this.props.translate)
+        if (willUpdateState) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    errorOnApprover: msg,
+                    approver: value,
+                }
+            });
+        }
+        return msg === undefined;
+    }
     // Bắt sự kiện thay đổi "Giá trị dự tính"
     handleEstimatePriceChange = (e) => {
         let value = e.target.value;
@@ -183,10 +200,11 @@ class PurchaseRequestCreateForm extends Component {
 
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
     isFormValidated = () => {
-        const { equipmentName, total, unit, recommendNumber } = this.state;
+        const { equipmentName, total, unit, recommendNumber, approver } = this.state;
         let result = this.validateEquipment(equipmentName, false) &&
             this.validateTotal(total, false) &&
-            this.validateUnit(unit, false)
+            this.validateUnit(unit, false) &&
+            this.validateApprover(approver, false)
         return result;
     }
 
@@ -260,8 +278,8 @@ class PurchaseRequestCreateForm extends Component {
     render() {
         const { _id, translate, recommendProcure, user, auth, department } = this.props;
         const {
-            recommendNumber, dateCreate, equipmentName, equipmentDescription, supplier, total, unit, estimatePrice, recommendUnits,
-            errorOnEquipment, errorOnEquipmentDescription, errorOnTotal, errorOnUnit
+            recommendNumber, dateCreate, equipmentName, equipmentDescription, supplier, total, unit, estimatePrice, recommendUnits, approver,
+            errorOnEquipment, errorOnEquipmentDescription, errorOnTotal, errorOnUnit, errorOnApprover
         } = this.state;
 
         var userlist = user.list;
@@ -385,6 +403,26 @@ class PurchaseRequestCreateForm extends Component {
                                 <div className="form-group">
                                     <label>{translate('human_resource.profile.attached_files')}</label>
                                     <UploadFile multiple={true} onChange={this.handleChangeFile} />
+                                </div>
+                                {/* Người phê duyệt */}
+                                <div className={`form-group`}>
+                                    <label>Người phê duyệt<span className="text-red">*</span></label>
+                                    <div>
+                                        {userlist &&
+                                            <SelectBox
+                                                id={`add-approver${_id}`}
+                                                className="form-control select2"
+                                                style={{ width: "100%" }}
+                                                items={userlist && userlist.map(x => {
+                                                    return { value: x._id, text: x.name + " - " + x.email }
+                                                })}
+                                                onChange={this.handleApproverChange}
+                                                value={approver}
+                                                multiple={true}
+                                                options={{ placeholder: "Chọn người phê duyệt" }}
+                                            />
+                                        }
+                                    </div>
                                 </div>
                             </div>
                         </div>
