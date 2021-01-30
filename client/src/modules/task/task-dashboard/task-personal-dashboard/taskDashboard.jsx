@@ -321,7 +321,6 @@ class TaskDashboard extends Component {
         let { startMonthTitle, endMonthTitle } = this.INFO_SEARCH;
         // Thống kê bấm giờ
         let { userTimeSheetLogs } = tasks;
-        console.log("USER TIME SHEET LOG", userTimeSheetLogs.userTimeSheetLogs)
         return (
             <React.Fragment>
                 <div className="qlcv" style={{ textAlign: "right" }}>
@@ -407,11 +406,15 @@ class TaskDashboard extends Component {
                             <CalendarEmployee
                                 tasks={tasks}
                             />
-                            {/* <GanttCalendar/> */}
+                            {/* <GanttCalendar
+                                tasks={tasks}
+                                unitOrganization = {false}
+                            /> */}
                         </div>
 
                     </div>
                 </div>
+                
                 <div className="row">
                     {/* Biểu đồ miền kết quả công việc */}
                     <div className="col-xs-12">
