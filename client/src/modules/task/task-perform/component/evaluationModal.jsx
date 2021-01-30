@@ -188,7 +188,7 @@ class EvaluationModal extends Component {
     }
 
     handleChangeMonthEval = async (value) => {
-        await this.setState({ month: value.month, dateParam: value.date});
+        await this.setState({ month: value.month, dateParam: value.date });
     }
 
     handleSortMonthEval = (task, month) => {
@@ -197,7 +197,7 @@ class EvaluationModal extends Component {
 
     render() {
         const { translate, performtasks } = this.props;
-        const { dateParam, month, evaluationsList, checkMonth, showEval, content, evaluation, isEval, expire, isInNextMonthOfEndDate } = this.state;
+        let { dateParam, month, evaluationsList, checkMonth, showEval, content, evaluation, isEval, expire, isInNextMonthOfEndDate } = this.state;
         const { role, id, hasAccountable } = this.props;
 
         console.log('isEval', this.state);
