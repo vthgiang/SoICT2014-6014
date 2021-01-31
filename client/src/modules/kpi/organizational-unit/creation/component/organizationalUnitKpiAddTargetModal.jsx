@@ -27,10 +27,6 @@ class OrganizationalUnitKpiAddTargetModal extends Component {
         };
     }
 
-    componentDidMount() {
-        this.props.getParentTarget(localStorage.getItem("currentRole"));
-    }
-
     onAddItem = async () => {
         let parentKPI = null;
         let items;
@@ -236,8 +232,7 @@ function mapState(state) {
 }
 
 const actionCreators = {
-    getParentTarget: createUnitKpiActions.getKPIParent,
-    addTargetKPIUnit: createUnitKpiActions.addTargetKPIUnit,
+    addTargetKPIUnit: createUnitKpiActions.addTargetKPIUnit
 };
 
 const connectedOrganizationalUnitKpiAddTargetModal = connect(mapState, actionCreators)(withTranslate(OrganizationalUnitKpiAddTargetModal));
