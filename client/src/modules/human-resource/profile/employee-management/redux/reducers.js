@@ -32,8 +32,8 @@ export function employeesManager(state = initState, action) {
                 isLoading: true,
                     exportData: [],
                     arrMonth: [],
-                    listEmployeesOfOrganizationalUnits:[],
-                    listAllEmployees:[],
+                    // listEmployeesOfOrganizationalUnits:[],
+                    // listAllEmployees:[],
             };
         case EmployeeConstants.GETALL_SUCCESS:
             if (action.exportData) {

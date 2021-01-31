@@ -555,6 +555,25 @@ evaluationAction = async (req, res) => {
         })
     }
 }
+
+exports.evaluationAllAction = async (req, res) => {
+    try {
+        let action = await PerformTaskService.evaluationAllAction(req.portal, req.params, req.body, req.user._id);
+        await Logger.info(req.user.email, ` evaluation all action success  `, req.portal)
+        res.status(200).json({
+            success: true,
+            messages: ['evaluation_all_action_success'],
+            content: action
+        })
+    } catch (error) {
+        await Logger.error(req.user.email, ` evaluation all action fail `, req.portal)
+        res.status(400).json({
+            success: false,
+            messages: ['evaluation_all_action_fail'],
+            content: error
+        })
+    }
+}
 /**
  * Xác nhận hành động
  */

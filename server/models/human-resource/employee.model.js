@@ -280,10 +280,10 @@ const EmployeeSchema = new Schema({
         package: [{
             type: String,
         }],
-        field: {
+        field: [{
             type: Schema.Types.ObjectId,
             ref: 'CareerField',
-        },
+        }],
         position: {
             type: Schema.Types.ObjectId,
             ref: "CareerPosition",

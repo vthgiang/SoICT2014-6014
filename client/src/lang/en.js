@@ -64,6 +64,7 @@ export default {
             not_org_unit: "Not have organizational unit",
             list_unit: "Organizational unit list",
             list_employee: "Employee list",
+            detail: "Detail"
         },
 
         intro: {
@@ -1481,12 +1482,14 @@ export default {
                         ward: 'Phường/Xã',
                         house_hold_address: 'Địa chỉ hộ khẩu',
                         phone: 'Số điện thoại',
+                        phone_appendix:'Điện thoại hộ gia đình',
                         house_hold_code: 'Mã số hộ gia đình'
                     },
                     members: {
                         title: 'Kê khai đầy đủ thông tin thành viên hộ gia đình trong sổ hộ khẩu',
                         stt: 'STT',
                         name: 'Họ và tên',
+                        name_member:'Họ và tên thành viên',
                         code_social_insurance: 'Mã sổ BHXH',
                         book_nci: 'Số sổ BHXH',
                         gender: 'Giới tính',
@@ -1729,10 +1732,12 @@ export default {
                         sheet5: "5.Staffs - Labor contracts",
                         sheet6: "6.Staffs - Social insurances",
                         sheet7: "7.Staffs - Attachments",
-                        sheet8: "8.Staffs - Commendations",
-                        sheet9: "9.Staffs - Disciplines",
-                        sheet10: "10.Staffs - Salaries",
-                        sheet11: "11.Staffs - Annual Leave",
+                        sheet8: "8.Staffs - Family Members",
+                        sheet9: "9.Staffs - Commendations",
+                        sheet10: "10.Staffs - Disciplines",
+                        sheet11: "11.Staffs - Salaries",
+                        sheet12: "12.Staffs - Annual Leave",
+                        
 
                         emergency_contact_person: "Emergency contact person",
                         relation_with_emergency_contact_person:
@@ -1761,6 +1766,7 @@ export default {
                         import_contract: "Labor contracts",
                         import_socialInsurance_details: "Social insurances",
                         import_file: "Attachments",
+                        import_family : "Family member",
 
                         import_general_infor_title:
                             "Import staff basic information",
@@ -1771,6 +1777,7 @@ export default {
                         import_socialInsurance_details_title:
                             "Import social insurance",
                         import_file_title: "Import attachments",
+                        import_file_family : "Import family member"
                     },
 
                     // Nhón dành cho UI

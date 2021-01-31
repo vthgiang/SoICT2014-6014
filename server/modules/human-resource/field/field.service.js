@@ -23,6 +23,7 @@ exports.getAllFields = async (portal, params, company) => {
             }
         }
     }
+
     if(params.limit===undefined&&params.page===undefined){
         let data = await Field(connect(DB_CONNECTION, portal)).find(keySearch);
         return {
@@ -39,11 +40,7 @@ exports.getAllFields = async (portal, params, company) => {
             listField: listField,
             totalList: data.length
         }
-        return
     }
-    
-    
-    return data
 }
 
 /**

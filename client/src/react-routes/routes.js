@@ -156,7 +156,7 @@ import ManufacturingLot from "../modules/production/manufacturing/manufacturing-
 
 import AnswerAuthQuestionPage from '../modules/auth/components/answerAuthQuestion';
 
-import { Project } from '../modules/project/component/managerTableProject';
+import { Project } from '../modules/project/component/index';
 import UserGuide from '../modules/user-guide/components';
 import DetailUserGuide from '../modules/user-guide/components/detailUserGuide';
 import AllTimeSheetLog from '../modules/task/task-dashboard/statistic/allTimeSheetLog';

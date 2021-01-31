@@ -8,7 +8,9 @@ import ValidationHelper from '../../../../../helpers/validationHelper';
 class CreateForm extends Component {
     constructor(props) {
         super(props);
-        this.state = { }
+        this.state = {
+            action: [],
+        }
     }
 
     handleName = (e) => {
@@ -49,6 +51,11 @@ class CreateForm extends Component {
         console.log('field...', this.state);
     };
 
+    handleAction = (value) => {
+        this.setState({ action: value });
+        console.log('action...', this.state);
+    };
+
     isValidateForm = () => {
         let { name } = this.state;
         let { translate } = this.props;
@@ -63,6 +70,7 @@ class CreateForm extends Component {
             package: this.state.package,
             parent: this.state.parent,
             field: this.state.field,
+            action: this.state.action,
         }
         console.log('data', data);
         this.props.createCareerPosition(data);
@@ -71,14 +79,14 @@ class CreateForm extends Component {
     render() {
         const { translate, career } = this.props;
         const { list } = this.props;
-        let { parent, field, nameError, codeError } = this.state;
+        let { parent, field, nameError, codeError, action } = this.state;
         return (
             <React.Fragment>
                 <DialogModal
                     modalID="modal-create-career-position"
                     formID="form-create-career-position"
                     title="Thêm vị trí công việc"
-                    disableSubmit={!this.isValidateForm()}
+                    // disableSubmit={!this.isValidateForm()}
                     func={this.save}
                 >
                     <form id="form-create-career-position">
@@ -87,16 +95,11 @@ class CreateForm extends Component {
                             <input type="text" className="form-control" onChange={this.handlePackage} />
                             <ErrorLabel content={nameError} />
                         </div> */}
-                        <div className={`form-group ${!nameError ? "" : "has-error"}`}>
-                            <label>Tên<span className="text-red">*</span></label>
-                            <input type="text" className="form-control" onChange={this.handleName} />
-                            <ErrorLabel content={nameError} />
-                        </div>
                         <div className="form-group">
                             <label>Chọn thông tin cha</label>
                             <TreeSelect data={list} value={parent} handleChange={this.handleParent} mode="radioSelect" />
                         </div>
-                        { !parent &&
+                        {!parent &&
                             <div className="form-group">
                                 <label>Lĩnh vực</label>
                                 <SelectBox
@@ -113,12 +116,39 @@ class CreateForm extends Component {
                                 />
                             </div>
                         }
-
-                        <div className={`form-group ${!codeError ? "" : "has-error"}`}>
-                            <label>Nhãn<span className="text-red">*</span></label>
-                            <input type="text" className="form-control" onChange={this.handleCode} />
-                            <ErrorLabel content={nameError} />
-                        </div>
+                        {(!this.state.name || this.state.name === "") &&
+                            <div className="form-group">
+                                <label>Chọn hoạt động công việc đang có</label>
+                                <SelectBox
+                                    id={`position-career-add-action`}
+                                    lassName="form-control select2"
+                                    style={{ width: "100%" }}
+                                    items={career?.listAction.filter(e => e.isLabel === 0).map(x => {
+                                        return { text: x.name, value: x._id }
+                                    }) // TODO: cần lọc ra hoạt động công việc đã có trong đây rồi
+                                    }
+                                    options={{ placeholder: "Chọn hoạt động công việc đang có" }}
+                                    onChange={this.handleAction}
+                                    value={action}
+                                    multiple={true}
+                                />
+                            </div>
+                        }
+                        {this.state.action.length === 0 &&
+                            //${!nameError ? "" : "has-error"} ${!codeError ? "" : "has-error"}
+                            <div>
+                                <div className={`form-group `}>
+                                    <label>Tên<span className="text-red">*</span></label>
+                                    <input type="text" className="form-control" onChange={this.handleName} />
+                                    {/* <ErrorLabel content={nameError} /> */}
+                                </div>
+                                <div className={`form-group `}>
+                                    <label>Nhãn<span className="text-red">*</span></label>
+                                    <input type="text" className="form-control" onChange={this.handleCode} />
+                                    {/* <ErrorLabel content={nameError} /> */}
+                                </div>
+                            </div>
+                        }
                     </form>
                 </DialogModal>
             </React.Fragment>

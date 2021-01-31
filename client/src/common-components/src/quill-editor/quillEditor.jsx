@@ -58,7 +58,9 @@ class QuillEditor extends Component {
                         })
                     }
 
-                    this.props.getTextData(quill.root.innerHTML, imageSources);
+                    if (quill && quill.root) {
+                        this.props.getTextData(quill.root.innerHTML, imageSources);
+                    }
                     if (imgs && imgs.length !== 0) {
                         imgs = imgs.map((item, index) => {
                             item.src = imageSources[index];

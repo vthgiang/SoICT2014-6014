@@ -1,7 +1,7 @@
 const Models = require('../../../models');
-const {connect} = require(`../../../helpers/dbHelper`);
-const {freshObject} = require(`../../../helpers/functionHelper`);
-const { RecommendProcure, User } = Models;
+const { connect } = require(`../../../helpers/dbHelper`);
+const { freshObject } = require(`../../../helpers/functionHelper`);
+const { RecommendProcure, User, Link, Privilege, UserRole } = Models;
 const { freshArray } = require("../../../helpers/functionHelper");
 
 /**
@@ -25,15 +25,15 @@ exports.searchPurchaseRequests = async (portal, company, query) => {
     if (recommendNumber) {
         keySearch = {
             ...keySearch,
-            recommendNumber: {$regex: recommendNumber, $options: "i"},
+            recommendNumber: { $regex: recommendNumber, $options: "i" },
         };
     }
 
     //Bắt sựu kiện tháng tìm kiếm khác ""
     if (proposalDate) {
         // Convert lại do bên client gửi dữ liệu month dạng month-year
-        let date = proposalDate.split("-");0
-        let start = new Date(date[1], date[0]-1, 1); //ngày cuối cùng của tháng trước
+        let date = proposalDate.split("-"); 0
+        let start = new Date(date[1], date[0] - 1, 1); //ngày cuối cùng của tháng trước
         let end = new Date(date[1], date[0], 1); // ngày cuối cùng của tháng
 
         keySearch = {
@@ -47,8 +47,8 @@ exports.searchPurchaseRequests = async (portal, company, query) => {
 
     if (month) {
         // Convert lại do bên client gửi dữ liệu month dạng month-year
-        let date = month.split("-");0
-        let start = new Date(date[1], date[0]-1, 1); //ngày cuối cùng của tháng trước
+        let date = month.split("-"); 0
+        let start = new Date(date[1], date[0] - 1, 1); //ngày cuối cùng của tháng trước
         let end = new Date(date[1], date[0], 1); // ngày cuối cùng của tháng
 
         keySearch = {
@@ -65,8 +65,8 @@ exports.searchPurchaseRequests = async (portal, company, query) => {
         let user = await User(connect(DB_CONNECTION, portal))
             .find({
                 $or: [
-                    {email: {$regex: proponent, $options: "i"}},
-                    {name: {$regex: proponent, $options: "i"}}
+                    { email: { $regex: proponent, $options: "i" } },
+                    { name: { $regex: proponent, $options: "i" } }
                 ]
             })
             .select("_id");
@@ -74,7 +74,7 @@ exports.searchPurchaseRequests = async (portal, company, query) => {
         user.map((x) => {
             userIds.push(x._id);
         });
-        keySearch = {...keySearch, proponent: {$in: userIds}};
+        keySearch = { ...keySearch, proponent: { $in: userIds } };
     }
 
     // Thêm người phê duyệt vào trường tìm kiếm
@@ -82,8 +82,8 @@ exports.searchPurchaseRequests = async (portal, company, query) => {
         let user = await User(connect(DB_CONNECTION, portal))
             .find({
                 $or: [
-                    {email: {$regex: approver, $options: "i"}},
-                    {name: {$regex: approver, $options: "i"}}
+                    { email: { $regex: approver, $options: "i" } },
+                    { name: { $regex: approver, $options: "i" } }
                 ]
             })
             .select("_id");
@@ -91,12 +91,12 @@ exports.searchPurchaseRequests = async (portal, company, query) => {
         user.map((x) => {
             userIds.push(x._id);
         });
-        keySearch = {...keySearch, approver: {$in: userIds}};
+        keySearch = { ...keySearch, approver: { $in: userIds } };
     }
 
     // Thêm key tìm kiếm phiếu theo trạng thái vào keySearch
     if (status) {
-        keySearch = {...keySearch, status: {$in: status}};
+        keySearch = { ...keySearch, status: { $in: status } };
     }
 
     var totalList = await RecommendProcure(
@@ -106,12 +106,70 @@ exports.searchPurchaseRequests = async (portal, company, query) => {
         connect(DB_CONNECTION, portal)
     )
         .find(keySearch)
-        .populate({path: "proponent approver recommendUnits"})
-        .sort({createdAt: "desc"})
+        .populate({ path: "proponent approver recommendUnits" })
+        .sort({ createdAt: "desc" })
         .skip(page ? parseInt(page) : 0)
         .limit(limit ? parseInt(limit) : 0);
 
-    return {totalList, listRecommendProcures};
+    return { totalList, listRecommendProcures };
+};
+
+/**
+ * Gửi email khi đăng ký sử dụng tài sản
+ * @param {*} portal id công ty
+ */
+exports.sendEmailToManager = async (portal, equipmentName, approver, userId, type) => {
+    let idManager = [], privilege, roleIds = [], userRoles, email = [];
+    if (approver !== "undefined" && approver !== "" && approver) {
+        for (let i in approver) {
+            idManager.push(approver[i]);
+        }
+    }
+
+    let link = await Link(connect(DB_CONNECTION, portal)).find({ url: "/manage-info-asset" });
+    if (link.length) {
+        privilege = await Privilege(connect(DB_CONNECTION, portal)).find({ resourceId: link[0]._id });
+        if (privilege.length) {
+            for (let i in privilege) {
+                roleIds.push(privilege[i].roleId);
+            }
+            userRoles = await UserRole(connect(DB_CONNECTION, portal)).find({ roleId: { $in: roleIds } })
+            if (userRoles.length) {
+                for (let j in userRoles) {
+                    let check = true;
+                    for (let i in approver) {
+                        if (userRoles[j].userId == approver[i]) {
+                            check = false;
+                            break;
+                        }
+                    }
+                    if (check) {
+                        idManager.push(userRoles[j].userId);
+                    }
+                }
+            }
+        }
+    }
+
+    let manager = await User(connect(DB_CONNECTION, portal)).find({ _id: { $in: idManager } });
+    let currentUser = await User(connect(DB_CONNECTION, portal)).findById(
+        userId
+    );
+    if (manager.length) {
+        for (i in manager) {
+            email.push(manager.email)
+        }
+    }
+
+    let body = `<p>Mô tả : ${currentUser.name} đã ${type}   </p>`;
+    let html = `<p>Bạn có thông báo mới: ` + body;
+    return {
+        equipmentName: equipmentName,
+        manager: idManager,
+        user: currentUser,
+        email: email,
+        html: html,
+    };
 };
 
 exports.getUrl = (destination, filename) => {
@@ -125,7 +183,7 @@ exports.getUrl = (destination, filename) => {
 exports.createPurchaseRequest = async (portal, company, data, files) => {
     const checkPur = await RecommendProcure(
         connect(DB_CONNECTION, portal)
-    ).findOne({recommendNumber: data.recommendNumber});
+    ).findOne({ recommendNumber: data.recommendNumber });
     if (checkPur) throw ["recommend_number_exist"];
     data = freshObject(data);
 
@@ -154,6 +212,25 @@ exports.createPurchaseRequest = async (portal, company, data, files) => {
         files: filesConvert,
         recommendUnits: data.recommendUnits,
     });
+
+    if (createRecommendProcure) {
+        let type = "đăng ký mua sắm thiết bị" + " " + data.equipmentName + " " + "số lượng" + " " + data.total + " " + data.unit;
+        var mail = await this.sendEmailToManager(
+            portal,
+            data.equipmentName,
+            data.approver,
+            data.proponent,
+            type
+        );
+        return {
+            createRecommendProcure: createRecommendProcure,
+            manager: mail.manager,
+            user: mail.user,
+            email: mail.email,
+            html: mail.html,
+            equipmentName: mail.equipmentName
+        };
+    }
     return createRecommendProcure;
 };
 
@@ -173,7 +250,7 @@ exports.deletePurchaseRequest = async (portal, id) => {
  * Update thông tin phiếu đề nghị mua sắm thiết bị
  * @id: id phiếu đề nghị mua sắm thiết bị muốn update
  */
-exports.updatePurchaseRequest = async (portal, id, data, files) => {
+exports.updatePurchaseRequest = async (portal, id, data, files, userId) => {
     let filesConvert = [];
     if (files) {
         filesConvert = files.map(obj => ({
@@ -204,10 +281,31 @@ exports.updatePurchaseRequest = async (portal, id, data, files) => {
 
     recommendProcureChange = freshObject(recommendProcureChange)
     // Cập nhật thông tin phiếu đề nghị mua sắm thiết bị vào database
-    return await RecommendProcure(connect(DB_CONNECTION, portal)).findByIdAndUpdate(
-       id,
+
+    const recommendProcure = await RecommendProcure(connect(DB_CONNECTION, portal)).findByIdAndUpdate(
+        id,
         {
             $set: recommendProcureChange,
-        },{new:true}
+        }, { new: true }
     );
+
+    if (recommendProcure) {
+        let type = "sửa đăng ký mua sắm thiết bị" + " " + data.equipmentName;
+        var mail = await this.sendEmailToManager(
+            portal,
+            data.equipmentName,
+            data.approver,
+            userId,
+            type
+        );
+        return {
+            recommendProcure: recommendProcure,
+            manager: mail.manager,
+            user: mail.user,
+            email: mail.email,
+            html: mail.html,
+            equipmentName: mail.equipmentName
+        };
+    }
+    return recommendProcure;
 };

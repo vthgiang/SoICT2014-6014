@@ -17,9 +17,8 @@ class AssetCrashManager extends Component {
         this.state = {
             code: "",
             assetName: "",
-            assetType: null,
             month: null,
-            status: "",
+            type: null,
             page: 0,
         }
     }
@@ -109,7 +108,7 @@ class AssetCrashManager extends Component {
     handleMonthChange = (value) => {
         this.setState({
             ...this.state,
-            month: value
+            incidentDate: value
         });
     }
 
@@ -121,7 +120,7 @@ class AssetCrashManager extends Component {
 
         this.setState({
             ...this.state,
-            type: value
+            incidentType: value
         })
     }
 
@@ -131,6 +130,7 @@ class AssetCrashManager extends Component {
             ...this.state,
 
         })
+        console.log("state", this.state);
         this.props.getAllAsset(this.state);
     }
 
@@ -235,8 +235,8 @@ class AssetCrashManager extends Component {
                                 options={{ nonSelectedText: translate('asset.general_information.select_incident_type'), allSelectedText: translate('asset.general_information.select_all_incident_type') }}
                                 onChange={this.handleTypeChange}
                                 items={[
-                                    { value: "broken", text: translate('asset.general_information.damaged') },
-                                    { value: "lost", text: translate('asset.general_information.lost') }
+                                    { value: "1", text: translate('asset.general_information.damaged') },
+                                    { value: "2", text: translate('asset.general_information.lost') }
                                 ]}
                             >
                             </SelectMulti>

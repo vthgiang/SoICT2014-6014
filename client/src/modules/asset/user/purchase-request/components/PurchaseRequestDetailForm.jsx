@@ -60,7 +60,6 @@ class PurchaseRequestDetailForm extends Component {
         const { recommendNumber, dateCreate, proponent, equipmentName, equipmentDescription, supplier, total, unit, estimatePrice, approver, status, note, files, recommendUnits } = this.state;
 
         var formater = new Intl.NumberFormat();
-        console.log('files', files);
         return (
             <React.Fragment>
                 <DialogModal
@@ -138,7 +137,12 @@ class PurchaseRequestDetailForm extends Component {
                                 {/* Người phê duyệt */}
                                 <div className="form-group">
                                     <strong>{translate('asset.usage.accountable')}&emsp; </strong>
-                                    {approver ? approver.name : ''}
+                                    {approver && approver.length ?
+                                        approver.map((x) => (
+                                            <div>
+                                                {x.name}
+                                            </div>
+                                        )) : ''}
                                 </div>
 
                                 {/* Trạng thái */}

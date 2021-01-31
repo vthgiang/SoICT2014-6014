@@ -11,7 +11,6 @@ import { DisciplineActions } from '../../human-resource/commendation-discipline/
 import { AnnualLeaveActions } from '../../human-resource/annual-leave/redux/actions';
 import { WorkPlanActions } from '../../human-resource/work-plan/redux/actions';
 import { TimesheetsActions } from '../../human-resource/timesheets/redux/actions';
-import { EmployeeManagerActions } from '../../human-resource/profile/employee-management/redux/actions'
 import { taskManagementActions } from '../../task/task-management/redux/actions';
 import { createKpiSetActions } from '../../kpi/employee/creation/redux/actions';
 import { UserActions } from '../../super-admin/user/redux/actions';
@@ -20,10 +19,17 @@ import { UserActions } from '../../super-admin/user/redux/actions';
 class ComponentInfor extends Component {
     constructor(props) {
         super(props);
+        const currentRole = localStorage.getItem("currentRole")
+        let organizationalUnitsOfUser = null
+        this.props.organizationalUnitsOfUser.forEach(x => {
+            if (x.deputyManagers.includes(currentRole) || x.managers.includes(currentRole) || x.employees.includes(currentRole)) {
+                organizationalUnitsOfUser = x._id
+            }
+        })
         this.state = {
             month: this.formatDate(Date.now(), true),
             monthShow: this.formatDate(Date.now(), true),
-            organizationalUnits: [this.props.organizationalUnitsOfUser[0]._id],
+            organizationalUnits: [organizationalUnitsOfUser],
         }
     }
 
@@ -187,37 +193,36 @@ class ComponentInfor extends Component {
         let employeeTasks = [], employeeOvertime = [], employeeHoursOff = [];
         for (let i in listEmployee) {
             let tasks = [];
-            let accountableEmployees = [], consultedEmployees = [], responsibleEmployees = [], informedEmployees = [];
+            let accountableTask = [], consultedTask = [], responsibleTask = [], informedTask = [];
             taskListByStatus && taskListByStatus.forEach(task => {
-                for (let j in task.accountableEmployees)
-                    if (listEmployee[i].userId._id === task.accountableEmployees[j])
-                        accountableEmployees = [...accountableEmployees, task.accountableEmployees[j]];
-                for (let j in task.consultedEmployees)
-                    if (listEmployee[i].userId._id === task.consultedEmployees[j])
-                        consultedEmployees = [...consultedEmployees, task.accountableEmployees[j]];
-                for (let j in task.responsibleEmployees)
-                    if (listEmployee[i].userId._id === task.responsibleEmployees[j]._id)
-                        responsibleEmployees = [...responsibleEmployees, task.accountableEmployees[j]];
-                for (let j in task.informedEmployees)
-                    if (listEmployee[i].userId._id === task.informedEmployees[j])
-                        informedEmployees = [...informedEmployees, task.accountableEmployees[j]];
+                if (task.accountableEmployees.includes(listEmployee[i].userId._id)) {
+                    accountableTask = [...accountableTask, task._id]
+                }
+                if (task.consultedEmployees.includes(listEmployee[i].userId._id)) {
+                    consultedTask = [...consultedTask, task._id]
+                }
+                if (task.responsibleEmployees.includes(listEmployee[i].userId._id)) {
+                    responsibleTask = [...responsibleTask, task._id]
+                }
+                if (task.informedEmployees.includes(listEmployee[i].userId._id)) {
+                    informedTask = [...informedTask, task._id]
+                }
             });
-            tasks = tasks.concat(accountableEmployees).concat(consultedEmployees).concat(responsibleEmployees).concat(informedEmployees);
-            console.log(tasks)
+            tasks = tasks.concat(accountableTask).concat(consultedTask).concat(responsibleTask).concat(informedTask);
             let totalTask = tasks.filter(function (item, pos) {
-                return tasks.indexOf(item) !== pos;
+                return tasks.indexOf(item) === pos;
             })
-            console.log(totalTask)
-            if (totalTask.length > totalTask) {
+            if (totalTask.length > maxTask) {
                 maxTask = totalTask
             };
+
             employeeTasks = [...employeeTasks, {
                 _id: listEmployee[i].userId._id,
                 name: listEmployee[i].userId.name,
-                accountableEmployees: accountableEmployees.length,
-                consultedEmployees: consultedEmployees.length,
-                responsibleEmployees: responsibleEmployees.length,
-                informedEmployees: informedEmployees.length,
+                accountableTask: accountableTask.length,
+                consultedTask: consultedTask.length,
+                responsibleTask: responsibleTask.length,
+                informedTask: informedTask.length,
                 totalTask: totalTask.length
             }]
         };
@@ -227,14 +232,14 @@ class ComponentInfor extends Component {
         };
 
         /* Lấy tổng số công việc làm trong tháng của nhân viên */
-        let totalTask = 0, accountableEmployees = 0, consultedEmployees = 0, responsibleEmployees = 0, informedEmployees = 0;
+        let totalTask = 0, accountableTask = 0, consultedTask = 0, responsibleTask = 0, informedTask = 0;
         let taskPersonal = employeeTasks.find(x => x._id === localStorage.getItem("userId"));
         if (taskPersonal) {
             totalTask = taskPersonal.totalTask;
-            accountableEmployees = taskPersonal.accountableEmployees;
-            consultedEmployees = taskPersonal.consultedEmployees;
-            responsibleEmployees = taskPersonal.responsibleEmployees;
-            informedEmployees = taskPersonal.informedEmployees;
+            accountableTask = taskPersonal.accountableTask;
+            consultedTask = taskPersonal.consultedTask;
+            responsibleTask = taskPersonal.responsibleTask;
+            informedTask = taskPersonal.informedTask;
 
         }
 
@@ -337,10 +342,10 @@ class ComponentInfor extends Component {
                                                     <i className="fa fa-ellipsis-v"></i>
                                                 </span>
                                                 <span className="text"><a href='/task-management-dashboard' target="_blank" >{translate('human_resource.dashboard_personal.task')}</a></span>
-                                                <small className="label label-danger">{accountableEmployees} {translate('human_resource.dashboard_personal.accountable')}</small>
-                                                <small className="label label-success">{responsibleEmployees} {translate('human_resource.dashboard_personal.responsible')}</small>
-                                                <small className="label label-warning">{consultedEmployees} {translate('human_resource.dashboard_personal.consulted')}</small>
-                                                <small className="label label-info">{informedEmployees} {translate('human_resource.dashboard_personal.informed')}</small>
+                                                <small className="label label-danger">{accountableTask} {translate('human_resource.dashboard_personal.accountable')}</small>
+                                                <small className="label label-success">{responsibleTask} {translate('human_resource.dashboard_personal.responsible')}</small>
+                                                <small className="label label-warning">{consultedTask} {translate('human_resource.dashboard_personal.consulted')}</small>
+                                                <small className="label label-info">{informedTask} {translate('human_resource.dashboard_personal.informed')}</small>
                                             </li>
                                             <li>
                                                 <span className="handle">
@@ -391,7 +396,7 @@ class ComponentInfor extends Component {
                                                 <tr>
                                                     <th className="col-fixed" style={{ width: 80 }}>STT</th>
                                                     <th>{translate('human_resource.dashboard_personal.fullname')}</th>
-                                                    <th>{translate('human_resource.dashboard_personal.task_total')}</th>
+                                                    <th className="col-sort">{translate('human_resource.dashboard_personal.task_total')}</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -432,7 +437,7 @@ class ComponentInfor extends Component {
                                                 <tr>
                                                     <th className="col-fixed" style={{ width: 80 }}>STT</th>
                                                     <th>{translate('human_resource.dashboard_personal.fullname')}</th>
-                                                    <th>{translate('human_resource.dashboard_personal.reason_praise')}</th>
+                                                    <th className="col-sort">{translate('human_resource.dashboard_personal.reason_praise')}</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -468,7 +473,7 @@ class ComponentInfor extends Component {
                                                 <tr>
                                                     <th className="col-fixed" style={{ width: 80 }}>STT</th>
                                                     <th>{translate('human_resource.dashboard_personal.fullname')}</th>
-                                                    <th>{translate('human_resource.dashboard_personal.reason_discipline')}</th>
+                                                    <th className="col-sort">{translate('human_resource.dashboard_personal.reason_discipline')}</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -507,7 +512,7 @@ class ComponentInfor extends Component {
                                                 <tr>
                                                     <th>STT</th>
                                                     <th>{translate('human_resource.dashboard_personal.fullname')}</th>
-                                                    <th>{translate('human_resource.dashboard_personal.total_hours')}</th>
+                                                    <th className="col-sort">{translate('human_resource.dashboard_personal.total_hours')}</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -516,7 +521,6 @@ class ComponentInfor extends Component {
                                                         <tr key={index}>
                                                             <td>{index + 1}</td>
                                                             <td>Nhân viên {index + 1}</td>
-                                                            {/* <td>{x.totalHours}</td> */}
                                                             <td>
                                                                 <div className="clearfix"> <small className="pull-right">{x.totalHours}</small> </div>
                                                                 <div className="progress xs">
@@ -548,7 +552,7 @@ class ComponentInfor extends Component {
                                                 <tr>
                                                     <th>STT</th>
                                                     <th>{translate('human_resource.dashboard_personal.fullname')}</th>
-                                                    <th>{translate('human_resource.dashboard_personal.total_hours')}</th>
+                                                    <th className="col-sort">{translate('human_resource.dashboard_personal.total_hours')}</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -557,7 +561,6 @@ class ComponentInfor extends Component {
                                                         <tr key={index}>
                                                             <td>{index + 1}</td>
                                                             <td>Nhân viên {index + 1}</td>
-                                                            {/* <td>{x.totalHours}</td> */}
                                                             <td>
                                                                 <div className="clearfix"> <small className="pull-right">{x.totalHours}</small> </div>
                                                                 <div className="progress xs">

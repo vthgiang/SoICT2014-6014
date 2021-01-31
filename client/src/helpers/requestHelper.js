@@ -7,7 +7,7 @@ import FingerprintJS from '@fingerprintjs/fingerprintjs';
 import store from '../redux/store'
 import { AuthConstants } from '../modules/auth/redux/constants';
 import JSEncrypt from 'jsencrypt';
-import {key} from './pub.json'
+import { key } from './pub.json'
 
 function encryptMessage(message) {
     const publicKey = key;
@@ -17,7 +17,7 @@ function encryptMessage(message) {
     return jsEncrypt.encrypt(message);
 }
 
-const AuthenticateHeader = async() => {
+const AuthenticateHeader = async () => {
     const fpAgent = await FingerprintJS.load();
     const result = await fpAgent.get();
     const fingerprint = result.visitorId;
@@ -44,6 +44,7 @@ const checkErrorAuth = (code) => {
         'service_off',
         'fingerprint_invalid',
         'service_permisson_denied',
+        'auth_error'
     ];
     if (error_auth.indexOf(code) !== -1) return true;
     return false;
@@ -101,7 +102,7 @@ export async function sendRequest(options, showSuccessAlert = false, showFailAle
                 showAuthResponseAlertAndRedirectToLoginPage();
             else if (messages[0] === 'acc_log_out')
                 clearStorage();
-            else if(messages[0] === 'auth_password2_not_complete') // Yêu cầu người dùng hoàn thành câu hỏi xác thực thông tin bắt buộc
+            else if (messages[0] === 'auth_password2_not_complete') // Yêu cầu người dùng hoàn thành câu hỏi xác thực thông tin bắt buộc
                 store.dispatch({ type: AuthConstants.REDIRECT_AUTH_QUESTION_PAGE, payload: err.response.data.content.token });
             else {
                 showFailAlert && toast.error(
