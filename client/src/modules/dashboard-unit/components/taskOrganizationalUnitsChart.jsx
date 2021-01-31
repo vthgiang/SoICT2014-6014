@@ -284,6 +284,7 @@ class TaskOrganizationalUnitsChart extends Component {
                 employeeOfUnits = [...employeeOfUnits, count.length ? count.length : 1]
             })
         }
+        console.log(arrMonth)
 
         let data = [["x", ...arrMonth]];
         childOrganizationalUnit.forEach((x, index) => {
@@ -293,12 +294,21 @@ class TaskOrganizationalUnitsChart extends Component {
             }
             let row = [...arrMonth];
             row = row.map(r => {
+
+                console.log(taskOfUnist.map(x => x._id))
                 let taskOfUnistInMonth = taskOfUnist.filter(t => {
-                    if (new Date(t.startDate).getTime() <= new Date(r).getTime() && new Date(r).getTime() <= new Date(t.endDate).getTime()) {
+                    let date = new Date(r)
+                    let endMonth = new Date(date.setMonth(date.getMonth() + 1))
+                    let endDate = new Date(endMonth.setDate(endMonth.getDate() - 1))
+                    console.log(endDate)
+                    if (new Date(r).getTime() <= new Date(t.startDate).getTime() && new Date(t.startDate).getTime() <= new Date(endDate) ||
+                        new Date(r).getTime() <= new Date(t.endDate).getTime() && new Date(t.endDate).getTime() <= new Date(endDate) ||
+                        new Date(t.startDate).getTime() >= new Date(r).getTime() && new Date(endDate).getTime() >= new Date(t.endDate).getTime()) {
                         return true;
                     }
                     return false;
                 });
+                console.log(taskOfUnistInMonth.length)
                 if (totalTask) {
                     return (taskOfUnistInMonth.length / employeeOfUnits[index]).toFixed(1);
                 }
@@ -308,7 +318,6 @@ class TaskOrganizationalUnitsChart extends Component {
         })
 
         this.dataChart = data;
-        console.log(this.dataChart)
         this.renderChart(data)
 
         return (
