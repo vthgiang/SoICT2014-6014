@@ -115,7 +115,8 @@ exports.deleteOrganizationalUnitKpi = async (req, res) => {
  */
 getParentOrganizationalUnitKpiSet = async (req, res) => {
     try {
-        var kpiunit = await KPIUnitService.getParentOrganizationalUnitKpiSet(req.portal, req.query.roleId);
+        let kpiunit = await KPIUnitService.getParentOrganizationalUnitKpiSet(req.portal, req.query);
+        
         Logger.info(req.user.email, 'get parent kpi unit', req.portal)
         res.status(200).json({
             success: true,
@@ -206,7 +207,12 @@ editOrganizationalUnitKpiSetStatus = async (req, res) => {
  */
 exports.createOrganizationalUnitKpiSet = async (req, res) => {
     try {
-        var organizationalUnitKpi = await KPIUnitService.createOrganizationalUnitKpiSet(req.portal, req.body);
+        let data = {
+            ...req.body,
+            creator: req.user._id
+        }
+        let organizationalUnitKpi = await KPIUnitService.createOrganizationalUnitKpiSet(req.portal, data);
+        
         Logger.info(req.user.email, 'create kpi unit', req.portal)
         res.status(200).json({
             success: true,
