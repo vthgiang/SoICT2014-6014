@@ -1660,12 +1660,14 @@ export default {
                         ward: 'Phường/Xã',
                         house_hold_address: 'Địa chỉ hộ khẩu',
                         phone: 'Số điện thoại',
+                        phone_appendix:'Điện thoại hộ gia đình',
                         house_hold_code: 'Mã số hộ gia đình'
                     },
                     members: {
                         title: 'Kê khai đầy đủ thông tin thành viên hộ gia đình trong sổ hộ khẩu',
                         stt: 'STT',
                         name: 'Họ và tên',
+                        name_member:'Họ và tên thành viên',
                         code_social_insurance: 'Mã sổ BHXH',
                         book_nci: 'Số sổ BHXH',
                         gender: 'Giới tính',
@@ -1904,10 +1906,11 @@ export default {
                         sheet5: "5.HS Nhân viên - Hợp đồng",
                         sheet6: "6.HS Nhân viên - Bảo hiểm XH",
                         sheet7: "7.HS Nhân viên - Tài liệu",
-                        sheet8: "8.HS Nhân viên - Khen thưởng",
-                        sheet9: "9.HS Nhân viên - Kỷ luật",
-                        sheet10: "10.HS Nhân viên - Lương thưởng",
-                        sheet11: "11.HS Nhân viên - Nghỉ phép",
+                        sheet8: "8.HS Nhân viên - Gia đình",
+                        sheet9: "9.HS Nhân viên - Khen thưởng",
+                        sheet10: "10.HS Nhân viên - Kỷ luật",
+                        sheet11: "11.HS Nhân viên - Lương thưởng",
+                        sheet12: "12.HS Nhân viên - Nghỉ phép",
 
                         emergency_contact_person: "Người liên hệ khẩn cấp",
                         relation_with_emergency_contact_person:
@@ -1934,6 +1937,7 @@ export default {
                         import_contract: "Hợp đồng lao động",
                         import_socialInsurance_details: "Bảo hiểm xã hội",
                         import_file: "Tài liệu đính kèm",
+                        import_family: "Thành viên hộ gia đình",
 
                         import_general_infor_title:
                             "Import thông tin nhân viên",
@@ -1944,6 +1948,7 @@ export default {
                         import_socialInsurance_details_title:
                             "Import bảo hiểm xã hội",
                         import_file_title: "Import tài liệu đính kèm",
+                        import_file_family : "Import thành viên hộ gia đình"
                     },
 
                     // Nhón dành cho UI
