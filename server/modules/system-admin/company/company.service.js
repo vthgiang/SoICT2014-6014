@@ -587,7 +587,7 @@ exports.getCompanyInformation = async (shortName) => {
 exports.requestService = async (data) => {
     let { name, email, phone, service } = data;
 
-    let sendTo = 'support@dxclan.com';
+    let sendTo = process.env.EMAIL_SUPPORT;
     let subject = '[ĐĂNG KÝ SỬ DỤNG DỊCH VỤ]';
     let text = '';
     let html = `
