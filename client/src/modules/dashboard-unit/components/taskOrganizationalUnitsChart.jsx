@@ -161,7 +161,7 @@ class TaskOrganizationalUnitsChart extends Component {
      */
     renderChart = (data) => {
         this.removePreviousChart();
-        this.chart = c3.generate({
+        let chart = c3.generate({
             bindto: this.refs.taskUnitsChart,
             data: {
                 x: 'x',
@@ -190,15 +190,21 @@ class TaskOrganizationalUnitsChart extends Component {
                     },
                 }
             },
+
+            legend: {
+                show: false
+            }
         });
 
+        this.chart = chart;
+
         setTimeout(function () {
-            if (this.chart) {
-                this.chart.load({
+            if (chart) {
+                chart.load({
                     columns: data,
                 });
             }
-        }, 0);
+        }, 2000);
     };
 
     /** Bắt sự kiện tìm kiếm */
@@ -347,9 +353,8 @@ class TaskOrganizationalUnitsChart extends Component {
                                 <button type="button" className={`btn btn-xs ${totalTask ? 'btn-danger' : "active"}`} onClick={() => this.handleChangeViewChart(true)}>Công việc trên đầu người</button>
                             </div>
                         </div>
-                        <div ref="taskUnitsChart" ></div>
                         <section id={"taskUnitsChart"} className="c3-chart-container">
-                            <div ref="taskUnitsChart"></div>
+                            <div ref="taskUnitsChart" style={{ marginBottom: "15px" }}></div>
                             <CustomLegendC3js
                                 chart={this.chart}
                                 chartId={"taskUnitsChart"}
