@@ -14,7 +14,9 @@ import 'c3/c3.css';
 class TaskOrganizationalUnitsChart extends Component {
     constructor(props) {
         super(props);
-        let startDate = ['01', new Date().getFullYear()].join('-');
+        // let startDate = ['01', new Date().getFullYear()].join('-');
+        let date = new Date()
+        let startDate = this.formatDate(date.setMonth(new Date().getMonth() - 5), true);
         this.state = {
             totalTask: false,
             startDate: startDate,
