@@ -31,3 +31,4 @@ export * from './src/comment/comment';
 export * from './src/scheduler/scheduler';
 export * from './src/quill-editor/quillEditor';
 export * from './src/showmore-showless/showMoreShowLess';
+export * from './src/custom-legend-c3js/customLegendC3js';

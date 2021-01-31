@@ -16,4 +16,6 @@ router.get('/analys/user/:userId', auth, TaskManagementController.getTaskAnalysO
 
 router.get('/time-sheet', auth, TaskManagementController.getUserTimeSheet);
 
+router.get('/time-sheet/all', auth, TaskManagementController.getAllUserTimeSheet);
+
 module.exports = router;

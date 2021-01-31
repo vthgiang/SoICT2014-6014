@@ -11,15 +11,19 @@ import InfoForm from './infoForm';
 import EditForm from './editForm';
 import CrmCustomerImportFile from './importFileForm';
 import { formatFunction } from '../../common/index';
-
+import { getTableConfiguration } from '../../../../helpers/tableConfiguration'
 class CrmCustomer extends Component {
     constructor(props) {
         super(props);
+        const tableId = "table-manage-crm-customer";
+        const defaultConfig = { limit: 6 }
+        const limit = getTableConfiguration(tableId, defaultConfig).limit;
         this.state = {
-            limit: 5,
+            limit: limit,
             page: 0,
             option: 'name',
-            value: ''
+            value: '',
+            tableId,
         }
     }
 
@@ -181,11 +185,10 @@ class CrmCustomer extends Component {
     }
 
 
-
     render() {
         const { translate, crm, user } = this.props;
         const { customers } = crm;
-        const { importCustomer, createCustomer, limit, page, customerIdEdit, customerId } = this.state;
+        const { importCustomer, createCustomer, limit, page, customerIdEdit, customerId, tableId } = this.state;
 
         let pageTotal = (crm.customers.totalDocs % limit === 0) ?
             parseInt(crm.customers.totalDocs / limit) :
@@ -322,9 +325,8 @@ class CrmCustomer extends Component {
                                             translate('crm.customer.mobilephoneNumber'),
                                             translate('crm.customer.address')
                                         ]}
-                                        limit={this.state.limit}
                                         setLimit={this.setLimit}
-                                        tableId="table-manage-crm-customer"
+                                        tableId={tableId}
                                     />
                                 </th>
                             </tr>

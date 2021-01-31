@@ -397,9 +397,10 @@ const TaskSchema = new Schema(
                 duration: {
                     type: Number,
                 },
-                autoStopped: {
-                    type: Boolean,
-                    default: false
+                autoStopped: { // 1: Tắt bấm giờ bằng tay, 2: Tắt bấm giờ tự động với thời gian hẹn trc, 3: add log timer
+                    type: Number,
+                    default: 1,
+                    enum: [1, 2, 3],
                 },
                 acceptLog: {
                     type: Boolean,

@@ -126,27 +126,46 @@ exports.crateNewCareerField = async (portal, data) => {
     else {
         let isField = await CareerField(connect(DB_CONNECTION, portal)).findOne({ _id: data.parent })
         if (isField) {
+            if (data.position.length === 0) {
+                let additionalNewPosition = await CareerPosition(connect(DB_CONNECTION, portal)).create({
+                    name: data.name,
+                    code: data.code,
+                    package: [],
+                    description: [],
+                })
 
-            let additionalNewPosition = await CareerPosition(connect(DB_CONNECTION, portal)).create({
-                name: data.name,
-                code: data.code,
-                package: [],
-                description: [],
-            })
-
-            position = await CareerField(connect(DB_CONNECTION, portal)).findOneAndUpdate(
-                {
-                    _id: data.parent,
-                },
-                {
-                    $push: {
-                        "position": {
-                            position: additionalNewPosition._id,
-                            multi: 0,
+                position = await CareerField(connect(DB_CONNECTION, portal)).findOneAndUpdate(
+                    {
+                        _id: data.parent,
+                    },
+                    {
+                        $push: {
+                            "position": {
+                                position: additionalNewPosition._id,
+                                multi: 0,
+                            }
                         }
                     }
+                )
+            }
+            else {
+                console.log('data.position',data.position, data.parent);
+                for (let i in data.position) {
+                    position = await CareerField(connect(DB_CONNECTION, portal)).findOneAndUpdate(
+                        {
+                            _id: data.parent,
+                        },
+                        {
+                            $push: {
+                                "position": {
+                                    position: data.position[i],
+                                    multi: 1,
+                                }
+                            }
+                        }
+                    )
                 }
-            )
+            }
         }
     }
 
@@ -161,6 +180,7 @@ exports.crateNewCareerField = async (portal, data) => {
  */
 exports.crateNewCareerPosition = async (portal, data) => {
     let position, description;
+    console.log('data.action', data.action);
     if (!data.parent) {
         console.log('is parent ');
         position = await CareerPosition(connect(DB_CONNECTION, portal)).create({
@@ -190,29 +210,50 @@ exports.crateNewCareerPosition = async (portal, data) => {
     else {
         let isDescription = await CareerPosition(connect(DB_CONNECTION, portal)).findOne({ _id: data.parent })
         if (isDescription) {
-            // tạo hành động công việc
-            let listAction = await CareerAction(connect(DB_CONNECTION, portal)).find({});
-            let index = listAction.length;
-            let action = await CareerAction(connect(DB_CONNECTION, portal)).create({
-                name: data.name,
-                // code: `act_${index + 1}`,
-                code: data.code,
-                package: data.package,
-            })
+            if (data.action.length === 0) {
+                // tạo hành động công việc
+                let listAction = await CareerAction(connect(DB_CONNECTION, portal)).find({});
+                let index = listAction.length;
+                let action = await CareerAction(connect(DB_CONNECTION, portal)).create({
+                    name: data.name,
+                    // code: `act_${index + 1}`,
+                    code: data.code,
+                    package: data.package,
+                })
 
-            description = await CareerPosition(connect(DB_CONNECTION, portal)).findOneAndUpdate(
-                {
-                    _id: data.parent,
-                },
-                {
-                    $push: {
-                        "description": {
-                            action: action._id,
-                            multi: 0,
+                description = await CareerPosition(connect(DB_CONNECTION, portal)).findOneAndUpdate(
+                    {
+                        _id: data.parent,
+                    },
+                    {
+                        $push: {
+                            "description": {
+                                action: action._id,
+                                multi: 0,
+                            }
                         }
                     }
+                )
+            }
+            else {
+                console.log('action', data.action);
+                for (let i in data.action) {
+                    description = await CareerPosition(connect(DB_CONNECTION, portal)).findOneAndUpdate(
+                        {
+                            _id: data.parent,
+                        },
+                        {
+                            $push: {
+                                "description": {
+                                    action: data.action[i],
+                                    multi: 1,
+                                }
+                            }
+                        }
+                    )
                 }
-            )
+
+            }
         }
     }
 

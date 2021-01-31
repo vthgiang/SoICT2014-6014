@@ -183,11 +183,11 @@ class MajorAddModal extends Component {
                 >
                     <form className="form-group" id={`form-create-major-${id}`}>
                         <div className="form-group">
-                            <label>Nhóm ngành</label>
+                            <label>Nhóm ngành<span className="text-red">*</span></label>
                             <TreeSelect data={listGroup} value={group?._id} handleChange={this.handleGroup} mode="radioSelect" />
                         </div>
                         <div className="form-group">
-                            <label>Chuyên ngành</label>
+                            <label>Chuyên ngành<span className="text-red">*</span></label>
                             <TreeSelect data={listSpecialized} value={specialized?._id} handleChange={this.handleSpecialized} mode="radioSelect" />
                         </div>
                         {/* File đính kèm */}

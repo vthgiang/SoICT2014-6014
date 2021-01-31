@@ -307,47 +307,51 @@ class OrganizationalUnitKpiDashboard extends Component {
                             </div>
                         </div>
 
-
+                        {/* Phân bố KPI đơn vị */}
                         <LazyLoadComponent
                             key="distributionOfOrganizationalUnitKpiChart"
                         >
                             <div className="row">
                                 <div className="col-xs-12">
                                     <div className="box box-primary">
-                                        {/* Phân bố KPI đơn vị */}
                                         <div className="box-body">
-                                            <div className="col-xs-6">
-                                                <div className="box-header with-border">
-                                                    <div className="box-title">{translate('kpi.organizational_unit.dashboard.distributive')}{this.state.date}</div>
-                                                </div>
-                                                {childOrganizationalUnit && (this.state.dataStatus === this.DATA_STATUS.AVAILABLE)
-                                                    &&
-                                                    <DistributionOfOrganizationalUnitKpiChart
-                                                        organizationalUnitId={organizationalUnitId}
-                                                        month={month}
-                                                    />
-                                                }
+                                            <div className="box-header with-border">
+                                                <div className="box-title">{translate('kpi.organizational_unit.dashboard.distributive')}{this.state.date}</div>
                                             </div>
-
-                                            {/* Thống kê kết quả KPI */}
-                                            <div className="col-xs-6">
-                                                <div className="box-header with-border">
-                                                    <div className="box-title">{translate('kpi.organizational_unit.dashboard.statiscial')} {this.state.date}</div>
-                                                    {statisticsOfOrganizationalUnitKpiResultChartData && <ExportExcel type="link" id="export-statistic-organizational-unit-kpi-results-chart" exportData={statisticsOfOrganizationalUnitKpiResultChartData} style={{ marginLeft: 10 }} />}
-                                                </div>
-                                                <StatisticsOfOrganizationalUnitKpiResultsChart
+                                            {childOrganizationalUnit && (this.state.dataStatus === this.DATA_STATUS.AVAILABLE)
+                                                &&
+                                                <DistributionOfOrganizationalUnitKpiChart
                                                     organizationalUnitId={organizationalUnitId}
                                                     month={month}
-                                                    organizationalUnit={childOrganizationalUnit}
-                                                    onDataAvailable={this.handleStatisticsOfOrganizationalUnitKpiResultChartDataAvailable}
                                                 />
-                                            </div>
+                                            }
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </LazyLoadComponent>
 
+                        {/* Thống kê kết quả KPI */}
+                        <LazyLoadComponent
+                            key="statisticsOfOrganizationalUnitKpi"
+                        >
+                            <div className="row">
+                                <div className="col-xs-12">
+                                    <div className="box box-primary">
+                                        <div className="box-header with-border">
+                                            <div className="box-title">{translate('kpi.organizational_unit.dashboard.statiscial')} {this.state.date}</div>
+                                            {statisticsOfOrganizationalUnitKpiResultChartData && <ExportExcel type="link" id="export-statistic-organizational-unit-kpi-results-chart" exportData={statisticsOfOrganizationalUnitKpiResultChartData} style={{ marginLeft: 10 }} />}
+                                        </div>
+                                        <StatisticsOfOrganizationalUnitKpiResultsChart
+                                            organizationalUnitId={organizationalUnitId}
+                                            month={month}
+                                            organizationalUnit={childOrganizationalUnit}
+                                            onDataAvailable={this.handleStatisticsOfOrganizationalUnitKpiResultChartDataAvailable}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        </LazyLoadComponent>
 
                         {/* Kết quả KPI đơn vị */}
                         <LazyLoadComponent

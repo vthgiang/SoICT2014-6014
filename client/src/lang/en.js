@@ -61,6 +61,10 @@ export default {
                 not_existing_error: "Value not existing",
                 existing_error: "Value existing",
             },
+            not_org_unit: "Not have organizational unit",
+            list_unit: "Organizational unit list",
+            list_employee: "Employee list",
+            detail: "Detail"
         },
 
         intro: {
@@ -966,6 +970,7 @@ export default {
             task_organization_management_dashboard: "Unit task dashboard",
             task_management_process: "Process list",
             task_process_template: "Process template",
+            all_time_sheet_log: 'All Timesheetlogs',
             //*******START */
             // Quản lý tài sản
             // QUẢN LÝ
@@ -1041,6 +1046,7 @@ export default {
 
 
             user_guide: "User guide",
+            user_guide_detail: "User guide detail",
         },
 
         manage_system: {

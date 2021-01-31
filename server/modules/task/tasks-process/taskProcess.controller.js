@@ -142,7 +142,7 @@ exports.createTaskByProcess = async (req, res) => {
 			let user = mails[i].user;
 			let email = mails[i].email;
 			let html = mails[i].html;
-
+			console.log(task)
 			let mailData = { 
 				"organizationalUnits": task.organizationalUnit._id, 
 				"title": "Tạo mới công việc", 

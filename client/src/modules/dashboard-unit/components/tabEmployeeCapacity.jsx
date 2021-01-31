@@ -111,8 +111,10 @@ class TabEmployeeCapacity extends Component {
 
         if (dashboardEvaluationEmployeeKpiSet) {
             employeeKpiSets = dashboardEvaluationEmployeeKpiSet.employeeKpiSets;
+
             lastMonthEmployeeKpiSets = employeeKpiSets && employeeKpiSets.filter(item => this.formatDate(item.date) === month);
             lastMonthEmployeeKpiSets && lastMonthEmployeeKpiSets.sort((a, b) => b.approvedPoint - a.approvedPoint);
+            lastMonthEmployeeKpiSets = lastMonthEmployeeKpiSets.filter(x => x.approvedPoint)
             lastMonthEmployeeKpiSets = lastMonthEmployeeKpiSets && lastMonthEmployeeKpiSets.slice(0, numberOfExcellentEmployees);
         }
         // let organizationalUnitIds;

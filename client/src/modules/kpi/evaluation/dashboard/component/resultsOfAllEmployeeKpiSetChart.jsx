@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import { createKpiSetActions } from '../../../employee/creation/redux/actions';
 
-import { DatePicker } from '../../../../../common-components';
+import { DatePicker, CustomLegendC3js } from '../../../../../common-components';
 
 import { withTranslate } from 'react-redux-multilingual'
 
@@ -26,6 +26,9 @@ class ResultsOfAllEmployeeKpiSetChart extends Component {
 
         this.DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
         this.KIND_OF_POINT = { AUTOMATIC: 1, EMPLOYEE: 2, APPROVED: 3 };
+
+        this.chart = null;
+        this.dataChart = null;
 
         this.state = {
             userRoleId: localStorage.getItem("currentRole"),
@@ -224,15 +227,15 @@ class ResultsOfAllEmployeeKpiSetChart extends Component {
     }
 
     multiLineChart = () => {
-        this.removePreviousChart();
+        const { translate } = this.props;
+        let xs = {};
 
-        let dataChart, xs = {};
-        const {translate}= this.props;
-        dataChart = this.setDataMultiLineChart();
+        this.removePreviousChart();
+        this.dataChart = this.setDataMultiLineChart();
         
-        for(let i=0; i<dataChart.length; i=i+2) {
+        for(let i=0; i<this.dataChart.length; i=i+2) {
             let temporary = {};
-            temporary[dataChart[i+1][0]] = dataChart[i][0]; 
+            temporary[this.dataChart[i+1][0]] = this.dataChart[i][0]; 
             xs = Object.assign(xs, temporary);
         }
 
@@ -247,7 +250,7 @@ class ResultsOfAllEmployeeKpiSetChart extends Component {
 
             data: {                                 
                 xs: xs,
-                columns: dataChart,
+                columns: this.dataChart,
                 type: 'spline'
             },
 
@@ -271,6 +274,10 @@ class ResultsOfAllEmployeeKpiSetChart extends Component {
                     }
                 }
             },
+
+            legend: {
+                show: false
+            }
         })
     }
 
@@ -412,9 +419,16 @@ class ResultsOfAllEmployeeKpiSetChart extends Component {
                         <button type="button" className={`btn btn-xs ${this.state.kindOfPoint === this.KIND_OF_POINT.EMPLOYEE ? 'btn-danger' : null}`} onClick={() => this.handleSelectKindOfPoint(this.KIND_OF_POINT.EMPLOYEE)}>{translate('kpi.evaluation.dashboard.employee_point')}</button>
                         <button type="button" className={`btn btn-xs ${this.state.kindOfPoint === this.KIND_OF_POINT.APPROVED ? 'btn-danger' : null}`} onClick={() => this.handleSelectKindOfPoint(this.KIND_OF_POINT.APPROVED)}>{translate('kpi.evaluation.dashboard.approve_point')}</button>
                     </div>
-                    
-
+                </section>
+                <section id={"resultsOfAllEmployeeKpiSet"} className="c3-chart-container">
                     <div ref="chart"></div>
+                    <CustomLegendC3js
+                        chart={this.chart}
+                        chartId={"resultsOfAllEmployeeKpiSet"}
+                        legendId={"resultsOfAllEmployeeKpiSetLegend"}
+                        title={this.dataChart && `${translate('general.list_employee')} (${this.dataChart.length/2})`}
+                        dataChartLegend={this.dataChart && this.dataChart.filter((item, index) => index % 2 === 1).map(item => item[0])}
+                    />
                 </section>
             </React.Fragment>
         )

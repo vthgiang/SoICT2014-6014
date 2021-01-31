@@ -28,9 +28,9 @@ class HighestSalaryChart extends Component {
             organizationalUnitsName = organizationalUnitsName.map(x => x.name);
         };
 
-        let dataSalary = salary.listSalaryByMonthAndOrganizationalUnits;
-        if (dataSalary.length !== 0) {
-            dataSalary = dataSalary.map(x => {
+        let data = salary.listSalaryByMonthAndOrganizationalUnits;
+        if (data.length !== 0) {
+            data = data.map(x => {
                 let total = parseInt(x.mainSalary);
                 if (x.bonus.length !== 0) {
                     for (let count in x.bonus) {
@@ -40,6 +40,17 @@ class HighestSalaryChart extends Component {
                 return { ...x, total: total }
             })
         };
+
+        let dataSalary = []
+        data.forEach(x => {
+            const index = dataSalary.findIndex(y => y.employee._id === x.employee._id)
+            if (index >= 0) {
+                dataSalary[index].total = dataSalary[index].total + x.total
+            } else {
+                dataSalary = [...dataSalary, x]
+            }
+        });
+
         dataSalary = dataSalary.sort((a, b) => b.total - a.total);
 
         return (

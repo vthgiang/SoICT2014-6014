@@ -1427,9 +1427,30 @@ const LINKS = [{
         ROOT_ROLES.DEPUTY_MANAGER.name,
         ROOT_ROLES.EMPLOYEE.name,
     ],
-
-
     components: getComponentsInLink('/user-guide')
+},{
+    url: '/user-guide-detail',
+    description: 'Chi tiết hướng dẫn sử dụng',
+    category: LINK_CATEGORY.USERGUIDE.name,
+    roles: [
+        ROOT_ROLES.ADMIN.name,
+        ROOT_ROLES.MANAGER.name,
+        ROOT_ROLES.DEPUTY_MANAGER.name,
+        ROOT_ROLES.EMPLOYEE.name,
+    ],
+    components: getComponentsInLink('/user-guide-detail')
+},{
+    url: "/time-sheet-log/all",
+    description: "Thống kê lịch sử bấm giờ tất cả thành viên trong công ty",
+    category: LINK_CATEGORY.TASK.name,
+    roles: [
+        ROOT_ROLES.SUPER_ADMIN.name,
+        ROOT_ROLES.ADMIN.name,
+        ROOT_ROLES.MANAGER.name,
+        ROOT_ROLES.DEPUTY_MANAGER.name,
+        ROOT_ROLES.EMPLOYEE.name,
+    ],
+    components: getComponentsInLink('/time-sheet-log/all')
 }
 ];
 

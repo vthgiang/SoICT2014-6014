@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 
 import { withTranslate } from 'react-redux-multilingual';
 import Swal from 'sweetalert2';
+import parse from 'html-react-parser';
 // import { Comment } from './comment';
 
 import { UserActions } from "../../../../super-admin/user/redux/actions";
@@ -633,7 +634,7 @@ class CreateEmployeeKpiSet extends Component {
                                                                 <td title={index + 1}>{index + 1}</td>
                                                                 <td title={item.name}>{item.name}</td>
                                                                 <td title={item.parent ? item.parent.name : translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.handle_populate_info_null.error_kpi_approver_null')}>{item.parent ? item.parent.name : translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.handle_populate_info_null.error_kpi_approver_null')}</td>
-                                                                <td title={item.criteria}>{item.criteria}</td>
+                                                                <td title={item.criteria}>{parse(item.criteria)}</td>
                                                                 <td title={item.weight}>{item.weight}</td>
                                                                 <td title={this.handleCheckEmployeeKpiStatus(item.status)}>{this.handleCheckEmployeeKpiStatus(item.status)}</td>
                                                                 <td>

@@ -1,23 +1,23 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { withTranslate } from 'react-redux-multilingual';
 
 import { dashboardOrganizationalUnitKpiActions } from '../redux/actions';
 import { createUnitKpiActions } from '../../creation/redux/actions';
 
-import { withTranslate } from 'react-redux-multilingual';
+import { CustomLegendC3js } from '../../../../../common-components';
 
 import c3 from 'c3';
 import 'c3/c3.css';
-import * as d3 from "d3";
-
-
 class TrendsInOrganizationalUnitKpiChart extends Component {
 
     constructor(props) {
         super(props);
 
         this.DATA_STATUS = {NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3};
-        
+        this.chart = null;
+        this.dataChart = null;
+
         this.state = {
             currentRole: null,
             dataStatus: this.DATA_STATUS.NOT_AVAILABLE
@@ -398,7 +398,7 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
         this.removePreviousBarChart();
 
         const { createKpiUnit } = this.props;
-        let numberOfParticipants, numberOfEmployeeKpis, executionTimes, numberOfTasks, weight, data, dataChart, listOrganizationalUnitKpi, titleX;
+        let numberOfParticipants, numberOfEmployeeKpis, executionTimes, numberOfTasks, weight, data, listOrganizationalUnitKpi, titleX;
            
         if(createKpiUnit.currentKPI) {
             listOrganizationalUnitKpi = createKpiUnit.currentKPI.kpis;
@@ -424,7 +424,7 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
         }
 
         if(listOrganizationalUnitKpi) {
-            dataChart = listOrganizationalUnitKpi.map(kpis => {
+            this.dataChart = listOrganizationalUnitKpi.map(kpis => {
                 let temporary;
                 temporary = data.map(x => {
                     return x[kpis.name] ? x[kpis.name] : 0;
@@ -436,7 +436,7 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
             })
         }
 
-        dataChart.unshift(titleX);
+        this.dataChart.unshift(titleX);
         this.chart = c3.generate({
             bindto: this.refs.chart,                
 
@@ -453,7 +453,7 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
 
             data: {                             
                 x: 'x',
-                columns: dataChart,
+                columns: this.dataChart,
                 type: 'bar',
                 groups: [
                     listOrganizationalUnitKpi.map(x => x.name)
@@ -477,6 +477,31 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
                         outer: true
                     }
                 }
+            },
+
+            tooltip: {
+                position: function () {
+                    // let position = c3.chart.internal.fn.tooltipPosition.apply(this, arguments);
+                    return { top: 0, left: 240 };
+                },
+                contents: function (data) {
+                    let value = '<div style="overflow-y: scroll; max-height: 300px; pointer-events: auto;">';
+                    value = value + '<table class=\'c3-tooltip\'>';
+
+                    data.forEach((val) => {
+                        value = value + '<tr><td class=\'name\'>' + val.name + '</td>'
+                                    +'<td class=\'value\'>' + val.value + '</td></tr>';
+                    });
+
+                    value = value + '</table>';
+                    value = value + '</div>';
+                    
+                    return value;
+                }
+            },
+
+            legend: {
+                show: false
             }
         });
     }
@@ -493,7 +518,17 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
         return (
             <React.Fragment>
                 {currentKpi ?
-                    <section ref="chart"></section>
+                    <section id={"trendsInUnit"} className="c3-chart-container enable-pointer">
+                        <div ref="chart"></div>
+                       
+                        <CustomLegendC3js
+                            chart={this.chart}
+                            chartId={"trendsInUnit"}
+                            legendId={"trendsInUnitLegend"}
+                            title={`${translate('kpi.evaluation.employee_evaluation.KPI_list')} (${currentKpi.kpis && currentKpi.kpis.length})`}
+                            dataChartLegend={this.dataChart && this.dataChart.filter((item, index) => index > 0).map(item => item[0])}
+                        />
+                    </section>
                     : organizationalUnitKpiLoading && <section>{translate('kpi.organizational_unit.dashboard.no_data')}</section>
                 }
             </React.Fragment>

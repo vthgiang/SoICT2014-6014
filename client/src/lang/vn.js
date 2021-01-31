@@ -62,6 +62,10 @@ export default {
                 not_existing_error: "Giá trị không tồn tại",
                 existing_error: "Giá trị đã tồn tại",
             },
+            not_org_unit: "Bạn chưa có đơn vị",
+            list_unit: "Danh sách đơn vị",
+            list_employee: "Danh sách nhân viên",
+            detail: "Chi tiết"
         },
 
         intro: {
@@ -568,7 +572,8 @@ export default {
             history_report: "Lịch sử thống kê",
             archive: "Lưu trữ",
 
-            roles: "Những vị trí có quyền xem mẫu này",
+            roles: "Những vị trí có quyền xem tài liệu này",
+            users: "Những người dùng có quyền xem tài liệu này",
             issuing_date: "Ngày ban hành",
             effective_date: "Ngày áp dụng",
             expired_date: "Ngày hết hạn",
@@ -1122,6 +1127,7 @@ export default {
                 "Dashboard công việc đơn vị",
             task_management_process: "Danh sách quy trình",
             task_process_template: "Mẫu quy trình",
+            all_time_sheet_log: 'Thống kê bấm giờ',
 
             //*******START */
             // Quản lý tài sản
@@ -1197,6 +1203,7 @@ export default {
             manage_project: "Quản lý dự án",
 
             user_guide: "Hướng dẫn sử dụng",
+            user_guide_detail: "Chi tiết hướng dẫn sử dụng",
         },
 
         manage_system: {

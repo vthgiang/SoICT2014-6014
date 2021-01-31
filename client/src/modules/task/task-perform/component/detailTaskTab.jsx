@@ -263,9 +263,8 @@ class DetailTaskTab extends Component {
 
     }
 
-    handleCopyTask = async (id, role) => {
-        console.log('copy');
-        await this.setState(state => {
+    handleCopyTask = (id, role) => {
+        this.setState(state => {
             return {
                 ...state,
                 showCopy: `copy-task-${id}`
@@ -687,7 +686,7 @@ class DetailTaskTab extends Component {
                 let newMonth = dateOfPrevEval.getMonth() - 1;
                 if (newMonth < 0) {
                     newMonth += 12;
-                    dateOfPrevEval.setYear(dateOfPrevEval.getYear() - 1);
+                    dateOfPrevEval.setYear(dateOfPrevEval.getFullYear() - 1);
                 }
                 dateOfPrevEval.setDate(15);
                 dateOfPrevEval.setMonth(newMonth);
@@ -761,7 +760,6 @@ class DetailTaskTab extends Component {
             employeeCollaboratedWithUnitSelectBox = this.setSelectBoxOfUserSameDepartmentCollaborated(task);
         }
 
-        console.log('taskkk', task);
         return (
             <React.Fragment>
                 {(showToolbar) &&

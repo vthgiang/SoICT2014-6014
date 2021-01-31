@@ -29,6 +29,7 @@ router.patch('/tasks/:taskId/documents/:documentId/files/:fileId', auth, Perform
 router.post('/tasks/:taskId/task-actions/:actionId', auth, PerformTaskController.confirmAction);
 router.post('/tasks/:taskId/task-actions', auth, uploadFile([{ name: 'files', path: '/files/actions' }], 'array'), PerformTaskController.createTaskAction);
 router.patch('/tasks/:taskId/task-actions/:actionId', auth, uploadFile([{ name: 'files', path: '/files/actions' }], 'array'), PerformTaskController.editTaskAction);
+router.patch('/tasks/:taskId/task-actions/evaluation/all', auth, PerformTaskController.evaluationAllAction);
 router.delete('/tasks/:taskId/task-actions/:actionId', auth, PerformTaskController.deleteTaskAction);
 router.patch('/tasks/:taskId/task-actions/:actionId/files/:fileId', auth, PerformTaskController.deleteFileOfAction);
 router.post('/tasks/:taskId/sort', auth, PerformTaskController.sortActions);

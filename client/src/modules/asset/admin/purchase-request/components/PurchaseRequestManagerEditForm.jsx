@@ -230,7 +230,7 @@ class PurchaseRequestEditForm extends Component {
             oldFiles = files;
         }
 
-        let dataToSubmit = { ...this.state, oldFiles, dateCreate: dateCreateConvert, approver: this.props.auth.user._id };
+        let dataToSubmit = { ...this.state, oldFiles, dateCreate: dateCreateConvert, approver: [this.props.auth.user._id] };
         if (this.isFormValidated()) {
             let formData = convertJsonObjectToFormData(dataToSubmit);
             if (recommendFiles) {
@@ -244,6 +244,12 @@ class PurchaseRequestEditForm extends Component {
 
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps._id !== prevState._id) {
+            let approver = []
+            if (nextProps.approver) {
+                for (let i in nextProps.approver) {
+                    approver.push(nextProps.approver[i]._id)
+                }
+            }
             return {
                 ...prevState,
                 _id: nextProps._id,
@@ -256,7 +262,7 @@ class PurchaseRequestEditForm extends Component {
                 total: nextProps.total,
                 unit: nextProps.unit,
                 estimatePrice: nextProps.estimatePrice,
-                approver: nextProps.approver,
+                approver: approver,
                 status: nextProps.status,
                 note: nextProps.note,
                 files: nextProps.files,
@@ -411,8 +417,8 @@ class PurchaseRequestEditForm extends Component {
                                                     return { value: x._id, text: x.name + " - " + x.email }
                                                 })}
                                                 onChange={this.handleApproverChange}
-                                                value={auth.user._id}
-                                                multiple={false}
+                                                value={approver}
+                                                multiple={true}
                                                 disabled
                                             />
                                         </div>

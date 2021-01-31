@@ -131,6 +131,12 @@ class Content extends Component {
         for (let i = 0; i < tables.length; ++i) {
             let table = window.$(tables[i]);
             let tableHeadings = table.find("th:not(:last-child)").not(".not-sort");
+            let tableHeadingsColSort = table.find("th.col-sort").not(".not-sort");
+            if (tableHeadingsColSort && tableHeadingsColSort.length) {
+                for (let k = 0; k < tableHeadingsColSort.length; ++k) {
+                    tableHeadings.push(tableHeadingsColSort[k])
+                }
+            }
             for (let j = 0; j < tableHeadings.length; ++j) {
                 let th = window.$(tableHeadings[j]);
 
@@ -164,6 +170,13 @@ class Content extends Component {
                         if (moment(str, 'HH:mm DD-MM-YYYY', true).isValid()) {
                             let time = str.split(" ")
                             let date = time[1].split("-")
+                            date = [date[2], date[1], date[0]].join("-")
+                            str = date + " " + time[0]
+                        }
+
+                        if (moment(str, 'HH:mm:SS DD/MM/YYYY', true).isValid()) {
+                            let time = str.split(" ")
+                            let date = time[1].split("/")
                             date = [date[2], date[1], date[0]].join("-")
                             str = date + " " + time[0]
                         }

@@ -16,6 +16,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import { SelectMulti, DatePicker, ToolTip } from '../../../../common-components/index';
 import Swal from 'sweetalert2';
 import { InprocessOfUnitTask } from './processOfUnitTasks';
+import ValidationHelper from '../../../../helpers/validationHelper';
 
 class TaskOrganizationUnitDashboard extends Component {
     constructor(props) {
@@ -84,30 +85,59 @@ class TaskOrganizationUnitDashboard extends Component {
     }
 
     shouldComponentUpdate = async (nextProps, nextState) => {
+        const { dashboardEvaluationEmployeeKpiSet } = this.props;
+        let { idsUnit, checkUnit, startMonth, endMonth } = this.state;
         let data, organizationUnit = "organizationUnit";
 
-        if (!this.state.idsUnit.length && this.props.dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit
-            || (nextState.checkUnit !== this.state.checkUnit
-                || nextState.startMonth !== this.state.startMonth
-                || nextState.endMonth !== this.state.endMonth)) {
-            let idsUnit = !this.state.idsUnit.length ? [this.props.dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit.id] : nextState.idsUnit;
+        if (idsUnit !== nextState.idsUnit) {
+            return false;
+        }
+
+        if (!idsUnit.length && dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit
+            || (nextState.checkUnit !== checkUnit
+                || nextState.startMonth !== startMonth
+                || nextState.endMonth !== endMonth)
+        ) {
+            let childrenOrganizationalUnit = [], queue = [], currentOrganizationalUnit;
+
+            if (dashboardEvaluationEmployeeKpiSet) {
+                currentOrganizationalUnit = dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit;
+            }
+            if (currentOrganizationalUnit) {
+                childrenOrganizationalUnit.push(currentOrganizationalUnit);
+                queue.push(currentOrganizationalUnit);
+                while (queue.length > 0) {
+                    let v = queue.shift();
+                    if (v.children) {
+                        for (let i = 0; i < v.children.length; i++) {
+                            let u = v.children[i];
+                            queue.push(u);
+                            childrenOrganizationalUnit.push(u);
+                        }
+                    }
+                }
+            }
+
+            let units = childrenOrganizationalUnit.map(item => item.id);
+
             this.setState((state) => {
                 return {
                     ...state,
                     startMonth: nextState.startMonth,
                     endMonth: nextState.endMonth,
                     checkUnit: nextState.checkUnit,
-                    idsUnit: idsUnit,
+                    idsUnit: !idsUnit.length ? units : nextState.idsUnit,
+                    selectBoxUnit: childrenOrganizationalUnit
                 }
             });
-            await this.props.getAllEmployeeOfUnitByIds(this.state.idsUnit);
+            await this.props.getAllEmployeeOfUnitByIds(units);
             data = {
-                organizationUnitId: this.state.idsUnit,
+                organizationUnitId: units,
                 type: organizationUnit,
             }
 
-            if (this.state.idsUnit.length) {
-                await this.props.getTaskInOrganizationUnitByMonth(this.state.idsUnit, this.state.startMonth, this.state.endMonth);
+            if (units.length) {
+                await this.props.getTaskInOrganizationUnitByMonth(units, this.state.startMonth, this.state.endMonth);
             }
 
             await this.props.getTaskByUser(data);
@@ -141,7 +171,13 @@ class TaskOrganizationUnitDashboard extends Component {
     handleChangeOrganizationUnit = async (value) => {
         let checkUnit = this.state.checkUnit + 1;
         this.INFO_SEARCH.checkUnit = checkUnit;
-        this.INFO_SEARCH.idsUnit = value;
+
+        this.setState(state => {
+            return {
+                ...state,
+                idsUnit: value
+            }
+        })
     }
 
     handleSelectMonthStart = async (value) => {
@@ -178,7 +214,6 @@ class TaskOrganizationUnitDashboard extends Component {
                     ...state,
                     startMonth: this.INFO_SEARCH.startMonth,
                     endMonth: this.INFO_SEARCH.endMonth,
-                    idsUnit: this.INFO_SEARCH.idsUnit,
                     checkUnit: this.INFO_SEARCH.checkUnit,
                 }
             })
@@ -186,36 +221,36 @@ class TaskOrganizationUnitDashboard extends Component {
             await this.props.getTaskInOrganizationUnitByMonth(this.state.idsUnit, this.state.startMonth, this.state.endMonth);
         }
     }
+
+    showLoadTaskDoc = () => {
+        const { translate } = this.props;
+        Swal.fire({
+            //  icon: "help",
+            html: `<h3 style="color: red"><div>Cách tính tải công việc  ?</div> </h3>
+             <div style="size: 24">Lấy tất cả các công việc mà đơn vị thực hiện trong khoảng thời gian được chọn,</div>
+             <div style="size: 24">Tính lần lượt tải công việc theo từng tháng rồi cộng lại,</div>
+             <div style="size: 24">Tải công việc theo từng tháng được tính bằng tỉ số: Số ngày thực hiện với  tổng số người thực hiện, phê duyệt, hỗ trợ</div>`,
+            // icon: 'warning',
+            // showCancelButton: true,
+            // confirmButtonColor: '#3085d6',
+            // cancelButtonColor: '#d33',
+            // cancelButtonText: translate('general.no'),
+            // confirmButtonText: translate('general.yes'),
+
+        })
+    }
+
     render() {
         const { tasks, translate, user, dashboardEvaluationEmployeeKpiSet } = this.props;
-        let { idsUnit, startMonth, endMonth } = this.state;
+        let { idsUnit, startMonth, endMonth, selectBoxUnit } = this.state;
         let { startMonthTitle, endMonthTitle } = this.INFO_SEARCH;
-        let numTask, units, queue = [];
-        let totalTasks = 0;
         let childrenOrganizationalUnit = [];
         let currentOrganizationalUnit, currentOrganizationalUnitLoading;
-
-
 
         if (dashboardEvaluationEmployeeKpiSet) {
             currentOrganizationalUnit = dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit;
             currentOrganizationalUnitLoading = dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnitLoading;
         }
-        if (currentOrganizationalUnit) {
-            childrenOrganizationalUnit.push(currentOrganizationalUnit);
-            queue.push(currentOrganizationalUnit);
-            while (queue.length > 0) {
-                let v = queue.shift();
-                if (v.children) {
-                    for (let i = 0; i < v.children.length; i++) {
-                        let u = v.children[i];
-                        queue.push(u);
-                        childrenOrganizationalUnit.push(u);
-                    }
-                }
-            }
-        }
-
         // Config ngày mặc định cho datePiker
         let d = new Date(),
             month = d.getMonth() + 1,
@@ -247,10 +282,15 @@ class TaskOrganizationUnitDashboard extends Component {
                             <div className="form-inline">
                                 <div className="form-group">
                                     <label style={{ width: "auto" }} className="form-control-static">{translate('kpi.evaluation.dashboard.organizational_unit')}</label>
-                                    {childrenOrganizationalUnit.length &&
+                                    {selectBoxUnit && selectBoxUnit.length &&
                                         <SelectMulti id="multiSelectOrganizationalUnitInTaskUnit"
-                                            items={childrenOrganizationalUnit.map(item => { return { value: item.id, text: item.name } })}
-                                            options={{ nonSelectedText: childrenOrganizationalUnit[0].name, allSelectedText: translate('kpi.evaluation.dashboard.all_unit') }}
+                                            items={selectBoxUnit.map(item => { return { value: item.id, text: item.name } })}
+                                            options={{
+                                                nonSelectedText: idsUnit.length !== 0 ? translate('task.task_management.select_department') : translate('general.not_org_unit'),
+                                                allSelectedText: translate('kpi.evaluation.dashboard.all_unit'),
+                                                includeSelectAllOption: true,
+                                                maxHeight: 200
+                                            }}
                                             onChange={this.handleChangeOrganizationUnit}
                                             value={idsUnit}
                                         >
@@ -262,7 +302,7 @@ class TaskOrganizationUnitDashboard extends Component {
                                     <DatePicker
                                         id="monthStartInOrganizationUnitDashboard"
                                         dateFormat="month-year"
-                                        value={defaultStartMonth}
+                                        value={startMonth}
                                         onChange={this.handleSelectMonthStart}
                                         disabled={false}
                                     />
@@ -272,7 +312,7 @@ class TaskOrganizationUnitDashboard extends Component {
                                     <DatePicker
                                         id="monthEndInOrganizationUnitDashboard"
                                         dateFormat="month-year"
-                                        value={defaultEndMonth}
+                                        value={endMonth}
                                         onChange={this.handleSelectMonthEnd}
                                         disabled={false}
                                     />
@@ -457,17 +497,20 @@ class TaskOrganizationUnitDashboard extends Component {
                                 <div className="box box-primary">
                                     <div className="box-header with-border">
                                         <div className="box-title">{translate('task.task_management.load_task_chart_unit')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
-                                        <ToolTip
+                                        {/* <ToolTip
                                             type={"icon_tooltip"} materialIcon={"help"}
                                             dataTooltip={['Tải công việc tính theo công thức tổng các tỉ số: số ngày thực hiện công việc trong tháng/(số người thực hiện + số người phê duyệt + số người hỗ trợ)']}
-                                        />
+                                        /> */}
+                                        <a className="text-red" title={translate('document.delete')} onClick={() => this.showLoadTaskDoc()}>
+                                            <i className="material-icons">help</i>
+                                        </a>
                                     </div>
                                     <div className="box-body qlcv">
                                         {this.state.callAction && tasks && tasks.organizationUnitTasks &&
                                             <LoadTaskOrganizationChart
                                                 tasks={tasks.organizationUnitTasks}
                                                 listEmployee={user && user.employees}
-                                                units={childrenOrganizationalUnit}
+                                                units={selectBoxUnit}
                                                 startMonth={startMonth}
                                                 endMonth={endMonth}
                                                 idsUnit={this.state.idsUnit}
@@ -481,7 +524,7 @@ class TaskOrganizationUnitDashboard extends Component {
                     : currentOrganizationalUnitLoading
                     && <div className="box">
                         <div className="box-body">
-                            <h4>Bạn chưa có đơn vị</h4>
+                            <h4>{translate('general.not_org_unit')}</h4>
                         </div>
                     </div>
                 }
