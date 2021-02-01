@@ -6,6 +6,7 @@ export function createEmployeeKpiSet(state = {}, action) {
             return {
                 ...state,
                 currentKPI: null,
+                currentKPILoading: false,
                 isLoading: true
             };
         case createKpiSetConstants.GET_EMPLOYEE_KPI_SET_SUCCESS:
@@ -13,11 +14,13 @@ export function createEmployeeKpiSet(state = {}, action) {
                 ...state,
                 loading: false,
                 currentKPI: action.payload,
+                currentKPILoading: true,
                 isLoading: false
             };
         case createKpiSetConstants.GET_EMPLOYEE_KPI_SET_FAILURE:
             return {
                 error: action.payload,
+                currentKPILoading: true,
                 isLoading: false
             };
         case createKpiSetConstants.GET_ALL_EMPLOYEE_KPI_SET_BY_MONTH_REQUEST:
