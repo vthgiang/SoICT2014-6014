@@ -28,23 +28,21 @@ class CreateEmployeeKpiSet extends Component {
         translate = this.props.translate;
 
         let d = new Date(),
-            month = '' + (d.getMonth() + 1),
-            day = '' + d.getDate(),
+            month = d.getMonth() + 1,
             year = d.getFullYear();
 
-        if (month.length < 2)
+        if (month < 10) {
             month = '0' + month;
-        if (day.length < 2)
-            day = '0' + day;
-        let defaultTime = [month, year].join('-');
+        }
 
         this.state = {
             employeeKpiSet: {
                 creator: "",
                 organizationUnit: "",
-                date: defaultTime,
                 approver: null
             },
+            month: [year, month].join('-'),
+            defaultDate: [month, year].join('-'),
             adding: false,
             editing: false,
             editingTarget: "",
@@ -69,13 +67,16 @@ class CreateEmployeeKpiSet extends Component {
     }
     componentDidMount() {
         this.props.getDepartment();
-        this.props.getEmployeeKpiSet();
+        this.props.getEmployeeKpiSet({
+            roleId: localStorage.getItem("currentRole")
+        });
         this.props.getCurrentKPIUnit(localStorage.getItem('currentRole'));
         this.props.getAllUserSameDepartment(localStorage.getItem("currentRole"));
     }
 
     shouldComponentUpdate = (nextProps, nextState) => {
-        const { user } = this.props;
+        const { user, currentRole, month } = this.props;
+
         // Khi truy vấn API đã có kết quả
         if (!this.state.employeeKpiSet.approver && user.userdepartments && user.userdepartments.managers) {
             if (Object.keys(user.userdepartments.managers).length > 0) { // Nếu có trưởng đơn vị
@@ -95,7 +96,10 @@ class CreateEmployeeKpiSet extends Component {
             }
         }
         if (nextProps.auth.user.avatar !== this.props.auth.user.avatar) {
-            this.props.getEmployeeKpiSet()
+            this.props.getEmployeeKpiSet({
+                roleId: currentRole,
+                month: month
+            })
             return true;
         }
         return true;
@@ -205,59 +209,46 @@ class CreateEmployeeKpiSet extends Component {
         });
     }
 
-    handleChangeDate = async (value) => {
-        await this.setState(state => {
+    handleChangeDate = (value) => {
+        let month = value.slice(3, 7) + '-' + value.slice(0, 2);
+
+        this.setState(state => {
             return {
                 ...state,
-                employeeKpiSet: {
-                    ...state.employeeKpiSet,
-                    date: value,
-                }
-            }
-        });
-    }
-
-    /**Lưu thay đổi thời gian của tập KPI này */
-    handleSaveEditEmployeeKpiSet = async (id, organizationUnit) => {
-        let d = new Date(),
-            month = '' + (d.getMonth() + 1),
-            day = '' + d.getDate(),
-            year = d.getFullYear();
-        if (month.length < 2)
-            month = '0' + month;
-        if (day.length < 2)
-            day = '0' + day;
-        let defaultTime = [month, year].join('-');
-
-        if (this.state.employeeKpiSet.date === "") {
-            await this.setState(state => {
-                return {
-                    ...state,
-                    employeeKpiSet: {
-                        ...state.employeeKpiSet,
-                        date: defaultTime,
-                    }
-                }
-            })
-        }
-        await this.setState(state => {
-            return {
-                ...state,
-                editing: !state.editing,
-                employeeKpiSet: {
-                    ...state.employeeKpiSet,
-                }
+                month: month
             }
         })
+    }
+
+    handleSearchData = () => {
+        const { currentRole, month } = this.state;
+
+        this.props.getEmployeeKpiSet({
+            roleId: currentRole,
+            month: month
+        });
+        this.props.getCurrentKPIUnit(currentRole, null, month);
+    }
+
+    /**Lưu người phê duyệt của tập KPI này */
+    handleSaveEditEmployeeKpiSet = (id) => {
+        this.setState(state => {
+            return {
+                ...state,
+                editing: !state.editing
+            }
+        })
+
         let { employeeKpiSet } = this.state;
-        if (employeeKpiSet.approver && employeeKpiSet.date) {//&& kpipersonal.creater
+
+        if (employeeKpiSet.approver) {//&& kpipersonal.creater
             this.props.editEmployeeKpiSet(id, employeeKpiSet);
         }
     }
 
     /**Hủy thay đổi thời gian của tập kpi này */
-    handleCancelEditEmployeeKpiSet = async () => {
-        await this.setState(state => {
+    handleCancelEditEmployeeKpiSet = () => {
+        this.setState(state => {
             return {
                 ...state,
                 editing: !state.editing
@@ -462,9 +453,9 @@ class CreateEmployeeKpiSet extends Component {
 
 
     render() {
-        let unitList, currentUnit, currentKPI, currentKPIUnit, userdepartments;
-        const { editing, id, employeeKpi, employeeKpiSet } = this.state;
         const { createEmployeeKpiSet, user, translate, createKpiUnit } = this.props;
+        const { editing, id, employeeKpi, employeeKpiSet, defaultDate, month } = this.state;
+        let unitList, currentUnit, currentKPI, currentKPIUnit, userdepartments;
 
         if (user) {
             unitList = user.organizationalUnitsOfUser;
@@ -488,229 +479,233 @@ class CreateEmployeeKpiSet extends Component {
         }
 
         return (
-            <div className="box">
-                <div className="box-body">
-                    <div className="row">
-                        <ModalEditEmployeeKpi
-                            id={id}
-                            employeeKpi={employeeKpi}
-                        />
+            <section>
+                <div className="qlcv" style={{ marginLeft: "-5px" }}>
+                    <div className="form-inline">
+                        <div className="form-group">
+                            <label style={{ width: "auto" }}>{translate('kpi.organizational_unit.dashboard.month')}</label>
+                            <DatePicker
+                                id="monthInOrganizationalUnitKpi"
+                                dateFormat="month-year"
+                                value={defaultDate}
+                                onChange={this.handleChangeDate}
+                                disabled={false}
+                            />
+                        </div>
 
-                        {/* Khi đã khởi tạo tập KPI */}
-                        {currentKPI ?
-                            <div className="col-xs-12 col-sm-12">
-                                <div style={{ marginLeft: "-10px", marginBottom: "10px" }}>
+                        <button type="button" className="btn btn-success" onClick={this.handleSearchData}>{translate('task.task_management.search')}</button>
+                    </div>
+                </div>  
+                <div className="box">
+                    <div className="box-body">
+                        <div className="row">
+                            <ModalEditEmployeeKpi
+                                id={id}
+                                employeeKpi={employeeKpi}
+                            />
 
-                                    {/* Chỉnh sửa thông tin của tập KPI này */}
-                                    {editing ?
-                                        <React.Fragment>
-                                            <a className="btn btn-app" onClick={() => this.handleSaveEditEmployeeKpiSet(currentKPI._id, currentUnit && currentUnit[0]._id)} title="Lưu thông tin chỉnh sửa">
-                                                <i className="fa fa-save" style={{ fontSize: "16px" }}></i>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.general_information.save')}
+                            {/* Khi đã khởi tạo tập KPI */}
+                            {currentKPI ?
+                                <div className="col-xs-12 col-sm-12">
+                                    <div style={{ marginLeft: "-10px", marginBottom: "10px" }}>
+
+                                        {/* Chỉnh sửa thông tin của tập KPI này */}
+                                        {editing ?
+                                            <React.Fragment>
+                                                <a className="btn btn-app" onClick={() => this.handleSaveEditEmployeeKpiSet(currentKPI._id)} title="Lưu thông tin chỉnh sửa">
+                                                    <i className="fa fa-save" style={{ fontSize: "16px" }}></i>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.general_information.save')}
+                                                </a>
+                                                <a className="btn btn-app" onClick={() => this.handleCancelEditEmployeeKpiSet()} title="Hủy bỏ chỉnh sửa">
+                                                    <i className="fa fa-ban" style={{ fontSize: "16px" }}></i>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.general_information.cancel')}
+                                                </a>
+                                            </React.Fragment> :
+                                            <a className="btn btn-app" onClick={this.checkOrganizationalUnitKpi(currentKPIUnit) ? () => this.handleEditEmployeeKpiSet(currentKPI.status) : () => this.handleStartOrganizationalUnitKpi(currentKPIUnit)} title="Chỉnh sửa thông tin chung">
+                                                <i className="fa fa-edit" style={{ fontSize: "16px" }}></i>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.general_information.edit')}
                                             </a>
-                                            <a className="btn btn-app" onClick={() => this.handleCancelEditEmployeeKpiSet()} title="Hủy bỏ chỉnh sửa">
-                                                <i className="fa fa-ban" style={{ fontSize: "16px" }}></i>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.general_information.cancel')}
+                                        }
+
+                                        {/* Xóa tập KPI này */}
+                                        <a className="btn btn-app" onClick={this.checkOrganizationalUnitKpi(currentKPIUnit) ? () => this.handleDeleteEmployeeKpiSet(currentKPI._id, currentKPI.status) : () => this.handleStartOrganizationalUnitKpi(currentKPIUnit)} title="Xóa KPI tháng">
+                                            <i className="fa fa-trash" style={{ fontSize: "16px" }}></i>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.general_information.delete')}
+                                        </a>
+
+                                        {/* Thêm KPI cá nhân */}
+                                        <a
+                                            className="btn btn-app"
+                                            data-toggle="modal"
+                                            data-backdrop="static"
+                                            data-keyboard="false"
+                                            onClick={
+                                                this.checkOrganizationalUnitKpi(currentKPIUnit) ?
+                                                    () => this.handleCreateEmployeeKpi(currentKPI.status) :
+                                                    () => this.handleStartOrganizationalUnitKpi(currentKPIUnit)
+                                            }
+                                        >
+                                            <i className="fa fa-plus-circle" style={{ fontSize: "16px" }}></i>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.add_target')}
+                                        </a>
+
+                                        <ModalCreateEmployeeKpi employeeKpiSet={currentKPI._id} organizationalUnit={currentUnit && currentUnit[0]} />
+
+                                        {/* Yêu cầu phê duyệt tập KPI này */}
+                                        {currentKPI.status === 0 ?
+                                            <a className="btn btn-app" onClick={this.checkOrganizationalUnitKpi(currentKPIUnit) ? () => this.handleRequestApproveEmployeeKpiSet(currentKPI) : () => this.handleStartOrganizationalUnitKpi(currentKPIUnit)}>
+                                                <i className="fa fa-external-link-square" style={{ fontSize: "16px" }}></i>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.request_approval')}
                                             </a>
-                                        </React.Fragment> :
-                                        <a className="btn btn-app" onClick={this.checkOrganizationalUnitKpi(currentKPIUnit) ? () => this.handleEditEmployeeKpiSet(currentKPI.status) : () => this.handleStartOrganizationalUnitKpi(currentKPIUnit)} title="Chỉnh sửa thông tin chung">
-                                            <i className="fa fa-edit" style={{ fontSize: "16px" }}></i>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.general_information.edit')}
-                                        </a>
-                                    }
-
-                                    {/* Xóa tập KPI này */}
-                                    <a className="btn btn-app" onClick={this.checkOrganizationalUnitKpi(currentKPIUnit) ? () => this.handleDeleteEmployeeKpiSet(currentKPI._id, currentKPI.status) : () => this.handleStartOrganizationalUnitKpi(currentKPIUnit)} title="Xóa KPI tháng">
-                                        <i className="fa fa-trash" style={{ fontSize: "16px" }}></i>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.general_information.delete')}
-                                    </a>
-
-                                    {/* Thêm KPI cá nhân */}
-                                    <a
-                                        className="btn btn-app"
-                                        data-toggle="modal"
-                                        data-backdrop="static"
-                                        data-keyboard="false"
-                                        onClick={
-                                            this.checkOrganizationalUnitKpi(currentKPIUnit) ?
-                                                () => this.handleCreateEmployeeKpi(currentKPI.status) :
-                                                () => this.handleStartOrganizationalUnitKpi(currentKPIUnit)
+                                            : <a className="btn btn-app" onClick={() => this.handleCancelApproveEmployeeKpiSet(currentKPI)}>
+                                                <i className="fa fa-minus-square" style={{ fontSize: "16px" }}></i>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.cancel_request_approval')}
+                                            </a>
                                         }
-                                    >
-                                        <i className="fa fa-plus-circle" style={{ fontSize: "16px" }}></i>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.add_target')}
-                                    </a>
+                                    </div>
 
-                                    <ModalCreateEmployeeKpi employeeKpiSet={currentKPI._id} organizationalUnit={currentUnit && currentUnit[0]} />
+                                    <div className="" style={{ marginBottom: "10px" }}>
+                                        <h4 style={{ display: "inline", fontWeight: "600" }}>
+                                            {/* Tên đơn vị */}
+                                            {translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.general_information.general_information')} {this.formatDate(currentKPI.date)} ({currentKPI.organizationalUnit.name ? currentKPI.organizationalUnit.name : translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.handle_populate_info_null.error_kpi_organizational_unit_null')})
+                                        </h4>
+                                    </div>
 
-                                    {/* Yêu cầu phê duyệt tập KPI này */}
-                                    {currentKPI.status === 0 ?
-                                        <a className="btn btn-app" onClick={this.checkOrganizationalUnitKpi(currentKPIUnit) ? () => this.handleRequestApproveEmployeeKpiSet(currentKPI) : () => this.handleStartOrganizationalUnitKpi(currentKPIUnit)}>
-                                            <i className="fa fa-external-link-square" style={{ fontSize: "16px" }}></i>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.request_approval')}
-                                        </a>
-                                        : <a className="btn btn-app" onClick={() => this.handleCancelApproveEmployeeKpiSet(currentKPI)}>
-                                            <i className="fa fa-minus-square" style={{ fontSize: "16px" }}></i>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.cancel_request_approval')}
-                                        </a>
+                                    {/* Khi edit tập KPI này */}
+                                    {editing ? managers &&
+                                        <div className="form-group">
+                                            <label>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set_modal.approver')}</label>
+                                            <SelectBox
+                                                id={`createEmployeeKpiSet`}
+                                                className="form-control select2"
+                                                style={{ width: "40%" }}
+                                                items={managers}
+                                                multiple={false}
+                                                onChange={this.handleApproverChange}
+                                                value={employeeKpiSet.approver}
+                                            />
+                                        </div>
+                                        : <div>
+                                            {/* Tên người phê duyệt */}
+                                            <span style={{ fontWeight: "600" }}>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.approver')}: </span>
+                                            <span>{currentKPI.approver.name ? currentKPI.approver.name : translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.handle_populate_info_null.error_kpi_approver_null')}</span>
+                                        </div>
                                     }
-                                </div>
 
-                                <div className="" style={{ marginBottom: "10px" }}>
-                                    <h4 style={{ display: "inline", fontWeight: "600" }}>
-                                        {/* Tên đơn vị */}
-                                        {translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.general_information.general_information')} {this.formatDate(currentKPI.date)} ({currentKPI.organizationalUnit.name ? currentKPI.organizationalUnit.name : translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.handle_populate_info_null.error_kpi_organizational_unit_null')})
-                                    </h4>
-                                </div>
 
-                                {/* Khi edit tập KPI này */}
-                                {editing ? managers &&
-                                    <div className="col-sm-6 col-xs-12 form-group">
-                                        <label>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set_modal.approver')}</label>
-                                        <SelectBox
-                                            id={`createEmployeeKpiSet`}
-                                            className="form-control select2"
-                                            style={{ width: "100%" }}
-                                            items={managers}
-                                            multiple={false}
-                                            onChange={this.handleApproverChange}
-                                            value={employeeKpiSet.approver}
-                                        />
-                                    </div>
-                                    : <div className="form-group">
-                                        {/* Tên người phê duyệt */}
-                                        <span style={{ fontWeight: "600" }}>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.approver')}: </span>
-                                        <span>{currentKPI.approver.name ? currentKPI.approver.name : translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.handle_populate_info_null.error_kpi_approver_null')}</span>
-                                    </div>
-                                }
-
-                                {/*Tháng của tập KPI */}
-                                {editing &&
-                                    <div className="col-sm-6 col-xs-12 form-group">
-                                        <label>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set_modal.month')}</label>
-                                        <DatePicker
-                                            style={{ width: "60%" }}
-                                            id="month"
-                                            dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm 
-                                            value={employeeKpiSet && employeeKpiSet.date}                 // giá trị mặc định cho datePicker    
-                                            onChange={this.handleChangeDate}
-                                            disabled={false}                    // sử dụng khi muốn disabled, mặc định là false
-                                        />
-                                    </div>
-                                }
-
-                                {/*Tổng trọng số */}
-                                {editing === false &&
-                                    <div>
-                                        <span>{currentKPI.kpis.length} {translate('kpi.evaluation.employee_evaluation.target')} - {translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.weight_total')} </span>
-                                        <span>{currentKPI.kpis.map(item => parseInt(item.weight)).reduce((sum, number) => sum + number, 0)}/100 - </span>
-                                        {currentKPI.kpis.map(item => parseInt(item.weight)).reduce((sum, number) => sum + number, 0) !== 100 ?
-                                            <span className="text-danger" style={{ fontWeight: "bold" }}>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.not_satisfied')}</span>
-                                            : <span className="text-success" style={{ fontWeight: "bold" }}>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.satisfied')}</span>
-                                        }
-                                        <span> - </span>
-                                        {this.handleCheckEmployeeKpiSetStatus(currentKPI.status)}
-                                    </div>
-                                }
-
-                                {/* Danh sách các mục tiêu */}
-                                <div>
-                                    {(typeof currentKPI !== 'undefined' && currentKPI !== null) &&
-                                        <h4 style={{ display: "inline-block", fontWeight: "600", marginTop: "20px" }}>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.target_list')}</h4>
-                                    }
-                                    <SlimScroll outerComponentId="kpi_table" innerComponentId="kpipersonal_table" innerComponentWidth="992px" activate={this.state.fixTableWidth} />
-                                    <div id="kpi_table">
-                                        <table className="table table-bordered table-striped table-hover" id="kpipersonal_table">
-                                            <thead>
-                                                <tr>
-                                                    <th title={translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.no_')} style={{ width: '40px' }}>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.no_')}</th>
-                                                    <th title={translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.target_name')} className="col-lg-3 col-sm-3">{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.target_name')}</th>
-                                                    <th title={translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.parents_target')} className="col-lg-3 col-sm-3">{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.parents_target')}</th>
-                                                    <th title={translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.evaluation_criteria')} className="col-lg-2 col-sm-2">{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.evaluation_criteria')}</th>
-                                                    <th title={translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.weight')} className="col-lg-1 col-sm-1">{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.weight')}</th>
-                                                    <th title={translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.status')} className="col-lg-1 col-sm-1">{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.status')}</th>
-                                                    <th title={translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.action')} className="col-lg-1 col-sm-1">{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.action')}</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {
-                                                    (typeof currentKPI === 'undefined' || currentKPI === null) ?
-                                                        <tr><td colSpan={7}><center>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.not_initialize')} {this.formatDate(Date.now())}</center></td></tr>
-                                                        : (currentKPI.kpis.map((item, index) => item ?
-                                                            <tr key={index + 1}>
-                                                                <td title={index + 1}>{index + 1}</td>
-                                                                <td title={item.name}>{item.name}</td>
-                                                                <td title={item.parent ? item.parent.name : translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.handle_populate_info_null.error_kpi_approver_null')}>{item.parent ? item.parent.name : translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.handle_populate_info_null.error_kpi_approver_null')}</td>
-                                                                <td title={item.criteria}>{parse(item.criteria)}</td>
-                                                                <td title={item.weight}>{item.weight}</td>
-                                                                <td title={this.handleCheckEmployeeKpiStatus(item.status)}>{this.handleCheckEmployeeKpiStatus(item.status)}</td>
-                                                                <td>
-                                                                    <a
-                                                                        style={{ color: "#FFC107", fontSize: "16px" }}
-                                                                        title={translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.action_title.edit')}
-                                                                        data-target={`editEmployeeKpi${item._id}`}
-                                                                        data-toggle="modal"
-                                                                        data-backdrop="static"
-                                                                        data-keyboard="false"
-                                                                        onClick={this.checkOrganizationalUnitKpi(currentKPIUnit) ? () => this.handleEditEmployeeKpi(currentKPI.status, item._id, item) : () => this.handleStartOrganizationalUnitKpi(currentKPIUnit)}>
-                                                                        <i className="fa fa-edit"></i>
-                                                                    </a>
-
-                                                                    {item.type !== 0 ?
-                                                                        // <a className="copy" title={translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.action_title.content')}><i className="material-icons">notification_important</i></a>
-                                                                        <ToolTip
-                                                                            type={"icon_tooltip"} materialIcon={"notification_important"}
-                                                                            dataTooltip={[translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.action_title.content')]}
-                                                                        />
-                                                                        : <a
-                                                                            style={{ color: "#E34724", fontSize: "16px" }}
-                                                                            title={translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.action_title.delete')}
-                                                                            onClick={this.checkOrganizationalUnitKpi(currentKPIUnit) ? () => this.handleDeleteEmployeeKpi(currentKPI._id, currentKPI.status, item._id, item.status) : () => this.handleStartOrganizationalUnitKpi(currentKPIUnit)}>
-                                                                            <i className="fa fa-trash"></i>
-                                                                        </a>
-                                                                    }
-                                                                </td>
-                                                            </tr> : translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.handle_populate_info_null.error_kpi_targets_list_null')
-                                                        ))
-                                                }
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                                <div className="row" style={{ display: 'flex', flex: 'no-wrap', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-                                    <div className="col-xs-12 col-sm-12 col-md-6">
-                                        <Comment
-                                            data={currentKPI}
-                                            comments={currentKPI.comments}
-                                            createComment={(dataId, data) => this.props.createComment(dataId, data)}
-                                            editComment={(dataId, commentId, data) => this.props.editComment(dataId, commentId, data)}
-                                            deleteComment={(dataId, commentId) => this.props.deleteComment(dataId, commentId)}
-                                            createChildComment={(dataId, commentId, data) => this.props.createChildComment(dataId, commentId, data)}
-                                            editChildComment={(dataId, commentId, childCommentId, data) => this.props.editChildComment(dataId, commentId, childCommentId, data)}
-                                            deleteChildComment={(dataId, commentId, childCommentId) => this.props.deleteChildComment(dataId, commentId, childCommentId)}
-                                            deleteFileComment={(fileId, commentId, dataId) => this.props.deleteFileComment(fileId, commentId, dataId)}
-                                            deleteFileChildComment={(fileId, commentId, childCommentId, dataId) => this.props.deleteFileChildComment(fileId, commentId, childCommentId, dataId)}
-                                            downloadFile={(path, fileName) => this.props.downloadFile(path, fileName)}
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-
-                            /* Khi chưa khởi tạo tập KPI cá nhân */
-                            : <div className="col-xs-12">
-                                <div style={{ marginLeft: "-10px" }}>
-                                    {this.checkOrganizationalUnitKpi(currentKPIUnit) ?
+                                    {/*Tổng trọng số */}
+                                    {!editing &&
                                         <div>
-                                            <a className="btn btn-app" data-toggle="modal" data-target="#createEmployeeKpiSet" data-backdrop="static" data-keyboard="false">
+                                            <span>{currentKPI.kpis.length} {translate('kpi.evaluation.employee_evaluation.target')} - {translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.weight_total')} </span>
+                                            <span>{currentKPI.kpis.map(item => parseInt(item.weight)).reduce((sum, number) => sum + number, 0)}/100 - </span>
+                                            {currentKPI.kpis.map(item => parseInt(item.weight)).reduce((sum, number) => sum + number, 0) !== 100 ?
+                                                <span className="text-danger" style={{ fontWeight: "bold" }}>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.not_satisfied')}</span>
+                                                : <span className="text-success" style={{ fontWeight: "bold" }}>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.satisfied')}</span>
+                                            }
+                                            <span> - </span>
+                                            {this.handleCheckEmployeeKpiSetStatus(currentKPI.status)}
+                                        </div>
+                                    }
+
+                                    {/* Danh sách các mục tiêu */}
+                                    <div>
+                                        {(typeof currentKPI !== 'undefined' && currentKPI !== null) &&
+                                            <h4 style={{ display: "inline-block", fontWeight: "600", marginTop: "20px" }}>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.target_list')}</h4>
+                                        }
+                                        <SlimScroll outerComponentId="kpi_table" innerComponentId="kpipersonal_table" innerComponentWidth="992px" activate={this.state.fixTableWidth} />
+                                        <div id="kpi_table">
+                                            <table className="table table-bordered table-striped table-hover" id="kpipersonal_table">
+                                                <thead>
+                                                    <tr>
+                                                        <th title={translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.no_')} style={{ width: '40px' }}>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.no_')}</th>
+                                                        <th title={translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.target_name')} className="col-lg-3 col-sm-3">{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.target_name')}</th>
+                                                        <th title={translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.parents_target')} className="col-lg-3 col-sm-3">{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.parents_target')}</th>
+                                                        <th title={translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.evaluation_criteria')} className="col-lg-2 col-sm-2">{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.evaluation_criteria')}</th>
+                                                        <th title={translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.weight')} className="col-lg-1 col-sm-1">{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.weight')}</th>
+                                                        <th title={translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.status')} className="col-lg-1 col-sm-1">{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.status')}</th>
+                                                        <th title={translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.action')} className="col-lg-1 col-sm-1">{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.action')}</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {
+                                                        (typeof currentKPI === 'undefined' || currentKPI === null) ?
+                                                            <tr><td colSpan={7}><center>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.not_initialize')} {this.formatDate(Date.now())}</center></td></tr>
+                                                            : (currentKPI.kpis.map((item, index) => item ?
+                                                                <tr key={index + 1}>
+                                                                    <td title={index + 1}>{index + 1}</td>
+                                                                    <td title={item.name}>{item.name}</td>
+                                                                    <td title={item.parent ? item.parent.name : translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.handle_populate_info_null.error_kpi_approver_null')}>{item.parent ? item.parent.name : translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.handle_populate_info_null.error_kpi_approver_null')}</td>
+                                                                    <td title={item.criteria}>{parse(item.criteria)}</td>
+                                                                    <td title={item.weight}>{item.weight}</td>
+                                                                    <td title={this.handleCheckEmployeeKpiStatus(item.status)}>{this.handleCheckEmployeeKpiStatus(item.status)}</td>
+                                                                    <td>
+                                                                        <a
+                                                                            style={{ color: "#FFC107", fontSize: "16px" }}
+                                                                            title={translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.action_title.edit')}
+                                                                            data-target={`editEmployeeKpi${item._id}`}
+                                                                            data-toggle="modal"
+                                                                            data-backdrop="static"
+                                                                            data-keyboard="false"
+                                                                            onClick={this.checkOrganizationalUnitKpi(currentKPIUnit) ? () => this.handleEditEmployeeKpi(currentKPI.status, item._id, item) : () => this.handleStartOrganizationalUnitKpi(currentKPIUnit)}>
+                                                                            <i className="fa fa-edit"></i>
+                                                                        </a>
+
+                                                                        {item.type !== 0 ?
+                                                                            // <a className="copy" title={translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.action_title.content')}><i className="material-icons">notification_important</i></a>
+                                                                            <ToolTip
+                                                                                type={"icon_tooltip"} materialIcon={"notification_important"}
+                                                                                dataTooltip={[translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.action_title.content')]}
+                                                                            />
+                                                                            : <a
+                                                                                style={{ color: "#E34724", fontSize: "16px" }}
+                                                                                title={translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.action_title.delete')}
+                                                                                onClick={this.checkOrganizationalUnitKpi(currentKPIUnit) ? () => this.handleDeleteEmployeeKpi(currentKPI._id, currentKPI.status, item._id, item.status) : () => this.handleStartOrganizationalUnitKpi(currentKPIUnit)}>
+                                                                                <i className="fa fa-trash"></i>
+                                                                            </a>
+                                                                        }
+                                                                    </td>
+                                                                </tr> : translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.handle_populate_info_null.error_kpi_targets_list_null')
+                                                            ))
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div className="row" style={{ display: 'flex', flex: 'no-wrap', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                                        <div className="col-xs-12 col-sm-12 col-md-6">
+                                            <Comment
+                                                data={currentKPI}
+                                                comments={currentKPI.comments}
+                                                createComment={(dataId, data) => this.props.createComment(dataId, data)}
+                                                editComment={(dataId, commentId, data) => this.props.editComment(dataId, commentId, data)}
+                                                deleteComment={(dataId, commentId) => this.props.deleteComment(dataId, commentId)}
+                                                createChildComment={(dataId, commentId, data) => this.props.createChildComment(dataId, commentId, data)}
+                                                editChildComment={(dataId, commentId, childCommentId, data) => this.props.editChildComment(dataId, commentId, childCommentId, data)}
+                                                deleteChildComment={(dataId, commentId, childCommentId) => this.props.deleteChildComment(dataId, commentId, childCommentId)}
+                                                deleteFileComment={(fileId, commentId, dataId) => this.props.deleteFileComment(fileId, commentId, dataId)}
+                                                deleteFileChildComment={(fileId, commentId, childCommentId, dataId) => this.props.deleteFileChildComment(fileId, commentId, childCommentId, dataId)}
+                                                downloadFile={(path, fileName) => this.props.downloadFile(path, fileName)}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                /* Khi chưa khởi tạo tập KPI cá nhân */
+                                : <div className="col-xs-12">
+                                    <div style={{ marginLeft: "-10px" }}>
+                                        {this.checkOrganizationalUnitKpi(currentKPIUnit) ?
+                                            <div>
+                                                <a className="btn btn-app" data-toggle="modal" data-target="#createEmployeeKpiSet" data-backdrop="static" data-keyboard="false">
+                                                    <i className="fa fa-calendar-plus-o" style={{ fontSize: "16px" }}></i>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.initialize_kpi_newmonth')}
+                                                </a>
+                                                <ModalCreateEmployeeKpiSet organizationalUnit={currentUnit && currentUnit[0] && currentUnit[0]} month={month}/>
+                                            </div>
+                                            : <a className="btn btn-app" data-toggle="modal" data-target="#startKPIPersonal" data-backdrop="static" data-keyboard="false" onClick={() => this.handleStartOrganizationalUnitKpi()}>
                                                 <i className="fa fa-calendar-plus-o" style={{ fontSize: "16px" }}></i>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.initialize_kpi_newmonth')}
                                             </a>
-                                            <ModalCreateEmployeeKpiSet organizationalUnit={currentUnit && currentUnit[0] && currentUnit[0]._id} />
-                                        </div>
-                                        : <a className="btn btn-app" data-toggle="modal" data-target="#startKPIPersonal" data-backdrop="static" data-keyboard="false" onClick={() => this.handleStartOrganizationalUnitKpi()}>
-                                            <i className="fa fa-calendar-plus-o" style={{ fontSize: "16px" }}></i>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.initialize_kpi_newmonth')}
-                                        </a>
-                                    }
+                                        }
+                                    </div>
+                                    <h3 style={{ display: "inline-block", fontWeight: "600" }}>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.general_information.general_information')} {this.formatDate(month)}</h3>
+                                    <p>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.not_initialize')}</p>
                                 </div>
-                                <h3 style={{ display: "inline-block", fontWeight: "600" }}>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.general_information.general_information')} {this.formatDate(Date.now())}</h3>
-                                <p>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.not_initialize')}</p>
-                            </div>
-                        }
+                            }
+                        </div>
                     </div>
                 </div>
-            </div>
+            </section>
         );
     }
 }

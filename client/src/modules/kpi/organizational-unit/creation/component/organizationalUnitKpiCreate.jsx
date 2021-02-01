@@ -426,8 +426,8 @@ class OrganizationalUnitKpiCreate extends Component {
                 {unitList && unitList.length !== 0
                     ? <section>
                         <div className="qlcv" style={{ marginLeft: "-5px" }}>
-                            <div className="form-inline">
-                                {selectBoxUnit &&
+                            {selectBoxUnit &&
+                                <div className="form-inline">
                                     <div className="form-group">
                                         <label style={{ width: "auto" }}>{translate('kpi.organizational_unit.dashboard.organizational_unit')}</label>
                                         <SelectBox
@@ -440,21 +440,23 @@ class OrganizationalUnitKpiCreate extends Component {
                                             value={organizationalUnitId}
                                         />
                                     </div>
-                                }
-                                <div className="form-group">
-                                    <label style={{ width: "auto" }}>{translate('kpi.organizational_unit.dashboard.month')}</label>
-                                    <DatePicker
-                                        id="monthInOrganizationalUnitKpi"
-                                        dateFormat="month-year"
-                                        value={defaultDate}
-                                        onChange={this.handleChangeDate}
-                                        disabled={false}
-                                    />
-                                </div>
+                                
+                                    <div className="form-group">
+                                        <label style={{ width: "auto" }}>{translate('kpi.organizational_unit.dashboard.month')}</label>
+                                        <DatePicker
+                                            id="monthInOrganizationalUnitKpi"
+                                            dateFormat="month-year"
+                                            value={defaultDate}
+                                            onChange={this.handleChangeDate}
+                                            disabled={false}
+                                        />
+                                    </div>
 
-                                <button type="button" className="btn btn-success" onClick={this.handleSearchData}>{translate('kpi.evaluation.dashboard.analyze')}</button>
-                            </div>
+                                    <button type="button" className="btn btn-success" onClick={this.handleSearchData}>{translate('task.task_management.search')}</button>
+                                </div>
+                            }
                         </div>
+                        
                         <div className="box">
                             {currentKPI
                                 ? <div className="box-body">
