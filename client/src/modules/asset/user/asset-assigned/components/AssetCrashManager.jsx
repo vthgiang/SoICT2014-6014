@@ -130,7 +130,6 @@ class AssetCrashManager extends Component {
             ...this.state,
 
         })
-        console.log("state", this.state);
         this.props.getAllAsset(this.state);
     }
 
@@ -223,7 +222,7 @@ class AssetCrashManager extends Component {
                         {/* Tên tài sản */}
                         <div className="form-group">
                             <label className="form-control-static">{translate('asset.general_information.asset_name')}</label>
-                            <input type="text" className="form-control" name="assetName" onChange={this.handleRepairNumberChange} placeholder={translate('asset.general_information.asset_name')} autoComplete="off" />
+                            <input type="text" className="form-control" name="assetName" onChange={this.handleAssetNameChange} placeholder={translate('asset.general_information.asset_name')} autoComplete="off" />
                         </div>
                     </div>
 
@@ -244,11 +243,10 @@ class AssetCrashManager extends Component {
 
                         {/* Tháng */}
                         <div className="form-group">
-                            <label className="form-control-static">{translate('page.month')}</label>
+                            <label className="form-control-static">{translate('asset.general_information.date_incident')}</label>
                             <DatePicker
                                 id="month"
                                 dateFormat="month-year"
-                                value={this.formatDate(Date.now())}
                                 onChange={this.handleMonthChange}
                             />
                         </div>

@@ -82,6 +82,12 @@
     background: #F09A07;
 }
 
+.none {
+    border: 2px solid #adadad;
+    color: #a34141;
+    background: #909090;
+}
+
 .gantt_link_control.task_left, .gantt_link_control.task_right {
     display: none;
 }
