@@ -53,6 +53,7 @@ class OrganizationalUnitKpiCreate extends Component {
     componentDidMount() {
         // Get department list of company
         this.props.getDepartment();
+        this.props.getCurrentKPIUnit(localStorage.getItem('currentRole'));
         this.props.getChildrenOfOrganizationalUnitsAsTree(localStorage.getItem("currentRole"));
     }
 
@@ -116,7 +117,6 @@ class OrganizationalUnitKpiCreate extends Component {
                 }
             });
 
-            this.props.getCurrentKPIUnit(currentRole, childrenOrganizationalUnit[0].id, date);
             this.props.getKPIParent({
                 roleId: currentRole,
                 organizationalUnitId: childrenOrganizationalUnit[0].id,

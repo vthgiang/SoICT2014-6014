@@ -9,7 +9,12 @@ const Logger = require(`../../../../logs`);
  */
 exports.copyKPI = async (req, res) => {
     try {
-        let kpiunit = await managerService.copyKPI(req.portal, req.params.id, req.query);
+        let data = {
+            ...req.query,
+            creator: req.user._id
+        }
+        let kpiunit = await managerService.copyKPI(req.portal, req.params.id, data);
+        
         Logger.info(req.user.email, ' copy kpi unit ', req.portal)
         res.status(200).json({
             success: true,
@@ -17,6 +22,7 @@ exports.copyKPI = async (req, res) => {
             content: kpiunit
         });
     } catch (error) {
+        console.log(error)
         Logger.error(req.user.email, ' copy kpi unit ', req.portal)
         res.status(400).json({
             success: false,

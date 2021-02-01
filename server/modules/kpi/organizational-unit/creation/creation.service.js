@@ -184,16 +184,7 @@ exports.getAllOrganizationalUnitKpiSetByTimeOfChildUnit = async (portal, company
  * @query {*} status trạng thái của OrganizationalUnitKPISet
  */
 exports.getAllOrganizationalUnitKpiSet = async (portal, data) => {
-    let keySearch, organizationalUnit, status;
-
-    organizationalUnit = await OrganizationalUnit(connect(DB_CONNECTION, portal))
-        .findOne({
-            $or: [
-                { 'managers': data.roleId },
-                { 'deputyManagers': data.roleId },
-                { 'employees': data.roleId }
-            ]
-        });
+    let keySearch = {}, status;
 
     status = Number(data.status);
     if (data.startDate) {
@@ -210,9 +201,27 @@ exports.getAllOrganizationalUnitKpiSet = async (portal, data) => {
         var enddate = new Date(endDate[2] + "-" + endDate[1] + "-" + endDate[0]);
     }
 
-    if (organizationalUnit) {
+    if (data && !data.organizationalUnit || data.organizationalUnit.length === 0) {
+        let organizationalUnit;
+
+        organizationalUnit = await OrganizationalUnit(connect(DB_CONNECTION, portal))
+            .findOne({
+                $or: [
+                    { 'managers': data.roleId },
+                    { 'deputyManagers': data.roleId },
+                    { 'employees': data.roleId }
+                ]
+            });
+        if (organizationalUnit) {
+            keySearch = {
+                ...keySearch,
+                organizationalUnit: organizationalUnit._id
+            };
+        }
+    } else {
         keySearch = {
-            organizationalUnit: organizationalUnit._id
+            ...keySearch,
+            organizationalUnit: { $in: data.organizationalUnit }
         };
     }
 

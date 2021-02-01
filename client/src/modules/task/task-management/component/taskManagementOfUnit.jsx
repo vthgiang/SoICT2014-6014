@@ -431,7 +431,7 @@ class TaskManagementOfUnit extends Component {
                                             items={selectBoxUnit.map(item => { return { value: item.id, text: item.name } })}
                                             onChange={this.handleSelectOrganizationalUnit}
                                             options={{
-                                                nonSelectedText: organizationalUnit.length !== 0 ? translate('task.task_management.select_department') : translate('general.not_org_unit'),
+                                                nonSelectedText: translate('task.task_management.select_department'),
                                                 allSelectedText: translate(`task.task_management.select_all_department`),
                                                 includeSelectAllOption: true,
                                                 maxHeight: 200
