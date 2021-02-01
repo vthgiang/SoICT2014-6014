@@ -2538,22 +2538,22 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
         `<p>Người thực hiện</p> ` +
         `<ul>${res.map((item) => {
             return `<li>${item.name} - ${item.email}</li>`
-        })}
+        }).join('')}
                     </ul>`+
         `<p>Người phê duyệt</p> ` +
         `<ul>${acc.map((item) => {
             return `<li>${item.name} - ${item.email}</li>`
-        })}
+        }).join('')}
                     </ul>` +
         `${con.length > 0 ? `<p>Người tư vấn</p> ` +
             `<ul>${con.map((item) => {
                 return `<li>${item.name} - ${item.email}</li>`
-            })}
+            }).join('')}
                     </ul>` : ""}` +
         `${inf.length > 0 ? `<p>Người quan sát</p> ` +
             `<ul>${inf.map((item) => {
                 return `<li>${item.name} - ${item.email}</li>`
-            })}
+            }).join('')}
                     </ul>` : ""}`
         ;
 
@@ -2947,18 +2947,18 @@ exports.editEmployeeCollaboratedWithOrganizationalUnits = async (portal, taskId,
         `<p>Người thực hiện</p> ` +
         `<ul>${newTask.responsibleEmployees.map((item) => {
             return `<li>${item.name} - ${item.email}</li>`;
-        })}
+        }).join('')}
                     </ul>` +
         `<p>Người phê duyệt</p> ` +
         `<ul>${newTask.accountableEmployees.map((item) => {
             return `<li>${item.name} - ${item.email}</li>`;
-        })}
+        }).join('')}
                     </ul>` +
         `${newTask.consultedEmployees.length > 0
             ? `<p>Người tư vấn</p> ` +
             `<ul>${newTask.consultedEmployees.map((item) => {
                 return `<li>${item.name} - ${item.email}</li>`;
-            })}
+            }).join('')}
                     </ul>`
             : ""
         }` +
@@ -2966,7 +2966,7 @@ exports.editEmployeeCollaboratedWithOrganizationalUnits = async (portal, taskId,
             ? `<p>Người quan sát</p> ` +
             `<ul>${newTask.informedEmployees.map((item) => {
                 return `<li>${item.name} - ${item.email}</li>`;
-            })}
+            }).join('')}
                     </ul>`
             : ""
         }`;
@@ -4580,18 +4580,18 @@ exports.sendEmailForActivateTask = async (portal, task) => {
         `<p>Người thực hiện</p> ` +
         `<ul>${res.map((item) => {
             return `<li>${item}</li>`;
-        })}
+        }).join('')}
                     </ul>` +
         `<p>Người phê duyệt</p> ` +
         `<ul>${acc.map((item) => {
             return `<li>${item.name}</li>`;
-        })}
+        }).join('')}
                     </ul>` +
         `${con.length > 0
             ? `<p>Người tư vấn</p> ` +
             `<ul>${con.map((item) => {
                 return `<li>${item.name}</li>`;
-            })}
+            }).join('')}
                     </ul>`
             : ""
         }` +
@@ -4599,7 +4599,7 @@ exports.sendEmailForActivateTask = async (portal, task) => {
             ? `<p>Người quan sát</p> ` +
             `<ul>${inf.map((item) => {
                 return `<li>${item.name}</li>`;
-            })}
+            }).join('')}
                     </ul>`
             : ""
         }`;
