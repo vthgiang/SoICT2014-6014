@@ -401,7 +401,7 @@ class OrganizationalUnitKpiCreate extends Component {
     }
 
     render() {
-        const { user, createKpiUnit } = this.props;
+        const { user, createKpiUnit, dashboardEvaluationEmployeeKpiSet } = this.props;
         const { translate } = this.props;
         const {
             id, organizationalUnitKpi, organizationalUnit,
@@ -409,7 +409,11 @@ class OrganizationalUnitKpiCreate extends Component {
         } = this.state;
 
 
-        let unitList, currentKPI, organizationalUnitKpiLoading, organizationalUnitsOfUserLoading;
+        let unitList, currentKPI, organizationalUnitKpiLoading, organizationalUnitsOfUserLoading, childrenOrganizationalUnitLoading;
+
+        if (dashboardEvaluationEmployeeKpiSet) {
+            childrenOrganizationalUnitLoading = dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnitLoading
+        }
 
         if (user) {
             organizationalUnitsOfUserLoading = user.organizationalUnitsOfUserLoading;
@@ -452,7 +456,7 @@ class OrganizationalUnitKpiCreate extends Component {
                                         />
                                     </div>
 
-                                    <button type="button" className="btn btn-success" onClick={this.handleSearchData}>{translate('task.task_management.search')}</button>
+                                    <button type="button" className="btn btn-success" onClick={this.handleSearchData}>{translate('kpi.general.show')}</button>
                                 </div>
                             }
                         </div>
@@ -598,7 +602,7 @@ class OrganizationalUnitKpiCreate extends Component {
                                         </table>
                                     </div>
                                 </div>
-                                : organizationalUnitKpiLoading
+                                : organizationalUnitKpiLoading && childrenOrganizationalUnitLoading 
                                 && <div className="box-body">
                                     <div style={{ marginLeft: "-10px" }}>
                                         {this.checkPermisson(organizationalUnit && organizationalUnit.managers) &&
@@ -609,7 +613,7 @@ class OrganizationalUnitKpiCreate extends Component {
                                                             {/* Khởi tạo KPI */}
                                                             <div className="col-xs-12">
                                                                 <a className="btn btn-app" data-toggle="modal" data-target="#startKPIUnit" data-backdrop="static" data-keyboard="false">
-                                                                    <i className="fa fa-calendar-plus-o" style={{ fontSize: "16px" }}></i>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.initialize_kpi_newmonth')}
+                                                                    <i className="fa fa-calendar-plus-o" style={{ fontSize: "16px" }}></i>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.initialize_kpi_newmonth')} {this.formatDate(date)}
                                                                 </a>
                                                             </div>
                                                             <OrganizationalUnitKpiCreateModal organizationalUnit={organizationalUnit} date={date}/>
@@ -619,7 +623,7 @@ class OrganizationalUnitKpiCreate extends Component {
                                                     // Cảnh báo đơn vị cha chưa kích hoạt KPI
                                                     <React.Fragment>
                                                         <a className="btn btn-app" data-toggle="modal" data-backdrop="static" data-keyboard="false" onClick={() => this.swalEdittingPermission()}>
-                                                            <i className="fa fa-calendar-plus-o" style={{ fontSize: "16px" }}></i>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.initialize_kpi_newmonth')}
+                                                            <i className="fa fa-calendar-plus-o" style={{ fontSize: "16px" }}></i>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.initialize_kpi_newmonth')} {this.formatDate(date)}
                                                         </a>
                                                     </React.Fragment>
                                                 }

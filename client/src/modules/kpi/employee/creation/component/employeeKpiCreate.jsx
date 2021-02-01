@@ -75,7 +75,13 @@ class CreateEmployeeKpiSet extends Component {
     }
 
     shouldComponentUpdate = (nextProps, nextState) => {
-        const { user, currentRole, month } = this.props;
+        const { user, currentRole } = this.props;
+        const { month } = this.state;
+
+        // Không re-render khi lựa chọn tháng ở DatePiker
+        if (nextState.month !== month) {
+            return false;
+        }
 
         // Khi truy vấn API đã có kết quả
         if (!this.state.employeeKpiSet.approver && user.userdepartments && user.userdepartments.managers) {
@@ -505,7 +511,7 @@ class CreateEmployeeKpiSet extends Component {
                             />
                         </div>
 
-                        <button type="button" className="btn btn-success" onClick={this.handleSearchData}>{translate('task.task_management.search')}</button>
+                        <button type="button" className="btn btn-success" onClick={this.handleSearchData}>{translate('kpi.general.show')}</button>
                     </div>
                 </div>  
                 <div className="box">
@@ -696,22 +702,23 @@ class CreateEmployeeKpiSet extends Component {
                                 </div>
 
                                 /* Khi chưa khởi tạo tập KPI cá nhân */
-                                : currentKPILoading && <div className="col-xs-12">
+                                : currentKPILoading
+                                && <div className="col-xs-12">
                                     <div style={{ marginLeft: "-10px" }}>
                                         {this.checkOrganizationalUnitKpi() ?
                                             <div>
                                                 <a className="btn btn-app" data-toggle="modal" data-target="#createEmployeeKpiSet" data-backdrop="static" data-keyboard="false">
-                                                    <i className="fa fa-calendar-plus-o" style={{ fontSize: "16px" }}></i>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.initialize_kpi_newmonth')}
+                                                    <i className="fa fa-calendar-plus-o" style={{ fontSize: "16px" }}></i>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.initialize_kpi_newmonth')} {this.formatDate(month)}
                                                 </a>
                                                 <ModalCreateEmployeeKpiSet organizationalUnit={currentUnit && currentUnit[0] && currentUnit[0]} month={month}/>
                                             </div>
                                             : <a className="btn btn-app" data-toggle="modal" data-target="#startKPIPersonal" data-backdrop="static" data-keyboard="false" onClick={() => this.handleStartOrganizationalUnitKpi()}>
-                                                <i className="fa fa-calendar-plus-o" style={{ fontSize: "16px" }}></i>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.initialize_kpi_newmonth')}
+                                                <i className="fa fa-calendar-plus-o" style={{ fontSize: "16px" }}></i>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.initialize_kpi_newmonth')} {this.formatDate(month)}
                                             </a>
                                         }
                                     </div>
                                     <h3 style={{ display: "inline-block", fontWeight: "600" }}>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.general_information.general_information')} {this.formatDate(month)}</h3>
-                                    <p>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.not_initialize')}</p>
+                                    <p>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.not_initialize')} {this.formatDate(month)}</p>
                                 </div>
                             }
                         </div>
