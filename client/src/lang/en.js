@@ -3521,6 +3521,7 @@ export default {
                     target: "targets",
                     data_not_found: "There is no satisfied result",
                     unsuitable_weight: "Unsuitable weight",
+                    unsuitable_approval: "Editing is not approved",
                     status: "Status",
                     action: "Action",
                     save_result: "Save result",

@@ -3814,6 +3814,7 @@ export default {
                     result: "Kết quả đánh giá",
                     data_not_found: "Không tìm thấy dữ liệu phù hợp",
                     unsuitable_weight: "Trọng số không thỏa mãn",
+                    unsuitable_approval: "Đang chỉnh sửa không được phê duyệt",
                     status: "Trạng thái",
                     action: "Hành động",
                     save_result: "Lưu kết quả",
