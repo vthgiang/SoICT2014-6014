@@ -26,11 +26,11 @@ export const createKpiSetActions = {
 
 
 // Lấy tập KPI cá nhân hiện tại
-function getEmployeeKpiSet(month = undefined) {
+function getEmployeeKpiSet(data) {
     return dispatch => {
         dispatch({ type: createKpiSetConstants.GET_EMPLOYEE_KPI_SET_REQUEST });
 
-        createKpiSetService.getEmployeeKpiSet(month)
+        createKpiSetService.getEmployeeKpiSet(data)
             .then(res => {
                 dispatch({
                     type: createKpiSetConstants.GET_EMPLOYEE_KPI_SET_SUCCESS,
@@ -339,7 +339,6 @@ function createChildComment(setKpiId, commentId, data) {
 }
 
 function editChildComment(setKpiId, commentId, childCommentId, data) {
-    console.log(data)
     return dispatch => {
         dispatch({ type: createKpiSetConstants.EDIT_COMMENT_OF_COMMENT_REQUEST });
         createKpiSetService.editChildComment(setKpiId, commentId, childCommentId, data)

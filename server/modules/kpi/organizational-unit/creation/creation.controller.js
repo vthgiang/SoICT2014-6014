@@ -15,7 +15,8 @@ exports.getOrganizationalUnitKpiSet = async (req, res) => {
         getAllOrganizationalUnitKpiSetByTime(req, res);
     } else {
         try {
-            var kpiunit = await KPIUnitService.getOrganizationalUnitKpiSet(req.portal, req.query);
+            let kpiunit = await KPIUnitService.getOrganizationalUnitKpiSet(req.portal, req.query);
+            
             Logger.info(req.user.email, `Get kpi unit by role `, req.portal);
             res.status(200).json({
                 success: true,

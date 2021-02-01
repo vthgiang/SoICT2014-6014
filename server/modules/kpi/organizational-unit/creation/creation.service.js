@@ -10,7 +10,7 @@ const { connect } = require(`../../../../helpers/dbHelper`);
  * @param {*} month 
  */
 exports.getOrganizationalUnitKpiSet = async (portal, query) => {
-    let month, nextMonth, endOfCurrentMonth, endOfLastMonth, department;
+    let month, nextMonth, department;
 
     if (query.month) {
         month = new Date(query.month);
@@ -25,12 +25,10 @@ exports.getOrganizationalUnitKpiSet = async (portal, query) => {
         if (currentMonth < 10) {
             currentMonth = "0" + currentMonth;
         }
-    
-        month = currentYear + "-" + currentMonth;
-        nextMonth = currentYear + "-" + (currentMonth + 1);
 
-        month = new Date(month);
-        nextMonth = new Date(nextMonth);
+        month = new Date(currentYear + "-" + currentMonth);
+        nextMonth = new Date(currentYear + "-" + currentMonth);
+        nextMonth.setMonth(nextMonth.getMonth() + 1);
     }
 
     if (!query.organizationalUnitId) {
@@ -97,12 +95,10 @@ exports.getParentOrganizationalUnitKpiSet = async (portal, data) => {
         if (currentMonth < 10) {
             currentMonth = "0" + currentMonth;
         }
-    
-        monthIso = currentYear + "-" + currentMonth;
-        nextMonth = currentYear + "-" + (currentMonth + 1);
 
-        monthIso = new Date(monthIso);
-        nextMonth = new Date(nextMonth);
+        monthIso = new Date(currentYear + "-" + currentMonth);
+        nextMonth = new Date(currentYear + "-" + currentMonth);
+        nextMonth.setMonth(nextMonth.getMonth() + 1);
     }
     
     if (department) {
@@ -281,6 +277,8 @@ exports.editOrganizationalUnitKpiSet = async (portal, dateString, id) => {
 exports.createOrganizationalUnitKpiSet = async (portal, data) => {
     const { date, creator, organizationalUnitId } = data;
 
+    // Config month tìm kiếm
+    let monthSearch, nextMonthSearch;
     let currentYear, currentMonth, now;
 
     now = new Date();
@@ -290,11 +288,9 @@ exports.createOrganizationalUnitKpiSet = async (portal, data) => {
         currentMonth = "0" + currentMonth;
     }
 
-    month = currentYear + "-" + currentMonth;
-    nextMonth = currentYear + "-" + (currentMonth + 1);
-
-    month = new Date(month);
-    nextMonth = new Date(nextMonth);
+    monthSearch = new Date(currentYear + "-" + currentMonth);
+    nextMonthSearch = new Date(currentYear + "-" + currentMonth);
+    nextMonthSearch.setMonth(nextMonthSearch.getMonth() + 1);
 
     // Tạo thông tin chung cho KPI đơn vị
     let organizationalUnitKpi = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
@@ -315,7 +311,7 @@ exports.createOrganizationalUnitKpiSet = async (portal, data) => {
                 organizationalUnit: organizationalUnit.parent,
                 status: 1,
                 date: {
-                    $gte: month, $lt: nextMonth
+                    $gte: monthSearch, $lt: nextMonthSearch
                 }
             })
             .populate("kpis");
