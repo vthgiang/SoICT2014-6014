@@ -3247,6 +3247,9 @@ export default {
         },
 
         kpi: {
+            general: {
+                show: "Show"
+            },
             employee: {
                 get_kpi_by_member_success: "Get KPI by member successfully",
                 get_kpi_by_member_fail: "Get KPI by member fail",
@@ -3275,7 +3278,7 @@ export default {
                         },
                         satisfied: "Satisfied",
                         not_satisfied: "Not Satisfied",
-                        initialize_kpi_newmonth: "Initialize KPI new month",
+                        initialize_kpi_newmonth: "Initialize KPI",
                         request_approval: "Request for approval",
                         cancel_request_approval: "Cancel request for approval",
                         not_initialize_organiztional_unit_kpi:
@@ -3521,6 +3524,7 @@ export default {
                     target: "targets",
                     data_not_found: "There is no satisfied result",
                     unsuitable_weight: "Unsuitable weight",
+                    unsuitable_approval: "Editing is not approved",
                     status: "Status",
                     action: "Action",
                     save_result: "Save result",
@@ -3636,7 +3640,7 @@ export default {
                     confirm_delete_success:
                         "Are you sure you want to delete this entire KPI?",
                     time: "Time",
-                    initialize_kpi_newmonth: "Initialize KPI new month",
+                    initialize_kpi_newmonth: "Initialize KPI",
                     edit_kpi_success: "Editing KPI successful",
                     edit_kpi_failure: "Editing KPI falied",
                     delete_kpi_success: "Delete KPI successfully",

@@ -163,11 +163,11 @@ class Notification extends Component {
                                                                     notification.level === 'important' ? <i className="fa fa-warning text-yellow" /> :
                                                                         <i className="fa fa-bomb text-red" />
                                                         }
-                                                        <p className="notify-title" >
+                                                        <span className="notify-title" >
                                                             {notification.associatedDataObject && notification.associatedDataObject.description ?
                                                                 parse(notification.associatedDataObject.description) : notification.title}
                                                             <DateTimeConverter dateTime={notification.createdAt} style={{ display: 'block', fontSize: '12px', color: '#d47979' }} />
-                                                        </p>
+                                                        </span>
                                                     </div>
                                                 </Link>
                                             </div>
@@ -186,11 +186,11 @@ class Notification extends Component {
                                                                     notification.level === 'important' ? <i className="fa fa-warning text-yellow" /> :
                                                                         <i className="fa fa-bomb text-red" />
                                                         }
-                                                        <p className="notify-title" >
+                                                        <span className="notify-title">
                                                             {notification.associatedDataObject && notification.associatedDataObject.description ?
                                                                 parse(notification.associatedDataObject.description) : notification.title}
                                                             <DateTimeConverter dateTime={notification.createdAt} style={{ display: 'block', fontSize: '12px', color: '#d47979' }} />
-                                                        </p>
+                                                        </span>
                                                     </div>
                                                 </Link>
                                             </div>
@@ -210,11 +210,11 @@ class Notification extends Component {
                                                                     notification.level === 'important' ? <i className="fa fa-warning text-yellow" /> :
                                                                         <i className="fa fa-bomb text-red" />
                                                         }
-                                                        <p className="notify-title" >
+                                                        <span className="notify-title" >
                                                             {notification.associatedDataObject && notification.associatedDataObject.description ?
                                                                 parse(notification.associatedDataObject.description) : notification.title}
                                                             <DateTimeConverter dateTime={notification.createdAt} style={{ display: 'block', fontSize: '12px', color: '#d47979' }} />
-                                                        </p>
+                                                        </span>
                                                     </div>
                                                 </Link>
                                             </div>
@@ -233,11 +233,11 @@ class Notification extends Component {
                                                                     notification.level === 'important' ? <i className="fa fa-warning text-yellow" /> :
                                                                         <i className="fa fa-bomb text-red" />
                                                         }
-                                                        <p className="notify-title" >
+                                                        <span className="notify-title" >
                                                             {notification.associatedDataObject && notification.associatedDataObject.description ?
                                                                 parse(notification.associatedDataObject.description) : notification.title}
                                                             <DateTimeConverter dateTime={notification.createdAt} style={{ display: 'block', fontSize: '12px', color: '#d47979' }} />
-                                                        </p>
+                                                        </span>
                                                     </div>
                                                 </Link>
                                             </div>

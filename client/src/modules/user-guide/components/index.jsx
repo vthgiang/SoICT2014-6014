@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
+import Swal from 'sweetalert2';
 import { UserGuideSystem, UserGuideKpi, UserGuideTask, UserGuideDocument, UserGuideAsset, UserGuideHr } from './config.js';
 import DetailGuide from './detailGuide';
 const UserGuide = (props) => {
@@ -68,10 +69,45 @@ const UserGuide = (props) => {
     }
 
     const showFilePreview = (data) => {
-        console.log('ddddddddddd', data);
-        setCurrentLink(data);
-        window.$('#modal-detail-guide').modal('show');
+        console.log('aaaaaaaaaa', data);
+        const { translate } = props;
+        const link = process.env.REACT_APP_SERVER + data.url;
+        Swal.fire({
+            html: ` 
+            <h3>${data.pageName}</h3>
+               <iframe
+                        width= "100%" height= "600"
+                        src= ${link}
+                    />`,
+            //  icon: 'warning',
+            width: "100%",
+            //showCancelButton: true,
+            // confirmButtonColor: '#3085d6',
+            // cancelButtonColor: '#d33',
+            // cancelButtonText: translate('general.no'),
+            // confirmButtonText: translate('general.yes'),
+        })
     }
+
+    // const deleteDocument = (id, info) => {
+    //     const { translate } = this.props;
+    //     Swal.fire({
+    //         html: `    <iframe
+    //                     width="100%" height="700"
+    //                     src= ${link}
+    //                 />`,
+    //         icon: 'warning',
+    //         showCancelButton: true,
+    //         confirmButtonColor: '#3085d6',
+    //         cancelButtonColor: '#d33',
+    //         cancelButtonText: translate('general.no'),
+    //         confirmButtonText: translate('general.yes'),
+    //     }).then((result) => {
+    //         if (result.value) {
+    //             this.props.deleteDocument(id);
+    //         }
+    //     })
+    // }
 
     //  console.log('pppppppp', currentL)
     return (
