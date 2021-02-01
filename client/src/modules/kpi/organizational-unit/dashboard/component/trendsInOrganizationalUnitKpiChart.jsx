@@ -481,8 +481,8 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
 
             tooltip: {
                 position: function () {
-                    // let position = c3.chart.internal.fn.tooltipPosition.apply(this, arguments);
-                    return { top: 0, left: 240 };
+                    let position = c3.chart.internal.fn.tooltipPosition.apply(this, arguments);
+                    return position;
                 },
                 contents: function (data) {
                     let value = '<div style="overflow-y: scroll; max-height: 300px; pointer-events: auto;">';
@@ -490,7 +490,7 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
 
                     data.forEach((val) => {
                         value = value + '<tr><td class=\'name\'>' + val.name + '</td>'
-                                    +'<td class=\'value\'>' + val.value + '</td></tr>';
+                                    +'<td class=\'value\'>' + (Math.round(Number(val.value) * 1000) / 1000) + '</td></tr>';
                     });
 
                     value = value + '</table>';

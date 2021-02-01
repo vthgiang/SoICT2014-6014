@@ -165,45 +165,18 @@ class GeneralTab extends Component {
      */
 
     handleAssetTypeChange = async (value) => {
-        // let { assetType } = this.props;
-        // let { detailInfo } = this.state;
-        // let arr = [...detailInfo];
-
-        // if (value && value.length !== 0) {
-        //     let assetTypeList = assetType.listAssetTypes;
-        //     let currentAssetType = assetTypeList.filter((element) => element._id === value[0])[0];
-        //     let defaultInformation = currentAssetType ? currentAssetType.defaultInformation : [];
-
-        //     // Thêm trường thông tin mặc định ở nhóm tài sản vào thông tin chi tiết
-        //     for (let i in defaultInformation) {
-        //         let check = true;
-        //         for (let j in detailInfo) {
-        //             if (defaultInformation[i].nameField === detailInfo[j].nameField) {
-        //                 check = false;
-        //             }
-        //         }
-
-        //         if (check) {
-        //             arr.push({
-        //                 ...defaultInformation[i],
-        //                 value: '',
-        //             });
-        //         }
-        //     }
-        // }
         const { translate } = this.props;
         let { message } = ValidationHelper.validateEmpty(translate, value[0]);
+
         await this.setState(state => {
             return {
                 ...state,
                 assetType: value,
-                // detailInfo: arr,
                 isObj: false,
                 errorOnAssetType: message,
             }
         });
         this.props.handleChange("assetType", value);
-        // this.props.handleChange("detailInfo", this.state.detailInfo);
     }
 
     /**
@@ -552,7 +525,7 @@ class GeneralTab extends Component {
         var userlist = user.list, departmentlist = department.list;
         let startDate = status == "in_use" && usageLogs && usageLogs.length ? this.formatDate(usageLogs[usageLogs.length - 1].startDate) : '';
         let endDate = status == "in_use" && usageLogs && usageLogs.length ? this.formatDate(usageLogs[usageLogs.length - 1].endDate) : '';
-        let typeInTreeSelect = assetType && assetType.length ? assetType : [];
+        let typeInTreeSelect = assetTypes && assetTypes.length ? assetTypes : [];
         let types = this.state.assetType;
         let listtypes = this.props.assetType.listAssetTypes;
 

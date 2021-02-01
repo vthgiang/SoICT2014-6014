@@ -603,7 +603,7 @@ class TrendsInChildrenOrganizationalUnitKpiChart extends Component {
                     value = value + '<table class=\'c3-tooltip\'>';
                     data.forEach((val) => {
                         value = value + '<tr><td class=\'name\'>' + val.name + '</td>'
-                                    +'<td class=\'value\'>' + val.value + '</td></tr>';
+                                    +'<td class=\'value\'>' + (Math.round(Number(val.value) * 1000) / 1000) + '</td></tr>';
                     });
                     value = value + '</table>';
                     value = value + '</div>';

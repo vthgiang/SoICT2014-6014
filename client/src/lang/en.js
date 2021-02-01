@@ -1482,12 +1482,14 @@ export default {
                         ward: 'Phường/Xã',
                         house_hold_address: 'Địa chỉ hộ khẩu',
                         phone: 'Số điện thoại',
+                        phone_appendix:'Điện thoại hộ gia đình',
                         house_hold_code: 'Mã số hộ gia đình'
                     },
                     members: {
                         title: 'Kê khai đầy đủ thông tin thành viên hộ gia đình trong sổ hộ khẩu',
                         stt: 'STT',
                         name: 'Họ và tên',
+                        name_member:'Họ và tên thành viên',
                         code_social_insurance: 'Mã sổ BHXH',
                         book_nci: 'Số sổ BHXH',
                         gender: 'Giới tính',
@@ -1730,10 +1732,12 @@ export default {
                         sheet5: "5.Staffs - Labor contracts",
                         sheet6: "6.Staffs - Social insurances",
                         sheet7: "7.Staffs - Attachments",
-                        sheet8: "8.Staffs - Commendations",
-                        sheet9: "9.Staffs - Disciplines",
-                        sheet10: "10.Staffs - Salaries",
-                        sheet11: "11.Staffs - Annual Leave",
+                        sheet8: "8.Staffs - Family Members",
+                        sheet9: "9.Staffs - Commendations",
+                        sheet10: "10.Staffs - Disciplines",
+                        sheet11: "11.Staffs - Salaries",
+                        sheet12: "12.Staffs - Annual Leave",
+                        
 
                         emergency_contact_person: "Emergency contact person",
                         relation_with_emergency_contact_person:
@@ -1762,6 +1766,7 @@ export default {
                         import_contract: "Labor contracts",
                         import_socialInsurance_details: "Social insurances",
                         import_file: "Attachments",
+                        import_family : "Family member",
 
                         import_general_infor_title:
                             "Import staff basic information",
@@ -1772,6 +1777,7 @@ export default {
                         import_socialInsurance_details_title:
                             "Import social insurance",
                         import_file_title: "Import attachments",
+                        import_file_family : "Import family member"
                     },
 
                     // Nhón dành cho UI
@@ -3241,6 +3247,9 @@ export default {
         },
 
         kpi: {
+            general: {
+                show: "Show"
+            },
             employee: {
                 get_kpi_by_member_success: "Get KPI by member successfully",
                 get_kpi_by_member_fail: "Get KPI by member fail",
@@ -3269,7 +3278,7 @@ export default {
                         },
                         satisfied: "Satisfied",
                         not_satisfied: "Not Satisfied",
-                        initialize_kpi_newmonth: "Initialize KPI new month",
+                        initialize_kpi_newmonth: "Initialize KPI",
                         request_approval: "Request for approval",
                         cancel_request_approval: "Cancel request for approval",
                         not_initialize_organiztional_unit_kpi:
@@ -3515,6 +3524,7 @@ export default {
                     target: "targets",
                     data_not_found: "There is no satisfied result",
                     unsuitable_weight: "Unsuitable weight",
+                    unsuitable_approval: "Editing is not approved",
                     status: "Status",
                     action: "Action",
                     save_result: "Save result",
@@ -3630,7 +3640,7 @@ export default {
                     confirm_delete_success:
                         "Are you sure you want to delete this entire KPI?",
                     time: "Time",
-                    initialize_kpi_newmonth: "Initialize KPI new month",
+                    initialize_kpi_newmonth: "Initialize KPI",
                     edit_kpi_success: "Editing KPI successful",
                     edit_kpi_failure: "Editing KPI falied",
                     delete_kpi_success: "Delete KPI successfully",

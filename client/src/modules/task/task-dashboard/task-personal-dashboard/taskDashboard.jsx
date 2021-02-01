@@ -402,11 +402,15 @@ class TaskDashboard extends Component {
                             <CalendarEmployee
                                 tasks={tasks}
                             />
-                            {/* <GanttCalendar/> */}
+                            {/* <GanttCalendar
+                                tasks={tasks}
+                                unitOrganization = {false}
+                            /> */}
                         </div>
 
                     </div>
                 </div>
+                
                 <div className="row">
                     {/* Biểu đồ miền kết quả công việc */}
                     <div className="col-xs-12">

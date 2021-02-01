@@ -28,13 +28,19 @@ class DistributionOfEmployeeKpiChart extends Component {
 
         this.state = {
             month: currentYear + '-' + (currentMonth + 1),
-            dataStatus: this.DATA_STATUS.QUERYING
+            dataStatus: this.DATA_STATUS.QUERYING,
+            currentRole: localStorage.getItem("currentRole")
         };
     }
 
     componentDidMount = () => {
+        const { currentRole, month } = this.state;
+
         // Lấy Kpi của cá nhân hiện tại
-        this.props.getEmployeeKpiSet(this.state.month);
+        this.props.getEmployeeKpiSet({
+            roleId: currentRole,
+            month: month
+        });
 
         this.setState(state => {
             return {
@@ -45,8 +51,13 @@ class DistributionOfEmployeeKpiChart extends Component {
     }
 
     shouldComponentUpdate = async (nextProps, nextState) => {
-        if (nextState.month !== this.state.month) {
-            await this.props.getEmployeeKpiSet(nextState.month);
+        const { currentRole, month } = this.state;
+
+        if (nextState.month !== month) {
+            await this.props.getEmployeeKpiSet({
+                roleId: currentRole,
+                month: nextState.month
+            });
 
             this.setState(state => {
                 return {

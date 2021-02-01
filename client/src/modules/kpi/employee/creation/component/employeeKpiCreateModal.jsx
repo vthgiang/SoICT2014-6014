@@ -23,20 +23,22 @@ class ModalCreateEmployeeKpiSet extends Component {
             employeeKpiSet: {
                 organizationalUnit: "",
                 approver: null,
-                date: "",
+                month: "",
             },
             adding: false
         };
     }
 
     static getDerivedStateFromProps = (nextProps, prevState) => {
-        if (nextProps.organizationalUnit !== prevState.organizationalUnit) {
+        if (nextProps.organizationalUnit !== prevState.organizationalUnit || nextProps.month !== prevState.month) {
             return {
                 ...prevState,
                 employeeKpiSet: {
                     ...prevState.employeeKpiSet,
-                    organizationalUnit: nextProps.organizationalUnit
-                }
+                    organizationalUnit: nextProps.organizationalUnit && nextProps.organizationalUnit._id,
+                    month: nextProps.month
+                },
+                organizationalUnit: nextProps.organizationalUnit
             }
         } else {
             return null;
@@ -45,27 +47,6 @@ class ModalCreateEmployeeKpiSet extends Component {
 
     componentDidMount() {
         this.props.getAllUserSameDepartment(localStorage.getItem("currentRole"));
-
-        let d = new Date(),
-            month = '' + (d.getMonth() + 1),
-            day = '' + d.getDate(),
-            year = d.getFullYear();
-
-        if (month.length < 2)
-            month = '0' + month;
-        if (day.length < 2)
-            day = '0' + day;
-        let defaultTime = [month, year].join('-');
-
-        this.setState(state => {
-            return {
-                ...state,
-                employeeKpiSet: {
-                    ...state.employeeKpiSet,
-                    date: defaultTime
-                }
-            }
-        })
     }
 
     shouldComponentUpdate = (nextProps, nextState) => {
@@ -94,18 +75,6 @@ class ModalCreateEmployeeKpiSet extends Component {
         return true;
     }
 
-    formatDate = (value) => {
-        this.setState(state => {
-            return {
-                ...state,
-                employeeKpiSet: {
-                    ...state.employeeKpiSet,
-                    date: value
-                }
-            }
-        })
-    }
-
     /**Thay đổi người phê duyệt */
     handleApproverChange = (value) => {
         this.setState(state => {
@@ -121,41 +90,36 @@ class ModalCreateEmployeeKpiSet extends Component {
 
     /**Gửi request khởi tạo tập KPI cá nhân mới */
     handleCreateEmployeeKpiSet = async () => {
-        const { organizationalUnit } = this.props;
         const { employeeKpiSet } = this.state;
 
-        let d = new Date(),
-            month = '' + (d.getMonth() + 1),
-            day = '' + d.getDate(),
-            year = d.getFullYear();
-        if (month.length < 2)
-            month = '0' + month;
-        if (day.length < 2)
-            day = '0' + day;
-        let defaultTime = [month, year].join('-');
 
-        if (employeeKpiSet.date === "") {
-            this.setState(state => {
-                return {
-                    ...state,
-                    employeeKpiSet: {
-                        ...state.employeeKpiSet,
-                        date: defaultTime,
-                    }
-                }
-            })
-        }
-
-        if (employeeKpiSet.organizationalUnit && employeeKpiSet.date && employeeKpiSet.approver) {//&& employeeKpiSet.creator
+        if (employeeKpiSet.organizationalUnit && employeeKpiSet.month && employeeKpiSet.approver) {//&& employeeKpiSet.creator
             this.props.createEmployeeKpiSet(employeeKpiSet);
             window.$("#createEmployeeKpiSet").modal("hide");
         }
     }
 
+    formatDate(date) {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2) {
+            month = '0' + month;
+        }
+
+        if (day.length < 2) {
+            day = '0' + day;
+        }
+
+        return [month, year].join('-');
+    }
+
     render() {
+        const { user, translate } = this.props;
+        const { _id, employeeKpiSet, organizationalUnit } = this.state;
         let managers;
-        const { organizationalUnit, user, translate } = this.props;
-        const { _id, employeeKpiSet } = this.state;
 
         if (user.userdepartments) {
             managers = getEmployeeSelectBoxItems([user.userdepartments], true, false, false);
@@ -172,44 +136,34 @@ class ModalCreateEmployeeKpiSet extends Component {
                     func={this.handleCreateEmployeeKpiSet}
                 >
                     <form className="form-group" id="formCreateEmployeeKpiSet" onSubmit={() => this.handleCreateEmployeeKpiSet(translate('kpi.employee.employee_kpi_set.create_employee_kpi_set_modal.success'))}>
+                        {/* Tên đơn vị */}
                         <div className="form-group">
-
-                            {/**Tên đơn vị */}
-                            <label>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set_modal.organizational_unit')}</label>
-                            <label style={{ fontWeight: "400", marginLeft: "+2.5%" }}>{organizationalUnit && organizationalUnit.name}</label>
+                            <label className="col-sm-2">{translate('kpi.organizational_unit.create_organizational_unit_kpi_set_modal.organizational_unit')}</label>
+                            <label className="col-sm-10" style={{ fontWeight: "400", marginLeft: "-2.5%" }}>{organizationalUnit && organizationalUnit.name}</label>
                         </div>
 
-                        <div className="row">
+                        {/* Tháng */}
+                        <div className="form-group">
+                            <label className="col-sm-2">{translate('kpi.organizational_unit.create_organizational_unit_kpi_set_modal.month')}</label>
+                            {this.formatDate(employeeKpiSet.month)}
+                        </div>
 
-                            {/**Tháng của tập KPI này */}
-                            <div className="col-sm-6 col-xs-12 form-group">
-                                <label>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set_modal.month')}</label>
-                                <DatePicker
-                                    id="month"
-                                    dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm 
-                                    value={employeeKpiSet.date}                 // giá trị mặc định cho datePicker    
-                                    onChange={this.formatDate}
-                                    disabled={false}                    // sử dụng khi muốn disabled, mặc định là false
+                        {/**Chọn người phê duyệt tập KPI này */}
+                        {managers &&
+                            <div className="col-sm-12 form-group">
+                                <label>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set_modal.approver')}</label>
+                                <SelectBox
+                                    id={`createEmployeeKpiSet${_id}`}
+                                    className="form-control select2"
+                                    style={{ width: "100%" }}
+                                    items={managers}
+                                    multiple={false}
+                                    onChange={this.handleApproverChange}
+                                    value={employeeKpiSet ? employeeKpiSet.approver : ""}
                                 />
                             </div>
-
-                            {/**Chọn người phê duyệt tập KPI này */}
-                            {managers &&
-                                <div className="col-sm-6 col-xs-12 form-group">
-                                    <label>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set_modal.approver')}</label>
-                                    <SelectBox
-                                        id={`createEmployeeKpiSet${_id}`}
-                                        className="form-control select2"
-                                        style={{ width: "100%" }}
-                                        items={managers}
-                                        multiple={false}
-                                        onChange={this.handleApproverChange}
-                                        value={employeeKpiSet ? employeeKpiSet.approver : ""}
-                                    />
-                                </div>
-                            }
-                        </div>
-                        <div className="form-group" >
+                        }
+                        <div className="col-sm-12 form-group" >
                             <label>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set_modal.default_target')}</label>
                             <ul>
                                 <li>Hỗ trợ thực hiện công việc</li>

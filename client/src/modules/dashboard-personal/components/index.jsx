@@ -11,9 +11,12 @@ class DashboardPersonal extends Component {
     };
     componentDidMount() {
         this.props.getDepartment();
+        this.props.getRoleSameDepartment();
     }
     render() {
         const { user } = this.props;
+        console.log(user.organizationalUnitsOfUser)
+        console.log(user.roledepartments)
         return (
             <React.Fragment>
                 { user.organizationalUnitsOfUser
@@ -31,6 +34,7 @@ function mapState(state) {
 
 const actionCreators = {
     getDepartment: UserActions.getDepartmentOfUser,
+    getRoleSameDepartment: UserActions.getRoleSameDepartment
 };
 
 const dashboardPersonal = connect(mapState, actionCreators)(withTranslate(DashboardPersonal));

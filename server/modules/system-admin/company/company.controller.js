@@ -239,3 +239,23 @@ exports.getCompanyInformation = async (req, res) => {
     }
 }
 
+exports.requestService = async (req, res) => {
+    try {
+        const data = await CompanyServices.requestService(req.body);
+
+        Logger.info(req.body.email, 'request_service_success');
+        res.status(200).json({ 
+            success: true, 
+            messages: ['request_service_success'], 
+            content: data
+        });
+    } catch (error) {
+        
+        Logger.error(req.body.email, 'request_service_faile');
+        res.status(400).json({
+            success: false, 
+            messages: ['request_service_faile'], 
+            content: error
+        });
+    }
+}

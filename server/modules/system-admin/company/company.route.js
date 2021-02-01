@@ -21,4 +21,6 @@ router.patch('/data-import-configurations/:id', auth, CompanyControllers.editImp
 router.patch('/organizationalUnitImage', auth, uploadFile([{name:'organizationalUnitImage', path:'/Unit/image'}], 'fields'), CompanyControllers.editCompanyOrgInformation);
 router.get('/organizationalUnitImage', auth, CompanyControllers.getCompanyInformation);
 
+router.post('/request-service', CompanyControllers.requestService)
+
 module.exports = router;

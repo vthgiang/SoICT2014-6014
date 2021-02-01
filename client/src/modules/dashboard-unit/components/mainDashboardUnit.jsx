@@ -389,24 +389,24 @@ class MainDashboardUnit extends Component {
         let employeeTasks = [];
         for (let i in listEmployee) {
             let tasks = [];
-            let accountableEmployees = [], consultedEmployees = [], responsibleEmployees = [], informedEmployees = [];
+            let accountableTask = [], consultedTask = [], responsibleTask = [], informedTask = [];
             taskListByStatus && taskListByStatus.forEach(task => {
-                for (let j in task.accountableEmployees)
-                    if (listEmployee[i].userId._id === task.accountableEmployees[j])
-                        accountableEmployees = [...accountableEmployees, task.accountableEmployees[j]];
-                for (let j in task.consultedEmployees)
-                    if (listEmployee[i].userId._id === task.consultedEmployees[j])
-                        consultedEmployees = [...consultedEmployees, task.accountableEmployees[j]];
-                for (let j in task.responsibleEmployees)
-                    if (listEmployee[i].userId._id === task.responsibleEmployees[j]._id)
-                        responsibleEmployees = [...responsibleEmployees, task.accountableEmployees[j]];
-                for (let j in task.informedEmployees)
-                    if (listEmployee[i].userId._id === task.informedEmployees[j])
-                        informedEmployees = [...informedEmployees, task.accountableEmployees[j]];
+                if (task.accountableEmployees.includes(listEmployee[i].userId._id)) {
+                    accountableTask = [...accountableTask, task._id]
+                }
+                if (task.consultedEmployees.includes(listEmployee[i].userId._id)) {
+                    consultedTask = [...consultedTask, task._id]
+                }
+                if (task.responsibleEmployees.includes(listEmployee[i].userId._id)) {
+                    responsibleTask = [...responsibleTask, task._id]
+                }
+                if (task.informedEmployees.includes(listEmployee[i].userId._id)) {
+                    informedTask = [...informedTask, task._id]
+                }
             });
-            tasks = tasks.concat(accountableEmployees).concat(consultedEmployees).concat(responsibleEmployees).concat(informedEmployees);
+            tasks = tasks.concat(accountableTask).concat(consultedTask).concat(responsibleTask).concat(informedTask);
             let totalTask = tasks.filter(function (item, pos) {
-                return tasks.indexOf(item) == pos;
+                return tasks.indexOf(item) === pos;
             })
             employeeTasks = [...employeeTasks, { _id: listEmployee[i].userId._id, name: listEmployee[i].userId.name, totalTask: totalTask.length }]
         };
@@ -615,54 +615,7 @@ class MainDashboardUnit extends Component {
                         </div>
                         <button type="button" className="btn btn-success" onClick={this.handleUpdateData}>{translate('kpi.evaluation.dashboard.analyze')}</button>
                     </div>
-                    {/* <div className="row">
-                        <div className="col-md-3 col-sm-6 col-xs-6">
-                            <div className="info-box with-border">
-                                <span className="info-box-icon bg-aqua"><i className="fa fa-users"></i></span>
-                                <div className="info-box-content">
-                                    <span className="info-box-text">Số nhân viên</span>
-                                    <span className="info-box-number">
-                                        {listAllEmployees.length}
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
 
-                        <div className="col-lg-3 col-md-3 col-sm-6 col-xs-6">
-                            <div className="info-box with-border">
-                                <span className="info-box-icon bg-yellow"><i className="fa fa-tasks"></i></span>
-                                <div className="info-box-content">
-                                    <span className="info-box-text">Số sinh nhật</span>
-                                    <span className="info-box-number">
-                                        {employeesManager.listEmployees ? employeesManager.listEmployees.length : 0}
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="col-lg-3 col-md-3 col-sm-6 col-xs-6">
-                            <div className="info-box with-border">
-                                <span className="info-box-icon bg-green"><i className="fa fa-gift"></i></span>
-                                <div className="info-box-content">
-                                    <span className="info-box-text">Số khen thưởng</span>
-                                    <span className="info-box-number">
-                                        {discipline.totalListCommendation ? discipline.totalListCommendation.length : 0}
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col-lg-3 col-md-3 col-sm-6 col-xs-6">
-                            <div className="info-box with-border">
-                                <span className="info-box-icon bg-red"><i className="fa fa-balance-scale"></i></span>
-                                <div className="info-box-content">
-                                    <span className="info-box-text">Số kỷ luật</span>
-                                    <span className="info-box-number">
-                                        {discipline.totalListDiscipline ? discipline.totalListDiscipline.length : 0}
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                    </div> */}
                     <div className="nav-tabs-custom">
                         <ul className="nav nav-tabs">
                             <li className="active"><a href="#task" data-toggle="tab" onClick={() => this.handleNavTabs()}>Công việc</a></li>

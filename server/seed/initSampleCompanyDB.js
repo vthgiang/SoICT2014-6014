@@ -327,6 +327,12 @@ const initSampleCompanyDB = async () => {
             password: hash,
             company: vnist._id,
         },
+        {
+            name: "Trần Hùng Cường",
+            email: "cuongth.vnist@gmail.com",
+            password: hash,
+            company: vnist._id,
+        },
     ]);
     console.log("Dữ liệu tài khoản người dùng cho công ty VNIST", users);
 
@@ -401,6 +407,22 @@ const initSampleCompanyDB = async () => {
     const truongPhongHC = await Role(vnistDB).create({
         parents: [roleManager._id, nvPhongHC._id, phoPhongHC._id],
         name: "Trưởng phòng kinh doanh",
+        type: roleChucDanh._id,
+    });
+
+    const nvPhongNS = await Role(vnistDB).create({
+        parents: [roleEmployee._id],
+        name: "Nhân viên phòng nhân sự",
+        type: roleChucDanh._id,
+    });
+    const phoPhongNS = await Role(vnistDB).create({
+        parents: [roleDeputyManager._id, nvPhongHC._id],
+        name: "Phó phòng nhân sự",
+        type: roleChucDanh._id,
+    });
+    const truongPhongNS = await Role(vnistDB).create({
+        parents: [roleManager._id, nvPhongHC._id, phoPhongHC._id],
+        name: "Trưởng phòng nhân sự",
         type: roleChucDanh._id,
     });
 
@@ -1161,8 +1183,8 @@ const initSampleCompanyDB = async () => {
             company: vnist._id,
             employee: employee._id,
             organizationalUnit: Directorate._id,
-            startDate: "2020-02-06",
-            endDate: "2020-02-08",
+            startDate: "2021-01-06",
+            endDate: "2021-01-08",
             status: "approved",
             reason: "Về quê",
         },
@@ -1170,8 +1192,8 @@ const initSampleCompanyDB = async () => {
             company: vnist._id,
             employee: employee._id,
             organizationalUnit: Directorate._id,
-            startDate: "2020-02-05",
-            endDate: "2020-02-10",
+            startDate: "2021-01-05",
+            endDate: "2021-01-10",
             status: "waiting_for_approval",
             reason: "Nghỉ tết",
         },
@@ -1188,7 +1210,7 @@ const initSampleCompanyDB = async () => {
         {
             company: vnist._id,
             employee: employee._id,
-            month: "2020-02",
+            month: "2021-01",
             organizationalUnit: Directorate._id,
             mainSalary: "10000000",
             unit: "VND",
@@ -1203,7 +1225,7 @@ const initSampleCompanyDB = async () => {
             company: vnist._id,
             employee: employee._id,
             organizationalUnit: Directorate._id,
-            month: "2020-01",
+            month: "2020-12",
             mainSalary: "10000000",
             unit: "VND",
             bonus: [
@@ -1228,7 +1250,7 @@ const initSampleCompanyDB = async () => {
             employee: employee._id,
             decisionNumber: "123",
             organizationalUnit: departments[0]._id,
-            startDate: "2020-02-02",
+            startDate: "2021-01-02",
             type: "Thưởng tiền",
             reason: "Vượt doanh số",
         },
@@ -1237,7 +1259,7 @@ const initSampleCompanyDB = async () => {
             employee: employee._id,
             decisionNumber: "1234",
             organizationalUnit: departments[0]._id,
-            startDate: "2020-02-02",
+            startDate: "2021-01-06",
             type: "Thưởng tiền",
             reason: "Vượt doanh số 500 triệu",
         },
@@ -1256,8 +1278,8 @@ const initSampleCompanyDB = async () => {
             employee: employee._id,
             decisionNumber: "1456",
             organizationalUnit: departments[0]._id,
-            startDate: "2020-02-07",
-            endDate: "2020-02-09",
+            startDate: "2021-01-06",
+            endDate: "2021-01-09",
             type: "Phạt tiền",
             reason: "Không làm đủ công",
         },
@@ -1266,8 +1288,8 @@ const initSampleCompanyDB = async () => {
             employee: employee._id,
             decisionNumber: "1457",
             organizationalUnit: departments[0]._id,
-            startDate: "2020-02-07",
-            endDate: "2020-02-09",
+            startDate: "2021-01-10",
+            endDate: "2021-01-12",
             type: "Phạt tiền",
             reason: "Không đủ doanh số",
         },
@@ -1314,8 +1336,8 @@ const initSampleCompanyDB = async () => {
             courseId: "LD1233",
             offeredBy: "Vnists",
             coursePlace: "P9.01",
-            startDate: "2020-02-16",
-            endDate: "2020-03-21",
+            startDate: "2021-01-16",
+            endDate: "2021-03-21",
             cost: {
                 number: "1200000",
                 unit: "VND",
@@ -1331,8 +1353,8 @@ const initSampleCompanyDB = async () => {
             courseId: "LD123",
             offeredBy: "Vnists",
             coursePlace: "P9.01",
-            startDate: "2020-02-16",
-            endDate: "2020-03-21",
+            startDate: "2021-01-16",
+            endDate: "2021-05-21",
             cost: {
                 number: "1200000",
                 unit: "VND",

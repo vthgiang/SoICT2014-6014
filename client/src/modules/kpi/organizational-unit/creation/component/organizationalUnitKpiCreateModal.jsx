@@ -10,29 +10,29 @@ class OrganizationalUnitKpiCreateModal extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            organizationalUnitKpi: {
-                organizationalUnit: "",
-                date: "",
-            }
+            organizationalUnitId: null,
+            organizationalUnit: "",
+            date: "",
         };
     }
     
-    formatDate = async (value) => {
-        await this.setState(state => {
+    static getDerivedStateFromProps(nextProps, prevState) {
+        if (nextProps.organizationalUnitId !== prevState.organizationalUnitId
+            || nextProps.date !== prevState.date
+        ) {
             return {
-                ...state,
-                organizationalUnitKpi: {
-                    ...state.organizationalUnitKpi,
-                    date: value
-                }
+                ...prevState,
+                organizationalUnitId: nextProps.organizationalUnitId,
+                organizationalUnit: nextProps.organizationalUnit,
+                date: nextProps.date
             }
-        })
+        } else {
+            return null;
+        }
     }
-    
-    handleSubmit = async () => {
-        const { translate } = this.props;
 
-        let d = new Date(),
+    formatDate(date) {
+        let d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
             year = d.getFullYear();
@@ -40,38 +40,22 @@ class OrganizationalUnitKpiCreateModal extends Component {
         if (month.length < 2) {
             month = '0' + month;
         }
-            
+
         if (day.length < 2) {
             day = '0' + day;
         }
-            
-        let defaultTime =  [month, year].join('-');
 
-        if(this.state.organizationalUnitKpi.date === ""){
-            await this.setState(state => {
-                return {
-                    ...state,
-                    organizationalUnitKpi: {
-                        ...state.organizationalUnitKpi,
-                        date: defaultTime,
-                    }
-                }
-            })
-        }
+        return [month, year].join('-');
+    }
+    
+    handleSubmit = () => {
+        const { organizationalUnit, date } = this.state;
 
-        await this.setState(state => {
-            return {
-                ...state,
-                organizationalUnitKpi: {
-                    ...state.organizationalUnitKpi,
-                    organizationalUnit: this.props.organizationalUnit,
-                }
-            }
-        })
-        let { organizationalUnitKpi } = this.state;
-        
-        if (organizationalUnitKpi.organizationalUnit && organizationalUnitKpi.date) {            
-            this.props.addKPIUnit(organizationalUnitKpi);
+        if (organizationalUnit && date) {            
+            this.props.addKPIUnit({
+                organizationalUnitId: organizationalUnit.id,
+                date: date
+            });
 
             window.$("#startKPIUnit").modal("hide");
         }
@@ -79,23 +63,8 @@ class OrganizationalUnitKpiCreateModal extends Component {
     }
     
     render() {
-        const { organizationalUnit } = this.props;
         const { translate } = this.props; 
-
-        let d = new Date(),
-            month = '' + (d.getMonth() + 1),
-            day = '' + d.getDate(),
-            year = d.getFullYear();
-
-        if (month.length < 2) {
-            month = '0' + month;
-        }
-            
-        if (day.length < 2) {
-            day = '0' + day;
-        }
-
-        let defaultTime =  [month, year].join('-');
+        const { organizationalUnit, date } = this.state;
 
         return (
             <React.Fragment>
@@ -119,13 +88,7 @@ class OrganizationalUnitKpiCreateModal extends Component {
                         {/* Tháng */}
                         <div className="form-group">
                             <label className="col-sm-2">{translate('kpi.organizational_unit.create_organizational_unit_kpi_set_modal.month')}</label>
-                            <DatePicker
-                                id="month"      
-                                dateFormat="month-year"            
-                                value={defaultTime}                            
-                                onChange={this.formatDate}
-                                disabled={false}                     
-                            />
+                            {this.formatDate(date)}
                         </div>
 
                         {/* Mục tiêu mặc định */}
@@ -151,8 +114,7 @@ function mapState(state) {
 }
 
 const actionCreators = {
-    addKPIUnit: createUnitKpiActions.addKPIUnit,
-    getKPIParent: createUnitKpiActions.getKPIParent
+    addKPIUnit: createUnitKpiActions.addKPIUnit
 };
 const connectedOrganizationalUnitKpiCreateModal = connect(mapState, actionCreators)(withTranslate(OrganizationalUnitKpiCreateModal));
 export { connectedOrganizationalUnitKpiCreateModal as OrganizationalUnitKpiCreateModal };
