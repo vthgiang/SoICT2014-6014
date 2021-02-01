@@ -75,7 +75,13 @@ class CreateEmployeeKpiSet extends Component {
     }
 
     shouldComponentUpdate = (nextProps, nextState) => {
-        const { user, currentRole, month } = this.props;
+        const { user, currentRole } = this.props;
+        const { month } = this.state;
+
+        // Không re-render khi lựa chọn tháng ở DatePiker
+        if (nextState.month !== month) {
+            return false;
+        }
 
         // Khi truy vấn API đã có kết quả
         if (!this.state.employeeKpiSet.approver && user.userdepartments && user.userdepartments.managers) {
@@ -134,7 +140,14 @@ class CreateEmployeeKpiSet extends Component {
         }
     }
 
-    checkOrganizationalUnitKpi = (currentKPIUnit) => {
+    checkOrganizationalUnitKpi = () => {
+        const { createKpiUnit } = this.props;
+        let currentKPIUnit;
+
+        if (createKpiUnit) {
+            currentKPIUnit = createKpiUnit.currentKPI;
+        }
+
         if (currentKPIUnit) {
             if (currentKPIUnit.status === 1) {
                 return true;
@@ -146,7 +159,14 @@ class CreateEmployeeKpiSet extends Component {
         }
     }
 
-    handleStartOrganizationalUnitKpi = (currentKPIUnit) => {
+    handleStartOrganizationalUnitKpi = () => {
+        const { createKpiUnit } = this.props;
+        let currentKPIUnit;
+
+        if (createKpiUnit) {
+            currentKPIUnit = createKpiUnit.currentKPI;
+        }
+
         if (currentKPIUnit) {
             Swal.fire({
                 title: translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.not_activate_organiztional_unit_kpi'),
@@ -453,9 +473,9 @@ class CreateEmployeeKpiSet extends Component {
 
 
     render() {
-        const { createEmployeeKpiSet, user, translate, createKpiUnit } = this.props;
+        const { createEmployeeKpiSet, user, translate } = this.props;
         const { editing, id, employeeKpi, employeeKpiSet, defaultDate, month } = this.state;
-        let unitList, currentUnit, currentKPI, currentKPIUnit, userdepartments;
+        let unitList, currentUnit, currentKPI, currentKPILoading, userdepartments;
 
         if (user) {
             unitList = user.organizationalUnitsOfUser;
@@ -467,9 +487,7 @@ class CreateEmployeeKpiSet extends Component {
 
         if (createEmployeeKpiSet) {
             currentKPI = createEmployeeKpiSet.currentKPI;
-        }
-        if (createKpiUnit) {
-            currentKPIUnit = createKpiUnit.currentKPI;
+            currentKPILoading = createEmployeeKpiSet.currentKPILoading;
         }
 
         let managers;
@@ -493,7 +511,7 @@ class CreateEmployeeKpiSet extends Component {
                             />
                         </div>
 
-                        <button type="button" className="btn btn-success" onClick={this.handleSearchData}>{translate('task.task_management.search')}</button>
+                        <button type="button" className="btn btn-success" onClick={this.handleSearchData}>{translate('kpi.general.show')}</button>
                     </div>
                 </div>  
                 <div className="box">
@@ -519,13 +537,13 @@ class CreateEmployeeKpiSet extends Component {
                                                     <i className="fa fa-ban" style={{ fontSize: "16px" }}></i>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.general_information.cancel')}
                                                 </a>
                                             </React.Fragment> :
-                                            <a className="btn btn-app" onClick={this.checkOrganizationalUnitKpi(currentKPIUnit) ? () => this.handleEditEmployeeKpiSet(currentKPI.status) : () => this.handleStartOrganizationalUnitKpi(currentKPIUnit)} title="Chỉnh sửa thông tin chung">
+                                            <a className="btn btn-app" onClick={this.checkOrganizationalUnitKpi() ? () => this.handleEditEmployeeKpiSet(currentKPI.status) : () => this.handleStartOrganizationalUnitKpi()} title="Chỉnh sửa thông tin chung">
                                                 <i className="fa fa-edit" style={{ fontSize: "16px" }}></i>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.general_information.edit')}
                                             </a>
                                         }
 
                                         {/* Xóa tập KPI này */}
-                                        <a className="btn btn-app" onClick={this.checkOrganizationalUnitKpi(currentKPIUnit) ? () => this.handleDeleteEmployeeKpiSet(currentKPI._id, currentKPI.status) : () => this.handleStartOrganizationalUnitKpi(currentKPIUnit)} title="Xóa KPI tháng">
+                                        <a className="btn btn-app" onClick={this.checkOrganizationalUnitKpi() ? () => this.handleDeleteEmployeeKpiSet(currentKPI._id, currentKPI.status) : () => this.handleStartOrganizationalUnitKpi()} title="Xóa KPI tháng">
                                             <i className="fa fa-trash" style={{ fontSize: "16px" }}></i>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.general_information.delete')}
                                         </a>
 
@@ -536,9 +554,9 @@ class CreateEmployeeKpiSet extends Component {
                                             data-backdrop="static"
                                             data-keyboard="false"
                                             onClick={
-                                                this.checkOrganizationalUnitKpi(currentKPIUnit) ?
+                                                this.checkOrganizationalUnitKpi() ?
                                                     () => this.handleCreateEmployeeKpi(currentKPI.status) :
-                                                    () => this.handleStartOrganizationalUnitKpi(currentKPIUnit)
+                                                    () => this.handleStartOrganizationalUnitKpi()
                                             }
                                         >
                                             <i className="fa fa-plus-circle" style={{ fontSize: "16px" }}></i>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.add_target')}
@@ -548,7 +566,7 @@ class CreateEmployeeKpiSet extends Component {
 
                                         {/* Yêu cầu phê duyệt tập KPI này */}
                                         {currentKPI.status === 0 ?
-                                            <a className="btn btn-app" onClick={this.checkOrganizationalUnitKpi(currentKPIUnit) ? () => this.handleRequestApproveEmployeeKpiSet(currentKPI) : () => this.handleStartOrganizationalUnitKpi(currentKPIUnit)}>
+                                            <a className="btn btn-app" onClick={this.checkOrganizationalUnitKpi() ? () => this.handleRequestApproveEmployeeKpiSet(currentKPI) : () => this.handleStartOrganizationalUnitKpi()}>
                                                 <i className="fa fa-external-link-square" style={{ fontSize: "16px" }}></i>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.request_approval')}
                                             </a>
                                             : <a className="btn btn-app" onClick={() => this.handleCancelApproveEmployeeKpiSet(currentKPI)}>
@@ -639,7 +657,7 @@ class CreateEmployeeKpiSet extends Component {
                                                                             data-toggle="modal"
                                                                             data-backdrop="static"
                                                                             data-keyboard="false"
-                                                                            onClick={this.checkOrganizationalUnitKpi(currentKPIUnit) ? () => this.handleEditEmployeeKpi(currentKPI.status, item._id, item) : () => this.handleStartOrganizationalUnitKpi(currentKPIUnit)}>
+                                                                            onClick={this.checkOrganizationalUnitKpi() ? () => this.handleEditEmployeeKpi(currentKPI.status, item._id, item) : () => this.handleStartOrganizationalUnitKpi()}>
                                                                             <i className="fa fa-edit"></i>
                                                                         </a>
 
@@ -652,7 +670,7 @@ class CreateEmployeeKpiSet extends Component {
                                                                             : <a
                                                                                 style={{ color: "#E34724", fontSize: "16px" }}
                                                                                 title={translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.action_title.delete')}
-                                                                                onClick={this.checkOrganizationalUnitKpi(currentKPIUnit) ? () => this.handleDeleteEmployeeKpi(currentKPI._id, currentKPI.status, item._id, item.status) : () => this.handleStartOrganizationalUnitKpi(currentKPIUnit)}>
+                                                                                onClick={this.checkOrganizationalUnitKpi() ? () => this.handleDeleteEmployeeKpi(currentKPI._id, currentKPI.status, item._id, item.status) : () => this.handleStartOrganizationalUnitKpi()}>
                                                                                 <i className="fa fa-trash"></i>
                                                                             </a>
                                                                         }
@@ -684,22 +702,23 @@ class CreateEmployeeKpiSet extends Component {
                                 </div>
 
                                 /* Khi chưa khởi tạo tập KPI cá nhân */
-                                : <div className="col-xs-12">
+                                : currentKPILoading
+                                && <div className="col-xs-12">
                                     <div style={{ marginLeft: "-10px" }}>
-                                        {this.checkOrganizationalUnitKpi(currentKPIUnit) ?
+                                        {this.checkOrganizationalUnitKpi() ?
                                             <div>
                                                 <a className="btn btn-app" data-toggle="modal" data-target="#createEmployeeKpiSet" data-backdrop="static" data-keyboard="false">
-                                                    <i className="fa fa-calendar-plus-o" style={{ fontSize: "16px" }}></i>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.initialize_kpi_newmonth')}
+                                                    <i className="fa fa-calendar-plus-o" style={{ fontSize: "16px" }}></i>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.initialize_kpi_newmonth')} {this.formatDate(month)}
                                                 </a>
                                                 <ModalCreateEmployeeKpiSet organizationalUnit={currentUnit && currentUnit[0] && currentUnit[0]} month={month}/>
                                             </div>
                                             : <a className="btn btn-app" data-toggle="modal" data-target="#startKPIPersonal" data-backdrop="static" data-keyboard="false" onClick={() => this.handleStartOrganizationalUnitKpi()}>
-                                                <i className="fa fa-calendar-plus-o" style={{ fontSize: "16px" }}></i>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.initialize_kpi_newmonth')}
+                                                <i className="fa fa-calendar-plus-o" style={{ fontSize: "16px" }}></i>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.initialize_kpi_newmonth')} {this.formatDate(month)}
                                             </a>
                                         }
                                     </div>
                                     <h3 style={{ display: "inline-block", fontWeight: "600" }}>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.general_information.general_information')} {this.formatDate(month)}</h3>
-                                    <p>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.not_initialize')}</p>
+                                    <p>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.not_initialize')} {this.formatDate(month)}</p>
                                 </div>
                             }
                         </div>

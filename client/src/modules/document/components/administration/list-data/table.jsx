@@ -485,7 +485,7 @@ class Table extends Component {
             list = docs.paginate;
         }
         let exportData = list ? this.convertDataToExportData(list) : "";
-        console.log("propppsss", currentRow);
+        console.log("propppsss", paginate);
         return (
             <div className="qlcv">
                 <CreateForm />
@@ -684,9 +684,9 @@ class Table extends Component {
                                         <a href="#" onClick={() => this.requestDownloadDocumentFile(doc._id, doc.name, doc.versions.length - 1)}>
                                             <u>{doc.versions.length && doc.versions[doc.versions.length - 1].file ? translate('document.download') : ""}</u>
                                         </a>
-                                        {/* <a href="#" onClick={() => this.showFilePreview(doc.versions.length && doc.versions[doc.versions.length - 1].file)}>
+                                        <a href="#" onClick={() => this.showFilePreview(doc.versions.length && doc.versions[doc.versions.length - 1].file)}>
                                             <u>{doc.versions.length && doc.versions[doc.versions.length - 1].file ? "Xem trước" : ""}</u>
-                                        </a> */}
+                                        </a>
                                     </td>
                                     <td>
                                         <a href="#" onClick={() => this.requestDownloadDocumentFileScan(doc._id, "SCAN_" + doc.name, doc.versions.length - 1)}>

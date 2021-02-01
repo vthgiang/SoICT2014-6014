@@ -3544,6 +3544,9 @@ export default {
         },
 
         kpi: {
+            general: {
+                show: "Xem"
+            },
             employee: {
                 get_kpi_by_member_success:
                     "Lấy KPI thành viên theo người thiết lập thành công",
@@ -3571,7 +3574,7 @@ export default {
                         weight_total: "Tổng trọng số",
                         not_satisfied: "Chưa thỏa mãn",
                         satisfied: "Thỏa mãn",
-                        initialize_kpi_newmonth: "Khởi tạo KPI tháng mới",
+                        initialize_kpi_newmonth: "Khởi tạo KPI tháng",
                         request_approval: "Yêu cầu phê duyệt",
                         cancel_request_approval: "Hủy yêu cầu phê duyệt",
                         not_initialize_organiztional_unit_kpi:
@@ -3814,6 +3817,7 @@ export default {
                     result: "Kết quả đánh giá",
                     data_not_found: "Không tìm thấy dữ liệu phù hợp",
                     unsuitable_weight: "Trọng số không thỏa mãn",
+                    unsuitable_approval: "Đang chỉnh sửa không được phê duyệt",
                     status: "Trạng thái",
                     action: "Hành động",
                     save_result: "Lưu kết quả",
@@ -3934,7 +3938,7 @@ export default {
                     confirm_delete_success:
                         "Bạn chắc chắn muốn xóa toàn bộ KPI này?",
                     time: "Thời gian",
-                    initialize_kpi_newmonth: "Khởi tạo KPI tháng mới",
+                    initialize_kpi_newmonth: "Khởi tạo KPI tháng",
                     edit_kpi_success: "Chỉnh sửa KPI thành công",
                     edit_kpi_failure: "Chỉnh sửa KPI không thành công",
                     delete_kpi_success: "Xóa KPI thành công",
