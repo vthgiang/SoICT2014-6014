@@ -1466,7 +1466,7 @@ exports.importEmployeeInfor = async (portal, company, data) => {
         if (checkEmailInCompany) {
             x = {
                 ...x,
-                errorAlert: [...x.errorAlert, "email_in_company_required"],
+                errorAlert: [...x.errorAlert, "email_in_company_have_exist"],
                 error: true
             };
         }
