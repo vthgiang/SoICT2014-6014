@@ -764,6 +764,7 @@ class TaskManagement extends Component {
                             <DataTableSetting
                                 tableId="tree-table"
                                 tableContainerId="tree-table-container"
+                                tableWidth="1300px"
                                 columnArr={[
                                     translate('task.task_management.col_name'),
                                     translate('task.task_management.col_organization'),

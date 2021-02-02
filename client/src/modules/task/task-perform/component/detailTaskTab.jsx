@@ -16,6 +16,7 @@ import { SelectFollowingTaskModal } from './selectFollowingTaskModal';
 import { withTranslate } from 'react-redux-multilingual';
 import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
 import { ShowMoreShowLess } from '../../../../common-components';
+import moment from 'moment';
 import Swal from 'sweetalert2';
 
 import parse from 'html-react-parser';
@@ -678,7 +679,8 @@ class DetailTaskTab extends Component {
         if (evaluations && evaluations.length > 0) {
             for (let i = 0; i < evaluations.length; i++) {
                 let prevEval;
-                let prevDate = task.startDate;
+                let startDate = task.startDate;
+                let prevDate = startDate;
                 let splitter = this.formatDate(evaluations[i].date).split("-");
 
                 let dateOfEval = new Date(splitter[2], splitter[1] - 1, splitter[0]);
@@ -697,6 +699,12 @@ class DetailTaskTab extends Component {
                 prevEval = evaluations.find(e => (monthOfPrevEval === new Date(e.date).getMonth() && yearOfPrevEval === new Date(e.date).getFullYear()));
                 if (prevEval) {
                     prevDate = prevEval.date;
+                } else {
+                    let strPrevMonth = `${monthOfPrevEval + 1}-${yearOfPrevEval}`
+                    // trong TH k có đánh giá tháng trước, so sánh tháng trước với tháng start date
+                    if (!((yearOfPrevEval === new Date(startDate).getFullYear()) && monthOfPrevEval <= new Date(startDate).getMonth())) {
+                        prevDate = moment(strPrevMonth, 'MM-YYYY').endOf("month").toDate();
+                    }
                 }
                 evalList.push({ ...evaluations[i], prevDate: prevDate })
             }
@@ -725,7 +733,7 @@ class DetailTaskTab extends Component {
 
                 if (tsheetlog && tsheetlog.stoppedAt && tsheetlog.creator) {
                     let times = hoursSpentOfEmployeeInTask[tsheetlog.creator.name] ? hoursSpentOfEmployeeInTask[tsheetlog.creator.name] : 0;
-                    
+
                     if (tsheetlog.acceptLog) {
                         hoursSpentOfEmployeeInTask[tsheetlog.creator.name] = times + tsheetlog.duration;
                     }
@@ -998,7 +1006,7 @@ class DetailTaskTab extends Component {
 
                                 {/* Mô tả công việc */}
                                 <div>
-                                <strong>{translate('task.task_management.detail_description')}:</strong>
+                                    <strong>{translate('task.task_management.detail_description')}:</strong>
                                     <ShowMoreShowLess
                                         id={"task-description"}
                                         isHtmlElement={true}
@@ -1266,11 +1274,11 @@ class DetailTaskTab extends Component {
                 }
                 {
                     (id && showCopy === `copy-task-${id}`) &&
-                    <TaskAddModal id={`copy-task-${id}`} task={task}/>
+                    <TaskAddModal id={`copy-task-${id}`} task={task} />
                 }
                 {
                     (id && showSaveAsTemplate === `${id}`) &&
-                    <ModalAddTaskTemplate savedTaskAsTemplate={true} savedTaskItem={task} savedTaskId={`${id}`} task={task}/>
+                    <ModalAddTaskTemplate savedTaskAsTemplate={true} savedTaskItem={task} savedTaskId={`${id}`} task={task} />
                 }
             </React.Fragment>
         );

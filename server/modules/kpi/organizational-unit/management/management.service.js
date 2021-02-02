@@ -14,41 +14,58 @@ const EmployeeKpiService = require(`../../employee/management/management.service
  * @query {*} idunit Id của đơn vị 
  */
 exports.copyKPI = async (portal, kpiId, data) => {
-    let organizationalUnitOldKPISet = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
+    let organizationalUnitOldKPISet, checkOrganizationalUnitKpiSet;
+    let newDate, nextNewDate;
+
+    newDate = new Date(data.datenew);
+    nextNewDate = new Date(data.datenew);
+    nextNewDate.setMonth(nextNewDate.getMonth() + 1);
+
+    organizationalUnitOldKPISet = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
         .findById(kpiId)
         .populate("organizationalUnit creator")
         .populate({ path: "kpis", populate: { path: 'parent' } });
-
-    let organizationalUnitKpiSet;
-
-    let organizationalUnitNewKpi = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
-        .create({
+    
+    checkOrganizationalUnitKpiSet = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
+        .findOne({
             organizationalUnit: organizationalUnitOldKPISet.organizationalUnit._id,
-            creator: data.creator,
-            date: new Date(data.datenew),
-            kpis: []
+            date: { $gte: newDate, $lt: nextNewDate }
         })
 
-    for (let i in organizationalUnitOldKPISet.kpis) {
-        var target = await OrganizationalUnitKpi(connect(DB_CONNECTION, portal))
-            .create({
-                name: organizationalUnitOldKPISet.kpis[i].name,
-                parent: organizationalUnitOldKPISet.kpis[i].parent,
-                weight: organizationalUnitOldKPISet.kpis[i].weight,
-                criteria: organizationalUnitOldKPISet.kpis[i].criteria,
-                type: organizationalUnitOldKPISet.kpis[i].type
-            })
-        organizationalUnitKpiSet = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
-            .findByIdAndUpdate(
-                organizationalUnitNewKpi, { $push: { kpis: target._id } }, { new: true }
-            );
-    }
-    organizationalUnitKpiSet = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
-        .find({ organizationalUnit: data.idunit })
-        .populate("organizationalUnit creator")
-        .populate({ path: "kpis", populate: { path: 'parent' } });
+    if (checkOrganizationalUnitKpiSet) {
+        throw { messages: "organizatinal_unit_kpi_set_exist" }
+    } else {
+        let organizationalUnitKpiSet, organizationalUnitNewKpi;
 
-    return organizationalUnitKpiSet;
+        organizationalUnitNewKpi = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
+            .create({
+                organizationalUnit: organizationalUnitOldKPISet.organizationalUnit._id,
+                creator: data.creator,
+                date: newDate,
+                kpis: []
+            })
+
+        for (let i in organizationalUnitOldKPISet.kpis) {
+            let target = await OrganizationalUnitKpi(connect(DB_CONNECTION, portal))
+                .create({
+                    name: organizationalUnitOldKPISet.kpis[i].name,
+                    parent: organizationalUnitOldKPISet.kpis[i].parent,
+                    weight: organizationalUnitOldKPISet.kpis[i].weight,
+                    criteria: organizationalUnitOldKPISet.kpis[i].criteria,
+                    type: organizationalUnitOldKPISet.kpis[i].type
+                })
+            organizationalUnitKpiSet = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
+                .findByIdAndUpdate(
+                    organizationalUnitNewKpi, { $push: { kpis: target._id } }, { new: true }
+                );
+        }
+        organizationalUnitKpiSet = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
+            .find({ organizationalUnit: data.idunit })
+            .populate("organizationalUnit creator")
+            .populate({ path: "kpis", populate: { path: 'parent' } });
+
+        return organizationalUnitKpiSet;
+    }
 }
 
 exports.calculateKpiUnit = async (portal, data) => {

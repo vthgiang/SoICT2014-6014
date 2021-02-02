@@ -60,6 +60,8 @@ export function managerKpiUnit(state = {}, action) {
       };
     case managerConstants.COPY_KPIUNIT_FAILURE:
       return {
+        ...state,
+        adding: true,
         error: action.payload,
         isLoading: false
       };

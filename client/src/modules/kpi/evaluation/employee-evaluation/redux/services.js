@@ -23,7 +23,9 @@ function getEmployeeKPISets(infosearch) {
             user: infosearch.user,
             status: infosearch.status,
             startDate: infosearch.startDate,
-            endDate: infosearch.endDate
+            endDate: infosearch.endDate,
+            approver: infosearch ? infosearch.approver : null,
+            organizationalUnit: infosearch ? infosearch.organizationalUnit : null
         }
     }, false, true, 'kpi.evaluation');
 }

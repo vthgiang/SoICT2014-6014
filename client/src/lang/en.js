@@ -2846,7 +2846,7 @@ export default {
                     "You can no longer edit reviews because it is more than 7 days after the last review.",
                 note_eval: "Number of days left to edit review",
 
-                add_eval_of_this_month: "Add evaluation of this month",
+                add_eval_of_this_month: "Add evaluation",
                 eval_of: "Evaluation of",
                 eval_from: "Evaluation from",
                 eval_to: "Evaluation to",
@@ -3874,6 +3874,11 @@ export default {
                     "Update KPI unit evaluation successfully",
                 update_evaluate_kpi_unit_fail:
                     "Update KPI unit evaluation fail",
+                copy_kpi_unit_success: "Copy organizational unit KPI set successfully",
+                copy_kpi_unit_failure: "Copy organizational unit KPI set unsuccessfully",
+                organizatinal_unit_kpi_set_exist: "Organizational unit KPI set already exists",
+                calculate_kpi_unit_success: "Calculate organizational unit KPI successfully",
+                calculate_kpi_unit_failure: "Calculate organizational unit KPI unsuccessfully"
             },
         },
 
