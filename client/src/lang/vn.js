@@ -3111,7 +3111,7 @@ export default {
                     "Đã quá 7 ngày sau ngày đánh giá. Bạn không thể chỉnh sửa thêm!",
                 note_eval: "Số ngày còn lại để chỉnh sửa đánh giá",
 
-                add_eval_of_this_month: "Thêm đánh giá tháng này",
+                add_eval_of_this_month: "Thêm đánh giá",
                 eval_of: "Đánh giá tháng",
                 eval_from: "Đánh giá từ ngày",
                 eval_to: "Đến ngày",
