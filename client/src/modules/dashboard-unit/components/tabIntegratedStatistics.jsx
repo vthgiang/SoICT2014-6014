@@ -144,7 +144,7 @@ class TabIntegratedStatistics extends Component {
                                         <tbody>
                                             {employeeTasks.length !== 0 &&
                                                 employeeTasks.map((x, index) => index < 5 ? (
-                                                    <tr key={index}>
+                                                    <tr key={index} style={{ width: 46 }}>
                                                         <td>{index + 1}</td>
                                                         <td>{x.name}</td>
                                                         <td>

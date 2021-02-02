@@ -659,7 +659,7 @@ class TaskManagement extends Component {
                                         defaultValue={units.map(item => item._id)}
                                         items={units.map(item => { return { value: item._id, text: item.name } })}
                                         onChange={this.handleSelectOrganizationalUnit}
-                                        options={{ nonSelectedText: units.length !== 0 ? translate('task.task_management.select_department') : "Bạn chưa có đơn vị", allSelectedText: translate(`task.task_management.select_all_department`) }}>
+                                        options={{ nonSelectedText: translate('task.task_management.select_department'), allSelectedText: translate(`task.task_management.select_all_department`) }}>
                                     </SelectMulti>
                                 }
                             </div>

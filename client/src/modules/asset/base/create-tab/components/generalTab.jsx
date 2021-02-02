@@ -165,45 +165,18 @@ class GeneralTab extends Component {
      */
 
     handleAssetTypeChange = async (value) => {
-        // let { assetType } = this.props;
-        // let { detailInfo } = this.state;
-        // let arr = [...detailInfo];
-
-        // if (value && value.length !== 0) {
-        //     let assetTypeList = assetType.listAssetTypes;
-        //     let currentAssetType = assetTypeList.filter((element) => element._id === value[0])[0];
-        //     let defaultInformation = currentAssetType ? currentAssetType.defaultInformation : [];
-
-        //     // Thêm trường thông tin mặc định ở nhóm tài sản vào thông tin chi tiết
-        //     for (let i in defaultInformation) {
-        //         let check = true;
-        //         for (let j in detailInfo) {
-        //             if (defaultInformation[i].nameField === detailInfo[j].nameField) {
-        //                 check = false;
-        //             }
-        //         }
-
-        //         if (check) {
-        //             arr.push({
-        //                 ...defaultInformation[i],
-        //                 value: '',
-        //             });
-        //         }
-        //     }
-        // }
         const { translate } = this.props;
         let { message } = ValidationHelper.validateEmpty(translate, value[0]);
+
         await this.setState(state => {
             return {
                 ...state,
                 assetType: value,
-                // detailInfo: arr,
                 isObj: false,
                 errorOnAssetType: message,
             }
         });
         this.props.handleChange("assetType", value);
-        // this.props.handleChange("detailInfo", this.state.detailInfo);
     }
 
     /**
@@ -482,7 +455,10 @@ class GeneralTab extends Component {
     };
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.id !== prevState.id || nextProps.assignedToUser !== prevState.assignedToUser || nextProps.assignedToOrganizationalUnit !== prevState.assignedToOrganizationalUnit) {
+        if (nextProps.id !== prevState.id 
+            || nextProps.assignedToUser !== prevState.assignedToUser 
+            || nextProps.assignedToOrganizationalUnit !== prevState.assignedToOrganizationalUnit
+            || nextProps.assetTypes !== prevState.assetTypes) {
             return {
                 ...prevState,
                 id: nextProps.id,
@@ -492,7 +468,7 @@ class GeneralTab extends Component {
                 code: nextProps.code,
                 assetName: nextProps.assetName,
                 serial: nextProps.serial,
-                assetType: nextProps.assetType,
+                assetTypes: nextProps.assetTypes,
                 group: nextProps.group,
                 location: nextProps.location,
                 purchaseDate: nextProps.purchaseDate,
@@ -525,25 +501,10 @@ class GeneralTab extends Component {
         }
     }
 
-    getAssetTypes = () => {
-        let { assetType } = this.props;
-        let assetTypeName = assetType && assetType.listAssetTypes;
-        let typeArr = [];
-        assetTypeName.map(item => {
-            typeArr.push({
-                _id: item._id,
-                id: item._id,
-                name: item.typeName,
-                parent: item.parent ? item.parent._id : null
-            })
-        })
-        return typeArr;
-    }
-
     render() {
-        const { id, translate, user, assetsManager, role, department, assetTypes } = this.props;
+        const { id, translate, user, assetsManager, role, department, assetType } = this.props;
         const {
-            img, defaultAvatar, code, assetName, assetType, group, serial, purchaseDate, warrantyExpirationDate, managedBy, isObj,
+            img, defaultAvatar, code, assetName, assetTypes, group, serial, purchaseDate, warrantyExpirationDate, managedBy, isObj,
             assignedToUser, assignedToOrganizationalUnit, location, description, status, typeRegisterForUse, detailInfo,
             errorOnCode, errorOnAssetName, errorOnSerial, errorOnAssetType, errorOnLocation, errorOnPurchaseDate,
             errorOnWarrantyExpirationDate, errorOnManagedBy, errorOnNameField, errorOnValue, usageLogs, readByRoles, errorOnNameFieldPosition, errorOnValuePosition
@@ -552,24 +513,6 @@ class GeneralTab extends Component {
         var userlist = user.list, departmentlist = department.list;
         let startDate = status == "in_use" && usageLogs && usageLogs.length ? this.formatDate(usageLogs[usageLogs.length - 1].startDate) : '';
         let endDate = status == "in_use" && usageLogs && usageLogs.length ? this.formatDate(usageLogs[usageLogs.length - 1].endDate) : '';
-        let typeInTreeSelect = assetType && assetType.length ? assetType : [];
-        let types = this.state.assetType;
-        let listtypes = this.props.assetType.listAssetTypes;
-
-        if (types.length && listtypes.length) {
-            for (let i in types) {
-                for (let j in listtypes) {
-                    if (types[i] === listtypes[j]._id) {
-                        typeInTreeSelect.push(listtypes[j]._id);
-                    }
-                }
-            }
-        }
-        else {
-            for (let i in assetTypes) {
-                typeInTreeSelect.push(assetTypes[i]._id);
-            }
-        }
 
         let assetbuilding = assetsManager && assetsManager.buildingAssets;
         let assetbuildinglist = assetbuilding && assetbuilding.list;
@@ -581,7 +524,15 @@ class GeneralTab extends Component {
                 parent: node.location,
             }
         })
-        let typeArr = this.getAssetTypes();
+
+        let assetTypeName = assetType && assetType.listAssetTypes;
+        let typeArr = assetTypeName && assetTypeName.map(item => {
+            return {
+                _id: item._id,
+                name: item.typeName,
+                parent: item.parent ? item.parent._id : null
+            }
+        })
 
         return (
             <div id={id} className="tab-pane active">
@@ -655,7 +606,7 @@ class GeneralTab extends Component {
                                     <label>{translate('asset.general_information.asset_type')}<span className="text-red">*</span></label>
                                     <TreeSelect
                                         data={typeArr}
-                                        value={typeInTreeSelect}
+                                        value={assetTypes}
                                         handleChange={this.handleAssetTypeChange}
                                         mode="hierarchical"
                                     />

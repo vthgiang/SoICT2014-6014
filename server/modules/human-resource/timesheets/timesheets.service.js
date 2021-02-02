@@ -530,7 +530,7 @@ exports.importTimesheets = async (portal, data, company) => {
                 let timekeepingByHours = shift1s.map((x, index) => x + shift2s[index] + shift3s[index]);
                 let totalHours = 0;
                     if(y.totalHours){
-                        totalHours
+                        totalHours = y.totalHours
                     } else {
                         timekeepingByHours.forEach(x => {
                             totalHours = totalHours + x;

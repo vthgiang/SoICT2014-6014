@@ -545,6 +545,9 @@ exports.importEmployees = async (req, res) => {
         if (req.body.importType === 'File') {
             data = await EmployeeService.importFile(req.portal, req.user.company._id, req.body.importData);
         };
+        if (req.body.importType === 'FamilyMembers') {
+            data = await EmployeeService.importFamily(req.portal, req.user.company._id, req.body.importData);
+        };
         if (data.errorStatus === true) {
             await Log.error(req.user.email, 'IMPORT_EMPLOYEE', req.portal);
             res.status(400).json({

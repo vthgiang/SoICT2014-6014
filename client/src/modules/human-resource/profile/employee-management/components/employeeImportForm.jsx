@@ -147,13 +147,23 @@ class EmployeeImportForm extends Component {
                 maritalStatus: maritalStatus,
                 educationalLevel: educationalLevel,
                 professionalSkill: professionalSkill,
-                status: status
+                status: status,
+                houseHold: {
+                    headHouseHoldName: x.headHouseHoldName,
+                    documentType: x.documentType,
+                    houseHoldNumber: x.houseHoldNumber,
+                    city: x.city,
+                    district: x.district,
+                    ward: x.ward,
+                    houseHoldAddress: x.houseHoldAddress,
+                    phone: x.phone,
+                    houseHoldCode: x.houseHoldCode,
+                }
             };
         })
 
         // Check dữ liệu import có hợp lệ hay không
         let checkImportData = value, rowError = [];
-        console.log(value)
         value = value.map((x, index) => {
             let errorAlert = [];
             if (x.employeeNumber === null || x.fullName === null || x.emailInCompany === null || x.employeeTimesheetId === null
@@ -270,7 +280,6 @@ class EmployeeImportForm extends Component {
      * @param {*} value : dữ liệu cần import
      */
     handleCheckImportDataOfDegree = (value) => {
-        console.log(value)
         const { translate, field } = this.props;
         const listFields = field.listFields
         value = value.map(x => {
@@ -551,6 +560,47 @@ class EmployeeImportForm extends Component {
         return { importData: value, rowError: rowError }
     }
 
+    /**
+     * Function kiểm dữ liệu import thông tin thành viên hộ gia đình
+     * @param {*} value : dữ liệu cần import
+     */
+    handleCheckImportDataOfFamily = (value) => {
+        console.log(value)
+        const { translate } = this.props;
+        value = value.map(x => {
+            let isHeadHousehold = x.isHeadHousehold ? 'yes' : 'no'
+            let gender = x.gender === translate('human_resource.profile.male') ? "male" : "female";
+            return {
+                ...x,
+                gender,
+                isHeadHousehold,
+            }
+        })
+        let rowError = [];
+        // Check dữ liệu import có hợp lệ hay không
+        value = value.map((x, index) => {
+            let errorAlert = [];
+            if (x.employeeNumber === null, x.name === null) {
+                rowError = [...rowError, index + 1]
+                x = { ...x, error: true }
+            }
+            if (x.employeeNumber === null) {
+                errorAlert = [...errorAlert, `${translate('human_resource.profile.staff_number')} ${translate('human_resource.cannot_be_empty')}`];
+            };
+
+            if (x.name === null) {
+                errorAlert = [...errorAlert, `${translate('human_resource.profile.house_hold.members.name_member')} ${translate('human_resource.cannot_be_empty')}`];
+            };
+
+            x = { ...x, errorAlert: errorAlert }
+            return x;
+        });
+        this.setState({
+            importDataOfFamily: value,
+        })
+        return { importData: value, rowError: rowError }
+    }
+
 
 
     /**
@@ -602,11 +652,19 @@ class EmployeeImportForm extends Component {
     }
 
     /**
-    * Function bắt sự kiện import Tài liệ đính kèm
+    * Function bắt sự kiện import Tài liệu đính kèm
     */
     handleImportFile = () => {
         let { importDataOfFile } = this.state;
         this.props.importEmployees({ importType: "File", importData: importDataOfFile });
+    }
+
+    /**
+    * Function bắt sự kiện import thành viên hộ gia đình
+    */
+    handleFamilyMembers = () => {
+        let { importDataOfFamily } = this.state;
+        this.props.importEmployees({ importType: "FamilyMembers", importData: importDataOfFamily });
     }
 
 
@@ -619,6 +677,7 @@ class EmployeeImportForm extends Component {
             configurationCertificate = configurationEmployee.configurationCertificate(translate),
             configurationContract = configurationEmployee.configurationContract(translate),
             configurationFile = configurationEmployee.configurationFile(translate),
+            configurationFamilyMembers = configurationEmployee.configurationFamilyMembers(translate),
             teamplateImport = configurationEmployee.templateImport(translate);
         let listFields = field.listFields
         return (
@@ -641,6 +700,7 @@ class EmployeeImportForm extends Component {
                                 <li><a title={translate(`human_resource.profile.employee_management.import.import_contract_title`)} data-toggle="tab" href="#import_employee_contract">{translate(`human_resource.profile.employee_management.import.import_contract`)}</a></li>
                                 <li><a title={translate(`human_resource.profile.employee_management.import.import_socialInsurance_details_title`)} data-toggle="tab" href="#import_employee_socialInsurance_details">{translate(`human_resource.profile.employee_management.import.import_socialInsurance_details`)}</a></li>
                                 <li><a title={translate(`human_resource.profile.employee_management.import.import_file_title`)} data-toggle="tab" href="#import_employee_file">{translate(`human_resource.profile.employee_management.import.import_file`)}</a></li>
+                                <li><a title={translate(`human_resource.profile.employee_management.import.import_file_family`)} data-toggle="tab" href="#import_employee_family">{translate(`human_resource.profile.employee_management.import.import_family`)}</a></li>
 
                             </ul>
                             < div className="tab-content">
@@ -731,6 +791,19 @@ class EmployeeImportForm extends Component {
                                     teamplateImport={teamplateImport}
                                     handleCheckImportData={this.handleCheckImportDataOfFile}
                                     handleImport={this.handleImportFile}
+                                />
+
+                                <EmployeeImportTab
+                                    id="import_employee_family"
+                                    textareaRow={10}
+                                    configTableWidth={1000}
+                                    showTableWidth={1000}
+                                    rowErrorOfReducer={employeesManager.error.rowErrorOfFile}
+                                    dataOfReducer={employeesManager.error.files}
+                                    configuration={configurationFamilyMembers}
+                                    teamplateImport={teamplateImport}
+                                    handleCheckImportData={this.handleCheckImportDataOfFamily}
+                                    handleImport={this.handleFamilyMembers}
                                 />
                             </div>
                         </div>

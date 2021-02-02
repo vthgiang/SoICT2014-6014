@@ -27,13 +27,15 @@ class SlimScroll extends Component {
     }
 
     shouldComponentUpdate(nextProps, nextState) {
-        const { maxHeight=200 } = this.props;
+        const { maxHeight=200, verticalScroll=false } = this.props;
 
-        // Nếu height mới lớn hơn maxHeight mới re-render
-        let checkHeight = window.$(`#${nextProps.outerComponentId}`).height() > maxHeight;
+        if (verticalScroll) {
+            // Nếu height mới lớn hơn maxHeight mới re-render
+            let checkHeight = window.$(`#${nextProps.outerComponentId}`).height() > maxHeight;
 
-        if (!checkHeight) {
-            return false
+            if (!checkHeight) {
+                return false
+            }
         }
 
         return true;

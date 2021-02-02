@@ -1092,13 +1092,16 @@ class ActionTab extends Component {
         const { performtasks } = this.props;
         let { addLogTimeDate, addLogStartTime, addLogEndTime, addLogDescription } = this.state;
         let startAt, stopAt;
+        let { startDate, endDate } = performtasks.task;
 
+        // Định dạng new Date("2021-02-21 09:40 PM") chạy trên chorme ok, chạy trên firefox invalid date
+        // nên chuyển thành định dạng new Date("2021/02/21 09:40 PM")
         if (addLogTimeDate && addLogStartTime) {
-            startAt = new Date(addLogTimeDate + " " + addLogStartTime);
+            startAt = new Date((addLogTimeDate + " " + addLogStartTime).replace(/-/g, '/'));
         }
 
         if (addLogTimeDate && addLogEndTime) {
-            stopAt = new Date(addLogTimeDate + " " + addLogEndTime);
+            stopAt = new Date((addLogTimeDate + " " + addLogEndTime).replace(/-/g, '/'));
         }
 
         const timer = {
@@ -1118,21 +1121,40 @@ class ActionTab extends Component {
                 confirmButtonText: "Đóng",
             })
         } else {
-            // Check thời gian kết thúc phải sau thời gian bắt đầu
-            if (!this.checkValidateDate(startAt, stopAt)) {
+            startDate = moment(startDate).format('YYYY-MM-DD');
+            startDate = new Date(startDate).getTime();
+
+            endDate = moment(endDate).format('YYYY-MM-DD');
+            endDate = new Date(endDate).getTime();
+
+            let checkDateRange = new Date(addLogTimeDate).getTime();
+
+            // check xem thời gian bấm giờ nằm trong khoản thời gian bắt đầu và thời gian kết thúc của công việc
+            if (!(checkDateRange >= startDate && checkDateRange <= endDate)) {
                 Swal.fire({
-                    title: 'Thời gian kết thúc phải sau thời gian bắt đầu',
+                    title: 'Thời gian bấm giờ phải trong khoảng thời gian làm việc',
                     type: 'warning',
                     confirmButtonColor: '#dd4b39',
                     confirmButtonText: "Đóng",
                 })
-            } else {
-                this.props.stopTimer(performtasks.task._id, timer);
-                this.setState({
-                    ...this.state,
-                    showBoxAddLogTimer: false,
-                    addLogDescription: "",
-                })
+            }
+            else {
+                // Check thời gian kết thúc phải sau thời gian bắt đầu
+                if (!this.checkValidateDate(startAt, stopAt)) {
+                    Swal.fire({
+                        title: 'Thời gian kết thúc phải sau thời gian bắt đầu',
+                        type: 'warning',
+                        confirmButtonColor: '#dd4b39',
+                        confirmButtonText: "Đóng",
+                    })
+                } else {
+                    this.props.stopTimer(performtasks.task._id, timer);
+                    this.setState({
+                        ...this.state,
+                        showBoxAddLogTimer: false,
+                        addLogDescription: "",
+                    })
+                }
             }
         }
     }

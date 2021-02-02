@@ -1767,22 +1767,22 @@ exports.sendEmailForCreateTask = async (portal, task) => {
         `<p>Người thực hiện</p> ` +
         `<ul>${res.map((item) => {
             return `<li>${item.name} - ${item.email}</li>`
-        })}
+        }).join('')}
                     </ul>`+
         `<p>Người phê duyệt</p> ` +
         `<ul>${acc.map((item) => {
             return `<li>${item.name} - ${item.email}</li>`
-        })}
+        }).join('')}
                     </ul>` +
         `${con.length > 0 ? `<p>Người tư vấn</p> ` +
             `<ul>${con.map((item) => {
                 return `<li>${item.name} - ${item.email}</li>`
-            })}
+            }).join('')}
                     </ul>` : ""}` +
         `${inf.length > 0 ? `<p>Người quan sát</p> ` +
             `<ul>${inf.map((item) => {
                 return `<li>${item.name} - ${item.email}</li>`
-            })}
+            }).join('')}
                     </ul>` : ""}`
         ;
     var html = `<p>Bạn có công việc mới: ` + body;

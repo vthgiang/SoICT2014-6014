@@ -40,6 +40,7 @@ exports.searchAssetProfiles = async (req, res) => {
                 incidentCode: req.query.incidentCode,
                 incidentStatus: req.query.incidentStatus,
                 incidentType: req.query.incidentType,
+                incidentDate: req.query.incidentDate,
                 getType: req.query.getType
             }
             data = await AssetService.searchAssetProfiles(req.portal, req.user.company._id, params);

@@ -2,9 +2,11 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import FilePreviewer from 'react-file-previewer';
+
 import { DialogModal } from '../../../../../common-components';
 import { AuthActions } from '../../../../auth/redux/actions';
 import FileViewer from 'react-file-viewer';
+//import docx2html from 'docx2html';
 class FilePreview extends Component {
 
 
@@ -61,6 +63,9 @@ class FilePreview extends Component {
         const { data } = this.state;
         let encode = this.props.auth.showFiles.length ? this.props.auth.showFiles[0].file : "";
 
+        // docx2html(encode, { container: document.getElementById('a') }).then(function (html) {
+        //     html.toString()
+        // })
 
         //   let dataEncode = this.props.auth.showFiles.length ? atob(encode) : "";
         // if (this.props.auth.showFiles.length) {
@@ -74,8 +79,10 @@ class FilePreview extends Component {
         //         console.log(reader.result);
         //     };
         // }
-        let link = `https://docs.google.com/gview?url${encode} &embedded=true`
-        console.log('filleee', link);
+        // let link = `https://docs.google.com/gview?url${encode} &embedded=true`
+        // console.log('filleee', link);
+
+
 
         return (
             <React.Fragment>
@@ -96,12 +103,16 @@ class FilePreview extends Component {
                                 name: 'sample.pdf' // for download
                             }}
                         /> */}
-                        {/* <iframe
-                            src={link}
+                        <iframe
+                            src={encode}
                         >
 
 
-                        </iframe> */}
+                        </iframe>
+
+                        <div id='a'>
+
+                        </div>
                         {/* <FileViewer
                             fileType='docx'
                             filePath={encode}

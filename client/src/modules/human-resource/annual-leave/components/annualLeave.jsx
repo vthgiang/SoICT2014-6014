@@ -181,7 +181,7 @@ class AnnualLeave extends Component {
                             <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }}>
                                 <thead>
                                     <tr>
-                                        <th style={{ width: 40 }}>{translate('human_resource.stt')}</th>
+                                        <th className="not-sort" style={{ width: 50 }}>{translate('human_resource.stt')}</th>
                                         <th>{translate('human_resource.work_plan.table.timeline')}</th>
                                         <th>{translate('human_resource.work_plan.table.describe_timeline')}</th>
                                         <th>{translate('human_resource.work_plan.table.type')}</th>

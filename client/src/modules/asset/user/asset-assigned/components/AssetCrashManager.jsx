@@ -17,9 +17,8 @@ class AssetCrashManager extends Component {
         this.state = {
             code: "",
             assetName: "",
-            assetType: null,
             month: null,
-            status: "",
+            type: null,
             page: 0,
         }
     }
@@ -109,7 +108,7 @@ class AssetCrashManager extends Component {
     handleMonthChange = (value) => {
         this.setState({
             ...this.state,
-            month: value
+            incidentDate: value
         });
     }
 
@@ -121,7 +120,7 @@ class AssetCrashManager extends Component {
 
         this.setState({
             ...this.state,
-            type: value
+            incidentType: value
         })
     }
 
@@ -223,7 +222,7 @@ class AssetCrashManager extends Component {
                         {/* Tên tài sản */}
                         <div className="form-group">
                             <label className="form-control-static">{translate('asset.general_information.asset_name')}</label>
-                            <input type="text" className="form-control" name="assetName" onChange={this.handleRepairNumberChange} placeholder={translate('asset.general_information.asset_name')} autoComplete="off" />
+                            <input type="text" className="form-control" name="assetName" onChange={this.handleAssetNameChange} placeholder={translate('asset.general_information.asset_name')} autoComplete="off" />
                         </div>
                     </div>
 
@@ -235,8 +234,8 @@ class AssetCrashManager extends Component {
                                 options={{ nonSelectedText: translate('asset.general_information.select_incident_type'), allSelectedText: translate('asset.general_information.select_all_incident_type') }}
                                 onChange={this.handleTypeChange}
                                 items={[
-                                    { value: "broken", text: translate('asset.general_information.damaged') },
-                                    { value: "lost", text: translate('asset.general_information.lost') }
+                                    { value: "1", text: translate('asset.general_information.damaged') },
+                                    { value: "2", text: translate('asset.general_information.lost') }
                                 ]}
                             >
                             </SelectMulti>
@@ -244,11 +243,10 @@ class AssetCrashManager extends Component {
 
                         {/* Tháng */}
                         <div className="form-group">
-                            <label className="form-control-static">{translate('page.month')}</label>
+                            <label className="form-control-static">{translate('asset.general_information.date_incident')}</label>
                             <DatePicker
                                 id="month"
                                 dateFormat="month-year"
-                                value={this.formatDate(Date.now())}
                                 onChange={this.handleMonthChange}
                             />
                         </div>

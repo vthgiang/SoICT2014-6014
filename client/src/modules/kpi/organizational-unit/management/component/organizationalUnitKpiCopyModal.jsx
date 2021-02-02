@@ -36,120 +36,49 @@ class ModalCopyKPIUnit extends Component {
     }
 
     handleNewDateChange = (value) => {
+        let month = value.slice(3, 7) + '-' + value.slice(0, 2);
+
         this.setState(state => {
             return {
                 ...state,
-                NewDate: value,
+                month: month
             }
         });
 
     }
 
-    handleSubmit = async (oldkpiunit, listkpi, idunit, kpiId) => {
-        const { kpiunit } = this.state;
-        const { translate } = this.props;
-        let id = getStorage("userId");
+    handleSubmit = () => {
+        const { kpiId, kpiunit, idunit } = this.props;
 
-        await this.setState(state => {
+        this.setState(state => {
             return {
                 ...state,
                 kpiunit: {
                     ...state.kpiunit,
-                    creator: id,
-                    unit: oldkpiunit.organizationalUnit._id,
-                    kpis: oldkpiunit.kpis
+                    unit: kpiunit.organizationalUnit._id,
+                    kpis: kpiunit.kpis
                 }
             }
         })
-        
-        let checkNewDate = this.state.NewDate;
-        if (checkNewDate) {
-            let date = this.state.NewDate.split("-");
-            let check = 1;
-            let nowDate = new Date();
 
-            for (let i in listkpi) {
-                if (listkpi[i].organizationalUnit._id == idunit) {
-                    let checkDate = listkpi[i].date.split("-");
-                    if (checkDate[0] == date[1] && checkDate[1] == date[0]) {
-                        check = 0;
-                        break;
-                    }
-                }
-            }
-
-            if (check != 0) {
-                if (date[1] < nowDate.getFullYear()) {
-                    check = 2;
-                } else if (date[1] == nowDate.getFullYear()) {
-                    if (date[0] < nowDate.getMonth()) {
-                        check = 2
-                    }
-                }
-            }
-
-            if (check == 0) {
-                Swal.fire({
-                    title: translate('kpi.organizational_unit.management.copy_modal.alert.coincide_month')+`${date[0]}-${date[1]} `,
-                    type: 'warning',
-                    icon: 'warning',
-                    confirmButtonColor: '#3085d6',
-                    confirmButtonText: translate('kpi.organizational_unit.management.copy_modal.alert.confirm'),
-                })
-            }
-
-            if (check == 2) {
-                Swal.fire({
-                    title: translate('kpi.organizational_unit.management.copy_modal.alert.unable_kpi'),
-                    type: 'warning',
-                    icon: 'warning',
-                    confirmButtonColor: '#3085d6',
-                    confirmButtonText: translate('kpi.organizational_unit.management.copy_modal.alert.confirm'),
-                })
-            }
-
-            if (check == 1) {
-                let data = {  
-                    creator: id,
-                    idunit: idunit,
-                    datenew: this.state.NewDate
-                }
-                this.props.copyKPIUnit(kpiId, data);
-                if (kpiunit.unit && kpiunit.date) {
-                    Swal.fire({
-                        title: translate('kpi.organizational_unit.management.copy_modal.alert.change_link'),
-                        type: 'warning',
-                        confirmButtonColor: '#3085d6',
-                        confirmButtonText: translate('kpi.organizational_unit.management.copy_modal.alert.confirm'),
-                    });
-                }
-            }
-        } else {
-            Swal.fire({
-                title: translate('kpi.organizational_unit.management.copy_modal.alert.check_new_date'),
-                type: 'warning',
-                icon: 'warning',
-                confirmButtonColor: '#3085d6',
-                confirmButtonText: translate('kpi.organizational_unit.management.copy_modal.alert.confirm'),
-            })
+        let data = {  
+            idunit: idunit,
+            datenew: this.state.month
         }
-    }
-
-    save = () => {
-        const { kpiId, listkpi, kpiunit, idunit } = this.props;
-        this.handleSubmit(kpiunit, listkpi, idunit, kpiId)
+        console.log(data)
+        this.props.copyKPIUnit(kpiId, data);
     }
 
     render() {
         const { kpiunit, listkpi, idunit, translate, kpiId } = this.props;
-        const { NewDate, errorOnDate } = this.state;
+        const { month, errorOnDate } = this.state;
         
         return (
             <DialogModal
                 modalID={`copy-old-kpi-to-new-time-${kpiunit._id}`}
                 title={translate('kpi.organizational_unit.management.copy_modal.create')+ `${this.formatDate(kpiunit.date)}`}
                 size={10}
-                func={this.save}
+                func={this.handleSubmit}
             >
                 <div className="form-group">
                     <label className="col-sm-4">{translate('kpi.organizational_unit.management.copy_modal.organizational_unit')}</label>
@@ -160,7 +89,7 @@ class ModalCopyKPIUnit extends Component {
                     <label className="col-sm-2">{translate('kpi.organizational_unit.management.copy_modal.month')}</label>
                     <DatePicker
                         id="new_date"
-                        value={NewDate}
+                        value={month}
                         onChange={this.handleNewDateChange}
                         dateFormat="month-year"
                     />

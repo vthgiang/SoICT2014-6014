@@ -6,6 +6,7 @@ export const configurationEmployee = {
     configurationContract,
     configurationSocialInsuranceDetails,
     configurationFile,
+    configurationFamilyMembers,
 
     templateImport,
 }
@@ -246,6 +247,53 @@ function configurationEmployeeInfo(translate) {
             description: `${translate('human_resource.title_correspond')} ${translate('human_resource.profile.attachments_code').toLowerCase()}`,
             value: translate(`human_resource.profile.attachments_code`)
         },
+        // Thông tin hộ gia đình
+        houseHoldNumber: { // Số hộ khẩu
+            columnName: translate(`human_resource.profile.house_hold.appendix.house_hold_number`),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.profile.house_hold.appendix.house_hold_number').toLowerCase()}`,
+            value: translate(`human_resource.profile.house_hold.appendix.house_hold_number`)
+        },
+        headHouseHoldName: { // Tên chủ hộ
+            columnName: translate(`human_resource.profile.house_hold.appendix.head_house_hold_name`),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.profile.house_hold.appendix.head_house_hold_name').toLowerCase()}`,
+            value: translate(`human_resource.profile.house_hold.appendix.head_house_hold_name`)
+        },
+        documentType: { // Loại giấy tờ
+            columnName: translate(`human_resource.profile.house_hold.appendix.document_type`),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.profile.house_hold.appendix.document_type').toLowerCase()}`,
+            value: translate(`human_resource.profile.house_hold.appendix.document_type`)
+        },
+        city: { // Thành phố/ tỉnh
+            columnName: translate(`human_resource.profile.house_hold.appendix.city`),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.profile.house_hold.appendix.city').toLowerCase()}`,
+            value: translate(`human_resource.profile.house_hold.appendix.city`)
+        },
+        district: { // Quận/ huyện
+            columnName: translate(`human_resource.profile.house_hold.appendix.district`),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.profile.house_hold.appendix.district').toLowerCase()}`,
+            value: translate(`human_resource.profile.house_hold.appendix.district`)
+        },
+        ward: { // Phường/ xã
+            columnName: translate(`human_resource.profile.house_hold.appendix.ward`),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.profile.house_hold.appendix.ward').toLowerCase()}`,
+            value: translate(`human_resource.profile.house_hold.appendix.ward`)
+        },
+        houseHoldAddress: { // Địa chỉ hộ khẩu
+            columnName: translate(`human_resource.profile.house_hold.appendix.house_hold_address`),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.profile.house_hold.appendix.house_hold_address').toLowerCase()}`,
+            value: translate(`human_resource.profile.house_hold.appendix.house_hold_address`)
+        },
+        phone: { // Số điện thoại
+            columnName: translate(`human_resource.profile.house_hold.appendix.phone_appendix`),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.profile.house_hold.appendix.phone_appendix').toLowerCase()}`,
+            value: translate(`human_resource.profile.house_hold.appendix.phone_appendix`)
+        },
+        houseHoldCode: { // Mã sổ hộ khẩu
+            columnName: translate(`human_resource.profile.house_hold.appendix.house_hold_code`),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.profile.house_hold.appendix.house_hold_code').toLowerCase()}`,
+            value: translate(`human_resource.profile.house_hold.appendix.house_hold_code`)
+        },
+
     };
     return config;
 }
@@ -531,6 +579,92 @@ function configurationFile(translate) {
     return config;
 }
 
+// Cấu hình file import thông tin thành viên gia đình
+function configurationFamilyMembers(translate) {
+    let config = {
+        rowHeader: {
+            description: translate('human_resource.rowHeader'),
+            value: 1
+        },
+        sheets: {
+            description: translate('human_resource.sheets_name'),
+            value: [translate(`human_resource.profile.employee_management.export.sheet8`)]
+        },
+        employeeNumber: {
+            columnName: translate(`human_resource.profile.staff_number`),
+            description: `${translate('human_resource.title_correspond')} ${translate(`human_resource.profile.staff_number`).toLowerCase()}`,
+            value: translate(`human_resource.profile.staff_number`)
+        },
+        name: {
+            columnName: translate(`human_resource.profile.house_hold.members.name_member`),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.profile.house_hold.members.name_member').toLowerCase()}`,
+            value: translate(`human_resource.profile.house_hold.members.name_member`)
+        },
+        codeSocialInsurance: {
+            columnName: translate(`human_resource.profile.house_hold.members.code_social_insurance`),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.profile.house_hold.members.code_social_insurance').toLowerCase()}`,
+            value: translate(`human_resource.profile.house_hold.members.code_social_insurance`)
+        },
+        bookNumberSocialInsurance: {
+            columnName: translate(`human_resource.profile.house_hold.members.book_nci`),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.profile.house_hold.members.book_nci').toLowerCase()}`,
+            value: translate(`human_resource.profile.house_hold.members.book_nci`)
+        },
+        gender: {
+            columnName: translate(`human_resource.profile.house_hold.members.gender`),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.profile.house_hold.members.gender').toLowerCase()}`,
+            value: translate(`human_resource.profile.house_hold.members.gender`)
+        },
+        isHeadHousehold: {
+            columnName: translate(`human_resource.profile.house_hold.members.is_hh`),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.profile.house_hold.members.is_hh').toLowerCase()}`,
+            value: translate(`human_resource.profile.house_hold.members.is_hh`)
+        },
+        relationshipWithHeadHousehold: {
+            columnName: translate(`human_resource.profile.house_hold.members.rwhh`),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.profile.house_hold.members.rwhh').toLowerCase()}`,
+            value: translate(`human_resource.profile.house_hold.members.rwhh`)
+        },
+        birth: {
+            columnName: translate(`human_resource.profile.house_hold.members.birth`),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.profile.house_hold.members.birth').toLowerCase()}`,
+            value: translate(`human_resource.profile.house_hold.members.birth`)
+        },
+        ccns: {
+            columnName: translate(`human_resource.profile.house_hold.members.cnss`),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.profile.house_hold.members.cnss').toLowerCase()}`,
+            value: translate(`human_resource.profile.house_hold.members.cnss`)
+        },
+        placeOfBirthCertificate: {
+            columnName: translate(`human_resource.profile.house_hold.members.pob`),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.profile.house_hold.members.pob').toLowerCase()}`,
+            value: translate(`human_resource.profile.house_hold.members.pob`)
+        },
+        nationality: {
+            columnName: translate(`human_resource.profile.house_hold.members.nationality`),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.profile.house_hold.members.nationality').toLowerCase()}`,
+            value: translate(`human_resource.profile.house_hold.members.nationality`)
+        },
+
+        nation: {
+            columnName: translate(`human_resource.profile.house_hold.members.nation`),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.profile.house_hold.members.nation').toLowerCase()}`,
+            value: translate(`human_resource.profile.house_hold.members.nation`)
+        },
+        numberPassport: {
+            columnName: translate(`human_resource.profile.house_hold.members.npp`),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.profile.house_hold.members.npp').toLowerCase()}`,
+            value: translate(`human_resource.profile.house_hold.members.npp`)
+        },
+        note: {
+            columnName: translate(`human_resource.profile.house_hold.members.note`),
+            description: `${translate('human_resource.title_correspond')} ${translate('human_resource.profile.house_hold.members.note').toLowerCase()}`,
+            value: translate(`human_resource.profile.house_hold.members.note`)
+        },
+    };
+    return config;
+}
+
 
 
 
@@ -592,6 +726,16 @@ function templateImport(translate) {
                                 { key: "healthInsuranceEndDate", value: translate(`human_resource.profile.employee_management.export.health_insurance_end_date`),width: 20 },
                                 { key: "socialInsuranceNumber", value: translate(`human_resource.profile.number_BHXH`) },
                                 { key: "archivedRecordNumber", value: translate(`human_resource.profile.attachments_code`) },
+
+                                { key: "houseHoldNumber", value: translate(`human_resource.profile.house_hold.appendix.house_hold_number`) },
+                                { key: "headHouseHoldName", value: translate(`human_resource.profile.house_hold.appendix.head_house_hold_name`) },
+                                { key: "documentType", value: translate(`human_resource.profile.house_hold.appendix.document_type`) },
+                                { key: "city", value: translate(`human_resource.profile.house_hold.appendix.city`) },
+                                { key: "district", value: translate(`human_resource.profile.house_hold.appendix.district`) },
+                                { key: "ward", value: translate(`human_resource.profile.house_hold.appendix.ward`) },
+                                { key: "houseHoldAddress", value: translate(`human_resource.profile.house_hold.appendix.house_hold_address`) },
+                                { key: "phone", value: translate(`human_resource.profile.house_hold.appendix.phone_appendix`) },
+                                { key: "houseHoldCode", value: translate(`human_resource.profile.house_hold.appendix.house_hold_code`) },
                             ],
                             data: [
                                 {
@@ -643,6 +787,15 @@ function templateImport(translate) {
                                     taxNumber: "12658974",
                                     taxRepresentative: "Nguyễn Văn Hưng",
                                     temporaryResidence: "số nhà 14 ngách 53/1 ngõ Trại Cá phường Trương Định",
+                                    headHouseHoldName: "Nguyến văn Thái",
+                                    documentType: "sổ hộ khẩu",
+                                    houseHoldNumber: "123",
+                                    city: "Hà Nội",
+                                    district:"Hai Bà Trưng",
+                                    ward: "Bạch Mai",
+                                    houseHoldAddress: "Số 12 Bạch Mai, Hai Bà Trưng, Hà Nội",
+                                    phone: 962532521,
+                                    houseHoldCode: "MS12532"
 
                                 },
                                 {
@@ -694,7 +847,15 @@ function templateImport(translate) {
                                     taxNumber: "12658974",
                                     taxRepresentative: "Nguyễn Văn Hưng",
                                     temporaryResidence: "số nhà 14 ngách 53/1 ngõ Trại Cá phường Trương Định",
-                                    
+                                    headHouseHoldName: "Nguyến văn Thái",
+                                    documentType: "sổ hộ khẩu",
+                                    houseHoldNumber: "123",
+                                    city: "Hà Nội",
+                                    district:"Hai Bà Trưng",
+                                    ward: "Bạch Mai",
+                                    houseHoldAddress: "Số 12 Bạch Mai, Hai Bà Trưng, Hà Nội",
+                                    phone: 962532521,
+                                    houseHoldCode: "MS12532"
                                 }
                             ]
                         }
@@ -907,45 +1068,68 @@ function templateImport(translate) {
                         }
                     ]
                 },
+                
                 {
-                    // 8.HS Nhân viên - Khen thưởng
+                    // 8.HS Nhân viên - Thành viên hộ gia đình
                     sheetName: translate(`human_resource.profile.employee_management.export.sheet8`),
                     tables: [
                         {
                             columns: [
                                 { key: "STT", value: translate(`human_resource.stt`), width: 7 },
                                 { key: "employeeNumber", value: translate(`human_resource.profile.staff_number`) },
-                                { key: "fullName", value: translate(`human_resource.profile.full_name`), width: 20 },
-                                { key: "decisionNumber", value: translate('human_resource.commendation_discipline.commendation.table.decision_number') },
-                                { key: "decisionUnit", value: translate('human_resource.commendation_discipline.commendation.table.decision_unit'), width: 25 },
-                                { key: "startDate", value: translate('human_resource.commendation_discipline.commendation.table.decision_date') },
-                                { key: "type", value: translate('human_resource.commendation_discipline.commendation.table.reward_forms') },
-                                { key: "reason", value: translate('human_resource.commendation_discipline.commendation.table.reason_praise'), width: 35 },
+                                { key: "name", value: translate(`human_resource.profile.house_hold.members.name_member`)},
+                                { key: "codeSocialInsurance", value: translate('human_resource.profile.house_hold.members.code_social_insurance') },
+                                { key: "bookNumberSocialInsurance", value: translate('human_resource.profile.house_hold.members.book_nci')},
+                                { key: "gender", value: translate('human_resource.profile.house_hold.members.gender') },
+                                { key: "isHeadHousehold", value: translate('human_resource.profile.house_hold.members.is_hh') },
+                                { key: "relationshipWithHeadHousehold", value: translate('human_resource.profile.house_hold.members.rwhh') },
+                                { key: "birth", value: translate('human_resource.profile.house_hold.members.birth')},
+                                { key: "ccns", value: translate('human_resource.profile.house_hold.members.cnss')},
+                                { key: "placeOfBirthCertificate", value: translate('human_resource.profile.house_hold.members.pob')},
+                                { key: "nationality", value: translate('human_resource.profile.house_hold.members.nationality')},
+                                { key: "nation", value: translate('human_resource.profile.house_hold.members.nation')},
+                                { key: "numberPassport", value: translate('human_resource.profile.house_hold.members.npp')},
+                                { key: "note", value: translate('human_resource.profile.house_hold.members.note')},
                             ],
                             data: [{
                                 STT: 1,
-                                decisionNumber: "123",
-                                decisionUnit: "Phòng kinh doanh",
                                 employeeNumber: "MS2015123",
-                                fullName: "Nguyễn Văn An",
-                                reason: "Vượt doanh số",
-                                startDate: "02-02-2020",
-                                type: "Thưởng tiền",
+                                name: "Trần Văn toàn",
+                                codeSocialInsurance: "12523",
+                                bookNumberSocialInsurance: "",
+                                gender: translate('human_resource.profile.male'),
+                                isHeadHousehold: 'X',
+                                relationshipWithHeadHousehold: "Là chủ hộ",
+                                birth: "1973-05-12",
+                                ccns: 'Ngày tháng năm',
+                                placeOfBirthCertificate: "Hai Bà Trưng - Hà Nội",
+                                nationality: "Việt Nam",
+                                nation: "Kinh",
+                                numberPassport: "163256235",
+                                note: ""
+                                
                             },{
                                 STT: 2,
-                                decisionNumber: "1234",
-                                decisionUnit: "Phòng kinh doanh",
                                 employeeNumber: "MS2015123",
-                                fullName: "Nguyễn Văn An",
-                                reason: "Vượt doanh số 500 triệu",
-                                startDate: "02-02-2020",
-                                type: "Thưởng tiền",
+                                name: "Vũ Thị Hồng",
+                                codeSocialInsurance: "12523",
+                                bookNumberSocialInsurance: "",
+                                gender: translate('human_resource.profile.female'),
+                                isHeadHousehold: "",
+                                relationshipWithHeadHousehold: " Vợ chủ hộ",
+                                birth: "1973-05-12",
+                                ccns: 'Ngày tháng năm',
+                                placeOfBirthCertificate: "Hai Bà Trưng - Hà Nội",
+                                nationality: "Việt Nam",
+                                nation: "Kinh",
+                                numberPassport: "163256235",
+                                note: ""
                             }]
                         }
                     ]
                 },
                 // {
-                //     // 9.HS Nhân viên - Kỷ luật
+                //     // 9.HS Nhân viên - Khen thưởng
                 //     sheetName: translate(`human_resource.profile.employee_management.export.sheet9`),
                 //     tables: [
                 //         {
@@ -955,31 +1139,28 @@ function templateImport(translate) {
                 //                 { key: "fullName", value: translate(`human_resource.profile.full_name`), width: 20 },
                 //                 { key: "decisionNumber", value: translate('human_resource.commendation_discipline.commendation.table.decision_number') },
                 //                 { key: "decisionUnit", value: translate('human_resource.commendation_discipline.commendation.table.decision_unit'), width: 25 },
-                //                 { key: "startDate", value: translate('human_resource.commendation_discipline.discipline.table.start_date') },
-                //                 { key: "endDate", value: translate('human_resource.commendation_discipline.discipline.table.end_date') },
-                //                 { key: "type", value: translate('human_resource.commendation_discipline.discipline.table.discipline_forms') },
-                //                 { key: "reason", value: translate('human_resource.commendation_discipline.discipline.table.reason_discipline'), width: 35 },
+                //                 { key: "startDate", value: translate('human_resource.commendation_discipline.commendation.table.decision_date') },
+                //                 { key: "type", value: translate('human_resource.commendation_discipline.commendation.table.reward_forms') },
+                //                 { key: "reason", value: translate('human_resource.commendation_discipline.commendation.table.reason_praise'), width: 35 },
                 //             ],
                 //             data: [{
                 //                 STT: 1,
-                //                 decisionNumber: "1456",
+                //                 decisionNumber: "123",
                 //                 decisionUnit: "Phòng kinh doanh",
                 //                 employeeNumber: "MS2015123",
-                //                 endDate: "09-02-2020",
                 //                 fullName: "Nguyễn Văn An",
-                //                 reason: "Không làm đủ công",
-                //                 startDate: "07-02-2020",
-                //                 type: "Phạt tiền",
+                //                 reason: "Vượt doanh số",
+                //                 startDate: "02-02-2020",
+                //                 type: "Thưởng tiền",
                 //             },{
                 //                 STT: 2,
-                //                 decisionNumber: "1457",
+                //                 decisionNumber: "1234",
                 //                 decisionUnit: "Phòng kinh doanh",
                 //                 employeeNumber: "MS2015123",
-                //                 endDate: "09-02-2020",
                 //                 fullName: "Nguyễn Văn An",
-                //                 reason: "Không đủ doanh số",
-                //                 startDate: "07-02-2020",
-                //                 type: "Phạt tiền"
+                //                 reason: "Vượt doanh số 500 triệu",
+                //                 startDate: "02-02-2020",
+                //                 type: "Thưởng tiền",
                 //             }]
                 //         }
                 //     ]

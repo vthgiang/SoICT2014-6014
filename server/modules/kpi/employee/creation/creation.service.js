@@ -7,34 +7,40 @@ const NotificationServices = require(`../../../notification/notification.service
 // File này làm nhiệm vụ thao tác với cơ sở dữ liệu của module quản lý kpi cá nhân
 
 /*Lấy tập KPI cá nhân hiện tại theo người dùng */
-exports.getEmployeeKpiSet = async (portal, id, role, month) => {
+exports.getEmployeeKpiSet = async (portal, data) => {
 
-    let now = new Date(month);
-    let currentYear = now.getFullYear();
-    let currentMonth = now.getMonth();
-    let endOfCurrentMonth = new Date(currentYear, currentMonth + 1);
-    let endOfLastMonth = new Date(currentYear, currentMonth);
-
-    if (month) {
-        now = new Date(month);
-        currentYear = now.getFullYear();
-        currentMonth = now.getMonth();
-        endOfCurrentMonth = new Date(currentYear, currentMonth + 1);
-        endOfLastMonth = new Date(currentYear, currentMonth);
+    let month, nextMonth;
+    if (data.month) {
+        month = new Date(data.month);
+        nextMonth = new Date(data.month);
+        nextMonth.setMonth(nextMonth.getMonth() + 1);
     } else {
+        let currentYear, currentMonth, nextMonthTemp, now;
+
         now = new Date();
         currentYear = now.getFullYear();
-        currentMonth = now.getMonth();
-        endOfCurrentMonth = new Date(currentYear, currentMonth + 1);
-        endOfLastMonth = new Date(currentYear, currentMonth);
+        currentMonth = now.getMonth() + 1;
+        nextMonthTemp = currentMonth + 1;
+        if (currentMonth < 10) {
+            currentMonth = "0" + currentMonth;
+        }
+        if (nextMonthTemp < 10) {
+            nextMonthTemp = "0" + nextMonthTemp;
+        }
+
+        month = currentYear + "-" + currentMonth;
+        nextMonth = currentYear + "-" + nextMonthTemp;
+
+        month = new Date(month);
+        nextMonth = new Date(nextMonth);
     }
 
 
     let department = await OrganizationalUnit(connect(DB_CONNECTION, portal)).findOne({
         $or: [
-            { managers: role },
-            { deputyManagers: role },
-            { employees: role }
+            { managers: data.roleId },
+            { deputyManagers: data.roleId },
+            { employees: data.roleId }
         ]
     });
 
@@ -43,7 +49,7 @@ exports.getEmployeeKpiSet = async (portal, id, role, month) => {
     }
 
     let employeeKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
-        .findOne({ creator: id, organizationalUnit: department._id, status: { $ne: 3 }, date: { $lte: endOfCurrentMonth, $gt: endOfLastMonth } })
+        .findOne({ creator: data.userId, organizationalUnit: department._id, status: { $ne: 3 }, date: { $lt: nextMonth, $gte: month } })
         .populate("organizationalUnit creator approver")
         .populate({ path: "kpis", populate: { path: 'parent' } })
         .populate([
@@ -143,48 +149,46 @@ exports.getAllEmployeeKpiSetOfAllEmployeeInOrganizationalUnitByMonth = async (po
 
 /* Khởi tạo tập KPI cá nhân */
 exports.createEmployeeKpiSet = async (portal, data) => {
-    let organizationalUnitId = data.organizationalUnit;
-    let creatorId = data.creator;
-    let approverId = data.approver;
-    let dateId = data.date;
+    const { organizationalUnit, month, creator, approver } = data;
 
-    let currentMonth = data.date.slice(3, 7) + '-' + data.date.slice(0, 2);
-    let nextMonth;
-    if (new Number(data.date.slice(0, 2)) < 12) {
-        if (new Number(data.date.slice(0, 2)) < 10) {
-            nextMonth = data.date.slice(3, 7) + '-0' + (new Number(data.date.slice(0, 2)) + 1);
-        } else {
-            nextMonth = data.date.slice(3, 7) + '-' + (new Number(data.date.slice(0, 2)) + 1);
-        }
-    } else {
-        nextMonth = (new Number(data.date.slice(3, 7)) + 1) + '-01';
+    // Config month tìm kiếm
+    let monthSearch, nextMonthSearch;
+    let currentYear, currentMonth, now;
+
+    now = new Date();
+    currentYear = now.getFullYear();
+    currentMonth = now.getMonth() + 1;
+    if (currentMonth < 10) {
+        currentMonth = "0" + currentMonth;
     }
+
+    monthSearch = new Date(currentYear + "-" + currentMonth);
+    nextMonthSearch = new Date(currentYear + "-" + currentMonth);
+    nextMonthSearch.setMonth(nextMonthSearch.getMonth() + 1);
 
     // Tìm kiếm danh sách các mục tiêu mặc định của phòng ban
     let organizationalUnitKpiSet = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
         .findOne({
-            organizationalUnit: organizationalUnitId,
+            organizationalUnit: organizationalUnit,
             status: 1,
             date: {
-                $gte: currentMonth, $lt: nextMonth
+                $gte: monthSearch, $lt: nextMonthSearch
             }
         })
         .populate("kpis");//status = 1 là kpi đã đc phê duyệt
 
     let defaultOrganizationalUnitKpi;
-    if (organizationalUnitKpiSet.kpis) defaultOrganizationalUnitKpi = organizationalUnitKpiSet.kpis.filter(item => item.type !== 0);
-    if (defaultOrganizationalUnitKpi !== []) {
-
-        let time = dateId.split("-");
-        let date = new Date(time[1], time[0], 0);
-
+   
+    if (organizationalUnitKpiSet && organizationalUnitKpiSet.kpis) defaultOrganizationalUnitKpi = organizationalUnitKpiSet.kpis.filter(item => item.type !== 0);
+    
+    if (defaultOrganizationalUnitKpi) {
         // Tạo thông tin chung cho KPI cá nhân
         let employeeKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
             .create({
-                organizationalUnit: organizationalUnitId,
-                creator: creatorId,
-                approver: approverId,
-                date: date,
+                organizationalUnit: organizationalUnit,
+                creator: creator,
+                approver: approver,
+                date: new Date(month),
                 kpis: []
             });
         let defaultEmployeeKpi = await Promise.all(defaultOrganizationalUnitKpi.map(async (item) => {
@@ -293,11 +297,9 @@ exports.updateEmployeeKpiSetStatus = async (portal, id, statusId, companyId) => 
 }
 
 /* Chỉnh sửa thông tin chung của KPI cá nhân */
-exports.editEmployeeKpiSet = async (portal, strDate, approver, id) => {
-    let arr = strDate.split("-");
-    let date = new Date(arr[1], arr[0], 0)
+exports.editEmployeeKpiSet = async (portal, approver, id) => {
     let employeeKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
-        .findByIdAndUpdate(id, { $set: { date: date, approver: approver._id } }, { new: true })
+        .findByIdAndUpdate(id, { $set: { approver: approver._id } }, { new: true })
 
     employeeKpiSet = employeeKpiSet && await employeeKpiSet
         .populate("organizationalUnit creator approver ")

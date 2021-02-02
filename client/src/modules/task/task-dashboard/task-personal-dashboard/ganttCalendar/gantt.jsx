@@ -16,7 +16,7 @@ export default class Gantt extends Component {
     gantt.ext.zoom.init({
       levels: [
         {
-          name: 'Hours',
+          name: 'Giờ',
           scale_height: 60,
           min_column_width: 30,
           scales: [
@@ -25,21 +25,21 @@ export default class Gantt extends Component {
           ]
         },
         {
-          name: 'Days',
+          name: 'Ngày',
           scale_height: 60,
           min_column_width: 70,
           scales: [
-            { unit: 'week', step: 1, format: 'Week #%W' },
+            { unit: 'week', step: 1, format: 'Tuần %W' },
             { unit: 'day', step: 1, format: '%d %M' }
           ]
         },
         {
-          name: 'Months',
+          name: 'Tháng',
           scale_height: 60,
           min_column_width: 70,
           scales: [
-            { unit: "month", step: 1, format: '%F' },
-            { unit: 'week', step: 1, format: '#%W' }
+            { unit: "year", step: 1, format: '%Y' },
+            { unit: "month", step: 1, format: '%F' }
           ]
         }
       ]
@@ -71,18 +71,27 @@ export default class Gantt extends Component {
   }
 
   shouldComponentUpdate(nextProps) {
-    return this.props.zoom !== nextProps.zoom;
+    if(this.props.tasks !== nextProps.tasks || this.props.taskStatus != nextProps.taskStatus){
+      console.log("chould compoent ",this.props.tasks)
+      if (this.dataProcessor) {
+        this.dataProcessor.destructor();
+        this.dataProcessor = null;
+      }
+      gantt.init(this.ganttContainer);
+      this.initGanttDataProcessor();
+      gantt.parse(this.props.tasks);
+    };
+    return true;
   }
 
   componentDidMount() {
-    console.log("hello",gantt.config);
     gantt.config.drag_move = false;
     gantt.config.drag_multiple = false;
     gantt.config.drag_progress = false;
     gantt.config.drag_resize = false;
     gantt.config.links = false;
     gantt.config.details_on_dblclick = false;
-    gantt.config.columns=[{name :'user', label: "Người thực hiện", align: "center", resize: true, width: 120}]
+    gantt.config.columns=[{name :'role', label: "Vai trò", align: "center", resize: true, width: 120}]
     gantt.config.xml_date = "%Y-%m-%d %H:%i";
     gantt.templates.task_class = function (start, end, task) {
       switch (task.process) {
@@ -92,14 +101,20 @@ export default class Gantt extends Component {
           return "intime";
         case 2:
           return "notAchive";
-        default: return "";
+        default: return "none";
       }
     };
     const { tasks } = this.props;
-    gantt.init(this.ganttContainer);
-    this.initGanttDataProcessor();
-    gantt.parse(tasks);
-    
+    // gantt.init(this.ganttContainer);
+    // this.initGanttDataProcessor();
+    // gantt.parse(tasks);
+    gantt.attachEvent("onTaskClick",  (id, mode) =>{
+      let cnt =0;
+      console.log("cnt", cnt++)
+      var task = gantt.getTask(id);
+      console.log("task", task);
+        gantt.message("you clicked task" + task.idTask);
+    });
   }
   
   componentWillUnmount() {
@@ -112,11 +127,13 @@ export default class Gantt extends Component {
   render() {
     const { zoom } = this.props;
     this.setZoom(zoom);
-
-    // gantt.attachEvent("onTaskClick", function (id, mode) {
+    console.log("render gantt");
+    // gantt.attachEvent("onTaskClick",  (id, mode) =>{
+    //   let cnt =0;
+    //   console.log("cnt", cnt++)
     //   var task = gantt.getTask(id);
     //   console.log("task", task);
-    //     gantt.message("you clicked task" + task.id);
+    //     gantt.message("you clicked task" + task.idTask);
     // });
 
     return (

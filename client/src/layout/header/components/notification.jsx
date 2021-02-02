@@ -38,6 +38,9 @@ class Notification extends Component {
             }
             this.props.receiveNofitication(data);
         });
+
+        // Thêm scroll tab đầu tiên
+        this.checkTabPaneScroll("allNotificationDefault");
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -59,6 +62,7 @@ class Notification extends Component {
     }
 
     checkTabPaneScroll = (idTabPane) => {
+        // Bỏ scroll của tab hiện tại
         let tabPaneScroll = window.$('.StyleScrollDiv.StyleScrollDiv-y');
 
         if (tabPaneScroll) {
@@ -66,6 +70,7 @@ class Notification extends Component {
             tabPaneScroll.css("maxHeight", "");
         }
 
+        // Cập nhật scroll cho tab mới mở
         this.setState(state => {
             return {
                 ...state,
@@ -158,11 +163,11 @@ class Notification extends Component {
                                                                     notification.level === 'important' ? <i className="fa fa-warning text-yellow" /> :
                                                                         <i className="fa fa-bomb text-red" />
                                                         }
-                                                        <p className="notify-title" >
+                                                        <span className="notify-title" >
                                                             {notification.associatedDataObject && notification.associatedDataObject.description ?
                                                                 parse(notification.associatedDataObject.description) : notification.title}
                                                             <DateTimeConverter dateTime={notification.createdAt} style={{ display: 'block', fontSize: '12px', color: '#d47979' }} />
-                                                        </p>
+                                                        </span>
                                                     </div>
                                                 </Link>
                                             </div>
@@ -181,11 +186,11 @@ class Notification extends Component {
                                                                     notification.level === 'important' ? <i className="fa fa-warning text-yellow" /> :
                                                                         <i className="fa fa-bomb text-red" />
                                                         }
-                                                        <p className="notify-title" >
+                                                        <span className="notify-title">
                                                             {notification.associatedDataObject && notification.associatedDataObject.description ?
                                                                 parse(notification.associatedDataObject.description) : notification.title}
                                                             <DateTimeConverter dateTime={notification.createdAt} style={{ display: 'block', fontSize: '12px', color: '#d47979' }} />
-                                                        </p>
+                                                        </span>
                                                     </div>
                                                 </Link>
                                             </div>
@@ -205,11 +210,11 @@ class Notification extends Component {
                                                                     notification.level === 'important' ? <i className="fa fa-warning text-yellow" /> :
                                                                         <i className="fa fa-bomb text-red" />
                                                         }
-                                                        <p className="notify-title" >
+                                                        <span className="notify-title" >
                                                             {notification.associatedDataObject && notification.associatedDataObject.description ?
                                                                 parse(notification.associatedDataObject.description) : notification.title}
                                                             <DateTimeConverter dateTime={notification.createdAt} style={{ display: 'block', fontSize: '12px', color: '#d47979' }} />
-                                                        </p>
+                                                        </span>
                                                     </div>
                                                 </Link>
                                             </div>
@@ -228,11 +233,11 @@ class Notification extends Component {
                                                                     notification.level === 'important' ? <i className="fa fa-warning text-yellow" /> :
                                                                         <i className="fa fa-bomb text-red" />
                                                         }
-                                                        <p className="notify-title" >
+                                                        <span className="notify-title" >
                                                             {notification.associatedDataObject && notification.associatedDataObject.description ?
                                                                 parse(notification.associatedDataObject.description) : notification.title}
                                                             <DateTimeConverter dateTime={notification.createdAt} style={{ display: 'block', fontSize: '12px', color: '#d47979' }} />
-                                                        </p>
+                                                        </span>
                                                     </div>
                                                 </Link>
                                             </div>

@@ -45,6 +45,7 @@ function getAll(data) {
                 incidentCode: data ? data.incidentCode : data,
                 incidentStatus: data ? data.incidentStatus : data,
                 incidentType: data ? data.incidentType : data,
+                incidentDate: data ? data.incidentDate : data,
 
                 // hình thức lấy danh sách tài sản (bình thường, tài sản có thông tin khấu hao, v.v.)
                 getType: data ? data.getType : undefined,

@@ -180,15 +180,17 @@ function editStatusKPIUnit(id, status) {
 }
 
 
-// lấy kpi đơn vị cha
-function getKPIParent(currentRole) {
+/** Lấy KPI đơn vị cha của 1 đơn vị trong 1 tháng
+ * @data gồm các thuộc tính: roleId, organizationalUnitId, month
+ */
+function getKPIParent(data) {
     return dispatch => {
         dispatch({
             type: createUnitKpiConstants.GETPARENT_KPIUNIT_REQUEST,
-            payload: currentRole
+            payload: data ? data.roleId : null
         });
 
-        createUnitKpiServices.getKPIParent(currentRole)
+        createUnitKpiServices.getKPIParent(data)
             .then(res => {
                 dispatch({
                     type: createUnitKpiConstants.GETPARENT_KPIUNIT_SUCCESS,

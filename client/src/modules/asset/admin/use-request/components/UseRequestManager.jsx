@@ -277,7 +277,6 @@ class UseRequestManager extends Component {
 
     // Bắt sự kiện click chỉnh sửa thông tin tài sản
     handleEditAsset = async (value) => {
-        console.log(value);
         await this.setState(state => {
             return {
                 ...state,

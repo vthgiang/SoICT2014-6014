@@ -181,7 +181,7 @@ class QualificationChart extends Component {
                 <div className="box box-solid">
                     <div className="box-header with-border">
                         <h3 className="box-title">
-                            {`Trình độ chuyên môn của nhân sự ${(!organizationalUnits || organizationalUnits.length === department.list.length) ? "trong công ty" : organizationalUnitsName.join(', ')}`}
+                            {`Trình độ chuyên môn của nhân sự trong công ty`}
                         </h3>
                     </div>
                     <div className="box-body">
