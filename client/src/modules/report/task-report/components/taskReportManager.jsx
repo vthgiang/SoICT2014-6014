@@ -266,7 +266,7 @@ class TaskReportManager extends Component {
                                     items={units.map(item => { return { value: item._id, text: item.name } })}
                                     onChange={this.handleSelectOrganizationalUnit}
                                     options={{
-                                        nonSelectedText: units.length !== 0 ? translate('task.task_management.select_department') : translate('general.not_org_unit'),
+                                        nonSelectedText: translate('task.task_management.select_department'),
                                         allSelectedText: translate(`task.task_management.select_all_department`),
                                         includeSelectAllOption: true,
                                         maxHeight: 200

@@ -131,7 +131,7 @@ class TaskManagement extends Component {
             if (warning[0] === 'time_overlapping') {
                 Swal.fire({
                     title: `Bạn đã hẹn tắt bấm giờ cho công việc [ ${warning[1]} ]`,
-                    html: `<h4 class="text-red">Hủy bỏ bấm giờ làm việc và bấm giờ công việc mới</h4>`,
+                    html: `<h4 class="text-red">Lưu lại những giờ đã bấm được cho công việc [ ${warning[1]} ] và bấm giờ công việc mới</h4>`,
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#3085d6',
@@ -659,7 +659,7 @@ class TaskManagement extends Component {
                                         defaultValue={units.map(item => item._id)}
                                         items={units.map(item => { return { value: item._id, text: item.name } })}
                                         onChange={this.handleSelectOrganizationalUnit}
-                                        options={{ nonSelectedText: units.length !== 0 ? translate('task.task_management.select_department') : "Bạn chưa có đơn vị", allSelectedText: translate(`task.task_management.select_all_department`) }}>
+                                        options={{ nonSelectedText: translate('task.task_management.select_department'), allSelectedText: translate(`task.task_management.select_all_department`) }}>
                                     </SelectMulti>
                                 }
                             </div>
@@ -764,6 +764,7 @@ class TaskManagement extends Component {
                             <DataTableSetting
                                 tableId="tree-table"
                                 tableContainerId="tree-table-container"
+                                tableWidth="1300px"
                                 columnArr={[
                                     translate('task.task_management.col_name'),
                                     translate('task.task_management.col_organization'),

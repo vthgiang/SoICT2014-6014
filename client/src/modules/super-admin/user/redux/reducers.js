@@ -268,6 +268,7 @@ export function user(state = initState, action) {
 
         case UserConstants.GETALLUSER_OFDEPARTMENT_FAILURE:
             return {
+                ...state,
                 isLoading: false,
                 error: action.error
             };
@@ -288,6 +289,7 @@ export function user(state = initState, action) {
 
         case UserConstants.GETALLUSER_SAMEDEPARTMENT_FAILURE:
             return {
+                ...state,
                 isLoading: false,
                 error: action.error
             };

@@ -184,35 +184,31 @@ exports.getAllOrganizationalUnitKpiSetByTimeOfChildUnit = async (portal, company
  * @query {*} status trạng thái của OrganizationalUnitKPISet
  */
 exports.getAllOrganizationalUnitKpiSet = async (portal, data) => {
-    let keySearch, organizationalUnit, status;
-
-    organizationalUnit = await OrganizationalUnit(connect(DB_CONNECTION, portal))
-        .findOne({
-            $or: [
-                { 'managers': data.roleId },
-                { 'deputyManagers': data.roleId },
-                { 'employees': data.roleId }
-            ]
-        });
+    let keySearch = {}, status;
 
     status = Number(data.status);
-    if (data.startDate) {
-        let startDate = data.startDate.split("-");
-        var startdate = new Date(startDate[1] + "-" + startDate[0] + "-" + "01");
-    }
-    if (data.endDate) {
-        var endDate = data.endDate.split("-");
-        if (endDate[0] === "12") {
-            endDate[1] = String(parseInt(endDate[1]) + 1);
-            endDate[0] = "1";
-        }
-        endDate[0] = String(parseInt(endDate[0]) + 1);
-        var enddate = new Date(endDate[2] + "-" + endDate[1] + "-" + endDate[0]);
-    }
 
-    if (organizationalUnit) {
+    if (data && !data.organizationalUnit || data.organizationalUnit.length === 0) {
+        let organizationalUnit;
+
+        organizationalUnit = await OrganizationalUnit(connect(DB_CONNECTION, portal))
+            .findOne({
+                $or: [
+                    { 'managers': data.roleId },
+                    { 'deputyManagers': data.roleId },
+                    { 'employees': data.roleId }
+                ]
+            });
+        if (organizationalUnit) {
+            keySearch = {
+                ...keySearch,
+                organizationalUnit: organizationalUnit._id
+            };
+        }
+    } else {
         keySearch = {
-            organizationalUnit: organizationalUnit._id
+            ...keySearch,
+            organizationalUnit: { $in: data.organizationalUnit }
         };
     }
 
@@ -223,22 +219,29 @@ exports.getAllOrganizationalUnitKpiSet = async (portal, data) => {
         };
     }
 
-    if (data.startDate && data.endDate) {
+
+    if (data && data.startDate && data.endDate) {
+        data.endDate = new Date(data.endDate);
+        data.endDate.setMonth(data.endDate.getMonth() + 1);
+
         keySearch = {
             ...keySearch,
-            date: { "$gte": startdate, "$lt": enddate }
+            date: { "$gte": new Date(data.startDate), "$lt": data.endDate }
         }
     }
-    else if (data.startDate) {
+    else if (data && data.startDate) {
         keySearch = {
             ...keySearch,
-            date: { "$gte": startdate }
+            date: { "$gte": new Date(data.startDate) }
         }
     }
-    else if (data.endDate) {
+    else if (data && data.endDate) {
+        data.endDate = new Date(data.endDate);
+        data.endDate.setMonth(data.endDate.getMonth() + 1);
+
         keySearch = {
             ...keySearch,
-            date: { "$lt": enddate }
+            date: { "$lt": data.endDate }
         }
     }
 

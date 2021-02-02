@@ -75,8 +75,8 @@ class CreateEmployeeKpiSet extends Component {
     }
 
     shouldComponentUpdate = (nextProps, nextState) => {
-        const { user, currentRole } = this.props;
-        const { month } = this.state;
+        const { user } = this.props;
+        const { month, currentRole } = this.state;
 
         // Không re-render khi lựa chọn tháng ở DatePiker
         if (nextState.month !== month) {

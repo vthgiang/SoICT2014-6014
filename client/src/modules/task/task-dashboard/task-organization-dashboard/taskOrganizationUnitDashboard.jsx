@@ -286,7 +286,7 @@ class TaskOrganizationUnitDashboard extends Component {
                                         <SelectMulti id="multiSelectOrganizationalUnitInTaskUnit"
                                             items={selectBoxUnit.map(item => { return { value: item.id, text: item.name } })}
                                             options={{
-                                                nonSelectedText: idsUnit.length !== 0 ? translate('task.task_management.select_department') : translate('general.not_org_unit'),
+                                                nonSelectedText: translate('task.task_management.select_department'),
                                                 allSelectedText: translate('kpi.evaluation.dashboard.all_unit'),
                                                 includeSelectAllOption: true,
                                                 maxHeight: 200

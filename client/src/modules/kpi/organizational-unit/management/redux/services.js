@@ -16,7 +16,8 @@ function getAllKPIUnit(infosearch) {
             roleId: infosearch.role,
             status: infosearch.status,
             startDate: infosearch.startDate,
-            endDate: infosearch.endDate
+            endDate: infosearch.endDate,
+            organizationalUnit: infosearch.organizationalUnit
         }
     }, false, true, 'kpi.organizational_unit');
 }
@@ -40,8 +41,7 @@ function copyKPIUnit(kpiId, data) {
         method: 'POST',
         params: {
             idunit: data.idunit,
-            datenew: data.datenew,
-            creator: data.creator,
+            datenew: data.datenew
         }
     }, true, true, 'kpi.organizational_unit');
 }

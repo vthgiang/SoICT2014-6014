@@ -77,7 +77,7 @@ exports.searchTimesheets = async (portal, params, company) => {
     let totalList = await Timesheet(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
     let listTimesheets = await Timesheet(connect(DB_CONNECTION, portal)).find(keySearch).populate({
             path: 'employee',
-            select: 'employeeNumber fullName'
+            select: 'employeeNumber fullName emailInCompany'
         })
         .sort({
             'createAt': 'desc'

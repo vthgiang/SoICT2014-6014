@@ -63,6 +63,7 @@ export default {
                 existing_error: "Giá trị đã tồn tại",
             },
             not_org_unit: "Bạn chưa có đơn vị",
+            not_select_unit: "Chọn đơn vị",
             list_unit: "Danh sách đơn vị",
             list_employee: "Danh sách nhân viên",
             detail: "Chi tiết"
@@ -3116,7 +3117,7 @@ export default {
                     "Đã quá 7 ngày sau ngày đánh giá. Bạn không thể chỉnh sửa thêm!",
                 note_eval: "Số ngày còn lại để chỉnh sửa đánh giá",
 
-                add_eval_of_this_month: "Thêm đánh giá tháng này",
+                add_eval_of_this_month: "Thêm đánh giá",
                 eval_of: "Đánh giá tháng",
                 eval_from: "Đánh giá từ ngày",
                 eval_to: "Đến ngày",
@@ -4172,6 +4173,11 @@ export default {
                     "Cập nhật điểm đánh giá KPI đơn vị thành công",
                 update_evaluate_kpi_unit_fail:
                     "Cập nhật điểm đánh giá KPI đơn vị lỗi",
+                copy_kpi_unit_success: "Sao chép KPI đơn vị thành công",
+                copy_kpi_unit_failure: "Sao chép KPI đơn vị thất bại",
+                organizatinal_unit_kpi_set_exist: "KPI đơn vị đã tồn tại",
+                calculate_kpi_unit_success: "Tính điểm KPI thành công",
+                calculate_kpi_unit_failure: "Tính điểm KPI thất bại"
             },
         },
 

@@ -128,7 +128,10 @@ class MainDashboardUnit extends Component {
         this.props.searchSalary({ callApiDashboard: true, month: newMonth });
 
         /* Lấy dữ liệu nghỉ phép, tăng ca của nhân viên */
-        this.props.getTimesheets({ organizationalUnits: arrayUnitShow, startDate: newMonth, endDate: newMonth });
+        this.props.getTimesheets({
+            organizationalUnits: arrayUnitShow, month: newMonth, page: 0,
+            limit: 100000,
+        });
 
     }
 
@@ -349,7 +352,10 @@ class MainDashboardUnit extends Component {
         this.props.searchSalary({ callApiDashboard: true, month: newMonth });
 
         /* Lấy dữ liệu nghỉ phép, tăng ca của nhân viên */
-        this.props.getTimesheets({ organizationalUnits: organizationalUnits, startDate: newMonth, endDate: newMonth });
+        this.props.getTimesheets({
+            organizationalUnits: organizationalUnits, month: newMonth, page: 0,
+            limit: 100000,
+        });
 
 
         let partDate = currentDate.split('-');

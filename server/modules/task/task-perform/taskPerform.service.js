@@ -357,6 +357,7 @@ exports.startTimesheetLog = async (portal, params, body) => {
 
         const result = await Task(connect(DB_CONNECTION, portal)).findOneAndUpdate({
             "timesheetLogs.creator": body.creator,
+            "timesheetLogs.acceptLog": true,
             "timesheetLogs.stoppedAt": { $exists: true },
             "timesheetLogs.stoppedAt": { $gt: timerUpdate.startedAt }
         }, {
@@ -386,7 +387,8 @@ exports.startTimesheetLog = async (portal, params, body) => {
             res[value.creator] = { employee: value.creator, hoursSpent: 0 };
             contributions.push(res[value.creator])
             }
-            res[value.creator].hoursSpent += value.duration;
+            if (value.duration)
+                res[value.creator].hoursSpent += value.duration;
             return res;
         }, {});
 
