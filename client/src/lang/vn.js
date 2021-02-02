@@ -63,6 +63,7 @@ export default {
                 existing_error: "Giá trị đã tồn tại",
             },
             not_org_unit: "Bạn chưa có đơn vị",
+            not_select_unit: "Chọn đơn vị",
             list_unit: "Danh sách đơn vị",
             list_employee: "Danh sách nhân viên",
             detail: "Chi tiết"

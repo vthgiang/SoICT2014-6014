@@ -71,7 +71,12 @@ export default class Gantt extends Component {
   }
 
   shouldComponentUpdate(nextProps) {
-    if(this.props.tasks !== nextProps.tasks){
+    if(this.props.tasks !== nextProps.tasks || this.props.taskStatus != nextProps.taskStatus){
+      console.log("chould compoent ",this.props.tasks)
+      if (this.dataProcessor) {
+        this.dataProcessor.destructor();
+        this.dataProcessor = null;
+      }
       gantt.init(this.ganttContainer);
       this.initGanttDataProcessor();
       gantt.parse(this.props.tasks);
@@ -96,7 +101,7 @@ export default class Gantt extends Component {
           return "intime";
         case 2:
           return "notAchive";
-        default: return "";
+        default: return "none";
       }
     };
     const { tasks } = this.props;

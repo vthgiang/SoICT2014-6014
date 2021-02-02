@@ -39,6 +39,9 @@ class AssetEditForm extends Component {
                 value = null
             }
         }
+        if(name === "assetType"){
+             value = JSON.stringify(value);
+        }
 
         this.setState({
             [name]: value
@@ -247,6 +250,7 @@ class AssetEditForm extends Component {
             createIncidentLogs: incidentLogs.filter(x => !x._id),
             createFiles: files.filter(x => !x._id),
         })
+
         let formData = convertJsonObjectToFormData(this.state);
         files.forEach(x => {
             x.files.forEach(item => {
