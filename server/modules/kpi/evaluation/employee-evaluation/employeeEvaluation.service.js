@@ -10,50 +10,23 @@ const NotificationServices = require(`../../../notification/notification.service
  */
 
 exports.getEmployeeKPISets = async (portal, data) => {
-    let department = await OrganizationalUnit(connect(DB_CONNECTION, portal))
-        .findOne({
-            $or: [
-                { 'managers': data.roleId },
-                { 'deputyManagers': data.roleId },
-                { 'employees': data.roleId }
-            ]
-        });
-
     let keySearch;
-    let employeeKpiSets;
-    let startdate = null;
-    let enddate = null;
+    let employeeKpiSets, department;
     let status = null;
-    let user = data.user ? data.user : [0];
-    let year, month;
+    let user = data.user && data.user.length !== 0 ? data.user : null;
+    let approver = data.approver && data.approver.length !== 0 ? data.approver : null;
 
-    // config endDate để truy vấn (ví dụ endDate=2020-10 ---> 2020-11)
-    if (data.endDate) {
-        year = data.endDate.slice(0, 4);
-        month = data.endDate.slice(5, 7);
-    }
-    if (year && month && Number(month) === 12) {
-        month = 1;
-        year = Number(year) + 1;
-    } else {
-        if (month) {
-            month = Number(month) + 1;
-        }
-    }
-    if (year && month && month < 10) {
-        data.endDate = year + '-0' + month;
-    } else {
-        if (year && month) {
-            data.endDate = year + '-' + month;
-        }
-    }
+    if (!data.organizationalUnit) {
+        department = await OrganizationalUnit(connect(DB_CONNECTION, portal))
+            .findOne({
+                $or: [
+                    { 'managers': data.roleId },
+                    { 'deputyManagers': data.roleId },
+                    { 'employees': data.roleId }
+                ]
+            });
+    } 
 
-    if (data.startDate) {
-        startdate = new Date(data.startDate);
-    }
-    if (data.endDate) {
-        enddate = new Date(data.endDate);
-    }
 
     if (data.status) status = parseInt(data.status);
 
@@ -63,9 +36,15 @@ exports.getEmployeeKPISets = async (portal, data) => {
                 $in: department._id
             }
         }
+    } else {
+        keySearch = {
+            organizationalUnit: {
+                $in: data.organizationalUnit
+            }
+        }
     }
 
-    if (user[0] != '0') {
+    if (user) {
         keySearch = {
             ...keySearch,
             creator: {
@@ -73,6 +52,16 @@ exports.getEmployeeKPISets = async (portal, data) => {
             }
         }
     }
+
+    if (approver) {
+        keySearch = {
+            ...keySearch,
+            approver: {
+                $in: approver
+            }
+        }
+    }
+
     if (status !== -1 && status && status !== 5 || status === 0) {
         keySearch = {
             ...keySearch,
@@ -82,25 +71,31 @@ exports.getEmployeeKPISets = async (portal, data) => {
         }
     }
 
-    if (startdate && enddate) {
+    if (data && data.startDate && data.endDate) {
+        data.endDate = new Date(data.endDate);
+        data.endDate.setMonth(data.endDate.getMonth() + 1);
+
         keySearch = {
             ...keySearch,
-            date: { "$gte": startdate, "$lt": enddate }
+            date: { "$gte": new Date(data.startDate), "$lt": data.endDate }
         }
     }
-    if (startdate && !enddate) {
+    else if (data && data.startDate) {
         keySearch = {
             ...keySearch,
             date: {
-                $gte: startdate,
+                $gte: new Date(data.startDate),
             }
         }
     }
-    if (enddate && !startdate) {
+    else if (data && data.endDate) {
+        data.endDate = new Date(data.endDate);
+        data.endDate.setMonth(data.endDate.getMonth() + 1);
+
         keySearch = {
             ...keySearch,
             date: {
-                $lt: enddate,
+                $lt: data.endDate,
             }
         }
     }
