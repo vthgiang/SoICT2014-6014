@@ -47,7 +47,10 @@ class DashBoardEmployees extends Component {
         this.props.searchSalary({ callApiDashboard: true, month: newMonth });
 
         /* Lấy dữ liệu nghỉ phép, tăng ca của nhân viên */
-        this.props.getTimesheets({ organizationalUnits: organizationalUnits, startDate: newMonth, endDate: newMonth });
+        this.props.getTimesheets({
+            organizationalUnits: organizationalUnits, month: newMonth, page: 0,
+            limit: 100000,
+        });
     }
 
     /**
@@ -126,7 +129,10 @@ class DashBoardEmployees extends Component {
         this.props.searchSalary({ callApiDashboard: true, month: newMonth });
 
         /* Lấy dữ liệu nghỉ phép, tăng ca của nhân viên */
-        this.props.getTimesheets({ organizationalUnits: arrayUnitShow, startDate: newMonth, endDate: newMonth });
+        this.props.getTimesheets({
+            organizationalUnits: arrayUnitShow, month: newMonth, page: 0,
+            limit: 100000,
+        });
 
     }
 
@@ -139,7 +145,7 @@ class DashBoardEmployees extends Component {
     }
 
     render() {
-        const { translate, employeesManager, annualLeave, discipline } = this.props;
+        const { translate, employeesManager, annualLeave, discipline, timesheets } = this.props;
 
         const { childOrganizationalUnit } = this.props;
 
@@ -149,11 +155,10 @@ class DashBoardEmployees extends Component {
             employeesManager.listAllEmployees : employeesManager.listEmployeesOfOrganizationalUnits;
 
         let totalHourAnnualLeave = 0;
-        annualLeave.totalListAnnulLeave.forEach(x => {
-            if (x.totalHours && x.totalHours !== 0) {
-                totalHourAnnualLeave = totalHourAnnualLeave + x.totalHours;
-            } else {
-                totalHourAnnualLeave = totalHourAnnualLeave + (Math.round((new Date(x.endDate).getTime() - new Date(x.startDate).getTime()) / (24 * 60 * 60 * 1000)) + 1) * 8;
+        let listTimesheets = timesheets.listTimesheets;
+        listTimesheets.forEach(x => {
+            if (x.totalHoursOff && x.totalHoursOff !== 0) {
+                totalHourAnnualLeave = totalHourAnnualLeave + x.totalHoursOff;
             }
         });
         return (
@@ -269,8 +274,8 @@ class DashBoardEmployees extends Component {
 }
 
 function mapState(state) {
-    const { employeesManager, annualLeave, discipline } = state;
-    return { employeesManager, annualLeave, discipline };
+    const { employeesManager, annualLeave, discipline, timesheets } = state;
+    return { employeesManager, annualLeave, discipline, timesheets };
 }
 
 const actionCreators = {
