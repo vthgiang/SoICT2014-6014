@@ -172,7 +172,7 @@ class DetailTaskTab extends Component {
             if (warning[0] === 'time_overlapping') {
                 Swal.fire({
                     title: `Bạn đã hẹn tắt bấm giờ cho công việc [ ${warning[1]} ]`,
-                    html: `<h4 class="text-red">Hủy bỏ bấm giờ làm việc và bấm giờ công việc mới</h4>`,
+                    html: `<h4 class="text-red">Lưu lại những giờ đã bấm được cho công việc [ ${warning[1]} ] và bấm giờ công việc mới</h4>`,
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#3085d6',
