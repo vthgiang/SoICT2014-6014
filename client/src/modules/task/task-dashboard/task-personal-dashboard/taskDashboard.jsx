@@ -399,13 +399,13 @@ class TaskDashboard extends Component {
                             <div className="box-header with-border">
                                 <div className="box-title">{translate('task.task_management.tasks_calendar')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
                             </div>
-                            <CalendarEmployee
+                            {/* <CalendarEmployee
                                 tasks={tasks}
-                            />
-                            {/* <GanttCalendar
+                            /> */}
+                            <GanttCalendar
                                 tasks={tasks}
                                 unitOrganization = {false}
-                            /> */}
+                            />
                         </div>
 
                     </div>
