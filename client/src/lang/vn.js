@@ -4173,6 +4173,11 @@ export default {
                     "Cập nhật điểm đánh giá KPI đơn vị thành công",
                 update_evaluate_kpi_unit_fail:
                     "Cập nhật điểm đánh giá KPI đơn vị lỗi",
+                copy_kpi_unit_success: "Sao chép KPI đơn vị thành công",
+                copy_kpi_unit_failure: "Sao chép KPI đơn vị thất bại",
+                organizatinal_unit_kpi_set_exist: "KPI đơn vị đã tồn tại",
+                calculate_kpi_unit_success: "Tính điểm KPI thành công",
+                calculate_kpi_unit_failure: "Tính điểm KPI thất bại"
             },
         },
 
