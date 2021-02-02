@@ -337,3 +337,10 @@ to {transform:scale(1)}
     margin-top: -6px;
     font-size: 12px;
 }
+
+.rating-approve-all--wraper{
+    color: "#616161";
+    display: flex;
+    align-items: center;
+    
+}
