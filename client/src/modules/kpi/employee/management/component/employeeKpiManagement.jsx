@@ -22,13 +22,13 @@ class KPIPersonalManager extends Component {
         translate=this.props.translate
         this.state = {
             commenting: false,
-            user:null,
+            user: null,
             status:-1,
             startDate: null,
             endDate: null,
             infosearch: {
                 role: localStorage.getItem("currentRole"),
-                user: localStorage.getItem("userId"),
+                user: [localStorage.getItem("userId")],
                 status: null,
                 startDate: null,
                 endDate: null

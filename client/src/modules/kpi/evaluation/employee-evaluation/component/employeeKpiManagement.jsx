@@ -206,7 +206,7 @@ class EmployeeKpiManagement extends Component {
         this.setState(state => {
             return {
                 ...state,
-                status: value
+                status: value[0]
             }
         });
     }
@@ -220,12 +220,12 @@ class EmployeeKpiManagement extends Component {
                 ...state,
                 infosearch: {
                     ...state.infosearch,
-                    user: userId,
-                    status: status,
+                    user: userId[0] !== '0' ? userId : [],
+                    status: status && Number(status[0]),
                     startDate: startDate !== "" ? startDate : null,
                     endDate: endDate !== "" ? endDate : null,
                     organizationalUnit: organizationalUnit,
-                    approver: approver
+                    approver: approver[0] !== '0' ? approver : []
                 },
                 kpiId: null,
                 employeeKpiSet: { _id: null },
@@ -738,7 +738,7 @@ class EmployeeKpiManagement extends Component {
                     }
                 }
             }
-            approverSelectBox = [{ text: translate('kpi.evaluation.employee_evaluation.choose_employee'), value: 0 }, ...approverSelectBox];
+            approverSelectBox = [{ text: translate('manage_warehouse.bill_management.choose_approver'), value: 0 }, ...approverSelectBox];
         }
 
         if (kpimember && userdepartments) {
