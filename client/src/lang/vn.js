@@ -4108,7 +4108,7 @@ export default {
                             change_link:
                                 "Hãy nhớ thay đổi liên kết đến mục tiêu cha để được tính KPI mới!",
                         },
-                        create: "Thiết lập KPI tháng mới từ tháng ",
+                        create: "Thiết lập KPI tháng",
                         organizational_unit: "Đơn vị",
                         month: "Tháng",
                         list_target: "Danh sách mục tiêu",
@@ -4118,6 +4118,7 @@ export default {
                     detail_modal: {
                         list_kpi_unit: "Danh sách KPI đơn vị",
                         title: "Thông tin chi tiết KPI đơn vị tháng ",
+                        title_parent: "Thông tin chi tiết KPI đơn vị cha tháng ",
                         information_kpi: "Thông tin KPI ",
                         criteria: "Tiêu chí:",
                         weight: "Trọng số:",

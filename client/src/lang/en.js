@@ -3820,7 +3820,8 @@ export default {
                     },
                     detail_modal: {
                         list_kpi_unit: "List KPI unit",
-                        title: "Detailed information KPI unit on ",
+                        title: "Organizational unit KPI details on ",
+                        title_parent: "Parent organizational unit KPI details on  ",
                         information_kpi: "Information KPI ",
                         criteria: "Criteria:",
                         weight: "Weight:",

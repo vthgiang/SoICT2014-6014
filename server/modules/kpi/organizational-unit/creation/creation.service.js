@@ -279,8 +279,6 @@ exports.editOrganizationalUnitKpiSet = async (portal, dateString, id) => {
  */
 exports.createOrganizationalUnitKpiSet = async (portal, data) => {
     const { date, creator, organizationalUnitId } = data;
-
-    // Config month tìm kiếm
     let monthSearch, nextMonthSearch;
     let currentYear, currentMonth, now;
 

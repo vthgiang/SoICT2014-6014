@@ -22,7 +22,6 @@ exports.copyKPI = async (req, res) => {
             content: kpiunit
         });
     } catch (error) {
-        console.log(error)
         let messages = error && error.messages === 'organizatinal_unit_kpi_set_exist'
             ? ['organizatinal_unit_kpi_set_exist']
             : ['copy_kpi_unit_failure'];

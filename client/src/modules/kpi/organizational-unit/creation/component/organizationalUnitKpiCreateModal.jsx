@@ -12,19 +12,19 @@ class OrganizationalUnitKpiCreateModal extends Component {
         this.state = {
             organizationalUnitId: null,
             organizationalUnit: "",
-            date: "",
+            month: "",
         };
     }
     
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.organizationalUnitId !== prevState.organizationalUnitId
-            || nextProps.date !== prevState.date
+            || nextProps.month !== prevState.month
         ) {
             return {
                 ...prevState,
                 organizationalUnitId: nextProps.organizationalUnitId,
                 organizationalUnit: nextProps.organizationalUnit,
-                date: nextProps.date
+                month: nextProps.month
             }
         } else {
             return null;
@@ -49,12 +49,13 @@ class OrganizationalUnitKpiCreateModal extends Component {
     }
     
     handleSubmit = () => {
-        const { organizationalUnit, date } = this.state;
+        const { organizationalUnit, month } = this.state;
 
-        if (organizationalUnit && date) {            
+        console.log(organizationalUnit, month)
+        if (organizationalUnit && month) {            
             this.props.addKPIUnit({
                 organizationalUnitId: organizationalUnit.id,
-                date: date
+                month: month
             });
 
             window.$("#startKPIUnit").modal("hide");
@@ -64,7 +65,7 @@ class OrganizationalUnitKpiCreateModal extends Component {
     
     render() {
         const { translate } = this.props; 
-        const { organizationalUnit, date } = this.state;
+        const { organizationalUnit, month } = this.state;
 
         return (
             <React.Fragment>
@@ -88,7 +89,7 @@ class OrganizationalUnitKpiCreateModal extends Component {
                         {/* Tháng */}
                         <div className="form-group">
                             <label className="col-sm-2">{translate('kpi.organizational_unit.create_organizational_unit_kpi_set_modal.month')}</label>
-                            {this.formatDate(date)}
+                            {this.formatDate(month)}
                         </div>
 
                         {/* Mục tiêu mặc định */}

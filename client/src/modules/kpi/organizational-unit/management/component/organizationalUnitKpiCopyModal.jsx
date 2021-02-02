@@ -1,23 +1,16 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { managerActions } from '../redux/actions';
 import { withTranslate } from 'react-redux-multilingual';
-import Swal from 'sweetalert2';
-import { ErrorLabel, DatePicker, DialogModal } from '../../../../../common-components';
-import {
-    getStorage
-} from '../../../../../config';
 
+import { managerActions } from '../redux/actions';
+
+import { ErrorLabel, DatePicker, DialogModal } from '../../../../../common-components';
 
 class ModalCopyKPIUnit extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            kpiunit: {
-                unit: "",
-                date: this.formatDate(Date.now()),
-                creator: "",
-            }
+
         };
     }
 
@@ -48,57 +41,62 @@ class ModalCopyKPIUnit extends Component {
     }
 
     handleSubmit = () => {
-        const { kpiId, kpiunit, idunit } = this.props;
+        const { kpiId, idunit, monthDefault, type = 'default' } = this.props;
+        const { month } = this.state;
 
-        this.setState(state => {
-            return {
-                ...state,
-                kpiunit: {
-                    ...state.kpiunit,
-                    unit: kpiunit.organizationalUnit._id,
-                    kpis: kpiunit.kpis
-                }
+        if (type === 'default') {
+            let data = {  
+                idunit: idunit,
+                datenew: month
             }
-        })
 
-        let data = {  
-            idunit: idunit,
-            datenew: this.state.month
+            this.props.copyKPIUnit(kpiId, data);
+        } else if (type === 'copy-parent-kpi-to-unit') {
+            let data = {  
+                idunit: idunit,
+                datenew: monthDefault
+            }
+
+            this.props.copyKPIUnit(kpiId, data);
+        } else if (type === 'copy-parent-kpi-to-employee') {
+
         }
-        console.log(data)
-        this.props.copyKPIUnit(kpiId, data);
+        
     }
 
     render() {
-        const { kpiunit, listkpi, idunit, translate, kpiId } = this.props;
+        const { kpiunit, translate, kpiId, type = 'default', monthDefault } = this.props;
         const { month, errorOnDate } = this.state;
         
         return (
             <DialogModal
-                modalID={`copy-old-kpi-to-new-time-${kpiunit._id}`}
-                title={translate('kpi.organizational_unit.management.copy_modal.create')+ `${this.formatDate(kpiunit.date)}`}
+                modalID={`copy-old-kpi-to-new-time-${kpiId}`}
+                title={translate('kpi.organizational_unit.management.detail_modal.title_parent') + `${kpiunit && this.formatDate(kpiunit.date)}`}
                 size={10}
                 func={this.handleSubmit}
             >
                 <div className="form-group">
-                    <label className="col-sm-4">{translate('kpi.organizational_unit.management.copy_modal.organizational_unit')}</label>
+                    <label className="col-sm-3">{translate('kpi.organizational_unit.management.copy_modal.organizational_unit')}</label>
                     <label className="col-sm-9" style={{ fontWeight: "400", marginLeft: "-14.5%" }}>{kpiunit && kpiunit.organizationalUnit.name}</label>
                 </div>
                 <br/>
                 <div className="form-group">
-                    <label className="col-sm-2">{translate('kpi.organizational_unit.management.copy_modal.month')}</label>
-                    <DatePicker
-                        id="new_date"
-                        value={month}
-                        onChange={this.handleNewDateChange}
-                        dateFormat="month-year"
-                    />
+                    <label className="col-sm-3">{translate('kpi.organizational_unit.management.copy_modal.month')}</label>
+                    {type === 'default'
+                        ? <DatePicker
+                            id="new_date"
+                            value={month}
+                            onChange={this.handleNewDateChange}
+                            dateFormat="month-year"
+                        />
+                        : <label className="col-sm-9" style={{ fontWeight: "400", marginLeft: "-14.5%" }}>{this.formatDate(monthDefault)}</label>
+                }
                     <ErrorLabel content={errorOnDate} />
                 </div>
                 <div className="form-group" >
                     <label className="col-sm-12">{translate('kpi.organizational_unit.management.copy_modal.list_target')}</label>
                     <ul>
-                        {typeof kpiunit && kpiunit.kpis.length &&
+                        {kpiunit && typeof kpiunit && kpiunit.kpis.length &&
                             kpiunit.kpis.map(item => {
                                 return <li key={item._id}>{item.name + " (" + item.weight + ")"}</li>
                             })

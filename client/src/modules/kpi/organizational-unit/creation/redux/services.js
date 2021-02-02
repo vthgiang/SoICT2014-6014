@@ -86,7 +86,10 @@ function addKPIUnit(newKPI) {
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/kpi/organizational-unit/creation/organizational-unit-kpi-sets`,
         method: 'POST',
-        data: newKPI
+        data: {
+            date: newKPI ? newKPI.month : null,
+            organizationalUnitId: newKPI ? newKPI.organizationalUnitId : null
+        }
     }, true, true, 'kpi.organizational_unit.create_organizational_unit_kpi_set_modal');
 }
 

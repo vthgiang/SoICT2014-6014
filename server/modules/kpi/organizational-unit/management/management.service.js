@@ -20,15 +20,10 @@ exports.copyKPI = async (portal, kpiId, data) => {
     newDate = new Date(data.datenew);
     nextNewDate = new Date(data.datenew);
     nextNewDate.setMonth(nextNewDate.getMonth() + 1);
-
-    organizationalUnitOldKPISet = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
-        .findById(kpiId)
-        .populate("organizationalUnit creator")
-        .populate({ path: "kpis", populate: { path: 'parent' } });
     
     checkOrganizationalUnitKpiSet = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
         .findOne({
-            organizationalUnit: organizationalUnitOldKPISet.organizationalUnit._id,
+            organizationalUnit: data.idunit,
             date: { $gte: newDate, $lt: nextNewDate }
         })
 
@@ -39,12 +34,18 @@ exports.copyKPI = async (portal, kpiId, data) => {
 
         organizationalUnitNewKpi = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
             .create({
-                organizationalUnit: organizationalUnitOldKPISet.organizationalUnit._id,
+                organizationalUnit: data.idunit,
                 creator: data.creator,
                 date: newDate,
                 kpis: []
             })
 
+        organizationalUnitOldKPISet = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
+            .findById(kpiId)
+            .populate("organizationalUnit creator")
+            .populate({ path: "kpis", populate: { path: 'parent' } });
+    
+        
         for (let i in organizationalUnitOldKPISet.kpis) {
             let target = await OrganizationalUnitKpi(connect(DB_CONNECTION, portal))
                 .create({
@@ -59,11 +60,12 @@ exports.copyKPI = async (portal, kpiId, data) => {
                     organizationalUnitNewKpi, { $push: { kpis: target._id } }, { new: true }
                 );
         }
+
         organizationalUnitKpiSet = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
-            .find({ organizationalUnit: data.idunit })
+            .findById(organizationalUnitNewKpi._id)
             .populate("organizationalUnit creator")
             .populate({ path: "kpis", populate: { path: 'parent' } });
-
+        
         return organizationalUnitKpiSet;
     }
 }
