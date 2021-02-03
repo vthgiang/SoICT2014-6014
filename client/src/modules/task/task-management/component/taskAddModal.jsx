@@ -569,7 +569,7 @@ class TaskAddModal extends Component {
                                         table={false}
                                         embeds={false}
                                         getTextData={this.handleChangeTaskDescription}
-                                        height={80}
+                                        height={150}
                                         quillValueDefault={newTask.quillDescriptionDefault}
                                         placeholder={translate('task.task_management.detail_description')}
                                     />
