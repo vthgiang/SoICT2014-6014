@@ -10,17 +10,23 @@ import { UserActions } from '../../../../super-admin/user/redux/actions';
 
 import { AssetDetailForm, AssetEditForm } from '../../asset-information/components/combinedContent';
 import { DepreciationEditForm } from './depreciationEditForm';
+import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
 
 class DepreciationManager extends Component {
     constructor(props) {
         super(props);
+        const tableId = "table-depreciation-manager";
+        const defaultConfig = { limit: 5 }
+        const limit = getTableConfiguration(tableId, defaultConfig).limit;
+
         this.state = {
+            tableId,
             code: "",
             assetName: "",
             assetType: null,
             month: "",
             page: 0,
-            limit: 5,
+            limit: limit,
             managedBy: this.props.managedBy ? this.props.managedBy : '',
             getType: 'depreciation'
         }
@@ -381,7 +387,7 @@ class DepreciationManager extends Component {
 
     render() {
         const { translate, assetsManager, assetType } = this.props;
-        var { page, limit, currentRowView, currentRowEditAsset, managedBy } = this.state;
+        var { page, limit, currentRowView, currentRowEditAsset, managedBy, tableId } = this.state;
 
         var lists = "", exportData;
         let typeArr = this.getAssetTypes();
@@ -484,7 +490,7 @@ class DepreciationManager extends Component {
                     </div>
 
                     {/* Bảng thông tin khấu hao */}
-                    <table id="depreciation-table" className="table table-striped table-bordered table-hover">
+                    <table id={tableId} className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
                                 <th style={{ width: "8%" }}>{translate('asset.general_information.asset_code')}</th>
@@ -501,7 +507,7 @@ class DepreciationManager extends Component {
                                 <th style={{ width: "10%" }}>{translate('asset.general_information.end_depreciation')}</th>
                                 <th style={{ width: '120px', textAlign: 'center' }}>{translate('asset.general_information.action')}
                                     <DataTableSetting
-                                        tableId="depreciation-table"
+                                        tableId={tableId}
                                         columnArr={[
                                             translate('asset.general_information.asset_code'),
                                             translate('asset.general_information.asset_name'),
@@ -516,9 +522,7 @@ class DepreciationManager extends Component {
                                             translate('asset.depreciation.remaining_value'),
                                             translate('asset.general_information.end_depreciation')
                                         ]}
-                                        limit={limit}
                                         setLimit={this.setLimit}
-                                        hideColumnOption={true}
                                     />
                                 </th>
                             </tr>

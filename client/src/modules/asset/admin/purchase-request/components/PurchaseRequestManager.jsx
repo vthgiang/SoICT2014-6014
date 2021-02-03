@@ -10,16 +10,22 @@ import { PurchaseRequestDetailForm } from "../../../user/purchase-request/compon
 
 import { PurchaseRequestEditForm } from './PurchaseRequestManagerEditForm';
 import { getFormatDateFromTime } from '../../../../../helpers/stringMethod';
+import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
 
 class PurchaseRequestManager extends Component {
     constructor(props) {
         super(props);
+        const tableId = "table-purchase-request-manager";
+        const defaultConfig = { limit: 5 }
+        const limit = getTableConfiguration(tableId, defaultConfig).limit;
+
         this.state = {
+            tableId,
             recommendNumber: "",
             month: "",
             status: null,
             page: 0,
-            limit: 5,
+            limit: limit,
         }
     }
 
@@ -210,7 +216,7 @@ class PurchaseRequestManager extends Component {
 
     render() {
         const { translate, recommendProcure } = this.props;
-        const { page, limit, currentRowView, currentRow } = this.state;
+        const { page, limit, currentRowView, currentRow, tableId } = this.state;
 
         var listRecommendProcures = "", exportData;
         if (recommendProcure.isLoading === false) {
@@ -287,7 +293,7 @@ class PurchaseRequestManager extends Component {
                     </div>
 
                     {/* Bảng phiếu đăng ký mua sắm tài sản */}
-                    <table id="recommendprocuremanage-table" className="table table-striped table-bordered table-hover">
+                    <table id={tableId} className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
                                 <th style={{ width: "10%" }}>{translate('asset.general_information.form_code')}</th>
@@ -300,7 +306,7 @@ class PurchaseRequestManager extends Component {
                                 <th style={{ width: "11%" }}>{translate('asset.general_information.status')}</th>
                                 <th style={{ width: '120px', textAlign: 'center' }}>{translate('asset.general_information.action')}
                                     <DataTableSetting
-                                        tableId="recommendprocuremanage-table"
+                                        tableId={tableId}
                                         columnArr={[
                                             translate('asset.general_information.form_code'),
                                             translate('asset.general_information.create_date'),
@@ -311,9 +317,7 @@ class PurchaseRequestManager extends Component {
                                             translate('asset.usage.note'),
                                             translate('asset.general_information.status'),
                                         ]}
-                                        limit={limit}
                                         setLimit={this.setLimit}
-                                        hideColumnOption={true}
                                     />
                                 </th>
                             </tr>

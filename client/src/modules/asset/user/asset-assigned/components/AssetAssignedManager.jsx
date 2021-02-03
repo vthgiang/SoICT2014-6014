@@ -10,10 +10,15 @@ import { UserActions } from "../../../../super-admin/user/redux/actions";
 
 import { IncidentCreateForm } from "./incidentCreateForm";
 import { AssetDetailForm } from '../../../admin/asset-information/components/assetDetailForm';
+import { getTableConfiguration } from '../../../../../helpers/tableConfiguration'
 
 class AssetAssignedManager extends Component {
     constructor(props) {
         super(props);
+        const tableId = "table-asset-assign-manager";
+        const defaultConfig = { limit: 10 }
+        const limit = getTableConfiguration(tableId, defaultConfig).limit;
+
         this.state = {
             code: "",
             assetName: "",
@@ -21,7 +26,8 @@ class AssetAssignedManager extends Component {
             month: null,
             status: "",
             page: 0,
-            limit: 100,
+            limit: limit,
+            tableId,
         }
     }
 
@@ -238,7 +244,7 @@ class AssetAssignedManager extends Component {
     }
     render() {
         const { id, translate, assetsManager, assetType, user, auth } = this.props;
-        const { page, limit, currentRowView, currentRow } = this.state;
+        const { page, limit, currentRowView, currentRow, tableId } = this.state;
 
         var lists = "";
         var userlist = user.list;
@@ -338,7 +344,7 @@ class AssetAssignedManager extends Component {
                     </div>
 
                     {/* Bảng thông tin thiết bị bàn giao */}
-                    <table id="assetassigned-table" className="table table-striped table-bordered table-hover">
+                    <table id={tableId} className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
                                 <th style={{ width: "8%" }}>{translate('asset.general_information.asset_code')}</th>
@@ -348,7 +354,7 @@ class AssetAssignedManager extends Component {
                                 <th style={{ width: "10%" }}>{translate('asset.general_information.status')}</th>
                                 <th style={{ width: '120px', textAlign: 'center' }}>{translate('table.action')}
                                     <DataTableSetting
-                                        tableId="assetassigned-table"
+                                        tableId={tableId}
                                         columnArr={[
                                             translate('asset.general_information.asset_code'),
                                             translate('asset.general_information.asset_name'),
@@ -356,9 +362,7 @@ class AssetAssignedManager extends Component {
                                             translate('asset.general_information.asset_value'),
                                             translate('asset.general_information.status')
                                         ]}
-                                        limit={limit}
                                         setLimit={this.setLimit}
-                                        hideColumnOption={true}
                                     />
                                 </th>
                             </tr>
