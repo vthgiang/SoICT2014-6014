@@ -14,14 +14,20 @@ import { RoleActions } from '../../../../super-admin/role/redux/actions';
 import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
 import { FormImportProcessTemplate } from './formImportProcessTemplate';
 import Swal from 'sweetalert2';
+import { getTableConfiguration } from '../../../../../helpers/tableConfiguration'
 
 class ProcessTemplate extends Component {
     constructor(props) {
         super(props);
+        const tableId = "table-process-template";
+        const defaultConfig = { limit: 5 }
+        const limit = getTableConfiguration(tableId, defaultConfig).limit;
+
         this.state = {
             currentRow: {},
             pageNumber: 1,
-            noResultsPerPage: 5,
+            noResultsPerPage: limit,
+            tableId,
         };
 
     }
@@ -352,7 +358,7 @@ class ProcessTemplate extends Component {
 
     render() {
         const { translate, taskProcess, department } = this.props
-        const { showModalCreateProcess, currentRow, showModalImportProcess } = this.state
+        const { showModalCreateProcess, currentRow, showModalImportProcess, tableId } = this.state
         let listDiagram = [];
         if (taskProcess && taskProcess.xmlDiagram) {
             listDiagram = taskProcess.xmlDiagram.filter((item) => {
@@ -459,17 +465,15 @@ class ProcessTemplate extends Component {
                     </div>
 
                     <DataTableSetting
-                        tableId="table-process-template"
+                        tableId={tableId}
                         columnArr={[
                             translate("task.task_process.process_name"),
                             translate('task_template.description'),
                             translate('task_template.creator'),
                         ]}
-                        limit={this.state.noResultsPerPage}
                         setLimit={this.setLimit}
-                        hideColumnOption={true}
                     />
-                    <table className="table table-bordered table-striped table-hover" id="table-process-template">
+                    <table className="table table-bordered table-striped table-hover" id={tableId}>
                         <thead>
                             <tr>
                                 <th title={translate('task_template.tasktemplate_name')}>{translate('task_template.tasktemplate_name')}</th>
@@ -512,10 +516,11 @@ class ProcessTemplate extends Component {
                                             </a>
                                         </td>
                                     </tr>
-                                }) : <tr><td colSpan={6}>{translate("task.task_process.no_data")}</td></tr>
+                                }) : null
                             }
                         </tbody>
                     </table>
+                    {(listDiagram && listDiagram.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>}
                     <PaginateBar pageTotal={totalPage} currentPage={this.state.pageNumber} func={this.setPage} />
                 </div>
             </div>

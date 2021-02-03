@@ -16,7 +16,8 @@ export const AuthActions = {
     changeInformation,
     changePassword,
     downloadFile,
-    answerAuthQuestion
+    answerAuthQuestion,
+    checkExistsPassword2,
 }
 
 function login(user){
@@ -254,6 +255,23 @@ function answerAuthQuestion(data){
                 reject(err);
             })
         })
+        
+    }
+}
+
+function checkExistsPassword2() {
+    return dispatch => {
+        dispatch({type: AuthConstants.CHECK_PASSWORD2_EXITS_REQUEST});
+        AuthService.checkExistsPassword2()
+            .then(res => {
+                dispatch({
+                    type: AuthConstants.CHECK_PASSWORD2_EXITS_SUCCESS,
+                    payload: res.data.content
+                });
+            })
+            .catch(err => {
+                dispatch({type: AuthConstants.CHECK_PASSWORD2_EXITS_FAILE});
+            })
         
     }
 }

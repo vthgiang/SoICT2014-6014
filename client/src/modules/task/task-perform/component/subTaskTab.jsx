@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+import parse from 'html-react-parser';
+import qs from 'qs';
+import './actionTab.css';
 
 import { taskManagementActions } from "../../task-management/redux/actions";
-import './actionTab.css';
-import qs from 'qs';
+
 import { performTaskAction } from '../redux/actions';
 class SubTaskTab extends Component {
     constructor(props) {
@@ -51,7 +53,7 @@ class SubTaskTab extends Component {
                                 <span>{item.progress}%, </span>
                                 <span>{this.formatDate(item.startDate)} - {this.formatDate(item.endDate)}</span>
                                 <div>
-                                    {item.description}
+                                    {parse(item.description)}
                                 </div>
                             </div>
                         )

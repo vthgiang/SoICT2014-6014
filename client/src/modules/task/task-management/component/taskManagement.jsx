@@ -15,15 +15,19 @@ import TaskProjectAction from '../../task-project/redux/action';
 import { TaskAddModal } from './taskAddModal';
 import { ModalPerform } from '../../task-perform/component/modalPerform';
 import { duration } from 'moment';
-
+import { getTableConfiguration } from '../../../../helpers/tableConfiguration'
 class TaskManagement extends Component {
     constructor(props) {
         let userId = getStorage("userId");
         super(props);
+        const tableId = "tree-table-task-management";
+        const defaultConfig = { limit: 20 }
+        const limit = getTableConfiguration(tableId, defaultConfig).limit;
         this.state = {
             displayType: 'table',
-            perPage: 20,
+            perPage: limit,
             currentPage: 1,
+            tableId,
 
             currentTab: ["responsible", "accountable"],
             organizationalUnit: [],
@@ -495,7 +499,7 @@ class TaskManagement extends Component {
 
     render() {
         const { tasks, user, translate, taskProject } = this.props;
-        const { currentTaskId, currentPage, currentTab, parentTask, startDate, endDate, perPage, status, monthTimeSheetLog } = this.state;
+        const { currentTaskId, currentPage, currentTab, parentTask, startDate, endDate, perPage, status, monthTimeSheetLog, tableId } = this.state;
         let currentTasks, units = [];
         if (tasks) {
             currentTasks = tasks.tasks;
@@ -760,10 +764,19 @@ class TaskManagement extends Component {
                                 <label></label>
                                 <button type="button" className="btn btn-success" onClick={this.handleUpdateData}>{translate('task.task_management.search')}</button>
                             </div>
+                        </div>
 
+                        {
+                            currentTaskId &&
+                            <ModalPerform
+                                units={units}
+                                id={currentTaskId}
+                            />
+                        }
+
+                        <div id="tree-table-container" style={{ marginTop: '20px' }}>
                             <DataTableSetting
-                                tableId="tree-table"
-                                tableContainerId="tree-table-container"
+                                tableId={tableId}
                                 tableWidth="1300px"
                                 columnArr={[
                                     translate('task.task_management.col_name'),
@@ -775,26 +788,10 @@ class TaskManagement extends Component {
                                     translate('task.task_management.col_progress'),
                                     translate('task.task_management.col_logged_time')
                                 ]}
-                                limit={perPage}
                                 setLimit={this.setLimit}
-                                hideColumnOption={true}
-                                className="pull-right btn btn-default"
-                                style={{ borderRadius: 0 }}
-                                fontSize={16}
-                                text="Thiết lập"
                             />
-                        </div>
-
-                        {
-                            currentTaskId &&
-                            <ModalPerform
-                                units={units}
-                                id={currentTaskId}
-                            />
-                        }
-
-                        <div id="tree-table-container" style={{ marginTop: '30px' }}>
                             <TreeTable
+                                tableId={tableId}
                                 behaviour="show-children"
                                 column={column}
                                 data={data}

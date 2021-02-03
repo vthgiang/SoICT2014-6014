@@ -16,7 +16,7 @@ var initState = {
     reset_password: false,
     showFiles: [],
     isLoading: false,
-    redirectToAuthQuestionPage: false,
+    password2AlreadyExists: false,
 }
 
 export function auth(state = initState, action) {
@@ -37,6 +37,7 @@ export function auth(state = initState, action) {
         case AuthConstants.CHANGE_USER_PASSWORD_REQUEST:
         case AuthConstants.GET_COMPONENTS_OF_USER_IN_LINK_REQUEST:
         case AuthConstants.ANSWER_AUTH_QUESTIONS_REQUEST:
+        case AuthConstants.CHECK_PASSWORD2_EXITS_REQUEST:
             return {
                 ...state,
                 isLoading: true,
@@ -47,7 +48,8 @@ export function auth(state = initState, action) {
             return {
                 ...state,
                 isLoading: false,
-                redirectToAuthQuestionPage: false
+                password2AlreadyExists: true,
+                autoRedirectAfterQuestionAnswer: true,
             };
 
         case AuthConstants.LOGIN_SUCCESS:
@@ -57,13 +59,21 @@ export function auth(state = initState, action) {
                 isLoading: false,
                 error: null
             };
-
-        case AuthConstants.REDIRECT_AUTH_QUESTION_PAGE:
+        
+        case AuthConstants.CHECK_PASSWORD2_EXITS_SUCCESS:
             return {
                 ...state,
-                redirectToAuthQuestionPage: true
+                password2AlreadyExists: false,
+                error: null
             };
-
+        
+        case AuthConstants.CHECK_PASSWORD2_EXITS_FAILE:
+            return {
+                ...state,
+                password2AlreadyExists: true,
+                error: action.payload
+            }
+        
         case AuthConstants.LOGIN_FAILE:
             return {
                 ...state,

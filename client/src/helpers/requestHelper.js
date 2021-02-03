@@ -4,8 +4,8 @@ import ServerResponseAlert from '../modules/alert/components/serverResponseAlert
 import { toast } from 'react-toastify';
 import React from 'react';
 import FingerprintJS from '@fingerprintjs/fingerprintjs';
-import store from '../redux/store'
-import { AuthConstants } from '../modules/auth/redux/constants';
+// import store from '../redux/store'
+// import { AuthConstants } from '../modules/auth/redux/constants';
 import JSEncrypt from 'jsencrypt';
 import { key } from './pub.json'
 
@@ -100,10 +100,11 @@ export async function sendRequest(options, showSuccessAlert = false, showFailAle
         if (messages) {
             if (checkErrorAuth(messages[0]))
                 showAuthResponseAlertAndRedirectToLoginPage();
-            else if (messages[0] === 'acc_log_out')
+            else if (messages[0] === 'acc_log_out') {
                 clearStorage();
-            else if (messages[0] === 'auth_password2_not_complete') // Yêu cầu người dùng hoàn thành câu hỏi xác thực thông tin bắt buộc
-                store.dispatch({ type: AuthConstants.REDIRECT_AUTH_QUESTION_PAGE, payload: err.response.data.content.token });
+            }
+            // else if (messages[0] === 'auth_password2_found') // Nếu người dùng chưa có mật khảu cấp 2 thì chuyển hướng tới trang thêm mới mkc2
+            //     store.dispatch({ type: AuthConstants.REDIRECT_AUTH_QUESTION_PAGE, payload: err.response.data.content.token });
             else {
                 showFailAlert && toast.error(
                     <ServerResponseAlert

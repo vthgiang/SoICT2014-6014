@@ -5,6 +5,7 @@ import Swal from 'sweetalert2'
 import Rating from 'react-rating';
 import moment from 'moment';
 import 'moment/locale/vi';
+import parse from 'html-react-parser';
 import './actionTab.css';
 
 import { ContentMaker, DateTimeConverter, ApiImage, ShowMoreShowLess, SelectBox, DatePicker, TimePicker, ErrorLabel } from '../../../../common-components';
@@ -19,7 +20,6 @@ import { SubTaskTab } from './subTaskTab';
 import { ViewProcess } from '../../task-process/component/task-process-management/viewProcess';
 import { IncomingDataTab } from './incomingDataTab';
 import { OutgoingDataTab } from './outgoingDataTab';
-import parse from 'html-react-parser';
 import TextareaAutosize from 'react-textarea-autosize';
 import ValidationHelper from '../../../../helpers/validationHelper';
 import { formatDate } from '../../../../helpers/formatDate';

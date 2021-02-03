@@ -35,8 +35,9 @@ class KPIUnitManager extends Component {
         } else {
             endMonth = month;
         }
-
+        const tableId = "table-org-kpi-management";
         this.state = {
+            tableId,
             showModalCopy: "",
             currentRole: localStorage.getItem("currentRole"),
             status: -1,
@@ -85,7 +86,7 @@ class KPIUnitManager extends Component {
         }
 
         // Không re-render khi lựa chọn tháng ở DatePiker
-        if (nextState.startDate !== startDate 
+        if (nextState.startDate !== startDate
             || nextState.endDate !== endDate
             || nextState.status !== status
             || nextState.organizationalUnit !== organizationalUnit
@@ -280,7 +281,7 @@ class KPIUnitManager extends Component {
 
     render() {
         const { user, managerKpiUnit, dashboardEvaluationEmployeeKpiSet, translate } = this.props;
-        const { startDate, endDate, status, errorOnDate, infosearch, organizationalUnit, defaultStartDate, defaultEndDate } = this.state;
+        const { startDate, endDate, status, errorOnDate, infosearch, organizationalUnit, defaultStartDate, defaultEndDate, tableId } = this.state;
 
         let listkpi, currentKPI, kpiApproved, datachat1, targetA, targetC, targetOther, misspoint, organizationalUnitsOfUserLoading;
         let unitList, currentUnit, userdepartments, exportData;
@@ -344,7 +345,7 @@ class KPIUnitManager extends Component {
                 }
             }
         }
-        
+
         return (
             <React.Fragment>
                 <div className="box">
@@ -423,14 +424,13 @@ class KPIUnitManager extends Component {
                                 {exportData && <ExportExcel id="export-unit-kpi-management-overview" exportData={exportData} style={{ marginRight: 15, marginTop: 5 }} />}
                             </div>
 
-                            
 
-                            <DataTableSetting className="pull-right" tableId="kpiTable" tableContainerId="kpiTableContainer" tableWidth="1300px"
+
+                            <DataTableSetting className="pull-right" tableId={tableId} tableContainerId="kpiTableContainer" tableWidth="1300px"
                                 columnArr={['Người tạo', 'Thời gian', 'Trạng thái', 'Số lượng mục tiêu', 'Kết quả đánh giá', 'Xem chi tiết', 'Tạo KPI tháng mới', 'Cập nhật']}
-                                limit={this.state.perPage}
                                 setLimit={this.setLimit} hideColumnOption={true} />
                             {/* Danh sách các KPI của đơn vị */}
-                            <table id="kpiTable" className="table table-hover table-bordered">
+                            <table id={tableId} className="table table-hover table-bordered">
                                 <thead>
                                     <tr>
                                         <th title="Người tạo">{translate('kpi.organizational_unit.management.over_view.creator')}</th>
@@ -479,16 +479,12 @@ class KPIUnitManager extends Component {
                                                         </td>
                                                     </tr>
                                                 }
-                                            }
-                                            )
-                                            : <tr>
-                                                <td colSpan={8}>
-                                                    <center>{translate('kpi.organizational_unit.management.over_view.no_data')}</center>
-                                                </td>
-                                            </tr>
+                                            }) : null
                                     }
                                 </tbody>
-                            </table></div>
+                            </table>
+                            {(listkpi && listkpi.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>}
+                        </div>
                         : organizationalUnitsOfUserLoading
                         && <div className="box-body">
                             <h4>Bạn chưa có đơn vị</h4>

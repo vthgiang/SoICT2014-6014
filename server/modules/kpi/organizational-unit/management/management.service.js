@@ -1,8 +1,5 @@
 const Models = require(`../../../../models`);
-const { OrganizationalUnitKpiSet, OrganizationalUnitKpi, } = Models;
-
-const mongoose = require("mongoose");
-const { EmployeeKpi } = require("../../../../models");
+const { OrganizationalUnitKpiSet, OrganizationalUnitKpi, EmployeeKpiSet, EmployeeKpi } = Models;
 const { connect } = require(`../../../../helpers/dbHelper`);
 const EmployeeKpiService = require(`../../employee/management/management.service`);
 
@@ -20,15 +17,10 @@ exports.copyKPI = async (portal, kpiId, data) => {
     newDate = new Date(data.datenew);
     nextNewDate = new Date(data.datenew);
     nextNewDate.setMonth(nextNewDate.getMonth() + 1);
-
-    organizationalUnitOldKPISet = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
-        .findById(kpiId)
-        .populate("organizationalUnit creator")
-        .populate({ path: "kpis", populate: { path: 'parent' } });
     
     checkOrganizationalUnitKpiSet = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
         .findOne({
-            organizationalUnit: organizationalUnitOldKPISet.organizationalUnit._id,
+            organizationalUnit: data.idunit,
             date: { $gte: newDate, $lt: nextNewDate }
         })
 
@@ -39,17 +31,23 @@ exports.copyKPI = async (portal, kpiId, data) => {
 
         organizationalUnitNewKpi = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
             .create({
-                organizationalUnit: organizationalUnitOldKPISet.organizationalUnit._id,
+                organizationalUnit: data.idunit,
                 creator: data.creator,
                 date: newDate,
                 kpis: []
             })
 
+        organizationalUnitOldKPISet = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
+            .findById(kpiId)
+            .populate("organizationalUnit creator")
+            .populate({ path: "kpis", populate: { path: 'parent' } });
+    
+        
         for (let i in organizationalUnitOldKPISet.kpis) {
             let target = await OrganizationalUnitKpi(connect(DB_CONNECTION, portal))
                 .create({
                     name: organizationalUnitOldKPISet.kpis[i].name,
-                    parent: organizationalUnitOldKPISet.kpis[i].parent,
+                    parent: data.type === 'default' ? organizationalUnitOldKPISet.kpis[i].parent : organizationalUnitOldKPISet.kpis[i]._id,
                     weight: organizationalUnitOldKPISet.kpis[i].weight,
                     criteria: organizationalUnitOldKPISet.kpis[i].criteria,
                     type: organizationalUnitOldKPISet.kpis[i].type
@@ -59,14 +57,94 @@ exports.copyKPI = async (portal, kpiId, data) => {
                     organizationalUnitNewKpi, { $push: { kpis: target._id } }, { new: true }
                 );
         }
+
         organizationalUnitKpiSet = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
-            .find({ organizationalUnit: data.idunit })
+            .findById(organizationalUnitNewKpi._id)
             .populate("organizationalUnit creator")
             .populate({ path: "kpis", populate: { path: 'parent' } });
-
+        
         return organizationalUnitKpiSet;
     }
 }
+
+/**
+ * Copy KPI đơn vị sang KPI nhân viên
+ * @param {*} kpiId id của OrganizationalUnitKPIset 
+ * @query {*} datenew tháng mới được chọn để tạo
+ * @query {*} idunit Id của đơn vị 
+ * @query {*} creator Id nhân viên
+ * @query {*} approver Id người phê duyệt
+ */
+exports.copyParentKPIUnitToChildrenKPIEmployee = async (portal, kpiId, data) => {
+    let organizationalUnitOldKPISet, checkEmployeeKpiSet;
+    let newDate, nextNewDate;
+
+    newDate = new Date(data.datenew);
+    nextNewDate = new Date(data.datenew);
+    nextNewDate.setMonth(nextNewDate.getMonth() + 1);
+    
+    checkEmployeeKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
+        .findOne({
+            organizationalUnit: data.idunit,
+            creator: data.creator,
+            status: { $ne: 3 },
+            date: { $gte: newDate, $lt: nextNewDate }
+        })
+
+    if (checkEmployeeKpiSet) {
+        throw { messages: "employee_kpi_set_exist" }
+    } else {
+        let employeeKpiSet, employeeNewKpiSet;
+
+        employeeNewKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
+            .create({
+                organizationalUnit: data.idunit,
+                creator: data.creator,
+                approver: data.approver,
+                date: newDate,
+                kpis: []
+            })
+
+        organizationalUnitOldKPISet = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
+            .findById(kpiId)
+            .populate("organizationalUnit creator")
+            .populate({ path: "kpis", populate: { path: 'parent' } });
+    
+        
+        for (let i in organizationalUnitOldKPISet.kpis) {
+            let target = await EmployeeKpi(connect(DB_CONNECTION, portal))
+                .create({
+                    name: organizationalUnitOldKPISet.kpis[i].name,
+                    parent: organizationalUnitOldKPISet.kpis[i]._id,
+                    weight: organizationalUnitOldKPISet.kpis[i].weight,
+                    criteria: organizationalUnitOldKPISet.kpis[i].criteria,
+                    type: organizationalUnitOldKPISet.kpis[i].type
+                })
+            
+            employeeKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
+                .findByIdAndUpdate(
+                    employeeNewKpiSet._id, { $push: { kpis: target._id } }, { new: true }
+                );
+        }
+
+        employeeKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
+            .findOne({
+                creator: data.creator,
+                organizationalUnit: data.idunit,
+                status: { $ne: 3 },
+                date: { $gte: newDate, $lt: nextNewDate }
+            })
+            .populate("organizationalUnit creator approver")
+            .populate({ path: "kpis", populate: { path: 'parent' } })
+            .populate([
+                { path: 'comments.creator', select: 'name email avatar ' },
+                { path: 'comments.comments.creator', select: 'name email avatar' }
+            ])
+        
+        return employeeKpiSet;
+    }
+}
+
 
 exports.calculateKpiUnit = async (portal, data) => {
     //const month = data.date.getMoth() + 1;
@@ -118,3 +196,4 @@ exports.calculateKpiUnit = async (portal, data) => {
     return { kpiUnitSet, childrenKpi };
 
 }
+
