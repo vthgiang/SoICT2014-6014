@@ -777,6 +777,7 @@ class TaskManagement extends Component {
                         <div id="tree-table-container" style={{ marginTop: '20px' }}>
                             <DataTableSetting
                                 tableId={tableId}
+                                tableContainerId="tree-table-container"
                                 tableWidth="1300px"
                                 columnArr={[
                                     translate('task.task_management.col_name'),
