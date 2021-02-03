@@ -2826,7 +2826,7 @@ export default {
 
         task: {
             task_management: {
-                get_subtask_success: "Lấy công việc liên quan thành công",
+                get_subtask_success: "Lấy công việc con thành công",
                 get_task_of_informed_employee_success:
                     "Lấy công việc theo vai trò người quan sát thành công",
                 get_task_of_creator_success:
@@ -2850,7 +2850,7 @@ export default {
                 edit_status_archived_of_task_success:
                     "Chỉnh sửa trạng thái lưu kho của công việc thành công",
 
-                get_subtask_fail: "Lấy công việc liên quan thất bại",
+                get_subtask_fail: "Lấy công việc con thất bại",
                 get_task_of_informed_employee_fail:
                     "Lấy công việc theo vai trò người quan sát thất bại",
                 get_task_of_creator_fail:
@@ -2901,7 +2901,7 @@ export default {
 
                 add_task: "Thêm mới",
                 add_title: "Thêm mới một công việc",
-                add_subtask: "Thêm công việc liên quan",
+                add_subtask: "Thêm công việc con",
 
                 department: "Đơn vị",
                 select_department: "Chọn đơn vị",
@@ -2970,7 +2970,7 @@ export default {
                 action_delete: "Xóa công việc",
                 action_store: "Lưu vào kho",
                 action_restore: "Lấy ra khỏi kho",
-                action_add: "Thêm công việc liên quan",
+                action_add: "Thêm công việc con",
                 action_start_timer: "Bắt đầu bấm giờ",
 
                 from: "Từ ",
@@ -3083,9 +3083,9 @@ export default {
 
                 add_template: "Mẫu công việc",
                 add_template_notice: "Hãy chọn mẫu công việc",
-                add_parent_task: "Công việc liên quan",
-                search_task_by_typing: "Nhập để tìm kiếm công việc liên quan",
-                add_parent_task_notice: "Hãy chọn công việc liên quan",
+                add_parent_task: "Công việc cha",
+                search_task_by_typing: "Nhập để tìm kiếm công việc cha",
+                add_parent_task_notice: "Hãy chọn công việc cha",
                 add_raci: "Phân định trách nhiệm",
                 add_resp: "Chọn người thực hiện",
                 add_acc: "Chọn người phê duyệt",
@@ -3232,7 +3232,7 @@ export default {
                 communication: "Trao đổi",
                 documents: "Tài liệu",
                 timesheetlogs: "Lịch sử bấm giờ",
-                subtasks: "Công việc liên quan",
+                subtasks: "Công việc ",
                 change_history: "Lịch sử thay đổi",
                 change_process: "Quy trình",
                 change_incoming: "Dữ liệu vào",
@@ -3262,7 +3262,7 @@ export default {
                 create_action: "Thêm hoạt động",
                 total_time: "Tổng thời gian",
                 time: "Thời gian",
-                none_subtask: "Không có công việc liên quan",
+                none_subtask: "Không có công việc con",
                 enter_comment_action: "Nhập bình luận cho hoạt động",
                 enter_result_action: "Nhập kết quả cho hoạt động",
                 create_comment_action: "Thêm bình luận",
