@@ -1,4 +1,5 @@
 import { createKpiSetConstants } from "./constants";
+import { managerConstants } from "../../../organizational-unit/management/redux/constants";
 
 export function createEmployeeKpiSet(state = {}, action) {
     switch (action.type) {
@@ -366,6 +367,25 @@ export function createEmployeeKpiSet(state = {}, action) {
                 ...state,
                 error: action.payload,
             }
+
+        case managerConstants.COPY_KPIUNIT_REQUEST:
+            return {
+                ...state,
+                currentKPI: null,
+                isLoading: false
+            };
+        case managerConstants.COPY_KPIUNIT_SUCCESS:
+            return {
+                ...state,
+                currentKPI: action.payload,
+                isLoading: false
+            };
+        case managerConstants.COPY_KPIUNIT_FAILURE:
+            return {
+                ...state,
+                error: action.payload,
+                isLoading: false
+            };
         default:
             return state
     }

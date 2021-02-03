@@ -9,15 +9,16 @@ import parse from 'html-react-parser';
 import { UserActions } from "../../../../super-admin/user/redux/actions";
 import { createKpiSetActions } from '../redux/actions';
 import { createUnitKpiActions } from '../../../organizational-unit/creation/redux/actions';
+import { AuthActions } from '../../../../auth/redux/actions';
 
 import { ModalCreateEmployeeKpi } from './employeeKpiAddTargetModal';
 import { ModalCreateEmployeeKpiSet } from './employeeKpiCreateModal';
 import { ModalEditEmployeeKpi } from './employeeKpiEditTargetModal';
+import { ModalCopyKPIUnit } from '../../../organizational-unit/management/component/organizationalUnitKpiCopyModal';
 
 import { getStorage } from '../../../../../config'
 import { DatePicker, SelectBox, SlimScroll, ToolTip, Comment } from '../../../../../../src/common-components';
 import getEmployeeSelectBoxItems from '../../../../task/organizationalUnitHelper';
-import { AuthActions } from '../../../../auth/redux/actions';
 
 
 var translate = '';
@@ -473,9 +474,9 @@ class CreateEmployeeKpiSet extends Component {
 
 
     render() {
-        const { createEmployeeKpiSet, user, translate } = this.props;
+        const { createEmployeeKpiSet, user, translate, createKpiUnit } = this.props;
         const { editing, id, employeeKpi, employeeKpiSet, defaultDate, month } = this.state;
-        let unitList, currentUnit, currentKPI, currentKPILoading, userdepartments;
+        let unitList, currentUnit, currentKPI, currentKPILoading, userdepartments, organizationalUnitsOfUser;
 
         if (user) {
             unitList = user.organizationalUnitsOfUser;
@@ -483,7 +484,13 @@ class CreateEmployeeKpiSet extends Component {
                 item.managers.includes(this.state.currentRole)
                 || item.employees.includes(this.state.currentRole)
                 || item.deputyManagers.includes(this.state.currentRole)));
+            
+            if (currentUnit && currentUnit[0]) {
+                currentUnit = currentUnit[0];
+            }
         }
+
+        let parentKpi = createKpiUnit && createKpiUnit.currentKPI;
 
         if (createEmployeeKpiSet) {
             currentKPI = createEmployeeKpiSet.currentKPI;
@@ -562,7 +569,7 @@ class CreateEmployeeKpiSet extends Component {
                                             <i className="fa fa-plus-circle" style={{ fontSize: "16px" }}></i>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.add_target')}
                                         </a>
 
-                                        <ModalCreateEmployeeKpi employeeKpiSet={currentKPI._id} organizationalUnit={currentUnit && currentUnit[0]} />
+                                        <ModalCreateEmployeeKpi employeeKpiSet={currentKPI._id} organizationalUnit={currentUnit} />
 
                                         {/* Yêu cầu phê duyệt tập KPI này */}
                                         {currentKPI.status === 0 ?
@@ -599,7 +606,7 @@ class CreateEmployeeKpiSet extends Component {
                                         : <div>
                                             {/* Tên người phê duyệt */}
                                             <span style={{ fontWeight: "600" }}>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.approver')}: </span>
-                                            <span>{currentKPI.approver.name ? currentKPI.approver.name : translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.handle_populate_info_null.error_kpi_approver_null')}</span>
+                                            <span>{currentKPI.approver && currentKPI.approver.name ? currentKPI.approver.name : translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.handle_populate_info_null.error_kpi_approver_null')}</span>
                                         </div>
                                     }
 
@@ -706,15 +713,40 @@ class CreateEmployeeKpiSet extends Component {
                                 && <div className="col-xs-12">
                                     <div style={{ marginLeft: "-10px" }}>
                                         {this.checkOrganizationalUnitKpi() ?
-                                            <div>
+                                            <span>
                                                 <a className="btn btn-app" data-toggle="modal" data-target="#createEmployeeKpiSet" data-backdrop="static" data-keyboard="false">
                                                     <i className="fa fa-calendar-plus-o" style={{ fontSize: "16px" }}></i>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.initialize_kpi_newmonth')} {this.formatDate(month)}
                                                 </a>
-                                                <ModalCreateEmployeeKpiSet organizationalUnit={currentUnit && currentUnit[0] && currentUnit[0]} month={month}/>
-                                            </div>
-                                            : <a className="btn btn-app" data-toggle="modal" data-target="#startKPIPersonal" data-backdrop="static" data-keyboard="false" onClick={() => this.handleStartOrganizationalUnitKpi()}>
-                                                <i className="fa fa-calendar-plus-o" style={{ fontSize: "16px" }}></i>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.initialize_kpi_newmonth')} {this.formatDate(month)}
-                                            </a>
+                                                <ModalCreateEmployeeKpiSet organizationalUnit={currentUnit} month={month}/>
+                                            </span>
+                                            : <span>
+                                                <a className="btn btn-app" data-toggle="modal" data-target="#startKPIPersonal" data-backdrop="static" data-keyboard="false" onClick={() => this.handleStartOrganizationalUnitKpi()}>
+                                                    <i className="fa fa-calendar-plus-o" style={{ fontSize: "16px" }}></i>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.initialize_kpi_newmonth')} {this.formatDate(month)}
+                                                </a>
+                                            </span>
+                                        }
+
+                                        {/* Sao chép mục tiêu từ KPI đơn vị cha */}
+                                        {this.checkOrganizationalUnitKpi() ?
+                                            <span>
+                                                <a className="btn btn-app" data-toggle="modal" data-target={`#copy-old-kpi-to-new-time-${parentKpi && parentKpi._id}`} data-backdrop="static" data-keyboard="false">
+                                                    <i className="fa fa-copy" style={{ fontSize: "16px" }}></i>Sao chép KPI đơn vị cha
+                                                </a>
+                                                <ModalCopyKPIUnit
+                                                    kpiId={parentKpi && parentKpi._id}
+                                                    idunit={currentUnit && currentUnit._id}
+                                                    kpiunit={parentKpi}
+                                                    editMonth={true}
+                                                    monthDefault={month}
+                                                    approverDefault={managers}
+                                                    type={'copy-parent-kpi-to-employee'}
+                                                />
+                                            </span>
+                                            : <span>
+                                                <a className="btn btn-app" onClick={() => this.handleStartOrganizationalUnitKpi()}>
+                                                    <i className="fa fa-copy" style={{ fontSize: "16px" }}></i>Sao chép KPI đơn vị cha
+                                                </a>
+                                            </span>
                                         }
                                     </div>
                                     <h3 style={{ display: "inline-block", fontWeight: "600" }}>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.general_information.general_information')} {this.formatDate(month)}</h3>
