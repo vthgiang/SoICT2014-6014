@@ -56,17 +56,8 @@ class Gantt extends Component {
   }
 
   initGanttDataProcessor() {
-    // const onDataUpdated = this.props.onDataUpdated;
-
-    // this.dataProcessor = gantt.createDataProcessor((type, action, item, id) => {
-    //   return new Promise((resolve, reject) => {
-    //     if (onDataUpdated) {
-    //       onDataUpdated(type, action, item, id);
-    //     }
-    //     return resolve();
-    //   });
-    // });
   }
+
   shouldComponentUpdate(nextProps) {
     if (this.props.ganttData !== nextProps.ganttData) {
       gantt.clearAll();
@@ -78,13 +69,14 @@ class Gantt extends Component {
   }
 
   componentDidMount() {
+    const { unit } = this.props;
     gantt.config.drag_move = false;
     gantt.config.drag_multiple = false;
     gantt.config.drag_progress = false;
     gantt.config.drag_resize = false;
     gantt.config.links = false;
     gantt.config.details_on_dblclick = false;
-    gantt.config.columns = [{ name: 'role', label: "Vai trò", align: "center", resize: true, width: 120 }]
+    gantt.config.columns = [{ name: 'role', label: unit ? "Người thực hiện" : "Vai trò", align: "center", resize: true, width: 120 }]
     gantt.config.xml_date = "%Y-%m-%d %H:%i";
     gantt.templates.task_class = function (start, end, task) {
       switch (task.process) {

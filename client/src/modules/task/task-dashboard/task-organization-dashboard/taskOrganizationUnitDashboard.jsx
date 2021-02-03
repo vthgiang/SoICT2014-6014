@@ -17,6 +17,7 @@ import { SelectMulti, DatePicker, ToolTip } from '../../../../common-components/
 import Swal from 'sweetalert2';
 import { InprocessOfUnitTask } from './processOfUnitTasks';
 import ValidationHelper from '../../../../helpers/validationHelper';
+import GanttCalendar from '../task-personal-dashboard/ganttCalendar';
 
 class TaskOrganizationUnitDashboard extends Component {
     constructor(props) {
@@ -330,12 +331,12 @@ class TaskOrganizationUnitDashboard extends Component {
                                     <div className="box-header with-border">
                                         <div className="box-title">{translate('task.task_management.tasks_calendar')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
                                     </div>
-                                    <CalendarOrganizationUnit
-                                        // callAction={!this.state.willUpdate}
-                                        // TaskOrganizationUnitDashboard={true}
-                                        // units={idsUnit}
-                                        // willUpdate={true}
-                                        tasks={tasks} />
+                                    {/* <CalendarOrganizationUnit
+                                        tasks={tasks} /> */}
+                                    <GanttCalendar
+                                        tasks={tasks}
+                                        unit={true}
+                                    />
                                 </div>
 
                             </div>

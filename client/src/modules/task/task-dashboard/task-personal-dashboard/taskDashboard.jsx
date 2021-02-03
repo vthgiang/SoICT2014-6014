@@ -404,13 +404,13 @@ class TaskDashboard extends Component {
                             /> */}
                             <GanttCalendar
                                 tasks={tasks}
-                                unitOrganization = {false}
+                                unit={false}
                             />
                         </div>
 
                     </div>
                 </div>
-                
+
                 <div className="row">
                     {/* Biểu đồ miền kết quả công việc */}
                     <div className="col-xs-12">
