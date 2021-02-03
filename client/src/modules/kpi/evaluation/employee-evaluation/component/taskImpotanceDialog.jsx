@@ -41,10 +41,16 @@ class TaskImpartanceDialog extends Component {
                     hasSaveButton={false}
                 >
                     <div>
-                        <div>{translate('kpi.evaluation.employee_evaluation.num_of_working_day')}: {this.props.task ? this.props.task.daykpi : 0}</div>
-                        <div>{translate('kpi.evaluation.employee_evaluation.contribution')}: {this.props.task ? this.props.task.results.contribution : ""}</div>
-                        <div>{translate('kpi.evaluation.employee_evaluation.priority')}: {priority}</div>
-                        <div>{translate('kpi.evaluation.employee_evaluation.formula')}:</div>
+                        <div><b>{translate('kpi.evaluation.employee_evaluation.formula')} :</b></div>
+                        <div>3 * ( priority/5) + 3* (% contribution/100) + 4 * (day/30)</div>
+                        <div>{translate('task.task_management.calc_where')}:</div>
+                        <ul>
+                            <li> priority: {translate('kpi.evaluation.employee_evaluation.priority')}, 1: {translate('task.task_management.low')}, 2: {translate('task.task_management.average')}, 3: {translate('task.task_management.standard')}, 4: {translate('task.task_management.high')}, 5: {translate('task.task_management.urgent')} </li>
+                            <li> contribution: % {translate('kpi.evaluation.employee_evaluation.contribution')}</li>
+                            <li> day: {translate('kpi.evaluation.employee_evaluation.num_of_working_day')}</li>
+                            <li> 3, 3,4: {translate('task.task_management.coefficient')}</li>
+                        </ul>
+                        <div><b>{translate('task.task_management.calc_new_formula')}:</b></div>
                         <div> 3 * ({this.props.task.priority} / 5) + 3 * ({this.props.task.results.contribution} / 100) + 4 * ({this.props.task.daykpi} / 30)</div>
                         <div> = {this.props.task.taskImportanceLevelCal}</div>
                     </div>

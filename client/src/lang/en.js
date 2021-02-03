@@ -1483,14 +1483,14 @@ export default {
                         ward: 'Phường/Xã',
                         house_hold_address: 'Địa chỉ hộ khẩu',
                         phone: 'Số điện thoại',
-                        phone_appendix:'Điện thoại hộ gia đình',
+                        phone_appendix: 'Điện thoại hộ gia đình',
                         house_hold_code: 'Mã số hộ gia đình'
                     },
                     members: {
                         title: 'Kê khai đầy đủ thông tin thành viên hộ gia đình trong sổ hộ khẩu',
                         stt: 'STT',
                         name: 'Họ và tên',
-                        name_member:'Họ và tên thành viên',
+                        name_member: 'Họ và tên thành viên',
                         code_social_insurance: 'Mã sổ BHXH',
                         book_nci: 'Số sổ BHXH',
                         gender: 'Giới tính',
@@ -1738,7 +1738,7 @@ export default {
                         sheet10: "10.Staffs - Disciplines",
                         sheet11: "11.Staffs - Salaries",
                         sheet12: "12.Staffs - Annual Leave",
-                        
+
 
                         emergency_contact_person: "Emergency contact person",
                         relation_with_emergency_contact_person:
@@ -1767,7 +1767,7 @@ export default {
                         import_contract: "Labor contracts",
                         import_socialInsurance_details: "Social insurances",
                         import_file: "Attachments",
-                        import_family : "Family member",
+                        import_family: "Family member",
 
                         import_general_infor_title:
                             "Import staff basic information",
@@ -1778,7 +1778,7 @@ export default {
                         import_socialInsurance_details_title:
                             "Import social insurance",
                         import_file_title: "Import attachments",
-                        import_file_family : "Import family member"
+                        import_file_family: "Import family member"
                     },
 
                     // Nhón dành cho UI
@@ -2663,6 +2663,7 @@ export default {
                 standard: "Standard",
                 average: "Normal",
                 low: "Low",
+                coefficient: "Coefficient",
 
                 special: "Special",
                 select_all_special: "Selected all",
@@ -2953,6 +2954,7 @@ export default {
                 time: "Time",
                 load_task_chart: "Dashboard load task",
                 load_task_chart_unit: "Dashboard load task of unit",
+                explain: "Explain",
             },
             task_perform: {
                 actions: "Actions",

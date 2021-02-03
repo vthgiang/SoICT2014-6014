@@ -491,7 +491,6 @@ class Table extends Component {
             list = docs.paginate;
         }
         let exportData = list ? this.convertDataToExportData(list) : "";
-        console.log("propppsss", paginate);
         return (
             <div className="qlcv">
                 <CreateForm />
