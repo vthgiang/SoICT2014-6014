@@ -227,17 +227,14 @@ class TaskDashboard extends Component {
     showLoadTaskDoc = () => {
         const { translate } = this.props;
         Swal.fire({
-            //  icon: "help",
+            icon: "question",
             html: `<h3 style="color: red"><div>Cách tính tải công việc  ?</div> </h3>
-             <div style="size: 24; margin: 15">Lấy tất cả các công việc người đó đống một trong 3 vai trò: thực hiện,phê duyệt, hỗ trợ,  trong khoảng thời gian được chọn,</div>
-             <div style="size: 24; marginTop: 40">Tính lần lượt tải công việc theo từng tháng rồi cộng lại,</div>
-             <div style="size: 24; margin-top: 15px">Tải công việc theo từng tháng được tính bằng tỉ số: Số ngày thực hiện với  tổng số người thực hiện, phê duyệt, hỗ trợ</div>`,
-            // icon: 'warning',
-            // showCancelButton: true,
-            // confirmButtonColor: '#3085d6',
-            // cancelButtonColor: '#d33',
-            // cancelButtonText: translate('general.no'),
-            // confirmButtonText: translate('general.yes'),
+            <ul>
+             <li style="font-size: 15px; margin-top: 25px; text-align: left;">Lấy tất cả các công việc người đó đống một trong 3 vai trò: thực hiện,phê duyệt, hỗ trợ,  trong khoảng thời gian được chọn,</li>
+             <li style="font-size: 15px; margin-top: 25px; text-align: left;">Tính lần lượt tải công việc theo từng tháng rồi cộng lại,</li>
+             <li style="font-size: 15px; margin-top: 25px; text-align: left;">Tải công việc theo từng tháng được tính bằng tỉ số: Số ngày thực hiện với  tổng số người thực hiện, phê duyệt, hỗ trợ</li>
+             </ul>`,
+            width: "50%",
 
         })
     }
@@ -410,7 +407,7 @@ class TaskDashboard extends Component {
 
                     </div>
                 </div>
-                
+
                 <div className="row">
                     {/* Biểu đồ miền kết quả công việc */}
                     <div className="col-xs-12">
@@ -540,11 +537,12 @@ class TaskDashboard extends Component {
                 {/*Biểu đồ dashboard tải công việc */}
                 <div className="col-xs-12">
                     <div className="box box-primary">
-                        <div className="box-header with-border">
+                        <div className="box-header with-border inline">
                             <div className="box-title">{translate('task.task_management.load_task_chart')}</div>
-                            <a className="text-red" title={translate('document.delete')} onClick={() => this.showLoadTaskDoc()}>
-                                <i className="material-icons">help</i>
+                            <a className="text-red" title={translate('task.task_management.explain')} onClick={() => this.showLoadTaskDoc()}>
+                                <i className="material-icons" style={{ marginLeft: "10px" }}>help</i>
                             </a>
+
                         </div>
 
 

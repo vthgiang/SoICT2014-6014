@@ -1660,14 +1660,14 @@ export default {
                         ward: 'Phường/Xã',
                         house_hold_address: 'Địa chỉ hộ khẩu',
                         phone: 'Số điện thoại',
-                        phone_appendix:'Điện thoại hộ gia đình',
+                        phone_appendix: 'Điện thoại hộ gia đình',
                         house_hold_code: 'Mã số hộ gia đình'
                     },
                     members: {
                         title: 'Kê khai đầy đủ thông tin thành viên hộ gia đình trong sổ hộ khẩu',
                         stt: 'STT',
                         name: 'Họ và tên',
-                        name_member:'Họ và tên thành viên',
+                        name_member: 'Họ và tên thành viên',
                         code_social_insurance: 'Mã sổ BHXH',
                         book_nci: 'Số sổ BHXH',
                         gender: 'Giới tính',
@@ -1948,7 +1948,7 @@ export default {
                         import_socialInsurance_details_title:
                             "Import bảo hiểm xã hội",
                         import_file_title: "Import tài liệu đính kèm",
-                        import_file_family : "Import thành viên hộ gia đình"
+                        import_file_family: "Import thành viên hộ gia đình"
                     },
 
                     // Nhón dành cho UI
@@ -2924,6 +2924,7 @@ export default {
                 standard: "Tiêu chuẩn",
                 average: "Trung bình",
                 low: "Thấp",
+                coefficient: "Hệ số",
 
                 special: "Đặc tính",
                 select_all_special: "Chọn tất cả các đặc tính",
@@ -3223,6 +3224,7 @@ export default {
                 time: "Thời gian",
                 load_task_chart: "Dashboard tải công việc",
                 load_task_chart_unit: "Dashboard tải công việc của đơn vị",
+                explain: "Giải thích",
             },
             task_perform: {
                 actions: "Hoạt động",

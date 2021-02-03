@@ -225,18 +225,15 @@ class TaskOrganizationUnitDashboard extends Component {
     showLoadTaskDoc = () => {
         const { translate } = this.props;
         Swal.fire({
-            //  icon: "help",
-            html: `<h3 style="color: red"><div>Cách tính tải công việc  ?</div> </h3>
-             <div style="size: 24">Lấy tất cả các công việc mà đơn vị thực hiện trong khoảng thời gian được chọn,</div>
-             <div style="size: 24">Tính lần lượt tải công việc theo từng tháng rồi cộng lại,</div>
-             <div style="size: 24">Tải công việc theo từng tháng được tính bằng tỉ số: Số ngày thực hiện với  tổng số người thực hiện, phê duyệt, hỗ trợ</div>`,
-            // icon: 'warning',
-            // showCancelButton: true,
-            // confirmButtonColor: '#3085d6',
-            // cancelButtonColor: '#d33',
-            // cancelButtonText: translate('general.no'),
-            // confirmButtonText: translate('general.yes'),
+            icon: "question",
 
+            html: `<h3 style="color: red"><div>Cách tính tải công việc  ?</div> </h3>
+            <ul>
+             <li style="font-size: 15px; margin-top: 25px; text-align: left;">Lấy tất cả các công việc mà đơn vị thực hiện trong khoảng thời gian được chọn</li>
+             <li style="font-size: 15px; margin-top: 25px; text-align: left;">Tính lần lượt tải công việc theo từng tháng rồi cộng lại</li>
+             <li style="font-size: 15px; margin-top: 25px; text-align: left;">Tải công việc theo từng tháng được tính bằng tỉ số: Số ngày thực hiện với  tổng số người thực hiện, phê duyệt, hỗ trợ</li>
+             </ul>`,
+            width: "50%",
         })
     }
 
@@ -502,7 +499,7 @@ class TaskOrganizationUnitDashboard extends Component {
                                             dataTooltip={['Tải công việc tính theo công thức tổng các tỉ số: số ngày thực hiện công việc trong tháng/(số người thực hiện + số người phê duyệt + số người hỗ trợ)']}
                                         /> */}
                                         <a className="text-red" title={translate('document.delete')} onClick={() => this.showLoadTaskDoc()}>
-                                            <i className="material-icons">help</i>
+                                            <i className="material-icons" style={{ marginLeft: "10px" }}>help</i>
                                         </a>
                                     </div>
                                     <div className="box-body qlcv">
