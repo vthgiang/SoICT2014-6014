@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import { AuthActions } from '../redux/actions';
 import './answerAuthQuestion.css';
 import Swal from 'sweetalert2';
 
-const AnswerAuthQuestionPage = ({ auth, answerAuthQuestion }) => {
+const AnswerAuthQuestionPage = ({ auth, answerAuthQuestion, checkExistsPassword2, autoRedirectAfterQuestionAnswer }) => {
     const [state, setState] = useState({
         hide: true
     });
@@ -61,15 +61,19 @@ const AnswerAuthQuestionPage = ({ auth, answerAuthQuestion }) => {
         })
     }
 
+    useEffect(() => {
+        checkExistsPassword2();
+    }, [])
+
     return (
         <div style={{ width: '100vw', height: '100vh', backgroundColor: '#e1e1e1' }}>
 
             <div className="one-edge-shadow">
                 {
-                    auth.redirectToAuthQuestionPage ?
+                    !auth.password2AlreadyExists ?
                         <form onSubmit={_save}>
                             <div className="auth-info-line">
-                                <label className="auth-text">Tạo mật khẩu cấp 2 để hoàn tất kích hoạt tài khoản<span className="text-red">*</span></label>
+                                <label className="auth-text">Tạo mật khẩu cấp 2<span className="text-red">*</span></label>
                                 <div style={{ display: 'flex' }}>
                                     <input className="form-control auth-input" type={state.hide ? 'password' : 'text'} placeholder="Nhập ..." onChange={_handlePassword2} />
                                     <span className="auth-input-action" style={{ position: 'absolute', top: "60px", right: '25px', cursor: 'pointer' }} onClick={_handleShowHide}><i className={state.hide ? 'fa fa-eye' : 'fa fa-eye-slash'}></i></span>
@@ -77,11 +81,11 @@ const AnswerAuthQuestionPage = ({ auth, answerAuthQuestion }) => {
                             </div>
 
                             <span>(<span className="text-red">*</span>) Trường thông tin bắt buộc</span>
-                            <button type="submit" className="auth-button pull-right">Xác nhận</button>
+                            <button type="submit" className="btn btn-success pull-right">Xác nhận</button>
                         </form> :
                         <div className="text-center">
                             <h3 className="text-green">
-                                <i className="fa fa-check" style={{ fontSize: '24px' }}></i>Lưu thông tin thành công!
+                                <i className="fa fa-check" style={{ fontSize: '24px' }}></i>{`${auth.password2AlreadyExists && !auth.autoRedirectAfterQuestionAnswer ? 'Bạn đã có mật khẩu cấp 2' : 'Lưu thông tin thành công'}`}
                             </h3>
                             <a href="/"><span style={{ fontSize: '16px', color: 'blue' }}><u>Chuyển đến trang chủ</u></span></a>
                         </div>
@@ -96,7 +100,8 @@ const mapStateToProps = state => {
 }
 
 const mapDispatchToProps = {
-    answerAuthQuestion: AuthActions.answerAuthQuestion
+    answerAuthQuestion: AuthActions.answerAuthQuestion,
+    checkExistsPassword2: AuthActions.checkExistsPassword2,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(AnswerAuthQuestionPage));

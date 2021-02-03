@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Route, Switch } from "react-router-dom";
+import { Route, Switch, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 
 import { PrivateRoute } from "./privateRoute";
@@ -173,13 +173,19 @@ class Routes extends Component {
             department,
             employeesManager,
         } = this.props;
+        const { password2AlreadyExists,autoRedirectAfterQuestionAnswer } = auth;
         return (
             <React.Fragment>
                 <Switch>
                     <Route
-                        exact
-                        path="/answer-auth-questions"
-                        component={AnswerAuthQuestionPage}
+                        exact={true}
+                        path={"/answer-auth-questions"}
+                        // component={AnswerAuthQuestionPage}
+                        render={props =>
+                            (password2AlreadyExists && autoRedirectAfterQuestionAnswer)
+                                ? <Redirect to={{ pathname: '/', state: { from: props.location } }} />
+                                : <AnswerAuthQuestionPage {...props} />
+                        }
                     />
                     <AuthRoute
                         exact

@@ -46,7 +46,7 @@ export function dashboardEvaluationEmployeeKpiSet(state = {}, action) {
         isLoading: false
       };
 
-    case  dashboardEmployeeKpiConstants.GET_ALL_CHILDREN_OF_UNIT_REQUEST:
+    case dashboardEmployeeKpiConstants.GET_ALL_CHILDREN_OF_UNIT_REQUEST:
       return {
         ...state,
         childrenOrganizationalUnitLoading: false,

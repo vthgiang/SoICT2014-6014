@@ -10,16 +10,22 @@ import { ModalViewProcess } from './modalViewProcess';
 import { ModalEditProcess } from './modalEditProcess';
 import { forwardRef } from 'react';
 import { ModalCreateTaskByProcess } from './modalCreateTaskByProcess';
+import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
 
 class TaskProcessManagement extends Component {
 	constructor(props) {
 		super(props);
+		const tableId = "table-task-process-template";
+		const defaultConfig = { limit: 5 }
+		const limit = getTableConfiguration(tableId, defaultConfig).limit;
+
 		this.state = {
 			currentRole: getStorage('currentRole'),
 			currentUser: getStorage("userId"),
 			currentRow: {},
 			pageNumber: 1,
-			noResultsPerPage: 5,
+			noResultsPerPage: limit,
+			tableId,
 		};
 
 	}
@@ -100,7 +106,7 @@ class TaskProcessManagement extends Component {
 
 	render() {
 		const { translate, taskProcess, department } = this.props
-		const { currentRow, currentRole, currentUser,showModalCreateTaskByProcess } = this.state
+		const { currentRow, currentRole, currentUser, showModalCreateTaskByProcess, tableId } = this.state
 		let listTaskProcess = [];
 		if (taskProcess && taskProcess.listTaskProcess) {
 			listTaskProcess = taskProcess.listTaskProcess
@@ -143,7 +149,7 @@ class TaskProcessManagement extends Component {
 					<div className="pull-right" style={{ marginTop: 5 }}>
 						<button type="button" className="btn btn-success pull-right" data-toggle="dropdown" aria-expanded="true" title='Thêm' onClick={(event) => { this.showModalCreateTaskByProcess(event) }}>{translate('task_template.add')}</button>
 					</div>
-					{ showModalCreateTaskByProcess &&
+					{showModalCreateTaskByProcess &&
 						<ModalCreateTaskByProcess
 							title={"Quy trình không theo mẫu"}
 							listOrganizationalUnit={listOrganizationalUnit}
@@ -156,19 +162,18 @@ class TaskProcessManagement extends Component {
 							<button type="button" className="btn btn-success" title={translate('task_template.search')} onClick={this.handleUpdateData}>{translate('task_template.search')}</button>
 						</div>
 					</div>
-					
+
 					<DataTableSetting
-						tableId="table-task-process-template"
+						tableId={tableId}
 						columnArr={[
 							translate("task.task_process.process_name"),
 							translate('task_template.description'),
+							translate('task.task_process.manager'),
 							translate("task.task_process.creator"),
 						]}
-						limit={this.state.noResultsPerPage}
 						setLimit={this.setLimit}
-						hideColumnOption={true}
 					/>
-					<table className="table table-bordered table-striped table-hover" id="table-task-process-template">
+					<table className="table table-bordered table-striped table-hover" id={tableId}>
 						<thead>
 							<tr>
 								<th title={translate("task.task_process.process_name")}>{translate("task.task_process.process_name")}</th>
@@ -204,10 +209,11 @@ class TaskProcessManagement extends Component {
 											</a> */}
 										</td>
 									</tr>
-								}) : <tr><td colSpan={5}>{translate("task.task_process.no_data")}</td></tr>
+								}) : null
 							}
 						</tbody>
 					</table>
+					{(listTaskProcess && listTaskProcess.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>}
 					<PaginateBar pageTotal={totalPage} currentPage={this.state.pageNumber} func={this.setPage} />
 				</div>
 			</div>

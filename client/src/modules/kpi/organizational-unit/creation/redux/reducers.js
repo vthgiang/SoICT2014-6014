@@ -1,4 +1,5 @@
 import { createUnitKpiConstants } from "./constants";
+import { managerConstants } from '../../management/redux/constants';
 
 export function createKpiUnit (state = {}, action){
     switch (action.type) {
@@ -20,6 +21,7 @@ export function createKpiUnit (state = {}, action){
           };
         case createUnitKpiConstants.GETCURRENT_KPIUNIT_FAILURE:
           return {
+            ...state,
             organizationUnitKpiLoading: true,
             error: action.payload,
             isLoading: false
@@ -39,16 +41,17 @@ export function createKpiUnit (state = {}, action){
           };
         case createUnitKpiConstants.GETPARENT_KPIUNIT_FAILURE:
           return {
+            ...state,
             error: action.payload,
             isLoading: false
           };
-          case createUnitKpiConstants.GET_ALL_ORGANIZATIONALUNIT_KPI_SET_BY_TIME_REQUEST:
-            return {
-                ...state,
-                organizationalUnitKpiSets: null,
-                loading: true,
-                isLoading: false
-            }
+        case createUnitKpiConstants.GET_ALL_ORGANIZATIONALUNIT_KPI_SET_BY_TIME_REQUEST:
+          return {
+            ...state,
+            organizationalUnitKpiSets: null,
+            loading: true,
+            isLoading: false
+          }
         case createUnitKpiConstants.GET_ALL_ORGANIZATIONALUNIT_KPI_SET_BY_TIME_SUCCESS:
             return {
                 ...state,
@@ -103,6 +106,7 @@ export function createKpiUnit (state = {}, action){
           };
         case createUnitKpiConstants.ADD_KPIUNIT_FAILURE:
           return {
+            ...state,
             error: action.payload,
             isLoading: false
           };
@@ -121,6 +125,7 @@ export function createKpiUnit (state = {}, action){
           };
         case createUnitKpiConstants.EDIT_KPIUNIT_FAILURE:
           return {
+            ...state,
             error: action.payload,
             isLoading: false
           };
@@ -139,6 +144,7 @@ export function createKpiUnit (state = {}, action){
           };
         case createUnitKpiConstants.EDITSTATUS_KPIUNIT_FAILURE:
           return {
+            ...state,
             error: action.payload,
             isLoading: false
           };
@@ -158,6 +164,7 @@ export function createKpiUnit (state = {}, action){
           };
         case createUnitKpiConstants.DELETE_KPIUNIT_FAILURE:
           return {
+            ...state,
             error: action.payload,
             isLoading: false
           };
@@ -175,6 +182,7 @@ export function createKpiUnit (state = {}, action){
           };
         case createUnitKpiConstants.ADDTARGET_KPIUNIT_FAILURE:
           return {
+            ...state,
             error: action.payload,
             isLoading: false
           };
@@ -203,6 +211,7 @@ export function createKpiUnit (state = {}, action){
           };
         case createUnitKpiConstants.EDITTARGET_KPIUNIT_FAILURE:
           return {
+            ...state,
             error: action.payload,
             isLoading: false
           };
@@ -226,6 +235,27 @@ export function createKpiUnit (state = {}, action){
           };
         case createUnitKpiConstants.DELETETARGET_KPIUNIT_FAILURE:
           return {
+            ...state,
+            error: action.payload,
+            isLoading: false
+          };
+      
+        case managerConstants.COPY_KPIUNIT_REQUEST:
+          return {
+            ...state,
+            isLoading: false,
+            currentKPI: null
+          };
+        case managerConstants.COPY_KPIUNIT_SUCCESS:
+          return {
+            ...state,
+            currentKPI: action.payload,
+            isLoading: false
+          };
+        case managerConstants.COPY_KPIUNIT_FAILURE:
+          return {
+            ...state,
+            adding: true,
             error: action.payload,
             isLoading: false
           };

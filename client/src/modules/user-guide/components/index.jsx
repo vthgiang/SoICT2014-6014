@@ -4,6 +4,7 @@ import { withTranslate } from "react-redux-multilingual";
 import Swal from 'sweetalert2';
 import { UserGuideSystem, UserGuideKpi, UserGuideTask, UserGuideDocument, UserGuideAsset, UserGuideHr } from './config.js';
 import DetailGuide from './detailGuide';
+import { getStorage } from '../../../config';
 const UserGuide = (props) => {
 
 
@@ -81,6 +82,7 @@ const UserGuide = (props) => {
                     />`,
             //  icon: 'warning',
             width: "100%",
+            //height: "100%",
             //showCancelButton: true,
             // confirmButtonColor: '#3085d6',
             // cancelButtonColor: '#d33',
@@ -108,8 +110,51 @@ const UserGuide = (props) => {
     //         }
     //     })
     // }
+    let currentRole = getStorage('currentRole');
 
-    //  console.log('pppppppp', currentL)
+    const { user } = props;
+    let roles = [];
+    roles = user.roles;
+    let currentRoleInfo = roles.filter(elem => elem.roleId.id === currentRole).map(elem => { return elem.roleId })[0];
+    console.log('pppppppp', currentRoleInfo);
+    let TaskGuide = [], DocumentGuide = [], HrGuide = [], kpiGuide = [], AssetGuide = [], SystemGuide = [];
+    let employeeRegex = /^(Nhân viên|Employee)/gi;
+
+    if (employeeRegex.test(currentRoleInfo.name)) {
+        TaskGuide.user = UserGuideTask.user;
+        DocumentGuide.user = UserGuideDocument.user;
+        HrGuide.user = UserGuideHr.user;
+        kpiGuide.user = UserGuideKpi.user;
+        AssetGuide.user = UserGuideAsset.user;
+
+        TaskGuide.manager = [];
+        DocumentGuide.manager = [];
+        HrGuide.manager = [];
+        kpiGuide.manager = [];
+        AssetGuide.manager = [];
+        SystemGuide = [];
+
+    }
+    else if (currentRoleInfo.name === "Admin" || currentRoleInfo.name === "Super Admin") {
+        TaskGuide = UserGuideTask;
+        DocumentGuide = UserGuideDocument;
+        HrGuide = UserGuideHr;
+        kpiGuide = UserGuideKpi;
+        AssetGuide = UserGuideAsset;
+        AssetGuide = UserGuideAsset;
+        SystemGuide = UserGuideSystem;
+    }
+    else {
+        TaskGuide = UserGuideTask;
+        DocumentGuide = UserGuideDocument;
+        HrGuide = UserGuideHr;
+        kpiGuide = UserGuideKpi;
+        AssetGuide = UserGuideAsset;
+        AssetGuide = UserGuideAsset;
+        SystemGuide = [];
+    }
+
+
     return (
         <React.Fragment>
             {
@@ -135,11 +180,11 @@ const UserGuide = (props) => {
                                         <span className="material-icons" style={{ fontWeight: "bold", marginRight: '10px' }}>
                                             {taskForManager ? `keyboard_arrow_up` : `keyboard_arrow_down`}
 
-                                        </span>{`Manager (${UserGuideTask.manager.length})`}</p>
+                                        </span>{`Manager (${TaskGuide.manager.length})`}</p>
                                     <div className="collapse" data-toggle="collapse " id="show-asset-guide-task-for-manager">
                                         <ul className="todo-list" data-widget="todo-list">
                                             {
-                                                UserGuideTask.manager.length > 0 && UserGuideTask.manager.map((obj, index) => (
+                                                TaskGuide.manager.length > 0 && TaskGuide.manager.map((obj, index) => (
                                                     <li style={{ borderLeft: 'none', cursor: "pointer" }} key={index}>
                                                         <div className="icheck-primary" style={{ display: "flex" }}>
                                                             <span className="material-icons" style={{ marginRight: '10px' }}>
@@ -159,11 +204,11 @@ const UserGuide = (props) => {
                                         <span className="material-icons" style={{ fontWeight: "bold", marginRight: '10px' }}>
                                             {taskForUser ? `keyboard_arrow_up` : `keyboard_arrow_down`}
 
-                                        </span>{`User (${UserGuideTask.user.length})`}</p>
+                                        </span>{`User (${TaskGuide.user.length})`}</p>
                                     <div className="collapse" data-toggle="collapse " id="show-asset-guide-task-for-user">
                                         <ul className="todo-list" data-widget="todo-list">
                                             {
-                                                UserGuideTask.user.length > 0 && UserGuideTask.user.map((obj, index) => (
+                                                TaskGuide.user.length > 0 && TaskGuide.user.map((obj, index) => (
                                                     <li style={{ borderLeft: 'none', cursor: "pointer" }} key={index}>
                                                         <div className="icheck-primary" style={{ display: "flex" }}>
                                                             <span className="material-icons" style={{ marginRight: '10px' }}>
@@ -195,11 +240,11 @@ const UserGuide = (props) => {
                                         <span className="material-icons" style={{ fontWeight: "bold", marginRight: '10px' }}>
                                             {kpiForManager ? `keyboard_arrow_up` : `keyboard_arrow_down`}
 
-                                        </span>{`Manager (${UserGuideKpi.manager.length})`}</p>
+                                        </span>{`Manager (${kpiGuide.manager.length})`}</p>
                                     <div className="collapse" data-toggle="collapse " id="show-asset-guide-kpi-for-manager">
                                         <ul className="todo-list" data-widget="todo-list">
                                             {
-                                                UserGuideKpi.manager.length > 0 && UserGuideKpi.manager.map((obj, index) => (
+                                                kpiGuide.manager.length > 0 && kpiGuide.manager.map((obj, index) => (
                                                     <li style={{ borderLeft: 'none', cursor: "pointer" }} key={index}>
                                                         <div className="icheck-primary" style={{ display: "flex" }}>
                                                             <span className="material-icons" style={{ marginRight: '10px' }}>
@@ -219,11 +264,11 @@ const UserGuide = (props) => {
                                         <span className="material-icons" style={{ fontWeight: "bold", marginRight: '10px' }}>
                                             {kpiForUser ? `keyboard_arrow_up` : `keyboard_arrow_down`}
 
-                                        </span>{`User (${UserGuideKpi.user.length})`}</p>
+                                        </span>{`User (${kpiGuide.user.length})`}</p>
                                     <div className="collapse" data-toggle="collapse " id="show-asset-guide-kpi-for-user">
                                         <ul className="todo-list" data-widget="todo-list">
                                             {
-                                                UserGuideKpi.user.length > 0 && UserGuideKpi.user.map((obj, index) => {
+                                                kpiGuide.user.length > 0 && kpiGuide.user.map((obj, index) => {
                                                     return <li style={{ borderLeft: 'none', cursor: "pointer" }} key={index}>
                                                         <div className="icheck-primary" style={{ display: "flex" }}>
                                                             <span className="material-icons" style={{ marginRight: '10px' }}>
@@ -257,11 +302,11 @@ const UserGuide = (props) => {
                                         <span className="material-icons" style={{ fontWeight: "bold", marginRight: '10px' }}>
                                             {documentForManager ? `keyboard_arrow_up` : `keyboard_arrow_down`}
 
-                                        </span>{`Manager (${UserGuideDocument.manager.length})`}</p>
+                                        </span>{`Manager (${DocumentGuide.manager.length})`}</p>
                                     <div className="collapse" data-toggle="collapse " id="show-asset-guide-document-for-manager">
                                         <ul className="todo-list" data-widget="todo-list">
                                             {
-                                                UserGuideDocument.manager.length > 0 && UserGuideDocument.manager.map((obj, index) => (
+                                                DocumentGuide.manager.length > 0 && DocumentGuide.manager.map((obj, index) => (
                                                     <li style={{ borderLeft: 'none', cursor: "pointer" }} key={index}>
                                                         <div className="icheck-primary" style={{ display: "flex" }}>
                                                             <span className="material-icons" style={{ marginRight: '10px' }}>
@@ -281,11 +326,11 @@ const UserGuide = (props) => {
                                         <span className="material-icons" style={{ fontWeight: "bold", marginRight: '10px' }}>
                                             {documentForUser ? `keyboard_arrow_up` : `keyboard_arrow_down`}
 
-                                        </span>{`User (${UserGuideDocument.user.length})`}</p>
+                                        </span>{`User (${DocumentGuide.user.length})`}</p>
                                     <div className="collapse" data-toggle="collapse " id="show-asset-guide-document-for-user">
                                         <ul className="todo-list" data-widget="todo-list">
                                             {
-                                                UserGuideDocument.manager.length > 0 && UserGuideDocument.manager.map((obj, index) => (
+                                                DocumentGuide.manager.length > 0 && DocumentGuide.manager.map((obj, index) => (
                                                     <li style={{ borderLeft: 'none', cursor: "pointer" }} key={index}>
                                                         <div className="icheck-primary" style={{ display: "flex" }}>
                                                             <span className="material-icons" style={{ marginRight: '10px' }}>
@@ -316,11 +361,11 @@ const UserGuide = (props) => {
                                         <span className="material-icons" style={{ fontWeight: "bold", marginRight: '10px' }}>
                                             {assetForManager ? `keyboard_arrow_up` : `keyboard_arrow_down`}
 
-                                        </span>{`Manager (${UserGuideAsset.manager.length})`}</p>
+                                        </span>{`Manager (${AssetGuide.manager.length})`}</p>
                                     <div className="collapse" data-toggle="collapse " id="show-asset-guide-asset-for-manager">
                                         <ul className="todo-list" data-widget="todo-list">
                                             {
-                                                UserGuideAsset.manager.length > 0 && UserGuideAsset.manager.map((obj, index) => (
+                                                AssetGuide.manager.length > 0 && AssetGuide.manager.map((obj, index) => (
                                                     <li style={{ borderLeft: 'none', cursor: "pointer" }} key={index}>
                                                         <div className="icheck-primary" style={{ display: "flex" }}>
                                                             <span className="material-icons" style={{ marginRight: '10px' }}>
@@ -339,11 +384,11 @@ const UserGuide = (props) => {
                                         <span className="material-icons" style={{ fontWeight: "bold", marginRight: '10px' }}>
                                             {assetForUser ? `keyboard_arrow_up` : `keyboard_arrow_down`}
 
-                                        </span>{`User (${UserGuideAsset.user.length})`}</p>
+                                        </span>{`User (${AssetGuide.user.length})`}</p>
                                     <div className="collapse" data-toggle="collapse " id="show-asset-guide-asset-for-user">
                                         <ul className="todo-list" data-widget="todo-list">
                                             {
-                                                UserGuideAsset.user.length > 0 && UserGuideAsset.user.map((obj, index) => (
+                                                AssetGuide.user.length > 0 && AssetGuide.user.map((obj, index) => (
                                                     <li style={{ borderLeft: 'none', cursor: "pointer" }} key={index}>
                                                         <div className="icheck-primary" style={{ display: "flex" }}>
                                                             <span className="material-icons" style={{ marginRight: '10px' }}>
@@ -376,11 +421,11 @@ const UserGuide = (props) => {
                                         <span className="material-icons" style={{ fontWeight: "bold", marginRight: '10px' }}>
                                             {humanResourceForManager ? `keyboard_arrow_up` : `keyboard_arrow_down`}
 
-                                        </span>{`Manager (${UserGuideHr.manager.length})`}</p>
+                                        </span>{`Manager (${HrGuide.manager.length})`}</p>
                                     <div className="collapse" data-toggle="collapse " id="show-asset-guide-hr-for-manager">
                                         <ul className="todo-list" data-widget="todo-list">
                                             {
-                                                UserGuideHr.manager.length > 0 && UserGuideHr.manager.map((obj, index) => (
+                                                HrGuide.manager.length > 0 && HrGuide.manager.map((obj, index) => (
                                                     <li style={{ borderLeft: 'none', cursor: "pointer" }} key={index}>
                                                         <div className="icheck-primary" style={{ display: "flex" }}>
                                                             <span className="material-icons" style={{ marginRight: '10px' }}>
@@ -429,11 +474,11 @@ const UserGuide = (props) => {
                                         <span className="material-icons" style={{ fontWeight: "bold", marginRight: '10px' }}>
                                             {managerSystem ? `keyboard_arrow_up` : `keyboard_arrow_down`}
 
-                                        </span>{`Super admin (${UserGuideSystem.length})`} </p>
+                                        </span>{`Super admin (${SystemGuide.length})`} </p>
                                     <div className="collapse" data-toggle="collapse " id="show-asset-guide-system-for-user">
                                         <ul className="todo-list" data-widget="todo-list">
                                             {
-                                                UserGuideSystem.length > 0 && UserGuideSystem.map((obj, index) => (
+                                                SystemGuide.length > 0 && SystemGuide.map((obj, index) => (
                                                     <li style={{ borderLeft: 'none', cursor: "pointer" }} key={index}>
                                                         <div className="icheck-primary" style={{ display: "flex" }}>
                                                             <span className="material-icons" style={{ marginRight: '10px' }}>
@@ -457,5 +502,9 @@ const UserGuide = (props) => {
         </React.Fragment>
     );
 };
+const mapStateToProps = state => {
+    const { auth } = state;
+    return auth;
+};
 
-export default connect(null, null)(withTranslate(UserGuide));
+export default connect(mapStateToProps, null)(withTranslate(UserGuide));

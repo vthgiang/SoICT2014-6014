@@ -34,7 +34,7 @@ function DetailGuide(props) {
                     {/* <h3>Mô tả chi tiết</h3> */}
 
                     <iframe
-                        width="100%" height="700"
+                        width="100%" height="100vh"
                         src={link}
                     />
 

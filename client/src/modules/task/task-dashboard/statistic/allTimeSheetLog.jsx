@@ -5,6 +5,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import { DatePicker, ToolTip } from '../../../../common-components';
 import { convertTime } from '../../../../helpers/stringMethod';
 
+
 class AllTimeSheetLogs extends Component {
     constructor(props) {
         super(props);
@@ -19,6 +20,7 @@ class AllTimeSheetLogs extends Component {
     componentDidMount() {
         let { time } = this.state;
         this.filterTimeSheetLog(time);
+        // this.filterTimeSheetLog(time);
     }
 
     changeTime = (value) => {
@@ -26,6 +28,7 @@ class AllTimeSheetLogs extends Component {
             time: value
         });
         this.filterTimeSheetLog(value);
+        // this.filterTimeSheetLog(value);
     }
 
     filterTimeSheetLog = (time) => {
@@ -37,6 +40,7 @@ class AllTimeSheetLogs extends Component {
         }
     }
 
+
     render() {
         const { tasks, translate } = this.props;
         const { month } = this.state;
@@ -45,9 +49,8 @@ class AllTimeSheetLogs extends Component {
         return (
             <div className="box" style={{ minHeight: '450px' }}>
                 <div className="box-body">
-
                     <div className="row">
-                        <div className="col-xs-12 col-sm-12 col-md-3 col-lg-3">
+                        <div className="col-xs-12 col-sm-12">
                             <div className="form-group" style={{ display: "flex", alignItems: 'center' }}>
                                 <label style={{ margin: '2px 10px' }}>Tháng</label>
                                 <DatePicker
@@ -58,45 +61,44 @@ class AllTimeSheetLogs extends Component {
                                     disabled={false}
                                 />
                             </div>
+                            <table className="table table-hover table-striped table-bordered" id="table-all-user-time-sheet-log">
+                                <thead>
+                                    <tr>
+                                        <th style={{ width: '60px' }}>STT</th>
+                                        <th>{translate('manage_user.name')}</th>
+                                        <th>{translate('manage_user.email')}</th>
+                                        <th>Tổng thời gian bấm giờ</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {
+                                        Array.isArray(timesheetlogs) && timesheetlogs.map((tsl, index) => {
+                                            return (
+                                                <tr key={index}>
+                                                    <td>{index + 1}</td>
+                                                    <td>{tsl?.creator?.name}</td>
+                                                    <td>{tsl?.creator?.email}</td>
+                                                    <td>{convertTime(tsl?.duration)}</td>
+                                                </tr>
+                                            )
+                                        })
+                                    }
+                                </tbody>
+                            </table>
                         </div>
                     </div>
-
-                    <table className="table table-hover table-striped table-bordered" id="table-all-user-time-sheet-log">
-                        <thead>
-                            <tr>
-                                <th style={{ width: '60px' }}>STT</th>
-                                <th>{translate('manage_user.name')}</th>
-                                <th>{translate('manage_user.email')}</th>
-                                <th>Tổng thời gian bấm giờ</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {
-                                Array.isArray(timesheetlogs) && timesheetlogs.map((tsl, index) => {
-                                    return (
-                                        <tr key={index}>
-                                            <td>{index + 1}</td>
-                                            <td>{tsl?.creator?.name}</td>
-                                            <td>{tsl?.creator?.email}</td>
-                                            <td>{convertTime(tsl?.duration)}</td>
-                                        </tr>
-                                    )
-                                })
-                            }
-                        </tbody>
-                    </table>
                 </div>
             </div>
         )
     }
 }
-
 const mapState = (state) => {
     const { tasks } = state;
     return { tasks };
 }
 const actionCreators = {
     getAllUserTimeSheet: taskManagementActions.getAllUserTimeSheet,
+
 };
 
-export default connect(mapState, actionCreators)(withTranslate(AllTimeSheetLogs));
+export default connect(mapState, actionCreators)(withTranslate(AllTimeSheetLogs)); 

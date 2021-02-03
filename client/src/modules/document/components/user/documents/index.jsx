@@ -9,6 +9,7 @@ import DocumentInformation from './documentInformation';
 import { getStorage } from '../../../../../config';
 import ListDownload from '../../administration/list-data/listDownload';
 import ListView from '../../administration/list-data/listView';
+import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
 
 const getIndex = (array, id) => {
     let index = -1;
@@ -23,7 +24,12 @@ const getIndex = (array, id) => {
 class UserDocumentsData extends Component {
     constructor(props) {
         super(props);
+        const tableId = "table-user-documents-data";
+        const defaultConfig = { limit: 5 }
+        const limit = getTableConfiguration(tableId, defaultConfig).limit;
+
         this.state = {
+            tableId,
             category: "",
             domain: "",
             archive: "",
@@ -33,7 +39,7 @@ class UserDocumentsData extends Component {
                 domain: "",
                 archive: "",
             },
-            limit: 5,
+            limit: limit,
             page: 1
         }
     }
@@ -415,7 +421,7 @@ class UserDocumentsData extends Component {
         const docs = this.props.documents.user.data;
         const { paginate } = docs;
         const { isLoading } = this.props.documents;
-        const { currentRow, archive, category, domain } = this.state;
+        const { currentRow, archive, category, domain, tableId } = this.state;
         const listDomain = domains.list
         const listCategory = this.convertData(categories.list)
         const listArchive = archives.list;
@@ -535,7 +541,7 @@ class UserDocumentsData extends Component {
 
                     </div>
 
-                    <table className="table table-hover table-striped table-bordered" id="table-manage-document">
+                    <table className="table table-hover table-striped table-bordered" id={tableId}>
                         <thead>
                             <tr>
                                 <th>{translate('document.doc_version.issuing_body')}</th>
@@ -560,10 +566,8 @@ class UserDocumentsData extends Component {
                                             translate('document.upload_file_scan'),
 
                                         ]}
-                                        limit={this.state.limit}
                                         setLimit={this.setLimit}
-                                        hideColumnOption={true}
-                                        tableId="table-manage-user-document"
+                                        tableId={tableId}
                                     />
                                 </th>
                             </tr>
@@ -595,13 +599,16 @@ class UserDocumentsData extends Component {
                                                     <i className="material-icons">visibility</i>
                                                 </a>
                                             </td>
-                                        </tr>) :
-                                    isLoading ?
-                                        <tr><td colSpan={10}>{translate('general.loading')}</td></tr> : <tr><td colSpan={10}>{translate('general.no_data')}</td></tr>
+                                        </tr>) : null
                             }
 
                         </tbody>
                     </table>
+                    {
+                        isLoading ?
+                            <div className="table-info-panel">{translate('confirm.loading')}</div> :
+                            paginate.length === 0 && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                    }
 
                     <PaginateBar pageTotal={docs.totalPages} currentPage={docs.page} func={this.setPage} />
                 </React.Fragment>
