@@ -181,7 +181,6 @@ class EmployeeCreateForm extends Component {
      * @param {*} addData : Công việc tương đương muốn thêm
      */
     handleChangeCareer = (data, addData) => {
-        console.log('handleChangeCareer = (data, addData)', data, addData);
         this.setState({
             career: data
         })
@@ -444,7 +443,6 @@ class EmployeeCreateForm extends Component {
     }
 
     _fm_openEditFamilyMemberModal = (index) => {
-        console.log("kkkk")
         this.setState({
             editMember: {
                 index,

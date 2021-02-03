@@ -200,7 +200,6 @@ class EmployeeManagement extends Component {
      * @param {*} value : Giá trị chuyên ngành
      */
     handleCareerFieldChange = (value) => {
-        console.log(value)
         if (value.length === 0) {
             value = null
         };
