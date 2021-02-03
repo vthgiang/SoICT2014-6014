@@ -11,7 +11,7 @@ import { TaskStatusChart } from '../task-personal-dashboard/taskStatusChart';
 import { CalendarOrganizationUnit } from './calendarOrganizationUnit';
 import { LoadTaskOrganizationChart } from './loadTaskOrganizationChart';
 import { AverageResultsOfTaskInOrganizationalUnit } from './averageResultsOfTaskInOrganizationalUnit';
-import { AllTimeSheetLogs } from '../statistic/allTimeSheetLog'
+import { AllTimeSheetLogsByUnit } from './allTimeSheetLogByUnit'
 
 import { withTranslate } from 'react-redux-multilingual';
 import { SelectMulti, DatePicker, ToolTip } from '../../../../common-components/index';
@@ -523,7 +523,7 @@ class TaskOrganizationUnitDashboard extends Component {
                             </div>
                         </div>
                         <div>
-                            <AllTimeSheetLogs userDepartment={user.employees} organizationUnitTasks={tasks.organizationUnitTasks}></AllTimeSheetLogs>
+                            <AllTimeSheetLogsByUnit userDepartment={user.employees} organizationUnitTasks={tasks.organizationUnitTasks} />
                         </div>
                     </React.Fragment>
                     : currentOrganizationalUnitLoading

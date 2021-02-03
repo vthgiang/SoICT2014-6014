@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { taskManagementActions } from '../../task-management/redux/actions';
 import { withTranslate } from 'react-redux-multilingual';
+import { DatePicker, ToolTip } from '../../../../common-components';
 import { convertTime } from '../../../../helpers/stringMethod';
-import { InforTimeSheetLog } from './inforTimeSheetLog'
 
 
 class AllTimeSheetLogs extends Component {
@@ -12,13 +13,13 @@ class AllTimeSheetLogs extends Component {
         let month = curTime.getMonth() + 1;
         let year = curTime.getFullYear();
         this.state = {
-            time: month + "-" + year,
-            currentRowTimeSheetLog: undefined
+            time: month + "-" + year
         }
     }
 
     componentDidMount() {
         let { time } = this.state;
+        this.filterTimeSheetLog(time);
         // this.filterTimeSheetLog(time);
     }
 
@@ -26,6 +27,7 @@ class AllTimeSheetLogs extends Component {
         this.setState({
             time: value
         });
+        this.filterTimeSheetLog(value);
         // this.filterTimeSheetLog(value);
     }
 
@@ -34,115 +36,49 @@ class AllTimeSheetLogs extends Component {
             let dataTime = time.split("-");
             let month = dataTime[0];
             let year = dataTime[1];
-            // this.props.getAllUserTimeSheetByUnit(this.props.idsUnit, month, year);
+            this.props.getAllUserTimeSheet(month, year);
         }
     }
 
-    handleInforTimeSheet = async (value) => {
-        const { organizationUnitTasks, userDepartment } = this.props;
-        let inforTimeSheetLog = []
-        if (organizationUnitTasks && organizationUnitTasks.tasks) {
-            for (let i in organizationUnitTasks.tasks) {
-                if (organizationUnitTasks.tasks[i].timesheetLogs && organizationUnitTasks.tasks[i].timesheetLogs.length) {
-                    for (let j in organizationUnitTasks.tasks[i].timesheetLogs) {
-                        let creator = organizationUnitTasks.tasks[i].timesheetLogs[j].creator;
-                        if (creator == value.userId) {
-                            let timesheet = {
-                                ...organizationUnitTasks.tasks[i].timesheetLogs[j],
-                                taskName: organizationUnitTasks.tasks[i].name
-                            }
-                            inforTimeSheetLog.push(timesheet)
-                        }
-                    }
-                }
-            }
-        }
-        await this.setState(state => {
-            return {
-                ...state,
-                currentRowTimeSheetLog: {
-                    timesheetlogs: inforTimeSheetLog,
-                    data: value
-                }
-            }
-        });
-        window.$('#modal-infor-time-sheet-log').modal('show');
 
-    }
     render() {
         const { tasks, translate } = this.props;
-        const { organizationUnitTasks, userDepartment } = this.props;
-        const { month, currentRowTimeSheetLog } = this.state;
-
-        var allTimeSheet = [], timesheetlogs = []
-        if (userDepartment) {
-            for (let i in userDepartment) {
-                allTimeSheet[userDepartment[i].userId._id] = {
-                    totalhours: 0,
-                    autotimer: 0,
-                    manualtimer: 0,
-                    logtimer: 0,
-                    name: userDepartment[i].userId.name,
-                    userId: userDepartment[i].userId._id
-                }
-            }
-        }
-        if (organizationUnitTasks && organizationUnitTasks.tasks && userDepartment) {
-            for (let i in organizationUnitTasks.tasks) {
-                if (organizationUnitTasks.tasks[i].timesheetLogs && organizationUnitTasks.tasks[i].timesheetLogs.length) {
-                    for (let j in organizationUnitTasks.tasks[i].timesheetLogs) {
-                        let autoStopped = organizationUnitTasks.tasks[i].timesheetLogs[j].autoStopped;
-                        let creator = organizationUnitTasks.tasks[i].timesheetLogs[j].creator;
-
-                        if (autoStopped == 1) {
-                            allTimeSheet[creator].manualtimer += organizationUnitTasks.tasks[i].timesheetLogs[j].duration
-                        } else if (autoStopped == 2) {
-                            allTimeSheet[creator].autotimer += organizationUnitTasks.tasks[i].timesheetLogs[j].duration
-                        } else if (autoStopped == 3) {
-                            allTimeSheet[creator].logtimer += organizationUnitTasks.tasks[i].timesheetLogs[j].duration
-                        }
-                    }
-                }
-            }
-
-            for (let i in allTimeSheet) {
-                allTimeSheet[i].totalhours = allTimeSheet[i].autotimer + allTimeSheet[i].manualtimer + allTimeSheet[i].logtimer
-                timesheetlogs.push(allTimeSheet[i])
-            }
-        }
+        const { month } = this.state;
+        const timesheetlogs = tasks?.allTimeSheetLogs;
 
         return (
-            <div className="row">
-                <div className="col-xs-12 col-md-12">
-                    <div className="box box-primary">
-                        <div className="box-header with-border">
-                            <div className="box-title">
-                                Thống kê bấm giờ theo tháng
-                                </div>
-                        </div>
-                        <div className="box-body qlcv">
-                            <table className="table table-hover table-striped table-bordered" id="table-user-timesheetlogs">
+            <div className="box" style={{ minHeight: '450px' }}>
+                <div className="box-body">
+                    <div className="row">
+                        <div className="col-xs-12 col-sm-12">
+                            <div className="form-group" style={{ display: "flex", alignItems: 'center' }}>
+                                <label style={{ margin: '2px 10px' }}>Tháng</label>
+                                <DatePicker
+                                    id="time-sheet-log"
+                                    dateFormat="month-year"
+                                    value={month}
+                                    onChange={this.changeTime}
+                                    disabled={false}
+                                />
+                            </div>
+                            <table className="table table-hover table-striped table-bordered" id="table-all-user-time-sheet-log">
                                 <thead>
                                     <tr>
                                         <th style={{ width: '60px' }}>STT</th>
                                         <th>{translate('manage_user.name')}</th>
-                                        <th>Tổng thời gian bấm giờ</th>
-                                        <th>Bấm giờ tự chọn</th>
-                                        <th>Bấm giờ tự động</th>
-                                        <th>Bấm giờ tự tắt</th>
+                                        <th>{translate('manage_user.email')}</th>
+                                        <th>Tổng thời gian bấm giờ</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {
-                                        timesheetlogs.length && timesheetlogs.map((tsl, index) => {
+                                        Array.isArray(timesheetlogs) && timesheetlogs.map((tsl, index) => {
                                             return (
                                                 <tr key={index}>
                                                     <td>{index + 1}</td>
-                                                    <td><a onClick={() => this.handleInforTimeSheet(tsl)}>{tsl.name}</a></td>
-                                                    <td>{convertTime(tsl.totalhours)}</td>
-                                                    <td>{convertTime(tsl.manualtimer)}</td>
-                                                    <td>{convertTime(tsl.autotimer)}</td>
-                                                    <td>{convertTime(tsl.logtimer)}</td>
+                                                    <td>{tsl?.creator?.name}</td>
+                                                    <td>{tsl?.creator?.email}</td>
+                                                    <td>{convertTime(tsl?.duration)}</td>
                                                 </tr>
                                             )
                                         })
@@ -152,26 +88,17 @@ class AllTimeSheetLogs extends Component {
                         </div>
                     </div>
                 </div>
-                { currentRowTimeSheetLog &&
-                    <InforTimeSheetLog
-                        timesheetlogs={currentRowTimeSheetLog.timesheetlogs}
-                        data={currentRowTimeSheetLog.data}
-                    />
-                }
             </div>
         )
     }
 }
-
 const mapState = (state) => {
     const { tasks } = state;
     return { tasks };
 }
 const actionCreators = {
+    getAllUserTimeSheet: taskManagementActions.getAllUserTimeSheet,
 
 };
 
-export default connect(mapState, actionCreators)(withTranslate(AllTimeSheetLogs));
-
-const connectedAllTimeSheetLogs = connect(mapState, actionCreators)(withTranslate(AllTimeSheetLogs))
-export { connectedAllTimeSheetLogs as AllTimeSheetLogs }
+export default connect(mapState, actionCreators)(withTranslate(AllTimeSheetLogs)); 
