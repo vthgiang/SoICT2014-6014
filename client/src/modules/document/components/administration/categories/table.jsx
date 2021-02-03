@@ -8,26 +8,31 @@ import { DocumentActions } from '../../../redux/actions';
 
 import CreateForm from './createForm';
 import EditForm from './editForm';
-import {CategoryImportForm} from './categoryImportForm';
-
+import { CategoryImportForm } from './categoryImportForm';
+import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
 class Table extends Component {
     constructor(props) {
         super(props);
+        const tableId = "table-manage-document-categories";
+        const defaultConfig = { limit: 5 }
+        const limit = getTableConfiguration(tableId, defaultConfig).limit;
+
         this.state = {
+            tableId,
             option: 'name',
             value: '',
-            limit: 5,
+            limit: limit,
             page: 1
         }
     }
 
-    componentDidMount(){
-      //  this.props.getDocumentCategories();
-        this.props.getDocumentCategories({page: this.state.page, limit: this.state.limit});
+    componentDidMount() {
+        //  this.props.getDocumentCategories();
+        this.props.getDocumentCategories({ page: this.state.page, limit: this.state.limit });
     }
 
     deleteDocumentCategory = (id, info) => {
-        const {translate} = this.props;
+        const { translate } = this.props;
         Swal.fire({
             html: `<h4 style="color: red"><div>${translate('document.administration.categories.delete')}</div> <div>"${info}" ?</div></h4>`,
             icon: 'warning',
@@ -44,7 +49,7 @@ class Table extends Component {
     }
 
     showModalEditCategory = async (currentRow) => {
-        await this.setState({currentRow});
+        await this.setState({ currentRow });
         window.$('#modal-edit-document-category').modal('show');
     }
     convertDataToExportData = (data) => {
@@ -65,9 +70,9 @@ class Table extends Component {
                             tableName: "Bảng thống kê loại tài liệu",
                             rowHeader: 1,
                             columns: [
-                                { key: "STT", value: "STT"},
-                                { key: "name", value: "Tên loại tài liệu"},
-                                { key: "description", value: "Mô tả loại tài liệu"}
+                                { key: "STT", value: "STT" },
+                                { key: "name", value: "Tên loại tài liệu" },
+                                { key: "description", value: "Mô tả loại tài liệu" }
                             ],
                             data: data
                         },
@@ -77,40 +82,40 @@ class Table extends Component {
         }
         return exportData;
     }
-    render() { 
+    render() {
         const { translate } = this.props;
         const { isLoading } = this.props.documents;
         const { categories } = this.props.documents.administration;
         const { paginate } = categories;
-        const { currentRow } = this.state;
+        const { currentRow, tableId } = this.state;
         const { list } = categories;
         let dataExport = [];
         if (isLoading === false) {
             dataExport = list;
         }
         let exportData = this.convertDataToExportData(dataExport);
-        return ( 
+        return (
             <React.Fragment>
-                <CreateForm/>
+                <CreateForm />
                 {
                     currentRow &&
                     <EditForm
-                        categoryId = { currentRow._id }
-                        categoryName = { currentRow.name }
-                        categoryDescription = { currentRow.description }
+                        categoryId={currentRow._id}
+                        categoryName={currentRow.name}
+                        categoryDescription={currentRow.description}
                     />
                 }
-                <ExportExcel id="export-document-category" exportData={exportData} style={{ marginRight: 5 }} buttonName={translate('document.export')}/>
-                <SearchBar 
+                <ExportExcel id="export-document-category" exportData={exportData} style={{ marginRight: 5 }} buttonName={translate('document.export')} />
+                <SearchBar
                     columns={[
                         { title: translate('document.administration.categories.name'), value: 'name' },
                         { title: translate('document.administration.categories.description'), value: 'description' }
                     ]}
-                    option = { this.state.option }
-                    setOption = { this.setOption }
-                    search = { this.searchWithOption }
+                    option={this.state.option}
+                    setOption={this.setOption}
+                    search={this.searchWithOption}
                 />
-                <table className="table table-hover table-striped table-bordered" id="table-manage-document-categories">
+                <table className="table table-hover table-striped table-bordered" id={tableId}>
                     <thead>
                         <tr>
                             <th>{translate('document.administration.categories.name')}</th>
@@ -119,13 +124,11 @@ class Table extends Component {
                                 {translate('general.action')}
                                 <DataTableSetting
                                     columnArr={[
-                                        translate('document.administration.categories.name'), 
+                                        translate('document.administration.categories.name'),
                                         translate('document.administration.categories.description')
                                     ]}
-                                    limit={this.state.limit}
                                     setLimit={this.setLimit}
-                                    hideColumnOption = {true}
-                                    tableId="table-manage-document-types"
+                                    tableId={tableId}
                                 />
                             </th>
                         </tr>
@@ -133,27 +136,27 @@ class Table extends Component {
                     <tbody>
                         {
                             paginate.length > 0 ?
-                            paginate.map(docType => 
-                            <tr key={docType._id}>
-                                <td>{docType.name}</td>
-                                <td>{docType.description}</td>
-                                <td>
-                                    <a className="text-yellow" onClick={()=>this.showModalEditCategory(docType)} title={translate('document.administration.categories.edit')}><i className="material-icons">edit</i></a>
-                                    <a className="text-red" onClick={()=>this.deleteDocumentCategory(docType._id, docType.name)} title={translate('document.administration.categories.delete')}><i className="material-icons">delete</i></a>
-                                </td>
-                            </tr>):
-                            isLoading ? 
-                            <tr><td colSpan={3}>{translate('general.loading')}</td></tr>:<tr><td colSpan={3}>{translate('general.no_data')}</td></tr>
+                                paginate.map(docType =>
+                                    <tr key={docType._id}>
+                                        <td>{docType.name}</td>
+                                        <td>{docType.description}</td>
+                                        <td>
+                                            <a className="text-yellow" onClick={() => this.showModalEditCategory(docType)} title={translate('document.administration.categories.edit')}><i className="material-icons">edit</i></a>
+                                            <a className="text-red" onClick={() => this.deleteDocumentCategory(docType._id, docType.name)} title={translate('document.administration.categories.delete')}><i className="material-icons">delete</i></a>
+                                        </td>
+                                    </tr>) :
+                                isLoading ?
+                                    <tr><td colSpan={3}>{translate('general.loading')}</td></tr> : <tr><td colSpan={3}>{translate('general.no_data')}</td></tr>
                         }
                     </tbody>
                 </table>
-                <PaginateBar pageTotal={categories.totalPages} currentPage={categories.page} func={this.setPage}/> 
+                <PaginateBar pageTotal={categories.totalPages} currentPage={categories.page} func={this.setPage} />
             </React.Fragment>
-         );
+        );
     }
 
-    
-    setPage = async(page) => {
+
+    setPage = async (page) => {
         this.setState({ page });
         const data = {
             limit: this.state.limit,
@@ -165,7 +168,7 @@ class Table extends Component {
     }
 
     setLimit = (number) => {
-        if (this.state.limit !== number){
+        if (this.state.limit !== number) {
             this.setState({ limit: number });
             const data = { limit: number, page: this.state.page };
             this.props.getDocumentCategories(data);
@@ -177,8 +180,8 @@ class Table extends Component {
             [title]: option
         });
     }
-    
-    searchWithOption = async() => {
+
+    searchWithOption = async () => {
         const data = {
             limit: this.state.limit,
             page: 1,
@@ -188,7 +191,7 @@ class Table extends Component {
         await this.props.getDocumentCategories(data);
     }
 }
- 
+
 const mapStateToProps = state => state;
 
 const mapDispatchToProps = {
@@ -196,4 +199,4 @@ const mapDispatchToProps = {
     deleteDocumentCategory: DocumentActions.deleteDocumentCategory
 }
 
-export default connect( mapStateToProps, mapDispatchToProps )( withTranslate(Table) );
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(Table));

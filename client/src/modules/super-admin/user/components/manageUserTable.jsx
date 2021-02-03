@@ -10,12 +10,17 @@ import { UserActions } from '../redux/actions';
 import UserEditForm from './userEditForm';
 import UserCreateForm from './userCreateForm';
 import ModalImportUser from './modalImportUser';
-
+import { getTableConfiguration } from '../../../../helpers/tableConfiguration';
 class ManageUserTable extends Component {
     constructor(props) {
         super(props);
+        const tableId = "table-manage-user";
+        const defaultConfig = { limit: 10 }
+        const limit = getTableConfiguration(tableId, defaultConfig).limit;
+
         this.state = {
-            limit: 10,
+            tableId,
+            limit: limit,
             page: 1,
             option: 'name', // Mặc định tìm kiếm theo tên
             value: ''
@@ -96,7 +101,7 @@ class ManageUserTable extends Component {
 
     render() {
         const { user, translate } = this.props;
-        const { limit } = this.state;
+        const { limit, tableId } = this.state;
         return (
             <React.Fragment>
                 <div className="dropdown pull-right">
@@ -137,7 +142,7 @@ class ManageUserTable extends Component {
                 }
 
                 {/* Bảng dữ liệu tài khoản người dùng */}
-                <table className="table table-hover table-striped table-bordered" id="table-manage-user">
+                <table className="table table-hover table-striped table-bordered" id={tableId}>
                     <thead>
                         <tr>
                             <th>{translate('manage_user.name')}</th>
@@ -153,10 +158,8 @@ class ManageUserTable extends Component {
                                         translate('manage_user.roles'),
                                         translate('manage_user.status')
                                     ]}
-                                    limit={this.state.limit}
                                     setLimit={this.setLimit}
-                                    hideColumnOption={true}
-                                    tableId="table-manage-user"
+                                    tableId={tableId}
                                 />
                             </th>
                         </tr>
