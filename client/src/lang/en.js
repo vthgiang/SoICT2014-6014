@@ -1825,6 +1825,7 @@ export default {
                     employee_number_required: "Staff code required",
                     email_in_company_required: "Email in company required",
                     employee_number_have_exist: "Employee number have exist",
+                    staff_code_not_find:'Employee number does have exist',
                     email_in_company_have_exist: "Email in company have exist",
                     employee_timesheet_id_required:
                         "Employee timesheet id required",

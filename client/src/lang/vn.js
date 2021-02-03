@@ -2003,6 +2003,7 @@ export default {
                     email_in_company_required:
                         "Email công ty không được để trống",
                     employee_number_have_exist: "Mã nhân viên đã tồn tại",
+                    staff_code_not_find:"Mã nhân viên không tồn tại",
                     email_in_company_have_exist: "Email công ty đã tồn tại",
                     employee_timesheet_id_required:
                         "Mã số chấm công không được để trống",
