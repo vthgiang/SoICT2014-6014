@@ -5,6 +5,8 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import { FieldsActions } from '../../field/redux/actions';
 
+import { CustomLegendC3js } from '../../../../common-components/index';
+
 import c3 from 'c3';
 import 'c3/c3.css';
 
@@ -58,7 +60,10 @@ class QualificationChart extends Component {
     renderChart = (data) => {
         const { typeChart } = this.state;
         this.removePreviousChart();
-        let chart = c3.generate({
+
+        this.dataChart = data;
+
+        this.chart = c3.generate({
             bindto: this.refs.donutChart,
             data: {
                 columns: [
@@ -66,8 +71,13 @@ class QualificationChart extends Component {
                 ],
                 type: 'donut',
             },
+
             donut: {
                 title: typeChart ? "Trình độ chuyên ngành" : "Trình độ chuyên môn"
+            },
+
+            legend: {
+                show: false
             }
         });
     };
@@ -185,15 +195,23 @@ class QualificationChart extends Component {
                         </h3>
                     </div>
                     <div className="box-body">
-                        <div className="dashboard_box_body">
-                            <div className="box-tools pull-left" >
-                                <div className="btn-group pull-left">
-                                    <button type="button" className={`btn btn-xs ${typeChart ? "active" : "btn-danger"}`} onClick={() => this.handleChangeViewChart(false)}>Trình độ chuyên môn</button>
-                                    <button type="button" className={`btn btn-xs ${typeChart ? 'btn-danger' : "active"}`} onClick={() => this.handleChangeViewChart(true)}>Trình độ chuyên ngành</button>
-                                </div>
+                        <div className="box-tools pull-left" >
+                            <div className="btn-group pull-left">
+                                <button type="button" className={`btn btn-xs ${typeChart ? "active" : "btn-danger"}`} onClick={() => this.handleChangeViewChart(false)}>Trình độ chuyên môn</button>
+                                <button type="button" className={`btn btn-xs ${typeChart ? 'btn-danger' : "active"}`} onClick={() => this.handleChangeViewChart(true)}>Trình độ chuyên ngành</button>
                             </div>
-                            <div ref="donutChart"></div>
                         </div>
+                        <section id={"donutChart"} className="c3-chart-container">
+                            <div ref="donutChart"></div>
+                        
+                            <CustomLegendC3js
+                                chart={this.chart}
+                                chartId={"donutChart"}
+                                legendId={"donutChartLegend"}
+                                title={`${translate('kpi.evaluation.employee_evaluation.KPI_list')}`}
+                                dataChartLegend={this.dataChart && this.dataChart.map(item => item[0])}
+                            />
+                        </section>
                     </div>
                 </div>
             </React.Fragment>

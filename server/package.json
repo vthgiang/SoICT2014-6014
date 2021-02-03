@@ -16,7 +16,6 @@
     "skpi": "node seed/initOrganizationalUnitKPIData.js",
     "shr": "node seed/initHumanResourceData.js",
     "init-db": "node seed/initDB.js",
-    "init-data-human":"node seed/initDataHuman.js",
     "init-sample-company": "node seed/initSampleCompanyDB.js",
     "init-sample-organizational-unit-kpi": "node seed/initOrganizationalUnitKPIData.js",
     "init-human-resource-data": "node seed/initHumanResourceData.js",
