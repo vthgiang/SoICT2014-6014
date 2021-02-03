@@ -8,6 +8,7 @@ const OrganizationalUnitService = require(`../../super-admin/organizational-unit
 const NotificationServices = require(`../../notification/notification.service`);
 const { sendEmail } = require(`../../../helpers/emailHelper`);
 const { connect } = require(`../../../helpers/dbHelper`);
+const sumBy = require('lodash/sumBy');
 
 /*
  * Lấy công việc theo Id
@@ -335,27 +336,37 @@ exports.startTimesheetLog = async (portal, params, body) => {
         startedAt: now,
         creator: body.creator,
     };
-    // Kiểm tra người dùng có đang bấm giờ một công việc nào đó không?
-    let check = await Task(connect(DB_CONNECTION, portal))
-        .findOne({ 
-            "timesheetLogs.creator": timerUpdate.creator,
-            "timesheetLogs.startedAt": { $exists: true },
-            "timesheetLogs.stoppedAt": { $exists: false }
-        });
-    if(check) throw ['task_dif_logging'];
 
+    /* check và tìm công việc đang được hẹn tắt bấm giờ:
+    * Nếu công tìm được công việc có thời gian kết thúc bấm giờ lớn hơn thời gin hiện tại
+    * => Thì chứng tỏ công việc đấy đang được hẹn tắt giờ
+    */
+    let checkAutoTSLog = await Task(connect(DB_CONNECTION, portal)).findOne({
+        "timesheetLogs.creator": body.creator,
+        "timesheetLogs.acceptLog": true,
+        "timesheetLogs.stoppedAt": { $exists: true },
+        "timesheetLogs.stoppedAt": { $gt: timerUpdate.startedAt }
+    }, {'timesheetLogs.$': 1, '_id': 1, 'name': 1});
+    
     // Kiểm tra thời điểm bắt đầu bấm giờ có nằm trong khoảng thời gian hẹn tắt bấm giờ tự động không?
-    if(body.overrideTSLog === 'yes'){
-        await Task(connect(DB_CONNECTION, portal))
-        .updateOne({
+    if (body.overrideTSLog === 'yes') {
+        // Nếu người dùng ấn xác nhận bấm giờ công việc mới thì sẽ lưu lại khoảng thời gian mà người dùng bám được cho tới hiện tại
+        const timesheetLogs = checkAutoTSLog.timesheetLogs;
+        const duration = new Date().getTime() - timesheetLogs[0].startedAt.getTime();
+        let checkDurationValid = duration / (60 * 60 * 1000);
+
+        const result = await Task(connect(DB_CONNECTION, portal)).findOneAndUpdate({
             "timesheetLogs.creator": body.creator,
+            "timesheetLogs.acceptLog": true,
             "timesheetLogs.stoppedAt": { $exists: true },
             "timesheetLogs.stoppedAt": { $gt: timerUpdate.startedAt }
-        },{
+        }, {
             $set: {
-                "timesheetLogs.$[i].acceptLog": false
+                "timesheetLogs.$[i].stoppedAt": new Date(),
+                "timesheetLogs.$[i].duration": duration, // Cập nhạt lị thời gian làm việc mới
+                "timesheetLogs.$[i].acceptLog": checkDurationValid > 24 ? false : true,
             },
-        },{
+        }, {
             arrayFilters: [
                 {
                     "i.creator": body.creator,
@@ -363,17 +374,38 @@ exports.startTimesheetLog = async (portal, params, body) => {
                     "i.stoppedAt": { $gt: timerUpdate.startedAt }
                 },
             ],
-        });
-    }else{
-        let checkAutoTSLog = await Task(connect(DB_CONNECTION, portal)).findOne({
-            "timesheetLogs.creator": body.creator,
-            "timesheetLogs.stoppedAt": { $exists: true },
-            "timesheetLogs.stoppedAt": { $gt: timerUpdate.startedAt }
-        });
+            new: true
+        })
+
+        // Cộng tổng thời gian đóng góp trong công việc thoe duration mới
+        let newTotalHoursSpent = sumBy(result.timesheetLogs, function (o) { return o.duration })
+        
+        //cần cập nhật lại thời gian đóng góp của từng người trong hoursSpentOnTask.contributions
+        let contributions = [];
+        result.timesheetLogs.reduce(function(res, value) {
+        if (!res[value.creator]) {
+            res[value.creator] = { employee: value.creator, hoursSpent: 0 };
+            contributions.push(res[value.creator])
+            }
+            if (value.duration)
+                res[value.creator].hoursSpent += value.duration;
+            return res;
+        }, {});
+
+        
+        await Task(connect(DB_CONNECTION, portal)).findOneAndUpdate(
+            { _id: checkAutoTSLog._id },
+            {
+                $set: {
+                    "hoursSpentOnTask.totalHoursSpent": newTotalHoursSpent,
+                    "hoursSpentOnTask.contributions": contributions,
+                },
+            },
+            {new: true}
+        );
+    } else {
         if(checkAutoTSLog) throw ['time_overlapping', checkAutoTSLog.name]
     }
-
-    // if(autoTSLog) throw ['time_overlapping'];
 
     let timer = await Task(connect(DB_CONNECTION, portal)).findByIdAndUpdate(
         params.taskId,

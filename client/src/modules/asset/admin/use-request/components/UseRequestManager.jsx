@@ -10,16 +10,22 @@ import { RecommendDistributeActions } from '../../../user/use-request/redux/acti
 import { UserActions } from "../../../../super-admin/user/redux/actions";
 import { AssetManagerActions } from "../../asset-information/redux/actions";
 import { AssetEditForm } from '../../asset-information/components/assetEditForm';
+import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
 
 class UseRequestManager extends Component {
     constructor(props) {
         super(props);
+        const tableId = "table-use-request-manager";
+        const defaultConfig = { limit: 5 }
+        const limit = getTableConfiguration(tableId, defaultConfig).limit;
+
         this.state = {
+            tableId,
             recommendNumber: "",
             month: "",
             status: null,
             page: 0,
-            limit: 5,
+            limit: limit,
             managedBy: this.props.managedBy ? this.props.managedBy : ''
         }
     }
@@ -303,7 +309,7 @@ class UseRequestManager extends Component {
 
     render() {
         const { translate, recommendDistribute, isActive } = this.props;
-        const { page, limit, currentRow, currentRowEditAsset, managedBy } = this.state;
+        const { page, limit, currentRow, currentRowEditAsset, managedBy, tableId } = this.state;
 
         var listRecommendDistributes = "", exportData;
         if (recommendDistribute.isLoading === false) {
@@ -383,7 +389,7 @@ class UseRequestManager extends Component {
                     </div>
 
                     {/* Bảng thông tin đăng kí sử dụng tài sản */}
-                    <table id="recommenddistributemanager-table" className="table table-striped table-bordered table-hover">
+                    <table id={tableId} className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
                                 <th style={{ width: "17%" }}>{translate('asset.general_information.asset_code')}</th>
@@ -397,7 +403,7 @@ class UseRequestManager extends Component {
                                 <th style={{ width: "11%" }}>{translate('asset.general_information.status')}</th>
                                 <th style={{ width: '120px', textAlign: 'center' }}>{translate('table.action')}
                                     <DataTableSetting
-                                        tableId="recommenddistributemanager-table"
+                                        tableId={tableId}
                                         columnArr={[
                                             translate('asset.general_information.asset_code'),
                                             translate('asset.general_information.form_code'),
@@ -409,9 +415,7 @@ class UseRequestManager extends Component {
                                             translate('asset.usage.accountable'),
                                             translate('asset.general_information.status'),
                                         ]}
-                                        limit={limit}
                                         setLimit={this.setLimit}
-                                        hideColumnOption={true}
                                     />
                                 </th>
                             </tr>

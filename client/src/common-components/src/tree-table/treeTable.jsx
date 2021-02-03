@@ -251,50 +251,54 @@ class TreeTable extends Component {
         const { translate, column, data, actions = true, tableId = 'tree-table' } = this.props;
 
         return (
-            <table id={tableId} className="table table-striped table-hover table-bordered">
-                <thead>
-                    <tr id="task">
-                        {column.length !== 0 && column.map((col, index) => <th key={index}>{col.name}</th>)}
-                        {actions && <th style={{ width: '120px', textAlign: 'center' }}>{translate('table.action')}</th>}
-                    </tr>
-                </thead>
-                <tbody id="taskTable" className="task-table">
-                    {this.dataTreetable(column, data).length > 0 ?
-                        this.dataTreetable(column, data).map((rows, index) => (
-                            <tr key={index} data-id={rows._id} data-parent={rows.parent} data-level={rows.level}>
-                                {
-                                    rows.row.map((x, index) => index === 0 ?
-                                        <td key={index} data-column="name">{x}</td> :
-                                        <td key={index}>{x}</td>
-                                    )
-                                }
-                                {actions &&
-                                    <td>
-                                        {
-                                            rows.action && rows.action.map((x, index) => Array.isArray(x) ?
-                                                <React.Fragment key={index}>
-                                                    <button type="button" data-toggle="collapse" data-target={`#actionTask${rows._id}`} style={{ border: "none", background: "none" }}><i className="fa fa-ellipsis-v"></i></button>
-                                                    <div id={`actionTask${rows._id}`} className="collapse">
-                                                        {x.map((y, index) => (
-                                                            <React.Fragment key={index}>
-                                                                {this.showActionColumn(y, rows._id)}
-                                                            </React.Fragment>
-                                                        ))}
-                                                    </div>
-                                                </React.Fragment> :
-                                                <React.Fragment key={index}>
-                                                    {this.showActionColumn(x, rows._id)}
-                                                </React.Fragment>
-                                            )
-                                        }
-                                    </td>
-                                }
-                            </tr>
-                        )) :
-                        <tr><td colSpan={column.length + 1}><center>{translate('task_template.no_data')}</center></td></tr>
-                    }
-                </tbody>
-            </table >
+            <React.Fragment>
+                <table id={tableId} className="table table-striped table-hover table-bordered" style={{ marginBottom: 0 }}>
+                    <thead>
+                        <tr id="task">
+                            {column.length !== 0 && column.map((col, index) => <th key={index}>{col.name}</th>)}
+                            {actions && <th style={{ width: '120px', textAlign: 'center' }}>{translate('table.action')}</th>}
+                        </tr>
+                    </thead>
+                    <tbody id="taskTable" className="task-table">
+                        {this.dataTreetable(column, data).length > 0 ?
+                            this.dataTreetable(column, data).map((rows, index) => (
+                                <tr key={index} data-id={rows._id} data-parent={rows.parent} data-level={rows.level}>
+                                    {
+                                        rows.row.map((x, index) => index === 0 ?
+                                            <td key={index} data-column="name">{x}</td> :
+                                            <td key={index}>{x}</td>
+                                        )
+                                    }
+                                    {actions &&
+                                        <td>
+                                            {
+                                                rows.action && rows.action.map((x, index) => Array.isArray(x) ?
+                                                    <React.Fragment key={index}>
+                                                        <button type="button" data-toggle="collapse" data-target={`#actionTask${rows._id}`} style={{ border: "none", background: "none" }}><i className="fa fa-ellipsis-v"></i></button>
+                                                        <div id={`actionTask${rows._id}`} className="collapse">
+                                                            {x.map((y, index) => (
+                                                                <React.Fragment key={index}>
+                                                                    {this.showActionColumn(y, rows._id)}
+                                                                </React.Fragment>
+                                                            ))}
+                                                        </div>
+                                                    </React.Fragment> :
+                                                    <React.Fragment key={index}>
+                                                        {this.showActionColumn(x, rows._id)}
+                                                    </React.Fragment>
+                                                )
+                                            }
+                                        </td>
+                                    }
+                                </tr>
+                            )) : null
+                        }
+                    </tbody>
+                </table >
+                {
+                    this.dataTreetable(column, data).length === 0 && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                }
+            </React.Fragment>
         );
     }
 }

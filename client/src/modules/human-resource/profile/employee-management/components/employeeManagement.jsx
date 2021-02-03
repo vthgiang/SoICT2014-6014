@@ -11,6 +11,7 @@ import { DepartmentActions } from '../../../../super-admin/organizational-unit/r
 import { CareerReduxAction } from "../../../career/redux/actions";
 import { MajorActions } from "../../../major/redux/actions";
 import { FieldsActions } from '../../../field/redux/actions';
+import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
 
 class EmployeeManagement extends Component {
     constructor(props) {
@@ -29,7 +30,12 @@ class EmployeeManagement extends Component {
             }
         }
 
+        const tableId = "table-employee-management";
+        const defaultConfig = { limit: 5 }
+        const limit = getTableConfiguration(tableId, defaultConfig).limit;
+
         this.state = {
+            tableId,
             position: null,
             gender: null,
             employeeName: null,
@@ -39,7 +45,7 @@ class EmployeeManagement extends Component {
             professionalSkills: null,
             careerFields: null,
             page: 0,
-            limit: 5,
+            limit: limit,
         }
     }
 
@@ -889,7 +895,7 @@ class EmployeeManagement extends Component {
     render() {
         const { employeesManager, translate, department, field } = this.props;
 
-        let { importEmployee, limit, page, organizationalUnits, currentRow, currentRowView, status } = this.state;
+        let { importEmployee, limit, page, organizationalUnits, currentRow, currentRowView, status, tableId } = this.state;
 
         let listEmployees = [];
         if (employeesManager.listEmployees) {
@@ -1054,7 +1060,7 @@ class EmployeeManagement extends Component {
                         }
                     </div>
 
-                    <table id="employee-table" className="table table-striped table-bordered table-hover">
+                    <table id={tableId} className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
                                 <th>{translate('human_resource.staff_number')}</th>
@@ -1066,7 +1072,7 @@ class EmployeeManagement extends Component {
                                 <th>{translate('human_resource.status')}</th>
                                 <th style={{ width: '120px', textAlign: 'center' }}>{translate('general.action')}
                                     <DataTableSetting
-                                        tableId="employee-table"
+                                        tableId={tableId}
                                         columnArr={[
                                             translate('human_resource.staff_number'),
                                             translate('human_resource.staff_name'),
@@ -1076,9 +1082,7 @@ class EmployeeManagement extends Component {
                                             translate('human_resource.profile.type_contract'),
                                             translate('human_resource.status'),
                                         ]}
-                                        limit={this.state.limit}
                                         setLimit={this.setLimit}
-                                        hideColumnOption={true}
                                     />
                                 </th>
                             </tr>

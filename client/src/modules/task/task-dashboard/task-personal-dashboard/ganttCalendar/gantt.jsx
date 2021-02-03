@@ -1,15 +1,20 @@
 import React, { Component } from 'react';
 import { gantt } from 'dhtmlx-gantt';
+import { connect } from 'react-redux';
+import withTranslate from 'react-redux-multilingual/lib/withTranslate';
+
+import { ModalDetailTask } from '../modalDetailTask';
+import { performTaskAction } from '../../../task-perform/redux/actions';
+
 import 'dhtmlx-gantt/codebase/dhtmlxgantt.css';
 
-export default class Gantt extends Component {
+class Gantt extends Component {
 
   constructor(props) {
     super(props);
     this.initZoom();
   }
 
-  // instance of gantt.dataProcessor
   dataProcessor = null;
 
   initZoom() {
@@ -51,42 +56,27 @@ export default class Gantt extends Component {
   }
 
   initGanttDataProcessor() {
-    /**
-     * type: "task"|"link"
-     * action: "create"|"update"|"delete"
-     * item: data object object
-     */
-    const onDataUpdated = this.props.onDataUpdated;
-    this.dataProcessor = gantt.createDataProcessor((type, action, item, id) => {
-      // return new Promise((resolve, reject) => {
-      //   if (onDataUpdated) {
-      //     onDataUpdated(type, action, item, id);
-      //   }
-
-      //   // if onDataUpdated changes returns a permanent id of the created item, you can return it from here so dhtmlxGantt could apply it
-      //   // resolve({id: databaseId});
-      //   return resolve();
-      // });
-    });
   }
 
   shouldComponentUpdate(nextProps) {
-    if(this.props.tasks !== nextProps.tasks){
+    if (this.props.ganttData !== nextProps.ganttData) {
+      gantt.clearAll();
       gantt.init(this.ganttContainer);
       this.initGanttDataProcessor();
-      gantt.parse(this.props.tasks);
+      gantt.parse(this.props.ganttData);
     };
     return true;
   }
 
   componentDidMount() {
+    const { unit } = this.props;
     gantt.config.drag_move = false;
     gantt.config.drag_multiple = false;
     gantt.config.drag_progress = false;
     gantt.config.drag_resize = false;
     gantt.config.links = false;
     gantt.config.details_on_dblclick = false;
-    gantt.config.columns=[{name :'role', label: "Vai trò", align: "center", resize: true, width: 120}]
+    gantt.config.columns = [{ name: 'role', label: unit ? "Người thực hiện" : "Vai trò", align: "center", resize: true, width: 120 }]
     gantt.config.xml_date = "%Y-%m-%d %H:%i";
     gantt.templates.task_class = function (start, end, task) {
       switch (task.process) {
@@ -96,22 +86,18 @@ export default class Gantt extends Component {
           return "intime";
         case 2:
           return "notAchive";
-        default: return "";
+        default: return "none";
       }
     };
-    const { tasks } = this.props;
-    // gantt.init(this.ganttContainer);
-    // this.initGanttDataProcessor();
-    // gantt.parse(tasks);
-    gantt.attachEvent("onTaskClick",  (id, mode) =>{
-      let cnt =0;
-      console.log("cnt", cnt++)
-      var task = gantt.getTask(id);
-      console.log("task", task);
-        gantt.message("you clicked task" + task.idTask);
+
+    gantt.attachEvent("onTaskDblClick", (id, mode) => {
+      const taskId = id.split('-')[1];
+      this.props.getTaskById(taskId);
+      window.$(`#modal-detail-task-Employee`).modal('show')
     });
+
   }
-  
+
   componentWillUnmount() {
     if (this.dataProcessor) {
       this.dataProcessor.destructor();
@@ -120,22 +106,32 @@ export default class Gantt extends Component {
   }
 
   render() {
-    const { zoom } = this.props;
+    const { zoom, tasks, translate, count, ganttData } = this.props;
+    const task = tasks && tasks.task;
+    const heightCalc = ganttData ? (ganttData.data.length) * 35 + 80 : 0;
     this.setZoom(zoom);
-    console.log("render gantt");
-    // gantt.attachEvent("onTaskClick",  (id, mode) =>{
-    //   let cnt =0;
-    //   console.log("cnt", cnt++)
-    //   var task = gantt.getTask(id);
-    //   console.log("task", task);
-    //     gantt.message("you clicked task" + task.idTask);
-    // });
 
     return (
-      <div
-        ref={(input) => { this.ganttContainer = input }}
-        style={{ width: '100%', height: '100%' }}
-      ></div>
+      <React.Fragment>
+
+        {<ModalDetailTask action={'Employee'} task={task} />}
+        <div
+          ref={(input) => { this.ganttContainer = input }}
+          style={{ width: '100%', height: heightCalc }}
+        ></div>
+
+
+      </React.Fragment>
     );
   }
 }
+
+function mapState(state) {
+  const { tasks } = state;
+  return { tasks }
+}
+const actions = {
+  getTaskById: performTaskAction.getTaskById,
+}
+const ganttConnected = connect(mapState, actions)(withTranslate(Gantt))
+export { ganttConnected as Gantt }

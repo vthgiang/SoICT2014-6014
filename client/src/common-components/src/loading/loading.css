@@ -6,7 +6,7 @@
     width: 1em;
     height: 1em;
     vertical-align: text-bottom;
-    border: .125em solid #fff;
+    border: .125em solid #333;
     border-right-color: transparent;
     border-radius: 50%;
     -webkit-animation: spin 1s linear infinite; /* Safari */

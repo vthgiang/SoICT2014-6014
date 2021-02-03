@@ -149,6 +149,17 @@ class TaskDashboard extends Component {
         return dps;
     }
 
+    convertType = (value) => {
+        // 1: Tắt bấm giờ bằng tay, 2: Tắt bấm giờ tự động với thời gian hẹn trc, 3: add log timer
+        if (value == 1) {
+            return "Bấm giờ tự chọn"
+        } else if (value == 2) {
+            return "Bấm giờ tự động"
+        } else {
+            return "Bấm giờ tự tắt"
+        }
+    }
+
     handleSelectMonthStart = (value) => {
         let month = value.slice(3, 7) + '-' + value.slice(0, 2);
         let startMonthTitle = value.slice(0, 2) + '-' + value.slice(3, 7);
@@ -248,7 +259,6 @@ class TaskDashboard extends Component {
         let amountResponsibleTask = 0, amountTaskCreated = 0, amountAccountableTasks = 0, amountConsultedTasks = 0;
         let numTask = [];
         let totalTasks = 0;
-
         // Tinh so luong tat ca cac task
         if (tasks && tasks.responsibleTasks) {
             let task = tasks.responsibleTasks;
@@ -396,13 +406,13 @@ class TaskDashboard extends Component {
                             <div className="box-header with-border">
                                 <div className="box-title">{translate('task.task_management.tasks_calendar')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
                             </div>
-                            <CalendarEmployee
+                            {/* <CalendarEmployee
                                 tasks={tasks}
-                            />
-                            {/* <GanttCalendar
-                                tasks={tasks}
-                                unitOrganization = {false}
                             /> */}
+                            <GanttCalendar
+                                tasks={tasks}
+                                unit={false}
+                            />
                         </div>
 
                     </div>
@@ -597,9 +607,11 @@ class TaskDashboard extends Component {
                                     <thead>
                                         <tr>
                                             <th style={{ width: 80 }}>STT</th>
+                                            <th>Tên công việc</th>
                                             <th>Thời gian bắt đầu</th>
                                             <th>Thời gian kết thúc</th>
-                                            <th>Bấm giờ</th>
+                                            <th>Loại bấm giờ</th>
+                                            <th className="col-sort">Bấm giờ</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -608,8 +620,10 @@ class TaskDashboard extends Component {
                                                 return (
                                                     <tr>
                                                         <td>{index + 1}</td>
+                                                        <td>{tsl.name}</td>
                                                         <td>{moment(tsl.startedAt).format("HH:mm:ss DD/MM/YYYY")}</td>
                                                         <td>{moment(tsl.stoppedAt).format("HH:mm:ss DD/MM/YYYY")}</td>
+                                                        <td>{this.convertType(tsl.autoStopped)}</td>
                                                         <td>{convertTime(tsl.duration)}</td>
                                                     </tr>
                                                 )

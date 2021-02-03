@@ -16,7 +16,8 @@ function getAllKPIUnit(infosearch) {
             roleId: infosearch.role,
             status: infosearch.status,
             startDate: infosearch.startDate,
-            endDate: infosearch.endDate
+            endDate: infosearch.endDate,
+            organizationalUnit: infosearch.organizationalUnit
         }
     }, false, true, 'kpi.organizational_unit');
 }
@@ -39,9 +40,10 @@ function copyKPIUnit(kpiId, data) {
         url: `${process.env.REACT_APP_SERVER}/kpi/organizational-unit/management/organizational-unit-kpi-sets/${kpiId}/copy`,
         method: 'POST',
         params: {
+            type: data.type,
             idunit: data.idunit,
             datenew: data.datenew,
-            creator: data.creator,
+            approver: data.approver
         }
     }, true, true, 'kpi.organizational_unit');
 }

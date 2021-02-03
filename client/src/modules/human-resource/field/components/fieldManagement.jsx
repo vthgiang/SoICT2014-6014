@@ -6,13 +6,18 @@ import { DataTableSetting, PaginateBar, DeleteNotification } from '../../../../c
 import { FieldCreateForm, FieldEditForm } from './combinedContent';
 
 import { FieldsActions } from '../redux/actions';
-
+import { getTableConfiguration } from '../../../../helpers/tableConfiguration';
 class FieldManagement extends Component {
     constructor(props) {
         super(props);
+        const tableId = "table-field-management";
+        const defaultConfig = { limit: 5 }
+        const limit = getTableConfiguration(tableId, defaultConfig).limit;
+
         this.state = {
+            tableId,
             page: 0,
-            limit: 5,
+            limit: limit,
             name: "",
         }
     }
@@ -74,7 +79,7 @@ class FieldManagement extends Component {
     render() {
         const { translate, field } = this.props;
 
-        const { limit, page, currentRow } = this.state;
+        const { limit, page, currentRow, tableId } = this.state;
 
         let listFields = field.listFields;
 
@@ -96,21 +101,19 @@ class FieldManagement extends Component {
                         </div>
                     </div>
 
-                    <table id="field-table" className="table table-striped table-bordered table-hover">
+                    <table id={tableId} className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
                                 <th>{translate('human_resource.field.table.name')}</th>
                                 <th>{translate('human_resource.field.table.description')}</th>
                                 <th style={{ width: '120px', textAlign: 'center' }}>{translate('human_resource.annual_leave.table.action')}
                                     <DataTableSetting
-                                        tableId="field-table"
+                                        tableId={tableId}
                                         columnArr={[
                                             translate('human_resource.field.table.name'),
                                             translate('human_resource.field.table.description'),
                                         ]}
-                                        limit={limit}
                                         setLimit={this.setLimit}
-                                        hideColumnOption={true}
                                     />
                                 </th>
                             </tr>

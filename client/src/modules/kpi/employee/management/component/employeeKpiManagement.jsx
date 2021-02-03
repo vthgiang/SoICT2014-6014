@@ -10,25 +10,25 @@ import { kpiMemberActions } from '../../../evaluation/employee-evaluation/redux/
 
 import { ModalCopyKPIPersonal } from './employeeKpiCopyModal';
 import { ModalDetailKPIPersonal } from './employeeKpiDetailModal';
-
-
 import Swal from 'sweetalert2';
 
 
-var translate ='';
+var translate = '';
 class KPIPersonalManager extends Component {
     constructor(props) {
         super(props);
-        translate=this.props.translate
+        translate = this.props.translate;
+        const tableId = "table-personal-kpi-management";
         this.state = {
+            tableId,
             commenting: false,
-            user:null,
-            status:-1,
+            user: null,
+            status: -1,
             startDate: null,
             endDate: null,
             infosearch: {
                 role: localStorage.getItem("currentRole"),
-                user: localStorage.getItem("userId"),
+                user: [localStorage.getItem("userId")],
                 status: null,
                 startDate: null,
                 endDate: null
@@ -41,15 +41,15 @@ class KPIPersonalManager extends Component {
         this.props.getAllUserSameDepartment(localStorage.getItem("currentRole"));
         this.props.getEmployeeKPISets(this.state.infosearch);
     }
-    
+
     formatDateBack(date) {
         var d = new Date(date), month, day, year;
-        if(d.getMonth()===0){
+        if (d.getMonth() === 0) {
             month = '' + 12;
             day = '' + d.getDate();
-            year = d.getFullYear()-1;
-        } else{
-            month = '' + (d.getMonth()+1);
+            year = d.getFullYear() - 1;
+        } else {
+            month = '' + (d.getMonth() + 1);
             day = '' + d.getDate();
             year = d.getFullYear();
         }
@@ -60,7 +60,7 @@ class KPIPersonalManager extends Component {
 
         return [month, year].join('-');
     }
-    
+
     formatDate(date) {
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
@@ -99,24 +99,24 @@ class KPIPersonalManager extends Component {
 
     handleStartDateChange = (value) => {
         this.setState(state => {
-                return {
-                    ...state,
-                    startDate: value.slice(3,7) + '-' + value.slice(0,2)
-                }
-            });
-        
+            return {
+                ...state,
+                startDate: value.slice(3, 7) + '-' + value.slice(0, 2)
+            }
+        });
+
     }
 
     handleEndDateChange = (value) => {
         this.setState(state => {
-                return {
-                    ...state,
-                    endDate: value.slice(3,7) + '-' + value.slice(0,2)
-                }
-            });   
-        }
+            return {
+                ...state,
+                endDate: value.slice(3, 7) + '-' + value.slice(0, 2)
+            }
+        });
+    }
 
-    handleStatusChange =(value) => {
+    handleStatusChange = (value) => {
         this.setState(state => {
             return {
                 ...state,
@@ -140,19 +140,19 @@ class KPIPersonalManager extends Component {
                 employeeKpiSet: { _id: null },
             }
         })
-        
+
         const { infosearch } = this.state;
         let startdate = new Date(infosearch.startDate);
         let enddate = new Date(infosearch.endDate);
 
         if (startdate && enddate && startdate.getTime() > enddate.getTime()) {
             Swal.fire({
-                title: translate('kpi.evaluation.employee_evaluation.wrong_time')+"!",
+                title: translate('kpi.evaluation.employee_evaluation.wrong_time') + "!",
                 type: 'warning',
                 confirmButtonColor: '#3085d6',
                 confirmButtonText: translate('general.accept')
             })
-        } 
+        }
         else {
             this.props.getEmployeeKPISets(infosearch);
         }
@@ -173,27 +173,27 @@ class KPIPersonalManager extends Component {
     convertDataToExportData = (data) => {
         let fileName = "Bảng theo dõi KPI cá nhân";
 
-        if(data.length !== 0){
-            fileName+= " "+ (data[0].creator.name?data[0].creator.name:"");
+        if (data.length !== 0) {
+            fileName += " " + (data[0].creator.name ? data[0].creator.name : "");
         }
 
-        if (data) {           
+        if (data) {
             data = data.map((x, index) => {
-                let automaticPoint = (x.automaticPoint === null)?"Chưa đánh giá":parseInt(x.automaticPoint);
-                let employeePoint = (x.employeePoint === null)?"Chưa đánh giá":parseInt(x.employeePoint);
-                let approverPoint =(x.approvedPoint===null)?"Chưa đánh giá":parseInt(x.approvedPoint);
-                let date = new Date(x.date);                   
+                let automaticPoint = (x.automaticPoint === null) ? "Chưa đánh giá" : parseInt(x.automaticPoint);
+                let employeePoint = (x.employeePoint === null) ? "Chưa đánh giá" : parseInt(x.employeePoint);
+                let approverPoint = (x.approvedPoint === null) ? "Chưa đánh giá" : parseInt(x.approvedPoint);
+                let date = new Date(x.date);
                 let status = this.checkStatusKPI(x.status);
-                let numberTarget =parseInt(x.kpis.length);               
+                let numberTarget = parseInt(x.kpis.length);
 
                 return {
-                    STT: index + 1,                 
+                    STT: index + 1,
                     automaticPoint: automaticPoint,
                     status: status,
                     employeePoint: employeePoint,
                     approverPoint: approverPoint,
-                    date :date,
-                    numberTarget:numberTarget                   
+                    date: date,
+                    numberTarget: numberTarget
                 };
             })
         }
@@ -203,13 +203,13 @@ class KPIPersonalManager extends Component {
             dataSheets: [
                 {
                     sheetName: "sheet1",
-                    sheetTitle : fileName,
+                    sheetTitle: fileName,
                     tables: [
                         {
                             columns: [
                                 { key: "STT", value: "STT" },
-                                { key: "date", value: "Thời gian" },    
-                                { key: "status", value: "Trạng thái mục tiêu" },                     
+                                { key: "date", value: "Thời gian" },
+                                { key: "status", value: "Trạng thái mục tiêu" },
                                 { key: "numberTarget", value: "Số lượng mục tiêu" },
                                 { key: "automaticPoint", value: "Điểm KPI tự động" },
                                 { key: "employeePoint", value: "Điểm KPI tự đánh giá" },
@@ -221,8 +221,8 @@ class KPIPersonalManager extends Component {
                 },
             ]
         }
-        return exportData;        
-       
+        return exportData;
+
     }
 
     render() {
@@ -230,21 +230,21 @@ class KPIPersonalManager extends Component {
         var userdepartments;
         let exportData;
 
-        const { translate, kpimembers, user } =this.props;
-        const { status,startDate, endDate} = this.state;
+        const { translate, kpimembers, user } = this.props;
+        const { status, startDate, endDate, tableId } = this.state;
 
         if (user) userdepartments = user.userdepartments;
-        if (kpimembers) kpipersonal =  kpimembers.kpimembers;
-        
-        if(kpipersonal){
-            exportData=this.convertDataToExportData(kpipersonal)
+        if (kpimembers) kpipersonal = kpimembers.kpimembers;
+
+        if (kpipersonal) {
+            exportData = this.convertDataToExportData(kpipersonal)
         }
         return (
             <div className="box">
                 <div className="box-body qlcv">
 
                     {/**Modal xem chi tiết của 1 tập KPI */}
-                    <ModalDetailKPIPersonal employeeKpiSet={this.state.employeeKpiSet}/>
+                    <ModalDetailKPIPersonal employeeKpiSet={this.state.employeeKpiSet} />
 
                     {/**Select box chọn trạng thái để tìm kiếm */}
                     <div className="form-inline">
@@ -252,12 +252,12 @@ class KPIPersonalManager extends Component {
                             <label>{translate('general.status')}:</label>
                             <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
                                 id={`status-kpi`}
-                                style={{width: "100%"}}
-                                items = {[
-                                    {value:-1, text : "--"+translate('kpi.evaluation.employee_evaluation.choose_status')+"--"},
-                                    {value:0, text : translate('kpi.evaluation.employee_evaluation.establishing')},
-                                    {value:1, text : translate('kpi.evaluation.employee_evaluation.expecting')},
-                                    {value:2, text : translate('kpi.evaluation.employee_evaluation.activated')},]}
+                                style={{ width: "100%" }}
+                                items={[
+                                    { value: -1, text: "--" + translate('kpi.evaluation.employee_evaluation.choose_status') + "--" },
+                                    { value: 0, text: translate('kpi.evaluation.employee_evaluation.establishing') },
+                                    { value: 1, text: translate('kpi.evaluation.employee_evaluation.expecting') },
+                                    { value: 2, text: translate('kpi.evaluation.employee_evaluation.activated') },]}
                                 onChange={this.handleStatusChange}
                                 value={status}
                             />
@@ -271,52 +271,50 @@ class KPIPersonalManager extends Component {
                         <div className="form-group">
                             <label>{translate('kpi.evaluation.employee_evaluation.from')}:</label>
                             <DatePicker id='start_date'
-                            value = {startDate}
-                            onChange={this.handleStartDateChange}
-                            dateFormat="month-year"
+                                value={startDate}
+                                onChange={this.handleStartDateChange}
+                                dateFormat="month-year"
                             />
                         </div>
-                        
+
                         {/**Chọn ngày kết thúc */}
                         <div className="form-group">
                             <label>{translate('kpi.evaluation.employee_evaluation.to')}</label>
                             <DatePicker
-                            id='end_date'
-                            
-                            value = {endDate}
-                            onChange={this.handleEndDateChange}
-                            dateFormat="month-year"
+                                id='end_date'
+
+                                value={endDate}
+                                onChange={this.handleEndDateChange}
+                                dateFormat="month-year"
                             />
                         </div>
 
                         <div className="form-group">
-                        <button type="button" className="btn btn-success" onClick={()=> this.handleSearchData()}>{
-                        translate('kpi.organizational_unit.management.over_view.search')}</button>
+                            <button type="button" className="btn btn-success" onClick={() => this.handleSearchData()}>{
+                                translate('kpi.organizational_unit.management.over_view.search')}</button>
                         </div>
-                        {exportData&&<ExportExcel id="export-employee-kpi-management" exportData={exportData} style={{ marginRight: 15, marginTop:5 }} />}
+                        {exportData && <ExportExcel id="export-employee-kpi-management" exportData={exportData} style={{ marginRight: 15, marginTop: 5 }} />}
 
                     </div>
-                    
-                    {/**Table chứa danh sách các tập KPI */}
-                    <DataTableSetting className="pull-right" tableId="kpiEmployeeManagement" tableContainerId="tree-table-container" tableWidth="1300px"
-                    columnArr={[ 
-                        translate('kpi.evaluation.employee_evaluation.index'),
-                        translate('kpi.evaluation.employee_evaluation.time') , 
-                        translate('kpi.evaluation.employee_evaluation.status'),
-                        translate('kpi.evaluation.employee_evaluation.number_of_targets') , 
-                        translate('kpi.evaluation.employee_evaluation.system_evaluate') ,
-                        translate('kpi.evaluation.employee_evaluation.result_self_evaluate') ,
-                        translate('kpi.evaluation.employee_evaluation.evaluation_management'),
-                        translate('kpi.evaluation.employee_evaluation.action')]} 
-                    limit={this.state.perPage} 
-                    setLimit={this.setLimit} 
-                    hideColumnOption={true} />
 
-                    <table id="kpiEmployeeManagement" className="table table-hover table-bordered">
+                    {/**Table chứa danh sách các tập KPI */}
+                    <DataTableSetting className="pull-right" tableId={tableId} tableContainerId="tree-table-container" tableWidth="1300px"
+                        columnArr={[
+                            translate('kpi.evaluation.employee_evaluation.index'),
+                            translate('kpi.evaluation.employee_evaluation.time'),
+                            translate('kpi.evaluation.employee_evaluation.status'),
+                            translate('kpi.evaluation.employee_evaluation.number_of_targets'),
+                            translate('kpi.evaluation.employee_evaluation.system_evaluate'),
+                            translate('kpi.evaluation.employee_evaluation.result_self_evaluate'),
+                            translate('kpi.evaluation.employee_evaluation.evaluation_management'),
+                            translate('kpi.evaluation.employee_evaluation.action')]}
+                        setLimit={this.setLimit} />
+
+                    <table id={tableId} className="table table-hover table-bordered">
                         <thead>
                             <tr>
-                                <th title={translate('kpi.evaluation.employee_evaluation.index')} style={{ width: "40px" }} className="col-fixed">{translate('kpi.evaluation.employee_evaluation.index')}</th>
-                                <th title={ translate('kpi.evaluation.employee_evaluation.time')}>{ translate('kpi.evaluation.employee_evaluation.time')}</th>
+                                <th title={translate('kpi.evaluation.employee_evaluation.index')} style={{ width: "40px" }} className="col-fixed not-sort">{translate('kpi.evaluation.employee_evaluation.index')}</th>
+                                <th title={translate('kpi.evaluation.employee_evaluation.time')}>{translate('kpi.evaluation.employee_evaluation.time')}</th>
                                 <th title={translate('kpi.evaluation.employee_evaluation.status')}>{translate('kpi.evaluation.employee_evaluation.status')}</th>
                                 <th title={translate('kpi.evaluation.employee_evaluation.number_of_targets')}>{translate('kpi.evaluation.employee_evaluation.number_of_targets')}</th>
                                 <th title={translate('kpi.evaluation.employee_evaluation.system_evaluate')}>{translate('kpi.evaluation.employee_evaluation.system_evaluate')}</th>
@@ -326,9 +324,9 @@ class KPIPersonalManager extends Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {kpipersonal && kpipersonal.length!==0 && kpipersonal.map((item, index) =>
+                            {kpipersonal && kpipersonal.length !== 0 && kpipersonal.map((item, index) =>
                                 <tr key={index}>
-                                    <td>{index+1}</td>
+                                    <td>{index + 1}</td>
                                     <td>{this.formatDate(item.date)}</td>
                                     <td>{this.checkStatusKPI(item.status)}</td>
                                     <td>{item.kpis.length}</td>
@@ -338,16 +336,17 @@ class KPIPersonalManager extends Component {
                                     <td>
 
                                         {/**Các Button để xem chi tiết, khởi tạo KPI tháng mới */}
-                                        <a href="#modal-detail-KPI-personal" onClick={()=> this.showDetailKpiPersonal(item)} data-toggle="modal"
-                                        title={translate('kpi.evaluation.employee_evaluation.view_detail')}><i className="material-icons">view_list</i></a>
-                                        <a href="#abc" onClick={() => this.showModalCopy(item._id)} data-toggle="modal" 
-                                        className="copy" title={translate('kpi.evaluation.employee_evaluation.clone_to_new_kpi')}><i className="material-icons">content_copy</i></a>
-                                        {this.state.showModalCopy === item._id  && <ModalCopyKPIPersonal id={item._id} idunit={item.organizationalUnit._id} listkpipersonal={kpipersonal} kpipersonal={item} />}
+                                        <a href="#modal-detail-KPI-personal" onClick={() => this.showDetailKpiPersonal(item)} data-toggle="modal"
+                                            title={translate('kpi.evaluation.employee_evaluation.view_detail')}><i className="material-icons">view_list</i></a>
+                                        <a href="#abc" onClick={() => this.showModalCopy(item._id)} data-toggle="modal"
+                                            className="copy" title={translate('kpi.evaluation.employee_evaluation.clone_to_new_kpi')}><i className="material-icons">content_copy</i></a>
+                                        {this.state.showModalCopy === item._id && <ModalCopyKPIPersonal id={item._id} idunit={item.organizationalUnit._id} listkpipersonal={kpipersonal} kpipersonal={item} />}
                                     </td>
                                 </tr>)
                             }
                         </tbody>
                     </table>
+                    {(kpipersonal && kpipersonal.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>}
                 </div>
             </div>
         )

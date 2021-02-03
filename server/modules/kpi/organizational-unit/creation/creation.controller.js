@@ -277,7 +277,7 @@ getAllOrganizationalUnitKpiSetByTimeOfChildUnit = async (req, res) => {
 
 getAllOrganizationalUnitKpiSet = async (req, res) => {
     try {
-        var kpiunits = await KPIUnitService.getAllOrganizationalUnitKpiSet(req.portal, req.query);
+        let kpiunits = await KPIUnitService.getAllOrganizationalUnitKpiSet(req.portal, req.query);
         Logger.info(req.user.email, ' get kpi unit ', req.portal);
         res.status(200).json({
             success: true,

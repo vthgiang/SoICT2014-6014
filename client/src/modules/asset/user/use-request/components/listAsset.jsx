@@ -11,17 +11,24 @@ import { UserActions } from "../../../../super-admin/user/redux/actions";
 import { UseRequestCreateForm } from './UseRequestCreateForm';
 import { AssetDetailForm } from '../../../admin/asset-information/components/assetDetailForm';
 import { getPropertyOfValue } from '../../../../../helpers/stringMethod';
+import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
+
 class ListAsset extends Component {
     constructor(props) {
         super(props);
+        const tableId = "table-list-asset";
+        const defaultConfig = { limit: 5 }
+        const limit = getTableConfiguration(tableId, defaultConfig).limit;
+
         this.state = {
+            tableId,
             code: "",
             assetName: "",
             assetType: null,
             status: "",
             typeRegisterForUse: [2, 3],
             page: 0,
-            limit: 5,
+            limit: limit,
             currentRole: localStorage.getItem('currentRole'),
         }
     }
@@ -240,7 +247,7 @@ class ListAsset extends Component {
 
     render() {
         const { translate, assetsManager, assetType, user, auth } = this.props;
-        const { page, limit, currentRowView, currentRow } = this.state;
+        const { page, limit, currentRowView, currentRow, tableId } = this.state;
 
         var lists = "";
         var userlist = user.list;
@@ -349,7 +356,7 @@ class ListAsset extends Component {
                     </div>
 
                     {/* Bảng đăng kí sử dụng thiết bị */}
-                    <table id="asset-table" className="table table-striped table-bordered table-hover">
+                    <table id={tableId} className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
                                 <th style={{ width: "8%" }}>{translate('asset.general_information.asset_code')}</th>
@@ -362,7 +369,7 @@ class ListAsset extends Component {
                                 <th style={{ width: "10%" }}>{translate('asset.general_information.status')}</th>
                                 <th style={{ width: '120px', textAlign: 'center' }}>{translate('asset.general_information.action')}
                                     <DataTableSetting
-                                        tableId="asset-table"
+                                        tableId={tableId}
                                         columnArr={[
                                             translate('asset.general_information.asset_code'),
                                             translate('asset.general_information.asset_name'),
@@ -373,9 +380,7 @@ class ListAsset extends Component {
                                             translate('asset.general_information.handover_to_date'),
                                             translate('asset.general_information.status')
                                         ]}
-                                        limit={limit}
                                         setLimit={this.setLimit}
-                                        hideColumnOption={true}
                                     />
                                 </th>
                             </tr>

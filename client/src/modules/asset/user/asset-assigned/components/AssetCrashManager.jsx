@@ -10,16 +10,22 @@ import { IncidentActions } from '../redux/actions';
 import { UserActions } from '../../../../super-admin/user/redux/actions';
 import { AssetManagerActions } from '../../../admin/asset-information/redux/actions';
 import { AssetTypeActions } from "../../../admin/asset-type/redux/actions";
+import { getTableConfiguration } from '../../../../../helpers/tableConfiguration'
 
 class AssetCrashManager extends Component {
     constructor(props) {
         super(props);
+        const tableId = "table-asset-crash-manager";
+        const defaultConfig = { limit: 5 }
+        const limit = getTableConfiguration(tableId, defaultConfig).limit;
+
         this.state = {
+            tableId,
             code: "",
             assetName: "",
             month: null,
             type: null,
-            page: 0,
+            page: limit,
         }
     }
 
@@ -130,7 +136,6 @@ class AssetCrashManager extends Component {
             ...this.state,
 
         })
-        console.log("state", this.state);
         this.props.getAllAsset(this.state);
     }
 
@@ -191,7 +196,7 @@ class AssetCrashManager extends Component {
 
     render() {
         const { translate, assetsManager, assetType, user, auth } = this.props;
-        const { page, limit, currentRow } = this.state;
+        const { page, limit, currentRow, tableId } = this.state;
 
         var lists = "";
         var userlist = user.list;
@@ -223,7 +228,7 @@ class AssetCrashManager extends Component {
                         {/* Tên tài sản */}
                         <div className="form-group">
                             <label className="form-control-static">{translate('asset.general_information.asset_name')}</label>
-                            <input type="text" className="form-control" name="assetName" onChange={this.handleRepairNumberChange} placeholder={translate('asset.general_information.asset_name')} autoComplete="off" />
+                            <input type="text" className="form-control" name="assetName" onChange={this.handleAssetNameChange} placeholder={translate('asset.general_information.asset_name')} autoComplete="off" />
                         </div>
                     </div>
 
@@ -244,11 +249,10 @@ class AssetCrashManager extends Component {
 
                         {/* Tháng */}
                         <div className="form-group">
-                            <label className="form-control-static">{translate('page.month')}</label>
+                            <label className="form-control-static">{translate('asset.general_information.date_incident')}</label>
                             <DatePicker
                                 id="month"
                                 dateFormat="month-year"
-                                value={this.formatDate(Date.now())}
                                 onChange={this.handleMonthChange}
                             />
                         </div>
@@ -260,7 +264,7 @@ class AssetCrashManager extends Component {
                     </div>
 
                     {/* Bảng thông tin sự cố */}
-                    <table id="incident-table" className="table table-striped table-bordered table-hover">
+                    <table id={tableId} className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
                                 <th style={{ width: "10%" }}>{translate('asset.general_information.asset_code')}</th>
@@ -273,7 +277,7 @@ class AssetCrashManager extends Component {
                                 <th style={{ width: "10%" }}>{translate('asset.general_information.content')}</th>
                                 <th style={{ width: '100px', textAlign: 'center' }}>{translate('table.action')}
                                     <DataTableSetting
-                                        tableId="incident-table"
+                                        tableId={tableId}
                                         columnArr={[
                                             translate('asset.general_information.asset_code'),
                                             translate('asset.general_information.asset_name'),
@@ -284,9 +288,7 @@ class AssetCrashManager extends Component {
                                             translate('asset.general_information.date_incident'),
                                             translate('asset.general_information.content'),
                                         ]}
-                                        limit={limit}
                                         setLimit={this.setLimit}
-                                        hideColumnOption={true}
                                     />
                                 </th>
                             </tr>

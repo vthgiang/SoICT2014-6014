@@ -18,7 +18,7 @@ const { decryptMessage } = require('../helpers/functionHelper');
  * ****************************************
  */
 
-exports.authFunc = (checkPage = true, checkPassword2 = true) => {
+exports.authFunc = (checkPage = true) => {
     return async (req, res, next) => {
         try {
             const crtp = decryptMessage(req.header("crtp")); // trang hiện tại
@@ -50,15 +50,6 @@ exports.authFunc = (checkPage = true, checkPassword2 = true) => {
                 ? process.env.DB_NAME
                 : req.user.company.shortName;
             initModels(connect(DB_CONNECTION, req.portal), Models);
-
-            const userToken = await User(
-                connect(DB_CONNECTION, req.portal)
-            ).findById(req.user._id);
-            if (userToken.numberDevice === 0) throw ["acc_log_out"];
-
-            // Kiểm tra người dùng đã nhập mật khẩu cấp 2 hay chưa?
-            let password2 = userToken.password2;
-            if (checkPassword2 && !password2) throw ['auth_password2_not_complete']
 
             if (crtp !== "/") {
                 const fingerprint = fgp; //chữ ký của trình duyệt người dùng - fingerprint
