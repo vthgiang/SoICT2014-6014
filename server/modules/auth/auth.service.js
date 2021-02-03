@@ -246,7 +246,7 @@ exports.changeInformation = async (
  * @param {*} password : mật khẩu cũ
  * @param {*} new_password : mật khẩu mới
  */
-exports.changePassword = async (portal, id, password, new_password) => {
+exports.changePassword = async (portal, id, password, new_password, password2) => {
     const user = await User(connect(DB_CONNECTION, portal))
         .findById(id)
         .populate([{ path: "roles", populate: { path: "roleId" } }]);
@@ -256,8 +256,11 @@ exports.changePassword = async (portal, id, password, new_password) => {
 
     // Lưu mật khẩu mới
     const salt = await bcrypt.genSaltSync(10);
-    const hash = await bcrypt.hashSync(new_password, salt);
-    user.password = hash;
+    const hashPassword = await bcrypt.hashSync(new_password, salt);
+    const hashPassword2 = await bcrypt.hashSync(password2, salt);
+
+    user.password = hashPassword;
+    user.password2 = hashPassword2;
     await user.save();
 
     return user;
@@ -308,4 +311,13 @@ exports.answerAuthQuestions = async (portal, userId, data) => {
     await user.save();
 
     return await User(connect(DB_CONNECTION, portal)).findById(userId).select("-password -password2") 
+}
+
+exports.checkPassword2Exists = async (portal, userId) => {
+    const userToken = await User(
+        connect(DB_CONNECTION, portal)
+    ).findById(userId);
+    if (userToken.numberDevice === 0) throw ["acc_log_out"];
+    // Kiểm tra người dùng đã có mật khẩu cấp 2 hay chưa?
+    if (userToken && userToken.password2) throw ['auth_password2_found']
 }

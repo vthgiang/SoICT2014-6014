@@ -15,18 +15,43 @@ import { DataTableSetting, ErrorLabel, DatePicker, SelectBox, ExportExcel, Selec
 class KPIUnitManager extends Component {
     constructor(props) {
         super(props);
+
+        let d = new Date(),
+            month = d.getMonth() + 1,
+            year = d.getFullYear();
+        let startMonth, endMonth, startYear;
+
+        if (month > 1) {
+            startMonth = month - 1;
+            startYear = year;
+        } else {
+            startMonth = month - 1 + 12;
+            startYear = year - 1;
+        }
+        if (startMonth < 10)
+            startMonth = '0' + startMonth;
+        if (month < 10) {
+            endMonth = '0' + month;
+        } else {
+            endMonth = month;
+        }
+
         this.state = {
             showModalCopy: "",
             currentRole: localStorage.getItem("currentRole"),
             status: -1,
             organizationalUnit: [],
+            startDate: new Date([startYear, startMonth].join('-')),
+            endDate: new Date([year, endMonth].join('-')),
             infosearch: {
                 role: localStorage.getItem("currentRole"),
                 status: -1,
-                startDate: null,
-                endDate: null,
+                startDate: new Date([startYear, startMonth].join('-')),
+                endDate: new Date([year, endMonth].join('-')),
                 organizationalUnit: [],
             },
+            defaultStartDate: [startMonth, startYear].join('-'),
+            defaultEndDate: [endMonth, year].join('-'),
         };
     }
 
@@ -75,7 +100,7 @@ class KPIUnitManager extends Component {
         this.setState(state => {
             return {
                 ...state,
-                startDate: value,
+                startDate: new Date(value.slice(3, 7) + '-' + value.slice(0, 2)),
             }
         });
 
@@ -94,7 +119,7 @@ class KPIUnitManager extends Component {
         this.setState(state => {
             return {
                 ...state,
-                endDate: value,
+                endDate: new Date(value.slice(3, 7) + '-' + value.slice(0, 2)),
             }
         });
     }
@@ -165,21 +190,10 @@ class KPIUnitManager extends Component {
                 }
             }
         })
-        const { infosearch } = this.state;
+        const { infosearch, startDate, endDate } = this.state;
         const { translate } = this.props;
-        let startDate, endDate;
-        let startdate = null, enddate = null;
-        if (infosearch.startDate) {
-            startDate = infosearch.startDate.split("-");
-            startdate = new Date(startDate[1], startDate[0]);
-        }
 
-        if (infosearch.endDate) {
-            endDate = infosearch.endDate.split("-");
-            enddate = new Date(endDate[1], endDate[0]);
-        }
-
-        if (startdate && enddate && Date.parse(startdate) > Date.parse(enddate)) {
+        if (startDate && endDate && startDate.getTime() > endDate.getTime()) {
             Swal.fire({
                 title: translate('kpi.organizational_unit.management.over_view.alert_search.search'),
                 type: 'warning',
@@ -266,7 +280,7 @@ class KPIUnitManager extends Component {
 
     render() {
         const { user, managerKpiUnit, dashboardEvaluationEmployeeKpiSet, translate } = this.props;
-        const { startDate, endDate, status, errorOnDate, infosearch, organizationalUnit } = this.state;
+        const { startDate, endDate, status, errorOnDate, infosearch, organizationalUnit, defaultStartDate, defaultEndDate } = this.state;
 
         let listkpi, currentKPI, kpiApproved, datachat1, targetA, targetC, targetOther, misspoint, organizationalUnitsOfUserLoading;
         let unitList, currentUnit, userdepartments, exportData;
@@ -286,7 +300,6 @@ class KPIUnitManager extends Component {
         if (managerKpiUnit) {
             listkpi = managerKpiUnit.kpis;
             if (listkpi && listkpi.length !== 0) {
-                console.log('aaaaaaaaaaaa', managerKpiUnit)
                 kpiApproved = listkpi.filter(item => item.status === 2);
                 currentKPI = listkpi.filter(item => item.status !== 2);
                 datachat1 = kpiApproved.map(item => {
@@ -332,7 +345,6 @@ class KPIUnitManager extends Component {
             }
         }
         
-        console.log('eeeeeeeeeeee', dashboardEvaluationEmployeeKpiSet, childrenOrganizationalUnit)
         return (
             <React.Fragment>
                 <div className="box">
@@ -378,8 +390,6 @@ class KPIUnitManager extends Component {
                                         />
                                     }
                                 </div>
-
-                                {exportData && <ExportExcel id="export-unit-kpi-management-overview" exportData={exportData} style={{ marginRight: 15, marginTop: 5 }} />}
                             </div>
 
                             {/* TÌm kiếm theo tháng */}
@@ -388,7 +398,7 @@ class KPIUnitManager extends Component {
                                     <label>{translate('kpi.organizational_unit.management.over_view.start_date')}</label>
                                     <DatePicker
                                         id="start_date"
-                                        value={startDate}
+                                        value={defaultStartDate}
                                         onChange={this.handleStartDateChange}
                                         dateFormat="month-year"
                                     />
@@ -398,7 +408,7 @@ class KPIUnitManager extends Component {
                                     <label>{translate('kpi.organizational_unit.management.over_view.end_date')}</label>
                                     <DatePicker
                                         id="end_date"
-                                        value={endDate}
+                                        value={defaultEndDate}
                                         onChange={this.handleEndDateChange}
                                         dateFormat="month-year"
                                     />
@@ -409,6 +419,8 @@ class KPIUnitManager extends Component {
                                     <label></label>
                                     <button type="button" className="btn btn-success" onClick={() => this.handleSearchData()}>{translate('kpi.organizational_unit.management.over_view.search')}</button>
                                 </div>
+
+                                {exportData && <ExportExcel id="export-unit-kpi-management-overview" exportData={exportData} style={{ marginRight: 15, marginTop: 5 }} />}
                             </div>
 
                             

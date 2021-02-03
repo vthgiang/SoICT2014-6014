@@ -8,6 +8,7 @@ import { CalendarEmployee } from '../../task/task-dashboard/task-personal-dashbo
 import { withTranslate } from 'react-redux-multilingual';
 import { DatePicker } from '../../../common-components';
 import Swal from 'sweetalert2';
+import GanttCalendar from '../../task/task-dashboard/task-personal-dashboard/ganttCalendar';
 
 
 class SuperHome extends Component {
@@ -270,10 +271,14 @@ class SuperHome extends Component {
                             <div className="box-header with-border">
                                 <div className="box-title">{translate('task.task_management.tasks_calendar')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
                             </div>
-                            <CalendarEmployee
+                            {/* <CalendarEmployee
                                 startMonth={startMonth}
                                 endMonth={endMonth}
                                 home={true}
+                            /> */}
+                            <GanttCalendar
+                                tasks={tasks}
+                                unitOrganization={false}
                             />
                         </div>
                     </div>

@@ -230,6 +230,8 @@ export default {
             reset_password_success: "Thiết lập mật khẩu thành công",
             otp_invalid: "Yêu cầu thiết lập lại mật khẩu không hợp lệ",
             portal_invalid: "Portal không hợp lệ",
+            answer_auth_question_success: 'Thêm mật khẩu cấp 2 thành công',
+            answer_auth_question_faile: 'Thêm mật khẩu cấp 2 thất bại',
         },
 
         system_admin: {
@@ -4108,7 +4110,7 @@ export default {
                             change_link:
                                 "Hãy nhớ thay đổi liên kết đến mục tiêu cha để được tính KPI mới!",
                         },
-                        create: "Thiết lập KPI tháng mới từ tháng ",
+                        create: "Thiết lập KPI tháng",
                         organizational_unit: "Đơn vị",
                         month: "Tháng",
                         list_target: "Danh sách mục tiêu",
@@ -4118,6 +4120,7 @@ export default {
                     detail_modal: {
                         list_kpi_unit: "Danh sách KPI đơn vị",
                         title: "Thông tin chi tiết KPI đơn vị tháng ",
+                        title_parent: "Thông tin chi tiết KPI đơn vị cha tháng ",
                         information_kpi: "Thông tin KPI ",
                         criteria: "Tiêu chí:",
                         weight: "Trọng số:",
@@ -4173,6 +4176,11 @@ export default {
                     "Cập nhật điểm đánh giá KPI đơn vị thành công",
                 update_evaluate_kpi_unit_fail:
                     "Cập nhật điểm đánh giá KPI đơn vị lỗi",
+                copy_kpi_unit_success: "Sao chép KPI đơn vị thành công",
+                copy_kpi_unit_failure: "Sao chép KPI đơn vị thất bại",
+                organizatinal_unit_kpi_set_exist: "KPI đơn vị đã tồn tại",
+                calculate_kpi_unit_success: "Tính điểm KPI thành công",
+                calculate_kpi_unit_failure: "Tính điểm KPI thất bại"
             },
         },
 

@@ -124,6 +124,7 @@ class ActionTab extends Component {
             addLogTimeDate: this.formatDate(Date.now()),
             showBoxAddLogTimer: false,
             checkDateAddLog: false,
+            showPopupApproveAllAction: false,
         };
         this.hover = [];
         this.contentTaskComment = [];
@@ -247,24 +248,6 @@ class ActionTab extends Component {
                 showEvaluations: [...this.state.showEvaluations, actionId]
             }
         })
-    }
-
-    handleApproveAllAction = (taskId, taskActions, role, value = 10) => {
-        let evaluation = [], showEvaluations = [];
-
-        taskActions.forEach((obj, index) => {
-            evaluation = [...evaluation, {
-                actionId: obj._id,
-                role: 'accountable',
-                rating: 10,
-            }]
-            showEvaluations = [...showEvaluations, obj._id]
-        })
-
-        this.setState({
-            ...this.state,
-            showEvaluations,
-        }, () => this.props.evaluationAllAction(taskId, evaluation));
     }
 
 
@@ -1187,6 +1170,37 @@ class ActionTab extends Component {
         return true;
     }
 
+
+    togglePopupApproveAllAction = () => {
+        this.setState({
+            ...this.state,
+            showPopupApproveAllAction: !this.state.showPopupApproveAllAction,
+        })
+    }
+
+    setValueRatingApproveAll = (taskId, taskActions, value) => {
+        let evaluation = [], showEvaluations = [];
+
+        taskActions.forEach((obj, index) => {
+            evaluation = [...evaluation, {
+                actionId: obj._id,
+                role: 'accountable',
+                rating: value * 2,
+            }]
+            showEvaluations = [...showEvaluations, obj._id]
+        })
+
+        this.setState({
+            ...this.state,
+            showEvaluations,
+            showPopupApproveAllAction: !this.state.showPopupApproveAllAction,
+
+        }, () => {
+            this.hover["all-action"] = 0;
+            this.props.evaluationAllAction(taskId, evaluation)
+        });
+    }
+
     render() {
         let task, informations, statusTask, documents, actionComments, taskComments, logTimer, logs;
         let idUser = getStorage("userId");
@@ -1255,12 +1269,6 @@ class ActionTab extends Component {
                     </ul>
                     <div className="tab-content">
                         <div className={selected === "taskAction" ? "active tab-pane" : "tab-pane"} id="taskAction">
-                            {
-                                (taskActions.length !== 0 && role === "accountable") &&
-                                <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '10px' }}>
-                                    <button className="btn btn-success" onClick={() => this.handleApproveAllAction(task._id, taskActions, role)}>Đánh giá tất cả</button>
-                                </div>
-                            }
 
                             {typeof taskActions !== 'undefined' && taskActions.length !== 0 ?
                                 <ShowMoreShowLess
@@ -1579,10 +1587,6 @@ class ActionTab extends Component {
                                         <button type="button" className={`btn btn-block`} onClick={() => this.saveSort(task._id)}>Lưu</button>
                                     </div>
                                 </div>
-                                // <div className="" style={{ display: "flex", justifyContent: "center" }}>
-                                //     <button className="link-black text-sm btn btn-primary" onClick={() => this.saveSort(task._id)}>Lưu</button>
-                                //     <button className="link-black text-sm btn btn-warning" onClick={() => this.cancelSort()}>Hủy</button>
-                                // </div>
                                 :
                                 <React.Fragment>
                                     {role === "responsible" && task &&
@@ -1604,7 +1608,35 @@ class ActionTab extends Component {
                                                 }}
                                                 onSubmit={(e) => { this.submitAction(task._id, taskActions.length) }}
                                             />
-                                        </React.Fragment>}
+                                        </React.Fragment>
+                                    }
+
+                                    {
+                                        this.state.showPopupApproveAllAction ?
+                                            (role === "accountable") && taskActions.length > 1 &&
+                                            <React.Fragment>
+                                                <div className="rating-approve-all--wraper">
+                                                    <h4 style={{ fontWeight: 600, color: "#616161", marginRight: '10px' }}>Chọn đánh giá cho tất cả hoạt động của bạn </h4>
+                                                    <div className="rating-approve-all--wraper">
+                                                        <Rating
+                                                            fractions={2}
+                                                            emptySymbol="fa fa-star-o fa-2x high"
+                                                            fullSymbol="fa fa-star fa-2x high"
+                                                            initialRating={0}
+                                                            onClick={(value) => {
+                                                                this.setValueRatingApproveAll(task._id, taskActions, value);
+                                                            }}
+                                                            onHover={(value) => {
+                                                                this.setHover('all-action', value)
+                                                            }}
+                                                        />
+                                                        <div style={{ display: "inline", marginLeft: "5px" }}>{this.hover['all-action']}</div>
+                                                    </div>
+                                                </div>
+                                                <button style={{ marginTop: '7px' }} className="btn btn-block btn-default btn-sm" onClick={this.togglePopupApproveAllAction}>Hủy đánh giá hoạt động</button>
+                                            </React.Fragment>
+                                            : (role === "accountable") && taskActions.length > 1 && <button className="btn btn-block btn-success btn-sm" onClick={this.togglePopupApproveAllAction}>Đánh giá tất cả hoạt động</button>
+                                    }
                                     {(role === "responsible" || role === "accountable") && taskActions.length > 1 && <button className="btn btn-block btn-default btn-sm" onClick={this.showSort}>Sắp xếp hoạt động</button>}
                                 </React.Fragment>
                             }

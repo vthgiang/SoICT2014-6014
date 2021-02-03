@@ -3820,7 +3820,8 @@ export default {
                     },
                     detail_modal: {
                         list_kpi_unit: "List KPI unit",
-                        title: "Detailed information KPI unit on ",
+                        title: "Organizational unit KPI details on ",
+                        title_parent: "Parent organizational unit KPI details on  ",
                         information_kpi: "Information KPI ",
                         criteria: "Criteria:",
                         weight: "Weight:",
@@ -3874,6 +3875,11 @@ export default {
                     "Update KPI unit evaluation successfully",
                 update_evaluate_kpi_unit_fail:
                     "Update KPI unit evaluation fail",
+                copy_kpi_unit_success: "Copy organizational unit KPI set successfully",
+                copy_kpi_unit_failure: "Copy organizational unit KPI set unsuccessfully",
+                organizatinal_unit_kpi_set_exist: "Organizational unit KPI set already exists",
+                calculate_kpi_unit_success: "Calculate organizational unit KPI successfully",
+                calculate_kpi_unit_failure: "Calculate organizational unit KPI unsuccessfully"
             },
         },
 

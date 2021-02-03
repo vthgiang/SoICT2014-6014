@@ -187,19 +187,6 @@ exports.getAllOrganizationalUnitKpiSet = async (portal, data) => {
     let keySearch = {}, status;
 
     status = Number(data.status);
-    if (data.startDate) {
-        let startDate = data.startDate.split("-");
-        var startdate = new Date(startDate[1] + "-" + startDate[0] + "-" + "01");
-    }
-    if (data.endDate) {
-        var endDate = data.endDate.split("-");
-        if (endDate[0] === "12") {
-            endDate[1] = String(parseInt(endDate[1]) + 1);
-            endDate[0] = "1";
-        }
-        endDate[0] = String(parseInt(endDate[0]) + 1);
-        var enddate = new Date(endDate[2] + "-" + endDate[1] + "-" + endDate[0]);
-    }
 
     if (data && !data.organizationalUnit || data.organizationalUnit.length === 0) {
         let organizationalUnit;
@@ -232,22 +219,29 @@ exports.getAllOrganizationalUnitKpiSet = async (portal, data) => {
         };
     }
 
-    if (data.startDate && data.endDate) {
+
+    if (data && data.startDate && data.endDate) {
+        data.endDate = new Date(data.endDate);
+        data.endDate.setMonth(data.endDate.getMonth() + 1);
+
         keySearch = {
             ...keySearch,
-            date: { "$gte": startdate, "$lt": enddate }
+            date: { "$gte": new Date(data.startDate), "$lt": data.endDate }
         }
     }
-    else if (data.startDate) {
+    else if (data && data.startDate) {
         keySearch = {
             ...keySearch,
-            date: { "$gte": startdate }
+            date: { "$gte": new Date(data.startDate) }
         }
     }
-    else if (data.endDate) {
+    else if (data && data.endDate) {
+        data.endDate = new Date(data.endDate);
+        data.endDate.setMonth(data.endDate.getMonth() + 1);
+
         keySearch = {
             ...keySearch,
-            date: { "$lt": enddate }
+            date: { "$lt": data.endDate }
         }
     }
 
@@ -285,8 +279,6 @@ exports.editOrganizationalUnitKpiSet = async (portal, dateString, id) => {
  */
 exports.createOrganizationalUnitKpiSet = async (portal, data) => {
     const { date, creator, organizationalUnitId } = data;
-
-    // Config month tìm kiếm
     let monthSearch, nextMonthSearch;
     let currentYear, currentMonth, now;
 
