@@ -40,8 +40,9 @@ class EmployeeKpiManagement extends Component {
         } else {
             endMonth = month;
         }
-
+        const tableId = "table-employee-kpi-management";
         this.state = {
+            tableId,
             commenting: false,
             userId: '',
             status: -1,
@@ -704,14 +705,14 @@ class EmployeeKpiManagement extends Component {
     render() {
         const { user, kpimembers, dashboardEvaluationEmployeeKpiSet } = this.props;
         const { translate } = this.props;
-        const { status, kpiId, employeeKpiSet, perPage, userId, startDateDefault, endDateDefault, organizationalUnit, approver } = this.state;
+        const { status, kpiId, employeeKpiSet, perPage, userId, startDateDefault, endDateDefault, organizationalUnit, approver, tableId } = this.state;
         let userdepartments, kpimember, unitMembers, exportData, approverSelectBox = [];
         let childrenOrganizationalUnit = [], queue = [], currentOrganizationalUnit;
 
         if (kpimembers.kpimembers) {
             kpimember = kpimembers.kpimembers;
         }
-        
+
         if (user) {
             userdepartments = user.userdepartments;
             if (userdepartments && !Array.isArray(userdepartments)) {
@@ -732,7 +733,7 @@ class EmployeeKpiManagement extends Component {
                 managers = Object.values(managers);
                 if (managers && managers.length !== 0) {
                     managers = managers[0] && managers[0].members;
-                    
+
                     if (managers && managers.length !== 0) {
                         approverSelectBox = managers.map(item => { return { text: item.name, value: item.id } })
                     }
@@ -764,7 +765,7 @@ class EmployeeKpiManagement extends Component {
             }
         }
 
-        
+
         return (
             <React.Fragment>
                 <div className="box">
@@ -795,7 +796,7 @@ class EmployeeKpiManagement extends Component {
                                         >
                                         </SelectBox>
                                     }
-                                </div>      
+                                </div>
                                 <div className="form-group">
                                     <label>{translate('kpi.organizational_unit.management.over_view.status')}</label>
                                     <SelectBox
@@ -871,21 +872,21 @@ class EmployeeKpiManagement extends Component {
                                 <button type="button" className="btn btn-primary dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('menu.add_asset_title')} >Báo cáo</button>
                                 <ul className="dropdown-menu pull-right" style={{ marginTop: 0 }}>
                                     <li>{exportData && <ExportExcel id="export-employee-kpi-evaluation-management" type='link' buttonName="Báo cáo chung" exportData={exportData} style={{ marginRight: 15, marginTop: 5 }} />}</li>
-                                    <li>{kpimember && <ExportExcel id="export-total-employee-kpi-evaluation-management" type='link' buttonName="Báo cáo tổng hợp" onClick={() => this.handleExportTotalData(kpimember)}/>}</li>
+                                    <li>{kpimember && <ExportExcel id="export-total-employee-kpi-evaluation-management" type='link' buttonName="Báo cáo tổng hợp" onClick={() => this.handleExportTotalData(kpimember)} />}</li>
                                 </ul>
                             </div>
                             <div className="form-group pull-right">
                                 <button type="button" className="btn btn-success" onClick={() => this.handleSearchData()}>{translate('kpi.evaluation.employee_evaluation.search')}</button>
                             </div>
                         </ShowMoreShowLess>
-                        
-                        
 
-                        <div id="tree-table-container"  style={{ marginTop: '30px' }}>
-                            <table id="tree-table" className="table table-hover table-bordered">
+
+
+                        <div id="tree-table-container" style={{ marginTop: '30px' }}>
+                            <table id={tableId} className="table table-hover table-bordered">
                                 <thead>
                                     <tr>
-                                        <th title="STT" style={{ width: "40px" }} className="col-fixed">STT</th>
+                                        <th title="STT" style={{ width: "40px" }} className="col-fixed not-sort">STT</th>
                                         <th title="Tên nhân viên">{translate('kpi.evaluation.employee_evaluation.name')}</th>
                                         <th title={translate('kpi.employee.employee_kpi_set.create_employee_kpi_set_modal.approver')}>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set_modal.approver')}</th>
                                         <th title="Thời gian">{translate('kpi.evaluation.employee_evaluation.time')}</th>
@@ -897,7 +898,7 @@ class EmployeeKpiManagement extends Component {
                                         <th title="Phê duyệt" style={{ textAlign: "center" }}>{translate('kpi.evaluation.employee_evaluation.approve')}</th>
                                         <th title="Đánh giá">{translate('kpi.evaluation.employee_evaluation.evaluate')}
                                             <DataTableSetting
-                                                tableId="tree-table"
+                                                tableId={tableId}
                                                 tableContainerId="tree-table-container"
                                                 tableWidth="1300px"
                                                 columnArr={[
@@ -913,7 +914,6 @@ class EmployeeKpiManagement extends Component {
                                                     translate('kpi.evaluation.employee_evaluation.approve'),
                                                     translate('kpi.evaluation.employee_evaluation.evaluate')
                                                 ]}
-                                                limit={perPage}
                                                 setLimit={this.setLimit}
                                                 hideColumnOption={true}
                                             />
@@ -942,13 +942,10 @@ class EmployeeKpiManagement extends Component {
                                                         className="copy" title={translate('kpi.evaluation.employee_evaluation.evaluate_this_kpi')}><i className="fa fa-list"></i></a>
                                                 </td>
                                             </tr>
-                                        ) : <tr>
-                                            <td colSpan={11}>
-                                                <center>{translate('kpi.evaluation.employee_evaluation.data_not_found')}</center>
-                                            </td>
-                                        </tr>}
+                                        ) : null}
                                 </tbody>
                             </table>
+                            {(kpimember && kpimember.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>}
                         </div>
                     </div>
                 </div>
