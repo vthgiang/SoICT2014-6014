@@ -206,7 +206,7 @@ class EmployeeKpiManagement extends Component {
         this.setState(state => {
             return {
                 ...state,
-                status: value
+                status: value[0]
             }
         });
     }
@@ -220,12 +220,12 @@ class EmployeeKpiManagement extends Component {
                 ...state,
                 infosearch: {
                     ...state.infosearch,
-                    user: userId,
-                    status: status,
+                    user: userId && userId[0] !== '0' ? userId : [],
+                    status: status && Number(status[0]),
                     startDate: startDate !== "" ? startDate : null,
                     endDate: endDate !== "" ? endDate : null,
                     organizationalUnit: organizationalUnit,
-                    approver: approver
+                    approver: approver && approver[0] !== '0' ? approver : []
                 },
                 kpiId: null,
                 employeeKpiSet: { _id: null },
@@ -738,7 +738,7 @@ class EmployeeKpiManagement extends Component {
                     }
                 }
             }
-            approverSelectBox = [{ text: translate('kpi.evaluation.employee_evaluation.choose_employee'), value: 0 }, ...approverSelectBox];
+            approverSelectBox = [{ text: translate('manage_warehouse.bill_management.choose_approver'), value: 0 }, ...approverSelectBox];
         }
 
         if (kpimember && userdepartments) {
@@ -777,9 +777,10 @@ class EmployeeKpiManagement extends Component {
                             classContainer="qlcv"
                             showMore="Mở rộng"
                             showLess="Thu gọn"
+                            classShowMoreLess="form-group"
                         >
                             {/* Tìm kiếm theo đơn vị và trạng thái */}
-                            <div className="form-inline">
+                            <div className="form-inline hide-component">
                                 <div className="form-group">
                                     <label>{translate('task.task_management.department')}</label>
                                     {childrenOrganizationalUnit && childrenOrganizationalUnit.length !== 0
@@ -844,7 +845,7 @@ class EmployeeKpiManagement extends Component {
                             </div>
 
                             {/* Tìm kiém theo thời gian */}
-                            <div className="form-inline hide-component" style={{ marginBottom: '5px' }}>
+                            <div className="form-inline" style={{ marginBottom: '5px' }}>
                                 <div className="form-group">
                                     <label>{translate('kpi.evaluation.employee_evaluation.from')}</label>
                                     <DatePicker
