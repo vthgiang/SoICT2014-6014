@@ -1837,7 +1837,7 @@ exports.createTask = async (portal, task) => {
     }
 
     let formula;
-    if(task.formula) {
+    if (task.formula) {
         formula = task.formula;
     } else {
         if (taskTemplate) {
@@ -1853,7 +1853,7 @@ exports.createTask = async (portal, task) => {
     let taskProject = (taskTemplate && taskTemplate.taskProject) ? getValidObjectId(taskTemplate.taskProject) : getValidObjectId(task.taskProject);
 
     let taskActions = [];
-    if(task.taskActions) {
+    if (task.taskActions) {
         taskActions = task.taskActions.map(e => {
             return {
                 mandatory: e.mandatory,
@@ -1866,7 +1866,7 @@ exports.createTask = async (portal, task) => {
     }
 
     let taskInformations = [];
-    if(task.taskInformations) {
+    if (task.taskInformations) {
         taskInformations = task.taskInformations.map(e => {
             return {
                 filledByAccountableEmployeesOnly: e.filledByAccountableEmployeesOnly,
@@ -2448,22 +2448,27 @@ exports.getUserTimeSheet = async (portal, userId, month, year) => {
     let endOfMonth = new Date(year, month); // cần chỉnh lại
 
     let tsl = await Task(connect(DB_CONNECTION, portal)).aggregate([
-        { $match: { 
-            "timesheetLogs.creator": mongoose.Types.ObjectId(userId),
-            "timesheetLogs.startedAt": { $exists: true },
-            "timesheetLogs.startedAt": { $gte: beginOfMonth },
-            "timesheetLogs.stoppedAt": { $exists: true },
-            "timesheetLogs.stoppedAt": { $lte: endOfMonth }
-        } },
+        {
+            $match: {
+                "timesheetLogs.creator": mongoose.Types.ObjectId(userId),
+                "timesheetLogs.startedAt": { $exists: true },
+                "timesheetLogs.startedAt": { $gte: beginOfMonth },
+                "timesheetLogs.stoppedAt": { $exists: true },
+                "timesheetLogs.stoppedAt": { $lte: endOfMonth }
+            }
+        },
         { $unwind: "$timesheetLogs" },
-        { $replaceRoot: { newRoot: "$timesheetLogs" } },
-        { $match: { 
-            "creator": mongoose.Types.ObjectId(userId),
-            "startedAt": { $exists: true },
-            "startedAt": { $gte: beginOfMonth },
-            "stoppedAt": { $exists: true },
-            "stoppedAt": { $lte: endOfMonth }
-        } },
+        { $replaceRoot: { newRoot: { $mergeObjects: [{ _id: "$_id", name: "$name" }, "$timesheetLogs"] } } },
+
+        {
+            $match: {
+                "creator": mongoose.Types.ObjectId(userId),
+                "startedAt": { $exists: true },
+                "startedAt": { $gte: beginOfMonth },
+                "stoppedAt": { $exists: true },
+                "stoppedAt": { $lte: endOfMonth }
+            },
+        },
     ]);
 
     return tsl;
@@ -2482,21 +2487,25 @@ exports.getAllUserTimeSheet = async (portal, month, year) => {
     let endOfMonth = new Date(year, month); // cần chỉnh lại
 
     let tsl = await Task(connect(DB_CONNECTION, portal)).aggregate([
-        { $match: { 
-            "timesheetLogs.startedAt": { $exists: true },
-            "timesheetLogs.startedAt": { $gte: beginOfMonth },
-            "timesheetLogs.stoppedAt": { $exists: true },
-            "timesheetLogs.stoppedAt": { $lte: endOfMonth },
-        } },
+        {
+            $match: {
+                "timesheetLogs.startedAt": { $exists: true },
+                "timesheetLogs.startedAt": { $gte: beginOfMonth },
+                "timesheetLogs.stoppedAt": { $exists: true },
+                "timesheetLogs.stoppedAt": { $lte: endOfMonth },
+            }
+        },
         { $unwind: "$timesheetLogs" },
         { $replaceRoot: { newRoot: "$timesheetLogs" } },
-        { $match: { 
-            "startedAt": { $exists: true },
-            "startedAt": { $gte: beginOfMonth },
-            "stoppedAt": { $exists: true },
-            "stoppedAt": { $lte: endOfMonth },
-            "acceptLog": true
-        } },
+        {
+            $match: {
+                "startedAt": { $exists: true },
+                "startedAt": { $gte: beginOfMonth },
+                "stoppedAt": { $exists: true },
+                "stoppedAt": { $lte: endOfMonth },
+                "acceptLog": true
+            }
+        },
         {
             $group: {
                 _id: "$creator",
@@ -2506,12 +2515,12 @@ exports.getAllUserTimeSheet = async (portal, month, year) => {
     ]);
 
     let allTS = [];
-    for(let i=0; i<tsl.length; i++){
+    for (let i = 0; i < tsl.length; i++) {
         let user = users.find(user => {
-            if(user && tsl[i] && user._id && tsl[i]._id && user._id.toString() === tsl[i]._id.toString()) return true;
+            if (user && tsl[i] && user._id && tsl[i]._id && user._id.toString() === tsl[i]._id.toString()) return true;
             return false;
         });
-        if(user) {
+        if (user) {
             allTS.push({
                 creator: user,
                 duration: tsl[i].total
