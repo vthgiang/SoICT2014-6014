@@ -1108,10 +1108,11 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                         <label>{translate('task.task_management.detail_description')}<span className="text-red">*</span></label>
                                         <QuillEditor
                                             id={"task-edit-by-accountable"}
-                                            toolbar={false}
+                                            table={false}
+                                            embeds={false}
                                             quillValueDefault={taskDescriptionDefault}
                                             getTextData={this.handleTaskDescriptionChange}
-                                            height={80}
+                                            height={180}
                                             placeholder={"Mô tả công việc"}
                                         />
                                         <ErrorLabel content={errorTaskDescription} />

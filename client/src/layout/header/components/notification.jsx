@@ -20,6 +20,7 @@ class Notification extends Component {
         this.state = {
             notify: [],
             sound,
+            idTabPaneActive: "allNotificationDefault"
         }
     }
 
@@ -38,9 +39,6 @@ class Notification extends Component {
             }
             this.props.receiveNofitication(data);
         });
-
-        // Thêm scroll tab đầu tiên
-        this.checkTabPaneScroll("allNotificationDefault");
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -55,6 +53,7 @@ class Notification extends Component {
         }
     }
 
+
     componentDidUpdate(prevProps, prevState) {
         if (prevState.sound !== this.state.sound) {
             localStorage.setItem("sound", JSON.stringify(this.state.sound));
@@ -63,12 +62,7 @@ class Notification extends Component {
 
     checkTabPaneScroll = (idTabPane) => {
         // Bỏ scroll của tab hiện tại
-        let tabPaneScroll = window.$('.StyleScrollDiv.StyleScrollDiv-y');
-
-        if (tabPaneScroll) {
-            tabPaneScroll.removeClass("StyleScrollDiv StyleScrollDiv-y");
-            tabPaneScroll.css("maxHeight", "");
-        }
+        SlimScroll.removeVerticalScrollStyleCSS('notifi-tab-pane');
 
         // Cập nhật scroll cho tab mới mở
         this.setState(state => {
@@ -128,7 +122,7 @@ class Notification extends Component {
         return (
             <React.Fragment>
                 <li className="dropdown mega-dropdown notifications-menu">
-                    <a href="#abc" className="dropdown-toggle" data-toggle="dropdown" style={{ color: '#4C4C4C', maxHeight: '50px' }}>
+                    <a href="#abc" className="dropdown-toggle" data-toggle="dropdown" style={{ color: '#4C4C4C', maxHeight: '50px' }} onClick={() => this.checkTabPaneScroll(idTabPaneActive)}>
                         <i className="material-icons" style={{ fontSize: '22px' }}>notifications_none</i>
                         {
                             count > 0 && <span className="label label-warning">{count}</span>
@@ -151,7 +145,7 @@ class Notification extends Component {
                             </ul>
 
                             <div className="tab-content">
-                                <div className="tab-pane active" id="allNotificationDefault">
+                                <div className="tab-pane active notifi-tab-pane" id="allNotificationDefault">
                                     {
                                         notifyDefault.length > 0 ? notifyDefault.map((notification, index) => {
                                             return <div className="notify-wrapper" key={index}>
@@ -174,7 +168,7 @@ class Notification extends Component {
                                         }) : <p style={{ textAlign: 'center', padding: '10px' }}>Không có thông báo nào</p>
                                     }
                                 </div>
-                                <div className="tab-pane" id="allNotificationOfTask">
+                                <div className="tab-pane notifi-tab-pane" id="allNotificationOfTask">
                                     {
                                         notifyTaskUnRead.length > 0 ? notifyTaskUnRead.map((notification, index) => {
                                             return <div className="notify-wrapper" key={index}>
@@ -198,7 +192,7 @@ class Notification extends Component {
                                         }) : <p style={{ textAlign: 'center', padding: '10px' }}>Không có thông báo nào</p>
                                     }
                                 </div>
-                                <div className="tab-pane" id="allNotificationOfAsset">
+                                <div className="tab-pane notifi-tab-pane" id="allNotificationOfAsset">
                                     {
                                         notifyAssetUnRead.length > 0 ? notifyAssetUnRead.map((notification, index) => {
                                             return <div className="notify-wrapper" key={index}>
@@ -221,7 +215,7 @@ class Notification extends Component {
                                         }) : <p style={{ textAlign: 'center', padding: '10px' }}>Không có thông báo nào</p>
                                     }
                                 </div>
-                                <div className="tab-pane" id="allNotificationOfKPI">
+                                <div className="tab-pane notifi-tab-pane" id="allNotificationOfKPI">
                                     {
                                         notifyKPIUnRead.length > 0 ? notifyKPIUnRead.map((notification, index) => {
                                             return <div className="notify-wrapper" key={index}>

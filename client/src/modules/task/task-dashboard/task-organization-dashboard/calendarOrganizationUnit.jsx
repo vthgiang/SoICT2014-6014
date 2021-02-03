@@ -9,7 +9,7 @@ import Timeline, { TodayMarker } from "react-calendar-timeline"
 import { SelectMulti } from '../../../../common-components/index';
 import moment from 'moment'
 import 'react-calendar-timeline/lib/Timeline.css'
-import '../task-personal-dashboard/calendar.css'
+// import '../task-personal-dashboard/calendar.css'
 import { performTaskAction } from '../../task-perform/redux/actions'
 
 

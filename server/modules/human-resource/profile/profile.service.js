@@ -1453,7 +1453,7 @@ exports.importEmployeeInfor = async (portal, company, data) => {
 
     let rowError = [];
     data = data.map((x, index) => {
-        let checkEmployeeNumber = employeeInfo.some(y => y.employeeNumber === x.employeeNumber);
+        let checkEmployeeNumber = employeeInfo.some(y => y.employeeNumber.toString() === x.employeeNumber.toString());
         let checkEmailInCompany = employeeInfo.some(y => y.emailInCompany === x.emailInCompany);
         let checkEmployeeTimesheetId = employeeInfo.some(y => y.employeeTimesheetId.toString() === x.employeeTimesheetId.toString());
         if (checkEmployeeNumber) {
@@ -1514,10 +1514,9 @@ exports.checkImportData = async (portal, company, data) => {
         employeeNumber: 1,
         _id: 1
     });
-
     let rowError = [];
     data = data.map((x, index) => {
-        let employee = employeeInfo.filter(y => y.employeeNumber === x.employeeNumber);
+        let employee = employeeInfo.filter(y => y.employeeNumber.toString() === x.employeeNumber.toString());
         if (employee.length === 0) {
             x = {
                 ...x,

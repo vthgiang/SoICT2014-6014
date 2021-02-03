@@ -6,7 +6,7 @@ import { taskManagementActions } from '../../task/task-management/redux/actions'
 import { CalendarEmployee } from '../../task/task-dashboard/task-personal-dashboard/calendarEmployee';
 
 import { withTranslate } from 'react-redux-multilingual';
-import { DatePicker } from '../../../common-components';
+import { DatePicker, SlimScroll } from '../../../common-components';
 import Swal from 'sweetalert2';
 import GanttCalendar from '../../task/task-dashboard/task-personal-dashboard/ganttCalendar';
 
@@ -81,6 +81,19 @@ class SuperHome extends Component {
         });
     }
 
+    shouldComponentUpdate(nextProps, nextState) {
+        window.$('#dashboard-about-to-overdue').ready(function () {
+            SlimScroll.removeVerticalScrollStyleCSS('dashboard-about-to-overdue')
+            SlimScroll.addVerticalScrollStyleCSS("dashboard-about-to-overdue", 300, true);
+        })
+
+        window.$('#dashboard-overdue').ready(function () {
+            SlimScroll.removeVerticalScrollStyleCSS('dashboard-overdue')
+            SlimScroll.addVerticalScrollStyleCSS("dashboard-overdue", 300, true);
+        })
+
+        return true;
+    }
     generateDataPoints(noOfDps) {
         let xVal = 1, yVal = 100;
         let dps = [];
@@ -213,7 +226,7 @@ class SuperHome extends Component {
                                 <div className="box-title">{translate('task.task_management.dashboard_overdue')}</div>
                             </div>
 
-                            <div className="box-body" style={{ height: "380px", overflow: "auto" }}>
+                            <div id="dashboard-overdue" className="box-body dashboard-overdue">
                                 {
                                     (tasks && tasks.tasksbyuser) ?
                                         <ul className="todo-list">
@@ -233,6 +246,12 @@ class SuperHome extends Component {
                                         </ul> : "Đang tải dữ liệu"
                                 }
                             </div>
+                            <SlimScroll
+                                outerComponentId={"dashboard-overdue"}
+                                maxHeight={300}
+                                verticalScroll={true}
+                                activate={true}
+                            />
                         </div>
                     </div>
                     <div className="col-xs-6">
@@ -240,7 +259,7 @@ class SuperHome extends Component {
                             <div className="box-header with-border">
                                 <div className="box-title">{translate('task.task_management.dashboard_about_to_overdue')}</div>
                             </div>
-                            <div className="box-body" style={{ height: "380px", overflow: "auto" }}>
+                            <div id="dashboard-about-to-overdue" className="box-body dashboard-about-to-overdue">
                                 {
                                     (tasks && tasks.tasksbyuser) ?
                                         <ul className="todo-list">
@@ -260,6 +279,12 @@ class SuperHome extends Component {
                                         </ul> : "Đang tải dữ liệu"
                                 }
                             </div>
+                            <SlimScroll
+                                outerComponentId={"dashboard-about-to-overdue"}
+                                maxHeight={300}
+                                verticalScroll={true}
+                                activate={true}
+                            />
                         </div>
                     </div>
                 </div>

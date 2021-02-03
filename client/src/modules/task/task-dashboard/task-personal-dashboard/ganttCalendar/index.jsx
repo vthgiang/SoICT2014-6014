@@ -43,11 +43,11 @@ class GanttCalendar extends Component {
     this.forceUpdate();
   }
 
-  // xu ly data cho mot nhom 
-  getDataByGroup = (data, group, groupName, label, count) => {
-    // loc cong viec theo trang thai
+  // Phân nhóm công việc cá nhân
+  getDataGroupByRole = (data, group, groupName, label, count) => {
     let taskFilter = [];
     let status = this.state.taskStatus;
+
     for (let i in status) {
       for (let j in group) {
         if (group[j].status === status[i]) {
@@ -55,61 +55,51 @@ class GanttCalendar extends Component {
         }
       }
     }
-    // console.log("filter", taskFilter);
-    for (let i in taskFilter) {
 
-      // tinh so ngay thuc hien cong viec
+    for (let i in taskFilter) {
       let start = moment(taskFilter[i].startDate);
       let end = moment(taskFilter[i].endDate);
       let now = moment(new Date());
       let duration = end.diff(start, 'days');
-      // xu ly mau sac hien thi
       let process = 0;
+
+      // Tô màu công việc
       if (taskFilter[i].status != "inprocess") {
         process = 3;
       }
-      // khong phai cong viec dang thuc hien
       else if (now > end) {
-        process = 2; // qua han
+        process = 2; // Quá hạn
         count.notAchived++;
       }
       else {
-        // phan tram lam viec theo tien do
         let processDay = Math.floor(taskFilter[i].progress * duration / 100);
-        // lam viec thuc te
         let uptonow = now.diff(start, 'days');
+
         if (uptonow > processDay) {
-          process = 0;
+          process = 0; // Trễ hạn
           count.delay++;
-        } // tre
+        }
         else if (uptonow <= processDay) {
-          process = 1 // dung tien do
+          process = 1; // Đúng hạn
           count.intime++;
         }
       }
-
-
       data.push({
         id: `${groupName}-${taskFilter[i]._id}`,
-        // id: taskFilter[i]._id, 
         text: taskFilter[i].status == "inprocess" ? `${taskFilter[i].name} - ${taskFilter[i].progress}%` : `${taskFilter[i].name}`,
         role: i == 0 ? label : "",
         start_date: moment(taskFilter[i].startDate).format("YYYY-MM-DD"),
         duration: duration,
         progress: taskFilter[i].status === "inprocess" ? taskFilter[i].progress / 100 : 0,
-        process: process // xu ly mau sac 
+        process: process
       });
     }
-    console.log("===============COUNT===========", count)
-    return {
-      data,
-      count
-    };
+
+    return { data, count };
   }
-  // xu ly data bieu do
+  // Xử lý công việc cá nhân
   getdataTask = () => {
     const { tasks } = this.props;
-
     let data = [];
     let count = { delay: 0, intime: 0, notAchived: 0 };
 
@@ -119,37 +109,119 @@ class GanttCalendar extends Component {
     let inf = tasks && tasks.informedTasks;
 
 
-    let resData = this.getDataByGroup(data, res, 'res', 'Thực hiện', count);
+    let resData = this.getDataGroupByRole(data, res, 'res', 'Thực hiện', count);
     let data1 = resData.data;
     let count1 = resData.count;
-    console.log("count 1", count1);
-    let accData = this.getDataByGroup(data1, acc, 'acc', 'Tư vấn', count1);
+
+    let accData = this.getDataGroupByRole(data1, acc, 'acc', 'Tư vấn', count1);
     let data2 = accData.data;
     let count2 = accData.count;
-    console.log("count 2", count2);
 
-
-    let conData = this.getDataByGroup(data2, con, 'con', 'Hỗ trợ', count2);
+    let conData = this.getDataGroupByRole(data2, con, 'con', 'Hỗ trợ', count2);
     let data3 = conData.data;
     let count3 = conData.count;
-    console.log("count 3", count3);
 
-    let infData = this.getDataByGroup(data3, inf, 'inf', 'Quan sát', count3);
+    let infData = this.getDataGroupByRole(data3, inf, 'inf', 'Quan sát', count3);
     let dataAllTask = infData.data;
     let countAllTask = infData.count;
+
     return {
       dataAllTask,
       countAllTask
     };
   }
 
+  // Xử lý công việc đơn vị
+  getdataTaskUnit = () => {
+    const { tasks } = this.props;
+    const { organizationUnitTasks } = tasks;
+    const listtask = organizationUnitTasks && organizationUnitTasks.tasks;
+
+    const unitData = this.getDataGroupByEmployee(listtask);
+    const dataAllTask = unitData.data;
+    const countAllTask = unitData.count;
+
+    return {
+      dataAllTask,
+      countAllTask
+    };
+  }
+
+  // Phân nhóm công việc đơn vị
+  getDataGroupByEmployee = (group) => {
+    let data = [];
+    let count = { delay: 0, intime: 0, notAchived: 0 };
+    let taskFilter = [];
+    let status = this.state.taskStatus;
+
+    // Lọc công việc theo trạng thái
+    for (let i in status) {
+      for (let j in group) {
+        if (group[j].status === status[i]) {
+          taskFilter.push(group[j])
+        }
+      }
+    }
+
+    for (let i in taskFilter) {
+      let start = moment(taskFilter[i].startDate);
+      let end = moment(taskFilter[i].endDate);
+      let now = moment(new Date());
+      let duration = end.diff(start, 'days');
+      let process = 0;
+      let groupNameLabel = taskFilter[i].responsibleEmployees[0].name;
+
+      // Tô màu công việc
+      if (taskFilter[i].status != "inprocess") {
+        process = 3;
+      }
+      else if (now > end) {
+        process = 2; // Quá hạn
+        count.notAchived++;
+      }
+      else {
+        let processDay = Math.floor(taskFilter[i].progress * duration / 100);
+        let uptonow = now.diff(start, 'days');
+        if (uptonow > processDay) {
+          process = 0; // Trễ hạn
+          count.delay++;
+        }
+        else if (uptonow <= processDay) {
+          process = 1; // Đúng hạn
+          count.intime++;
+        }
+      }
+
+      if (taskFilter[i].responsibleEmployees.length > 1) {
+        groupNameLabel = "Công việc nhiều người thực hiện";
+      } else {
+        groupNameLabel = taskFilter[i - 1]
+          && taskFilter[i - 1].responsibleEmployees[0].name
+          === taskFilter[i].responsibleEmployees[0].name
+          ? "" : taskFilter[i].responsibleEmployees[0].name;
+      }
+
+      data.push({
+        id: `taskUnit-${taskFilter[i]._id}`,
+        text: taskFilter[i].status == "inprocess" ? `${taskFilter[i].name} - ${taskFilter[i].progress}%` : `${taskFilter[i].name}`,
+        role: groupNameLabel,
+        start_date: moment(taskFilter[i].startDate).format("YYYY-MM-DD"),
+        duration: duration,
+        progress: taskFilter[i].status === "inprocess" ? taskFilter[i].progress / 100 : 0,
+        process: process
+      });
+    }
+    return { data, count };
+  }
+
   render() {
-    const { translate } = this.props;
+    const { translate, unit } = this.props;
     const { currentZoom, taskStatus } = this.state;
     const dataTask = {};
-    const dataCalendar = this.getdataTask();
+    const dataCalendar = unit ? this.getdataTaskUnit() : this.getdataTask();
     dataTask.data = dataCalendar.dataAllTask;
     const count = dataCalendar.countAllTask;
+
     return (
       <div className="gantt qlcv" >
         <section className="form-inline" style={{ textAlign: "right", marginBottom: "10px" }}>
@@ -187,6 +259,7 @@ class GanttCalendar extends Component {
             zoom={currentZoom}
             status={taskStatus}
             count={dataCalendar.countAllTask}
+            unit={unit}
           />
         </div>
 
