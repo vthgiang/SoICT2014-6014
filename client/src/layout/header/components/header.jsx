@@ -58,18 +58,32 @@ class Header extends Component {
                     <form id="form-security" style={{ padding: '10px 20px 10px 20px' }}>
                         <div className={`form-group ${!oldPasswordError ? "" : "has-error"}`}>
                             <label>{translate('auth.security.old_password')}<span className="text-red">*</span></label>
-                            <input className="form-control" type="password" onChange={this.handleOldPassword} />
+                            <input className="form-control" type="password" onChange={this.handleOldPassword} placeholder="Nhập mật khẩu cũ" />
                             <ErrorLabel content={oldPasswordError} />
                         </div>
                         <div className={`form-group ${!newPasswordError ? "" : "has-error"}`}>
                             <label>{translate('auth.security.new_password')}<span className="text-red">*</span></label>
-                            <input className="form-control" type="password" onChange={this.handleNewPassword} />
+                            <input className="form-control" type="password" onChange={this.handleNewPassword} placeholder="Nhập mật khẩu mới" />
                             <ErrorLabel content={newPasswordError} />
                         </div>
                         <div className={`form-group ${!confirmPasswordError ? "" : "has-error"}`}>
                             <label>{translate('auth.security.confirm_password')}<span className="text-red">*</span></label>
-                            <input className="form-control" type="password" onChange={this.handleConfirmPassword} />
+                            <input className="form-control" type="password" onChange={this.handleConfirmPassword} placeholder="Nhập lại mật khẩu mới" />
                             <ErrorLabel content={confirmPasswordError} />
+                        </div>
+                        <div className={`form-group`}>
+                            <label style={{ display: 'flex', marginTop: '5px' }}>
+                                <span style={{ marginRight: '10px' }}>Mật khẩu cấp 2</span>
+                                <div style={{ display: 'flex' }}>
+                                    <span style={{ marginRight: '5px' }}>Chưa có?</span>
+                                    <span>
+                                        <Link to="/answer-auth-questions" target="_blank">
+                                            <p>{` Thêm ngay`}</p>
+                                        </Link>
+                                    </span>
+                                </div>
+                            </label>
+                            <input className="form-control" type="password" onChange={this.handleNewPassword2} placeholder="Nhập mật khẩu cáp 2 mới" />
                         </div>
                     </form>
                 </DialogModal>
@@ -108,6 +122,13 @@ class Header extends Component {
         })
     }
 
+    handleNewPassword2 = (e) => {
+        const { value } = e.target;
+        this.setState({
+            password2: value,
+        })
+    }
+
     isFormValidated = () => {
         const { oldPassword, newPassword, confirmPassword } = this.state;
         let { translate } = this.props;
@@ -121,14 +142,15 @@ class Header extends Component {
 
     saveNewPassword = () => {
         const { translate } = this.props;
-        const { oldPassword, newPassword, confirmPassword } = this.state;
+        const { oldPassword, newPassword, confirmPassword, password2 } = this.state;
         if (newPassword !== confirmPassword) {
             toast.error(translate('auth.validator.confirm_password_invalid'));
         }
         if (this.isFormValidated()) {
             return this.props.changePassword({
                 password: oldPassword,
-                new_password: newPassword
+                new_password: newPassword,
+                password2,
             });
         }
     }

@@ -230,6 +230,8 @@ export default {
             reset_password_success: "Thiết lập mật khẩu thành công",
             otp_invalid: "Yêu cầu thiết lập lại mật khẩu không hợp lệ",
             portal_invalid: "Portal không hợp lệ",
+            answer_auth_question_success: 'Thêm mật khẩu cấp 2 thành công',
+            answer_auth_question_faile: 'Thêm mật khẩu cấp 2 thất bại',
         },
 
         system_admin: {

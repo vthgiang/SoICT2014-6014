@@ -13,6 +13,7 @@ router.patch("/profile/:id/change-information", auth, authCUIP, uploadFile([{nam
 router.patch("/profile/:id/change-password", auth, authCUIP, AuthController.changePassword);
 router.get("/get-links-that-role-can-access/:id", authFunc(false), AuthController.getLinksThatRoleCanAccess);
 router.get("/download-file", auth, AuthController.downloadFile);
-router.patch("/answer-questions", authFunc(false, false), AuthController.answerAuthQuestions);
+router.patch("/profile/answer-questions", authFunc(false), AuthController.answerAuthQuestions);
+router.get("/profile/check-user-exists-password2", authFunc(false), AuthController.checkPassword2Exists);
 
 module.exports = router;
