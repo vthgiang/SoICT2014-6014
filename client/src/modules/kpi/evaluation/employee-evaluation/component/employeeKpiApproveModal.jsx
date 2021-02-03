@@ -61,9 +61,9 @@ class EmployeeKpiApproveModal extends Component {
         return true;
     }
 
-    handleEdit = async (target) => {
+    handleEdit = (target) => {
         if (target && target.status !== 1) {
-            await this.setState(state => {
+            this.setState(state => {
                 return {
                     ...state,
                     editing: true,
@@ -80,24 +80,28 @@ class EmployeeKpiApproveModal extends Component {
         }
     }
 
-    handleSaveEdit = async (target) => {
-        await this.setState(state => {
+    handleSaveEdit = (target) => {
+        let newTarget = {
+            ...target,
+            weight: parseInt(this.newWeight[target._id].value)
+        }
+        this.setState(state => {
             return {
                 ...state,
-                newTarget: {
-                    ...target,
-                    weight: parseInt(this.newWeight[target._id].value)
-                },
+                newTarget: newTarget
             }
         })
-        const { newTarget } = this.state;
+
         if (this.newWeight[target._id].value !== "") {
+            console.log("target._id, newTarget", target._id, newTarget)
             this.props.editTarget(target._id, newTarget);
-            await this.setState(state => {
+
+            this.setState(state => {
                 return {
                     ...state,
                     edit: "",
                     checkWeight: false,
+                    checkEditting: false,
                     editing: true
                 }
             })
@@ -124,8 +128,8 @@ class EmployeeKpiApproveModal extends Component {
         return msg;
     }
 
-    handleCompare = async (id) => {
-        await this.setState(state => {
+    handleCompare = (id) => {
+        this.setState(state => {
             return {
                 ...state,
                 compare: !state.compare
@@ -179,31 +183,42 @@ class EmployeeKpiApproveModal extends Component {
         }
     }
 
-    handleEditStatusTarget = async (event, id, status, listTarget) => {
+    handleEditStatusTarget = (event, id, status, listTarget) => {
         event.preventDefault();
 
-        let totalWeight;
-        if (listTarget) {
-            totalWeight = listTarget.filter(item => item.status === 1 || item._id === id).map(item => parseInt(item.weight)).reduce((sum, number) => sum + number, 0);
-        }
+        const { edit } = this.state;
 
-        if (totalWeight > 100 && listTarget) {
-            await this.setState(state => {
-                return {
-                    ...state,
-                    checkWeight: true
-                }
-            })
-        } else {
-            if (id) {
-                this.props.editStatusKpi(id, status);
-                await this.setState(state => {
+        if (edit === "") {
+            let totalWeight;
+            if (listTarget) {
+                totalWeight = listTarget.filter(item => item.status === 1 || item._id === id).map(item => parseInt(item.weight)).reduce((sum, number) => sum + number, 0);
+            }
+
+            if (totalWeight > 100 && listTarget) {
+                this.setState(state => {
                     return {
                         ...state,
-                        checkWeight: false
+                        checkWeight: true
                     }
                 })
+            } else {
+                if (id) {
+                    this.props.editStatusKpi(id, status);
+                    this.setState(state => {
+                        return {
+                            ...state,
+                            checkWeight: false
+                        }
+                    })
+                }
             }
+        } else {
+            this.setState(state => {
+                return {
+                    ...state,
+                    checkEditting: true
+                }
+            })
         }
     }
 
@@ -243,7 +258,7 @@ class EmployeeKpiApproveModal extends Component {
     render() {
         const { kpimembers } = this.props;
         const { translate } = this.props;
-        const { errorOnDate, date, compare, edit, checkWeight, perPage } = this.state;
+        const { errorOnDate, date, compare, edit, checkWeight, perPage, checkEditting } = this.state;
         let kpimember, kpimembercmp, month, totalWeight;
 
         if (kpimembers.currentKPI) {
@@ -280,6 +295,8 @@ class EmployeeKpiApproveModal extends Component {
                             <button className=" btn btn-success" onClick={() => kpimember && this.handleApproveKPI(kpimember._id, kpimember.kpis)}>{translate('kpi.evaluation.employee_evaluation.approve_all')}</button>
                         </div>
                         <br />
+
+                        {/* So sánh KPI */}
                         {compare &&
                             <div>
                                 <div className="form-inline">
@@ -327,8 +344,13 @@ class EmployeeKpiApproveModal extends Component {
                         }
                         <br></br>
                         <br></br>
+
+                        {/* Label cảnh báo */}
                         <label>{`${translate('kpi.evaluation.employee_evaluation.kpi_this_month')} ${kpimember && month[1]}/${kpimember && month[0]}`} ({totalWeight}/100)</label>
                         {checkWeight && <p className="text-danger" style={{ fontWeight: 900 }}>{translate('kpi.evaluation.employee_evaluation.unsuitable_weight')}</p>}
+                        {checkEditting && <p className="text-danger" style={{ fontWeight: 900 }}>{translate('kpi.evaluation.employee_evaluation.unsuitable_approval')}</p>}
+                        
+                        {/* Danh sách KPI */}
                         <table id="kpi-approve-table" className="table table-bordered table-striped table-hover">
                             <thead>
                                 <tr>

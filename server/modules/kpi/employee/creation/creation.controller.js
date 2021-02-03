@@ -23,7 +23,12 @@ exports.getEmployeeKpiSet = async (req, res) => {
     }
     else {
         try {
-            let employeeKpiSet = await EmployeeKpiSetService.getEmployeeKpiSet(req.portal, req.query.userId, req.query.role, req.query.month);
+            let data = {
+                ...req.query,
+                userId: req.user._id
+            }
+            let employeeKpiSet = await EmployeeKpiSetService.getEmployeeKpiSet(req.portal, data);
+         
             await Logger.info(req.user.email, ` get employee kpi set by user id `, req.portal);
             res.status(200).json({
                 success: true,
@@ -134,7 +139,8 @@ exports.editEmployeeKpiSet = async (req, res) => {
     }
     else {
         try {
-            let employeeKpiSet = await EmployeeKpiSetService.editEmployeeKpiSet(req.portal, req.body.date, req.body.approver, req.params.id);
+            let employeeKpiSet = await EmployeeKpiSetService.editEmployeeKpiSet(req.portal, req.body.approver, req.params.id);
+            
             await Logger.info(req.user.email, ` edit employee kpi set `, req.portal)
             res.status(200).json({
                 success: true,

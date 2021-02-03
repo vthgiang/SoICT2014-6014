@@ -8,7 +8,7 @@ import { PraiseCreateForm, PraiseEditForm } from './combinedContent';
 import { EmployeeViewForm } from '../../profile/employee-management/components/combinedContent';
 
 import { DisciplineActions } from '../redux/actions';
-
+import { getTableConfiguration } from '../../../../helpers/tableConfiguration';
 class CommendationManagement extends Component {
     constructor(props) {
         super(props);
@@ -27,14 +27,19 @@ class CommendationManagement extends Component {
             }
         }
 
+        const tableId = "table-commendation-management";
+        const defaultConfig = { limit: 5 }
+        const limit = getTableConfiguration(tableId, defaultConfig).limit;
+
         this.state = {
+            tableId,
             type: null,
             decisionNumber: "",
             employeeNumber: "",
             employeeName: "",
             organizationalUnits: organizationalUnits,
             page: 0,
-            limit: 5,
+            limit: limit,
         }
     }
 
@@ -200,7 +205,7 @@ class CommendationManagement extends Component {
 
         const { pageActive } = this.props;
 
-        const { limit, page, organizationalUnits, currentRow, currentRowView } = this.state
+        const { limit, page, organizationalUnits, currentRow, currentRowView, tableId } = this.state
 
         let { list } = department;
         let listCommendations = [], exportData = [];
@@ -265,7 +270,7 @@ class CommendationManagement extends Component {
                         </div>
                     </div>
 
-                    <table id="praise-table" className="table table-striped table-bordered table-hover" >
+                    <table id={tableId} className="table table-striped table-bordered table-hover" >
                         <thead>
                             <tr>
                                 <th >{translate('human_resource.staff_number')}</th>
@@ -277,7 +282,7 @@ class CommendationManagement extends Component {
 
                                 <th style={{ width: '120px', textAlign: 'center' }}>{translate('general.action')}
                                     <DataTableSetting
-                                        tableId="praise-table"
+                                        tableId={tableId}
                                         columnArr={[
                                             translate('human_resource.staff_number'),
                                             translate('table.employee_name'),
@@ -286,9 +291,7 @@ class CommendationManagement extends Component {
                                             translate('human_resource.commendation_discipline.commendation.table.decision_unit'),
                                             translate('human_resource.commendation_discipline.commendation.table.reward_forms')
                                         ]}
-                                        limit={this.state.limit}
                                         setLimit={this.setLimit}
-                                        hideColumnOption={true}
                                     />
                                 </th>
                             </tr>

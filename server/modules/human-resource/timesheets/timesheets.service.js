@@ -77,7 +77,7 @@ exports.searchTimesheets = async (portal, params, company) => {
     let totalList = await Timesheet(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
     let listTimesheets = await Timesheet(connect(DB_CONNECTION, portal)).find(keySearch).populate({
             path: 'employee',
-            select: 'employeeNumber fullName'
+            select: 'employeeNumber fullName emailInCompany'
         })
         .sort({
             'createAt': 'desc'
@@ -530,7 +530,7 @@ exports.importTimesheets = async (portal, data, company) => {
                 let timekeepingByHours = shift1s.map((x, index) => x + shift2s[index] + shift3s[index]);
                 let totalHours = 0;
                     if(y.totalHours){
-                        totalHours
+                        totalHours = y.totalHours
                     } else {
                         timekeepingByHours.forEach(x => {
                             totalHours = totalHours + x;

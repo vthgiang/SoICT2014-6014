@@ -225,18 +225,12 @@ class ListEducation extends Component {
                                         <td>{x.name}</td>
                                         <td>{(typeof x.applyForOrganizationalUnits === 'undefined' || x.applyForOrganizationalUnits.length === 0) ? "" :
                                             x.applyForOrganizationalUnits.map((y, indexs) => {
-                                                if (indexs === 0) {
-                                                    return y.name
-                                                }
-                                                return ", " + y.name
+                                                return (<p style={{ margin: 0 }} key={indexs}> - {y.name} </p>)
                                             })}
                                         </td>
                                         <td>{(typeof x.applyForPositions === 'undefined' || x.applyForPositions.length === 0) ? "" :
                                             x.applyForPositions.map((y, indexs) => {
-                                                if (indexs === 0) {
-                                                    return y.name
-                                                }
-                                                return ", " + y.name
+                                                return (<p style={{ margin: 0 }} key={indexs}> - {y.name} </p>)
                                             })}
                                         </td>
                                         <td>{x.totalList}</td>

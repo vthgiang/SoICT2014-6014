@@ -9,19 +9,25 @@ import { EmployeeViewForm } from '../../profile/employee-management/components/c
 
 import { SalaryActions } from '../redux/actions';
 import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
-
+import { getTableConfiguration } from '../../../../helpers/tableConfiguration';
 class SalaryManagement extends Component {
     constructor(props) {
         super(props);
         let partMonth = this.formatDate(Date.now(), true).split('-');
         let month = [partMonth[1], partMonth[0]].join('-');
+
+        const tableId = "table-salary-management";
+        const defaultConfig = { limit: 5 }
+        const limit = getTableConfiguration(tableId, defaultConfig).limit;
+
         this.state = {
+            tableId,
             month: month,
             employeeName: "",
             employeeNumber: "",
             organizationalUnits: null,
             page: 0,
-            limit: 5,
+            limit: limit,
         }
     }
 
@@ -259,7 +265,7 @@ class SalaryManagement extends Component {
     render() {
         const { translate, salary, department } = this.props;
 
-        const { limit, page, importSalary, currentRow, currentRowView } = this.state;
+        const { limit, page, importSalary, currentRow, currentRowView, tableId } = this.state;
 
         let formater = new Intl.NumberFormat();
         let { list } = department;
@@ -335,7 +341,7 @@ class SalaryManagement extends Component {
                         </div>
                     </div>
 
-                    <table id="salary-table" className="table table-striped table-bordered table-hover">
+                    <table id={tableId} className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
                                 <th>{translate('human_resource.staff_number')}</th>
@@ -345,7 +351,7 @@ class SalaryManagement extends Component {
                                 <th>{translate('human_resource.unit')}</th>
                                 <th style={{ width: '120px', textAlign: 'center' }}>{translate('human_resource.salary.table.action')}
                                     <DataTableSetting
-                                        tableId="salary-table"
+                                        tableId={tableId}
                                         columnArr={[
                                             translate('human_resource.staff_number'),
                                             translate('human_resource.staff_name'),
@@ -353,9 +359,7 @@ class SalaryManagement extends Component {
                                             translate('human_resource.salary.table.total_salary'),
                                             translate('human_resource.unit'),
                                         ]}
-                                        limit={limit}
                                         setLimit={this.setLimit}
-                                        hideColumnOption={true}
                                     />
                                 </th>
                             </tr>

@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
-import { UserGuideSystem, UserGuideKpi, UserGuideTask, UserGuideDocument, UserGuideAsset, UserGuideHr } from './config.js'
+import Swal from 'sweetalert2';
+import { UserGuideSystem, UserGuideKpi, UserGuideTask, UserGuideDocument, UserGuideAsset, UserGuideHr } from './config.js';
+import DetailGuide from './detailGuide';
 const UserGuide = (props) => {
 
 
@@ -21,6 +23,8 @@ const UserGuide = (props) => {
     const [humanResourceForManager, sethumanResourceForManager] = useState(false);
 
     const [managerSystem, setManagerSystem] = useState(false);
+
+    const [currentLink, setCurrentLink] = useState("");
 
 
 
@@ -64,8 +68,57 @@ const UserGuide = (props) => {
         setManagerSystem(!managerSystem);
     }
 
+    const showFilePreview = (data) => {
+        console.log('aaaaaaaaaa', data);
+        const { translate } = props;
+        const link = process.env.REACT_APP_SERVER + data.url;
+        Swal.fire({
+            html: ` 
+            <h3>${data.pageName}</h3>
+               <iframe
+                        width= "100%" height= "600"
+                        src= ${link}
+                    />`,
+            //  icon: 'warning',
+            width: "100%",
+            //showCancelButton: true,
+            // confirmButtonColor: '#3085d6',
+            // cancelButtonColor: '#d33',
+            // cancelButtonText: translate('general.no'),
+            // confirmButtonText: translate('general.yes'),
+        })
+    }
+
+    // const deleteDocument = (id, info) => {
+    //     const { translate } = this.props;
+    //     Swal.fire({
+    //         html: `    <iframe
+    //                     width="100%" height="700"
+    //                     src= ${link}
+    //                 />`,
+    //         icon: 'warning',
+    //         showCancelButton: true,
+    //         confirmButtonColor: '#3085d6',
+    //         cancelButtonColor: '#d33',
+    //         cancelButtonText: translate('general.no'),
+    //         confirmButtonText: translate('general.yes'),
+    //     }).then((result) => {
+    //         if (result.value) {
+    //             this.props.deleteDocument(id);
+    //         }
+    //     })
+    // }
+
+    //  console.log('pppppppp', currentL)
     return (
         <React.Fragment>
+            {
+                currentLink &&
+                <DetailGuide
+                    link={currentLink}
+                />
+
+            }
             <div className="box">
                 <div className="box-body qlcv">
                     <div className="row">
@@ -80,7 +133,7 @@ const UserGuide = (props) => {
                                 <div className="box-body">
                                     <p data-toggle="collapse" data-target="#show-asset-guide-task-for-manager" aria-expanded="false" style={{ display: "flex", alignItems: "center", fontWeight: "bold", cursor: "pointer" }} onClick={() => showUserGuideTaskForManager()}>
                                         <span className="material-icons" style={{ fontWeight: "bold", marginRight: '10px' }}>
-                                            {taskForManager ? `keyboard_arrow_down` : `keyboard_arrow_up`}
+                                            {taskForManager ? `keyboard_arrow_up` : `keyboard_arrow_down`}
 
                                         </span>{`Manager (${UserGuideTask.manager.length})`}</p>
                                     <div className="collapse" data-toggle="collapse " id="show-asset-guide-task-for-manager">
@@ -92,7 +145,8 @@ const UserGuide = (props) => {
                                                             <span className="material-icons" style={{ marginRight: '10px' }}>
                                                                 link
                                                             </span>
-                                                            <a href={`${process.env.REACT_APP_WEBSITE + obj.detailPage}?name=task&type=manager&id=${obj.id}&fileName=${obj.fileName}`} title="Xem chi tiet" target="_blank">{obj.pageName}</a>
+                                                            {/* <a href={`${process.env.REACT_APP_WEBSITE + obj.detailPage}?name=task&type=manager&id=${obj.id}&fileName=${obj.fileName}`} title="Xem chi tiet" target="_blank">{obj.pageName}</a> */}
+                                                            <a href="#show-detail" onClick={() => showFilePreview(obj)}>{obj.pageName}</a>
                                                         </div>
                                                     </li>
                                                 ))
@@ -103,7 +157,7 @@ const UserGuide = (props) => {
 
                                     <p data-toggle="collapse" data-target="#show-asset-guide-task-for-user" aria-expanded="false" style={{ display: "flex", alignItems: "center", fontWeight: "bold", cursor: "pointer" }} onClick={() => showUserGuideTaskForUser()}>
                                         <span className="material-icons" style={{ fontWeight: "bold", marginRight: '10px' }}>
-                                            {taskForUser ? `keyboard_arrow_down` : `keyboard_arrow_up`}
+                                            {taskForUser ? `keyboard_arrow_up` : `keyboard_arrow_down`}
 
                                         </span>{`User (${UserGuideTask.user.length})`}</p>
                                     <div className="collapse" data-toggle="collapse " id="show-asset-guide-task-for-user">
@@ -115,7 +169,8 @@ const UserGuide = (props) => {
                                                             <span className="material-icons" style={{ marginRight: '10px' }}>
                                                                 link
                                                     </span>
-                                                            <a href={`${process.env.REACT_APP_WEBSITE + obj.detailPage}?name=task&type=user&id=${obj.id}&fileName=${obj.fileName}`} title="Xem chi tiet" target="_blank">{obj.pageName}</a>
+                                                            {/* <a href={`${process.env.REACT_APP_WEBSITE + obj.detailPage}?name=task&type=user&id=${obj.id}&fileName=${obj.fileName}`} title="Xem chi tiet" target="_blank">{obj.pageName}</a> */}
+                                                            <a href="#show-detail" title="Xem chi tiet" onClick={() => showFilePreview(obj)}>{obj.pageName}</a>
                                                         </div>
                                                     </li>
                                                 ))
@@ -138,7 +193,7 @@ const UserGuide = (props) => {
                                 <div className="box-body">
                                     <p data-toggle="collapse" data-target="#show-asset-guide-kpi-for-manager" aria-expanded="false" style={{ display: "flex", alignItems: "center", fontWeight: "bold", cursor: "pointer" }} onClick={() => showUserGuideKpiForManager()}>
                                         <span className="material-icons" style={{ fontWeight: "bold", marginRight: '10px' }}>
-                                            {kpiForManager ? `keyboard_arrow_down` : `keyboard_arrow_up`}
+                                            {kpiForManager ? `keyboard_arrow_up` : `keyboard_arrow_down`}
 
                                         </span>{`Manager (${UserGuideKpi.manager.length})`}</p>
                                     <div className="collapse" data-toggle="collapse " id="show-asset-guide-kpi-for-manager">
@@ -150,7 +205,8 @@ const UserGuide = (props) => {
                                                             <span className="material-icons" style={{ marginRight: '10px' }}>
                                                                 link
                                                             </span>
-                                                            <a href={`${process.env.REACT_APP_WEBSITE + obj.detailPage}?name=KPI&type=manager&id=${obj.id}&fileName=${obj.fileName}`} title="Xem chi tiet" target="_blank">{obj.pageName}</a>
+                                                            {/* <a href={`${process.env.REACT_APP_WEBSITE + obj.detailPage}?name=KPI&type=manager&id=${obj.id}&fileName=${obj.fileName}`} title="Xem chi tiet" target="_blank">{obj.pageName}</a> */}
+                                                            <a href="#show-detail" title="Xem chi tiet" onClick={() => showFilePreview(obj)}>{obj.pageName}</a>
                                                         </div>
                                                     </li>
                                                 ))
@@ -161,7 +217,7 @@ const UserGuide = (props) => {
 
                                     <p data-toggle="collapse" data-target="#show-asset-guide-kpi-for-user" aria-expanded="false" style={{ display: "flex", alignItems: "center", fontWeight: "bold", cursor: "pointer" }} onClick={() => showUserGuideKpiForUser()}>
                                         <span className="material-icons" style={{ fontWeight: "bold", marginRight: '10px' }}>
-                                            {kpiForUser ? `keyboard_arrow_down` : `keyboard_arrow_up`}
+                                            {kpiForUser ? `keyboard_arrow_up` : `keyboard_arrow_down`}
 
                                         </span>{`User (${UserGuideKpi.user.length})`}</p>
                                     <div className="collapse" data-toggle="collapse " id="show-asset-guide-kpi-for-user">
@@ -173,7 +229,8 @@ const UserGuide = (props) => {
                                                             <span className="material-icons" style={{ marginRight: '10px' }}>
                                                                 link
                                                     </span>
-                                                            <a href={`${process.env.REACT_APP_WEBSITE + obj.detailPage}?name=KPI&type=user&id=${obj.id}&fileName=${obj.fileName}`} title="Xem chi tiet" target="_blank">{obj.pageName}</a>
+                                                            {/* <a href={`${process.env.REACT_APP_WEBSITE + obj.detailPage}?name=KPI&type=user&id=${obj.id}&fileName=${obj.fileName}`} title="Xem chi tiet" target="_blank">{obj.pageName}</a> */}
+                                                            <a href="#show-detail" title="Xem chi tiet" onClick={() => showFilePreview(obj)}>{obj.pageName}</a>
                                                         </div>
                                                     </li>
                                                 })
@@ -198,7 +255,7 @@ const UserGuide = (props) => {
                                     {/* Quanr lys */}
                                     <p data-toggle="collapse" data-target="#show-asset-guide-document-for-manager" aria-expanded="false" style={{ display: "flex", alignItems: "center", fontWeight: "bold", cursor: "pointer" }} onClick={() => showUserGuideDocumentForManager()}>
                                         <span className="material-icons" style={{ fontWeight: "bold", marginRight: '10px' }}>
-                                            {documentForManager ? `keyboard_arrow_down` : `keyboard_arrow_up`}
+                                            {documentForManager ? `keyboard_arrow_up` : `keyboard_arrow_down`}
 
                                         </span>{`Manager (${UserGuideDocument.manager.length})`}</p>
                                     <div className="collapse" data-toggle="collapse " id="show-asset-guide-document-for-manager">
@@ -210,7 +267,8 @@ const UserGuide = (props) => {
                                                             <span className="material-icons" style={{ marginRight: '10px' }}>
                                                                 link
                                                             </span>
-                                                            <a href={`${process.env.REACT_APP_WEBSITE + obj.detailPage}?name=document&type=manager&id=${obj.id}&fileName=${obj.fileName}`} title="Xem chi tiet" target="_blank">{obj.pageName}</a>
+                                                            {/* <a href={`${process.env.REACT_APP_WEBSITE + obj.detailPage}?name=document&type=manager&id=${obj.id}&fileName=${obj.fileName}`} title="Xem chi tiet" target="_blank">{obj.pageName}</a> */}
+                                                            <a href="#show-detail" title="Xem chi tiet" onClick={() => showFilePreview(obj)}>{obj.pageName}</a>
                                                         </div>
                                                     </li>
                                                 ))
@@ -221,7 +279,7 @@ const UserGuide = (props) => {
                                     {/* Nguoiwf dung */}
                                     <p data-toggle="collapse" data-target="#show-asset-guide-document-for-user" aria-expanded="false" style={{ display: "flex", alignItems: "center", fontWeight: "bold", cursor: "pointer" }} onClick={() => showUserGuideDocumentForUser()}>
                                         <span className="material-icons" style={{ fontWeight: "bold", marginRight: '10px' }}>
-                                            {documentForUser ? `keyboard_arrow_down` : `keyboard_arrow_up`}
+                                            {documentForUser ? `keyboard_arrow_up` : `keyboard_arrow_down`}
 
                                         </span>{`User (${UserGuideDocument.user.length})`}</p>
                                     <div className="collapse" data-toggle="collapse " id="show-asset-guide-document-for-user">
@@ -233,7 +291,8 @@ const UserGuide = (props) => {
                                                             <span className="material-icons" style={{ marginRight: '10px' }}>
                                                                 link
                                                             </span>
-                                                            <a href={`${process.env.REACT_APP_WEBSITE + obj.detailPage}?name=document&type=user&id=${obj.id}&fileName=${obj.fileName}`} title="Xem chi tiet" target="_blank">{obj.pageName}</a>
+                                                            {/* <a href={`${process.env.REACT_APP_WEBSITE + obj.detailPage}?name=document&type=user&id=${obj.id}&fileName=${obj.fileName}`} title="Xem chi tiet" target="_blank">{obj.pageName}</a> */}
+                                                            <a href="#show-detail" title="Xem chi tiet" onClick={() => showFilePreview(obj)}>{obj.pageName}</a>
                                                         </div>
                                                     </li>
                                                 ))
@@ -255,7 +314,7 @@ const UserGuide = (props) => {
                                 <div className="box-body">
                                     <p data-toggle="collapse" data-target="#show-asset-guide-asset-for-manager" aria-expanded="false" style={{ display: "flex", alignItems: "center", fontWeight: "bold", cursor: "pointer" }} onClick={() => showUserGuideAssetForManager()}>
                                         <span className="material-icons" style={{ fontWeight: "bold", marginRight: '10px' }}>
-                                            {assetForManager ? `keyboard_arrow_down` : `keyboard_arrow_up`}
+                                            {assetForManager ? `keyboard_arrow_up` : `keyboard_arrow_down`}
 
                                         </span>{`Manager (${UserGuideAsset.manager.length})`}</p>
                                     <div className="collapse" data-toggle="collapse " id="show-asset-guide-asset-for-manager">
@@ -267,7 +326,8 @@ const UserGuide = (props) => {
                                                             <span className="material-icons" style={{ marginRight: '10px' }}>
                                                                 link
                                                     </span>
-                                                            <a href={`${process.env.REACT_APP_WEBSITE + obj.detailPage}?name=asset&type=manager&id=${obj.id}&fileName=${obj.fileName}`} title="Xem chi tiet" target="_blank">{obj.pageName}</a>
+                                                            {/* <a href={`${process.env.REACT_APP_WEBSITE + obj.detailPage}?name=asset&type=manager&id=${obj.id}&fileName=${obj.fileName}`} title="Xem chi tiet" target="_blank">{obj.pageName}</a> */}
+                                                            <a href="#show-detail" title="Xem chi tiet" onClick={() => showFilePreview(obj)}>{obj.pageName}</a>
                                                         </div>
                                                     </li>
                                                 ))
@@ -277,7 +337,7 @@ const UserGuide = (props) => {
 
                                     <p data-toggle="collapse" data-target="#show-asset-guide-asset-for-user" aria-expanded="false" style={{ display: "flex", alignItems: "center", fontWeight: "bold", cursor: "pointer" }} onClick={() => showUserGuideAssetForUser()}>
                                         <span className="material-icons" style={{ fontWeight: "bold", marginRight: '10px' }}>
-                                            {assetForUser ? `keyboard_arrow_down` : `keyboard_arrow_up`}
+                                            {assetForUser ? `keyboard_arrow_up` : `keyboard_arrow_down`}
 
                                         </span>{`User (${UserGuideAsset.user.length})`}</p>
                                     <div className="collapse" data-toggle="collapse " id="show-asset-guide-asset-for-user">
@@ -289,7 +349,8 @@ const UserGuide = (props) => {
                                                             <span className="material-icons" style={{ marginRight: '10px' }}>
                                                                 link
                                                             </span>
-                                                            <a href={`${process.env.REACT_APP_WEBSITE + obj.detailPage}?name=asset&type=user&id=${obj.id}&fileName=${obj.fileName}`} title="Xem chi tiet" target="_blank">{obj.pageName}</a>
+                                                            {/* <a href={`${process.env.REACT_APP_WEBSITE + obj.detailPage}?name=asset&type=user&id=${obj.id}&fileName=${obj.fileName}`} title="Xem chi tiet" target="_blank">{obj.pageName}</a> */}
+                                                            <a href="#show-detail" title="Xem chi tiet" onClick={() => showFilePreview(obj)}>{obj.pageName}</a>
                                                         </div>
                                                     </li>
                                                 ))
@@ -313,7 +374,7 @@ const UserGuide = (props) => {
                                 <div className="box-body">
                                     <p data-toggle="collapse" data-target="#show-asset-guide-hr-for-manager" aria-expanded="false" style={{ display: "flex", alignItems: "center", fontWeight: "bold", cursor: "pointer" }} onClick={() => showUserGuideHumanresourceForManager()}>
                                         <span className="material-icons" style={{ fontWeight: "bold", marginRight: '10px' }}>
-                                            {humanResourceForManager ? `keyboard_arrow_down` : `keyboard_arrow_up`}
+                                            {humanResourceForManager ? `keyboard_arrow_up` : `keyboard_arrow_down`}
 
                                         </span>{`Manager (${UserGuideHr.manager.length})`}</p>
                                     <div className="collapse" data-toggle="collapse " id="show-asset-guide-hr-for-manager">
@@ -325,7 +386,8 @@ const UserGuide = (props) => {
                                                             <span className="material-icons" style={{ marginRight: '10px' }}>
                                                                 link
                                                             </span>
-                                                            <a href={`${process.env.REACT_APP_WEBSITE + obj.detailPage}?name=hr&type=manager&id=${obj.id}&fileName=${obj.fileName}`} title="Xem chi tiet" target="_blank">{obj.pageName}</a>
+                                                            {/* <a href={`${process.env.REACT_APP_WEBSITE + obj.detailPage}?name=hr&type=manager&id=${obj.id}&fileName=${obj.fileName}`} title="Xem chi tiet" target="_blank">{obj.pageName}</a> */}
+                                                            <a href="#show-detail" title="Xem chi tiet" onClick={() => showFilePreview(obj)}>{obj.pageName}</a>
                                                         </div>
                                                     </li>
                                                 ))
@@ -335,7 +397,7 @@ const UserGuide = (props) => {
 
                                     <p data-toggle="collapse" data-target="#show-asset-guide-hr-for-user" aria-expanded="false" style={{ display: "flex", alignItems: "center", fontWeight: "bold", cursor: "pointer" }} onClick={() => showUserGuideHumanresourceForUser()}>
                                         <span className="material-icons" style={{ fontWeight: "bold", marginRight: '10px' }}>
-                                            {humanResourceForUser ? `keyboard_arrow_down` : `keyboard_arrow_up`}
+                                            {humanResourceForUser ? `keyboard_arrow_up` : `keyboard_arrow_down`}
 
                                         </span>User</p>
                                     <div className="collapse" data-toggle="collapse " id="show-asset-guide-hr-for-user">
@@ -365,7 +427,7 @@ const UserGuide = (props) => {
                                 <div className="box-body">
                                     <p data-toggle="collapse" data-target="#show-asset-guide-system-for-user" aria-expanded="false" style={{ display: "flex", alignItems: "center", fontWeight: "bold", cursor: "pointer" }} onClick={() => showUserGuideSystem()}>
                                         <span className="material-icons" style={{ fontWeight: "bold", marginRight: '10px' }}>
-                                            {managerSystem ? `keyboard_arrow_down` : `keyboard_arrow_up`}
+                                            {managerSystem ? `keyboard_arrow_up` : `keyboard_arrow_down`}
 
                                         </span>{`Super admin (${UserGuideSystem.length})`} </p>
                                     <div className="collapse" data-toggle="collapse " id="show-asset-guide-system-for-user">
@@ -377,7 +439,8 @@ const UserGuide = (props) => {
                                                             <span className="material-icons" style={{ marginRight: '10px' }}>
                                                                 link
                                                         </span>
-                                                            <a href={`${process.env.REACT_APP_WEBSITE + obj.detailPage}?name=System&id=${obj.id}&fileName=${obj.fileName}`} title="Xem chi tiet" target="_blank">{obj.pageName}</a>
+                                                            {/* <a href={`${process.env.REACT_APP_WEBSITE + obj.detailPage}?name=System&id=${obj.id}&fileName=${obj.fileName}`} title="Xem chi tiet" target="_blank">{obj.pageName}</a> */}
+                                                            <a href="#show-detail" title="Xem chi tiet" onClick={() => showFilePreview(obj)}>{obj.pageName}</a>
                                                         </div>
                                                     </li>
                                                 ))

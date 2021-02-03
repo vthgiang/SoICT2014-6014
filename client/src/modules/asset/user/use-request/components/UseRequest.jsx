@@ -9,15 +9,21 @@ import { UseRequestEditForm } from './UseRequestEditForm';
 import { AssetManagerActions } from "../../../admin/asset-information/redux/actions";
 import { UserActions } from "../../../../super-admin/user/redux/actions";
 import { RecommendDistributeActions } from '../redux/actions';
+import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
 
 class UseRequest extends Component {
     constructor(props) {
         super(props);
+        const tableId = "table-use-request";
+        const defaultConfig = { limit: 10 }
+        const limit = getTableConfiguration(tableId, defaultConfig).limit;
+
         this.state = {
+            tableId,
             receiptsCode: "",
             reqUseStatus: null,
             page: 0,
-            limit: 10,
+            limit: limit,
         }
     }
     componentDidMount() {
@@ -172,7 +178,7 @@ class UseRequest extends Component {
 
     render() {
         const { translate, recommendDistribute, auth } = this.props;
-        const { page, limit, currentRowEdit } = this.state;
+        const { page, limit, currentRowEdit, tableId } = this.state;
 
         var listRecommendDistributes = "";
 
@@ -233,7 +239,7 @@ class UseRequest extends Component {
                     </div>
 
                     {/* Bảng thông tin đăng ký sử dụng tài sản */}
-                    <table id="recommenddistribute-table" className="table table-striped table-bordered table-hover">
+                    <table id={tableId} className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
                                 <th style={{ width: "10%" }}>{translate('asset.general_information.form_code')}</th>
@@ -247,7 +253,7 @@ class UseRequest extends Component {
                                 <th style={{ width: "11%" }}>{translate('asset.general_information.status')}</th>
                                 <th style={{ width: '120px', textAlign: 'center' }}>{translate('table.action')}
                                     <DataTableSetting
-                                        tableId="recommenddistribute-table"
+                                        tableId={tableId}
                                         columnArr={[
                                             translate('asset.general_information.form_code'),
                                             translate('asset.general_information.create_date'),
@@ -259,9 +265,7 @@ class UseRequest extends Component {
                                             translate('asset.usage.accountable'),
                                             translate('asset.general_information.status'),
                                         ]}
-                                        limit={limit}
                                         setLimit={this.setLimit}
-                                        hideColumnOption={true}
                                     />
                                 </th>
                             </tr>

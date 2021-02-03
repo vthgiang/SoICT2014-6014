@@ -16,6 +16,7 @@ export const CompanyServices = {
     editImportConfiguration,
     uploadOrganizationalUnitImage,
     getCompanyInformation,
+    requestService
 };
 
 /**
@@ -154,6 +155,14 @@ function getCompanyInformation(data) {
     return sendRequest({
         url: `${ process.env.REACT_APP_SERVER }/system-admin/company/organizationalUnitImage`,
         method: 'GET',
+        data: data,
+    }, false, true, 'super_admin.organization_unit');
+}
+
+function requestService(data) {
+    return sendRequest({
+        url: `${ process.env.REACT_APP_SERVER }/system-admin/company/request-service`,
+        method: 'POST',
         data: data,
     }, false, true, 'super_admin.organization_unit');
 }

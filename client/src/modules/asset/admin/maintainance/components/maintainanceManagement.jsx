@@ -9,18 +9,23 @@ import { MaintainanceEditForm } from './maintainanceEditForm';
 
 import { MaintainanceActions } from '../redux/actions';
 import { AssetEditForm } from '../../asset-information/components/assetEditForm';
-
+import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
 class MaintainanceManagement extends Component {
     constructor(props) {
         super(props);
+        const tableId = "table-maintainance-manager";
+        const defaultConfig = { limit: 5 }
+        const limit = getTableConfiguration(tableId, defaultConfig).limit;
+
         this.state = {
+            tableId,
             code: "",
             maintainanceCode: "",
             maintainCreateDate: "",
             type: '',
             status: '',
             page: 1,
-            limit: 5,
+            limit: limit,
             managedBy: this.props.managedBy ? this.props.managedBy : ''
         }
     }
@@ -283,7 +288,7 @@ class MaintainanceManagement extends Component {
 
     render() {
         const { translate, mintainanceManager } = this.props;
-        const { page, limit, currentRow, currentRowEditAsset, managedBy } = this.state;
+        const { page, limit, currentRow, currentRowEditAsset, managedBy, tableId } = this.state;
 
         var lists = "", exportData;
         var formater = new Intl.NumberFormat();
@@ -369,7 +374,7 @@ class MaintainanceManagement extends Component {
                     </div>
 
                     {/* Bảng thông tin bảo trì tài sản */}
-                    <table id="maintainance-table" className="table table-striped table-bordered table-hover">
+                    <table id={tableId} className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
                                 <th style={{ width: "8%" }}>{translate('asset.general_information.asset_code')}</th>
@@ -384,7 +389,7 @@ class MaintainanceManagement extends Component {
                                 <th style={{ width: "10%" }}>{translate('asset.general_information.status')}</th>
                                 <th style={{ width: '100px', textAlign: 'center' }}>{translate('table.action')}
                                     <DataTableSetting
-                                        tableId="maintainance-table"
+                                        tableId={tableId}
                                         columnArr={[
                                             translate('asset.general_information.asset_code'),
                                             translate('asset.general_information.form_code'),
@@ -397,9 +402,7 @@ class MaintainanceManagement extends Component {
                                             translate('asset.general_information.expense'),
                                             translate('asset.general_information.status')
                                         ]}
-                                        limit={limit}
                                         setLimit={this.setLimit}
-                                        hideColumnOption={true}
                                     />
                                 </th>
                             </tr>

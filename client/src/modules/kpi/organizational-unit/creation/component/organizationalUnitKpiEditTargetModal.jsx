@@ -25,7 +25,7 @@ class OrganizationalUnitKpiEditTargetModal extends Component {
         };
     }
 
-    static getDerivedStateFromProps(nextProps, prevState){
+    static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.id !== prevState._id && nextProps.organizationalUnitKpi) {
             return {
                 ...prevState,
@@ -43,14 +43,6 @@ class OrganizationalUnitKpiEditTargetModal extends Component {
         } else {
             return null;
         }
-    }
-
-    shouldComponentUpdate = (nextProps, nextState) => {
-        if (nextState._id !== this.state._id) {
-            this.props.getParentTarget(localStorage.getItem("currentRole"));
-            return false;
-        }
-        return true;
     }
 
     handleEditTarget = async () => { 
@@ -140,13 +132,14 @@ class OrganizationalUnitKpiEditTargetModal extends Component {
 
     
     isFormValidated = () => {
+        const { translate } = this.props;
         const { name, criteria, weight } = this.state;
         
         let validatateName, validateCriteria, validateWeight, result;
         
-        validatateName = ValidationHelper.validateName(this.props.translate, name);
-        validateCriteria = ValidationHelper.validateDescription(this.props.translate, criteria);
-        validateWeight = this.validateWeight(this.props.translate, weight)
+        validatateName = ValidationHelper.validateName(translate, name);
+        validateCriteria = ValidationHelper.validateDescription(translate, criteria);
+        validateWeight = this.validateWeight(translate, weight)
         
         result = validatateName.status && validateCriteria.status && validateWeight.status;
         return result;
@@ -174,7 +167,7 @@ class OrganizationalUnitKpiEditTargetModal extends Component {
         return (
             <React.Fragment>
                 <DialogModal
-                    modalID={`editTargetKPIUnit${_id}`} isLoading={editing}
+                    modalID={`editTargetKPIUnit`} isLoading={editing}
                     formID="form-edit-target"
                     title={translate('kpi.organizational_unit.edit_target_kpi_modal.edit_organizational_unit_kpi')}
                     msg_success={translate('kpi.organizational_unit.edit_target_kpi_modal.success')}
@@ -238,7 +231,6 @@ function mapState(state) {
 }
 
 const actionCreators = {
-    getParentTarget: createUnitKpiActions.getKPIParent,
     editTargetKPIUnit: createUnitKpiActions.editTargetKPIUnit
 };
 const connectedOrganizationalUnitKpiEditTargetModal = connect(mapState, actionCreators)(withTranslate(OrganizationalUnitKpiEditTargetModal));

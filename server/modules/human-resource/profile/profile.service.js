@@ -1466,7 +1466,7 @@ exports.importEmployeeInfor = async (portal, company, data) => {
         if (checkEmailInCompany) {
             x = {
                 ...x,
-                errorAlert: [...x.errorAlert, "email_in_company_required"],
+                errorAlert: [...x.errorAlert, "email_in_company_have_exist"],
                 error: true
             };
         }
@@ -1832,6 +1832,53 @@ exports.importFile = async (portal, company, data) => {
                 _id: x._id
             });
             editEmployee.files = editEmployee.files.concat(x.files);
+            editEmployee.save();
+        }
+        return data;
+    }
+}
+
+
+/**
+ * Import thông tin thành viên gia đình
+ * @param {*} company : Id công ty
+ * @param {*} data : Dữ liệu thành viên gia đình cần import
+ */
+exports.importFamily = async (portal, company, data) => {
+    let result = await this.checkImportData(portal, company, data);
+    data = result.data;
+    let rowError = result.rowError;
+
+    if (rowError.length !== 0) {
+        return {
+            errorStatus: true,
+            files: data,
+            rowErrorOfFile: rowError
+        }
+    } else {
+        let importData = [];
+        for (let x of data) {
+            if (!importData.includes(x._id)) {
+                importData = [...importData, x._id]
+            }
+        }
+        importData = importData.map(x => {
+            let result = {
+                _id: x,
+                familyMembers: []
+            }
+            data.forEach(y => {
+                if (y._id === x) {
+                    result.familyMembers.push(y);
+                }
+            })
+            return result;
+        })
+        for (let x of importData) {
+            let editEmployee = await Employee(connect(DB_CONNECTION, portal)).findOne({
+                _id: x._id
+            });
+            editEmployee.houseHold.familyMembers = editEmployee.houseHold.familyMembers.concat(x.familyMembers);
             editEmployee.save();
         }
         return data;

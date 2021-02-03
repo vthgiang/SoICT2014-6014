@@ -6,6 +6,7 @@ class SlimScroll extends Component {
         super(props);
         this.state = {};
     }
+
     componentDidUpdate() {
         const { verticalScroll=false, outerComponentId, maxHeight=200, activate } = this.props
 
@@ -27,13 +28,15 @@ class SlimScroll extends Component {
     }
 
     shouldComponentUpdate(nextProps, nextState) {
-        const { maxHeight=200 } = this.props;
+        const { maxHeight=200, verticalScroll=false } = this.props;
 
-        // Nếu height mới lớn hơn maxHeight mới re-render
-        let checkHeight = window.$(`#${nextProps.outerComponentId}`).height() > maxHeight;
-
-        if (!checkHeight) {
-            return false
+        if (verticalScroll) {
+            // Nếu height mới lớn hơn maxHeight mới re-render
+            
+            let checkHeight = window.$(`#${nextProps.outerComponentId}`).height() > maxHeight;
+            if (!checkHeight) {
+                return false
+            }
         }
 
         return true;
@@ -58,6 +61,7 @@ class SlimScroll extends Component {
         }
     }
 
+    /** Thêm Css SlimScroll dọc */
     static addVerticalScrollStyleCSS = (outerComponentId, maxHeight=200, activate) => {
         let outer = window.$(`#${outerComponentId}`);
 
@@ -69,6 +73,16 @@ class SlimScroll extends Component {
                 outer.removeClass("StyleScrollDiv StyleScrollDiv-y");
                 outer.css("maxHeight", "");
             }
+        }
+    }
+
+    /** Bỏ css của slimscroll */
+    static removeVerticalScrollStyleCSS = (classNameContainer) => {
+        let tabPaneScroll = window.$(`.${classNameContainer}.StyleScrollDiv.StyleScrollDiv-y`);
+
+        if (tabPaneScroll) {
+            tabPaneScroll.removeClass("StyleScrollDiv StyleScrollDiv-y");
+            tabPaneScroll.css("maxHeight", "");
         }
     }
 

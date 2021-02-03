@@ -17,13 +17,14 @@ class EvaluateByAccountableEmployee extends Component {
     constructor(props) {
         super(props);
 
-        let { date, id } = this.props;
+        let { date, id, isEval } = this.props;
         let data = this.getData(date);
         currentTask = data;
         this.DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
 
         this.state = {
             // id: id,
+            isEval: isEval,
             errorInfo: {},
             errorApprovedPoint: {},
             errorContribute: {},
@@ -37,6 +38,7 @@ class EvaluateByAccountableEmployee extends Component {
             autoPoint: data.calcAuto,
             oldAutoPoint: data.automaticPoint,
             date: data.date,
+            month: data.month,
             checkSave: data.checkSave,
             prevDate: data.prevDate,
             dentaDate: data.dentaDate,
@@ -65,6 +67,7 @@ class EvaluateByAccountableEmployee extends Component {
                 // id: nextProps.id,
 
                 errorOnDate: undefined, // Khi nhận thuộc tính mới, cần lưu ý reset lại các gợi ý nhắc lỗi, nếu không các lỗi cũ sẽ hiển thị lại
+                errorOnMonth: undefined,
                 errorOnPoint: undefined,
                 errorOnProgress: undefined,
                 errorInfo: {},
@@ -92,6 +95,7 @@ class EvaluateByAccountableEmployee extends Component {
                 return {
                     ...state,
                     id: nextProps.id,
+                    isEval: nextProps.isEval,
                     task: data.task,
                     userId: data.userId,
                     info: data.info,
@@ -102,6 +106,7 @@ class EvaluateByAccountableEmployee extends Component {
                     autoPoint: data.calcAuto,
                     oldAutoPoint: data.automaticPoint,
                     date: data.date,
+                    month: data.month,
                     checkSave: data.checkSave,
                     prevDate: data.prevDate,
                     dentaDate: data.dentaDate,
@@ -146,11 +151,13 @@ class EvaluateByAccountableEmployee extends Component {
         let idUser = getStorage("userId");
         let checkSave = false;
         let date = dateParam;
-        let prevDate = this.formatDate(task.startDate);
+        let startDate = task.startDate;
+        let prevDate = this.formatDate(startDate);
         let dentaDate = 0;
         let evaluations, prevEval;
 
         let splitter = dateParam.split("-");
+        let month = `${splitter[1]}-${splitter[2]}`;
         let dateOfEval = new Date(splitter[2], splitter[1] - 1, splitter[0]);
         let dateOfPrevEval = new Date(splitter[2], splitter[1] - 1, splitter[0]);
         var newMonth = dateOfPrevEval.getMonth() - 1;
@@ -170,6 +177,12 @@ class EvaluateByAccountableEmployee extends Component {
         prevEval = task.evaluations.find(e => ((monthOfPrevEval) === new Date(e.date).getMonth() && yearOfPrevEval === new Date(e.date).getFullYear()));
         if (prevEval) {
             prevDate = this.formatDate(prevEval.date);
+        } else {
+            let strPrevMonth = `${monthOfPrevEval+1}-${yearOfPrevEval}`
+            // trong TH k có đánh giá tháng trước, so sánh tháng trước với tháng start date
+            if ( !( (yearOfPrevEval === new Date(startDate).getFullYear()) && monthOfPrevEval <= new Date(startDate).getMonth() ) ){
+                prevDate = moment(strPrevMonth, 'MM-YYYY').endOf("month").format('DD-MM-YYYY');
+            }
         }
         let automaticPoint = (evaluations && evaluations.results.length !== 0) ? evaluations.results[0].automaticPoint : undefined;
         let progress = evaluations ? evaluations.progress : 0;
@@ -415,6 +428,7 @@ class EvaluateByAccountableEmployee extends Component {
         return {
             info: info,
             date: date,
+            month: month,
             progress: progress,
             task: task,
             userId: idUser,
@@ -1001,12 +1015,13 @@ class EvaluateByAccountableEmployee extends Component {
     // hàm cập nhật ngày đánh giá
     handleDateChange = (value) => {
         let { translate } = this.props;
-        let { task, userId, unit } = this.state;
+        let { task, userId, unit, month } = this.state;
         let data = this.getData(value);
         this.props.getAllKpiSetsOrganizationalUnitByMonth(userId, unit, value);
 
-        let endOfMonth = new moment().endOf("month").toDate();
-        let startOfMonth = new moment().startOf("month").toDate();
+        // let endOfMonth = new moment().endOf("month").toDate();
+        let endOfMonth = moment(month, 'MM-YYYY').endOf("month").toDate();
+        let startOfMonth = moment(month, 'MM-YYYY').startOf("month").toDate();
 
         let startDate = new Date(task.startDate);
         let endDate = new Date(task.endDate);
@@ -1014,9 +1029,14 @@ class EvaluateByAccountableEmployee extends Component {
         let splitter = value.split('-');
         let dateValue = new Date(splitter[2], splitter[1] - 1, splitter[0]);
 
+        // tính hiệu giữa ngày đánh giá so với ngày bắt đầu của tháng, ngày kết thúc của tháng
         let de = (endOfMonth.getTime() - dateValue.getTime()); // < 0 -> err
         let ds = (dateValue.getTime() - startOfMonth.getTime()); // < 0 -> err
 
+        // đưa về cùng giờ để so sánh ngày tháng năm
+        dateValue.setHours(0);
+        startDate.setHours(0);
+        // tính hiệu giữa ngày đánh giá so với ngày bắt đầu và ngày kết thúc của công việc
         let dst = (dateValue.getTime() - startDate.getTime()); // < 0 -> err
         let det = (endDate.getTime() - dateValue.getTime()); // < 0 -> err
 
@@ -1027,7 +1047,7 @@ class EvaluateByAccountableEmployee extends Component {
         else if (dst < 0) {
             err = translate('task.task_management.err_eval_start');
         }
-        else if (de < 0 || ds < 0) {
+        else if (ds < 0) { // de < 0 || 
             err = translate('task.task_management.err_eval_on_month');
         }
         let automaticPoint = data.automaticPoint;
@@ -1055,6 +1075,81 @@ class EvaluateByAccountableEmployee extends Component {
         });
 
     }
+
+    // hàm cập nhật tháng đánh giá
+    handleMonthOfEvaluationChange = (value) => {
+        // indexReRender = indexReRender + 1;
+        let { translate } = this.props;
+        let { idUser, task } = this.state;
+        let evalDate = moment(value, 'MM-YYYY').endOf('month').format('DD-MM-YYYY');
+
+        let startDate = new Date(task.startDate);
+        let endDate = new Date(task.endDate);
+
+        let splitter = evalDate.split('-');
+        let dateValue = new Date(splitter[2], splitter[1] - 1, splitter[0]);
+
+        // đưa về cùng giờ để so sánh ngày tháng năm
+        dateValue.setHours(0);
+        startDate.setHours(0);
+        // tính hiệu giữa ngày đánh giá so với ngày bắt đầu và ngày kết thúc của công việc
+        let dst = (dateValue.getTime() - startDate.getTime()); // < 0 -> err
+        let det = (endDate.getTime() - dateValue.getTime()); // < 0 -> err
+
+        // validate ngày đánh giá
+        let err;
+        if (evalDate.trim() === "") {
+            err = translate('task.task_perform.modal_approve_task.err_empty');
+        }
+        else if (dst < 0) {
+            err = translate('task.task_management.err_eval_start');
+        }
+
+        // validate tháng đánh giá
+        let errMonth;
+
+        let monthOfEval = dateValue.getMonth();
+        let yearOfEval = dateValue.getFullYear();
+
+        let tmp = task.evaluations.find(e => (monthOfEval === new Date(e.date).getMonth() && yearOfEval === new Date(e.date).getFullYear()));
+
+        if (tmp) {
+            errMonth = "Tháng này đã có đánh giá";
+        }
+
+        let data = this.getData(evalDate);
+        this.props.getAllKpiSetsOrganizationalUnitByMonth(idUser, this.state.unit, evalDate);
+
+        let automaticPoint = data.autoPoint;
+        let taskInfo = {
+            task: data.task,
+            progress: this.state.progress,
+            date: evalDate,
+            info: this.state.info,
+        };
+
+        automaticPoint = AutomaticTaskPointCalculator.calcAutoPoint(taskInfo);
+        if (isNaN(automaticPoint)) automaticPoint = undefined
+        if (automaticPoint < 0) automaticPoint = 0;
+
+        this.setState(state => {
+            return {
+                ...state,
+                month: value,
+                date: evalDate,
+                prevDate: data.prevDate,
+                autoPoint: automaticPoint,
+                oldAutoPoint: data.automaticPoint,
+                errorOnDate: err,
+                errorOnMonth: errMonth,
+                indexReRender: state.indexReRender + 1,
+            }
+        });
+        if (!errMonth) {
+            this.props.handleChangeMonthEval({ month: value, date: evalDate });
+        }
+    }
+
     validateDate = (value, willUpdateState = true) => {
         let { translate } = this.props;
         let msg = undefined;
@@ -1067,7 +1162,7 @@ class EvaluateByAccountableEmployee extends Component {
 
     // hàm validate submit
     isFormValidated = () => {
-        const { errorOnDate, errorOnPoint, errorOnAccountablePoint, errorOnAccountableContribution, errorOnMyPoint,
+        const { errorOnMonth, errorOnDate, errorOnPoint, errorOnAccountablePoint, errorOnAccountableContribution, errorOnMyPoint,
             errorOnProgress, errorOnInfoDate, errorOnInfoBoolean, errorOnNumberInfo, errorOnTextInfo, errorApprovedPoint, errorContribute, errSumContribution } = this.state;
         let { info, results, empPoint, progress, } = this.state;
 
@@ -1091,7 +1186,7 @@ class EvaluateByAccountableEmployee extends Component {
             }
         }
 
-        return checkErrorApprovedPoint && checkErrorContribute && (errorOnDate === undefined && errorOnPoint === undefined
+        return checkErrorApprovedPoint && checkErrorContribute && ( errorOnMonth === undefined && errorOnDate === undefined && errorOnPoint === undefined
             && errorOnInfoDate === undefined && errorOnAccountablePoint === undefined && errorOnProgress === undefined
             && errorOnAccountableContribution === undefined && errorOnMyPoint === undefined && errSumContribution === undefined
             && errorOnInfoBoolean === undefined && errorOnNumberInfo === undefined && errorOnTextInfo === undefined) ? true : false;
@@ -1324,10 +1419,11 @@ class EvaluateByAccountableEmployee extends Component {
 
     render() {
         const { translate, user, KPIPersonalManager, performtasks } = this.props;
-        const { task, date, status, oldAutoPoint, autoPoint, errorOnDate, showAutoPointInfo, dentaDate, prevDate, info, results, empPoint, progress,
+        const { isEval, month, task, date, status, oldAutoPoint, autoPoint, errorOnDate, errorOnMonth, showAutoPointInfo, dentaDate, prevDate, info, results, empPoint, progress,
             errorInfo, errorApprovedPoint, errorContribute, errSumContribution, indexReRender, unit, kpi, evaluation } = this.state;
         const { id, perform, role, hasAccountable } = this.props;
 
+        console.log('quang acc', this.state);
         let listKpi = [];
         if (KPIPersonalManager && KPIPersonalManager.kpiSets) {
             listKpi = KPIPersonalManager.kpiSets.kpis;
@@ -1356,12 +1452,12 @@ class EvaluateByAccountableEmployee extends Component {
         ];
 
         let checkNoteMonth;
-        checkNoteMonth = this.checkNote();
+        // checkNoteMonth = this.checkNote();
 
         let disabled = false;
-        if (checkNoteMonth && (dentaDate > 7)) {
-            disabled = true;
-        }
+        // if (checkNoteMonth && (dentaDate > 7)) {
+        //     disabled = true;
+        // }
         let disableSubmit = !this.isFormValidated();
 
         return (
@@ -1374,10 +1470,10 @@ class EvaluateByAccountableEmployee extends Component {
                             {checkNoteMonth && (dentaDate > 7) && <p style={{ color: "red" }}>{translate('task.task_management.note_not_eval')}</p>}
                         </div>
                         {/* Nút lưu */}
-                        {!(checkNoteMonth && (dentaDate > 7)) &&
+                        { // !(checkNoteMonth && (dentaDate > 7)) &&
                             <div className='pull-right'>
                                 {/* disabled={disabled || disableSubmit} id !== 'new' && */}
-                                {(this.checkHasEval(date, performtasks) && role === "accountable") && <button style={{ marginRight: '5px' }} className="btn btn-danger" onClick={this.deleteEval}>{translate('task.task_management.delete_eval')}</button>}
+                                {(this.checkHasEval(date, performtasks) && !errorOnMonth && role === "accountable") && <button style={{ marginRight: '5px' }} className="btn btn-danger" onClick={this.deleteEval}>{translate('task.task_management.delete_eval')}</button>}
                                 <button disabled={disabled || disableSubmit} className="btn btn-success" onClick={this.save}>{translate('task.task_management.btn_save_eval')}</button>
                             </div>
                         }
@@ -1390,6 +1486,21 @@ class EvaluateByAccountableEmployee extends Component {
                         <form id="form-evaluate-task-by-accountable">
                             <fieldset className="scheduler-border">
                                 <legend className="scheduler-border">{translate('task.task_management.detail_general_info')}</legend>
+                                <div className="row">
+                                    <div className="col-md-12">
+                                        <div className={`form-group ${errorOnMonth === undefined ? "" : "has-error"}`}>
+                                            <label>Tháng đánh giá<span className="text-red">*</span></label>
+                                            <DatePicker
+                                                id={`create_month_${id}_${perform}`}
+                                                value={month}
+                                                onChange={this.handleMonthOfEvaluationChange}
+                                                disabled={isEval}
+                                                dateFormat={"month-year"}
+                                            />
+                                            <ErrorLabel content={errorOnMonth} />
+                                        </div>
+                                    </div>
+                                </div>
                                 <div className="row">
                                     {/* ngày đánh giá tháng trc hoặc ngày bắt đầu làm việc */}
                                     <div className="col-md-6">

@@ -15,6 +15,7 @@ import EditForm from './editForm';
 import ListView from './listView';
 import ListDownload from './listDownload';
 import FilePreview from './FilePreview';
+import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
 
 const getIndex = (array, id) => {
     let index = -1;
@@ -30,7 +31,12 @@ const getIndex = (array, id) => {
 class Table extends Component {
     constructor(props) {
         super(props);
+        const tableId = "table-manage-document-list";
+        const defaultConfig = { limit: 5 }
+        const limit = getTableConfiguration(tableId, defaultConfig).limit;
+
         this.state = {
+            tableId,
             category: "",
             archive: "",
             name: "",
@@ -39,7 +45,7 @@ class Table extends Component {
                 domain: "",
                 archive: "",
             },
-            limit: 5,
+            limit: limit,
             page: 1
         }
     }
@@ -474,7 +480,7 @@ class Table extends Component {
         const { isLoading } = this.props.documents;
         const docs = this.props.documents.administration.data;
 
-        const { currentRow, archive, domain, category, currentFile } = this.state;
+        const { currentRow, archive, domain, category, currentFile, tableId } = this.state;
         const { paginate } = docs;
 
         const listDomain = domains.list
@@ -485,7 +491,7 @@ class Table extends Component {
             list = docs.paginate;
         }
         let exportData = list ? this.convertDataToExportData(list) : "";
-        console.log("propppsss", currentRow);
+        console.log("propppsss", paginate);
         return (
             <div className="qlcv">
                 <CreateForm />
@@ -633,7 +639,7 @@ class Table extends Component {
                 {/* <div className="form-inline">
 
                 </div> */}
-                <table className="data-table table table-hover table-striped table-bordered" id="table-manage-document-list" style={{ marginBottom: 0, marginTop: 20 }}>
+                <table className="data-table table table-hover table-striped table-bordered" id={tableId} style={{ marginBottom: 0, marginTop: 20 }}>
                     <thead>
                         <tr>
                             <th>{translate('document.doc_version.issuing_body')}</th>
@@ -660,10 +666,8 @@ class Table extends Component {
                                         translate('document.views'),
                                         translate('document.downloads')
                                     ]}
-                                    limit={this.state.limit}
                                     setLimit={this.setLimit}
-                                    hideColumnOption={true}
-                                    tableId="table-manage-document"
+                                    tableId={tableId}
                                 />
                             </th>
                         </tr>
@@ -684,9 +688,9 @@ class Table extends Component {
                                         <a href="#" onClick={() => this.requestDownloadDocumentFile(doc._id, doc.name, doc.versions.length - 1)}>
                                             <u>{doc.versions.length && doc.versions[doc.versions.length - 1].file ? translate('document.download') : ""}</u>
                                         </a>
-                                        {/* <a href="#" onClick={() => this.showFilePreview(doc.versions.length && doc.versions[doc.versions.length - 1].file)}>
+                                        <a href="#" onClick={() => this.showFilePreview(doc.versions.length && doc.versions[doc.versions.length - 1].file)}>
                                             <u>{doc.versions.length && doc.versions[doc.versions.length - 1].file ? "Xem trước" : ""}</u>
-                                        </a> */}
+                                        </a>
                                     </td>
                                     <td>
                                         <a href="#" onClick={() => this.requestDownloadDocumentFileScan(doc._id, "SCAN_" + doc.name, doc.versions.length - 1)}>

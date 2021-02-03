@@ -7,7 +7,7 @@ import { UserActions } from '../../../super-admin/user/redux/actions';
 import { taskTemplateActions } from '../redux/actions';
 import { InformationForm } from '../component/informationsTemplate';
 import { ActionForm } from '../component/actionsTemplate';
-import { SelectBox, ErrorLabel } from '../../../../common-components';
+import { SelectBox, ErrorLabel, QuillEditor } from '../../../../common-components';
 import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
 import { TaskTemplateFormValidator } from './taskTemplateFormValidator';
 import { getStorage } from '../../../../config';
@@ -59,16 +59,30 @@ class AddTaskTemplate extends Component {
         this.setState({ newTemplate });
     }
 
-    handleTaskTemplateDesc = (e) => {
-        let { value } = e.target;
-        let { isProcess, translate } = this.props
-        isProcess && this.props.handleChangeName(value);
-        let { message } = ValidationHelper.validateName(translate, value, 1, 255);
-        let { newTemplate } = this.state;
-        newTemplate.description = value;
-        newTemplate.errorDescription = message;
-        this.props.onChangeTemplateData(newTemplate);
-        this.setState({ newTemplate });
+    // handleTaskTemplateDesc = (e) => {
+    //     let { value } = e.target;
+    //     let { isProcess, translate } = this.props
+    //     isProcess && this.props.handleChangeName(value);
+    //     let { message } = ValidationHelper.validateName(translate, value, 1, 255);
+    //     let { newTemplate } = this.state;
+    //     newTemplate.description = value;
+    //     newTemplate.errorDescription = message;
+    //     this.props.onChangeTemplateData(newTemplate);
+    //     this.setState({ newTemplate });
+    // }
+
+    handleTaskTemplateDesc = (value, imgs) => {
+        this.setState(state => {
+            return {
+                ...state,
+                newTemplate: {
+                    ...state.newTemplate,
+                    description: value,
+                }
+            };
+        });
+        
+        this.props.onChangeTemplateData(this.state.newTemplate);
     }
 
     handleTaskTemplateFormula = (event) => {
@@ -239,6 +253,7 @@ class AddTaskTemplate extends Component {
                         consultedEmployees: (info && info.consultedEmployees) ? info.consultedEmployees : [],
                         informedEmployees: (info && info.informedEmployees) ? info.informedEmployees : [],
                         description: (info && info.description) ? info.description : '',
+                        quillDescriptionDefault: (info && info.description) ? info.description : '',
                         creator: (info && info.creator) ? info.creator : getStorage("userId"),
                         numberOfDaysTaken: (info && info.numberOfDaysTaken) ? info.numberOfDaysTaken : '',
                         formula: (info && info.formula) ? info.formula : '',
@@ -271,6 +286,7 @@ class AddTaskTemplate extends Component {
             this.setState(state => {
                 return {
                     savedTaskId: nextProps.savedTaskId,
+                    id: nextProps.savedTaskId,
                     newTemplate: {
                         organizationalUnit: nextProps.savedTaskItem.organizationalUnit._id,
                         collaboratedWithOrganizationalUnits: nextProps.savedTaskItem.collaboratedWithOrganizationalUnits.map(e => e.organizationalUnit._id),
@@ -281,6 +297,7 @@ class AddTaskTemplate extends Component {
                         consultedEmployees: nextProps.savedTaskItem.consultedEmployees.map(e => e._id),
                         informedEmployees: nextProps.savedTaskItem.informedEmployees.map(e => e._id),
                         description: nextProps.savedTaskItem.description,
+                        quillDescriptionDefault: nextProps.savedTaskItem.description,
                         // numberOfDaysTaken: nextProps.savedTaskItem.numberOfDaysTaken,
                         formula: nextProps.savedTaskItem.formula,
                         priority: nextProps.savedTaskItem.priority,
@@ -424,7 +441,7 @@ class AddTaskTemplate extends Component {
                             <label className="control-label">{translate('task_template.unit')}</label>
                             {usersInUnitsOfCompany !== undefined && newTemplate.organizationalUnit !== "" &&
                                 <SelectBox
-                                    id={`unit-select-box`}
+                                    id={`unit-select-box-${id}`}
                                     className="form-control select2"
                                     style={{ width: "100%" }}
                                     items={
@@ -445,7 +462,7 @@ class AddTaskTemplate extends Component {
                             <div className="form-group">
                                 <label>{translate('task.task_management.collaborated_with_organizational_units')}</label>
                                 <SelectBox
-                                    id="multiSelectUnitThatHaveCollaboratedTemplate"
+                                    id={`multiSelectUnitThatHaveCollaboratedTemplate-${id}`}
                                     lassName="form-control select2"
                                     style={{ width: "100%" }}
                                     items={usersInUnitsOfCompany.filter(item => String(item.id) !== String(newTemplate.organizationalUnit)).map(x => {
@@ -467,7 +484,7 @@ class AddTaskTemplate extends Component {
                                 <label className="control-label">{translate('task_template.permission_view')} </label>
                                 {listRoles &&
                                     <SelectBox
-                                        id={`read-select-box`}
+                                        id={`read-select-box-${id}`}
                                         className="form-control select2"
                                         style={{ width: "100%" }}
                                         items={
@@ -498,15 +515,22 @@ class AddTaskTemplate extends Component {
                         </div>
                     </div>
 
-                    {/**Mô tả mẫu công việc */}
+                    {/* Mô tả công việc */}
                     <div className={`${isProcess ? "col-lg-12" : "col-sm-6"}`}>
-                        {/* <div className={`form-group ${this.state.newTemplate.errorOnDescription === undefined ? "" : "has-error"}`} > */}
-                        <div className={`form-group`} >
-                            <label className="control-label" htmlFor="inputDescriptionTaskTemplate" style={{ width: '100%', textAlign: 'left' }}>{translate('task_template.description')}</label>
-                            <textarea rows={5} type="Description" className="form-control" id="inputDescriptionTaskTemplate" name="description" placeholder={translate('task_template.description')} value={newTemplate.description} onChange={this.handleTaskTemplateDesc} />
-                            {/* <ErrorLabel content={this.state.newTemplate.errorOnDescription} /> */}
+                        <div className={`form-group`}>
+                            <label className="control-label">{translate('task.task_management.detail_description')}</label>
+                            <QuillEditor
+                                id={`task-template-add-modal-quill-${id}`}
+                                table={false}
+                                embeds={false}
+                                getTextData={this.handleTaskTemplateDesc}
+                                height={80}
+                                quillValueDefault={newTemplate.quillDescriptionDefault}
+                                placeholder={translate('task_template.description')}
+                            />
                         </div>
                     </div>
+
                 </div>
                 {/* </div> */}
 

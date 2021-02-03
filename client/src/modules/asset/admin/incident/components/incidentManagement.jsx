@@ -13,11 +13,17 @@ import { UserActions } from '../../../../super-admin/user/redux/actions';
 import { AssetManagerActions } from '../../asset-information/redux/actions';
 import { AssetTypeActions } from "../../asset-type/redux/actions";
 import { AssetEditForm } from '../../asset-information/components/assetEditForm';
+import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
 
 class IncidentManagement extends Component {
     constructor(props) {
         super(props);
+        const tableId = "table-incident-manager";
+        const defaultConfig = { limit: 5 }
+        const limit = getTableConfiguration(tableId, defaultConfig).limit;
+
         this.state = {
+            tableId,
             code: "",
             assetName: "",
             assetType: null,
@@ -28,14 +34,14 @@ class IncidentManagement extends Component {
             incidentStatus: "",
             incidentType: "",
             page: 1,
-            limit: 5,
+            limit: limit,
             managedBy: this.props.managedBy ? this.props.managedBy : ''
         }
     }
 
     componentDidMount() {
         let { managedBy } = this.state;
-        this.props.searchAssetTypes({ typeNumber: "", typeName: "", limit: 0 });
+        this.props.searchAssetTypes({ typeNumber: "", typeName: "", limit: this.state.limit });
         this.props.getUser();
         this.props.getIncidents(this.state);
 
@@ -291,7 +297,7 @@ class IncidentManagement extends Component {
 
     render() {
         const { translate, assetsManager, assetType, user, isActive, incidentManager } = this.props;
-        const { page, limit, currentRow, currentRowEditAsset, managedBy } = this.state;
+        const { page, limit, currentRow, currentRowEditAsset, managedBy, tableId } = this.state;
 
         var lists = [], exportData;
         var userlist = user.list;
@@ -372,7 +378,7 @@ class IncidentManagement extends Component {
                     </div>
 
                     {/* Bảng danh sách sự cố tài sản */}
-                    <table id="incident-table" className="table table-striped table-bordered table-hover">
+                    <table id={tableId} className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
                                 <th style={{ width: "10%" }}>{translate('asset.general_information.asset_code')}</th>
@@ -385,7 +391,7 @@ class IncidentManagement extends Component {
                                 <th style={{ width: "10%" }}>{translate('asset.general_information.content')}</th>
                                 <th style={{ width: '100px', textAlign: 'center' }}>{translate('table.action')}
                                     <DataTableSetting
-                                        tableId="incident-table"
+                                        tableId={tableId}
                                         columnArr={[
                                             translate('asset.general_information.asset_code'),
                                             translate('asset.general_information.asset_name'),
@@ -396,9 +402,7 @@ class IncidentManagement extends Component {
                                             translate('asset.general_information.date_incident'),
                                             translate('asset.general_information.content'),
                                         ]}
-                                        limit={limit}
                                         setLimit={this.setLimit}
-                                        hideColumnOption={true}
                                     />
                                 </th>
                             </tr>

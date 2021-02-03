@@ -10,15 +10,20 @@ import { DashboardEvaluationEmployeeKpiSetAction } from '../../../kpi/evaluation
 import { taskManagementActions } from '../redux/actions';
 
 import { ModalPerform } from '../../task-perform/component/modalPerform';
+import { getTableConfiguration } from '../../../../helpers/tableConfiguration'
 class TaskManagementOfUnit extends Component {
 
     constructor(props) {
         super(props);
+        const tableId = "tree-table-task-management-of-unit";
+        const defaultConfig = { limit: 20 }
+        const limit = getTableConfiguration(tableId, defaultConfig).limit;
+
         this.state = {
             organizationalUnit: [],
-            perPage: 20,
+            perPage: limit,
             currentPage: 1,
-
+            tableId,
             currentTab: "responsible",
             status: ["inprocess", "wait_for_approval"],
             priority: [],
@@ -75,7 +80,7 @@ class TaskManagementOfUnit extends Component {
                     }
                 }
             }
-            
+
             let units = childrenOrganizationalUnit.map(item => item.id);
             this.setState((state) => {
                 return {
@@ -365,7 +370,7 @@ class TaskManagementOfUnit extends Component {
 
     render() {
         const { tasks, user, translate, dashboardEvaluationEmployeeKpiSet } = this.props;
-        const { selectBoxUnit, currentTaskId, currentPage, startDate, endDate, perPage, status, isAssigned, organizationalUnit } = this.state;
+        const { selectBoxUnit, currentTaskId, currentPage, startDate, endDate, perPage, status, isAssigned, organizationalUnit, tableId } = this.state;
         let currentTasks, units = [];
         let data = [];
         let childrenOrganizationalUnit = [], queue = [];
@@ -431,7 +436,7 @@ class TaskManagementOfUnit extends Component {
                                             items={selectBoxUnit.map(item => { return { value: item.id, text: item.name } })}
                                             onChange={this.handleSelectOrganizationalUnit}
                                             options={{
-                                                nonSelectedText: organizationalUnit.length !== 0 ? translate('task.task_management.select_department') : translate('general.not_org_unit'),
+                                                nonSelectedText: translate('task.task_management.select_department'),
                                                 allSelectedText: translate(`task.task_management.select_all_department`),
                                                 includeSelectAllOption: true,
                                                 maxHeight: 200
@@ -559,7 +564,7 @@ class TaskManagementOfUnit extends Component {
                             </div>
 
                             <DataTableSetting
-                                tableId="tree-table"
+                                tableId={tableId}
                                 tableContainerId="tree-table-container"
                                 tableWidth="1300px"
                                 columnArr={[
@@ -572,13 +577,12 @@ class TaskManagementOfUnit extends Component {
                                     translate('task.task_management.col_progress'),
                                     translate('task.task_management.col_logged_time')
                                 ]}
-                                limit={perPage}
                                 setLimit={this.setLimit}
-                                hideColumnOption={true}
                             />
 
                             <div id="tree-table-container">
                                 <TreeTable
+                                    tableId={tableId}
                                     behaviour="show-children"
                                     column={column}
                                     data={data}

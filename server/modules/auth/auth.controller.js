@@ -136,7 +136,7 @@ exports.changeInformation = async (req, res) => {
 
 exports.changePassword = async (req, res) => {
     try {
-        const user = await AuthService.changePassword(req.portal, req.params.id, req.body.password, req.body.new_password);
+        const user = await AuthService.changePassword(req.portal, req.params.id, req.body.password, req.body.new_password, req.body.password2);
 
         await Logger.info(req.user.email, 'change_user_password_success', req.portal);
         res.status(200).json({
@@ -217,7 +217,6 @@ exports.downloadFile = async (req, res) => {
 
 exports.answerAuthQuestions = async(req, res) => {
     try {
-        console.log('fffffffffff')
         const answer = await AuthService.answerAuthQuestions(req.portal, req.user._id, req.body);
         console.log("anser", answer);
         await Logger.info(req.user.email, 'answer_auth_question_success', req.portal);
@@ -232,6 +231,25 @@ exports.answerAuthQuestions = async(req, res) => {
         res.status(400).json({
             success: false,
             messages: Array.isArray(error) ? error : ['answer_auth_question_faile'],
+            content: error
+        });
+    }
+}
+
+exports.checkPassword2Exists = async (req, res) => {
+    try {
+        const result = await AuthService.checkPassword2Exists(req.portal, req.user._id);
+        await Logger.info(req.user.email, 'check_password2_success', req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ['check_password2_success'],
+            content: result
+        });
+    } catch (error) {
+        await Logger.info(req.user.email, 'check_password2_faile', req.portal);
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['check_password2_faile'],
             content: error
         });
     }

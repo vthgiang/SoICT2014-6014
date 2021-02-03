@@ -13,10 +13,16 @@ import { RoleActions } from '../../../../super-admin/role/redux/actions';
 import { AssetCreateForm, AssetDetailForm, AssetEditForm, AssetImportForm } from './combinedContent';
 import qs from 'qs';
 import { getFormatDateFromTime, getPropertyOfValue } from '../../../../../helpers/stringMethod';
+import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
 class AssetManagement extends Component {
     constructor(props) {
         super(props);
+        const tableId = "table-asset-manager";
+        const defaultConfig = { limit: 5 }
+        const limit = getTableConfiguration(tableId, defaultConfig).limit;
+
         this.state = {
+            tableId,
             code: "",
             assetName: "",
             purchaseDate: null,
@@ -27,7 +33,7 @@ class AssetManagement extends Component {
             handoverUser: "",
             typeRegisterForUse: "",
             page: 0,
-            limit: 5,
+            limit: limit,
             managedBy: this.props.managedBy ? this.props.managedBy : ''
         }
     }
@@ -146,11 +152,11 @@ class AssetManagement extends Component {
         if (value.length === 0) {
             value = null;
         }
-         this.setState(state => {
-             return {
+        this.setState(state => {
+            return {
                 ...state,
                 assetType: JSON.stringify(value),
-             }
+            }
         })
     }
 
@@ -711,7 +717,7 @@ class AssetManagement extends Component {
 
     render() {
         const { assetsManager, assetType, translate, user, isActive, department } = this.props;
-        const { page, limit, currentRowView, status, currentRow, purchaseDate, disposalDate, managedBy, location } = this.state;
+        const { page, limit, currentRowView, status, currentRow, purchaseDate, disposalDate, managedBy, location, tableId } = this.state;
         var lists = "", exportData;
         var userlist = user.list, departmentlist = department.list;
         var assettypelist = assetType.listAssetTypes;
@@ -929,7 +935,7 @@ class AssetManagement extends Component {
                     }
 
                     {/* Bảng các tài sản */}
-                    <table id="asset-table" className="table table-striped table-bordered table-hover">
+                    <table id={tableId} className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
                                 <th style={{ width: "8%" }}>{translate('asset.general_information.asset_code')}</th>
@@ -944,7 +950,7 @@ class AssetManagement extends Component {
                                 <th style={{ width: "10%" }}>{translate('asset.general_information.disposal_date')}</th>
                                 <th style={{ width: '120px', textAlign: 'center' }}>{translate('asset.general_information.action')}
                                     <DataTableSetting
-                                        tableId="asset-table"
+                                        tableId={tableId}
                                         columnArr={[
                                             translate('asset.general_information.asset_code'),
                                             translate('asset.general_information.asset_name'),
@@ -957,9 +963,7 @@ class AssetManagement extends Component {
                                             translate('asset.general_information.status'),
                                             translate('asset.general_information.disposal_date')
                                         ]}
-                                        limit={limit}
                                         setLimit={this.setLimit}
-                                        hideColumnOption={true}
                                     />
                                 </th>
                             </tr>

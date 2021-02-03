@@ -8,13 +8,8 @@ class ShowMoreShowLess extends Component {
     constructor(props) {
         super(props);
 
-        var translate = this.props.translate;
-
         this.state = {
-            showMore: translate("common_component.showmore_showless.showmore"),
-            showLess: translate("common_component.showmore_showless.showless"),
-            titleShowMore: translate("common_component.showmore_showless.title_showmore"),
-            titleShowLess: translate("common_component.showmore_showless.title_showless"),
+            
         }
 
     }
@@ -101,21 +96,26 @@ class ShowMoreShowLess extends Component {
     }
     
     render() {
-        const { id, value, isText = false, classShowMoreLess = "", styleShowMoreLess = {} } = this.props;
-        const { showMore, showLess, titleShowMore, titleShowLess } = this.state;
+        const { translate } = this.props;
+        const { id, value, isText = false, classShowMoreLess = "", styleShowMoreLess = {}, classContainer,
+            showMore = translate("common_component.showmore_showless.showmore"),
+            showLess = translate("common_component.showmore_showless.showless"),
+            titleShowMore = translate("common_component.showmore_showless.title_showmore"),
+            titleShowLess = translate("common_component.showmore_showless.title_showless")
+        } = this.props;
 
         return (
             <React.Fragment>
                 {
                     isText
-                        ? <span id={`showmore-showless${id}`} className="add-read-more showless-content">
+                        ? <span id={`showmore-showless${id}`} className={`add-read-more showless-content ${classContainer}`}>
                             <span className='text'>{value}</span>
                             <span id={`span${id}`} style={styleShowMoreLess} className={classShowMoreLess}><a id={`readMore${id}`} className='read-more' title={titleShowMore} onClick={this.handleShowMore}> ... {showMore} </a><a id={`readLess${id}`} href={`#showmore-showless${id}`} className='read-less' title={titleShowLess} onClick={this.handleShowMore}> {showLess} </a></span>
                         </span>
-                        : <section id={`showmore-showless${id}`} className="add-read-more showless-content">
+                        : <div id={`showmore-showless${id}`} className={`add-read-more showless-content ${classContainer}`}>
                             {this.props.children}
                             <span id={`span${id}`} style={styleShowMoreLess} className={classShowMoreLess}><a id={`readMore${id}`} className='read-more' title={titleShowMore} onClick={this.handleShowMore}>{showMore} <i className="fa fa-angle-double-down"></i></a><a id={`readLess${id}`} href={`#showmore-showless${id}`} className='read-less' title={titleShowLess} onClick={this.handleShowMore}>{showLess} <i className="fa fa-angle-double-up"></i></a></span>
-                        </section>
+                        </div>
                 }
             </React.Fragment>
         )

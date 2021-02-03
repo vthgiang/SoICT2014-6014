@@ -20,6 +20,7 @@ export const CompanyActions = {
     updateCompanyComponents,
     uploadOrganizationalUnitImage,
     getCompanyInformation,
+    requestService
 };
 
 /**
@@ -464,6 +465,27 @@ function getCompanyInformation(data) {
             .catch(err => {
                 dispatch({
                     type: CompanyConstants.GET_COMPANY_INFOMATION_FAILURE,
+                    payload: err
+                });
+            })
+    };
+}
+
+function requestService(data) {
+    return dispatch => {
+        dispatch({
+            type: CompanyConstants.REQUEST_SERVICE_REQUEST
+        });
+        CompanyServices.requestService(data)
+            .then(res => {
+                dispatch({
+                    type: CompanyConstants.REQUEST_SERVICE_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(err => {
+                dispatch({
+                    type: CompanyConstants.REQUEST_SERVICE_FAILURE,
                     payload: err
                 });
             })

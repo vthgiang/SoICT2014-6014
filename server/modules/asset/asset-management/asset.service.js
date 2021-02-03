@@ -277,6 +277,20 @@ exports.searchAssetProfiles = async (portal, company, params) => {
         };
     }
 
+    // Thêm key tìm kiếm tài sản theo ngày phát hiện
+    if (params.incidentDate) {
+        let date = params.incidentDate.split("-");
+        let start = new Date(date[1], date[0] - 1, 1);
+        let end = new Date(date[1], date[0], 1);
+        keySearch = {
+            ...keySearch,
+            "incidentLogs.dateOfIncident": {
+                $gt: start,
+                $lte: end,
+            },
+        };
+    }
+
     // Thêm key tìm kiếm tài sản theo trạng thái sự cố
     if (params.incidentStatus) {
         keySearch = {
@@ -942,7 +956,7 @@ exports.updateAssetInformation = async (
     oldAsset.assetName = data.assetName;
     oldAsset.code = data.code;
     oldAsset.serial = data.serial;
-    oldAsset.assetType = data.assetType;
+    oldAsset.assetType = JSON.parse(data.assetType);
     oldAsset.group = data.group;
     oldAsset.purchaseDate = data.purchaseDate;
     oldAsset.warrantyExpirationDate = data.warrantyExpirationDate;

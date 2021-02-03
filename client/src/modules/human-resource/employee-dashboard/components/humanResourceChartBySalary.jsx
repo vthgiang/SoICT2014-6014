@@ -220,7 +220,7 @@ class HumanResourceChartBySalary extends Component {
             <React.Fragment>
                 <div className="box box-solid">
                     <div className="box-header with-border">
-                        <h3 className="box-title">{`Biểu đồ nhân sự của ${(!organizationalUnits || organizationalUnits.length === department.list.length) ? "công ty" : organizationalUnitsName.join(', ')} phân theo dải lương tháng ${monthShow}`}</h3>
+                        <h3 className="box-title">{`Biểu đồ nhân sự của công ty phân theo dải lương tháng ${monthShow}`}</h3>
                     </div>
                     <div className="box-body">
                         <div className="dashboard_box_body">
