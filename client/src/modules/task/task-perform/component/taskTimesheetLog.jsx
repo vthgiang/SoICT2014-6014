@@ -111,7 +111,7 @@ class TaskTimesheetLog extends Component {
                 if (!this.checkValidateDate(new Date(), stoppedAt)) {
                     check = false;
                     Swal.fire({
-                        title: 'Chức năng chỉ phép hẹn tắt bấm giờ trong tương lai',
+                        title: 'Chức năng chỉ cho phép hẹn tắt bấm giờ trong tương lai',
                         type: 'warning',
                         confirmButtonColor: '#dd4b39',
                         confirmButtonText: "Đóng",
