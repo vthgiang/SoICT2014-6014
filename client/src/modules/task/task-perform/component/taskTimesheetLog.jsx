@@ -9,6 +9,7 @@ import { CallApiStatus } from '../../../auth/redux/reducers'
 import TextareaAutosize from 'react-textarea-autosize';
 import { performTaskAction } from './../redux/actions';
 import './taskTimesheetLog.css';
+import Swal from 'sweetalert2'
 class TaskTimesheetLog extends Component {
     constructor(props) {
         super(props);
@@ -92,13 +93,30 @@ class TaskTimesheetLog extends Component {
             }
         });
     }
+
+    checkValidateDate = (start, end) => {
+        let mStart = moment(start);
+        let mEnd = moment(end);
+        return mEnd.isAfter(mStart);
+    }
+
     stopTimer = async () => {
         const { performtasks } = this.props;
         let stoppedAt = new Date(); // mặc định lấy thời điểm hiện tại
         let autoStopped = 1;
+        let check = true;
         if (this.state.showEndDate) {
             if (this.state.dateStop && this.state.timeStop) {
-                stoppedAt = new Date(this.state.dateStop + " " + this.state.timeStop);
+                stoppedAt = new Date((this.state.dateStop + " " + this.state.timeStop).replace(/-/g, '/'));
+                if (!this.checkValidateDate(new Date(), stoppedAt)) {
+                    check = false;
+                    Swal.fire({
+                        title: 'Chức năng chỉ phép hẹn tắt bấm giờ trong tương lai',
+                        type: 'warning',
+                        confirmButtonColor: '#dd4b39',
+                        confirmButtonText: "Đóng",
+                    })
+                }
                 autoStopped = 2;
             }
         }
@@ -110,13 +128,16 @@ class TaskTimesheetLog extends Component {
             stoppedAt,
             autoStopped
         };
-        await this.props.stopTimer(performtasks.currentTimer._id, timer);
-        this.setState(state => {
-            return {
-                ...state,
-                showModal: ""
-            }
-        });
+        if (check) {
+            await this.props.stopTimer(performtasks.currentTimer._id, timer);
+            this.setState(state => {
+                return {
+                    ...state,
+                    showModal: ""
+                }
+            });
+        }
+
     }
 
     getDefaultValue = (value) => {
@@ -132,7 +153,7 @@ class TaskTimesheetLog extends Component {
                 dateStop: dateStop
             }
         });
-        this.validateTime()
+        // this.validateTime()
     }
 
     handleTimeChange = (value) => {
@@ -143,7 +164,7 @@ class TaskTimesheetLog extends Component {
                 timeStop: value
             }
         });
-        this.validateTime()
+        // this.validateTime()
 
     }
 
