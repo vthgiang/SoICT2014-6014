@@ -702,7 +702,9 @@ class DetailTaskTab extends Component {
                 } else {
                     let strPrevMonth = `${monthOfPrevEval + 1}-${yearOfPrevEval}`
                     // trong TH k có đánh giá tháng trước, so sánh tháng trước với tháng start date
-                    if (!((yearOfPrevEval === new Date(startDate).getFullYear()) && monthOfPrevEval <= new Date(startDate).getMonth())) {
+                    if (!((yearOfPrevEval === new Date(startDate).getFullYear() && monthOfPrevEval < new Date(startDate).getMonth()) // bắt đầu tháng bất kì khác tháng 1
+                        || (yearOfPrevEval < new Date(startDate).getFullYear()) // TH bắt đầu là tháng 1 - chọn đánh giá tháng 1
+                    )) {
                         prevDate = moment(strPrevMonth, 'MM-YYYY').endOf("month").toDate();
                     }
                 }

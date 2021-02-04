@@ -178,9 +178,11 @@ class EvaluateByAccountableEmployee extends Component {
         if (prevEval) {
             prevDate = this.formatDate(prevEval.date);
         } else {
-            let strPrevMonth = `${monthOfPrevEval+1}-${yearOfPrevEval}`
+            let strPrevMonth = `${monthOfPrevEval + 1}-${yearOfPrevEval}`
             // trong TH k có đánh giá tháng trước, so sánh tháng trước với tháng start date
-            if ( !( (yearOfPrevEval === new Date(startDate).getFullYear()) && monthOfPrevEval <= new Date(startDate).getMonth() ) ){
+            if (!((yearOfPrevEval === new Date(startDate).getFullYear() && monthOfPrevEval < new Date(startDate).getMonth()) // bắt đầu tháng bất kì khác tháng 1
+                || (yearOfPrevEval < new Date(startDate).getFullYear()) // TH bắt đầu là tháng 1 - chọn đánh giá tháng 1
+            )) {
                 prevDate = moment(strPrevMonth, 'MM-YYYY').endOf("month").format('DD-MM-YYYY');
             }
         }
@@ -1116,6 +1118,25 @@ class EvaluateByAccountableEmployee extends Component {
         if (tmp) {
             errMonth = "Tháng này đã có đánh giá";
         }
+        
+        // validate tháng đánh giá phải trong thời gian làm việc.
+        // đưa về cùng ngày - giờ để so sánh tháng năm
+        dateValue.setDate(15);
+        startDate.setDate(15);
+        endDate.setDate(15);
+        dateValue.setHours(0);
+        startDate.setHours(0);
+        endDate.setHours(0);
+        // tính hiệu giữa ngày đánh giá so với ngày bắt đầu và ngày kết thúc của công việc
+        let dst2 = (dateValue.getTime() - startDate.getTime()); // < 0 -> err // denta start task
+        let det2 = (endDate.getTime() - dateValue.getTime()); // < 0 -> err // denta end task
+
+        console.log('dateValue.getTime() - startDate.getTime()', dateValue, startDate);
+        if(dst2 < 0) {
+            errMonth = "Tháng đánh giá phải lớn hơn hoặc bằng tháng bắt đầu";
+        } else if(det2 < 0) {
+            // errMonth = "Tháng đánh giá phải nhỏ hơn hoặc bằng tháng kết thúc";
+        }
 
         let data = this.getData(evalDate);
         this.props.getAllKpiSetsOrganizationalUnitByMonth(idUser, this.state.unit, evalDate);
@@ -1186,7 +1207,7 @@ class EvaluateByAccountableEmployee extends Component {
             }
         }
 
-        return checkErrorApprovedPoint && checkErrorContribute && ( errorOnMonth === undefined && errorOnDate === undefined && errorOnPoint === undefined
+        return checkErrorApprovedPoint && checkErrorContribute && (errorOnMonth === undefined && errorOnDate === undefined && errorOnPoint === undefined
             && errorOnInfoDate === undefined && errorOnAccountablePoint === undefined && errorOnProgress === undefined
             && errorOnAccountableContribution === undefined && errorOnMyPoint === undefined && errSumContribution === undefined
             && errorOnInfoBoolean === undefined && errorOnNumberInfo === undefined && errorOnTextInfo === undefined) ? true : false;
@@ -1481,7 +1502,7 @@ class EvaluateByAccountableEmployee extends Component {
 
 
 
-                    <div className="body-evaluation" style={{height:"calc(100vh - 186px)", overflow: "auto"}}>
+                    <div className="body-evaluation" style={{ height: "calc(100vh - 186px)", overflow: "auto" }}>
                         {/* Đánh giá từ ngày ... đến ngày ... */}
                         <form id="form-evaluate-task-by-accountable">
                             <fieldset className="scheduler-border">
@@ -1590,7 +1611,7 @@ class EvaluateByAccountableEmployee extends Component {
                                 <TaskInformationForm
                                     legendText={translate('task.task_management.info_eval_month')}
                                     task={task && task}
-                                    evaluationInfo={evaluation? evaluation : task}
+                                    evaluationInfo={evaluation ? evaluation : task}
 
                                     handleChangeProgress={this.handleChangeProgress}
                                     handleInfoBooleanChange={this.handleInfoBooleanChange}
@@ -1639,10 +1660,10 @@ class EvaluateByAccountableEmployee extends Component {
                                                             <span key={index}>
                                                                 ({index + 1})&nbsp;&nbsp;
                                                             <QuillEditor
-                                                                id={`evaluateByAccountable${item._id}`}
-                                                                quillValueDefault={item.description}
-                                                                isText={true}
-                                                            />
+                                                                    id={`evaluateByAccountable${item._id}`}
+                                                                    quillValueDefault={item.description}
+                                                                    isText={true}
+                                                                />
                                                             </span>
                                                         </div>
                                                     ))
@@ -1682,106 +1703,106 @@ class EvaluateByAccountableEmployee extends Component {
 
                                             { // Chấm điểm phê duyệt cho người thực hiện
                                                 task && task.responsibleEmployees.map((item, index) =>
-                                                    (task.inactiveEmployees.indexOf(item._id) === -1 &&
-                                                        <tr key={index} style={{ verticalAlign: "top" }}>
-                                                            <td><div style={{ marginTop: 10 }}>{item.name}</div></td>
-                                                            <td><div style={{ marginTop: 10 }}>{this.formatRole('responsible')}</div></td>
-                                                            <td><div style={{ marginTop: 10 }}>{this.checkNullUndefined(empPoint[`responsible${item._id}`]) ? empPoint[`responsible${item._id}`] : translate('task.task_management.not_eval')}</div></td>
-                                                            <td style={{ padding: 5 }}>
-                                                                <div className={errorContribute[`responsible${item._id}`] === undefined ? "form-group" : "form-group has-error"}>
-                                                                    <input className='form-control'
-                                                                        value={this.checkNullUndefined(results[`contributeResponsible${item._id}`]?.value) ? results[`contributeResponsible${item._id}`].value : ''}
-                                                                        type="number" name={`contributeResponsible${item._id}`} placeholder={"% " + translate('task.task_management.contribution')}
-                                                                        onChange={(e) => this.handleChangeResponsibleContribution(e, item._id)}
-                                                                        disabled={disabled}
-                                                                    />
-                                                                    <ErrorLabel content={errorContribute ? errorContribute[`responsible${item._id}`] : ''} />
-                                                                </div>
-                                                            </td>
-                                                            <td style={{ padding: 5 }}>
-                                                                <div className={errorApprovedPoint[`responsible${item._id}`] === undefined ? "form-group" : "form-group has-error"}>
-                                                                    <input className='form-control' type="number"
-                                                                        value={this.checkNullUndefined(results[`approvedPointResponsible${item._id}`]?.value) ? results[`approvedPointResponsible${item._id}`].value : ''}
-                                                                        name={`approvedPointResponsible${item._id}`} placeholder={translate('task.task_management.detail_acc_point')}
-                                                                        onChange={(e) => this.handleChangeApprovedPointForResponsible(e, item._id)}
-                                                                        disabled={disabled}
-                                                                    />
-                                                                    <ErrorLabel content={errorApprovedPoint ? errorApprovedPoint[`responsible${item._id}`] : ''} />
-                                                                </div>
+                                                (task.inactiveEmployees.indexOf(item._id) === -1 &&
+                                                    <tr key={index} style={{ verticalAlign: "top" }}>
+                                                        <td><div style={{ marginTop: 10 }}>{item.name}</div></td>
+                                                        <td><div style={{ marginTop: 10 }}>{this.formatRole('responsible')}</div></td>
+                                                        <td><div style={{ marginTop: 10 }}>{this.checkNullUndefined(empPoint[`responsible${item._id}`]) ? empPoint[`responsible${item._id}`] : translate('task.task_management.not_eval')}</div></td>
+                                                        <td style={{ padding: 5 }}>
+                                                            <div className={errorContribute[`responsible${item._id}`] === undefined ? "form-group" : "form-group has-error"}>
+                                                                <input className='form-control'
+                                                                    value={this.checkNullUndefined(results[`contributeResponsible${item._id}`]?.value) ? results[`contributeResponsible${item._id}`].value : ''}
+                                                                    type="number" name={`contributeResponsible${item._id}`} placeholder={"% " + translate('task.task_management.contribution')}
+                                                                    onChange={(e) => this.handleChangeResponsibleContribution(e, item._id)}
+                                                                    disabled={disabled}
+                                                                />
+                                                                <ErrorLabel content={errorContribute ? errorContribute[`responsible${item._id}`] : ''} />
+                                                            </div>
+                                                        </td>
+                                                        <td style={{ padding: 5 }}>
+                                                            <div className={errorApprovedPoint[`responsible${item._id}`] === undefined ? "form-group" : "form-group has-error"}>
+                                                                <input className='form-control' type="number"
+                                                                    value={this.checkNullUndefined(results[`approvedPointResponsible${item._id}`]?.value) ? results[`approvedPointResponsible${item._id}`].value : ''}
+                                                                    name={`approvedPointResponsible${item._id}`} placeholder={translate('task.task_management.detail_acc_point')}
+                                                                    onChange={(e) => this.handleChangeApprovedPointForResponsible(e, item._id)}
+                                                                    disabled={disabled}
+                                                                />
+                                                                <ErrorLabel content={errorApprovedPoint ? errorApprovedPoint[`responsible${item._id}`] : ''} />
+                                                            </div>
 
-                                                            </td>
-                                                        </tr>
-                                                    )
+                                                        </td>
+                                                    </tr>
+                                                )
 
                                                 )
                                             }
                                             { // Chấm điểm phê duyệt cho người tư vấn
                                                 task && task.consultedEmployees.map((item, index) =>
-                                                    (task.inactiveEmployees.indexOf(item._id) === -1 &&
-                                                        <tr key={index} style={{ verticalAlign: "top" }}>
-                                                            <td><div style={{ marginTop: 10 }}>{item.name}</div></td>
-                                                            <td><div style={{ marginTop: 10 }}>{this.formatRole('consulted')}</div></td>
-                                                            <td><div style={{ marginTop: 10 }}>{this.checkNullUndefined(empPoint[`consulted${item._id}`]) ? empPoint[`consulted${item._id}`] : translate('task.task_management.not_eval')}</div></td>
-                                                            <td style={{ padding: 5 }}>
-                                                                <div className={errorContribute[`consulted${item._id}`] === undefined ? "form-group" : "form-group has-error"}>
-                                                                    <input className='form-control' type="number"
-                                                                        value={this.checkNullUndefined(results[`contributeConsulted${item._id}`]?.value) ? results[`contributeConsulted${item._id}`].value : ''}
-                                                                        name={`contributeConsulted${item._id}`} placeholder={"% " + translate('task.task_management.contribution')}
-                                                                        onChange={(e) => this.handleChangeConsultedContribution(e, item._id)}
-                                                                        disabled={disabled}
-                                                                    />
-                                                                    <ErrorLabel content={errorContribute ? errorContribute[`consulted${item._id}`] : ''} />
-                                                                </div>
+                                                (task.inactiveEmployees.indexOf(item._id) === -1 &&
+                                                    <tr key={index} style={{ verticalAlign: "top" }}>
+                                                        <td><div style={{ marginTop: 10 }}>{item.name}</div></td>
+                                                        <td><div style={{ marginTop: 10 }}>{this.formatRole('consulted')}</div></td>
+                                                        <td><div style={{ marginTop: 10 }}>{this.checkNullUndefined(empPoint[`consulted${item._id}`]) ? empPoint[`consulted${item._id}`] : translate('task.task_management.not_eval')}</div></td>
+                                                        <td style={{ padding: 5 }}>
+                                                            <div className={errorContribute[`consulted${item._id}`] === undefined ? "form-group" : "form-group has-error"}>
+                                                                <input className='form-control' type="number"
+                                                                    value={this.checkNullUndefined(results[`contributeConsulted${item._id}`]?.value) ? results[`contributeConsulted${item._id}`].value : ''}
+                                                                    name={`contributeConsulted${item._id}`} placeholder={"% " + translate('task.task_management.contribution')}
+                                                                    onChange={(e) => this.handleChangeConsultedContribution(e, item._id)}
+                                                                    disabled={disabled}
+                                                                />
+                                                                <ErrorLabel content={errorContribute ? errorContribute[`consulted${item._id}`] : ''} />
+                                                            </div>
 
-                                                            </td>
-                                                            <td style={{ padding: 5 }}>
-                                                                <div className={errorApprovedPoint[`consulted${item._id}`] === undefined ? "form-group" : "form-group has-error"}>
-                                                                    <input className='form-control' type="number"
-                                                                        value={this.checkNullUndefined(results[`approvedPointConsulted${item._id}`]?.value) ? results[`approvedPointConsulted${item._id}`].value : ''}
-                                                                        name={`approvedPointConsulted${item._id}`} placeholder={translate('task.task_management.detail_acc_point')}
-                                                                        onChange={(e) => this.handleChangeApprovedPointForConsulted(e, item._id)}
-                                                                        disabled={disabled}
-                                                                    />
-                                                                    <ErrorLabel content={errorApprovedPoint ? errorApprovedPoint[`consulted${item._id}`] : ''} />
-                                                                </div>
+                                                        </td>
+                                                        <td style={{ padding: 5 }}>
+                                                            <div className={errorApprovedPoint[`consulted${item._id}`] === undefined ? "form-group" : "form-group has-error"}>
+                                                                <input className='form-control' type="number"
+                                                                    value={this.checkNullUndefined(results[`approvedPointConsulted${item._id}`]?.value) ? results[`approvedPointConsulted${item._id}`].value : ''}
+                                                                    name={`approvedPointConsulted${item._id}`} placeholder={translate('task.task_management.detail_acc_point')}
+                                                                    onChange={(e) => this.handleChangeApprovedPointForConsulted(e, item._id)}
+                                                                    disabled={disabled}
+                                                                />
+                                                                <ErrorLabel content={errorApprovedPoint ? errorApprovedPoint[`consulted${item._id}`] : ''} />
+                                                            </div>
 
-                                                            </td>
-                                                        </tr>
-                                                    )
+                                                        </td>
+                                                    </tr>
+                                                )
 
                                                 )
                                             }
                                             { // Chấm điểm phê duyệt cho người phê duyệt
                                                 task && task.accountableEmployees.map((item, index) =>
-                                                    (task.inactiveEmployees.indexOf(item._id) === -1 &&
-                                                        <tr key={index} style={{ verticalAlign: "top" }}>
-                                                            <td><div style={{ marginTop: 10 }}>{item.name}</div></td>
-                                                            <td><div style={{ marginTop: 10 }}>{this.formatRole('accountable')}</div></td>
-                                                            <td><div style={{ marginTop: 10 }}><p id={`accountablePoint${item._id}`}>{this.checkNullUndefined(empPoint[`accountable${item._id}`]) ? empPoint[`accountable${item._id}`] : translate('task.task_management.not_eval')}</p></div></td>
-                                                            <td style={{ padding: 5 }}>
-                                                                <div className={errorContribute[`accountable${item._id}`] === undefined ? "form-group" : "form-group has-error"}>
-                                                                    <input className='form-control' type="number"
-                                                                        value={this.checkNullUndefined(results[`contributeAccountable${item._id}`]?.value) ? results[`contributeAccountable${item._id}`].value : ''}
-                                                                        name={`contributeAccountable${item._id}`} placeholder={"% " + translate('task.task_management.contribution')}
-                                                                        onChange={(e) => this.handleChangeAccountableContribution(e, item._id)}
-                                                                        disabled={disabled}
-                                                                    />
-                                                                    <ErrorLabel content={errorContribute ? errorContribute[`accountable${item._id}`] : ''} />
-                                                                </div>
-                                                            </td>
-                                                            <td style={{ padding: 5 }}>
-                                                                <div className={errorApprovedPoint[`accountable${item._id}`] === undefined ? "form-group" : "form-group has-error"}>
-                                                                    <input className="form-control" type="number"
-                                                                        value={this.checkNullUndefined(results[`approvedPoint${item._id}`]?.value) ? results[`approvedPoint${item._id}`].value : ''}
-                                                                        name={`approvedPoint${item._id}`} placeholder={translate('task.task_management.detail_acc_point')}
-                                                                        onChange={(e) => this.handleChangeAccountablePoint(e, item._id)}
-                                                                        disabled={disabled}
-                                                                    />
-                                                                    <ErrorLabel content={errorApprovedPoint ? errorApprovedPoint[`accountable${item._id}`] : ''} />
-                                                                </div>
-                                                            </td>
-                                                        </tr>
-                                                    )
+                                                (task.inactiveEmployees.indexOf(item._id) === -1 &&
+                                                    <tr key={index} style={{ verticalAlign: "top" }}>
+                                                        <td><div style={{ marginTop: 10 }}>{item.name}</div></td>
+                                                        <td><div style={{ marginTop: 10 }}>{this.formatRole('accountable')}</div></td>
+                                                        <td><div style={{ marginTop: 10 }}><p id={`accountablePoint${item._id}`}>{this.checkNullUndefined(empPoint[`accountable${item._id}`]) ? empPoint[`accountable${item._id}`] : translate('task.task_management.not_eval')}</p></div></td>
+                                                        <td style={{ padding: 5 }}>
+                                                            <div className={errorContribute[`accountable${item._id}`] === undefined ? "form-group" : "form-group has-error"}>
+                                                                <input className='form-control' type="number"
+                                                                    value={this.checkNullUndefined(results[`contributeAccountable${item._id}`]?.value) ? results[`contributeAccountable${item._id}`].value : ''}
+                                                                    name={`contributeAccountable${item._id}`} placeholder={"% " + translate('task.task_management.contribution')}
+                                                                    onChange={(e) => this.handleChangeAccountableContribution(e, item._id)}
+                                                                    disabled={disabled}
+                                                                />
+                                                                <ErrorLabel content={errorContribute ? errorContribute[`accountable${item._id}`] : ''} />
+                                                            </div>
+                                                        </td>
+                                                        <td style={{ padding: 5 }}>
+                                                            <div className={errorApprovedPoint[`accountable${item._id}`] === undefined ? "form-group" : "form-group has-error"}>
+                                                                <input className="form-control" type="number"
+                                                                    value={this.checkNullUndefined(results[`approvedPoint${item._id}`]?.value) ? results[`approvedPoint${item._id}`].value : ''}
+                                                                    name={`approvedPoint${item._id}`} placeholder={translate('task.task_management.detail_acc_point')}
+                                                                    onChange={(e) => this.handleChangeAccountablePoint(e, item._id)}
+                                                                    disabled={disabled}
+                                                                />
+                                                                <ErrorLabel content={errorApprovedPoint ? errorApprovedPoint[`accountable${item._id}`] : ''} />
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                )
                                                 )
                                             }
                                         </table>
