@@ -35,6 +35,7 @@ class Notification extends Component {
             const { sound } = this.state;
             if (sound) {
                 const audio = new Audio(audioFile);
+                audio.volume = 0.7;
                 audio.play();
             }
             this.props.receiveNofitication(data);
