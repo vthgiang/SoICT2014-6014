@@ -185,7 +185,7 @@ class AnnualLeaveEditForm extends Component {
         }
 
         if (this.isFormValidated()) {
-            return this.props.updateAnnualLeave(_id, { ...this.state, startTime: startTime, endTime: endTime, startDate: startDateNew, endDate: endDateNew });
+            return this.props.updateAnnualLeave(_id, { ...this.state, startTime: startTime, endTime: endTime, startDate: startDateNew, endDate: endDateNew, approvedApplication: true });
         }
     }
 
@@ -194,6 +194,7 @@ class AnnualLeaveEditForm extends Component {
             return {
                 ...prevState,
                 _id: nextProps._id,
+                employee: nextProps.employee,
                 employeeNumber: nextProps.employeeNumber,
                 organizationalUnit: nextProps.organizationalUnit,
                 endDate: nextProps.endDate,
