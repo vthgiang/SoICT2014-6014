@@ -16,6 +16,8 @@ class OutgoingDataTab extends Component {
         this.state = {
             taskId: undefined,
             task: undefined,
+            isOutputInformation: {},
+            isOutputDocument: {},
         }
     }
 
