@@ -23,7 +23,7 @@ exports.authFunc = (checkPage = true) => {
         try {
             let crtp, crtr, fgp;
             const token = req.header("utk"); //JWT nhận từ người dùng
-            if (process.env.DEVELOPMENT === "true") {
+            if (process.env.DEVELOPMENT === "false") {
                 crtp = decryptMessage(req.header("crtp")); // trang hiện tại
                 crtr = decryptMessage(req.header("crtr")); // role hiện tại
                 fgp = decryptMessage(req.header("fgp")); // fingerprint
@@ -32,7 +32,7 @@ exports.authFunc = (checkPage = true) => {
                 crtr = req.header("crtr");
                 fgp = req.header("fgp");
             }
-            
+
             /**
              * Nếu không có JWT được gửi lên -> người dùng chưa đăng nhập
              */
