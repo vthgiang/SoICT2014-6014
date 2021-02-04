@@ -120,8 +120,6 @@ class TaskTemplate extends Component {
                                     options={{
                                         nonSelectedText: translate('task_template.select_all_units'),
                                         allSelectedText: translate(`task.task_management.select_all_department`),
-                                        includeSelectAllOption: true,
-                                        maxHeight: 200
                                     }}>
                                 </SelectMulti>
                             }

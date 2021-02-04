@@ -448,8 +448,6 @@ class MainDashboardUnit extends Component {
                                                     options={{
                                                         nonSelectedText: translate('page.non_unit'),
                                                         allSelectedText: translate('page.all_unit'),
-                                                        includeSelectAllOption: true,
-                                                        maxHeight: 200
                                                     }}
                                                     onChange={this.handleSelectOrganizationalUnitUrgent}
                                                     value={arrayUnitForUrgentChart}
@@ -469,7 +467,7 @@ class MainDashboardUnit extends Component {
                                                             onMouseEnter={this.handleMouseHovershowTaskUrgent}
                                                             onMouseLeave={this.handleMouseHovershowTaskUrgent}>
                                                             help
-                                                    </span>
+                                                        </span>
                                                     </p >
                                                     {
                                                         TaskUrgentIsHovering &&
@@ -600,8 +598,6 @@ class MainDashboardUnit extends Component {
                                 options={{
                                     nonSelectedText: translate('page.non_unit'),
                                     allSelectedText: translate('page.all_unit'),
-                                    includeSelectAllOption: true,
-                                    maxHeight: 200
                                 }}
                                 onChange={this.handleSelectOrganizationalUnit}
                                 value={arrayUnitShow}
