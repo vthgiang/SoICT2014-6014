@@ -13,7 +13,7 @@ class GanttCalendar extends Component {
       taskStatus: ["inprocess"],
     }
     this.state = {
-      currentZoom: 'Ngày',
+      currentZoom: this.props.translate('system_admin.system_setting.backup.date'),
       messages: [],
       taskStatus: this.SEARCH_INFO.taskStatus,
 
@@ -99,7 +99,8 @@ class GanttCalendar extends Component {
   }
   // Xử lý công việc cá nhân
   getdataTask = () => {
-    const { tasks } = this.props;
+    const { tasks, translate } = this.props;
+    // console.log("========= hello", tasks)
     let data = [];
     let count = { delay: 0, intime: 0, notAchived: 0 };
 
@@ -109,19 +110,19 @@ class GanttCalendar extends Component {
     let inf = tasks && tasks.informedTasks;
 
 
-    let resData = this.getDataGroupByRole(data, res, 'res', 'Thực hiện', count);
+    let resData = this.getDataGroupByRole(data, res, 'res', translate('task.task_management.responsible_role'), count);
     let data1 = resData.data;
     let count1 = resData.count;
 
-    let accData = this.getDataGroupByRole(data1, acc, 'acc', 'Tư vấn', count1);
+    let accData = this.getDataGroupByRole(data1, acc, 'acc', translate('task.task_management.accountable_role'), count1);
     let data2 = accData.data;
     let count2 = accData.count;
 
-    let conData = this.getDataGroupByRole(data2, con, 'con', 'Hỗ trợ', count2);
+    let conData = this.getDataGroupByRole(data2, con, 'con', translate('task.task_management.consulted_role'), count2);
     let data3 = conData.data;
     let count3 = conData.count;
 
-    let infData = this.getDataGroupByRole(data3, inf, 'inf', 'Quan sát', count3);
+    let infData = this.getDataGroupByRole(data3, inf, 'inf', translate('task.task_management.informed_role'), count3);
     let dataAllTask = infData.data;
     let countAllTask = infData.count;
 
@@ -169,7 +170,7 @@ class GanttCalendar extends Component {
       let now = moment(new Date());
       let duration = end.diff(start, 'days');
       let process = 0;
-      let groupNameLabel = taskFilter[i].responsibleEmployees[0].name;
+      let groupNameLabel = taskFilter[i].responsibleEmployees[0] && taskFilter[i].responsibleEmployees[0].name;
 
       // Tô màu công việc
       if (taskFilter[i].status != "inprocess") {

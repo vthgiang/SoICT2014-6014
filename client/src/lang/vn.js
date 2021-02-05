@@ -346,10 +346,12 @@ export default {
                     yearly: "Hằng năm",
                     date: "Ngày",
                     hour: "Giờ",
+                    week: "Tuần",
                     minute: "Phút",
                     second: "Giây",
                     day: "Thứ",
                     month: "Tháng",
+                    year: "Năm",
                     save: "Lưu cấu hình",
 
                     version: "Phiên bản",
@@ -1663,14 +1665,14 @@ export default {
                         ward: 'Phường/Xã',
                         house_hold_address: 'Địa chỉ hộ khẩu',
                         phone: 'Số điện thoại',
-                        phone_appendix:'Điện thoại hộ gia đình',
+                        phone_appendix: 'Điện thoại hộ gia đình',
                         house_hold_code: 'Mã số hộ gia đình'
                     },
                     members: {
                         title: 'Kê khai đầy đủ thông tin thành viên hộ gia đình trong sổ hộ khẩu',
                         stt: 'STT',
                         name: 'Họ và tên',
-                        name_member:'Họ và tên thành viên',
+                        name_member: 'Họ và tên thành viên',
                         code_social_insurance: 'Mã sổ BHXH',
                         book_nci: 'Số sổ BHXH',
                         gender: 'Giới tính',
@@ -1951,7 +1953,7 @@ export default {
                         import_socialInsurance_details_title:
                             "Import bảo hiểm xã hội",
                         import_file_title: "Import tài liệu đính kèm",
-                        import_file_family : "Import thành viên hộ gia đình"
+                        import_file_family: "Import thành viên hộ gia đình"
                     },
 
                     // Nhón dành cho UI
@@ -3544,6 +3546,16 @@ export default {
                 import_task_template_faile: "Thêm mẫu công việc thất bại !",
                 task_template_name_exist: "Tên mẫu công việc đã tồn tại",
             },
+            task_dashboard: {
+                general_unit_task: "Tổng quan công việc đơn vị",
+                unit: "Đơn vị",
+                all_tasks: "Tổng số công việc",
+                confirmed_task: "Công việc đã xác nhận thực hiện",
+                none_update_recently: "Công việc chưa cập nhật gần đây",
+                intime_task: "Công việc đúng tiến độ",
+                delay_task: "Công việc trễ tiến độ",
+                overdue_task: "Công việc quá hạn"
+            }
         },
 
         kpi: {

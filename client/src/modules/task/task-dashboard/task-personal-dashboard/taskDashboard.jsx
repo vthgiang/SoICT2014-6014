@@ -20,6 +20,7 @@ import { LoadTaskChart } from './loadTaskChart';
 import { convertTime } from '../../../../helpers/stringMethod';
 import { getStorage } from '../../../../config';
 import LoadTaskInformation from './loadTaskInformation'
+import ProcessOfTask from './processOfTask'
 import moment from 'moment';
 class TaskDashboard extends Component {
 
@@ -468,7 +469,7 @@ class TaskDashboard extends Component {
                                 <InprocessTask
                                     startMonth={startMonth}
                                     endMonth={endMonth}
-                                    tasks={tasks}
+                                    tasks={tasks.tasks}
                                 />
                             </div>
                         </div>
@@ -533,6 +534,20 @@ class TaskDashboard extends Component {
                         </div>
                     </div>
                 </div>
+                {/* <div className="row">
+
+                    <div className="col-xs-12 col-sm-12 col-md-6">
+                        <div className="box box-primary">
+                            <div className="box-header with-border">
+                                <div className="box-title">{translate('task.task_management.dashboard_about_to_overdue')}</div>
+                            </div>
+                            <ProcessOfTask
+                                tasks={tasks}
+                            />
+
+                        </div>
+                    </div>
+                </div> */}
 
                 <TasksIsNotLinked />
                 <TaskHasActionNotEvaluated />
