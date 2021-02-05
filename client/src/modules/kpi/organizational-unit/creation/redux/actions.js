@@ -6,7 +6,6 @@ export const createUnitKpiActions = {
     editKPIUnit,
     deleteKPIUnit,
     deleteTargetKPIUnit,
-    editStatusKPIUnit,
     getKPIParent,
     getAllOrganizationalUnitKpiSetByTime,
     getAllOrganizationalUnitKpiSetByTimeOfChildUnit,
@@ -83,14 +82,14 @@ function getAllOrganizationalUnitKpiSetByTimeOfChildUnit(roleId, startDate, endD
     }
 }
 // Chỉnh sửa kpi đơn vị
-function editKPIUnit(id, newKPI) {
+function editKPIUnit(id, data, type) {
     return dispatch => {
         dispatch({
             type: createUnitKpiConstants.EDIT_KPIUNIT_REQUEST,
             payload: id
         });
 
-        createUnitKpiServices.editKPIUnit(id, newKPI)
+        createUnitKpiServices.editKPIUnit(id, data, type)
             .then(res => {
                 dispatch({
                     type: createUnitKpiConstants.EDIT_KPIUNIT_SUCCESS,
@@ -149,30 +148,6 @@ function deleteTargetKPIUnit(id, organizationalUnitKpiSetId) {
             .catch(error => {
                 dispatch({
                     type: createUnitKpiConstants.DELETETARGET_KPIUNIT_FAILURE,
-                    payload: error
-                })
-            })
-    };
-}
-
-// Chỉnh sửa trạng thái KPI đơn vị
-function editStatusKPIUnit(id, status) {
-    return dispatch => {
-        dispatch({
-            type: createUnitKpiConstants.EDITSTATUS_KPIUNIT_REQUEST,
-            payload: id
-        });
-
-        createUnitKpiServices.editStatusKPIUnit(id, status)
-            .then(res => {
-                dispatch({
-                    type: createUnitKpiConstants.EDITSTATUS_KPIUNIT_SUCCESS,
-                    payload: res.data.content
-                })
-            })
-            .catch(error => {
-                dispatch({
-                    type: createUnitKpiConstants.EDITSTATUS_KPIUNIT_FAILURE,
                     payload: error
                 })
             })

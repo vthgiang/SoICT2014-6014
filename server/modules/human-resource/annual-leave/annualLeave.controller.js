@@ -267,7 +267,7 @@ exports.updateAnnualLeave = async (req, res) => {
                     <p>Trạng thái: ${status_en}<p>
                     <p>Approver:  ${req.user.name} (${req.user.email})</>
                 `
-                sendEmail(req.body.employee.fullName, 'Phê duyệt đơn xin nghỉ phép', "", html);
+                sendEmail(req.body.employee.emailInCompany, 'Phê duyệt đơn xin nghỉ phép', "", html);
                 let user = await UserService.getUserInformByEmail(req.portal, req.body.employee.emailInCompany, req.user.company._id);
                 let content = `
                     <p>Đơn xin nghỉ phép của bạn từ ${req.body.startTime? req.body.startTime + ":" : ''} ${req.body.startDate} đến ${req.body.startTime? req.body.endTime + ":": ''} ${req.body.endDate}.</p>
