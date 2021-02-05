@@ -49,7 +49,6 @@ import FieldManager from "../modules/human-resource/field/components";
 import TimesheetsManager from "../modules/human-resource/timesheets/components";
 import { AnnualLeave } from "../modules/human-resource/annual-leave/components/combinedContent";
 import { ManageLeaveApplication } from "../modules/human-resource/annual-leave/components/combinedContent";
-import { EmployeeCapacity } from "../modules/human-resource/employee-capacity/components";
 import { DashboardPersonal } from "../modules/dashboard-personal/components";
 import { DashboardUnit } from "../modules/dashboard-unit/components";
 
@@ -724,28 +723,6 @@ class Routes extends Component {
                         pageName={"dashboard_employee"}
                         layout={Layout}
                         component={EmployeeDashBoard}
-                    />
-                    <PrivateRoute
-                        isLoading={
-                            this.props.dashboardEvaluationEmployeeKpiSet
-                                .isLoading
-                        }
-                        key={"employee_capacity"}
-                        arrPage={[
-                            { link: "/", name: "home", icon: "fa fa-home" },
-                            {
-                                link: "/hr-employee-capacity",
-                                name: "employee_capacity",
-                                icon: "fa fa-dashboard",
-                            },
-                        ]}
-                        auth={auth}
-                        exact={true}
-                        link={"/hr-employee-capacity"}
-                        path={"/hr-employee-capacity"}
-                        pageName={"employee_capacity"}
-                        layout={Layout}
-                        component={EmployeeCapacity}
                     />
                     <PrivateRoute
                         isLoading={this.props.discipline.isLoading}

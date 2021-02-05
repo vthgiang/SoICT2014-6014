@@ -1066,7 +1066,7 @@ export default {
             manageDocument: "Quản lý văn bản",
             manageDocumentType: "Quản lý loại văn bản",
 
-            leave_application: "Quản lý đơn xin nghỉ",
+            leave_application: "Quản lý đơn xin nghỉ đơn vị",
             manage_employee: "Quản lý nhân sự",
             manage_work_plan: "Quản lý kế hoạch làm việc",
             manage_training: "Quản lý đào tạo",

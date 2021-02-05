@@ -202,12 +202,12 @@ class TaskOrganizationalUnitsChart extends Component {
 
                     data.forEach((val) => {
                         value = value + '<tr><td class=\'name\'>' + val.name + '</td>'
-                                    +'<td class=\'value\'>' + val.value + '</td></tr>';
+                            + '<td class=\'value\'>' + val.value + '</td></tr>';
                     });
 
                     value = value + '</table>';
                     value = value + '</div>';
-                    
+
                     return value;
                 }
             },
@@ -225,7 +225,7 @@ class TaskOrganizationalUnitsChart extends Component {
                     columns: data,
                 });
             }
-        }, 2000);
+        }, 100);
     };
 
     /** Bắt sự kiện tìm kiếm */
@@ -305,7 +305,6 @@ class TaskOrganizationalUnitsChart extends Component {
                 employeeOfUnits = [...employeeOfUnits, count.length ? count.length : 1]
             })
         }
-        console.log(arrMonth)
 
         let data = [["x", ...arrMonth]];
         childOrganizationalUnit.forEach((x, index) => {
@@ -315,13 +314,10 @@ class TaskOrganizationalUnitsChart extends Component {
             }
             let row = [...arrMonth];
             row = row.map(r => {
-
-                console.log(taskOfUnist.map(x => x._id))
                 let taskOfUnistInMonth = taskOfUnist.filter(t => {
                     let date = new Date(r)
                     let endMonth = new Date(date.setMonth(date.getMonth() + 1))
                     let endDate = new Date(endMonth.setDate(endMonth.getDate() - 1))
-                    console.log(endDate)
                     if (new Date(r).getTime() <= new Date(t.startDate).getTime() && new Date(t.startDate).getTime() <= new Date(endDate) ||
                         new Date(r).getTime() <= new Date(t.endDate).getTime() && new Date(t.endDate).getTime() <= new Date(endDate) ||
                         new Date(t.startDate).getTime() >= new Date(r).getTime() && new Date(endDate).getTime() >= new Date(t.endDate).getTime()) {
@@ -329,7 +325,6 @@ class TaskOrganizationalUnitsChart extends Component {
                     }
                     return false;
                 });
-                console.log(taskOfUnistInMonth.length)
                 if (totalTask) {
                     return (taskOfUnistInMonth.length / employeeOfUnits[index]).toFixed(1);
                 }
