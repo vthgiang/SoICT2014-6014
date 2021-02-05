@@ -39,8 +39,8 @@ class AssetEditForm extends Component {
                 value = null
             }
         }
-        if(name === "assetType"){
-             value = JSON.stringify(value);
+        if (name === "assetType") {
+            value = JSON.stringify(value);
         }
 
         this.setState({
@@ -318,7 +318,7 @@ class AssetEditForm extends Component {
                 code: nextProps.code,
                 assetName: nextProps.assetName,
                 serial: nextProps.serial,
-                assetType: nextProps.assetType,
+                assetType: nextProps.assetType && nextProps.assetType.map(o => o._id),
                 group: nextProps.group,
                 purchaseDate: nextProps.purchaseDate,
                 warrantyExpirationDate: nextProps.warrantyExpirationDate,
@@ -391,6 +391,7 @@ class AssetEditForm extends Component {
             handoverToDate, location, description, status, typeRegisterForUse, detailInfo, usageLogs, maintainanceLogs, cost, residualValue, startDepreciation,
             usefulLife, depreciationType, incidentLogs, disposalDate, disposalType, unitsProducedDuringTheYears, disposalCost, disposalDesc, archivedRecordNumber,
             files, estimatedTotalProduction, readByRoles } = this.state;
+
         return (
             <React.Fragment>
                 <DialogModal
@@ -423,7 +424,7 @@ class AssetEditForm extends Component {
                                 code={code}
                                 assetName={assetName}
                                 serial={serial}
-                                assetTypes={assetType}
+                                assetTypeEdit={assetType}
                                 group={group}
                                 purchaseDate={purchaseDate}
                                 warrantyExpirationDate={warrantyExpirationDate}
