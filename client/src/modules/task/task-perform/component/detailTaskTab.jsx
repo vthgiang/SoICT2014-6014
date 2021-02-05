@@ -636,6 +636,30 @@ class DetailTaskTab extends Component {
         return employeeSelectBox;
     }
 
+    remindEvaluateTaskOnThisMonth = (task) => {
+        let startDate = new Date(task?.startDate);
+        let endDate = new Date(task?.endDate);
+
+        let endOfMonth = new moment().endOf("month").toDate();
+        let today = new Date();
+        let check;
+
+        // kiểm tra đánh giá tháng hiện tại
+        let denta = Math.abs(endOfMonth.getTime() - today.getTime());
+        let dentaDate = denta / (24 * 60 * 60 * 1000);
+
+        if (dentaDate <= 25) {
+            check = true;
+        }
+        return check;
+    }
+
+    /** sắp xếp đánh giá theo thứ tự tháng */ 
+    handleSortMonthEval = (evaluations) => {
+        const sortedEvaluations = evaluations.sort((a, b) => new Date(b.date) - new Date(a.date));
+        return sortedEvaluations;
+    }
+
     render() {
         const { tasks, performtasks, user, translate } = this.props;
         const { showToolbar, id, isProcess } = this.props; // props form parent component ( task, id, showToolbar, onChangeTaskRole() )
@@ -644,7 +668,7 @@ class DetailTaskTab extends Component {
         let task;
         let codeInProcess, typeOfTask, statusTask, checkInactive = true, evaluations, evalList = [];
         // Các biến dùng trong phần Nhắc Nhở
-        let warning = false, checkConfirmTask, checkEvaluationTaskAction, checkEvaluationTaskAndKpiLink, checkDeadlineForEvaluation, checkConfirmAssginOfOrganizationalUnit;
+        let warning = false, checkEvaluate, checkConfirmTask, checkEvaluationTaskAction, checkEvaluationTaskAndKpiLink, checkDeadlineForEvaluation, checkConfirmAssginOfOrganizationalUnit;
         // Các biến dùng cho biểu đồ đóng góp thời gian
         let hoursSpentOfEmployeeInTask, hoursSpentOfEmployeeInEvaluation = {};
         // Các biến check trưởng đơn vị phối hợp
@@ -716,14 +740,16 @@ class DetailTaskTab extends Component {
             }
         }
 
+        evalList = this.handleSortMonthEval(evalList);
 
         // Xử lý dữ liệu phần Nhắc nhở
+        checkEvaluate = this.remindEvaluateTaskOnThisMonth(task);
         checkConfirmTask = this.checkConfirmTask(task);
         checkEvaluationTaskAction = this.checkEvaluationTaskAction(task);
         checkEvaluationTaskAndKpiLink = this.checkEvaluationTaskAndKpiLink(task);
         checkDeadlineForEvaluation = this.checkDeadlineForEvaluation(task);
         checkConfirmAssginOfOrganizationalUnit = this.checkConfirmAssginOfOrganizationalUnit(task);
-        warning = (statusTask === "inprocess") && ((checkConfirmTask && checkConfirmTask.checkConfirm)
+        warning = (statusTask === "inprocess") && ((checkEvaluate) || (checkConfirmTask && checkConfirmTask.checkConfirm)
             || (checkEvaluationTaskAction && checkEvaluationTaskAction.checkEvaluationTaskAction)
             || (checkEvaluationTaskAndKpiLink && checkEvaluationTaskAndKpiLink.checkEvaluationTask)
             || (checkEvaluationTaskAndKpiLink && checkEvaluationTaskAndKpiLink.checkKpiLink)
@@ -904,6 +930,11 @@ class DetailTaskTab extends Component {
                                 {
                                     task.status === "inprocess" && checkEvaluationTaskAndKpiLink && checkEvaluationTaskAndKpiLink.checkEvaluationTask
                                     && <div><strong>{translate('task.task_management.not_have_evaluation')}</strong></div>
+                                }
+
+                                {/* Nhắc nhở đánh giá */
+                                    task.status === "inprocess" && checkEvaluationTaskAndKpiLink && checkEvaluationTaskAndKpiLink.checkEvaluationTask && checkEvaluate
+                                    && <div><strong>{translate("task.task_management.warning_evaluate")}</strong></div>
                                 }
 
                                 {/* Chưa liên kết KPI */}
