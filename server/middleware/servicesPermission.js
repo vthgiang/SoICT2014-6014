@@ -937,9 +937,6 @@ exports.links = [
 
         url: '/user-guide',
         apis: ['@all']
-    },{
-        url: '/user-guide-detail',
-        apis: ['@all']
     }, {
         url: '/time-sheet-log/all',
         apis: ['@all']
