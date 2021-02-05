@@ -2934,6 +2934,7 @@ export default {
                 // warning
                 warning: "Warning",
                 not_have_evaluation: "No one evaluate task this month",
+                warning_evaluate: "Evaluation is coming soon. You need to evaluate the work this month",
                 you_need: "You need",
                 confirm_task: "confirm take part in this task",
                 not_confirm: "Not confirm this task",

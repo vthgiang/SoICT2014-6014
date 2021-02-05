@@ -3208,6 +3208,7 @@ export default {
                 // warning
                 warning: "Cảnh báo",
                 not_have_evaluation: "Chưa có đánh giá công việc tháng này",
+                warning_evaluate: "Sắp đến hạn đánh giá. Bạn cần đánh giá công việc tháng này",
                 you_need: "Bạn cần",
                 confirm_task: "xác nhận tham gia công việc này",
                 not_confirm: "Chưa xác nhận công việc",
