@@ -3950,6 +3950,7 @@ export default {
                     edit_kpi_failure: "Chỉnh sửa KPI không thành công",
                     delete_kpi_success: "Xóa KPI thành công",
                     delete_kpi_failure: "Xóa KPI không thành công",
+                    copy_kpi_unit: "Sao chép KPI đơn vị",
 
                     // Nhóm dành cho trọng số
                     weight_total: "Tổng trọng số",
