@@ -254,15 +254,13 @@ exports.getAllOrganizationalUnitKpiSet = async (portal, data) => {
 }
 
 /**
- * Chỉnh sửa thông tin chung của tập KPI đơn vị
- * @dateString thời gian mới 
+ * Chỉnh sửa độ quan trọng của nhân viên 
  * @id Id của tập KPI đơn vị
  */
-exports.editOrganizationalUnitKpiSet = async (portal, dateString, id) => {
-    let time = dateString.split("-");
-    let date = new Date(time[1], time[0], 0)
+exports.editEmployeeImportancesInUnitKpi = async (portal, id, data) => {
+
     let organizationalUnitKpiSet = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
-        .findByIdAndUpdate(id, { $set: { date: date } }, { new: true })
+        .findByIdAndUpdate(id, { $set: { employeeImportances: data } }, { new: true })
 
     organizationalUnitKpiSet = organizationalUnitKpiSet && await organizationalUnitKpiSet
         .populate("organizationalUnit creator")
@@ -442,9 +440,9 @@ exports.deleteOrganizationalUnitKpi = async (portal, id, organizationalUnitKpiSe
  * @id Id của tập KPI đơn vị
  * @statusId trạng thái mới của tập KPI đơn vị
  */
-exports.editOrganizationalUnitKpiSetStatus = async (portal, id, query) => {
+exports.editOrganizationalUnitKpiSetStatus = async (portal, id, data) => {
     let kpiunit = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
-        .findByIdAndUpdate(id, { $set: { status: query.status } }, { new: true });
+        .findByIdAndUpdate(id, { $set: { status: data.status } }, { new: true });
 
     kpiunit = kpiunit && await kpiunit
         .populate("organizationalUnit creator")

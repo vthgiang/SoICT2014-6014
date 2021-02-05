@@ -129,25 +129,6 @@ export function createKpiUnit (state = {}, action){
             error: action.payload,
             isLoading: false
           };
-        case createUnitKpiConstants.EDITSTATUS_KPIUNIT_REQUEST:
-          return {
-            ...state,
-            editing: true,
-            isLoading: false
-          };
-        case createUnitKpiConstants.EDITSTATUS_KPIUNIT_SUCCESS:
-          return {
-            ...state,
-            editing: false,
-            currentKPI: action.payload,
-            isLoading: false
-          };
-        case createUnitKpiConstants.EDITSTATUS_KPIUNIT_FAILURE:
-          return {
-            ...state,
-            error: action.payload,
-            isLoading: false
-          };
         
         case createUnitKpiConstants.DELETE_KPIUNIT_REQUEST:
           return {
