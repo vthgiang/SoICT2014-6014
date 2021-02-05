@@ -3651,6 +3651,7 @@ export default {
                     delete_kpi_success: "Delete KPI successfully",
                     delete_kpi_failure: "Delete KPI unsuccessfully",
                     copy_kpi_unit: "Copy KPI Unit",
+                    employee_importance: "Employee importances",
 
                     // Nhóm dành cho trọng số
                     weight_total: "Weight total",
@@ -3710,6 +3711,8 @@ export default {
                     create_target_success: "Add KPI target successful",
                     create_target_failure:
                         "You have not entered enough information",
+                    organizational_unit_kpi_exist: "Organizational Unit KPI already exists",
+
 
                     // Nhóm dành cho validate
                     validate_name: {
@@ -3782,7 +3785,7 @@ export default {
                     no_data: "No data",
                     trend_chart: {
                         execution_time: "Execution time (Days)",
-                        participants: "Participants",
+                        participants: "Amount of participants",
                         amount_tasks: "Amount of tasks",
                         amount_employee_kpi: "Amount of employee KPI",
                         weight: "Weight",
@@ -3864,6 +3867,13 @@ export default {
                         },
                     },
                 },
+
+                statistics: {
+                    detail_participant: "Participant detail",
+                    detail_employee_kpi: "Employee KPI detail",
+                    email: "Email"
+                },
+
                 //Thông điệp khác trả về từ server
                 get_parent_by_unit_success:
                     "Get KPI by parent unit successfully",

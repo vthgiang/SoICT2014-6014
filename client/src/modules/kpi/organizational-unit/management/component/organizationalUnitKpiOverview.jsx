@@ -431,15 +431,15 @@ class KPIUnitManager extends Component {
                             <table id={tableId} className="table table-hover table-bordered">
                                 <thead>
                                     <tr>
-                                        <th title="Người tạo">{translate('kpi.organizational_unit.management.over_view.creator')}</th>
-                                        <th title="Đơn vị">{translate('task.task_management.col_organization')}</th>
-                                        <th title="Thời gian">{translate('kpi.organizational_unit.management.over_view.time')}</th>
-                                        <th title="Trạng thái">{translate('kpi.organizational_unit.management.over_view.status')}</th>
-                                        <th title="Số lượng mục tiêu">{translate('kpi.organizational_unit.management.over_view.number_target')}</th>
+                                        <th title={translate('kpi.organizational_unit.management.over_view.creator')}>{translate('kpi.organizational_unit.management.over_view.creator')}</th>
+                                        <th title={translate('task.task_management.col_organization')}>{translate('task.task_management.col_organization')}</th>
+                                        <th title={translate('kpi.organizational_unit.management.over_view.time')}>{translate('kpi.organizational_unit.management.over_view.time')}</th>
+                                        <th title={translate('kpi.organizational_unit.management.over_view.status')}>{translate('kpi.organizational_unit.management.over_view.status')}</th>
+                                        <th title={translate('kpi.organizational_unit.management.over_view.number_target')}>{translate('kpi.organizational_unit.management.over_view.number_target')}</th>
                                         <th title={translate('kpi.evaluation.employee_evaluation.system_evaluate')}>{translate('kpi.evaluation.employee_evaluation.system_evaluate')}</th>
                                         <th title={translate('kpi.evaluation.employee_evaluation.result_self_evaluate')}>{translate('kpi.evaluation.employee_evaluation.result_self_evaluate')}</th>
                                         <th title={translate('kpi.evaluation.employee_evaluation.evaluation_management')}>{translate('kpi.evaluation.employee_evaluation.evaluation_management')}</th>
-                                        <th title="Hành động">{translate('kpi.organizational_unit.management.over_view.action')}</th>
+                                        <th title={translate('kpi.organizational_unit.management.over_view.action')}>{translate('kpi.organizational_unit.management.over_view.action')}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
