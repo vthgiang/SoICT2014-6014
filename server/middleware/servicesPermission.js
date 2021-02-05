@@ -635,9 +635,6 @@ exports.links = [
         url: '/documents',
         apis: ['@all']
     }, {
-        url: '/hr-employee-capacity',
-        apis: ['@all']
-    }, {
         url: '/hr-manage-work-plan',
         apis: ['@all']
     }, {

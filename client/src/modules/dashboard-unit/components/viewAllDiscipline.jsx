@@ -2,15 +2,36 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DialogModal } from '../../../common-components';
+import { DialogModal, PaginateBar } from '../../../common-components';
 
 class ViewAllDiscipline extends Component {
     constructor(props) {
         super(props);
+        this.state = {
+            page: 0,
+            limit: 10,
+        }
     };
+
+    /**
+     * Bắt sự kiện chuyển trang
+     * @param {*} pageNumber :  Số trang muốn xem
+     */
+    setPage = async (pageNumber) => {
+        await this.setState({
+            page: parseInt(pageNumber - 1),
+        });
+    }
 
     render() {
         const { dataDiscipline, title } = this.props;
+        const { page, limit } = this.state;
+
+        let pageTotal = (dataDiscipline.length % limit === 0) ?
+            parseInt(dataDiscipline.length / limit) :
+            parseInt((dataDiscipline.length / limit) + 1);
+        let currentPage = parseInt(page + 1);
+        const listData = dataDiscipline.slice(page * limit, page * limit + limit)
 
         return (
             <React.Fragment>
@@ -32,10 +53,10 @@ class ViewAllDiscipline extends Component {
                             </thead>
                             <tbody>
                                 {
-                                    dataDiscipline && dataDiscipline.length !== 0 &&
-                                    dataDiscipline.map((x, index) => (
+                                    listData && listData.length !== 0 &&
+                                    listData.map((x, index) => (
                                         <tr key={index}>
-                                            <td>{index + 1}</td>
+                                            <td>{page * limit + index + 1}</td>
                                             <td>{x.employee.fullName}</td>
                                             <td>{x.reason}</td>
                                         </tr>
@@ -43,6 +64,7 @@ class ViewAllDiscipline extends Component {
                                 }
                             </tbody>
                         </table>
+                        <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={currentPage} func={this.setPage} />
                     </form>
                 </DialogModal>
             </React.Fragment>
