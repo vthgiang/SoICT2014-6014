@@ -22,16 +22,16 @@ class DetailOfParticipantDialogModal extends Component {
             <React.Fragment>
                 <DialogModal
                     modalID="modal-participant-detail" 
-                    title="Chi tiết người tham gia"
+                    title={translate('kpi.organizational_unit.statistics.detail_participant')}
                     hasNote={false}
                     hasSaveButton={false}
                 >
                     <table className="table table-bordered table-striped table-hover">
                         <thead>
                             <tr>
-                                <th title="Số thứ tự" style={{ width: "40px" }}>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.no_')}</th>
-                                <th title="Tên nhân viên">Tên nhân viên</th>
-                                <th title="Email" style={{ textAlign: "left" }}>Email</th>
+                                <th title={translate('kpi.organizational_unit.create_organizational_unit_kpi_set.no_')} style={{ width: "40px" }}>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.no_')}</th>
+                                <th title={translate('kpi.organizational_unit.kpi_organizational_unit_manager.employee_name')}>{translate('kpi.organizational_unit.kpi_organizational_unit_manager.employee_name')}</th>
+                                <th title={translate('intro.service_signup.form.email')} style={{ textAlign: "left" }}>{translate('intro.service_signup.form.email')}</th>
                             </tr>
                         </thead>
 
@@ -46,7 +46,7 @@ class DetailOfParticipantDialogModal extends Component {
                                         </tr>
                                     )
                                     : <tr>
-                                        <td colspan="3">Không có dữ liệu</td>
+                                        <td colspan="3">{translate('kpi.organizational_unit.kpi_organizational_unit_manager.no_data')}</td>
                                     </tr>
                             }
                         </tbody>

@@ -32,6 +32,7 @@ class EvaluationModal extends Component {
     shouldComponentUpdate(nextProps, nextState) {
         if (this.state.dataStatus === this.DATA_STATUS.QUERYING) {
             let data = this.handleData(this.formatDate(new Date()));
+            console.log("qydsd", data.evaluations.length)
             this.setState(state => {
                 return {
                     evaluationsList: data.evaluations,
@@ -114,8 +115,11 @@ class EvaluationModal extends Component {
             }
         }
 
+        // sort evaluations
+        let sortedEvaluations = this.handleSortMonthEval(evaluations);
+
         data = {
-            evaluations: evaluations,
+            evaluations: sortedEvaluations,
             checkEval: checkEval,
             checkMonth: checkMonth,
             expire: expire,
@@ -188,16 +192,18 @@ class EvaluationModal extends Component {
     }
 
     handleChangeMonthEval = async (value) => {
-        await this.setState({ month: value.month, dateParam: value.date});
+        await this.setState({ month: value.month, dateParam: value.date });
     }
 
-    handleSortMonthEval = (task, month) => {
+    handleSortMonthEval = (evaluations) => {
         // sắp xếp đánh giá theo thứ tự tháng
+        const sortedEvaluations = evaluations.sort((a, b) => new Date(b.date) - new Date(a.date));
+        return sortedEvaluations;
     }
 
     render() {
         const { translate, performtasks } = this.props;
-        const { dateParam, month, evaluationsList, checkMonth, showEval, content, evaluation, isEval, expire, isInNextMonthOfEndDate } = this.state;
+        let { dateParam, month, evaluationsList, checkMonth, showEval, content, evaluation, isEval, expire, isInNextMonthOfEndDate } = this.state;
         const { role, id, hasAccountable } = this.props;
 
         console.log('isEval', this.state);
@@ -279,6 +285,7 @@ class EvaluationModal extends Component {
                     {(content !== undefined && role === "responsible") && hasAccountable === true &&
                         <EvaluateByResponsibleEmployee
                             id={content}
+                            handleChangeDataStatus={this.handleChangeDataStatus}
                             task={task}
                             role={role}
                             title={title}
@@ -293,6 +300,7 @@ class EvaluationModal extends Component {
                         <EvaluateByAccountableEmployee
                             hasAccountable={false}
                             id={content}
+                            handleChangeDataStatus={this.handleChangeDataStatus}
                             task={task}
                             role={role}
                             title={title}
@@ -323,6 +331,7 @@ class EvaluationModal extends Component {
                         (content !== undefined && role === "consulted") &&
                         <EvaluateByConsultedEmployee
                             id={content}
+                            handleChangeDataStatus={this.handleChangeDataStatus}
                             task={task}
                             role={role}
                             title={title}

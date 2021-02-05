@@ -39,11 +39,11 @@ exports.getOrganizationalUnitKpiSet = async (req, res) => {
  * Chỉnh sửa thông tin chung của tập KPI đơn vị
  */
 exports.editOrganizationalUnitKpiSet = async (req, res) => {
-    if (req.query.status) {
+    if (req.query.type === 'edit-status') {
         editOrganizationalUnitKpiSetStatus(req, res);
     } else {
         try {
-            var organizationalUnitKpiSet = await KPIUnitService.editOrganizationalUnitKpiSet(req.portal, req.body.date, req.params.id);
+            let organizationalUnitKpiSet = await KPIUnitService.editEmployeeImportancesInUnitKpi(req.portal, req.params.id, req.body);
             Logger.info(req.user.email, ' Edit kpi unit ', req.portal);
             res.status(200).json({
                 success: true,
@@ -66,7 +66,7 @@ exports.editOrganizationalUnitKpiSet = async (req, res) => {
  */
 exports.deleteOrganizationalUnitKpiSet = async (req, res) => {
     try {
-        var arr = await KPIUnitService.deleteOrganizationalUnitKpiSet(req.portal, req.params.id);
+        let arr = await KPIUnitService.deleteOrganizationalUnitKpiSet(req.portal, req.params.id);
         kpiunit = arr[0];
         listTarget = arr[1];
         Logger.info(req.user.email, 'delete kpi unit', req.portal)
@@ -94,7 +94,7 @@ exports.deleteOrganizationalUnitKpiSet = async (req, res) => {
  */
 exports.deleteOrganizationalUnitKpi = async (req, res) => {
     try {
-        var organizationalUnitKpiSet = await KPIUnitService.deleteOrganizationalUnitKpi(req.portal, req.params.idUnitKpi, req.params.idUnitKpiSet);
+        let organizationalUnitKpiSet = await KPIUnitService.deleteOrganizationalUnitKpi(req.portal, req.params.idUnitKpi, req.params.idUnitKpiSet);
         Logger.info(req.user.email, 'delete target kpi unit', req.portal);
         res.status(200).json({
             success: true,
@@ -140,7 +140,7 @@ getParentOrganizationalUnitKpiSet = async (req, res) => {
  */
 exports.createOrganizationalUnitKpi = async (req, res) => {
     try {
-        var organizationalUnitKpiSet = await KPIUnitService.createOrganizationalUnitKpi(req.portal, req.body);
+        let organizationalUnitKpiSet = await KPIUnitService.createOrganizationalUnitKpi(req.portal, req.body);
         Logger.info(req.user.email, 'create target kpi unit', req.portal)
         res.status(200).json({
             success: true,
@@ -148,10 +148,12 @@ exports.createOrganizationalUnitKpi = async (req, res) => {
             content: organizationalUnitKpiSet,
         });
     } catch (error) {
+        let messages = error && error.messages === 'organizational_unit_kpi_exist' ? ['organizational_unit_kpi_exist'] : ['create_target_failure'];
+
         Logger.error(req.user.email, 'create target kpi unit', req.portal)
         res.status(400).json({
             success: false,
-            messages: ['create_target_failure'],
+            messages: messages,
             content: error
         })
     }
@@ -163,7 +165,7 @@ exports.createOrganizationalUnitKpi = async (req, res) => {
 exports.editOrganizationalUnitKpi = async (req, res) => {
 
     try {
-        var target = await KPIUnitService.editOrganizationalUnitKpi(req.portal, req.body, req.params.id);
+        let target = await KPIUnitService.editOrganizationalUnitKpi(req.portal, req.body, req.params.id);
         Logger.info(req.user.email, 'edit target kpi unit', req.portal)
         res.status(200).json({
             success: true,
@@ -186,7 +188,7 @@ exports.editOrganizationalUnitKpi = async (req, res) => {
  */
 editOrganizationalUnitKpiSetStatus = async (req, res) => {
     try {
-        var kpiunit = await KPIUnitService.editOrganizationalUnitKpiSetStatus(req.portal, req.params.id, req.query);
+        let kpiunit = await KPIUnitService.editOrganizationalUnitKpiSetStatus(req.portal, req.params.id, req.body);
         Logger.info(req.user.email, 'edit status kpi unit', req.portal)
         res.status(200).json({
             success: true,
@@ -235,7 +237,7 @@ exports.createOrganizationalUnitKpiSet = async (req, res) => {
  */
 getAllOrganizationalUnitKpiSetByTime = async (req, res) => {
     try {
-        var organizationalUnitKpiSets = await KPIUnitService.getAllOrganizationalUnitKpiSetByTime(req.portal, req.query.roleId, req.query.organizationalUnitId, req.query.startDate, req.query.endDate);
+        let organizationalUnitKpiSets = await KPIUnitService.getAllOrganizationalUnitKpiSetByTime(req.portal, req.query.roleId, req.query.organizationalUnitId, req.query.startDate, req.query.endDate);
         Logger.info(req.user.email, ' get all organizational unit kpi set each year ', req.portal);
         res.status(200).json({
             success: true,

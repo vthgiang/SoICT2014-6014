@@ -89,8 +89,6 @@ class EmployeeImportTab extends Component {
             });
         };
         if (importData && id === "import_employee_family") {
-            console.log(importData)
-
             importData = importData.map(x => {
                 let gender = translate(`human_resource.profile.${x.gender}`);
                 let isHeadHousehold = x.isHeadHousehold === 'yes' ? 'X' : null;

@@ -565,7 +565,6 @@ class EmployeeImportForm extends Component {
      * @param {*} value : dữ liệu cần import
      */
     handleCheckImportDataOfFamily = (value) => {
-        console.log(value)
         const { translate } = this.props;
         value = value.map(x => {
             let isHeadHousehold = x.isHeadHousehold ? 'yes' : 'no'

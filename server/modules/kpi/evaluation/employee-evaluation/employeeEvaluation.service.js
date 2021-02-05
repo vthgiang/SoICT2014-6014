@@ -158,18 +158,19 @@ exports.approveAllKpis = async (portal, id, companyId) => {
             { path: 'comments.comments.creator', select: 'name email avatar' }
         ])
         .execPopulate();
-
+    
+    const date = (employee_kpi_set.date).getMonth() + 1;
     if (employee_kpi_set) {
         const dataNotify = {
             organizationalUnits: employee_kpi_set.organizationalUnit._id,
             title: "Phê duyệt KPI",
             level: "general",
-            content: `<p><strong>${employee_kpi_set.approver.name}</strong> đã phê duyệt tất cả mục tiêu kpi của bạn.</p>`,
+            content: `<p><strong>${employee_kpi_set.approver.name}</strong> đã phê duyệt tất cả mục tiêu Kpi tháng <strong>${date}</strong> của bạn.</p>`,
             sender: `${employee_kpi_set.approver._id}`,
             users: [employee_kpi_set.creator._id],
             associatedDataObject: {
                 dataType: 3,
-                description: `<p><strong>${employee_kpi_set.approver.name}</strong> đã phê duyệt tất cả mục tiêu kpi của bạn.</p>`
+                description: `<p><strong>${employee_kpi_set.approver.name}</strong> đã phê duyệt tất cả mục tiêu Kpi tháng <strong>${date}</strong> của bạn.</p>`
             }
         };
 
@@ -218,15 +219,16 @@ exports.editStatusKpi = async (portal, data, query, companyId) => {
         .execPopulate();
 
     if (employee_kpi_set) {
+        const date = (employee_kpi_set.date).getMonth() + 1;
         let getKpiApprove = employee_kpi_set.kpis.filter(obj => obj._id.toString() === data.id.toString());
         getKpiApprove = getKpiApprove[0];
 
         let content = "";
         if (checkFullApprove === 2) {
-            content = `<p><strong>${employee_kpi_set.approver.name}</strong> đã phê duyệt mục tiêu <strong>${getKpiApprove.name}</strong> của bạn.</p>`
+            content = `<p><strong>${employee_kpi_set.approver.name}</strong> đã phê duyệt mục tiêu <strong>${getKpiApprove.name}</strong> thuộc tập Kpi tháng <strong>${date}</strong> của bạn.</p>`
         }
         if (checkFullApprove === 0) {
-            content = `<p><strong>${employee_kpi_set.approver.name}</strong> đã hủy bỏ mục tiêu <strong>${getKpiApprove.name}</strong> của bạn.</p>`
+            content = `<p><strong>${employee_kpi_set.approver.name}</strong> đã hủy bỏ mục tiêu <strong>${getKpiApprove.name}</strong> thuộc tập Kpi tháng <strong>${date}</strong> của bạn.</p>`
         }
         const dataNotify = {
             organizationalUnits: employee_kpi_set.organizationalUnit._id,

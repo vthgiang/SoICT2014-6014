@@ -1068,7 +1068,7 @@ export default {
             manageDocument: "Quản lý văn bản",
             manageDocumentType: "Quản lý loại văn bản",
 
-            leave_application: "Quản lý đơn xin nghỉ",
+            leave_application: "Quản lý đơn xin nghỉ đơn vị",
             manage_employee: "Quản lý nhân sự",
             manage_work_plan: "Quản lý kế hoạch làm việc",
             manage_training: "Quản lý đào tạo",
@@ -2007,6 +2007,7 @@ export default {
                     email_in_company_required:
                         "Email công ty không được để trống",
                     employee_number_have_exist: "Mã nhân viên đã tồn tại",
+                    staff_code_not_find:"Mã nhân viên không tồn tại",
                     email_in_company_have_exist: "Email công ty đã tồn tại",
                     employee_timesheet_id_required:
                         "Mã số chấm công không được để trống",
@@ -2929,6 +2930,7 @@ export default {
                 standard: "Tiêu chuẩn",
                 average: "Trung bình",
                 low: "Thấp",
+                coefficient: "Hệ số",
 
                 special: "Đặc tính",
                 select_all_special: "Chọn tất cả các đặc tính",
@@ -3208,6 +3210,7 @@ export default {
                 // warning
                 warning: "Cảnh báo",
                 not_have_evaluation: "Chưa có đánh giá công việc tháng này",
+                warning_evaluate: "Sắp đến hạn đánh giá. Bạn cần đánh giá công việc tháng này",
                 you_need: "Bạn cần",
                 confirm_task: "xác nhận tham gia công việc này",
                 not_confirm: "Chưa xác nhận công việc",
@@ -3228,6 +3231,7 @@ export default {
                 time: "Thời gian",
                 load_task_chart: "Dashboard tải công việc",
                 load_task_chart_unit: "Dashboard tải công việc của đơn vị",
+                explain: "Giải thích",
             },
             task_perform: {
                 actions: "Hoạt động",
@@ -3958,6 +3962,8 @@ export default {
                     edit_kpi_failure: "Chỉnh sửa KPI không thành công",
                     delete_kpi_success: "Xóa KPI thành công",
                     delete_kpi_failure: "Xóa KPI không thành công",
+                    copy_kpi_unit: "Sao chép KPI đơn vị",
+                    employee_importance: "Độ quan trọng nhân viên",
 
                     // Nhóm dành cho trọng số
                     weight_total: "Tổng trọng số",
@@ -4014,6 +4020,7 @@ export default {
                     weight: "Trọng số",
                     create_target_success: "Thêm mục tiêu KPI thành công",
                     create_target_failure: "Bạn chưa nhập đủ thông tin",
+                    organizational_unit_kpi_exist: "Mục tiêu KPI đã tồn tại",
 
                     // Nhóm dành cho validate
                     validate_name: {
@@ -4092,7 +4099,7 @@ export default {
                     no_data: "Không có dữ liệu",
                     trend_chart: {
                         execution_time: "Thời gian thực hiện (Ngày)",
-                        participants: "Người tham gia",
+                        participants: "Só người tham gia",
                         amount_tasks: "Số lượng công việc",
                         amount_employee_kpi: "Số lượng KPI nhân viên",
                         weight: "Trọng số",
@@ -4158,7 +4165,7 @@ export default {
                         setting_up: "Đang thiết lập",
                         activated: "Đã kích hoạt",
                         time: "Thời gian",
-                        creator: "Người tạo",
+                        creator: "Người khởi tạo",
                         number_target: "Số lượng mục tiêu",
                         result: "Kết quả đánh giá",
                         no_data: "Không có dữ liệu",
@@ -4171,6 +4178,13 @@ export default {
                         },
                     },
                 },
+
+                statistics: {
+                    detail_participant: "Chi tiết người tham gia",
+                    detail_employee_kpi: "Chi tiết KPI nhân viên",
+                    email: "Email"
+                },
+
                 //Thông điệp khác trả về từ server
                 get_parent_by_unit_success:
                     "Lấy KPI đơn vị của đơn vị cha thành công",

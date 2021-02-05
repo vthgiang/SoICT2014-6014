@@ -1826,6 +1826,7 @@ export default {
                     employee_number_required: "Staff code required",
                     email_in_company_required: "Email in company required",
                     employee_number_have_exist: "Employee number have exist",
+                    staff_code_not_find:'Employee number does have exist',
                     email_in_company_have_exist: "Email in company have exist",
                     employee_timesheet_id_required:
                         "Employee timesheet id required",
@@ -2664,6 +2665,7 @@ export default {
                 standard: "Standard",
                 average: "Normal",
                 low: "Low",
+                coefficient: "Coefficient",
 
                 special: "Special",
                 select_all_special: "Selected all",
@@ -2933,6 +2935,7 @@ export default {
                 // warning
                 warning: "Warning",
                 not_have_evaluation: "No one evaluate task this month",
+                warning_evaluate: "Evaluation is coming soon. You need to evaluate the work this month",
                 you_need: "You need",
                 confirm_task: "confirm take part in this task",
                 not_confirm: "Not confirm this task",
@@ -2954,6 +2957,7 @@ export default {
                 time: "Time",
                 load_task_chart: "Dashboard load task",
                 load_task_chart_unit: "Dashboard load task of unit",
+                explain: "Explain",
             },
             task_perform: {
                 actions: "Actions",
@@ -3657,6 +3661,8 @@ export default {
                     edit_kpi_failure: "Editing KPI falied",
                     delete_kpi_success: "Delete KPI successfully",
                     delete_kpi_failure: "Delete KPI unsuccessfully",
+                    copy_kpi_unit: "Copy KPI Unit",
+                    employee_importance: "Employee importances",
 
                     // Nhóm dành cho trọng số
                     weight_total: "Weight total",
@@ -3716,6 +3722,8 @@ export default {
                     create_target_success: "Add KPI target successful",
                     create_target_failure:
                         "You have not entered enough information",
+                    organizational_unit_kpi_exist: "Organizational Unit KPI already exists",
+
 
                     // Nhóm dành cho validate
                     validate_name: {
@@ -3788,7 +3796,7 @@ export default {
                     no_data: "No data",
                     trend_chart: {
                         execution_time: "Execution time (Days)",
-                        participants: "Participants",
+                        participants: "Amount of participants",
                         amount_tasks: "Amount of tasks",
                         amount_employee_kpi: "Amount of employee KPI",
                         weight: "Weight",
@@ -3870,6 +3878,13 @@ export default {
                         },
                     },
                 },
+
+                statistics: {
+                    detail_participant: "Participant detail",
+                    detail_employee_kpi: "Employee KPI detail",
+                    email: "Email"
+                },
+
                 //Thông điệp khác trả về từ server
                 get_parent_by_unit_success:
                     "Get KPI by parent unit successfully",

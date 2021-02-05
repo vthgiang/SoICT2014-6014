@@ -537,7 +537,7 @@ class CreateEmployeeKpiSet extends Component {
                                         {/* Chỉnh sửa thông tin của tập KPI này */}
                                         {editing ?
                                             <React.Fragment>
-                                                <a className="btn btn-app" onClick={() => this.handleSaveEditEmployeeKpiSet(currentKPI._id)} title="Lưu thông tin chỉnh sửa">
+                                                <a className="btn btn-app" onClick={() => this.handleSaveEditEmployeeKpiSet(currentKPI._id)} title={translate('kpi.evaluation.employee_evaluation.save_result')}>
                                                     <i className="fa fa-save" style={{ fontSize: "16px" }}></i>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.general_information.save')}
                                                 </a>
                                                 <a className="btn btn-app" onClick={() => this.handleCancelEditEmployeeKpiSet()} title="Hủy bỏ chỉnh sửa">

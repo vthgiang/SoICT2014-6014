@@ -6,6 +6,7 @@ import { createUnitKpiActions } from '../../organizational-unit/creation/redux/a
 import { DashboardEvaluationEmployeeKpiSetAction } from '../../evaluation/dashboard/redux/actions';
 
 import { DetailsOfOrganizationalUnitKpiForm } from './detailsOfOrganizationalUnitKpiForm';
+import { DistributionOfOrganizationalUnitChart } from './distributionOfOrganizationalUnitChart';
 
 import { SelectBox, DatePicker, Tree, SlimScroll } from '../../../../common-components';
 
@@ -618,6 +619,18 @@ class StatisticsOfOrganizationalUnitKpi extends Component {
                                             details={details}
                                         />
                                     }
+                                </div>
+                            </div>
+
+                            <div className="row">
+                                <div className="col-xs-12" style={{ padding: 10 }}>
+                                    <div className="description-box" style={{ height: "100%" }}>
+                                        <h4 className="box-title">Biểu đồ phân bố KPI đơn vị tháng {month.slice(5, 7) + "-" + month.slice(0, 4)}</h4>
+
+                                        <DistributionOfOrganizationalUnitChart
+                                            organizationalUnitKPI={dataTree.filter(item => item.parent === '#')}
+                                        />
+                                    </div>
                                 </div>
                             </div>
                         </div>

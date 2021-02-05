@@ -21,10 +21,18 @@ const { decryptMessage } = require('../helpers/functionHelper');
 exports.authFunc = (checkPage = true) => {
     return async (req, res, next) => {
         try {
-            const crtp = decryptMessage(req.header("crtp")); // trang hiện tại
-            const crtr = decryptMessage(req.header("crtr")); // role hiện tại
-            const fgp = decryptMessage(req.header("fgp")); // fingerprint
+            let crtp, crtr, fgp;
             const token = req.header("utk"); //JWT nhận từ người dùng
+            if (process.env.DEVELOPMENT === "false") {
+                crtp = decryptMessage(req.header("crtp")); // trang hiện tại
+                crtr = decryptMessage(req.header("crtr")); // role hiện tại
+                fgp = decryptMessage(req.header("fgp")); // fingerprint
+            } else {
+                crtp = req.header("crtp");
+                crtr = req.header("crtr");
+                fgp = req.header("fgp");
+            }
+
             /**
              * Nếu không có JWT được gửi lên -> người dùng chưa đăng nhập
              */

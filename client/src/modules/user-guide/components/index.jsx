@@ -4,8 +4,10 @@ import { withTranslate } from "react-redux-multilingual";
 import Swal from 'sweetalert2';
 import { UserGuideSystem, UserGuideKpi, UserGuideTask, UserGuideDocument, UserGuideAsset, UserGuideHr } from './config.js';
 import DetailGuide from './detailGuide';
-const UserGuide = (props) => {
+import { getStorage } from '../../../config';
+import { RoleActions } from '../../super-admin/role/redux/actions';
 
+function UserGuide(props) {
 
     const [taskForUser, setTaskForUser] = useState(false);
     const [taskForManager, setTaskForManager] = useState(false);
@@ -68,8 +70,11 @@ const UserGuide = (props) => {
         setManagerSystem(!managerSystem);
     }
 
+    useEffect(() => {
+        props.getAllRole();
+    }, []);
+
     const showFilePreview = (data) => {
-        console.log('aaaaaaaaaa', data);
         const { translate } = props;
         const link = process.env.REACT_APP_SERVER + data.url;
         Swal.fire({
@@ -81,6 +86,7 @@ const UserGuide = (props) => {
                     />`,
             //  icon: 'warning',
             width: "100%",
+            //height: "100%",
             //showCancelButton: true,
             // confirmButtonColor: '#3085d6',
             // cancelButtonColor: '#d33',
@@ -108,8 +114,61 @@ const UserGuide = (props) => {
     //         }
     //     })
     // }
+    let currentRole = getStorage('currentRole');
 
-    //  console.log('pppppppp', currentL)
+    const { auth, role } = props;
+
+
+    let rolesUser = [], roles = role.list;
+    rolesUser = auth.user.roles;
+    let currentRoleInfo = rolesUser.filter(elem => elem.roleId.id === currentRole).map(elem => { return elem.roleId })[0];
+
+    let TaskGuide = { user: [], manager: [] }, DocumentGuide = { user: [], manager: [] },
+        HrGuide = { user: [], manager: [] }, kpiGuide = { user: [], manager: [] }, AssetGuide = { user: [], manager: [] }, SystemGuide = [];
+    let roleAdmin = roles.find(x => x.name === "Admin");
+    let roleSuperAdmin = roles.find(x => x.name === "Super Admin");
+    let roleManager = roles.find(x => x.name === "Manager");
+
+    console.log('pppppppp', roleAdmin, roleManager, currentRoleInfo);
+
+    if (roleAdmin && roleManager) {
+        if (currentRoleInfo.id === roleAdmin.id || currentRoleInfo.parents.includes(roleAdmin.id) ||
+            currentRoleInfo.id === roleSuperAdmin.id || currentRoleInfo.parents.includes(roleSuperAdmin.id)) {
+            TaskGuide = UserGuideTask;
+            DocumentGuide = UserGuideDocument;
+            HrGuide = UserGuideHr;
+            kpiGuide = UserGuideKpi;
+            AssetGuide = UserGuideAsset;
+            AssetGuide = UserGuideAsset;
+            SystemGuide = UserGuideSystem;
+        }
+        else if (currentRoleInfo.id === roleManager.id || currentRoleInfo.parents.includes(roleManager.id)) {
+            TaskGuide = UserGuideTask;
+            DocumentGuide = UserGuideDocument;
+            HrGuide = UserGuideHr;
+            kpiGuide = UserGuideKpi;
+            AssetGuide = UserGuideAsset;
+            AssetGuide = UserGuideAsset;
+            SystemGuide = [];
+        }
+        else {
+            TaskGuide.user = UserGuideTask.user;
+            DocumentGuide.user = UserGuideDocument.user;
+            HrGuide.user = UserGuideHr.user;
+            kpiGuide.user = UserGuideKpi.user;
+            AssetGuide.user = UserGuideAsset.user;
+
+            TaskGuide.manager = [];
+            DocumentGuide.manager = [];
+            HrGuide.manager = [];
+            kpiGuide.manager = [];
+            AssetGuide.manager = [];
+            SystemGuide = [];
+        }
+
+    }
+
+
     return (
         <React.Fragment>
             {
@@ -123,339 +182,391 @@ const UserGuide = (props) => {
                 <div className="box-body qlcv">
                     <div className="row">
                         {/* Module công việc */}
-                        <section className="col-lg-6 col-md-6">
-                            <div className="box">
-                                <div className="box-header with-border">
-                                    <h3 className="box-title" style={{ fontWeight: 600 }}>
-                                        Module công việc
+                        {
+                            TaskGuide.manager.length || TaskGuide.user.length ?
+                                <section className="col-lg-6 col-md-6">
+                                    <div className="box">
+                                        <div className="box-header with-border">
+                                            <h3 className="box-title" style={{ fontWeight: 600 }}>
+                                                Module công việc
                                                 </h3>
-                                </div>
-                                <div className="box-body">
-                                    <p data-toggle="collapse" data-target="#show-asset-guide-task-for-manager" aria-expanded="false" style={{ display: "flex", alignItems: "center", fontWeight: "bold", cursor: "pointer" }} onClick={() => showUserGuideTaskForManager()}>
-                                        <span className="material-icons" style={{ fontWeight: "bold", marginRight: '10px' }}>
-                                            {taskForManager ? `keyboard_arrow_up` : `keyboard_arrow_down`}
-
-                                        </span>{`Manager (${UserGuideTask.manager.length})`}</p>
-                                    <div className="collapse" data-toggle="collapse " id="show-asset-guide-task-for-manager">
-                                        <ul className="todo-list" data-widget="todo-list">
+                                        </div>
+                                        <div className="box-body">
                                             {
-                                                UserGuideTask.manager.length > 0 && UserGuideTask.manager.map((obj, index) => (
-                                                    <li style={{ borderLeft: 'none', cursor: "pointer" }} key={index}>
-                                                        <div className="icheck-primary" style={{ display: "flex" }}>
-                                                            <span className="material-icons" style={{ marginRight: '10px' }}>
-                                                                link
+                                                TaskGuide.manager.length ?
+                                                    <div>
+                                                        <p data-toggle="collapse" data-target="#show-asset-guide-task-for-manager" aria-expanded="false" style={{ display: "flex", alignItems: "center", fontWeight: "bold", cursor: "pointer" }} onClick={() => showUserGuideTaskForManager()}>
+                                                            <span className="material-icons" style={{ fontWeight: "bold", marginRight: '10px' }}>
+                                                                {taskForManager ? `keyboard_arrow_up` : `keyboard_arrow_down`}
+
+                                                            </span>{`Manager (${TaskGuide.manager.length})`}</p>
+                                                        <div className="collapse" data-toggle="collapse " id="show-asset-guide-task-for-manager">
+                                                            <ul className="todo-list" data-widget="todo-list">
+                                                                {
+                                                                    TaskGuide.manager.length > 0 && TaskGuide.manager.map((obj, index) => (
+                                                                        <li style={{ borderLeft: 'none', cursor: "pointer" }} key={index}>
+                                                                            <div className="icheck-primary" style={{ display: "flex" }}>
+                                                                                <span className="material-icons" style={{ marginRight: '10px' }}>
+                                                                                    link
                                                             </span>
-                                                            {/* <a href={`${process.env.REACT_APP_WEBSITE + obj.detailPage}?name=task&type=manager&id=${obj.id}&fileName=${obj.fileName}`} title="Xem chi tiet" target="_blank">{obj.pageName}</a> */}
-                                                            <a href="#show-detail" onClick={() => showFilePreview(obj)}>{obj.pageName}</a>
+                                                                                {/* <a href={`${process.env.REACT_APP_WEBSITE + obj.detailPage}?name=task&type=manager&id=${obj.id}&fileName=${obj.fileName}`} title="Xem chi tiet" target="_blank">{obj.pageName}</a> */}
+                                                                                <a href="#show-detail" onClick={() => showFilePreview(obj)}>{obj.pageName}</a>
+                                                                            </div>
+                                                                        </li>
+                                                                    ))
+                                                                }
+                                                            </ul>
                                                         </div>
-                                                    </li>
-                                                ))
+                                                    </div> : <> </>
                                             }
-                                        </ul>
-                                    </div>
 
 
-                                    <p data-toggle="collapse" data-target="#show-asset-guide-task-for-user" aria-expanded="false" style={{ display: "flex", alignItems: "center", fontWeight: "bold", cursor: "pointer" }} onClick={() => showUserGuideTaskForUser()}>
-                                        <span className="material-icons" style={{ fontWeight: "bold", marginRight: '10px' }}>
-                                            {taskForUser ? `keyboard_arrow_up` : `keyboard_arrow_down`}
+                                            <p data-toggle="collapse" data-target="#show-asset-guide-task-for-user" aria-expanded="false" style={{ display: "flex", alignItems: "center", fontWeight: "bold", cursor: "pointer" }} onClick={() => showUserGuideTaskForUser()}>
+                                                <span className="material-icons" style={{ fontWeight: "bold", marginRight: '10px' }}>
+                                                    {taskForUser ? `keyboard_arrow_up` : `keyboard_arrow_down`}
 
-                                        </span>{`User (${UserGuideTask.user.length})`}</p>
-                                    <div className="collapse" data-toggle="collapse " id="show-asset-guide-task-for-user">
-                                        <ul className="todo-list" data-widget="todo-list">
-                                            {
-                                                UserGuideTask.user.length > 0 && UserGuideTask.user.map((obj, index) => (
-                                                    <li style={{ borderLeft: 'none', cursor: "pointer" }} key={index}>
-                                                        <div className="icheck-primary" style={{ display: "flex" }}>
-                                                            <span className="material-icons" style={{ marginRight: '10px' }}>
-                                                                link
+                                                </span>{`User (${TaskGuide.user.length})`}</p>
+                                            <div className="collapse" data-toggle="collapse " id="show-asset-guide-task-for-user">
+                                                <ul className="todo-list" data-widget="todo-list">
+                                                    {
+                                                        TaskGuide.user.length > 0 && TaskGuide.user.map((obj, index) => (
+                                                            <li style={{ borderLeft: 'none', cursor: "pointer" }} key={index}>
+                                                                <div className="icheck-primary" style={{ display: "flex" }}>
+                                                                    <span className="material-icons" style={{ marginRight: '10px' }}>
+                                                                        link
                                                     </span>
-                                                            {/* <a href={`${process.env.REACT_APP_WEBSITE + obj.detailPage}?name=task&type=user&id=${obj.id}&fileName=${obj.fileName}`} title="Xem chi tiet" target="_blank">{obj.pageName}</a> */}
-                                                            <a href="#show-detail" title="Xem chi tiet" onClick={() => showFilePreview(obj)}>{obj.pageName}</a>
-                                                        </div>
-                                                    </li>
-                                                ))
-                                            }
+                                                                    {/* <a href={`${process.env.REACT_APP_WEBSITE + obj.detailPage}?name=task&type=user&id=${obj.id}&fileName=${obj.fileName}`} title="Xem chi tiet" target="_blank">{obj.pageName}</a> */}
+                                                                    <a href="#show-detail" title="Xem chi tiet" onClick={() => showFilePreview(obj)}>{obj.pageName}</a>
+                                                                </div>
+                                                            </li>
+                                                        ))
+                                                    }
 
-                                        </ul>
+                                                </ul>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
-                        </section>
+                                </section> : <> </>
+                        }
 
                         {/* Module Kpi */}
-                        <section className="col-lg-6 col-md-6">
-                            <div className="box">
-                                <div className="box-header with-border">
-                                    <h3 className="box-title" style={{ fontWeight: 600 }}>
-                                        Module KPI
+                        {kpiGuide.manager.length || kpiGuide.user.length ?
+                            <section className="col-lg-6 col-md-6">
+                                <div className="box">
+                                    <div className="box-header with-border">
+                                        <h3 className="box-title" style={{ fontWeight: 600 }}>
+                                            Module KPI
                                     </h3>
-                                </div>
-                                <div className="box-body">
-                                    <p data-toggle="collapse" data-target="#show-asset-guide-kpi-for-manager" aria-expanded="false" style={{ display: "flex", alignItems: "center", fontWeight: "bold", cursor: "pointer" }} onClick={() => showUserGuideKpiForManager()}>
-                                        <span className="material-icons" style={{ fontWeight: "bold", marginRight: '10px' }}>
-                                            {kpiForManager ? `keyboard_arrow_up` : `keyboard_arrow_down`}
+                                    </div>
+                                    <div className="box-body">
+                                        {kpiGuide.manager.length ?
+                                            <div>
+                                                <p data-toggle="collapse" data-target="#show-asset-guide-kpi-for-manager" aria-expanded="false" style={{ display: "flex", alignItems: "center", fontWeight: "bold", cursor: "pointer" }} onClick={() => showUserGuideKpiForManager()}>
+                                                    <span className="material-icons" style={{ fontWeight: "bold", marginRight: '10px' }}>
+                                                        {kpiForManager ? `keyboard_arrow_up` : `keyboard_arrow_down`}
 
-                                        </span>{`Manager (${UserGuideKpi.manager.length})`}</p>
-                                    <div className="collapse" data-toggle="collapse " id="show-asset-guide-kpi-for-manager">
-                                        <ul className="todo-list" data-widget="todo-list">
-                                            {
-                                                UserGuideKpi.manager.length > 0 && UserGuideKpi.manager.map((obj, index) => (
-                                                    <li style={{ borderLeft: 'none', cursor: "pointer" }} key={index}>
-                                                        <div className="icheck-primary" style={{ display: "flex" }}>
-                                                            <span className="material-icons" style={{ marginRight: '10px' }}>
-                                                                link
+                                                    </span>{`Manager (${kpiGuide.manager.length})`}</p>
+                                                <div className="collapse" data-toggle="collapse " id="show-asset-guide-kpi-for-manager">
+                                                    <ul className="todo-list" data-widget="todo-list">
+                                                        {
+                                                            kpiGuide.manager.length > 0 && kpiGuide.manager.map((obj, index) => (
+                                                                <li style={{ borderLeft: 'none', cursor: "pointer" }} key={index}>
+                                                                    <div className="icheck-primary" style={{ display: "flex" }}>
+                                                                        <span className="material-icons" style={{ marginRight: '10px' }}>
+                                                                            link
                                                             </span>
-                                                            {/* <a href={`${process.env.REACT_APP_WEBSITE + obj.detailPage}?name=KPI&type=manager&id=${obj.id}&fileName=${obj.fileName}`} title="Xem chi tiet" target="_blank">{obj.pageName}</a> */}
-                                                            <a href="#show-detail" title="Xem chi tiet" onClick={() => showFilePreview(obj)}>{obj.pageName}</a>
-                                                        </div>
-                                                    </li>
-                                                ))
-                                            }
-                                        </ul>
-                                    </div>
+                                                                        {/* <a href={`${process.env.REACT_APP_WEBSITE + obj.detailPage}?name=KPI&type=manager&id=${obj.id}&fileName=${obj.fileName}`} title="Xem chi tiet" target="_blank">{obj.pageName}</a> */}
+                                                                        <a href="#show-detail" title="Xem chi tiet" onClick={() => showFilePreview(obj)}>{obj.pageName}</a>
+                                                                    </div>
+                                                                </li>
+                                                            ))
+                                                        }
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            : <> </>
+                                        }
 
 
-                                    <p data-toggle="collapse" data-target="#show-asset-guide-kpi-for-user" aria-expanded="false" style={{ display: "flex", alignItems: "center", fontWeight: "bold", cursor: "pointer" }} onClick={() => showUserGuideKpiForUser()}>
-                                        <span className="material-icons" style={{ fontWeight: "bold", marginRight: '10px' }}>
-                                            {kpiForUser ? `keyboard_arrow_up` : `keyboard_arrow_down`}
+                                        <p data-toggle="collapse" data-target="#show-asset-guide-kpi-for-user" aria-expanded="false" style={{ display: "flex", alignItems: "center", fontWeight: "bold", cursor: "pointer" }} onClick={() => showUserGuideKpiForUser()}>
+                                            <span className="material-icons" style={{ fontWeight: "bold", marginRight: '10px' }}>
+                                                {kpiForUser ? `keyboard_arrow_up` : `keyboard_arrow_down`}
 
-                                        </span>{`User (${UserGuideKpi.user.length})`}</p>
-                                    <div className="collapse" data-toggle="collapse " id="show-asset-guide-kpi-for-user">
-                                        <ul className="todo-list" data-widget="todo-list">
-                                            {
-                                                UserGuideKpi.user.length > 0 && UserGuideKpi.user.map((obj, index) => {
-                                                    return <li style={{ borderLeft: 'none', cursor: "pointer" }} key={index}>
-                                                        <div className="icheck-primary" style={{ display: "flex" }}>
-                                                            <span className="material-icons" style={{ marginRight: '10px' }}>
-                                                                link
+                                            </span>{`User (${kpiGuide.user.length})`}</p>
+                                        <div className="collapse" data-toggle="collapse " id="show-asset-guide-kpi-for-user">
+                                            <ul className="todo-list" data-widget="todo-list">
+                                                {
+                                                    kpiGuide.user.length > 0 && kpiGuide.user.map((obj, index) => {
+                                                        return <li style={{ borderLeft: 'none', cursor: "pointer" }} key={index}>
+                                                            <div className="icheck-primary" style={{ display: "flex" }}>
+                                                                <span className="material-icons" style={{ marginRight: '10px' }}>
+                                                                    link
                                                     </span>
-                                                            {/* <a href={`${process.env.REACT_APP_WEBSITE + obj.detailPage}?name=KPI&type=user&id=${obj.id}&fileName=${obj.fileName}`} title="Xem chi tiet" target="_blank">{obj.pageName}</a> */}
-                                                            <a href="#show-detail" title="Xem chi tiet" onClick={() => showFilePreview(obj)}>{obj.pageName}</a>
-                                                        </div>
-                                                    </li>
-                                                })
-                                            }
-                                        </ul>
+                                                                {/* <a href={`${process.env.REACT_APP_WEBSITE + obj.detailPage}?name=KPI&type=user&id=${obj.id}&fileName=${obj.fileName}`} title="Xem chi tiet" target="_blank">{obj.pageName}</a> */}
+                                                                <a href="#show-detail" title="Xem chi tiet" onClick={() => showFilePreview(obj)}>{obj.pageName}</a>
+                                                            </div>
+                                                        </li>
+                                                    })
+                                                }
+                                            </ul>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        </section>
+                            </section> : <></>
+                        }
                     </div>
 
                     <div className="row">
                         {/* Module tài liệu */}
-                        <section className="col-lg-6 col-md-6">
-                            <div className="box">
-                                <div className="box-header with-border">
-                                    <h3 className="box-title" style={{ fontWeight: 600 }}>
-                                        Module tài liệu
+                        {
+                            DocumentGuide.manager.length || DocumentGuide.user.length ?
+                                <section className="col-lg-6 col-md-6">
+                                    <div className="box">
+                                        <div className="box-header with-border">
+                                            <h3 className="box-title" style={{ fontWeight: 600 }}>
+                                                Module tài liệu
                                     </h3>
-                                </div>
-                                <div className="box-body">
-                                    {/* Quanr lys */}
-                                    <p data-toggle="collapse" data-target="#show-asset-guide-document-for-manager" aria-expanded="false" style={{ display: "flex", alignItems: "center", fontWeight: "bold", cursor: "pointer" }} onClick={() => showUserGuideDocumentForManager()}>
-                                        <span className="material-icons" style={{ fontWeight: "bold", marginRight: '10px' }}>
-                                            {documentForManager ? `keyboard_arrow_up` : `keyboard_arrow_down`}
+                                        </div>
+                                        <div className="box-body">
+                                            {/* Quanr lys */}
+                                            {DocumentGuide.manager.length ?
+                                                <div>
+                                                    <p data-toggle="collapse" data-target="#show-asset-guide-document-for-manager" aria-expanded="false" style={{ display: "flex", alignItems: "center", fontWeight: "bold", cursor: "pointer" }} onClick={() => showUserGuideDocumentForManager()}>
+                                                        <span className="material-icons" style={{ fontWeight: "bold", marginRight: '10px' }}>
+                                                            {documentForManager ? `keyboard_arrow_up` : `keyboard_arrow_down`}
 
-                                        </span>{`Manager (${UserGuideDocument.manager.length})`}</p>
-                                    <div className="collapse" data-toggle="collapse " id="show-asset-guide-document-for-manager">
-                                        <ul className="todo-list" data-widget="todo-list">
-                                            {
-                                                UserGuideDocument.manager.length > 0 && UserGuideDocument.manager.map((obj, index) => (
-                                                    <li style={{ borderLeft: 'none', cursor: "pointer" }} key={index}>
-                                                        <div className="icheck-primary" style={{ display: "flex" }}>
-                                                            <span className="material-icons" style={{ marginRight: '10px' }}>
-                                                                link
+                                                        </span>{`Manager (${DocumentGuide.manager.length})`}</p>
+                                                    <div className="collapse" data-toggle="collapse " id="show-asset-guide-document-for-manager">
+                                                        <ul className="todo-list" data-widget="todo-list">
+                                                            {
+                                                                DocumentGuide.manager.length > 0 && DocumentGuide.manager.map((obj, index) => (
+                                                                    <li style={{ borderLeft: 'none', cursor: "pointer" }} key={index}>
+                                                                        <div className="icheck-primary" style={{ display: "flex" }}>
+                                                                            <span className="material-icons" style={{ marginRight: '10px' }}>
+                                                                                link
                                                             </span>
-                                                            {/* <a href={`${process.env.REACT_APP_WEBSITE + obj.detailPage}?name=document&type=manager&id=${obj.id}&fileName=${obj.fileName}`} title="Xem chi tiet" target="_blank">{obj.pageName}</a> */}
-                                                            <a href="#show-detail" title="Xem chi tiet" onClick={() => showFilePreview(obj)}>{obj.pageName}</a>
-                                                        </div>
-                                                    </li>
-                                                ))
+                                                                            {/* <a href={`${process.env.REACT_APP_WEBSITE + obj.detailPage}?name=document&type=manager&id=${obj.id}&fileName=${obj.fileName}`} title="Xem chi tiet" target="_blank">{obj.pageName}</a> */}
+                                                                            <a href="#show-detail" title="Xem chi tiet" onClick={() => showFilePreview(obj)}>{obj.pageName}</a>
+                                                                        </div>
+                                                                    </li>
+                                                                ))
+                                                            }
+                                                        </ul>
+                                                    </div>
+                                                </div> : <> </>
                                             }
-                                        </ul>
-                                    </div>
 
-                                    {/* Nguoiwf dung */}
-                                    <p data-toggle="collapse" data-target="#show-asset-guide-document-for-user" aria-expanded="false" style={{ display: "flex", alignItems: "center", fontWeight: "bold", cursor: "pointer" }} onClick={() => showUserGuideDocumentForUser()}>
-                                        <span className="material-icons" style={{ fontWeight: "bold", marginRight: '10px' }}>
-                                            {documentForUser ? `keyboard_arrow_up` : `keyboard_arrow_down`}
+                                            {/* Nguoiwf dung */}
+                                            <p data-toggle="collapse" data-target="#show-asset-guide-document-for-user" aria-expanded="false" style={{ display: "flex", alignItems: "center", fontWeight: "bold", cursor: "pointer" }} onClick={() => showUserGuideDocumentForUser()}>
+                                                <span className="material-icons" style={{ fontWeight: "bold", marginRight: '10px' }}>
+                                                    {documentForUser ? `keyboard_arrow_up` : `keyboard_arrow_down`}
 
-                                        </span>{`User (${UserGuideDocument.user.length})`}</p>
-                                    <div className="collapse" data-toggle="collapse " id="show-asset-guide-document-for-user">
-                                        <ul className="todo-list" data-widget="todo-list">
-                                            {
-                                                UserGuideDocument.manager.length > 0 && UserGuideDocument.manager.map((obj, index) => (
-                                                    <li style={{ borderLeft: 'none', cursor: "pointer" }} key={index}>
-                                                        <div className="icheck-primary" style={{ display: "flex" }}>
-                                                            <span className="material-icons" style={{ marginRight: '10px' }}>
-                                                                link
-                                                            </span>
-                                                            {/* <a href={`${process.env.REACT_APP_WEBSITE + obj.detailPage}?name=document&type=user&id=${obj.id}&fileName=${obj.fileName}`} title="Xem chi tiet" target="_blank">{obj.pageName}</a> */}
-                                                            <a href="#show-detail" title="Xem chi tiet" onClick={() => showFilePreview(obj)}>{obj.pageName}</a>
-                                                        </div>
-                                                    </li>
-                                                ))
-                                            }
-                                        </ul>
+                                                </span>{`User (${DocumentGuide.user.length})`}</p>
+                                            <div className="collapse" data-toggle="collapse " id="show-asset-guide-document-for-user">
+                                                <ul className="todo-list" data-widget="todo-list">
+                                                    {
+                                                        DocumentGuide.manager.length > 0 && DocumentGuide.manager.map((obj, index) => (
+                                                            <li style={{ borderLeft: 'none', cursor: "pointer" }} key={index}>
+                                                                <div className="icheck-primary" style={{ display: "flex" }}>
+                                                                    <span className="material-icons" style={{ marginRight: '10px' }}>
+                                                                        link
+                                                                     </span>
+                                                                    {/* <a href={`${process.env.REACT_APP_WEBSITE + obj.detailPage}?name=document&type=user&id=${obj.id}&fileName=${obj.fileName}`} title="Xem chi tiet" target="_blank">{obj.pageName}</a> */}
+                                                                    <a href="#show-detail" title="Xem chi tiet" onClick={() => showFilePreview(obj)}>{obj.pageName}</a>
+                                                                </div>
+                                                            </li>
+                                                        ))
+                                                    }
+                                                </ul>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
-                        </section>
+                                </section> : <> </>
+                        }
 
                         {/* Module tài sản */}
-                        <section className="col-lg-6 col-md-6">
-                            <div className="box">
-                                <div className="box-header with-border">
-                                    <h3 className="box-title" style={{ fontWeight: 600 }}>
-                                        Module tài sản
+                        {
+                            AssetGuide.manager.length || AssetGuide.user.length ?
+                                <section className="col-lg-6 col-md-6">
+                                    <div className="box">
+                                        <div className="box-header with-border">
+                                            <h3 className="box-title" style={{ fontWeight: 600 }}>
+                                                Module tài sản
                                     </h3>
-                                </div>
-                                <div className="box-body">
-                                    <p data-toggle="collapse" data-target="#show-asset-guide-asset-for-manager" aria-expanded="false" style={{ display: "flex", alignItems: "center", fontWeight: "bold", cursor: "pointer" }} onClick={() => showUserGuideAssetForManager()}>
-                                        <span className="material-icons" style={{ fontWeight: "bold", marginRight: '10px' }}>
-                                            {assetForManager ? `keyboard_arrow_up` : `keyboard_arrow_down`}
-
-                                        </span>{`Manager (${UserGuideAsset.manager.length})`}</p>
-                                    <div className="collapse" data-toggle="collapse " id="show-asset-guide-asset-for-manager">
-                                        <ul className="todo-list" data-widget="todo-list">
+                                        </div>
+                                        <div className="box-body">
                                             {
-                                                UserGuideAsset.manager.length > 0 && UserGuideAsset.manager.map((obj, index) => (
-                                                    <li style={{ borderLeft: 'none', cursor: "pointer" }} key={index}>
-                                                        <div className="icheck-primary" style={{ display: "flex" }}>
-                                                            <span className="material-icons" style={{ marginRight: '10px' }}>
-                                                                link
-                                                    </span>
-                                                            {/* <a href={`${process.env.REACT_APP_WEBSITE + obj.detailPage}?name=asset&type=manager&id=${obj.id}&fileName=${obj.fileName}`} title="Xem chi tiet" target="_blank">{obj.pageName}</a> */}
-                                                            <a href="#show-detail" title="Xem chi tiet" onClick={() => showFilePreview(obj)}>{obj.pageName}</a>
+                                                AssetGuide.manager.length ?
+                                                    <div>
+                                                        <p data-toggle="collapse" data-target="#show-asset-guide-asset-for-manager" aria-expanded="false" style={{ display: "flex", alignItems: "center", fontWeight: "bold", cursor: "pointer" }} onClick={() => showUserGuideAssetForManager()}>
+                                                            <span className="material-icons" style={{ fontWeight: "bold", marginRight: '10px' }}>
+                                                                {assetForManager ? `keyboard_arrow_up` : `keyboard_arrow_down`}
+
+                                                            </span>{`Manager (${AssetGuide.manager.length})`}</p>
+                                                        <div className="collapse" data-toggle="collapse " id="show-asset-guide-asset-for-manager">
+                                                            <ul className="todo-list" data-widget="todo-list">
+                                                                {
+                                                                    AssetGuide.manager.length > 0 && AssetGuide.manager.map((obj, index) => (
+                                                                        <li style={{ borderLeft: 'none', cursor: "pointer" }} key={index}>
+                                                                            <div className="icheck-primary" style={{ display: "flex" }}>
+                                                                                <span className="material-icons" style={{ marginRight: '10px' }}>
+                                                                                    link
+                                                                                </span>
+                                                                                {/* <a href={`${process.env.REACT_APP_WEBSITE + obj.detailPage}?name=asset&type=manager&id=${obj.id}&fileName=${obj.fileName}`} title="Xem chi tiet" target="_blank">{obj.pageName}</a> */}
+                                                                                <a href="#show-detail" title="Xem chi tiet" onClick={() => showFilePreview(obj)}>{obj.pageName}</a>
+                                                                            </div>
+                                                                        </li>
+                                                                    ))
+                                                                }
+                                                            </ul>
                                                         </div>
-                                                    </li>
-                                                ))
+                                                    </div> : <> </>
+
                                             }
-                                        </ul>
-                                    </div>
 
-                                    <p data-toggle="collapse" data-target="#show-asset-guide-asset-for-user" aria-expanded="false" style={{ display: "flex", alignItems: "center", fontWeight: "bold", cursor: "pointer" }} onClick={() => showUserGuideAssetForUser()}>
-                                        <span className="material-icons" style={{ fontWeight: "bold", marginRight: '10px' }}>
-                                            {assetForUser ? `keyboard_arrow_up` : `keyboard_arrow_down`}
+                                            <p data-toggle="collapse" data-target="#show-asset-guide-asset-for-user" aria-expanded="false" style={{ display: "flex", alignItems: "center", fontWeight: "bold", cursor: "pointer" }} onClick={() => showUserGuideAssetForUser()}>
+                                                <span className="material-icons" style={{ fontWeight: "bold", marginRight: '10px' }}>
+                                                    {assetForUser ? `keyboard_arrow_up` : `keyboard_arrow_down`}
 
-                                        </span>{`User (${UserGuideAsset.user.length})`}</p>
-                                    <div className="collapse" data-toggle="collapse " id="show-asset-guide-asset-for-user">
-                                        <ul className="todo-list" data-widget="todo-list">
-                                            {
-                                                UserGuideAsset.user.length > 0 && UserGuideAsset.user.map((obj, index) => (
-                                                    <li style={{ borderLeft: 'none', cursor: "pointer" }} key={index}>
-                                                        <div className="icheck-primary" style={{ display: "flex" }}>
-                                                            <span className="material-icons" style={{ marginRight: '10px' }}>
-                                                                link
+                                                </span>{`User (${AssetGuide.user.length})`}</p>
+                                            <div className="collapse" data-toggle="collapse " id="show-asset-guide-asset-for-user">
+                                                <ul className="todo-list" data-widget="todo-list">
+                                                    {
+                                                        AssetGuide.user.length > 0 && AssetGuide.user.map((obj, index) => (
+                                                            <li style={{ borderLeft: 'none', cursor: "pointer" }} key={index}>
+                                                                <div className="icheck-primary" style={{ display: "flex" }}>
+                                                                    <span className="material-icons" style={{ marginRight: '10px' }}>
+                                                                        link
                                                             </span>
-                                                            {/* <a href={`${process.env.REACT_APP_WEBSITE + obj.detailPage}?name=asset&type=user&id=${obj.id}&fileName=${obj.fileName}`} title="Xem chi tiet" target="_blank">{obj.pageName}</a> */}
-                                                            <a href="#show-detail" title="Xem chi tiet" onClick={() => showFilePreview(obj)}>{obj.pageName}</a>
-                                                        </div>
-                                                    </li>
-                                                ))
-                                            }
-                                        </ul>
+                                                                    {/* <a href={`${process.env.REACT_APP_WEBSITE + obj.detailPage}?name=asset&type=user&id=${obj.id}&fileName=${obj.fileName}`} title="Xem chi tiet" target="_blank">{obj.pageName}</a> */}
+                                                                    <a href="#show-detail" title="Xem chi tiet" onClick={() => showFilePreview(obj)}>{obj.pageName}</a>
+                                                                </div>
+                                                            </li>
+                                                        ))
+                                                    }
+                                                </ul>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
-                        </section>
+                                </section> : <></>
+                        }
                     </div>
 
                     <div className="row">
                         {/* Module nhân sự */}
-                        <section className="col-lg-6 col-md-6">
-                            <div className="box">
-                                <div className="box-header with-border">
-                                    <h3 className="box-title" style={{ fontWeight: 600 }}>
-                                        Module nhân sự
+                        {
+                            HrGuide.manager.length ?
+                                <section className="col-lg-6 col-md-6">
+                                    <div className="box">
+                                        <div className="box-header with-border">
+                                            <h3 className="box-title" style={{ fontWeight: 600 }}>
+                                                Module nhân sự
                                     </h3>
-                                </div>
-                                <div className="box-body">
-                                    <p data-toggle="collapse" data-target="#show-asset-guide-hr-for-manager" aria-expanded="false" style={{ display: "flex", alignItems: "center", fontWeight: "bold", cursor: "pointer" }} onClick={() => showUserGuideHumanresourceForManager()}>
-                                        <span className="material-icons" style={{ fontWeight: "bold", marginRight: '10px' }}>
-                                            {humanResourceForManager ? `keyboard_arrow_up` : `keyboard_arrow_down`}
-
-                                        </span>{`Manager (${UserGuideHr.manager.length})`}</p>
-                                    <div className="collapse" data-toggle="collapse " id="show-asset-guide-hr-for-manager">
-                                        <ul className="todo-list" data-widget="todo-list">
+                                        </div>
+                                        <div className="box-body">
                                             {
-                                                UserGuideHr.manager.length > 0 && UserGuideHr.manager.map((obj, index) => (
-                                                    <li style={{ borderLeft: 'none', cursor: "pointer" }} key={index}>
+                                                HrGuide.manager.length ?
+                                                    <div>
+                                                        <p data-toggle="collapse" data-target="#show-asset-guide-hr-for-manager" aria-expanded="false" style={{ display: "flex", alignItems: "center", fontWeight: "bold", cursor: "pointer" }} onClick={() => showUserGuideHumanresourceForManager()}>
+                                                            <span className="material-icons" style={{ fontWeight: "bold", marginRight: '10px' }}>
+                                                                {humanResourceForManager ? `keyboard_arrow_up` : `keyboard_arrow_down`}
+
+                                                            </span>{`Manager (${HrGuide.manager.length})`}</p>
+                                                        <div className="collapse" data-toggle="collapse " id="show-asset-guide-hr-for-manager">
+                                                            <ul className="todo-list" data-widget="todo-list">
+                                                                {
+                                                                    HrGuide.manager.length > 0 && HrGuide.manager.map((obj, index) => (
+                                                                        <li style={{ borderLeft: 'none', cursor: "pointer" }} key={index}>
+                                                                            <div className="icheck-primary" style={{ display: "flex" }}>
+                                                                                <span className="material-icons" style={{ marginRight: '10px' }}>
+                                                                                    link
+                                                            </span>
+                                                                                {/* <a href={`${process.env.REACT_APP_WEBSITE + obj.detailPage}?name=hr&type=manager&id=${obj.id}&fileName=${obj.fileName}`} title="Xem chi tiet" target="_blank">{obj.pageName}</a> */}
+                                                                                <a href="#show-detail" title="Xem chi tiet" onClick={() => showFilePreview(obj)}>{obj.pageName}</a>
+                                                                            </div>
+                                                                        </li>
+                                                                    ))
+                                                                }
+                                                            </ul>
+                                                        </div>
+                                                    </div> : <></>
+                                            }
+
+                                            <p data-toggle="collapse" data-target="#show-asset-guide-hr-for-user" aria-expanded="false" style={{ display: "flex", alignItems: "center", fontWeight: "bold", cursor: "pointer" }} onClick={() => showUserGuideHumanresourceForUser()}>
+                                                <span className="material-icons" style={{ fontWeight: "bold", marginRight: '10px' }}>
+                                                    {humanResourceForUser ? `keyboard_arrow_up` : `keyboard_arrow_down`}
+
+                                                </span>User</p>
+                                            <div className="collapse" data-toggle="collapse " id="show-asset-guide-hr-for-user">
+                                                <ul className="todo-list" data-widget="todo-list">
+                                                    <li style={{ borderLeft: 'none', cursor: "pointer" }}>
                                                         <div className="icheck-primary" style={{ display: "flex" }}>
                                                             <span className="material-icons" style={{ marginRight: '10px' }}>
                                                                 link
-                                                            </span>
-                                                            {/* <a href={`${process.env.REACT_APP_WEBSITE + obj.detailPage}?name=hr&type=manager&id=${obj.id}&fileName=${obj.fileName}`} title="Xem chi tiet" target="_blank">{obj.pageName}</a> */}
-                                                            <a href="#show-detail" title="Xem chi tiet" onClick={() => showFilePreview(obj)}>{obj.pageName}</a>
+                                                    </span>
+                                                            <a href="#" title="Xem chi tiet" target="_blank">Chưa có dữ liệu</a>
                                                         </div>
                                                     </li>
-                                                ))
-                                            }
-                                        </ul>
+                                                </ul>
+                                            </div>
+                                        </div>
                                     </div>
-
-                                    <p data-toggle="collapse" data-target="#show-asset-guide-hr-for-user" aria-expanded="false" style={{ display: "flex", alignItems: "center", fontWeight: "bold", cursor: "pointer" }} onClick={() => showUserGuideHumanresourceForUser()}>
-                                        <span className="material-icons" style={{ fontWeight: "bold", marginRight: '10px' }}>
-                                            {humanResourceForUser ? `keyboard_arrow_up` : `keyboard_arrow_down`}
-
-                                        </span>User</p>
-                                    <div className="collapse" data-toggle="collapse " id="show-asset-guide-hr-for-user">
-                                        <ul className="todo-list" data-widget="todo-list">
-                                            <li style={{ borderLeft: 'none', cursor: "pointer" }}>
-                                                <div className="icheck-primary" style={{ display: "flex" }}>
-                                                    <span className="material-icons" style={{ marginRight: '10px' }}>
-                                                        link
-                                                    </span>
-                                                    <a href="#" title="Xem chi tiet" target="_blank">Chưa có dữ liệu</a>
-                                                </div>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </section>
+                                </section> : <> </>
+                        }
 
                         {/* Module QTHT */}
-                        <section className="col-lg-6 col-md-6">
-                            <div className="box">
-                                <div className="box-header with-border">
-                                    <h3 className="box-title" style={{ fontWeight: 600 }}>
-                                        Module quản trị hệ thống
+                        {SystemGuide.length ?
+                            <section className="col-lg-6 col-md-6">
+                                <div className="box">
+                                    <div className="box-header with-border">
+                                        <h3 className="box-title" style={{ fontWeight: 600 }}>
+                                            Module quản trị hệ thống
                                     </h3>
-                                </div>
-                                <div className="box-body">
-                                    <p data-toggle="collapse" data-target="#show-asset-guide-system-for-user" aria-expanded="false" style={{ display: "flex", alignItems: "center", fontWeight: "bold", cursor: "pointer" }} onClick={() => showUserGuideSystem()}>
-                                        <span className="material-icons" style={{ fontWeight: "bold", marginRight: '10px' }}>
-                                            {managerSystem ? `keyboard_arrow_up` : `keyboard_arrow_down`}
+                                    </div>
+                                    <div className="box-body">
+                                        <p data-toggle="collapse" data-target="#show-asset-guide-system-for-user" aria-expanded="false" style={{ display: "flex", alignItems: "center", fontWeight: "bold", cursor: "pointer" }} onClick={() => showUserGuideSystem()}>
+                                            <span className="material-icons" style={{ fontWeight: "bold", marginRight: '10px' }}>
+                                                {managerSystem ? `keyboard_arrow_up` : `keyboard_arrow_down`}
 
-                                        </span>{`Super admin (${UserGuideSystem.length})`} </p>
-                                    <div className="collapse" data-toggle="collapse " id="show-asset-guide-system-for-user">
-                                        <ul className="todo-list" data-widget="todo-list">
-                                            {
-                                                UserGuideSystem.length > 0 && UserGuideSystem.map((obj, index) => (
-                                                    <li style={{ borderLeft: 'none', cursor: "pointer" }} key={index}>
-                                                        <div className="icheck-primary" style={{ display: "flex" }}>
-                                                            <span className="material-icons" style={{ marginRight: '10px' }}>
-                                                                link
+                                            </span>{`Super admin (${SystemGuide.length})`} </p>
+                                        <div className="collapse" data-toggle="collapse " id="show-asset-guide-system-for-user">
+                                            <ul className="todo-list" data-widget="todo-list">
+                                                {
+                                                    SystemGuide.length > 0 && SystemGuide.map((obj, index) => (
+                                                        <li style={{ borderLeft: 'none', cursor: "pointer" }} key={index}>
+                                                            <div className="icheck-primary" style={{ display: "flex" }}>
+                                                                <span className="material-icons" style={{ marginRight: '10px' }}>
+                                                                    link
                                                         </span>
-                                                            {/* <a href={`${process.env.REACT_APP_WEBSITE + obj.detailPage}?name=System&id=${obj.id}&fileName=${obj.fileName}`} title="Xem chi tiet" target="_blank">{obj.pageName}</a> */}
-                                                            <a href="#show-detail" title="Xem chi tiet" onClick={() => showFilePreview(obj)}>{obj.pageName}</a>
-                                                        </div>
-                                                    </li>
-                                                ))
-                                            }
+                                                                {/* <a href={`${process.env.REACT_APP_WEBSITE + obj.detailPage}?name=System&id=${obj.id}&fileName=${obj.fileName}`} title="Xem chi tiet" target="_blank">{obj.pageName}</a> */}
+                                                                <a href="#show-detail" title="Xem chi tiet" onClick={() => showFilePreview(obj)}>{obj.pageName}</a>
+                                                            </div>
+                                                        </li>
+                                                    ))
+                                                }
 
-                                        </ul>
+                                            </ul>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        </section>
+                            </section> : <> </>
+                        }
                     </div>
                 </div>
             </div>
         </React.Fragment>
     );
 };
+function mapState(state) {
+    const { auth, role } = state;
 
-export default connect(null, null)(withTranslate(UserGuide));
+    return { auth, role }
+}
+
+const mapDispatchToProps = {
+    getAllRole: RoleActions.get,
+}
+
+
+const connectedUserGuideManagementTable = connect(mapState, mapDispatchToProps)(withTranslate(UserGuide));
+export { connectedUserGuideManagementTable as UserGuide };

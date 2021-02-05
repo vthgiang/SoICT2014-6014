@@ -2,11 +2,15 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DialogModal } from '../../../common-components';
+import { DialogModal, PaginateBar } from '../../../common-components';
 
 class ViewAllEmployee extends Component {
     constructor(props) {
         super(props);
+        this.state = {
+            page: 0,
+            limit: 10,
+        }
     };
 
     /**
@@ -33,9 +37,26 @@ class ViewAllEmployee extends Component {
         return date;
     };
 
+    /**
+     * Bắt sự kiện chuyển trang
+     * @param {*} pageNumber :  Số trang muốn xem
+     */
+    setPage = async (pageNumber) => {
+        await this.setState({
+            page: parseInt(pageNumber - 1),
+        });
+    }
+
     render() {
         const { translate } = this.props;
         const { dataEmployee, title, viewAll = false } = this.props;
+        const { page, limit } = this.state;
+
+        let pageTotal = (dataEmployee.length % limit === 0) ?
+            parseInt(dataEmployee.length / limit) :
+            parseInt((dataEmployee.length / limit) + 1);
+        let currentPage = parseInt(page + 1);
+        const listData = dataEmployee.slice(page * limit, page * limit + limit)
 
         return (
             <React.Fragment>
@@ -60,10 +81,10 @@ class ViewAllEmployee extends Component {
                             </thead>
                             <tbody>
                                 {
-                                    dataEmployee && dataEmployee.length !== 0 &&
-                                    dataEmployee.map((x, index) => (
+                                    listData && listData.length !== 0 &&
+                                    listData.map((x, index) => (
                                         <tr key={index}>
-                                            <td>{index + 1}</td>
+                                            <td>{page * limit + index + 1}</td>
                                             <td>{x.fullName}</td>
                                             <td>{translate(`human_resource.profile.${x.gender}`)}</td>
                                             <td>{this.formatDate(x.birthdate, false)}</td>
@@ -74,6 +95,7 @@ class ViewAllEmployee extends Component {
                                 }
                             </tbody>
                         </table>
+                        <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={currentPage} func={this.setPage} />
                     </form>
                 </DialogModal>
             </React.Fragment>

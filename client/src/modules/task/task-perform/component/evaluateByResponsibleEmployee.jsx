@@ -159,7 +159,9 @@ class EvaluateByResponsibleEmployee extends Component {
         } else {
             let strPrevMonth = `${monthOfPrevEval + 1}-${yearOfPrevEval}`
             // trong TH k có đánh giá tháng trước, so sánh tháng trước với tháng start date
-            if (!((yearOfPrevEval === new Date(startDate).getFullYear()) && monthOfPrevEval <= new Date(startDate).getMonth())) {
+            if (!((yearOfPrevEval === new Date(startDate).getFullYear() && monthOfPrevEval < new Date(startDate).getMonth()) // bắt đầu tháng bất kì khác tháng 1
+                || (yearOfPrevEval < new Date(startDate).getFullYear()) // TH bắt đầu là tháng 1 - chọn đánh giá tháng 1
+            )) {
                 prevDate = moment(strPrevMonth, 'MM-YYYY').endOf("month").format('DD-MM-YYYY');
             }
         }
@@ -550,8 +552,8 @@ class EvaluateByResponsibleEmployee extends Component {
         dateValue.setHours(0);
         startDate.setHours(0);
         // tính hiệu giữa ngày đánh giá so với ngày bắt đầu và ngày kết thúc của công việc
-        let dst = (dateValue.getTime() - startDate.getTime()); // < 0 -> err
-        let det = (endDate.getTime() - dateValue.getTime()); // < 0 -> err
+        let dst = (dateValue.getTime() - startDate.getTime()); // < 0 -> err // denta start task
+        let det = (endDate.getTime() - dateValue.getTime()); // < 0 -> err // denta end task
 
         // validate ngày đánh giá
         let err;
@@ -572,6 +574,24 @@ class EvaluateByResponsibleEmployee extends Component {
 
         if (tmp) {
             errMonth = "Tháng này đã có đánh giá";
+        }
+        // validate tháng đánh giá phải trong thời gian làm việc.
+        // đưa về cùng ngày - giờ để so sánh tháng năm
+        dateValue.setDate(15);
+        startDate.setDate(15);
+        endDate.setDate(15);
+        dateValue.setHours(0);
+        startDate.setHours(0);
+        endDate.setHours(0);
+        // tính hiệu giữa ngày đánh giá so với ngày bắt đầu và ngày kết thúc của công việc
+        let dst2 = (dateValue.getTime() - startDate.getTime()); // < 0 -> err // denta start task
+        let det2 = (endDate.getTime() - dateValue.getTime()); // < 0 -> err // denta end task
+
+        console.log('dateValue.getTime() - startDate.getTime()', dateValue, startDate);
+        if(dst2 < 0) {
+            errMonth = "Tháng đánh giá phải lớn hơn hoặc bằng tháng bắt đầu";
+        } else if(det2 < 0) {
+            // errMonth = "Tháng đánh giá phải nhỏ hơn hoặc bằng tháng kết thúc";
         }
 
         let data = this.getData(evalDate);

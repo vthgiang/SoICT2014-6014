@@ -6,10 +6,9 @@ import moment from 'moment';
 import { DialogModal, ButtonModal, SelectBox, DatePicker, TreeSelect, ErrorLabel, UploadFile } from '../../../../../common-components';
 import { DocumentActions } from '../../../redux/actions';
 import { DocumentImportForm } from './documentImportForm';
-import { UserAction } from '../'
 import { AddVersion } from './addVerson';
 import EditVersionForm from './editVersionForm';
-import { setStorage, getStorage } from '../../../../../config';
+import { getStorage } from '../../../../../config';
 
 class CreateForm extends Component {
     constructor(props) {
@@ -605,6 +604,7 @@ class CreateForm extends Component {
         const relationshipDocs = documents.administration.relationshipDocs.paginate.map(doc => { return { value: doc._id, text: doc.name } });
         let path = documentArchives ? this.findPath(archives, documentArchives) : "";
 
+        console.log('aaaaaaaa', role);
 
         return (
             <React.Fragment>

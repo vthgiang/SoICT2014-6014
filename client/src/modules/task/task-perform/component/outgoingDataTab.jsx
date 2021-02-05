@@ -1,10 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { ApiImage, Comment } from '../../../../common-components'
 import { withTranslate } from "react-redux-multilingual";
+import parse from 'html-react-parser';
+
+import { ApiImage, Comment } from '../../../../common-components'
+
 import { AuthActions } from '../../../auth/redux/actions';
 import { performTaskAction } from '../redux/actions';
-import { CommentInProcess } from './commentInProcess';
+
 class OutgoingDataTab extends Component {
 
     constructor(props) {
@@ -16,6 +19,8 @@ class OutgoingDataTab extends Component {
         this.state = {
             taskId: undefined,
             task: undefined,
+            isOutputInformation: {},
+            isOutputDocument: {},
         }
     }
 
@@ -171,7 +176,7 @@ class OutgoingDataTab extends Component {
                                                     onClick={() => this.handleCheckBoxOutputInformation(info)}
                                                     checked={isOutputInformation[info._id]}
                                                 />
-                                                <strong>{info.name}:</strong>
+                                                <strong style={{ marginRight: '5px' }}>{info.name}:</strong>
                                             </label>
                                             <span>{info.value}</span>
                                         </div>
@@ -193,9 +198,9 @@ class OutgoingDataTab extends Component {
                                                         title={translate('task.task_process.export_doc')}
                                                         name={document.description}
                                                         onClick={() => this.handleCheckBoxOutputDocument(document)}
-                                                        checked={isOutputDocument[document._id]}
+                                                        checked={isOutputDocument && isOutputDocument[document._id]}
                                                     />
-                                                    <strong>{document.description} ({document.files.length} tài liệu)</strong>
+                                                    <strong>{parse(document.description)} ({document.files.length} tài liệu)</strong>
                                                 </label>
                                             </div>
 

@@ -278,17 +278,17 @@ exports.updateEmployeeKpiSetStatus = async (portal, id, statusId, companyId) => 
             { path: 'comments.comments.creator', select: 'name email avatar' }
         ])
         .execPopulate();
-    
+    const date = (employeeKpiSet.date).getMonth() + 1;
     const data = {
         organizationalUnits: employeeKpiSet.organizationalUnit._id,
         title: "Xin phê duyệt KPI",
         level: "general",
-        content: `<p><strong>${employeeKpiSet.creator.name}</strong> đã gửi yêu cầu phê duyệt KPI, <a href="${process.env.WEBSITE}/kpi-member/manager">Xem ngay</a></p>`,
+        content: `<p><strong>${employeeKpiSet.creator.name}</strong> đã gửi yêu cầu phê duyệt KPI tháng <strong>${date}</strong>, <a href="${process.env.WEBSITE}/kpi-member/manager">Xem ngay</a></p>`,
         sender: `${employeeKpiSet.creator.name}`,
         users: [employeeKpiSet.approver._id],
         associatedDataObject: {
             dataType: 3,
-            description: `<p><strong>${employeeKpiSet.creator.name}</strong>: Đã gửi yêu cầu phê duyệt KPI.</p>`
+            description: `<p><strong>${employeeKpiSet.creator.name}</strong>: Đã gửi yêu cầu phê duyệt KPI tháng <strong>${date}</strong>.</p>`
         }
     };
     NotificationServices.createNotification(portal, companyId, data)
