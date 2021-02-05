@@ -2934,6 +2934,7 @@ export default {
                 // warning
                 warning: "Warning",
                 not_have_evaluation: "No one evaluate task this month",
+                warning_evaluate: "Evaluation is coming soon. You need to evaluate the work this month",
                 you_need: "You need",
                 confirm_task: "confirm take part in this task",
                 not_confirm: "Not confirm this task",
@@ -3649,6 +3650,7 @@ export default {
                     edit_kpi_failure: "Editing KPI falied",
                     delete_kpi_success: "Delete KPI successfully",
                     delete_kpi_failure: "Delete KPI unsuccessfully",
+                    copy_kpi_unit: "Copy KPI Unit",
 
                     // Nhóm dành cho trọng số
                     weight_total: "Weight total",

@@ -100,11 +100,6 @@ class QualificationChart extends Component {
         return null;
     }
     shouldComponentUpdate(nextProps, nextState) {
-        // if (nextProps.organizationalUnits !== this.state.organizationalUnits ||
-        //     !QualificationChart.isEqual(nextProps.employeesManager.listAllEmployees, this.state.listAllEmployees) ||
-        //     !QualificationChart.isEqual(nextProps.employeesManager.listEmployeesOfOrganizationalUnits, this.state.listEmployeesOfOrganizationalUnits)) {
-        //     return true;
-        // };
         return true;
     }
 
@@ -203,14 +198,15 @@ class QualificationChart extends Component {
                         </div>
                         <section id={"donutChart"} className="c3-chart-container">
                             <div ref="donutChart"></div>
-                        
-                            <CustomLegendC3js
-                                chart={this.chart}
-                                chartId={"donutChart"}
-                                legendId={"donutChartLegend"}
-                                title={`${translate('kpi.evaluation.employee_evaluation.KPI_list')}`}
-                                dataChartLegend={this.dataChart && this.dataChart.map(item => item[0])}
-                            />
+                            <div style={{ paddingTop: 10 }}>
+                                <CustomLegendC3js
+                                    chart={this.chart}
+                                    chartId={"donutChart"}
+                                    legendId={"donutChartLegend"}
+                                    title={`${typeChart ? "Danh sách trình độ chuyên ngành" : "Dánh sách trình độ chuyên môn"}`}
+                                    dataChartLegend={this.dataChart && this.dataChart.map(item => item[0])}
+                                />
+                            </div>
                         </section>
                     </div>
                 </div>

@@ -1066,7 +1066,7 @@ export default {
             manageDocument: "Quản lý văn bản",
             manageDocumentType: "Quản lý loại văn bản",
 
-            leave_application: "Quản lý đơn xin nghỉ",
+            leave_application: "Quản lý đơn xin nghỉ đơn vị",
             manage_employee: "Quản lý nhân sự",
             manage_work_plan: "Quản lý kế hoạch làm việc",
             manage_training: "Quản lý đào tạo",
@@ -3208,6 +3208,7 @@ export default {
                 // warning
                 warning: "Cảnh báo",
                 not_have_evaluation: "Chưa có đánh giá công việc tháng này",
+                warning_evaluate: "Sắp đến hạn đánh giá. Bạn cần đánh giá công việc tháng này",
                 you_need: "Bạn cần",
                 confirm_task: "xác nhận tham gia công việc này",
                 not_confirm: "Chưa xác nhận công việc",
@@ -3949,6 +3950,7 @@ export default {
                     edit_kpi_failure: "Chỉnh sửa KPI không thành công",
                     delete_kpi_success: "Xóa KPI thành công",
                     delete_kpi_failure: "Xóa KPI không thành công",
+                    copy_kpi_unit: "Sao chép KPI đơn vị",
 
                     // Nhóm dành cho trọng số
                     weight_total: "Tổng trọng số",

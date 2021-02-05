@@ -635,9 +635,6 @@ exports.links = [
         url: '/documents',
         apis: ['@all']
     }, {
-        url: '/hr-employee-capacity',
-        apis: ['@all']
-    }, {
         url: '/hr-manage-work-plan',
         apis: ['@all']
     }, {
@@ -936,9 +933,6 @@ exports.links = [
     }, {
 
         url: '/user-guide',
-        apis: ['@all']
-    },{
-        url: '/user-guide-detail',
         apis: ['@all']
     }, {
         url: '/time-sheet-log/all',

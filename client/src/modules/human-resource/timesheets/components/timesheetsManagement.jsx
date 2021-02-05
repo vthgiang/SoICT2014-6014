@@ -573,17 +573,20 @@ class TimesheetsManagement extends Component {
                                                                 let check = false;
                                                                 let data = []
                                                                 annualLeaves.forEach(a => {
-                                                                    console.log(y.time)
-                                                                    console.log(a.startDate)
                                                                     if (new Date(a.startDate).getTime() <= new Date(y.time).getTime() && new Date(a.endDate).getTime() >= new Date(y.time).getTime()) {
                                                                         check = true;
                                                                         data = [...data, a]
                                                                     }
                                                                 })
                                                                 return (
-                                                                    <td key={indexs} title={check ? data[0].reason : ""} style={{ backgroundColor: check ? "#e0e0e0" : "none", borderBottomColor: check ? "#e0e0e0" : "none" }}>
+                                                                    <td key={indexs} className="tooltip-timesheet" style={{ backgroundColor: check ? "#e0e0e0" : "none", borderBottomColor: check ? "#e0e0e0" : "none" }}>
                                                                         {shift1s[indexs] && indexs < dayNow ? <i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i> :
                                                                             (indexs < dayNow ? <i style={{ color: "red" }} className="glyphicon glyphicon-remove"></i> : null)}
+                                                                        {check &&
+                                                                            <span className="tooltiptext">
+                                                                                {data[0].reason}
+                                                                            </span>
+                                                                        }
                                                                     </td>
                                                                 )
                                                             })
@@ -602,12 +605,17 @@ class TimesheetsManagement extends Component {
                                                                     }
                                                                 })
                                                                 return (
-                                                                    <td key={indexs} title={check ? data[0].reason : ""} style={{
+                                                                    <td key={indexs} className="tooltip-timesheet" style={{
                                                                         backgroundColor: check ? "#e0e0e0" : "none",
                                                                         borderTopColor: check ? "#e0e0e0" : "none", borderBottomColor: check ? "#e0e0e0" : "none"
                                                                     }} >
                                                                         {shift2s[indexs] === true && indexs < dayNow ? <i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i> :
                                                                             (indexs < dayNow ? <i style={{ color: "red" }} className="glyphicon glyphicon-remove"></i> : null)}
+                                                                        {check &&
+                                                                            <span className="tooltiptext">
+                                                                                {data[0].reason}
+                                                                            </span>
+                                                                        }
                                                                     </td>
                                                                 )
                                                             })
@@ -626,9 +634,19 @@ class TimesheetsManagement extends Component {
                                                                     }
                                                                 })
                                                                 return (
-                                                                    <td key={indexs} title={check ? data[0].reason : ""} style={{ backgroundColor: check ? "#e0e0e0" : "none", borderTopColor: check ? "#e0e0e0" : "none" }} >
+                                                                    <td className="tooltip-timesheet" key={indexs} style={{ backgroundColor: check ? "#e0e0e0" : "none", borderTopColor: check ? "#e0e0e0" : "none" }} >
                                                                         {shift3s[indexs] === true && indexs < dayNow ? <i style={{ color: "#08b30e" }} className="glyphicon glyphicon-ok"></i> :
                                                                             (indexs < dayNow ? <i style={{ color: "red" }} className="glyphicon glyphicon-remove"></i> : null)}
+                                                                        {check &&
+                                                                            <span className="tooltiptext">
+                                                                                {data[0].reason}
+                                                                                <p>{"Từ " + (data[0].startTime ? data[0].startTime : "") + " " + this.formatDate(data[0].startDate)
+                                                                                    + ' đến '
+                                                                                    + (data[0].endTime ? data[0].endTime : "") + " " + this.formatDate(data[0].endDate)
+                                                                                }
+                                                                                </p>
+                                                                            </span>
+                                                                        }
                                                                     </td>
                                                                 )
                                                             })
@@ -690,16 +708,20 @@ class TimesheetsManagement extends Component {
                                                             let check = false;
                                                             let data = []
                                                             annualLeaves.forEach(a => {
-                                                                console.log(y.time)
-                                                                console.log(a.startDate)
                                                                 if (new Date(a.startDate).getTime() <= new Date(y.time).getTime() && new Date(a.endDate).getTime() >= new Date(y.time).getTime()) {
                                                                     check = true;
                                                                     data = [...data, a]
                                                                 }
                                                             })
                                                             return (
-                                                                <td key={indexs} title={check ? data[0].reason : ""} style={{ backgroundColor: check ? "#e0e0e0" : "none" }}>
+                                                                <td key={indexs} className="tooltip-timesheet" style={{ backgroundColor: check ? "#e0e0e0" : "none" }}>
                                                                     {timekeepingByHours[indexs] !== 0 ? timekeepingByHours[indexs] : null}
+                                                                    {check &&
+                                                                        <span className="tooltiptext">
+                                                                            {data[0].reason}
+
+                                                                        </span>
+                                                                    }
                                                                 </td>
                                                             )
                                                         })

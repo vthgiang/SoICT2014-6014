@@ -2,15 +2,37 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DialogModal } from '../../../common-components';
+import { DialogModal, PaginateBar } from '../../../common-components';
 
 class ViewAllSalary extends Component {
     constructor(props) {
         super(props);
+        this.state = {
+            page: 0,
+            limit: 10,
+        }
     };
+
+    /**
+     * Bắt sự kiện chuyển trang
+     * @param {*} pageNumber :  Số trang muốn xem
+     */
+    setPage = async (pageNumber) => {
+        await this.setState({
+            page: parseInt(pageNumber - 1),
+        });
+    }
 
     render() {
         const { dataSalary, title, viewTotalSalary = false, } = this.props;
+
+        const { page, limit } = this.state;
+
+        let pageTotal = (dataSalary.length % limit === 0) ?
+            parseInt(dataSalary.length / limit) :
+            parseInt((dataSalary.length / limit) + 1);
+        let currentPage = parseInt(page + 1);
+        const listData = dataSalary.slice(page * limit, page * limit + limit)
 
         let formater = new Intl.NumberFormat();
         return (
@@ -34,10 +56,10 @@ class ViewAllSalary extends Component {
                             </thead>
                             <tbody>
                                 {
-                                    dataSalary && dataSalary.length !== 0 &&
-                                    dataSalary.map((x, index) => (
+                                    listData && listData.length !== 0 &&
+                                    listData.map((x, index) => (
                                         <tr key={index}>
-                                            <td>{index + 1}</td>
+                                            <td>{page * limit + index + 1}</td>
                                             <td>{x.employee.employeeNumber}</td>
                                             <td>{x.employee.fullName}</td>
                                             { viewTotalSalary && <td>{formater.format(x.total)} {x.unit}</td>}
@@ -46,6 +68,7 @@ class ViewAllSalary extends Component {
                                 }
                             </tbody>
                         </table>
+                        <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={currentPage} func={this.setPage} />
                     </form>
                 </DialogModal>
             </React.Fragment>

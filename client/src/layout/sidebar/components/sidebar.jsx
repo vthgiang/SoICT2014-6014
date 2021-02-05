@@ -390,7 +390,7 @@ class SideBar extends Component {
                                 }}
                             />
 
-                            {/* Quản lý đơn xin nghỉ phép */}
+                            {/* Quản lý đơn xin nghỉ phép đơn vị */}
                             <Item
                                 item={{
                                     name: "menu.leave_application",
@@ -406,7 +406,6 @@ class SideBar extends Component {
                                     icon: "fa fa-address-book",
                                     list: [
                                         { name: "menu.dashboard_employee", icon: "fa fa-dashboard", path: "/hr-dashboard-employee" },
-                                        { name: "menu.employee_capacity", icon: "fa fa-dashboard", path: "/hr-employee-capacity" },
                                         { name: "menu.manage_unit", icon: "fa fa-sitemap", path: "/hr-manage-department" },
                                         { name: "menu.add_employee", icon: "fa fa-user-plus", path: "/hr-add-employee" },
                                         { name: "menu.list_employee", icon: "fa fa-address-card", path: "/hr-list-employee" },
