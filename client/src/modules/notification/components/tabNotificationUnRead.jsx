@@ -6,6 +6,7 @@ import { NotificationActions } from '../redux/actions';
 import NotificationReceiveredInfo from './notificationReiceiveredInfo';
 import parse from 'html-react-parser';
 import innerText from 'react-innertext';
+import { NotificationFilterByModules } from '../../../helpers/NotificationFilterByModules';
 class TabNotificationUnRead extends Component {
     constructor(props) {
         super(props);
@@ -26,6 +27,8 @@ class TabNotificationUnRead extends Component {
         const { translate, notifications } = this.props;
         const { currentRow } = this.state;
         let content = [];
+        let notifyTaskUnRead = [], notifyAssetUnRead = [], notifyKPIUnRead = [], notifyDefault = [];
+
         if (notifications.isLoading === false) {
             content = notifications.receivered.paginate.map(x => x.content);
             content = content.map(x => {
@@ -51,6 +54,14 @@ class TabNotificationUnRead extends Component {
             });
         }
 
+        if (notifications.receivered.paginate.length > 0) {
+            const data = NotificationFilterByModules(notifications.receivered.paginate);
+            notifyTaskUnRead = data.notifyTask;
+            notifyAssetUnRead = data.notifyAsset;
+            notifyKPIUnRead = data.notifyKPI;
+            notifyDefault = data.notifyDefault;
+        }
+
         return (
             <React.Fragment>
                 {
@@ -68,41 +79,210 @@ class TabNotificationUnRead extends Component {
                     />
                 }
                 <div id="tab-notification-un-read" style={{ display: 'block' }}>
-                    <ul className="todo-list">
-                        {
-                            notifications.receivered.paginate.length > 0 ?
-                                notifications.receivered.paginate.map((notification, index) =>
-                                    <li key={index} style={{ border: "none", backgroundColor: "white", cursor: "pointer", overflow: "hidden" }}>
-                                        <div className="row" >
-                                            <div style={{ marginBottom: 5 }} className="col-sm-11" onClick={() => this.handleEdit(notification)}>
-                                                <div>{
-                                                    notification.level === 'info' ? <i className="fa fa-fw fa-info-circle text-blue" /> :
-                                                        notification.level === 'general' ? <i className="fa fa-fw fa-bell" style={{ color: `${this.checkPriority(notification.associatedDataObject && notification.associatedDataObject.value)}` }} /> :
-                                                            notification.level === 'important' ? <i className="fa fa-fw fa-warning text-yellow" /> :
-                                                                <i className="fa fa-fw fa-bomb text-red" />
-                                                }
-                                                    <DateTimeConverter dateTime={notification.createdAt} type={1} />
-                                                    {notification.readed ?
-                                                        <div className="label" style={{ width: 30, display: "inline-block", margin: "0 0 0 5px" }}></div> :
-                                                        <div className="label label-danger" style={{ width: 30, display: "inline-block", margin: "0 0 0 5px" }}>{translate('notification.new')}</div>
-                                                    }</div>
-                                                <span className="threedots" style={{ maxWidth: "100%", display: "inline-block" }}><b>{notification.title}</b> {content[index]}</span>
-                                            </div>
-                                            <div className="col-sm-1">
-                                                <DeleteNotification
-                                                    content={translate('notification.delete')}
-                                                    data={{ id: notification._id, info: notification.title }}
-                                                    func={this.props.deleteNotification}
-                                                />
+                    <div className="nav-tabs-custom">
+                        <ul className="notify-tabs nav nav-tabs">
+                            <li className="active"><a className="notify-action" href="#allNotificationUnread" data-toggle="tab" >{`Tất cả (${notifications.receivered.paginate.length})`}</a></li>
+                            <li><a className="notify-action" href="#allNotificationUnreadDefault" data-toggle="tab" >{`Chung (${notifyDefault.length})`}</a></li>
+                            <li><a className="notify-action" href="#allNotificationUnreadOfTask" data-toggle="tab" >{`Công việc (${notifyTaskUnRead.length})`}</a></li>
+                            <li><a className="notify-action" href="#allNotificationUnreadOfAsset" data-toggle="tab" >{`Tài sản (${notifyAssetUnRead.length})`}</a></li>
+                            <li><a className="notify-action" href="#allNotificationUnreadOfKPI" data-toggle="tab" >{`KPI (${notifyKPIUnRead.length})`}</a></li>
+                        </ul>
+                        <div className="tab-content">
+                            <div className="tab-pane active notifi-tab-pane" id="allNotificationUnread">
+                                <ul className="todo-list">
+                                    {
+                                        notifications.receivered.paginate.length > 0 ?
+                                            notifications.receivered.paginate.map((notification, index) =>
+                                                <li key={index} style={{ border: "none", backgroundColor: "white", cursor: "pointer", overflow: "hidden", borderBottom: '1px solid #ececec' }}>
+                                                    <div className="row" >
+                                                        <div style={{ marginBottom: 5 }} className="col-sm-11" onClick={() => this.handleEdit(notification)}>
+                                                            <div>{
+                                                                notification.level === 'info' ? <i className="fa fa-fw fa-info-circle text-blue" /> :
+                                                                    notification.level === 'general' ? <i className="fa fa-fw fa-bell" style={{ color: `${this.checkPriority(notification.associatedDataObject && notification.associatedDataObject.value)}` }} /> :
+                                                                        notification.level === 'important' ? <i className="fa fa-fw fa-warning text-yellow" /> :
+                                                                            <i className="fa fa-fw fa-bomb text-red" />
+                                                            }
+                                                                <DateTimeConverter dateTime={notification.createdAt} type={1} />
+                                                                {notification.readed ?
+                                                                    <div className="label" style={{ width: 30, display: "inline-block", margin: "0 0 0 5px" }}></div> :
+                                                                    <div className="label label-danger" style={{ width: 30, display: "inline-block", margin: "0 0 0 5px" }}>{translate('notification.new')}</div>
+                                                                }</div>
+                                                            <span className="threedots" style={{ maxWidth: "100%", display: "inline-block" }}><b>{notification.title}</b> {content[index]}</span>
+                                                        </div>
+                                                        <div className="col-sm-1">
+                                                            <DeleteNotification
+                                                                content={translate('notification.delete')}
+                                                                data={{ id: notification._id, info: notification.title }}
+                                                                func={this.props.deleteNotification}
+                                                            />
 
-                                            </div>
-                                        </div>
-                                    </li>
-                                ) : notifications.isLoading ?
-                                    <div className="table-info-panel" style={{ textAlign: "left" }}>{translate('general.loading')}</div> :
-                                    <div className="table-info-panel" style={{ textAlign: "left" }}>{translate('general.no_data')}</div>
-                        }
-                    </ul>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            ) : notifications.isLoading ?
+                                                <div className="table-info-panel" style={{ textAlign: "left" }}>{translate('general.loading')}</div> :
+                                                <div className="table-info-panel" style={{ textAlign: "left" }}>{translate('general.no_data')}</div>
+                                    }
+                                </ul>
+                            </div>
+
+                            {/* Tab thông báo chung */}
+                            <div className="tab-pane notifi-tab-pane" id="allNotificationUnreadDefault">
+                                <ul className="todo-list">
+                                    {
+                                        notifyDefault.length > 0 ?
+                                            notifyDefault.map((notification, index) =>
+                                                <li key={index} style={{ border: "none", backgroundColor: "white", cursor: "pointer", overflow: "hidden", borderBottom: '1px solid #ececec' }}>
+                                                    <div className="row" >
+                                                        <div style={{ marginBottom: 5 }} className="col-sm-11" onClick={() => this.handleEdit(notification)}>
+                                                            <div>{
+                                                                notification.level === 'info' ? <i className="fa fa-fw fa-info-circle text-blue" /> :
+                                                                    notification.level === 'general' ? <i className="fa fa-fw fa-bell" style={{ color: `${this.checkPriority(notification.associatedDataObject && notification.associatedDataObject.value)}` }} /> :
+                                                                        notification.level === 'important' ? <i className="fa fa-fw fa-warning text-yellow" /> :
+                                                                            <i className="fa fa-fw fa-bomb text-red" />
+                                                            }
+                                                                <DateTimeConverter dateTime={notification.createdAt} type={1} />
+                                                                {notification.readed ?
+                                                                    <div className="label" style={{ width: 30, display: "inline-block", margin: "0 0 0 5px" }}></div> :
+                                                                    <div className="label label-danger" style={{ width: 30, display: "inline-block", margin: "0 0 0 5px" }}>{translate('notification.new')}</div>
+                                                                }</div>
+                                                            <span className="threedots" style={{ maxWidth: "100%", display: "inline-block" }}><b>{notification.title}</b> {content[index]}</span>
+                                                        </div>
+                                                        <div className="col-sm-1">
+                                                            <DeleteNotification
+                                                                content={translate('notification.delete')}
+                                                                data={{ id: notification._id, info: notification.title }}
+                                                                func={this.props.deleteNotification}
+                                                            />
+
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            ) : notifications.isLoading ?
+                                                <div className="table-info-panel" style={{ textAlign: "left" }}>{translate('general.loading')}</div> :
+                                                <div className="table-info-panel" style={{ textAlign: "left" }}>{translate('general.no_data')}</div>
+                                    }
+                                </ul>
+                            </div>
+
+                            {/* Tab thông công việc */}
+                            <div className="tab-pane notifi-tab-pane" id="allNotificationUnreadOfTask">
+                                <ul className="todo-list">
+                                    {
+                                        notifyTaskUnRead.length > 0 ?
+                                            notifyTaskUnRead.map((notification, index) =>
+                                                <li key={index} style={{ border: "none", backgroundColor: "white", cursor: "pointer", overflow: "hidden", borderBottom: '1px solid #ececec' }}>
+                                                    <div className="row" >
+                                                        <div style={{ marginBottom: 5 }} className="col-sm-11" onClick={() => this.handleEdit(notification)}>
+                                                            <div>{
+                                                                notification.level === 'info' ? <i className="fa fa-fw fa-info-circle text-blue" /> :
+                                                                    notification.level === 'general' ? <i className="fa fa-fw fa-bell" style={{ color: `${this.checkPriority(notification.associatedDataObject && notification.associatedDataObject.value)}` }} /> :
+                                                                        notification.level === 'important' ? <i className="fa fa-fw fa-warning text-yellow" /> :
+                                                                            <i className="fa fa-fw fa-bomb text-red" />
+                                                            }
+                                                                <DateTimeConverter dateTime={notification.createdAt} type={1} />
+                                                                {notification.readed ?
+                                                                    <div className="label" style={{ width: 30, display: "inline-block", margin: "0 0 0 5px" }}></div> :
+                                                                    <div className="label label-danger" style={{ width: 30, display: "inline-block", margin: "0 0 0 5px" }}>{translate('notification.new')}</div>
+                                                                }</div>
+                                                            <span className="threedots" style={{ maxWidth: "100%", display: "inline-block" }}><b>{notification.title}</b> {content[index]}</span>
+                                                        </div>
+                                                        <div className="col-sm-1">
+                                                            <DeleteNotification
+                                                                content={translate('notification.delete')}
+                                                                data={{ id: notification._id, info: notification.title }}
+                                                                func={this.props.deleteNotification}
+                                                            />
+
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            ) : notifications.isLoading ?
+                                                <div className="table-info-panel" style={{ textAlign: "left" }}>{translate('general.loading')}</div> :
+                                                <div className="table-info-panel" style={{ textAlign: "left" }}>{translate('general.no_data')}</div>
+                                    }
+                                </ul>
+                            </div>
+
+                            {/* Tab thông báo tài sản */}
+                            <div className="tab-pane notifi-tab-pane" id="allNotificationUnreadOfAsset">
+                                <ul className="todo-list">
+                                    {
+                                        notifyAssetUnRead.length > 0 ?
+                                            notifyAssetUnRead.map((notification, index) =>
+                                                <li key={index} style={{ border: "none", backgroundColor: "white", cursor: "pointer", overflow: "hidden", borderBottom: '1px solid #ececec' }}>
+                                                    <div className="row" >
+                                                        <div style={{ marginBottom: 5 }} className="col-sm-11" onClick={() => this.handleEdit(notification)}>
+                                                            <div>{
+                                                                notification.level === 'info' ? <i className="fa fa-fw fa-info-circle text-blue" /> :
+                                                                    notification.level === 'general' ? <i className="fa fa-fw fa-bell" style={{ color: `${this.checkPriority(notification.associatedDataObject && notification.associatedDataObject.value)}` }} /> :
+                                                                        notification.level === 'important' ? <i className="fa fa-fw fa-warning text-yellow" /> :
+                                                                            <i className="fa fa-fw fa-bomb text-red" />
+                                                            }
+                                                                <DateTimeConverter dateTime={notification.createdAt} type={1} />
+                                                                {notification.readed ?
+                                                                    <div className="label" style={{ width: 30, display: "inline-block", margin: "0 0 0 5px" }}></div> :
+                                                                    <div className="label label-danger" style={{ width: 30, display: "inline-block", margin: "0 0 0 5px" }}>{translate('notification.new')}</div>
+                                                                }</div>
+                                                            <span className="threedots" style={{ maxWidth: "100%", display: "inline-block" }}><b>{notification.title}</b> {content[index]}</span>
+                                                        </div>
+                                                        <div className="col-sm-1">
+                                                            <DeleteNotification
+                                                                content={translate('notification.delete')}
+                                                                data={{ id: notification._id, info: notification.title }}
+                                                                func={this.props.deleteNotification}
+                                                            />
+
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            ) : notifications.isLoading ?
+                                                <div className="table-info-panel" style={{ textAlign: "left" }}>{translate('general.loading')}</div> :
+                                                <div className="table-info-panel" style={{ textAlign: "left" }}>{translate('general.no_data')}</div>
+                                    }
+                                </ul>
+                            </div>
+
+                            {/* Tab thông báo KPI */}
+                            <div className="tab-pane notifi-tab-pane" id="allNotificationUnreadOfKPI">
+                                <ul className="todo-list">
+                                    {
+                                        notifyKPIUnRead.length > 0 ?
+                                            notifyKPIUnRead.map((notification, index) =>
+                                                <li key={index} style={{ border: "none", backgroundColor: "white", cursor: "pointer", overflow: "hidden", borderBottom: '1px solid #ececec' }}>
+                                                    <div className="row" >
+                                                        <div style={{ marginBottom: 5 }} className="col-sm-11" onClick={() => this.handleEdit(notification)}>
+                                                            <div>{
+                                                                notification.level === 'info' ? <i className="fa fa-fw fa-info-circle text-blue" /> :
+                                                                    notification.level === 'general' ? <i className="fa fa-fw fa-bell" style={{ color: `${this.checkPriority(notification.associatedDataObject && notification.associatedDataObject.value)}` }} /> :
+                                                                        notification.level === 'important' ? <i className="fa fa-fw fa-warning text-yellow" /> :
+                                                                            <i className="fa fa-fw fa-bomb text-red" />
+                                                            }
+                                                                <DateTimeConverter dateTime={notification.createdAt} type={1} />
+                                                                {notification.readed ?
+                                                                    <div className="label" style={{ width: 30, display: "inline-block", margin: "0 0 0 5px" }}></div> :
+                                                                    <div className="label label-danger" style={{ width: 30, display: "inline-block", margin: "0 0 0 5px" }}>{translate('notification.new')}</div>
+                                                                }</div>
+                                                            <span className="threedots" style={{ maxWidth: "100%", display: "inline-block" }}><b>{notification.title}</b> {content[index]}</span>
+                                                        </div>
+                                                        <div className="col-sm-1">
+                                                            <DeleteNotification
+                                                                content={translate('notification.delete')}
+                                                                data={{ id: notification._id, info: notification.title }}
+                                                                func={this.props.deleteNotification}
+                                                            />
+
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            ) : notifications.isLoading ?
+                                                <div className="table-info-panel" style={{ textAlign: "left" }}>{translate('general.loading')}</div> :
+                                                <div className="table-info-panel" style={{ textAlign: "left" }}>{translate('general.no_data')}</div>
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
                     <div style={{ marginTop: 10 }}><span style={{ cursor: "pointer", color: "#385898" }} onClick={() => this.handleClick()}>{translate('notification.mark_all_readed')}</span></div>
                     <PaginateBar id="un-read" pageTotal={notifications.receivered.totalPages} currentPage={notifications.receivered.page} func={this.setPage} />
                 </div>
