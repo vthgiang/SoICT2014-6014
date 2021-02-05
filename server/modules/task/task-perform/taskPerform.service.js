@@ -1943,6 +1943,7 @@ exports.editTaskByResponsibleEmployees = async (portal, data, taskId) => {
                     type: task.taskInformations[i].type,
                     extra: task.taskInformations[i].extra,
                     value: info[item].value,
+                    isOutput: taskInformations[i].isOutput
                 };
 
                 await Task(connect(DB_CONNECTION, portal)).updateOne(
@@ -2298,6 +2299,7 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
                                     "taskInformations.$.filledByAccountableEmployeesOnly": listInfoTask[i].filledByAccountableEmployeesOnly,
                                     "taskInformations.$.description": listInfoTask[i].description,
                                     "taskInformations.$.extra": listInfoTask[i].extra,
+                                    "taskInformations.$.isOutput": listInfoTask[i].isOutput
                                 },
                             },
                             {
@@ -2321,7 +2323,8 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
                                     "taskInformations.$.description": listInfoTask[i].description,
                                     "taskInformations.$.extra": listInfoTask[i].extra,
                                     "taskInformations.$.type": listInfoTask[i].type,
-                                    "taskInformations.$.value": null
+                                    "taskInformations.$.value": null,
+                                    "taskInformations.$.isOutput": listInfoTask[i].isOutput
                                 },
                             },
                             {
@@ -2349,6 +2352,7 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
                             "description": listInfoTask[i].description,
                             "type": listInfoTask[i].type,
                             "extra": listInfoTask[i].extra,
+                            "taskInformations.$.isOutput": listInfoTask[i].isOutput
                         }
                     }
                 },
@@ -2377,7 +2381,7 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
                                         "evaluations.$.taskInformations.$[elem].name": listInfoTask[i].name,
                                         "evaluations.$.taskInformations.$[elem].filledByAccountableEmployeesOnly": listInfoTask[i].filledByAccountableEmployeesOnly,
                                         "evaluations.$.taskInformations.$[elem].description": listInfoTask[i].description,
-                                        "evaluations.$.taskInformations.$[elem].extra": listInfoTask[i].extra,
+                                        "evaluations.$.taskInformations.$[elem].extra": listInfoTask[i].extra
                                     },
                                 },
                                 {
@@ -2461,6 +2465,7 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
                     type: task.taskInformations[i].type,
                     extra: task.taskInformations[i].extra,
                     value: info[item].value,
+                    isOutput: task.taskInformations[i].isOutput
                 };
                 await Task(connect(DB_CONNECTION, portal)).updateOne(
                     {

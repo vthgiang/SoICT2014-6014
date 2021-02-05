@@ -37,9 +37,6 @@ class EmployeeCapacityStatistic extends Component {
                 let partMonth = nextProps.month.split('-');
                 monthNew = [partMonth[1], partMonth[0]].join('-');
             };
-            console.log(nextProps.month);
-            console.log(nextProps.organizationalUnits);
-            console.log(nextProps.allOrganizationalUnits);
             nextProps.getAllEmployeeKpiSetOfUnitByIds((nextProps.organizationalUnits && nextProps.organizationalUnits.length !== 0) ? nextProps.organizationalUnits : nextProps.allOrganizationalUnits)
             return {
                 ...prevState,
@@ -119,6 +116,7 @@ class EmployeeCapacityStatistic extends Component {
             employeeKpiSets = dashboardEvaluationEmployeeKpiSet.employeeKpiSets;
             lastMonthEmployeeKpiSets = employeeKpiSets && employeeKpiSets.filter(item => this.formatDate(item.date) == this.formatDate(month));
             lastMonthEmployeeKpiSets && lastMonthEmployeeKpiSets.sort((a, b) => b.approvedPoint - a.approvedPoint);
+            lastMonthEmployeeKpiSets = lastMonthEmployeeKpiSets && lastMonthEmployeeKpiSets.filter(x => x.approvedPoint)
             lastMonthEmployeeKpiSets = lastMonthEmployeeKpiSets && lastMonthEmployeeKpiSets.slice(0, numberOfExcellentEmployees);
         }
         // let organizationalUnitIds;

@@ -168,8 +168,6 @@ class EducationProgramCreateForm extends Component {
                                     nonSelectedText: translate('human_resource.non_unit'),
                                     nSelectedText: translate('human_resource.unit_selected'),
                                     allSelectedText: translate('human_resource.all_unit'),
-                                    includeSelectAllOption: true,
-                                    maxHeight: 200
                                 }}
                                 items={department.list.map((u, i) => { return { value: u._id, text: u.name } })} onChange={this.handleUnitChange}>
                             </SelectMulti>
@@ -183,8 +181,6 @@ class EducationProgramCreateForm extends Component {
                                     nonSelectedText: translate('human_resource.non_position'),
                                     nSelectedText: translate('human_resource.position_selected'),
                                     allSelectedText: translate('human_resource.all_position'),
-                                    includeSelectAllOption: true,
-                                    maxHeight: 200
                                 }}
                                 items={listPosition.map((p, i) => { return { value: p._id, text: p.name } })} onChange={this.handlePositionChange}>
                             </SelectMulti>

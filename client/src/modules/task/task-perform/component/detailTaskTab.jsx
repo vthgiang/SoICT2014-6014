@@ -22,7 +22,7 @@ import Swal from 'sweetalert2';
 import parse from 'html-react-parser';
 import { TaskAddModal } from '../../task-management/component/taskAddModal';
 import { ModalAddTaskTemplate } from '../../task-template/component/addTaskTemplateModal';
-
+import TaskProjectAction from '../../task-project/redux/action';
 class DetailTaskTab extends Component {
 
     constructor(props) {
@@ -141,6 +141,10 @@ class DetailTaskTab extends Component {
             }
         }
         return true;
+    }
+
+    componentDidMount() {
+        this.props.getAllTaskProject();
     }
 
     handleChangeCollapseInfo = async () => {
@@ -1336,7 +1340,8 @@ const actionGetState = { //dispatchActionToProps
     editStatusTask: performTaskAction.editStatusOfTask,
     editHoursSpentInEvaluate: performTaskAction.editHoursSpentInEvaluate,
     confirmTask: performTaskAction.confirmTask,
-    getAllUserInAllUnitsOfCompany: UserActions.getAllUserInAllUnitsOfCompany
+    getAllUserInAllUnitsOfCompany: UserActions.getAllUserInAllUnitsOfCompany,
+    getAllTaskProject: TaskProjectAction.get,
 }
 
 const detailTask = connect(mapStateToProps, actionGetState)(withTranslate(DetailTaskTab));

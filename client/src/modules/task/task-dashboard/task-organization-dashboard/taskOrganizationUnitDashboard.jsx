@@ -287,8 +287,6 @@ class TaskOrganizationUnitDashboard extends Component {
                                             options={{
                                                 nonSelectedText: translate('task.task_management.select_department'),
                                                 allSelectedText: translate('kpi.evaluation.dashboard.all_unit'),
-                                                includeSelectAllOption: true,
-                                                maxHeight: 200
                                             }}
                                             onChange={this.handleChangeOrganizationUnit}
                                             value={idsUnit}

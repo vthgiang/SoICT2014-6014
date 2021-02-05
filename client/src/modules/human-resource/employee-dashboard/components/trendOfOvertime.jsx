@@ -265,8 +265,6 @@ class TrendOfOvertime extends Component {
                                         options={{
                                             nonSelectedText: translate('page.non_unit'),
                                             allSelectedText: translate('page.all_unit'),
-                                            includeSelectAllOption: true,
-                                            maxHeight: 200
                                         }}
                                         onChange={this.handleSelectOrganizationalUnit}
                                         value={organizationalUnits}

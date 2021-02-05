@@ -438,8 +438,6 @@ class TaskManagementOfUnit extends Component {
                                             options={{
                                                 nonSelectedText: translate('task.task_management.select_department'),
                                                 allSelectedText: translate(`task.task_management.select_all_department`),
-                                                includeSelectAllOption: true,
-                                                maxHeight: 200
                                             }}
                                             value={organizationalUnit}
                                         >
