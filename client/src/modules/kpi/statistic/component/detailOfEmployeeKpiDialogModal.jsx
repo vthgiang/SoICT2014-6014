@@ -4,6 +4,8 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import { DialogModal } from '../../../../common-components';
 
+import parse from 'html-react-parser';
+
 class DetailOfEmployeeKpiDialogModal extends Component {
 
     constructor(props) {
@@ -67,7 +69,7 @@ class DetailOfEmployeeKpiDialogModal extends Component {
                                             <td title={item.creatorInfo.email && item.creatorInfo.email.length !== 0 && item.creatorInfo.email[0]}>
                                                 {item.creatorInfo.email && item.creatorInfo.email.length !== 0 && item.creatorInfo.email[0]}
                                             </td>
-                                            <td title={item.criteria}>{item.criteria}</td>
+                                            <td title={parse(item.criteria)}>{parse(item.criteria)}</td>
                                             <td title={item.status}>{this.formatStatus(item.status)}</td>
                                             <td title={item.weight} style={{ textAlign: "left" }}>{item.weight}</td>
                                         </tr>
