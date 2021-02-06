@@ -148,10 +148,12 @@ exports.createOrganizationalUnitKpi = async (req, res) => {
             content: organizationalUnitKpiSet,
         });
     } catch (error) {
+        let messages = error && error.messages === 'organizational_unit_kpi_exist' ? ['organizational_unit_kpi_exist'] : ['create_target_failure'];
+
         Logger.error(req.user.email, 'create target kpi unit', req.portal)
         res.status(400).json({
             success: false,
-            messages: ['create_target_failure'],
+            messages: messages,
             content: error
         })
     }

@@ -886,7 +886,7 @@ class EmployeeEditFrom extends Component {
         this.setState({
             houseHold: {
                 ...this.state.houseHold,
-                houseHoldName: e.target.value
+                headHouseHoldName: e.target.value
             }
         });
     }

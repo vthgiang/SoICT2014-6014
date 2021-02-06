@@ -3,6 +3,7 @@ const { OrganizationalUnitKpi, OrganizationalUnit, OrganizationalUnitKpiSet } = 
 
 const overviewService = require('../../employee/management/management.service');
 const { connect } = require(`../../../../helpers/dbHelper`);
+const mongoose = require('mongoose');
 
 /**
  * Get organizational unit kpi set
@@ -377,22 +378,49 @@ exports.createOrganizationalUnitKpiSet = async (portal, data) => {
  * 
  */
 exports.createOrganizationalUnitKpi = async (portal, data) => {
-    let target = await OrganizationalUnitKpi(connect(DB_CONNECTION, portal))
-        .create({
-            name: data.name,
-            parent: data.parent,
-            weight: data.weight,
-            criteria: data.criteria
-        })
-    let organizationalUnitKpiSet = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
-        .findByIdAndUpdate(
-            data.organizationalUnitKpiSetId, { $push: { kpis: target._id } }, { new: true }
-        );
+    let checkTarget, target, organizationalUnitKpiSet;
 
-    organizationalUnitKpiSet = organizationalUnitKpiSet && await organizationalUnitKpiSet
-        .populate("organizationalUnit creator")
-        .populate({ path: "kpis", populate: { path: 'parent' } })
-        .execPopulate();
+    // Kiểm tra đã tồn tại kpi có tên = data.name chưa
+    checkTarget = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
+        .aggregate([
+            { $match: { '_id': mongoose.Types.ObjectId(data.organizationalUnitKpiSetId) } },
+            {
+                $lookup:
+                    {
+                        from: "organizationalunitkpis",
+                        localField: "kpis",
+                        foreignField: "_id",
+                        as: "organizationalUnitKpis"
+                    }
+            },
+            { $unwind: "$organizationalUnitKpis" },
+            { $replaceRoot: { newRoot: "$organizationalUnitKpis" } },
+            { $match: { 'name': data.name } },
+        ])
+        
+    if (checkTarget.length !== 0) {
+        throw {
+            messages: 'organizational_unit_kpi_exist'
+        };
+    } else {
+        target = await OrganizationalUnitKpi(connect(DB_CONNECTION, portal))
+            .create({
+                name: data.name,
+                parent: data.parent,
+                weight: data.weight,
+                criteria: data.criteria
+            })
+        organizationalUnitKpiSet = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
+            .findByIdAndUpdate(
+                data.organizationalUnitKpiSetId, { $push: { kpis: target._id } }, { new: true }
+            );
+
+        organizationalUnitKpiSet = organizationalUnitKpiSet && await organizationalUnitKpiSet
+            .populate("organizationalUnit creator")
+            .populate({ path: "kpis", populate: { path: 'parent' } })
+            .execPopulate();
+    }
+    
     return organizationalUnitKpiSet;
 
 }

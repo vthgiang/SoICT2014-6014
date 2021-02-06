@@ -517,11 +517,11 @@ class OrganizationalUnitKpiCreate extends Component {
                                                 <span>
                                                     {currentKPI.status === 1 ?
                                                         <a className="btn btn-app" onClick={() => this.swalOfUnitKpi("add_target")}>
-                                                            <i className="fa fa-plus-circle" style={{ fontSize: "16px" }}></i>Phân bố KPI
+                                                            <i className="fa fa-plus-circle" style={{ fontSize: "16px" }}></i>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.employee_importance')}
                                                         </a>
                                                         : <span>
                                                             <a className="btn btn-app" data-toggle="modal" data-target="#employee-importances" data-backdrop="static" data-keyboard="false">
-                                                                <i className="fa fa-plus-circle" style={{ fontSize: "16px" }}></i>Phân bố KPI
+                                                                <i className="fa fa-plus-circle" style={{ fontSize: "16px" }}></i>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.employee_importance')}
                                                             </a>
                                                         <EmployeeImportancesModal
                                                             organizationalUnit={currentKPI.organizationalUnit}
@@ -577,7 +577,7 @@ class OrganizationalUnitKpiCreate extends Component {
                                                         <tr key={item._id}>
                                                             <td>{index + 1}</td>
                                                             <td title={item.name}>{item.name}</td>
-                                                            <td title={item.criteria}>{parse(item.criteria)}</td>
+                                                            <td title={parse(item.criteria)}>{parse(item.criteria)}</td>
                                                             <td title={item.weight}>{item.weight}</td>
                                                             {this.checkPermisson(organizationalUnit && organizationalUnit.managers) &&
                                                                 <td>

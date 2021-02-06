@@ -54,7 +54,7 @@ class DetailOfTaskDialogModal extends Component {
             <React.Fragment>
                 <DialogModal
                     modalID="modal-task-detail"
-                    title="Chi tiết công việc"
+                    title={translate('menu.task')}
                     size="75"
                     hasNote={false}
                     hasSaveButton={false}
@@ -62,13 +62,13 @@ class DetailOfTaskDialogModal extends Component {
                     <table className="table table-bordered table-striped table-hover">
                         <thead>
                             <tr>
-                                <th title="Số thứ tự" style={{ width: "40px" }}>Stt</th>
-                                <th title="Tên công việc" >Tên công việc</th>
-                                <th title="Đơn vị">Đơn vị</th>
-                                <th title="Độ ưu tiên" >Độ ưu tiên</th>
-                                <th title="Ngày bắt đầu" >Ngày bắt đầu</th>
-                                <th title="Ngày kết thúc">Ngày kết thúc</th>
-                                <th title="Trạng thái" style={{ textAlign: "left" }}>Trạng thái</th>
+                                <th title={translate('kpi.organizational_unit.create_organizational_unit_kpi_set.no_')} style={{ width: "40px" }}>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.no_')}</th>
+                                <th title={translate('task.task_management.col_name')} >{translate('task.task_management.col_name')}</th>
+                                <th title={translate('task.task_management.col_organization')}>{translate('task.task_management.col_organization')}</th>
+                                <th title={translate('task.task_management.col_priority')}>{translate('task.task_management.col_priority')}</th>
+                                <th title={translate('task.task_management.col_start_date')}>{translate('task.task_management.col_start_date')}</th>
+                                <th title={translate('task.task_management.col_end_date')}>{translate('task.task_management.col_end_date')}</th>
+                                <th title={translate('task.task_management.col_status')} style={{ textAlign: "left" }}>{translate('task.task_management.col_status')}</th>
                             </tr>
                         </thead>
 
@@ -89,7 +89,7 @@ class DetailOfTaskDialogModal extends Component {
                                         </tr>
                                     )
                                     : <tr>
-                                        <td colspan="7">Không có dữ liệu</td>
+                                        <td colspan="7">{translate('kpi.organizational_unit.kpi_organizational_unit_manager.no_data')}</td>
                                     </tr>
                             }
                         </tbody>

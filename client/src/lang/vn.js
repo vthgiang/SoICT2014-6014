@@ -346,10 +346,12 @@ export default {
                     yearly: "Hằng năm",
                     date: "Ngày",
                     hour: "Giờ",
+                    week: "Tuần",
                     minute: "Phút",
                     second: "Giây",
                     day: "Thứ",
                     month: "Tháng",
+                    year: "Năm",
                     save: "Lưu cấu hình",
 
                     version: "Phiên bản",
@@ -3548,6 +3550,16 @@ export default {
                 import_task_template_faile: "Thêm mẫu công việc thất bại !",
                 task_template_name_exist: "Tên mẫu công việc đã tồn tại",
             },
+            task_dashboard: {
+                general_unit_task: "Tổng quan công việc đơn vị",
+                unit: "Đơn vị",
+                all_tasks: "Tổng số công việc",
+                confirmed_task: "Công việc đã xác nhận thực hiện",
+                none_update_recently: "Công việc chưa cập nhật gần đây",
+                intime_task: "Công việc đúng tiến độ",
+                delay_task: "Công việc trễ tiến độ",
+                overdue_task: "Công việc quá hạn"
+            }
         },
 
         kpi: {
@@ -3951,6 +3963,7 @@ export default {
                     delete_kpi_success: "Xóa KPI thành công",
                     delete_kpi_failure: "Xóa KPI không thành công",
                     copy_kpi_unit: "Sao chép KPI đơn vị",
+                    employee_importance: "Độ quan trọng nhân viên",
 
                     // Nhóm dành cho trọng số
                     weight_total: "Tổng trọng số",
@@ -4007,6 +4020,7 @@ export default {
                     weight: "Trọng số",
                     create_target_success: "Thêm mục tiêu KPI thành công",
                     create_target_failure: "Bạn chưa nhập đủ thông tin",
+                    organizational_unit_kpi_exist: "Mục tiêu KPI đã tồn tại",
 
                     // Nhóm dành cho validate
                     validate_name: {
@@ -4085,7 +4099,7 @@ export default {
                     no_data: "Không có dữ liệu",
                     trend_chart: {
                         execution_time: "Thời gian thực hiện (Ngày)",
-                        participants: "Người tham gia",
+                        participants: "Só người tham gia",
                         amount_tasks: "Số lượng công việc",
                         amount_employee_kpi: "Số lượng KPI nhân viên",
                         weight: "Trọng số",
@@ -4151,7 +4165,7 @@ export default {
                         setting_up: "Đang thiết lập",
                         activated: "Đã kích hoạt",
                         time: "Thời gian",
-                        creator: "Người tạo",
+                        creator: "Người khởi tạo",
                         number_target: "Số lượng mục tiêu",
                         result: "Kết quả đánh giá",
                         no_data: "Không có dữ liệu",
@@ -4164,6 +4178,13 @@ export default {
                         },
                     },
                 },
+
+                statistics: {
+                    detail_participant: "Chi tiết người tham gia",
+                    detail_employee_kpi: "Chi tiết KPI nhân viên",
+                    email: "Email"
+                },
+
                 //Thông điệp khác trả về từ server
                 get_parent_by_unit_success:
                     "Lấy KPI đơn vị của đơn vị cha thành công",

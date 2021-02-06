@@ -53,7 +53,7 @@ function EmployeeImportancesModal(props) {
         
         
             // Khởi tạo select box chọn nhân viên
-            if (userdepartments) {
+            if (userdepartments && Array.isArray(userdepartments) && userdepartments.length !== 0) {
                 unitMembers = getEmployeeSelectBoxItems(userdepartments);
                 // Lấy mảng các nhân viên
                 if (unitMembers && unitMembers.length !== 0 && unitMembers[0] && unitMembers[0].value) {
@@ -93,10 +93,11 @@ function EmployeeImportancesModal(props) {
     }
    
 
-    const handleEdit = (value) => {
+    const handleEdit = (value, importance) => {
         setState({
             ...state,
-            editting: value
+            editting: value,
+            importance: importance
         })
     }
 
@@ -159,10 +160,10 @@ function EmployeeImportancesModal(props) {
                     <table className="table table-hover table-bordered">
                         <thead>
                             <tr>
-                                <th>STT</th>
-                                <th>Tên nhân viên</th>
-                                <th>Độ quan trọng</th>
-                                <th>Hành động</th>
+                                <th title={translate('kpi.organizational_unit.create_organizational_unit_kpi_set.no_')}>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.no_')}</th>
+                                <th title={translate('kpi.evaluation.employee_evaluation.name')}>{translate('kpi.evaluation.employee_evaluation.name')}</th>
+                                <th title={translate('kpi.organizational_unit.create_organizational_unit_kpi_set.employee_importance')}>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.employee_importance')}</th>
+                                <th title={translate('kpi.organizational_unit.management.over_view.action')}>{translate('kpi.organizational_unit.management.over_view.action')}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -187,7 +188,7 @@ function EmployeeImportancesModal(props) {
                                                     <span><a style={{ cursor: 'pointer', color: '#398439' }} title={translate('kpi.evaluation.employee_evaluation.save_result')} onClick={() => handleSaveEdit(index)}><i className="material-icons">save</i></a></span>
                                                     <span><a style={{ cursor: 'pointer', color: '#E34724' }} onClick={() => handleCancelEdit()}><i className="material-icons">cancel</i></a></span>
                                                 </div>
-                                                : <a style={{ cursor: 'pointer', color: '#FFC107' }} title={translate('kpi.organizational_unit.create_organizational_unit_kpi_set.edit')} onClick={() => handleEdit(item.value)}><i className="material-icons">edit</i></a>
+                                                : <a style={{ cursor: 'pointer', color: '#FFC107' }} title={translate('kpi.organizational_unit.create_organizational_unit_kpi_set.edit')} onClick={() => handleEdit(item.value, item.importance)}><i className="material-icons">edit</i></a>
                                             }
                                         </td>
                                     </tr>

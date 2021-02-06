@@ -53,14 +53,6 @@ class ModalEditEmployeeKpi extends Component {
         }
     }
 
-    shouldComponentUpdate = (nextProps, nextState) => {
-        if (nextState._id !== this.state._id) {
-            this.props.getCurrentKPIUnit(localStorage.getItem("currentRole"));
-
-            return false;
-        }
-        return true;
-    }
     
     /**Gửi request chỉnh sửa mục tiêu này */
     handleEditTargetEmployeeKpi = async () => {
@@ -252,7 +244,6 @@ function mapState(state) {
 }
 
 const actionCreators = {
-    getCurrentKPIUnit: createUnitKpiActions.getCurrentKPIUnit,
     editEmployeeKpi: createKpiSetActions.editEmployeeKpi
 };
 

@@ -7,6 +7,7 @@ import { ModalDetailTask } from '../modalDetailTask';
 import { performTaskAction } from '../../../task-perform/redux/actions';
 
 import 'dhtmlx-gantt/codebase/dhtmlxgantt.css';
+import { translate } from 'react-redux-multilingual/lib/utils';
 
 class Gantt extends Component {
 
@@ -18,10 +19,11 @@ class Gantt extends Component {
   dataProcessor = null;
 
   initZoom() {
+    const { translate } = this.props;
     gantt.ext.zoom.init({
       levels: [
         {
-          name: 'Giờ',
+          name: translate('system_admin.system_setting.backup.hour'),
           scale_height: 60,
           min_column_width: 30,
           scales: [
@@ -30,16 +32,25 @@ class Gantt extends Component {
           ]
         },
         {
-          name: 'Ngày',
+          name: translate('system_admin.system_setting.backup.date'),
           scale_height: 60,
           min_column_width: 70,
           scales: [
-            { unit: 'week', step: 1, format: 'Tuần %W' },
+            { unit: 'week', step: 1, format: '# %W' },
             { unit: 'day', step: 1, format: '%d %M' }
           ]
         },
         {
-          name: 'Tháng',
+          name: translate('system_admin.system_setting.backup.week'),
+          scale_height: 60,
+          min_column_width: 70,
+          scales: [
+            { unit: "month", step: 1, format: '%F' },
+            { unit: 'week', step: 1, format: 'Tuần %W' }
+          ]
+        },
+        {
+          name: translate('system_admin.system_setting.backup.month'),
           scale_height: 60,
           min_column_width: 70,
           scales: [
@@ -59,24 +70,22 @@ class Gantt extends Component {
   }
 
   shouldComponentUpdate(nextProps) {
-    if (this.props.ganttData !== nextProps.ganttData) {
-      gantt.clearAll();
-      gantt.init(this.ganttContainer);
-      this.initGanttDataProcessor();
-      gantt.parse(this.props.ganttData);
-    };
+    gantt.clearAll();
+    gantt.init(this.ganttContainer);
+    this.initGanttDataProcessor();
+    gantt.parse(this.props.ganttData);
     return true;
   }
 
   componentDidMount() {
-    const { unit } = this.props;
+    const { unit, translate } = this.props;
     gantt.config.drag_move = false;
     gantt.config.drag_multiple = false;
     gantt.config.drag_progress = false;
     gantt.config.drag_resize = false;
     gantt.config.links = false;
     gantt.config.details_on_dblclick = false;
-    gantt.config.columns = [{ name: 'role', label: unit ? "Người thực hiện" : "Vai trò", align: "center", resize: true, width: 120 }]
+    gantt.config.columns = [{ name: 'role', label: unit ? translate('task.task_management.responsible') : translate('task.task_management.role'), align: "center", resize: true, width: 120 }]
     gantt.config.xml_date = "%Y-%m-%d %H:%i";
     gantt.templates.task_class = function (start, end, task) {
       switch (task.process) {
@@ -106,7 +115,7 @@ class Gantt extends Component {
   }
 
   render() {
-    const { zoom, tasks, translate, count, ganttData } = this.props;
+    const { zoom, tasks, ganttData } = this.props;
     const task = tasks && tasks.task;
     const heightCalc = ganttData ? (ganttData.data.length) * 35 + 80 : 0;
     this.setZoom(zoom);

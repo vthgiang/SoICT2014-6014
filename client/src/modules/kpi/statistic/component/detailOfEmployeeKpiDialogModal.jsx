@@ -4,6 +4,8 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import { DialogModal } from '../../../../common-components';
 
+import parse from 'html-react-parser';
+
 class DetailOfEmployeeKpiDialogModal extends Component {
 
     constructor(props) {
@@ -36,7 +38,7 @@ class DetailOfEmployeeKpiDialogModal extends Component {
             <React.Fragment>
                 <DialogModal
                     modalID="modal-employee-kpi-detail" 
-                    title="Chi tiết KPI nhân viên"
+                    title={translate('kpi.organizational_unit.statistics.detail_employee_kpi')}
                     size="75"
                     hasNote={false}
                     hasSaveButton={false}
@@ -44,13 +46,13 @@ class DetailOfEmployeeKpiDialogModal extends Component {
                     <table className="table table-bordered table-striped table-hover">
                         <thead>
                             <tr>
-                                <th title="Số thứ tự" style={{ width: "40px" }}>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.no_')}</th>
-                                <th title="Tên mục tiêu">{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.target_name')}</th>
-                                <th title="Người khởi tạo">Người khởi tạo</th>
-                                <th title="Email">Email</th>
-                                <th title="Tiêu chí đánh giá">{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.evaluation_criteria')}</th>
-                                <th title="Trạng thái">Trạng thái</th>
-                                <th title="Trọng số" style={{ textAlign: "left" }}>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.weight')}</th>
+                                <th title={translate('kpi.organizational_unit.create_organizational_unit_kpi_set.no_')} style={{ width: "40px" }}>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.no_')}</th>
+                                <th title={translate('kpi.organizational_unit.create_organizational_unit_kpi_set.target_name')}>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.target_name')}</th>
+                                <th title={translate('kpi.organizational_unit.management.over_view.creator')}>{translate('kpi.organizational_unit.management.over_view.creator')}</th>
+                                <th title={translate('kpi.organizational_unit.statistics.email')}>{translate('kpi.organizational_unit.statistics.email')}</th>
+                                <th title={translate('kpi.organizational_unit.create_organizational_unit_kpi_set.evaluation_criteria')}>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.evaluation_criteria')}</th>
+                                <th title={translate('general.status')}>{translate('general.status')}</th>
+                                <th title={translate('kpi.organizational_unit.create_organizational_unit_kpi_set.weight')} style={{ textAlign: "left" }}>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.weight')}</th>
                             </tr>
                         </thead>
 
@@ -67,13 +69,13 @@ class DetailOfEmployeeKpiDialogModal extends Component {
                                             <td title={item.creatorInfo.email && item.creatorInfo.email.length !== 0 && item.creatorInfo.email[0]}>
                                                 {item.creatorInfo.email && item.creatorInfo.email.length !== 0 && item.creatorInfo.email[0]}
                                             </td>
-                                            <td title={item.criteria}>{item.criteria}</td>
+                                            <td title={parse(item.criteria)}>{parse(item.criteria)}</td>
                                             <td title={item.status}>{this.formatStatus(item.status)}</td>
                                             <td title={item.weight} style={{ textAlign: "left" }}>{item.weight}</td>
                                         </tr>
                                     )
                                     : <tr>
-                                        <td colspan="7">Không có dữ liệu</td>
+                                        <td colspan="7">{translate('kpi.organizational_unit.kpi_organizational_unit_manager.no_data')}</td>
                                     </tr>
                             }
                         </tbody>

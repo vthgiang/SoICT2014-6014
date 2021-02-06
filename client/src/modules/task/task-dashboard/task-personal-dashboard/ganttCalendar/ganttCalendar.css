@@ -56,23 +56,23 @@
 }
 
 .notAchive {
-    border: 2px solid #d96c49;
-    color: #d96c49;
-    background: #d96c49;
+    border: 2px solid #ff8080;
+    color: #ff8080;
+    background: #ff8080;
 }
 
 .notAchive .gantt_task_progress {
-    background: #db2536;
+    background: #de3c29;
 }
 
 .intime {
-    border: 2px solid #34c461;
-    color: #34c461;
-    background: #34c461;
+    border: 2px solid #41d462;
+    color: #41d462;
+    background: #41d462;
 }
 
 .intime .gantt_task_progress {
-    background: #23964d;
+    background: #28a745;
 }
 
 .delay {
@@ -82,7 +82,7 @@
 }
 
 .delay .gantt_task_progress {
-    background: #F09A07;
+    background: #ff8900;
 }
 
 .none {
