@@ -75,7 +75,6 @@ function UserGuide(props) {
     }, []);
 
     const showFilePreview = (data) => {
-        const { translate } = props;
         const link = process.env.REACT_APP_SERVER + data.url;
         Swal.fire({
             html: ` 
@@ -110,7 +109,6 @@ function UserGuide(props) {
     let roleSuperAdmin = roles.find(x => x.name === "Super Admin");
     let roleManager = roles.find(x => x.name === "Manager");
 
-    console.log('pppppppp', roleAdmin, roleManager, currentRoleInfo);
 
     if (roleAdmin && roleManager) {
         if (currentRoleInfo.id === roleAdmin.id || currentRoleInfo.parents.includes(roleAdmin.id) ||
