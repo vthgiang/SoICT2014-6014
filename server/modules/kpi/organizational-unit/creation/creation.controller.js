@@ -287,3 +287,209 @@ getAllOrganizationalUnitKpiSet = async (req, res) => {
     }
 
 };
+
+/**
+ * Tạo comment trong trang create KPI employee
+ */
+exports.createComment = async (req, res) => {
+    try {
+        var files = [];
+        if (req.files !== undefined) {
+            req.files.forEach((elem, index) => {
+                var path = elem.destination + '/' + elem.filename;
+                files.push({ name: elem.originalname, url: path })
+
+            })
+        }
+        var comments = await KPIUnitService.createComment(req.portal, req.params, req.body, files);
+        await Logger.info(req.user.email, ` create comment `, req.portal)
+        res.status(200).json({
+            success: true,
+            messages: ['create_comment_success'],
+            content: comments
+        })
+    } catch (error) {
+        await Logger.error(req.user.email, ` create comment kpi `, req.portal)
+        res.status(400).json({
+            success: false,
+            messages: ['create_comment_fail'],
+            content: error
+        });
+    }
+}
+
+/**
+ * 
+ * Tạo comment trong comment trong trang create KPI employee (tạo replied comment)
+ */
+exports.createChildComment = async (req, res) => {
+    // try {
+    var files = [];
+    if (req.files !== undefined) {
+        req.files.forEach((elem, index) => {
+            var path = elem.destination + '/' + elem.filename;
+            files.push({ name: elem.originalname, url: path })
+        })
+    }
+    var comments = await KPIUnitService.createChildComment(req.portal, req.params, req.body, files);
+    await Logger.info(req.user.email, ` create comment `, req.portal)
+    res.status(200).json({
+        success: true,
+        messages: ['create_child_comment_success'],
+        content: comments
+    })
+    // } catch (error) {
+    //     await Logger.error(req.user.email, ` create child comment kpi `, req.portal)
+    //     res.status(400).json({
+    //         success: false,
+    //         messages: ['create_child_comment_fail'],
+    //         content: error
+    //     });
+    // }
+}
+
+/**
+ * 
+ *Sửa comment trong trang create KPI employee
+ */
+exports.editComment = async (req, res) => {
+    try {
+        let files = [];
+        if (req.files !== undefined) {
+            req.files.forEach((elem, index) => {
+                let path = elem.destination + '/' + elem.filename;
+                files.push({ name: elem.originalname, url: path })
+
+            })
+        }
+        let comments = await KPIUnitService.editComment(req.portal, req.params, req.body, files);
+        await Logger.info(req.user.email, ` edit comment kpi `, req.portal)
+        res.status(200).json({
+            success: true,
+            messages: ['edit_comment_success'],
+            content: comments
+        })
+    } catch (error) {
+        await Logger.error(req.user.email, ` edit comment kpi `, req.portal)
+        res.status(400).json({
+            success: false,
+            messages: ['edit_comment_fail'],
+            content: error
+        });
+    }
+}
+
+/**
+ * Xóa comment trong trang create KPI organizational
+ */
+exports.deleteComment = async (req, res) => {
+    try {
+        var comments = await KPIUnitService.deleteComment(req.portal, req.params);
+        await Logger.info(req.user.email, ` delete comment kpi`, req.portal)
+        res.status(200).json({
+            success: false,
+            messages: ['delete_comment_success'],
+            content: comments
+        })
+    } catch (error) {
+        await Logger.error(req.user.email, ` delete comment kpi `, req.portal)
+        res.status(200).json({
+            success: false,
+            messages: ['delete_comment_fail'],
+            content: error
+        })
+    }
+}
+/**
+ * Sửa 1 comment trong trang create KPI employee (xóa comment replied)
+ */
+exports.editChildComment = async (req, res) => {
+    try {
+        let files = [];
+        if (req.files !== undefined) {
+            req.files.forEach((elem, index) => {
+                let path = elem.destination + '/' + elem.filename;
+                files.push({ name: elem.originalname, url: path })
+
+            })
+        }
+        var comments = await KPIUnitService.editChildComment(req.portal, req.params, req.body, files);
+        await Logger.info(req.user.email, ` edit comment of comment kpi `, req.portal)
+        res.status(200).json({
+            success: true,
+            messages: ['edit_comment_of_comment_success'],
+            content: comments
+        })
+    } catch (error) {
+        await Logger.error(req.user.email, ` edit comment of comment kpi `, req.portal)
+        res.status(400).json({
+            success: true,
+            messages: ['edit_comment_of_comment_fail'],
+            content: error
+        })
+    }
+}
+
+/**
+ * Xóa comment của commnent trong trang create KPI employee (xóa comment replied)
+ */
+exports.deleteChildComment = async (req, res) => {
+    try {
+        var comments = await KPIUnitService.deleteChildComment(req.portal, req.params);
+        await Logger.info(req.user.email, ` delete child comment kpi `, req.portal)
+        res.status(200).json({
+            success: true,
+            messages: ['delete_child_comment_success'],
+            content: comments
+        })
+    } catch (error) {
+        await Logger.error(req.user.email, ` delete child comment kpi `, req.portal)
+        res.status(400).json({
+            success: true,
+            messages: ['delete_child_comment_fail'],
+            content: error
+        })
+    }
+}
+/**
+ * Xóa file của comment
+ */
+exports.deleteFileComment = async (req, res) => {
+    try {
+        var comments = await KPIUnitService.deleteFileComment(req.portal, req.params);
+        await Logger.info(req.user.email, ` delete file comment `, req.portal)
+        res.status(200).json({
+            success: true,
+            messages: ['delete_file_comment_success'],
+            content: comments
+        })
+    } catch (error) {
+        await Logger.error(req.user.email, ` delete file comment `, req.portal)
+        res.status(400).json({
+            success: true,
+            messages: ['delete_file_comment_fail'],
+            content: error
+        })
+    }
+}
+/**
+ * Xóa file child comment
+ */
+exports.deleteFileChildComment = async (req, res) => {
+    try {
+        var comments = await KPIUnitService.deleteFileChildComment(req.portal, req.params);
+        await Logger.info(req.user.email, ` delete file child comment `, req.portal)
+        res.status(200).json({
+            success: true,
+            messages: ['delete_file_comment_success'],
+            content: comments
+        })
+    } catch (error) {
+        await Logger.error(req.user.email, ` delete file child comment `, req.portal)
+        res.status(400).json({
+            success: true,
+            messages: ['delete_file_comment_fail'],
+            content: error
+        })
+    }
+}

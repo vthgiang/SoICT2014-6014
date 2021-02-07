@@ -4,7 +4,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import Swal from 'sweetalert2';
 import parse from 'html-react-parser';
 
-import { DatePicker, ToolTip } from '../../../../../common-components';
+import { Comment, DatePicker, ToolTip } from '../../../../../common-components';
 
 import { OrganizationalUnitKpiAddTargetModal } from './organizationalUnitKpiAddTargetModal';
 import { OrganizationalUnitKpiCreateModal } from './organizationalUnitKpiCreateModal';
@@ -12,6 +12,7 @@ import { OrganizationalUnitKpiEditTargetModal } from './organizationalUnitKpiEdi
 
 import { createUnitKpiActions } from '../redux/actions.js';
 import { UserActions } from '../../../../super-admin/user/redux/actions';
+import { AuthActions } from '../../../../auth/redux/actions';
 
 var translate = '';
 
@@ -497,7 +498,25 @@ class OrganizationalUnitKpiCreate extends Component {
                                         </tbody>
                                     </table>
                                 </div>
+                                <div className="row" style={{ display: 'flex', flex: 'no-wrap', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                                    <div className="col-xs-12 col-sm-12 col-md-6">
+                                        <Comment
+                                            data={currentKPI}
+                                            comments={currentKPI.comments}
+                                            createComment={(dataId, data) => this.props.createComment(dataId, data)}
+                                            editComment={(dataId, commentId, data) => this.props.editComment(dataId, commentId, data)}
+                                            deleteComment={(dataId, commentId) => this.props.deleteComment(dataId, commentId)}
+                                            createChildComment={(dataId, commentId, data) => this.props.createChildComment(dataId, commentId, data)}
+                                            editChildComment={(dataId, commentId, childCommentId, data) => this.props.editChildComment(dataId, commentId, childCommentId, data)}
+                                            deleteChildComment={(dataId, commentId, childCommentId) => this.props.deleteChildComment(dataId, commentId, childCommentId)}
+                                            deleteFileComment={(fileId, commentId, dataId) => this.props.deleteFileComment(fileId, commentId, dataId)}
+                                            deleteFileChildComment={(fileId, commentId, childCommentId, dataId) => this.props.deleteFileChildComment(fileId, commentId, childCommentId, dataId)}
+                                            downloadFile={(path, fileName) => this.props.downloadFile(path, fileName)}
+                                        />
+                                    </div>
+                                </div>
                             </div>
+                            
                             : organizationalUnitKpiLoading
                             && <div className="box-body">
                                 <div style={{ marginLeft: "-10px" }}>
@@ -547,6 +566,15 @@ const actionCreators = {
     deleteTargetKPIUnit: createUnitKpiActions.deleteTargetKPIUnit,
     editStatusKPIUnit: createUnitKpiActions.editStatusKPIUnit,
     getKPIParent: createUnitKpiActions.getKPIParent,
+    createComment: createUnitKpiActions.createComment,
+    editComment: createUnitKpiActions.editComment,
+    deleteComment: createUnitKpiActions.deleteComment,
+    createChildComment: createUnitKpiActions.createChildComment,
+    editChildComment: createUnitKpiActions.editChildComment,
+    deleteChildComment: createUnitKpiActions.deleteChildComment,
+    deleteFileComment: createUnitKpiActions.deleteFileComment,
+    deleteFileChildComment: createUnitKpiActions.deleteFileChildComment,
+    downloadFile: AuthActions.downloadFile,
 };
 const connectedOrganizationalUnitKpiCreate = connect(mapState, actionCreators)(withTranslate(OrganizationalUnitKpiCreate));
 export { connectedOrganizationalUnitKpiCreate as OrganizationalUnitKpiCreate };

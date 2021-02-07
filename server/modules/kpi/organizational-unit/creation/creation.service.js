@@ -1,6 +1,6 @@
 const Models = require(`../../../../models`);
 const { OrganizationalUnitKpi, OrganizationalUnit, OrganizationalUnitKpiSet } = Models;
-
+const mongoose = require('mongoose')
 const overviewService = require('../../employee/management/management.service');
 const { connect } = require(`../../../../helpers/dbHelper`);
 
@@ -47,7 +47,11 @@ exports.getOrganizationalUnitKpiSet = async (portal, query) => {
                 status: { $ne: 2 }, date: { $lte: endOfCurrentMonth, $gt: endOfLastMonth }
             })
             .populate("organizationalUnit creator")
-            .populate({ path: "kpis", populate: { path: 'parent' } });
+            .populate({ path: "kpis", populate: { path: 'parent' } })
+            .populate([
+                { path: "comments.creator", select: 'name email avatar' },
+                { path: "comments.comments.creator", select: 'name email avatar' },
+            ]);
     }
 
     return kpiunit;
@@ -342,6 +346,10 @@ exports.createOrganizationalUnitKpiSet = async (portal, data) => {
     organizationalUnitKpi = organizationalUnitKpi && await organizationalUnitKpi
         .populate("organizationalUnit creator")
         .populate({ path: "kpis", populate: { path: 'parent' } })
+        .populate([
+            { path: 'comments.creator', select: 'name email avatar ' },
+            { path: 'comments.comments.creator', select: 'name email avatar' }
+        ])
         .execPopulate();
 
     return organizationalUnitKpi;
@@ -446,3 +454,287 @@ exports.deleteOrganizationalUnitKpiSet = async (portal, id) => {
     return [kpiunit, kpis];
 }
 
+/**
+ *  thêm bình luận
+ */
+exports.createComment = async (portal, params, body, files) => {
+    
+    const commentss = {
+        description: body.description,
+        creator: body.creator,
+        files: files
+    }
+    let comment1 = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
+        .update(
+            { _id: params.kpiId },
+            { $push: { comments: commentss } }, { new: true }
+        )
+    let comment = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
+        .findOne({ _id: params.kpiId })
+        .populate([
+            { path: 'comments.creator', select: 'name email avatar ' }
+        ])
+    return comment.comments;
+}
+
+
+/**
+ * Sửa bình luận
+ */
+exports.editComment = async (portal, params, body, files) => {
+    let commentss = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
+        .updateOne(
+            { "_id": params.kpiId, "comments._id": params.commentId },
+            {
+                $set: { "comments.$.description": body.description }
+            }
+        )
+
+    let comment1 = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
+        .updateOne(
+            { "_id": params.kpiId, "comments._id": params.commentId },
+            {
+                $push:
+                {
+                    "comments.$.files": files
+                }
+            }
+        )
+    let comment = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
+        .findOne({ "_id": params.kpiId, "comments._id": params.commentId })
+        .populate([
+            { path: 'comments.creator', select: 'name email avatar ' },
+            { path: 'comments.comments.creator', select: 'name email avatar' }
+        ])
+    return comment.comments;
+}
+
+/**
+ * Delete comment
+ */
+exports.deleteComment = async (portal, params) => {
+    let files1 = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
+        .aggregate([
+            { $match: { "_id": mongoose.Types.ObjectId(params.kpiId) } },
+            { $unwind: "$comments" },
+            { $replaceRoot: { newRoot: "$comments" } },
+            { $match: { "_id": mongoose.Types.ObjectId(params.commentId) } },
+            { $unwind: "$files" },
+            { $replaceRoot: { newRoot: "$files" } },
+        ])
+
+    let files2 = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
+        .aggregate([
+            { $match: { "_id": mongoose.Types.ObjectId(params.kpiId) } },
+            { $unwind: "$comments" },
+            { $replaceRoot: { newRoot: "$comments" } },
+            { $match: { "_id": mongoose.Types.ObjectId(params.commentId) } },
+            { $unwind: "$comments" },
+            { $replaceRoot: { newRoot: "$comments" } },
+            { $unwind: "$files" },
+            { $replaceRoot: { newRoot: "$files" } }
+        ])
+    let files = [...files1, ...files2]
+    let i
+    for (i = 0; i < files.length; i++) {
+        fs.unlinkSync(files[i].url)
+    }
+    console.log(params)
+    let comments = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
+        .update(
+            { "_id": params.kpiId, "comments._id": params.commentId },
+            { $pull: { comments: { _id: params.commentId } } },
+            { safe: true }
+        )
+    let comment = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
+        .findOne({ "_id": params.kpiId })
+        .populate([
+            { path: 'comments.creator', select: 'name email avatar ' },
+            { path: 'comments.comments.creator', select: 'name email avatar' }
+        ])
+    return comment.comments
+}
+
+/**
+ *  thêm bình luận cua binh luan
+ */
+exports.createChildComment = async (portal, params, body, files) => {
+    let commentss = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
+        .updateOne(
+            { "_id": params.kpiId, "comments._id": params.commentId },
+            {
+                "$push": {
+                    "comments.$.comments":
+                    {
+                        creator: body.creator,
+                        description: body.description,
+                        files: files
+                    }
+                }
+            }
+        )
+    let comment = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
+        .findOne({ "_id": params.kpiId, "comments._id": params.commentId })
+        .populate([
+            { path: 'comments.creator', select: 'name email avatar ' },
+            { path: 'comments.comments.creator', select: 'name email avatar' }
+        ])
+    return comment.comments;
+}
+/**
+ * Edit comment of comment
+ */
+exports.editChildComment = async (portal, params, body, files) => {
+    let now = new Date()
+    let comment1 = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
+        .updateOne(
+            { "_id": params.kpiId, "comments._id": params.commentId, "comments.comments._id": params.childCommentId },
+            {
+                $set:
+                {
+                    "comments.$.comments.$[elem].description": body.description,
+                    "comments.$.comments.$[elem].updatedAt": now
+                }
+            },
+            {
+                arrayFilters: [
+                    {
+                        "elem._id": params.childCommentId
+                    }
+                ]
+            }
+        )
+    let action1 = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
+        .updateOne(
+            { "_id": params.kpiId, "comments._id": params.commentId, "comments.comments._id": params.childCommentId },
+            {
+                $push:
+                {
+                    "comments.$.comments.$[elem].files": files
+                }
+            },
+            {
+                arrayFilters:
+                    [
+                        {
+                            "elem._id": params.childCommentId
+                        }
+                    ]
+            }
+        )
+
+
+    let comment = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
+        .findOne({ "_id": params.kpiId, "comments._id": params.commentId, "comments.comments._id": params.childCommentId })
+        .populate([
+            { path: 'comments.creator', select: 'name email avatar ' },
+            { path: 'comments.comments.creator', select: 'name email avatar' }
+        ])
+    return comment.comments
+}
+
+/**
+ * Delete comment of comment
+ */
+exports.deleteChildComment = async (portal, params) => {
+    let files = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
+        .aggregate([
+            { $match: { "_id": mongoose.Types.ObjectId(params.kpiId) } },
+            { $unwind: "$comments" },
+            { $replaceRoot: { newRoot: "$comments" } },
+            { $match: { "_id": mongoose.Types.ObjectId(params.commentId) } },
+            { $unwind: "$comments" },
+            { $replaceRoot: { newRoot: "$comments" } },
+            { $match: { "_id": mongoose.Types.ObjectId(params.childCommentId) } },
+            { $unwind: "$files" },
+            { $replaceRoot: { newRoot: "$files" } }
+        ])
+    let i = 0
+    for (i = 0; i < files.length; i++) {
+        fs.unlinkSync(files[i].url)
+    }
+    let comment1 = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
+        .update(
+            { "_id": params.kpiId, "comments._id": params.commentId, "comments.comments._id": params.childCommentId },
+            { $pull: { "comments.$.comments": { _id: params.childCommentId } } },
+            { safe: true }
+        )
+
+    let comment = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
+        .findOne({ "_id": params.kpiId, "comments._id": params.commentId, })
+        .populate([
+            { path: 'comments.creator', select: 'name email avatar ' },
+            { path: 'comments.comments.creator', select: 'name email avatar' }
+        ])
+
+    return comment.comments
+}
+
+/**
+ * Xóa file của bình luận
+ */
+exports.deleteFileComment = async (portal, params) => {
+    let file = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
+        .aggregate([
+            { $match: { "_id": mongoose.Types.ObjectId(params.kpiId) } },
+            { $unwind: "$comments" },
+            { $replaceRoot: { newRoot: "$comments" } },
+            { $match: { "_id": mongoose.Types.ObjectId(params.commentId) } },
+            { $unwind: "$files" },
+            { $replaceRoot: { newRoot: "$files" } },
+            { $match: { "_id": mongoose.Types.ObjectId(params.fileId) } }
+        ])
+    fs.unlinkSync(file[0].url)
+
+    let comment1 = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
+        .update(
+            { "_id": params.kpiId, "comments._id": params.commentId },
+            { $pull: { "comments.$.files": { _id: params.fileId } } },
+            { safe: true }
+        )
+    let task = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
+        .findOne({ "_id": params.kpiId, "comments._id": params.commentId })
+        .populate([
+            { path: "comments.creator", select: 'name email avatar' },
+            { path: "comments.comments.creator", select: 'name email avatar' },
+        ]);
+
+    return task.comments;
+}
+
+/**
+ * Xóa file bình luận con
+ */
+exports.deleteFileChildComment = async (portal, params) => {
+    let file = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
+        .aggregate([
+            { $match: { "_id": mongoose.Types.ObjectId(params.kpiId) } },
+            { $unwind: "$comments" },
+            { $replaceRoot: { newRoot: "$comments" } },
+            { $match: { "_id": mongoose.Types.ObjectId(params.commentId) } },
+            { $unwind: "$comments" },
+            { $replaceRoot: { newRoot: "$comments" } },
+            { $match: { "_id": mongoose.Types.ObjectId(params.childCommentId) } },
+            { $unwind: "$files" },
+            { $replaceRoot: { newRoot: "$files" } },
+            { $match: { "_id": mongoose.Types.ObjectId(params.fileId) } }
+        ]);
+
+    fs.unlinkSync(file[0].url);
+
+    let action = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
+        .update(
+            { "_id": params.kpiId, "comments._id": params.commentId },
+            { $pull: { "comments.$.comments.$[].files": { _id: params.fileId } } },
+            { safe: true }
+        );
+
+    let task = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
+        .findOne({ "_id": params.kpiId, "comments._id": params.commentId },)
+        .populate([
+            { path: "comments.creator", select: 'name email avatar' },
+            { path: "comments.comments.creator", select: 'name email avatar' },
+        ]);
+
+    return task.comments;
+}

@@ -129,7 +129,6 @@ function deleteXmlDiagram(diagramId, pageNumber, noResultsPerPage, name) {
  * @param {String} processId id của process
  */
 function createTaskByProcess(data, processId) {
-    console.log(processId)
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/process/processes/${processId}/tasks/create`,
         method: 'POST',

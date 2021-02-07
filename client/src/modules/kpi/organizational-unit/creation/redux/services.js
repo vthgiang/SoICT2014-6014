@@ -13,6 +13,15 @@ export const createUnitKpiServices = {
     addTargetKPIUnit,
     editTargetKPIUnit,
     deleteTargetKPIUnit,
+
+    createComment,
+    editComment,
+    deleteComment,
+    createChildComment,
+    editChildComment,
+    deleteChildComment,
+    deleteFileComment,
+    deleteFileChildComment
 }
 
 /**
@@ -149,4 +158,83 @@ function deleteTargetKPIUnit(id, organizationalUnitKpiSetId) {
         url: `${process.env.REACT_APP_SERVER}/kpi/organizational-unit/creation/organizational-unit-kpi-sets/${kpiunit}/organizational-unit-kpis/${id}`,
         method: 'DELETE'
     }, true, true, 'kpi.organizational_unit.create_organizational_unit_kpi_set');
+}
+
+/**
+ * Tạo comment cho kpi set
+ */
+function createComment(setKpiId, data) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/kpi/organizational-unit/creation/organizational-unit-kpi-sets/${setKpiId}/comments`,
+        method: 'POST',
+        data: data
+    }, false, true)
+}
+/**
+ * Tạo comment cho kpi set
+ */
+function createChildComment(setKpiId, commentId, data) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/kpi/organizational-unit/creation/organizational-unit-kpi-sets/${setKpiId}/comments/${commentId}/child-comments`,
+        method: 'POST',
+        data: data
+    }, false, true)
+}
+
+/**
+ * Edit comment cho kpi set
+ */
+function editComment(setKpiId, commentId, data) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/kpi/organizational-unit/creation/organizational-unit-kpi-sets/${setKpiId}/comments/${commentId}`,
+        method: 'PATCH',
+        data: data
+    }, false, true)
+}
+/**
+ * Delete comment
+ */
+function deleteComment(setKpiId, commentId) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/kpi/organizational-unit/creation/organizational-unit-kpi-sets/${setKpiId}/comments/${commentId}`,
+        method: 'DELETE',
+    }, false, true)
+}
+/**
+ * Edit comment of comment
+ */
+function editChildComment(setKpiId, commentId, childCommentId, data) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/kpi/organizational-unit/creation/organizational-unit-kpi-sets/${setKpiId}/comments/${commentId}/child-comments/${childCommentId}`,
+        method: 'PATCH',
+        data: data
+    }, false, true)
+}
+/**
+ * Delete comment of comment
+ */
+function deleteChildComment(setKpiId, commentId, childCommentId) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/kpi/organizational-unit/creation/organizational-unit-kpi-sets/${setKpiId}/comments/${commentId}/child-comments/${childCommentId}`,
+        method: 'DELETE',
+    }, false, true)
+}
+
+/**
+ * Delete file of comment
+ */
+function deleteFileComment(fileId,commentId, setKpiId) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/kpi/organizational-unit/creation/organizational-unit-kpi-sets/${setKpiId}/comments/${commentId}/files/${fileId}`,
+        method: 'DELETE',
+    }, false, true)
+}
+/**
+ * Delete file child comment
+ */
+function deleteFileChildComment(fileId, childCommentId, commentId, setKpiId) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/kpi/organizational-unit/creation/organizational-unit-kpi-sets/${setKpiId}/comments/${commentId}/child-comments/${childCommentId}/files/${fileId}`,
+        method: 'DELETE',
+    }, false, true)
 }

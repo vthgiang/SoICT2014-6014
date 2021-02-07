@@ -26,7 +26,7 @@ export function taskProcess(state = {}, action) {
                 isLoading: true
             };
         case TaskProcessConstants.IMPORT_PROCESS_TEMPLATE_SUCCESS:
-            for(let i in action.payload.content){
+            for (let i in action.payload.content) {
                 let item = action.payload.content[i];
                 state.xmlDiagram.push(item);
             }
@@ -119,11 +119,29 @@ export function taskProcess(state = {}, action) {
                 isLoading: true
             };
         case TaskProcessConstants.CREATE_TASK_BY_PROCESS_SUCCESS:
+
             return {
                 ...state,
-                xmlDiagram: action.payload.content
+                xmlDiagram: action.payload.xmlDiagram,
+                listTaskProcess: [...state.listTaskProcess, action.payload.content]
             };
         case TaskProcessConstants.CREATE_TASK_BY_PROCESS_FAIL:
+            return {
+                error: action.error,
+                isLoading: false
+            };
+        case TaskProcessConstants.CREATE_TASK_BY_PROCESS_TEMPLATE_REQUEST:
+            return {
+                ...state,
+                isLoading: true
+            };
+        case TaskProcessConstants.CREATE_TASK_BY_PROCESS_TEMPLATE_SUCCESS:
+
+            return {
+                ...state,
+                xmlDiagram: action.payload.xmlDiagram,
+            };
+        case TaskProcessConstants.CREATE_TASK_BY_PROCESS_TEMPLATE_FAIL:
             return {
                 error: action.error,
                 isLoading: false

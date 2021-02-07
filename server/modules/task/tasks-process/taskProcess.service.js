@@ -288,7 +288,7 @@ isStartTask = (task) => {
 exports.createTaskByProcess = async (portal, processId, body) => {
     let data = body.taskList;
     let level;
-
+    let newTaskItem
     let splitter = body.startDate.split("-");
     let startDateProcess = new Date(splitter[2], splitter[1] - 1, splitter[0]);
     splitter = body.endDate.split("-");
@@ -305,7 +305,7 @@ exports.createTaskByProcess = async (portal, processId, body) => {
         viewer: body.viewer,
         manager: body.manager,
     })
-   
+
     let listTask = [];
     let mailInfoArr = [];
     let taskProcessId = newTaskProcess._id;
@@ -341,7 +341,7 @@ exports.createTaskByProcess = async (portal, processId, body) => {
 
         let collaboratedWithOrganizationalUnits = data[i].collaboratedWithOrganizationalUnits.map(item => { return { "organizationalUnit": item } })
         let process = taskProcessId;
-        let newTaskItem = await Task(connect(DB_CONNECTION, portal)).create({
+        newTaskItem = await Task(connect(DB_CONNECTION, portal)).create({
             process: process,
             codeInProcess: data[i].code,
             numberOfDaysTaken: data[i].numberOfDaysTaken,
@@ -366,7 +366,7 @@ exports.createTaskByProcess = async (portal, processId, body) => {
             informedEmployees: data[i].informedEmployees,
             confirmedByEmployees: data[i].responsibleEmployees.concat(data[i].accountableEmployees).concat(data[i].consultedEmployees).includes(data[i].creator) ? data[i].creator : []
         });
-        
+
         let x = await TaskService.sendEmailForCreateTask(portal, newTaskItem);
 
         mailInfoArr.push(x);
@@ -419,13 +419,37 @@ exports.createTaskByProcess = async (portal, processId, body) => {
             { new: true }
         )
     }
-    console.log(processId)
-    if(processId !== "undefined") {
-        console.log("AHAHAHAHAHAHAH")
+
+    if (processId !== "undefined") {
         await ProcessTemplate(connect(DB_CONNECTION, portal)).findByIdAndUpdate(processId, { $inc: { 'numberOfUse': 1 } }, { new: true });
     }
 
-    await TaskProcess(connect(DB_CONNECTION, portal)).findByIdAndUpdate(taskProcessId, { $set: { tasks: listTask } }, { new: true });
+    let newProcess = await TaskProcess(connect(DB_CONNECTION, portal)).findByIdAndUpdate(taskProcessId, { $set: { tasks: listTask } }, { new: true })
+    .populate([
+        { path: 'creator', select: 'name' },
+        // { path: 'viewer', select: 'name' },
+        { path: 'manager', select: 'name' },
+        {
+            path: 'tasks', populate: [
+                { path: "parent", select: "name" },
+                { path: "taskTemplate", select: "formula" },
+                { path: "organizationalUnit", },
+                { path: "collaboratedWithOrganizationalUnits", },
+                { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", select: "name email _id" },
+                { path: "evaluations.results.employee", select: "name email _id" },
+                { path: "evaluations.results.organizationalUnit", select: "name _id" },
+                { path: "evaluations.results.kpis" },
+                { path: "taskActions.creator", select: 'name email avatar' },
+                { path: "taskActions.comments.creator", select: 'name email avatar' },
+                { path: "taskActions.evaluations.creator", select: 'name email avatar ' },
+                { path: "taskComments.creator", select: 'name email avatar' },
+                { path: "taskComments.comments.creator", select: 'name email avatar' },
+                { path: "documents.creator", select: 'name email avatar' },
+                { path: "process" },
+            ]
+        },
+        { path: 'processTemplate', select: 'processName' },
+    ]);
     let myProcess = await ProcessTemplate(connect(DB_CONNECTION, portal)).find().populate([
         { path: 'creator', select: 'name' },
         { path: 'viewer', select: 'name' },
@@ -433,8 +457,12 @@ exports.createTaskByProcess = async (portal, processId, body) => {
         { path: "tasks.organizationalUnit tasks.collaboratedWithOrganizationalUnits", },
         { path: "tasks.responsibleEmployees tasks.accountableEmployees tasks.consultedEmployees tasks.informedEmployees tasks.confirmedByEmployees tasks.creator", select: "name email _id" },
     ]);;
-
-    return { process: myProcess, mailInfo: mailInfoArr }
+    if( body.template === false ) {
+        return { process: newProcess, newTask: newTaskItem, mailInfo: mailInfoArr }
+    }else {
+        return { process: myProcess, newTask: newTaskItem, mailInfo: mailInfoArr }
+    }
+    
 }
 
 /**
