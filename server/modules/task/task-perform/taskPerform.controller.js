@@ -81,7 +81,7 @@ exports.startTimesheetLog = async (req, res) => {
             messages: ['start_timer_success'],
             content: timerStatus
         })
-    } catch (error) {console.log(error)
+    } catch (error) {
         await Logger.error(req.user.email, 'start_timer_faile', req.portal)
         res.status(400).json({
             success: false,
@@ -175,7 +175,7 @@ exports.createTaskAction = async (req, res) => {
                 description: `<p><strong>${tasks.name}:</strong> ${userCreator.name} đã thêm mới hoạt động, phê duyệt ngay! </p>`
             }
         };
-        NotificationServices.createNotification(req.portal, tasks.organizationalUnit, associatedDataforAccountable,);
+        NotificationServices.createNotification(req.portal, tasks.organizationalUnit, associatedDataforAccountable);
        
         // message gửi cho người thực hiện
         // Loại người tạo hoặt động khỏi danh sách người nhận thông báo
@@ -198,7 +198,7 @@ exports.createTaskAction = async (req, res) => {
             }
         };
 
-        NotificationServices.createNotification(req.portal, tasks.organizationalUnit, associatedDataforResponsible,);
+        NotificationServices.createNotification(req.portal, tasks.organizationalUnit, associatedDataforResponsible);
         sendEmail(task.email, "Phê duyệt hoạt động", '', `<p><strong>${userCreator.name}</strong> đã thêm mới hoạt động, bạn có thể vào để phê duyệt hoạt động này <a href="${process.env.WEBSITE}/task?taskId=${tasks._id}" target="_blank">${process.env.WEBSITE}/task?taskId=${tasks._id}</a></p>`);
         
         await Logger.info(req.user.email, ` create task action  `, req.portal)
@@ -546,7 +546,6 @@ evaluationAction = async (req, res) => {
             content: taskAction
         })
     } catch (error) {
-        console.log(error)
         await Logger.error(req.user.email, ` evaluation action  `, req.portal)
         res.status(400).json({
             success: false,
@@ -776,6 +775,9 @@ exports.editTask = async (req, res) => {
     else if (req.query.type === 'confirm_task') {
         confirmTask(req, res);
     }
+    else if (req.query.type === 'request_approval_close_task') {
+        requestAndApprovalCloseTask(req, res);
+    }
     else if (req.query.type === 'edit_employee_collaborated_with_unit') {
         editEmployeeCollaboratedWithOrganizationalUnits(req, res);
     }
@@ -820,7 +822,7 @@ editTaskByResponsibleEmployees = async (req, res) => {
                 description: `<p><strong>${tasks.name}:</strong> ${user.name} đã cập nhật thông tin công việc với vai trò người thực hiện</p>`
             }
         };
-        NotificationServices.createNotification(req.portal, tasks.organizationalUnit, data,);
+        NotificationServices.createNotification(req.portal, tasks.organizationalUnit, data);
 
         // sendEmail(task.email, "Cập nhật thông tin công việc", '', `<p><strong>${user.name}</strong> đã cập nhật thông tin công việc với vai trò người phê duyệt <a href="${process.env.WEBSITE}/task?taskId=${req.params.taskId}" target="_blank">${process.env.WEBSITE}/task?taskId=${req.params.taskId}</a></p>`);
         let title = "Cập nhật thông tin công việc: " + task.tasks.name;
@@ -861,13 +863,12 @@ editTaskByAccountableEmployees = async (req, res) => {
                 description: `<p><strong>${tasks.name}:</strong> ${user.name} đã cập nhật thông tin công việc với vai trò người phê duyệt</p>`
             }
         };
-        NotificationServices.createNotification(req.portal, tasks.organizationalUnit, data,);
+        NotificationServices.createNotification(req.portal, tasks.organizationalUnit, data);
         // sendEmail(task.email, "Cập nhật thông tin công việc", '', `<p><strong>${user.name}</strong> đã cập nhật thông tin công việc với vai trò người phê duyệt <a href="${process.env.WEBSITE}/task?taskId=${req.params.taskId}">${process.env.WEBSITE}/task?taskId=${req.params.taskId}</a></p>`);
         let title = "Cập nhật thông tin công việc: " + task.tasks.name;
         sendEmail(task.email, title, '', `<p><strong>${user.name}</strong> đã cập nhật thông tin công việc với vai trò người phê duyệt <a href="${process.env.WEBSITE}/task?taskId=${req.params.taskId}">${process.env.WEBSITE}/task?taskId=${req.params.taskId}</a></p>`);
         
 
-        console.log('TASSKKKKKK', task.deletedCollabEmail, task.additionalCollabEmail);
         // Gửi mail cho trưởng đơn vị phối hợp thực hiện công việc
         let deletedCollabEmail = task.deletedCollabEmail;
         let deletedCollabHtml = task.deletedCollabHtml;
@@ -1187,6 +1188,87 @@ confirmTask = async (req, res) => {
         res.status(400).json({
             success: false,
             messages: ['confirm_task_failure'],
+            content: error
+        })
+    }
+}
+
+/** Yêu cầu kết thúc công việc */
+requestAndApprovalCloseTask = async (req, res) => {
+    try {
+        let data = {
+            ...req.body,
+            userId: req.user._id
+        }
+        let task = await PerformTaskService.requestAndApprovalCloseTask(req.portal, req.params.taskId, data);
+
+        let dataNotification, email = [];
+
+        dataNotification = {
+            "organizationalUnits": task?.organizationalUnit?._id,
+            "level": "general",
+            associatedDataObject: {
+                dataType: 1
+            }
+        };
+        
+        if (data.type === 'request') {
+            dataNotification = {
+                ...dataNotification,
+                "title": "Yêu cầu kết thúc công việc",
+                "sender": task?.requestToCloseTask?.requestedBy?.name,
+                "users": task.accountableEmployees.map(item => item._id),
+                "content": `<p><strong>${task?.requestToCloseTask?.requestedBy?.name}</strong> đã gửi yêu cầu kết thúc công việc <a href="${process.env.WEBSITE}/task?taskId=${req.params.taskId}">${task?.name}</a></p>`,
+                associatedDataObject: {
+                    ...dataNotification.associatedDataObject,
+                    description: `<p><strong>${task?.requestToCloseTask?.requestedBy?.name}</strong> đã gửi yêu cầu kết thúc công việc <a href="${process.env.WEBSITE}/task?taskId=${req.params.taskId}">${task?.name}</a></p>`
+                }
+            };
+
+            email = task.accountableEmployees.map(item => item.email);
+        } 
+        else if (data.type === 'cancel_request') {
+            dataNotification = null;
+        }
+        else if (data.type === 'approval') {
+            dataNotification = {
+                ...dataNotification,
+                "title": "Phê duyệt kết thúc công việc",
+                "sender": task?.requestToCloseTask?.requestedBy?.name,
+                "users": task.responsibleEmployees.map(item => item._id),
+                "content": `<p>Yêu cầu kết thúc công việc <a href="${process.env.WEBSITE}/task?taskId=${req.params.taskId}">${task?.name}</a> đã được phê duyệt thành công</p>`
+            };
+
+            email = task.responsibleEmployees.map(item => item.email);
+        }
+        else if (data.type === 'decline') {
+            dataNotification = {
+                ...dataNotification,
+                "title": "Phê duyệt kết thúc công việc",
+                "sender": task?.requestToCloseTask?.requestedBy?.name,
+                "users": task.responsibleEmployees.map(item => item._id),
+                "content": `<p>Yêu cầu kết thúc công việc <a href="${process.env.WEBSITE}/task?taskId=${req.params.taskId}">${task?.name}</a> không được phê duyệt</p>`
+            };
+
+            email = task.responsibleEmployees.map(item => item.email);
+        }
+
+        if (dataNotification) {
+            NotificationServices.createNotification(req.portal, task?.organizationalUnit?._id, dataNotification);
+            sendEmail(email, dataNotification.title, '', dataNotification.content);
+        }
+        
+        await Logger.info(req.user.email, ` request close task `, req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ['request_close_task_success'],
+            content: task
+        })
+    } catch (error) {
+        await Logger.error(req.user.email, ` request close task `, req.portal);
+        res.status(400).json({
+            success: false,
+            messages: ['request_close_task_failure'],
             content: error
         })
     }

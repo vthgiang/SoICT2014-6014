@@ -57,6 +57,7 @@ export const performTaskAction = {
     editInformationTask,
     getTaskById,
     confirmTask,
+    requestAndApprovalCloseTask,
     editEmployeeCollaboratedWithOrganizationalUnits,
 
     createComment,
@@ -761,6 +762,27 @@ function confirmTask(taskId) {
             .catch(error => {
                 dispatch({
                     type: performTaskConstants.CONFIRM_TASK_FAILURE,
+                    payload: error
+                });
+            });
+    }
+}
+
+/** Yêu cầu kết thúc công việc */
+function requestAndApprovalCloseTask(taskId, data) {
+    return dispatch => {
+        dispatch({ type: performTaskConstants.REQUEST_AND_APPROVAL_CLOSE_TASK_REQUEST });
+
+        performTaskService.requestAndApprovalCloseTask(taskId, data)
+            .then(res => {
+                dispatch({
+                    type: performTaskConstants.REQUEST_AND_APPROVAL_CLOSE_TASK_SUCCESS,    
+                    payload: res.data.content
+                });
+            })
+            .catch(error => {
+                dispatch({
+                    type: performTaskConstants.REQUEST_AND_APPROVAL_CLOSE_TASK_FAILURE,
                     payload: error
                 });
             });

@@ -21,6 +21,7 @@ exports.getTaskById = async (portal, id, userId) => {
             { path: "taskTemplate", select: "formula" },
             { path: "organizationalUnit" },
             { path: "collaboratedWithOrganizationalUnits.organizationalUnit" },
+            { path: "requestToCloseTask.requestedBy", select: "name email _id active" },
             {
                 path:
                     "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator",
@@ -2234,7 +2235,6 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
 
     
     evaluateId = await this.getIdEvaluationOfThisMonth(portal, taskId);
-    console.log('evaluateId', evaluateId);
 
     // tìm ra info ở thông tin chung bị xóa
     let deletedInfoItems = task.taskInformations.filter(x => 
@@ -2243,7 +2243,6 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
 
     let evaluation = task.evaluations.find(e => String(e._id) === String(evaluateId));
 
-    console.log('deleted info ', deletedInfoItems);
 
     if(listInfoTask && listInfoTask.length > 0) {
         // xóa info ở thông tin chung
@@ -2286,7 +2285,6 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
             for (let x in task.taskInformations) {
                 if (String(listInfoTask[i]._id) === String(task.taskInformations[x]._id)) {
                     if (listInfoTask[i].type === task.taskInformations[x].type) {
-                        // console.log('1 - ', 'tìm thấy cái task info có sẵn - sửa thông tin task info');
                         await Task(connect(DB_CONNECTION, portal)).updateOne(
                             {
                                 _id: taskId,
@@ -2308,7 +2306,6 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
                         );
                     }
                     else {
-                        // console.log('2 - ', 'có thấy task info có sẵn - nhưng kiểu dữ liệu thay đổi, xóa giá trị của thông tin');
                         listChangeTypeInfo.push(listInfoTask[i]._id);
                         await Task(connect(DB_CONNECTION, portal)).updateOne(
                             {
@@ -2337,8 +2334,6 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
             }
         }
         else {
-            console.log('3 - thêm mới task info');
-            console.log('"code": "p" ', i, "p" + parseInt(Number(i) + 1));
             await Task(connect(DB_CONNECTION, portal)).updateOne(
                 {
                     _id: taskId,
@@ -2368,7 +2363,6 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
                     // do các thông tin như _id, type, code,... ở trong task.taskInformations giống với evaluation.taskInformations 
                     // nên có thể dùng task.taskInformations để cập nhật thông tin của evaluation.taskInformations
                     if (String(listInfoTask[i]._id) === String(task.taskInformations[x]._id)) {
-                        // console.log('eval 1');
                         if (listInfoTask[i].type === task.taskInformations[x].type) {
                             await Task(connect(DB_CONNECTION, portal)).updateOne(
                                 {
@@ -2394,7 +2388,6 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
                             );
                         }
                         else {
-                            // console.log('eval 2');
                             await Task(connect(DB_CONNECTION, portal)).updateOne(
                                 {
                                     _id: taskId,
@@ -2425,8 +2418,6 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
                 }
             }
             else {
-                // console.log('eval 3');
-                console.log('"code": "p" ', i, "p" + parseInt(Number(i) + 1));
                 let updatedItem = await Task(connect(DB_CONNECTION, portal)).findById(taskId);
                 let codeOfNewItem = "p" + parseInt(Number(i) + 1);
                 let newInfoItem = updatedItem.taskInformations.find(e => e.code === codeOfNewItem);
@@ -2447,9 +2438,8 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
         }    
     }
 
-    console.log('task info old', task.taskInformations.length); 
     task = await Task(connect(DB_CONNECTION, portal)).findById(taskId);
-    console.log('task info new', task.taskInformations.length); 
+
     // cập nhật value cho info
     for (let item in info) {
         for (let i in task.taskInformations) {
@@ -4830,6 +4820,61 @@ exports.confirmTask = async (portal, taskId, userId) => {
     let confirmedByEmployee = await Task(
         connect(DB_CONNECTION, portal)
     ).findByIdAndUpdate(taskId, { $push: { confirmedByEmployees: userId } });
+
+    let task = await this.getTaskById(portal, taskId, userId);
+    return task;
+};
+
+/** Yêu cầu kết thúc công việc */
+exports.requestAndApprovalCloseTask = async (portal, taskId, data) => {
+    const { userId, taskStatus, description, type } = data;
+
+    let keyUpdate = {};
+
+    if (type === 'request') {
+        keyUpdate = {
+            "requestToCloseTask": {
+                "requestedBy": userId,
+                "taskStatus": taskStatus,
+                "description": description,
+                "requestStatus": 1
+            }
+        }
+    } 
+    else if (type === 'cancel_request') {
+        keyUpdate = {
+            "requestToCloseTask": {
+                "requestedBy": userId,
+                "taskStatus": taskStatus,
+                "description": description,
+                "requestStatus": 0
+            }
+        }
+    }
+    else if (type === 'approval') {
+        keyUpdate = {
+            "requestToCloseTask": {
+                "requestedBy": userId,
+                "taskStatus": taskStatus,
+                "description": description,
+                "requestStatus": 3
+            },
+            "status": taskStatus
+        }
+    }
+    else if (type === 'decline') {
+        keyUpdate = {
+            "requestToCloseTask": {
+                "requestedBy": userId,
+                "taskStatus": taskStatus,
+                "description": description,
+                "requestStatus": 2
+            }
+        }
+    }
+
+    let requestCloseByEmployee = await Task(connect(DB_CONNECTION, portal))
+        .findByIdAndUpdate(taskId, keyUpdate, { new: true });
 
     let task = await this.getTaskById(portal, taskId, userId);
     return task;

@@ -231,7 +231,7 @@ const TaskSchema = new Schema(
             taskStatus: { // Các trạng thái như trạng thái công việc, trừ inprocess
                 type: String,
             },
-            requestStatus: { // 0: chưa yêu cầu, 1: đang yêu cầu, 2: từ chối
+            requestStatus: { // 0: chưa yêu cầu, 1: đang yêu cầu, 2: từ chối, 3: đồng ý
                 type: Number,
                 default: 0,
             }

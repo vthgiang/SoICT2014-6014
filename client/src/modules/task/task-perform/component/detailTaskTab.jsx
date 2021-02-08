@@ -18,10 +18,12 @@ import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
 import { ShowMoreShowLess } from '../../../../common-components';
 import moment from 'moment';
 import Swal from 'sweetalert2';
-
 import parse from 'html-react-parser';
+
 import { TaskAddModal } from '../../task-management/component/taskAddModal';
 import { ModalAddTaskTemplate } from '../../task-template/component/addTaskTemplateModal';
+import { RequestToCloseTaskModal } from './requestToCloseTaskModal';
+
 import TaskProjectAction from '../../task-project/redux/action';
 class DetailTaskTab extends Component {
 
@@ -243,6 +245,18 @@ class DetailTaskTab extends Component {
         }
         window.$(modalId).modal('show');
 
+    }
+
+    handleShowRequestCloseTask = async (id) => {
+        await this.setState(state => {
+            return {
+                ...state,
+                showRequestClose: id
+            }
+        });
+
+        let modalId = `#modal-request-close-task-${id}`;
+        window.$(modalId).modal('show');
     }
 
     handleEndTask = async (id, status, codeInProcess, typeOfTask) => {
@@ -663,7 +677,10 @@ class DetailTaskTab extends Component {
     render() {
         const { tasks, performtasks, user, translate } = this.props;
         const { showToolbar, id, isProcess } = this.props; // props form parent component ( task, id, showToolbar, onChangeTaskRole() )
-        const { currentUser, roles, currentRole, collapseInfo, showEdit, showEndTask, showEvaluate, showMore, showCopy, showSaveAsTemplate } = this.state
+        const { currentUser, roles, currentRole, collapseInfo,
+            showEdit, showEndTask, showEvaluate, showRequestClose,
+            showMore, showCopy, showSaveAsTemplate
+        } = this.state
 
         let task;
         let codeInProcess, typeOfTask, statusTask, checkInactive = true, evaluations, evalList = [];
@@ -694,7 +711,7 @@ class DetailTaskTab extends Component {
         if (task && task.accountableEmployees && task.accountableEmployees.length === 0) {
             checkHasAccountable = false;
         }
-
+        
         if (task) {
             statusTask = task.status;
         }
@@ -755,7 +772,8 @@ class DetailTaskTab extends Component {
             || (checkEvaluationTaskAndKpiLink && checkEvaluationTaskAndKpiLink.checkKpiLink)
             || (checkDeadlineForEvaluation && checkDeadlineForEvaluation.checkDeadlineForEvaluation)
             || (checkInactive && codeInProcess && (currentRole === "accountable" || (currentRole === "responsible" && checkHasAccountable === false))))
-            || (checkConfirmAssginOfOrganizationalUnit.checkConfirm);
+            || (checkConfirmAssginOfOrganizationalUnit.checkConfirm)
+            || (currentRole === "accountable" && task?.requestToCloseTask?.requestStatus === 1);
 
         // Xử lý dữ liệu biểu đồ đóng góp thời gian công việc
         if (task && task.hoursSpentOnTask) {
@@ -854,6 +872,11 @@ class DetailTaskTab extends Component {
                                 </a>
                             </React.Fragment>
                         }
+                        {(((currentRole === "responsible" && task?.requestToCloseTask?.requestStatus !== 3) || (currentRole === "accountable" && task?.requestToCloseTask?.requestStatus === 1)) && checkInactive) && checkHasAccountable
+                            && <a className="btn btn-app" onClick={() => this.handleShowRequestCloseTask(id)} title="Phê duyệt yêu cầu kết thúc công việc">
+                                <i className="fa fa-edit" style={{ fontSize: "16px" }}></i>Yêu cầu kết thúc công việc
+                            </a>
+                        }
                         {
                             (collapseInfo === false) ?
                                 <a className="btn btn-app" data-toggle="collapse" href="#info" onClick={this.handleChangeCollapseInfo} role="button" aria-expanded="false" aria-controls="info">
@@ -887,6 +910,16 @@ class DetailTaskTab extends Component {
                             task && warning &&
                             <div className="description-box warning">
                                 <h4>{translate('task.task_management.warning')}</h4>
+
+                                {/* Phê duyệt yêu cầu kết thúc công việc */}
+                                {currentRole === "accountable" && task?.requestToCloseTask?.requestStatus === 1
+                                    && <div>
+                                        <strong>Công việc đang chờ phê duyệt yêu cầu kết thúc:</strong>
+                                        <a style={{ cursor: "pointer" }} onClick={() => this.handleShowRequestCloseTask(id)}>
+                                            Phê duyệt yêu cầu
+                                        </a>
+                                    </div>
+                                }
 
                                 {/* Kích hoạt công việc phía sau trong quy trình */}
                                 {statusTask === "inprocess" && checkInactive && codeInProcess && (currentRole === "accountable" || (currentRole === "responsible" && checkHasAccountable === false)) &&
@@ -1316,6 +1349,15 @@ class DetailTaskTab extends Component {
                 {
                     (id && showSaveAsTemplate === `${id}`) &&
                     <ModalAddTaskTemplate savedTaskAsTemplate={true} savedTaskItem={task} savedTaskId={`${id}`} task={task} />
+                }
+
+                {
+                    (id && showRequestClose === id) && (currentRole === "responsible" || currentRole === "accountable") && checkHasAccountable &&
+                    <RequestToCloseTaskModal
+                        id={id}
+                        task={task && task}
+                        role={currentRole}
+                    />
                 }
             </React.Fragment>
         );
