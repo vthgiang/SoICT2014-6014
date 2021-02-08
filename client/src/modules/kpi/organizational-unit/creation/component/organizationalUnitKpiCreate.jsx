@@ -359,7 +359,7 @@ class OrganizationalUnitKpiCreate extends Component {
         const { createKpiUnit } = this.props;
 
         let parentKpi = createKpiUnit && createKpiUnit.parent;
-        if (parentKpi == null) {
+        if (!parentKpi) {
             Swal.fire({
                 title: translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.not_initialize_organiztional_unit_kpi'),
                 type: 'warning',
@@ -395,6 +395,13 @@ class OrganizationalUnitKpiCreate extends Component {
             case "delete":
                 return Swal.fire({
                     title: translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.delete_kpi.activated'),
+                    type: 'warning',
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'Đồng ý'
+                })
+            case "edit_employee_importance":
+                return Swal.fire({
+                    title: translate('kpi.organizational_unit.create_organizational_unit_kpi_set.employee_importance_activated'),
                     type: 'warning',
                     confirmButtonColor: '#3085d6',
                     confirmButtonText: 'Đồng ý'
@@ -516,7 +523,7 @@ class OrganizationalUnitKpiCreate extends Component {
                                             {this.checkEdittingPermission(currentKPI && currentKPI.organizationalUnit) ?
                                                 <span>
                                                     {currentKPI.status === 1 ?
-                                                        <a className="btn btn-app" onClick={() => this.swalOfUnitKpi("add_target")}>
+                                                        <a className="btn btn-app" onClick={() => this.swalOfUnitKpi("edit_employee_importance")}>
                                                             <i className="fa fa-plus-circle" style={{ fontSize: "16px" }}></i>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.employee_importance')}
                                                         </a>
                                                         : <span>
@@ -533,7 +540,7 @@ class OrganizationalUnitKpiCreate extends Component {
                                                 </span>
                                                 : <span>
                                                     <a className="btn btn-app" onClick={() => this.swalEdittingPermission()}>
-                                                        <i className="fa fa-plus-circle" style={{ fontSize: "16px" }}></i>Phân bố KPI
+                                                        <i className="fa fa-plus-circle" style={{ fontSize: "16px" }}></i>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.employee_importance')}
                                                     </a>
                                                 </span>
                                             }

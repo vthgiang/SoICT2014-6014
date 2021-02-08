@@ -10,8 +10,8 @@ exports.sendEmail = (to, subject, text, html) => {
         from: user,
         to: to,
         subject: subject,
-        text:  text,
-        html:   html
+        text: text,
+        html: html
     }
 
     transporter.sendMail(mainOptions);

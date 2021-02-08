@@ -3711,6 +3711,7 @@ export default {
                     content:
                         "This is the default target (if necessary, weights can be corrected)",
                     delete_title: "Delete",
+                    employee_importance_activated: "KPI has been activated, you can not edit employee importances!"
                 },
 
                 create_organizational_unit_kpi_modal: {
@@ -3884,7 +3885,9 @@ export default {
                 statistics: {
                     detail_participant: "Participant detail",
                     detail_employee_kpi: "Employee KPI detail",
-                    email: "Email"
+                    email: "Email",
+                    weight_current: "Current KPI weights",
+                    weight_analysis: "KPI weighting according to actual analysis"
                 },
 
                 //Thông điệp khác trả về từ server
