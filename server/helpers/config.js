@@ -765,6 +765,7 @@ const LINKS = [{
         ROOT_ROLES.MANAGER.name,
         ROOT_ROLES.DEPUTY_MANAGER.name,
         ROOT_ROLES.EMPLOYEE.name,
+        ROOT_ROLES.ADMIN.name,
     ],
     components: getComponentsInLink('/task')
 },
@@ -1418,7 +1419,7 @@ const LINKS = [{
         ROOT_ROLES.EMPLOYEE.name,
     ],
     components: getComponentsInLink('/user-guide')
-},{
+}, {
     url: "/time-sheet-log/all",
     description: "Thống kê lịch sử bấm giờ tất cả thành viên trong công ty",
     category: LINK_CATEGORY.TASK.name,
