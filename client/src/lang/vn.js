@@ -66,7 +66,8 @@ export default {
             not_select_unit: "Chọn đơn vị",
             list_unit: "Danh sách đơn vị",
             list_employee: "Danh sách nhân viên",
-            detail: "Chi tiết"
+            detail: "Chi tiết",
+            select_all: "Chọn tất cả",
         },
 
         intro: {

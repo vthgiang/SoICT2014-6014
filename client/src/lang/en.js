@@ -65,7 +65,8 @@ export default {
             not_select_unit: "Select units",
             list_unit: "Organizational unit list",
             list_employee: "Employee list",
-            detail: "Detail"
+            detail: "Detail",
+            select_all: "Select all",
         },
 
         intro: {
