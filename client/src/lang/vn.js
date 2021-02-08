@@ -4010,6 +4010,7 @@ export default {
                     content:
                         "Đây là mục tiêu mặc định (nếu cần thiết có thể sửa trọng số)",
                     delete_title: "Xóa",
+                    employee_importance_activated: "KPI đã kích hoạt, bạn không thể chỉnh sửa độ quan trọng nhân viên"
                 },
 
                 create_organizational_unit_kpi_modal: {
@@ -4184,7 +4185,9 @@ export default {
                 statistics: {
                     detail_participant: "Chi tiết người tham gia",
                     detail_employee_kpi: "Chi tiết KPI nhân viên",
-                    email: "Email"
+                    email: "Email",
+                    weight_current: "Trọng số KPI hiện tại",
+                    weight_analysis: "Trọng số KPI theo phân tích thực tế"
                 },
 
                 //Thông điệp khác trả về từ server
