@@ -9,8 +9,8 @@ import DepreciationTree from './depreciation-of-asset/depreciationTree';
 import ValueTree from './value-of-asset/valueTree';
 
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
-
-
+import { TreeSelect } from '../../../../../../common-components';
+import isEqual from 'lodash/isEqual';
 class AssetByType extends Component {
 
     constructor(props) {
@@ -28,7 +28,8 @@ class AssetByType extends Component {
         this.state = {
             listAssets: [],
             displayBy: this.INFO_SEARCH.displayBy,
-            typeOfChart: this.INFO_SEARCH.typeOfChart
+            typeOfChart: this.INFO_SEARCH.typeOfChart,
+            depreciationOfAsset: [],
         }
     }
 
@@ -85,13 +86,70 @@ class AssetByType extends Component {
         this.props.setAssetByTypeExportData(this.EXPORT_DATA.amountOfAsset, this.EXPORT_DATA.depreciationOfAsset, this.EXPORT_DATA.valueOfAsset)
     }
 
+    getDepreciationOfAsset = (value) => {
+        let { depreciationOfAsset } = this.state;
+        if (!isEqual(depreciationOfAsset, value)) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    depreciationOfAsset: value,
+                }
+            })
+        }
+    }
+
+    getAssetTypes = (assetType) => {
+        let typeArr = [];
+        assetType.map(item => {
+            typeArr.push({
+                _id: item._id,
+                id: item._id,
+                name: item.typeName,
+                parent: item.parent ? item.parent._id : null
+            })
+        })
+        return typeArr;
+    }
+
+    handleChangeTypeAsset = (value) => {
+        this.setState(state => {
+            return {
+                ...state,
+                type: JSON.stringify(value),
+            }
+        })
+    }
+
     render() {
         const { translate } = this.props;
-        const { listAssets, assetType } = this.state;
-        
+        let { listAssets, assetType, type, depreciationOfAsset } = this.state;
+        const listAssetType = assetType && assetType.length > 0 ?
+            this.getAssetTypes(assetType) : [];
+        let assetTypes;
+
+        if (type && JSON.parse(type).length > 0 && assetType && assetType.length > 0) {
+            assetTypes = assetType.filter((obj, index) => JSON.parse(type).some(item => obj._id === item));
+        } else {
+            assetTypes = assetType;
+        }
+
         return (
             <React.Fragment>
                 <div className="qlcv">
+                    <div className="row">
+                        <div className="col-md-12">
+                            {/* Chọn loại tài sản */}
+                            <div className="form-group" style={{ width: "100%" }}>
+                                <label style={{ width: 90 }}>{translate('asset.general_information.asset_type')}</label>
+                                <TreeSelect
+                                    data={listAssetType}
+                                    value={type ? type : []}
+                                    handleChange={this.handleChangeTypeAsset}
+                                    mode="hierarchical"
+                                />
+                            </div>
+                        </div>
+                    </div>
                     <div className="row">
                         <div className="col-xs-6">
                             <div className="box box-solid">
@@ -101,7 +159,7 @@ class AssetByType extends Component {
                                 <div className="box-body qlcv">
                                     <AmountTree
                                         listAssets={listAssets}
-                                        assetType={assetType}
+                                        assetType={assetTypes}
                                         setAmountOfAsset={this.setAmountOfAsset}
                                     />
                                 </div>
@@ -116,8 +174,9 @@ class AssetByType extends Component {
                                 <div className="box-body qlcv">
                                     <ValueTree
                                         listAssets={listAssets}
-                                        assetType={assetType}
+                                        assetType={assetTypes}
                                         setValueOfAsset={this.setValueOfAsset}
+                                        depreciationOfAsset={depreciationOfAsset}
                                     />
                                 </div>
                             </div>
@@ -132,8 +191,9 @@ class AssetByType extends Component {
                                 <div className="box-body qlcv">
                                     <DepreciationTree
                                         listAssets={listAssets}
-                                        assetType={assetType}
+                                        assetType={assetTypes}
                                         setDepreciationOfAsset={this.setDepreciationOfAsset}
+                                        getDepreciationOfAsset={this.getDepreciationOfAsset}
                                     />
                                 </div>
                             </div>
