@@ -271,7 +271,7 @@ exports.getTasksCreatedByUser = async (portal, id) => {
  * @task dữ liệu trong params
  */
 exports.getPaginatedTasks = async (portal, task) => {
-    let { perPage, number, role, user, organizationalUnit, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime } = task;
+    let { perPage, number, role, user, organizationalUnit, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime, responsibleEmployees } = task;
     let taskList;
     perPage = Number(perPage);
     let page = Number(number);
@@ -363,6 +363,15 @@ exports.getPaginatedTasks = async (portal, task) => {
             }
         }
     };
+
+    if (responsibleEmployees && responsibleEmployees.length > 0) {
+        keySearch = {
+            ...keySearch,
+            responsibleEmployees: {
+                $in: responsibleEmployees
+            }
+        }
+    }
 
     if (JSON.parse(aPeriodOfTime)) {
         endDate = new Date(endDate);

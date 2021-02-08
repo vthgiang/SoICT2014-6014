@@ -375,7 +375,8 @@ getPaginatedTasks = async (req, res) => {
             name: req.query.name,
             startDate: req.query.startDate,
             endDate: req.query.endDate,
-            aPeriodOfTime: req.query.aPeriodOfTime
+            aPeriodOfTime: req.query.aPeriodOfTime,
+            responsibleEmployees: req.query.responsibleEmployees,
         };
 
         let tasks = await TaskManagementService.getPaginatedTasks(req.portal, task);

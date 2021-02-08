@@ -3232,6 +3232,7 @@ export default {
                 load_task_chart: "Dashboard tải công việc",
                 load_task_chart_unit: "Dashboard tải công việc của đơn vị",
                 explain: "Giải thích",
+                select_responsible: "Chọn người thực hiện",
             },
             task_perform: {
                 actions: "Hoạt động",

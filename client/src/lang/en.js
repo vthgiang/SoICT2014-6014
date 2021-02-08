@@ -2958,6 +2958,7 @@ export default {
                 load_task_chart: "Dashboard load task",
                 load_task_chart_unit: "Dashboard load task of unit",
                 explain: "Explain",
+                select_responsible: "Select responsible"
             },
             task_perform: {
                 actions: "Actions",
