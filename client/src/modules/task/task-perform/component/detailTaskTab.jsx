@@ -397,7 +397,7 @@ class DetailTaskTab extends Component {
         let listEmployeeNotKpiLink = [], responsibleEmployeesNotKpiLink = [], accountableEmployeesNotKpiLink = [], consultedEmployeesNotKpiLink = [];
 
         if (task && task.evaluations) {
-            evaluations = task.evaluations.filter(item => new Date(item.date) >= new Date(currentMonth) && new Date(item.date) < new Date(nextMonth));
+            evaluations = task.evaluations.filter(item => new Date(item.evaluatingMonth) >= new Date(currentMonth) && new Date(item.evaluatingMonth) < new Date(nextMonth));
 
             if (evaluations.length === 0) {
                 // Check đánh giá trong tháng
@@ -479,7 +479,7 @@ class DetailTaskTab extends Component {
 
         if (task && task.evaluations) {
             // Check evaluations tháng trước
-            evaluations = task.evaluations.filter(item => new Date(item.date) >= new Date(lastMonth) && new Date(item.date) < new Date(currentMonth));
+            evaluations = task.evaluations.filter(item => new Date(item.evaluatingMonth) >= new Date(lastMonth) && new Date(item.evaluatingMonth) < new Date(currentMonth));
 
             if (evaluations.length !== 0) {
                 // Check số ngày đến hạn đánh giá
@@ -526,7 +526,7 @@ class DetailTaskTab extends Component {
         }
     }
 
-    calculateHoursSpentOnTask = async (taskId, timesheetLogs, evaluate, startDate, endDate) => {
+    calculateHoursSpentOnTask = async (taskId, timesheetLogs, month, evaluate, startDate, endDate) => {
         let results = evaluate && evaluate.results;
         results.map(item => {
             item.hoursSpent = 0;
@@ -648,7 +648,7 @@ class DetailTaskTab extends Component {
         let denta = Math.abs(endOfMonth.getTime() - today.getTime());
         let dentaDate = denta / (24 * 60 * 60 * 1000);
 
-        if (dentaDate <= 25) {
+        if (dentaDate <= 7) {
             check = true;
         }
         return check;
@@ -656,7 +656,7 @@ class DetailTaskTab extends Component {
 
     /** sắp xếp đánh giá theo thứ tự tháng */ 
     handleSortMonthEval = (evaluations) => {
-        const sortedEvaluations = evaluations.sort((a, b) => new Date(b.date) - new Date(a.date));
+        const sortedEvaluations = evaluations.sort((a, b) => new Date(b.evaluatingMonth) - new Date(a.evaluatingMonth));
         return sortedEvaluations;
     }
 
@@ -704,12 +704,14 @@ class DetailTaskTab extends Component {
         if (task && task.evaluations && task.evaluations.length !== 0) {
             evaluations = task.evaluations; //.reverse()
         }
+
+        // thêm giá trị prevDate vào evaluation
         if (evaluations && evaluations.length > 0) {
             for (let i = 0; i < evaluations.length; i++) {
                 let prevEval;
                 let startDate = task.startDate;
                 let prevDate = startDate;
-                let splitter = this.formatDate(evaluations[i].date).split("-");
+                let splitter = this.formatDate(evaluations[i].evaluatingMonth).split("-");
 
                 let dateOfEval = new Date(splitter[2], splitter[1] - 1, splitter[0]);
                 let dateOfPrevEval = new Date(splitter[2], splitter[1] - 1, splitter[0]);
@@ -724,9 +726,9 @@ class DetailTaskTab extends Component {
                 let monthOfPrevEval = dateOfPrevEval.getMonth();
                 let yearOfPrevEval = dateOfPrevEval.getFullYear();
 
-                prevEval = evaluations.find(e => (monthOfPrevEval === new Date(e.date).getMonth() && yearOfPrevEval === new Date(e.date).getFullYear()));
+                prevEval = evaluations.find(e => (monthOfPrevEval === new Date(e.evaluatingMonth).getMonth() && yearOfPrevEval === new Date(e.evaluatingMonth).getFullYear()));
                 if (prevEval) {
-                    prevDate = prevEval.date;
+                    prevDate = prevEval.evaluatingMonth;
                 } else {
                     let strPrevMonth = `${monthOfPrevEval + 1}-${yearOfPrevEval}`
                     // trong TH k có đánh giá tháng trước, so sánh tháng trước với tháng start date
@@ -776,21 +778,21 @@ class DetailTaskTab extends Component {
         if (task && task.evaluations && task.evaluations.length !== 0) {
             task.evaluations.map(item => {
                 if (item.results && item.results.length !== 0) {
-                    hoursSpentOfEmployeeInEvaluation[item.date] = {};
+                    hoursSpentOfEmployeeInEvaluation[item.evaluatingMonth] = {};
 
                     item.results.map(result => {
                         if (result.employee) {
-                            if (!hoursSpentOfEmployeeInEvaluation[item.date][result.employee.name]) {
+                            if (!hoursSpentOfEmployeeInEvaluation[item.evaluatingMonth][result.employee.name]) {
                                 if (result.hoursSpent) {
-                                    hoursSpentOfEmployeeInEvaluation[item.date][result.employee.name] = Number.parseFloat(result.hoursSpent);
+                                    hoursSpentOfEmployeeInEvaluation[item.evaluatingMonth][result.employee.name] = Number.parseFloat(result.hoursSpent);
                                 }
                             } else {
-                                hoursSpentOfEmployeeInEvaluation[item.date][result.employee.name] = hoursSpentOfEmployeeInEvaluation[item.date][result.employee.name] + result.hoursSpent ? Number.parseFloat(result.hoursSpent) : 0;
+                                hoursSpentOfEmployeeInEvaluation[item.evaluatingMonth][result.employee.name] = hoursSpentOfEmployeeInEvaluation[item.evaluatingMonth][result.employee.name] + result.hoursSpent ? Number.parseFloat(result.hoursSpent) : 0;
                             }
                         }
                     })
                 } else {
-                    hoursSpentOfEmployeeInEvaluation[item.date] = null;
+                    hoursSpentOfEmployeeInEvaluation[item.evaluatingMonth] = null;
                 }
             })
         }
@@ -1159,7 +1161,7 @@ class DetailTaskTab extends Component {
                                         return (
                                             <div key={keyEva} className="description-box">
                                                 <h4>
-                                                    {translate('task.task_management.detail_eval')}&nbsp;{this.formatDate(eva.prevDate)} <i className="fa fa-fw fa-caret-right"></i> {this.formatDate(eva.date)}
+                                                    {translate('task.task_management.detail_eval')}&nbsp;{this.formatDate(eva.startDate)} <i className="fa fa-fw fa-caret-right"></i> {this.formatDate(eva.endDate)}
                                                 </h4>
                                                 <a style={{ cursor: "pointer" }} onClick={() => this.handleChangeShowMoreEvalItem(eva._id)}>{showMore[eva._id] ? <p>Nhấn chuột để ẩn chi tiết&nbsp;&nbsp;<i className="fa fa-angle-double-up"></i></p> : <p>Nhấn chuột để xem chi tiết&nbsp;&nbsp;<i className="fa fa-angle-double-down"></i></p>}</a>
                                                 { showMore[eva._id] &&
@@ -1225,14 +1227,14 @@ class DetailTaskTab extends Component {
 
                                                         {/* Thời gian bấm giờ */}
                                                         <strong>Thời gian đóng góp:</strong>
-                                                        {showToolbar && <a style={{ cursor: "pointer" }} onClick={() => this.calculateHoursSpentOnTask(task._id, task.timesheetLogs, eva, eva.prevDate, eva.date)} title="Cập nhật thời gian bấm giờ">Nhấn chuột để cập nhật dữ liệu <i className="fa fa-fw fa-clock-o"></i></a>}
+                                                        {showToolbar && <a style={{ cursor: "pointer" }} onClick={() => this.calculateHoursSpentOnTask(task._id, task.timesheetLogs, eva.evaluatingMonth, eva, eva.startDate, eva.endDate)} title="Cập nhật thời gian bấm giờ">Nhấn chuột để cập nhật dữ liệu <i className="fa fa-fw fa-clock-o"></i></a>}
                                                         {
-                                                            eva.results.length !== 0 && hoursSpentOfEmployeeInEvaluation[eva.date] && JSON.stringify(hoursSpentOfEmployeeInEvaluation[eva.date]) !== '{}'
+                                                            eva.results.length !== 0 && hoursSpentOfEmployeeInEvaluation[eva.evaluatingMonth] && JSON.stringify(hoursSpentOfEmployeeInEvaluation[eva.evaluatingMonth]) !== '{}'
                                                             &&
                                                             <React.Fragment>
                                                                 <HoursSpentOfEmployeeChart
-                                                                    refs={"evaluationBox" + eva.date}
-                                                                    data={hoursSpentOfEmployeeInEvaluation[eva.date]}
+                                                                    refs={"evaluationBox" + eva.evaluatingMonth}
+                                                                    data={hoursSpentOfEmployeeInEvaluation[eva.evaluatingMonth]}
                                                                 />
                                                             </React.Fragment>
                                                         }

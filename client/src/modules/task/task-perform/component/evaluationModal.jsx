@@ -102,7 +102,9 @@ class EvaluationModal extends Component {
         // nếu expire < 0 là đang quá hạn; ngược lại thì vẫn đúng hạn
         let expire = endDate.getTime() - today.getTime();
 
-        evaluationOfMonth = task && task.evaluations.find(e => (monthOfEval === new Date(e.date).getMonth() && yearOfEval === new Date(e.date).getFullYear()));
+
+        // tìm đánh giá tháng hiện tại
+        evaluationOfMonth = task && task.evaluations.find(e => (monthOfEval === new Date(e.evaluatingMonth).getMonth() && yearOfEval === new Date(e.evaluatingMonth).getFullYear()));
 
         if (evaluations && evaluations.length > 0) {
             if (!evaluationOfMonth) { // có đánh giá các tháng nhưng chưa có đánh giá tháng này
@@ -192,12 +194,12 @@ class EvaluationModal extends Component {
     }
 
     handleChangeMonthEval = async (value) => {
-        await this.setState({ month: value.month, dateParam: value.date });
+        await this.setState({ month: value.evaluatingMonth, dateParam: value.date });
     }
 
     handleSortMonthEval = (evaluations) => {
         // sắp xếp đánh giá theo thứ tự tháng
-        const sortedEvaluations = evaluations.sort((a, b) => new Date(b.date) - new Date(a.date));
+        const sortedEvaluations = evaluations.sort((a, b) => new Date(b.evaluatingMonth) - new Date(a.evaluatingMonth));
         return sortedEvaluations;
     }
 
@@ -260,7 +262,7 @@ class EvaluationModal extends Component {
                                 {(evaluationsList && evaluationsList.length !== 0) && evaluationsList.map((item, index) =>
                                     <li key={index} className={content === item._id ? "active" : undefined}>
                                         <a style={{ cursor: 'pointer' }} onClick={() => this.handleChangeContent(item._id, item)}>
-                                            {translate('task.task_management.eval_of')} {this.formatMonth(item.date)}
+                                            {translate('task.task_management.eval_of')} {this.formatMonth(item.evaluatingMonth)}
                                         &nbsp;
                                     </a>
                                     </li>
@@ -291,7 +293,7 @@ class EvaluationModal extends Component {
                             title={title}
                             perform='evaluate'
                             evaluation={evaluation}
-                            date={evaluation ? this.formatDate(evaluation.date) : dateParam}
+                            date={evaluation ? this.formatDate(evaluation.evaluatingMonth) : dateParam}
                             handleChangeMonthEval={this.handleChangeMonthEval}
                             isEval={isEval}
                         />
@@ -306,7 +308,7 @@ class EvaluationModal extends Component {
                             title={title}
                             perform='evaluate'
                             evaluation={evaluation}
-                            date={evaluation ? this.formatDate(evaluation.date) : dateParam}
+                            date={evaluation ? this.formatDate(evaluation.evaluatingMonth) : dateParam}
                             handleChangeMonthEval={this.handleChangeMonthEval}
                             isEval={isEval}
                         />
@@ -322,7 +324,7 @@ class EvaluationModal extends Component {
                             title={title}
                             perform='evaluate'
                             evaluation={evaluation}
-                            date={evaluation ? this.formatDate(evaluation.date) : dateParam}
+                            date={evaluation ? this.formatDate(evaluation.evaluatingMonth) : dateParam}
                             handleChangeMonthEval={this.handleChangeMonthEval}
                             isEval={isEval}
                         />
@@ -337,7 +339,7 @@ class EvaluationModal extends Component {
                             title={title}
                             perform='evaluate'
                             evaluation={evaluation}
-                            date={evaluation ? this.formatDate(evaluation.date) : dateParam}
+                            date={evaluation ? this.formatDate(evaluation.evaluatingMonth) : dateParam}
                             handleChangeMonthEval={this.handleChangeMonthEval}
                             isEval={isEval}
                         />

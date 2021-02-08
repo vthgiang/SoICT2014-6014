@@ -1757,8 +1757,8 @@ async function checkEvaluations(portal, date, taskId, storeDate) {
     } else {
         let chk = initTask.evaluations.find(
             (e) =>
-                monthOfParams === e.date.getMonth() &&
-                yearOfParams === e.date.getFullYear()
+                monthOfParams === e.evaluatingMonth.getMonth() &&
+                yearOfParams === e.evaluatingMonth.getFullYear()
         );
         if (!chk) {
             // có evaluate nhưng k có tháng này
@@ -1772,7 +1772,7 @@ async function checkEvaluations(portal, date, taskId, storeDate) {
     // TH1: chưa có evaluations => tạo mới
     if (testCase === "TH1") {
         let evaluationsVer1 = {
-            date: storeDateISO,
+            evaluatingMonth: storeDateISO,
             kpi: [],
             result: [],
             taskInformations: cloneTaskInfo,
@@ -1794,10 +1794,10 @@ async function checkEvaluations(portal, date, taskId, storeDate) {
         evaluateId = taskV2.evaluations[0]._id;
     }
 
-    // TH2: Có evaluation nhưng chưa có tháng giống với date => tạo mới
+    // TH2: Có evaluation nhưng chưa có tháng giống với evaluatingMonth => tạo mới
     else if (testCase === "TH2") {
         let evaluationsVer2 = {
-            date: storeDateISO,
+            evaluatingMonth: storeDateISO,
             kpi: [],
             result: [],
             taskInformations: cloneTaskInfo,
@@ -1819,18 +1819,18 @@ async function checkEvaluations(portal, date, taskId, storeDate) {
         );
         evaluateId = taskV2.evaluations.find(
             (e) =>
-                monthOfParams === e.date.getMonth() &&
-                yearOfParams === e.date.getFullYear()
+                monthOfParams === e.evaluatingMonth.getMonth() &&
+                yearOfParams === e.evaluatingMonth.getFullYear()
         )._id;
     }
 
-    // TH3: Có evaluations của tháng giống date => cập nhật evaluations
+    // TH3: Có evaluations của tháng giống evaluatingMonth => cập nhật evaluations
     else if (testCase === "TH3") {
         let taskV3 = initTask;
         evaluateId = taskV3.evaluations.find(
             (e) =>
-                monthOfParams === e.date.getMonth() &&
-                yearOfParams === e.date.getFullYear()
+                monthOfParams === e.evaluatingMonth.getMonth() &&
+                yearOfParams === e.evaluatingMonth.getFullYear()
         )._id;
     }
 
@@ -1853,8 +1853,8 @@ exports.getIdEvaluationOfThisMonth = async (portal, taskId) => {
     } else {
         let chk = initTask.evaluations.find(
             (e) =>
-                monthOfParams === e.date.getMonth() &&
-                yearOfParams === e.date.getFullYear()
+                monthOfParams === e.evaluatingMonth.getMonth() &&
+                yearOfParams === e.evaluatingMonth.getFullYear()
         );
         if (!chk) {
             // có evaluate nhưng k có tháng này
@@ -1870,8 +1870,8 @@ exports.getIdEvaluationOfThisMonth = async (portal, taskId) => {
         let taskV3 = initTask;
         evaluateId = taskV3.evaluations.find(
             (e) =>
-                monthOfParams === e.date.getMonth() &&
-                yearOfParams === e.date.getFullYear()
+                monthOfParams === e.evaluatingMonth.getMonth() &&
+                yearOfParams === e.evaluatingMonth.getFullYear()
         )._id;
     }
 
@@ -3042,8 +3042,19 @@ exports.editEmployeeCollaboratedWithOrganizationalUnits = async (portal, taskId,
  */
 exports.evaluateTaskByConsultedEmployees = async (portal, data, taskId) => {
     let user = data.user;
-    let { automaticPoint, employeePoint, kpi, unit, role, date } = data;
-    let evaluateId = await checkEvaluations(portal, date, taskId, date);
+    let { automaticPoint, employeePoint, kpi, unit, role, evaluatingMonth, startDate, endDate } = data;
+    let evaluateId = await checkEvaluations(portal, evaluatingMonth, taskId, evaluatingMonth);
+
+    let splitter = evaluatingMonth.split("-");
+    let evaluateDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
+    let dateFormat = evaluateDate;
+
+    // TODO: về sau dùng time picker thì k cần split, dùng new date luôn
+    splitter = startDate.split("-");
+    let startEval = new Date(splitter[2], splitter[1] - 1, splitter[0]);
+
+    splitter = endDate.split("-");
+    let endEval = new Date(splitter[2], splitter[1] - 1, splitter[0]);
 
     let resultItem = {
         employee: user,
@@ -3101,6 +3112,38 @@ exports.evaluateTaskByConsultedEmployees = async (portal, data, taskId) => {
             }
         );
     }
+    
+    //cập nhật lại tất cả điểm tự động
+    await Task(connect(DB_CONNECTION, portal)).updateOne(
+        {
+            _id: taskId,
+            "evaluations._id": evaluateId,
+        },
+        {
+            $set: {
+                "evaluations.$.results.$[].automaticPoint": automaticPoint,
+            },
+        }
+    );
+
+    // cập nhật lại ngày đánh giá
+    await Task(connect(DB_CONNECTION, portal)).updateOne(
+        {
+            _id: taskId,
+            "evaluations._id": evaluateId,
+        },
+        {
+            $set: {
+                "evaluations.$.evaluatingMonth": dateFormat,
+                "evaluations.$.startDate": startEval,
+                "evaluations.$.endDate": endEval,
+            },
+        },
+        {
+            $new: true,
+        }
+    );
+
     // let newTask = await Task(connect(DB_CONNECTION, portal)).findById(taskId);
     let newTask = await Task(connect(DB_CONNECTION, portal))
         .findById(taskId)
@@ -3239,14 +3282,23 @@ exports.evaluateTaskByResponsibleEmployees = async (portal, data, taskId) => {
         automaticPoint,
         employeePoint,
         role,
-        date,
+        evaluatingMonth,
+        startDate,
+        endDate,
         kpi,
         info,
     } = data;
 
-    let splitter = date.split("-");
+    let splitter = evaluatingMonth.split("-");
     let evaluateDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
     let dateFormat = evaluateDate;
+
+    // TODO: về sau dùng time picker thì k cần split, dùng new date luôn
+    splitter = startDate.split("-");
+    let startEval = new Date(splitter[2], splitter[1] - 1, splitter[0]);
+
+    splitter = endDate.split("-");
+    let endEval = new Date(splitter[2], splitter[1] - 1, splitter[0]);
 
     let resultItem = {
         employee: user,
@@ -3257,7 +3309,7 @@ exports.evaluateTaskByResponsibleEmployees = async (portal, data, taskId) => {
         role: role,
     };
 
-    let evaluateId = await checkEvaluations(portal, date, taskId, date);
+    let evaluateId = await checkEvaluations(portal, evaluatingMonth, taskId, evaluatingMonth);
 
     // chuẩn hóa dữ liệu info
     for (let i in info) {
@@ -3362,7 +3414,7 @@ exports.evaluateTaskByResponsibleEmployees = async (portal, data, taskId) => {
     );
 
     // update Info task
-    let splitterDate = date.split("-");
+    let splitterDate = endDate.split("-");
     let dateISO = new Date(
         splitterDate[2],
         splitterDate[1] - 1,
@@ -3443,7 +3495,9 @@ exports.evaluateTaskByResponsibleEmployees = async (portal, data, taskId) => {
         },
         {
             $set: {
-                "evaluations.$.date": dateFormat,
+                "evaluations.$.evaluatingMonth": dateFormat,
+                "evaluations.$.startDate": startEval,
+                "evaluations.$.endDate": endEval,
             },
         },
         {
@@ -3587,7 +3641,10 @@ exports.evaluateTaskByAccountableEmployees = async (portal, data, taskId) => {
         checkSave,
         progress,
         role,
-        date,
+        // date,
+        evaluatingMonth,
+        startDate,
+        endDate,
         status,
         info,
         results,
@@ -3597,11 +3654,18 @@ exports.evaluateTaskByAccountableEmployees = async (portal, data, taskId) => {
     let automaticPoint =
         data.automaticPoint === undefined ? 0 : data.automaticPoint;
 
-    let splitter = date.split("-");
+    let splitter = evaluatingMonth.split("-");
     let evaluateDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
     let dateFormat = evaluateDate;
 
-    let evaluateId = await checkEvaluations(portal, date, taskId, date);
+    // TODO: về sau dùng time picker thì k cần split, dùng new date luôn
+    splitter = startDate.split("-");
+    let startEval = new Date(splitter[2], splitter[1] - 1, splitter[0]);
+
+    splitter = endDate.split("-");
+    let endEval = new Date(splitter[2], splitter[1] - 1, splitter[0]);
+
+    let evaluateId = await checkEvaluations(portal, evaluatingMonth, taskId, evaluatingMonth);
 
     // lấy info có value khác undefined
     let filterInfo = [];
@@ -3845,7 +3909,7 @@ exports.evaluateTaskByAccountableEmployees = async (portal, data, taskId) => {
     );
 
     // update Info task
-    let splitterDate = date.split("-");
+    let splitterDate = endDate.split("-");
     let dateISO = new Date(
         splitterDate[2],
         splitterDate[1] - 1,
@@ -3928,7 +3992,10 @@ exports.evaluateTaskByAccountableEmployees = async (portal, data, taskId) => {
         },
         {
             $set: {
-                "evaluations.$.date": dateFormat,
+                // "evaluations.$.date": dateFormat,
+                "evaluations.$.evaluatingMonth": dateFormat,
+                "evaluations.$.startDate": startEval,
+                "evaluations.$.endDate": endEval,
             },
         },
         {
