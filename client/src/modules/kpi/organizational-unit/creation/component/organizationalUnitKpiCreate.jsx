@@ -577,7 +577,7 @@ class OrganizationalUnitKpiCreate extends Component {
                                                         <tr key={item._id}>
                                                             <td>{index + 1}</td>
                                                             <td title={item.name}>{item.name}</td>
-                                                            <td title={item.criteria}>{parse(item.criteria)}</td>
+                                                            <td title={parse(item.criteria)}>{parse(item.criteria)}</td>
                                                             <td title={item.weight}>{item.weight}</td>
                                                             {this.checkPermisson(organizationalUnit && organizationalUnit.managers) &&
                                                                 <td>

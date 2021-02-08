@@ -75,45 +75,25 @@ function UserGuide(props) {
     }, []);
 
     const showFilePreview = (data) => {
-        const { translate } = props;
         const link = process.env.REACT_APP_SERVER + data.url;
         Swal.fire({
             html: ` 
-            <h3>${data.pageName}</h3>
-               <iframe
-                        width= "100%" height= "600"
+            <h4>${data.pageName}</h4>
+            <div style="margin:0px;padding:0px;overflow:hidden">
+               <iframe  frameborder="0" style="overflow:hidden;height:90vh;width:100%" height="100vh" width="100%"
                         src= ${link}
-                    />`,
-            //  icon: 'warning',
+                    />
+            </div>`,
             width: "100%",
-            //height: "100%",
-            //showCancelButton: true,
-            // confirmButtonColor: '#3085d6',
-            // cancelButtonColor: '#d33',
-            // cancelButtonText: translate('general.no'),
-            // confirmButtonText: translate('general.yes'),
+            showCancelButton: false,
+            showConfirmButton: false,
+            showCloseButton: true,
+            focusConfirm: false,
+
         })
     }
 
-    // const deleteDocument = (id, info) => {
-    //     const { translate } = this.props;
-    //     Swal.fire({
-    //         html: `    <iframe
-    //                     width="100%" height="700"
-    //                     src= ${link}
-    //                 />`,
-    //         icon: 'warning',
-    //         showCancelButton: true,
-    //         confirmButtonColor: '#3085d6',
-    //         cancelButtonColor: '#d33',
-    //         cancelButtonText: translate('general.no'),
-    //         confirmButtonText: translate('general.yes'),
-    //     }).then((result) => {
-    //         if (result.value) {
-    //             this.props.deleteDocument(id);
-    //         }
-    //     })
-    // }
+
     let currentRole = getStorage('currentRole');
 
     const { auth, role } = props;
@@ -129,7 +109,6 @@ function UserGuide(props) {
     let roleSuperAdmin = roles.find(x => x.name === "Super Admin");
     let roleManager = roles.find(x => x.name === "Manager");
 
-    console.log('pppppppp', roleAdmin, roleManager, currentRoleInfo);
 
     if (roleAdmin && roleManager) {
         if (currentRoleInfo.id === roleAdmin.id || currentRoleInfo.parents.includes(roleAdmin.id) ||

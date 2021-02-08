@@ -343,6 +343,7 @@ export default {
                     minute: "Minute",
                     second: "Second",
                     day: "Day",
+                    week: "Week",
                     month: "Month",
                     save: "Save configuration",
 
@@ -3249,6 +3250,16 @@ export default {
                 import_task_template_success: "Import task template success",
                 import_task_template_faile: "Import task template faile",
             },
+            task_dashboard: {
+                general_unit_task: "General unit task dashboard",
+                unit: "Organizational unit",
+                all_tasks: "All tasks",
+                confirmed_task: "Confirmed tasks",
+                none_update_recently: "None updated recently tasks",
+                intime_task: "Intime tasks",
+                delay_task: "Delayed tasks",
+                overdue_task: "Overdue tasks"
+            }
         },
 
         kpi: {

@@ -25,7 +25,7 @@ exports.getEmployeeKPISets = async (portal, data) => {
                     { 'employees': data.roleId }
                 ]
             });
-    } 
+    }
 
 
     if (data.status) status = parseInt(data.status);
@@ -158,7 +158,7 @@ exports.approveAllKpis = async (portal, id, companyId) => {
             { path: 'comments.comments.creator', select: 'name email avatar' }
         ])
         .execPopulate();
-    
+
     const date = (employee_kpi_set.date).getMonth() + 1;
     if (employee_kpi_set) {
         const dataNotify = {
@@ -363,7 +363,7 @@ exports.setTaskImportanceLevel = async (portal, id, kpiType, data) => {
                 difference_In_Time = 0;
             }
 
-            let daykpi = Math.ceil(difference_In_Time / (1000 * 3600 * 24));
+            let daykpi = Number.parseFloat(difference_In_Time / (1000 * 3600 * 24)).toFixed(2);
             if (daykpi > 30) daykpi = 30;
             element.taskImportanceLevelCal = Math.round(3 * (element.priority / 5) + 3 * (element.results.contribution / 100) + 4 * (daykpi / 30));
             if (element.results.taskImportanceLevel === -1 || element.results.taskImportanceLevel === null)

@@ -53,7 +53,7 @@ function EmployeeImportancesModal(props) {
         
         
             // Khởi tạo select box chọn nhân viên
-            if (userdepartments) {
+            if (userdepartments && Array.isArray(userdepartments) && userdepartments.length !== 0) {
                 unitMembers = getEmployeeSelectBoxItems(userdepartments);
                 // Lấy mảng các nhân viên
                 if (unitMembers && unitMembers.length !== 0 && unitMembers[0] && unitMembers[0].value) {

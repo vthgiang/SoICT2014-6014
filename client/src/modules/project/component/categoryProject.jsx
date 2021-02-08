@@ -23,36 +23,10 @@ function CategoryProject(props) {
         })
     }
     useEffect(() => {
-        //   props.getProjects({ calledId: "paginate", page, limit });
         props.getProjects({ calledId: "all" })
-        //  props.getAllUser();
     }, [])
 
-    // const deleteArchive = () => {
-    //     const { translate } = props;
-    //     const { deleteNode, projectParent } = state;
-    //     Swal.fire({
-    //         html: `<h4 style="color: red"><div>Xóa lưu trữ</div>?</h4>`,
-    //         icon: 'warning',
-    //         showCancelButton: true,
-    //         confirmButtonColor: '#3085d6',
-    //         cancelButtonColor: '#d33',
-    //         cancelButtonText: translate('general.no'),
-    //         confirmButtonText: translate('general.yes'),
-    //     }).then(result => {
-    //         if (result.value && projectParent.length > 1) {
-    //             props.deleteDocumentArchive(projectParent, "many");
-    //             setState({
-    //                 deleteNode: []
-    //             });
-    //         } else if (result.value && projectParent.length === 1) {
-    //             props.deleteDocumentArchive(projectParent, 'single');
-    //             setState({
-    //                 deleteNode: []
-    //             });
-    //         }
-    //     })
-    // }
+
     const onChanged = async (e, data) => {
         await setState({
             currentArchive: data.node,
@@ -93,7 +67,6 @@ function CategoryProject(props) {
         }
     })
 
-    console.log('lllllllll', list, dataTree);
     return (
         <React.Fragment>
             <div class="row">
@@ -127,7 +100,6 @@ const actions = {
     deleteProject: ProjectActions.deleteProject,
 
 
-    // getAllUser: UserActions.get,
 
 }
 

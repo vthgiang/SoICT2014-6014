@@ -19,6 +19,7 @@ import Swal from 'sweetalert2';
 import { InprocessOfUnitTask } from './processOfUnitTasks';
 import ValidationHelper from '../../../../helpers/validationHelper';
 import GanttCalendar from '../task-personal-dashboard/ganttCalendar';
+import GeneralTaskChart from './generalTaskChart';
 
 class TaskOrganizationUnitDashboard extends Component {
     constructor(props) {
@@ -240,7 +241,9 @@ class TaskOrganizationUnitDashboard extends Component {
     }
 
     render() {
+
         const { tasks, translate, user, dashboardEvaluationEmployeeKpiSet } = this.props;
+        console.log("props", this.props);
         let { idsUnit, startMonth, endMonth, selectBoxUnit } = this.state;
         let { startMonthTitle, endMonthTitle } = this.INFO_SEARCH;
         let childrenOrganizationalUnit = [];
@@ -320,15 +323,34 @@ class TaskOrganizationUnitDashboard extends Component {
 
                             </div>
                         </div>
+                        <div className="row">
+                            <div className="col-xs-12">
+                                <div className="box box-primary">
+                                    <div className="box-header with-border">
+                                        <div className="box-title">{translate('task.task_dashboard.general_unit_task')}</div>
+                                    </div>
+                                    <div className="box-body qlcv">
+                                        {/* {this.state.callAction && tasks && tasks.organizationUnitTasks && */}
 
+                                        {/* } */}
+                                        {this.state.callAction && tasks && tasks.organizationUnitTasks &&
+                                            <GeneralTaskChart
+                                                tasks={tasks.organizationUnitTasks}
+                                                units={selectBoxUnit}
+                                                employees={user.employees}
+                                                unitSelected={idsUnit}
+                                            />
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <div className="row">
                             <div className="col-xs-12">
                                 <div className="box box-primary">
                                     <div className="box-header with-border">
                                         <div className="box-title">{translate('task.task_management.tasks_calendar')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
                                     </div>
-                                    {/* <CalendarOrganizationUnit
-                                        tasks={tasks} /> */}
                                     <GanttCalendar
                                         tasks={tasks}
                                         unit={true}
@@ -355,6 +377,7 @@ class TaskOrganizationUnitDashboard extends Component {
                                 </div>
                             </div>
                         </div>
+
                         <div className="row">
                             <div className="col-xs-12">
                                 <div className="box box-primary">
