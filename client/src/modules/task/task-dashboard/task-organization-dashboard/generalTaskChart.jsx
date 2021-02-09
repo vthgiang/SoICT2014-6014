@@ -76,7 +76,7 @@ const GeneralTaskChart = (props) => {
             let tasksOfUnit = [], dataRow = [];
 
             for (let j in tasksOfSelectedUnit) {
-                if (tasksOfSelectedUnit[j].organizationalUnit._id === listUnit[i].id) {
+                if (tasksOfSelectedUnit[j]?.organizationalUnit?._id === listUnit[i]?.id) {
                     tasksOfUnit.push(tasksOfSelectedUnit[j])
                 }
             }
