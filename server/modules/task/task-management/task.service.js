@@ -340,14 +340,15 @@ exports.getPaginatedTasks = async (portal, task) => {
                 let now = new Date();
                 let currentYear = now.getFullYear();
                 let currentMonth = now.getMonth();
-                let endOfCurrentMonth = new Date(currentYear, currentMonth + 1);
-                let endOfLastMonth = new Date(currentYear, currentMonth);
-
+                let month = new Date(currentYear + '-' + (currentMonth + 1));
+                let nextMonth = new Date(currentYear + '-' + (currentMonth + 1));
+                nextMonth.setMonth(nextMonth.getMonth() + 1);
+                
                 keySearchSpecial = {
                     $or: [
-                        { 'endDate': { $lte: endOfCurrentMonth, $gt: endOfLastMonth } },
-                        { 'startDate': { $lte: endOfCurrentMonth, $gt: endOfLastMonth } },
-                        { $and: [{ 'endDate': { $gte: endOfCurrentMonth } }, { 'startDate': { $lte: endOfLastMonth } }] }
+                        { 'endDate': { $lt: nextMonth, $gte: month } },
+                        { 'startDate': { $lt: nextMonth, $gte: month } },
+                        { $and: [{ 'endDate': { $gte: nextMonth } }, { 'startDate': { $lt: month } }] }
                     ]
                 }
             }
@@ -373,61 +374,56 @@ exports.getPaginatedTasks = async (portal, task) => {
         }
     }
 
-    if (JSON.parse(aPeriodOfTime)) {
+    if (startDate && endDate) {
         endDate = new Date(endDate);
         endDate.setMonth(endDate.getMonth() + 1);
+        
+        keySearch = {
+            ...keySearch,
+            $or: [
+                { 'endDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
+                { 'startDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
+                { $and: [{ 'endDate': { $gte: new Date(endDate) } }, { 'startDate': { $lt: new Date(startDate) } }] }
+            ]
+        }
+    }
+    else if (startDate) {
+        startDate = new Date(startDate);
 
-        if (startDate && endDate) {
-            keySearchPeriod = {
-                $or: [
-                    { 'endDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
-                    { 'startDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
-                    { $and: [{ 'endDate': { $gte: new Date(endDate) } }, { 'startDate': { $lt: new Date(startDate) } }] }
-                ]
-            }
+        keySearch = {
+            ...keySearch,
+            "$and": [
+                {
+                    "$expr": { 
+                        "$eq": [ { "$month": "$startDate" }, startDate.getMonth() + 1 ]
+                    }
+                },
+                {
+                    "$expr": { 
+                        "$eq": [ { "$year": "$startDate" }, startDate.getFullYear() ]
+                    }
+                }
+            ]
         }
-    } else {
-        if (startDate) {
-            let checkDate = Date.parse(endDate);
-            if (checkDate) {
-                keySearch = {
-                    ...keySearch,
-                    startDate: {
-                        $gt: new Date(startDate)
-                    }
-                }
-            } else {
-                let startTime = startDate.split("-");
-                let start = new Date(startTime[1], startTime[0] - 1, 1);
-                keySearch = {
-                    ...keySearch,
-                    startDate: {
-                        $gt: start
-                    }
-                }
-            }
-        }
-        if (endDate) {
-            let checkDate = Date.parse(endDate);
-            if (checkDate) {
-                keySearch = {
-                    ...keySearch,
-                    endDate: {
-                        $lte: new Date(endDate)
-                    }
-                }
-            } else {
-                let endTime = endDate.split("-");
-                let end = new Date(endTime[1], endTime[0], 1);
-                keySearch = {
-                    ...keySearch,
-                    endDate: {
-                        $lte: end
-                    }
-                }
-            }
-        }
+    }
+    else if (endDate) {
+        endDate = new Date(endDate);
 
+        keySearch = {
+            ...keySearch,
+            "$and": [
+                {
+                    "$expr": { 
+                        "$eq": [ { "$month": "$endDate" }, endDate.getMonth() + 1 ]
+                    }
+                },
+                {
+                    "$expr": { 
+                        "$eq": [ { "$year": "$endDate" }, endDate.getFullYear() ]
+                    }
+                }
+            ]
+        }
     }
 
     let optionQuery = {
@@ -512,14 +508,15 @@ exports.getPaginatedTasksThatUserHasResponsibleRole = async (portal, task) => {
                 let now = new Date();
                 let currentYear = now.getFullYear();
                 let currentMonth = now.getMonth();
-                let endOfCurrentMonth = new Date(currentYear, currentMonth + 1);
-                let endOfLastMonth = new Date(currentYear, currentMonth);
-
+                let month = new Date(currentYear + '-' + (currentMonth + 1));
+                let nextMonth = new Date(currentYear + '-' + (currentMonth + 1));
+                nextMonth.setMonth(nextMonth.getMonth() + 1);
+                
                 keySearchSpecial = {
                     $or: [
-                        { 'endDate': { $lte: endOfCurrentMonth, $gt: endOfLastMonth } },
-                        { 'startDate': { $lte: endOfCurrentMonth, $gt: endOfLastMonth } },
-                        { $and: [{ 'endDate': { $gte: endOfCurrentMonth } }, { 'startDate': { $lte: endOfLastMonth } }] }
+                        { 'endDate': { $lt: nextMonth, $gte: month } },
+                        { 'startDate': { $lt: nextMonth, $gte: month } },
+                        { $and: [{ 'endDate': { $gte: nextMonth } }, { 'startDate': { $lt: month } }] }
                     ]
                 }
             }
@@ -536,77 +533,58 @@ exports.getPaginatedTasksThatUserHasResponsibleRole = async (portal, task) => {
         }
     };
 
-    if (JSON.parse(aPeriodOfTime)) {
+    if (startDate && endDate) {
         endDate = new Date(endDate);
         endDate.setMonth(endDate.getMonth() + 1);
-
-        if (startDate && endDate) {
-            keySearchPeriod = {
-                $or: [
-                    { 'endDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
-                    { 'startDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
-                    { $and: [{ 'endDate': { $gte: new Date(endDate) } }, { 'startDate': { $lt: new Date(startDate) } }] }
-                ]
-            }
+        
+        keySearch = {
+            ...keySearch,
+            $or: [
+                { 'endDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
+                { 'startDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
+                { $and: [{ 'endDate': { $gte: new Date(endDate) } }, { 'startDate': { $lt: new Date(startDate) } }] }
+            ]
         }
-    } else {
-        if (startDate) {
-            let startTime = startDate.split("-");
-            let start = new Date(startTime[1], startTime[0] - 1, 1);
-            let end = new Date(startTime[1], startTime[0], 1);
+    }
+    else if (startDate) {
+        startDate = new Date(startDate);
 
-            keySearch = {
-                ...keySearch,
-                startDate: {
-                    $gte: start,
-                    $lt: end
+        keySearch = {
+            ...keySearch,
+            "$and": [
+                {
+                    "$expr": { 
+                        "$eq": [ { "$month": "$startDate" }, startDate.getMonth() + 1 ]
+                    }
+                },
+                {
+                    "$expr": { 
+                        "$eq": [ { "$year": "$startDate" }, startDate.getFullYear() ]
+                    }
                 }
-            }
+            ]
         }
-        if (endDate) {
-            let endTime = endDate.split("-");
-            let start = new Date(endTime[1], endTime[0] - 1, 1);
-            let end = new Date(endTime[1], endTime[0], 1);
+    }
+    else if (endDate) {
+        endDate = new Date(endDate);
 
-            keySearch = {
-                ...keySearch,
-                endDate: {
-                    $gte: start,
-                    $lt: end
+        keySearch = {
+            ...keySearch,
+            "$and": [
+                {
+                    "$expr": { 
+                        "$eq": [ { "$month": "$endDate" }, endDate.getMonth() + 1 ]
+                    }
+                },
+                {
+                    "$expr": { 
+                        "$eq": [ { "$year": "$endDate" }, endDate.getFullYear() ]
+                    }
                 }
-            }
+            ]
         }
     }
 
-    // if (startDateAfter) {
-    //     let startTimeAfter = startDateAfter.split("-");
-    //     let start;
-
-
-    //     if (startTimeAfter[0] > 12) start = new Date(startTimeAfter[0], startTimeAfter[1] - 1, 1);
-    //     else start = new Date(startTimeAfter[1], startTimeAfter[0] - 1, 1);
-
-    //     keySearch = {
-    //         ...keySearch,
-    //         endDate: {
-    //             $gte: start
-    //         }
-    //     }
-    // }
-
-    // if (endDateBefore) {
-    //     let endTimeBefore = endDateBefore.split("-");
-    //     let end;
-    //     if (endTimeBefore[0] > 12) end = new Date(endTimeBefore[0], endTimeBefore[1], 1);
-    //     else end = new Date(endTimeBefore[1], endTimeBefore[0], 1);
-
-    //     keySearch = {
-    //         ...keySearch,
-    //         startDate: {
-    //             $lt: end
-    //         }
-    //     }
-    // }
 
     responsibleTasks = await Task(connect(DB_CONNECTION, portal)).find({
         $and: [
@@ -691,14 +669,15 @@ exports.getPaginatedTasksThatUserHasAccountableRole = async (portal, task) => {
                 let now = new Date();
                 let currentYear = now.getFullYear();
                 let currentMonth = now.getMonth();
-                let endOfCurrentMonth = new Date(currentYear, currentMonth + 1);
-                let endOfLastMonth = new Date(currentYear, currentMonth);
-
+                let month = new Date(currentYear + '-' + (currentMonth + 1));
+                let nextMonth = new Date(currentYear + '-' + (currentMonth + 1));
+                nextMonth.setMonth(nextMonth.getMonth() + 1);
+                
                 keySearchSpecial = {
                     $or: [
-                        { 'endDate': { $lte: endOfCurrentMonth, $gt: endOfLastMonth } },
-                        { 'startDate': { $lte: endOfCurrentMonth, $gt: endOfLastMonth } },
-                        { $and: [{ 'endDate': { $gte: endOfCurrentMonth } }, { 'startDate': { $lte: endOfLastMonth } }] }
+                        { 'endDate': { $lt: nextMonth, $gte: month } },
+                        { 'startDate': { $lt: nextMonth, $gte: month } },
+                        { $and: [{ 'endDate': { $gte: nextMonth } }, { 'startDate': { $lt: month } }] }
                     ]
                 }
             }
@@ -715,77 +694,58 @@ exports.getPaginatedTasksThatUserHasAccountableRole = async (portal, task) => {
         }
     };
 
-    if (JSON.parse(aPeriodOfTime)) {
+    if (startDate && endDate) {
         endDate = new Date(endDate);
         endDate.setMonth(endDate.getMonth() + 1);
-
-        if (startDate && endDate) {
-            keySearchPeriod = {
-                $or: [
-                    { 'endDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
-                    { 'startDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
-                    { $and: [{ 'endDate': { $gte: new Date(endDate) } }, { 'startDate': { $lt: new Date(startDate) } }] }
-                ]
-            }
-        }
-    } else {
-        if (startDate) {
-            let startTime = startDate.split("-");
-            let start = new Date(startTime[1], startTime[0] - 1, 1);
-            let end = new Date(startTime[1], startTime[0], 1);
-
-            keySearch = {
-                ...keySearch,
-                startDate: {
-                    $gte: start,
-                    $lt: end
-                }
-            }
-        }
-
-        if (endDate) {
-            let endTime = endDate.split("-");
-            let start = new Date(endTime[1], endTime[0] - 1, 1);
-            let end = new Date(endTime[1], endTime[0], 1);
-
-            keySearch = {
-                ...keySearch,
-                endDate: {
-                    $gte: start,
-                    $lt: end
-                }
-            }
+        
+        keySearch = {
+            ...keySearch,
+            $or: [
+                { 'endDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
+                { 'startDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
+                { $and: [{ 'endDate': { $gte: new Date(endDate) } }, { 'startDate': { $lt: new Date(startDate) } }] }
+            ]
         }
     }
-    // if (startDateAfter) {
-    //     let startTimeAfter = startDateAfter.split("-");
-    //     let start;
+    else if (startDate) {
+        startDate = new Date(startDate);
 
+        keySearch = {
+            ...keySearch,
+            "$and": [
+                {
+                    "$expr": { 
+                        "$eq": [ { "$month": "$startDate" }, startDate.getMonth() + 1 ]
+                    }
+                },
+                {
+                    "$expr": { 
+                        "$eq": [ { "$year": "$startDate" }, startDate.getFullYear() ]
+                    }
+                }
+            ]
+        }
+    }
+    else if (endDate) {
+        endDate = new Date(endDate);
 
-    //     if (startTimeAfter[0] > 12) start = new Date(startTimeAfter[0], startTimeAfter[1] - 1, 1);
-    //     else start = new Date(startTimeAfter[1], startTimeAfter[0] - 1, 1);
-
-    //     keySearch = {
-    //         ...keySearch,
-    //         endDate: {
-    //             $gte: start
-    //         }
-    //     }
-    // }
-
-    // if (endDateBefore) {
-    //     let endTimeBefore = endDateBefore.split("-");
-    //     let end;
-    //     if (endTimeBefore[0] > 12) end = new Date(endTimeBefore[0], endTimeBefore[1], 1);
-    //     else end = new Date(endTimeBefore[1], endTimeBefore[0], 1);
-
-    //     keySearch = {
-    //         ...keySearch,
-    //         startDate: {
-    //             $lt: end
-    //         }
-    //     }
-    // }
+        keySearch = {
+            ...keySearch,
+            "$and": [
+                {
+                    "$expr": { 
+                        "$eq": [ { "$month": "$endDate" }, endDate.getMonth() + 1 ]
+                    }
+                },
+                {
+                    "$expr": { 
+                        "$eq": [ { "$year": "$endDate" }, endDate.getFullYear() ]
+                    }
+                }
+            ]
+        }
+    }
+    
     accountableTasks = await Task(connect(DB_CONNECTION, portal)).find({
         $and: [
             keySearch,
@@ -867,14 +827,15 @@ exports.getPaginatedTasksThatUserHasConsultedRole = async (portal, task) => {
                 let now = new Date();
                 let currentYear = now.getFullYear();
                 let currentMonth = now.getMonth();
-                let endOfCurrentMonth = new Date(currentYear, currentMonth + 1);
-                let endOfLastMonth = new Date(currentYear, currentMonth);
-
+                let month = new Date(currentYear + '-' + (currentMonth + 1));
+                let nextMonth = new Date(currentYear + '-' + (currentMonth + 1));
+                nextMonth.setMonth(nextMonth.getMonth() + 1);
+                
                 keySearchSpecial = {
                     $or: [
-                        { 'endDate': { $lte: endOfCurrentMonth, $gt: endOfLastMonth } },
-                        { 'startDate': { $lte: endOfCurrentMonth, $gt: endOfLastMonth } },
-                        { $and: [{ 'endDate': { $gte: endOfCurrentMonth } }, { 'startDate': { $lte: endOfLastMonth } }] }
+                        { 'endDate': { $lt: nextMonth, $gte: month } },
+                        { 'startDate': { $lt: nextMonth, $gte: month } },
+                        { $and: [{ 'endDate': { $gte: nextMonth } }, { 'startDate': { $lt: month } }] }
                     ]
                 }
             }
@@ -891,77 +852,58 @@ exports.getPaginatedTasksThatUserHasConsultedRole = async (portal, task) => {
         }
     };
 
-    if (JSON.parse(aPeriodOfTime)) {
+    if (startDate && endDate) {
         endDate = new Date(endDate);
         endDate.setMonth(endDate.getMonth() + 1);
-
-        if (startDate && endDate) {
-            keySearchPeriod = {
-                $or: [
-                    { 'endDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
-                    { 'startDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
-                    { $and: [{ 'endDate': { $gte: new Date(endDate) } }, { 'startDate': { $lt: new Date(startDate) } }] }
-                ]
-            }
-        }
-    } else {
-        if (startDate) {
-            let startTime = startDate.split("-");
-            let start = new Date(startTime[1], startTime[0] - 1, 1);
-            let end = new Date(startTime[1], startTime[0], 1);
-
-            keySearch = {
-                ...keySearch,
-                startDate: {
-                    $gte: start,
-                    $lt: end
-                }
-            }
-        }
-
-        if (endDate) {
-            let endTime = endDate.split("-");
-            let start = new Date(endTime[1], endTime[0] - 1, 1);
-            let end = new Date(endTime[1], endTime[0], 1);
-
-            keySearch = {
-                ...keySearch,
-                endDate: {
-                    $gte: start,
-                    $lt: end
-                }
-            }
+        
+        keySearch = {
+            ...keySearch,
+            $or: [
+                { 'endDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
+                { 'startDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
+                { $and: [{ 'endDate': { $gte: new Date(endDate) } }, { 'startDate': { $lt: new Date(startDate) } }] }
+            ]
         }
     }
-    // if (startDateAfter) {
-    //     let startTimeAfter = startDateAfter.split("-");
-    //     let start;
+    else if (startDate) {
+        startDate = new Date(startDate);
 
+        keySearch = {
+            ...keySearch,
+            "$and": [
+                {
+                    "$expr": { 
+                        "$eq": [ { "$month": "$startDate" }, startDate.getMonth() + 1 ]
+                    }
+                },
+                {
+                    "$expr": { 
+                        "$eq": [ { "$year": "$startDate" }, startDate.getFullYear() ]
+                    }
+                }
+            ]
+        }
+    }
+    else if (endDate) {
+        endDate = new Date(endDate);
 
-    //     if (startTimeAfter[0] > 12) start = new Date(startTimeAfter[0], startTimeAfter[1] - 1, 1);
-    //     else start = new Date(startTimeAfter[1], startTimeAfter[0] - 1, 1);
-
-    //     keySearch = {
-    //         ...keySearch,
-    //         endDate: {
-    //             $gte: start
-    //         }
-    //     }
-    // }
-
-    // if (endDateBefore) {
-    //     let endTimeBefore = endDateBefore.split("-");
-    //     let end;
-    //     if (endTimeBefore[0] > 12) end = new Date(endTimeBefore[0], endTimeBefore[1], 1);
-    //     else end = new Date(endTimeBefore[1], endTimeBefore[0], 1);
-
-    //     keySearch = {
-    //         ...keySearch,
-    //         startDate: {
-    //             $lt: end
-    //         }
-    //     }
-    // }
+        keySearch = {
+            ...keySearch,
+            "$and": [
+                {
+                    "$expr": { 
+                        "$eq": [ { "$month": "$endDate" }, endDate.getMonth() + 1 ]
+                    }
+                },
+                {
+                    "$expr": { 
+                        "$eq": [ { "$year": "$endDate" }, endDate.getFullYear() ]
+                    }
+                }
+            ]
+        }
+    }
+   
     consultedTasks = await Task(connect(DB_CONNECTION, portal)).find({
         $and: [
             keySearch,
@@ -1043,14 +985,15 @@ exports.getPaginatedTasksCreatedByUser = async (portal, task) => {
                 let now = new Date();
                 let currentYear = now.getFullYear();
                 let currentMonth = now.getMonth();
-                let endOfCurrentMonth = new Date(currentYear, currentMonth + 1);
-                let endOfLastMonth = new Date(currentYear, currentMonth);
-
+                let month = new Date(currentYear + '-' + (currentMonth + 1));
+                let nextMonth = new Date(currentYear + '-' + (currentMonth + 1));
+                nextMonth.setMonth(nextMonth.getMonth() + 1);
+                
                 keySearchSpecial = {
                     $or: [
-                        { 'endDate': { $lte: endOfCurrentMonth, $gt: endOfLastMonth } },
-                        { 'startDate': { $lte: endOfCurrentMonth, $gt: endOfLastMonth } },
-                        { $and: [{ 'endDate': { $gte: endOfCurrentMonth } }, { 'startDate': { $lte: endOfLastMonth } }] }
+                        { 'endDate': { $lt: nextMonth, $gte: month } },
+                        { 'startDate': { $lt: nextMonth, $gte: month } },
+                        { $and: [{ 'endDate': { $gte: nextMonth } }, { 'startDate': { $lt: month } }] }
                     ]
                 }
             }
@@ -1067,46 +1010,55 @@ exports.getPaginatedTasksCreatedByUser = async (portal, task) => {
         }
     };
 
-    if (JSON.parse(aPeriodOfTime)) {
+    if (startDate && endDate) {
         endDate = new Date(endDate);
         endDate.setMonth(endDate.getMonth() + 1);
-
-        if (startDate && endDate) {
-            keySearchPeriod = {
-                $or: [
-                    { 'endDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
-                    { 'startDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
-                    { $and: [{ 'endDate': { $gte: new Date(endDate) } }, { 'startDate': { $lt: new Date(startDate) } }] }
-                ]
-            }
+        
+        keySearch = {
+            ...keySearch,
+            $or: [
+                { 'endDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
+                { 'startDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
+                { $and: [{ 'endDate': { $gte: new Date(endDate) } }, { 'startDate': { $lt: new Date(startDate) } }] }
+            ]
         }
-    } else {
-        if (startDate) {
-            let startTime = startDate.split("-");
-            let start = new Date(startTime[1], startTime[0] - 1, 1);
-            let end = new Date(startTime[1], startTime[0], 1);
+    }
+    else if (startDate) {
+        startDate = new Date(startDate);
 
-            keySearch = {
-                ...keySearch,
-                startDate: {
-                    $gte: start,
-                    $lt: end
+        keySearch = {
+            ...keySearch,
+            "$and": [
+                {
+                    "$expr": { 
+                        "$eq": [ { "$month": "$startDate" }, startDate.getMonth() + 1 ]
+                    }
+                },
+                {
+                    "$expr": { 
+                        "$eq": [ { "$year": "$startDate" }, startDate.getFullYear() ]
+                    }
                 }
-            }
+            ]
         }
+    }
+    else if (endDate) {
+        endDate = new Date(endDate);
 
-        if (endDate) {
-            let endTime = endDate.split("-");
-            let start = new Date(endTime[1], endTime[0] - 1, 1);
-            let end = new Date(endTime[1], endTime[0], 1);
-
-            keySearch = {
-                ...keySearch,
-                endDate: {
-                    $gte: start,
-                    $lt: end
+        keySearch = {
+            ...keySearch,
+            "$and": [
+                {
+                    "$expr": { 
+                        "$eq": [ { "$month": "$endDate" }, endDate.getMonth() + 1 ]
+                    }
+                },
+                {
+                    "$expr": { 
+                        "$eq": [ { "$year": "$endDate" }, endDate.getFullYear() ]
+                    }
                 }
-            }
+            ]
         }
     }
 
@@ -1191,14 +1143,15 @@ exports.getPaginatedTasksThatUserHasInformedRole = async (portal, task) => {
                 let now = new Date();
                 let currentYear = now.getFullYear();
                 let currentMonth = now.getMonth();
-                let endOfCurrentMonth = new Date(currentYear, currentMonth + 1);
-                let endOfLastMonth = new Date(currentYear, currentMonth);
-
+                let month = new Date(currentYear + '-' + (currentMonth + 1));
+                let nextMonth = new Date(currentYear + '-' + (currentMonth + 1));
+                nextMonth.setMonth(nextMonth.getMonth() + 1);
+                
                 keySearchSpecial = {
                     $or: [
-                        { 'endDate': { $lte: endOfCurrentMonth, $gt: endOfLastMonth } },
-                        { 'startDate': { $lte: endOfCurrentMonth, $gt: endOfLastMonth } },
-                        { $and: [{ 'endDate': { $gte: endOfCurrentMonth } }, { 'startDate': { $lte: endOfLastMonth } }] }
+                        { 'endDate': { $lt: nextMonth, $gte: month } },
+                        { 'startDate': { $lt: nextMonth, $gte: month } },
+                        { $and: [{ 'endDate': { $gte: nextMonth } }, { 'startDate': { $lt: month } }] }
                     ]
                 }
             }
@@ -1215,77 +1168,58 @@ exports.getPaginatedTasksThatUserHasInformedRole = async (portal, task) => {
         }
     };
 
-    if (JSON.parse(aPeriodOfTime)) {
+    if (startDate && endDate) {
         endDate = new Date(endDate);
         endDate.setMonth(endDate.getMonth() + 1);
-
-        if (startDate && endDate) {
-            keySearchPeriod = {
-                $or: [
-                    { 'endDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
-                    { 'startDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
-                    { $and: [{ 'endDate': { $gte: new Date(endDate) } }, { 'startDate': { $lt: new Date(startDate) } }] }
-                ]
-            }
-        }
-    } else {
-        if (startDate) {
-            let startTime = startDate.split("-");
-            let start = new Date(startTime[1], startTime[0] - 1, 1);
-            let end = new Date(startTime[1], startTime[0], 1);
-
-            keySearch = {
-                ...keySearch,
-                startDate: {
-                    $gte: start,
-                    $lt: end
-                }
-            }
-        }
-
-        if (endDate) {
-            let endTime = endDate.split("-");
-            let start = new Date(endTime[1], endTime[0] - 1, 1);
-            let end = new Date(endTime[1], endTime[0], 1);
-
-            keySearch = {
-                ...keySearch,
-                endDate: {
-                    $gte: start,
-                    $lt: end
-                }
-            }
+        
+        keySearch = {
+            ...keySearch,
+            $or: [
+                { 'endDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
+                { 'startDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
+                { $and: [{ 'endDate': { $gte: new Date(endDate) } }, { 'startDate': { $lt: new Date(startDate) } }] }
+            ]
         }
     }
-    // if (startDateAfter) {
-    //     let startTimeAfter = startDateAfter.split("-");
-    //     let start;
+    else if (startDate) {
+        startDate = new Date(startDate);
 
+        keySearch = {
+            ...keySearch,
+            "$and": [
+                {
+                    "$expr": { 
+                        "$eq": [ { "$month": "$startDate" }, startDate.getMonth() + 1 ]
+                    }
+                },
+                {
+                    "$expr": { 
+                        "$eq": [ { "$year": "$startDate" }, startDate.getFullYear() ]
+                    }
+                }
+            ]
+        }
+    }
+    else if (endDate) {
+        endDate = new Date(endDate);
 
-    //     if (startTimeAfter[0] > 12) start = new Date(startTimeAfter[0], startTimeAfter[1] - 1, 1);
-    //     else start = new Date(startTimeAfter[1], startTimeAfter[0] - 1, 1);
+        keySearch = {
+            ...keySearch,
+            "$and": [
+                {
+                    "$expr": { 
+                        "$eq": [ { "$month": "$endDate" }, endDate.getMonth() + 1 ]
+                    }
+                },
+                {
+                    "$expr": { 
+                        "$eq": [ { "$year": "$endDate" }, endDate.getFullYear() ]
+                    }
+                }
+            ]
+        }
+    }
 
-    //     keySearch = {
-    //         ...keySearch,
-    //         endDate: {
-    //             $gte: start
-    //         }
-    //     }
-    // }
-
-    // if (endDateBefore) {
-    //     let endTimeBefore = endDateBefore.split("-");
-    //     let end;
-    //     if (endTimeBefore[0] > 12) end = new Date(endTimeBefore[0], endTimeBefore[1], 1);
-    //     else end = new Date(endTimeBefore[1], endTimeBefore[0], 1);
-
-    //     keySearch = {
-    //         ...keySearch,
-    //         startDate: {
-    //             $lt: end
-    //         }
-    //     }
-    // }
 
     informedTasks = await Task(connect(DB_CONNECTION, portal)).find({
         $and: [
@@ -1316,7 +1250,7 @@ exports.getPaginatedTasksThatUserHasInformedRole = async (portal, task) => {
  * Lấy công việc quan sát theo id người dùng
  */
 exports.getPaginatedTasksByUser = async (portal, task, type = "paginated_task_by_user") => {
-    var { perPage, number, user, organizationalUnit, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime, isAssigned } = task;
+    var { perPage, number, user, organizationalUnit, status, priority, special, name, startDate, endDate, aPeriodOfTime, isAssigned } = task;
     var tasks;
     var perPage = Number(perPage);
     var page = Number(number);
@@ -1401,14 +1335,15 @@ exports.getPaginatedTasksByUser = async (portal, task, type = "paginated_task_by
                 let now = new Date();
                 let currentYear = now.getFullYear();
                 let currentMonth = now.getMonth();
-                let endOfCurrentMonth = new Date(currentYear, currentMonth + 1);
-                let endOfLastMonth = new Date(currentYear, currentMonth);
-
+                let month = new Date(currentYear + '-' + (currentMonth + 1));
+                let nextMonth = new Date(currentYear + '-' + (currentMonth + 1));
+                nextMonth.setMonth(nextMonth.getMonth() + 1);
+                
                 keySearchSpecial = {
                     $or: [
-                        { 'endDate': { $lte: endOfCurrentMonth, $gt: endOfLastMonth } },
-                        { 'startDate': { $lte: endOfCurrentMonth, $gt: endOfLastMonth } },
-                        { $and: [{ 'endDate': { $gte: endOfCurrentMonth } }, { 'startDate': { $lte: endOfLastMonth } }] }
+                        { 'endDate': { $lt: nextMonth, $gte: month } },
+                        { 'startDate': { $lt: nextMonth, $gte: month } },
+                        { $and: [{ 'endDate': { $gte: nextMonth } }, { 'startDate': { $lt: month } }] }
                     ]
                 }
             }
@@ -1425,77 +1360,58 @@ exports.getPaginatedTasksByUser = async (portal, task, type = "paginated_task_by
         }
     };
 
-    if (aPeriodOfTime && JSON.parse(aPeriodOfTime)) {
+    
+    if (startDate && endDate) {
         endDate = new Date(endDate);
         endDate.setMonth(endDate.getMonth() + 1);
-
-        if (startDate && endDate) {
-            keySearchPeriod = {
-                $or: [
-                    { 'endDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
-                    { 'startDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
-                    { $and: [{ 'endDate': { $gte: new Date(endDate) } }, { 'startDate': { $lt: new Date(startDate) } }] }
-                ]
-            }
-        }
-    } else {
-        if (startDate) {
-            let startTime = startDate.split("-");
-            let start = new Date(startTime[1], startTime[0] - 1, 1);
-            let end = new Date(startTime[1], startTime[0], 1);
-
-            keySearch = {
-                ...keySearch,
-                startDate: {
-                    $gte: start,
-                    $lt: end
-                }
-            }
-        }
-
-        if (endDate) {
-            let endTime = endDate.split("-");
-            let start = new Date(endTime[1], endTime[0] - 1, 1);
-            let end = new Date(endTime[1], endTime[0], 1);
-
-            keySearch = {
-                ...keySearch,
-                endDate: {
-                    $gte: start,
-                    $lt: end
-                }
-            }
+        
+        keySearch = {
+            ...keySearch,
+            $or: [
+                { 'endDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
+                { 'startDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
+                { $and: [{ 'endDate': { $gte: new Date(endDate) } }, { 'startDate': { $lt: new Date(startDate) } }] }
+            ]
         }
     }
-    // if (startDateAfter) {
-    //     let startTimeAfter = startDateAfter.split("-");
-    //     let start;
+    else if (startDate) {
+        startDate = new Date(startDate);
 
+        keySearch = {
+            ...keySearch,
+            "$and": [
+                {
+                    "$expr": { 
+                        "$eq": [ { "$month": "$startDate" }, startDate.getMonth() + 1 ]
+                    }
+                },
+                {
+                    "$expr": { 
+                        "$eq": [ { "$year": "$startDate" }, startDate.getFullYear() ]
+                    }
+                }
+            ]
+        }
+    }
+    else if (endDate) {
+        endDate = new Date(endDate);
 
-    //     if (startTimeAfter[0] > 12) start = new Date(startTimeAfter[0], startTimeAfter[1] - 1, 1);
-    //     else start = new Date(startTimeAfter[1], startTimeAfter[0] - 1, 1);
-
-    //     keySearch = {
-    //         ...keySearch,
-    //         endDate: {
-    //             $gte: start
-    //         }
-    //     }
-    // }
-
-    // if (endDateBefore) {
-    //     let endTimeBefore = endDateBefore.split("-");
-    //     let end;
-    //     if (endTimeBefore[0] > 12) end = new Date(endTimeBefore[0], endTimeBefore[1], 1);
-    //     else end = new Date(endTimeBefore[1], endTimeBefore[0], 1);
-
-    //     keySearch = {
-    //         ...keySearch,
-    //         startDate: {
-    //             $lt: end
-    //         }
-    //     }
-    // }
+        keySearch = {
+            ...keySearch,
+            "$and": [
+                {
+                    "$expr": { 
+                        "$eq": [ { "$month": "$endDate" }, endDate.getMonth() + 1 ]
+                    }
+                },
+                {
+                    "$expr": { 
+                        "$eq": [ { "$year": "$endDate" }, endDate.getFullYear() ]
+                    }
+                }
+            ]
+        }
+    }
 
     tasks = await Task(connect(DB_CONNECTION, portal)).find({
         $and: [
@@ -1697,8 +1613,6 @@ exports.getAllTaskByPriorityOfOrganizationalUnit = async (portal, task) => {
     /*quá hạn ko có ở khẩn cấp 
     hoặc
     chậm tiến độ của mức 5 , 4, 3, 2, 1: 5- 0<x<10, 4: 10 <= x <20, 3: 20<x<30, 2: 30<x<40 ,1: 40<x<50: */
-    console.log('taskUrgent', taskUrgent.map(x => x.name));
-    console.log('taskNeedToDo', taskNeedToDo.map(x => x.name));
 
     return {
         "urgent": taskUrgent,
@@ -1816,7 +1730,7 @@ exports.createTask = async (portal, task) => {
         var parent = await Task(connect(DB_CONNECTION, portal)).findById(task.parent);
         if (parent) level = parent.level + 1;
     }
-    console.log(task.endDate)
+
     var startDate, endDate;
     if (Date.parse(task.startDate)) startDate = new Date(task.startDate);
     else {
@@ -1824,7 +1738,6 @@ exports.createTask = async (portal, task) => {
         startDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
     }
 
-    console.log(Date.parse(task.endDate))
     if (Date.parse(task.endDate)) endDate = new Date(task.endDate);
     else {
         var splitter = task.endDate.split("-");

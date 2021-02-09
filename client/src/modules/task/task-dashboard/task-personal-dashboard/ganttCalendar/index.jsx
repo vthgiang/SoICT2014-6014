@@ -198,7 +198,7 @@ class GanttCalendar extends Component {
       } else {
         groupNameLabel = taskFilter[i] && taskFilter[i - 1] && taskFilter[i - 1].responsibleEmployees[0] && taskFilter[i].responsibleEmployees[0]
           && taskFilter[i - 1].responsibleEmployees[0].name === taskFilter[i].responsibleEmployees[0].name
-          ? "" : taskFilter[i].responsibleEmployees[0].name;
+          ? "" : taskFilter[i]?.responsibleEmployees[0]?.name;
       }
 
       data.push({

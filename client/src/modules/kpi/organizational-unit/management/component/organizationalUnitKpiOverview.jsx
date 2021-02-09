@@ -98,13 +98,19 @@ class KPIUnitManager extends Component {
     }
 
     handleStartDateChange = (value) => {
+        let month;
+        if (value === '') {
+            month = null;
+        } else {
+            month = value.slice(3, 7) + '-' + value.slice(0, 2);
+        }
+
         this.setState(state => {
             return {
                 ...state,
-                startDate: new Date(value.slice(3, 7) + '-' + value.slice(0, 2)),
+                startDate: month
             }
         });
-
     }
 
     checkStatusKPI = (status) => {
@@ -117,10 +123,17 @@ class KPIUnitManager extends Component {
     }
 
     handleEndDateChange = (value) => {
+        let month;
+        if (value === '') {
+            month = null;
+        } else {
+            month = value.slice(3, 7) + '-' + value.slice(0, 2);
+        }
+
         this.setState(state => {
             return {
                 ...state,
-                endDate: new Date(value.slice(3, 7) + '-' + value.slice(0, 2)),
+                endDate: month
             }
         });
     }

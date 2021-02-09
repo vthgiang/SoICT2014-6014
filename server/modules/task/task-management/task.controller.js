@@ -275,8 +275,6 @@ getPaginatedTasksCreatedByUser = async (req, res) => {
             content: creatorTasks
         })
     } catch (error) {
-        console.log(error)
-
         await Logger.error(req.user.email, 'paginated_tasks_created_by_user', req.portal)
         res.status(400).json({
             success: false,
@@ -414,7 +412,8 @@ getPaginatedTasksByOrganizationalUnit = async (req, res) => {
             isAssigned: req.query.isAssigned
         };
 
-        var tasks = await TaskManagementService.getPaginatedTasksByOrganizationalUnit(req.portal, task, req.query.type);
+        let tasks = await TaskManagementService.getPaginatedTasksByOrganizationalUnit(req.portal, task, req.query.type);
+        
         await Logger.info(req.user.email, ` get paginated tasks by organizational unit `, req.portal)
         res.status(200).json({
             success: true,
@@ -871,7 +870,6 @@ exports.getUserTimeSheet = async(req, res) => {
             content: timesheetlogs
         })
     } catch (error) {
-        console.log('Error', error)
         await Logger.error(req.user.email, 'get_user_time_sheet_faile', req.portal)
         res.status(400).json({
             success: false,
@@ -886,7 +884,7 @@ exports.getAllUserTimeSheet = async(req, res) => {
         let portal = req.portal;
         let {month, year} = req.query;
         let timesheetlogs = await TaskManagementService.getAllUserTimeSheet(portal, month, year);
-        console.log("data", timesheetlogs)
+
         await Logger.info(req.user.email, 'get_all_user_time_sheet_success', req.portal)
         res.status(200).json({
             success: true,
@@ -894,7 +892,6 @@ exports.getAllUserTimeSheet = async(req, res) => {
             content: timesheetlogs
         })
     } catch (error) {
-        console.log('Error', error)
         await Logger.error(req.user.email, 'get_all_user_time_sheet_faile', req.portal)
         res.status(400).json({
             success: false,

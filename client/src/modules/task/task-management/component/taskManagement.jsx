@@ -311,25 +311,27 @@ class TaskManagement extends Component {
     }
 
     handleUpdateData = () => {
+        const { translate } = this.props;
         let { organizationalUnit, status, priority, special, name, startDate, endDate, responsibleEmployees, perPage } = this.state;
+        let startMonth, endMonth;
+        
+        if (startDate && endDate) {
+            startMonth = new Date(startDate);
+            endMonth = new Date(endDate);
+        }
 
-        let content = this.state.currentTab;
+        if (startMonth && endMonth && startMonth.getTime() > endMonth.getTime()) {
+            Swal.fire({
+                title: translate('kpi.evaluation.employee_evaluation.wrong_time'),
+                type: 'warning',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: translate('kpi.evaluation.employee_evaluation.confirm'),
+            })
+        } else {
+            let content = this.state.currentTab;
 
-        this.props.getPaginateTasks(content, organizationalUnit, 1, perPage, status, priority, special, name, startDate, endDate, responsibleEmployees);
-
-        // if (content === "responsible") {
-        //     this.props.getResponsibleTaskByUser(organizationalUnit, 1, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore);
-        // } else if (content === "accountable") {
-        //     this.props.getAccountableTaskByUser(organizationalUnit, 1, perPage, status, priority, special, name, startDate, endDate);
-        // } else if (content === "consulted") {
-        //     this.props.getConsultedTaskByUser(organizationalUnit, 1, perPage, status, priority, special, name, startDate, endDate);
-        // } else if (content === "creator") {
-        //     this.props.getCreatorTaskByUser(organizationalUnit, 1, perPage, status, priority, special, name, startDate, endDate);
-        // } else if (content === "informed") {
-        //     this.props.getInformedTaskByUser(organizationalUnit, 1, perPage, status, priority, special, name, startDate, endDate);
-        // } else {
-        //     this.props.getPaginateTasksByUser(organizationalUnit, 1, perPage, status, priority, special, name, startDate, endDate);
-        // }
+            this.props.getPaginateTasks(content, organizationalUnit, 1, perPage, status, priority, special, name, startDate, endDate, responsibleEmployees);
+        }
 
         this.setState({
             currentPage: 1
@@ -434,22 +436,34 @@ class TaskManagement extends Component {
     }
 
     handleChangeStartDate = (value) => {
+        let month;
         if (value === '') {
-            value = null;
+            month = null;
+        } else {
+            month = value.slice(3, 7) + '-' + value.slice(0, 2);
         }
 
-        this.setState({
-            startDate: value
+        this.setState(state => {
+            return {
+                ...state,
+                startDate: month
+            }
         });
     }
 
     handleChangeEndDate = (value) => {
+        let month;
         if (value === '') {
-            value = null;
+            month = null;
+        } else {
+            month = value.slice(3, 7) + '-' + value.slice(0, 2);
         }
 
-        this.setState({
-            endDate: value
+        this.setState(state => {
+            return {
+                ...state,
+                endDate: month
+            }
         });
     }
 
@@ -773,7 +787,7 @@ class TaskManagement extends Component {
                                 <DatePicker
                                     id="start-date"
                                     dateFormat="month-year"
-                                    value={startDate}
+                                    value={""}
                                     onChange={this.handleChangeStartDate}
                                     disabled={false}
                                 />
@@ -784,7 +798,7 @@ class TaskManagement extends Component {
                                 <DatePicker
                                     id="end-date"
                                     dateFormat="month-year"
-                                    value={endDate}
+                                    value={""}
                                     onChange={this.handleChangeEndDate}
                                     disabled={false}
                                 />
