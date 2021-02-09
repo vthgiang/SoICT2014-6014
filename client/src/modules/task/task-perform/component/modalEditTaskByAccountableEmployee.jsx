@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 
-import { DialogModal, ErrorLabel, SelectBox, DatePicker, QuillEditor, TreeSelect } from '../../../../common-components/';
+import { DialogModal, ErrorLabel, SelectBox, DatePicker, QuillEditor, TreeSelect, TimePicker } from '../../../../common-components/';
 import { getStorage } from "../../../../config";
 
 import { UserActions } from "../../../super-admin/user/redux/actions";
@@ -15,6 +15,8 @@ import { TaskTemplateFormValidator } from '../../task-template/component/taskTem
 
 import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
 import Swal from 'sweetalert2'
+import moment from 'moment';
+
 class ModalEditTaskByAccountableEmployee extends Component {
 
     constructor(props) {
@@ -115,6 +117,9 @@ class ModalEditTaskByAccountableEmployee extends Component {
         let startDate = this.formatDate(task.startDate);
         let endDate = this.formatDate(task.endDate);
 
+        let startTime = this.formatTime(task.startDate);
+        let endTime = this.formatTime(task.endDate);
+
         this.state = {
             listInactive: listInactive,
             userId: userId,
@@ -134,6 +139,8 @@ class ModalEditTaskByAccountableEmployee extends Component {
             taskProjectName: taskProject,
             startDate: startDate,
             endDate: endDate,
+            startTime: startTime,
+            endTime: endTime,
             responsibleEmployees: responsibleEmployees,
             accountableEmployees: accountableEmployees,
             consultedEmployees: consultedEmployees,
@@ -164,7 +171,8 @@ class ModalEditTaskByAccountableEmployee extends Component {
                 errorTaskDescription: undefined,
                 errorOnFormula: undefined,
                 errorInfo: {},
-
+                errorOnStartDate: undefined,
+                errorOnEndDate: undefined,
             }
         } else {
             return null;
@@ -184,6 +192,17 @@ class ModalEditTaskByAccountableEmployee extends Component {
             day = '0' + day;
 
         return [day, month, year].join('-');
+    }
+
+    // convert ISODate to String hh:mm AM/PM
+    formatTime(date) {
+        var d = new Date(date);
+        let time = moment(d).format("hh:mm");
+        let suffix = " AM";
+        if(d.getHours() >= 12 && d.getHours() <= 23) {
+            suffix = " PM";
+        }
+        return time + suffix;
     }
 
     handleChangeProgress = async (e) => {
@@ -626,6 +645,12 @@ class ModalEditTaskByAccountableEmployee extends Component {
 
         if (value === "") {
             msg = translate('task.task_perform.modal_approve_task.err_empty');
+        } else {
+            let startDate = this.convertDateTime(value, this.state.startTime);
+            let endDate = this.convertDateTime(this.state.endDate, this.state.endTime);
+            if(startDate > endDate) {
+                msg = translate('task.task_management.add_err_end_date');
+            }
         }
         if (willUpdateState) {
             this.setState(state => {
@@ -648,6 +673,12 @@ class ModalEditTaskByAccountableEmployee extends Component {
 
         if (value === "") {
             msg = translate('task.task_perform.modal_approve_task.err_empty');
+        } else {
+            let startDate = this.convertDateTime(this.state.startDate, this.state.startTime);
+            let endDate = this.convertDateTime(value, this.state.endTime);
+            if(startDate > endDate) {
+                msg = translate('task.task_management.add_err_end_date');
+            }
         }
         if (willUpdateState) {
             this.state.endDate = value;
@@ -953,6 +984,8 @@ class ModalEditTaskByAccountableEmployee extends Component {
                 inactiveEmployees.push(listInactive[i].value);
             }
         }
+        let startDateTask = this.convertDateTime(this.state.startDate, this.state.startTime);
+        let endDateTask = this.convertDateTime(this.state.endDate, this.state.endTime);
         let data = {
             listInfo: this.state.listInfo,
 
@@ -966,8 +999,8 @@ class ModalEditTaskByAccountableEmployee extends Component {
             progress: this.state.progress,
             date: this.formatDate(Date.now()),
 
-            startDate: this.state.startDate,
-            endDate: this.state.endDate,
+            startDate: startDateTask,
+            endDate: endDateTask,
 
             collaboratedWithOrganizationalUnits: this.state.collaboratedWithOrganizationalUnits,
             accountableEmployees: this.state.accountableEmployees,
@@ -1016,12 +1049,60 @@ class ModalEditTaskByAccountableEmployee extends Component {
         })
     }
 
+    handleStartTimeChange = (value) => {
+        let { translate } =this.props;
+        let startDate = this.convertDateTime(this.state.startDate, value);
+        let endDate = this.convertDateTime(this.state.endDate, this.state.endTime);
+        let err;
+        if (value.trim() === "" ) {
+            err = translate('task.task_management.add_err_empty_end_date');
+        }
+        else if(startDate > endDate) {
+            err = translate('task.task_management.add_err_end_date');
+        }
+        this.setState(state => {
+            return {
+                ...state,
+                startTime: value,
+                errorOnStartDate: err,
+            }
+        });
+    }
+
+    handleEndTimeChange = (value) => {
+        let { translate } =this.props;
+        let startDate = this.convertDateTime(this.state.startDate, this.state.startTime);
+        let endDate = this.convertDateTime(this.state.endDate, value);
+        let err;
+        console.log('startDate > endDate', startDate > endDate, startDate , endDate);
+        if (value.trim() === "" ) {
+            err = translate('task.task_management.add_err_empty_end_date');
+        }
+        else if(startDate > endDate) {
+            err = translate('task.task_management.add_err_end_date');
+        }
+        this.setState(state => {
+            return {
+                ...state,
+                endTime: value,
+                errorOnEndDate: err,
+            }
+        });
+    }
+    
+    convertDateTime = (date, time) => {
+        let splitter = date.split("-");
+        let strDateTime = `${splitter[2]}-${splitter[1]}-${splitter[0]} ${time}`;
+        // console.log('str Date time', strDateTime);
+        return new Date(strDateTime);
+    }
+
     render() {
         console.log('new edit Task', this.state);
 
         const { user, tasktemplates, department, translate, taskProject } = this.props;
         const { task, organizationalUnit, collaboratedWithOrganizationalUnits, errorOnEndDate, errorOnStartDate, errorTaskName, errorTaskDescription, errorOnFormula, taskName, taskDescription, statusOptions, priorityOptions, taskDescriptionDefault,
-            startDate, endDate, formula, responsibleEmployees, accountableEmployees, consultedEmployees, informedEmployees, inactiveEmployees, parent, parentTask
+            startDate, endDate, startTime, endTime, formula, responsibleEmployees, accountableEmployees, consultedEmployees, informedEmployees, inactiveEmployees, parent, parentTask
             , taskProjectName } = this.state;
 
         const { tasks, perform, id, role, title, hasAccountable } = this.props;
@@ -1213,6 +1294,11 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                             value={startDate}
                                             onChange={this.handleChangeTaskStartDate}
                                         />
+                                        < TimePicker
+                                            id={`time-picker-1-start-time${id}`}
+                                            value={startTime}
+                                            onChange={this.handleStartTimeChange}
+                                        />
                                         <ErrorLabel content={errorOnStartDate} />
                                     </div>
                                     <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 ${errorOnEndDate === undefined ? "" : "has-error"}`}>
@@ -1221,6 +1307,11 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                             id={`datepicker2-enddate-${id}`}
                                             value={endDate}
                                             onChange={this.handleChangeTaskEndDate}
+                                        />
+                                        < TimePicker
+                                            id={`time-picker-2-end-time-${id}`}
+                                            value={endTime}
+                                            onChange={this.handleEndTimeChange}
                                         />
                                         <ErrorLabel content={errorOnEndDate} />
                                     </div>
