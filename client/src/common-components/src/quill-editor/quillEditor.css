@@ -4,3 +4,7 @@
 .insert-table-icon-quill:hover {
     color: #06c !important; 
 }
+
+.ql-disabled {
+    background-color: #eee;
+}

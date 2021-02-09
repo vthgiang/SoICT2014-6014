@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import Swal from 'sweetalert2';
 import { withTranslate } from 'react-redux-multilingual';
 import { DataTableSetting, DatePicker, PaginateBar, SelectBox, SelectMulti, TreeTable } from '../../../../common-components';
 import { getStorage } from '../../../../config';
@@ -230,11 +231,28 @@ class TaskManagementOfUnit extends Component {
     }
 
     handleUpdateData = () => {
+        const { translate } = this.props;
         let { organizationalUnit, status, priority, special, name, startDate, endDate, perPage, isAssigned } = this.state;
 
-        if (organizationalUnit && organizationalUnit.length !== 0) {
+        let startMonth, endMonth;
+        
+        if (startDate && endDate) {
+            startMonth = new Date(startDate);
+            endMonth = new Date(endDate);
+        }
+
+        if (startMonth && endMonth && startMonth.getTime() > endMonth.getTime()) {
+            Swal.fire({
+                title: translate('kpi.evaluation.employee_evaluation.wrong_time'),
+                type: 'warning',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: translate('kpi.evaluation.employee_evaluation.confirm'),
+            })
+        }
+        else if (organizationalUnit && organizationalUnit.length !== 0) {
             this.props.getPaginatedTasksByOrganizationalUnit(organizationalUnit, 1, perPage, status, priority, special, name, startDate, endDate, isAssigned);
         }
+
         this.setState(state => {
             return {
                 ...state,
@@ -343,27 +361,33 @@ class TaskManagementOfUnit extends Component {
     }
 
     handleChangeStartDate = (value) => {
+        let month;
         if (value === '') {
-            value = null;
+            month = null;
+        } else {
+            month = value.slice(3, 7) + '-' + value.slice(0, 2);
         }
 
         this.setState(state => {
             return {
                 ...state,
-                startDate: value
+                startDate: month
             }
         });
     }
 
     handleChangeEndDate = (value) => {
+        let month;
         if (value === '') {
-            value = null;
+            month = null;
+        } else {
+            month = value.slice(3, 7) + '-' + value.slice(0, 2);
         }
 
         this.setState(state => {
             return {
                 ...state,
-                endDate: value
+                endDate: month
             }
         });
     }
@@ -535,7 +559,7 @@ class TaskManagementOfUnit extends Component {
                                     <DatePicker
                                         id="start-date"
                                         dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm 
-                                        value={startDate} // giá trị mặc định cho datePicker    
+                                        value={""} // giá trị mặc định cho datePicker    
                                         onChange={this.handleChangeStartDate}
                                         disabled={false}                     // sử dụng khi muốn disabled, mặc định là false
                                     />
@@ -547,7 +571,7 @@ class TaskManagementOfUnit extends Component {
                                     <DatePicker
                                         id="end-date"
                                         dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm 
-                                        value={endDate} // giá trị mặc định cho datePicker    
+                                        value={""} // giá trị mặc định cho datePicker    
                                         onChange={this.handleChangeEndDate}
                                         disabled={false}                     // sử dụng khi muốn disabled, mặc định là false
                                     />

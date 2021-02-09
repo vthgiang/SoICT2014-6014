@@ -66,7 +66,8 @@ export default {
             not_select_unit: "Chọn đơn vị",
             list_unit: "Danh sách đơn vị",
             list_employee: "Danh sách nhân viên",
-            detail: "Chi tiết"
+            detail: "Chi tiết",
+            select_all: "Chọn tất cả",
         },
 
         intro: {
@@ -3232,6 +3233,7 @@ export default {
                 load_task_chart: "Dashboard tải công việc",
                 load_task_chart_unit: "Dashboard tải công việc của đơn vị",
                 explain: "Giải thích",
+                select_responsible: "Chọn người thực hiện",
             },
             task_perform: {
                 actions: "Hoạt động",
@@ -4008,6 +4010,7 @@ export default {
                     content:
                         "Đây là mục tiêu mặc định (nếu cần thiết có thể sửa trọng số)",
                     delete_title: "Xóa",
+                    employee_importance_activated: "KPI đã kích hoạt, bạn không thể chỉnh sửa độ quan trọng nhân viên"
                 },
 
                 create_organizational_unit_kpi_modal: {
@@ -4182,7 +4185,9 @@ export default {
                 statistics: {
                     detail_participant: "Chi tiết người tham gia",
                     detail_employee_kpi: "Chi tiết KPI nhân viên",
-                    email: "Email"
+                    email: "Email",
+                    weight_current: "Trọng số KPI hiện tại",
+                    weight_analysis: "Trọng số KPI theo phân tích thực tế"
                 },
 
                 //Thông điệp khác trả về từ server

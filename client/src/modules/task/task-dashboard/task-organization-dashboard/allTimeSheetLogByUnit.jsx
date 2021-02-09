@@ -93,13 +93,14 @@ class AllTimeSheetLogsByUnit extends Component {
                     for (let j in organizationUnitTasks.tasks[i].timesheetLogs) {
                         let autoStopped = organizationUnitTasks.tasks[i].timesheetLogs[j].autoStopped;
                         let creator = organizationUnitTasks.tasks[i].timesheetLogs[j].creator;
-
-                        if (autoStopped == 1) {
-                            allTimeSheet[creator].manualtimer += organizationUnitTasks.tasks[i].timesheetLogs[j].duration
-                        } else if (autoStopped == 2) {
-                            allTimeSheet[creator].autotimer += organizationUnitTasks.tasks[i].timesheetLogs[j].duration
-                        } else if (autoStopped == 3) {
-                            allTimeSheet[creator].logtimer += organizationUnitTasks.tasks[i].timesheetLogs[j].duration
+                        if (creator && allTimeSheet[creator]) {
+                            if (autoStopped == 1) {
+                                allTimeSheet[creator].manualtimer += organizationUnitTasks.tasks[i].timesheetLogs[j].duration
+                            } else if (autoStopped == 2) {
+                                allTimeSheet[creator].autotimer += organizationUnitTasks.tasks[i].timesheetLogs[j].duration
+                            } else if (autoStopped == 3) {
+                                allTimeSheet[creator].logtimer += organizationUnitTasks.tasks[i].timesheetLogs[j].duration
+                            }
                         }
                     }
                 }

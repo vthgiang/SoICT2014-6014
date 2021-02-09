@@ -26,10 +26,12 @@ class SelectMulti extends Component {
     }
 
     componentDidMount() {
+        const { translate } = this.props;
         let { id, options, onChange, disabled = false, slimScroll = true, height = 200 } = this.props;
         options = {
             ...options,
             includeSelectAllOption: true,
+            selectAllText: translate('general.select_all'),
             maxHeight: 200,
         }
 

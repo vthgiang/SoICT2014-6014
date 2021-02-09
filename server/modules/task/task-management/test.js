@@ -17,6 +17,13 @@ let duyen = "Duyen"
 console.log('split', quang.split("-"));
 console.log('split  y', duyen.split("-"));
 
+let qdz = "2021-02-07 12:30:00";
+let qd1 = new Date(qdz);
+let qd2 = new Date(2021, 1, 8);
+console.log('qd1',qd1);
+console.log('qd2', qd2);
+console.log('qd1m', qd1.getMonth());
+
 
 // let splitter = "31-10-2020".split("-");
 // let splitter2 = "01-11-2020".split("-");

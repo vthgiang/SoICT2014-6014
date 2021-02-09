@@ -15,7 +15,8 @@ class ValueTree extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            tree: false
+            tree: false,
+            crrValue: false,
         }
     }
 
@@ -28,10 +29,17 @@ class ValueTree extends Component {
         })
     }
 
+    handleChangeViewCurrentValue = () => {
+        this.setState({
+            ...this.state,
+            crrValue: !this.state.crrValue,
+        })
+    }
+
     render() {
-        const { assetType, listAssets, translate, setValueOfAsset } = this.props;
-        const { tree } = this.state;
-        let typeName = [], countAssetValue = [], idAssetType = [];
+        const { assetType, listAssets, translate, setValueOfAsset, depreciationOfAsset } = this.props;
+        const { tree, crrValue } = this.state;
+        let typeName = [], countAssetValue = [], idAssetType = [], currentValue = [];
 
         for (let i in assetType) {
             countAssetValue[i] = 0;
@@ -46,9 +54,20 @@ class ValueTree extends Component {
                     countAssetValue[idx] += asset.cost;
                 }
             })
-            for (let i in assetType) {
+            if (crrValue) {
+                if (depreciationOfAsset && depreciationOfAsset.length > 0) {
+                    currentValue = countAssetValue.map((o, i) => o - depreciationOfAsset[i]);
+                }
+            }
 
-                let val = d3.format(",")(countAssetValue[i])
+            for (let i in assetType) {
+                let val;
+                if (crrValue) {
+                    val = d3.format(",")(currentValue[i])
+                } else {
+                    val = d3.format(",")(countAssetValue[i])
+                }
+
                 let title = `${assetType[i].typeName} - ${val} `
 
                 typeName.push(assetType[i].typeName);
@@ -73,7 +92,11 @@ class ValueTree extends Component {
         return (
             <div className="value-asset" id="value-asset">
                 {/* Chọn loại biểu đồ */}
-                <div className="box-tools pull-right">
+                <div className="box-tools" style={{ marginBottom: '15px' }}>
+                    <div className="btn-group value-asset-option">
+                        <button type="button" className={`btn btn-xs ${crrValue ? "active" : "btn-danger"}`} onClick={() => this.handleChangeViewCurrentValue()}>Nguyên giá</button>
+                        <button type="button" className={`btn btn-xs ${crrValue ? "btn-danger" : "active"}`} onClick={() => this.handleChangeViewCurrentValue()}>Giá trị hiện tại</button>
+                    </div>
                     <div className="btn-group pull-right">
                         <button type="button" className={`btn btn-xs ${tree ? "active" : "btn-danger"}`} onClick={() => this.handleChangeViewChart(false)}>{translate('asset.dashboard.bar_chart')}</button>
                         <button type="button" className={`btn btn-xs ${tree ? "btn-danger" : "active"}`} onClick={() => this.handleChangeViewChart(true)}>{translate('asset.dashboard.tree')}</button>
@@ -85,7 +108,7 @@ class ValueTree extends Component {
                             <br />
                             {/* Cây giá trị tài sản */}
                             <Tree
-                                id="tree-qlcv-value-asset"
+                                id={`tree-qlcv-value-asset-${crrValue}`}
                                 data={dataTree}
                                 plugins={false}
                             />
@@ -93,6 +116,8 @@ class ValueTree extends Component {
                             listAssets={listAssets}
                             assetType={assetType}
                             setValueOfAsset={setValueOfAsset}
+                            depreciationOfAsset={depreciationOfAsset}
+                            crrValue={crrValue}
                         />
                 }
             </div>

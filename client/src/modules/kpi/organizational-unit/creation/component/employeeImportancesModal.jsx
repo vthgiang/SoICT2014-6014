@@ -154,6 +154,7 @@ function EmployeeImportancesModal(props) {
                 msg_success={translate('kpi.organizational_unit.create_organizational_unit_kpi_set_modal.success')}
                 msg_faile={translate('kpi.organizational_unit.create_organizational_unit_kpi_set_modal.failure')}
                 func={handleSubmit}
+                hasNote={false}
             >
                 {/* Form khởi tạo KPI đơn vị */}
                 <form id="form-employee-importances" onSubmit={() => handleSubmit(translate('kpi.organizational_unit.create_organizational_unit_kpi_set_modal.success'))}>
