@@ -129,6 +129,14 @@ class EmployeeKpiEvaluateModal extends Component {
 
             this.props.setPointKPI(content, type, data);
         }
+        else {
+
+            this.props.setPointKPI(content, type, [{
+                date: date,
+                type: type,
+                employeeId: employeeId
+            }]);
+        }
     }
 
     setValueSlider = (e, id) => {
