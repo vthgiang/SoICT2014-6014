@@ -66,7 +66,8 @@ export default {
             not_select_unit: "Chọn đơn vị",
             list_unit: "Danh sách đơn vị",
             list_employee: "Danh sách nhân viên",
-            detail: "Chi tiết"
+            detail: "Chi tiết",
+            select_all: "Chọn tất cả",
         },
 
         intro: {
@@ -346,10 +347,12 @@ export default {
                     yearly: "Hằng năm",
                     date: "Ngày",
                     hour: "Giờ",
+                    week: "Tuần",
                     minute: "Phút",
                     second: "Giây",
                     day: "Thứ",
                     month: "Tháng",
+                    year: "Năm",
                     save: "Lưu cấu hình",
 
                     version: "Phiên bản",
@@ -1066,7 +1069,7 @@ export default {
             manageDocument: "Quản lý văn bản",
             manageDocumentType: "Quản lý loại văn bản",
 
-            leave_application: "Quản lý đơn xin nghỉ",
+            leave_application: "Quản lý đơn xin nghỉ đơn vị",
             manage_employee: "Quản lý nhân sự",
             manage_work_plan: "Quản lý kế hoạch làm việc",
             manage_training: "Quản lý đào tạo",
@@ -2005,6 +2008,7 @@ export default {
                     email_in_company_required:
                         "Email công ty không được để trống",
                     employee_number_have_exist: "Mã nhân viên đã tồn tại",
+                    staff_code_not_find:"Mã nhân viên không tồn tại",
                     email_in_company_have_exist: "Email công ty đã tồn tại",
                     employee_timesheet_id_required:
                         "Mã số chấm công không được để trống",
@@ -3207,6 +3211,7 @@ export default {
                 // warning
                 warning: "Cảnh báo",
                 not_have_evaluation: "Chưa có đánh giá công việc tháng này",
+                warning_evaluate: "Sắp đến hạn đánh giá. Bạn cần đánh giá công việc tháng này",
                 you_need: "Bạn cần",
                 confirm_task: "xác nhận tham gia công việc này",
                 not_confirm: "Chưa xác nhận công việc",
@@ -3228,6 +3233,7 @@ export default {
                 load_task_chart: "Dashboard tải công việc",
                 load_task_chart_unit: "Dashboard tải công việc của đơn vị",
                 explain: "Giải thích",
+                select_responsible: "Chọn người thực hiện",
             },
             task_perform: {
                 actions: "Hoạt động",
@@ -3546,6 +3552,16 @@ export default {
                 import_task_template_faile: "Thêm mẫu công việc thất bại !",
                 task_template_name_exist: "Tên mẫu công việc đã tồn tại",
             },
+            task_dashboard: {
+                general_unit_task: "Tổng quan công việc đơn vị",
+                unit: "Đơn vị",
+                all_tasks: "Tổng số công việc",
+                confirmed_task: "Công việc đã xác nhận thực hiện",
+                none_update_recently: "Công việc chưa cập nhật gần đây",
+                intime_task: "Công việc đúng tiến độ",
+                delay_task: "Công việc trễ tiến độ",
+                overdue_task: "Công việc quá hạn"
+            }
         },
 
         kpi: {
@@ -3948,6 +3964,8 @@ export default {
                     edit_kpi_failure: "Chỉnh sửa KPI không thành công",
                     delete_kpi_success: "Xóa KPI thành công",
                     delete_kpi_failure: "Xóa KPI không thành công",
+                    copy_kpi_unit: "Sao chép KPI đơn vị",
+                    employee_importance: "Độ quan trọng nhân viên",
 
                     // Nhóm dành cho trọng số
                     weight_total: "Tổng trọng số",
@@ -3992,6 +4010,7 @@ export default {
                     content:
                         "Đây là mục tiêu mặc định (nếu cần thiết có thể sửa trọng số)",
                     delete_title: "Xóa",
+                    employee_importance_activated: "KPI đã kích hoạt, bạn không thể chỉnh sửa độ quan trọng nhân viên"
                 },
 
                 create_organizational_unit_kpi_modal: {
@@ -4004,6 +4023,7 @@ export default {
                     weight: "Trọng số",
                     create_target_success: "Thêm mục tiêu KPI thành công",
                     create_target_failure: "Bạn chưa nhập đủ thông tin",
+                    organizational_unit_kpi_exist: "Mục tiêu KPI đã tồn tại",
 
                     // Nhóm dành cho validate
                     validate_name: {
@@ -4082,7 +4102,7 @@ export default {
                     no_data: "Không có dữ liệu",
                     trend_chart: {
                         execution_time: "Thời gian thực hiện (Ngày)",
-                        participants: "Người tham gia",
+                        participants: "Só người tham gia",
                         amount_tasks: "Số lượng công việc",
                         amount_employee_kpi: "Số lượng KPI nhân viên",
                         weight: "Trọng số",
@@ -4148,7 +4168,7 @@ export default {
                         setting_up: "Đang thiết lập",
                         activated: "Đã kích hoạt",
                         time: "Thời gian",
-                        creator: "Người tạo",
+                        creator: "Người khởi tạo",
                         number_target: "Số lượng mục tiêu",
                         result: "Kết quả đánh giá",
                         no_data: "Không có dữ liệu",
@@ -4161,6 +4181,15 @@ export default {
                         },
                     },
                 },
+
+                statistics: {
+                    detail_participant: "Chi tiết người tham gia",
+                    detail_employee_kpi: "Chi tiết KPI nhân viên",
+                    email: "Email",
+                    weight_current: "Trọng số KPI hiện tại",
+                    weight_analysis: "Trọng số KPI theo phân tích thực tế"
+                },
+
                 //Thông điệp khác trả về từ server
                 get_parent_by_unit_success:
                     "Lấy KPI đơn vị của đơn vị cha thành công",

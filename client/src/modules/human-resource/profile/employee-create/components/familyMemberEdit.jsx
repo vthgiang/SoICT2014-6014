@@ -5,6 +5,7 @@ import { DatePicker, DialogModal } from '../../../../../common-components';
 import { getFormatDateFromTime, getTimeFromFormatDate } from '../../../../../helpers/stringMethod';
 
 const FamilyMemberEdit = ({
+    id,
     editMember,
     _save,
     translate
@@ -124,125 +125,130 @@ const FamilyMemberEdit = ({
     }, [editMember.index])
 
     return (
-        <div style={{ marginTop: 40, display: 'none' }} id="form-edit-family-members">
-            <form>
-                <div className="row">
-                    <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-                        <div className="form-group">
-                            <label>{translate('human_resource.profile.house_hold.members.name')}</label>
-                            <input className="form-control" onChange={_handleCurName} value={name} />
+        <DialogModal
+            func={_editMember} isLoading={false}
+            modalID={`form-edit-family-members-${id}`}
+            title={"Chỉnh sửa thông tin thành viên hộ gia đình"}
+            size={75}
+        >
+            <div id="form-edit-family-members">
+                <form>
+                    <div className="row">
+                        <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                            <div className="form-group">
+                                <label>{translate('human_resource.profile.house_hold.members.name')}</label>
+                                <input className="form-control" onChange={_handleCurName} value={name} />
+                            </div>
                         </div>
-                    </div>
-                    <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-                        <div className="form-group">
-                            <label>{translate('human_resource.profile.house_hold.members.code_social_insurance')}</label>
-                            <input className="form-control" onChange={_handleCurCodeSocialInsurance} value={codeSocialInsurance} />
+                        <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                            <div className="form-group">
+                                <label>{translate('human_resource.profile.house_hold.members.code_social_insurance')}</label>
+                                <input className="form-control" onChange={_handleCurCodeSocialInsurance} value={codeSocialInsurance} />
+                            </div>
                         </div>
-                    </div>
-                    <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-                        <div className="form-group">
-                            <label>{translate('human_resource.profile.house_hold.members.book_nci')}</label>
-                            <input className="form-control" onChange={_handleCurBookNumberSocialInsurance} value={bookNumberSocialInsurance} />
-                        </div>
-                    </div>
-                </div>
-                <div className="row">
-                    <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-                        <div className="form-group">
-                            <label>{translate('human_resource.profile.house_hold.members.is_hh')}</label>
-                            <div>
-                                <div className="radio-inline">
-                                    <label>
-                                        <input type="radio" value="yes" onChange={_handleCurIsHeadHousehold}
-                                            checked={isHeadHousehold === 'yes' ? true : false} />&nbsp;&nbsp; Có</label>
-                                </div>
-                                <div className="radio-inline">
-                                    <label>
-                                        <input type="radio" value="no" onChange={_handleCurIsHeadHousehold}
-                                            checked={isHeadHousehold === 'no' ? true : false} />&nbsp;&nbsp; Không</label>
-                                </div>
+                        <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                            <div className="form-group">
+                                <label>{translate('human_resource.profile.house_hold.members.book_nci')}</label>
+                                <input className="form-control" onChange={_handleCurBookNumberSocialInsurance} value={bookNumberSocialInsurance} />
                             </div>
                         </div>
                     </div>
-                    <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-                        <div className="form-group">
-                            <label>{translate('human_resource.profile.house_hold.members.rwhh')}</label>
-                            <input className="form-control" onChange={_handleCurRelationshipWithHeadHousehold} value={relationshipWithHeadHousehold} />
-                        </div>
-                    </div>
-                    <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-                        <div className="form-group">
-                            <label>{translate('human_resource.profile.house_hold.members.cnss')}</label>
-                            <input className="form-control" onChange={_handleCurCnss} value={cnss} />
-                        </div>
-                    </div>
-                </div>
-                <div className="row">
-                    <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-                        <div className="form-group ">
-                            <label>{translate('human_resource.profile.house_hold.members.gender')}</label>
-                            <div>
-                                <div className="radio-inline">
-                                    <label>
-                                        <input type="radio" value="male" onChange={_handleCurGender}
-                                            checked={gender === "male" ? true : false} />&nbsp;&nbsp;{translate('human_resource.profile.male')}</label>
-                                </div>
-                                <div className="radio-inline">
-                                    <label>
-                                        <input type="radio" value="female" onChange={_handleCurGender}
-                                            checked={gender === "female" ? true : false} />&nbsp;&nbsp;{translate('human_resource.profile.female')}</label>
+                    <div className="row">
+                        <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                            <div className="form-group">
+                                <label>{translate('human_resource.profile.house_hold.members.is_hh')}</label>
+                                <div>
+                                    <div className="radio-inline">
+                                        <label>
+                                            <input type="radio" value="yes" onChange={_handleCurIsHeadHousehold}
+                                                checked={isHeadHousehold === 'yes' ? true : false} />&nbsp;&nbsp; Có</label>
+                                    </div>
+                                    <div className="radio-inline">
+                                        <label>
+                                            <input type="radio" value="no" onChange={_handleCurIsHeadHousehold}
+                                                checked={isHeadHousehold === 'no' ? true : false} />&nbsp;&nbsp; Không</label>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-                        <div className="form-group">
-                            <label>{translate('human_resource.profile.house_hold.members.birth')}</label>
-                            <DatePicker
-                                id="edit-member-birthday"
-                                value={birth}
-                                onChange={_handleCurBirth}
-                            />
+                        <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                            <div className="form-group">
+                                <label>{translate('human_resource.profile.house_hold.members.rwhh')}</label>
+                                <input className="form-control" onChange={_handleCurRelationshipWithHeadHousehold} value={relationshipWithHeadHousehold} />
+                            </div>
+                        </div>
+                        <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                            <div className="form-group">
+                                <label>{translate('human_resource.profile.house_hold.members.cnss')}</label>
+                                <input className="form-control" onChange={_handleCurCnss} value={cnss} />
+                            </div>
                         </div>
                     </div>
-                    <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-                        <div className="form-group">
-                            <label>{translate('human_resource.profile.house_hold.members.pob')}</label>
-                            <input className="form-control" onChange={_handleCurPlaceOfBirthCertificate} value={placeOfBirthCertificate} />
+                    <div className="row">
+                        <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                            <div className="form-group ">
+                                <label>{translate('human_resource.profile.house_hold.members.gender')}</label>
+                                <div>
+                                    <div className="radio-inline">
+                                        <label>
+                                            <input type="radio" value="male" onChange={_handleCurGender}
+                                                checked={gender === "male" ? true : false} />&nbsp;&nbsp;{translate('human_resource.profile.male')}</label>
+                                    </div>
+                                    <div className="radio-inline">
+                                        <label>
+                                            <input type="radio" value="female" onChange={_handleCurGender}
+                                                checked={gender === "female" ? true : false} />&nbsp;&nbsp;{translate('human_resource.profile.female')}</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                            <div className="form-group">
+                                <label>{translate('human_resource.profile.house_hold.members.birth')}</label>
+                                <DatePicker
+                                    id={`edit-member-birthday-${id}`}
+                                    value={birth}
+                                    onChange={_handleCurBirth}
+                                />
+                            </div>
+                        </div>
+                        <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                            <div className="form-group">
+                                <label>{translate('human_resource.profile.house_hold.members.pob')}</label>
+                                <input className="form-control" onChange={_handleCurPlaceOfBirthCertificate} value={placeOfBirthCertificate} />
+                            </div>
+                        </div>
+                        <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                            <div className="form-group">
+                                <label>{translate('human_resource.profile.house_hold.members.nationality')}</label>
+                                <input className="form-control" onChange={_handleCurNationality} value={nationality} />
+                            </div>
+                        </div>
+                        <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                            <div className="form-group">
+                                <label>{translate('human_resource.profile.house_hold.members.nation')}</label>
+                                <input className="form-control" onChange={_handleCurNation} value={nation} />
+                            </div>
+                        </div>
+                        <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                            <div className="form-group">
+                                <label>{translate('human_resource.profile.house_hold.members.npp')}</label>
+                                <input className="form-control" onChange={_handleCurNumberPassport} value={numberPassport} />
+                            </div>
                         </div>
                     </div>
-                    <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-                        <div className="form-group">
-                            <label>{translate('human_resource.profile.house_hold.members.nationality')}</label>
-                            <input className="form-control" onChange={_handleCurNationality} value={nationality} />
+                    <div className="row">
+                        <div className="col-xs-12 col-sm-8 col-md-8 col-lg-8">
+                            <div className="form-group">
+                                <label>{translate('human_resource.profile.house_hold.members.note')}</label>
+                                <textarea className="form-control" onChange={_handleCurNote} value={note} />
+                            </div>
                         </div>
                     </div>
-                    <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-                        <div className="form-group">
-                            <label>{translate('human_resource.profile.house_hold.members.nation')}</label>
-                            <input className="form-control" onChange={_handleCurNation} value={nation} />
-                        </div>
-                    </div>
-                    <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-                        <div className="form-group">
-                            <label>{translate('human_resource.profile.house_hold.members.npp')}</label>
-                            <input className="form-control" onChange={_handleCurNumberPassport} value={numberPassport} />
-                        </div>
-                    </div>
-                </div>
-                <div className="row">
-                    <div className="col-xs-12 col-sm-8 col-md-8 col-lg-8">
-                        <div className="form-group">
-                            <label>{translate('human_resource.profile.house_hold.members.note')}</label>
-                            <textarea className="form-control" onChange={_handleCurNote} value={note} />
-                        </div>
-                    </div>
-                    <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4" style={{ marginTop: 30 }}>
-                        <button type="button" className="btn btn-primary pull-right" onClick={_editMember}>{translate('general.save')}</button>
-                    </div>
-                </div>
-            </form>
-        </div>
+                </form>
+            </div>
+        </DialogModal>
+
     )
 }
 

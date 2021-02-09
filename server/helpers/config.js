@@ -365,15 +365,6 @@ const LINKS = [{
 },
 
 {
-    url: '/hr-employee-capacity',
-    description: 'Năng lực nhân viên',
-    category: LINK_CATEGORY.HUMAN_RESOURCE.name,
-    roles: [
-        ROOT_ROLES.ADMIN.name,
-    ],
-    components: getComponentsInLink('/hr-employee-capacity')
-},
-{
     url: '/hr-manage-work-plan',
     description: 'Quản lý kế hoạch làm việc',
     category: LINK_CATEGORY.HUMAN_RESOURCE.name,
@@ -473,10 +464,9 @@ const LINKS = [{
 },
 {
     url: '/hr-manage-leave-application',
-    description: 'Quản lý đơn xin nghỉ phép',
+    description: 'Quản lý đơn xin nghỉ đơn vị',
     category: LINK_CATEGORY.HUMAN_RESOURCE.name,
     roles: [
-        ROOT_ROLES.ADMIN.name,
         ROOT_ROLES.MANAGER.name,
         ROOT_ROLES.DEPUTY_MANAGER.name,
     ],
@@ -775,6 +765,7 @@ const LINKS = [{
         ROOT_ROLES.MANAGER.name,
         ROOT_ROLES.DEPUTY_MANAGER.name,
         ROOT_ROLES.EMPLOYEE.name,
+        ROOT_ROLES.ADMIN.name,
     ],
     components: getComponentsInLink('/task')
 },
@@ -1428,18 +1419,7 @@ const LINKS = [{
         ROOT_ROLES.EMPLOYEE.name,
     ],
     components: getComponentsInLink('/user-guide')
-},{
-    url: '/user-guide-detail',
-    description: 'Chi tiết hướng dẫn sử dụng',
-    category: LINK_CATEGORY.USERGUIDE.name,
-    roles: [
-        ROOT_ROLES.ADMIN.name,
-        ROOT_ROLES.MANAGER.name,
-        ROOT_ROLES.DEPUTY_MANAGER.name,
-        ROOT_ROLES.EMPLOYEE.name,
-    ],
-    components: getComponentsInLink('/user-guide-detail')
-},{
+}, {
     url: "/time-sheet-log/all",
     description: "Thống kê lịch sử bấm giờ tất cả thành viên trong công ty",
     category: LINK_CATEGORY.TASK.name,

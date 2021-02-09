@@ -10,6 +10,7 @@ import { OrganizationalUnitKpiAddTargetModal } from './organizationalUnitKpiAddT
 import { OrganizationalUnitKpiCreateModal } from './organizationalUnitKpiCreateModal';
 import { OrganizationalUnitKpiEditTargetModal } from './organizationalUnitKpiEditTargetModal';
 import { ModalCopyKPIUnit } from '../../management/component/organizationalUnitKpiCopyModal';
+import { EmployeeImportancesModal } from './employeeImportancesModal';
 
 import { createUnitKpiActions } from '../redux/actions.js';
 import { UserActions } from '../../../../super-admin/user/redux/actions';
@@ -142,7 +143,7 @@ class OrganizationalUnitKpiCreate extends Component {
             confirmButtonText: translate('kpi.organizational_unit.create_organizational_unit_kpi_set.confirm')
         }).then((res) => {
             if (res.value) {
-                this.props.editStatusKPIUnit(id, status);
+                this.props.editKPIUnit(id, { status: status }, 'edit-status');
             }
         });
     }
@@ -169,7 +170,7 @@ class OrganizationalUnitKpiCreate extends Component {
                     confirmButtonText: translate('kpi.organizational_unit.create_organizational_unit_kpi_set.confirm'),
                 }).then((res) => {
                     if (res.value) {
-                        this.props.editStatusKPIUnit(currentKPI._id, status);
+                        this.props.editKPIUnit(currentKPI._id, { status: status }, 'edit-status');
                     }
                 });
             } else {
@@ -358,7 +359,7 @@ class OrganizationalUnitKpiCreate extends Component {
         const { createKpiUnit } = this.props;
 
         let parentKpi = createKpiUnit && createKpiUnit.parent;
-        if (parentKpi == null) {
+        if (!parentKpi) {
             Swal.fire({
                 title: translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.not_initialize_organiztional_unit_kpi'),
                 type: 'warning',
@@ -394,6 +395,13 @@ class OrganizationalUnitKpiCreate extends Component {
             case "delete":
                 return Swal.fire({
                     title: translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.delete_kpi.activated'),
+                    type: 'warning',
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'Đồng ý'
+                })
+            case "edit_employee_importance":
+                return Swal.fire({
+                    title: translate('kpi.organizational_unit.create_organizational_unit_kpi_set.employee_importance_activated'),
                     type: 'warning',
                     confirmButtonColor: '#3085d6',
                     confirmButtonText: 'Đồng ý'
@@ -511,7 +519,31 @@ class OrganizationalUnitKpiCreate extends Component {
                                                 </span>
                                             }
 
-                                            
+                                            {/* Chỉnh sửa độ quan trọng của nhân viên */}
+                                            {this.checkEdittingPermission(currentKPI && currentKPI.organizationalUnit) ?
+                                                <span>
+                                                    {currentKPI.status === 1 ?
+                                                        <a className="btn btn-app" onClick={() => this.swalOfUnitKpi("edit_employee_importance")}>
+                                                            <i className="fa fa-plus-circle" style={{ fontSize: "16px" }}></i>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.employee_importance')}
+                                                        </a>
+                                                        : <span>
+                                                            <a className="btn btn-app" data-toggle="modal" data-target="#employee-importances" data-backdrop="static" data-keyboard="false">
+                                                                <i className="fa fa-plus-circle" style={{ fontSize: "16px" }}></i>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.employee_importance')}
+                                                            </a>
+                                                        <EmployeeImportancesModal
+                                                            organizationalUnit={currentKPI.organizationalUnit}
+                                                            organizationalUnitId={currentKPI.organizationalUnit && currentKPI.organizationalUnit._id}
+                                                            month={month}
+                                                        />
+                                                        </span>
+                                                    }
+                                                </span>
+                                                : <span>
+                                                    <a className="btn btn-app" onClick={() => this.swalEdittingPermission()}>
+                                                        <i className="fa fa-plus-circle" style={{ fontSize: "16px" }}></i>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.employee_importance')}
+                                                    </a>
+                                                </span>
+                                            }
                                         </div>
                                     }
                                     <div className="">
@@ -552,7 +584,7 @@ class OrganizationalUnitKpiCreate extends Component {
                                                         <tr key={item._id}>
                                                             <td>{index + 1}</td>
                                                             <td title={item.name}>{item.name}</td>
-                                                            <td title={item.criteria}>{parse(item.criteria)}</td>
+                                                            <td title={parse(item.criteria)}>{parse(item.criteria)}</td>
                                                             <td title={item.weight}>{item.weight}</td>
                                                             {this.checkPermisson(organizationalUnit && organizationalUnit.managers) &&
                                                                 <td>
@@ -609,7 +641,7 @@ class OrganizationalUnitKpiCreate extends Component {
                                                 {this.checkEdittingPermission(organizationalUnit) && parentKpi ?
                                                     <span>
                                                         <a className="btn btn-app" data-toggle="modal" data-target={`#copy-old-kpi-to-new-time-${parentKpi && parentKpi._id}`} data-backdrop="static" data-keyboard="false">
-                                                            <i className="fa fa-copy" style={{ fontSize: "16px" }}></i>Sao chép KPI đơn vị cha
+                                                            <i className="fa fa-copy" style={{ fontSize: "16px" }}></i>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.copy_kpi_unit')}
                                                         </a>
                                                         <ModalCopyKPIUnit
                                                             kpiId={parentKpi && parentKpi._id}
@@ -622,7 +654,7 @@ class OrganizationalUnitKpiCreate extends Component {
                                                     </span>
                                                     : <span>
                                                         <a className="btn btn-app" onClick={() => this.swalEdittingPermission()}>
-                                                            <i className="fa fa-copy" style={{ fontSize: "16px" }}></i>Sao chép KPI đơn vị cha
+                                                            <i className="fa fa-copy" style={{ fontSize: "16px" }}></i>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.copy_kpi_unit')}
                                                         </a>
                                                     </span>
                                                 }
@@ -655,7 +687,7 @@ const actionCreators = {
     getCurrentKPIUnit: createUnitKpiActions.getCurrentKPIUnit,
     deleteKPIUnit: createUnitKpiActions.deleteKPIUnit,
     deleteTargetKPIUnit: createUnitKpiActions.deleteTargetKPIUnit,
-    editStatusKPIUnit: createUnitKpiActions.editStatusKPIUnit,
+    editKPIUnit: createUnitKpiActions.editKPIUnit,
     getKPIParent: createUnitKpiActions.getKPIParent,
     getChildrenOfOrganizationalUnitsAsTree: DashboardEvaluationEmployeeKpiSetAction.getChildrenOfOrganizationalUnitsAsTree
 };

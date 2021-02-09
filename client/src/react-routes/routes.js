@@ -49,7 +49,6 @@ import FieldManager from "../modules/human-resource/field/components";
 import TimesheetsManager from "../modules/human-resource/timesheets/components";
 import { AnnualLeave } from "../modules/human-resource/annual-leave/components/combinedContent";
 import { ManageLeaveApplication } from "../modules/human-resource/annual-leave/components/combinedContent";
-import { EmployeeCapacity } from "../modules/human-resource/employee-capacity/components";
 import { DashboardPersonal } from "../modules/dashboard-personal/components";
 import { DashboardUnit } from "../modules/dashboard-unit/components";
 
@@ -157,8 +156,7 @@ import ManufacturingLot from "../modules/production/manufacturing/manufacturing-
 import AnswerAuthQuestionPage from '../modules/auth/components/answerAuthQuestion';
 
 import { Project } from '../modules/project/component/index';
-import UserGuide from '../modules/user-guide/components';
-import DetailUserGuide from '../modules/user-guide/components/detailUserGuide';
+import { UserGuide } from '../modules/user-guide/components';
 import AllTimeSheetLog from '../modules/task/task-dashboard/statistic/allTimeSheetLog';
 
 class Routes extends Component {
@@ -173,7 +171,7 @@ class Routes extends Component {
             department,
             employeesManager,
         } = this.props;
-        const { password2AlreadyExists,autoRedirectAfterQuestionAnswer } = auth;
+        const { password2AlreadyExists, autoRedirectAfterQuestionAnswer } = auth;
         return (
             <React.Fragment>
                 <Switch>
@@ -724,28 +722,6 @@ class Routes extends Component {
                         pageName={"dashboard_employee"}
                         layout={Layout}
                         component={EmployeeDashBoard}
-                    />
-                    <PrivateRoute
-                        isLoading={
-                            this.props.dashboardEvaluationEmployeeKpiSet
-                                .isLoading
-                        }
-                        key={"employee_capacity"}
-                        arrPage={[
-                            { link: "/", name: "home", icon: "fa fa-home" },
-                            {
-                                link: "/hr-employee-capacity",
-                                name: "employee_capacity",
-                                icon: "fa fa-dashboard",
-                            },
-                        ]}
-                        auth={auth}
-                        exact={true}
-                        link={"/hr-employee-capacity"}
-                        path={"/hr-employee-capacity"}
-                        pageName={"employee_capacity"}
-                        layout={Layout}
-                        component={EmployeeCapacity}
                     />
                     <PrivateRoute
                         isLoading={this.props.discipline.isLoading}
@@ -2444,26 +2420,6 @@ class Routes extends Component {
                         pageName={"user_guide"}
                         layout={Layout}
                         component={UserGuide}
-                    />
-
-                    <PrivateRoute // Trang chi tiết hướng dẫn sử dụng (không có trên menu)
-                        isLoading={false}
-                        key={"user-guide-detail"}
-                        arrPage={[
-                            { link: "/", name: "home", icon: "fa fa-home" },
-                            {
-                                link: "/user-guide",
-                                name: "user_guide",
-                                icon: "",
-                            },
-                        ]}
-                        auth={auth}
-                        exact={true}
-                        link={"/user-guide-detail"}
-                        path={"/user-guide-detail"}
-                        pageName={"user_guide_detail"}
-                        layout={Layout}
-                        component={DetailUserGuide}
                     />
 
                     <PrivateRoute

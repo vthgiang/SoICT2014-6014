@@ -5,6 +5,7 @@ import { DatePicker, DialogModal } from '../../../../../common-components';
 import { getTimeFromFormatDate } from '../../../../../helpers/stringMethod';
 
 const FamilyMemberModal = ({
+    id,
     _save,
     translate
 }) => {
@@ -87,9 +88,6 @@ const FamilyMemberModal = ({
         setNote(value)
     }
 
-    const _openModalAddFamilyMember = () => {
-        window.$(`#form-add-family-members`).slideToggle(); // hiển thị form thành viên hộ gia đình
-    }
 
     const _addFamilyMember = () => {
         const member = {
@@ -124,9 +122,13 @@ const FamilyMemberModal = ({
     }
 
     return (
-        <React.Fragment>
-            <button className="btn btn-success pull-right" style={{ cursor: 'pointer', marginBottom: '10px' }} onClick={_openModalAddFamilyMember}>{translate('general.add')}</button>
-            <div style={{ marginTop: 40, display: 'none' }} id="form-add-family-members">
+        <DialogModal
+            func={_addFamilyMember} isLoading={false}
+            modalID={`form-add-family-members-${id}`}
+            title={"Thêm mới thành viên hộ gia đình"}
+            size={75}
+        >
+            <div id="form-add-family-members">
                 <form>
                     <div className="row">
                         <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
@@ -201,7 +203,7 @@ const FamilyMemberModal = ({
                             <div className="form-group">
                                 <label>{translate('human_resource.profile.house_hold.members.birth')}</label>
                                 <DatePicker
-                                    id="edit-member-birthday"
+                                    id={`create-member-birthday-${id}`}
                                     value={birth}
                                     onChange={_handleCurBirth}
                                 />
@@ -239,13 +241,10 @@ const FamilyMemberModal = ({
                                 <textarea className="form-control" onChange={_handleCurNote} value={note} />
                             </div>
                         </div>
-                        <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4" style={{ marginTop: 30 }}>
-                            <button type="button" className="btn btn-primary pull-right" onClick={_addFamilyMember}>{translate('general.save')}</button>
-                        </div>
                     </div>
                 </form>
             </div>
-        </React.Fragment>
+        </DialogModal>
     )
 }
 

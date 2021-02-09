@@ -219,9 +219,9 @@ class SuperHome extends Component {
                     </div>
                 </div>
 
-                <div className="row">
-                    <div className="col-xs-6">
-                        <div className="box box-primary">
+                <div className="row row-equal-height" style={{ marginBottom: '20px' }}>
+                    <div className="col-xs-12 col-sm-6 col-md-6">
+                        <div className="box box-primary" style={{ height: "100%" }}>
                             <div className="box-header with-border">
                                 <div className="box-title">{translate('task.task_management.dashboard_overdue')}</div>
                             </div>
@@ -254,8 +254,8 @@ class SuperHome extends Component {
                             />
                         </div>
                     </div>
-                    <div className="col-xs-6">
-                        <div className="box box-primary">
+                    <div className="col-xs-12 col-sm-6 col-md-6">
+                        <div className="box box-primary" style={{ height: "100%" }}>
                             <div className="box-header with-border">
                                 <div className="box-title">{translate('task.task_management.dashboard_about_to_overdue')}</div>
                             </div>

@@ -9,13 +9,13 @@ import { DepartmentActions } from '../../../../super-admin/organizational-unit/r
 import DocumentInformation from '../../user/documents/documentInformation';
 import { DocumentActions } from '../../../redux/actions';
 import { UserActions } from '../../../../super-admin/user/redux/actions';
-import { getStorage } from "../../../../../config";
+import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
 import CreateForm from './createForm';
 import EditForm from './editForm';
 import ListView from './listView';
 import ListDownload from './listDownload';
 import FilePreview from './FilePreview';
-import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
+
 
 const getIndex = (array, id) => {
     let index = -1;

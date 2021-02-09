@@ -216,11 +216,40 @@ const TaskSchema = new Schema(
                 ref: "User",
             },
         ],
+        requestToCloseTask: {
+            requestedBy: {
+                type: Schema.Types.ObjectId,
+                ref: "User",
+            },
+            createdAt: {
+                type: Date,
+                default: Date.now,
+            },
+            description: {
+                type: String,
+            },
+            taskStatus: { // Các trạng thái như trạng thái công việc, trừ inprocess
+                type: String,
+            },
+            requestStatus: { // 0: chưa yêu cầu, 1: đang yêu cầu, 2: từ chối, 3: đồng ý
+                type: Number,
+                default: 0,
+            }
+        },
         evaluations: [
             {
                 // Một công việc có thể trải dài nhiều tháng, mỗi tháng phải đánh giá một lần
-                date: {
+                date: { // về sau không dùng. thay bởi các thuộc tính (evaluatingMonth, startDate, endDate) bên dưới
                     // Lưu ngày đánh giá. Khi muốn match công việc trong 1 KPI thì chỉ lấy tháng
+                    type: Date,
+                },
+                evaluatingMonth: { // tháng đánh giá
+                    type: Date,
+                },
+                startDate: { // đánh giá từ ngày
+                    type: Date,
+                },
+                endDate: { // đánh giá đến ngày
                     type: Date,
                 },
                 progress: {

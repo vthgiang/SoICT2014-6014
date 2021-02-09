@@ -30,11 +30,6 @@ class ModalCreateEmployeeKpi extends Component {
             submitted: false
         };
     }
-
-    componentDidMount() {
-        // get all parent target of unit
-        this.props.getCurrentKPIUnit(localStorage.getItem("currentRole"));
-    }
     
     /**
      * Khởi tạo 1 target mới trong tập kpi
@@ -246,7 +241,6 @@ function mapState(state) {
 }
 
 const actionCreators = {
-    getCurrentKPIUnit: createUnitKpiActions.getCurrentKPIUnit,
     createEmployeeKpi: createKpiSetActions.createEmployeeKpi
 };
 

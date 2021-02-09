@@ -26,13 +26,19 @@ class SelectMulti extends Component {
     }
 
     componentDidMount() {
-        const { id, options, onChange, disabled = false, slimScroll=true, height=200 } = this.props;
+        const { translate } = this.props;
+        let { id, options, onChange, disabled = false, slimScroll = true, height = 200 } = this.props;
+        options = {
+            ...options,
+            includeSelectAllOption: true,
+            selectAllText: translate('general.select_all'),
+            maxHeight: 200,
+        }
 
         window.$("#" + id).multiselect(options);
-       
         window.$("#" + id).on("change", () => {
             let value = [].filter.call(this.refs.selectmulti.options, o => o.selected).map(o => o.value);
-           
+
             this.setState(state => {
                 return {
                     ...state,

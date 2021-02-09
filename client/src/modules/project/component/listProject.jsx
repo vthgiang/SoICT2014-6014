@@ -6,8 +6,6 @@ import { DataTableSetting, DeleteNotification, PaginateBar } from "../../../comm
 
 import ProjectCreateForm from "./createProject";
 import ProjectEditForm from "./editProject";
-// import { ExampleDetailInfo } from "./exampleDetailInfo";
-// import { ExampleImportForm } from "./exampleImortForm";
 
 import { ProjectActions } from "../redux/actions";
 import { UserActions } from '../../super-admin/user/redux/actions';
@@ -121,17 +119,12 @@ function ListProject(props) {
                 code={currentRow && currentRow.code}
                 parent={currentRow && currentRow.parent}
             />
-            {/* <ExampleDetailInfo
-                exampleId={state.exampleId}
-            /> */}
+
             <ProjectCreateForm
                 page={page}
                 limit={limit}
             />
-            {/* <ExampleImportForm
-                page={page}
-                limit={limit}
-            /> */}
+
 
             <div className="box-body qlcv">
                 <div className="form-inline">

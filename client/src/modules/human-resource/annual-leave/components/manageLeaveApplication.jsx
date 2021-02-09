@@ -27,7 +27,7 @@ class ManageLeaveApplication extends Component {
     componentDidMount() {
         this.props.getDepartmentsThatUserIsManager();
         this.props.getDepartment();
-        this.props.searchAnnualLeaves(this.state);
+        // this.props.searchAnnualLeaves(this.state);
     }
 
     /**

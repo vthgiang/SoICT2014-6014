@@ -7,7 +7,6 @@ export const createUnitKpiServices = {
     getAllOrganizationalUnitKpiSetByTime,
     getAllOrganizationalUnitKpiSetByTimeOfChildUnit,
     addKPIUnit,
-    editStatusKPIUnit,
     editKPIUnit,
     deleteKPIUnit,
     addTargetKPIUnit,
@@ -96,26 +95,17 @@ function addKPIUnit(newKPI) {
 
 
 // Chỉnh sửa KPI đơn vị
-function editKPIUnit(kpiId, newKPI) {
-    var userId = getStorage("userId");
-    newKPI = { ...newKPI, creator: userId };
-    return sendRequest({
-        url: `${process.env.REACT_APP_SERVER}/kpi/organizational-unit/creation/organizational-unit-kpi-sets/${kpiId}`,
-        method: 'PATCH',
-        data: newKPI
-    }, true, true, 'kpi.organizational_unit.create_organizational_unit_kpi_set');
-}
-
-// Chỉnh sửa trạng thái của KPI đơn vị
-function editStatusKPIUnit(kpiId, status) {
+function editKPIUnit(kpiId, data, type) {
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/kpi/organizational-unit/creation/organizational-unit-kpi-sets/${kpiId}`,
         method: 'PATCH',
         params: {
-            status: status,
-        }
+            type: type
+        },
+        data: data
     }, true, true, 'kpi.organizational_unit.create_organizational_unit_kpi_set');
 }
+
 
 // Xóa KPI đơn vị
 function deleteKPIUnit(kpiId) {

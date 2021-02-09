@@ -411,15 +411,6 @@ class EmployeeCreatePage extends Component {
         });
     }
 
-    _fm_openEditFamilyMemberModal = (index) => {
-        this.setState({
-            editMember: {
-                index,
-                ...this.state.houseHold.familyMembers[index]
-            }
-        });
-        window.$('#form-edit-family-members').slideToggle();
-    }
 
     _fm_editMember = (index, data) => {
         let familyMembers = this.state.houseHold.familyMembers;
@@ -596,7 +587,6 @@ class EmployeeCreatePage extends Component {
                             id="family_member"
                             tabEditMember="modal-edit-member-c"
                             editMember={editMember}
-                            _fm_openEditFamilyMemberModal={this._fm_openEditFamilyMemberModal}
                             _fm_editMember={this._fm_editMember}
                             _fm_deleteMember={this._fm_deleteMember}
                             houseHold={this.state.houseHold}

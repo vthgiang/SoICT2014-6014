@@ -98,8 +98,6 @@ class NotificationReiceiverdInfo extends Component {
                 content = content.replace(img[1], base64fileConvert[i]);
             }
         }
-        console.log('content', content);
-        console.log('parse(content)', parse(content));
 
         return (
             <DialogModal

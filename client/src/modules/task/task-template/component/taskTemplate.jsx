@@ -120,8 +120,6 @@ class TaskTemplate extends Component {
                                     options={{
                                         nonSelectedText: translate('task_template.select_all_units'),
                                         allSelectedText: translate(`task.task_management.select_all_department`),
-                                        includeSelectAllOption: true,
-                                        maxHeight: 200
                                     }}>
                                 </SelectMulti>
                             }
@@ -443,9 +441,9 @@ class TaskTemplate extends Component {
                     accountableEmployees: accountableEmployees.join(', '),
                     consultedEmployees: consultedEmployees.join(', '),
                     informedEmployees: informedEmployees.join(', '),
-                    organizationalUnits: x.organizationalUnit.name,
+                    organizationalUnits: x.organizationalUnit && x.organizationalUnit.name,
                     collaboratedWithOrganizationalUnits: collaboratedWithOrganizationalUnits[0],
-                    creator: x.creator.email,
+                    creator: x.creator && x.creator.email,
                     annunciator: annunciator,
                     priority: this.getPriority(x.priority),
                     formula: x.formula,

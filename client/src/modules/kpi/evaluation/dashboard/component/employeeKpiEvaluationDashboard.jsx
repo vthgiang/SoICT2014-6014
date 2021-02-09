@@ -43,7 +43,7 @@ class EmployeeKpiEvaluationDashboard extends Component {
         } else {
             endMonth = month;
         }
-        
+
         this.INFO_SEARCH = {
             userId: null,
             startMonth: [startYear, startMonth].join('-'),
@@ -110,11 +110,11 @@ class EmployeeKpiEvaluationDashboard extends Component {
                 this.props.getAllEmployeeOfUnitByIds([dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit.id]);
                 this.props.getAllEmployeeKpiSetOfUnitByIds([dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit.id]);
             }
-            
+
             return false;
         }
 
-        
+
         if (nextProps.user.userdepartments !== this.props.user.userdepartments) {
             let userdepartments;
             userdepartments = nextProps.user.userdepartments;
@@ -243,7 +243,7 @@ class EmployeeKpiEvaluationDashboard extends Component {
     }
 
     handleSelectMonthStart = (value) => {
-        let month = value.slice(3,7) + '-' + value.slice(0,2);
+        let month = value.slice(3, 7) + '-' + value.slice(0, 2);
         let startMonthTitle = value.slice(0, 2) + '-' + value.slice(3, 7);
 
         this.INFO_SEARCH.startMonth = month;
@@ -251,7 +251,7 @@ class EmployeeKpiEvaluationDashboard extends Component {
     }
 
     handleSelectMonthEnd = (value) => {
-        let month = value.slice(3,7) + '-' + value.slice(0,2);
+        let month = value.slice(3, 7) + '-' + value.slice(0, 2);
         let endMonthTitle = value.slice(0, 2) + '-' + value.slice(3, 7);
 
         this.INFO_SEARCH.endMonth = month;
@@ -287,7 +287,7 @@ class EmployeeKpiEvaluationDashboard extends Component {
 
 
     handleStatisticsOfEmployeeKpiSetChartDataAvailable = (data) => {
-        this.setState( state => {
+        this.setState(state => {
             return {
                 ...state,
                 statisticsOfEmployeeKpiSetChartData: data
@@ -295,8 +295,8 @@ class EmployeeKpiEvaluationDashboard extends Component {
         })
     }
 
-    handleResultsOfAllEmployeeKpiSetChartDataAvailable =(data)=>{
-        this.setState( state => {
+    handleResultsOfAllEmployeeKpiSetChartDataAvailable = (data) => {
+        this.setState(state => {
             return {
                 ...state,
                 resultsOfAllEmployeeKpiSetChartData: data
@@ -315,7 +315,7 @@ class EmployeeKpiEvaluationDashboard extends Component {
 
         let { startMonthTitle, endMonthTitle } = this.INFO_SEARCH;
         let employeeKpiSets, lastMonthEmployeeKpiSets, currentMonthEmployeeKpiSets, settingUpKpi, awaitingApprovalKpi, activatedKpi, totalKpi, numberOfEmployee;
-        let queue = [], childrenOrganizationalUnit = [],userName;
+        let queue = [], childrenOrganizationalUnit = [], userName;
         let kpimember;
         let listkpi, kpiApproved;
         let currentUnit, currentUnitLoading;
@@ -328,12 +328,11 @@ class EmployeeKpiEvaluationDashboard extends Component {
             currentUnit = dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit;
             currentUnitLoading = dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnitLoading
         }
-        
+
         if (unitMembers && infosearch) {
-            for(let i=0;i<unitMembers[0].value.length;i++)
-            {
+            for (let i = 0; i < unitMembers[0].value.length; i++) {
                 let arr = unitMembers[0].value
-                if(arr[i].value === infosearch.userId){
+                if (arr[i].value === infosearch.userId) {
                     userName = arr[i].text
                 }
             }
@@ -411,7 +410,7 @@ class EmployeeKpiEvaluationDashboard extends Component {
 
         return (
             <React.Fragment>
-                { currentUnit 
+                { currentUnit
                     ? <React.Fragment>
                         <div className="qlcv" style={{ textAlign: "right", marginBottom: 15 }}>
                             <div className="form-inline">
@@ -423,8 +422,6 @@ class EmployeeKpiEvaluationDashboard extends Component {
                                             options={{
                                                 nonSelectedText: translate('kpi.evaluation.dashboard.select_units'),
                                                 allSelectedText: translate('kpi.evaluation.dashboard.all_unit'),
-                                                includeSelectAllOption: true,
-                                                maxHeight: 200
                                             }}
                                             onChange={this.handleSelectOrganizationalUnit}
                                             value={ids}
@@ -594,7 +591,7 @@ class EmployeeKpiEvaluationDashboard extends Component {
                                                     unitId={currentUnit}
                                                     userName={userName}
                                                     organizationalUnitIds={ids}
-                                                    onDataAvailable = {this.handleStatisticsOfEmployeeKpiSetChartDataAvailable}
+                                                    onDataAvailable={this.handleStatisticsOfEmployeeKpiSetChartDataAvailable}
                                                 />
                                             }
                                         </div>
@@ -603,14 +600,14 @@ class EmployeeKpiEvaluationDashboard extends Component {
                             </div>
                         </div>
 
-                        
+
                         {/* Kết quả Kpi tất cả nhân viên */}
                         <div className="row">
                             <div className="col-md-12">
                                 <div className="box">
                                     <div className="box-header with-border">
                                         <h3 className="box-title">{translate('kpi.evaluation.dashboard.result_kpi_titile')}</h3>
-                                        {resultsOfAllEmployeeKpiSetChartData&&<ExportExcel  type="link" id="export-all-employee-kpi-evaluate-result-dashboard" exportData={resultsOfAllEmployeeKpiSetChartData} style={{ marginTop:5 }} />}
+                                        {resultsOfAllEmployeeKpiSetChartData && <ExportExcel type="link" id="export-all-employee-kpi-evaluate-result-dashboard" exportData={resultsOfAllEmployeeKpiSetChartData} style={{ marginTop: 5 }} />}
                                     </div>
                                     {/* /.box-header */}
 
@@ -629,7 +626,7 @@ class EmployeeKpiEvaluationDashboard extends Component {
                         <div className="box-body">
                             <h4>Bạn chưa có đơn vị</h4>
                         </div>
-                    </div>   
+                    </div>
                 }
             </React.Fragment>
         );

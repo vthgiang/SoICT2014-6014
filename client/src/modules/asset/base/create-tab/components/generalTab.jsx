@@ -171,7 +171,7 @@ class GeneralTab extends Component {
         await this.setState(state => {
             return {
                 ...state,
-                assetType: value,
+                assetType: JSON.stringify(value),
                 isObj: false,
                 errorOnAssetType: message,
             }
@@ -455,10 +455,9 @@ class GeneralTab extends Component {
     };
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.id !== prevState.id 
-            || nextProps.assignedToUser !== prevState.assignedToUser 
-            || nextProps.assignedToOrganizationalUnit !== prevState.assignedToOrganizationalUnit
-            || nextProps.assetTypes !== prevState.assetTypes) {
+        if (nextProps.id !== prevState.id
+            || nextProps.assignedToUser !== prevState.assignedToUser
+            || nextProps.assignedToOrganizationalUnit !== prevState.assignedToOrganizationalUnit) {
             return {
                 ...prevState,
                 id: nextProps.id,
@@ -468,7 +467,7 @@ class GeneralTab extends Component {
                 code: nextProps.code,
                 assetName: nextProps.assetName,
                 serial: nextProps.serial,
-                assetTypes: nextProps.assetTypes,
+                assetType: nextProps.assetTypeEdit,
                 group: nextProps.group,
                 location: nextProps.location,
                 purchaseDate: nextProps.purchaseDate,
@@ -606,7 +605,7 @@ class GeneralTab extends Component {
                                     <label>{translate('asset.general_information.asset_type')}<span className="text-red">*</span></label>
                                     <TreeSelect
                                         data={typeArr}
-                                        value={assetTypes}
+                                        value={this.state.assetType}
                                         handleChange={this.handleAssetTypeChange}
                                         mode="hierarchical"
                                     />

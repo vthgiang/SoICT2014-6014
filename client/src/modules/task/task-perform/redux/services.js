@@ -53,6 +53,7 @@ export const performTaskService = {
     editInformationTask,
     getById,
     confirmTask,
+    requestAndApprovalCloseTask,
     editEmployeeCollaboratedWithOrganizationalUnits,
 
     //Comment in process
@@ -235,6 +236,18 @@ function confirmTask(taskId) {
         url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}`,
         method: 'POST',
         params: { type: 'confirm_task' }
+    }, true, true, 'task.task_management');
+}
+
+/** Yêu cầu kết thúc công việc */
+function requestAndApprovalCloseTask(taskId, data) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}`,
+        method: 'POST',
+        params: {
+            type: 'request_approval_close_task'
+        },
+        data: data
     }, true, true, 'task.task_management');
 }
 

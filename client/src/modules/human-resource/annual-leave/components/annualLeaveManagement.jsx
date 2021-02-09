@@ -417,6 +417,7 @@ class AnnualLeaveManagement extends Component {
                     currentRow &&
                     <AnnualLeaveEditForm
                         _id={currentRow._id}
+                        employee={currentRow.employee}
                         employeeNumber={currentRow.employee ? `${currentRow.employee.employeeNumber} - ${currentRow.employee.fullName}` : ''}
                         organizationalUnit={currentRow.organizationalUnit}
                         endDate={this.formatDate(currentRow.endDate)}

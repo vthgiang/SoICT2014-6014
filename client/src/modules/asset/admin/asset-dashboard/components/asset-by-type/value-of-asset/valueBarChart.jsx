@@ -20,9 +20,9 @@ class ValueBarChart extends Component {
 
     // Thiết lập dữ liệu biểu đồ
     setDataBarChart = () => {
-        const { listAssets, assetType, setValueOfAsset, translate } = this.props;
+        const { listAssets, assetType, setValueOfAsset, translate, depreciationOfAsset, crrValue } = this.props;
 
-        let typeName = [], shortName = [], countAssetValue = [], idAssetType = [];
+        let typeName = [], shortName = [], countAssetValue = [], idAssetType = [], currentValue = [];
         for (let i in assetType) {
             countAssetValue[i] = 0;
             idAssetType.push(assetType[i]._id)
@@ -36,6 +36,16 @@ class ValueBarChart extends Component {
                     countAssetValue[idx] += asset.cost / 1000000;
                 }
             })
+
+            if (crrValue) {
+                if (depreciationOfAsset && depreciationOfAsset.length > 0) {
+                    currentValue = countAssetValue.map((o, i) => o - (depreciationOfAsset[i] / 1000000));
+                }
+                currentValue.unshift(translate('asset.dashboard.sum_value'));
+            } else {
+                countAssetValue.unshift(translate('asset.dashboard.sum_value'))
+            }
+
             for (let i in assetType) {
 
                 let longName = assetType[i].typeName.slice(0, 20) + "...";
@@ -45,9 +55,9 @@ class ValueBarChart extends Component {
 
             }
         }
-        countAssetValue.unshift(translate('asset.dashboard.sum_value'))
+
         let data = {
-            count: countAssetValue,
+            count: crrValue ? currentValue : countAssetValue,
             type: typeName,
             shortName: shortName
         }

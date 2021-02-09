@@ -181,7 +181,6 @@ class EmployeeCreateForm extends Component {
      * @param {*} addData : Công việc tương đương muốn thêm
      */
     handleChangeCareer = (data, addData) => {
-        console.log('handleChangeCareer = (data, addData)', data, addData);
         this.setState({
             career: data
         })
@@ -443,18 +442,8 @@ class EmployeeCreateForm extends Component {
         });
     }
 
-    _fm_openEditFamilyMemberModal = (index) => {
-        console.log("kkkk")
-        this.setState({
-            editMember: {
-                index,
-                ...this.state.houseHold.familyMembers[index]
-            }
-        });
-        window.$('#form-edit-family-members').slideToggle();
-    }
-
     _fm_editMember = (index, data) => {
+        console.log('index, data', index, data)
         let familyMembers = this.state.houseHold.familyMembers;
         familyMembers[index] = data;
         this.setState({
@@ -632,9 +621,8 @@ class EmployeeCreateForm extends Component {
                             {/* Tab thành viên hộ gia đình */}
                             <FamilyMemberTab
                                 id="family_member"
-                                tabEditMember="modal-edit-member-c"
+                                tabEditMember="modal-create-member-c"
                                 editMember={editMember}
-                                _fm_openEditFamilyMemberModal={this._fm_openEditFamilyMemberModal}
                                 _fm_editMember={this._fm_editMember}
                                 _fm_deleteMember={this._fm_deleteMember}
                                 houseHold={this.state.houseHold}
