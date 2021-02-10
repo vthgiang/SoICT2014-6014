@@ -1827,7 +1827,7 @@ export default {
                     employee_number_required: "Staff code required",
                     email_in_company_required: "Email in company required",
                     employee_number_have_exist: "Employee number have exist",
-                    staff_code_not_find:'Employee number does have exist',
+                    staff_code_not_find: 'Employee number does have exist',
                     email_in_company_have_exist: "Email in company have exist",
                     employee_timesheet_id_required:
                         "Employee timesheet id required",
@@ -3642,6 +3642,10 @@ export default {
                     "Set task importance level successfully",
                 set_task_importance_level_fail:
                     "Set task importance level fail",
+                set_point_kpi_success:
+                    "Set point all kpi successfully",
+                set_point_kpi_fail:
+                    "Set point all kpi fail",
             },
             organizational_unit: {
                 // Module chính

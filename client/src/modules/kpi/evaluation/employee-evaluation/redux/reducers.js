@@ -155,7 +155,7 @@ export function kpimembers(state = {}, action) {
         loading: false,
         tasks: action.payload,
       };
-      case kpiMemberConstants.GET_TASK_BY_LIST_KPI_FAILURE:
+    case kpiMemberConstants.GET_TASK_BY_LIST_KPI_FAILURE:
       return {
         error: action.payload
       };
@@ -387,6 +387,25 @@ export function kpimembers(state = {}, action) {
         error: action.payload,
         isLoading: false
       }
+    case kpiMemberConstants.SET_POINT_ALL_KPI_REQUEST:
+      return {
+        ...state,
+        editing: true
+      };
+    case kpiMemberConstants.SET_POINT_ALL_KPI_SUCCESS:
+      return {
+        ...state,
+        employeeKpiSet: action.payload,
+        currentKPI: action.payload,
+        kpimembers: state.kpimembers.map(kpi =>
+          (kpi._id === action.payload._id) ? action.payload : kpi),
+
+      }
+    case kpiMemberConstants.SET_POINT_ALL_KPI_FAILURE:
+      return {
+        error: action.payload
+      };
+
     default:
       return state
   }

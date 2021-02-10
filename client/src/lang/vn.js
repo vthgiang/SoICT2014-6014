@@ -2008,7 +2008,7 @@ export default {
                     email_in_company_required:
                         "Email công ty không được để trống",
                     employee_number_have_exist: "Mã nhân viên đã tồn tại",
-                    staff_code_not_find:"Mã nhân viên không tồn tại",
+                    staff_code_not_find: "Mã nhân viên không tồn tại",
                     email_in_company_have_exist: "Email công ty đã tồn tại",
                     employee_timesheet_id_required:
                         "Mã số chấm công không được để trống",
@@ -3943,6 +3943,10 @@ export default {
                     "Thêm độ quan trọng cho công việc thành công",
                 set_task_importance_level_fail:
                     "Thêm độ quan trọng cho công việc lỗi",
+                set_point_kpi_success:
+                    "Tính điểm tất cả kpi thành công",
+                set_point_kpi_fail:
+                    "Tính điểm tất cả kpi lỗi",
             },
             organizational_unit: {
                 // Module chính
