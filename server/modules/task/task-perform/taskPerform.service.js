@@ -2134,21 +2134,6 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
         parent = null;
     }
 
-    // Chuẩn hóa ngày bắt đầu và ngày kết thúc
-    let splitStartDate = startDate.split("-");
-    let startOfTask = new Date(
-        splitStartDate[2],
-        splitStartDate[1] - 1,
-        splitStartDate[0]
-    );
-
-    let splitEndDate = endDate.split("-");
-    let endOfTask = new Date(
-        splitEndDate[2],
-        splitEndDate[1] - 1,
-        splitEndDate[0]
-    );
-
     // chuẩn hóa dữ liệu info
     for (let i in info) {
         if (info[i].value) {
@@ -2192,8 +2177,6 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
         }
     }
 
-
-
     // cập nhật thông tin cơ bản
     await Task(connect(DB_CONNECTION, portal)).updateOne(
         { _id: taskId },
@@ -2208,8 +2191,8 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
                 parent: parent,
                 taskProject: taskProject,
 
-                startDate: startOfTask,
-                endDate: endOfTask,
+                startDate: new Date(startDate),
+                endDate: new Date(endDate),
 
                 collaboratedWithOrganizationalUnits: newCollab,
 
@@ -3039,12 +3022,9 @@ exports.evaluateTaskByConsultedEmployees = async (portal, data, taskId) => {
     let evaluateDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
     let dateFormat = evaluateDate;
 
-    // TODO: về sau dùng time picker thì k cần split, dùng new date luôn
-    splitter = startDate.split("-");
-    let startEval = new Date(splitter[2], splitter[1] - 1, splitter[0]);
+    let startEval = new Date(startDate);
 
-    splitter = endDate.split("-");
-    let endEval = new Date(splitter[2], splitter[1] - 1, splitter[0]);
+    let endEval = new Date(endDate);
 
     let resultItem = {
         employee: user,
@@ -3279,16 +3259,15 @@ exports.evaluateTaskByResponsibleEmployees = async (portal, data, taskId) => {
         info,
     } = data;
 
+    console.log('end start', endDate, startDate, typeof endDate);
+
     let splitter = evaluatingMonth.split("-");
     let evaluateDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
     let dateFormat = evaluateDate;
 
-    // TODO: về sau dùng time picker thì k cần split, dùng new date luôn
-    splitter = startDate.split("-");
-    let startEval = new Date(splitter[2], splitter[1] - 1, splitter[0]);
+    let startEval = new Date(startDate);
 
-    splitter = endDate.split("-");
-    let endEval = new Date(splitter[2], splitter[1] - 1, splitter[0]);
+    let endEval = new Date(endDate);
 
     let resultItem = {
         employee: user,
@@ -3404,12 +3383,7 @@ exports.evaluateTaskByResponsibleEmployees = async (portal, data, taskId) => {
     );
 
     // update Info task
-    let splitterDate = endDate.split("-");
-    let dateISO = new Date(
-        splitterDate[2],
-        splitterDate[1] - 1,
-        splitterDate[0]
-    );
+    let dateISO = new Date(endDate)
     let monthOfParams = dateISO.getMonth();
     let yearOfParams = dateISO.getFullYear();
     let now = new Date();
@@ -3647,13 +3621,10 @@ exports.evaluateTaskByAccountableEmployees = async (portal, data, taskId) => {
     let splitter = evaluatingMonth.split("-");
     let evaluateDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
     let dateFormat = evaluateDate;
+  
+    let startEval = new Date(startDate);
 
-    // TODO: về sau dùng time picker thì k cần split, dùng new date luôn
-    splitter = startDate.split("-");
-    let startEval = new Date(splitter[2], splitter[1] - 1, splitter[0]);
-
-    splitter = endDate.split("-");
-    let endEval = new Date(splitter[2], splitter[1] - 1, splitter[0]);
+    let endEval = new Date(endDate);
 
     let evaluateId = await checkEvaluations(portal, evaluatingMonth, taskId, evaluatingMonth);
 
@@ -3899,12 +3870,7 @@ exports.evaluateTaskByAccountableEmployees = async (portal, data, taskId) => {
     );
 
     // update Info task
-    let splitterDate = endDate.split("-");
-    let dateISO = new Date(
-        splitterDate[2],
-        splitterDate[1] - 1,
-        splitterDate[0]
-    );
+    let dateISO = new Date(endDate)
     let monthOfParams = dateISO.getMonth();
     let yearOfParams = dateISO.getFullYear();
     let now = new Date();

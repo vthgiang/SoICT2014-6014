@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal } from '../../../../common-components';
 import { AutomaticTaskPointCalculator } from './automaticTaskPointCalculator';
+import moment from 'moment'
 
 var mexp = require('math-expression-evaluator');
 
@@ -27,14 +28,29 @@ class ModalShowAutoPointInfo extends Component {
         return [day, month, year].join('-');
     }
 
+    convertDateTime = (date, time) => {
+        let splitter = date.split("-");
+        let strDateTime = `${splitter[2]}-${splitter[1]}-${splitter[0]} ${time}`;
+        return new Date(strDateTime);
+    }
+
+    // convert ISODate to String hh:mm AM/PM
+    formatTime(date) {
+        var d = new Date(date);
+        let time = moment(d).format("DD-MM-YYYY hh:mm A");
+        return time;
+    }
+
     render() {
         const { translate } = this.props;
-        const { task, progress, date, info, autoPoint } = this.props; // props from parent component
+        const { task, progress, date, time, info, autoPoint } = this.props; // props from parent component
 
+        console.log('props', this.props);
         let progressTask = (progress === undefined || progress === "") ? undefined : progress;
         let taskInformations = task.taskInformations;
-        let splitter = date.split('-');
-        let evaluationsDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
+        // let splitter = date.split('-');
+        // let evaluationsDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
+        let evaluationsDate = this.convertDateTime(date, time);
         let startDate = new Date(task.startDate);
         let endDate = new Date(task.endDate);
         let totalDays = endDate.getTime() - startDate.getTime() + 86400000;
@@ -153,6 +169,7 @@ class ModalShowAutoPointInfo extends Component {
             task: task,
             progress: progressTask,
             date: date,
+            time: time,
             info: info,
         };
 

@@ -47,12 +47,19 @@ const calculateExpression = (expression) => {
     }
 }
 
-function calcAutoPoint(data) {
-    let { task, date, progress, info } = data;
+const convertDateTime = (date, time) => {
+    let splitter = date.split("-");
+    let strDateTime = `${splitter[2]}-${splitter[1]}-${splitter[0]} ${time}`;
+    return new Date(strDateTime);
+}
 
-    let splitter = date.split('-');
+function calcAutoPoint(data) {
+    let { task, date, time, progress, info } = data;
+
+    // let splitter = date.split('-');
     let progressTask = (progress !== null && progress !== undefined) ? progress : undefined;
-    let evaluationsDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
+    // let evaluationsDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
+    let evaluationsDate = convertDateTime(date, time);
     let startDate = new Date(task.startDate);
     let endDate = new Date(task.endDate);
 

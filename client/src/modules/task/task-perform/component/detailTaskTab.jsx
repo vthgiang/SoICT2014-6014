@@ -674,6 +674,17 @@ class DetailTaskTab extends Component {
         return sortedEvaluations;
     }
 
+    // convert ISODate to String hh:mm AM/PM
+    formatTime(date) {
+        var d = new Date(date);
+        let time = moment(d).format("DD-MM-YYYY hh:mm A");
+        // let suffix = " AM";
+        // if(d.getHours() >= 12 && d.getHours() <= 23) {
+        //     suffix = " PM";
+        // }
+        return time;
+    }
+
     render() {
         const { tasks, performtasks, user, translate } = this.props;
         const { showToolbar, id, isProcess } = this.props; // props form parent component ( task, id, showToolbar, onChangeTaskRole() )
@@ -1039,7 +1050,7 @@ class DetailTaskTab extends Component {
                                 <h4>{translate('task.task_management.detail_general_info')}</h4>
 
                                 <div><strong>{translate('task.task_management.detail_link')}:</strong> <a href={`/task?taskId=${task._id}`} target="_blank">{task.name}</a></div>
-                                <div><strong>{translate('task.task_management.detail_time')}:</strong> {this.formatDate(task && task.startDate)} <i className="fa fa-fw fa-caret-right"></i> {this.formatDate(task && task.endDate)}</div>
+                                <div><strong>{translate('task.task_management.detail_time')}:</strong> {this.formatTime(task && task.startDate)} <i className="fa fa-fw fa-caret-right"></i> {this.formatTime(task && task.endDate)} </div>
                                 <div><strong>{translate('task.task_management.unit_manage_task')}:</strong> {task && task.organizationalUnit ? task.organizationalUnit.name : translate('task.task_management.err_organizational_unit')}</div>
                                 <div>
                                     <strong>{translate('task.task_management.collaborated_with_organizational_units')}: </strong>
@@ -1345,7 +1356,7 @@ class DetailTaskTab extends Component {
                     />
                 }
                 {
-                    (id && showCopy === `copy-task-${id}`) &&
+                    // (id && showCopy === `copy-task-${id}`) &&
                     <TaskAddModal id={`copy-task-${id}`} task={task} />
                 }
                 {
