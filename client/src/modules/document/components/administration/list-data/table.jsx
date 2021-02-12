@@ -511,6 +511,7 @@ class Table extends Component {
             list = docs.paginate;
         }
         let exportData = list ? this.convertDataToExportData(list) : "";
+
         return (
             <div className="qlcv">
                 <CreateForm />
@@ -576,6 +577,7 @@ class Table extends Component {
                         documentRelationshipDocuments={currentRow.relationshipDocuments ? currentRow.relationshipDocuments.map(document => document.name) : []}
 
                         documentRoles={currentRow.roles}
+                        documentUserCanView={currentRow.userCanView}
 
                         documentArchivedRecordPlaceInfo={currentRow.archivedRecordPlaceInfo}
                         organizationUnit={currentRow.archivedRecordPlaceOrganizationalUnit}
