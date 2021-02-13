@@ -224,19 +224,21 @@ export function createKpiUnit (state = {}, action){
         case managerConstants.COPY_KPIUNIT_REQUEST:
           return {
             ...state,
+            adding: true,
             isLoading: false,
             currentKPI: null
           };
         case managerConstants.COPY_KPIUNIT_SUCCESS:
           return {
             ...state,
+            adding: false,
             currentKPI: action.payload,
             isLoading: false
           };
         case managerConstants.COPY_KPIUNIT_FAILURE:
           return {
             ...state,
-            adding: true,
+            adding: false,
             error: action.payload,
             isLoading: false
           };

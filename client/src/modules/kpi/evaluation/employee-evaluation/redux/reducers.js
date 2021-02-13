@@ -392,7 +392,7 @@ export function kpimembers(state = {}, action) {
         ...state,
         adding: false,
         isLoading: false,
-        kpimembers: [action.payload, ...state.kpimembers]
+        kpimembers: state.kpimembers ? [action.payload, ...state.kpimembers] : [action.payload]
       }
     case managerKPIConstants.COPY_KPIPERSONALS_FAILURE:
       return {

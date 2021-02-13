@@ -652,7 +652,8 @@ class OrganizationalUnitKpiCreate extends Component {
                                                             type={'copy-parent-kpi-to-unit'}
                                                         />
                                                     </span>
-                                                    : <span>
+                                                    : (organizationalUnit?.parent || organizationalUnit?.parent_id)
+                                                    && <span>
                                                         <a className="btn btn-app" onClick={() => this.swalEdittingPermission()}>
                                                             <i className="fa fa-copy" style={{ fontSize: "16px" }}></i>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.copy_kpi_unit')}
                                                         </a>
