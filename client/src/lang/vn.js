@@ -4136,7 +4136,7 @@ export default {
                             change_link:
                                 "Hãy nhớ thay đổi liên kết đến mục tiêu cha để được tính KPI mới!",
                         },
-                        create: "Thiết lập KPI tháng",
+                        create: "Thông tin tập KPI cá nhân tháng",
                         organizational_unit: "Đơn vị",
                         month: "Tháng",
                         list_target: "Danh sách mục tiêu",
@@ -4213,7 +4213,10 @@ export default {
                     "Cập nhật điểm đánh giá KPI đơn vị lỗi",
                 copy_kpi_unit_success: "Sao chép KPI đơn vị thành công",
                 copy_kpi_unit_failure: "Sao chép KPI đơn vị thất bại",
+                copy_employee_kpi_success: "Sao chép KPI cá nhân thành công",
+                copy_employee_kpi_failure: "Sao chép KPI cá nhân thất bại",
                 organizatinal_unit_kpi_set_exist: "KPI đơn vị đã tồn tại",
+                employee_kpi_set_exist: "KPI cá nhân đã tồn tại",
                 calculate_kpi_unit_success: "Tính điểm KPI thành công",
                 calculate_kpi_unit_failure: "Tính điểm KPI thất bại"
             },

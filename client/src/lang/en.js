@@ -3837,7 +3837,7 @@ export default {
                             change_link:
                                 "Remember to change the link to the parent target to get the new KPI!",
                         },
-                        create: "Copy a new KPI from the KPI on ",
+                        create: "Employee KPI set information on",
                         organizational_unit: "Department",
                         month: "Month",
                         list_target: "List target",
@@ -3912,7 +3912,10 @@ export default {
                     "Update KPI unit evaluation fail",
                 copy_kpi_unit_success: "Copy organizational unit KPI set successfully",
                 copy_kpi_unit_failure: "Copy organizational unit KPI set unsuccessfully",
+                copy_employee_kpi_success: "Copy employee KPI set successfully",
+                copy_employee_kpi_failure: "Copy employee KPI set unsuccessfully",
                 organizatinal_unit_kpi_set_exist: "Organizational unit KPI set already exists",
+                employee_kpi_set_exist: "Employee KPI set already exists",
                 calculate_kpi_unit_success: "Calculate organizational unit KPI successfully",
                 calculate_kpi_unit_failure: "Calculate organizational unit KPI unsuccessfully"
             },

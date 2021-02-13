@@ -18,6 +18,7 @@ export function kpimembers(state = {}, action) {
       };
     case kpiMemberConstants.GETALL_KPIMEMBER_OfUNIT_FAILURE:
       return {
+        ...state,
         error: action.payload,
         isLoading: false
       };
@@ -37,6 +38,7 @@ export function kpimembers(state = {}, action) {
       };
     case kpiMemberConstants.GETALL_KPIMEMBER_FAILURE:
       return {
+        ...state,
         error: action.payload,
         isLoading: false
       };
@@ -54,6 +56,7 @@ export function kpimembers(state = {}, action) {
       };
     case kpiMemberConstants.GET_KPIMEMBER_BYID_FAILURE:
       return {
+        ...state,
         error: action.payload,
         isLoading: false
       };
@@ -70,6 +73,7 @@ export function kpimembers(state = {}, action) {
       };
     case kpiMemberConstants.GET_KPIMEMBER_BYMONTH_FAILURE:
       return {
+        ...state,
         error: action.payload,
         isLoading: false
       };
@@ -89,6 +93,7 @@ export function kpimembers(state = {}, action) {
       };
     case kpiMemberConstants.APPROVE_KPIMEMBER_FAILURE:
       return {
+        ...state,
         error: action.payload,
         isLoading: false
       };
@@ -116,6 +121,7 @@ export function kpimembers(state = {}, action) {
       };
     case kpiMemberConstants.EDITTARGET_KPIMEMBER_FAILURE:
       return {
+        ...state,
         error: action.payload,
         isLoading: false
       };
@@ -136,11 +142,13 @@ export function kpimembers(state = {}, action) {
       };
     case kpiMemberConstants.EDITSTATUS_TARGET_KPIMEMBER_FAILURE:
       return {
+        ...state,
         error: action.payload,
         isLoading: false
       };
     case kpiMemberConstants.GET_TASK_BYID_FAILURE:
       return {
+        ...state,
         error: action.payload
       };
     case kpiMemberConstants.GET_TASK_BYID_REQUEST:
@@ -157,6 +165,7 @@ export function kpimembers(state = {}, action) {
       };
     case kpiMemberConstants.GET_TASK_BY_LIST_KPI_FAILURE:
       return {
+        ...state,
         error: action.payload
       };
     case kpiMemberConstants.GET_TASK_BY_LIST_KPI_REQUEST:
@@ -206,6 +215,7 @@ export function kpimembers(state = {}, action) {
       };
     case kpiMemberConstants.SET_POINTKPI_FAILURE:
       return {
+        ...state,
         error: action.payload
       };
     case kpiMemberConstants.TASK_IMPORTANT_LEVEL_REQUEST:
@@ -221,6 +231,7 @@ export function kpimembers(state = {}, action) {
       };
     case kpiMemberConstants.TASK_IMPORTANT_LEVEL_FAILURE:
       return {
+        ...state,
         error: action.payload
       };
     case createKpiSetConstants.CREATE_COMMENT_REQUEST:
@@ -238,6 +249,7 @@ export function kpimembers(state = {}, action) {
       }
     case createKpiSetConstants.CREATE_COMMENT_FAILURE:
       return {
+        ...state,
         error: action.payload,
       }
     case createKpiSetConstants.CREATE_COMMENT_OF_COMMENT_REQUEST:
@@ -380,10 +392,11 @@ export function kpimembers(state = {}, action) {
         ...state,
         adding: false,
         isLoading: false,
-        kpimembers: action.payload
+        kpimembers: [action.payload, ...state.kpimembers]
       }
     case managerKPIConstants.COPY_KPIPERSONALS_FAILURE:
       return {
+        ...state,
         error: action.payload,
         isLoading: false
       }
