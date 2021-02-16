@@ -66,7 +66,11 @@ div.qlcv > .form-inline > div.react-dropdown-tree-select, div.qlcv > .form-inlin
 }
 
 
-
+/* Ghi đè CSS box AdminLTE */
+.box {
+    margin-top: 0px;
+    margin-bottom: 15px;
+}
 
 
 /* Ghi đè CSS menu AdminLTE */
