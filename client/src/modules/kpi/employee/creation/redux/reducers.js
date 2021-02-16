@@ -1,4 +1,5 @@
 import { createKpiSetConstants } from "./constants";
+import { managerConstants } from "../../../organizational-unit/management/redux/constants";
 
 export function createEmployeeKpiSet(state = {}, action) {
     switch (action.type) {
@@ -6,6 +7,7 @@ export function createEmployeeKpiSet(state = {}, action) {
             return {
                 ...state,
                 currentKPI: null,
+                currentKPILoading: false,
                 isLoading: true
             };
         case createKpiSetConstants.GET_EMPLOYEE_KPI_SET_SUCCESS:
@@ -13,11 +15,14 @@ export function createEmployeeKpiSet(state = {}, action) {
                 ...state,
                 loading: false,
                 currentKPI: action.payload,
+                currentKPILoading: true,
                 isLoading: false
             };
         case createKpiSetConstants.GET_EMPLOYEE_KPI_SET_FAILURE:
             return {
+                ...state,
                 error: action.payload,
+                currentKPILoading: true,
                 isLoading: false
             };
         case createKpiSetConstants.GET_ALL_EMPLOYEE_KPI_SET_BY_MONTH_REQUEST:
@@ -35,6 +40,7 @@ export function createEmployeeKpiSet(state = {}, action) {
             };
         case createKpiSetConstants.GET_ALL_EMPLOYEE_KPI_SET_BY_MONTH_FAILURE:
             return {
+                ...state,
                 error: action.payload,
                 isLoading: false
             };
@@ -59,6 +65,7 @@ export function createEmployeeKpiSet(state = {}, action) {
             };
         case createKpiSetConstants.EDIT_EMPLOYEE_KPI_SET_FAILURE:
             return {
+                ...state,
                 error: action.payload,
                 isLoading: false
             };
@@ -77,6 +84,7 @@ export function createEmployeeKpiSet(state = {}, action) {
             };
         case createKpiSetConstants.UPDATE_EMPLOYEE_KPI_SET_STATUS_FAILURE:
             return {
+                ...state,
                 error: action.payload,
                 isLoading: false
             };
@@ -95,23 +103,27 @@ export function createEmployeeKpiSet(state = {}, action) {
             };
         case createKpiSetConstants.DELETE_EMPLOYEE_KPI_SET_FAILURE:
             return {
+                ...state,
                 error: action.payload,
                 isLoading: false
             };
         case createKpiSetConstants.GET_ALL_EMPLOYEE_KPI_SET_IN_ORGANIZATIONALUNITS_BY_MONTH_REQUEST:
             return {
+                ...state,
                 loading: true,
                 isLoading: false,
                 employeeKpiSetsInOrganizationalUnitByMonth: null
             };
         case createKpiSetConstants.GET_ALL_EMPLOYEE_KPI_SET_IN_ORGANIZATIONALUNITS_BY_MONTH_SUCCESS:
             return {
+                ...state,
                 loading: false,
                 isLoading: false,
                 employeeKpiSetsInOrganizationalUnitByMonth: action.payload
             }
         case createKpiSetConstants.GET_ALL_EMPLOYEE_KPI_SET_IN_ORGANIZATIONALUNITS_BY_MONTH_FAILURE:
             return {
+                ...state,
                 loading: false,
                 isLoading: false,
                 error: action.payload
@@ -136,12 +148,14 @@ export function createEmployeeKpiSet(state = {}, action) {
             };
         case createKpiSetConstants.DELETE_EMPLOYEE_KPI_FAILURE:
             return {
+                ...state,
                 error: action.payload,
                 isLoading: false
             };
 
         case createKpiSetConstants.CREATE_EMPLOYEE_KPI_REQUEST:
             return {
+                ...state,
                 loading: true,
                 isLoading: false
             };
@@ -153,6 +167,7 @@ export function createEmployeeKpiSet(state = {}, action) {
             };
         case createKpiSetConstants.CREATE_EMPLOYEE_KPI_FAILURE:
             return {
+                ...state,
                 error: action.payload,
                 isLoading: false
             };
@@ -182,12 +197,14 @@ export function createEmployeeKpiSet(state = {}, action) {
             };
         case createKpiSetConstants.EDIT_EMPLOYEE_KPI_FAILURE:
             return {
+                ...state,
                 error: action.payload,
                 isLoading: false
             };
 
         case createKpiSetConstants.CREATE_EMPLOYEE_KPI_SET_REQUEST:
             return {
+                ...state,
                 adding: true,
                 isLoading: false
             };
@@ -200,6 +217,7 @@ export function createEmployeeKpiSet(state = {}, action) {
             };
         case createKpiSetConstants.CREATE_EMPLOYEE_KPI_SET_FAILURE:
             return {
+                ...state,
                 error: action.payload,
                 isLoading: false
             };
@@ -218,6 +236,7 @@ export function createEmployeeKpiSet(state = {}, action) {
             }
         case createKpiSetConstants.CREATE_COMMENT_FAILURE:
             return {
+                ...state,
                 error: action.payload,
             }
         case createKpiSetConstants.CREATE_COMMENT_OF_COMMENT_REQUEST:
@@ -348,6 +367,25 @@ export function createEmployeeKpiSet(state = {}, action) {
                 ...state,
                 error: action.payload,
             }
+
+        case managerConstants.COPY_KPIUNIT_REQUEST:
+            return {
+                ...state,
+                currentKPI: null,
+                isLoading: false
+            };
+        case managerConstants.COPY_KPIUNIT_SUCCESS:
+            return {
+                ...state,
+                currentKPI: action.payload,
+                isLoading: false
+            };
+        case managerConstants.COPY_KPIUNIT_FAILURE:
+            return {
+                ...state,
+                error: action.payload,
+                isLoading: false
+            };
         default:
             return state
     }

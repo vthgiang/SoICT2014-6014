@@ -240,28 +240,43 @@ exports.updateAnnualLeave = async (req, res) => {
             });
         } else {
             if (req.body.approvedApplication) {
+                let status_vi, status_en;
+
+                if (req.body.status === 'approved') {
+                    status_vi = 'Được chấp nhận';
+                    status_en = 'Accepted';
+                } else {
+                    if (req.body.status === 'disapproved') {
+                        status_vi = 'Không chấp nhận';
+                        status_en = 'Not Accepted';
+                    } else {
+                        status_vi = 'Chờ phê duyệt';
+                        status_en = 'Waiting for approval';
+                    }
+                }
+                
                 let html = `
-                    <h3><strong>Thông báo từ hệ thống ${process.env.WEB_NAME}.</strong></h3>
+                    <h3><strong>Thông báo từ hệ thống ${process.env.WEBSITE}.</strong></h3>
                     <p>Đơn xin nghỉ phép của bạn từ ${req.body.startTime? req.body.startTime + ":": ''} ${req.body.startDate} đến ${req.body.startTime? req.body.endTime + ":": ''} ${req.body.endDate}.</p>
-                    <p>Trạng thái: ${req.body.status==='pass' ? 'Đã được chấp nhận' : 'Không được chấp nhận'}<p>
+                    <p>Trạng thái: ${status_vi}<p>
                     <p>Người phê duyệt: ${req.user.name} (${req.user.email})</>
                     <br/>
                     <br/>
-                    <h3><strong>Notification from system ${process.env.WEB_NAME}.</strong></h3>
+                    <h3><strong>Notification from system ${process.env.WEBSITE}.</strong></h3>
                     <p>Your application for leave from ${req.body.startTime? req.body.startTime + ":": ''} ${req.body.startDate} to ${req.body.startTime? req.body.endTime + ":": ''} ${req.body.endDate}.</p>
-                    <p>Trạng thái: ${req.body.status==='pass' ? 'Accepted' : 'Not accepted'}<p>
+                    <p>Trạng thái: ${status_en}<p>
                     <p>Approver:  ${req.user.name} (${req.user.email})</>
                 `
                 sendEmail(req.body.employee.emailInCompany, 'Phê duyệt đơn xin nghỉ phép', "", html);
                 let user = await UserService.getUserInformByEmail(req.portal, req.body.employee.emailInCompany, req.user.company._id);
                 let content = `
                     <p>Đơn xin nghỉ phép của bạn từ ${req.body.startTime? req.body.startTime + ":" : ''} ${req.body.startDate} đến ${req.body.startTime? req.body.endTime + ":": ''} ${req.body.endDate}.</p>
-                    <p>Trạng thái: ${req.body.status==='pass' ? 'Đã được chấp nhận' : 'Không được chấp nhận'}<p>
+                    <p>Trạng thái: ${status_vi}<p>
                     <p>Người phê duyệt: ${req.user.name} (${req.user.email})</>
                     <br/>
                     <br/>
                     <p>Your application for leave from ${req.body.startTime? req.body.startTime + ":": ''} ${req.body.startDate} to ${req.body.startTime? req.body.endTime + ":": ''} ${req.body.endDate}.</p>
-                    <p>Trạng thái: ${req.body.status==='pass' ? 'Accepted' : 'Not accepted'}<p>
+                    <p>Trạng thái: ${status_en}<p>
                     <p>Approver:  ${req.user.name} (${req.user.email})</>
                 `
                 let notification = {
@@ -274,7 +289,6 @@ exports.updateAnnualLeave = async (req, res) => {
                 }
                 await NotificationServices.createNotification(req.portal, req.user.company._id, notification, undefined);
             };
-
 
             let annualleaveUpdate = await AnnualLeaveService.updateAnnualLeave(req.portal, req.params.id, req.body);
             await Log.info(req.user.email, 'EDIT_ANNUALLEAVE', req.portal);

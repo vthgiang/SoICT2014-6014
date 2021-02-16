@@ -88,7 +88,7 @@ class EducationProgramDetailForm extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps._id !== prevState._id) {
+        if (nextProps._id !== prevState._id || nextProps.name !== prevState.name) {
             return {
                 ...prevState,
                 _id: nextProps._id,

@@ -14,6 +14,7 @@
     width: 100%;
     padding: 10px 10px 3px 15px;
     border-bottom: 1px solid #ececec;
+    cursor: pointer;
 }
 
 .notify-wrapper:hover{
@@ -37,6 +38,7 @@
     font-size: 1em;
     font-weight: 500;
     color: #444 !important;
+    padding: 10px 12px !important;
 }
 
 .notify-dropdown .active .notify-action{

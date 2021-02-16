@@ -19,6 +19,7 @@ class CareerField extends Component {
 
     componentDidMount() {
         this.props.getListCareerField({ name: '', page: 1, limit: 1000 });
+        this.props.getListCareerPosition({ name: '', page: 1, limit: 1000 });
     }
     onChanged = async (e, data) => {
         await this.setState({
@@ -103,7 +104,7 @@ class CareerField extends Component {
                 id: elm._id,
                 text: elm.name,
                 code: elm.code,
-                state: { "opened": true },
+                // state: { "opened": true },
                 parent: "#",
             }
         });
@@ -182,6 +183,7 @@ const mapStateToProps = state => state;
 
 const mapDispatchToProps = {
     getListCareerField: CareerReduxAction.getListCareerField,
+    getListCareerPosition: CareerReduxAction.getListCareerPosition,
     deleteCareerField: CareerReduxAction.deleteCareerField,
 }
 

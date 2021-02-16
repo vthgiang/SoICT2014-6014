@@ -5,7 +5,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import { taskManagementActions } from '../../task/task-management/redux/actions';
 import { UserActions } from '../../super-admin/user/redux/actions';
 
-import { DatePicker } from '../../../common-components';
+import { DatePicker, CustomLegendC3js } from '../../../common-components';
 import Swal from 'sweetalert2';
 
 import c3 from 'c3';
@@ -15,6 +15,10 @@ class TaskOrganizationalUnitsChart extends Component {
     constructor(props) {
         super(props);
         let startDate = ['01', new Date().getFullYear()].join('-');
+
+        this.chart = null;
+        this.dataChart = null;
+
         this.state = {
             totalTask: false,
             startDate: startDate,
@@ -186,13 +190,42 @@ class TaskOrganizationalUnitsChart extends Component {
                     },
                 }
             },
+
+            tooltip: {
+                position: function () {
+                    let position = c3.chart.internal.fn.tooltipPosition.apply(this, arguments);
+                    return position;
+                },
+                contents: function (data) {
+                    let value = '<div style="overflow-y: scroll; max-height: 300px; pointer-events: auto;">';
+                    value = value + '<table class=\'c3-tooltip\'>';
+
+                    data.forEach((val) => {
+                        value = value + '<tr><td class=\'name\'>' + val.name + '</td>'
+                            + '<td class=\'value\'>' + val.value + '</td></tr>';
+                    });
+
+                    value = value + '</table>';
+                    value = value + '</div>';
+
+                    return value;
+                }
+            },
+
+            legend: {
+                show: false
+            }
         });
 
+        this.chart = chart;
+
         setTimeout(function () {
-            chart.load({
-                columns: data,
-            });
-        }, 0);
+            if (chart) {
+                chart.load({
+                    columns: data,
+                });
+            }
+        }, 100);
     };
 
     /** Bắt sự kiện tìm kiếm */
@@ -282,7 +315,12 @@ class TaskOrganizationalUnitsChart extends Component {
             let row = [...arrMonth];
             row = row.map(r => {
                 let taskOfUnistInMonth = taskOfUnist.filter(t => {
-                    if (new Date(t.startDate).getTime() <= new Date(r).getTime() && new Date(r).getTime() <= new Date(t.endDate).getTime()) {
+                    let date = new Date(r)
+                    let endMonth = new Date(date.setMonth(date.getMonth() + 1))
+                    let endDate = new Date(endMonth.setDate(endMonth.getDate() - 1))
+                    if (new Date(r).getTime() <= new Date(t.startDate).getTime() && new Date(t.startDate).getTime() <= new Date(endDate) ||
+                        new Date(r).getTime() <= new Date(t.endDate).getTime() && new Date(t.endDate).getTime() <= new Date(endDate) ||
+                        new Date(t.startDate).getTime() >= new Date(r).getTime() && new Date(endDate).getTime() >= new Date(t.endDate).getTime()) {
                         return true;
                     }
                     return false;
@@ -295,6 +333,7 @@ class TaskOrganizationalUnitsChart extends Component {
             data = [...data, [x.name, ...row]]
         })
 
+        this.dataChart = data;
         this.renderChart(data)
 
         return (
@@ -331,7 +370,7 @@ class TaskOrganizationalUnitsChart extends Component {
                         </div>
 
                     </div>
-                    <div className="dashboard_box_body" >
+                    <div className="" >
                         <p className="pull-left" > < b > ĐV tính: Số công việc </b></p >
                         <div className="box-tools pull-right" >
                             <div className="btn-group pull-rigth">
@@ -339,7 +378,16 @@ class TaskOrganizationalUnitsChart extends Component {
                                 <button type="button" className={`btn btn-xs ${totalTask ? 'btn-danger' : "active"}`} onClick={() => this.handleChangeViewChart(true)}>Công việc trên đầu người</button>
                             </div>
                         </div>
-                        <div ref="taskUnitsChart" ></div>
+                        <section id={"taskUnitsChart"} className="c3-chart-container">
+                            <div ref="taskUnitsChart" style={{ marginBottom: "15px" }}></div>
+                            <CustomLegendC3js
+                                chart={this.chart}
+                                chartId={"taskUnitsChart"}
+                                legendId={"taskUnitsChartLegend"}
+                                title={this.dataChart && `${translate('general.list_unit')} (${this.dataChart.length - 1})`}
+                                dataChartLegend={this.dataChart && this.dataChart.filter((item, index) => index > 0).map(item => item[0])}
+                            />
+                        </section>
                     </div>
                 </div>
             </div>

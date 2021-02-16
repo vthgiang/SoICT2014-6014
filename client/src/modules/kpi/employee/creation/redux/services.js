@@ -28,17 +28,13 @@ export const createKpiSetService = {
 };
 
 /** Lấy tập KPI cá nhân hiện tại */
-function getEmployeeKpiSet(month) {
-    var id = getStorage("userId");
-    const role = getStorage("currentRole");
-
+function getEmployeeKpiSet(data) {
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/kpi/employee/creation/employee-kpi-sets`,
         method: 'GET',
         params: {
-            userId: id,
-            role: role,
-            month: month,
+            roleId: data ? data.roleId : null,
+            month: data ? data.month : null
         }
     }, false, true);
 }

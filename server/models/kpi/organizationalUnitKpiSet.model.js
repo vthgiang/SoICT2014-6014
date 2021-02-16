@@ -20,6 +20,16 @@ const OrganizationalUnitKpiSetSchema = new Schema({
         type: Date,
         required: true
     },
+    employeeImportances: [{
+        employee: {
+            type: Schema.Types.ObjectId,
+            ref: 'User',
+        },
+        importance: {
+            type: Number,
+            default: 100,
+        },
+    }],
     // Danh sách các KPI trong tập kpi này
     kpis: [{
         type: Schema.Types.ObjectId,
@@ -57,7 +67,7 @@ const OrganizationalUnitKpiSetSchema = new Schema({
             default: Date.now
         },
         updatedAt: {
-            type : Date,
+            type: Date,
             default: Date.now
         },
         description: {
@@ -89,7 +99,7 @@ const OrganizationalUnitKpiSetSchema = new Schema({
                 default: Date.now
             },
             updatedAt: {
-                type : Date,
+                type: Date,
                 default: Date.now
             },
             files: [{ // Các file đi kèm comments
@@ -108,7 +118,7 @@ const OrganizationalUnitKpiSetSchema = new Schema({
 });
 
 module.exports = (db) => {
-    if(!db.models.OrganizationalUnitKpiSet)
+    if (!db.models.OrganizationalUnitKpiSet)
         return db.model('OrganizationalUnitKpiSet', OrganizationalUnitKpiSetSchema);
     return db.models.OrganizationalUnitKpiSet;
 }

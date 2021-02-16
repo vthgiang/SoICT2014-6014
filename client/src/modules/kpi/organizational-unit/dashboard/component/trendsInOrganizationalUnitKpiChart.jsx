@@ -479,6 +479,27 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
                 }
             },
 
+            tooltip: {
+                position: function () {
+                    let position = c3.chart.internal.fn.tooltipPosition.apply(this, arguments);
+                    return position;
+                },
+                contents: function (data) {
+                    let value = '<div style="overflow-y: scroll; max-height: 300px; pointer-events: auto;">';
+                    value = value + '<table class=\'c3-tooltip\'>';
+
+                    data.forEach((val) => {
+                        value = value + '<tr><td class=\'name\'>' + val.name + '</td>'
+                                    +'<td class=\'value\'>' + (Math.round(Number(val.value) * 1000) / 1000) + '</td></tr>';
+                    });
+
+                    value = value + '</table>';
+                    value = value + '</div>';
+                    
+                    return value;
+                }
+            },
+
             legend: {
                 show: false
             }
@@ -497,14 +518,14 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
         return (
             <React.Fragment>
                 {currentKpi ?
-                    <section id={"trendsInUnit"} className="c3-chart-container">
+                    <section id={"trendsInUnit"} className="c3-chart-container enable-pointer">
                         <div ref="chart"></div>
                        
                         <CustomLegendC3js
                             chart={this.chart}
                             chartId={"trendsInUnit"}
                             legendId={"trendsInUnitLegend"}
-                            title={`${translate('kpi.evaluation.employee_evaluation.KPI_list')}(${currentKpi.kpis && currentKpi.kpis.length})`}
+                            title={`${translate('kpi.evaluation.employee_evaluation.KPI_list')} (${currentKpi.kpis && currentKpi.kpis.length})`}
                             dataChartLegend={this.dataChart && this.dataChart.filter((item, index) => index > 0).map(item => item[0])}
                         />
                     </section>

@@ -256,6 +256,10 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
                     }
                 }
             },
+
+            legend: {
+                show: false
+            }
         })
 
     }
@@ -362,7 +366,6 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
         let defaultEndDate = [month, year].join('-');
         let defaultStartDate = ['01', year].join('-');
 
-        console.log("dataChart", this.dataChart)
         return (
             <React.Fragment>
                 {/* Search data trong một khoảng thời gian */}
@@ -400,18 +403,17 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
                         <button type="button" className={`btn btn-xs ${this.state.kindOfPoint === this.KIND_OF_POINT.EMPLOYEE ? 'btn-danger' : null}`} onClick={() => this.handleSelectKindOfPoint(this.KIND_OF_POINT.EMPLOYEE)}>{translate('kpi.evaluation.dashboard.employee_point')}</button>
                         <button type="button" className={`btn btn-xs ${this.state.kindOfPoint === this.KIND_OF_POINT.APPROVED ? 'btn-danger' : null}`} onClick={() => this.handleSelectKindOfPoint(this.KIND_OF_POINT.APPROVED)}>{translate('kpi.evaluation.dashboard.approve_point')}</button>
                     </div>
-
-                    
-                </section><section id={"resultsOfAllUnit"} className="c3-chart-container">
-                        <div ref="chart"></div>
-                        <CustomLegendC3js
-                            chart={this.chart}
-                            chartId={"resultsOfAllUnit"}
-                            legendId={"resultsOfAllUnitLegend"}
-                            title={this.dataChart && `${translate('general.list_unit')}(${this.dataChart.length - 1})`}
-                            dataChartLegend={this.dataChart && this.dataChart.filter((item, index) => index > 0).map(item => item[0])}
-                        />
-                    </section>
+                </section>
+                <section id={"resultsOfAllUnit"} className="c3-chart-container">
+                    <div ref="chart"></div>
+                    <CustomLegendC3js
+                        chart={this.chart}
+                        chartId={"resultsOfAllUnit"}
+                        legendId={"resultsOfAllUnitLegend"}
+                        title={this.dataChart && `${translate('general.list_unit')} (${this.dataChart.length/2})`}
+                        dataChartLegend={this.dataChart && this.dataChart.filter((item, index) => index % 2 === 1).map(item => item[0])}
+                    />
+                </section>
             </React.Fragment>
         )
     }

@@ -14,14 +14,12 @@ function CustomLegendC3js(props) {
     const { dataTooltip } = state;
 
     useEffect(() => {
-        console.log("55555")
         if (!dataTooltip) {
-            console.log("66")
-            customLegend(chart, chartId, legendId, dataChartLegend);
+            customLegend(chart, chartId, legendId, dataChartLegend, maxHeight, activate);
         }
     })
 
-    const customLegend = (chart, chartId, legendId, dataChartLegend) => {
+    const customLegend = (chart, chartId, legendId, dataChartLegend, maxHeight, activate) => {
         let legend = window.$(`#${legendId}`).remove();
 
         if (chart && chartId && legendId && dataChartLegend && dataChartLegend.length > 0) {
@@ -34,7 +32,7 @@ function CustomLegendC3js(props) {
                 .attr('data-id', function (id) { return id; })
                 .html(function (id) { return id; })
                 .each(function (id) {
-                    d3.select(this).style('border-left', `5px solid ${chart.color(id)}`);
+                    d3.select(this).style('border-left', `8px solid ${chart.color(id)}`);
                     d3.select(this).style('padding-left', `5px`);
                 })
                 .on('mouseover',(id) => {
@@ -54,6 +52,8 @@ function CustomLegendC3js(props) {
                 .on('click', function (id) {
                     chart.toggle(id);
                 });
+            
+            SlimScroll.addVerticalScrollStyleCSS(legendId, maxHeight, activate);
         }
     }
 

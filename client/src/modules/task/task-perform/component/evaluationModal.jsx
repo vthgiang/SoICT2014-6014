@@ -13,7 +13,12 @@ class EvaluationModal extends Component {
         let date = this.formatDate(new Date());
         let data = this.handleData(date);
         this.TODAY = date;
+
+        let month = this.formatMonth(new Date());
+
         this.state = {
+            month: month,
+            dateParam: this.TODAY,
             evaluationsList: data.evaluations,
             checkEval: data.checkEval,
             checkMonth: data.checkMonth,
@@ -27,6 +32,7 @@ class EvaluationModal extends Component {
     shouldComponentUpdate(nextProps, nextState) {
         if (this.state.dataStatus === this.DATA_STATUS.QUERYING) {
             let data = this.handleData(this.formatDate(new Date()));
+            console.log("qydsd", data.evaluations.length)
             this.setState(state => {
                 return {
                     evaluationsList: data.evaluations,
@@ -85,10 +91,10 @@ class EvaluationModal extends Component {
         let endDate = new Date(task && task.endDate);
         let monthOfEndDate = endDate.getMonth();
         let yearOfEndDate = endDate.getUTCFullYear();
-        
+
         // kiểm tra xem bước sang tháng mới so với ngày kết thúc hay chưa.
         let isInNextMonthOfEndDate = false;
-        if((yearOfEval === yearOfEndDate && monthOfEval > monthOfEndDate ) || (yearOfEval > yearOfEndDate)){
+        if ((yearOfEval === yearOfEndDate && monthOfEval > monthOfEndDate) || (yearOfEval > yearOfEndDate)) {
             isInNextMonthOfEndDate = true;
             console.log('isInNextMonthOfEndDate', isInNextMonthOfEndDate, monthOfEval, monthOfEndDate);
         }
@@ -109,8 +115,11 @@ class EvaluationModal extends Component {
             }
         }
 
+        // sort evaluations
+        let sortedEvaluations = this.handleSortMonthEval(evaluations);
+
         data = {
-            evaluations: evaluations,
+            evaluations: sortedEvaluations,
             checkEval: checkEval,
             checkMonth: checkMonth,
             expire: expire,
@@ -153,6 +162,7 @@ class EvaluationModal extends Component {
                 ...state,
                 content: id,
                 evaluation: item,
+                isEval: item ? true : false,
                 // dataStatus: this.DATA_STATUS.QUERYING,
             }
         });
@@ -163,6 +173,7 @@ class EvaluationModal extends Component {
                 ...state,
                 content: "new",
                 evaluation: null, // new evaluation of month
+                isEval: false,
                 // checkMonth: true,
                 showEval: true,
                 // dataStatus: this.DATA_STATUS.QUERYING,
@@ -180,17 +191,28 @@ class EvaluationModal extends Component {
         });
     }
 
+    handleChangeMonthEval = async (value) => {
+        await this.setState({ month: value.month, dateParam: value.date });
+    }
+
+    handleSortMonthEval = (evaluations) => {
+        // sắp xếp đánh giá theo thứ tự tháng
+        const sortedEvaluations = evaluations.sort((a, b) => new Date(b.date) - new Date(a.date));
+        return sortedEvaluations;
+    }
+
     render() {
         const { translate, performtasks } = this.props;
-        const { evaluationsList, checkMonth, showEval, content, evaluation, expire, isInNextMonthOfEndDate } = this.state;
+        let { dateParam, month, evaluationsList, checkMonth, showEval, content, evaluation, isEval, expire, isInNextMonthOfEndDate } = this.state;
         const { role, id, hasAccountable } = this.props;
 
+        console.log('isEval', this.state);
         let task;
         if (performtasks.task) {
             task = performtasks.task;
         }
 
-        let dateParam = this.TODAY;
+        // let dateParam = this.TODAY;
         let now = new Date();
         let startDate = task && new Date(task.startDate);
 
@@ -224,12 +246,13 @@ class EvaluationModal extends Component {
                         <div className="box-body no-padding">
                             <ul className="nav nav-pills nav-stacked">
                                 {/* Đánh giá cho tháng đang được thêm, cho lên đầu */}
-                                {(checkMonth === false && showEval === true) &&
+                                {(showEval === true) && // checkMonth === false && 
                                     <li className={content === 'new' ? "active" : undefined}>
                                         <a style={{ cursor: 'pointer' }} onClick={() => this.handleChangeContent('new', null)}>
-                                            {translate('task.task_management.eval_of')} {this.formatMonth(new Date())}
-                                        &nbsp;
-                                    </a>
+                                            {/* {translate('task.task_management.eval_of')} {this.formatMonth(new Date())} */}
+                                            {translate('task.task_management.eval_of')} {month}
+                                            &nbsp;
+                                        </a>
                                     </li>
                                 }
 
@@ -245,7 +268,7 @@ class EvaluationModal extends Component {
 
                                 {/* Thêm mới đánh giá */}
                                 {/* Kiểm tra có phải tháng hiện tại hay không và chưa chọn đánh giá tháng này (showEval == false) !(isInNextMonthOfEndDate) && */}
-                                {(checkMonth === false && showEval === false) && 
+                                {(showEval === false) && // checkMonth === false && 
                                     // !(isInNextMonthOfEndDate) && // kiểm tra khi qua ngày kết thúc ko cho đánh giá
                                     <li className={content === 'new' ? "active" : undefined}>
                                         <a style={{ cursor: 'pointer' }} onClick={() => this.handleAddEval()}>
@@ -262,24 +285,30 @@ class EvaluationModal extends Component {
                     {(content !== undefined && role === "responsible") && hasAccountable === true &&
                         <EvaluateByResponsibleEmployee
                             id={content}
+                            handleChangeDataStatus={this.handleChangeDataStatus}
                             task={task}
                             role={role}
                             title={title}
                             perform='evaluate'
                             evaluation={evaluation}
                             date={evaluation ? this.formatDate(evaluation.date) : dateParam}
+                            handleChangeMonthEval={this.handleChangeMonthEval}
+                            isEval={isEval}
                         />
                     }
                     {(content !== undefined && role === "responsible") && hasAccountable === false &&
                         <EvaluateByAccountableEmployee
                             hasAccountable={false}
                             id={content}
+                            handleChangeDataStatus={this.handleChangeDataStatus}
                             task={task}
                             role={role}
                             title={title}
                             perform='evaluate'
                             evaluation={evaluation}
                             date={evaluation ? this.formatDate(evaluation.date) : dateParam}
+                            handleChangeMonthEval={this.handleChangeMonthEval}
+                            isEval={isEval}
                         />
                     }
                     {
@@ -294,18 +323,23 @@ class EvaluationModal extends Component {
                             perform='evaluate'
                             evaluation={evaluation}
                             date={evaluation ? this.formatDate(evaluation.date) : dateParam}
+                            handleChangeMonthEval={this.handleChangeMonthEval}
+                            isEval={isEval}
                         />
                     }
                     {
                         (content !== undefined && role === "consulted") &&
                         <EvaluateByConsultedEmployee
                             id={content}
+                            handleChangeDataStatus={this.handleChangeDataStatus}
                             task={task}
                             role={role}
                             title={title}
                             perform='evaluate'
                             evaluation={evaluation}
                             date={evaluation ? this.formatDate(evaluation.date) : dateParam}
+                            handleChangeMonthEval={this.handleChangeMonthEval}
+                            isEval={isEval}
                         />
                     }
                 </div>

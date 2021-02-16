@@ -6,24 +6,40 @@ class SlimScroll extends Component {
         super(props);
         this.state = {};
     }
+
     componentDidUpdate() {
-        const { verticalScroll=false } = this.props
+        const { verticalScroll=false, outerComponentId, maxHeight=200, activate } = this.props
 
         if (verticalScroll) {
-            this.addVerticalScrollStyleCss();
+            SlimScroll.addVerticalScrollStyleCSS(outerComponentId, maxHeight, activate);
         } else {
             this.addStyleCSS();
         }
     }
 
     componentDidMount() {
-        const { verticalScroll=false } = this.props
+        const { verticalScroll=false, outerComponentId, maxHeight=200, activate } = this.props
 
         if (verticalScroll) {
-            this.addVerticalScrollStyleCss();
+            SlimScroll.addVerticalScrollStyleCSS(outerComponentId, maxHeight, activate);
         } else {
             this.addStyleCSS();
         }
+    }
+
+    shouldComponentUpdate(nextProps, nextState) {
+        const { maxHeight=200, verticalScroll=false } = this.props;
+
+        if (verticalScroll) {
+            // Nếu height mới lớn hơn maxHeight mới re-render
+            
+            let checkHeight = window.$(`#${nextProps.outerComponentId}`).height() > maxHeight;
+            if (!checkHeight) {
+                return false
+            }
+        }
+
+        return true;
     }
 
     addStyleCSS = () => {
@@ -45,9 +61,8 @@ class SlimScroll extends Component {
         }
     }
 
-    addVerticalScrollStyleCss = () => {
-        const { outerComponentId, maxHeight=200, activate } = this.props;
-
+    /** Thêm Css SlimScroll dọc */
+    static addVerticalScrollStyleCSS = (outerComponentId, maxHeight=200, activate) => {
         let outer = window.$(`#${outerComponentId}`);
 
         if (outer) {
@@ -58,6 +73,16 @@ class SlimScroll extends Component {
                 outer.removeClass("StyleScrollDiv StyleScrollDiv-y");
                 outer.css("maxHeight", "");
             }
+        }
+    }
+
+    /** Bỏ css của slimscroll */
+    static removeVerticalScrollStyleCSS = (classNameContainer) => {
+        let tabPaneScroll = window.$(`.${classNameContainer}.StyleScrollDiv.StyleScrollDiv-y`);
+
+        if (tabPaneScroll) {
+            tabPaneScroll.removeClass("StyleScrollDiv StyleScrollDiv-y");
+            tabPaneScroll.css("maxHeight", "");
         }
     }
 

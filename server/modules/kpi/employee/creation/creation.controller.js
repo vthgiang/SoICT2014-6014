@@ -23,7 +23,12 @@ exports.getEmployeeKpiSet = async (req, res) => {
     }
     else {
         try {
-            let employeeKpiSet = await EmployeeKpiSetService.getEmployeeKpiSet(req.portal, req.query.userId, req.query.role, req.query.month);
+            let data = {
+                ...req.query,
+                userId: req.user._id
+            }
+            let employeeKpiSet = await EmployeeKpiSetService.getEmployeeKpiSet(req.portal, data);
+         
             await Logger.info(req.user.email, ` get employee kpi set by user id `, req.portal);
             res.status(200).json({
                 success: true,
@@ -134,7 +139,8 @@ exports.editEmployeeKpiSet = async (req, res) => {
     }
     else {
         try {
-            let employeeKpiSet = await EmployeeKpiSetService.editEmployeeKpiSet(req.portal, req.body.date, req.body.approver, req.params.id);
+            let employeeKpiSet = await EmployeeKpiSetService.editEmployeeKpiSet(req.portal, req.body.approver, req.params.id);
+            
             await Logger.info(req.user.email, ` edit employee kpi set `, req.portal)
             res.status(200).json({
                 success: true,
@@ -155,8 +161,8 @@ exports.editEmployeeKpiSet = async (req, res) => {
 /** Chỉnh sửa trạng thái của KPI cá nhân */
 exports.updateEmployeeKpiSetStatus = async (req, res) => {
     try {
-
-        var employeeKpiSet = await EmployeeKpiSetService.updateEmployeeKpiSetStatus(req.portal, req.params.id, req.query.status, req.user.company._id);
+        let employeeKpiSet = await EmployeeKpiSetService.updateEmployeeKpiSetStatus(req.portal, req.params.id, req.query.status, req.user.company._id);
+       
         await Logger.info(req.user.email, ` edit employee kpi set status `, req.portal)
         res.status(200).json({
             success: true,
@@ -176,7 +182,7 @@ exports.updateEmployeeKpiSetStatus = async (req, res) => {
 /** Xóa KPI cá nhân */
 exports.deleteEmployeeKpiSet = async (req, res) => {
     try {
-        var arr = await EmployeeKpiSetService.deleteEmployeeKpiSet(req.portal, req.params.id);
+        let arr = await EmployeeKpiSetService.deleteEmployeeKpiSet(req.portal, req.params.id);
         employeeKpiSet = arr[0];
         kpis = arr[1];
         await Logger.info(req.user.email, ` delete employee kpi set `, req.portal)
@@ -200,7 +206,7 @@ exports.deleteEmployeeKpiSet = async (req, res) => {
 /** Xóa 1 mục tiêu KPI cá nhân */
 exports.deleteEmployeeKpi = async (req, res) => {
     try {
-        var employeeKpiSet = await EmployeeKpiSetService.deleteEmployeeKpi(req.portal, req.params.id, req.query.employeeKpiSetId);
+        let employeeKpiSet = await EmployeeKpiSetService.deleteEmployeeKpi(req.portal, req.params.id, req.query.employeeKpiSetId);
         await Logger.info(req.user.email, ` delete employee kpi `, req.portal)
         res.status(200).json({
             success: true,
@@ -223,15 +229,15 @@ exports.deleteEmployeeKpi = async (req, res) => {
  */
 exports.createComment = async (req, res) => {
     try {
-        var files = [];
+        let files = [];
         if (req.files !== undefined) {
             req.files.forEach((elem, index) => {
-                var path = elem.destination + '/' + elem.filename;
+                let path = elem.destination + '/' + elem.filename;
                 files.push({ name: elem.originalname, url: path })
 
             })
         }
-        var comments = await EmployeeKpiSetService.createComment(req.portal, req.params, req.body, files);
+        let comments = await EmployeeKpiSetService.createComment(req.portal, req.params, req.body, files);
         await Logger.info(req.user.email, ` create comment `, req.portal)
         res.status(200).json({
             success: true,
@@ -254,14 +260,14 @@ exports.createComment = async (req, res) => {
  */
 exports.createChildComment = async (req, res) => {
     // try {
-    var files = [];
+    let files = [];
     if (req.files !== undefined) {
         req.files.forEach((elem, index) => {
-            var path = elem.destination + '/' + elem.filename;
+            let path = elem.destination + '/' + elem.filename;
             files.push({ name: elem.originalname, url: path })
         })
     }
-    var comments = await EmployeeKpiSetService.createChildComment(req.portal, req.params, req.body, files);
+    let comments = await EmployeeKpiSetService.createChildComment(req.portal, req.params, req.body, files);
     await Logger.info(req.user.email, ` create comment `, req.portal)
     res.status(200).json({
         success: true,
@@ -315,7 +321,7 @@ exports.editComment = async (req, res) => {
 exports.deleteComment = async (req, res) => {
     try {
 
-        var comments = await EmployeeKpiSetService.deleteComment(req.portal, req.params);
+        let comments = await EmployeeKpiSetService.deleteComment(req.portal, req.params);
         await Logger.info(req.user.email, ` delete comment kpi`, req.portal)
         res.status(200).json({
             success: false,
@@ -344,7 +350,7 @@ exports.editChildComment = async (req, res) => {
 
             })
         }
-        var comments = await EmployeeKpiSetService.editChildComment(req.portal, req.params, req.body, files);
+        let comments = await EmployeeKpiSetService.editChildComment(req.portal, req.params, req.body, files);
         await Logger.info(req.user.email, ` edit comment of comment kpi `, req.portal)
         res.status(200).json({
             success: true,
@@ -366,7 +372,7 @@ exports.editChildComment = async (req, res) => {
  */
 exports.deleteChildComment = async (req, res) => {
     try {
-        var comments = await EmployeeKpiSetService.deleteChildComment(req.portal, req.params);
+        let comments = await EmployeeKpiSetService.deleteChildComment(req.portal, req.params);
         await Logger.info(req.user.email, ` delete child comment kpi `, req.portal)
         res.status(200).json({
             success: true,
@@ -387,7 +393,7 @@ exports.deleteChildComment = async (req, res) => {
  */
 exports.deleteFileComment = async (req, res) => {
     try {
-        var comments = await EmployeeKpiSetService.deleteFileComment(req.portal, req.params);
+        let comments = await EmployeeKpiSetService.deleteFileComment(req.portal, req.params);
         await Logger.info(req.user.email, ` delete file comment `, req.portal)
         res.status(200).json({
             success: true,
@@ -408,7 +414,7 @@ exports.deleteFileComment = async (req, res) => {
  */
 exports.deleteFileChildComment = async (req, res) => {
     try {
-        var comments = await EmployeeKpiSetService.deleteFileChildComment(req.portal, req.params);
+        let comments = await EmployeeKpiSetService.deleteFileChildComment(req.portal, req.params);
         await Logger.info(req.user.email, ` delete file child comment `, req.portal)
         res.status(200).json({
             success: true,

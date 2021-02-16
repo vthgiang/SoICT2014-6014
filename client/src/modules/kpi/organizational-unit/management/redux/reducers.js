@@ -55,11 +55,13 @@ export function managerKpiUnit(state = {}, action) {
       return {
         ...state,
         adding: false,
-        kpis: action.payload,
+        kpis: [action.payload, ...state.kpis],
         isLoading: false
       };
     case managerConstants.COPY_KPIUNIT_FAILURE:
       return {
+        ...state,
+        adding: true,
         error: action.payload,
         isLoading: false
       };

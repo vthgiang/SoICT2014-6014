@@ -48,7 +48,7 @@ class CrmGroup extends Component {
                         setOption={this.setOption}
                         search={this.searchWithOption}
                     />
-                    <table className="table table-hover table-striped table-bordered" id="table-manage-crm-group" style={{ marginTop: '10px' }}>
+                    <table className="table table-hover table-striped table-bordered" id={tableId} style={{ marginTop: '10px' }}>
                         <thead>
                             <tr>
                                 <th>{translate('crm.group.name')}</th>
@@ -62,7 +62,6 @@ class CrmGroup extends Component {
                                             translate('crm.group.code'),
                                             translate('crm.group.description'),
                                         ]}
-                                        limit={this.state.limit}
                                         setLimit={this.setLimit}
                                         tableId={tableId}
                                     />

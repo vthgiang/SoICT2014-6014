@@ -12,18 +12,24 @@ import { ModalAddTaskTemplate } from './addTaskTemplateModal';
 import { ModalViewTaskTemplate } from './viewTaskTemplateModal';
 import { ModalEditTaskTemplate } from './editTaskTemplateModal';
 import { TaskTemplateImportForm } from './taskTemplateImportForm';
+import { getTableConfiguration } from '../../../../helpers/tableConfiguration'
 import './tasktemplate.css';
 
 class TaskTemplate extends Component {
     constructor(props) {
         super(props);
+        const tableId = "table-task-template";
+        const defaultConfig = { limit: 10 }
+        const limit = getTableConfiguration(tableId, defaultConfig).limit;
+
         this.state = {
             status: 'start',
             currentPage: 1,
-            perPage: 10,
+            perPage: limit,
             unit: [],
             name: '',
             currentRole: localStorage.getItem("currentRole"),
+            tableId,
         };
     }
 
@@ -36,7 +42,7 @@ class TaskTemplate extends Component {
 
     render() {
         const { translate, tasktemplates, user } = this.props;
-        const { currentPage, currentEditRow, currentViewRow, currentEditRowId } = this.state;
+        const { currentPage, currentEditRow, currentViewRow, currentEditRowId, tableId } = this.state;
 
 
         var listTaskTemplates, pageTotal, units = [], currentUnit;
@@ -111,7 +117,10 @@ class TaskTemplate extends Component {
                                 <SelectMulti id="multiSelectUnit"
                                     defaultValue={units.map(item => { return item._id })}
                                     items={units.map(item => { return { value: item._id, text: item.name } })}
-                                    options={{ nonSelectedText: translate('task_template.select_all_units'), allSelectedText: "Tất cả các đơn vị" }}>
+                                    options={{
+                                        nonSelectedText: translate('task_template.select_all_units'),
+                                        allSelectedText: translate(`task.task_management.select_all_department`),
+                                    }}>
                                 </SelectMulti>
                             }
                             <button type="button" className="btn btn-success" title="Tìm tiếm mẫu công việc" onClick={this.handleUpdateData}>{translate('task_template.search')}</button>
@@ -119,7 +128,7 @@ class TaskTemplate extends Component {
                     </div>
 
                     <DataTableSetting
-                        tableId="table-task-template"
+                        tableId={tableId}
                         columnArr={[
                             'Tên mẫu công việc',
                             'Mô tả',
@@ -127,13 +136,11 @@ class TaskTemplate extends Component {
                             'Người tạo mẫu',
                             'Đơn vị'
                         ]}
-                        limit={this.state.perPage}
                         setLimit={this.setLimit}
-                        hideColumnOption={true}
                     />
 
                     {/**Table chứa các mẫu công việc trong 1 trang */}
-                    <table className="table table-bordered table-striped table-hover" id="table-task-template">
+                    <table className="table table-bordered table-striped table-hover" id={tableId}>
                         <thead>
                             <tr>
                                 <th title={translate('task_template.tasktemplate_name')}>{translate('task_template.tasktemplate_name')}</th>
@@ -172,11 +179,11 @@ class TaskTemplate extends Component {
                                                 }
                                             </td>
                                         </tr>
-                                    ) :
-                                    <tr><td colSpan={6}><center>{translate('task_template.no_data')}</center></td></tr>
+                                    ) : null
                             }
                         </tbody>
                     </table>
+                    {(listTaskTemplates && listTaskTemplates.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>}
                     <PaginateBar pageTotal={pageTotal} currentPage={currentPage} func={this.setPage} />
                 </div>
             </div>

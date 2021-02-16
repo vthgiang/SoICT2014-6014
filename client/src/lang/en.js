@@ -62,7 +62,10 @@ export default {
                 existing_error: "Value existing",
             },
             not_org_unit: "Not have organizational unit",
-            list_unit: "Organizational unit list"
+            not_select_unit: "Select units",
+            list_unit: "Organizational unit list",
+            list_employee: "Employee list",
+            detail: "Detail"
         },
 
         intro: {
@@ -340,6 +343,7 @@ export default {
                     minute: "Minute",
                     second: "Second",
                     day: "Day",
+                    week: "Week",
                     month: "Month",
                     save: "Save configuration",
 
@@ -1480,12 +1484,14 @@ export default {
                         ward: 'Phường/Xã',
                         house_hold_address: 'Địa chỉ hộ khẩu',
                         phone: 'Số điện thoại',
+                        phone_appendix: 'Điện thoại hộ gia đình',
                         house_hold_code: 'Mã số hộ gia đình'
                     },
                     members: {
                         title: 'Kê khai đầy đủ thông tin thành viên hộ gia đình trong sổ hộ khẩu',
                         stt: 'STT',
                         name: 'Họ và tên',
+                        name_member: 'Họ và tên thành viên',
                         code_social_insurance: 'Mã sổ BHXH',
                         book_nci: 'Số sổ BHXH',
                         gender: 'Giới tính',
@@ -1728,10 +1734,12 @@ export default {
                         sheet5: "5.Staffs - Labor contracts",
                         sheet6: "6.Staffs - Social insurances",
                         sheet7: "7.Staffs - Attachments",
-                        sheet8: "8.Staffs - Commendations",
-                        sheet9: "9.Staffs - Disciplines",
-                        sheet10: "10.Staffs - Salaries",
-                        sheet11: "11.Staffs - Annual Leave",
+                        sheet8: "8.Staffs - Family Members",
+                        sheet9: "9.Staffs - Commendations",
+                        sheet10: "10.Staffs - Disciplines",
+                        sheet11: "11.Staffs - Salaries",
+                        sheet12: "12.Staffs - Annual Leave",
+
 
                         emergency_contact_person: "Emergency contact person",
                         relation_with_emergency_contact_person:
@@ -1760,6 +1768,7 @@ export default {
                         import_contract: "Labor contracts",
                         import_socialInsurance_details: "Social insurances",
                         import_file: "Attachments",
+                        import_family: "Family member",
 
                         import_general_infor_title:
                             "Import staff basic information",
@@ -1770,6 +1779,7 @@ export default {
                         import_socialInsurance_details_title:
                             "Import social insurance",
                         import_file_title: "Import attachments",
+                        import_file_family: "Import family member"
                     },
 
                     // Nhón dành cho UI
@@ -1816,6 +1826,7 @@ export default {
                     employee_number_required: "Staff code required",
                     email_in_company_required: "Email in company required",
                     employee_number_have_exist: "Employee number have exist",
+                    staff_code_not_find:'Employee number does have exist',
                     email_in_company_have_exist: "Email in company have exist",
                     employee_timesheet_id_required:
                         "Employee timesheet id required",
@@ -2654,6 +2665,7 @@ export default {
                 standard: "Standard",
                 average: "Normal",
                 low: "Low",
+                coefficient: "Coefficient",
 
                 special: "Special",
                 select_all_special: "Selected all",
@@ -2837,7 +2849,7 @@ export default {
                     "You can no longer edit reviews because it is more than 7 days after the last review.",
                 note_eval: "Number of days left to edit review",
 
-                add_eval_of_this_month: "Add evaluation of this month",
+                add_eval_of_this_month: "Add evaluation",
                 eval_of: "Evaluation of",
                 eval_from: "Evaluation from",
                 eval_to: "Evaluation to",
@@ -2923,6 +2935,7 @@ export default {
                 // warning
                 warning: "Warning",
                 not_have_evaluation: "No one evaluate task this month",
+                warning_evaluate: "Evaluation is coming soon. You need to evaluate the work this month",
                 you_need: "You need",
                 confirm_task: "confirm take part in this task",
                 not_confirm: "Not confirm this task",
@@ -2944,6 +2957,7 @@ export default {
                 time: "Time",
                 load_task_chart: "Dashboard load task",
                 load_task_chart_unit: "Dashboard load task of unit",
+                explain: "Explain",
             },
             task_perform: {
                 actions: "Actions",
@@ -3236,9 +3250,22 @@ export default {
                 import_task_template_success: "Import task template success",
                 import_task_template_faile: "Import task template faile",
             },
+            task_dashboard: {
+                general_unit_task: "General unit task dashboard",
+                unit: "Organizational unit",
+                all_tasks: "All tasks",
+                confirmed_task: "Confirmed tasks",
+                none_update_recently: "None updated recently tasks",
+                intime_task: "Intime tasks",
+                delay_task: "Delayed tasks",
+                overdue_task: "Overdue tasks"
+            }
         },
 
         kpi: {
+            general: {
+                show: "Show"
+            },
             employee: {
                 get_kpi_by_member_success: "Get KPI by member successfully",
                 get_kpi_by_member_fail: "Get KPI by member fail",
@@ -3267,7 +3294,7 @@ export default {
                         },
                         satisfied: "Satisfied",
                         not_satisfied: "Not Satisfied",
-                        initialize_kpi_newmonth: "Initialize KPI new month",
+                        initialize_kpi_newmonth: "Initialize KPI",
                         request_approval: "Request for approval",
                         cancel_request_approval: "Cancel request for approval",
                         not_initialize_organiztional_unit_kpi:
@@ -3513,6 +3540,7 @@ export default {
                     target: "targets",
                     data_not_found: "There is no satisfied result",
                     unsuitable_weight: "Unsuitable weight",
+                    unsuitable_approval: "Editing is not approved",
                     status: "Status",
                     action: "Action",
                     save_result: "Save result",
@@ -3628,11 +3656,13 @@ export default {
                     confirm_delete_success:
                         "Are you sure you want to delete this entire KPI?",
                     time: "Time",
-                    initialize_kpi_newmonth: "Initialize KPI new month",
+                    initialize_kpi_newmonth: "Initialize KPI",
                     edit_kpi_success: "Editing KPI successful",
                     edit_kpi_failure: "Editing KPI falied",
                     delete_kpi_success: "Delete KPI successfully",
                     delete_kpi_failure: "Delete KPI unsuccessfully",
+                    copy_kpi_unit: "Copy KPI Unit",
+                    employee_importance: "Employee importances",
 
                     // Nhóm dành cho trọng số
                     weight_total: "Weight total",
@@ -3692,6 +3722,8 @@ export default {
                     create_target_success: "Add KPI target successful",
                     create_target_failure:
                         "You have not entered enough information",
+                    organizational_unit_kpi_exist: "Organizational Unit KPI already exists",
+
 
                     // Nhóm dành cho validate
                     validate_name: {
@@ -3764,7 +3796,7 @@ export default {
                     no_data: "No data",
                     trend_chart: {
                         execution_time: "Execution time (Days)",
-                        participants: "Participants",
+                        participants: "Amount of participants",
                         amount_tasks: "Amount of tasks",
                         amount_employee_kpi: "Amount of employee KPI",
                         weight: "Weight",
@@ -3807,7 +3839,8 @@ export default {
                     },
                     detail_modal: {
                         list_kpi_unit: "List KPI unit",
-                        title: "Detailed information KPI unit on ",
+                        title: "Organizational unit KPI details on ",
+                        title_parent: "Parent organizational unit KPI details on  ",
                         information_kpi: "Information KPI ",
                         criteria: "Criteria:",
                         weight: "Weight:",
@@ -3845,6 +3878,13 @@ export default {
                         },
                     },
                 },
+
+                statistics: {
+                    detail_participant: "Participant detail",
+                    detail_employee_kpi: "Employee KPI detail",
+                    email: "Email"
+                },
+
                 //Thông điệp khác trả về từ server
                 get_parent_by_unit_success:
                     "Get KPI by parent unit successfully",
@@ -3861,6 +3901,11 @@ export default {
                     "Update KPI unit evaluation successfully",
                 update_evaluate_kpi_unit_fail:
                     "Update KPI unit evaluation fail",
+                copy_kpi_unit_success: "Copy organizational unit KPI set successfully",
+                copy_kpi_unit_failure: "Copy organizational unit KPI set unsuccessfully",
+                organizatinal_unit_kpi_set_exist: "Organizational unit KPI set already exists",
+                calculate_kpi_unit_success: "Calculate organizational unit KPI successfully",
+                calculate_kpi_unit_failure: "Calculate organizational unit KPI unsuccessfully"
             },
         },
 

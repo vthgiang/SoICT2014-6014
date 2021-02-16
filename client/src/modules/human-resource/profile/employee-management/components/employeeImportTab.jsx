@@ -87,6 +87,13 @@ class EmployeeImportTab extends Component {
                 let status = x.status ? translate(`human_resource.profile.${x.status}`) : x.status;
                 return { ...x, status: status }
             });
+        };
+        if (importData && id === "import_employee_family") {
+            importData = importData.map(x => {
+                let gender = translate(`human_resource.profile.${x.gender}`);
+                let isHeadHousehold = x.isHeadHousehold === 'yes' ? 'X' : null;
+                return { ...x, gender: gender, isHeadHousehold: isHeadHousehold }
+            });
         }
 
         configData = configData ? configData : configuration;

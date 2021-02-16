@@ -85,7 +85,7 @@ class TasksIsNotLinked extends Component {
         return (
             <React.Fragment>
                 {/* Các công việc chưa liên kết kpi tháng */}
-                <div className="col-xs-6">
+                <div className="col-xs-12 col-md-6">
                     <div className="box box-primary">
                         <div className="box-header with-border">
                             <div className="box-title">{translate('task.task_management.task_is_not_linked_up_with_monthly_kpi')}</div>

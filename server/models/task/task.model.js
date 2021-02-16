@@ -216,6 +216,26 @@ const TaskSchema = new Schema(
                 ref: "User",
             },
         ],
+        requestToCloseTask: {
+            requestedBy: {
+                type: Schema.Types.ObjectId,
+                ref: "User",
+            },
+            createdAt: {
+                type: Date,
+                default: Date.now,
+            },
+            description: {
+                type: String,
+            },
+            taskStatus: { // Các trạng thái như trạng thái công việc, trừ inprocess
+                type: String,
+            },
+            requestStatus: { // 0: chưa yêu cầu, 1: đang yêu cầu, 2: từ chối
+                type: Number,
+                default: 0,
+            }
+        },
         evaluations: [
             {
                 // Một công việc có thể trải dài nhiều tháng, mỗi tháng phải đánh giá một lần
@@ -397,9 +417,10 @@ const TaskSchema = new Schema(
                 duration: {
                     type: Number,
                 },
-                autoStopped: {
-                    type: Boolean,
-                    default: false
+                autoStopped: { // 1: Tắt bấm giờ bằng tay, 2: Tắt bấm giờ tự động với thời gian hẹn trc, 3: add log timer
+                    type: Number,
+                    default: 1,
+                    enum: [1, 2, 3],
                 },
                 acceptLog: {
                     type: Boolean,

@@ -1,4 +1,5 @@
 import { createUnitKpiConstants } from "./constants";
+import { managerConstants } from '../../management/redux/constants';
 
 export function createKpiUnit(state = {}, action) {
     switch (action.type) {
@@ -19,11 +20,12 @@ export function createKpiUnit(state = {}, action) {
                 isLoading: false
             };
         case createUnitKpiConstants.GETCURRENT_KPIUNIT_FAILURE:
-            return {
-                organizationUnitKpiLoading: true,
-                error: action.payload,
-                isLoading: false
-            };
+          return {
+            ...state,
+            organizationUnitKpiLoading: true,
+            error: action.payload,
+            isLoading: false
+          };
         case createUnitKpiConstants.GETPARENT_KPIUNIT_REQUEST:
             return {
                 ...state,
@@ -38,17 +40,18 @@ export function createKpiUnit(state = {}, action) {
                 isLoading: false
             };
         case createUnitKpiConstants.GETPARENT_KPIUNIT_FAILURE:
-            return {
-                error: action.payload,
-                isLoading: false
-            };
+          return {
+            ...state,
+            error: action.payload,
+            isLoading: false
+          };
         case createUnitKpiConstants.GET_ALL_ORGANIZATIONALUNIT_KPI_SET_BY_TIME_REQUEST:
-            return {
-                ...state,
-                organizationalUnitKpiSets: null,
-                loading: true,
-                isLoading: false
-            }
+          return {
+            ...state,
+            organizationalUnitKpiSets: null,
+            loading: true,
+            isLoading: false
+          }
         case createUnitKpiConstants.GET_ALL_ORGANIZATIONALUNIT_KPI_SET_BY_TIME_SUCCESS:
             return {
                 ...state,
@@ -102,10 +105,11 @@ export function createKpiUnit(state = {}, action) {
                 isLoading: false
             };
         case createUnitKpiConstants.ADD_KPIUNIT_FAILURE:
-            return {
-                error: action.payload,
-                isLoading: false
-            };
+          return {
+            ...state,
+            error: action.payload,
+            isLoading: false
+          };
         case createUnitKpiConstants.EDIT_KPIUNIT_REQUEST:
             return {
                 ...state,
@@ -120,29 +124,12 @@ export function createKpiUnit(state = {}, action) {
                 isLoading: false
             };
         case createUnitKpiConstants.EDIT_KPIUNIT_FAILURE:
-            return {
-                error: action.payload,
-                isLoading: false
-            };
-        case createUnitKpiConstants.EDITSTATUS_KPIUNIT_REQUEST:
-            return {
-                ...state,
-                editing: true,
-                isLoading: false
-            };
-        case createUnitKpiConstants.EDITSTATUS_KPIUNIT_SUCCESS:
-            return {
-                ...state,
-                editing: false,
-                currentKPI: action.payload,
-                isLoading: false
-            };
-        case createUnitKpiConstants.EDITSTATUS_KPIUNIT_FAILURE:
-            return {
-                error: action.payload,
-                isLoading: false
-            };
-
+          return {
+            ...state,
+            error: action.payload,
+            isLoading: false
+          };
+        
         case createUnitKpiConstants.DELETE_KPIUNIT_REQUEST:
             return {
                 ...state,
@@ -157,10 +144,11 @@ export function createKpiUnit(state = {}, action) {
                 isLoading: false
             };
         case createUnitKpiConstants.DELETE_KPIUNIT_FAILURE:
-            return {
-                error: action.payload,
-                isLoading: false
-            };
+          return {
+            ...state,
+            error: action.payload,
+            isLoading: false
+          };
         case createUnitKpiConstants.ADDTARGET_KPIUNIT_REQUEST:
             return {
                 ...state,
@@ -174,10 +162,11 @@ export function createKpiUnit(state = {}, action) {
                 isLoading: false
             };
         case createUnitKpiConstants.ADDTARGET_KPIUNIT_FAILURE:
-            return {
-                error: action.payload,
-                isLoading: false
-            };
+          return {
+            ...state,
+            error: action.payload,
+            isLoading: false
+          };
         case createUnitKpiConstants.EDITTARGET_KPIUNIT_REQUEST:
             return {
                 ...state,
@@ -202,10 +191,11 @@ export function createKpiUnit(state = {}, action) {
                 isLoading: false
             };
         case createUnitKpiConstants.EDITTARGET_KPIUNIT_FAILURE:
-            return {
-                error: action.payload,
-                isLoading: false
-            };
+          return {
+            ...state,
+            error: action.payload,
+            isLoading: false
+          };
         case createUnitKpiConstants.DELETETARGET_KPIUNIT_REQUEST:
             return {
                 ...state,
@@ -225,155 +215,31 @@ export function createKpiUnit(state = {}, action) {
                 isLoading: false
             };
         case createUnitKpiConstants.DELETETARGET_KPIUNIT_FAILURE:
-            return {
-                error: action.payload,
-                isLoading: false
-            };
-        case createUnitKpiConstants.CREATE_COMMENT_REQUEST:
-            return {
-                ...state,
-                adding: true
-            }
-        case createUnitKpiConstants.CREATE_COMMENT_SUCCESS:
-            return {
-                ...state,
-                currentKPI: {
-                    ...state.currentKPI,
-                    comments: action.payload
-                }
-            }
-        case createUnitKpiConstants.CREATE_COMMENT_FAILURE:
-            return {
-                error: action.payload,
-            }
-        case createUnitKpiConstants.CREATE_COMMENT_OF_COMMENT_REQUEST:
-            return {
-                ...state,
-                adding: true
-            }
-        case createUnitKpiConstants.CREATE_COMMENT_OF_COMMENT_SUCCESS:
-            return {
-                ...state,
-                currentKPI: {
-                    ...state.currentKPI,
-                    comments: action.payload
-                }
-            }
-        case createUnitKpiConstants.CREATE_COMMENT_OF_COMMENT_FAILURE:
-            return {
-                ...state,
-                error: action.payload,
-            }
-        case createUnitKpiConstants.EDIT_COMMENT_REQUEST:
-            return {
-                ...state,
-                editing: true
-            }
-        case createUnitKpiConstants.EDIT_COMMENT_SUCCESS:
-            return {
-                ...state,
-                idLoading: false,
-                currentKPI: {
-                    ...state.currentKPI,
-                    comments: action.payload,
-
-                }
-            }
-        case createUnitKpiConstants.EDIT_COMMENT_FAILURE:
-            return {
-                ...state,
-                error: action.payload,
-            }
-        case createUnitKpiConstants.DELETE_COMMENT_REQUEST:
-            return {
-                ...state,
-                editing: true
-            }
-        case createUnitKpiConstants.DELETE_COMMENT_SUCCESS:
-            return {
-                ...state,
-                currentKPI: {
-                    ...state.currentKPI,
-                    comments: action.payload
-                }
-            }
-        case createUnitKpiConstants.DELETE_COMMENT_FAILURE:
-            return {
-                ...state,
-                error: action.payload,
-            }
-        case createUnitKpiConstants.EDIT_COMMENT_OF_COMMENT_REQUEST:
-            return {
-                ...state,
-                editing: true
-            }
-        case createUnitKpiConstants.EDIT_COMMENT_OF_COMMENT_SUCCESS:
-            return {
-                ...state,
-                currentKPI: {
-                    ...state.currentKPI,
-                    comments: action.payload
-                }
-            }
-        case createUnitKpiConstants.EDIT_COMMENT_OF_COMMENT_FAILURE:
-            return {
-                ...state,
-                error: action.payload,
-            }
-        case createUnitKpiConstants.DELETE_COMMENT_OF_COMMENT_REQUEST:
-            return {
-                ...state,
-                deleting: true
-            }
-        case createUnitKpiConstants.DELETE_COMMENT_OF_COMMENT_SUCCESS:
-            return {
-                ...state,
-                currentKPI: {
-                    ...state.currentKPI,
-                    comments: action.payload
-                }
-            }
-        case createUnitKpiConstants.DELETE_COMMENT_OF_COMMENT_FAILURE:
-            return {
-                ...state,
-                error: action.payload,
-            }
-        case createUnitKpiConstants.DELETE_FILE_COMMENT_REQUEST:
-            return {
-                ...state,
-                deleting: true
-            }
-        case createUnitKpiConstants.DELETE_FILE_COMMENT_SUCCESS:
-            return {
-                ...state,
-                currentKPI: {
-                    ...state.currentKPI,
-                    comments: action.payload
-                }
-            }
-        case createUnitKpiConstants.DELETE_FILE_COMMENT_FAILURE:
-            return {
-                ...state,
-                error: action.payload,
-            }
-        case createUnitKpiConstants.DELETE_FILE_CHILD_COMMENT_REQUEST:
-            return {
-                ...state,
-                deleting: true
-            }
-        case createUnitKpiConstants.DELETE_FILE_CHILD_COMMENT_SUCCESS:
-            return {
-                ...state,
-                currentKPI: {
-                    ...state.currentKPI,
-                    comments: action.payload
-                }
-            }
-        case createUnitKpiConstants.DELETE_FILE_CHILD_COMMENT_FAILURE:
-            return {
-                ...state,
-                error: action.payload,
-            }
+          return {
+            ...state,
+            error: action.payload,
+            isLoading: false
+          };
+      
+        case managerConstants.COPY_KPIUNIT_REQUEST:
+          return {
+            ...state,
+            isLoading: false,
+            currentKPI: null
+          };
+        case managerConstants.COPY_KPIUNIT_SUCCESS:
+          return {
+            ...state,
+            currentKPI: action.payload,
+            isLoading: false
+          };
+        case managerConstants.COPY_KPIUNIT_FAILURE:
+          return {
+            ...state,
+            adding: true,
+            error: action.payload,
+            isLoading: false
+          };
         default:
             return state
     }

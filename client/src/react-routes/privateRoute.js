@@ -17,13 +17,14 @@ const checkURL = (urlName, linkArr) => {
 }
 
 const PrivateRoute = ({ auth, isLoading, arrPage, pageName, link, component: Component, layout: Layout, ...rest }) => {
-    const {redirectToAuthQuestionPage} = auth;
+    // const {password2AlreadyExists} = auth;
     
     return <Route {...rest} render={props => {
         var logged = getStorage();
-        if(redirectToAuthQuestionPage)
-            return <Redirect to='/answer-auth-questions'/>
-        else if(logged !== null){
+        // if(password2AlreadyExists)
+        //     return <Redirect to='/answer-auth-questions'/>
+        // else
+        if (logged !== null) {
             if(auth.calledAPI !== CallApiStatus.FINISHED)
                 return <Layout></Layout>
             

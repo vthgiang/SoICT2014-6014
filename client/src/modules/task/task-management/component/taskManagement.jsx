@@ -15,15 +15,19 @@ import TaskProjectAction from '../../task-project/redux/action';
 import { TaskAddModal } from './taskAddModal';
 import { ModalPerform } from '../../task-perform/component/modalPerform';
 import { duration } from 'moment';
-
+import { getTableConfiguration } from '../../../../helpers/tableConfiguration'
 class TaskManagement extends Component {
     constructor(props) {
         let userId = getStorage("userId");
         super(props);
+        const tableId = "tree-table-task-management";
+        const defaultConfig = { limit: 20 }
+        const limit = getTableConfiguration(tableId, defaultConfig).limit;
         this.state = {
             displayType: 'table',
-            perPage: 20,
+            perPage: limit,
             currentPage: 1,
+            tableId,
 
             currentTab: ["responsible", "accountable"],
             organizationalUnit: [],
@@ -131,7 +135,7 @@ class TaskManagement extends Component {
             if (warning[0] === 'time_overlapping') {
                 Swal.fire({
                     title: `Bạn đã hẹn tắt bấm giờ cho công việc [ ${warning[1]} ]`,
-                    html: `<h4 class="text-red">Hủy bỏ bấm giờ làm việc và bấm giờ công việc mới</h4>`,
+                    html: `<h4 class="text-red">Lưu lại những giờ đã bấm được cho công việc [ ${warning[1]} ] và bấm giờ công việc mới</h4>`,
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#3085d6',
@@ -495,7 +499,7 @@ class TaskManagement extends Component {
 
     render() {
         const { tasks, user, translate, taskProject } = this.props;
-        const { currentTaskId, currentPage, currentTab, parentTask, startDate, endDate, perPage, status, monthTimeSheetLog } = this.state;
+        const { currentTaskId, currentPage, currentTab, parentTask, startDate, endDate, perPage, status, monthTimeSheetLog, tableId } = this.state;
         let currentTasks, units = [];
         if (tasks) {
             currentTasks = tasks.tasks;
@@ -659,7 +663,7 @@ class TaskManagement extends Component {
                                         defaultValue={units.map(item => item._id)}
                                         items={units.map(item => { return { value: item._id, text: item.name } })}
                                         onChange={this.handleSelectOrganizationalUnit}
-                                        options={{ nonSelectedText: units.length !== 0 ? translate('task.task_management.select_department') : "Bạn chưa có đơn vị", allSelectedText: translate(`task.task_management.select_all_department`) }}>
+                                        options={{ nonSelectedText: translate('task.task_management.select_department'), allSelectedText: translate(`task.task_management.select_all_department`) }}>
                                     </SelectMulti>
                                 }
                             </div>
@@ -760,28 +764,6 @@ class TaskManagement extends Component {
                                 <label></label>
                                 <button type="button" className="btn btn-success" onClick={this.handleUpdateData}>{translate('task.task_management.search')}</button>
                             </div>
-
-                            <DataTableSetting
-                                tableId="tree-table"
-                                tableContainerId="tree-table-container"
-                                columnArr={[
-                                    translate('task.task_management.col_name'),
-                                    translate('task.task_management.col_organization'),
-                                    translate('task.task_management.col_priority'),
-                                    translate('task.task_management.col_start_date'),
-                                    translate('task.task_management.col_end_date'),
-                                    translate('task.task_management.col_status'),
-                                    translate('task.task_management.col_progress'),
-                                    translate('task.task_management.col_logged_time')
-                                ]}
-                                limit={perPage}
-                                setLimit={this.setLimit}
-                                hideColumnOption={true}
-                                className="pull-right btn btn-default"
-                                style={{ borderRadius: 0 }}
-                                fontSize={16}
-                                text="Thiết lập"
-                            />
                         </div>
 
                         {
@@ -792,8 +774,25 @@ class TaskManagement extends Component {
                             />
                         }
 
-                        <div id="tree-table-container" style={{ marginTop: '30px' }}>
+                        <div id="tree-table-container" style={{ marginTop: '20px' }}>
+                            <DataTableSetting
+                                tableId={tableId}
+                                tableContainerId="tree-table-container"
+                                tableWidth="1300px"
+                                columnArr={[
+                                    translate('task.task_management.col_name'),
+                                    translate('task.task_management.col_organization'),
+                                    translate('task.task_management.col_priority'),
+                                    translate('task.task_management.col_start_date'),
+                                    translate('task.task_management.col_end_date'),
+                                    translate('task.task_management.col_status'),
+                                    translate('task.task_management.col_progress'),
+                                    translate('task.task_management.col_logged_time')
+                                ]}
+                                setLimit={this.setLimit}
+                            />
                             <TreeTable
+                                tableId={tableId}
                                 behaviour="show-children"
                                 column={column}
                                 data={data}

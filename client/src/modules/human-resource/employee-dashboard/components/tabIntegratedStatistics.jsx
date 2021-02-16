@@ -81,10 +81,10 @@ class TabIntegratedStatistics extends Component {
         let listEmployee = user.employees;
         let employeeOvertime = [], employeeHoursOff = [];
         /* Lấy dữ liệu tăng ca và nghỉ phép của mỗi nhân viên trong đơn vị */
-        let listOvertimeOfUnitsByStartDateAndEndDate = timesheets.listOvertimeOfUnitsByStartDateAndEndDate;
+        let listTimesheets = timesheets.listTimesheets;
         for (let i in listEmployee) {
             let totalOvertime = 0, totalHoursOff = 0;
-            listOvertimeOfUnitsByStartDateAndEndDate && listOvertimeOfUnitsByStartDateAndEndDate.forEach(x => {
+            listTimesheets && listTimesheets.forEach(x => {
                 if (listEmployee[i].userId.email === x.employee.emailInCompany) {
                     totalOvertime = x.totalOvertime ? x.totalOvertime : 0;
                     totalHoursOff = x.totalHoursOff ? x.totalHoursOff : 0;

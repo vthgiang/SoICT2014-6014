@@ -4,6 +4,7 @@ import { managerActions } from '../redux/actions';
 import { DialogModal } from '../../../../../common-components/index';
 import { withTranslate } from 'react-redux-multilingual';
 import { ExportExcel } from '../../../../../common-components';
+import parse from 'html-react-parser';
 
 class ModalDetailKPI extends Component {
     constructor(props) {
@@ -205,7 +206,7 @@ class ModalDetailKPI extends Component {
                                 <div style={{ lineHeight: 2 }}>
                                     <div>
                                         <label>{translate('kpi.organizational_unit.management.detail_modal.criteria')}</label>
-                                        <span> {item.criteria}</span>
+                                        <span> {parse(item.criteria)}</span>
                                     </div>
 
                                     <div>
@@ -250,7 +251,7 @@ class ModalDetailKPI extends Component {
                                                     <td>{data.target.name}</td>
                                                     <td>{data.creator.name}</td>
                                                     <td>{data.organizationalUnit.name}</td>
-                                                    <td>{data.target.criteria}</td>
+                                                    <td>{parse(data.target.criteria)}</td>
                                                     <td>{data.target.approvedPoint}</td>
                                                 </tr>)) : <tr><td colSpan={6}>{translate('kpi.organizational_unit.management.detail_modal.no_data')}</td></tr>
                                         }

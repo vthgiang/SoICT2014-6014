@@ -555,6 +555,25 @@ evaluationAction = async (req, res) => {
         })
     }
 }
+
+exports.evaluationAllAction = async (req, res) => {
+    try {
+        let action = await PerformTaskService.evaluationAllAction(req.portal, req.params, req.body, req.user._id);
+        await Logger.info(req.user.email, ` evaluation all action success  `, req.portal)
+        res.status(200).json({
+            success: true,
+            messages: ['evaluation_all_action_success'],
+            content: action
+        })
+    } catch (error) {
+        await Logger.error(req.user.email, ` evaluation all action fail `, req.portal)
+        res.status(400).json({
+            success: false,
+            messages: ['evaluation_all_action_fail'],
+            content: error
+        })
+    }
+}
 /**
  * Xác nhận hành động
  */
@@ -805,7 +824,7 @@ editTaskByResponsibleEmployees = async (req, res) => {
 
         // sendEmail(task.email, "Cập nhật thông tin công việc", '', `<p><strong>${user.name}</strong> đã cập nhật thông tin công việc với vai trò người phê duyệt <a href="${process.env.WEBSITE}/task?taskId=${req.params.taskId}" target="_blank">${process.env.WEBSITE}/task?taskId=${req.params.taskId}</a></p>`);
         let title = "Cập nhật thông tin công việc: " + task.tasks.name;
-        sendEmail(task.email, title, '', `<p><strong>${user.name}</strong> đã cập nhật thông tin công việc với vai trò người thực hiện <a href="${process.env.WEBSITE}/task?taskId=${req.params.id}">${process.env.WEBSITE}/task?taskId=${req.params.id}</a></p>`);
+        sendEmail(task.email, title, '', `<p><strong>${user.name}</strong> đã cập nhật thông tin công việc với vai trò người thực hiện <a href="${process.env.WEBSITE}/task?taskId=${req.params.taskId}">${process.env.WEBSITE}/task?taskId=${req.params.taskId}</a></p>`);
 
         await Logger.info(req.user.email, ` edit task  `, req.portal);
         res.status(200).json({
@@ -845,7 +864,7 @@ editTaskByAccountableEmployees = async (req, res) => {
         NotificationServices.createNotification(req.portal, tasks.organizationalUnit, data,);
         // sendEmail(task.email, "Cập nhật thông tin công việc", '', `<p><strong>${user.name}</strong> đã cập nhật thông tin công việc với vai trò người phê duyệt <a href="${process.env.WEBSITE}/task?taskId=${req.params.taskId}">${process.env.WEBSITE}/task?taskId=${req.params.taskId}</a></p>`);
         let title = "Cập nhật thông tin công việc: " + task.tasks.name;
-        sendEmail(task.email, title, '', `<p><strong>${user.name}</strong> đã cập nhật thông tin công việc với vai trò người phê duyệt <a href="${process.env.WEBSITE}/task?taskId=${req.params.id}">${process.env.WEBSITE}/task?taskId=${req.params.id}</a></p>`);
+        sendEmail(task.email, title, '', `<p><strong>${user.name}</strong> đã cập nhật thông tin công việc với vai trò người phê duyệt <a href="${process.env.WEBSITE}/task?taskId=${req.params.taskId}">${process.env.WEBSITE}/task?taskId=${req.params.taskId}</a></p>`);
         
 
         console.log('TASSKKKKKK', task.deletedCollabEmail, task.additionalCollabEmail);

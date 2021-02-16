@@ -11,7 +11,7 @@ import ProjectEditForm from "./editProject";
 
 import { ProjectActions } from "../redux/actions";
 import { UserActions } from '../../super-admin/user/redux/actions';
-function ManagementTableProject(props) {
+function ListProject(props) {
 
     // Khởi tạo state
     const [state, setState] = useState({
@@ -237,5 +237,5 @@ const actions = {
 
 }
 
-const connectedExampleManagementTable = connect(mapState, actions)(withTranslate(ManagementTableProject));
-export { connectedExampleManagementTable as Project };
+const connectedExampleManagementTable = connect(mapState, actions)(withTranslate(ListProject));
+export { connectedExampleManagementTable as ListProject };

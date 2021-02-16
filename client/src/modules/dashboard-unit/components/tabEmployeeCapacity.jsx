@@ -111,8 +111,10 @@ class TabEmployeeCapacity extends Component {
 
         if (dashboardEvaluationEmployeeKpiSet) {
             employeeKpiSets = dashboardEvaluationEmployeeKpiSet.employeeKpiSets;
+
             lastMonthEmployeeKpiSets = employeeKpiSets && employeeKpiSets.filter(item => this.formatDate(item.date) === month);
             lastMonthEmployeeKpiSets && lastMonthEmployeeKpiSets.sort((a, b) => b.approvedPoint - a.approvedPoint);
+            lastMonthEmployeeKpiSets = lastMonthEmployeeKpiSets && lastMonthEmployeeKpiSets.filter(x => x.approvedPoint)
             lastMonthEmployeeKpiSets = lastMonthEmployeeKpiSets && lastMonthEmployeeKpiSets.slice(0, numberOfExcellentEmployees);
         }
         // let organizationalUnitIds;
@@ -137,7 +139,7 @@ class TabEmployeeCapacity extends Component {
                 <div className="col-md-12">
                     <div className="box box-solid">
                         <div className="box-header with-border">
-                            <h3 className="box-title">{`Top ${numberOfExcellentEmployees} ${translate('kpi.evaluation.dashboard.best_employee')} của ${(!organizationalUnits || organizationalUnits.length === department.list.length) ? "công ty" : organizationalUnitsName.join(', ')} ${month}`}</h3>
+                            <h3 className="box-title">{`Top ${numberOfExcellentEmployees} ${translate('kpi.evaluation.dashboard.best_employee')} của công ty ${month}`}</h3>
                             <div className="box-tools pull-right">
                                 <button type="button" data-toggle="collapse" data-target="#setting-excellent" className="pull-right" style={{ border: "none", background: "none", padding: "0px" }}>
                                     <i className="fa fa-gear" style={{ fontSize: "19px" }}></i>
@@ -180,7 +182,7 @@ class TabEmployeeCapacity extends Component {
                 <div className="col-md-12">
                     <div className="box box-solid">
                         <div className="box-header with-border">
-                            <h3 className="box-title">{`${translate('kpi.evaluation.dashboard.result_kpi_titile')} của ${(!organizationalUnits || organizationalUnits.length === department.list.length) ? "công ty" : organizationalUnitsName.join(', ')}`}</h3>
+                            <h3 className="box-title">{`${translate('kpi.evaluation.dashboard.result_kpi_titile')} của công ty`}</h3>
                             {resultsOfAllEmployeeKpiSetChartData && <ExportExcel type="link" id="export-all-employee-kpi-evaluate-result-dashboard" exportData={resultsOfAllEmployeeKpiSetChartData} style={{ marginTop: 5 }} />}
                         </div>
                         {/* /.box-header */}

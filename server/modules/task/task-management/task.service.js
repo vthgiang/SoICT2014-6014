@@ -429,7 +429,7 @@ exports.getPaginatedTasks = async (portal, task) => {
         ]
     }
 
-    taskList = await Task(connect(DB_CONNECTION, portal)).find(optionQuery).sort({ 'createdAt': 1 })
+    taskList = await Task(connect(DB_CONNECTION, portal)).find(optionQuery).sort({ 'createdAt': -1 })
         .skip(perPage * (page - 1)).limit(perPage).populate([
             { path: "organizationalUnit creator parent responsibleEmployees" },
             { path: "timesheetLogs.creator", select: "name" },
@@ -605,7 +605,7 @@ exports.getPaginatedTasksThatUserHasResponsibleRole = async (portal, task) => {
             keySearchSpecial,
             keySearchPeriod
         ]
-    }).sort({ 'createdAt': 1 })
+    }).sort({ 'createdAt': -1 })
         .skip(perPage * (page - 1)).limit(perPage).populate({ path: "organizationalUnit creator parent responsibleEmployees" });
 
     var totalCount = await Task(connect(DB_CONNECTION, portal)).countDocuments({
@@ -783,7 +783,7 @@ exports.getPaginatedTasksThatUserHasAccountableRole = async (portal, task) => {
             keySearchSpecial,
             keySearchPeriod
         ]
-    }).sort({ 'createdAt': 1 })
+    }).sort({ 'createdAt': -1 })
         .skip(perPage * (page - 1)).limit(perPage).populate({ path: "organizationalUnit creator parent" });
 
     var totalCount = await Task(connect(DB_CONNECTION, portal)).countDocuments({
@@ -959,7 +959,7 @@ exports.getPaginatedTasksThatUserHasConsultedRole = async (portal, task) => {
             keySearchSpecial,
             keySearchPeriod
         ]
-    }).sort({ 'createdAt': 1 })
+    }).sort({ 'createdAt': -1 })
         .skip(perPage * (page - 1)).limit(perPage).populate({ path: "organizationalUnit creator parent" });
 
     var totalCount = await Task(connect(DB_CONNECTION, portal)).countDocuments({
@@ -1107,7 +1107,7 @@ exports.getPaginatedTasksCreatedByUser = async (portal, task) => {
             keySearchSpecial,
             keySearchPeriod
         ]
-    }).sort({ 'createdAt': 1 })
+    }).sort({ 'createdAt': -1 })
         .skip(perPage * (page - 1)).limit(perPage).populate({ path: "organizationalUnit creator parent" });
 
     var totalCount = await Task(connect(DB_CONNECTION, portal)).countDocuments({
@@ -1284,7 +1284,7 @@ exports.getPaginatedTasksThatUserHasInformedRole = async (portal, task) => {
             keySearchSpecial,
             keySearchPeriod
         ]
-    }).sort({ 'createdAt': 1 })
+    }).sort({ 'createdAt': -1 })
         .skip(perPage * (page - 1)).limit(perPage)
         .populate({ path: "organizationalUnit creator parent" });
 
@@ -1494,7 +1494,7 @@ exports.getPaginatedTasksByUser = async (portal, task, type = "paginated_task_by
             keySearchSpecial,
             keySearchPeriod
         ]
-    }).sort({ 'createdAt': 1 })
+    }).sort({ 'createdAt': -1 })
         .skip(perPage * (page - 1)).limit(perPage)
         .populate({ path: "organizationalUnit creator parent" });
 
@@ -1552,7 +1552,7 @@ exports.getAllTaskOfOrganizationalUnitByMonth = async (portal, task) => {
         }
     }
 
-    organizationUnitTasks = await Task(connect(DB_CONNECTION, portal)).find(keySearch).sort({ 'createdAt': 1 })
+    organizationUnitTasks = await Task(connect(DB_CONNECTION, portal)).find(keySearch).sort({ 'createdAt': -1 })
         .populate({ path: "organizationalUnit creator parent responsibleEmployees" });
     return {
         "tasks": organizationUnitTasks
@@ -1767,22 +1767,22 @@ exports.sendEmailForCreateTask = async (portal, task) => {
         `<p>Người thực hiện</p> ` +
         `<ul>${res.map((item) => {
             return `<li>${item.name} - ${item.email}</li>`
-        })}
+        }).join('')}
                     </ul>`+
         `<p>Người phê duyệt</p> ` +
         `<ul>${acc.map((item) => {
             return `<li>${item.name} - ${item.email}</li>`
-        })}
+        }).join('')}
                     </ul>` +
         `${con.length > 0 ? `<p>Người tư vấn</p> ` +
             `<ul>${con.map((item) => {
                 return `<li>${item.name} - ${item.email}</li>`
-            })}
+            }).join('')}
                     </ul>` : ""}` +
         `${inf.length > 0 ? `<p>Người quan sát</p> ` +
             `<ul>${inf.map((item) => {
                 return `<li>${item.name} - ${item.email}</li>`
-            })}
+            }).join('')}
                     </ul>` : ""}`
         ;
     var html = `<p>Bạn có công việc mới: ` + body;
@@ -1837,7 +1837,7 @@ exports.createTask = async (portal, task) => {
     }
 
     let formula;
-    if(task.formula) {
+    if (task.formula) {
         formula = task.formula;
     } else {
         if (taskTemplate) {
@@ -1853,7 +1853,7 @@ exports.createTask = async (portal, task) => {
     let taskProject = (taskTemplate && taskTemplate.taskProject) ? getValidObjectId(taskTemplate.taskProject) : getValidObjectId(task.taskProject);
 
     let taskActions = [];
-    if(task.taskActions) {
+    if (task.taskActions) {
         taskActions = task.taskActions.map(e => {
             return {
                 mandatory: e.mandatory,
@@ -1866,7 +1866,7 @@ exports.createTask = async (portal, task) => {
     }
 
     let taskInformations = [];
-    if(task.taskInformations) {
+    if (task.taskInformations) {
         taskInformations = task.taskInformations.map(e => {
             return {
                 filledByAccountableEmployeesOnly: e.filledByAccountableEmployeesOnly,
@@ -2448,22 +2448,27 @@ exports.getUserTimeSheet = async (portal, userId, month, year) => {
     let endOfMonth = new Date(year, month); // cần chỉnh lại
 
     let tsl = await Task(connect(DB_CONNECTION, portal)).aggregate([
-        { $match: { 
-            "timesheetLogs.creator": mongoose.Types.ObjectId(userId),
-            "timesheetLogs.startedAt": { $exists: true },
-            "timesheetLogs.startedAt": { $gte: beginOfMonth },
-            "timesheetLogs.stoppedAt": { $exists: true },
-            "timesheetLogs.stoppedAt": { $lte: endOfMonth }
-        } },
+        {
+            $match: {
+                "timesheetLogs.creator": mongoose.Types.ObjectId(userId),
+                "timesheetLogs.startedAt": { $exists: true },
+                "timesheetLogs.startedAt": { $gte: beginOfMonth },
+                "timesheetLogs.stoppedAt": { $exists: true },
+                "timesheetLogs.stoppedAt": { $lte: endOfMonth }
+            }
+        },
         { $unwind: "$timesheetLogs" },
-        { $replaceRoot: { newRoot: "$timesheetLogs" } },
-        { $match: { 
-            "creator": mongoose.Types.ObjectId(userId),
-            "startedAt": { $exists: true },
-            "startedAt": { $gte: beginOfMonth },
-            "stoppedAt": { $exists: true },
-            "stoppedAt": { $lte: endOfMonth }
-        } },
+        { $replaceRoot: { newRoot: { $mergeObjects: [{ _id: "$_id", name: "$name" }, "$timesheetLogs"] } } },
+
+        {
+            $match: {
+                "creator": mongoose.Types.ObjectId(userId),
+                "startedAt": { $exists: true },
+                "startedAt": { $gte: beginOfMonth },
+                "stoppedAt": { $exists: true },
+                "stoppedAt": { $lte: endOfMonth }
+            },
+        },
     ]);
 
     return tsl;
@@ -2482,21 +2487,25 @@ exports.getAllUserTimeSheet = async (portal, month, year) => {
     let endOfMonth = new Date(year, month); // cần chỉnh lại
 
     let tsl = await Task(connect(DB_CONNECTION, portal)).aggregate([
-        { $match: { 
-            "timesheetLogs.startedAt": { $exists: true },
-            "timesheetLogs.startedAt": { $gte: beginOfMonth },
-            "timesheetLogs.stoppedAt": { $exists: true },
-            "timesheetLogs.stoppedAt": { $lte: endOfMonth },
-        } },
+        {
+            $match: {
+                "timesheetLogs.startedAt": { $exists: true },
+                "timesheetLogs.startedAt": { $gte: beginOfMonth },
+                "timesheetLogs.stoppedAt": { $exists: true },
+                "timesheetLogs.stoppedAt": { $lte: endOfMonth },
+            }
+        },
         { $unwind: "$timesheetLogs" },
         { $replaceRoot: { newRoot: "$timesheetLogs" } },
-        { $match: { 
-            "startedAt": { $exists: true },
-            "startedAt": { $gte: beginOfMonth },
-            "stoppedAt": { $exists: true },
-            "stoppedAt": { $lte: endOfMonth },
-            "acceptLog": true
-        } },
+        {
+            $match: {
+                "startedAt": { $exists: true },
+                "startedAt": { $gte: beginOfMonth },
+                "stoppedAt": { $exists: true },
+                "stoppedAt": { $lte: endOfMonth },
+                "acceptLog": true
+            }
+        },
         {
             $group: {
                 _id: "$creator",
@@ -2506,14 +2515,17 @@ exports.getAllUserTimeSheet = async (portal, month, year) => {
     ]);
 
     let allTS = [];
-    for(let i=0; i<tsl.length; i++){
-        /*let user = users.find(user => user?._id?.toString() === tsl[i]?._id?.toString());
-        if(user) {
+    for (let i = 0; i < tsl.length; i++) {
+        let user = users.find(user => {
+            if (user && tsl[i] && user._id && tsl[i]._id && user._id.toString() === tsl[i]._id.toString()) return true;
+            return false;
+        });
+        if (user) {
             allTS.push({
                 creator: user,
                 duration: tsl[i].total
             })
-        }*/
+        }
     }
 
     return allTS;

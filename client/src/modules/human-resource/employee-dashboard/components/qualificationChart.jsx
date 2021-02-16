@@ -5,6 +5,8 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import { FieldsActions } from '../../field/redux/actions';
 
+import { CustomLegendC3js } from '../../../../common-components/index';
+
 import c3 from 'c3';
 import 'c3/c3.css';
 
@@ -58,7 +60,10 @@ class QualificationChart extends Component {
     renderChart = (data) => {
         const { typeChart } = this.state;
         this.removePreviousChart();
-        let chart = c3.generate({
+
+        this.dataChart = data;
+
+        this.chart = c3.generate({
             bindto: this.refs.donutChart,
             data: {
                 columns: [
@@ -66,8 +71,13 @@ class QualificationChart extends Component {
                 ],
                 type: 'donut',
             },
+
             donut: {
                 title: typeChart ? "Trình độ chuyên ngành" : "Trình độ chuyên môn"
+            },
+
+            legend: {
+                show: false
             }
         });
     };
@@ -90,11 +100,6 @@ class QualificationChart extends Component {
         return null;
     }
     shouldComponentUpdate(nextProps, nextState) {
-        // if (nextProps.organizationalUnits !== this.state.organizationalUnits ||
-        //     !QualificationChart.isEqual(nextProps.employeesManager.listAllEmployees, this.state.listAllEmployees) ||
-        //     !QualificationChart.isEqual(nextProps.employeesManager.listEmployeesOfOrganizationalUnits, this.state.listEmployeesOfOrganizationalUnits)) {
-        //     return true;
-        // };
         return true;
     }
 
@@ -181,19 +186,28 @@ class QualificationChart extends Component {
                 <div className="box box-solid">
                     <div className="box-header with-border">
                         <h3 className="box-title">
-                            {`Trình độ chuyên môn của nhân sự ${(!organizationalUnits || organizationalUnits.length === department.list.length) ? "trong công ty" : organizationalUnitsName.join(', ')}`}
+                            {`Trình độ chuyên môn của nhân sự trong công ty`}
                         </h3>
                     </div>
                     <div className="box-body">
-                        <div className="dashboard_box_body">
-                            <div className="box-tools pull-left" >
-                                <div className="btn-group pull-left">
-                                    <button type="button" className={`btn btn-xs ${typeChart ? "active" : "btn-danger"}`} onClick={() => this.handleChangeViewChart(false)}>Trình độ chuyên môn</button>
-                                    <button type="button" className={`btn btn-xs ${typeChart ? 'btn-danger' : "active"}`} onClick={() => this.handleChangeViewChart(true)}>Trình độ chuyên ngành</button>
-                                </div>
+                        <div className="box-tools pull-left" >
+                            <div className="btn-group pull-left">
+                                <button type="button" className={`btn btn-xs ${typeChart ? "active" : "btn-danger"}`} onClick={() => this.handleChangeViewChart(false)}>Trình độ chuyên môn</button>
+                                <button type="button" className={`btn btn-xs ${typeChart ? 'btn-danger' : "active"}`} onClick={() => this.handleChangeViewChart(true)}>Trình độ chuyên ngành</button>
                             </div>
-                            <div ref="donutChart"></div>
                         </div>
+                        <section id={"donutChart"} className="c3-chart-container">
+                            <div ref="donutChart"></div>
+                            <div style={{ paddingTop: 10 }}>
+                                <CustomLegendC3js
+                                    chart={this.chart}
+                                    chartId={"donutChart"}
+                                    legendId={"donutChartLegend"}
+                                    title={`${typeChart ? "Danh sách trình độ chuyên ngành" : "Dánh sách trình độ chuyên môn"}`}
+                                    dataChartLegend={this.dataChart && this.dataChart.map(item => item[0])}
+                                />
+                            </div>
+                        </section>
                     </div>
                 </div>
             </React.Fragment>

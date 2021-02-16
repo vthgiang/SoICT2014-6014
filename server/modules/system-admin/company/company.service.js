@@ -19,6 +19,7 @@ const nodemailer = require("nodemailer");
 const generator = require("generate-password");
 const Terms = require('../../../helpers/config');
 const { connect } = require('../../../helpers/dbHelper');
+const { sendEmail } = require("../../../helpers/emailHelper");
 
 /**
  * Lấy danh sách tất cả các công ty
@@ -581,4 +582,24 @@ exports.getCompanyInformation = async (shortName) => {
     return await Company(
         connect(DB_CONNECTION, process.env.DB_NAME)
     ).findOne({ shortName: shortName });   
+}
+
+exports.requestService = async (data) => {
+    let { name, email, phone, service } = data;
+
+    let sendTo = process.env.EMAIL_SUPPORT;
+    let subject = '[ĐĂNG KÝ SỬ DỤNG DỊCH VỤ]';
+    let text = '';
+    let html = `
+        <div>
+            <h3>Thông tin khách hàng đăng ký sử dụng dịch vụ</h3>
+            <p>Tên khách hàng: ${name}</p>
+            <p>Email: ${email}</p>
+            <p>Số điện thoại: ${phone}</p>
+            <p>Gói dịch: ${service}</p>
+        </div>
+    `;
+    let mail = await sendEmail(sendTo, subject, text, html);
+
+    return mail;
 }

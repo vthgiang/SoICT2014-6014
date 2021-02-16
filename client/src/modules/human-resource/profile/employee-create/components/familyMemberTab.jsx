@@ -9,9 +9,9 @@ const FamilyMemberTab = ({
     tabType = "create",
     houseHold,
     editMember,
-    _fm_openEditFamilyMemberModal,
     _fm_deleteMember,
-    id, translate,
+    id,
+    translate,
     _fm_handleHeadHouseHoldName,
     _fm_handleDocumentType,
     _fm_handleHouseHoldNumber,
@@ -33,7 +33,8 @@ const FamilyMemberTab = ({
         ward: '',
         houseHoldAddress: '',
         phone: '',
-        houseHoldCode: ''
+        houseHoldCode: '',
+        memberEdit: '',
     });
 
     const _showMemberGender = (gender) => {
@@ -54,6 +55,22 @@ const FamilyMemberTab = ({
 
     const _deleteMember = (index) => {
         _fm_deleteMember(index);
+    }
+
+    // mở modal form tạo mới thông tin nhan viên
+    const _openModalAddFamilyMemberCreateForm = () => {
+        window.$(`#form-add-family-members-${id}`).modal('show'); // hiển thị form thành viên hộ gia đình
+    }
+
+    const _fm_openEditFamilyMemberModal = async (index, member) => {
+        await setEmployeeHoldHouse({
+            ...employeeHouseHold,
+            memberEdit: {
+                ...member,
+                index,
+            },
+        })
+        window.$(`#form-edit-family-members-${id}`).modal('show');
     }
 
     useEffect(() => {
@@ -122,15 +139,22 @@ const FamilyMemberTab = ({
                     <legend className="scheduler-border" >
                         <h4 className="box-title">{translate('human_resource.profile.house_hold.members.title')}</h4>
                     </legend>
+                    <button className="btn btn-success pull-right" style={{ cursor: 'pointer', marginBottom: '10px' }} onClick={_openModalAddFamilyMemberCreateForm}>{translate('general.add')}</button>
 
+                    {/* Modal cho form thêm mới thông tin nhân viên */}
                     <FamilyMemberCreate
                         _save={_fm_saveMember}
+                        id={id}
                     />
 
-                    <FamilyMemberEdit
-                        editMember={editMember}
-                        _save={_fm_editMember}
-                    />
+                    {
+                        (employeeHouseHold.memberEdit) &&
+                        <FamilyMemberEdit
+                            id={id}
+                            editMember={employeeHouseHold.memberEdit}
+                            _save={_fm_editMember}
+                        />
+                    }
 
                     {/* Bảng danh sách thông tin các thành viên trong hộ gia đình */}
                     <div id="container-employee-family-member" className="row">
@@ -179,7 +203,7 @@ const FamilyMemberTab = ({
                                             <td>{member.numberPassport}</td>
                                             <td>{member.note}</td>
                                             <td>
-                                                <a className="text-orange" onClick={() => _fm_openEditFamilyMemberModal(index)}><i className="material-icons">edit</i></a>
+                                                <a className="text-orange" onClick={() => _fm_openEditFamilyMemberModal(index, member)}><i className="material-icons">edit</i></a>
                                                 <ConfirmNotification
                                                     icon="question"
                                                     title={translate('human_resource.profile.house_hold.delete')}

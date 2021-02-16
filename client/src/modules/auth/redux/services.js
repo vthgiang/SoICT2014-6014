@@ -18,7 +18,8 @@ export const AuthService = {
     changeInformation,
     changePassword,
     downloadFile,
-    answerAuthQuestion
+    answerAuthQuestion,
+    checkExistsPassword2
 };
 
 async function login(data) {
@@ -132,8 +133,15 @@ function downloadFile(path, type) {
 
 function answerAuthQuestion(data) {
     return sendRequest({
-        url: `${process.env.REACT_APP_SERVER}/auth/answer-questions`,
+        url: `${process.env.REACT_APP_SERVER}/auth/profile/answer-questions`,
         method: 'PATCH',
         data
+    }, true, true, 'auth');
+}
+
+function checkExistsPassword2() {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/auth/profile/check-user-exists-password2`,
+        method: 'GET',
     }, false, false, 'auth');
 }

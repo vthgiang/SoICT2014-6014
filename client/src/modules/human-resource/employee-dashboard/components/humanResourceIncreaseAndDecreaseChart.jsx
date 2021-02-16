@@ -13,7 +13,9 @@ import 'c3/c3.css';
 class HumanResourceIncreaseAndDecreaseChart extends Component {
     constructor(props) {
         super(props);
-        let startDate = ['01', new Date().getFullYear()].join('-');
+        // let startDate = ['01', new Date().getFullYear()].join('-');
+        let date = new Date()
+        let startDate = this.formatDate(date.setMonth(new Date().getMonth() - 5), true);
         this.state = {
             lineChart: false,
             startDate: startDate,
@@ -285,7 +287,7 @@ class HumanResourceIncreaseAndDecreaseChart extends Component {
         return (
             <div className="box box-solid" >
                 <div className="box-header with-border" >
-                    <h3 className="box-title" > {`${nameChart} của ${(organizationalUnitsName.length === 0 || organizationalUnitsName.length === department.list.length) ? "công ty" : organizationalUnitsName.join(', ')} ${startDateShow}`}<i className="fa fa-fw fa-caret-right"></i>{endDateShow}</h3> </div>
+                    <h3 className="box-title" > {`${nameChart} của công ty ${startDateShow}`}<i className="fa fa-fw fa-caret-right"></i>{endDateShow}</h3> </div>
                 <div className="box-body" >
                     <div className="qlcv" style={{ marginBottom: 15 }} >
                         <div className="form-inline" >
@@ -293,7 +295,10 @@ class HumanResourceIncreaseAndDecreaseChart extends Component {
                                 <label className="form-control-static" > {translate('kpi.evaluation.dashboard.organizational_unit')} </label>
                                 <SelectMulti id="multiSelectUnits-towBarChart"
                                     items={childOrganizationalUnit.map((p, i) => { return { value: p.id, text: p.name } })}
-                                    options={{ nonSelectedText: translate('page.non_unit'), allSelectedText: translate('page.all_unit') }}
+                                    options={{
+                                        nonSelectedText: translate('page.non_unit'),
+                                        allSelectedText: translate('page.all_unit'),
+                                    }}
                                     onChange={this.handleSelectOrganizationalUnit}
                                     value={organizationalUnits}
                                 >

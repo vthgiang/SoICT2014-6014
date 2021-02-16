@@ -6,29 +6,34 @@
     border-radius: 3px;
     line-height: 16px;
     letter-spacing: 0.3px;
-    padding: 8px;
+    padding: 5px;
     font-size: 13px;
     box-shadow: 0 0 5px #7d7d7d;
     animation: FadeIn_notifyHeader ease-in .3s;
     display: block;
 }
 .urgent{
-    top: -109px;
-    left: 27%;
+    top: -220px;
+    left: 28%;
+    z-index: 1031;
 }
 .needtodo{
-    top: -93px;
-    left: 26%;
+    top: -231px;
+    left: 26.5%;
+    z-index: 1031;
 }
 
 .menu-list-item::before{
     content: "";
     position: absolute;
-    bottom: -24px;
-    left: 0px;
-    border-width: 12px 11px;
+    bottom: -18px;
+    left: 1px;
+    border-width: 10px 8px;
     border-style: solid;
-    border-color: #c7a984 transparent transparent transparent;
+    border-color: transparent #c7a984 transparent transparent;
+    transform: rotate(
+    -90deg
+    );
 }
 
 

@@ -342,9 +342,9 @@ class ModalEditTaskByResponsibleEmployee extends Component {
     validateTaskDescription = (value, willUpdateState) => {
         let { translate } = this.props;
         let errorMessage = undefined;
-        if (value === "") {
-            errorMessage = translate('task.task_perform.modal_approve_task.err_empty');
-        }
+        // if (value === "") {
+        //     errorMessage = translate('task.task_perform.modal_approve_task.err_empty');
+        // }
         if (willUpdateState) {
             this.setState(state => {
                 return {
@@ -505,13 +505,14 @@ class ModalEditTaskByResponsibleEmployee extends Component {
                                     </div>
                                     <div
                                         className={`form-group ${errorTaskDescription === undefined ? "" : "has-error"}`}>
-                                        <label>{translate('task.task_management.detail_description')}<span className="text-red">*</span></label>
+                                        <label>{translate('task.task_management.detail_description')}</label>
                                         <QuillEditor
                                             id={"task-edit-by-responsible"}
-                                            toolbar={false}
+                                            table={false}
+                                            embeds={false}
                                             quillValueDefault={taskDescriptionDefault}
                                             getTextData={this.handleTaskDescriptionChange}
-                                            height={80}
+                                            height={150}
                                             placeholder={"Mô tả công việc"}
                                         />
                                         <ErrorLabel content={errorTaskDescription} />

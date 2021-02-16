@@ -18,7 +18,7 @@ const NotificationSchema = new Schema({
         type: String
     },
     associatedDataObject: { // Chỉ dùng cho app mobile
-        dataType: { // Task: 1, 
+        dataType: { // Task: 1, Asset: 2, KPI:3
             type: Number
         },
         value: { // ID của object

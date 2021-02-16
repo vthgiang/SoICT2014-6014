@@ -886,7 +886,7 @@ class EmployeeEditFrom extends Component {
         this.setState({
             houseHold: {
                 ...this.state.houseHold,
-                houseHoldName: e.target.value
+                headHouseHoldName: e.target.value
             }
         });
     }
@@ -963,16 +963,6 @@ class EmployeeEditFrom extends Component {
         });
     }
 
-    _fm_openEditFamilyMemberModal = (index) => {
-        this.setState({
-            editMember: {
-                index,
-                ...this.state.houseHold.familyMembers[index]
-            }
-        });
-        window.$(`#form-edit-family-members`).slideToggle();
-    }
-
     _fm_editMember = (index, data) => {
         let familyMembers = this.state.houseHold.familyMembers;
         familyMembers[index] = data;
@@ -1024,7 +1014,7 @@ class EmployeeEditFrom extends Component {
                                 <li><a title={translate('human_resource.profile.tab_name.menu_reward_discipline_title')} data-toggle="tab" href={`#edit_reward${_id}`}>{translate('human_resource.profile.tab_name.menu_reward_discipline')}</a></li>
                                 <li><a title={translate('menu.annual_leave_personal')} data-toggle="tab" href={`#edit_salary${_id}`}>{translate('menu.annual_leave_personal')}</a></li>
                                 <li><a title={"Công việc - chuyên ngành tương đương"} data-toggle="tab" href={`#edit_major_career${_id}`}>Công việc - chuyên ngành tương đương</a></li>
-                                <li><a title={"Thành viên hộ gia đình"} data-toggle="tab" href="#edit_family_member">Thành viên hộ gia đình</a></li>
+                                <li><a title={"Thành viên hộ gia đình"} data-toggle="tab" href={`#edit_family_member${_id}`}>Thành viên hộ gia đình</a></li>
                                 <li><a title={translate('human_resource.profile.tab_name.menu_attachments_title')} data-toggle="tab" href={`#edit_attachments${_id}`}>{translate('human_resource.profile.tab_name.menu_attachments')}</a></li>
                             </ul>
                             <div className="tab-content">
@@ -1153,10 +1143,9 @@ class EmployeeEditFrom extends Component {
                                 />
                                 {/* Tab thành viên hộ gia đình */}
                                 <FamilyMemberTab
-                                    id="edit_family_member"
+                                    id={`edit_family_member${_id}`}
                                     tabEditMember="modal-edit-member-e"
                                     editMember={editMember}
-                                    _fm_openEditFamilyMemberModal={this._fm_openEditFamilyMemberModal}
                                     _fm_editMember={this._fm_editMember}
                                     _fm_deleteMember={this._fm_deleteMember}
                                     houseHold={houseHold}

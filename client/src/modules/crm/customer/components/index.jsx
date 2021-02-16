@@ -218,7 +218,6 @@ class CrmCustomer extends Component {
             exportData = this.convertDataToExportData(customers.list);
         }
 
-        console.log('tableId', tableId)
         return (
             <div className="box">
                 <div className="box-body qlcv">
@@ -304,7 +303,7 @@ class CrmCustomer extends Component {
                             <button type="button" className="btn btn-success" onClick={this.search} title={translate('form.search')}>{translate('form.search')}</button>
                         </div>
                     </div>
-                    <table className="table table-hover table-striped table-bordered" id="table-manage-crm-customer" style={{ marginTop: '10px' }}>
+                    <table className="table table-hover table-striped table-bordered" id={tableId} style={{ marginTop: '10px' }}>
                         <thead>
                             <tr>
                                 <th>{translate('crm.customer.code')}</th>
@@ -326,7 +325,6 @@ class CrmCustomer extends Component {
                                             translate('crm.customer.mobilephoneNumber'),
                                             translate('crm.customer.address')
                                         ]}
-                                        limit={this.state.limit}
                                         setLimit={this.setLimit}
                                         tableId={tableId}
                                     />
@@ -376,7 +374,6 @@ class CrmCustomer extends Component {
     }
 
     componentDidMount() {
-        console.log('state', this.state)
         this.props.getCustomers(this.state);
         this.props.getDepartment();
         this.props.getGroups();

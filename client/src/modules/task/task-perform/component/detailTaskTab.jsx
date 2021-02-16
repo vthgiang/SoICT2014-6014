@@ -16,12 +16,13 @@ import { SelectFollowingTaskModal } from './selectFollowingTaskModal';
 import { withTranslate } from 'react-redux-multilingual';
 import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
 import { ShowMoreShowLess } from '../../../../common-components';
+import moment from 'moment';
 import Swal from 'sweetalert2';
 
 import parse from 'html-react-parser';
 import { TaskAddModal } from '../../task-management/component/taskAddModal';
 import { ModalAddTaskTemplate } from '../../task-template/component/addTaskTemplateModal';
-
+import TaskProjectAction from '../../task-project/redux/action';
 class DetailTaskTab extends Component {
 
     constructor(props) {
@@ -142,6 +143,10 @@ class DetailTaskTab extends Component {
         return true;
     }
 
+    componentDidMount() {
+        this.props.getAllTaskProject();
+    }
+
     handleChangeCollapseInfo = async () => {
         await this.setState(state => {
             return {
@@ -171,7 +176,7 @@ class DetailTaskTab extends Component {
             if (warning[0] === 'time_overlapping') {
                 Swal.fire({
                     title: `Bạn đã hẹn tắt bấm giờ cho công việc [ ${warning[1]} ]`,
-                    html: `<h4 class="text-red">Hủy bỏ bấm giờ làm việc và bấm giờ công việc mới</h4>`,
+                    html: `<h4 class="text-red">Lưu lại những giờ đã bấm được cho công việc [ ${warning[1]} ] và bấm giờ công việc mới</h4>`,
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#3085d6',
@@ -263,9 +268,8 @@ class DetailTaskTab extends Component {
 
     }
 
-    handleCopyTask = async (id, role) => {
-        console.log('copy');
-        await this.setState(state => {
+    handleCopyTask = (id, role) => {
+        this.setState(state => {
             return {
                 ...state,
                 showCopy: `copy-task-${id}`
@@ -632,6 +636,30 @@ class DetailTaskTab extends Component {
         return employeeSelectBox;
     }
 
+    remindEvaluateTaskOnThisMonth = (task) => {
+        let startDate = new Date(task?.startDate);
+        let endDate = new Date(task?.endDate);
+
+        let endOfMonth = new moment().endOf("month").toDate();
+        let today = new Date();
+        let check;
+
+        // kiểm tra đánh giá tháng hiện tại
+        let denta = Math.abs(endOfMonth.getTime() - today.getTime());
+        let dentaDate = denta / (24 * 60 * 60 * 1000);
+
+        if (dentaDate <= 25) {
+            check = true;
+        }
+        return check;
+    }
+
+    /** sắp xếp đánh giá theo thứ tự tháng */ 
+    handleSortMonthEval = (evaluations) => {
+        const sortedEvaluations = evaluations.sort((a, b) => new Date(b.date) - new Date(a.date));
+        return sortedEvaluations;
+    }
+
     render() {
         const { tasks, performtasks, user, translate } = this.props;
         const { showToolbar, id, isProcess } = this.props; // props form parent component ( task, id, showToolbar, onChangeTaskRole() )
@@ -640,7 +668,7 @@ class DetailTaskTab extends Component {
         let task;
         let codeInProcess, typeOfTask, statusTask, checkInactive = true, evaluations, evalList = [];
         // Các biến dùng trong phần Nhắc Nhở
-        let warning = false, checkConfirmTask, checkEvaluationTaskAction, checkEvaluationTaskAndKpiLink, checkDeadlineForEvaluation, checkConfirmAssginOfOrganizationalUnit;
+        let warning = false, checkEvaluate, checkConfirmTask, checkEvaluationTaskAction, checkEvaluationTaskAndKpiLink, checkDeadlineForEvaluation, checkConfirmAssginOfOrganizationalUnit;
         // Các biến dùng cho biểu đồ đóng góp thời gian
         let hoursSpentOfEmployeeInTask, hoursSpentOfEmployeeInEvaluation = {};
         // Các biến check trưởng đơn vị phối hợp
@@ -679,7 +707,8 @@ class DetailTaskTab extends Component {
         if (evaluations && evaluations.length > 0) {
             for (let i = 0; i < evaluations.length; i++) {
                 let prevEval;
-                let prevDate = task.startDate;
+                let startDate = task.startDate;
+                let prevDate = startDate;
                 let splitter = this.formatDate(evaluations[i].date).split("-");
 
                 let dateOfEval = new Date(splitter[2], splitter[1] - 1, splitter[0]);
@@ -687,7 +716,7 @@ class DetailTaskTab extends Component {
                 let newMonth = dateOfPrevEval.getMonth() - 1;
                 if (newMonth < 0) {
                     newMonth += 12;
-                    dateOfPrevEval.setYear(dateOfPrevEval.getYear() - 1);
+                    dateOfPrevEval.setYear(dateOfPrevEval.getFullYear() - 1);
                 }
                 dateOfPrevEval.setDate(15);
                 dateOfPrevEval.setMonth(newMonth);
@@ -698,19 +727,29 @@ class DetailTaskTab extends Component {
                 prevEval = evaluations.find(e => (monthOfPrevEval === new Date(e.date).getMonth() && yearOfPrevEval === new Date(e.date).getFullYear()));
                 if (prevEval) {
                     prevDate = prevEval.date;
+                } else {
+                    let strPrevMonth = `${monthOfPrevEval + 1}-${yearOfPrevEval}`
+                    // trong TH k có đánh giá tháng trước, so sánh tháng trước với tháng start date
+                    if (!((yearOfPrevEval === new Date(startDate).getFullYear() && monthOfPrevEval < new Date(startDate).getMonth()) // bắt đầu tháng bất kì khác tháng 1
+                        || (yearOfPrevEval < new Date(startDate).getFullYear()) // TH bắt đầu là tháng 1 - chọn đánh giá tháng 1
+                    )) {
+                        prevDate = moment(strPrevMonth, 'MM-YYYY').endOf("month").toDate();
+                    }
                 }
                 evalList.push({ ...evaluations[i], prevDate: prevDate })
             }
         }
 
+        evalList = this.handleSortMonthEval(evalList);
 
         // Xử lý dữ liệu phần Nhắc nhở
+        checkEvaluate = this.remindEvaluateTaskOnThisMonth(task);
         checkConfirmTask = this.checkConfirmTask(task);
         checkEvaluationTaskAction = this.checkEvaluationTaskAction(task);
         checkEvaluationTaskAndKpiLink = this.checkEvaluationTaskAndKpiLink(task);
         checkDeadlineForEvaluation = this.checkDeadlineForEvaluation(task);
         checkConfirmAssginOfOrganizationalUnit = this.checkConfirmAssginOfOrganizationalUnit(task);
-        warning = (statusTask === "inprocess") && ((checkConfirmTask && checkConfirmTask.checkConfirm)
+        warning = (statusTask === "inprocess") && ((checkEvaluate) || (checkConfirmTask && checkConfirmTask.checkConfirm)
             || (checkEvaluationTaskAction && checkEvaluationTaskAction.checkEvaluationTaskAction)
             || (checkEvaluationTaskAndKpiLink && checkEvaluationTaskAndKpiLink.checkEvaluationTask)
             || (checkEvaluationTaskAndKpiLink && checkEvaluationTaskAndKpiLink.checkKpiLink)
@@ -726,7 +765,7 @@ class DetailTaskTab extends Component {
 
                 if (tsheetlog && tsheetlog.stoppedAt && tsheetlog.creator) {
                     let times = hoursSpentOfEmployeeInTask[tsheetlog.creator.name] ? hoursSpentOfEmployeeInTask[tsheetlog.creator.name] : 0;
-                    
+
                     if (tsheetlog.acceptLog) {
                         hoursSpentOfEmployeeInTask[tsheetlog.creator.name] = times + tsheetlog.duration;
                     }
@@ -761,7 +800,6 @@ class DetailTaskTab extends Component {
             employeeCollaboratedWithUnitSelectBox = this.setSelectBoxOfUserSameDepartmentCollaborated(task);
         }
 
-        console.log('taskkk', task);
         return (
             <React.Fragment>
                 {(showToolbar) &&
@@ -894,6 +932,11 @@ class DetailTaskTab extends Component {
                                     && <div><strong>{translate('task.task_management.not_have_evaluation')}</strong></div>
                                 }
 
+                                {/* Nhắc nhở đánh giá */
+                                    task.status === "inprocess" && checkEvaluationTaskAndKpiLink && checkEvaluationTaskAndKpiLink.checkEvaluationTask && checkEvaluate
+                                    && <div><strong>{translate("task.task_management.warning_evaluate")}</strong></div>
+                                }
+
                                 {/* Chưa liên kết KPI */}
                                 {
                                     task.status === "inprocess" && checkEvaluationTaskAndKpiLink && checkEvaluationTaskAndKpiLink.checkKpiLink
@@ -1000,7 +1043,7 @@ class DetailTaskTab extends Component {
 
                                 {/* Mô tả công việc */}
                                 <div>
-                                <strong>{translate('task.task_management.detail_description')}:</strong>
+                                    <strong>{translate('task.task_management.detail_description')}:</strong>
                                     <ShowMoreShowLess
                                         id={"task-description"}
                                         isHtmlElement={true}
@@ -1268,11 +1311,11 @@ class DetailTaskTab extends Component {
                 }
                 {
                     (id && showCopy === `copy-task-${id}`) &&
-                    <TaskAddModal id={`copy-task-${id}`} task={task}/>
+                    <TaskAddModal id={`copy-task-${id}`} task={task} />
                 }
                 {
                     (id && showSaveAsTemplate === `${id}`) &&
-                    <ModalAddTaskTemplate savedTaskAsTemplate={true} savedTaskItem={task} savedTaskId={`${id}`} task={task}/>
+                    <ModalAddTaskTemplate savedTaskAsTemplate={true} savedTaskItem={task} savedTaskId={`${id}`} task={task} />
                 }
             </React.Fragment>
         );
@@ -1297,7 +1340,8 @@ const actionGetState = { //dispatchActionToProps
     editStatusTask: performTaskAction.editStatusOfTask,
     editHoursSpentInEvaluate: performTaskAction.editHoursSpentInEvaluate,
     confirmTask: performTaskAction.confirmTask,
-    getAllUserInAllUnitsOfCompany: UserActions.getAllUserInAllUnitsOfCompany
+    getAllUserInAllUnitsOfCompany: UserActions.getAllUserInAllUnitsOfCompany,
+    getAllTaskProject: TaskProjectAction.get,
 }
 
 const detailTask = connect(mapStateToProps, actionGetState)(withTranslate(DetailTaskTab));

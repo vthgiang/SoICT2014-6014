@@ -6,7 +6,6 @@ export const createUnitKpiActions = {
     editKPIUnit,
     deleteKPIUnit,
     deleteTargetKPIUnit,
-    editStatusKPIUnit,
     getKPIParent,
     getAllOrganizationalUnitKpiSetByTime,
     getAllOrganizationalUnitKpiSetByTimeOfChildUnit,
@@ -92,14 +91,14 @@ function getAllOrganizationalUnitKpiSetByTimeOfChildUnit(roleId, startDate, endD
     }
 }
 // Chỉnh sửa kpi đơn vị
-function editKPIUnit(id, newKPI) {
+function editKPIUnit(id, data, type) {
     return dispatch => {
         dispatch({
             type: createUnitKpiConstants.EDIT_KPIUNIT_REQUEST,
             payload: id
         });
 
-        createUnitKpiServices.editKPIUnit(id, newKPI)
+        createUnitKpiServices.editKPIUnit(id, data, type)
             .then(res => {
                 dispatch({
                     type: createUnitKpiConstants.EDIT_KPIUNIT_SUCCESS,
@@ -164,40 +163,18 @@ function deleteTargetKPIUnit(id, organizationalUnitKpiSetId) {
     };
 }
 
-// Chỉnh sửa trạng thái KPI đơn vị
-function editStatusKPIUnit(id, status) {
-    return dispatch => {
-        dispatch({
-            type: createUnitKpiConstants.EDITSTATUS_KPIUNIT_REQUEST,
-            payload: id
-        });
 
-        createUnitKpiServices.editStatusKPIUnit(id, status)
-            .then(res => {
-                dispatch({
-                    type: createUnitKpiConstants.EDITSTATUS_KPIUNIT_SUCCESS,
-                    payload: res.data.content
-                })
-            })
-            .catch(error => {
-                dispatch({
-                    type: createUnitKpiConstants.EDITSTATUS_KPIUNIT_FAILURE,
-                    payload: error
-                })
-            })
-    };
-}
-
-
-// lấy kpi đơn vị cha
-function getKPIParent(currentRole) {
+/** Lấy KPI đơn vị cha của 1 đơn vị trong 1 tháng
+ * @data gồm các thuộc tính: roleId, organizationalUnitId, month
+ */
+function getKPIParent(data) {
     return dispatch => {
         dispatch({
             type: createUnitKpiConstants.GETPARENT_KPIUNIT_REQUEST,
-            payload: currentRole
+            payload: data ? data.roleId : null
         });
 
-        createUnitKpiServices.getKPIParent(currentRole)
+        createUnitKpiServices.getKPIParent(data)
             .then(res => {
                 dispatch({
                     type: createUnitKpiConstants.GETPARENT_KPIUNIT_SUCCESS,

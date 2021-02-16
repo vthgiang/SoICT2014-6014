@@ -6,9 +6,9 @@ import moment from 'moment';
 import { DialogModal, ButtonModal, SelectBox, DatePicker, TreeSelect, ErrorLabel, UploadFile } from '../../../../../common-components';
 import { DocumentActions } from '../../../redux/actions';
 import { DocumentImportForm } from './documentImportForm';
-import { UserAction } from '../'
 import { AddVersion } from './addVerson';
-import EditVersionForm from './editVersionForm'
+import EditVersionForm from './editVersionForm';
+import { getStorage } from '../../../../../config';
 
 class CreateForm extends Component {
     constructor(props) {
@@ -276,7 +276,7 @@ class CreateForm extends Component {
 
 
     save = () => {
-        const {
+        let {
             documentName,
             documentCategory,
             documentDomains,
@@ -300,6 +300,9 @@ class CreateForm extends Component {
 
         } = this.state;
         const formData = new FormData();
+        if (!documentArchivedRecordPlaceOrganizationalUnit) {
+            documentArchivedRecordPlaceOrganizationalUnit = this.findDepartment();
+        }
         formData.append('name', documentName);
         formData.append('category', documentCategory);
         if (documentDomains) for (let i = 0; i < documentDomains.length; i++) {
@@ -376,6 +379,7 @@ class CreateForm extends Component {
             formData.append('userCanView[]', documentUserCanView[i]);
         }
         if (documentArchivedRecordPlaceOrganizationalUnit) {
+
             formData.append('archivedRecordPlaceOrganizationalUnit', documentArchivedRecordPlaceOrganizationalUnit);
         }
         if (documentArchivedRecordPlaceOrganizationalUnit) {
@@ -563,11 +567,32 @@ class CreateForm extends Component {
         }
     }
 
+    /**
+     * 
+     * @param {*vai tro ng dang dang nhap} currentRole 
+     * Ham tim ra những phòng ban mà người dùng đang đăng nhập là manager
+     */
+    findDepartment() {
+        const { department } = this.props;
+        let res = [];
+        let currentRole = getStorage('currentRole');
+        const list = department.list;
+        for (let i in list) {
+            for (let j in list[i].managers) {
+                if (list[i].managers[j].id === currentRole) {
+                    res.push(list[i]);
+                    break;
+                }
+            }
+        }
+        return res.map(elem => elem._id);
+    }
+
     render() {
         const { translate, role, documents, department, user } = this.props;
         const { list } = documents.administration.domains;
 
-        const {
+        let {
             errorName, errorCategory, errorOfficialNumber,
             documentArchives, documentDomains, listDocumentRelationship,
             documentVersions, currentVersion, documentUserCanView,
@@ -578,6 +603,9 @@ class CreateForm extends Component {
         const documentRoles = role.list.map(role => { return { value: role._id, text: role.name } });
         const relationshipDocs = documents.administration.relationshipDocs.paginate.map(doc => { return { value: doc._id, text: doc.name } });
         let path = documentArchives ? this.findPath(archives, documentArchives) : "";
+
+        console.log('aaaaaaaa', role);
+
         return (
             <React.Fragment>
 
@@ -758,8 +786,8 @@ class CreateForm extends Component {
                                                     multiple={true}
                                                 />
                                             </div>
-                                            <div>
-                                                <label>{translate('manage_role.users')}</label>
+                                            <div className="form-group">
+                                                <label>{translate('document.users')}</label>
                                                 <SelectBox
                                                     id={`select-document-user-can-view`}
                                                     className="form-control select2"

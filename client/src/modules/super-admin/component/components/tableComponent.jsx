@@ -9,12 +9,18 @@ import { LinkActions } from '../../link/redux/actions';
 import { RoleActions } from '../../role/redux/actions';
 
 import ComponentInfoForm from './componentInfoForm';
+import { getTableConfiguration } from '../../../../helpers/tableConfiguration';
 
 class TableComponent extends Component {
     constructor(props) {
         super(props);
+        const tableId = "table-manage-component";
+        const defaultConfig = { limit: 10 }
+        const limit = getTableConfiguration(tableId, defaultConfig).limit;
+
         this.state = {
-            limit: 10,
+            tableId,
+            limit: limit,
             page: 1,
             option: 'name', // Mặc định tìm kiếm theo tên
             value: ''
@@ -82,7 +88,7 @@ class TableComponent extends Component {
 
     render() {
         const { component, translate } = this.props;
-        const { currentRow } = this.state;
+        const { currentRow, tableId } = this.state;
 
         return (
             <React.Fragment>
@@ -110,7 +116,7 @@ class TableComponent extends Component {
                 />
 
                 {/* Bảng dữ liệu các components */}
-                <table className="table table-hover table-striped table-bordered" id="table-manage-component">
+                <table className="table table-hover table-striped table-bordered" id={tableId}>
                     <thead>
                         <tr>
                             <th>{translate('manage_component.name')}</th>
@@ -126,9 +132,8 @@ class TableComponent extends Component {
                                         translate('manage_component.description'),
                                         translate('manage_component.roles')
                                     ]}
-                                    limit={this.state.limit}
                                     setLimit={this.setLimit}
-                                    tableId="table-manage-component"
+                                    tableId={tableId}
                                 />
                             </th>
                         </tr>

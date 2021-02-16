@@ -7,7 +7,6 @@ export const createUnitKpiServices = {
     getAllOrganizationalUnitKpiSetByTime,
     getAllOrganizationalUnitKpiSetByTimeOfChildUnit,
     addKPIUnit,
-    editStatusKPIUnit,
     editKPIUnit,
     deleteKPIUnit,
     addTargetKPIUnit,
@@ -41,16 +40,18 @@ function getCurrentKPIUnit(roleId, organizationalUnitId, month) {
     }, false, true, 'kpi.organizational_unit');
 }
 
-/*
- *Lấy KPI đơn vị cha
+/** Lấy KPI đơn vị cha của 1 đơn vị trong 1 tháng
+ * @data gồm các thuộc tính: roleId, organizationalUnitId, month
  */
-function getKPIParent(parentUnit) {
+function getKPIParent(data) {
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/kpi/organizational-unit/creation/organizational-unit-kpi-sets`,
         method: 'GET',
         params: {
             parent: 1,
-            roleId: parentUnit
+            roleId: data ? data.roleId : null,
+            organizationalUnitId: data ? data.organizationalUnitId : null,
+            month: data ? data.month : null
         }
     }, false, true, 'kpi.organizational_unit');
 }
@@ -90,40 +91,30 @@ function getAllOrganizationalUnitKpiSetByTimeOfChildUnit(roleId, startDate, endD
 
 // Khởi tạo KPI đơn vị 
 function addKPIUnit(newKPI) {
-    var id = getStorage("userId");
-
-    newKPI = { ...newKPI, creator: id };
-
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/kpi/organizational-unit/creation/organizational-unit-kpi-sets`,
         method: 'POST',
-        data: newKPI
+        data: {
+            date: newKPI ? newKPI.month : null,
+            organizationalUnitId: newKPI ? newKPI.organizationalUnitId : null
+        }
     }, true, true, 'kpi.organizational_unit.create_organizational_unit_kpi_set_modal');
 }
 
 
 
 // Chỉnh sửa KPI đơn vị
-function editKPIUnit(kpiId, newKPI) {
-    var userId = getStorage("userId");
-    newKPI = { ...newKPI, creator: userId };
-    return sendRequest({
-        url: `${process.env.REACT_APP_SERVER}/kpi/organizational-unit/creation/organizational-unit-kpi-sets/${kpiId}`,
-        method: 'PATCH',
-        data: newKPI
-    }, true, true, 'kpi.organizational_unit.create_organizational_unit_kpi_set');
-}
-
-// Chỉnh sửa trạng thái của KPI đơn vị
-function editStatusKPIUnit(kpiId, status) {
+function editKPIUnit(kpiId, data, type) {
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/kpi/organizational-unit/creation/organizational-unit-kpi-sets/${kpiId}`,
         method: 'PATCH',
         params: {
-            status: status,
-        }
+            type: type
+        },
+        data: data
     }, true, true, 'kpi.organizational_unit.create_organizational_unit_kpi_set');
 }
+
 
 // Xóa KPI đơn vị
 function deleteKPIUnit(kpiId) {

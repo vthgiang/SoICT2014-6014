@@ -11,6 +11,7 @@ import { DepartmentActions } from '../../../../super-admin/organizational-unit/r
 import { CareerReduxAction } from "../../../career/redux/actions";
 import { MajorActions } from "../../../major/redux/actions";
 import { FieldsActions } from '../../../field/redux/actions';
+import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
 
 class EmployeeManagement extends Component {
     constructor(props) {
@@ -29,7 +30,12 @@ class EmployeeManagement extends Component {
             }
         }
 
+        const tableId = "table-employee-management";
+        const defaultConfig = { limit: 5 }
+        const limit = getTableConfiguration(tableId, defaultConfig).limit;
+
         this.state = {
+            tableId,
             position: null,
             gender: null,
             employeeName: null,
@@ -39,7 +45,7 @@ class EmployeeManagement extends Component {
             professionalSkills: null,
             careerFields: null,
             page: 0,
-            limit: 5,
+            limit: limit,
         }
     }
 
@@ -194,7 +200,6 @@ class EmployeeManagement extends Component {
      * @param {*} value : Giá trị chuyên ngành
      */
     handleCareerFieldChange = (value) => {
-        console.log(value)
         if (value.length === 0) {
             value = null
         };
@@ -338,11 +343,21 @@ class EmployeeManagement extends Component {
                 healthInsuranceEndDate: this.formatDate(employee.healthInsuranceEndDate),
                 socialInsuranceNumber: employee.socialInsuranceNumber,
                 archivedRecordNumber: employee.archivedRecordNumber,
+
+                headHouseHoldName: employee.houseHold?.headHouseHoldName,
+                documentType: employee.houseHold?.documentType,
+                houseHoldNumber: employee.houseHold?.houseHoldNumber,
+                city: employee.houseHold?.city,
+                district: employee.houseHold?.district,
+                ward: employee.houseHold?.ward,
+                houseHoldAddress: employee.houseHold?.houseHoldAddress,
+                phone: employee.houseHold?.phone,
+                houseHoldCode: employee.houseHold?.houseHoldCode
             };
         })
 
         let experiencesSheet = [], degreesSheet = [], certificatesSheet = [], contractsSheet = [], socialInsuranceDetailsSheet = [],
-            filesSheet = [], commendationsSheet = [], disciplinesSheet = [], salarysSheet = [], annualLeavesSheet = [], coursesSheet = [];
+            filesSheet = [], commendationsSheet = [], disciplinesSheet = [], salarysSheet = [], annualLeavesSheet = [], coursesSheet = [], familysSheet = [];
 
         data.forEach(x => {
             let employee = x.employees[0];
@@ -398,6 +413,16 @@ class EmployeeManagement extends Component {
                     fullName: employee.fullName
                 }
             });
+
+            let familys = employee.houseHold?.familyMembers?.map(y => {
+                return {
+                    ...y,
+                    gender: translate(`human_resource.profile.${y.gender}`),
+                    employeeNumber: employee.employeeNumber,
+                    isHeadHousehold: y.isHeadHousehold ? 'X' : null
+                }
+            })
+
             let commendations = x.commendations.map(y => {
                 let decisionUnit = department.list.find(u => u._id === y.organizationalUnit);
                 return {
@@ -459,6 +484,7 @@ class EmployeeManagement extends Component {
             salarysSheet = salarysSheet.concat(salaries);
             annualLeavesSheet = annualLeavesSheet.concat(annualLeaves);
             coursesSheet = coursesSheet.concat(courses);
+            familysSheet = familysSheet.concat(familys);
         });
 
         experiencesSheet = experiencesSheet.map((x, index) => {
@@ -491,6 +517,9 @@ class EmployeeManagement extends Component {
         coursesSheet = coursesSheet.map((x, index) => {
             return { STT: index + 1, ...x }
         });
+        familysSheet = familysSheet.map((x, index) => {
+            return { STT: index + 1, ...x }
+        })
 
 
         let otherSalary = [];
@@ -599,6 +628,16 @@ class EmployeeManagement extends Component {
                                 { key: "healthInsuranceEndDate", value: translate(`human_resource.profile.employee_management.export.health_insurance_end_date`), width: 20 },
                                 { key: "socialInsuranceNumber", value: translate(`human_resource.profile.number_BHXH`) },
                                 { key: "archivedRecordNumber", value: translate(`human_resource.profile.attachments_code`) },
+
+                                { key: "houseHoldNumber", value: translate(`human_resource.profile.house_hold.appendix.house_hold_number`) },
+                                { key: "headHouseHoldName", value: translate(`human_resource.profile.house_hold.appendix.head_house_hold_name`) },
+                                { key: "documentType", value: translate(`human_resource.profile.house_hold.appendix.document_type`) },
+                                { key: "city", value: translate(`human_resource.profile.house_hold.appendix.city`) },
+                                { key: "district", value: translate(`human_resource.profile.house_hold.appendix.district`) },
+                                { key: "ward", value: translate(`human_resource.profile.house_hold.appendix.ward`) },
+                                { key: "houseHoldAddress", value: translate(`human_resource.profile.house_hold.appendix.house_hold_address`) },
+                                { key: "phone", value: translate(`human_resource.profile.house_hold.appendix.phone_appendix`) },
+                                { key: "houseHoldCode", value: translate(`human_resource.profile.house_hold.appendix.house_hold_code`) },
                             ],
                             data: employeeInforSheet
                         }
@@ -713,8 +752,34 @@ class EmployeeManagement extends Component {
                     ]
                 },
                 {
-                    // 8.HS Nhân viên - Khen thưởng
+                    // 8.HS Nhân viên - Thành viên hộ gia đình
                     sheetName: translate(`human_resource.profile.employee_management.export.sheet8`),
+                    tables: [
+                        {
+                            columns: [
+                                { key: "STT", value: translate(`human_resource.stt`), width: 7 },
+                                { key: "employeeNumber", value: translate(`human_resource.profile.staff_number`) },
+                                { key: "name", value: translate(`human_resource.profile.house_hold.members.name_member`) },
+                                { key: "codeSocialInsurance", value: translate('human_resource.profile.house_hold.members.code_social_insurance') },
+                                { key: "bookNumberSocialInsurance", value: translate('human_resource.profile.house_hold.members.book_nci') },
+                                { key: "gender", value: translate('human_resource.profile.house_hold.members.gender') },
+                                { key: "isHeadHousehold", value: translate('human_resource.profile.house_hold.members.is_hh') },
+                                { key: "relationshipWithHeadHousehold", value: translate('human_resource.profile.house_hold.members.rwhh') },
+                                { key: "birth", value: translate('human_resource.profile.house_hold.members.birth') },
+                                { key: "ccns", value: translate('human_resource.profile.house_hold.members.cnss') },
+                                { key: "placeOfBirthCertificate", value: translate('human_resource.profile.house_hold.members.pob') },
+                                { key: "nationality", value: translate('human_resource.profile.house_hold.members.nationality') },
+                                { key: "nation", value: translate('human_resource.profile.house_hold.members.nation') },
+                                { key: "numberPassport", value: translate('human_resource.profile.house_hold.members.npp') },
+                                { key: "note", value: translate('human_resource.profile.house_hold.members.note') },
+                            ],
+                            data: familysSheet
+                        }
+                    ]
+                },
+                {
+                    // 9.HS Nhân viên - Khen thưởng
+                    sheetName: translate(`human_resource.profile.employee_management.export.sheet9`),
                     tables: [
                         {
                             columns: [
@@ -732,8 +797,8 @@ class EmployeeManagement extends Component {
                     ]
                 },
                 {
-                    // 9.HS Nhân viên - Kỷ luật
-                    sheetName: translate(`human_resource.profile.employee_management.export.sheet9`),
+                    // 10.HS Nhân viên - Kỷ luật
+                    sheetName: translate(`human_resource.profile.employee_management.export.sheet10`),
                     tables: [
                         {
                             columns: [
@@ -752,8 +817,8 @@ class EmployeeManagement extends Component {
                     ]
                 },
                 {
-                    // 10.HS Nhân viên - Lương thưởng
-                    sheetName: translate(`human_resource.profile.employee_management.export.sheet10`),
+                    // 11.HS Nhân viên - Lương thưởng
+                    sheetName: translate(`human_resource.profile.employee_management.export.sheet11`),
                     tables: [
                         {
                             rowHeader: 2,
@@ -780,8 +845,8 @@ class EmployeeManagement extends Component {
                     ]
                 },
                 {
-                    // 11.HS Nhân viên - Nghỉ phép
-                    sheetName: translate(`human_resource.profile.employee_management.export.sheet11`),
+                    // 12.HS Nhân viên - Nghỉ phép
+                    sheetName: translate(`human_resource.profile.employee_management.export.sheet12`),
                     tables: [
                         {
                             columns: [
@@ -829,7 +894,7 @@ class EmployeeManagement extends Component {
     render() {
         const { employeesManager, translate, department, field } = this.props;
 
-        let { importEmployee, limit, page, organizationalUnits, currentRow, currentRowView, status } = this.state;
+        let { importEmployee, limit, page, organizationalUnits, currentRow, currentRowView, status, tableId } = this.state;
 
         let listEmployees = [];
         if (employeesManager.listEmployees) {
@@ -994,7 +1059,7 @@ class EmployeeManagement extends Component {
                         }
                     </div>
 
-                    <table id="employee-table" className="table table-striped table-bordered table-hover">
+                    <table id={tableId} className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
                                 <th>{translate('human_resource.staff_number')}</th>
@@ -1006,7 +1071,7 @@ class EmployeeManagement extends Component {
                                 <th>{translate('human_resource.status')}</th>
                                 <th style={{ width: '120px', textAlign: 'center' }}>{translate('general.action')}
                                     <DataTableSetting
-                                        tableId="employee-table"
+                                        tableId={tableId}
                                         columnArr={[
                                             translate('human_resource.staff_number'),
                                             translate('human_resource.staff_name'),
@@ -1016,9 +1081,7 @@ class EmployeeManagement extends Component {
                                             translate('human_resource.profile.type_contract'),
                                             translate('human_resource.status'),
                                         ]}
-                                        limit={this.state.limit}
                                         setLimit={this.setLimit}
-                                        hideColumnOption={true}
                                     />
                                 </th>
                             </tr>
