@@ -17,12 +17,14 @@ import { ModalPerform } from '../../task-perform/component/modalPerform';
 import { duration } from 'moment';
 import { getTableConfiguration } from '../../../../helpers/tableConfiguration'
 import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
+import parse from 'html-react-parser';
+
 class TaskManagement extends Component {
     constructor(props) {
         let userId = getStorage("userId");
         super(props);
         const tableId = "tree-table-task-management";
-        const defaultConfig = { limit: 20 }
+        const defaultConfig = { limit: 20, hiddenColumns: ["2", "6", "7"] }
         const limit = getTableConfiguration(tableId, defaultConfig).limit;
         this.state = {
             displayType: 'table',
@@ -54,7 +56,7 @@ class TaskManagement extends Component {
     componentDidMount() {
         this.props.getDepartment();
         this.props.getAllDepartment();
-        this.props.getPaginateTasks(this.state.currentTab, [], '1', '20', this.state.status, null, null, null, null, null, null);
+        this.props.getPaginateTasks(this.state.currentTab, [], '1', '20', this.state.status, null, null, null, null, null, null, null, null);
         this.props.getAllTaskProject();
     }
 
@@ -195,7 +197,7 @@ class TaskManagement extends Component {
     }
 
     handleGetDataPagination = async (index) => {
-        let { organizationalUnit, status, priority, special, name, startDate, endDate, responsibleEmployees } = this.state;
+        let { organizationalUnit, status, priority, special, name, startDate, endDate, responsibleEmployees, accountableEmployees, creatorEmployees } = this.state;
 
         let oldCurrentPage = this.state.currentPage;
         let perPage = this.state.perPage;
@@ -206,7 +208,7 @@ class TaskManagement extends Component {
         let newCurrentPage = this.state.currentPage;
         if (oldCurrentPage !== index) {
             let content = this.state.currentTab;
-            this.props.getPaginateTasks(content, organizationalUnit, newCurrentPage, perPage, status, priority, special, name, startDate, endDate, responsibleEmployees);
+            this.props.getPaginateTasks(content, organizationalUnit, newCurrentPage, perPage, status, priority, special, name, startDate, endDate, responsibleEmployees, accountableEmployees, creatorEmployees);
 
             // if (content === "responsible") {
             //     this.props.getResponsibleTaskByUser(organizationalUnit, newCurrentPage, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore);
@@ -225,7 +227,7 @@ class TaskManagement extends Component {
     }
 
     nextPage = async (pageTotal) => {
-        let { organizationalUnit, status, priority, special, name, startDate, endDate, responsibleEmployees } = this.state;
+        let { organizationalUnit, status, priority, special, name, startDate, endDate, responsibleEmployees, accountableEmployees, creatorEmployees } = this.state;
 
         let oldCurrentPage = this.state.currentPage;
         await this.setState(state => {
@@ -237,7 +239,7 @@ class TaskManagement extends Component {
         let newCurrentPage = this.state.currentPage;
         if (oldCurrentPage !== newCurrentPage) {
             let content = this.state.currentTab;
-            this.props.getPaginateTasks(content, organizationalUnit, newCurrentPage, 20, status, priority, special, name, startDate, endDate, responsibleEmployees);
+            this.props.getPaginateTasks(content, organizationalUnit, newCurrentPage, 20, status, priority, special, name, startDate, endDate, responsibleEmployees, accountableEmployees, creatorEmployees);
 
             // if (content === "responsible") {
             //     this.props.getResponsibleTaskByUser(organizationalUnit, newCurrentPage, 20, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore);
@@ -256,7 +258,7 @@ class TaskManagement extends Component {
     }
 
     backPage = async () => {
-        let { organizationalUnit, status, priority, special, name, startDate, endDate, responsibleEmployees } = this.state;
+        let { organizationalUnit, status, priority, special, name, startDate, endDate, responsibleEmployees, accountableEmployees, creatorEmployees } = this.state;
 
         let oldCurrentPage = this.state.currentPage;
         await this.setState(state => {
@@ -268,7 +270,7 @@ class TaskManagement extends Component {
         let newCurrentPage = this.state.currentPage;
         if (oldCurrentPage !== newCurrentPage) {
             let content = this.state.currentTab;
-            this.props.getPaginateTasks(content, organizationalUnit, newCurrentPage, 20, status, priority, special, name, startDate, endDate, responsibleEmployees);
+            this.props.getPaginateTasks(content, organizationalUnit, newCurrentPage, 20, status, priority, special, name, startDate, endDate, responsibleEmployees, accountableEmployees, creatorEmployees);
 
             // if (content === "responsible") {
             //     this.props.getResponsibleTaskByUser(organizationalUnit, newCurrentPage, 20, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore);
@@ -287,10 +289,10 @@ class TaskManagement extends Component {
     }
 
     handleGetDataPerPage = (perPage) => {
-        let { organizationalUnit, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, responsibleEmployees } = this.state;
+        let { organizationalUnit, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, responsibleEmployees, accountableEmployees, creatorEmployees } = this.state;
 
         let content = this.state.currentTab;
-        this.props.getPaginateTasks(content, organizationalUnit, 1, perPage, status, priority, special, name, startDate, endDate, responsibleEmployees);
+        this.props.getPaginateTasks(content, organizationalUnit, 1, perPage, status, priority, special, name, startDate, endDate, responsibleEmployees, accountableEmployees, creatorEmployees);
 
         // if (content === "responsible") {
         //     this.props.getResponsibleTaskByUser(organizationalUnit, 1, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore);
@@ -312,7 +314,7 @@ class TaskManagement extends Component {
 
     handleUpdateData = () => {
         const { translate } = this.props;
-        let { organizationalUnit, status, priority, special, name, startDate, endDate, responsibleEmployees, perPage } = this.state;
+        let { organizationalUnit, status, priority, special, name, startDate, endDate, responsibleEmployees, perPage, accountableEmployees, creatorEmployees } = this.state;
         let startMonth, endMonth;
 
         if (startDate && endDate) {
@@ -330,7 +332,7 @@ class TaskManagement extends Component {
         } else {
             let content = this.state.currentTab;
 
-            this.props.getPaginateTasks(content, organizationalUnit, 1, perPage, status, priority, special, name, startDate, endDate, responsibleEmployees);
+            this.props.getPaginateTasks(content, organizationalUnit, 1, perPage, status, priority, special, name, startDate, endDate, responsibleEmployees, accountableEmployees, creatorEmployees);
         }
 
         this.setState({
@@ -511,10 +513,24 @@ class TaskManagement extends Component {
         return convertTime(total);
     }
 
-    handleSelectResponsibleEmployees = (value) => {
+    handleChangeResponsibleEmployees = (e) => {
+        const { value } = e.target;
         this.setState({
-            ...this.state,
             responsibleEmployees: value,
+        })
+    }
+
+    handleChangeAccountableEmployees = (e) => {
+        const { value } = e.target;
+        this.setState({
+            accountableEmployees: value,
+        })
+    }
+
+    handleChangeCreatorEmployees = (e) => {
+        const { value } = e.target;
+        this.setState({
+            creatorEmployees: value,
         })
     }
 
@@ -534,9 +550,12 @@ class TaskManagement extends Component {
         // khởi tạo dữ liệu TreeTable
         let column = [
             { name: translate('task.task_management.col_name'), key: "name" },
+            { name: translate('task.task_management.detail_description'), key: "description" },
             { name: translate('task.task_management.col_organization'), key: "organization" },
             { name: translate('task.task_management.col_priority'), key: "priority" },
             { name: translate('task.task_management.responsible'), key: "responsibleEmployees" },
+            { name: translate('task.task_management.accountable'), key: "accountableEmployees" },
+            { name: translate('task.task_management.creator'), key: "creatorEmployees" },
             { name: translate('task.task_management.col_start_date'), key: "startDate" },
             { name: translate('task.task_management.col_end_date'), key: "endDate" },
             { name: translate('task.task_management.col_status'), key: "status" },
@@ -551,9 +570,12 @@ class TaskManagement extends Component {
                 data[n] = {
                     ...dataTemp[n],
                     name: dataTemp[n].name,
+                    description: parse(dataTemp[n].description),
                     organization: dataTemp[n].organizationalUnit ? dataTemp[n].organizationalUnit.name : translate('task.task_management.err_organizational_unit'),
                     priority: this.formatPriority(dataTemp[n].priority),
                     responsibleEmployees: dataTemp[n].responsibleEmployees && dataTemp[n].responsibleEmployees.map(o => o.name).join(', '),
+                    accountableEmployees: dataTemp[n].accountableEmployees && dataTemp[n].accountableEmployees.map(o => o.name).join(', '),
+                    creatorEmployees: dataTemp[n].creator && dataTemp[n].creator.name,
                     startDate: getFormatDateFromTime(dataTemp[n].startDate, 'dd-mm-yyyy'),
                     endDate: getFormatDateFromTime(dataTemp[n].endDate, 'dd-mm-yyyy'),
                     status: this.formatStatus(dataTemp[n].status),
@@ -769,18 +791,23 @@ class TaskManagement extends Component {
                                 </SelectMulti>
                             </div>
 
+
+                            {/* Người thực hiện */}
                             <div className="form-group">
                                 <label>{translate('task.task_management.responsible')}</label>
-                                <SelectBox
-                                    id="multiSelectResponsible"
-                                    className="form-control select2"
-                                    style={{ width: "100%" }}
-                                    value={responsibleEmployees}
-                                    items={userList}
-                                    onChange={this.handleSelectResponsibleEmployees}
-                                    multiple={true}
-                                    options={{ placeholder: translate('task.task_management.select_responsible') }}>
-                                </SelectBox>
+                                <input className="form-control" type="text" placeholder={translate('task.task_management.search_by_employees')} name="name" onChange={(e) => this.handleChangeResponsibleEmployees(e)} />
+                            </div>
+
+                            {/* Người phê duyệt */}
+                            <div className="form-group">
+                                <label>{translate('task.task_management.accountable')}</label>
+                                <input className="form-control" type="text" placeholder={translate('task.task_management.search_by_employees')} name="name" onChange={(e) => this.handleChangeAccountableEmployees(e)} />
+                            </div>
+
+                            {/* Người thiết lập */}
+                            <div className="form-group">
+                                <label>{translate('task.task_management.creator')}</label>
+                                <input className="form-control" type="text" placeholder={translate('task.task_management.search_by_employees')} name="name" onChange={(e) => this.handleChangeCreatorEmployees(e)} />
                             </div>
 
                             <div className="form-group">
@@ -825,8 +852,12 @@ class TaskManagement extends Component {
                             tableWidth="1300px"
                             columnArr={[
                                 translate('task.task_management.col_name'),
+                                translate('task.task_management.detail_description'),
                                 translate('task.task_management.col_organization'),
                                 translate('task.task_management.col_priority'),
+                                translate('task.task_management.responsible'),
+                                translate('task.task_management.accountable'),
+                                translate('task.task_management.creator'),
                                 translate('task.task_management.col_start_date'),
                                 translate('task.task_management.col_end_date'),
                                 translate('task.task_management.col_status'),

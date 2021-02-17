@@ -2955,6 +2955,7 @@ export default {
 
                 name: "Tên công việc",
                 search_by_name: "Tìm kiếm theo tên",
+                search_by_employees: "Nhập tên hoặc email ",
 
                 start_date: "Ngày bắt đầu",
                 end_date: "Ngày kết thúc",

@@ -2690,6 +2690,7 @@ export default {
 
                 name: "Name of task",
                 search_by_name: "Search by name",
+                search_by_employees: "Enter name or email",
 
                 start_date: "Start date",
                 end_date: "End date",

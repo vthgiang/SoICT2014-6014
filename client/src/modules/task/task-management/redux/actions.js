@@ -319,13 +319,13 @@ function getPaginateTasksByUser(unit, number, perPage, status, priority, special
  * @param {*} endDate kết thúc công việc
  */
 
-function getPaginateTasks(role, unit, number, perPage, status, priority, special, name, startDate, endDate,responsibleEmployees, startDateAfter, endDateBefore, aPeriodOfTime = false) {
+function getPaginateTasks(role, unit, number, perPage, status, priority, special, name, startDate, endDate,responsibleEmployees, accountableEmployees,creatorEmployees, startDateAfter, endDateBefore, aPeriodOfTime = false) {
     return dispatch => {
         dispatch({
             type: taskManagementConstants.GET_PAGINATE_TASK_REQUEST, 
         });
 
-        taskManagementService.getPaginateTasks(role, unit, number, perPage, status, priority, special, name, startDate, endDate,responsibleEmployees, startDateAfter, endDateBefore, aPeriodOfTime)
+        taskManagementService.getPaginateTasks(role, unit, number, perPage, status, priority, special, name, startDate, endDate,responsibleEmployees,accountableEmployees, creatorEmployees, startDateAfter, endDateBefore, aPeriodOfTime)
             .then(res => {
                 dispatch({
                     type: taskManagementConstants.GET_PAGINATE_TASK_SUCCESS,
