@@ -1218,10 +1218,10 @@ requestAndApprovalCloseTask = async (req, res) => {
                 "title": "Yêu cầu kết thúc công việc",
                 "sender": task && task.requestToCloseTask && task.requestToCloseTask.requestedBy && task.requestToCloseTask.requestedBy.name,
                 "users": task.accountableEmployees.map(item => item._id),
-                "content": `<p><strong>${task && task.requestToCloseTask && task.requestToCloseTask.requestedBy && task.requestToCloseTask.requestedBy.name}</strong> đã gửi yêu cầu kết thúc công việc <a href="${process.env.WEBSITE}/task?taskId=${req.params.taskId}">${task && task.name}</a></p>`,
+                "content": `<strong>Công viêc <a href="${process.env.WEBSITE}/task?taskId=${req.params.taskId}">${task && task.name}</a>: </strong><span>${task && task.requestToCloseTask && task.requestToCloseTask.requestedBy && task.requestToCloseTask.requestedBy.name} đã gửi yêu cầu kết thúc công việc</span>`,
                 associatedDataObject: {
                     ...dataNotification.associatedDataObject,
-                    description: `<p><strong>${task && task.requestToCloseTask && task.requestToCloseTask.requestedBy && task.requestToCloseTask.requestedBy.name}</strong> đã gửi yêu cầu kết thúc công việc <a href="${process.env.WEBSITE}/task?taskId=${req.params.taskId}">${task && task.name}</a></p>`
+                    description: `<strong>Công việc <a href="${process.env.WEBSITE}/task?taskId=${req.params.taskId}">${task && task.name}</a></strong><p>${task && task.requestToCloseTask && task.requestToCloseTask.requestedBy && task.requestToCloseTask.requestedBy.name} đã gửi yêu cầu kết thúc công việc</p>`
                 }
             };
 
@@ -1236,7 +1236,11 @@ requestAndApprovalCloseTask = async (req, res) => {
                 "title": "Phê duyệt kết thúc công việc",
                 "sender": task && task.requestToCloseTask && task.requestToCloseTask.requestedBy && task.requestToCloseTask.requestedBy.name,
                 "users": task.responsibleEmployees.map(item => item._id),
-                "content": `<p>Yêu cầu kết thúc công việc <a href="${process.env.WEBSITE}/task?taskId=${req.params.taskId}">${task && task.name}</a> đã được phê duyệt thành công</p>`
+                "content": `<strong>Công việc <a href="${process.env.WEBSITE}/task?taskId=${req.params.taskId}">${task && task.name}</a>: </strong><span>Yêu cầu kết thúc công việc đã được phê duyệt thành công</span>`,
+                associatedDataObject: {
+                    ...dataNotification.associatedDataObject,
+                    description: `<strong>Công việc <a href="${process.env.WEBSITE}/task?taskId=${req.params.taskId}">${task && task.name}</a></strong><p>Yêu cầu kết thúc công việc đã được phê duyệt thành công</p>`
+                }
             };
 
             email = task.responsibleEmployees.map(item => item.email);
@@ -1247,7 +1251,11 @@ requestAndApprovalCloseTask = async (req, res) => {
                 "title": "Phê duyệt kết thúc công việc",
                 "sender": task && task.requestToCloseTask && task.requestToCloseTask.requestedBy && task.requestToCloseTask.requestedBy.name,
                 "users": task.responsibleEmployees.map(item => item._id),
-                "content": `<p>Yêu cầu kết thúc công việc <a href="${process.env.WEBSITE}/task?taskId=${req.params.taskId}">${task && task.name}</a> không được phê duyệt</p>`
+                "content": `<strong>Công việc <a href="${process.env.WEBSITE}/task?taskId=${req.params.taskId}">${task && task.name}</a>: </strong><span>Yêu cầu kết thúc công việc không được phê duyệt</span>`,
+                associatedDataObject: {
+                    ...dataNotification.associatedDataObject,
+                    description: `<strong>Công việc <a href="${process.env.WEBSITE}/task?taskId=${req.params.taskId}">${task && task.name}</a></strong><p>Yêu cầu kết thúc công việc không được phê duyệt</p>`
+                }
             };
 
             email = task.responsibleEmployees.map(item => item.email);
