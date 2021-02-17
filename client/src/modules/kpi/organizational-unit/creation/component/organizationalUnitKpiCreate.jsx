@@ -529,11 +529,11 @@ class OrganizationalUnitKpiCreate extends Component {
                                                 <span>
                                                     {currentKPI.status === 1 ?
                                                         <a className="btn btn-app" onClick={() => this.swalOfUnitKpi("edit_employee_importance")}>
-                                                            <i className="fa fa-plus-circle" style={{ fontSize: "16px" }}></i>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.employee_importance')}
+                                                            <i className="fa fa-child" style={{ fontSize: "16px" }}></i>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.employee_importance')}
                                                         </a>
                                                         : <span>
                                                             <a className="btn btn-app" data-toggle="modal" data-target="#employee-importances" data-backdrop="static" data-keyboard="false">
-                                                                <i className="fa fa-plus-circle" style={{ fontSize: "16px" }}></i>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.employee_importance')}
+                                                                <i className="fa fa-child" style={{ fontSize: "16px" }}></i>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.employee_importance')}
                                                             </a>
                                                         <EmployeeImportancesModal
                                                             organizationalUnit={currentKPI.organizationalUnit}
@@ -545,7 +545,7 @@ class OrganizationalUnitKpiCreate extends Component {
                                                 </span>
                                                 : <span>
                                                     <a className="btn btn-app" onClick={() => this.swalEdittingPermission()}>
-                                                        <i className="fa fa-plus-circle" style={{ fontSize: "16px" }}></i>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.employee_importance')}
+                                                        <i className="fa fa-child" style={{ fontSize: "16px" }}></i>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.employee_importance')}
                                                     </a>
                                                 </span>
                                             }

@@ -3259,8 +3259,6 @@ exports.evaluateTaskByResponsibleEmployees = async (portal, data, taskId) => {
         info,
     } = data;
 
-    console.log('end start', endDate, startDate, typeof endDate);
-
     let splitter = evaluatingMonth.split("-");
     let evaluateDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
     let dateFormat = evaluateDate;
