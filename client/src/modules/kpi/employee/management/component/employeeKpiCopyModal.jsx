@@ -2,15 +2,11 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import {
-    getStorage
-} from '../../../../../config';
-import Swal from 'sweetalert2';
-
-import { DatePicker, DialogModal } from '../../../../../common-components';
+import { DatePicker, DialogModal, ErrorLabel } from '../../../../../common-components';
 
 import { managerKpiActions } from '../redux/actions';
 
+import ValidationHelper from '../../../../../helpers/validationHelper';
 
 var translate ='';
 class ModalCopyKPIPersonal extends Component {
@@ -19,13 +15,11 @@ class ModalCopyKPIPersonal extends Component {
         translate=this.props.translate;
         this.state = {
             kpipersonal: {
-                organizationalUnit: "",
-                time: this.formatDate(Date.now()),
-                creator: "" 
-
+                organizationalUnit: ""
             },
         };
     }
+    
     formatDate(date) {
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
@@ -39,7 +33,10 @@ class ModalCopyKPIPersonal extends Component {
 
         return [month, year].join('-');
     }
+
     handleNewDateChange = (value) => {
+        const { translate } = this.props;
+
         let month;
         if (value === "") {
             month = null;
@@ -47,18 +44,21 @@ class ModalCopyKPIPersonal extends Component {
             month = value.slice(3, 7) + '-' + value.slice(0, 2);
         }
 
+        let validation = ValidationHelper.validateEmpty(translate, month);
+
         this.setState(state => {
             return {
                 ...state,
-                NewDate: month
+                errorOnNewDate: validation.message,
+                newDate: month
             }
         });
 
     }
 
     /**Gửi req khởi tạo KPI tháng mới từ KPi tháng này */
-    handleSubmit = async (id, oldkpipersonal, listkpipersonal, idunit) => {
-        const { kpipersonal, NewDate } = this.state;
+    handleSubmit = async (id, oldkpipersonal, idunit) => {
+        const { newDate } = this.state;
         
         await this.setState(state => {
             return {
@@ -71,26 +71,18 @@ class ModalCopyKPIPersonal extends Component {
             }
         })
         
-        if (!NewDate) {
-            Swal.fire({
-                title: translate('kpi.organizational_unit.management.copy_modal.alert.check_new_date'),
-                type: 'warning',
-                icon: 'warning',
-                confirmButtonColor: '#3085d6',
-                confirmButtonText: translate('kpi.evaluation.employee_evaluation.confirm')
-            })
-        } else {
-            this.props.copyEmployeeKPI(id, idunit, NewDate);
+        if (newDate) {
+            this.props.copyEmployeeKPI(id, idunit, newDate);
         }
     }
 
     save = () => {
-        const { listkpipersonal, kpipersonal } = this.props;
-        this.handleSubmit(kpipersonal._id, kpipersonal, listkpipersonal, kpipersonal.organizationalUnit._id);
+        const { kpipersonal } = this.props;
+        this.handleSubmit(kpipersonal._id, kpipersonal, kpipersonal.organizationalUnit._id);
     }
     
     render() {
-        const { NewDate } = this.state;
+        const { errorOnNewDate } = this.state;
         const { kpipersonal } = this.props;
         return (
             <DialogModal
@@ -98,6 +90,7 @@ class ModalCopyKPIPersonal extends Component {
                 title={`${translate('kpi.organizational_unit.management.copy_modal.create')} ${this.formatDate(kpipersonal.date)}`}
                 size={10}
                 func={this.save}
+                disableSubmit={errorOnNewDate}
             >
                 {/**Đơn vị của KPI tháng mới */}
                 <div className="form-group">
@@ -105,15 +98,16 @@ class ModalCopyKPIPersonal extends Component {
                     <span>{kpipersonal && kpipersonal.organizationalUnit.name}</span>
                 </div>
 
-                <div className="form-group" style={{ marginLeft: "10px" }}>
+                <div className={`form-group ${errorOnNewDate === undefined ? "" : "has-error"}`} style={{ marginLeft: "10px" }}>
                     {/**Tháng mới cần khởi tạo KPI */}
-                    <label>{translate('kpi.organizational_unit.management.copy_modal.month')}</label>
+                    <label>{translate('kpi.organizational_unit.management.copy_modal.month')}<span className="text-red">*</span></label>
                     <DatePicker
                         id="new_date"
                         value={""}
                         onChange={this.handleNewDateChange}
                         dateFormat="month-year"
                     />
+                    <ErrorLabel content={errorOnNewDate} />
                 </div>                
 
                 {/**Danh sách các mục tiêu */}
@@ -128,8 +122,8 @@ class ModalCopyKPIPersonal extends Component {
                     </ul>
                 </div>
 
-                <div className="form-group" style={{ color: "red",  margin: "0px 10px" }}>
-                    <label>Lưu ý:</label><span>{translate('kpi.organizational_unit.management.copy_modal.alert.change_link')}</span>
+                <div className="form-group text-red" style={{ margin: "0px 10px" }}>
+                    <label style={{ marginRight: "5px" }}>Lưu ý:</label><span>{translate('kpi.organizational_unit.management.copy_modal.alert.change_link')}</span>
                 </div>
             </DialogModal >
         );

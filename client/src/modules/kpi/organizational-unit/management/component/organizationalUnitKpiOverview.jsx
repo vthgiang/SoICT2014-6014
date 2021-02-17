@@ -191,6 +191,7 @@ class KPIUnitManager extends Component {
         })
     }
 
+    
     handleSearchData = async () => {
         await this.setState(state => {
             return {
@@ -207,7 +208,14 @@ class KPIUnitManager extends Component {
         const { infosearch, startDate, endDate } = this.state;
         const { translate } = this.props;
 
-        if (startDate && endDate && startDate.getTime() > endDate.getTime()) {
+        let startDateIso, endDateIso;
+
+        if (startDate && endDate) {
+            startDateIso = new Date(startDate);
+            endDateIso = new Date(endDate);
+        }
+
+        if (startDateIso && endDateIso && startDateIso.getTime() > endDateIso.getTime()) {
             Swal.fire({
                 title: translate('kpi.organizational_unit.management.over_view.alert_search.search'),
                 type: 'warning',

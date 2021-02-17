@@ -86,7 +86,7 @@ class OrganizationalUnitKpiCreate extends Component {
         }
 
         // Không re-render khi đag chọn các lựa chọn
-        if (nextState.organizationalUnitId !== organizationalUnitId || nextState.month !== month) {
+        if (nextState.organizationalUnitId !== organizationalUnitId || nextState.month !== month || nextState.month === '') {
             return false;
         }
         return true;
@@ -265,7 +265,10 @@ class OrganizationalUnitKpiCreate extends Component {
     }
 
     handleChangeDate = (value) => {
-        let month = value.slice(3, 7) + '-' + value.slice(0, 2);
+        let month = value;
+        if (value !== '') {
+            month = value.slice(3, 7) + '-' + value.slice(0, 2);
+        }
 
         this.setState(state => {
             return {
@@ -288,12 +291,14 @@ class OrganizationalUnitKpiCreate extends Component {
             }
         })
 
-        this.props.getCurrentKPIUnit(currentRole, organizationalUnitId, month);
-        this.props.getKPIParent({
-            roleId: currentRole,
-            organizationalUnitId: organizationalUnitId,
-            month: month
-        });
+        if (organizationalUnitId && month && month !== '') {
+            this.props.getCurrentKPIUnit(currentRole, organizationalUnitId, month);
+            this.props.getKPIParent({
+                roleId: currentRole,
+                organizationalUnitId: organizationalUnitId,
+                month: month
+            });
+        }
     }
 
     /** Tạm thời cho phép trưởng đơn vị được quyền chỉnh sửa KPI đơn vị con */
