@@ -314,7 +314,7 @@ class TaskManagement extends Component {
         const { translate } = this.props;
         let { organizationalUnit, status, priority, special, name, startDate, endDate, responsibleEmployees, perPage } = this.state;
         let startMonth, endMonth;
-        
+
         if (startDate && endDate) {
             startMonth = new Date(startDate);
             endMonth = new Date(endDate);
@@ -819,23 +819,23 @@ class TaskManagement extends Component {
                             />
                         }
 
+                        <DataTableSetting
+                            tableId={tableId}
+                            tableContainerId="tree-table-container"
+                            tableWidth="1300px"
+                            columnArr={[
+                                translate('task.task_management.col_name'),
+                                translate('task.task_management.col_organization'),
+                                translate('task.task_management.col_priority'),
+                                translate('task.task_management.col_start_date'),
+                                translate('task.task_management.col_end_date'),
+                                translate('task.task_management.col_status'),
+                                translate('task.task_management.col_progress'),
+                                translate('task.task_management.col_logged_time')
+                            ]}
+                            setLimit={this.setLimit}
+                        />
                         <div id="tree-table-container" style={{ marginTop: '20px' }}>
-                            <DataTableSetting
-                                tableId={tableId}
-                                tableContainerId="tree-table-container"
-                                tableWidth="1300px"
-                                columnArr={[
-                                    translate('task.task_management.col_name'),
-                                    translate('task.task_management.col_organization'),
-                                    translate('task.task_management.col_priority'),
-                                    translate('task.task_management.col_start_date'),
-                                    translate('task.task_management.col_end_date'),
-                                    translate('task.task_management.col_status'),
-                                    translate('task.task_management.col_progress'),
-                                    translate('task.task_management.col_logged_time')
-                                ]}
-                                setLimit={this.setLimit}
-                            />
                             <TreeTable
                                 tableId={tableId}
                                 behaviour="show-children"
