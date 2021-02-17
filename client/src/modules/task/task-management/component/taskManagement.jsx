@@ -570,12 +570,12 @@ class TaskManagement extends Component {
                 data[n] = {
                     ...dataTemp[n],
                     name: dataTemp[n].name,
-                    description: parse(dataTemp[n].description),
+                    description: dataTemp[n].description ? parse(dataTemp[n].description) : null,
                     organization: dataTemp[n].organizationalUnit ? dataTemp[n].organizationalUnit.name : translate('task.task_management.err_organizational_unit'),
                     priority: this.formatPriority(dataTemp[n].priority),
-                    responsibleEmployees: dataTemp[n].responsibleEmployees && dataTemp[n].responsibleEmployees.map(o => o.name).join(', '),
-                    accountableEmployees: dataTemp[n].accountableEmployees && dataTemp[n].accountableEmployees.map(o => o.name).join(', '),
-                    creatorEmployees: dataTemp[n].creator && dataTemp[n].creator.name,
+                    responsibleEmployees: dataTemp[n].responsibleEmployees ? dataTemp[n].responsibleEmployees.map(o => o.name).join(', ') : null,
+                    accountableEmployees: dataTemp[n].accountableEmployees ? dataTemp[n].accountableEmployees.map(o => o.name).join(', ') : null,
+                    creatorEmployees: dataTemp[n].creator ? dataTemp[n].creator.name : null,
                     startDate: getFormatDateFromTime(dataTemp[n].startDate, 'dd-mm-yyyy'),
                     endDate: getFormatDateFromTime(dataTemp[n].endDate, 'dd-mm-yyyy'),
                     status: this.formatStatus(dataTemp[n].status),
@@ -597,10 +597,13 @@ class TaskManagement extends Component {
                 if (dataTemp[n].responsibleEmployees.find(e => e._id === userId) || dataTemp[n].consultedEmployees.indexOf(userId) !== -1) {
                     data[n] = { ...data[n], action: ["edit", "startTimer", ["add", archived]] }
                 }
-                if (dataTemp[n].accountableEmployees.indexOf(userId) !== -1) {
+                if (dataTemp[n].accountableEmployees.filter(o => o._id === userId).length > 0) {
                     data[n] = { ...data[n], action: ["edit", "startTimer", ["add", archived, "delete"]] }
                 }
-
+                // Do mới thêm populate accountableEmployees bên server nên đoạn code dưới sai
+                // if (dataTemp[n].accountableEmployees.indexOf(userId) !== -1) {
+                //     data[n] = { ...data[n], action: ["edit", "startTimer", ["add", archived, "delete"]] }
+                // }
             }
 
             let getId = (data) => {
