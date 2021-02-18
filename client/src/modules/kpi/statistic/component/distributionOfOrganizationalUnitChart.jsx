@@ -26,7 +26,7 @@ function DistributionOfOrganizationalUnitChart(props) {
             employeeImportances = currentKpi.employeeImportances;
             if (employeeImportances && employeeImportances.length !== 0) {
                 employeeImportances.map(item => {
-                    objectEmployeeImportance[item.employee] = item.importance;
+                    objectEmployeeImportance[item?.employee?._id] = item?.importance;
                 })
             } 
         }
