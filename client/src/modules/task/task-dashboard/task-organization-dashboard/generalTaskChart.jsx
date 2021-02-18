@@ -13,25 +13,25 @@ const GeneralTaskChart = (props) => {
         let confirmedTask = 0, noneUpdateTask = 0, intimeTask = 0, delayTask = 0, overdueTask = 0;
 
         for (let i in tasklist) {
-            let start = moment(tasklist[i].startDate);
-            let end = moment(tasklist[i].endDate);
-            let lastUpdate = moment(tasklist[i].updatedAt);
+            let start = moment(tasklist[i]?.startDate);
+            let end = moment(tasklist[i]?.endDate);
+            let lastUpdate = moment(tasklist[i]?.updatedAt);
             let now = moment(new Date());
             let duration = end.diff(start, 'days');
             let uptonow = now.diff(lastUpdate, 'days');
-            if (tasklist[i].confirmedByEmployees.length) {
+            if (tasklist[i]?.confirmedByEmployees?.length) {
                 confirmedTask++;
             }
             if (uptonow >= 7) {
                 noneUpdateTask++;
             }
-            if (tasklist[i].status === 'inprocess') {
+            if (tasklist[i]?.status === 'inprocess') {
                 if (now > end) {
                     // Quá hạn
                     overdueTask++;
                 }
                 else {
-                    let processDay = Math.floor(tasklist[i].progress * duration / 100);
+                    let processDay = Math.floor(tasklist[i]?.progress * duration / 100);
                     let startToNow = now.diff(start, 'days');
 
                     if (startToNow > processDay) {
@@ -62,7 +62,7 @@ const GeneralTaskChart = (props) => {
 
         //Lay cac cong viec cua cac unit da chon
         const tasksOfSelectedUnit = allTasks.filter(x =>
-            unitSelected.includes(x.organizationalUnit._id))
+            unitSelected.includes(x?.organizationalUnit?._id))
 
         // Dem cong viec cua tat ca cac unit da chon
         let dataRow = countTask(tasksOfSelectedUnit, 'Tổng');
@@ -71,7 +71,7 @@ const GeneralTaskChart = (props) => {
         // Dem cong viec cua tung unit da chon
         let listUnit = [];
         units && units.forEach(unit => {
-            if (unitSelected.includes(unit.id)) {
+            if (unitSelected.includes(unit?.id)) {
                 listUnit.push(unit);
             }
         });
@@ -85,7 +85,7 @@ const GeneralTaskChart = (props) => {
                 }
             }
 
-            let unitName = listUnit[i].name;
+            let unitName = listUnit[i]?.name;
             let dataRowUnit = countTask(tasksOfUnit, unitName);
             dataTable.push(dataRowUnit);
         }
