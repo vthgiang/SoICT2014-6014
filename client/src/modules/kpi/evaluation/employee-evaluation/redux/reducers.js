@@ -6,14 +6,19 @@ export function kpimembers(state = {}, action) {
   switch (action.type) {
     case kpiMemberConstants.GETALL_KPIMEMBER_OfUNIT_REQUEST:
       return {
+        ...state,
         loading: true,
-        isLoading: true
+        isLoading: true,
+        totalCountEmployeeKpiSet: null,
+        totalPageEmployeeKpiSet: null
       };
     case kpiMemberConstants.GETALL_KPIMEMBER_OfUNIT_SUCCESS:
       return {
         ...state,
         loading: false,
-        kpimembers: action.payload,
+        kpimembers: action.payload.employeeKpiSets,
+        totalCountEmployeeKpiSet: action.payload.totalCount,
+        totalPageEmployeeKpiSet: action.payload.totalPages,
         isLoading: false
       };
     case kpiMemberConstants.GETALL_KPIMEMBER_OfUNIT_FAILURE:
