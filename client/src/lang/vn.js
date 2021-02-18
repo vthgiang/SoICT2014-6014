@@ -3463,6 +3463,15 @@ export default {
                         "Tổng phần trăm đóng góp phải là 100",
                     err_empty: "Giá trị không được để trống",
                 },
+
+                request_close_task: 'Yêu cầu kết thúc công việc',
+                approval_close_task: 'Phê duyệt kết thúc công việc',
+                open_task_again: 'Kích hoạt lại công việc',
+                send_request_close_task: 'Gửi yêu cầu',
+                cancel_request_close_task: 'Hủy yêu cầu',
+                approval_request_close_task: 'Phê duyệt',
+                decline_request_close_task: 'Từ chối',
+                status_task_close: 'Trạng thái khi kết thúc'
             },
             task_process: {
                 process_name: "Tên quy trình",

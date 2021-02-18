@@ -2719,7 +2719,7 @@ export default {
                 col_end_date: "End date",
                 col_status: "Status",
                 col_progress: "Progress",
-                col_logged_time: "Tatal logged time",
+                col_logged_time: "Total logged time",
 
                 action_edit: "Start working",
                 action_delete: "Delete task",
@@ -3174,6 +3174,15 @@ export default {
                         "Sum of all contributions should be 100",
                     err_empty: "Value must be required",
                 },
+
+                request_close_task: 'Request to close task',
+                approval_close_task: 'Approve request to close task',
+                open_task_again: 'Open task again',
+                send_request_close_task: 'Send request',
+                cancel_request_close_task: 'Cancel request',
+                approval_request_close_task: 'Approve',
+                decline_request_close_task: 'Decline',
+                status_task_close: 'Task status after closing'
             },
             task_process: {
                 process_name: "Process name",
