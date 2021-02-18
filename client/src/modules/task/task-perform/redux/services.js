@@ -54,6 +54,7 @@ export const performTaskService = {
     getById,
     confirmTask,
     requestAndApprovalCloseTask,
+    openTaskAgain,
     editEmployeeCollaboratedWithOrganizationalUnits,
 
     //Comment in process
@@ -244,10 +245,21 @@ function requestAndApprovalCloseTask(taskId, data) {
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}`,
         method: 'POST',
-        params: {
-            type: 'request_approval_close_task'
-        },
-        data: data
+        data: {
+            ...data,
+            requestAndApprovalCloseTask: 1
+        }
+    }, true, true, 'task.task_management');
+}
+
+/** Mở lại công việc đã kết thúc */
+function openTaskAgain(taskId) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}`,
+        method: 'POST',
+        data: {
+            type: 'open_task_again'
+        }
     }, true, true, 'task.task_management');
 }
 

@@ -4911,6 +4911,27 @@ exports.requestAndApprovalCloseTask = async (portal, taskId, data) => {
     return task;
 };
 
+/** Mở lại công việc đã kết thúc */
+exports.openTaskAgain = async (portal, taskId, data) => {
+    const { userId } = data;
+
+    let taskUpdate = await Task(connect(DB_CONNECTION, portal))
+        .findByIdAndUpdate(
+            taskId, 
+            {
+                status: 'inprocess',
+                requestToCloseTask: {
+                    "requestStatus": 0
+                }
+            },
+            { new: true }
+        );
+
+    let task = await this.getTaskById(portal, taskId, userId);
+    
+    return task;
+}
+
 /** Chỉnh sửa taskInformation của task */
 exports.editTaskInformation = async (
     portal,

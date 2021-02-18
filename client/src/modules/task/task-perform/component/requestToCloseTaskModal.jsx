@@ -8,12 +8,12 @@ import { performTaskAction } from '../redux/actions';
 
 function RequestToCloseTaskModal(props) {
     const { id, role, task, translate } = props;
-    const [status, setStatus] = useState("wait_for_approval");
+    const [status, setStatus] = useState(task?.requestToCloseTask?.taskStatus ? task.requestToCloseTask.taskStatus : 'finished');
     const [description, setDescription] = useState();
     const [descriptionDefault, setDescriptionDefault] = useState();
 
     useEffect(() => {
-        setDescriptionDefault(task && task.requestToCloseTask && task.requestToCloseTask.description);
+        setDescriptionDefault(task?.requestToCloseTask?.description);
     })
 
     let requestToCloseTask;
@@ -45,7 +45,7 @@ function RequestToCloseTaskModal(props) {
     const approvalRequestCloseTask = () => {
         props.requestAndApprovalCloseTask(id, {
             requestedBy: requestToCloseTask && requestToCloseTask.requestedBy,
-            taskStatus: requestToCloseTask && requestToCloseTask.taskStatus,
+            taskStatus: status,
             description: requestToCloseTask && requestToCloseTask.description,
             type: 'approval'
         })
@@ -63,14 +63,6 @@ function RequestToCloseTaskModal(props) {
 
         setDescriptionDefault(null);
         window.$(`#modal-request-close-task-${id}`).modal("hide");
-    }
-
-    const formatStatus = (data) => {
-        if (data === "inprocess") return translate('task.task_management.inprocess');
-        else if (data === "wait_for_approval") return translate('task.task_management.wait_for_approval');
-        else if (data === "finished") return translate('task.task_management.finished');
-        else if (data === "delayed") return translate('task.task_management.delayed');
-        else if (data === "canceled") return translate('task.task_management.canceled');
     }
 
     return (
@@ -97,27 +89,22 @@ function RequestToCloseTaskModal(props) {
                 }
                 <div className="form-group">
                     <label style={{ marginRight: '5px' }}>Trạng thái khi kết thúc công việc</label>
-                    {role === 'responsible'
-                        ? <SelectBox id="multiSelectStatusRequestClose"
-                            style={{ width: "100%" }}
-                            value={status}
-                            items={[
-                                { value: "wait_for_approval", text: translate('task.task_management.wait_for_approval') },
-                                { value: "finished", text: translate('task.task_management.finished') },
-                                { value: "delayed", text: translate('task.task_management.delayed') },
-                                { value: "canceled", text: translate('task.task_management.canceled') }
-                            ]}
-                            onChange={handleSelectStatus}
-                            disabled={requestToCloseTask && requestToCloseTask.requestStatus === 1}
-                        >
-                        </SelectBox>
-                        : role === 'accountable' && requestToCloseTask
-                            && <span>{formatStatus(requestToCloseTask.taskStatus)}</span>
-                    }
+                    <SelectBox id="multiSelectStatusRequestClose"
+                        style={{ width: "100%" }}
+                        value={status}
+                        items={[
+                            { value: "wait_for_approval", text: translate('task.task_management.wait_for_approval') },
+                            { value: "finished", text: translate('task.task_management.finished') },
+                            { value: "delayed", text: translate('task.task_management.delayed') },
+                            { value: "canceled", text: translate('task.task_management.canceled') }
+                        ]}
+                        onChange={handleSelectStatus}
+                        disabled={requestToCloseTask?.requestStatus === 1 && role === 'responsible'}
+                    />
                 </div>
 
                 <div className="form-group">
-                    <label>Mô tả yêu cầu</label>
+                    <label style={{ marginRight: '5px' }}>{translate('task.task_management.detail_description')}</label>
                     {role === 'responsible'
                         ? <QuillEditor
                             id={`quill-request-close-task-by-${role}-${id}`}
@@ -128,8 +115,8 @@ function RequestToCloseTaskModal(props) {
                             enableEdit={requestToCloseTask && requestToCloseTask.requestStatus !== 1}
                             quillValueDefault={descriptionDefault}
                         />
-                        : role === 'accountable' && requestToCloseTask
-                            && <span>{requestToCloseTask.description && parse(requestToCloseTask.description)}</span>
+                        : role === 'accountable' && requestToCloseTask && requestToCloseTask?.description
+                            ? <span>{parse(requestToCloseTask.description)}</span> : <span>{translate('task.task_perform.none_description')}</span>
                     }
                 </div>
             </DialogModal>

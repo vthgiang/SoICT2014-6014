@@ -2934,6 +2934,21 @@ export default {
                 confirm_task_success: "Confirm task successfully",
                 confirm_task_failure: "Confirm task unsuccessfully",
 
+                // yêu cầu kết thúc công việc
+                request_close_task_success: "Send request to close task successfully",
+                cancel_request_close_task_success: "Cancel request to close task successfully",
+                approval_close_task_success: "Approve request to close task successfully",
+                decline_close_task_success: "Decline request to close task successfully",
+                request_close_task_failure: "Send request to close task unsuccessfully",
+                cancel_request_close_task_failure: "Cancel request to close task unsuccessfully",
+                approval_close_task_failure: "Approve request to close task unsuccessfully",
+                decline_close_task_failure: "Decline request to close task unsuccessfully",
+
+                // Mở lại công việc
+                open_task_again_success: 'Open task again successfully',
+                open_task_again_failure: 'Open task again unsuccessfully',
+                confirm_open_task: 'Are you sure you want to open this task again?',
+
                 // warning
                 warning: "Warning",
                 not_have_evaluation: "No one evaluate task this month",

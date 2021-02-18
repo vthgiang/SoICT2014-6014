@@ -211,6 +211,21 @@ export function performtasks(state = {}, action) {
                 ...state,
                 error: action.payload
             }
+        case performTaskConstants.OPEN_TASK_AGAIN_REQUEST:
+            return {
+                ...state,
+                editing: true
+            }
+        case performTaskConstants.OPEN_TASK_AGAIN_SUCCESS:
+            return {
+                ...state,
+                task: action.payload
+            }
+        case performTaskConstants.OPEN_TASK_AGAIN_FAILURE:
+            return {
+                ...state,
+                error: action.payload
+            }
         case performTaskConstants.EDIT_EMPLOYEE_COLLABORATED_WITH_ORGANIZATIONAL_UNIT_REQUEST:
             return {
                 ...state,
