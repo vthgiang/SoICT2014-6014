@@ -6,6 +6,7 @@ import { UserActions } from '../../../../super-admin/user/redux/actions';
 import { createUnitKpiActions } from '../redux/actions.js';
 
 import { DialogModal } from '../../../../../common-components';
+import Swal from 'sweetalert2';
 
 function EmployeeImportancesModal(props) {
     const { translate, user, createKpiUnit } = props;
@@ -105,14 +106,23 @@ function EmployeeImportancesModal(props) {
     }
 
     const handleSaveEdit = (index) => {
-        let employeeImportancesStateTemp = employeeImportancesState;
-        employeeImportancesStateTemp[index].importance = importance;
-
-        setState({
-            ...state,
-            editting: ""
-        })
-        setEmployeeImportancesState(employeeImportancesStateTemp);
+        if (importance >= 0 && importance <= 100) {
+            let employeeImportancesStateTemp = employeeImportancesState;
+            employeeImportancesStateTemp[index].importance = importance;
+    
+            setState({
+                ...state,
+                editting: ""
+            })
+            setEmployeeImportancesState(employeeImportancesStateTemp);
+        } else {
+            Swal.fire({
+                title: 'Độ quan trọng phải từ 0 đến 100',
+                type: 'warning',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: translate('kpi.organizational_unit.create_organizational_unit_kpi_set.confirm')
+            })
+        }
     }
     
     const handleCancelEdit = () => {

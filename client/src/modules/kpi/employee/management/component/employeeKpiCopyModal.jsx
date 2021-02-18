@@ -92,6 +92,10 @@ class ModalCopyKPIPersonal extends Component {
                 func={this.save}
                 disableSubmit={errorOnNewDate}
             >
+                <div className="form-group text-red">
+                    <label style={{ margin: "0px 10px" }}>Lưu ý</label><span>{translate('kpi.organizational_unit.management.copy_modal.alert.change_link')}</span>
+                </div>
+
                 {/**Đơn vị của KPI tháng mới */}
                 <div className="form-group">
                     <label style={{ margin: "0px 10px"}}>{translate('kpi.organizational_unit.management.copy_modal.organizational_unit')}</label>
@@ -120,10 +124,6 @@ class ModalCopyKPIPersonal extends Component {
                             })
                         }
                     </ul>
-                </div>
-
-                <div className="form-group text-red" style={{ margin: "0px 10px" }}>
-                    <label style={{ marginRight: "5px" }}>Lưu ý:</label><span>{translate('kpi.organizational_unit.management.copy_modal.alert.change_link')}</span>
                 </div>
             </DialogModal >
         );

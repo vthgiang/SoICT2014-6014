@@ -4131,7 +4131,7 @@ export default {
                     no_data: "Không có dữ liệu",
                     trend_chart: {
                         execution_time: "Thời gian thực hiện (Ngày)",
-                        participants: "Só người tham gia",
+                        participants: "Số người tham gia",
                         amount_tasks: "Số lượng công việc",
                         amount_employee_kpi: "Số lượng KPI nhân viên",
                         weight: "Trọng số",
