@@ -303,7 +303,7 @@ class TaskOrganizationUnitDashboard extends Component {
                             <div className="col-xs-12">
                                 <div className="box box-primary">
                                     <div className="box-header with-border">
-                                        <div className="box-title">{translate('task.task_dashboard.general_unit_task')}</div>
+                                        <div className="box-title">{translate('task.task_dashboard.general_unit_task')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
                                     </div>
                                     <div className="box-body qlcv">
                                         {/* {this.state.callAction && tasks && tasks.organizationUnitTasks && */}

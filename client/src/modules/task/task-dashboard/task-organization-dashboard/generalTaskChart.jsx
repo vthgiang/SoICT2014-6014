@@ -58,7 +58,11 @@ const GeneralTaskChart = (props) => {
 
     useEffect(() => {
         const { tasks, units, unitSelected, employees } = props;
-        const tasksOfSelectedUnit = tasks?.tasks;
+        const allTasks = tasks?.tasks;
+
+        //Lay cac cong viec cua cac unit da chon
+        const tasksOfSelectedUnit = allTasks.filter(x =>
+            unitSelected.includes(x.organizationalUnit._id))
 
         // Dem cong viec cua tat ca cac unit da chon
         let dataRow = countTask(tasksOfSelectedUnit, 'Tổng');
@@ -66,7 +70,7 @@ const GeneralTaskChart = (props) => {
 
         // Dem cong viec cua tung unit da chon
         let listUnit = [];
-        units.forEach(unit => {
+        units && units.forEach(unit => {
             if (unitSelected.includes(unit.id)) {
                 listUnit.push(unit);
             }
@@ -90,7 +94,7 @@ const GeneralTaskChart = (props) => {
     }, [props.employees]);
 
     return (
-        <div>
+        <div style={{ fontWeight: 600 }}>
             <DataTableSetting className="pull-right" tableId='generalTaskUnit' tableContainerId="tree-table-container" tableWidth="1300px"
                 columnArr={[
                     translate('task.task_dashboard.unit'),
