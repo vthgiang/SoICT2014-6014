@@ -5,36 +5,51 @@ import moment from 'moment';
 const GeneralTaskPersonalChart = (props) => {
     const { translate } = props;
     const [state, setState] = useState({});
-
+    const now = moment
     useEffect(() => {
         const { tasks } = props;
         const taskOfUser = tasks?.tasks;
-        // console.log("===hello props: =====", taskOfUser)
 
         // xu ly du lieu
         if (taskOfUser && taskOfUser.length) {
             const unconfirmedTask = [], urgentTask = [], noneUpdateTask = [],
                 overdueTask = [], delayTask = [], intimeTask = [], todoTask = [];
             for (let i in taskOfUser) {
+                let created = moment(taskOfUser[i].createdAt);
                 let start = moment(taskOfUser[i].startDate);
                 let end = moment(taskOfUser[i].endDate);
                 let lastUpdate = moment(taskOfUser[i].updatedAt);
                 let now = moment(new Date());
                 let duration = end.diff(start, 'days');
-                let uptonow = now.diff(lastUpdate, 'days');
+                let updatedToNow = now.diff(lastUpdate, 'days');
+                let createdToNow = now.diff(created, 'days');
+                let nowToEnd = end.diff(now, 'days');
 
-                // viec 7 ngay chua update
-                if (uptonow >= 7) {
-                    noneUpdateTask.push(taskOfUser[i]);
+                // viec 7 {translate('task.task_dashboard.day')} chua update
+                if (updatedToNow >= 7) {
+                    let add = {
+                        ...taskOfUser[i],
+                        updatedToNow
+                    }
+                    noneUpdateTask.push(add);
                 }
+
                 if (taskOfUser[i].status === 'inprocess') {
                     if (now <= end) {
                         //viec can lam
-                        todoTask.push(taskOfUser[i])
+                        let add = {
+                            ...taskOfUser[i],
+                            nowToEnd
+                        }
+                        todoTask.push(add)
                     }
                     if (now > end) {
                         //viec Quá hạn
-                        overdueTask.push(taskOfUser[i]);
+                        let add = {
+                            ...taskOfUser[i],
+                            nowToEnd: -parseInt(nowToEnd)
+                        }
+                        overdueTask.push(add);
                     }
                     else {
                         let processDay = Math.floor(taskOfUser[i].progress * duration / 100);
@@ -42,25 +57,42 @@ const GeneralTaskPersonalChart = (props) => {
 
                         if (startToNow > processDay) {
                             //viec Trễ hạn
-                            delayTask.push(taskOfUser[i]);
+                            let add = {
+                                ...taskOfUser[i],
+                                nowToEnd
+                            }
+                            delayTask.push(add);
                         }
                         else if (startToNow <= processDay) {
                             //viec Đúng hạn
-                            intimeTask.push(taskOfUser[i]);
+                            let add = {
+                                ...taskOfUser[i],
+                                nowToEnd
+                            }
+                            intimeTask.push(add);
                         }
                     }
                 }
                 // cac cong viec chua xac nhan
                 if (!taskOfUser[i].confirmedByEmployees.length) {
-                    unconfirmedTask.push(taskOfUser[i])
+                    let add = {
+                        ...taskOfUser[i],
+                        createdToNow
+                    }
+                    unconfirmedTask.push(add)
                 }
 
                 // cac cong viec khan cap
                 if (taskOfUser[i].priority === 5) {
-                    urgentTask.push(taskOfUser[i])
+                    let add = {
+                        ...taskOfUser[i],
+                        createdToNow
+                    }
+                    urgentTask.push(add)
                 }
 
             }
+            console.log("===", urgentTask);
             setState({
                 ...state,
                 unconfirmedTask,
@@ -77,7 +109,8 @@ const GeneralTaskPersonalChart = (props) => {
 
     return (
         <div className="qlcv box-body" style={{ height: "380px", overflow: "auto" }}>
-            <h5><i class="fa fa-asterisk" style={{ fontSize: 10 }}></i> Việc chưa xác nhận</h5>
+            {/* Công việc chưa xác nhận */}
+            <strong><i class="fa fa-asterisk" style={{ fontSize: '80%' }}></i> {`${translate('task.task_dashboard.unconfirmed_task')} (${state.unconfirmedTask?.length})`}</strong>
             {
                 state.unconfirmedTask &&
                 <ul className="todo-list">
@@ -86,16 +119,17 @@ const GeneralTaskPersonalChart = (props) => {
                             state.unconfirmedTask.map((item, key) =>
                                 <li key={key}>
                                     <span className="handle">
-                                        <i className="fa fa-ellipsis-v" />
-                                        <i className="fa fa-ellipsis-v" />
+                                        <i className="fa fa-circle" style={{ fontSize: '60%' }} />
                                     </span>
-                                    <span className="text"><a href={`/task?taskId=${item._id}`} target="_blank">{item.name}</a></span>
+                                    <span className="handle text"><a href={`/task?taskId=${item._id}`} target="_blank">{item.name}</a></span>
+                                    <small className="label label-warning">{item.createdToNow} {translate('task.task_dashboard.day_ago')}</small>
                                 </li>
-                            ) : <small>Không có công việc nào</small>
+                            ) : <small>{translate('task.task_dashboard.no_task')}</small>
                     }
                 </ul>
             }
-            <h5><i class="fa fa-asterisk" style={{ fontSize: 10 }}></i> Việc khẩn cấp</h5>
+            {/* Công việc khẩn cấp */}
+            <strong><i class="fa fa-asterisk" style={{ fontSize: '80%' }}></i> {`${translate('task.task_dashboard.urgent_task')} (${state.urgentTask?.length})`}</strong>
             {
                 state.urgentTask &&
                 <ul className="todo-list">
@@ -104,16 +138,18 @@ const GeneralTaskPersonalChart = (props) => {
                             state.urgentTask.map((item, key) =>
                                 <li key={key}>
                                     <span className="handle">
-                                        <i className="fa fa-ellipsis-v" />
-                                        <i className="fa fa-ellipsis-v" />
+                                        <i className="fa fa-circle" style={{ fontSize: '60%' }} />
                                     </span>
-                                    <span className="text"><a href={`/task?taskId=${item._id}`} target="_blank">{item.name}</a></span>
+                                    <span className="handle text"><a href={`/task?taskId=${item._id}`} target="_blank">{item.name}</a></span>
+                                    <small className="label label-danger">{item.createdToNow} {translate('task.task_dashboard.day_ago')}</small>
+
                                 </li>
-                            ) : <small>Không có công việc nào</small>
+                            ) : <small>{translate('task.task_dashboard.no_task')}</small>
                     }
                 </ul>
             }
-            <h5><i class="fa fa-asterisk" style={{ fontSize: 10 }}></i> Việc cần làm</h5>
+            {/* Công việc cần làm */}
+            <strong><i class="fa fa-asterisk" style={{ fontSize: '80%' }}></i> {`${translate('task.task_dashboard.to_do_task')} (${state.todoTask?.length})`}</strong>
             {
                 state.todoTask &&
                 <ul className="todo-list">
@@ -121,15 +157,18 @@ const GeneralTaskPersonalChart = (props) => {
                         (state.todoTask.length !== 0) ?
                             state.todoTask.map((item, key) =>
                                 <li key={key}>
-                                    <span className="handle"></span>
-                                    <span className="text"><a href={`/task?taskId=${item._id}`} target="_blank">{item.name}</a></span>
-                                    <span>{item.progress} - {item.updatedAt}</span>
+                                    <span className="handle">
+                                        <i className="fa fa-circle" style={{ fontSize: '60%' }} />
+                                    </span>
+                                    <span className="handle text"><a href={`/task?taskId=${item._id}`} target="_blank">{item.name}</a></span>
+                                    <small className="label label-primary">{item.progress}% - {translate('task.task_dashboard.rest')} {item.nowToEnd} {translate('task.task_dashboard.day')}</small>
                                 </li>
-                            ) : <small>Không có công việc nào</small>
+                            ) : <small>{translate('task.task_dashboard.no_task')}</small>
                     }
                 </ul>
             }
-            <h5><i class="fa fa-asterisk" style={{ fontSize: 10 }}></i> Việc đúng hạn</h5>
+            {/* Công việc đúng hạn */}
+            <strong><i class="fa fa-asterisk" style={{ fontSize: '80%' }}></i> {`${translate('task.task_dashboard.intime_task')} (${state.intimeTask?.length})`}</strong>
             {
                 state.intimeTask &&
                 <ul className="todo-list">
@@ -138,16 +177,17 @@ const GeneralTaskPersonalChart = (props) => {
                             state.intimeTask.map((item, key) =>
                                 <li key={key}>
                                     <span className="handle">
-                                        <i className="fa fa-ellipsis-v" />
-                                        <i className="fa fa-ellipsis-v" />
+                                        <i className="fa fa-circle" style={{ fontSize: '60%' }} />
                                     </span>
-                                    <span className="text"><a href={`/task?taskId=${item._id}`} target="_blank">{item.name}</a></span>
+                                    <span className="handle text"><a href={`/task?taskId=${item._id}`} target="_blank">{item.name}</a></span>
+                                    <small className="label label-success">{item.progress}% - {translate('task.task_dashboard.rest')} {item.nowToEnd} {translate('task.task_dashboard.day')}</small>
                                 </li>
-                            ) : <small>Không có công việc nào</small>
+                            ) : <small>{translate('task.task_dashboard.no_task')}</small>
                     }
                 </ul>
             }
-            <h5><i class="fa fa-asterisk" style={{ fontSize: 10 }}></i> Việc trễ hạn</h5>
+            {/* Công việc trễ tiến độ */}
+            <strong><i class="fa fa-asterisk" style={{ fontSize: '80%' }}></i> {`${translate('task.task_dashboard.delay_task')} (${state.delayTask?.length})`}</strong>
             {
                 state.delayTask &&
                 <ul className="todo-list">
@@ -156,16 +196,17 @@ const GeneralTaskPersonalChart = (props) => {
                             state.delayTask.map((item, key) =>
                                 <li key={key}>
                                     <span className="handle">
-                                        <i className="fa fa-ellipsis-v" />
-                                        <i className="fa fa-ellipsis-v" />
+                                        <i className="fa fa-circle" style={{ fontSize: '60%' }} />
                                     </span>
-                                    <span className="text"><a href={`/task?taskId=${item._id}`} target="_blank">{item.name}</a></span>
+                                    <span className="handle text"><a href={`/task?taskId=${item._id}`} target="_blank">{item.name}</a></span>
+                                    <small className="label label-warning">{item.progress}% - {translate('task.task_dashboard.rest')} {item.nowToEnd} {translate('task.task_dashboard.day')}</small>
                                 </li>
-                            ) : <small>Không có công việc nào</small>
+                            ) : <small>{translate('task.task_dashboard.no_task')}</small>
                     }
                 </ul>
             }
-            <h5><i class="fa fa-asterisk" style={{ fontSize: 10 }}></i> Việc quá hạn</h5>
+            {/* Công việc quá hạn */}
+            <strong><i class="fa fa-asterisk" style={{ fontSize: '80%' }}></i> {`${translate('task.task_dashboard.overdue_task')} (${state.overdueTask?.length})`}</strong>
             {
                 state.overdueTask &&
                 <ul className="todo-list">
@@ -174,16 +215,17 @@ const GeneralTaskPersonalChart = (props) => {
                             state.overdueTask.map((item, key) =>
                                 <li key={key}>
                                     <span className="handle">
-                                        <i className="fa fa-ellipsis-v" />
-                                        <i className="fa fa-ellipsis-v" />
+                                        <i className="fa fa-circle" style={{ fontSize: '60%' }} />
                                     </span>
-                                    <span className="text"><a href={`/task?taskId=${item._id}`} target="_blank">{item.name}</a></span>
+                                    <span className="handle text"><a href={`/task?taskId=${item._id}`} target="_blank">{item.name}</a></span>
+                                    <small className="label label-danger">{translate('task.task_dashboard.overdue')} {item.nowToEnd} {translate('task.task_dashboard.day')}</small>
                                 </li>
-                            ) : <small>Không có công việc nào</small>
+                            ) : <small>{translate('task.task_dashboard.no_task')}</small>
                     }
                 </ul>
             }
-            <h5><i class="fa fa-asterisk" style={{ fontSize: 10 }}></i> Việc chưa update</h5>
+            {/* Công việc chưa cập nhật trong tuần qua */}
+            <strong><i class="fa fa-asterisk" style={{ fontSize: '80%' }}></i> {`${translate('task.task_dashboard.none_update_recently')} (${state.noneUpdateTask?.length})`}</strong>
             {
                 state.noneUpdateTask &&
                 <ul className="todo-list">
@@ -192,12 +234,14 @@ const GeneralTaskPersonalChart = (props) => {
                             state.noneUpdateTask.map((item, key) =>
                                 <li key={key}>
                                     <span className="handle">
-                                        <i className="fa fa-ellipsis-v" />
-                                        <i className="fa fa-ellipsis-v" />
+                                        <i className="fa fa-circle" style={{ fontSize: '60%' }} />
                                     </span>
-                                    <span className="text"><a href={`/task?taskId=${item._id}`} target="_blank">{item.name}</a></span>
+                                    <span className="handle text"><a href={`/task?taskId=${item._id}`} target="_blank">{item.name}</a></span>
+                                    <small className="label label-warning"><i className="fa fa-clock-o" /> &nbsp;
+                                    {translate('task.task_dashboard.updated')} {item.updatedToNow}
+                                        {translate('task.task_dashboard.day_ago')}</small>
                                 </li>
-                            ) : <small>Không có công việc nào</small>
+                            ) : <small>{translate('task.task_dashboard.no_task')}</small>
                     }
                 </ul>
             }

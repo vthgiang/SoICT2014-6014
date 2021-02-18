@@ -402,7 +402,7 @@ class TaskDashboard extends Component {
                 </div>
 
                 {/* Tổng quan công việc cá nhân */}
-                {/* <div className="row">
+                <div className="row">
                     <div className="col-xs-12">
                         <div className="box box-primary">
                             <div className="box-header with-border">
@@ -414,7 +414,7 @@ class TaskDashboard extends Component {
                         </div>
 
                     </div>
-                </div> */}
+                </div>
 
                 {/* Lịch công việc chi tiết */}
                 <div className="row">

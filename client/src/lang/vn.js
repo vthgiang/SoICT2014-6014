@@ -3223,7 +3223,7 @@ export default {
                 open_task_again_success: 'Kích hoạt lại công việc thành công',
                 open_task_again_failure: 'Kích hoạt lại công việc thất bại',
                 confirm_open_task: 'Bạn có chắc chắn muốn kích hoạt lại công việc hiện tại không?',
-                
+
                 // warning
                 warning: "Cảnh báo",
                 not_have_evaluation: "Chưa có đánh giá công việc tháng này",
@@ -3585,7 +3585,16 @@ export default {
                 none_update_recently: "Công việc chưa cập nhật gần đây",
                 intime_task: "Công việc đúng tiến độ",
                 delay_task: "Công việc trễ tiến độ",
-                overdue_task: "Công việc quá hạn"
+                overdue_task: "Công việc quá hạn",
+                no_task: "Không có công việc nào",
+                unconfirmed_task: "Công việc chưa xác nhận thực hiện",
+                urgent_task: "Công việc khẩn cấp",
+                to_do_task: "Công việc cần làm",
+                day_ago: "ngày trước",
+                rest: "Còn",
+                updated: "Cập nhật",
+                day: "ngày",
+                overdue: "Quá hạn",
             }
         },
 

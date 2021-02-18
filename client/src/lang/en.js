@@ -3285,7 +3285,16 @@ export default {
                 none_update_recently: "None updated recently tasks",
                 intime_task: "Intime tasks",
                 delay_task: "Delayed tasks",
-                overdue_task: "Overdue tasks"
+                overdue_task: "Overdue tasks",
+                no_task: "No data",
+                unconfirmed_task: "Unconfirmed tasks",
+                urgent_task: "Urgent tasks",
+                to_do_task: "Todo tasks",
+                day_ago: "days ago",
+                rest: "Rest",
+                updated: "Updated",
+                day: "days",
+                overdue: "Over",
             }
         },
 
