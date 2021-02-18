@@ -76,19 +76,19 @@ function RequestToCloseTaskModal(props) {
                 {role === 'responsible' && requestToCloseTask
                     ? <div style={{ textAlign: 'right' }}>
                         {(requestToCloseTask.requestStatus === 0 || requestToCloseTask.requestStatus === 2)
-                            ? <button className="btn btn-success" onClick={() => sendRequestCloseTask()}>Gửi yêu cầu</button>
+                            ? <button className="btn btn-success" onClick={() => sendRequestCloseTask()}>{translate('task.task_perform.send_request_close_task')}</button>
                             : requestToCloseTask && requestToCloseTask.requestStatus === 1
-                                && <button className="btn btn-danger" onClick={() => cancelRequestCloseTask()}>Hủy yêu cầu</button>
+                                && <button className="btn btn-danger" onClick={() => cancelRequestCloseTask()}>{translate('task.task_perform.cancel_request_close_task')}</button>
                         }
                     </div>
                     : role === 'accountable' && requestToCloseTask && requestToCloseTask.requestStatus === 1
                         && <div style={{ textAlign: 'right' }}>
-                            <button className="btn btn-success" onClick={() => approvalRequestCloseTask()}>Chấp nhận</button>
-                            <button className="btn btn-danger" onClick={() => declineRequestCloseTask()} style={{ marginLeft: '5px' }}>Từ chối</button>
+                            <button className="btn btn-success" onClick={() => approvalRequestCloseTask()}>{translate('task.task_perform.approval_request_close_task')}</button>
+                            <button className="btn btn-danger" onClick={() => declineRequestCloseTask()} style={{ marginLeft: '5px' }}>{translate('task.task_perform.decline_request_close_task')}</button>
                         </div>
                 }
                 <div className="form-group">
-                    <label style={{ marginRight: '5px' }}>Trạng thái khi kết thúc công việc</label>
+                    <label style={{ marginRight: '5px' }}>{translate('task.task_perform.status_task_close')}</label>
                     <SelectBox id="multiSelectStatusRequestClose"
                         style={{ width: "100%" }}
                         value={status}

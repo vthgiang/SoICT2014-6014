@@ -891,13 +891,13 @@ class DetailTaskTab extends Component {
                         }
                     
                         {(((currentRole === "responsible" && task?.requestToCloseTask?.requestStatus !== 3) || (currentRole === "accountable" && task?.requestToCloseTask?.requestStatus === 1)) && checkInactive) && checkHasAccountable
-                            && <a className="btn btn-app" onClick={() => this.handleShowRequestCloseTask(id)} title="Phê duyệt yêu cầu kết thúc công việc">
-                                <i className="fa fa-edit" style={{ fontSize: "16px" }}></i>Yêu cầu kết thúc công việc
+                            && <a className="btn btn-app" onClick={() => this.handleShowRequestCloseTask(id)} title={currentRole === "responsible" ? translate('task.task_perform.request_close_task') : translate('task.task_perform.approval_close_task')}>
+                                <i className="fa fa-external-link-square" style={{ fontSize: "16px" }}></i>{currentRole === "responsible" ? translate('task.task_perform.request_close_task') : translate('task.task_perform.approval_close_task')}
                             </a>
                         }
                         {task && statusTask !== "inprocess" && checkInactive
-                            && <a className="btn btn-app" onClick={() => this.handleOpenTaskAgain(id)} title="Kích hoạt lại công việc">
-                                <i className="fa fa-edit" style={{ fontSize: "16px" }}></i>Kích hoạt lại công việc
+                            && <a className="btn btn-app" onClick={() => this.handleOpenTaskAgain(id)} title={translate('task.task_perform.open_task_again')}>
+                                <i className="fa fa-rocket" style={{ fontSize: "16px" }}></i>{translate('task.task_perform.open_task_again')}
                             </a>
                         }
                     
