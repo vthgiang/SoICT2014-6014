@@ -365,7 +365,7 @@ class TaskOrganizationUnitDashboard extends Component {
                                             <InprocessOfUnitTask
                                                 tasks={tasks.organizationUnitTasks}
                                                 listEmployee={user && user.employees}
-                                                units={childrenOrganizationalUnit}
+                                                units={selectBoxUnit}
                                             />
                                         }
                                     </div>

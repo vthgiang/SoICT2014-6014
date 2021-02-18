@@ -22,6 +22,7 @@ import { getStorage } from '../../../../config';
 import LoadTaskInformation from './loadTaskInformation'
 import ProcessOfTask from './processOfTask'
 import moment from 'moment';
+import GeneralTaskPersonalChart from './generalTaskPersonalChart';
 class TaskDashboard extends Component {
 
     constructor(props) {
@@ -399,6 +400,21 @@ class TaskDashboard extends Component {
                         </div>
                     </div>
                 </div>
+
+                {/* Tổng quan công việc cá nhân */}
+                {/* <div className="row">
+                    <div className="col-xs-12">
+                        <div className="box box-primary">
+                            <div className="box-header with-border">
+                                <div className="box-title">Tổng quan công việc</div>
+                            </div>
+                            <GeneralTaskPersonalChart
+                                tasks={tasks}
+                            />
+                        </div>
+
+                    </div>
+                </div> */}
 
                 {/* Lịch công việc chi tiết */}
                 <div className="row">
