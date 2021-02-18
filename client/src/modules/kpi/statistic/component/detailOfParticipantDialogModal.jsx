@@ -46,7 +46,7 @@ class DetailOfParticipantDialogModal extends Component {
                                         </tr>
                                     )
                                     : <tr>
-                                        <td colspan="3">{translate('kpi.organizational_unit.kpi_organizational_unit_manager.no_data')}</td>
+                                        <td colSpan="3">{translate('kpi.organizational_unit.kpi_organizational_unit_manager.no_data')}</td>
                                     </tr>
                             }
                         </tbody>

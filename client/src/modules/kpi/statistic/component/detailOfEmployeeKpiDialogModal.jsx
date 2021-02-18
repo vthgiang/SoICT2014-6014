@@ -75,7 +75,7 @@ class DetailOfEmployeeKpiDialogModal extends Component {
                                         </tr>
                                     )
                                     : <tr>
-                                        <td colspan="7">{translate('kpi.organizational_unit.kpi_organizational_unit_manager.no_data')}</td>
+                                        <td colSpan="7">{translate('kpi.organizational_unit.kpi_organizational_unit_manager.no_data')}</td>
                                     </tr>
                             }
                         </tbody>
