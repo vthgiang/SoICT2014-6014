@@ -6,6 +6,7 @@ import { sendRequest } from '../../../../helpers/requestHelper';
 export const performTaskService = {
     getTimesheetLogs,
     getTimerStatusTask,
+    getCurrentTaskTimesheetLogOfEmployeeInOrganizationalUnit,
     startTimerTask,
     stopTimerTask,
     editTimeSheetLog,
@@ -54,6 +55,7 @@ export const performTaskService = {
     getById,
     confirmTask,
     requestAndApprovalCloseTask,
+    openTaskAgain,
     editEmployeeCollaboratedWithOrganizationalUnits,
 
     //Comment in process
@@ -102,6 +104,20 @@ function getTimerStatusTask(taskId) {
         url: `${process.env.REACT_APP_SERVER}/performtask/task-timesheet-logs`,
         method: 'GET',
         params: {taskId: taskId , userId: userId}
+    }, false, false, 'task.task_perform');
+};
+
+/**
+ * Lấy các nhân viên đang bấm giờ trong 1 đơn vị 
+ */
+function getCurrentTaskTimesheetLogOfEmployeeInOrganizationalUnit(data) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/performtask/task-timesheet-logs`,
+        method: 'GET',
+        params: {
+            currentTimesheetLog: 1,
+            organizationalUnitId: data?.organizationalUnitId
+        }
     }, false, false, 'task.task_perform');
 };
 
@@ -244,10 +260,21 @@ function requestAndApprovalCloseTask(taskId, data) {
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}`,
         method: 'POST',
-        params: {
-            type: 'request_approval_close_task'
-        },
-        data: data
+        data: {
+            ...data,
+            requestAndApprovalCloseTask: 1
+        }
+    }, true, true, 'task.task_management');
+}
+
+/** Mở lại công việc đã kết thúc */
+function openTaskAgain(taskId) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}`,
+        method: 'POST',
+        data: {
+            type: 'open_task_again'
+        }
     }, true, true, 'task.task_management');
 }
 

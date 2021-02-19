@@ -13,11 +13,13 @@ function getAllKPIUnit(infosearch) {
         method: 'GET',
         params: {
             allOrganizationalUnitKpiSet: 1,
-            roleId: infosearch.role,
-            status: infosearch.status,
-            startDate: infosearch.startDate,
-            endDate: infosearch.endDate,
-            organizationalUnit: infosearch.organizationalUnit
+            roleId: infosearch?.role,
+            status: infosearch?.status,
+            startDate: infosearch?.startDate,
+            endDate: infosearch?.endDate,
+            organizationalUnit: infosearch?.organizationalUnit,
+            perPage: infosearch?.perPage,
+            page: infosearch?.page
         }
     }, false, true, 'kpi.organizational_unit');
 }

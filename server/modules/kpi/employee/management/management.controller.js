@@ -34,18 +34,26 @@ exports.getAllKPIEmployeeSetsInOrganizationByMonth = async (req, res) => {
  */
 exports.copyKPI = async (req, res) => {
     try {
-        let kpipersonals = await overviewService.copyKPI(req.portal, req.params.id, req.query);
+        let data = {
+            ...req.query,
+            creator: req.user._id
+        }
+        let kpipersonals = await overviewService.copyKPI(req.portal, req.params.id, data);
         Logger.info(req.user.email, ` get all kpi personal `, req.portal);
         res.status(200).json({
             success: true,
-            messages: ['copy_KPI_success'],
+            messages: ['copy_employee_kpi_success'],
             content: kpipersonals
         });
     } catch (error) {
+        let messages = error && error.messages === 'employee_kpi_set_exist'
+            ? ['employee_kpi_set_exist']
+            : ['copy_employee_kpi_failure'];
+        
         Logger.error(req.user.email, ` get all kpi personal `, req.portal);
         res.status(400).json({
             success: false,
-            messages: ['copy_KPI_fail'],
+            messages: messages,
             content: error
         })
     }

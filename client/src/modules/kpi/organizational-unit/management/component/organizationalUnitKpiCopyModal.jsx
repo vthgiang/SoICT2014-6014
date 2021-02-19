@@ -103,8 +103,8 @@ class ModalCopyKPIUnit extends Component {
                 </div>
 
                 {/* Chọn tháng */}
-                <div className="form-group">
-                    <label style={{ margin: "0px 10px"}}>{translate('kpi.organizational_unit.management.copy_modal.month')}</label>
+                <div className="form-group" style={{ marginLeft: "10px" }}>
+                    <label style={{ marginRight: "10px"}}>{translate('kpi.organizational_unit.management.copy_modal.month')}</label>
                     {type === 'default'
                         ? <DatePicker
                             id="new_date"

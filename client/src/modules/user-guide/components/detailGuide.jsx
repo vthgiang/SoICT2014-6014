@@ -20,7 +20,6 @@ function DetailGuide(props) {
     }, []);
 
     const link = process.env.REACT_APP_SERVER + props.link.url;
-    console.log('aaaaaaaa', props);
     return (
         <React.Fragment>
             <DialogModal

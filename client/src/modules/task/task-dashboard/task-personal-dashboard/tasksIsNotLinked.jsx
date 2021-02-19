@@ -48,8 +48,8 @@ class TasksIsNotLinked extends Component {
 
                 evaluations = x.evaluations.length && x.evaluations;
                 for (let i in evaluations) {
-                    let month = evaluations[i].evaluatingMonth.slice(5, 7);
-                    let year = evaluations[i].evaluatingMonth.slice(0, 4);
+                    let month = evaluations[i] && evaluations[i].evaluatingMonth && evaluations[i].evaluatingMonth.slice(5, 7);
+                    let year = evaluations[i] && evaluations[i].evaluatingMonth && evaluations[i].evaluatingMonth.slice(0, 4);
 
                     if (month == currentMonth && year == currentYear) {
                         currentEvaluate.push(evaluations[i]);

@@ -90,6 +90,7 @@ export function user(state = initState, action) {
             if(action.callApi){
                 return {
                     ...state,
+                    employeesOfUnitsUserIsManager: null,
                     isLoading: true
                 };
             }

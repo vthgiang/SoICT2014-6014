@@ -1,38 +1,65 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+import Swal from 'sweetalert2';
 
-import { DataTableSetting, ExportExcel } from '../../../../../common-components';
-import { DatePicker, SelectBox } from '../../../../../common-components/index';
+import { DataTableSetting, ExportExcel, PaginateBar, DatePicker, SelectBox } from '../../../../../common-components';
+import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
 
 import { UserActions } from "../../../../super-admin/user/redux/actions";
 import { kpiMemberActions } from '../../../evaluation/employee-evaluation/redux/actions'
 
 import { ModalCopyKPIPersonal } from './employeeKpiCopyModal';
 import { ModalDetailKPIPersonal } from './employeeKpiDetailModal';
-import Swal from 'sweetalert2';
-
 
 var translate = '';
 class KPIPersonalManager extends Component {
     constructor(props) {
         super(props);
         translate = this.props.translate;
+
+        let d = new Date(),
+            month = d.getMonth() + 1,
+            year = d.getFullYear();
+        let startMonth, endMonth, startYear;
+
+        if (month > 1) {
+            startMonth = month - 1;
+            startYear = year;
+        } else {
+            startMonth = month - 1 + 12;
+            startYear = year - 1;
+        }
+        if (startMonth < 10)
+            startMonth = '0' + startMonth;
+        if (month < 10) {
+            endMonth = '0' + month;
+        } else {
+            endMonth = month;
+        }
+
         const tableId = "table-personal-kpi-management";
+        const defaultConfig = { limit: 20 }
+        const limit = getTableConfiguration(tableId, defaultConfig).limit;
+
         this.state = {
             tableId,
             commenting: false,
             user: null,
             status: -1,
-            startDate: null,
-            endDate: null,
+            startDate: [startYear, startMonth].join('-'),
+            endDate: [year, endMonth].join('-'),
             infosearch: {
                 role: localStorage.getItem("currentRole"),
                 user: [localStorage.getItem("userId")],
                 status: null,
-                startDate: null,
-                endDate: null
+                startDate: [startYear, startMonth].join('-'),
+                endDate: [year, endMonth].join('-'),
+                perPage: limit,
+                page: 1
             },
+            startDateDefault: [startMonth, startYear].join('-'),
+            endDateDefault: [endMonth, year].join('-'),
             showApproveModal: null,
             showDetailKpiPersonal: null
         };
@@ -98,20 +125,34 @@ class KPIPersonalManager extends Component {
     }
 
     handleStartDateChange = (value) => {
+        let month;
+        if (value === '') {
+            month = null
+        } else {
+            month = value.slice(3, 7) + '-' + value.slice(0, 2)
+        }
+
         this.setState(state => {
             return {
                 ...state,
-                startDate: value.slice(3, 7) + '-' + value.slice(0, 2)
+                startDate: month
             }
         });
 
     }
 
     handleEndDateChange = (value) => {
+        let month;
+        if (value === '') {
+            month = null
+        } else {
+            month = value.slice(3, 7) + '-' + value.slice(0, 2)
+        }
+
         this.setState(state => {
             return {
                 ...state,
-                endDate: value.slice(3, 7) + '-' + value.slice(0, 2)
+                endDate: month
             }
         });
     }
@@ -141,9 +182,11 @@ class KPIPersonalManager extends Component {
             }
         })
 
-        const { infosearch } = this.state;
-        let startdate = new Date(infosearch.startDate);
-        let enddate = new Date(infosearch.endDate);
+        let startdate, enddate;
+        if (startDate && endDate) {
+            startdate = new Date(startDate);
+            enddate = new Date(endDate);
+        }
 
         if (startdate && enddate && startdate.getTime() > enddate.getTime()) {
             Swal.fire({
@@ -154,8 +197,41 @@ class KPIPersonalManager extends Component {
             })
         }
         else {
+            let { infosearch } = this.state;
             this.props.getEmployeeKPISets(infosearch);
         }
+    }
+
+    setLimit = async (limit) => {
+        if (Number(limit) !== this.state?.infosearch?.limit) {
+            await this.setState(state => {
+                return {
+                    ...state,
+                    infosearch: {
+                        ...state.infosearch,
+                        perPage: Number(limit)
+                    }
+                }
+            })
+
+            let { infosearch } = this.state;
+            this.props.getEmployeeKPISets(infosearch);
+        }
+    }
+
+    handleGetDataPagination = async (index) => {
+        await this.setState(state => {
+            return {
+                ...state,
+                infosearch: {
+                    ...state.infosearch,
+                    page: index
+                }
+            }
+        })
+
+        let { infosearch } = this.state;
+        this.props.getEmployeeKPISets(infosearch);
     }
 
     /**Mở modal xem chi tiết 1 mẫu công việc */
@@ -174,7 +250,7 @@ class KPIPersonalManager extends Component {
         let fileName = "Bảng theo dõi KPI cá nhân";
 
         if (data.length !== 0) {
-            fileName += " " + (data[0].creator.name ? data[0].creator.name : "");
+            fileName += " " + (data[0]?.creator?.name ? data[0]?.creator?.name : "");
         }
 
         if (data) {
@@ -231,7 +307,7 @@ class KPIPersonalManager extends Component {
         let exportData;
 
         const { translate, kpimembers, user } = this.props;
-        const { status, startDate, endDate, tableId } = this.state;
+        const { status, tableId, startDateDefault, endDateDefault, infosearch } = this.state;
 
         if (user) userdepartments = user.userdepartments;
         if (kpimembers) kpipersonal = kpimembers.kpimembers;
@@ -248,6 +324,29 @@ class KPIPersonalManager extends Component {
 
                     {/**Select box chọn trạng thái để tìm kiếm */}
                     <div className="form-inline">
+                         {/**Chọn ngày bắt đầu */}
+                         <div className="form-group">
+                            <label>{translate('kpi.evaluation.employee_evaluation.from')}:</label>
+                            <DatePicker id='start_date'
+                                value={startDateDefault}
+                                onChange={this.handleStartDateChange}
+                                dateFormat="month-year"
+                            />
+                        </div>
+
+                        {/**Chọn ngày kết thúc */}
+                        <div className="form-group">
+                            <label>{translate('kpi.evaluation.employee_evaluation.to')}</label>
+                            <DatePicker
+                                id='end_date'
+                                value={endDateDefault}
+                                onChange={this.handleEndDateChange}
+                                dateFormat="month-year"
+                            />
+                        </div>
+                    </div>
+
+                    <div className="form-inline">
                         <div className="form-group">
                             <label>{translate('general.status')}:</label>
                             <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
@@ -263,38 +362,12 @@ class KPIPersonalManager extends Component {
                             />
                         </div>
 
-                    </div>
-
-                    <div className="form-inline">
-
-                        {/**Chọn ngày bắt đầu */}
                         <div className="form-group">
-                            <label>{translate('kpi.evaluation.employee_evaluation.from')}:</label>
-                            <DatePicker id='start_date'
-                                value={startDate}
-                                onChange={this.handleStartDateChange}
-                                dateFormat="month-year"
-                            />
-                        </div>
-
-                        {/**Chọn ngày kết thúc */}
-                        <div className="form-group">
-                            <label>{translate('kpi.evaluation.employee_evaluation.to')}</label>
-                            <DatePicker
-                                id='end_date'
-
-                                value={endDate}
-                                onChange={this.handleEndDateChange}
-                                dateFormat="month-year"
-                            />
-                        </div>
-
-                        <div className="form-group">
+                            <label></label>
                             <button type="button" className="btn btn-success" onClick={() => this.handleSearchData()}>{
                                 translate('kpi.organizational_unit.management.over_view.search')}</button>
                         </div>
                         {exportData && <ExportExcel id="export-employee-kpi-management" exportData={exportData} style={{ marginRight: 15, marginTop: 5 }} />}
-
                     </div>
 
                     {/**Table chứa danh sách các tập KPI */}
@@ -307,7 +380,8 @@ class KPIPersonalManager extends Component {
                             translate('kpi.evaluation.employee_evaluation.system_evaluate'),
                             translate('kpi.evaluation.employee_evaluation.result_self_evaluate'),
                             translate('kpi.evaluation.employee_evaluation.evaluation_management'),
-                            translate('kpi.evaluation.employee_evaluation.action')]}
+                            translate('kpi.evaluation.employee_evaluation.action')
+                        ]}
                         setLimit={this.setLimit} />
 
                     <table id={tableId} className="table table-hover table-bordered">
@@ -340,13 +414,21 @@ class KPIPersonalManager extends Component {
                                             title={translate('kpi.evaluation.employee_evaluation.view_detail')}><i className="material-icons">view_list</i></a>
                                         <a href="#abc" onClick={() => this.showModalCopy(item._id)} data-toggle="modal"
                                             className="copy" title={translate('kpi.evaluation.employee_evaluation.clone_to_new_kpi')}><i className="material-icons">content_copy</i></a>
-                                        {this.state.showModalCopy === item._id && <ModalCopyKPIPersonal id={item._id} idunit={item.organizationalUnit._id} listkpipersonal={kpipersonal} kpipersonal={item} />}
+                                        {this.state.showModalCopy === item._id && <ModalCopyKPIPersonal id={item._id} idunit={item.organizationalUnit._id} kpipersonal={item} />}
                                     </td>
                                 </tr>)
                             }
                         </tbody>
                     </table>
                     {(kpipersonal && kpipersonal.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>}
+               
+                    <PaginateBar
+                        display={kpipersonal?.length}
+                        total={kpimembers?.totalCountEmployeeKpiSet}
+                        pageTotal={kpimembers?.totalPageEmployeeKpiSet}
+                        currentPage={infosearch?.page}
+                        func={this.handleGetDataPagination}
+                    />
                 </div>
             </div>
         )

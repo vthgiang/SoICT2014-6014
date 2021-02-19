@@ -136,6 +136,8 @@ class TabEmployeeCapacity extends Component {
                         </div>
                     </div>
                 </LazyLoadComponent>
+
+                {/* Top 5 nhân viên xuất sắc */}
                 <div className="col-md-12">
                     <div className="box box-solid">
                         <div className="box-header with-border">
@@ -178,6 +180,8 @@ class TabEmployeeCapacity extends Component {
                         </div>
                     </div>
                 </div>
+
+
                 {/* Kết quả Kpi tất cả nhân viên */}
                 <div className="col-md-12">
                     <div className="box box-solid">

@@ -86,10 +86,10 @@ class TaskOrganizationalUnitsChart extends Component {
     }
 
     shouldComponentUpdate(nextProps, nextState) {
-        if (nextProps.tasks.organizationUnitTasks && !this.isEqual(nextProps.tasks.organizationUnitTasks.tasks, this.state.taskOfUnists) &&
-            nextProps.user.employeesOfUnitsUserIsManager.length !== 0) {
+        if (nextProps.tasks?.organizationUnitTasks && !this.isEqual(nextProps.tasks?.organizationUnitTasks?.tasks, this.state.taskOfUnists) &&
+            nextProps.user?.employeesOfUnitsUserIsManager?.length !== 0) {
             this.setState({
-                taskOfUnists: nextProps.tasks.organizationUnitTasks.tasks
+                taskOfUnists: nextProps.tasks?.organizationUnitTasks?.tasks
             })
             return true;
         };

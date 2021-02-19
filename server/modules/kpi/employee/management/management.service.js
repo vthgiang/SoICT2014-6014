@@ -31,48 +31,72 @@ exports.getAllKPIEmployeeSetsInOrganizationByMonth = async (portal, data) => {
 
 }
 
-/**
+/** 
  * service Khởi tạo KPI tháng mới từ KPI tháng này
  */
 exports.copyKPI = async (portal, id, data) => {
-    let oldEmployeeKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
-        .findById(id)
-        .populate("organizationalUnit creator")
-        .populate({ path: "kpis", populate: { path: 'parent' } });
-    let date, dateNewEmployeeKPI, employeeKpiSet;
-    date = data.dateNew.split("-");
-    dateNewEmployeeKPI = new Date(date[1], date[0], 0);
+    let { unitId, dateNew, creator } = data;
 
-    let NewEmployeeKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
-        .create({
-            organizationalUnit: oldEmployeeKpiSet.organizationalUnit._id,
-            creator: data.creator,
-            date: dateNewEmployeeKPI,
-            kpis: [],
-            approver: oldEmployeeKpiSet.approver,
-        })
+    dateNew = new Date(dateNew);
 
-    for (let i in oldEmployeeKpiSet.kpis) {
-        let target = await EmployeeKpi(connect(DB_CONNECTION, portal))
+    let checkEmployeeKPISet = await EmployeeKpiSet(connect(DB_CONNECTION, portal)).findOne({
+        organizationalUnit: unitId,
+        creator: creator,
+        "$and": [
+            {
+                "$expr": { 
+                    "$eq": [ { "$month": "$date" }, dateNew.getMonth() + 1 ]
+                }
+            },
+            {
+                "$expr": { 
+                    "$eq": [ { "$year": "$date" }, dateNew.getFullYear() ]
+                }
+            }
+        ]
+    })
+
+    if (checkEmployeeKPISet) {
+        throw { messages: "employee_kpi_set_exist" }
+    } else {
+        let employeeKpiSet, oldEmployeeKpiSet, newEmployeeKpiSet;
+
+        oldEmployeeKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
+            .findById(id)
+            .populate("organizationalUnit creator")
+            .populate({ path: "kpis", populate: { path: 'parent' } });
+
+        newEmployeeKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
             .create({
-                name: oldEmployeeKpiSet.kpis[i].name,
-                weight: oldEmployeeKpiSet.kpis[i].weight,
-                criteria: oldEmployeeKpiSet.kpis[i].criteria,
-                type: oldEmployeeKpiSet.kpis[i].type,
-                parent: null,
-            });
+                organizationalUnit: oldEmployeeKpiSet?.organizationalUnit?._id,
+                creator: creator,
+                date: dateNew,
+                kpis: [],
+                approver: oldEmployeeKpiSet?.approver,
+            })
+
+        for (let i in oldEmployeeKpiSet.kpis) {
+            let target = await EmployeeKpi(connect(DB_CONNECTION, portal))
+                .create({
+                    name: oldEmployeeKpiSet?.kpis[i]?.name,
+                    weight: oldEmployeeKpiSet?.kpis[i]?.weight,
+                    criteria: oldEmployeeKpiSet?.kpis[i]?.criteria,
+                    type: oldEmployeeKpiSet?.kpis[i]?.type,
+                    parent: null,
+                });
+            employeeKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
+                .findByIdAndUpdate(
+                    newEmployeeKpiSet, { $push: { kpis: target._id } }, { new: true }
+                );
+        }
+
         employeeKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
-            .findByIdAndUpdate(
-                NewEmployeeKpiSet, { $push: { kpis: target._id } }, { new: true }
-            );
+            .findById(newEmployeeKpiSet)
+            .populate("organizationalUnit creator")
+            .populate({ path: "kpis", populate: { path: 'parent' } })
+
+        return employeeKpiSet;
     }
-
-    employeeKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
-        .find({ creator: mongoose.Types.ObjectId(data.creator) })
-        .populate("organizationalUnit creator")
-        .populate({ path: "kpis", populate: { path: 'parent' } })
-
-    return employeeKpiSet;
 }
 
 /**

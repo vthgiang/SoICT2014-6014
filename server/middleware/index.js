@@ -23,14 +23,14 @@ exports.authFunc = (checkPage = true) => {
         try {
             let crtp, crtr, fgp;
             const token = req.header("utk"); //JWT nhận từ người dùng
-            if (process.env.DEVELOPMENT === "false") {
-                crtp = decryptMessage(req.header("crtp")); // trang hiện tại
-                crtr = decryptMessage(req.header("crtr")); // role hiện tại
-                fgp = decryptMessage(req.header("fgp")); // fingerprint
-            } else {
+            if (process.env.DEVELOPMENT === "true") {
                 crtp = req.header("crtp");
                 crtr = req.header("crtr");
                 fgp = req.header("fgp");
+            } else {
+                crtp = decryptMessage(req.header("crtp")); // trang hiện tại
+                crtr = decryptMessage(req.header("crtr")); // role hiện tại
+                fgp = decryptMessage(req.header("fgp")); // fingerprint
             }
 
             /**

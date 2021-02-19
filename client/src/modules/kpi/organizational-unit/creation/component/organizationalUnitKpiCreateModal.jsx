@@ -51,7 +51,6 @@ class OrganizationalUnitKpiCreateModal extends Component {
     handleSubmit = () => {
         const { organizationalUnit, month } = this.state;
 
-        console.log(organizationalUnit, month)
         if (organizationalUnit && month) {            
             this.props.addKPIUnit({
                 organizationalUnitId: organizationalUnit.id,

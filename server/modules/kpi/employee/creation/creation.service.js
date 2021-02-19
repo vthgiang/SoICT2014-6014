@@ -153,18 +153,11 @@ exports.createEmployeeKpiSet = async (portal, data) => {
 
     // Config month tìm kiếm
     let monthSearch, nextMonthSearch;
-    let currentYear, currentMonth, now;
 
-    now = new Date();
-    currentYear = now.getFullYear();
-    currentMonth = now.getMonth() + 1;
-    if (currentMonth < 10) {
-        currentMonth = "0" + currentMonth;
-    }
-
-    monthSearch = new Date(currentYear + "-" + currentMonth);
-    nextMonthSearch = new Date(currentYear + "-" + currentMonth);
+    monthSearch = new Date(month);
+    nextMonthSearch = new Date(month);
     nextMonthSearch.setMonth(nextMonthSearch.getMonth() + 1);
+
 
     // Tìm kiếm danh sách các mục tiêu mặc định của phòng ban
     let organizationalUnitKpiSet = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
@@ -176,12 +169,8 @@ exports.createEmployeeKpiSet = async (portal, data) => {
             }
         })
         .populate("kpis");//status = 1 là kpi đã đc phê duyệt
-
-    let defaultOrganizationalUnitKpi;
-   
-    if (organizationalUnitKpiSet && organizationalUnitKpiSet.kpis) defaultOrganizationalUnitKpi = organizationalUnitKpiSet.kpis.filter(item => item.type !== 0);
     
-    if (defaultOrganizationalUnitKpi) {
+    if (organizationalUnitKpiSet) {
         // Tạo thông tin chung cho KPI cá nhân
         let employeeKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
             .create({
@@ -191,21 +180,29 @@ exports.createEmployeeKpiSet = async (portal, data) => {
                 date: new Date(month),
                 kpis: []
             });
-        let defaultEmployeeKpi = await Promise.all(defaultOrganizationalUnitKpi.map(async (item) => {
-            let defaultT = await EmployeeKpi(connect(DB_CONNECTION, portal)).create({
-                name: item.name,
-                parent: item._id,
-                weight: 5,
-                criteria: item.criteria,
-                status: null,
-                type: item.type
-            })
-            return defaultT._id;
-        }));
-        employeeKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
-            .findByIdAndUpdate(
-                employeeKpiSet, { kpis: defaultEmployeeKpi }, { new: true }
-            )
+
+
+        let defaultOrganizationalUnitKpi;
+        if (organizationalUnitKpiSet?.kpis) defaultOrganizationalUnitKpi = organizationalUnitKpiSet.kpis.filter(item => item.type !== 0);
+
+        if (defaultOrganizationalUnitKpi) {
+            let defaultEmployeeKpi = await Promise.all(defaultOrganizationalUnitKpi.map(async (item) => {
+                let defaultT = await EmployeeKpi(connect(DB_CONNECTION, portal)).create({
+                    name: item.name,
+                    parent: item._id,
+                    weight: 5,
+                    criteria: item.criteria,
+                    status: null,
+                    type: item.type
+                })
+                return defaultT._id;
+            }));
+            employeeKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
+                .findByIdAndUpdate(
+                    employeeKpiSet, { kpis: defaultEmployeeKpi }, { new: true }
+                )
+        }
+
         employeeKpiSet = employeeKpiSet && await employeeKpiSet
             .populate("organizationalUnit creator approver")
             .populate({ path: "kpis", populate: { path: 'parent' } })

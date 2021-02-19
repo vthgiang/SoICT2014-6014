@@ -241,9 +241,7 @@ class TaskOrganizationUnitDashboard extends Component {
     }
 
     render() {
-
         const { tasks, translate, user, dashboardEvaluationEmployeeKpiSet } = this.props;
-        console.log("props", this.props);
         let { idsUnit, startMonth, endMonth, selectBoxUnit } = this.state;
         let { startMonthTitle, endMonthTitle } = this.INFO_SEARCH;
         let childrenOrganizationalUnit = [];
@@ -253,29 +251,7 @@ class TaskOrganizationUnitDashboard extends Component {
             currentOrganizationalUnit = dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit;
             currentOrganizationalUnitLoading = dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnitLoading;
         }
-        // Config ngày mặc định cho datePiker
-        let d = new Date(),
-            month = d.getMonth() + 1,
-            year = d.getFullYear();
-        let startMonthDefault, endMonthDefault, startYear;
 
-        if (month > 3) {
-            startMonthDefault = month - 3;
-            startYear = year;
-            if (month < 9) {
-                endMonthDefault = '0' + (month + 1);
-            } else {
-                endMonthDefault = month + 1;
-            }
-        } else {
-            startMonthDefault = month - 3 + 12;
-            startYear = year - 1;
-        }
-        if (startMonthDefault < 10)
-            startMonthDefault = '0' + startMonthDefault;
-
-        let defaultStartMonth = [startMonthDefault, startYear].join('-');
-        let defaultEndMonth = month < 10 ? ['0' + month, year].join('-') : [month, year].join('-');
         return (
             <React.Fragment>
                 {currentOrganizationalUnit
@@ -302,7 +278,7 @@ class TaskOrganizationUnitDashboard extends Component {
                                     <DatePicker
                                         id="monthStartInOrganizationUnitDashboard"
                                         dateFormat="month-year"
-                                        value={startMonth}
+                                        value={startMonthTitle}
                                         onChange={this.handleSelectMonthStart}
                                         disabled={false}
                                     />
@@ -312,7 +288,7 @@ class TaskOrganizationUnitDashboard extends Component {
                                     <DatePicker
                                         id="monthEndInOrganizationUnitDashboard"
                                         dateFormat="month-year"
-                                        value={endMonth}
+                                        value={endMonthTitle}
                                         onChange={this.handleSelectMonthEnd}
                                         disabled={false}
                                     />
@@ -327,7 +303,7 @@ class TaskOrganizationUnitDashboard extends Component {
                             <div className="col-xs-12">
                                 <div className="box box-primary">
                                     <div className="box-header with-border">
-                                        <div className="box-title">{translate('task.task_dashboard.general_unit_task')}</div>
+                                        <div className="box-title">{translate('task.task_dashboard.general_unit_task')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
                                     </div>
                                     <div className="box-body qlcv">
                                         {/* {this.state.callAction && tasks && tasks.organizationUnitTasks && */}
@@ -389,7 +365,7 @@ class TaskOrganizationUnitDashboard extends Component {
                                             <InprocessOfUnitTask
                                                 tasks={tasks.organizationUnitTasks}
                                                 listEmployee={user && user.employees}
-                                                units={childrenOrganizationalUnit}
+                                                units={selectBoxUnit}
                                             />
                                         }
                                     </div>

@@ -296,6 +296,7 @@ exports.links = [
             { path: '/kpi/evaluation/employee-evaluation/employee-kpis/:id', method: 'PATCH' },
             { path: '/kpi/evaluation/employee-evaluation/employee-kpis/:id/tasks', method: 'GET' },
             { path: '/kpi/evaluation/employee-evaluation/employee-kpis/:id/set-task-importance-level', method: 'POST' },
+            { path: '/kpi/evaluation/employee-evaluation/employee-kpis/:id/set-point-all-kpi', method: 'POST' },
 
             // Employee KPI evaluate dashboard
             { path: '/kpi/evaluation/dashboard/employee-kpis', method: 'GET' },

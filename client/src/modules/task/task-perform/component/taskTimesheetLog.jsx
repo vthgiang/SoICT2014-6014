@@ -144,7 +144,6 @@ class TaskTimesheetLog extends Component {
         this.setState({ timeStop: value });
     }
     handleDateChange = async (value) => {
-        console.log(value)
         let a = value.split('-');
         let dateStop = a[2] + '-' + a[1] + '-' + a[0];
         await this.setState(state => {
@@ -157,7 +156,6 @@ class TaskTimesheetLog extends Component {
     }
 
     handleTimeChange = (value) => {
-        console.log(value)
         this.setState(state => {
             return {
                 ...state,

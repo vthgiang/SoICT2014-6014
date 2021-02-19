@@ -80,7 +80,7 @@ class CreateEmployeeKpiSet extends Component {
         const { month, currentRole } = this.state;
 
         // Không re-render khi lựa chọn tháng ở DatePiker
-        if (nextState.month !== month) {
+        if (nextState.month !== month || nextState.month === '') {
             return false;
         }
 
@@ -231,7 +231,10 @@ class CreateEmployeeKpiSet extends Component {
     }
 
     handleChangeDate = (value) => {
-        let month = value.slice(3, 7) + '-' + value.slice(0, 2);
+        let month = value
+        if (value !== '') {
+            month = value.slice(3, 7) + '-' + value.slice(0, 2);
+        }
 
         this.setState(state => {
             return {
@@ -244,11 +247,13 @@ class CreateEmployeeKpiSet extends Component {
     handleSearchData = () => {
         const { currentRole, month } = this.state;
 
-        this.props.getEmployeeKpiSet({
-            roleId: currentRole,
-            month: month
-        });
-        this.props.getCurrentKPIUnit(currentRole, null, month);
+        if (month && month !== '') {
+            this.props.getEmployeeKpiSet({
+                roleId: currentRole,
+                month: month
+            });
+            this.props.getCurrentKPIUnit(currentRole, null, month);
+        }
     }
 
     /**Lưu người phê duyệt của tập KPI này */

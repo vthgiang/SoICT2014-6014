@@ -2,13 +2,16 @@ const mongoose = require("mongoose");
 const fs = require("fs");
 const moment = require("moment");
 const nodemailer = require("nodemailer");
+const sumBy = require('lodash/sumBy');
 
 const { Task, User, UserRole, Role, OrganizationalUnit } = require(`../../../models`);
+
 const OrganizationalUnitService = require(`../../super-admin/organizational-unit/organizationalUnit.service`);
 const NotificationServices = require(`../../notification/notification.service`);
+const UserService = require('../../super-admin/user/user.service');
+
 const { sendEmail } = require(`../../../helpers/emailHelper`);
 const { connect } = require(`../../../helpers/dbHelper`);
-const sumBy = require('lodash/sumBy');
 
 /*
  * Lấy công việc theo Id
@@ -779,6 +782,53 @@ exports.stopTimesheetLog = async (portal, params, body) => {
 
     return newTask;
 };
+
+/** Lấy các nhân viên đang bấm giờ trong 1 đơn vị */
+exports.getCurrentTaskTimesheetLogOfEmployeeInOrganizationalUnit = async (portal, data) => {
+    const { organizationalUnitId } = data;
+    let employees;
+    let users = await UserService.getAllEmployeeOfUnitByIds(portal, organizationalUnitId);
+    if (users && users.length !== 0) {
+        employees = users.map(item => item?.userId?._id)
+    }
+
+    const now = new Date();
+    let keySearch = {
+        creator: { $in: employees },
+        $or: [
+            { stoppedAt: { $exists: false } },          // Trường hợp chưa có stopped
+            {
+                $and: [                                 // Trường hợp hẹn tắt giờ
+                    { 'autoStopped': 2 },
+                    { 'startedAt': { $lte: now } },
+                    { 'stoppedAt': { $gte: now } }
+                ]
+            }
+        ]
+    }
+
+    let timesheetLog = await Task(connect(DB_CONNECTION, portal)).aggregate([
+        {
+            $match: {
+                timesheetLogs: { $elemMatch: keySearch }
+            }
+        },
+
+        { $unwind: '$timesheetLogs' },
+
+        {
+            $addFields: { "timesheetLogs.task": { _id: '$_id', name: '$name' } }
+        },
+
+        { $replaceRoot: { newRoot: '$timesheetLogs' } },
+
+        { $match: keySearch }
+    ])
+
+    await User(connect(DB_CONNECTION, portal)).populate(timesheetLog, { path: 'creator', select: '_id name email' });
+    
+    return timesheetLog;
+}
 
 /**
  * Thêm bình luận của hoạt động
@@ -2134,21 +2184,6 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
         parent = null;
     }
 
-    // Chuẩn hóa ngày bắt đầu và ngày kết thúc
-    let splitStartDate = startDate.split("-");
-    let startOfTask = new Date(
-        splitStartDate[2],
-        splitStartDate[1] - 1,
-        splitStartDate[0]
-    );
-
-    let splitEndDate = endDate.split("-");
-    let endOfTask = new Date(
-        splitEndDate[2],
-        splitEndDate[1] - 1,
-        splitEndDate[0]
-    );
-
     // chuẩn hóa dữ liệu info
     for (let i in info) {
         if (info[i].value) {
@@ -2192,8 +2227,6 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
         }
     }
 
-
-
     // cập nhật thông tin cơ bản
     await Task(connect(DB_CONNECTION, portal)).updateOne(
         { _id: taskId },
@@ -2208,8 +2241,8 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
                 parent: parent,
                 taskProject: taskProject,
 
-                startDate: startOfTask,
-                endDate: endOfTask,
+                startDate: new Date(startDate),
+                endDate: new Date(endDate),
 
                 collaboratedWithOrganizationalUnits: newCollab,
 
@@ -3039,12 +3072,9 @@ exports.evaluateTaskByConsultedEmployees = async (portal, data, taskId) => {
     let evaluateDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
     let dateFormat = evaluateDate;
 
-    // TODO: về sau dùng time picker thì k cần split, dùng new date luôn
-    splitter = startDate.split("-");
-    let startEval = new Date(splitter[2], splitter[1] - 1, splitter[0]);
+    let startEval = new Date(startDate);
 
-    splitter = endDate.split("-");
-    let endEval = new Date(splitter[2], splitter[1] - 1, splitter[0]);
+    let endEval = new Date(endDate);
 
     let resultItem = {
         employee: user,
@@ -3283,12 +3313,9 @@ exports.evaluateTaskByResponsibleEmployees = async (portal, data, taskId) => {
     let evaluateDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
     let dateFormat = evaluateDate;
 
-    // TODO: về sau dùng time picker thì k cần split, dùng new date luôn
-    splitter = startDate.split("-");
-    let startEval = new Date(splitter[2], splitter[1] - 1, splitter[0]);
+    let startEval = new Date(startDate);
 
-    splitter = endDate.split("-");
-    let endEval = new Date(splitter[2], splitter[1] - 1, splitter[0]);
+    let endEval = new Date(endDate);
 
     let resultItem = {
         employee: user,
@@ -3404,12 +3431,7 @@ exports.evaluateTaskByResponsibleEmployees = async (portal, data, taskId) => {
     );
 
     // update Info task
-    let splitterDate = endDate.split("-");
-    let dateISO = new Date(
-        splitterDate[2],
-        splitterDate[1] - 1,
-        splitterDate[0]
-    );
+    let dateISO = new Date(endDate)
     let monthOfParams = dateISO.getMonth();
     let yearOfParams = dateISO.getFullYear();
     let now = new Date();
@@ -3647,13 +3669,10 @@ exports.evaluateTaskByAccountableEmployees = async (portal, data, taskId) => {
     let splitter = evaluatingMonth.split("-");
     let evaluateDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
     let dateFormat = evaluateDate;
+  
+    let startEval = new Date(startDate);
 
-    // TODO: về sau dùng time picker thì k cần split, dùng new date luôn
-    splitter = startDate.split("-");
-    let startEval = new Date(splitter[2], splitter[1] - 1, splitter[0]);
-
-    splitter = endDate.split("-");
-    let endEval = new Date(splitter[2], splitter[1] - 1, splitter[0]);
+    let endEval = new Date(endDate);
 
     let evaluateId = await checkEvaluations(portal, evaluatingMonth, taskId, evaluatingMonth);
 
@@ -3899,12 +3918,7 @@ exports.evaluateTaskByAccountableEmployees = async (portal, data, taskId) => {
     );
 
     // update Info task
-    let splitterDate = endDate.split("-");
-    let dateISO = new Date(
-        splitterDate[2],
-        splitterDate[1] - 1,
-        splitterDate[0]
-    );
+    let dateISO = new Date(endDate)
     let monthOfParams = dateISO.getMonth();
     let yearOfParams = dateISO.getFullYear();
     let now = new Date();
@@ -4946,6 +4960,27 @@ exports.requestAndApprovalCloseTask = async (portal, taskId, data) => {
     let task = await this.getTaskById(portal, taskId, userId);
     return task;
 };
+
+/** Mở lại công việc đã kết thúc */
+exports.openTaskAgain = async (portal, taskId, data) => {
+    const { userId } = data;
+
+    let taskUpdate = await Task(connect(DB_CONNECTION, portal))
+        .findByIdAndUpdate(
+            taskId, 
+            {
+                status: 'inprocess',
+                requestToCloseTask: {
+                    "requestStatus": 0
+                }
+            },
+            { new: true }
+        );
+
+    let task = await this.getTaskById(portal, taskId, userId);
+    
+    return task;
+}
 
 /** Chỉnh sửa taskInformation của task */
 exports.editTaskInformation = async (

@@ -15,5 +15,6 @@ router.get('/employee-kpis/:id/tasks', auth, KPIPersonalController.getTasksByKpi
 
 router.post('/employee-kpis/:id/set-task-importance-level', auth, KPIPersonalController.setTaskImportanceLevel);
 
+router.post('/employee-kpis/:id/set-point-all-kpi', auth, KPIPersonalController.setPointAllKpi);
 
 module.exports = router;

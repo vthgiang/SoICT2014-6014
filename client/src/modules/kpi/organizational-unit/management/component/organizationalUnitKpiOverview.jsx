@@ -10,7 +10,8 @@ import { DashboardEvaluationEmployeeKpiSetAction } from '../../../evaluation/das
 import { ModalDetailKPI } from './organizationalUnitKpiDetailModal';
 import { ModalCopyKPIUnit } from './organizationalUnitKpiCopyModal';
 
-import { DataTableSetting, ErrorLabel, DatePicker, SelectBox, ExportExcel, SelectMulti } from '../../../../../common-components';
+import { DataTableSetting, ErrorLabel, DatePicker, SelectBox, ExportExcel, SelectMulti, PaginateBar } from '../../../../../common-components';
+import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
 
 class KPIUnitManager extends Component {
     constructor(props) {
@@ -35,7 +36,11 @@ class KPIUnitManager extends Component {
         } else {
             endMonth = month;
         }
+
         const tableId = "table-org-kpi-management";
+        const defaultConfig = { limit: 20 }
+        const limit = getTableConfiguration(tableId, defaultConfig).limit;
+
         this.state = {
             tableId,
             showModalCopy: "",
@@ -50,6 +55,8 @@ class KPIUnitManager extends Component {
                 startDate: new Date([startYear, startMonth].join('-')),
                 endDate: new Date([year, endMonth].join('-')),
                 organizationalUnit: [],
+                perPage: limit,
+                page: 1
             },
             defaultStartDate: [startMonth, startYear].join('-'),
             defaultEndDate: [endMonth, year].join('-'),
@@ -98,13 +105,19 @@ class KPIUnitManager extends Component {
     }
 
     handleStartDateChange = (value) => {
+        let month;
+        if (value === '') {
+            month = null;
+        } else {
+            month = value.slice(3, 7) + '-' + value.slice(0, 2);
+        }
+
         this.setState(state => {
             return {
                 ...state,
-                startDate: new Date(value.slice(3, 7) + '-' + value.slice(0, 2)),
+                startDate: month
             }
         });
-
     }
 
     checkStatusKPI = (status) => {
@@ -117,10 +130,17 @@ class KPIUnitManager extends Component {
     }
 
     handleEndDateChange = (value) => {
+        let month;
+        if (value === '') {
+            month = null;
+        } else {
+            month = value.slice(3, 7) + '-' + value.slice(0, 2);
+        }
+
         this.setState(state => {
             return {
                 ...state,
-                endDate: new Date(value.slice(3, 7) + '-' + value.slice(0, 2)),
+                endDate: month
             }
         });
     }
@@ -178,6 +198,7 @@ class KPIUnitManager extends Component {
         })
     }
 
+    
     handleSearchData = async () => {
         await this.setState(state => {
             return {
@@ -194,7 +215,14 @@ class KPIUnitManager extends Component {
         const { infosearch, startDate, endDate } = this.state;
         const { translate } = this.props;
 
-        if (startDate && endDate && startDate.getTime() > endDate.getTime()) {
+        let startDateIso, endDateIso;
+
+        if (startDate && endDate) {
+            startDateIso = new Date(startDate);
+            endDateIso = new Date(endDate);
+        }
+
+        if (startDateIso && endDateIso && startDateIso.getTime() > endDateIso.getTime()) {
             Swal.fire({
                 title: translate('kpi.organizational_unit.management.over_view.alert_search.search'),
                 type: 'warning',
@@ -205,6 +233,39 @@ class KPIUnitManager extends Component {
             this.props.getAllKPIUnit(infosearch);
         }
     };
+
+    setLimit = async (limit) => {
+        if (Number(limit) !== this.state?.infosearch?.limit) {
+            await this.setState(state => {
+                return {
+                    ...state,
+                    infosearch: {
+                        ...state.infosearch,
+                        perPage: Number(limit)
+                    }
+                }
+            })
+
+            let { infosearch } = this.state;
+            this.props.getAllKPIUnit(infosearch);
+        }
+    }
+
+    
+    handleGetDataPagination = async (index) => {
+        await this.setState(state => {
+            return {
+                ...state,
+                infosearch: {
+                    ...state.infosearch,
+                    page: index
+                }
+            }
+        })
+
+        let { infosearch } = this.state;
+        this.props.getAllKPIUnit(infosearch);
+    }
 
     showModalCopy = async (id) => {
         await this.setState(state => {
@@ -424,9 +485,25 @@ class KPIUnitManager extends Component {
 
 
 
-                            <DataTableSetting className="pull-right" tableId={tableId} tableContainerId="kpiTableContainer" tableWidth="1300px"
-                                columnArr={['Người tạo', 'Thời gian', 'Trạng thái', 'Số lượng mục tiêu', 'Kết quả đánh giá', 'Xem chi tiết', 'Tạo KPI tháng mới', 'Cập nhật']}
-                                setLimit={this.setLimit} hideColumnOption={true} />
+                            <DataTableSetting
+                                className="pull-right"
+                                tableId={tableId}
+                                tableContainerId="kpiTableContainer"
+                                tableWidth="1300px"
+                                columnArr={[
+                                    'Người tạo',
+                                    'Thời gian',
+                                    'Trạng thái',
+                                    'Số lượng mục tiêu',
+                                    'Kết quả đánh giá',
+                                    'Xem chi tiết',
+                                    'Tạo KPI tháng mới',
+                                    'Cập nhật'
+                                ]}
+                                setLimit={this.setLimit}
+                                hideColumnOption={true}
+                            />
+
                             {/* Danh sách các KPI của đơn vị */}
                             <table id={tableId} className="table table-hover table-bordered">
                                 <thead>
@@ -482,6 +559,14 @@ class KPIUnitManager extends Component {
                                 </tbody>
                             </table>
                             {(listkpi && listkpi.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>}
+
+                            <PaginateBar
+                                display={managerKpiUnit?.kpis?.length}
+                                total={managerKpiUnit?.totalCountUnitKpiSet}
+                                pageTotal={managerKpiUnit?.totalPageUnitKpiSet}
+                                currentPage={infosearch?.page}
+                                func={this.handleGetDataPagination}
+                            />
                         </div>
                         : organizationalUnitsOfUserLoading
                         && <div className="box-body">
