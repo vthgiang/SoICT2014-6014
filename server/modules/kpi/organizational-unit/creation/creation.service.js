@@ -250,13 +250,31 @@ exports.getAllOrganizationalUnitKpiSet = async (portal, data) => {
         }
     }
 
-    let kpiunits = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
+    let perPage = 100;
+    let page = 1;
+    if (data?.page) {
+        page = Number(data.page);
+    }
+    if (data?.perPage) {
+        perPage = Number(data.perPage)
+    } 
+
+    let kpiUnitSets = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
         .find(keySearch)
-        .skip(0).limit(12).populate("organizationalUnit creator")
+        .skip(perPage * (page - 1))
+        .limit(perPage)
+        .populate("organizationalUnit creator")
         .populate({ path: "kpis", populate: { path: 'parent' } })
         .populate({ path: 'employeeImportances', populate: { path: 'employee', select: ' _id name email' } });       
 
-    return kpiunits;
+    let totalCount = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
+    let totalPages = Math.ceil(totalCount / perPage);
+    
+    return {
+        kpiUnitSets,
+        totalCount,
+        totalPages
+    };
 }
 
 /**

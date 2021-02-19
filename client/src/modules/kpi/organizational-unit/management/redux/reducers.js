@@ -12,18 +12,24 @@ export function managerKpiUnit(state = {}, action) {
   switch (action.type) {
     case managerConstants.GETALL_KPIUNIT_REQUEST:
       return {
+        ...state,
         loading: true,
-        isLoading: true
+        isLoading: true,
+        totalCountUnitKpiSet: null,
+        totalPageUnitKpiSet: null,
       };
     case managerConstants.GETALL_KPIUNIT_SUCCESS:
       return {
         ...state,
         loading: false,
-        kpis: action.payload,
+        kpis: action.payload.kpiUnitSets,
+        totalCountUnitKpiSet: action.payload.totalCount,
+        totalPageUnitKpiSet: action.payload.totalPages,
         isLoading: false
       };
     case managerConstants.GETALL_KPIUNIT_FAILURE:
       return {
+        ...state,
         error: action.payload,
         isLoading: false
       };

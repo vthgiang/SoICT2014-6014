@@ -3,8 +3,9 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import Swal from 'sweetalert2';
 
-import { DataTableSetting, ExportExcel, DatePicker, SelectBox, ShowMoreShowLess } from '../../../../../common-components';
+import { DataTableSetting, ExportExcel, DatePicker, SelectBox, PaginateBar } from '../../../../../common-components';
 import getEmployeeSelectBoxItems from '../../../../task/organizationalUnitHelper';
+import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
 
 import { UserActions } from "../../../../super-admin/user/redux/actions";
 import { managerActions } from '../../../organizational-unit/management/redux/actions';
@@ -13,10 +14,6 @@ import { DashboardEvaluationEmployeeKpiSetAction } from '../../../evaluation/das
 
 import { EmployeeKpiApproveModal } from './employeeKpiApproveModal';
 import { EmployeeKpiEvaluateModal } from './employeeKpiEvaluateModal';
-
-import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
-
-import { PaginateBar } from '../../../../../common-components';
 class EmployeeKpiManagement extends Component {
 
     constructor(props) {
@@ -43,6 +40,7 @@ class EmployeeKpiManagement extends Component {
         } else {
             endMonth = month;
         }
+
         const tableId = "table-employee-kpi-management";
         const defaultConfig = { limit: 20 }
         const limit = getTableConfiguration(tableId, defaultConfig).limit;
