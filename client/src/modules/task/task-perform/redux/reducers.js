@@ -51,6 +51,23 @@ export function performtasks(state = {}, action) {
             return {
                 error: action.error
             };
+        case performTaskConstants.GET_CURRENT_TASK_TIMESHEET_LOG_IN_UNIT_REQUEST:
+            return {
+                ...state,
+                loading: true
+            }
+        case performTaskConstants.GET_CURRENT_TASK_TIMESHEET_LOG_IN_UNIT_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                currentTaskTimesheetLogInUnit: action.payload
+            }
+        case performTaskConstants.GET_CURRENT_TASK_TIMESHEET_LOG_IN_UNIT_FAILURE:
+            return {
+                ...state,
+                loading: false,
+                error: action.payload
+            }
         case performTaskConstants.GET_TIMERSTATUS_REQUEST:
             return {
                 ...state,

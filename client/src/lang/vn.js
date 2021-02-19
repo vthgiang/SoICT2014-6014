@@ -2971,7 +2971,8 @@ export default {
                 col_status: "Trạng thái",
                 col_progress: "Tiến độ",
                 col_logged_time: "Thời gian thực hiện",
-
+                col_timesheet_log: "Thời gian bấm giờ",
+                
                 action_edit: "Băt đầu công việc",
                 action_delete: "Xóa công việc",
                 action_store: "Lưu vào kho",

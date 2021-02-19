@@ -6,6 +6,7 @@ import { performTaskService } from "./services";
 export const performTaskAction = {
     getTimesheetLogs,
     getTimerStatusTask,
+    getCurrentTaskTimesheetLogOfEmployeeInOrganizationalUnit,
     startTimerTask,
     stopTimerTask,
     editTimeSheetLog,
@@ -162,6 +163,27 @@ function getTimerStatusTask(taskId) { //param -- , user
                 payload => dispatch({ type: performTaskConstants.GET_TIMERSTATUS_SUCCESS, payload }),
                 error => dispatch({ type: performTaskConstants.GET_TIMERSTATUS_FAILURE, error })
             );
+    };
+}
+
+/** Lấy các nhân viên đang bấm giờ trong 1 đơn vị  */  
+function getCurrentTaskTimesheetLogOfEmployeeInOrganizationalUnit(data) { 
+    return dispatch => {
+        dispatch({ type: performTaskConstants.GET_CURRENT_TASK_TIMESHEET_LOG_IN_UNIT_REQUEST });
+
+        performTaskService.getCurrentTaskTimesheetLogOfEmployeeInOrganizationalUnit(data)
+            .then(res => {
+                dispatch({
+                    type: performTaskConstants.GET_CURRENT_TASK_TIMESHEET_LOG_IN_UNIT_SUCCESS,
+                    payload: res.data.content
+                })
+            }
+            ).catch(error => {
+                dispatch({
+                    type: performTaskConstants.GET_CURRENT_TASK_TIMESHEET_LOG_IN_UNIT_FAILURE,
+                    payload: error
+                });
+            });
     };
 }
 

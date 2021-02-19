@@ -2720,6 +2720,7 @@ export default {
                 col_status: "Status",
                 col_progress: "Progress",
                 col_logged_time: "Total logged time",
+                col_timesheet_log: "Total timesheet",
 
                 action_edit: "Start working",
                 action_delete: "Delete task",
