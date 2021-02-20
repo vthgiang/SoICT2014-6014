@@ -36,12 +36,11 @@ function DistributionOfOrganizationalUnitChart(props) {
 
     /** Thiết lập dữ liệu biểu đồ */
     const setDataMultiChart = (organizationalUnitKPI) => {
-        let dataChartAnalysis = ['Điểm phân tích'], dataChartDefault = ['Điểm mặc định'], xs = ['x'];
+        let dataChartAnalysis = [translate('kpi.organizational_unit.statistics.weight_analysis')], dataChartDefault = [translate('kpi.organizational_unit.statistics.weight_current')], xs = ['x'];
         let objectEmployeeImportance;
 
         objectEmployeeImportance = setEmployeeImportance();
 
-        console.log("organizationalUnitKPI", organizationalUnitKPI)
         if (organizationalUnitKPI && organizationalUnitKPI.length !== 0) {
             organizationalUnitKPI.map(unitKpi => {
                 let totalPoint = 0, totalImportance = 0, average; 
@@ -66,11 +65,13 @@ function DistributionOfOrganizationalUnitChart(props) {
             })
         }
 
-        return [
-            xs,
-            dataChartDefault,
-            dataChartAnalysis
-        ]
+        return {
+            xs: xs,
+            dataChart: [
+                dataChartDefault,
+                dataChartAnalysis
+            ]
+        }
     }
 
     /** Xóa biểu đồ cũ */
@@ -86,30 +87,44 @@ function DistributionOfOrganizationalUnitChart(props) {
     const multiLineChart = (organizationalUnitKPI) => {
         removePreviousChart(chartRef.current);
 
+        let dataChart, xs;
         let dataChartTemp = setDataMultiChart(organizationalUnitKPI);
+        if (dataChartTemp) {
+            dataChart = dataChartTemp.dataChart;
+            xs = dataChartTemp.xs;
+        }
 
-        console.log("dataChartTemp", dataChartTemp)
         let chartTemp = c3.generate({
             bindto: chartRef.current,
 
             padding: {
                 top: 20,
-                bottom: 20,
+                bottom: 50,
                 right: 20
             },
 
             data: {
-                x: 'x',
-                columns: dataChartTemp,
+                columns: dataChart,
                 type: 'spline'
             },
 
             axis: {
                 x: {
-                    type: 'category' // this needed to load string x value
+                    type: 'category',
+                    tick: {
+                        format: function (x) {
+                            if (xs && xs.length > 1) {
+                                if (xs[x + 1].length > 30) {
+                                    return xs[x + 1].slice(0, 30) + "...";
+                                } else {
+                                    return xs[x + 1]
+                                }
+                            }
+                        }
+                    }
                 },
+                
                 y: {
-                    max: 100,
                     min: 0,
                     label: {
                         text: translate('kpi.organizational_unit.dashboard.point'),
@@ -118,6 +133,15 @@ function DistributionOfOrganizationalUnitChart(props) {
                     padding: {
                         top: 10,
                         bottom: 10
+                    }
+                }
+            },
+
+            tooltip: {
+                format: {
+                    title: function (d) {
+                        if (xs && xs.length > 1)
+                            return xs[d + 1];
                     }
                 }
             }

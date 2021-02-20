@@ -17,6 +17,22 @@ let duyen = "Duyen"
 console.log('split', quang.split("-"));
 console.log('split  y', duyen.split("-"));
 
+let qdz = "2021-02-07 12:30:00";
+// let qd1 = new Date(qdz);
+let qd1 = new Date ("2021-02-01 08:00 AM");
+let qd2 = new Date ("2021-03-31 5:00 PM");
+console.log("qd1>qd2",qd1 < qd2);
+console.log('qd1',qd1);
+console.log('qd2', qd2);
+console.log('qd1m', qd1.getHours());
+
+let d = new Date ("2021-02-08T10:00:00.000Z")
+let q = moment(qd1).format("hh:mm A");
+console.log('quang dz', q);
+
+let o = new Date();
+let m= new Date(o);
+console.log('Date.now', o, m);
 
 // let splitter = "31-10-2020".split("-");
 // let splitter2 = "01-11-2020".split("-");

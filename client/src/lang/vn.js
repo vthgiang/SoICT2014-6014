@@ -66,7 +66,8 @@ export default {
             not_select_unit: "Chọn đơn vị",
             list_unit: "Danh sách đơn vị",
             list_employee: "Danh sách nhân viên",
-            detail: "Chi tiết"
+            detail: "Chi tiết",
+            select_all: "Chọn tất cả",
         },
 
         intro: {
@@ -2007,7 +2008,7 @@ export default {
                     email_in_company_required:
                         "Email công ty không được để trống",
                     employee_number_have_exist: "Mã nhân viên đã tồn tại",
-                    staff_code_not_find:"Mã nhân viên không tồn tại",
+                    staff_code_not_find: "Mã nhân viên không tồn tại",
                     email_in_company_have_exist: "Email công ty đã tồn tại",
                     employee_timesheet_id_required:
                         "Mã số chấm công không được để trống",
@@ -3232,6 +3233,7 @@ export default {
                 load_task_chart: "Dashboard tải công việc",
                 load_task_chart_unit: "Dashboard tải công việc của đơn vị",
                 explain: "Giải thích",
+                select_responsible: "Chọn người thực hiện",
             },
             task_perform: {
                 actions: "Hoạt động",
@@ -3941,6 +3943,10 @@ export default {
                     "Thêm độ quan trọng cho công việc thành công",
                 set_task_importance_level_fail:
                     "Thêm độ quan trọng cho công việc lỗi",
+                set_point_kpi_success:
+                    "Tính điểm tất cả kpi thành công",
+                set_point_kpi_fail:
+                    "Tính điểm tất cả kpi lỗi",
             },
             organizational_unit: {
                 // Module chính
@@ -4008,6 +4014,7 @@ export default {
                     content:
                         "Đây là mục tiêu mặc định (nếu cần thiết có thể sửa trọng số)",
                     delete_title: "Xóa",
+                    employee_importance_activated: "KPI đã kích hoạt, bạn không thể chỉnh sửa độ quan trọng nhân viên"
                 },
 
                 create_organizational_unit_kpi_modal: {
@@ -4129,7 +4136,7 @@ export default {
                             change_link:
                                 "Hãy nhớ thay đổi liên kết đến mục tiêu cha để được tính KPI mới!",
                         },
-                        create: "Thiết lập KPI tháng",
+                        create: "Thông tin tập KPI cá nhân tháng",
                         organizational_unit: "Đơn vị",
                         month: "Tháng",
                         list_target: "Danh sách mục tiêu",
@@ -4182,7 +4189,9 @@ export default {
                 statistics: {
                     detail_participant: "Chi tiết người tham gia",
                     detail_employee_kpi: "Chi tiết KPI nhân viên",
-                    email: "Email"
+                    email: "Email",
+                    weight_current: "Trọng số KPI hiện tại",
+                    weight_analysis: "Trọng số KPI theo phân tích thực tế"
                 },
 
                 //Thông điệp khác trả về từ server
@@ -4204,7 +4213,10 @@ export default {
                     "Cập nhật điểm đánh giá KPI đơn vị lỗi",
                 copy_kpi_unit_success: "Sao chép KPI đơn vị thành công",
                 copy_kpi_unit_failure: "Sao chép KPI đơn vị thất bại",
+                copy_employee_kpi_success: "Sao chép KPI cá nhân thành công",
+                copy_employee_kpi_failure: "Sao chép KPI cá nhân thất bại",
                 organizatinal_unit_kpi_set_exist: "KPI đơn vị đã tồn tại",
+                employee_kpi_set_exist: "KPI cá nhân đã tồn tại",
                 calculate_kpi_unit_success: "Tính điểm KPI thành công",
                 calculate_kpi_unit_failure: "Tính điểm KPI thất bại"
             },

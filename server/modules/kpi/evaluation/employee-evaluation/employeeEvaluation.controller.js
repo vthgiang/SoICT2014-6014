@@ -198,9 +198,31 @@ exports.setTaskImportanceLevel = async (req, res) => {
             content: kpimembers
         });
     } catch (error) {
-        await Logger.info(req.user.email, `Set point for kpi`, req.portal);
+        await Logger.info(req.user.email, `Set task importance level`, req.portal);
         res.status(400).json({
             messages: ['set_task_importance_level_fail'],
+            message: error
+        });
+    }
+}
+
+/**
+ * tinh diem kpi
+ */
+
+exports.setPointAllKpi = async (req, res) => {
+    try {
+        const kpi = await KPIMemberService.setPointAllKpi(req.portal, req.params.id, req.query.id, req.body);
+        await Logger.info(req.user.email, `Set point kpi`, req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ['set_point_kpi_success'],
+            content: kpi
+        });
+    } catch (error) {
+        await Logger.info(req.user.email, `Set point kpi`, req.portal);
+        res.status(400).json({
+            messages: ['set_point_kpi_fail'],
             message: error
         });
     }

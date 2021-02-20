@@ -5,7 +5,8 @@ const PerformTaskController = require("./taskPerform.controller");
 
 
 router.get('/tasks/:taskId', auth, PerformTaskController.getTaskById);
-
+router.post('/tasks/:taskId', auth, PerformTaskController.editTask);
+ 
 
 router.get('/task-timesheet-logs', auth, PerformTaskController.getActiveTimesheetLog);
 router.post('/tasks/:taskId/timesheet-logs/start-timer', auth, PerformTaskController.startTimesheetLog);
@@ -58,7 +59,6 @@ router.patch('/tasks/:taskId/task-comments/:commentId/comments/files/:fileId', a
 
 // Task Information
 router.patch('/tasks/:taskId/task-informations', auth, PerformTaskController.editTaskInformation);
-router.post('/tasks/:taskId', auth, PerformTaskController.editTask);
 router.post('/tasks/:taskId/evaluate', auth, PerformTaskController.evaluateTask);
 router.delete('/tasks/:taskId/evaluations/:evaluationId', auth, PerformTaskController.deleteEvaluation);
 

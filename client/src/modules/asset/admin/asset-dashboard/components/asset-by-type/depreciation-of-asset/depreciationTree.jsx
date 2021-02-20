@@ -136,6 +136,9 @@ class DepreciationTree extends Component {
             }
         })
 
+        if (countAssetDepreciation.length > 0)
+            this.props.getDepreciationOfAsset(countAssetDepreciation)
+
         return (
             <div className="depreciation-asset" id="depreciation-asset">
                 <br />

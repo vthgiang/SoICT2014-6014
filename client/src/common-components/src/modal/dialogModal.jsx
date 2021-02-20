@@ -25,7 +25,7 @@ class DialogModal extends Component {
             this.props.afterClose()
         }
     }
-    
+
     save = () => {
         const { closeOnSave = true, resetOnSave = false, afterSave } = this.props;
         this.props.func();
@@ -40,8 +40,8 @@ class DialogModal extends Component {
 
     render() {
         const { translate } = this.props;
-        const { resetOnClose = false, disableSubmit = false, hasSaveButton = true, size, styleCustom, maxWidth, hasNote = true, receiveEventClose, marginTop, bodyStyle = {}, title, isLoading, modalID } = this.props;
-        
+        const { resetOnClose = false, disableSubmit = false, hasSaveButton = true, hasCloseButton = true, size, styleCustom, maxWidth, hasNote = true, receiveEventClose, marginTop, bodyStyle = {}, title, isLoading, modalID } = this.props;
+
         const { isClose } = this.state;
 
         return (
@@ -73,7 +73,10 @@ class DialogModal extends Component {
                                         {
                                             hasSaveButton && <button type="button" disabled={disableSubmit} className="btn btn-success" onClick={this.save}>{translate('form.save')}</button>
                                         }
-                                        <button type="button" className="btn btn-danger" onClick={() => this.closeModal(resetOnClose)}>{translate('form.close')}</button>
+                                        {
+                                            hasCloseButton && <button type="button" disabled={disableSubmit} className="btn btn-danger" onClick={() => this.closeModal(resetOnClose)}>{translate('form.close')}</button>
+                                        }
+                                        {/* <button type="button" className="btn btn-danger" onClick={() => this.closeModal(resetOnClose)}>{translate('form.close')}</button> */}
                                     </div>
                                 </div>
                             </div>

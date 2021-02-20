@@ -9,13 +9,13 @@ import { DepartmentActions } from '../../../../super-admin/organizational-unit/r
 import DocumentInformation from '../../user/documents/documentInformation';
 import { DocumentActions } from '../../../redux/actions';
 import { UserActions } from '../../../../super-admin/user/redux/actions';
-import { getStorage } from "../../../../../config";
+import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
 import CreateForm from './createForm';
 import EditForm from './editForm';
 import ListView from './listView';
 import ListDownload from './listDownload';
 import FilePreview from './FilePreview';
-import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
+
 
 const getIndex = (array, id) => {
     let index = -1;
@@ -135,11 +135,14 @@ class Table extends Component {
     }
 
     showFilePreview = async (data) => {
+
         await this.setState({
             currentFile: data,
         });
         window.$('#modal-file-preview').modal('show');
     }
+
+
     checkHasComponent = (name) => {
         let { auth } = this.props;
         let result = false;
@@ -474,6 +477,23 @@ class Table extends Component {
         await this.props.getAllDocuments(data);
     }
 
+    /**
+     * 
+     * @param {duong dan file} data 
+     * check xem file co phai anh hay pdf khong
+     */
+    checkTypeFile = (data) => {
+        if (typeof data === 'string' || data instanceof String) {
+            let index = data.lastIndexOf(".");
+            let typeFile = data.substring(index + 1, data.length);
+            if (typeFile === "pdf" || typeFile === "png" || typeFile === "jpg" || typeFile === "jpeg") {
+                return true;
+            }
+            else return false;
+        }
+        else return false;
+    }
+
     render() {
         const { translate, documents, department } = this.props;
         const { domains, categories, archives } = this.props.documents.administration;
@@ -491,6 +511,7 @@ class Table extends Component {
             list = docs.paginate;
         }
         let exportData = list ? this.convertDataToExportData(list) : "";
+
         return (
             <div className="qlcv">
                 <CreateForm />
@@ -556,6 +577,7 @@ class Table extends Component {
                         documentRelationshipDocuments={currentRow.relationshipDocuments ? currentRow.relationshipDocuments.map(document => document.name) : []}
 
                         documentRoles={currentRow.roles}
+                        documentUserCanView={currentRow.userCanView}
 
                         documentArchivedRecordPlaceInfo={currentRow.archivedRecordPlaceInfo}
                         organizationUnit={currentRow.archivedRecordPlaceOrganizationalUnit}
@@ -687,13 +709,19 @@ class Table extends Component {
                                         <a href="#" onClick={() => this.requestDownloadDocumentFile(doc._id, doc.name, doc.versions.length - 1)}>
                                             <u>{doc.versions.length && doc.versions[doc.versions.length - 1].file ? translate('document.download') : ""}</u>
                                         </a>
+
                                         <a href="#" onClick={() => this.showFilePreview(doc.versions.length && doc.versions[doc.versions.length - 1].file)}>
-                                            <u>{doc.versions.length && doc.versions[doc.versions.length - 1].file ? "Xem trước" : ""}</u>
+                                            <u>{doc.versions.length && doc.versions[doc.versions.length - 1].file && this.checkTypeFile(doc.versions[doc.versions.length - 1].file) ?
+                                                <i className="material-icons">preview</i> : ""}</u>
                                         </a>
                                     </td>
                                     <td>
                                         <a href="#" onClick={() => this.requestDownloadDocumentFileScan(doc._id, "SCAN_" + doc.name, doc.versions.length - 1)}>
                                             <u>{doc.versions.length && doc.versions[doc.versions.length - 1].scannedFileOfSignedDocument ? translate('document.download') : ""}</u>
+                                        </a>
+                                        <a href="#" onClick={() => this.showFilePreview(doc.versions.length && doc.versions[doc.versions.length - 1].scannedFileOfSignedDocument)}>
+                                            <u>{doc.versions.length && doc.versions[doc.versions.length - 1].scannedFileOfSignedDocument && this.checkTypeFile(doc.versions[doc.versions.length - 1].scannedFileOfSignedDocument) ?
+                                                <i className="material-icons">preview</i> : ""}</u>
                                         </a>
                                     </td>
                                     <td>

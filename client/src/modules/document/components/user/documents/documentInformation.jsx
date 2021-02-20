@@ -61,6 +61,7 @@ class DocumentInformation extends Component {
                 documentRelationshipDocuments: nextProps.documentRelationshipDocuments,
 
                 documentRoles: nextProps.documentRoles,
+                documentUserCanView: nextProps.documentUserCanView,
 
                 documentArchivedRecordPlaceInfo: nextProps.documentArchivedRecordPlaceInfo,
                 documentArchivedRecordPlaceOrganizationalUnit: nextProps.documentArchivedRecordPlaceOrganizationalUnit,
@@ -93,6 +94,14 @@ class DocumentInformation extends Component {
         return data;
     }
 
+    findUser(users, arr_id) {
+        let data = arr_id.map(id => {
+            let name = users.filter(user => id && id === user.value);
+            return name.map(x => x.text);
+        })
+        return data;
+    }
+
 
 
     render() {
@@ -100,13 +109,17 @@ class DocumentInformation extends Component {
             documentId, documentName, documentDescription, documentCategory, documentDomains,
             documentIssuingBody, documentOfficialNumber, documentSigner, documentVersions,
             documentRelationshipDescription, documentRelationshipDocuments,
-            documentRoles, documentArchives,
+            documentRoles, documentArchives, documentUserCanView,
             documentArchivedRecordPlaceOrganizationalUnit, currentVersion,
         } = this.state;
         const { translate, role, documents, department, user, documentLogs } = this.props;
         const roleList = role.list.map(role => { return { value: role._id, text: role.name } });
+        const userList = user.list.map(role => { return { value: role._id, text: role.name } });
         const relationshipDocs = documents.administration.data.list.filter(doc => doc._id !== documentId).map(doc => { return { value: doc._id, text: doc.name } })
         let roles = this.findDocumentRole(roleList, documentRoles);
+        let users = this.findUser(userList, documentUserCanView);
+        console.log('uuuuuuuuuu', users);
+        // let users = this.findUser()
         let logs = documentLogs.reverse();
         return (
             <React.Fragment>
@@ -245,6 +258,17 @@ class DocumentInformation extends Component {
                                             <strong>{translate('document.store.organizational_unit_manage')}&emsp; </strong>
                                             {documentArchivedRecordPlaceOrganizationalUnit ? documentArchivedRecordPlaceOrganizationalUnit.name : translate('general.no_data')}
                                         </div>
+                                    </div>
+                                    <div className="row">
+                                        <div className="form-group col-lg-12 col-md-12 col-ms-12 col-xs-12">
+                                            <strong>{translate('document.users')}&emsp; </strong>
+                                            {users && users.length ? users.map(y =>
+                                                <div>{y[0]}</div>
+                                            ) : translate('general.no_data')}
+                                        </div>
+
+
+
                                     </div>
                                 </div>
 

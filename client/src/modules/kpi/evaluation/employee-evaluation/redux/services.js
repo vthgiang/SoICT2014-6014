@@ -9,6 +9,8 @@ export const kpiMemberServices = {
     getTaskById,
     getTaskByListKpis,
     setPointKPI,
+    setPointAllKPI,
+
 };
 /**
  *  Lấy tất cả kpi cá nhân của các cá nhân trong đơn vị
@@ -104,8 +106,8 @@ function getTaskByListKpis(listkpis) {
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/kpi/evaluation/employee-evaluation/employee-kpi-sets`,
         method: 'GET',
-        params :{
-            listkpis:listkpis
+        params: {
+            listkpis: listkpis
         }
     }, false, true, 'kpi.evaluation')
 }
@@ -120,6 +122,20 @@ function setPointKPI(employeeId, kpiType, data) {
         params: {
             employeeId: employeeId,
             kpiType: kpiType
+        }
+    }, true, true, 'kpi.evaluation')
+}
+
+function setPointAllKPI(employeeId, idKpiSet, date, kpis) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/kpi/evaluation/employee-evaluation/employee-kpis/${employeeId}/set-point-all-kpi`,
+        method: 'POST',
+        data: {
+            kpis: kpis,
+            date: date,
+        },
+        params: {
+            id: idKpiSet,
         }
     }, true, true, 'kpi.evaluation')
 }

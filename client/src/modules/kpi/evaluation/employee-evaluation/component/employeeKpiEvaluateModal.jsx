@@ -2,7 +2,7 @@ import { TaskDialog } from './taskImpotanceDialog';
 import React, { Component, useState } from 'react';
 import { connect } from 'react-redux';
 import { kpiMemberActions } from '../redux/actions';
-import { DataTableSetting, ExportExcel } from '../../../../../common-components';
+import { DataTableSetting, ExportExcel, ToolTip } from '../../../../../common-components';
 import { DialogModal } from '../../../../../common-components/index';
 import { ModalDetailTask } from '../../../../task/task-dashboard/task-personal-dashboard/modalDetailTask';
 import { withTranslate } from 'react-redux-multilingual';
@@ -129,6 +129,23 @@ class EmployeeKpiEvaluateModal extends Component {
 
             this.props.setPointKPI(content, type, data);
         }
+        else {
+
+            this.props.setPointKPI(content, type, [{
+                date: date,
+                type: type,
+                employeeId: employeeId
+            }]);
+        }
+    }
+
+    handleSetPointAllKPI = () => {
+        let employeeId = this.props.employeeKpiSet.creator._id;
+        let { employeeKpiSet } = this.props;
+        let kpis = employeeKpiSet.kpis.map(element => element._id);
+
+        this.props.setPointAllKPI(employeeId, employeeKpiSet._id, employeeKpiSet.date, kpis);
+
     }
 
     setValueSlider = (e, id) => {
@@ -256,7 +273,7 @@ class EmployeeKpiEvaluateModal extends Component {
         const { kpimembers } = this.props;
         const { translate, employeeKpiSet } = this.props;
         const { taskId, content, contentName, perPage, points, tasks, taskImportanceDetail } = this.state;
-        let list, myTask, exportData;
+        let list, myTask, exportData, currentKpi;
 
         if (kpimembers.tasks) {
             myTask = kpimembers.tasks;
@@ -268,6 +285,7 @@ class EmployeeKpiEvaluateModal extends Component {
         if (employeeKpiSet && employeeKpiSet.creator && employeeKpiSet.creator.name && myTask) {
             exportData = this.convertDataToExportData(myTask, contentName, employeeKpiSet.creator.name);
         }
+        currentKpi = list && list.length ? list.filter(item => item._id == content)[0] : "";
         return (
             <DialogModal
                 modalID={"employee-kpi-evaluation-modal"}
@@ -278,6 +296,15 @@ class EmployeeKpiEvaluateModal extends Component {
                     <div className="box box-solid" style={{ border: "1px solid #ecf0f6", borderBottom: "none" }}>
                         <div className="box-header with-border">
                             <h3 className="box-title" style={{ fontWeight: 800 }}>{translate('kpi.evaluation.employee_evaluation.KPI_list')}</h3>
+                            <button className="btn btn-success" style={{ marginLeft: "15px" }} onClick={() => this.handleSetPointAllKPI()}>
+                                {translate('kpi.evaluation.employee_evaluation.calc_kpi_point')}
+                            </button>
+                            <ToolTip
+                                type="icon_tooltip"
+                                dataTooltip={[
+                                    '(*)Tính điểm toàn bộ KPI'
+                                ]}
+                            />
                         </div>
                         <div className="box-body no-padding">
                             <ul className="nav nav-pills nav-stacked">
@@ -295,9 +322,18 @@ class EmployeeKpiEvaluateModal extends Component {
                 </div>
                 <div className="col-xs-12 col-sm-8 qlcv">
                     <div className="form-inline pull-right">
-                        <button className="btn btn-success" onClick={() => this.handleSetPointKPI()}>
-                            {translate('kpi.evaluation.employee_evaluation.calc_kpi_point')}
-                        </button>
+                        {
+                            currentKpi &&
+                            <button className="btn btn-success" onClick={() => this.handleSetPointKPI()}>
+                                {translate('kpi.evaluation.employee_evaluation.calc_kpi_point')}
+                                <ToolTip
+                                    type="icon_tooltip"
+                                    dataTooltip={[
+                                        `(*)Tính điểm KPI ${currentKpi ? currentKpi.name : ""}`
+                                    ]}
+                                />
+                            </button>
+                        }
                         {exportData && <ExportExcel id="export-employee-kpi-evaluate-detail-kpi" exportData={exportData} style={{ marginTop: 5 }} />}
                     </div>
                     {list && list.map(item => {
@@ -419,6 +455,7 @@ const actionCreators = {
     getKpisByKpiSetId: kpiMemberActions.getKpisByKpiSetId,
     getTaskById: kpiMemberActions.getTaskById,
     setPointKPI: kpiMemberActions.setPointKPI,
+    setPointAllKPI: kpiMemberActions.setPointAllKPI,
 };
 const connectedEmployeeKpiEvaluateModal = connect(mapState, actionCreators)(withTranslate(EmployeeKpiEvaluateModal));
 export { connectedEmployeeKpiEvaluateModal as EmployeeKpiEvaluateModal };

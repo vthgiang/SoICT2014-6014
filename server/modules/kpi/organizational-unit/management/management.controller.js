@@ -59,7 +59,6 @@ copyParentKPIUnitToChildrenKPIEmployee = async (req, res) => {
             content: emloyeeKpiSet
         });
     } catch (error) {
-        console.log(error)
         let messages = error && error.messages === 'employee_kpi_set_exist'
             ? ['employee_kpi_set_exist']
             : ['copy_kpi_unit_failure'];

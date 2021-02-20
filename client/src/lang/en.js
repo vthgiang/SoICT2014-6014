@@ -65,7 +65,8 @@ export default {
             not_select_unit: "Select units",
             list_unit: "Organizational unit list",
             list_employee: "Employee list",
-            detail: "Detail"
+            detail: "Detail",
+            select_all: "Select all",
         },
 
         intro: {
@@ -1826,7 +1827,7 @@ export default {
                     employee_number_required: "Staff code required",
                     email_in_company_required: "Email in company required",
                     employee_number_have_exist: "Employee number have exist",
-                    staff_code_not_find:'Employee number does have exist',
+                    staff_code_not_find: 'Employee number does have exist',
                     email_in_company_have_exist: "Email in company have exist",
                     employee_timesheet_id_required:
                         "Employee timesheet id required",
@@ -2958,6 +2959,7 @@ export default {
                 load_task_chart: "Dashboard load task",
                 load_task_chart_unit: "Dashboard load task of unit",
                 explain: "Explain",
+                select_responsible: "Select responsible"
             },
             task_perform: {
                 actions: "Actions",
@@ -3640,6 +3642,10 @@ export default {
                     "Set task importance level successfully",
                 set_task_importance_level_fail:
                     "Set task importance level fail",
+                set_point_kpi_success:
+                    "Set point all kpi successfully",
+                set_point_kpi_fail:
+                    "Set point all kpi fail",
             },
             organizational_unit: {
                 // Module chính
@@ -3709,6 +3715,7 @@ export default {
                     content:
                         "This is the default target (if necessary, weights can be corrected)",
                     delete_title: "Delete",
+                    employee_importance_activated: "KPI has been activated, you can not edit employee importances!"
                 },
 
                 create_organizational_unit_kpi_modal: {
@@ -3830,7 +3837,7 @@ export default {
                             change_link:
                                 "Remember to change the link to the parent target to get the new KPI!",
                         },
-                        create: "Copy a new KPI from the KPI on ",
+                        create: "Employee KPI set information on",
                         organizational_unit: "Department",
                         month: "Month",
                         list_target: "List target",
@@ -3882,7 +3889,9 @@ export default {
                 statistics: {
                     detail_participant: "Participant detail",
                     detail_employee_kpi: "Employee KPI detail",
-                    email: "Email"
+                    email: "Email",
+                    weight_current: "Current KPI weights",
+                    weight_analysis: "KPI weighting according to actual analysis"
                 },
 
                 //Thông điệp khác trả về từ server
@@ -3903,7 +3912,10 @@ export default {
                     "Update KPI unit evaluation fail",
                 copy_kpi_unit_success: "Copy organizational unit KPI set successfully",
                 copy_kpi_unit_failure: "Copy organizational unit KPI set unsuccessfully",
+                copy_employee_kpi_success: "Copy employee KPI set successfully",
+                copy_employee_kpi_failure: "Copy employee KPI set unsuccessfully",
                 organizatinal_unit_kpi_set_exist: "Organizational unit KPI set already exists",
+                employee_kpi_set_exist: "Employee KPI set already exists",
                 calculate_kpi_unit_success: "Calculate organizational unit KPI successfully",
                 calculate_kpi_unit_failure: "Calculate organizational unit KPI unsuccessfully"
             },

@@ -90,7 +90,7 @@ class QuillEditor extends Component {
     }
 
     componentDidUpdate = () => {
-        const { quillValueDefault, fileDefault } = this.props;
+        const { quillValueDefault, fileDefault, enableEdit = true } = this.props;
         const { quill } = this.state;
 
         // Insert value ban đầu
@@ -111,12 +111,20 @@ class QuillEditor extends Component {
                 }
             }
         }
+
+        quill.enable(enableEdit);
     }
 
     shouldComponentUpdate = (nextProps, nextState) => {
-        if (nextProps.quillValueDefault === this.props.quillValueDefault) {
+        const { enableEdit, quillValueDefault } = this.props;
+
+        if (nextProps.enableEdit !== enableEdit) {
+            return true;
+        }
+        if (nextProps.quillValueDefault === quillValueDefault) {
             return false;
         }
+        
         return true;
     }
 

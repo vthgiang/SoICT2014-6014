@@ -47,7 +47,7 @@ exports.copyKPI = async (portal, kpiId, data) => {
             let target = await OrganizationalUnitKpi(connect(DB_CONNECTION, portal))
                 .create({
                     name: organizationalUnitOldKPISet.kpis[i].name,
-                    parent: data.type === 'default' ? organizationalUnitOldKPISet.kpis[i].parent : organizationalUnitOldKPISet.kpis[i]._id,
+                    parent: data.type !== 'default' ? organizationalUnitOldKPISet.kpis[i]._id : null,
                     weight: organizationalUnitOldKPISet.kpis[i].weight,
                     criteria: organizationalUnitOldKPISet.kpis[i].criteria,
                     type: organizationalUnitOldKPISet.kpis[i].type

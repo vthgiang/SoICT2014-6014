@@ -11,7 +11,7 @@ import { managerKpiActions } from '../../../kpi/employee/management/redux/action
 import { taskTemplateActions } from '../../../task/task-template/redux/actions';
 import { taskManagementActions } from '../redux/actions';
 
-import { DialogModal, DatePicker, SelectBox, ErrorLabel, ToolTip, TreeSelect, QuillEditor } from '../../../../common-components';
+import { DialogModal, DatePicker, SelectBox, ErrorLabel, ToolTip, TreeSelect, QuillEditor, TimePicker } from '../../../../common-components';
 import { TaskFormValidator } from './taskFormValidator';
 import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
 import ModalAddTaskProject from '../../task-project/component/modalAddTaskProject';
@@ -42,6 +42,9 @@ class TaskAddModal extends Component {
                 taskProject: "",
             },
 
+            startTime: "12:00 AM",
+            endTime: "12:00 AM",
+
             currentRole: getStorage('currentRole'),
         };
     }
@@ -51,16 +54,20 @@ class TaskAddModal extends Component {
         this.setState({ newTask: value })
     }
     handleSubmit = async (event) => {
-        const { newTask } = this.state;
-        let startDate = newTask.startDate;
-        let endDate = newTask.endDate;
+        const { newTask, startTime, endTime } = this.state;
+        let startDateTask = this.convertDateTime(newTask.startDate, startTime);
+        let endDateTask = this.convertDateTime(newTask.endDate, endTime);
 
-        startDate = new Date(getTimeFromFormatDate(startDate, 'dd-mm-yyyy'));
-        endDate = new Date(getTimeFromFormatDate(endDate, 'dd-mm-yyyy'));
+        console.log('start-end', startDateTask, endDateTask);
+
+        // let startDate = newTask.startDate;
+        // let endDate = newTask.endDate;
+        // startDate = new Date(getTimeFromFormatDate(startDate, 'dd-mm-yyyy'));
+        // endDate = new Date(getTimeFromFormatDate(endDate, 'dd-mm-yyyy'));
         this.props.addTask({
             ...newTask,
-            startDate: startDate,
-            endDate: endDate
+            startDate: startDateTask,
+            endDate: endDateTask,
         });
         console.log(newTask)
     }

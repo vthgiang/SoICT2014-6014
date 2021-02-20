@@ -193,13 +193,12 @@ class GanttCalendar extends Component {
         }
       }
 
-      if (taskFilter[i].responsibleEmployees.length > 1) {
+      if (taskFilter[i] && taskFilter[i].responsibleEmployees && taskFilter[i].responsibleEmployees.length > 1) {
         groupNameLabel = "Công việc nhiều người thực hiện";
       } else {
-        groupNameLabel = taskFilter[i - 1]
-          && taskFilter[i - 1].responsibleEmployees[0].name
-          === taskFilter[i].responsibleEmployees[0].name
-          ? "" : taskFilter[i].responsibleEmployees[0].name;
+        groupNameLabel = taskFilter[i] && taskFilter[i - 1] && taskFilter[i - 1].responsibleEmployees[0] && taskFilter[i].responsibleEmployees[0]
+          && taskFilter[i - 1].responsibleEmployees[0].name === taskFilter[i].responsibleEmployees[0].name
+          ? "" : taskFilter[i]?.responsibleEmployees[0]?.name;
       }
 
       data.push({
