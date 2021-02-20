@@ -11,13 +11,14 @@ import { DashboardEvaluationEmployeeKpiSetAction } from '../../../kpi/evaluation
 import { taskManagementActions } from '../redux/actions';
 
 import { ModalPerform } from '../../task-perform/component/modalPerform';
-import { getTableConfiguration } from '../../../../helpers/tableConfiguration'
+import { getTableConfiguration } from '../../../../helpers/tableConfiguration';
+import parse from 'html-react-parser';
 class TaskManagementOfUnit extends Component {
 
     constructor(props) {
         super(props);
         const tableId = "tree-table-task-management-of-unit";
-        const defaultConfig = { limit: 20 }
+        const defaultConfig = { limit: 20, hiddenColumns: ["2", "6", "7"] }
         const limit = getTableConfiguration(tableId, defaultConfig).limit;
 
         this.state = {
@@ -45,7 +46,7 @@ class TaskManagementOfUnit extends Component {
 
     shouldComponentUpdate = async (nextProps, nextState) => {
         const { dashboardEvaluationEmployeeKpiSet } = this.props;
-        let { currentTab, organizationalUnit, status, priority, special, name, startDate, endDate, isAssigned } = this.state;
+        let { currentTab, organizationalUnit, status, priority, special, name, startDate, endDate, isAssigned, responsibleEmployees, accountableEmployees, creatorEmployees } = this.state;
 
         if (organizationalUnit !== nextState.organizationalUnit ||
             currentTab !== nextState.currentTab ||
@@ -91,7 +92,7 @@ class TaskManagementOfUnit extends Component {
                 }
             });
 
-            await this.props.getPaginatedTasksByOrganizationalUnit(units, 1, 20, status, [], [], null, null, null, isAssigned);
+            await this.props.getPaginatedTasksByOrganizationalUnit(units, 1, 20, status, [], [], null, null, null, isAssigned, responsibleEmployees, accountableEmployees, creatorEmployees);
             return true;
         }
 
@@ -168,7 +169,7 @@ class TaskManagementOfUnit extends Component {
     }
 
     handleGetDataPagination = async (index) => {
-        let { organizationalUnit, status, priority, special, name, startDate, endDate, isAssigned } = this.state;
+        let { organizationalUnit, status, priority, special, name, startDate, endDate, isAssigned, responsibleEmployees, accountableEmployees, creatorEmployees } = this.state;
 
         let oldCurrentPage = this.state.currentPage;
         let perPage = this.state.perPage;
@@ -181,12 +182,12 @@ class TaskManagementOfUnit extends Component {
         })
         let newCurrentPage = this.state.currentPage;
         if (oldCurrentPage !== index) {
-            this.props.getPaginatedTasksByOrganizationalUnit(organizationalUnit, newCurrentPage, perPage, status, priority, special, name, startDate, endDate, isAssigned);
+            this.props.getPaginatedTasksByOrganizationalUnit(organizationalUnit, newCurrentPage, perPage, status, priority, special, name, startDate, endDate, isAssigned, responsibleEmployees, accountableEmployees, creatorEmployees);
         };
     }
 
     nextPage = async (pageTotal) => {
-        let { organizationalUnit, status, priority, special, name, startDate, endDate, isAssigned } = this.state;
+        let { organizationalUnit, status, priority, special, name, startDate, endDate, isAssigned, responsibleEmployees, accountableEmployees, creatorEmployees } = this.state;
 
         let oldCurrentPage = this.state.currentPage;
         await this.setState(state => {
@@ -197,12 +198,12 @@ class TaskManagementOfUnit extends Component {
         })
         let newCurrentPage = this.state.currentPage;
         if (oldCurrentPage !== newCurrentPage) {
-            this.props.getPaginatedTasksByOrganizationalUnit(organizationalUnit, newCurrentPage, 20, status, priority, special, name, startDate, endDate, isAssigned);
+            this.props.getPaginatedTasksByOrganizationalUnit(organizationalUnit, newCurrentPage, 20, status, priority, special, name, startDate, endDate, isAssigned, responsibleEmployees, accountableEmployees, creatorEmployees);
         };
     }
 
     backPage = async () => {
-        let { organizationalUnit, status, priority, special, name, startDate, endDate, isAssigned } = this.state;
+        let { organizationalUnit, status, priority, special, name, startDate, endDate, isAssigned, responsibleEmployees, accountableEmployees, creatorEmployees } = this.state;
 
         let oldCurrentPage = this.state.currentPage;
         await this.setState(state => {
@@ -213,14 +214,14 @@ class TaskManagementOfUnit extends Component {
         })
         let newCurrentPage = this.state.currentPage;
         if (oldCurrentPage !== newCurrentPage) {
-            this.props.getPaginatedTasksByOrganizationalUnit(organizationalUnit, newCurrentPage, 20, status, priority, special, name, startDate, endDate, isAssigned);
+            this.props.getPaginatedTasksByOrganizationalUnit(organizationalUnit, newCurrentPage, 20, status, priority, special, name, startDate, endDate, isAssigned, responsibleEmployees, accountableEmployees, creatorEmployees);
         };
     }
 
     handleGetDataPerPage = (perPage) => {
-        let { organizationalUnit, status, priority, special, name, startDate, endDate, isAssigned } = this.state;
+        let { organizationalUnit, status, priority, special, name, startDate, endDate, isAssigned, responsibleEmployees, accountableEmployees, creatorEmployees } = this.state;
 
-        this.props.getPaginatedTasksByOrganizationalUnit(organizationalUnit, 1, perPage, status, priority, special, name, startDate, endDate, isAssigned);
+        this.props.getPaginatedTasksByOrganizationalUnit(organizationalUnit, 1, perPage, status, priority, special, name, startDate, endDate, isAssigned, responsibleEmployees, accountableEmployees, creatorEmployees);
 
         this.setState(state => {
             return {
@@ -232,10 +233,10 @@ class TaskManagementOfUnit extends Component {
 
     handleUpdateData = () => {
         const { translate } = this.props;
-        let { organizationalUnit, status, priority, special, name, startDate, endDate, perPage, isAssigned } = this.state;
+        let { organizationalUnit, status, priority, special, name, startDate, endDate, perPage, isAssigned, responsibleEmployees, accountableEmployees, creatorEmployees } = this.state;
 
         let startMonth, endMonth;
-        
+
         if (startDate && endDate) {
             startMonth = new Date(startDate);
             endMonth = new Date(endDate);
@@ -250,7 +251,7 @@ class TaskManagementOfUnit extends Component {
             })
         }
         else if (organizationalUnit && organizationalUnit.length !== 0) {
-            this.props.getPaginatedTasksByOrganizationalUnit(organizationalUnit, 1, perPage, status, priority, special, name, startDate, endDate, isAssigned);
+            this.props.getPaginatedTasksByOrganizationalUnit(organizationalUnit, 1, perPage, status, priority, special, name, startDate, endDate, isAssigned, responsibleEmployees, accountableEmployees, creatorEmployees);
         }
 
         this.setState(state => {
@@ -392,6 +393,27 @@ class TaskManagementOfUnit extends Component {
         });
     }
 
+    handleChangeResponsibleEmployees = (e) => {
+        const { value } = e.target;
+        this.setState({
+            responsibleEmployees: value,
+        })
+    }
+
+    handleChangeAccountableEmployees = (e) => {
+        const { value } = e.target;
+        this.setState({
+            accountableEmployees: value,
+        })
+    }
+
+    handleChangeCreatorEmployees = (e) => {
+        const { value } = e.target;
+        this.setState({
+            creatorEmployees: value,
+        })
+    }
+
     render() {
         const { tasks, user, translate, dashboardEvaluationEmployeeKpiSet } = this.props;
         const { selectBoxUnit, currentTaskId, currentPage, startDate, endDate, perPage, status, isAssigned, organizationalUnit, tableId } = this.state;
@@ -408,8 +430,12 @@ class TaskManagementOfUnit extends Component {
         // khởi tạo dữ liệu TreeTable
         let column = [
             { name: translate('task.task_management.col_name'), key: "name" },
+            { name: translate('task.task_management.detail_description'), key: "description" },
             { name: translate('task.task_management.col_organization'), key: "organization" },
             { name: translate('task.task_management.col_priority'), key: "priority" },
+            { name: translate('task.task_management.responsible'), key: "responsibleEmployees" },
+            { name: translate('task.task_management.accountable'), key: "accountableEmployees" },
+            { name: translate('task.task_management.creator'), key: "creatorEmployees" },
             { name: translate('task.task_management.col_start_date'), key: "startDate" },
             { name: translate('task.task_management.col_end_date'), key: "endDate" },
             { name: translate('task.task_management.col_status'), key: "status" },
@@ -423,8 +449,12 @@ class TaskManagementOfUnit extends Component {
                 data[n] = {
                     ...dataTemp[n],
                     name: dataTemp[n].name,
+                    description: parse(dataTemp[n].description),
                     organization: dataTemp[n].organizationalUnit ? dataTemp[n].organizationalUnit.name : translate('task.task_management.err_organizational_unit'),
                     priority: this.formatPriority(dataTemp[n].priority),
+                    responsibleEmployees: dataTemp[n].responsibleEmployees && dataTemp[n].responsibleEmployees.map(o => o.name).join(', '),
+                    accountableEmployees: dataTemp[n].accountableEmployees && dataTemp[n].accountableEmployees.map(o => o.name).join(', '),
+                    creatorEmployees: dataTemp[n].creator && dataTemp[n].creator.name,
                     startDate: this.formatDate(dataTemp[n].startDate),
                     endDate: this.formatDate(dataTemp[n].endDate),
                     status: this.formatStatus(dataTemp[n].status),
@@ -553,6 +583,24 @@ class TaskManagementOfUnit extends Component {
                                     />
                                 </div>
 
+                                {/* Người thực hiện */}
+                                <div className="form-group">
+                                    <label>{translate('task.task_management.responsible')}</label>
+                                    <input className="form-control" type="text" placeholder={translate('task.task_management.search_by_employees')} name="name" onChange={(e) => this.handleChangeResponsibleEmployees(e)} />
+                                </div>
+
+                                {/* Người phê duyệt */}
+                                <div className="form-group">
+                                    <label>{translate('task.task_management.accountable')}</label>
+                                    <input className="form-control" type="text" placeholder={translate('task.task_management.search_by_employees')} name="name" onChange={(e) => this.handleChangeAccountableEmployees(e)} />
+                                </div>
+
+                                {/* Người thiết lập */}
+                                <div className="form-group">
+                                    <label>{translate('task.task_management.creator')}</label>
+                                    <input className="form-control" type="text" placeholder={translate('task.task_management.search_by_employees')} name="name" onChange={(e) => this.handleChangeCreatorEmployees(e)} />
+                                </div>
+
                                 {/* Ngày bắt đầu */}
                                 <div className="form-group">
                                     <label>{translate('task.task_management.start_date')}</label>
@@ -576,9 +624,7 @@ class TaskManagementOfUnit extends Component {
                                         disabled={false}                     // sử dụng khi muốn disabled, mặc định là false
                                     />
                                 </div>
-                            </div>
 
-                            <div className="form-inline">
                                 <div className="form-group">
                                     <label></label>
                                     <button type="button" className="btn btn-success" onClick={this.handleUpdateData}>{translate('task.task_management.search')}</button>
@@ -591,8 +637,12 @@ class TaskManagementOfUnit extends Component {
                                 tableWidth="1300px"
                                 columnArr={[
                                     translate('task.task_management.col_name'),
+                                    translate('task.task_management.detail_description'),
                                     translate('task.task_management.col_organization'),
                                     translate('task.task_management.col_priority'),
+                                    translate('task.task_management.responsible'),
+                                    translate('task.task_management.accountable'),
+                                    translate('task.task_management.creator'),
                                     translate('task.task_management.col_start_date'),
                                     translate('task.task_management.col_end_date'),
                                     translate('task.task_management.col_status'),

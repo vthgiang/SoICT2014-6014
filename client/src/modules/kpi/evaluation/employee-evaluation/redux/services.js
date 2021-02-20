@@ -21,13 +21,15 @@ function getEmployeeKPISets(infosearch) {
         url: `${process.env.REACT_APP_SERVER}/kpi/evaluation/employee-evaluation/employee-kpi-sets`,
         method: 'GET',
         params: {
-            roleId: infosearch.role,
-            user: infosearch.user,
-            status: infosearch.status,
-            startDate: infosearch.startDate,
-            endDate: infosearch.endDate,
-            approver: infosearch ? infosearch.approver : null,
-            organizationalUnit: infosearch ? infosearch.organizationalUnit : null
+            roleId: infosearch?.role,
+            user: infosearch?.user,
+            status: infosearch?.status,
+            startDate: infosearch?.startDate,
+            endDate: infosearch?.endDate,
+            approver: infosearch?.approver,
+            organizationalUnit: infosearch?.organizationalUnit,
+            perPage: infosearch?.perPage,
+            page: infosearch?.page
         }
     }, false, true, 'kpi.evaluation');
 }

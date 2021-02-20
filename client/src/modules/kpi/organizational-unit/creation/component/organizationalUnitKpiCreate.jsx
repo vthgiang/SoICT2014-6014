@@ -87,7 +87,7 @@ class OrganizationalUnitKpiCreate extends Component {
         }
 
         // Không re-render khi đag chọn các lựa chọn
-        if (nextState.organizationalUnitId !== organizationalUnitId || nextState.month !== month) {
+        if (nextState.organizationalUnitId !== organizationalUnitId || nextState.month !== month || nextState.month === '') {
             return false;
         }
         return true;
@@ -266,7 +266,10 @@ class OrganizationalUnitKpiCreate extends Component {
     }
 
     handleChangeDate = (value) => {
-        let month = value.slice(3, 7) + '-' + value.slice(0, 2);
+        let month = value;
+        if (value !== '') {
+            month = value.slice(3, 7) + '-' + value.slice(0, 2);
+        }
 
         this.setState(state => {
             return {
@@ -289,12 +292,14 @@ class OrganizationalUnitKpiCreate extends Component {
             }
         })
 
-        this.props.getCurrentKPIUnit(currentRole, organizationalUnitId, month);
-        this.props.getKPIParent({
-            roleId: currentRole,
-            organizationalUnitId: organizationalUnitId,
-            month: month
-        });
+        if (organizationalUnitId && month && month !== '') {
+            this.props.getCurrentKPIUnit(currentRole, organizationalUnitId, month);
+            this.props.getKPIParent({
+                roleId: currentRole,
+                organizationalUnitId: organizationalUnitId,
+                month: month
+            });
+        }
     }
 
     /** Tạm thời cho phép trưởng đơn vị được quyền chỉnh sửa KPI đơn vị con */
@@ -527,11 +532,11 @@ class OrganizationalUnitKpiCreate extends Component {
                                                 <span>
                                                     {currentKPI.status === 1 ?
                                                         <a className="btn btn-app" onClick={() => this.swalOfUnitKpi("edit_employee_importance")}>
-                                                            <i className="fa fa-plus-circle" style={{ fontSize: "16px" }}></i>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.employee_importance')}
+                                                            <i className="fa fa-child" style={{ fontSize: "16px" }}></i>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.employee_importance')}
                                                         </a>
                                                         : <span>
                                                             <a className="btn btn-app" data-toggle="modal" data-target="#employee-importances" data-backdrop="static" data-keyboard="false">
-                                                                <i className="fa fa-plus-circle" style={{ fontSize: "16px" }}></i>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.employee_importance')}
+                                                                <i className="fa fa-child" style={{ fontSize: "16px" }}></i>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.employee_importance')}
                                                             </a>
                                                         <EmployeeImportancesModal
                                                             organizationalUnit={currentKPI.organizationalUnit}
@@ -543,7 +548,7 @@ class OrganizationalUnitKpiCreate extends Component {
                                                 </span>
                                                 : <span>
                                                     <a className="btn btn-app" onClick={() => this.swalEdittingPermission()}>
-                                                        <i className="fa fa-plus-circle" style={{ fontSize: "16px" }}></i>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.employee_importance')}
+                                                        <i className="fa fa-child" style={{ fontSize: "16px" }}></i>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.employee_importance')}
                                                     </a>
                                                 </span>
                                             }

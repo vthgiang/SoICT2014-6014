@@ -186,7 +186,7 @@ class SuperHome extends Component {
 
         return (
             <React.Fragment>
-                <div className="qlcv" style={{ textAlign: "right" }}>
+                <div className="qlcv" style={{ marginBottom: 10 }}>
                     {/**Chọn ngày bắt đầu */}
                     <div className="form-inline">
                         <div className="form-group">

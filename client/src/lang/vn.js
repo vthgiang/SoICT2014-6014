@@ -2955,6 +2955,7 @@ export default {
 
                 name: "Tên công việc",
                 search_by_name: "Tìm kiếm theo tên",
+                search_by_employees: "Nhập tên hoặc email ",
 
                 start_date: "Ngày bắt đầu",
                 end_date: "Ngày kết thúc",
@@ -2970,7 +2971,8 @@ export default {
                 col_status: "Trạng thái",
                 col_progress: "Tiến độ",
                 col_logged_time: "Thời gian thực hiện",
-
+                col_timesheet_log: "Thời gian bấm giờ",
+                
                 action_edit: "Băt đầu công việc",
                 action_delete: "Xóa công việc",
                 action_store: "Lưu vào kho",
@@ -3207,6 +3209,21 @@ export default {
                 // confirm task
                 confirm_task_success: "Xác nhận tham gia công việc thành công",
                 confirm_task_failure: "Xác nhận tham gia công việc thất bại",
+
+                // yêu cầu kết thúc công việc
+                request_close_task_success: "Gửi yêu cầu kết thúc công việc thành công",
+                cancel_request_close_task_success: "Hủy yêu cầu kết thúc công việc thành công",
+                approval_close_task_success: "Phê duyệt yêu cầu kết thúc công việc thành công",
+                decline_close_task_success: "Từ chối yêu cầu kết thúc công việc thành công",
+                request_close_task_failure: "Gửi yêu cầu kết thúc công việc thất bại",
+                cancel_request_close_task_failure: "Hủy yêu cầu kết thúc công việc thất bại",
+                approval_close_task_failure: "Phê duyệt yêu cầu kết thúc công việc thất bại",
+                decline_close_task_failure: "Từ chối yêu cầu kết thúc công việc thất bại",
+
+                // Mở lại công việc
+                open_task_again_success: 'Kích hoạt lại công việc thành công',
+                open_task_again_failure: 'Kích hoạt lại công việc thất bại',
+                confirm_open_task: 'Bạn có chắc chắn muốn kích hoạt lại công việc hiện tại không?',
 
                 // warning
                 warning: "Cảnh báo",
@@ -3447,6 +3464,15 @@ export default {
                         "Tổng phần trăm đóng góp phải là 100",
                     err_empty: "Giá trị không được để trống",
                 },
+
+                request_close_task: 'Yêu cầu kết thúc công việc',
+                approval_close_task: 'Phê duyệt kết thúc công việc',
+                open_task_again: 'Kích hoạt lại công việc',
+                send_request_close_task: 'Gửi yêu cầu',
+                cancel_request_close_task: 'Hủy yêu cầu',
+                approval_request_close_task: 'Phê duyệt',
+                decline_request_close_task: 'Từ chối',
+                status_task_close: 'Trạng thái khi kết thúc'
             },
             task_process: {
                 process_name: "Tên quy trình",
@@ -3560,7 +3586,16 @@ export default {
                 none_update_recently: "Công việc chưa cập nhật gần đây",
                 intime_task: "Công việc đúng tiến độ",
                 delay_task: "Công việc trễ tiến độ",
-                overdue_task: "Công việc quá hạn"
+                overdue_task: "Công việc quá hạn",
+                no_task: "Không có công việc nào",
+                unconfirmed_task: "Công việc chưa xác nhận thực hiện",
+                urgent_task: "Công việc khẩn cấp",
+                to_do_task: "Công việc cần làm",
+                day_ago: "ngày trước",
+                rest: "Còn",
+                updated: "Cập nhật",
+                day: "ngày",
+                overdue: "Quá hạn",
             }
         },
 
@@ -4106,7 +4141,7 @@ export default {
                     no_data: "Không có dữ liệu",
                     trend_chart: {
                         execution_time: "Thời gian thực hiện (Ngày)",
-                        participants: "Só người tham gia",
+                        participants: "Số người tham gia",
                         amount_tasks: "Số lượng công việc",
                         amount_employee_kpi: "Số lượng KPI nhân viên",
                         weight: "Trọng số",

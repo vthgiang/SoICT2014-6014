@@ -1,6 +1,8 @@
 const Models = require(`../../../../models`);
 const { OrganizationalUnitKpi, OrganizationalUnit, OrganizationalUnitKpiSet } = Models;
 const overviewService = require('../../employee/management/management.service');
+const UserService = require('../../../super-admin/user/user.service');
+
 const { connect } = require(`../../../../helpers/dbHelper`);
 const mongoose = require('mongoose');
 
@@ -57,7 +59,8 @@ exports.getOrganizationalUnitKpiSet = async (portal, query) => {
             .populate([
                 { path: "comments.creator", select: 'name email avatar' },
                 { path: "comments.comments.creator", select: 'name email avatar' },
-            ]);
+            ])
+            .populate({ path: 'employeeImportances', populate: { path: 'employee', select: ' _id name email' } });       
     }
 
     return kpiunit;
@@ -112,7 +115,8 @@ exports.getParentOrganizationalUnitKpiSet = async (portal, data) => {
                 date: { $gte: monthIso, $lt: nextMonth }
             })
             .populate("organizationalUnit creator")
-            .populate({ path: "kpis", populate: { path: 'parent' } });
+            .populate({ path: "kpis", populate: { path: 'parent' } })
+            .populate({ path: 'employeeImportances', populate: { path: 'employee', select: ' _id name email' } });       
     }
 
     return kpiunit;
@@ -249,12 +253,31 @@ exports.getAllOrganizationalUnitKpiSet = async (portal, data) => {
         }
     }
 
-    let kpiunits = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
-        .find(keySearch)
-        .skip(0).limit(12).populate("organizationalUnit creator")
-        .populate({ path: "kpis", populate: { path: 'parent' } });
+    let perPage = 100;
+    let page = 1;
+    if (data?.page) {
+        page = Number(data.page);
+    }
+    if (data?.perPage) {
+        perPage = Number(data.perPage)
+    } 
 
-    return kpiunits;
+    let kpiUnitSets = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
+        .find(keySearch)
+        .skip(perPage * (page - 1))
+        .limit(perPage)
+        .populate("organizationalUnit creator")
+        .populate({ path: "kpis", populate: { path: 'parent' } })
+        .populate({ path: 'employeeImportances', populate: { path: 'employee', select: ' _id name email' } });       
+
+    let totalCount = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
+    let totalPages = Math.ceil(totalCount / perPage);
+    
+    return {
+        kpiUnitSets,
+        totalCount,
+        totalPages
+    };
 }
 
 /**
@@ -269,6 +292,7 @@ exports.editEmployeeImportancesInUnitKpi = async (portal, id, data) => {
     organizationalUnitKpiSet = organizationalUnitKpiSet && await organizationalUnitKpiSet
         .populate("organizationalUnit creator")
         .populate({ path: "kpis", populate: { path: 'parent' } })
+        .populate({ path: 'employeeImportances', populate: { path: 'employee', select: ' _id name email' } })      
         .execPopulate();
 
     return organizationalUnitKpiSet;
@@ -282,17 +306,9 @@ exports.editEmployeeImportancesInUnitKpi = async (portal, id, data) => {
 exports.createOrganizationalUnitKpiSet = async (portal, data) => {
     const { date, creator, organizationalUnitId } = data;
     let monthSearch, nextMonthSearch;
-    let currentYear, currentMonth, now;
 
-    now = new Date();
-    currentYear = now.getFullYear();
-    currentMonth = now.getMonth() + 1;
-    if (currentMonth < 10) {
-        currentMonth = "0" + currentMonth;
-    }
-
-    monthSearch = new Date(currentYear + "-" + currentMonth);
-    nextMonthSearch = new Date(currentYear + "-" + currentMonth);
+    monthSearch = new Date(date);
+    nextMonthSearch = new Date(date);
     nextMonthSearch.setMonth(nextMonthSearch.getMonth() + 1);
 
     // Tạo thông tin chung cho KPI đơn vị
@@ -366,17 +382,38 @@ exports.createOrganizationalUnitKpiSet = async (portal, data) => {
                 organizationalUnitKpi, { $push: { kpis: targetC._id } }, { new: true }
             );
     }
+
+    // Thêm độ quan trọng nhân viên
+    let users = await UserService.getAllEmployeeOfUnitByIds(portal, [organizationalUnitId]);
+    let employeeImportances = [];
+
+    if (users && users.length !== 0) {
+        employeeImportances = users.map(item => {
+            return {
+                employee: item?.userId?._id,
+                importance: 100
+            }
+        })
+    }
+    organizationalUnitKpi = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
+        .findByIdAndUpdate(
+            organizationalUnitKpi, { 'employeeImportances': employeeImportances }, { new: true }
+        );
+
     organizationalUnitKpi = organizationalUnitKpi && await organizationalUnitKpi
         .populate("organizationalUnit creator")
         .populate({ path: "kpis", populate: { path: 'parent' } })
+<<<<<<< HEAD
         .populate([
             { path: 'comments.creator', select: 'name email avatar ' },
             { path: 'comments.comments.creator', select: 'name email avatar' }
         ])
+=======
+        .populate({ path: 'employeeImportances', populate: { path: 'employee', select: ' _id name email' } })
+>>>>>>> dfbfcadeaf1c900654e24fb35689ffc003ac41f5
         .execPopulate();
 
     return organizationalUnitKpi;
-
 }
 
 /**
@@ -425,6 +462,7 @@ exports.createOrganizationalUnitKpi = async (portal, data) => {
         organizationalUnitKpiSet = organizationalUnitKpiSet && await organizationalUnitKpiSet
             .populate("organizationalUnit creator")
             .populate({ path: "kpis", populate: { path: 'parent' } })
+            .populate({ path: 'employeeImportances', populate: { path: 'employee', select: ' _id name email' } })   
             .execPopulate();
     }
     
@@ -465,6 +503,7 @@ exports.deleteOrganizationalUnitKpi = async (portal, id, organizationalUnitKpiSe
     organizationalUnitKpiSet = organizationalUnitKpiSet && await organizationalUnitKpiSet
         .populate("organizationalUnit creator")
         .populate({ path: "kpis", populate: { path: 'parent' } })
+        .populate({ path: 'employeeImportances', populate: { path: 'employee', select: ' _id name email' } })     
         .execPopulate();
 
     return organizationalUnitKpiSet;
@@ -482,6 +521,7 @@ exports.editOrganizationalUnitKpiSetStatus = async (portal, id, data) => {
     kpiunit = kpiunit && await kpiunit
         .populate("organizationalUnit creator")
         .populate({ path: "kpis", populate: { path: 'parent' } })
+        .populate({ path: 'employeeImportances', populate: { path: 'employee', select: ' _id name email' } })     
         .execPopulate();
 
     return kpiunit;

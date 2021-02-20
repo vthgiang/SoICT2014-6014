@@ -51,6 +51,23 @@ export function performtasks(state = {}, action) {
             return {
                 error: action.error
             };
+        case performTaskConstants.GET_CURRENT_TASK_TIMESHEET_LOG_IN_UNIT_REQUEST:
+            return {
+                ...state,
+                loading: true
+            }
+        case performTaskConstants.GET_CURRENT_TASK_TIMESHEET_LOG_IN_UNIT_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                currentTaskTimesheetLogInUnit: action.payload
+            }
+        case performTaskConstants.GET_CURRENT_TASK_TIMESHEET_LOG_IN_UNIT_FAILURE:
+            return {
+                ...state,
+                loading: false,
+                error: action.payload
+            }
         case performTaskConstants.GET_TIMERSTATUS_REQUEST:
             return {
                 ...state,
@@ -207,6 +224,21 @@ export function performtasks(state = {}, action) {
                 task: action.payload
             }
         case performTaskConstants.REQUEST_AND_APPROVAL_CLOSE_TASK_FAILURE:
+            return {
+                ...state,
+                error: action.payload
+            }
+        case performTaskConstants.OPEN_TASK_AGAIN_REQUEST:
+            return {
+                ...state,
+                editing: true
+            }
+        case performTaskConstants.OPEN_TASK_AGAIN_SUCCESS:
+            return {
+                ...state,
+                task: action.payload
+            }
+        case performTaskConstants.OPEN_TASK_AGAIN_FAILURE:
             return {
                 ...state,
                 error: action.payload

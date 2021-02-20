@@ -38,6 +38,13 @@ class AllTimeSheetLogsByUnit extends Component {
         }
     }
 
+    formatDate = (date) => {
+        if (date) {
+            let data = date.split("-");
+            data = data[1] + "-" + data[0]
+            return data;
+        }
+    }
     handleInforTimeSheet = async (value) => {
         const { organizationUnitTasks, userDepartment } = this.props;
         let inforTimeSheetLog = []
@@ -71,9 +78,9 @@ class AllTimeSheetLogsByUnit extends Component {
     }
     render() {
         const { tasks, translate } = this.props;
-        const { organizationUnitTasks, userDepartment } = this.props;
+        const { organizationUnitTasks, userDepartment, startMonth, endMonth } = this.props;
         const { month, currentRowTimeSheetLog } = this.state;
-
+        console.log("Dòng 76", this.props)
         var allTimeSheet = [], timesheetlogs = []
         if (userDepartment) {
             for (let i in userDepartment) {
@@ -118,8 +125,8 @@ class AllTimeSheetLogsByUnit extends Component {
                     <div className="box box-primary">
                         <div className="box-header with-border">
                             <div className="box-title">
-                                Thống kê bấm giờ theo tháng
-                                </div>
+                                Thống kê bấm giờ từ tháng {this.formatDate(startMonth)} đến tháng {this.formatDate(endMonth)}
+                            </div>
                         </div>
                         <div className="box-body qlcv">
                             <table className="table table-hover table-striped table-bordered" id="table-user-timesheetlogs">

@@ -303,7 +303,7 @@ class TaskOrganizationUnitDashboard extends Component {
                             <div className="col-xs-12">
                                 <div className="box box-primary">
                                     <div className="box-header with-border">
-                                        <div className="box-title">{translate('task.task_dashboard.general_unit_task')}</div>
+                                        <div className="box-title">{translate('task.task_dashboard.general_unit_task')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
                                     </div>
                                     <div className="box-body qlcv">
                                         {/* {this.state.callAction && tasks && tasks.organizationUnitTasks && */}
@@ -365,7 +365,7 @@ class TaskOrganizationUnitDashboard extends Component {
                                             <InprocessOfUnitTask
                                                 tasks={tasks.organizationUnitTasks}
                                                 listEmployee={user && user.employees}
-                                                units={childrenOrganizationalUnit}
+                                                units={selectBoxUnit}
                                             />
                                         }
                                     </div>
@@ -517,7 +517,12 @@ class TaskOrganizationUnitDashboard extends Component {
                             </div>
                         </div>
                         <div>
-                            <AllTimeSheetLogsByUnit userDepartment={user.employees} organizationUnitTasks={tasks.organizationUnitTasks} />
+                            <AllTimeSheetLogsByUnit
+                                userDepartment={user.employees}
+                                organizationUnitTasks={tasks.organizationUnitTasks}
+                                startMonth={startMonth}
+                                endMonth={endMonth}
+                            />
                         </div>
                     </React.Fragment>
                     : currentOrganizationalUnitLoading

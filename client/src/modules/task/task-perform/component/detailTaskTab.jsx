@@ -259,6 +259,23 @@ class DetailTaskTab extends Component {
         window.$(modalId).modal('show');
     }
 
+    handleOpenTaskAgain = (id) => {
+        const { translate } = this.props;
+
+        Swal.fire({
+            title: translate('task.task_management.confirm_open_task'),
+            type: 'success',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: translate('kpi.evaluation.employee_evaluation.confirm')
+        }).then((res) => {
+            if (res.value) {
+                this.props.openTaskAgain(id)
+            }
+        });
+    }
+
     handleEndTask = async (id, status, codeInProcess, typeOfTask) => {
         await this.setState(state => {
             return {
@@ -855,19 +872,6 @@ class DetailTaskTab extends Component {
                             </React.Fragment>
                         }
 
-                        {/* {checkInactive && codeInProcess && (currentRole === "accountable" || (currentRole === "responsible" && checkHasAccountable === false)) &&
-                            (statusTask !== "Finished" &&
-                                (typeOfTask === "Gateway" ?
-                                    <a className="btn btn-app" onClick={() => this.handleEndTask(id, "inprocess", codeInProcess, typeOfTask)} title={translate('task.task_management.detail_route_task')}>
-                                        <i className="fa fa-location-arrow" style={{ fontSize: "16px" }}></i>{translate('task.task_management.detail_route')}
-                                    </a> :
-                                    <a className="btn btn-app" onClick={() => this.handleEndTask(id, "finished", codeInProcess, typeOfTask)} title={translate('task.task_management.detail_end')}>
-                                        <i className="fa fa-power-off" style={{ fontSize: "16px" }}></i>{translate('task.task_management.detail_end')}
-                                    </a>
-                                )
-                            )
-                        } */}
-
                         {((currentRole === "consulted" || currentRole === "responsible" || currentRole === "accountable") && checkInactive) &&
                             <React.Fragment>
                                 <a className="btn btn-app" onClick={() => this.handleShowEvaluate(id, currentRole)} title={translate('task.task_management.detail_evaluate')}>
@@ -885,11 +889,18 @@ class DetailTaskTab extends Component {
                                 </a>
                             </React.Fragment>
                         }
+                    
                         {(((currentRole === "responsible" && task?.requestToCloseTask?.requestStatus !== 3) || (currentRole === "accountable" && task?.requestToCloseTask?.requestStatus === 1)) && checkInactive) && checkHasAccountable
-                            && <a className="btn btn-app" onClick={() => this.handleShowRequestCloseTask(id)} title="Phê duyệt yêu cầu kết thúc công việc">
-                                <i className="fa fa-edit" style={{ fontSize: "16px" }}></i>Yêu cầu kết thúc công việc
+                            && <a className="btn btn-app" onClick={() => this.handleShowRequestCloseTask(id)} title={currentRole === "responsible" ? translate('task.task_perform.request_close_task') : translate('task.task_perform.approval_close_task')}>
+                                <i className="fa fa-external-link-square" style={{ fontSize: "16px" }}></i>{currentRole === "responsible" ? translate('task.task_perform.request_close_task') : translate('task.task_perform.approval_close_task')}
                             </a>
                         }
+                        {task && statusTask !== "inprocess" && checkInactive
+                            && <a className="btn btn-app" onClick={() => this.handleOpenTaskAgain(id)} title={translate('task.task_perform.open_task_again')}>
+                                <i className="fa fa-rocket" style={{ fontSize: "16px" }}></i>{translate('task.task_perform.open_task_again')}
+                            </a>
+                        }
+                    
                         {
                             (collapseInfo === false) ?
                                 <a className="btn btn-app" data-toggle="collapse" href="#info" onClick={this.handleChangeCollapseInfo} role="button" aria-expanded="false" aria-controls="info">
@@ -1392,11 +1403,11 @@ const actionGetState = { //dispatchActionToProps
     getTimesheetLogs: performTaskAction.getTimesheetLogs,
     getChildrenOfOrganizationalUnits: UserActions.getChildrenOfOrganizationalUnitsAsTree,
     getTaskLog: performTaskAction.getTaskLog,
-    editStatusTask: performTaskAction.editStatusOfTask,
     editHoursSpentInEvaluate: performTaskAction.editHoursSpentInEvaluate,
     confirmTask: performTaskAction.confirmTask,
     getAllUserInAllUnitsOfCompany: UserActions.getAllUserInAllUnitsOfCompany,
     getAllTaskProject: TaskProjectAction.get,
+    openTaskAgain: performTaskAction.openTaskAgain
 }
 
 const detailTask = connect(mapStateToProps, actionGetState)(withTranslate(DetailTaskTab));

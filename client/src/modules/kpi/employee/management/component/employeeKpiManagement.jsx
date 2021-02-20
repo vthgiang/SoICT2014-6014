@@ -1,24 +1,22 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+import Swal from 'sweetalert2';
 
-import { DataTableSetting, ExportExcel } from '../../../../../common-components';
-import { DatePicker, SelectBox } from '../../../../../common-components/index';
+import { DataTableSetting, ExportExcel, PaginateBar, DatePicker, SelectBox } from '../../../../../common-components';
+import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
 
 import { UserActions } from "../../../../super-admin/user/redux/actions";
 import { kpiMemberActions } from '../../../evaluation/employee-evaluation/redux/actions'
 
 import { ModalCopyKPIPersonal } from './employeeKpiCopyModal';
 import { ModalDetailKPIPersonal } from './employeeKpiDetailModal';
-import Swal from 'sweetalert2';
-
 
 var translate = '';
 class KPIPersonalManager extends Component {
     constructor(props) {
         super(props);
         translate = this.props.translate;
-        const tableId = "table-personal-kpi-management";
 
         let d = new Date(),
             month = d.getMonth() + 1,
@@ -40,6 +38,10 @@ class KPIPersonalManager extends Component {
             endMonth = month;
         }
 
+        const tableId = "table-personal-kpi-management";
+        const defaultConfig = { limit: 20 }
+        const limit = getTableConfiguration(tableId, defaultConfig).limit;
+
         this.state = {
             tableId,
             commenting: false,
@@ -53,6 +55,8 @@ class KPIPersonalManager extends Component {
                 status: null,
                 startDate: [startYear, startMonth].join('-'),
                 endDate: [year, endMonth].join('-'),
+                perPage: limit,
+                page: 1
             },
             startDateDefault: [startMonth, startYear].join('-'),
             endDateDefault: [endMonth, year].join('-'),
@@ -198,6 +202,38 @@ class KPIPersonalManager extends Component {
         }
     }
 
+    setLimit = async (limit) => {
+        if (Number(limit) !== this.state?.infosearch?.limit) {
+            await this.setState(state => {
+                return {
+                    ...state,
+                    infosearch: {
+                        ...state.infosearch,
+                        perPage: Number(limit)
+                    }
+                }
+            })
+
+            let { infosearch } = this.state;
+            this.props.getEmployeeKPISets(infosearch);
+        }
+    }
+
+    handleGetDataPagination = async (index) => {
+        await this.setState(state => {
+            return {
+                ...state,
+                infosearch: {
+                    ...state.infosearch,
+                    page: index
+                }
+            }
+        })
+
+        let { infosearch } = this.state;
+        this.props.getEmployeeKPISets(infosearch);
+    }
+
     /**Mở modal xem chi tiết 1 mẫu công việc */
     showDetailKpiPersonal = async (item) => {
         await this.setState(state => {
@@ -271,7 +307,7 @@ class KPIPersonalManager extends Component {
         let exportData;
 
         const { translate, kpimembers, user } = this.props;
-        const { status, startDate, endDate, tableId, startDateDefault, endDateDefault } = this.state;
+        const { status, tableId, startDateDefault, endDateDefault, infosearch } = this.state;
 
         if (user) userdepartments = user.userdepartments;
         if (kpimembers) kpipersonal = kpimembers.kpimembers;
@@ -378,13 +414,21 @@ class KPIPersonalManager extends Component {
                                             title={translate('kpi.evaluation.employee_evaluation.view_detail')}><i className="material-icons">view_list</i></a>
                                         <a href="#abc" onClick={() => this.showModalCopy(item._id)} data-toggle="modal"
                                             className="copy" title={translate('kpi.evaluation.employee_evaluation.clone_to_new_kpi')}><i className="material-icons">content_copy</i></a>
-                                        {this.state.showModalCopy === item._id && <ModalCopyKPIPersonal id={item._id} idunit={item.organizationalUnit._id} listkpipersonal={kpipersonal} kpipersonal={item} />}
+                                        {this.state.showModalCopy === item._id && <ModalCopyKPIPersonal id={item._id} idunit={item.organizationalUnit._id} kpipersonal={item} />}
                                     </td>
                                 </tr>)
                             }
                         </tbody>
                     </table>
                     {(kpipersonal && kpipersonal.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>}
+               
+                    <PaginateBar
+                        display={kpipersonal?.length}
+                        total={kpimembers?.totalCountEmployeeKpiSet}
+                        pageTotal={kpimembers?.totalPageEmployeeKpiSet}
+                        currentPage={infosearch?.page}
+                        func={this.handleGetDataPagination}
+                    />
                 </div>
             </div>
         )

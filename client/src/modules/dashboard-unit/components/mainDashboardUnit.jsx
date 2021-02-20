@@ -5,7 +5,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import { TabEmployeeCapacity, TabIntegratedStatistics, TabTask } from './combinedContent';
 import { TabHumanResource, TabSalary, TabAnualLeave } from '../../human-resource/employee-dashboard/components/combinedContent';
 
-import { DatePicker, SelectMulti, LazyLoadComponent, forceCheckOrVisible, ToolTip } from '../../../common-components';
+import { DatePicker, SelectMulti, LazyLoadComponent, forceCheckOrVisible, CustomLegendC3js } from '../../../common-components';
 
 import { EmployeeManagerActions } from '../../human-resource/profile/employee-management/redux/actions';
 import { TimesheetsActions } from '../../human-resource/timesheets/redux/actions';
@@ -13,14 +13,18 @@ import { DisciplineActions } from '../../human-resource/commendation-discipline/
 import { SalaryActions } from '../../human-resource/salary/redux/actions';
 import { taskManagementActions } from '../../task/task-management/redux/actions';
 import { UserActions } from '../../super-admin/user/redux/actions';
+
 import c3 from 'c3';
 import Swal from 'sweetalert2';
+import "./dashboardUnit.css";
+
 import ViewAllTaskUrgent from './viewAllTaskUrgent';
 import ViewAllTaskNeedToDo from './viewAllTaskNeedToDo';
-import "./dashboardUnit.css";
+import { CurrentTaskTimesheetLogInOrganizationalUnit } from './currentTaskTimesheetLogInOrganizationalUnit';
 class MainDashboardUnit extends Component {
     constructor(props) {
         super(props);
+
         this.state = {
             month: this.formatDate(Date.now(), true),
             monthShow: this.formatDate(Date.now(), true),
@@ -143,7 +147,7 @@ class MainDashboardUnit extends Component {
     }
 
     removePreviousUrgentPieChart() {
-        const chart = this.refs.pieCharUrgent;
+        const chart = this.refs.pieChartUrgent;
         if (chart) {
             while (chart.hasChildNodes()) {
                 chart.removeChild(chart.lastChild);
@@ -151,7 +155,7 @@ class MainDashboardUnit extends Component {
         }
     }
     removePreviousNeedToDoPieChart() {
-        const chart = this.refs.pieCharTaskNeedToDo;
+        const chart = this.refs.pieChartTaskNeedToDo;
         if (chart) {
             while (chart.hasChildNodes()) {
                 chart.removeChild(chart.lastChild);
@@ -161,11 +165,13 @@ class MainDashboardUnit extends Component {
 
     pieChartUrgent = (data) => {
         this.removePreviousUrgentPieChart();
-        let dataChart = this.convertDataUrgentPieChart(data);
-        this.chart = c3.generate({
-            bindto: this.refs.pieCharUrgent,
+        let chartUrgentData = this.convertDataUrgentPieChart(data);
+
+        this.chartUrgentData = chartUrgentData;
+        this.chartUrgent = c3.generate({
+            bindto: this.refs.pieChartUrgent,
             data: { // Dữ liệu biểu đồ
-                columns: dataChart,
+                columns: chartUrgentData,
                 type: 'pie',
                 labels: true,
                 onclick: function (d, e) {
@@ -201,18 +207,18 @@ class MainDashboardUnit extends Component {
             },
 
             legend: {
-                show: true
+                show: false
             }
         })
     }
 
     pieChartNeedTodo = (data) => {
         this.removePreviousNeedToDoPieChart();
-        let dataChart = this.convertDataTaskNeedToDoPieChart(data);
-        this.chart = c3.generate({
-            bindto: this.refs.pieCharTaskNeedToDo,
+        this.chartNeedTodoData = this.convertDataTaskNeedToDoPieChart(data);
+        this.chartNeedTodo = c3.generate({
+            bindto: this.refs.pieChartTaskNeedToDo,
             data: { // Dữ liệu biểu đồ
-                columns: dataChart,
+                columns: this.chartNeedTodoData,
                 type: 'pie',
                 labels: true,
                 onclick: function (d, e) {
@@ -248,7 +254,7 @@ class MainDashboardUnit extends Component {
             },
 
             legend: {
-                show: true
+                show: false
             }
         })
     }
@@ -489,7 +495,6 @@ class MainDashboardUnit extends Component {
 
         };
 
-        console.log('TaskUrgentIsHovering', TaskUrgentIsHovering)
         return (
             <React.Fragment>
                 <div className="qlcv">
@@ -527,7 +532,7 @@ class MainDashboardUnit extends Component {
                                     </div>
 
                                     <div className="row " >
-                                        <div className="dashboard_box_body" >
+                                        <div className="">
                                             <div className="col-md-6">
                                                 <div style={{ display: 'flex', flexDirection: 'column', marginTop: '10px', marginBottom: 0 }}>
                                                     <p className="pull-left" style={{ display: 'flex', alignItems: 'center' }}> < b style={{ marginTop: '10px', marginRight: '5px' }}> Số công việc khẩn cấp</b>
@@ -539,8 +544,17 @@ class MainDashboardUnit extends Component {
                                                     {
                                                         tasks.isLoading ? <p style={{ marginTop: '60px', textAlign: "center" }}>Đang tải dữ liệu</p>
                                                             : urgent && urgent.length > 0 ?
-                                                                <div ref="pieCharUrgent" /> :
-                                                                <p style={{ marginTop: '60px', textAlign: "center" }}>không có công việc nào khẩn cấp</p>
+                                                                <section id={"pieChartUrgent"} className="c3-chart-container">
+                                                                    <div ref="pieChartUrgent"></div>
+                                                                    <CustomLegendC3js
+                                                                        chart={this.chartUrgent}
+                                                                        chartId={"pieChartUrgent"}
+                                                                        legendId={"pieChartUrgentLegend"}
+                                                                        title={this.chartUrgentData && `${translate('general.list_unit')} (${this.chartUrgentData.length})`}
+                                                                        dataChartLegend={this.chartUrgentData && this.chartUrgentData.map(item => item[0])}
+                                                                    />
+                                                                </section>
+                                                                : <p style={{ marginTop: '60px', textAlign: "center" }}>không có công việc nào khẩn cấp</p>
                                                     }
                                                 </div>
                                             </div>
@@ -559,8 +573,17 @@ class MainDashboardUnit extends Component {
                                                             <p style={{ marginTop: '60px', textAlign: "center" }}>Đang tải dữ liệu</p>
                                                             :
                                                             taskNeedToDo && taskNeedToDo.length > 0 ?
-                                                                <div ref="pieCharTaskNeedToDo" /> :
-                                                                <p style={{ marginTop: '60px', textAlign: "center" }}>không có công việc nào cần làm</p>
+                                                                <section id={"pieChartTaskNeedToDo"} className="c3-chart-container">
+                                                                    <div ref="pieChartTaskNeedToDo"></div>
+                                                                    <CustomLegendC3js
+                                                                        chart={this.chartTaskNeedToDo}
+                                                                        chartId={"pieChartTaskNeedToDo"}
+                                                                        legendId={"pieChartTaskNeedToDoLegend"}
+                                                                        title={this.chartTaskNeedToDoData && `${translate('general.list_unit')} (${this.chartTaskNeedToDoData.length})`}
+                                                                        dataChartLegend={this.chartTaskNeedToDoData && this.chartTaskNeedToDoData.map(item => item[0])}
+                                                                    />
+                                                                </section>
+                                                                : <p style={{ marginTop: '60px', textAlign: "center" }}>không có công việc nào cần làm</p>
                                                     }
                                                 </div>
                                             </div>
@@ -571,6 +594,24 @@ class MainDashboardUnit extends Component {
                         </div>
                     </div>
 
+                    {/* Danh sách nhân viên đang bấm giờ */}
+                    <div className="row">
+                        <div className="col-md-12">
+                            <div className="box box-solid">
+                                <div className="box-header with-border">
+                                    <div className="box-title" >
+                                        Danh sách nhân viên đang bấm giờ
+                                    </div>
+                                </div>
+
+                                <div className="box-body" style={{ marginBottom: 15 }}>
+                                    <CurrentTaskTimesheetLogInOrganizationalUnit
+                                        listUnitSelect={listUnitSelect}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
                     <div className="form-inline" style={{ marginBottom: 10 }}>
                         <div className="form-group">

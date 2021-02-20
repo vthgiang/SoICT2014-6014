@@ -271,7 +271,7 @@ exports.getTasksCreatedByUser = async (portal, id) => {
  * @task dữ liệu trong params
  */
 exports.getPaginatedTasks = async (portal, task) => {
-    let { perPage, number, role, user, organizationalUnit, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime, responsibleEmployees } = task;
+    let { perPage, number, role, user, organizationalUnit, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime, responsibleEmployees, accountableEmployees, creatorEmployees} = task;
     let taskList;
     perPage = Number(perPage);
     let page = Number(number);
@@ -365,11 +365,92 @@ exports.getPaginatedTasks = async (portal, task) => {
         }
     };
 
-    if (responsibleEmployees && responsibleEmployees.length > 0) {
-        keySearch = {
-            ...keySearch,
-            responsibleEmployees: {
-                $in: responsibleEmployees
+    // Tìm kiếm theo người thực hiện
+    if (responsibleEmployees) {
+        const responsible = await User(connect(DB_CONNECTION, portal)).find({
+            $or: [
+                {
+                    name: {
+                        $regex: responsibleEmployees,
+                        $options: "i",
+                    }
+                }, {
+                    email: {
+                        $regex: responsibleEmployees,
+                        $options: "i",
+                    }
+                }
+            ]
+        })
+
+        const getIdResponsible = responsible && responsible.length > 0 ? responsible.map(o => o._id): null;
+
+        if (getIdResponsible) {
+            keySearch = {
+                ...keySearch,
+                responsibleEmployees: {
+                    $in: getIdResponsible
+                }
+            }
+        }
+    }
+
+    // Tìm kiếm theo người phê duyệt
+    if (accountableEmployees) {
+        const accountable = await User(connect(DB_CONNECTION, portal)).find({
+            $or: [
+                {
+                    name: {
+                        $regex: accountableEmployees,
+                        $options: "i",
+                    }
+                }, {
+                    email: {
+                        $regex: accountableEmployees,
+                        $options: "i",
+                    }
+                }
+            ]
+        })
+
+        const getIdAccountable = accountable && accountable.length > 0 ? accountable.map(o => o._id): null;
+
+        if (getIdAccountable) {
+            keySearch = {
+                ...keySearch,
+                accountableEmployees: {
+                    $in: getIdAccountable
+                }
+            }
+        }
+    }
+
+    // Tìm kiếm theo người thiết lập
+    if (creatorEmployees) {
+        const creator = await User(connect(DB_CONNECTION, portal)).find({
+            $or: [
+                {
+                    name: {
+                        $regex: creatorEmployees,
+                        $options: "i",
+                    }
+                }, {
+                    email: {
+                        $regex: creatorEmployees,
+                        $options: "i",
+                    }
+                }
+            ]
+        })
+
+        const getIdCreator = creator && creator.length > 0 ? creator.map(o => o._id): null;
+
+        if (getIdCreator) {
+            keySearch = {
+                ...keySearch,
+                creator: {
+                    $in: getIdCreator
+                }
             }
         }
     }
@@ -436,7 +517,7 @@ exports.getPaginatedTasks = async (portal, task) => {
 
     taskList = await Task(connect(DB_CONNECTION, portal)).find(optionQuery).sort({ 'createdAt': -1 })
         .skip(perPage * (page - 1)).limit(perPage).populate([
-            { path: "organizationalUnit creator parent responsibleEmployees" },
+            { path: "organizationalUnit creator parent responsibleEmployees accountableEmployees" },
             { path: "timesheetLogs.creator", select: "name" },
         ]);
 
@@ -1250,7 +1331,7 @@ exports.getPaginatedTasksThatUserHasInformedRole = async (portal, task) => {
  * Lấy công việc quan sát theo id người dùng
  */
 exports.getPaginatedTasksByUser = async (portal, task, type = "paginated_task_by_user") => {
-    var { perPage, number, user, organizationalUnit, status, priority, special, name, startDate, endDate, aPeriodOfTime, isAssigned } = task;
+    var { perPage, number, user, organizationalUnit, status, priority, special, name, startDate, endDate, aPeriodOfTime, isAssigned, responsibleEmployees, accountableEmployees, creatorEmployees } = task;
     var tasks;
     var perPage = Number(perPage);
     var page = Number(number);
@@ -1272,6 +1353,98 @@ exports.getPaginatedTasksByUser = async (portal, task, type = "paginated_task_by
             isArchived: false
         };
     }
+
+    // Tìm kiếm theo người thực hiện
+    if (responsibleEmployees) {
+        const responsible = await User(connect(DB_CONNECTION, portal)).find({
+            $or: [
+                {
+                    name: {
+                        $regex: responsibleEmployees,
+                        $options: "i",
+                    }
+                }, {
+                    email: {
+                        $regex: responsibleEmployees,
+                        $options: "i",
+                    }
+                }
+            ]
+        })
+
+        const getIdResponsible = responsible && responsible.length > 0 ? responsible.map(o => o._id): null;
+
+        if (getIdResponsible) {
+            keySearch = {
+                ...keySearch,
+                responsibleEmployees: {
+                    $in: getIdResponsible
+                }
+            }
+        }
+    }
+
+    // Tìm kiếm theo người phê duyệt
+    if (accountableEmployees) {
+        const accountable = await User(connect(DB_CONNECTION, portal)).find({
+            $or: [
+                {
+                    name: {
+                        $regex: accountableEmployees,
+                        $options: "i",
+                    }
+                }, {
+                    email: {
+                        $regex: accountableEmployees,
+                        $options: "i",
+                    }
+                }
+            ]
+        })
+
+        const getIdAccountable = accountable && accountable.length > 0 ? accountable.map(o => o._id): null;
+
+        if (getIdAccountable) {
+            keySearch = {
+                ...keySearch,
+                accountableEmployees: {
+                    $in: getIdAccountable
+                }
+            }
+        }
+    }
+
+    // Tìm kiếm theo người thiết lập
+    if (creatorEmployees) {
+        const creator = await User(connect(DB_CONNECTION, portal)).find({
+            $or: [
+                {
+                    name: {
+                        $regex: creatorEmployees,
+                        $options: "i",
+                    }
+                }, {
+                    email: {
+                        $regex: creatorEmployees,
+                        $options: "i",
+                    }
+                }
+            ]
+        })
+
+        const getIdCreator = creator && creator.length > 0 ? creator.map(o => o._id): null;
+
+        if (getIdCreator) {
+            keySearch = {
+                ...keySearch,
+                creator: {
+                    $in: getIdCreator
+                }
+            }
+        }
+    }
+
+
     let keySearchSpecial = {}, keySearchPeriod = {};
 
     if (organizationalUnit) {
@@ -1421,7 +1594,7 @@ exports.getPaginatedTasksByUser = async (portal, task, type = "paginated_task_by
         ]
     }).sort({ 'createdAt': -1 })
         .skip(perPage * (page - 1)).limit(perPage)
-        .populate({ path: "organizationalUnit creator parent" });
+        .populate({ path: "organizationalUnit creator parent responsibleEmployees accountableEmployees " });
 
     let totalCount = await Task(connect(DB_CONNECTION, portal)).countDocuments({
         $and: [

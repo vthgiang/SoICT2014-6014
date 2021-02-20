@@ -3,8 +3,9 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import Swal from 'sweetalert2';
 
-import { DataTableSetting, ExportExcel, DatePicker, SelectBox, ShowMoreShowLess } from '../../../../../common-components';
+import { DataTableSetting, ExportExcel, DatePicker, SelectBox, PaginateBar } from '../../../../../common-components';
 import getEmployeeSelectBoxItems from '../../../../task/organizationalUnitHelper';
+import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
 
 import { UserActions } from "../../../../super-admin/user/redux/actions";
 import { managerActions } from '../../../organizational-unit/management/redux/actions';
@@ -13,7 +14,6 @@ import { DashboardEvaluationEmployeeKpiSetAction } from '../../../evaluation/das
 
 import { EmployeeKpiApproveModal } from './employeeKpiApproveModal';
 import { EmployeeKpiEvaluateModal } from './employeeKpiEvaluateModal';
-
 class EmployeeKpiManagement extends Component {
 
     constructor(props) {
@@ -40,7 +40,11 @@ class EmployeeKpiManagement extends Component {
         } else {
             endMonth = month;
         }
+
         const tableId = "table-employee-kpi-management";
+        const defaultConfig = { limit: 20 }
+        const limit = getTableConfiguration(tableId, defaultConfig).limit;
+
         this.state = {
             tableId,
             commenting: false,
@@ -54,6 +58,8 @@ class EmployeeKpiManagement extends Component {
                 status: -1,
                 startDate: [startYear, startMonth].join('-'),
                 endDate: [year, endMonth].join('-'),
+                perPage: limit,
+                page: 1
             },
             startDateDefault: [startMonth, startYear].join('-'),
             endDateDefault: [endMonth, year].join('-'),
@@ -240,7 +246,8 @@ class EmployeeKpiManagement extends Component {
                     startDate: startDate !== "" ? startDate : null,
                     endDate: endDate !== "" ? endDate : null,
                     organizationalUnit: organizationalUnit,
-                    approver: approver && approver[0] !== '0' ? approver : []
+                    approver: approver && approver[0] !== '0' ? approver : [],
+                    page: 1
                 },
                 kpiId: null,
                 employeeKpiSet: { _id: null },
@@ -310,6 +317,38 @@ class EmployeeKpiManagement extends Component {
                 dataStatus: this.DATA_STATUS.QUERYING,
             }
         });
+    }
+
+    setLimit = async (limit) => {
+        if (Number(limit) !== this.state?.infosearch?.limit) {
+            await this.setState(state => {
+                return {
+                    ...state,
+                    infosearch: {
+                        ...state.infosearch,
+                        perPage: Number(limit)
+                    }
+                }
+            })
+
+            let { infosearch } = this.state;
+            this.props.getEmployeeKPISets(infosearch);
+        }
+    }
+
+    handleGetDataPagination = async (index) => {
+        await this.setState(state => {
+            return {
+                ...state,
+                infosearch: {
+                    ...state.infosearch,
+                    page: index
+                }
+            }
+        })
+
+        let { infosearch } = this.state;
+        this.props.getEmployeeKPISets(infosearch);
     }
 
     pushDataIntoTable = (dataOfOneSheet) => {
@@ -719,10 +758,11 @@ class EmployeeKpiManagement extends Component {
 
     }
 
+
     render() {
         const { user, kpimembers, dashboardEvaluationEmployeeKpiSet } = this.props;
         const { translate } = this.props;
-        const { status, kpiId, employeeKpiSet, perPage, userId, startDateDefault, endDateDefault, organizationalUnit, approver, tableId } = this.state;
+        const { status, kpiId, employeeKpiSet, perPage, userId, startDateDefault, endDateDefault, organizationalUnit, approver, tableId, infosearch } = this.state;
         let userdepartments, kpimember, unitMembers, exportData, approverSelectBox = [];
         let childrenOrganizationalUnit = [], queue = [], currentOrganizationalUnit;
 
@@ -955,8 +995,16 @@ class EmployeeKpiManagement extends Component {
                                         ) : null}
                                 </tbody>
                             </table>
-                            {(kpimember && kpimember.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>}
+                            {(kpimember && kpimember?.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>}
                         </div>
+
+                        <PaginateBar
+                            display={kpimember?.length}
+                            total={kpimembers?.totalCountEmployeeKpiSet}
+                            pageTotal={kpimembers?.totalPageEmployeeKpiSet}
+                            currentPage={infosearch?.page}
+                            func={this.handleGetDataPagination}
+                        />
                     </div>
                 </div>
             </React.Fragment>

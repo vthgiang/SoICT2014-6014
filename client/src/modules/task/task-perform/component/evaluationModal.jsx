@@ -199,7 +199,7 @@ class EvaluationModal extends Component {
 
     handleSortMonthEval = (evaluations) => {
         // sắp xếp đánh giá theo thứ tự tháng
-        const sortedEvaluations = evaluations.sort((a, b) => new Date(b.evaluatingMonth) - new Date(a.evaluatingMonth));
+        const sortedEvaluations = evaluations?.sort((a, b) => new Date(b.evaluatingMonth) - new Date(a.evaluatingMonth));
         return sortedEvaluations;
     }
 

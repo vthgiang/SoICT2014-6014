@@ -130,8 +130,9 @@ class DataTableSetting extends Component {
                                 options={{ nonSelectedText: translate('table.choose_hidden_columns'), allSelectedText: translate('table.hide_all_columns') }}
                                 items={columnArr.map((col, i) => { return { value: i + 1, text: col } })}
                                 value={hiddenColumns}
-                                onChange={this.handleChangeHiddenColumns}>
-                            </SelectMulti>
+                                onChange={this.handleChangeHiddenColumns}
+                                includeSelectAllOption={false}
+                            />
                         </div>
                     }
                     <div className="form-group">

@@ -2690,6 +2690,7 @@ export default {
 
                 name: "Name of task",
                 search_by_name: "Search by name",
+                search_by_employees: "Enter name or email",
 
                 start_date: "Start date",
                 end_date: "End date",
@@ -2718,7 +2719,8 @@ export default {
                 col_end_date: "End date",
                 col_status: "Status",
                 col_progress: "Progress",
-                col_logged_time: "Tatal logged time",
+                col_logged_time: "Total logged time",
+                col_timesheet_log: "Total timesheet",
 
                 action_edit: "Start working",
                 action_delete: "Delete task",
@@ -2932,6 +2934,21 @@ export default {
                 // confirm task
                 confirm_task_success: "Confirm task successfully",
                 confirm_task_failure: "Confirm task unsuccessfully",
+
+                // yêu cầu kết thúc công việc
+                request_close_task_success: "Send request to close task successfully",
+                cancel_request_close_task_success: "Cancel request to close task successfully",
+                approval_close_task_success: "Approve request to close task successfully",
+                decline_close_task_success: "Decline request to close task successfully",
+                request_close_task_failure: "Send request to close task unsuccessfully",
+                cancel_request_close_task_failure: "Cancel request to close task unsuccessfully",
+                approval_close_task_failure: "Approve request to close task unsuccessfully",
+                decline_close_task_failure: "Decline request to close task unsuccessfully",
+
+                // Mở lại công việc
+                open_task_again_success: 'Open task again successfully',
+                open_task_again_failure: 'Open task again unsuccessfully',
+                confirm_open_task: 'Are you sure you want to open this task again?',
 
                 // warning
                 warning: "Warning",
@@ -3158,6 +3175,15 @@ export default {
                         "Sum of all contributions should be 100",
                     err_empty: "Value must be required",
                 },
+
+                request_close_task: 'Request to close task',
+                approval_close_task: 'Approve request to close task',
+                open_task_again: 'Open task again',
+                send_request_close_task: 'Send request',
+                cancel_request_close_task: 'Cancel request',
+                approval_request_close_task: 'Approve',
+                decline_request_close_task: 'Decline',
+                status_task_close: 'Task status after closing'
             },
             task_process: {
                 process_name: "Process name",
@@ -3260,7 +3286,16 @@ export default {
                 none_update_recently: "None updated recently tasks",
                 intime_task: "Intime tasks",
                 delay_task: "Delayed tasks",
-                overdue_task: "Overdue tasks"
+                overdue_task: "Overdue tasks",
+                no_task: "No data",
+                unconfirmed_task: "Unconfirmed tasks",
+                urgent_task: "Urgent tasks",
+                to_do_task: "Todo tasks",
+                day_ago: "days ago",
+                rest: "Rest",
+                updated: "Updated",
+                day: "days",
+                overdue: "Over",
             }
         },
 

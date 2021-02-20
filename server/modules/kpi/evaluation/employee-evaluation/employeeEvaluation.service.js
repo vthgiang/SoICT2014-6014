@@ -100,9 +100,19 @@ exports.getEmployeeKPISets = async (portal, data) => {
         }
     }
 
+    let perPage = 100;
+    let page = 1;
+    if (data?.page) {
+        page = Number(data.page);
+    }
+    if (data?.perPage) {
+        perPage = Number(data.perPage)
+    } 
+
     employeeKpiSets = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
         .find(keySearch)
-        .skip(0).limit(12)
+        .skip(perPage * (page - 1))
+        .limit(perPage)
         .populate("organizationalUnit creator approver")
         .populate({ path: "kpis", populate: { path: 'parent' } })
         .populate([
@@ -110,7 +120,14 @@ exports.getEmployeeKPISets = async (portal, data) => {
             { path: 'comments.comments.creator', select: 'name email avatar' }
         ]);
 
-    return employeeKpiSets;
+    let totalCount = await EmployeeKpiSet(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
+    let totalPages = Math.ceil(totalCount / perPage);
+
+    return {
+        employeeKpiSets,
+        totalCount,
+        totalPages
+    };
 }
 
 /**
@@ -205,7 +222,6 @@ exports.editStatusKpi = async (portal, data, query, companyId) => {
         }
         return true;
     })
-    console.log('checkFullApprove', checkFullApprove)
     employee_kpi_set = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
         .findByIdAndUpdate(employee_kpi_set._id, { $set: { status: checkFullApprove } }, { new: true })
 
