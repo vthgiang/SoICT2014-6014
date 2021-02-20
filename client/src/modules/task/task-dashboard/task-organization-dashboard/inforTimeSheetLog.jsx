@@ -58,7 +58,7 @@ class InforTimeSheetLog extends Component {
                                     return (
                                         <tr>
                                             <td>{index + 1}</td>
-                                            <td>{tsl.taskName}</td>
+                                            <td><a href={`/task?taskId=${tsl._id}`} target="_blank">{tsl.taskName}</a></td>
                                             <td>{moment(tsl.startedAt).format("HH:mm:ss DD/MM/YYYY")}</td>
                                             <td>{moment(tsl.stoppedAt).format("HH:mm:ss DD/MM/YYYY")}</td>
                                             <td>{this.convertType(tsl.autoStopped)}</td>

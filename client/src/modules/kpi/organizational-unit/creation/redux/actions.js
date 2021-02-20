@@ -11,7 +11,16 @@ export const createUnitKpiActions = {
     getAllOrganizationalUnitKpiSetByTimeOfChildUnit,
     addTargetKPIUnit,
     editTargetKPIUnit,
-    addKPIUnit
+    addKPIUnit,
+
+    createComment,
+    editComment,
+    deleteComment,
+    createChildComment,
+    editChildComment,
+    deleteChildComment,
+    deleteFileComment,
+    deleteFileChildComment
 }
 
 
@@ -251,4 +260,157 @@ function addKPIUnit(newKPI) {
                 })
             })
     };
+}
+
+function createComment(setKpiId, data) {
+    return dispatch => {
+        dispatch({ type: createUnitKpiConstants.CREATE_COMMENT_REQUEST });
+        createUnitKpiServices.createComment(setKpiId, data)
+            .then(res => {
+                dispatch({
+                    type: createUnitKpiConstants.CREATE_COMMENT_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(error => {
+                dispatch({
+                    type: createUnitKpiConstants.CREATE_COMMENT_FAILURE,
+                    payload: error
+                })
+            })
+    }
+}
+
+function editComment(setKpiId, commentId, data) {
+    return dispatch => {
+        dispatch({ type: createUnitKpiConstants.EDIT_COMMENT_REQUEST });
+        createUnitKpiServices.editComment(setKpiId, commentId, data)
+            .then(res => {
+                dispatch({
+                    type: createUnitKpiConstants.EDIT_COMMENT_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(error => {
+                dispatch({
+                    type: createUnitKpiConstants.EDIT_COMMENT_FAILURE,
+                    payload: error
+                })
+            })
+    }
+}
+function deleteComment(setKpiId, commentId) {
+    return dispatch => {
+        dispatch({ type: createUnitKpiConstants.DELETE_COMMENT_REQUEST });
+        createUnitKpiServices.deleteComment(setKpiId, commentId)
+            .then(res => {
+                dispatch({
+                    type: createUnitKpiConstants.DELETE_COMMENT_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(error => {
+                dispatch({
+                    type: createUnitKpiConstants.DELETE_COMMENT_FAILURE,
+                    payload: error
+                })
+            })
+    }
+}
+
+
+function createChildComment(setKpiId, commentId, data) {
+    return dispatch => {
+        dispatch({ type: createUnitKpiConstants.CREATE_COMMENT_OF_COMMENT_REQUEST });
+        createUnitKpiServices.createChildComment(setKpiId, commentId, data)
+            .then(res => {
+                dispatch({
+                    type: createUnitKpiConstants.CREATE_COMMENT_OF_COMMENT_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(error => {
+                dispatch({
+                    type: createUnitKpiConstants.CREATE_COMMENT_OF_COMMENT_FAILURE,
+                    payload: error
+                })
+            })
+    }
+}
+
+function editChildComment(setKpiId, commentId, childCommentId, data) {
+    console.log(data)
+    return dispatch => {
+        dispatch({ type: createUnitKpiConstants.EDIT_COMMENT_OF_COMMENT_REQUEST });
+        createUnitKpiServices.editChildComment(setKpiId, commentId, childCommentId, data)
+            .then(res => {
+                dispatch({
+                    type: createUnitKpiConstants.EDIT_COMMENT_OF_COMMENT_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(error => {
+                dispatch({
+                    type: createUnitKpiConstants.EDIT_COMMENT_OF_COMMENT_FAILURE,
+                    payload: error
+                })
+            })
+    }
+}
+
+function deleteChildComment(setKpiId, commentId, childCommentId) {
+    return dispatch => {
+        dispatch({ type: createUnitKpiConstants.DELETE_COMMENT_OF_COMMENT_REQUEST });
+        createUnitKpiServices.deleteChildComment(setKpiId, commentId, childCommentId)
+            .then(res => {
+                dispatch({
+                    type: createUnitKpiConstants.DELETE_COMMENT_OF_COMMENT_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(error => {
+                dispatch({
+                    type: createUnitKpiConstants.DELETE_COMMENT_OF_COMMENT_FAILURE,
+                    payload: error
+                })
+            })
+    }
+}
+
+function deleteFileComment(fileId, commentId, setKpiId) {
+    return dispatch => {
+        dispatch({ type: createUnitKpiConstants.DELETE_FILE_COMMENT_REQUEST });
+        createUnitKpiServices.deleteFileComment(fileId, commentId, setKpiId)
+            .then(res => {
+                dispatch({
+                    type: createUnitKpiConstants.DELETE_FILE_COMMENT_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(error => {
+                dispatch({
+                    type: createUnitKpiConstants.DELETE_FILE_COMMENT_FAILURE,
+                    payload: error
+                })
+            })
+    }
+}
+
+function deleteFileChildComment(fileId, childCommentId, commentId, setKpiId) {
+    return dispatch => {
+        dispatch({ type: createUnitKpiConstants.DELETE_FILE_CHILD_COMMENT_REQUEST });
+        createUnitKpiServices.deleteFileChildComment(fileId, childCommentId, commentId, setKpiId)
+            .then(res => {
+                dispatch({
+                    type: createUnitKpiConstants.DELETE_FILE_CHILD_COMMENT_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(error => {
+                dispatch({
+                    type: createUnitKpiConstants.DELETE_FILE_CHILD_COMMENT_FAILURE,
+                    payload: error
+                })
+            })
+    }
 }

@@ -68,20 +68,20 @@ exports.copyKPI = async (portal, id, data) => {
 
         newEmployeeKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
             .create({
-                organizationalUnit: oldEmployeeKpiSet?.organizationalUnit?._id,
+                organizationalUnit: oldEmployeeKpiSet.organizationalUnit._id,
                 creator: creator,
                 date: dateNew,
                 kpis: [],
-                approver: oldEmployeeKpiSet?.approver,
+                approver: oldEmployeeKpiSet.approver,
             })
 
         for (let i in oldEmployeeKpiSet.kpis) {
             let target = await EmployeeKpi(connect(DB_CONNECTION, portal))
                 .create({
-                    name: oldEmployeeKpiSet?.kpis[i]?.name,
-                    weight: oldEmployeeKpiSet?.kpis[i]?.weight,
-                    criteria: oldEmployeeKpiSet?.kpis[i]?.criteria,
-                    type: oldEmployeeKpiSet?.kpis[i]?.type,
+                    name: oldEmployeeKpiSet.kpis[i].name,
+                    weight: oldEmployeeKpiSet.kpis[i].weight,
+                    criteria: oldEmployeeKpiSet.kpis[i].criteria,
+                    type: oldEmployeeKpiSet.kpis[i].type,
                     parent: null,
                 });
             employeeKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
