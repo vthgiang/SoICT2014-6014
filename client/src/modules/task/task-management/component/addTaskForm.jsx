@@ -750,7 +750,7 @@ class AddTaskForm extends Component {
                                             style={{ width: "100%" }}
                                             items={allUnitsMember}
                                             onChange={this.handleChangeTaskResponsibleEmployees}
-                                            value={info.responsibleEmployees }
+                                            value={newTask.responsibleEmployees }
                                             multiple={true}
                                             options={{ placeholder: translate('task.task_management.add_resp') }}
                                         />
