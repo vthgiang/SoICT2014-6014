@@ -50,7 +50,6 @@ class TaskAddModal extends Component {
     }
     
     onChangeTaskData = (value) => {
-        console.log("value",value)
         this.setState({ newTask: value })
     }
     convertDateTime = (date, time) => {
@@ -63,7 +62,6 @@ class TaskAddModal extends Component {
         let startDateTask = this.convertDateTime(newTask.startDate, startTime);
         let endDateTask = this.convertDateTime(newTask.endDate, endTime);
 
-        console.log('start-end', startDateTask, endDateTask);
 
         // let startDate = newTask.startDate;
         // let endDate = newTask.endDate;
@@ -74,7 +72,6 @@ class TaskAddModal extends Component {
             startDate: startDateTask,
             endDate: endDateTask,
         });
-        console.log(newTask)
     }
     render() {
         const { id, newTask } = this.state;
