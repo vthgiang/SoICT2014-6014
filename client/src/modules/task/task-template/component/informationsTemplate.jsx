@@ -298,7 +298,7 @@ class InformationForm extends Component{
                     {/**Kiểu dữ liệu trường thông tin */}
                     <label className=" control-label">{translate('task_template.datatypes')}</label>
                     {
-                        this.state.warning && <p style={{color: "#FF6A00"}}>Đổi kiểu dữ liệu sẽ xóa dữ liệu ở tháng hiện tại và đánh giá tháng hiện tại</p>
+                        this.props.isEdit === true && this.state.warning && <p style={{color: "#FF6A00"}}>Đổi kiểu dữ liệu sẽ xóa dữ liệu ở tháng hiện tại và đánh giá tháng hiện tại</p>
                     }
                     <div style={{ width: '100%' }}>
                         <select onChange={this.handleChangeInfoType} className="form-control" id="seltype" value={information.type} name="type" >

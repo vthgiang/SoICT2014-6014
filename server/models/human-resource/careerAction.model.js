@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 // Tạo bảng hoạt động của công việc
 const CareerActionSchema = new Schema({
     name: String,
-    code: String, // lưu lại trong db của employees
+    code: String,
     
     package: [{
         type: String,

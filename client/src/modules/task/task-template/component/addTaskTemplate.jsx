@@ -12,6 +12,7 @@ import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
 import { TaskTemplateFormValidator } from './taskTemplateFormValidator';
 import { getStorage } from '../../../../config';
 import ValidationHelper from '../../../../helpers/validationHelper';
+import parse from 'html-react-parser';
 
 class AddTaskTemplate extends Component {
     constructor(props) {
@@ -304,7 +305,7 @@ class AddTaskTemplate extends Component {
                         taskActions: nextProps.savedTaskItem.taskActions.map(e => {
                             return {
                                 mandatory: e.mandatory,
-                                name: e.name,
+                                name: e.description,
                                 description: e.description,
                             }
                         }),
@@ -378,6 +379,7 @@ class AddTaskTemplate extends Component {
 
     render() {
 
+        console.log('stateeee', this.state);
         var units, taskActions, taskInformations, listRole, usercompanys, userdepartments, departmentsThatUserIsManager, listRoles = [];
         const { newTemplate, showMore, accountableEmployees, responsibleEmployees, id } = this.state;
         const { department, user, translate, tasktemplates, isProcess } = this.props;

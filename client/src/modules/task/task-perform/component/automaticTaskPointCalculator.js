@@ -63,8 +63,8 @@ function calcAutoPoint(data) {
     let startDate = new Date(task.startDate);
     let endDate = new Date(task.endDate);
 
-    let totalDays = endDate.getTime() - startDate.getTime() + 86400000;
-    let daysUsed = evaluationsDate.getTime() - startDate.getTime() + 86400000;
+    let totalDays = endDate.getTime() - startDate.getTime(); // + 86400000 === + 1 ngày -> do công việc làm theo giờ, nên tính theo giờ, vì thế k cần cộng 1 ngày nữa 
+    let daysUsed = evaluationsDate.getTime() - startDate.getTime(); // + 86400000
     let daysOverdue = (daysUsed - totalDays > 0) ? daysUsed - totalDays : 0;
 
 
