@@ -6,8 +6,6 @@ import { withTranslate } from "react-redux-multilingual";
 import { DialogModal, ErrorLabel, SelectBox, DatePicker } from "../../../../../common-components";
 import { UserActions } from "../../../../super-admin/user/redux/actions";
 import { performTaskAction } from "../../../task-perform/redux/actions";
-import { ModalDetailTask } from "../../../task-dashboard/task-personal-dashboard/modalDetailTask";
-
 import { isAny } from 'bpmn-js/lib/features/modeling/util/ModelingUtil'
 import BpmnModeler from 'bpmn-js/lib/Modeler';
 import PaletteProvider from 'bpmn-js/lib/features/palette/PaletteProvider';
@@ -68,6 +66,7 @@ class ModalEditProcess extends Component {
     }
 
     componentDidMount() {
+        this.props.getAllUsers();
         this.props.getAllUserOfCompany();
         this.props.getAllUserInAllUnitsOfCompany()
 
@@ -93,7 +92,13 @@ class ModalEditProcess extends Component {
             let info = {};
             let infoTask = nextProps.data.tasks;
             for (let i in infoTask) {
-                info[`${infoTask[i].codeInProcess}`] = infoTask[i];
+                info[`${infoTask[i].codeInProcess}`] = {
+                    ...infoTask[i],
+                    responsibleEmployees: infoTask[i].responsibleEmployees.map(e => e._id),
+                    accountableEmployees: infoTask[i].accountableEmployees.map(e => e._id),
+                    consultedEmployees: infoTask[i].consultedEmployees.map(e => e._id),
+                    informedEmployees: infoTask[i].informedEmployees.map(e => e._id),
+                };
             }
             return {
                 ...prevState,
@@ -145,9 +150,6 @@ class ModalEditProcess extends Component {
             let modeling = this.modeling;
             let state = this.state;
             this.modeler.importXML(nextProps.data.xmlDiagram, function (err) {
-                // handle zoom fit
-                // let canvas = modeler.get('canvas');
-                // canvas.zoom('fit-viewport');
 
                 // chỉnh màu sắc task
                 let infoTask = nextProps.data.tasks
@@ -217,16 +219,11 @@ class ModalEditProcess extends Component {
                     id: `${element.businessObject.id}`,
                 }
             }
-
             else {
                 return { ...state, showInfo: false, type: element.type, name: '', id: element.businessObject.id, }
             }
 
         })
-        // if (element.type === 'bpmn:Task' || element.type === 'bpmn:ExclusiveGateway') {
-        //     console.log('0000', this.state.info[this.state.id]);
-        //     window.$(`#modal-detail-task-edit-process`).modal("show");
-        // }
     }
 
     downloadAsSVG = () => {
@@ -387,8 +384,6 @@ class ModalEditProcess extends Component {
             state => {
                 state.info[`${state.id}`] = info
             })
-        console.log(this.state.info)    
-
     }
     // hàm cập nhật tên công việc trong quy trình
     handleChangeName = async (value) => {
@@ -401,38 +396,38 @@ class ModalEditProcess extends Component {
 
         this.forceUpdate();
     }
-        // hàm cập nhật người thực hiện công việc
-        handleChangeResponsible = async (value) => {
-            console.log(value)
-            const modeling = this.modeler.get('modeling');
-            let element1 = this.modeler.get('elementRegistry').get(this.state.id);
-            let { user } = this.props
-            let responsibleName
-            let responsible = []
-            value.forEach(x => {
-                responsible.push(user.list.find(y => y._id == x).name)
-            })
-            modeling.updateProperties(element1, {
-                responsibleName: responsible
-            });
-    
-        }
-    
-        // hàm cập nhật người phê duyệt công việc
-        handleChangeAccountable = async (value) => {
-            const modeling = this.modeler.get('modeling');
-            let element1 = this.modeler.get('elementRegistry').get(this.state.id);
-            let { user } = this.props
-            let accountableName
-            let accountable = []
-            value.forEach(x => {
-                accountable.push(user.list.find(y => y._id == x).name)
-            })
-            modeling.updateProperties(element1, {
-                accountableName: accountable
-            });
-        }
-    
+    // hàm cập nhật người thực hiện công việc
+    handleChangeResponsible = async (value) => {
+        console.log(value)
+        const modeling = this.modeler.get('modeling');
+        let element1 = this.modeler.get('elementRegistry').get(this.state.id);
+        let { user } = this.props
+        let responsibleName
+        let responsible = []
+        value.forEach(x => {
+            responsible.push(user.list.find(y => y._id == x).name)
+        })
+        modeling.updateProperties(element1, {
+            responsibleName: responsible
+        });
+
+    }
+
+    // hàm cập nhật người phê duyệt công việc
+    handleChangeAccountable = async (value) => {
+        const modeling = this.modeler.get('modeling');
+        let element1 = this.modeler.get('elementRegistry').get(this.state.id);
+        let { user } = this.props
+        let accountableName
+        let accountable = []
+        value.forEach(x => {
+            accountable.push(user.list.find(y => y._id == x).name)
+        })
+        modeling.updateProperties(element1, {
+            accountableName: accountable
+        });
+    }
+
     // hàm cập nhật Tên Quy trình
     handleChangeBpmnName = async (e) => {
         let { value } = e.target;
@@ -553,8 +548,6 @@ class ModalEditProcess extends Component {
 
             viewer: viewer,
         }
-
-        console.log('quang gửi data', data, idProcess);
         this.props.editProcessInfo(idProcess, data);
 
     }
@@ -562,7 +555,7 @@ class ModalEditProcess extends Component {
     render() {
         const { translate, role, user } = this.props;
         const { idProcess } = this.props;
-        const { id, info, viewer, startDate, endDate,showInfo, status, processDescription, processName, errorOnViewer, errorOnProcessName, errorOnEndDate, errorOnStartDate, errorOnProcessDescription } = this.state;
+        const { id, info, viewer, startDate, endDate, showInfo, status, processDescription, processName, errorOnViewer, errorOnProcessName, errorOnEndDate, errorOnStartDate, errorOnProcessDescription } = this.state;
 
         // lấy danh sách các nhân viên trong cả công ty
         let listUserCompany = user?.usercompanys;
@@ -598,9 +591,9 @@ class ModalEditProcess extends Component {
                     bodyStyle={{ paddingTop: 0, paddingBottom: 0 }}
                 >
                     <div>
-                        {id !== undefined &&
+                        {/* {id !== undefined &&
                             <ModalDetailTask action={"edit-process"} task={(info && info[`${id}`]) && info[`${id}`]} isProcess={true} />
-                        }
+                        } */}
 
                         <div className={'row'}>
                             {/* Quy trình công việc */}
@@ -631,18 +624,18 @@ class ModalEditProcess extends Component {
                                 </div>
                             </div>
 
-                            {showInfo && 
-                            <div className={`right-content ${showInfo ? 'col-md-4' : undefined}`}>
-                                <AddTaskForm
-                                    isProcess={true}
-                                    id={id}
-                                    info={(info && info[`${id}`]) && info[`${id}`]}
-                                    handleChangeTaskData={this.handleChangeInfo}
-                                    handleChangeName={this.handleChangeName} // cập nhật tên vào diagram
-                                    handleChangeResponsible={this.handleChangeResponsible} // cập nhật hiển thi diagram
-                                    handleChangeAccountable={this.handleChangeAccountable} // cập nhật hiển thị diagram
-                                />
-                            </div>
+                            {showInfo &&
+                                <div className={`right-content ${showInfo ? 'col-md-4' : undefined}`}>
+                                    <AddTaskForm
+                                        isProcess={true}
+                                        id={id}
+                                        info={(info && info[`${id}`]) && info[`${id}`]}
+                                        handleChangeTaskData={this.handleChangeInfo}
+                                        handleChangeName={this.handleChangeName} // cập nhật tên vào diagram
+                                        handleChangeResponsible={this.handleChangeResponsible} // cập nhật hiển thi diagram
+                                        handleChangeAccountable={this.handleChangeAccountable} // cập nhật hiển thị diagram
+                                    />
+                                </div>
                             }
                         </div>
                     </div>
@@ -659,6 +652,7 @@ function mapState(state) {
 }
 
 const actionCreators = {
+    getAllUsers: UserActions.get,
     getAllUserOfCompany: UserActions.getAllUserOfCompany,
     getDepartment: UserActions.getDepartmentOfUser,
     getTaskById: performTaskAction.getTaskById,
