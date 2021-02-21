@@ -131,7 +131,6 @@ class ViewProcess extends Component {
                         infoTask[i].responsibleEmployees.forEach(x => {
                             responsible.push(x.name)
                         })
-                        console.log(responsible)
                         infoTask[i].accountableEmployees.forEach(x => {
                             accountable.push(x.name)
                         })

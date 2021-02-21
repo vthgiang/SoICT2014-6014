@@ -311,8 +311,8 @@ class ModalCreateTaskByProcess extends Component {
             else {
                 return { ...state, showInfo: false, type: element.type, name: '', id: element.businessObject.id, }
             }
-        },()=> console.log(this.state.info))
-        console.log((this.state.info && this.state.info[`${this.state.id}`]) && this.state.info[`${this.state.id}`])
+        })
+
     }
 
     deleteElements = (event) => {
@@ -863,15 +863,6 @@ class ModalCreateTaskByProcess extends Component {
                                                             handleChangeResponsible={this.handleChangeResponsible} // cập nhật hiển thi diagram
                                                             handleChangeAccountable={this.handleChangeAccountable} // cập nhật hiển thị diagram
                                                         />
-                                                        {/* <FormCreateTask
-                                                            isProcess={true}
-                                                            id={id}
-                                                            info={(info && info[`${id}`]) && info[`${id}`]}
-                                                            onChangeTemplateData={this.handleChangeInfo}
-                                                            handleChangeName={this.handleChangeName} // cập nhật tên vào diagram
-                                                            handleChangeResponsible={this.handleChangeResponsible} // cập nhật hiển thi diagram
-                                                            handleChangeAccountable={this.handleChangeAccountable} // cập nhật hiển thị diagram
-                                                        /> */}
                                                     </div>
                                                 }
                                             </div>
