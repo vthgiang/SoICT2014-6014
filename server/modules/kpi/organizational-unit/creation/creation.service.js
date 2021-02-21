@@ -2,6 +2,7 @@ const Models = require(`../../../../models`);
 const { OrganizationalUnitKpi, OrganizationalUnit, OrganizationalUnitKpiSet } = Models;
 const overviewService = require('../../employee/management/management.service');
 const UserService = require('../../../super-admin/user/user.service');
+const OrganizationalUnitService = require('../../../super-admin/organizational-unit/organizationalUnit.service');
 
 const { connect } = require(`../../../../helpers/dbHelper`);
 const mongoose = require('mongoose');
@@ -259,12 +260,12 @@ exports.getAllOrganizationalUnitKpiSet = async (portal, data) => {
 
     let perPage = 100;
     let page = 1;
-    // if (data?.page) {
-    //     page = Number(data.page);
-    // }
-    // if (data?.perPage) {
-    //     perPage = Number(data.perPage)
-    // }
+    if (data?.page) {
+        page = Number(data.page);
+    }
+    if (data?.perPage) {
+        perPage = Number(data.perPage)
+    }
 
     let kpiUnitSets = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
         .find(keySearch)
@@ -394,6 +395,10 @@ exports.createOrganizationalUnitKpiSet = async (portal, data) => {
                 organizationalUnitKpi, { $push: { kpis: targetC._id } }, { new: true }
             );
     }
+
+    // Thêm độ quan trọng đơn vị
+    // let units = await OrganizationalUnitService.getChildrenOfOrganizationalUnitsAsTree(portal, null, organizationalUnitId);
+    // console.log(units)
 
     // Thêm độ quan trọng nhân viên
     let users = await UserService.getAllEmployeeOfUnitByIds(portal, [organizationalUnitId]);
