@@ -70,6 +70,9 @@ const OrganizationalUnitKpiSetSchema = new Schema({
             type: Date,
             default: Date.now
         },
+        description: {
+            type: String,
+        },
         files: [{ // Các file đi kèm comments
             name: {
                 type: String,
@@ -84,6 +87,9 @@ const OrganizationalUnitKpiSetSchema = new Schema({
                 type: Schema.Types.ObjectId,
                 ref: 'User',
                 required: true
+            },
+            description: {
+                type: String,
             },
             content: {
                 type: String,

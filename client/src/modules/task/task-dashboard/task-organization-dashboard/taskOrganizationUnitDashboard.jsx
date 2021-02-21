@@ -517,7 +517,12 @@ class TaskOrganizationUnitDashboard extends Component {
                             </div>
                         </div>
                         <div>
-                            <AllTimeSheetLogsByUnit userDepartment={user.employees} organizationUnitTasks={tasks.organizationUnitTasks} />
+                            <AllTimeSheetLogsByUnit
+                                userDepartment={user.employees}
+                                organizationUnitTasks={tasks.organizationUnitTasks}
+                                startMonth={startMonth}
+                                endMonth={endMonth}
+                            />
                         </div>
                     </React.Fragment>
                     : currentOrganizationalUnitLoading

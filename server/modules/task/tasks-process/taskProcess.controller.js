@@ -132,9 +132,8 @@ exports.deleteXmlDiagram = async (req, res) => {
  * @param {*} res 
  */
 exports.createTaskByProcess = async (req, res) => {
-	// try {
+	try {
 		let data = await TaskProcessService.createTaskByProcess(req.portal, req.params.processId, req.body);
-
 		let process = data.process;
 		let mails = data.mailInfo;
 		for (let i in mails) {
@@ -142,9 +141,8 @@ exports.createTaskByProcess = async (req, res) => {
 			let user = mails[i].user;
 			let email = mails[i].email;
 			let html = mails[i].html;
-			console.log(task)
 			let mailData = { 
-				"organizationalUnits": task.organizationalUnit._id, 
+				"organizationalUnits": task.organizationalUnit, 
 				"title": "Tạo mới công việc", 
 				"level": "general", 
 				"content": html, 
@@ -173,19 +171,20 @@ exports.createTaskByProcess = async (req, res) => {
 
 		}
 		await Logger.info(req.user.email, `create_task_by_process`, req.portal);
+		
 		res.status(200).json({
 			success: true,
 			messages: ['create_task_by_process_success'],
 			content: process,
 		});
-	// } catch (error) {
-	// 	await Logger.error(req.user.email, `create_task_by_process`, req.portal);
-	// 	res.status(400).json({
-	// 		success: false,
-	// 		messages: ['create_task_by_process_fail'],
-	// 		content: error,
-	// 	});
-	// }
+	} catch (error) {
+		await Logger.error(req.user.email, `create_task_by_process`, req.portal);
+		res.status(400).json({
+			success: false,
+			messages: ['create_task_by_process_fail'],
+			content: error,
+		});
+	}
 }
 
 /**

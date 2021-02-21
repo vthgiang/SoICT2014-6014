@@ -268,7 +268,15 @@ exports.links = [
             { path: '/kpi/organizational-unit/management/organizational-unit-kpi-sets/:id/copy', method: 'POST' },
             { path: '/kpi/organizational-unit/management/organizational-unit-kpi-sets/calculate', method: 'POST' },
             { path: '/kpi/organizational-unit/dashboard/organizational-units/get-children-of-organizational-unit-as-tree', method: 'GET' },
-
+            { path: '/kpi/organizational-unit/creation/organizational-unit-kpi-sets/:setKpiId/comments', method: 'POST' },
+            { path: '/kpi/organizational-unit/creation/organizational-unit-kpi-sets/:setKpiId/comments/:commentId', method: 'PATCH' },
+            { path: '/kpi/organizational-unit/creation/organizational-unit-kpi-sets/:setKpiId/comments/:commentId', method: 'DELETE' },
+            { path: '/kpi/organizational-unit/creation/organizational-unit-kpi-sets/:setKpiId/comments/:commentId/child-comments', method: 'POST' },
+            { path: '/kpi/organizational-unit/creation/organizational-unit-kpi-sets/:setKpiId/comments/:commentId/child-comments/:childCommentId', method: 'PATCH' },
+            { path: '/kpi/organizational-unit/creation/organizational-unit-kpi-sets/:setKpiId/comments/:commentId/child-comments/:childCommentId', method: 'DELETE' },
+            { path: '/kpi/organizational-unit/creation/organizational-unit-kpi-sets/:setKpiId/comments/:commentId:/files/:fileId', method: 'DELETE' },
+            { path: '/kpi/organizational-unit/creation/organizational-unit-kpi-sets/:setKpiId/comments/:commentId/child-comments/:childCommentId/files/:fileId', method: 'DELETE' },
+         
             { path: '/kpi/employee/creation/employee-kpi-sets', method: 'GET' },
             { path: '/kpi/employee/creation/employee-kpi-sets', method: 'POST' },
             { path: '/kpi/employee/creation/employee-kpi-sets/:id/edit', method: 'POST' },

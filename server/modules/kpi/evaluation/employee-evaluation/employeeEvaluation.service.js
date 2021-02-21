@@ -100,9 +100,19 @@ exports.getEmployeeKPISets = async (portal, data) => {
         }
     }
 
+    let perPage = 100;
+    let page = 1;
+    if (data?.page) {
+        page = Number(data.page);
+    }
+    if (data?.perPage) {
+        perPage = Number(data.perPage)
+    }
+
     employeeKpiSets = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
         .find(keySearch)
-        .skip(0).limit(12)
+        .skip(perPage * (page - 1))
+        .limit(perPage)
         .populate("organizationalUnit creator approver")
         .populate({ path: "kpis", populate: { path: 'parent' } })
         .populate([
@@ -110,7 +120,14 @@ exports.getEmployeeKPISets = async (portal, data) => {
             { path: 'comments.comments.creator', select: 'name email avatar' }
         ]);
 
-    return employeeKpiSets;
+    let totalCount = await EmployeeKpiSet(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
+    let totalPages = Math.ceil(totalCount / perPage);
+
+    return {
+        employeeKpiSets,
+        totalCount,
+        totalPages
+    };
 }
 
 /**
@@ -205,7 +222,6 @@ exports.editStatusKpi = async (portal, data, query, companyId) => {
         }
         return true;
     })
-    console.log('checkFullApprove', checkFullApprove)
     employee_kpi_set = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
         .findByIdAndUpdate(employee_kpi_set._id, { $set: { status: checkFullApprove } }, { new: true })
 
@@ -295,10 +311,11 @@ exports.getTasksByKpiId = async (portal, data) => {
     let task = await getResultTaskByMonth(portal, data);
 
     for (let i = 0; i < task.length; i++) {
-        let date1 = task[i].preEvaDate;
-        let date2 = task[i].date;
+        let date1 = task[i].startDate;
+        let date2 = task[i].endDate;
         let difference_In_Time, daykpi;
-
+        let priority = task[i].priority ? task[i].priority : 0;;
+        let contribution = task[i].results.contribution ? task[i].results.contribution : 0;
         if (date1) {
             difference_In_Time = date2.getTime() - date1.getTime();
             daykpi = Math.ceil(difference_In_Time / (1000 * 3600 * 24));
@@ -309,8 +326,7 @@ exports.getTasksByKpiId = async (portal, data) => {
         } else if (!daykpi) {
             daykpi = 0;
         }
-
-        task[i].taskImportanceLevelCal = Math.round(3 * (task[i].priority / 3) + 3 * (task[i].results.contribution / 100) + 4 * (daykpi / 30));
+        task[i].taskImportanceLevelCal = Math.round(3 * (priority / 3) + 3 * (priority / 100) + 4 * (daykpi / 30));
 
         if (task[i].results.taskImportanceLevel === -1 || task[i].results.taskImportanceLevel === null)
             task[i].results.taskImportanceLevel = task[i].taskImportanceLevelCal;
@@ -350,8 +366,8 @@ exports.setTaskImportanceLevel = async (portal, id, kpiType, data) => {
             employPoint += element.results.employeePoint * element.results.taskImportanceLevel;
             sumTaskImportance += element.results.taskImportanceLevel;
 
-            let date1 = element.preEvaDate;
-            let date2 = element.date;
+            let date1 = element.startDate;
+            let date2 = element.endDate;
             let difference_In_Time;
 
             if (date2 && date1) {
@@ -369,7 +385,6 @@ exports.setTaskImportanceLevel = async (portal, id, kpiType, data) => {
             if (element.results.taskImportanceLevel === -1 || element.results.taskImportanceLevel === null)
                 element.results.taskImportanceLevel = element.taskImportanceLevelCal;
             element.daykpi = daykpi;
-
         }
 
     }
@@ -437,9 +452,9 @@ async function updateTaskImportanceLevel(portal, taskId, employeeId, point, date
                 $unwind: "$evaluations"
             },
             {
-                $replaceRoot: { newRoot: { $mergeObjects: [{ name: "$name" }, { taskId: "$_id" }, { startDate: "$startDate" }, { endDate: "$endDate" }, { status: "$status" }, "$evaluations"] } }
+                $replaceRoot: { newRoot: { $mergeObjects: [{ name: "$name" }, { taskId: "$_id" }, { startDateTask: "$startDate" }, { endDateTask: "$endDate" }, { status: "$status" }, "$evaluations"] } }
             },
-            { $addFields: { "month": { $month: '$date' }, "year": { $year: '$date' } } },
+            { $addFields: { "month": { $month: '$evaluatingMonth' }, "year": { $year: '$evaluatingMonth' } } },
             { $match: { month: month } },
             { $match: { year: year } }
         ])
@@ -508,6 +523,7 @@ exports.getTasksByListKpis = async (portal, data) => {
  *  kpiType: loại Kpi
  */
 async function getResultTaskByMonth(portal, data) {
+
     let date = new Date(data.date);
     let monthkpi = parseInt(date.getMonth() + 1);
     let yearkpi = parseInt(date.getFullYear());
@@ -536,9 +552,9 @@ async function getResultTaskByMonth(portal, data) {
             }
         },
         {
-            $replaceRoot: { newRoot: { $mergeObjects: [{ name: "$name" }, { startDate: "$startDate" }, { taskId: "$_id" }, { priority: "$priority" }, { endDate: "$endDate" }, { taskId: "$_id" }, { status: "$status" }, { unit: "$organizationalUnitDetail" }, "$evaluations"] } }
+            $replaceRoot: { newRoot: { $mergeObjects: [{ name: "$name" }, { startDateTask: "$startDate" }, { taskId: "$_id" }, { priority: "$priority" }, { endDateTask: "$endDate" }, { taskId: "$_id" }, { status: "$status" }, { unit: "$organizationalUnitDetail" }, "$evaluations"] } }
         },
-        { $addFields: { "month": { $month: '$date' }, "year": { $year: '$date' } } },
+        { $addFields: { "month": { $month: '$evaluatingMonth' }, "year": { $year: '$evaluatingMonth' } } },
         { $unwind: "$results" },
         { $match: { "results.role": kpiType } },
         { $match: { 'results.employee': mongoose.Types.ObjectId(data.employeeId) } },
@@ -549,38 +565,7 @@ async function getResultTaskByMonth(portal, data) {
 
 
     let task = await Task(connect(DB_CONNECTION, portal)).aggregate(conditions);
-    for (let i = 0; i < task.length; i++) {
-        let x = task[i];
-        let date = await new Date(x.date);
-        let startDate = await new Date(x.startDate);
 
-        let month = await date.getMonth() + 1;
-        let year = await date.getFullYear();
-        let startMonth = await startDate.getMonth() + 1;
-
-        if (month === startMonth) {
-            task[i].preEvaDate = startDate;
-        } else {
-            let preEval = await Task(connect(DB_CONNECTION, portal))
-                .aggregate([
-                    {
-                        $match: { "_id": mongoose.Types.ObjectId(x.taskId) },
-                    },
-                    {
-                        $unwind: "$evaluations"
-                    },
-                    {
-                        $replaceRoot: { newRoot: "$evaluations" }
-                    },
-                    { $addFields: { "month": { $month: '$date' }, "year": { $year: '$date' } } },
-                    { $match: { "month": month - 1 } },
-                    { $match: { "year": year } },
-                ]);
-            if (preEval && preEval.length !== 0 && preEval[0]) {
-                task[i].preEvaDate = await preEval[0].date;
-            }
-        }
-    }
     return task;
 }
 /**
@@ -609,6 +594,7 @@ exports.setPointAllKpi = async (portal, idEmployee, idKpiSet, data) => {
             employeeId: idEmployee,
 
         }
+        let kpiCurrent = await EmployeeKpi(connect(DB_CONNECTION, portal)).findById(kpis[i]);
         let task = await getResultTaskByMonth(portal, obj);
         let automaticPoint = 0;
         let approvedPoint = 0;
@@ -616,9 +602,10 @@ exports.setPointAllKpi = async (portal, idEmployee, idKpiSet, data) => {
         let sumTaskImportance = 0;
         if (task.length) {
             for (let j in task) {
-                let date1 = task[j].preEvaDate;
-                let date2 = task[j].date;
+                let date1 = task[j].startDate;
+                let date2 = task[j].endDate;
                 let difference_In_Time;
+                let taskImportanceLevel = task[j].results.taskImportanceLevel;
 
                 if (date2 && date1) {
                     difference_In_Time = date2.getTime() - date1.getTime();
@@ -631,17 +618,35 @@ exports.setPointAllKpi = async (portal, idEmployee, idKpiSet, data) => {
 
                 let daykpi = Number.parseFloat(difference_In_Time / (1000 * 3600 * 24)).toFixed(2);
                 if (daykpi > 30) daykpi = 30;
-
-                task[j].taskImportanceLevelCal = Math.round(3 * (task[j].priority / 3) + 3 * (task[j].results.contribution / 100) + 4 * (daykpi / 30));
+                task[j].taskImportanceLevelCal = Math.round(3 * (task[j].priority / 3) + 3 * ((task[j].results.contribution ? task[j].results.contribution : 0) / 100) + 4 * (daykpi / 30));
 
                 if (task[j].results.taskImportanceLevel === -1 || task[j].results.taskImportanceLevel === null)
                     task[j].results.taskImportanceLevel = task[j].taskImportanceLevelCal;
                 task[j].daykpi = daykpi;
 
-                automaticPoint += task[j].results.automaticPoint * task[j].results.taskImportanceLevel;
-                approvedPoint += task[j].results.approvedPoint * task[j].results.taskImportanceLevel;
-                employeePoint += task[j].results.employeePoint * task[j].results.taskImportanceLevel;
-                sumTaskImportance += task[j].results.taskImportanceLevel;
+                // update taskImportanceLevel
+
+                let taskImportance = task[j].results.taskImportanceLevel;
+                if (isNaN(taskImportance) || taskImportance === -1) {
+
+                    taskImportance = task[j].taskImportanceLevelCal;
+                    let role;
+                    if (kpiCurrent.type === "1") {
+                        role = "accountable";
+                    } else if (kpiCurrent.type === "2") {
+                        role = "consulted";
+                    } else {
+                        role = "responsible";
+                    }
+                    let update = await updateTaskImportanceLevel(portal, task[j].id, idEmployee, task[j].taskImportanceLevelCal, date, role)
+
+                }
+                automaticPoint += task[j].results.automaticPoint ? task[j].results.automaticPoint : 0 * taskImportance;
+                approvedPoint += task[j].results.approvedPoint ? task[j].results.approvedPoint : 0 * taskImportance;
+                employeePoint += task[j].results.employeePoint ? task[j].results.employeePoint : 0 * taskImportance;
+                sumTaskImportance += taskImportance;
+
+
 
             }
         }
@@ -651,6 +656,7 @@ exports.setPointAllKpi = async (portal, idEmployee, idKpiSet, data) => {
             employeePoint = 100;
             sumTaskImportance = 1;
         }
+
 
         let kpi = await EmployeeKpi(connect(DB_CONNECTION, portal))
             .findByIdAndUpdate(

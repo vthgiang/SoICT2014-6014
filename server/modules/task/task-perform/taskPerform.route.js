@@ -8,7 +8,7 @@ router.get('/tasks/:taskId', auth, PerformTaskController.getTaskById);
 router.post('/tasks/:taskId', auth, PerformTaskController.editTask);
  
 
-router.get('/task-timesheet-logs', auth, PerformTaskController.getActiveTimesheetLog);
+router.get('/task-timesheet-logs', auth, PerformTaskController.getTaskTimesheetLog);
 router.post('/tasks/:taskId/timesheet-logs/start-timer', auth, PerformTaskController.startTimesheetLog);
 router.post('/tasks/:taskId/timesheet-logs/stop-timer', auth, PerformTaskController.stopTimesheetLog);
 router.get('/tasks/:taskId/timesheet-logs', auth, PerformTaskController.getTaskTimesheetLogs);

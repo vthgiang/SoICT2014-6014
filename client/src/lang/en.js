@@ -2720,6 +2720,7 @@ export default {
                 col_status: "Status",
                 col_progress: "Progress",
                 col_logged_time: "Total logged time",
+                col_timesheet_log: "Total timesheet",
 
                 action_edit: "Start working",
                 action_delete: "Delete task",
@@ -3285,7 +3286,19 @@ export default {
                 none_update_recently: "None updated recently tasks",
                 intime_task: "Intime tasks",
                 delay_task: "Delayed tasks",
-                overdue_task: "Overdue tasks"
+                overdue_task: "Overdue tasks",
+                no_task: "No data",
+                unconfirmed_task: "Unconfirmed tasks",
+                urgent_task: "Urgent tasks",
+                to_do_task: "Todo tasks",
+                day_ago: "days ago",
+                rest: "Rest",
+                updated: "Updated",
+                day: "days",
+                overdue: "Over",
+                task_name: "Task",
+                start_date: "Start date",
+                end_date: "End date"
             }
         },
 

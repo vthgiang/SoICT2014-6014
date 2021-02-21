@@ -6,6 +6,7 @@ import { sendRequest } from '../../../../helpers/requestHelper';
 export const performTaskService = {
     getTimesheetLogs,
     getTimerStatusTask,
+    getCurrentTaskTimesheetLogOfEmployeeInOrganizationalUnit,
     startTimerTask,
     stopTimerTask,
     editTimeSheetLog,
@@ -103,6 +104,20 @@ function getTimerStatusTask(taskId) {
         url: `${process.env.REACT_APP_SERVER}/performtask/task-timesheet-logs`,
         method: 'GET',
         params: {taskId: taskId , userId: userId}
+    }, false, false, 'task.task_perform');
+};
+
+/**
+ * Lấy các nhân viên đang bấm giờ trong 1 đơn vị 
+ */
+function getCurrentTaskTimesheetLogOfEmployeeInOrganizationalUnit(data) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/performtask/task-timesheet-logs`,
+        method: 'GET',
+        params: {
+            currentTimesheetLog: 1,
+            organizationalUnitId: data?.organizationalUnitId
+        }
     }, false, false, 'task.task_perform');
 };
 

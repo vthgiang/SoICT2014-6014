@@ -22,6 +22,8 @@ import 'bpmn-js/dist/assets/bpmn-font/css/bpmn.css';
 import 'bpmn-js/dist/assets/diagram-js.css';
 import '../process-template/processDiagram.css'
 import getEmployeeSelectBoxItems from "../../../organizationalUnitHelper";
+import { TaskAddModal } from "../../../task-management/component/taskAddModal";
+import { AddTaskForm } from "../../../task-management/component/addTaskForm";
 // custom element
 ElementFactory.prototype._getDefaultSize = function (semantic) {
 
@@ -296,7 +298,6 @@ class ModalCreateTaskByProcess extends Component {
                         ...state.info[`${element.businessObject.id}`],
                         organizationalUnit: this.props.listOrganizationalUnit[0]?._id,
                     }
-                    console.log('this.props.listOrganizationalUnit[0]?._id', state.info[`${element.businessObject.id}`]);
                 }  
                 return {
                     ...state,
@@ -310,8 +311,8 @@ class ModalCreateTaskByProcess extends Component {
             else {
                 return { ...state, showInfo: false, type: element.type, name: '', id: element.businessObject.id, }
             }
-        },()=> console.log(this.state.info))
-        console.log((this.state.info && this.state.info[`${this.state.id}`]) && this.state.info[`${this.state.id}`])
+        })
+
     }
 
     deleteElements = (event) => {
@@ -482,7 +483,6 @@ class ModalCreateTaskByProcess extends Component {
 
     // hàm cập nhật các thông tin của task trong quy trình
     handleChangeInfo = (value) => {
-        console.log(value)
         let info = {
             ...value,
             code: this.state.id
@@ -665,9 +665,8 @@ class ModalCreateTaskByProcess extends Component {
             taskList: info,
             startDate: startDate,
             endDate: endDate,
-
+            template: false
         }
-        console.log('000', data);
         this.props.createTaskByProcess(data, this.state.idProcess);
     }
 
@@ -855,15 +854,11 @@ class ModalCreateTaskByProcess extends Component {
                                                 {
                                                     (showInfo) &&
                                                     <div>
-                                                        {/* <div>
-															<h1>Option {name}</h1>
-														</div> */}
-                            
-                                                        <FormCreateTask
+                                                        <AddTaskForm
                                                             isProcess={true}
                                                             id={id}
                                                             info={(info && info[`${id}`]) && info[`${id}`]}
-                                                            onChangeTemplateData={this.handleChangeInfo}
+                                                            handleChangeTaskData={this.handleChangeInfo}
                                                             handleChangeName={this.handleChangeName} // cập nhật tên vào diagram
                                                             handleChangeResponsible={this.handleChangeResponsible} // cập nhật hiển thi diagram
                                                             handleChangeAccountable={this.handleChangeAccountable} // cập nhật hiển thị diagram

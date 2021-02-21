@@ -134,7 +134,7 @@ class TaskProcessManagement extends Component {
 					{
 						this.state.currentRow !== undefined &&
 						<ModalEditProcess
-							title={'chỉnh sửa quy trình'}
+							title={'Chỉnh sửa quy trình'}
 							listOrganizationalUnit={listOrganizationalUnit}
 							data={currentRow}
 							idProcess={currentRow._id}

@@ -434,7 +434,7 @@ class CommentInProcess extends Component {
                                     <React.Fragment>
                                         <div>
                                             <ContentMaker
-                                                idQuill={`edit-comment-process-${item._id}`}
+                                                idQuill={`edit-comment-process-${item?._id}-${task?._id}`}
                                                 inputCssClass="text-input-level1" controlCssClass="tool-level2 row"
                                                 onFilesChange={this.onEditCommentFilesChange}
                                                 onFilesError={this.onFilesError}
@@ -545,7 +545,7 @@ class CommentInProcess extends Component {
                                                     <React.Fragment>
                                                         <div>
                                                             <ContentMaker
-                                                                idQuill={`edit-child-comment-process-${child._id}`}
+                                                                idQuill={`edit-child-comment-process-${child?._id}-${task?._id}`}
                                                                 inputCssClass="text-input-level2" controlCssClass="tool-level2 row"
                                                                 onFilesChange={this.onEditFileChildComment}
                                                                 onFilesError={this.onFilesError}
@@ -596,7 +596,7 @@ class CommentInProcess extends Component {
                                             <img className="user-img-level2" src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="user avatar" />
                                             
                                             <ContentMaker
-                                                idQuill={`add-child-comment-process-${item._id}`}
+                                                idQuill={`add-child-comment-process-${item?._id}-${task?._id}`}
                                                 inputCssClass="text-input-level2" controlCssClass="tool-level2"
                                                 onFilesChange={this.onCommentFilesChange}
                                                 onFilesError={this.onFilesError}
@@ -621,7 +621,7 @@ class CommentInProcess extends Component {
                 <img className={inputAvatarCssClass} src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="User Image" />
                 
                 <ContentMaker
-                    idQuill={`add-comment-process`}
+                    idQuill={`add-comment-process-${task?._id}`}
                     inputCssClass="text-input-level1" controlCssClass="tool-level1"
                     onFilesChange={this.onFilesChange}
                     onFilesError={this.onFilesError}

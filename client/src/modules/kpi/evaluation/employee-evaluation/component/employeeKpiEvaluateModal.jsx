@@ -286,6 +286,7 @@ class EmployeeKpiEvaluateModal extends Component {
             exportData = this.convertDataToExportData(myTask, contentName, employeeKpiSet.creator.name);
         }
         currentKpi = list && list.length ? list.filter(item => item._id == content)[0] : "";
+        console.log('rrrrrrrrrrrrrrrr', kpimembers.tasks, taskImportanceDetail);
         return (
             <DialogModal
                 modalID={"employee-kpi-evaluation-modal"}
@@ -396,8 +397,8 @@ class EmployeeKpiEvaluateModal extends Component {
                                                 <tr key={index}>
                                                     <td>{index + 1}</td>
                                                     <td><a style={{ cursor: 'pointer' }} onClick={() => this.handleClickTaskName(itemTask.taskId)}>{itemTask.name}</a></td>
-                                                    <td>{this.formatDate(itemTask.startDate)}<br /> <i className="fa fa-angle-double-down"></i><br /> {this.formatDate(itemTask.endDate)}</td>
-                                                    <td>{this.formatDate(itemTask.preEvaDate)}<br /> <i className="fa fa-angle-double-down"></i><br /> {this.formatDate(itemTask.date)}</td>
+                                                    <td>{this.formatDate(itemTask.startDateTask)}<br /> <i className="fa fa-angle-double-down"></i><br /> {this.formatDate(itemTask.endDateTask)}</td>
+                                                    <td>{itemTask.startDate ? this.formatDate(itemTask.startDate) : ""}<br /> <i className="fa fa-angle-double-down"></i><br /> {itemTask.endDate ? this.formatDate(itemTask.endDate) : ""}</td>
                                                     <td>{this.formatTaskStatus(translate, itemTask.status)}</td>
                                                     <td>{itemTask.results.contribution ? itemTask.results.contribution : 0}%</td>
                                                     <td>{itemTask.results.automaticPoint + '-' + itemTask.results.employeePoint + '-' + itemTask.results.approvedPoint}</td>

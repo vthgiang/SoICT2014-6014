@@ -48,10 +48,19 @@ exports.getTaskTimesheetLogs = async (req, res) => {
         })
     }
 }
+
+exports.getTaskTimesheetLog = async (req, res) => {
+    if (req.query.currentTimesheetLog) {
+        getCurrentTaskTimesheetLogOfEmployeeInOrganizationalUnit(req, res);
+    } else {
+        getActiveTimesheetLog(req, res);
+    }
+}
+
 /**
  * Lấy trạng thái bấm giờ hiện tại
  */
-exports.getActiveTimesheetLog = async (req, res) => {
+getActiveTimesheetLog = async (req, res) => {
     try {
         let timerStatus = await PerformTaskService.getActiveTimesheetLog(req.portal, req.query);
         await Logger.info(req.user.email, `get timer status`, req.portal)
@@ -69,6 +78,28 @@ exports.getActiveTimesheetLog = async (req, res) => {
         })
     }
 }
+
+/** Lấy các nhân viên đang bấm giờ trong 1 đơn vị */
+getCurrentTaskTimesheetLogOfEmployeeInOrganizationalUnit = async (req, res) => {
+    try {
+        let timesheetLog = await PerformTaskService.getCurrentTaskTimesheetLogOfEmployeeInOrganizationalUnit(req.portal, req.query);
+        
+        await Logger.info(req.user.email, ` get current timesheet log `, req.portal)
+        res.status(200).json({
+            success: true,
+            messages: ['get_current_timesheet_log_success'],
+            content: timesheetLog
+        })
+    } catch (error) {
+        await Logger.error(req.user.email, ` get current timesheet log `, req.portal)
+        res.status(400).json({
+            success: false,
+            messages: ['get_current_timesheet_log_failure'],
+            content: error
+        })
+    }
+}
+
 /**
  * Bắt đầu bấm giờ
  */
