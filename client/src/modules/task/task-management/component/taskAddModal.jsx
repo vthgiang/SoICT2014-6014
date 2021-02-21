@@ -130,6 +130,7 @@ class TaskAddModal extends Component {
                     title={translate('task.task_management.add_new_task')}
                 >
                     <AddTaskForm
+                        quillId={this.props.id}
                         handleChangeTaskData={this.onChangeTaskData}
                     />
                     <ModalAddTaskProject />

@@ -145,7 +145,6 @@ class AddTaskForm extends Component {
                     newTask: {
                         ...state.newTask,
                         description: value,
-                        quillDescriptionDefault: value,
                         errorOnDescription: msg
                     }
                 };
@@ -685,7 +684,7 @@ class AddTaskForm extends Component {
                                 <div className={`form-group ${newTask.errorOnDescription === undefined ? "" : "has-error"}`}>
                                     <label className="control-label">{translate('task.task_management.detail_description')}<span className="text-red">*</span></label>
                                     <QuillEditor
-                                        id={`task-add-modal`}
+                                        id={`task-add-modal-${this.props.id}-${this.props.quillId}`}
                                         table={false}
                                         embeds={false}
                                         getTextData={this.handleChangeTaskDescription}

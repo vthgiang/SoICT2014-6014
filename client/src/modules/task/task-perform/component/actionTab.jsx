@@ -1593,7 +1593,7 @@ class ActionTab extends Component {
                                         <React.Fragment>
                                             <img className="user-img-level1" src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="user avatar" />
                                             <ContentMaker
-                                                idQuill="add-action"
+                                                idQuill={`add-action-${id}`}
                                                 inputCssClass="text-input-level1" controlCssClass="tool-level1 row"
                                                 onFilesChange={this.onActionFilesChange}
                                                 onFilesError={this.onFilesError}
@@ -1876,7 +1876,7 @@ class ActionTab extends Component {
                             {/* Thêm bình luận cho công việc*/}
                             <img className="user-img-level1" src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="User Image" />
                             <ContentMaker
-                                idQuill="add-comment-task"
+                                idQuill={`add-comment-task-${id}`}
                                 inputCssClass="text-input-level1" controlCssClass="tool-level1 row"
                                 onFilesChange={this.onTaskCommentFilesChange}
                                 onFilesError={this.onFilesError}
@@ -2009,7 +2009,7 @@ class ActionTab extends Component {
                                 <div style={{ marginTop: '15px' }}>
                                     <img className="user-img-level1" src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="user avatar" />
                                     <ContentMaker
-                                        idQuill="upload-file"
+                                        idQuill={`upload-file-${id}`}
                                         inputCssClass="text-input-level1" controlCssClass="tool-level1"
                                         onFilesChange={this.onTaskFilesChange}
                                         onFilesError={this.onFilesError}
