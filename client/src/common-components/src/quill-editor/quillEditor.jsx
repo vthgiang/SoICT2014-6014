@@ -43,13 +43,15 @@ class QuillEditor extends Component {
 
             if (enableEdit && !isText) {
                 // Bắt sự kiện text-change
-                quill.on('text-change', () => {
+                quill.on('text-change', (e) => {
                     let imgs, imageSources = [];
+                    let selection = quill.getSelection()?.index;
 
                     imgs = Array.from(
                         quill.container.querySelectorAll('img[src^="data:"]:not(.loading)')
                     );
 
+                    // Lọc base64 ảnh
                     if (imgs && imgs.length !== 0) {
                         imgs = imgs.map((item, index) => {
                             imageSources.push(item.getAttribute("src"));
@@ -58,9 +60,51 @@ class QuillEditor extends Component {
                         })
                     }
 
+                    // Auto Insert URL and email
+                    let insert = null;
+                    if (e && e.ops && e.ops.length !== 0) {
+                        e.ops.map(item => {
+                            if (item?.insert && !item?.attributes) {
+                                insert = item?.insert
+                            }
+                        })
+                    }
+                    
+                    if (insert === " ") {   // Handle event type space
+                        let text, temp = selection - 2;
+                        while (temp >= 0) {
+                            text = quill.getText(temp, 1);
+                            if (text?.toString() === " ") {
+                                break;
+                            } else {
+                                temp--;
+                            }
+                        }
+
+                        text = quill.getText(temp + 1, selection - temp - 2);
+                        if (text?.startsWith("http://") || text?.startsWith("https://") && (text !== "https://") && (text !== "http://")) {
+                            quill.deleteText(temp + 1, selection - temp - 2);
+                            quill.insertText(temp + 1, text, 'link', text);
+                        } else if (text?.endsWith("@gmail.com") || (text?.endsWith("@sis.hust.edu.vn"))) {
+                            quill.deleteText(temp + 1, selection - temp - 2);
+                            quill.insertText(temp + 1, text, 'link', "mailto:" + text);
+                        }
+                    } else if (insert && insert.length > 1) {   // Handle event paste
+                        if (insert?.startsWith("http://") || insert?.startsWith("https://") && (insert !== "https://") && (insert !== "http://")) {
+                            quill.deleteText(selection, insert.length);
+                            quill.insertText(selection, insert, 'link', insert);
+                        } else if (insert?.endsWith("@gmail.com") || (insert?.endsWith("@sis.hust.edu.vn"))) {
+                            quill.deleteText(selection, insert.length);
+                            quill.insertText(selection, insert, 'link', "mailto:" + insert);
+                        }
+                    }
+                    
+                    // Trả về html quill
                     if (quill && quill.root) {
                         this.props.getTextData(quill.root.innerHTML, imageSources);
                     }
+
+                    // Add lại base64 ảnh
                     if (imgs && imgs.length !== 0) {
                         imgs = imgs.map((item, index) => {
                             item.src = imageSources[index];
