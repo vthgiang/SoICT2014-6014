@@ -2972,7 +2972,7 @@ export default {
                 col_progress: "Tiến độ",
                 col_logged_time: "Thời gian thực hiện",
                 col_timesheet_log: "Thời gian bấm giờ",
-                
+
                 action_edit: "Băt đầu công việc",
                 action_delete: "Xóa công việc",
                 action_store: "Lưu vào kho",
@@ -3596,6 +3596,9 @@ export default {
                 updated: "Cập nhật",
                 day: "ngày",
                 overdue: "Quá hạn",
+                task_name: "Công việc",
+                start_date: "Ngày bắt đầu",
+                end_date: "Ngày kết thúc"
             }
         },
 
