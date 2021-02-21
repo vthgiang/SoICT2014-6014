@@ -23,7 +23,7 @@ const LoadTaskOrganizationChart = (props) => {
             if (selectedUnit.length == 0) selectedUnit = units.map(item => { return item.id });
 
             let improcessTask = taskList?.filter(x => x.status === "inprocess");
-
+            console.log('aaaaaaaaaaaaaaaaa', improcessTask);
             let startTime = new Date(startMonth.split("-")[0], startMonth.split('-')[1] - 1, 1);
             let endTime = new Date(endMonth.split("-")[0], endMonth.split('-')[1] ? endMonth.split('-')[1] : 1, 1);
             let listMonth = [], category = [];
@@ -66,7 +66,7 @@ const LoadTaskOrganizationChart = (props) => {
 
                                 let tmpStartDate = new Date(parseInt(category[j].split('-')[1]), parseInt(category[j].split('-')[0]), 1);
                                 let tmpEndDate = new Date(parseInt(category[j].split('-')[1]), parseInt(category[j].split('-')[0]) + 1, 0);
-
+                                console.log("datttttttttttttt", tmpStartDate, tmpEndDate, startDate, endDate);
                                 if (tmpStartDate > startDate && tmpEndDate < endDate) {
                                     improcessDay = tmpEndDate.getDate();
                                 }
@@ -82,7 +82,9 @@ const LoadTaskOrganizationChart = (props) => {
                                 }
                                 array[j] += Math.round(improcessDay /
                                     (improcessTask[k].accountableEmployees.length + improcessTask[k].consultedEmployees.length + improcessTask[k].responsibleEmployees.length))
+                                console.log("rrrrrrrrrrrrrrrrrrr", array[j], improcessDay, improcessTask[k].accountableEmployees.length, improcessTask[k].consultedEmployees.length, improcessTask[k].responsibleEmployees.length);
                             }
+
                         }
                     }
 

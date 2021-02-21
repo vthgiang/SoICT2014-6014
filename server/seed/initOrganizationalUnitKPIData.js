@@ -22,19 +22,19 @@ const initSampleCompanyDB = async () => {
      */
 
     let connectOptions = process.env.DB_AUTHENTICATION === 'true' ?
-    {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-        useCreateIndex: true,
-        useFindAndModify: false,
-        user: process.env.DB_USERNAME,
-        pass: process.env.DB_PASSWORD
-    } : {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-        useCreateIndex: true,
-        useFindAndModify: false
-    }
+        {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+            useCreateIndex: true,
+            useFindAndModify: false,
+            user: process.env.DB_USERNAME,
+            pass: process.env.DB_PASSWORD
+        } : {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+            useCreateIndex: true,
+            useFindAndModify: false
+        }
     const vnistDB = mongoose.createConnection(`mongodb://${process.env.DB_HOST}:${process.env.DB_PORT || '27017'}/vnist`, connectOptions);
     if (!vnistDB) throw ('DB vnist cannot connect');
     console.log("DB vnist connected");
@@ -614,6 +614,9 @@ const initSampleCompanyDB = async () => {
             confirmedByEmployees: [employee_1].concat([employee_2]).concat([employee_2]).includes(manager) ? manager : [],
             evaluations: [{ // Một công việc có thể trải dài nhiều tháng, mỗi tháng phải đánh giá một lần
                 date: new Date(currentYear, currentMonth - 1, 30),
+                evaluatingMonth: new Date(currentYear, currentMonth - 1, 30),
+                startDate: new Date(currentYear, currentMonth - 1, 2),
+                endDate: new Date(currentYear, currentMonth - 1, 30),
                 results: [
                     { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
                         employee: employee_1,
@@ -675,6 +678,9 @@ const initSampleCompanyDB = async () => {
             confirmedByEmployees: [employee_1].concat([employee_2]).concat([employee_2]).includes(manager) ? manager : [],
             evaluations: [{ // Một công việc có thể trải dài nhiều tháng, mỗi tháng phải đánh giá một lần
                 date: new Date(currentYear, currentMonth - 1, 30),
+                evaluatingMonth: new Date(currentYear, currentMonth - 1, 30),
+                startDate: new Date(currentYear, currentMonth - 1, 2),
+                endDate: new Date(currentYear, currentMonth - 1, 30),
                 results: [
                     { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
                         employee: employee_1,
@@ -735,6 +741,9 @@ const initSampleCompanyDB = async () => {
             evaluations: [
                 { // Một công việc có thể trải dài nhiều tháng, mỗi tháng phải đánh giá một lần
                     date: new Date(currentYear, currentMonth - 1, 30),
+                    evaluatingMonth: new Date(currentYear, currentMonth - 1, 30),
+                    startDate: new Date(currentYear, currentMonth - 1, 2),
+                    endDate: new Date(currentYear, currentMonth - 1, 30),
                     results: [
                         { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
                             employee: employee_1,
@@ -833,6 +842,9 @@ const initSampleCompanyDB = async () => {
             confirmedByEmployees: [employee_1].concat([employee_2]).concat([employee_2]).includes(manager) ? manager : [],
             evaluations: [{ // Một công việc có thể trải dài nhiều tháng, mỗi tháng phải đánh giá một lần
                 date: new Date(currentYear, currentMonth, 30),
+                evaluatingMonth: new Date(currentYear, currentMonth, 30),
+                startDate: new Date(currentYear, currentMonth, 2),
+                endDate: new Date(currentYear, currentMonth, 30),
                 results: [
                     { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
                         employee: employee_1,
@@ -892,6 +904,9 @@ const initSampleCompanyDB = async () => {
             confirmedByEmployees: [employee_1].concat([employee_2]).concat([employee_2]).includes(manager) ? manager : [],
             evaluations: [{ // Một công việc có thể trải dài nhiều tháng, mỗi tháng phải đánh giá một lần
                 date: new Date(currentYear, currentMonth, 30),
+                evaluatingMonth: new Date(currentYear, currentMonth, 30),
+                startDate: new Date(currentYear, currentMonth, 2),
+                endDate: new Date(currentYear, currentMonth, 30),
                 results: [
                     { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
                         employee: employee_1,
@@ -957,6 +972,9 @@ const initSampleCompanyDB = async () => {
             confirmedByEmployees: [employee_2].concat([employee_1]).concat([employee_1]).includes(manager) ? manager : [],
             evaluations: [{ // Một công việc có thể trải dài nhiều tháng, mỗi tháng phải đánh giá một lần
                 date: new Date(currentYear, currentMonth - 1, 30),
+                evaluatingMonth: new Date(currentYear, currentMonth - 1, 30),
+                startDate: new Date(currentYear, currentMonth - 1, 2),
+                endDate: new Date(currentYear, currentMonth - 1, 30),
                 results: [
                     { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
                         employee: employee_2,
@@ -1016,6 +1034,9 @@ const initSampleCompanyDB = async () => {
             confirmedByEmployees: [employee_2].concat([employee_1]).concat([employee_1]).includes(manager) ? manager : [],
             evaluations: [{ // Một công việc có thể trải dài nhiều tháng, mỗi tháng phải đánh giá một lần
                 date: new Date(currentYear, currentMonth - 1, 30),
+                evaluatingMonth: new Date(currentYear, currentMonth - 1, 30),
+                startDate: new Date(currentYear, currentMonth - 1, 2),
+                endDate: new Date(currentYear, currentMonth - 1, 30),
                 results: [
                     { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
                         employee: employee_2,
@@ -1076,6 +1097,9 @@ const initSampleCompanyDB = async () => {
             evaluations: [
                 { // Một công việc có thể trải dài nhiều tháng, mỗi tháng phải đánh giá một lần
                     date: new Date(currentYear, currentMonth - 1, 30),
+                    evaluatingMonth: new Date(currentYear, currentMonth - 1, 30),
+                    startDate: new Date(currentYear, currentMonth - 1, 2),
+                    endDate: new Date(currentYear, currentMonth - 1, 30),
                     results: [
                         { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
                             employee: employee_2,
@@ -1174,6 +1198,9 @@ const initSampleCompanyDB = async () => {
             confirmedByEmployees: [employee_2].concat([employee_1]).concat([employee_1]).includes(manager) ? manager : [],
             evaluations: [{ // Một công việc có thể trải dài nhiều tháng, mỗi tháng phải đánh giá một lần
                 date: new Date(currentYear, currentMonth, 30),
+                evaluatingMonth: new Date(currentYear, currentMonth, 30),
+                startDate: new Date(currentYear, currentMonth, 2),
+                endDate: new Date(currentYear, currentMonth, 30),
                 results: [
                     { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
                         employee: employee_2,
@@ -1233,6 +1260,9 @@ const initSampleCompanyDB = async () => {
             confirmedByEmployees: [employee_2].concat([employee_1]).concat([employee_1]).includes(manager) ? manager : [],
             evaluations: [{ // Một công việc có thể trải dài nhiều tháng, mỗi tháng phải đánh giá một lần
                 date: new Date(currentYear, currentMonth, 30),
+                evaluatingMonth: new Date(currentYear, currentMonth, 30),
+                startDate: new Date(currentYear, currentMonth, 2),
+                endDate: new Date(currentYear, currentMonth, 30),
                 results: [
                     { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
                         employee: employee_2,
@@ -1594,7 +1624,10 @@ const initSampleCompanyDB = async () => {
             informedEmployees: [deputyManager], // Người quan sát
             confirmedByEmployees: [employee].concat([employee]).concat([employee]).includes(manager) ? manager : [],
             evaluations: [{ // Một công việc có thể trải dài nhiều tháng, mỗi tháng phải đánh giá một lần
+                evaluatingMonth: new Date(currentYear, currentMonth - 1, 30),
                 date: new Date(currentYear, currentMonth - 1, 30),
+                startDate: new Date(currentYear, currentMonth - 1, 2),
+                endDate: new Date(currentYear, currentMonth - 1, 30),
                 results: [
                     { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
                         employee: employee,
@@ -1653,7 +1686,10 @@ const initSampleCompanyDB = async () => {
             informedEmployees: [deputyManager], // Người quan sát
             confirmedByEmployees: [employee].concat([employee]).concat([employee]).includes(manager) ? manager : [],
             evaluations: [{ // Một công việc có thể trải dài nhiều tháng, mỗi tháng phải đánh giá một lần
+                evaluatingMonth: new Date(currentYear, currentMonth - 1, 30),
                 date: new Date(currentYear, currentMonth - 1, 30),
+                startDate: new Date(currentYear, currentMonth - 1, 2),
+                endDate: new Date(currentYear, currentMonth - 1, 30),
                 results: [
                     { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
                         employee: employee,
@@ -1712,7 +1748,10 @@ const initSampleCompanyDB = async () => {
             confirmedByEmployees: [employee].concat([employee]).concat([employee]).includes(manager) ? manager : [],
             evaluations: [
                 { // Một công việc có thể trải dài nhiều tháng, mỗi tháng phải đánh giá một lần
+                    evaluatingMonth: new Date(currentYear, currentMonth - 1, 30),
                     date: new Date(currentYear, currentMonth - 1, 30),
+                    startDate: new Date(currentYear, currentMonth - 1, 2),
+                    endDate: new Date(currentYear, currentMonth - 1, 30),
                     results: [
                         { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
                             employee: employee,
@@ -1749,6 +1788,7 @@ const initSampleCompanyDB = async () => {
                     taskInformations: [] // Lưu lại lịch sử các giá trị của thuộc tính công việc trong mỗi lần đánh giá
                 },
                 { // Một công việc có thể trải dài nhiều tháng, mỗi tháng phải đánh giá một lần
+                    evaluatingMonth: new Date(currentYear, currentMonth, 30),
                     date: new Date(currentYear, currentMonth, 30),
                     results: [
                         { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
@@ -1811,7 +1851,10 @@ const initSampleCompanyDB = async () => {
             informedEmployees: [deputyManager], // Người quan sát
             confirmedByEmployees: [employee].concat([employee]).concat([employee]).includes(manager) ? manager : [],
             evaluations: [{ // Một công việc có thể trải dài nhiều tháng, mỗi tháng phải đánh giá một lần
+                evaluatingMonth: new Date(currentYear, currentMonth, 30),
                 date: new Date(currentYear, currentMonth, 30),
+                startDate: new Date(currentYear, currentMonth, 2),
+                endDate: new Date(currentYear, currentMonth, 30),
                 results: [
                     { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
                         employee: employee,
@@ -1870,7 +1913,10 @@ const initSampleCompanyDB = async () => {
             informedEmployees: [manager], // Người quan sát
             confirmedByEmployees: [employee].concat([employee]).concat([employee]).includes(manager) ? manager : [],
             evaluations: [{ // Một công việc có thể trải dài nhiều tháng, mỗi tháng phải đánh giá một lần
+                evaluatingMonth: new Date(currentYear, currentMonth, 30),
                 date: new Date(currentYear, currentMonth, 30),
+                startDate: new Date(currentYear, currentMonth, 2),
+                endDate: new Date(currentYear, currentMonth, 30),
                 results: [
                     { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
                         employee: employee,
