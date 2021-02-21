@@ -53,6 +53,11 @@ class TaskAddModal extends Component {
         console.log("value",value)
         this.setState({ newTask: value })
     }
+    convertDateTime = (date, time) => {
+        let splitter = date.split("-");
+        let strDateTime = `${splitter[2]}-${splitter[1]}-${splitter[0]} ${time}`;
+        return new Date(strDateTime);
+    }
     handleSubmit = async (event) => {
         const { newTask, startTime, endTime } = this.state;
         let startDateTask = this.convertDateTime(newTask.startDate, startTime);

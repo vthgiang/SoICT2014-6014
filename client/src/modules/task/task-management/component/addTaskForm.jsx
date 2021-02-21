@@ -112,7 +112,7 @@ class AddTaskForm extends Component {
                 };
             });
             this.props.handleChangeTaskData(this.state.newTask)
-            this.props.handleChangeName(this.state.newTask.name)
+            this.props.isProcess && this.props.handleChangeName(this.state.newTask.name)
         }
         return msg === undefined;
     }
@@ -395,7 +395,7 @@ class AddTaskForm extends Component {
                 };
             });
             this.props.handleChangeTaskData(this.state.newTask)
-            this.props.handleChangeResponsible(this.state.newTask.responsibleEmployees)
+            this.props.isProcess && this.props.handleChangeResponsible(this.state.newTask.responsibleEmployees)
         }
         return msg === undefined;
     }
@@ -417,7 +417,7 @@ class AddTaskForm extends Component {
                 };
             });
             this.props.handleChangeTaskData(this.state.newTask)
-            this.props.handleChangeAccountable(this.state.newTask.accountableEmployees)
+            this.props.isProcess && this.props.handleChangeAccountable(this.state.newTask.accountableEmployees)
         }
         return msg === undefined;
     }
@@ -473,18 +473,19 @@ class AddTaskForm extends Component {
 
         //Chức năng tạo task bằng process
         if (nextProps.isProcess && nextProps.id !== this.state.id) {
-            let { info, listOrganizationalUnit } = nextProps;
+            let { info } = nextProps;
             this.setState(state => {
                 return {
                     id: nextProps.id,
                     newTask: {
-                        organizationalUnit: (info && info.organizationalUnit) ? info.organizationalUnit : "",
+                        organizationalUnit: (info && info.organizationalUnit) ? info.organizationalUnit._id : "",
                         collaboratedWithOrganizationalUnits: (info && info.collaboratedWithOrganizationalUnits) ? info.collaboratedWithOrganizationalUnits : [],
                         name: (info && info.name) ? info.name : '',
                         responsibleEmployees: (info && info.responsibleEmployees) ? info.responsibleEmployees : [],
                         accountableEmployees: (info && info.accountableEmployees) ? info.accountableEmployees : [],
                         consultedEmployees: (info && info.consultedEmployees) ? info.consultedEmployees : [],
                         informedEmployees: (info && info.informedEmployees) ? info.informedEmployees : [],
+                        quillDescriptionDefault: (info && info.description) ? info.description : '',
                         description: (info && info.description) ? info.description : '',
                         creator: (info && info.creator) ? info.creator : getStorage("userId"),
                         priority: (info && info.priority) ? info.priority : 3,
@@ -685,7 +686,7 @@ class AddTaskForm extends Component {
                                 <div className={`form-group ${newTask.errorOnDescription === undefined ? "" : "has-error"}`}>
                                     <label className="control-label">{translate('task.task_management.detail_description')}<span className="text-red">*</span></label>
                                     <QuillEditor
-                                        id={`task-add-modal`}
+                                        id={`task-add-modal-${this.props.id}`}
                                         table={false}
                                         embeds={false}
                                         getTextData={this.handleChangeTaskDescription}
