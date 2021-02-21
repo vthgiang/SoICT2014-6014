@@ -202,6 +202,8 @@ class AddTaskForm extends Component {
                 }
             }
         });
+        this.props.handleChangeStartTime(this.state.startTime);
+        this.props.handleChangeTaskData(this.state.newTask)
     }
 
     handleEndTimeChange = (value) => {
@@ -226,6 +228,8 @@ class AddTaskForm extends Component {
                 }
             }
         });
+        this.props.handleChangeEndTime(this.state.endTime);
+        this.props.handleChangeTaskData(this.state.newTask);
     }
     handleChangeTaskEndDate = (value) => {
         this.validateTaskEndDate(value, true);
