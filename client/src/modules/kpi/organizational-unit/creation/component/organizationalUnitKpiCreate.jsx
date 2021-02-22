@@ -23,7 +23,7 @@ class OrganizationalUnitKpiCreate extends Component {
         super(props);
 
         translate = this.props.translate;
-        
+
         let d = new Date(),
             month = d.getMonth() + 1,
             year = d.getFullYear();
@@ -42,7 +42,7 @@ class OrganizationalUnitKpiCreate extends Component {
 
             organizationalUnitId: null,
             month: [year, month].join('-'),
-            
+
             adding: false,
             editing: false,
             submitted: false,
@@ -116,7 +116,7 @@ class OrganizationalUnitKpiCreate extends Component {
                 }
             }
         }
-        
+
         this.setState((state) => {
             return {
                 ...state,
@@ -460,7 +460,7 @@ class OrganizationalUnitKpiCreate extends Component {
                                             value={organizationalUnitId}
                                         />
                                     </div>
-                                
+
                                     <div className="form-group">
                                         <label style={{ width: "auto" }}>{translate('kpi.organizational_unit.dashboard.month')}</label>
                                         <DatePicker
@@ -476,7 +476,7 @@ class OrganizationalUnitKpiCreate extends Component {
                                 </div>
                             }
                         </div>
-                        
+
                         <div className="box">
                             {currentKPI
                                 ? <div className="box-body">
@@ -535,11 +535,11 @@ class OrganizationalUnitKpiCreate extends Component {
                                                             <a className="btn btn-app" data-toggle="modal" data-target="#employee-importances" data-backdrop="static" data-keyboard="false">
                                                                 <i className="fa fa-child" style={{ fontSize: "16px" }}></i>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.employee_importance')}
                                                             </a>
-                                                        <EmployeeImportancesModal
-                                                            organizationalUnit={currentKPI.organizationalUnit}
-                                                            organizationalUnitId={currentKPI.organizationalUnit && currentKPI.organizationalUnit._id}
-                                                            month={month}
-                                                        />
+                                                            <EmployeeImportancesModal
+                                                                organizationalUnit={currentKPI.organizationalUnit}
+                                                                organizationalUnitId={currentKPI.organizationalUnit && currentKPI.organizationalUnit._id}
+                                                                month={month}
+                                                            />
                                                         </span>
                                                     }
                                                 </span>
@@ -579,7 +579,7 @@ class OrganizationalUnitKpiCreate extends Component {
                                                     <th title="Số thứ tự" style={{ width: "40px" }}>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.no_')}</th>
                                                     <th title="Tên mục tiêu">{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.target_name')}</th>
                                                     <th title="Tiêu chí đánh giá">{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.evaluation_criteria')}</th>
-                                                    <th title="Trọng số" style={{ width: "100px" }}>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.weight')}</th>
+                                                    <th title="Trọng số" className="col-sort-number" style={{ width: "100px" }}>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.weight')}</th>
                                                     {this.checkPermisson(organizationalUnit && organizationalUnit.managers) && <th style={{ width: "100px" }}>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.action')}</th>}
                                                 </tr>
                                             </thead>
@@ -622,7 +622,7 @@ class OrganizationalUnitKpiCreate extends Component {
                                         </table>
                                     </div>
                                 </div>
-                                : organizationalUnitKpiLoading && childrenOrganizationalUnitLoading 
+                                : organizationalUnitKpiLoading && childrenOrganizationalUnitLoading
                                 && <div className="box-body">
                                     <div style={{ marginLeft: "-10px" }}>
                                         {this.checkPermisson(organizationalUnit && organizationalUnit.managers) &&
@@ -633,7 +633,7 @@ class OrganizationalUnitKpiCreate extends Component {
                                                         <a className="btn btn-app" data-toggle="modal" data-target="#startKPIUnit" data-backdrop="static" data-keyboard="false">
                                                             <i className="fa fa-calendar-plus-o" style={{ fontSize: "16px" }}></i>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.initialize_kpi_newmonth')} {this.formatDate(month)}
                                                         </a>
-                                                        <OrganizationalUnitKpiCreateModal organizationalUnit={organizationalUnit} month={month}/>
+                                                        <OrganizationalUnitKpiCreateModal organizationalUnit={organizationalUnit} month={month} />
                                                     </span>
                                                     :
                                                     // Cảnh báo đơn vị cha chưa kích hoạt KPI
@@ -641,7 +641,7 @@ class OrganizationalUnitKpiCreate extends Component {
                                                         <i className="fa fa-calendar-plus-o" style={{ fontSize: "16px" }}></i>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.initialize_kpi_newmonth')} {this.formatDate(month)}
                                                     </a>
                                                 }
-                                            
+
                                                 {/* Sao chép mục tiêu từ KPI đơn vị cha */}
                                                 {this.checkEdittingPermission(organizationalUnit) && parentKpi ?
                                                     <span>
@@ -671,8 +671,8 @@ class OrganizationalUnitKpiCreate extends Component {
                                     <p>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.not_initialize')} {this.formatDate(month)}</p>
                                 </div>
                             }
-                            </div>
-                        </section>
+                        </div>
+                    </section>
                     : organizationalUnitsOfUserLoading
                     && <div className="box-body">
                         <h4>Bạn chưa có đơn vị</h4>

@@ -183,6 +183,7 @@ class Content extends Component {
                         return str;
                     }
 
+
                     let sort = (ascOrder) => {
                         let rows = table.find("tbody>tr");
 
@@ -205,15 +206,25 @@ class Content extends Component {
                             }
                         }
 
-                        rows.sort((a, b) => {
-                            let keyA = nonAccentVietnamese(window.$(window.$(a).find("td")[j]).text());
-                            let keyB = nonAccentVietnamese(window.$(window.$(b).find("td")[j]).text());
-                            keyA = convertDate(keyA);
-                            keyB = convertDate(keyB);
-                            if (keyA < keyB) return ascOrder ? -1 : 1;
-                            if (keyA > keyB) return ascOrder ? 1 : -1;
-                            return 0;
-                        });
+                        if (th[0].className == "col-sort-number") {
+                            rows.sort((a, b) => {
+                                let keyA = parseInt(window.$(window.$(a).find("td")[j]).text());
+                                let keyB = parseInt(window.$(window.$(b).find("td")[j]).text());
+                                if (keyA < keyB) return ascOrder ? -1 : 1;
+                                if (keyA > keyB) return ascOrder ? 1 : -1;
+                                return 0;
+                            });
+                        } else {
+                            rows.sort((a, b) => {
+                                let keyA = nonAccentVietnamese(window.$(window.$(a).find("td")[j]).text());
+                                let keyB = nonAccentVietnamese(window.$(window.$(b).find("td")[j]).text());
+                                keyA = convertDate(keyA);
+                                keyB = convertDate(keyB);
+                                if (keyA < keyB) return ascOrder ? -1 : 1;
+                                if (keyA > keyB) return ascOrder ? 1 : -1;
+                                return 0;
+                            });
+                        }
 
                         window.$.each(rows, function (index, row) {
                             table.children('tbody').append(row);
