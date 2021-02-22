@@ -9,21 +9,26 @@ import StockCreateForm from './stockCreateForm';
 import StockEditForm from './stockEditForm';
 import StockDetailForm from './stockDetailForm';
 import { DataTableSetting, DeleteNotification, PaginateBar, SelectMulti } from '../../../../../common-components';
-
+import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
 class StockManagementTable extends Component {
     constructor(props) {
         super(props);
+        const tableId = "stock-management-table";
+        const defaultConfig = { limit: 5 }
+        const limit = getTableConfiguration(tableId, defaultConfig).limit;
+
         this.state = {
             currentRole: localStorage.getItem("currentRole"),
             page: 1,
-            limit: 5,
+            limit: limit,
             code: '',
             name: '',
             status: '',
+            tableId
         }
     }
 
-    componentDidMount(){
+    componentDidMount() {
         let { page, limit, currentRole } = this.state;
         this.props.getAllDepartments();
         this.props.getAllRoles();
@@ -31,7 +36,7 @@ class StockManagementTable extends Component {
         this.props.getAllStocks({ managementLocation: currentRole });
         this.props.getAllStocks({ page, limit, managementLocation: currentRole });
     }
-    
+
     setPage = (page) => {
         this.setState({ page });
         const data = {
@@ -71,7 +76,7 @@ class StockManagementTable extends Component {
 
     handleCodeChange = async (e) => {
         let value = e.target.value;
-        this.setState( state => {
+        this.setState(state => {
             return {
                 ...state,
                 code: value.trim()
@@ -81,7 +86,7 @@ class StockManagementTable extends Component {
 
     handleNameChange = async (e) => {
         let value = e.target.value;
-        this.setState( state => {
+        this.setState(state => {
             return {
                 ...state,
                 name: value.trim()
@@ -123,9 +128,10 @@ class StockManagementTable extends Component {
         window.$('#modal-detail-stock').modal('show');
     }
 
-    render (){
+    render() {
         const { stocks, translate } = this.props;
         const { listPaginate, totalPages, page } = stocks;
+        const { tableId } = this.state;
 
         return (
             <div className="box">
@@ -151,10 +157,10 @@ class StockManagementTable extends Component {
                                 className="form-control select2"
                                 style={{ width: "100%" }}
                                 items={[
-                                    { value: '1', text: translate('manage_warehouse.stock_management.1.status')},
-                                    { value: '2', text: translate('manage_warehouse.stock_management.2.status')},
-                                    { value: '3', text: translate('manage_warehouse.stock_management.3.status')},
-                                    { value: '4', text: translate('manage_warehouse.stock_management.4.status')},
+                                    { value: '1', text: translate('manage_warehouse.stock_management.1.status') },
+                                    { value: '2', text: translate('manage_warehouse.stock_management.2.status') },
+                                    { value: '3', text: translate('manage_warehouse.stock_management.3.status') },
+                                    { value: '4', text: translate('manage_warehouse.stock_management.4.status') },
                                 ]}
                                 onChange={this.handleStatusChange}
                             />
@@ -195,7 +201,7 @@ class StockManagementTable extends Component {
                         />
                     }
 
-                    <table id="stock-table" className="table table-striped table-bordered table-hover" style={{marginTop: '15px'}}>
+                    <table id={tableId} className="table table-striped table-bordered table-hover" style={{ marginTop: '15px' }}>
                         <thead>
                             <tr>
                                 <th style={{ width: "5%" }}>{translate('manage_warehouse.stock_management.index')}</th>
@@ -205,8 +211,8 @@ class StockManagementTable extends Component {
                                 <th>{translate('manage_warehouse.stock_management.address')}</th>
                                 <th>{translate('manage_warehouse.stock_management.description')}</th>
                                 <th style={{ width: '120px', textAlign: 'center' }}>{translate('table.action')}
-                                <DataTableSetting
-                                        tableId="stock-table"
+                                    <DataTableSetting
+                                        tableId={tableId}
                                         columnArr={[
                                             translate('manage_warehouse.stock_management.index'),
                                             translate('manage_warehouse.stock_management.code'),
@@ -215,24 +221,22 @@ class StockManagementTable extends Component {
                                             translate('manage_warehouse.stock_management.address'),
                                             translate('manage_warehouse.stock_management.description')
                                         ]}
-                                        limit={this.state.limit}
                                         setLimit={this.setLimit}
-                                        hideColumnOption={true}
                                     />
                                 </th>
                             </tr>
                         </thead>
                         <tbody>
-                            { (typeof listPaginate !== undefined && listPaginate.length !== 0) &&
+                            {(typeof listPaginate !== undefined && listPaginate.length !== 0) &&
                                 listPaginate.map((x, index) => (
                                     <tr key={index}>
                                         <td>{index + 1}</td>
                                         <td>{x.code}</td>
                                         <td>{x.name}</td>
-                                        <td style={{ color: translate(`manage_warehouse.stock_management.${x.status}.color`)}}>{translate(`manage_warehouse.stock_management.${x.status}.status`)}</td>
+                                        <td style={{ color: translate(`manage_warehouse.stock_management.${x.status}.color`) }}>{translate(`manage_warehouse.stock_management.${x.status}.status`)}</td>
                                         <td>{x.address}</td>
                                         <td>{x.description}</td>
-                                        <td style={{textAlign: 'center'}}>
+                                        <td style={{ textAlign: 'center' }}>
                                             <a onClick={() => this.handleShowDetailInfo(x)}><i className="material-icons">view_list</i></a>
                                             <a onClick={() => this.handleEdit(x)} href={`#${x._id}`} className="text-yellow" ><i className="material-icons">edit</i></a>
                                             {/* <DeleteNotification
@@ -253,12 +257,12 @@ class StockManagementTable extends Component {
                         <div className="table-info-panel">{translate('confirm.loading')}</div> :
                         (typeof listPaginate === 'undefined' || listPaginate.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                     }
-                    <PaginateBar pageTotal = {totalPages} currentPage = {page} func = {this.setPage} />
+                    <PaginateBar pageTotal={totalPages} currentPage={page} func={this.setPage} />
                 </div>
             </div>
         );
     }
-    
+
 }
 
 

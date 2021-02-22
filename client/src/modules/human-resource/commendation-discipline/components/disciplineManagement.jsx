@@ -8,7 +8,7 @@ import { DisciplineCreateForm, DisciplineEditForm } from './combinedContent';
 import { EmployeeViewForm } from '../../profile/employee-management/components/combinedContent';
 
 import { DisciplineActions } from '../redux/actions';
-
+import { getTableConfiguration } from '../../../../helpers/tableConfiguration';
 class DisciplineManager extends Component {
     constructor(props) {
         super(props);
@@ -27,13 +27,18 @@ class DisciplineManager extends Component {
             }
         }
 
+        const tableId = "discipline-management-table";
+        const defaultConfig = { limit: 5 }
+        const limit = getTableConfiguration(tableId, defaultConfig).limit;
+
         this.state = {
             decisionNumber: "",
             employeeNumber: "",
             employeeName: "",
             organizationalUnits: organizationalUnits,
             page: 0,
-            limit: 5,
+            limit: limit,
+            tableId,
         }
     }
 
@@ -199,7 +204,7 @@ class DisciplineManager extends Component {
 
         const { pageActive } = this.props;
 
-        const { limit, page, organizationalUnits, currentRow, currentRowView } = this.state;
+        const { limit, page, organizationalUnits, currentRow, currentRowView, tableId } = this.state;
 
         let { list } = department;
 
@@ -264,7 +269,7 @@ class DisciplineManager extends Component {
                         </div>
                     </div>
 
-                    <table id="discipline-table" className="table table-striped table-bordered table-hover" >
+                    <table id={tableId} className="table table-striped table-bordered table-hover" >
                         <thead>
                             <tr>
                                 <th>{translate('human_resource.staff_number')}</th>
@@ -276,7 +281,7 @@ class DisciplineManager extends Component {
                                 <th>{translate('human_resource.commendation_discipline.discipline.table.discipline_forms')}</th>
                                 <th style={{ width: '120px', textAlign: 'center' }}>{translate('general.action')}
                                     <DataTableSetting
-                                        tableId="discipline-table"
+                                        tableId={tableId}
                                         columnArr={[
                                             translate('human_resource.staff_number'),
                                             translate('table.employee_name'),
@@ -286,9 +291,7 @@ class DisciplineManager extends Component {
                                             translate('human_resource.commendation_discipline.commendation.table.decision_unit'),
                                             translate('human_resource.commendation_discipline.discipline.table.discipline_forms')
                                         ]}
-                                        limit={this.state.limit}
                                         setLimit={this.setLimit}
-                                        hideColumnOption={true}
                                     />
                                 </th>
                             </tr>

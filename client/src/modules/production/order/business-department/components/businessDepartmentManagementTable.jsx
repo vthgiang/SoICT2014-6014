@@ -8,14 +8,19 @@ import { DataTableSetting, PaginateBar, SelectBox } from "../../../../../common-
 import BusinessDepartmentCreateForm from "./businessDepartmentCreateForm";
 import BusinessDepartmentEditForm from "./businessDepartmentEditForm";
 import BusinessDepartmentDetailForm from "./businessDepartmentDetailForm";
-
+import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
 class BusinessDepartmentManagementTable extends Component {
     constructor(props) {
         super(props);
+        const tableId = "business-department-manager-table";
+        const defaultConfig = { limit: 5 }
+        const limit = getTableConfiguration(tableId, defaultConfig).limit;
+
         this.state = {
             page: 1,
-            limit: 5,
+            limit: limit,
             role: "",
+            tableId
         };
     }
 
@@ -108,7 +113,7 @@ class BusinessDepartmentManagementTable extends Component {
         const { translate } = this.props;
         const { businessDepartments } = this.props;
         const { totalPages, page } = businessDepartments;
-        let { businessDepartmentEdit, businessDepartmentDetail, role } = this.state;
+        let { businessDepartmentEdit, businessDepartmentDetail, role, tableId } = this.state;
         let listBusinessDepartments = [];
         if (businessDepartments.isLoading === false) {
             listBusinessDepartments = businessDepartments.listBusinessDepartments;
@@ -144,7 +149,7 @@ class BusinessDepartmentManagementTable extends Component {
                             </button>
                         </div>
                     </div>
-                    <table id="business-department-table" className="table table-striped table-bordered table-hover">
+                    <table id={tableId} className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
                                 <th>{"STT"}</th>
@@ -154,10 +159,8 @@ class BusinessDepartmentManagementTable extends Component {
                                 <th style={{ width: "120px", textAlign: "center" }}>
                                     {translate("table.action")}
                                     <DataTableSetting
-                                        tableId="business-department-table"
+                                        tableId={tableId}
                                         columnArr={["STT", "Tên đơn vị", "Trưởng đơn vị", "Vai trò"]}
-                                        limit={this.state.limit}
-                                        hideColumnOption={true}
                                         setLimit={this.setLimit}
                                     />
                                 </th>
@@ -204,10 +207,10 @@ class BusinessDepartmentManagementTable extends Component {
                     {businessDepartments.isLoading ? (
                         <div className="table-info-panel">{translate("confirm.loading")}</div>
                     ) : (
-                        (typeof listBusinessDepartments === "undefined" || listBusinessDepartments.length === 0) && (
-                            <div className="table-info-panel">{translate("confirm.no_data")}</div>
-                        )
-                    )}
+                            (typeof listBusinessDepartments === "undefined" || listBusinessDepartments.length === 0) && (
+                                <div className="table-info-panel">{translate("confirm.no_data")}</div>
+                            )
+                        )}
                     <PaginateBar pageTotal={totalPages ? totalPages : 0} currentPage={page} func={this.setPage} />
                 </div>
             </React.Fragment>

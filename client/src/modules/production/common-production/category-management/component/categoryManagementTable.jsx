@@ -1,31 +1,36 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
-import { CategoryActions} from '../redux/actions';
+import { CategoryActions } from '../redux/actions';
 import { GoodActions } from '../../good-management/redux/actions';
 import CategoryCreateForm from './categoryCreateForm';
 import CategoryEditForm from './categoryEditForm';
 import CategoryDetailForm from './categoryDetailInfo';
 import { DataTableSetting, DeleteNotification, PaginateBar, SearchBar } from '../../../../../common-components';
-
+import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
 class CategoryManagementTable extends Component {
     constructor(props) {
         super(props);
+        const tableId = "category-management-table";
+        const defaultConfig = { limit: 5 }
+        const limit = getTableConfiguration(tableId, defaultConfig).limit;
+
         this.state = {
             page: 1,
-            limit: 5,
+            limit: limit,
             option: 'code',
-            value: ''
+            value: '',
+            tableId
         }
     }
 
-    componentDidMount(){
+    componentDidMount() {
         let { page, limit } = this.state;
         this.props.getCategories();
         this.props.getCategoryToTree();
         this.props.getCategories({ page, limit });
     }
-    
+
     setPage = (page) => {
         this.setState({ page });
         const data = {
@@ -87,9 +92,10 @@ class CategoryManagementTable extends Component {
         window.$('#modal-detail-category').modal('show');
     }
 
-    render (){
+    render() {
         const { categories, translate } = this.props;
         const { listPaginate, totalPages, page, categoryToTree } = categories;
+        const { tableId } = this.state;
         console.log(categoryToTree);
 
         return (
@@ -97,19 +103,19 @@ class CategoryManagementTable extends Component {
                 <div className="box-body qlcv">
                     <CategoryCreateForm />
 
-                    <SearchBar 
+                    <SearchBar
                         columns={[
-                        { title: translate('manage_warehouse.category_management.code'), value: 'code' },
-                        { title: translate('manage_warehouse.category_management.name'), value: 'name' },
-                        { title: translate('manage_warehouse.category_management.type'), value: 'type' }
+                            { title: translate('manage_warehouse.category_management.code'), value: 'code' },
+                            { title: translate('manage_warehouse.category_management.name'), value: 'name' },
+                            { title: translate('manage_warehouse.category_management.type'), value: 'type' }
                         ]}
-                        valueOption = {{ nonSelectedText: translate('manage_warehouse.category_management.choose_type'), allSelectedText: translate('manage_warehouse.category_management.all_type') }}
+                        valueOption={{ nonSelectedText: translate('manage_warehouse.category_management.choose_type'), allSelectedText: translate('manage_warehouse.category_management.all_type') }}
                         typeColumns={[
-                            { value: "product", title: translate('manage_warehouse.category_management.product') }, 
-                            { value: "material", title: translate('manage_warehouse.category_management.material') }, 
+                            { value: "product", title: translate('manage_warehouse.category_management.product') },
+                            { value: "material", title: translate('manage_warehouse.category_management.material') },
                             { value: "equipment", title: translate('manage_warehouse.category_management.equipment') },
-                            { value: "waste", title: translate('manage_warehouse.category_management.waste')}
-                            ]}
+                            { value: "waste", title: translate('manage_warehouse.category_management.waste') }
+                        ]}
                         option={this.state.option}
                         setOption={this.setOption}
                         search={this.searchWithOption}
@@ -137,7 +143,7 @@ class CategoryManagementTable extends Component {
                         />
                     }
 
-                    <table id="category-table" className="table table-striped table-bordered table-hover" style={{marginTop: '15px'}}>
+                    <table id={tableId} className="table table-striped table-bordered table-hover" style={{ marginTop: '15px' }}>
                         <thead>
                             <tr>
                                 <th style={{ width: "5%" }}>{translate('manage_warehouse.category_management.index')}</th>
@@ -146,8 +152,8 @@ class CategoryManagementTable extends Component {
                                 <th>{translate('manage_warehouse.category_management.type')}</th>
                                 <th>{translate('manage_warehouse.category_management.description')}</th>
                                 <th style={{ width: '120px', textAlign: 'center' }}>{translate('table.action')}
-                                <DataTableSetting
-                                        tableId="category-table"
+                                    <DataTableSetting
+                                        tableId={tableId}
                                         columnArr={[
                                             translate('manage_warehouse.category_management.index'),
                                             translate('manage_warehouse.category_management.code'),
@@ -155,15 +161,13 @@ class CategoryManagementTable extends Component {
                                             translate('manage_warehouse.category_management.type'),
                                             translate('manage_warehouse.category_management.description')
                                         ]}
-                                        limit={this.state.limit}
                                         setLimit={this.setLimit}
-                                        hideColumnOption={true}
                                     />
                                 </th>
                             </tr>
                         </thead>
                         <tbody>
-                            { (typeof listPaginate !== undefined && listPaginate.length !== 0) &&
+                            {(typeof listPaginate !== undefined && listPaginate.length !== 0) &&
                                 listPaginate.map((x, index) => (
                                     <tr key={index}>
                                         <td>{index + 1}</td>
@@ -171,7 +175,7 @@ class CategoryManagementTable extends Component {
                                         <td>{x.name}</td>
                                         <td>{translate(`manage_warehouse.category_management.${x.type}`)}</td>
                                         <td>{x.description}</td>
-                                        <td style={{textAlign: 'center'}}>
+                                        <td style={{ textAlign: 'center' }}>
                                             <a className="text-green" onClick={() => this.handleShowDetailInfo(x)}><i className="material-icons">visibility</i></a>
                                             <a onClick={() => this.handleEdit(x)} href={`#${x._id}`} className="text-yellow" ><i className="material-icons">edit</i></a>
                                             <DeleteNotification
@@ -192,12 +196,12 @@ class CategoryManagementTable extends Component {
                         <div className="table-info-panel">{translate('confirm.loading')}</div> :
                         (typeof listPaginate === 'undefined' || listPaginate.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                     }
-                    <PaginateBar pageTotal = {totalPages} currentPage = {page} func = {this.setPage} />
+                    <PaginateBar pageTotal={totalPages} currentPage={page} func={this.setPage} />
                 </div>
             </div>
         );
     }
-    
+
 }
 
 

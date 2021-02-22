@@ -7,6 +7,7 @@ import { RoleActions } from '../../../../super-admin/role/redux/actions';
 import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
 import { getStorage } from '../../../../../config';
 import DocumentInformation from '../documents/documentInformation';
+import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
 
 
 const getIndex = (array, id) => {
@@ -22,7 +23,11 @@ const getIndex = (array, id) => {
 class DocumentDownloaded extends Component {
     constructor(props) {
         super(props);
-        this.state = { option: 'name', value: '', limit: 5, page: 1 }
+        const tableId = "table-manage-document-downloaded";
+        const defaultConfig = { limit: 5 }
+        const limit = getTableConfiguration(tableId, defaultConfig).limit;
+
+        this.state = { option: 'name', value: '', limit: limit, page: 1, tableId }
     }
 
     componentDidMount() {
@@ -396,7 +401,7 @@ class DocumentDownloaded extends Component {
         }
         const { domains, categories, archives } = this.props.documents.administration;
         const docs = this.props.documents.user.data;
-        const { currentRow, archive, category, domain } = this.state;
+        const { currentRow, archive, category, domain, tableId } = this.state;
         const listDomain = domains.list
         const listCategory = this.convertData(categories.list)
         const listArchive = archives.list;
@@ -506,7 +511,7 @@ class DocumentDownloaded extends Component {
 
                     </div>
 
-                    <table className="table table-hover table-striped table-bordered" id="table-manage-user-document-downloaded">
+                    <table className="table table-hover table-striped table-bordered" id={tableId}>
                         <thead>
                             <tr>
                                 <th>{translate('document.name')}</th>
@@ -528,10 +533,8 @@ class DocumentDownloaded extends Component {
                                             translate('document.upload_file'),
                                             translate('document.upload_file_scan')
                                         ]}
-                                        limit={this.state.limit}
                                         setLimit={this.setLimit}
-                                        hideColumnOption={true}
-                                        tableId="table-manage-user-document-downloaded"
+                                        tableId={tableId}
                                     />
                                 </th>
                             </tr>

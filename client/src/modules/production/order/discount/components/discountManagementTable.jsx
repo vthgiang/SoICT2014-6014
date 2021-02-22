@@ -8,17 +8,22 @@ import { PaginateBar, DataTableSetting, SelectBox, DeleteNotification, ConfirmNo
 import { formatDate } from "../../../../../helpers/formatDate";
 import DiscountEditForm from "./discountEditForm";
 import DiscountDetailForm from "./discountDetailForm";
-
+import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
 class DiscountManagementTable extends Component {
     constructor(props) {
         super(props);
+        const tableId = "discount-manager-table";
+        const defaultConfig = { limit: 5 }
+        const limit = getTableConfiguration(tableId, defaultConfig).limit;
+
         this.state = {
             page: 1,
-            limit: 5,
+            limit: limit,
             code: "",
             name: "",
             queryDate: "all",
             discountDetail: {},
+            tableId
         };
     }
 
@@ -121,7 +126,7 @@ class DiscountManagementTable extends Component {
         const { translate } = this.props;
         const { discounts } = this.props;
         const { totalPages, page, listDiscounts } = discounts;
-        const { currentRow, discountDetail } = this.state;
+        const { currentRow, discountDetail, tableId } = this.state;
         const typeConvert = ["Giảm trên toàn đơn", "Giảm giá từng mặt hàng"];
         return (
             <React.Fragment>
@@ -159,7 +164,7 @@ class DiscountManagementTable extends Component {
                             </button>
                         </div>
                     </div>
-                    <table id="discount-table" className="table table-striped table-bordered table-hover">
+                    <table id={tableId} className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
                                 <th>STT</th>
@@ -176,10 +181,8 @@ class DiscountManagementTable extends Component {
                                 >
                                     Hành động
                                     <DataTableSetting
-                                        tableId="discount-table"
+                                        tableId={tableId}
                                         columnArr={["STT", "Mã", "Tên", "Loại giảm giá", "Trạng thái"]}
-                                        limit={this.state.limit}
-                                        hideColumnOption={true}
                                         setLimit={this.setLimit}
                                     />
                                 </th>
@@ -258,10 +261,10 @@ class DiscountManagementTable extends Component {
                     {discounts.isLoading ? (
                         <div className="table-info-panel">{translate("confirm.loading")}</div>
                     ) : (
-                        (typeof listDiscounts === "undefined" || listDiscounts.length === 0) && (
-                            <div className="table-info-panel">{translate("confirm.no_data")}</div>
-                        )
-                    )}
+                            (typeof listDiscounts === "undefined" || listDiscounts.length === 0) && (
+                                <div className="table-info-panel">{translate("confirm.no_data")}</div>
+                            )
+                        )}
                     <PaginateBar pageTotal={totalPages ? totalPages : 0} currentPage={page} func={this.setPage} />
                 </div>
             </React.Fragment>

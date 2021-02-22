@@ -7,14 +7,19 @@ import ExampleCreateForm from "./exampleCreateForm";
 import ExampleEditForm from "./exampleEditForm";
 import ExampleDetailInfo from "./exampleDetailInfo";
 import { useEffect } from "react";
+import { getTableConfiguration } from '../../../../helpers/tableConfiguration';
 
 const ExampleManagementTable = (props) => {
+    const getTableId = "table-manage-example2-hooks";
+    const defaultConfig = { limit: 5 }
+    const getLimit = getTableConfiguration(getTableId, defaultConfig).limit;
 
     const [state, setState] = useState({
         exampleName: "",
         description: "",
         page: 1,
-        limit: 5
+        limit: getLimit,
+        tableId: getTableId,
     })
 
     useEffect(() => {
@@ -88,7 +93,7 @@ const ExampleManagementTable = (props) => {
 
     const totalPage = Math.ceil(example.totalList / state.limit);
     const page = state.page;
-
+    const { tableId } = state;
     return (
         <React.Fragment>
             {
@@ -112,7 +117,7 @@ const ExampleManagementTable = (props) => {
                         <button type="button" className="btn btn-success" title={translate('manage_example.search')} onClick={handleSubmitSearch}>{translate('manage_example.search')}</button>
                     </div>
                 </div>
-                <table id="example-table" className="table table-striped table-bordered table-hover">
+                <table id={tableId} className="table table-striped table-bordered table-hover">
                     <thead>
                         <tr>
                             <th className="col-fixed" style={{ width: 60 }}>{translate('manage_example.index')}</th>
@@ -120,15 +125,13 @@ const ExampleManagementTable = (props) => {
                             <th>{translate('manage_example.description')}</th>
                             <th style={{ width: "120px", textAlign: "center" }}>{translate('table.action')}
                                 <DataTableSetting
-                                    tableId="example-table"
+                                    tableId={tableId}
                                     columnArr={[
                                         translate('manage_example.index'),
                                         translate('manage_example.exampleName'),
                                         translate('manage_example.description'),
 
                                     ]}
-                                    limit={state.limit}
-                                    hideColumnOption={true}
                                     setLimit={setLimit}
                                 />
                             </th>
@@ -138,7 +141,7 @@ const ExampleManagementTable = (props) => {
                         {(lists && lists.length !== 0) &&
                             lists.map((example, index) => (
                                 <tr key={index}>
-                                    <td>{index + 1 + (page-1) * state.limit}</td>
+                                    <td>{index + 1 + (page - 1) * state.limit}</td>
                                     <td>{example.exampleName}</td>
                                     <td>{example.description}</td>
                                     <td style={{ textAlign: "center" }}>

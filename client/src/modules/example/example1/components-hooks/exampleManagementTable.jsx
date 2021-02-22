@@ -10,18 +10,23 @@ import { ExampleDetailInfo } from "./exampleDetailInfo";
 import { ExampleImportForm } from "./exampleImortForm";
 
 import { exampleActions } from "../redux/actions";
+import { getTableConfiguration } from '../../../../helpers/tableConfiguration';
 
 function ExampleManagementTable(props) {
+    const getTableId = "table-manage-example1-hooks";
+    const defaultConfig = { limit: 5 }
+    const getLimit = getTableConfiguration(getTableId, defaultConfig).limit;
 
     // Khởi tạo state
     const [state, setState] = useState({
         exampleName: "",
         page: 1,
-        limit: 5,
+        limit: getLimit,
+        tableId: getTableId,
     })
 
     const { example, translate } = props;
-    const { exampleName, page, limit, currentRow } = state;
+    const { exampleName, page, limit, currentRow, tableId } = state;
 
     useEffect(() => {
         props.getExamples({ exampleName, page, limit });
@@ -125,7 +130,7 @@ function ExampleManagementTable(props) {
                 page={page}
                 limit={limit}
             />
-            
+
             <div className="box-body qlcv">
                 <div className="form-inline">
                     {/* Button thêm mới */}
@@ -138,7 +143,7 @@ function ExampleManagementTable(props) {
                                 {translate('manage_example.add_example')}</a></li>
                         </ul>
                     </div>
-                    
+
                     {/* Tìm kiếm */}
                     <div className="form-group">
                         <label className="form-control-static">{translate('manage_example.exampleName')}</label>
@@ -148,9 +153,9 @@ function ExampleManagementTable(props) {
                         <button type="button" className="btn btn-success" title={translate('manage_example.search')} onClick={() => handleSubmitSearch()}>{translate('manage_example.search')}</button>
                     </div>
                 </div>
-                
+
                 {/* Danh sách các ví dụ */}
-                <table id="example-table" className="table table-striped table-bordered table-hover">
+                <table id={tableId} className="table table-striped table-bordered table-hover">
                     <thead>
                         <tr>
                             <th className="col-fixed" style={{ width: 60 }}>{translate('manage_example.index')}</th>
@@ -158,14 +163,12 @@ function ExampleManagementTable(props) {
                             <th>{translate('manage_example.description')}</th>
                             <th style={{ width: "120px", textAlign: "center" }}>{translate('table.action')}
                                 <DataTableSetting
-                                    tableId="example-table"
+                                    tableId={tableId}
                                     columnArr={[
                                         translate('manage_example.index'),
                                         translate('manage_example.exampleName'),
                                         translate('manage_example.description'),
                                     ]}
-                                    limit={limit}
-                                    hideColumnOption={true}
                                     setLimit={setLimit}
                                 />
                             </th>
@@ -175,7 +178,7 @@ function ExampleManagementTable(props) {
                         {(lists && lists.length !== 0) &&
                             lists.map((example, index) => (
                                 <tr key={index}>
-                                    <td>{index + 1 + (page-1) * limit}</td>
+                                    <td>{index + 1 + (page - 1) * limit}</td>
                                     <td>{example.exampleName}</td>
                                     <td>{example.description}</td>
                                     <td style={{ textAlign: "center" }}>

@@ -15,15 +15,21 @@ import QuoteDetailForm from "./quoteDetailForm";
 import QuoteCreateForm from "./quoteCreateForm";
 import QuoteEditForm from "./quoteEditForm";
 import QuoteApproveForm from "./approveQuote/index";
+import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
 class QuoteManageTable extends Component {
     constructor(props) {
         super(props);
+        const tableId = "qoute-manager-table";
+        const defaultConfig = { limit: 5 }
+        const limit = getTableConfiguration(tableId, defaultConfig).limit;
+
         this.state = {
             page: 1,
-            limit: 5,
+            limit: limit,
             code: "",
             status: null,
             currentRole: localStorage.getItem("currentRole"),
+            tableId
         };
     }
 
@@ -135,7 +141,7 @@ class QuoteManageTable extends Component {
     };
 
     render() {
-        let { limit, quoteApprove } = this.state;
+        let { limit, quoteApprove, tableId } = this.state;
         const { translate, quotes } = this.props;
         const { totalPages, page } = quotes;
 
@@ -196,11 +202,11 @@ class QuoteManageTable extends Component {
                                     items={
                                         this.props.customers.list
                                             ? this.props.customers.list.map((customerItem) => {
-                                                  return {
-                                                      value: customerItem._id,
-                                                      text: customerItem.name,
-                                                  };
-                                              })
+                                                return {
+                                                    value: customerItem._id,
+                                                    text: customerItem.name,
+                                                };
+                                            })
                                             : []
                                     }
                                     multiple="multiple"
@@ -259,7 +265,7 @@ class QuoteManageTable extends Component {
                                 </button>
                             </div>
                         </div>
-                        <table id={`quote-table`} className="table table-striped table-bordered table-hover" style={{ marginTop: 20 }}>
+                        <table id={tableId} className="table table-striped table-bordered table-hover" style={{ marginTop: 20 }}>
                             <thead>
                                 <tr>
                                     <th>STT</th>
@@ -278,7 +284,7 @@ class QuoteManageTable extends Component {
                                     >
                                         {translate("table.action")}
                                         <DataTableSetting
-                                            tableId="manufacturing-works-table"
+                                            tableId={tableId}
                                             columnArr={[
                                                 "Số thứ tự",
                                                 "Mã đơn",
@@ -289,8 +295,6 @@ class QuoteManageTable extends Component {
                                                 "Tổng tiền (vnđ)",
                                                 "Trạng thái",
                                             ]}
-                                            limit={this.state.limit}
-                                            hideColumnOption={true}
                                             setLimit={this.setLimit}
                                         />
                                     </th>
@@ -355,10 +359,10 @@ class QuoteManageTable extends Component {
                         {quotes.isLoading ? (
                             <div className="table-info-panel">{translate("confirm.loading")}</div>
                         ) : (
-                            (typeof listQuotes === "undefined" || listQuotes.length === 0) && (
-                                <div className="table-info-panel">{translate("confirm.no_data")}</div>
-                            )
-                        )}
+                                (typeof listQuotes === "undefined" || listQuotes.length === 0) && (
+                                    <div className="table-info-panel">{translate("confirm.no_data")}</div>
+                                )
+                            )}
                         <PaginateBar pageTotal={totalPages ? totalPages : 0} currentPage={page} func={this.setPage} />
                     </div>
                 </div>
