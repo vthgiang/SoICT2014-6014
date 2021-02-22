@@ -6,8 +6,6 @@ import { withTranslate } from "react-redux-multilingual";
 import { DialogModal, ErrorLabel, SelectBox, DatePicker } from "../../../../../common-components";
 import { UserActions } from "../../../../super-admin/user/redux/actions";
 import { performTaskAction } from "../../../task-perform/redux/actions";
-import { ModalDetailTask } from "../../../task-dashboard/task-personal-dashboard/modalDetailTask";
-
 import { isAny } from 'bpmn-js/lib/features/modeling/util/ModelingUtil'
 import BpmnModeler from 'bpmn-js/lib/Modeler';
 import PaletteProvider from 'bpmn-js/lib/features/palette/PaletteProvider';
@@ -19,6 +17,7 @@ import { TaskFormValidator } from "../../../task-management/component/taskFormVa
 import { TaskProcessValidator } from "../process-template/taskProcessValidator";
 import { TaskProcessActions } from "../../redux/actions";
 import getEmployeeSelectBoxItems from "../../../organizationalUnitHelper";
+import { AddTaskForm } from "../../../task-management/component/addTaskForm";
 
 
 //Xóa element khỏi pallette theo data-action
@@ -67,6 +66,7 @@ class ModalEditProcess extends Component {
     }
 
     componentDidMount() {
+        this.props.getAllUsers();
         this.props.getAllUserOfCompany();
         this.props.getAllUserInAllUnitsOfCompany()
 
@@ -92,7 +92,13 @@ class ModalEditProcess extends Component {
             let info = {};
             let infoTask = nextProps.data.tasks;
             for (let i in infoTask) {
-                info[`${infoTask[i].codeInProcess}`] = infoTask[i];
+                info[`${infoTask[i].codeInProcess}`] = {
+                    ...infoTask[i],
+                    responsibleEmployees: infoTask[i].responsibleEmployees.map(e => e._id),
+                    accountableEmployees: infoTask[i].accountableEmployees.map(e => e._id),
+                    consultedEmployees: infoTask[i].consultedEmployees.map(e => e._id),
+                    informedEmployees: infoTask[i].informedEmployees.map(e => e._id),
+                };
             }
             return {
                 ...prevState,
@@ -144,9 +150,6 @@ class ModalEditProcess extends Component {
             let modeling = this.modeling;
             let state = this.state;
             this.modeler.importXML(nextProps.data.xmlDiagram, function (err) {
-                // handle zoom fit
-                // let canvas = modeler.get('canvas');
-                // canvas.zoom('fit-viewport');
 
                 // chỉnh màu sắc task
                 let infoTask = nextProps.data.tasks
@@ -164,7 +167,6 @@ class ModalEditProcess extends Component {
 
                             var outgoing = element1.outgoing;
                             outgoing.forEach(x => {
-                                console.log('x', x);
                                 if (info[x.businessObject.targetRef.id].status === "inprocess") {
                                     var outgoingEdge = modeler.get('elementRegistry').get(x.id);
 
@@ -197,7 +199,6 @@ class ModalEditProcess extends Component {
 
     interactPopup = (event) => {
         var element = event.element;
-        console.log(element, this.state)
         let nameStr = element.type.split(':');
         this.setState(state => {
             if (element.type === 'bpmn:Task' || element.type === 'bpmn:ExclusiveGateway') {
@@ -217,16 +218,11 @@ class ModalEditProcess extends Component {
                     id: `${element.businessObject.id}`,
                 }
             }
-
             else {
                 return { ...state, showInfo: false, type: element.type, name: '', id: element.businessObject.id, }
             }
 
         })
-        if (element.type === 'bpmn:Task' || element.type === 'bpmn:ExclusiveGateway') {
-            console.log('0000', this.state.info[this.state.id]);
-            window.$(`#modal-detail-task-edit-process`).modal("show");
-        }
     }
 
     downloadAsSVG = () => {
@@ -376,6 +372,61 @@ class ModalEditProcess extends Component {
         return [day, month, year].join('-');
     }
 
+    // hàm cập nhật các thông tin của task trong quy trình
+    handleChangeInfo = (value) => {
+        let info = {
+            ...value,
+            code: this.state.id
+        }
+
+        this.setState(
+            state => {
+                state.info[`${state.id}`] = info
+            })
+    }
+    // hàm cập nhật tên công việc trong quy trình
+    handleChangeName = async (value) => {
+        let stringName = value
+        const modeling = this.modeler.get('modeling');
+        let element1 = this.modeler.get('elementRegistry').get(this.state.id);
+        modeling.updateProperties(element1, {
+            shapeName: stringName,
+        });
+
+        this.forceUpdate();
+    }
+    // hàm cập nhật người thực hiện công việc
+    handleChangeResponsible = async (value) => {
+        console.log(value)
+        const modeling = this.modeler.get('modeling');
+        let element1 = this.modeler.get('elementRegistry').get(this.state.id);
+        let { user } = this.props
+        let responsibleName
+        let responsible = []
+        value.forEach(x => {
+            responsible.push(user.list.find(y => y._id == x).name)
+        })
+        modeling.updateProperties(element1, {
+            responsibleName: responsible
+        });
+
+    }
+
+    // hàm cập nhật người phê duyệt công việc
+    handleChangeAccountable = async (value) => {
+        const modeling = this.modeler.get('modeling');
+        let element1 = this.modeler.get('elementRegistry').get(this.state.id);
+        let { user } = this.props
+        let accountableName
+        let accountable = []
+        value.forEach(x => {
+            accountable.push(user.list.find(y => y._id == x).name)
+        })
+        modeling.updateProperties(element1, {
+            accountableName: accountable
+        });
+    }
+
     // hàm cập nhật Tên Quy trình
     handleChangeBpmnName = async (e) => {
         let { value } = e.target;
@@ -496,8 +547,6 @@ class ModalEditProcess extends Component {
 
             viewer: viewer,
         }
-
-        console.log('quang gửi data', data, idProcess);
         this.props.editProcessInfo(idProcess, data);
 
     }
@@ -505,7 +554,7 @@ class ModalEditProcess extends Component {
     render() {
         const { translate, role, user } = this.props;
         const { idProcess } = this.props;
-        const { id, info, viewer, startDate, endDate, status, processDescription, processName, errorOnViewer, errorOnProcessName, errorOnEndDate, errorOnStartDate, errorOnProcessDescription } = this.state;
+        const { id, info, viewer, startDate, endDate, showInfo, status, processDescription, processName, errorOnViewer, errorOnProcessName, errorOnEndDate, errorOnStartDate, errorOnProcessDescription } = this.state;
 
         // lấy danh sách các nhân viên trong cả công ty
         let listUserCompany = user?.usercompanys;
@@ -541,13 +590,13 @@ class ModalEditProcess extends Component {
                     bodyStyle={{ paddingTop: 0, paddingBottom: 0 }}
                 >
                     <div>
-                        {id !== undefined &&
+                        {/* {id !== undefined &&
                             <ModalDetailTask action={"edit-process"} task={(info && info[`${id}`]) && info[`${id}`]} isProcess={true} />
-                        }
+                        } */}
 
                         <div className={'row'}>
                             {/* Quy trình công việc */}
-                            <div className={`contain-border col-md-8`}>
+                            <div className={`contain-border ${showInfo ? 'col-md-8' : 'col-md-12'}`}>
                                 {/* Diagram */}
                                 <div id={this.generateId}></div>
                                 {/* Zoom button */}
@@ -574,91 +623,19 @@ class ModalEditProcess extends Component {
                                 </div>
                             </div>
 
-                            <div className={'right-content col-md-4'}>
-
-                                {/* Thông tin chung quy trình */}
-                                <div className="box-header with-border">
-                                    <h4>{translate('task_template.general_information')}</h4>
+                            {showInfo &&
+                                <div className={`right-content ${showInfo ? 'col-md-4' : undefined}`}>
+                                    <AddTaskForm
+                                        isProcess={true}
+                                        id={id}
+                                        info={(info && info[`${id}`]) && info[`${id}`]}
+                                        handleChangeTaskData={this.handleChangeInfo}
+                                        handleChangeName={this.handleChangeName} // cập nhật tên vào diagram
+                                        handleChangeResponsible={this.handleChangeResponsible} // cập nhật hiển thi diagram
+                                        handleChangeAccountable={this.handleChangeAccountable} // cập nhật hiển thị diagram
+                                    />
                                 </div>
-                                <div className="box-body">
-                                    {/* Tên quy trình */}
-                                    <div className={`form-group ${errorOnProcessName === undefined ? "" : "has-error"}`}>
-                                        <label>{translate("task.task_process.process_name")}</label>
-                                        <input type="text"
-                                            value={processName}
-                                            className="form-control" placeholder={translate("task.task_process.process_name")}
-                                            onChange={this.handleChangeBpmnName}
-                                        />
-                                        <ErrorLabel content={errorOnProcessName} />
-                                    </div>
-
-                                    {/* Mô tả quy trình */}
-                                    <div className={`form-group ${errorOnProcessDescription === undefined ? "" : "has-error"}`}>
-                                        <label>{translate("task.task_process.process_description")}</label>
-                                        <textarea type="text" rows={4} style={{ height: "108px" }}
-                                            value={processDescription}
-                                            className="form-control" placeholder={translate("task.task_process.process_description")}
-                                            onChange={this.handleChangeBpmnDescription}
-                                        />
-                                        <ErrorLabel content={errorOnProcessDescription} />
-                                    </div>
-
-                                    {/* Trạng thái quy trình */}
-                                    <div className={`form-group`}>
-                                        <label>{translate("task.task_process.process_status")}</label>
-
-                                        <SelectBox
-                                            id={`select-status-process-${idProcess}`}
-                                            className="form-control select2"
-                                            style={{ width: "100%" }}
-                                            items={statusArr}
-                                            multiple={false}
-                                            value={status}
-                                            onChange={this.handleSelectedStatus}
-                                        />
-
-                                        {/* <ErrorLabel content={errorOnProcessStatus} /> */}
-                                    </div>
-                                    <div className={`form-group ${errorOnViewer === undefined ? "" : "has-error"}`}>
-                                        {/* Người được xem quy trình */}
-                                        <label className="control-label">{translate("task.task_process.viewer")}</label>
-                                        {allUnitsMember &&
-                                            <SelectBox
-                                                id={`select-viewer-employee-edit-task-process-${idProcess}`}
-                                                className="form-control select2"
-                                                style={{ width: "100%" }}
-                                                items={allUnitsMember}
-                                                onChange={this.handleChangeViewer}
-                                                multiple={true}
-                                                value={viewer}
-                                            />
-                                        }
-                                        <ErrorLabel content={errorOnViewer} />
-                                    </div>
-                                    {/* Ngày bắt đầu - kết thúc quy trình */}
-                                    <div className="row">
-                                        <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 ${errorOnStartDate === undefined ? "" : "has-error"}`}>
-                                            <label className="control-label">{translate('task.task_management.start_date')}*</label>
-                                            <DatePicker
-                                                id={`datepicker1-edit-process-${idProcess}`}
-                                                dateFormat="day-month-year"
-                                                value={startDate}
-                                                onChange={this.handleChangeTaskStartDate}
-                                            />
-                                            <ErrorLabel content={errorOnStartDate} />
-                                        </div>
-                                        <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 ${errorOnEndDate === undefined ? "" : "has-error"}`}>
-                                            <label className="control-label">{translate('task.task_management.end_date')}*</label>
-                                            <DatePicker
-                                                id={`datepicker2-edit-process-${idProcess}`}
-                                                value={endDate}
-                                                onChange={this.handleChangeTaskEndDate}
-                                            />
-                                            <ErrorLabel content={errorOnEndDate} />
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            }
                         </div>
                     </div>
                 </DialogModal>
@@ -674,6 +651,7 @@ function mapState(state) {
 }
 
 const actionCreators = {
+    getAllUsers: UserActions.get,
     getAllUserOfCompany: UserActions.getAllUserOfCompany,
     getDepartment: UserActions.getDepartmentOfUser,
     getTaskById: performTaskAction.getTaskById,

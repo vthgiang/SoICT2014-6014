@@ -31,18 +31,23 @@ import GoodIssueCreateForm from "../../../warehouse/bill-management/components/g
 import BillDetailForm from "../../../warehouse/bill-management/components/genaral/billDetailForm";
 import SalesOrderApproveForm from "./approveSalesOrder";
 import SalesOrderEditAfterApproveForm from "./editAfterApprove/salesOrderEditAfterApproveForm";
-
+import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
 class SalesOrderTable extends Component {
     constructor(props) {
         super(props);
+        const tableId = "sale-order-table";
+        const defaultConfig = { limit: 5 }
+        const limit = getTableConfiguration(tableId, defaultConfig).limit;
+
         this.state = {
             currentRole: localStorage.getItem("currentRole"),
             page: 1,
-            limit: 5,
+            limit: limit,
             code: "",
             status: null,
             salesOrderDetail: {},
             detailModalId: 1,
+            tableId
         };
     }
 
@@ -220,7 +225,7 @@ class SalesOrderTable extends Component {
     };
 
     render() {
-        let { limit, code, salesOrderAddBill, billCode, detailModalId, salesOrderApprove, salesOrderEditAfterApprove } = this.state;
+        let { limit, code, salesOrderAddBill, billCode, detailModalId, salesOrderApprove, salesOrderEditAfterApprove, tableId } = this.state;
         const { translate, salesOrders } = this.props;
         const { totalPages, page } = salesOrders;
 
@@ -365,11 +370,11 @@ class SalesOrderTable extends Component {
                                     items={
                                         this.props.customers.list
                                             ? this.props.customers.list.map((customerItem) => {
-                                                  return {
-                                                      value: customerItem._id,
-                                                      text: customerItem.name,
-                                                  };
-                                              })
+                                                return {
+                                                    value: customerItem._id,
+                                                    text: customerItem.name,
+                                                };
+                                            })
                                             : []
                                     }
                                     multiple="multiple"
@@ -430,7 +435,7 @@ class SalesOrderTable extends Component {
                                 </button>
                             </div>
                         </div>
-                        <table id={`sales-order-table`} className="table table-striped table-bordered table-hover" style={{ marginTop: 20 }}>
+                        <table id={tableId} className="table table-striped table-bordered table-hover" style={{ marginTop: 20 }}>
                             <thead>
                                 <tr>
                                     <th>STT</th>
@@ -449,7 +454,7 @@ class SalesOrderTable extends Component {
                                     >
                                         {translate("table.action")}
                                         <DataTableSetting
-                                            tableId="manufacturing-works-table"
+                                            tableId={tableId}
                                             columnArr={[
                                                 "Số thứ tự",
                                                 "Mã đơn",
@@ -460,8 +465,6 @@ class SalesOrderTable extends Component {
                                                 "Tổng tiền (vnđ)",
                                                 "Trạng thái",
                                             ]}
-                                            limit={this.state.limit}
-                                            hideColumnOption={true}
                                             setLimit={this.setLimit}
                                         />
                                     </th>
@@ -548,10 +551,10 @@ class SalesOrderTable extends Component {
                         {salesOrders.isLoading ? (
                             <div className="table-info-panel">{translate("confirm.loading")}</div>
                         ) : (
-                            (typeof listSalesOrders === "undefined" || listSalesOrders.length === 0) && (
-                                <div className="table-info-panel">{translate("confirm.no_data")}</div>
-                            )
-                        )}
+                                (typeof listSalesOrders === "undefined" || listSalesOrders.length === 0) && (
+                                    <div className="table-info-panel">{translate("confirm.no_data")}</div>
+                                )
+                            )}
                         <PaginateBar pageTotal={totalPages ? totalPages : 0} currentPage={page} func={this.setPage} />
                     </div>
                 </div>

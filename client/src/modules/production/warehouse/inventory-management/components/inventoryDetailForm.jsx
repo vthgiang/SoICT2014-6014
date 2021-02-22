@@ -4,13 +4,19 @@ import { connect } from 'react-redux';
 import { DialogModal, DatePicker, PaginateBar, DataTableSetting } from '../../../../../common-components';
 import { translate } from 'react-redux-multilingual/lib/utils';
 import { BillActions } from '../../bill-management/redux/actions';
+import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
 
 class InventoryDetailForm extends Component {
     constructor(props) {
         super(props);
+        const tableId = "inventory-management-table";
+        const defaultConfig = { limit: 5 }
+        const limit = getTableConfiguration(tableId, defaultConfig).limit;
+
         this.state = {
-            limit: 5,
-            page: 1
+            limit: limit,
+            page: 1,
+            tableId
         }
     }
 
@@ -93,18 +99,18 @@ class InventoryDetailForm extends Component {
 
     render() {
         const { translate, goods, lots, id, bills, quantity, stock } = this.props;
-        const { endDate, startDate } = this.state;
+        const { endDate, startDate, tableId } = this.state;
         const { goodDetail } = goods;
         const { listLots } = lots;
         const { listBillByGood, totalPages, page } = bills;
 
         let goodQuantity = [];
-        if(listBillByGood.length > 0) {
-            for (let i = 0; i <listBillByGood.length; i++){
-                if(listBillByGood[i].goods && listBillByGood[i].goods.length > 0){
-                    for(let j = 0; j < listBillByGood[i].goods.length; j++){
-                        if(listBillByGood[i].goods[j].good === id){
-                            if(listBillByGood[i].group === '3'){
+        if (listBillByGood.length > 0) {
+            for (let i = 0; i < listBillByGood.length; i++) {
+                if (listBillByGood[i].goods && listBillByGood[i].goods.length > 0) {
+                    for (let j = 0; j < listBillByGood[i].goods.length; j++) {
+                        if (listBillByGood[i].goods[j].good === id) {
+                            if (listBillByGood[i].group === '3') {
                                 goodQuantity.push(listBillByGood[i].goods[j].returnQuantity)
                             }
                             goodQuantity.push(listBillByGood[i].goods[j].quantity)
@@ -180,32 +186,30 @@ class InventoryDetailForm extends Component {
                                         </div>
                                     </div>
 
-                                    <table className="table table-bordered">
+                                    <table className="table table-bordered" id={tableId}>
                                         <thead>
                                             <tr>
-                                                <th style={{width: "5%"}} title={translate('manage_warehouse.inventory_management.index')}>{translate('manage_warehouse.inventory_management.index')}</th>
+                                                <th style={{ width: "5%" }} title={translate('manage_warehouse.inventory_management.index')}>{translate('manage_warehouse.inventory_management.index')}</th>
                                                 <th title={translate('manage_warehouse.inventory_management.date_month')}>{translate('manage_warehouse.inventory_management.date_month')}</th>
                                                 <th title={translate('manage_warehouse.inventory_management.receipt')}>{translate('manage_warehouse.inventory_management.receipt')}</th>
                                                 <th title={translate('manage_warehouse.inventory_management.issue')}>{translate('manage_warehouse.inventory_management.issue')}</th>
                                                 <th title={translate('manage_warehouse.inventory_management.stock')}>{translate('manage_warehouse.inventory_management.stock')}
-                                                <DataTableSetting
-                                                    tableId={`inventory-detail-table`}
-                                                    limit={this.state.limit}
-                                                    setLimit={this.setLimit}
-                                                    hideColumnOption={true}
-                                                />
+                                                    <DataTableSetting
+                                                        tableId={tableId}
+                                                        setLimit={this.setLimit}
+                                                    />
                                                 </th>
                                             </tr>
                                         </thead>
-                                        <tbody id={`inventory-detail-table`}>
+                                        <tbody >
                                             {
                                                 (typeof listBillByGood !== undefined && listBillByGood.length !== 0) &&
                                                 listBillByGood.map((x, index) => (
                                                     <tr key={index}>
                                                         <td>{index + 1}</td>
                                                         <td>{this.formatDate(x.createdAt)}</td>
-                                                        <td>{ x.group === '1' ? goodQuantity[index] : 0 }</td>
-                                                        <td>{ (x.group === '2' || x.group === '3')? goodQuantity[index] : 0 }</td>
+                                                        <td>{x.group === '1' ? goodQuantity[index] : 0}</td>
+                                                        <td>{(x.group === '2' || x.group === '3') ? goodQuantity[index] : 0}</td>
                                                         <td>{x.fromStock.name}</td>
                                                     </tr>
                                                 ))
@@ -216,7 +220,7 @@ class InventoryDetailForm extends Component {
                                         <div className="table-info-panel">{translate('confirm.loading')}</div> :
                                         (typeof listBillByGood === 'undefined' || listBillByGood.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                                     }
-                                    <PaginateBar pageTotal = {totalPages} currentPage = {page} func = {this.setPage} />
+                                    <PaginateBar pageTotal={totalPages} currentPage={page} func={this.setPage} />
                                 </fieldset>
                             </div>
                         </div>

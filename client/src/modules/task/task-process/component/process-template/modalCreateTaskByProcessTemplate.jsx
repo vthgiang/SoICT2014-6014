@@ -584,8 +584,8 @@ class ModalCreateTaskByProcessTemplate extends Component {
             endDate: endDate,
 
         }
-        console.log('000', data);
-        this.props.createTaskByProcess(data, this.state.idProcess);
+        let template;
+        this.props.createTaskByProcess(data, this.state.idProcess,template = true );
     }
 
     render() {

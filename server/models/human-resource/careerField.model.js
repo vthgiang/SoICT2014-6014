@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 // Tạo bảng vị trí công việc
 const CareerFieldSchema = new Schema({
     name: String,
-    code: String, // lưu lại trong db của employees
+    code: String,
     position: [{
         position: {
             type: Schema.Types.ObjectId,

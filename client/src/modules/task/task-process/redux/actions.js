@@ -141,7 +141,26 @@ function deleteXmlDiagram(diagramId, pageNumber, noResultsPerPage, name = "") {
  * @param {*} data dữ liệu để tạo mới
  * @param {*} diagramId id của quy trình
  */
-function createTaskByProcess(data, diagramId) {
+function createTaskByProcess(data, diagramId, template) {
+    if(template) {
+        return dispatch => {
+            dispatch({ type: TaskProcessConstants.CREATE_TASK_BY_PROCESS_TEMPLATE_REQUEST });
+            TaskProcessService.createTaskByProcess(data, diagramId)
+                .then(
+                    res => dispatch({ type: TaskProcessConstants.CREATE_TASK_BY_PROCESS_TEMPLATE_SUCCESS, payload: res.data }),
+                    error => dispatch({ type: TaskProcessConstants.CREATE_TASK_BY_PROCESS_TEMPLATE_FAIL })
+                );
+        };
+    }else {
+        return dispatch => {
+            dispatch({ type: TaskProcessConstants.CREATE_TASK_BY_PROCESS_REQUEST });
+            TaskProcessService.createTaskByProcess(data, diagramId)
+                .then(
+                    res => dispatch({ type: TaskProcessConstants.CREATE_TASK_BY_PROCESS_SUCCESS, payload: res.data }),
+                    error => dispatch({ type: TaskProcessConstants.CREATE_TASK_BY_PROCESS_FAIL })
+                );
+        };
+    }
     return dispatch => {
         dispatch({ type: TaskProcessConstants.CREATE_TASK_BY_PROCESS_REQUEST });
         TaskProcessService.createTaskByProcess(data, diagramId)

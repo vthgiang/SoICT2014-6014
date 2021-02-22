@@ -3296,6 +3296,9 @@ export default {
                 updated: "Updated",
                 day: "days",
                 overdue: "Over",
+                task_name: "Task",
+                start_date: "Start date",
+                end_date: "End date"
             }
         },
 

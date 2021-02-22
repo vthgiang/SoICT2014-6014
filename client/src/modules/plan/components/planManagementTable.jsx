@@ -6,17 +6,22 @@ import { DataTableSetting, DeleteNotification, PaginateBar, ConfirmNotification 
 import PlanCreateForm from "./planCreateForm";
 import PlanEditForm from "./planEditForm";
 import PlanDetailInfo from "./planDetailInfo";
-
+import { getTableConfiguration } from '../../../helpers/tableConfiguration';
 class PlanManagementTable extends Component {
     constructor(props) {
         super(props);
+        const tableId = "plan-management-table";
+        const defaultConfig = { limit: 5 }
+        const limit = getTableConfiguration(tableId, defaultConfig).limit;
+
         this.state = {
             code: "",
             planName: "",
             description: "",
             page: 0,
-            limit: 3,
-            flagDelete: false
+            limit: limit,
+            flagDelete: false,
+            tableId
         };
     }
 
@@ -98,6 +103,7 @@ class PlanManagementTable extends Component {
 
     render() {
         const { plan, translate } = this.props;
+        const { tableId } = this.state;
         let lists = [];
         if (plan.isLoading === false) {
             lists = plan.lists
@@ -138,7 +144,7 @@ class PlanManagementTable extends Component {
                             <button type="button" className="btn btn-success" title={translate('manage_plan.search')} onClick={this.handleSubmitSearch}>{translate('manage_plan.search')}</button>
                         </div>
                     </div>
-                    <table id="plan-table" className="table table-striped table-bordered table-hover">
+                    <table id={tableId} className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
                                 <th>{translate('manage_plan.index')}</th>
@@ -147,15 +153,13 @@ class PlanManagementTable extends Component {
                                 <th>{translate('manage_plan.description')}</th>
                                 <th style={{ width: "120px", textAlign: "center" }}>{translate('table.action')}
                                     <DataTableSetting
-                                        tableId="plan-table"
+                                        tableId={tableId}
                                         columnArr={[
                                             translate('manage_plan.index'),
                                             translate('manage_plan.code'),
                                             translate('manage_plan.planName'),
                                             translate('manage_plan.description'),
                                         ]}
-                                        limit={this.state.limit}
-                                        hideColumnOption={true}
                                         setLimit={this.setLimit}
                                     />
                                 </th>

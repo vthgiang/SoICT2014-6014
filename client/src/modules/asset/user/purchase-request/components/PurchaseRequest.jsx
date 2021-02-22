@@ -264,7 +264,10 @@ class PurchaseRequest extends Component {
                                         <td>{this.formatStatus(x.status)}</td>
                                         <td style={{ textAlign: "center" }}>
                                             <a onClick={() => this.handleView(x)} style={{ width: '5px' }} title={translate('asset.manage_recommend_procure.view_recommend_card')}><i className="material-icons">view_list</i></a>
-                                            <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={translate('asset.manage_recommend_procure.edit_recommend_card')}><i className="material-icons">edit</i></a>
+                                            {
+                                                (x.status === 'waiting_for_approval' || x.status === 'disapproved') &&
+                                                <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={translate('asset.manage_recommend_procure.edit_recommend_card')}><i className="material-icons">edit</i></a>
+                                            }
                                             <DeleteNotification
                                                 content={translate('asset.manage_recommend_procure.delete_recommend_card')}
                                                 data={{

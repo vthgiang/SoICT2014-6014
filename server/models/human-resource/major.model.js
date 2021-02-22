@@ -13,7 +13,7 @@ const MajorSchema = new Schema({
         name: {
             type: String,
         },
-        code: { // lưu lại trong db của employees
+        code: {
             type: String,
         },
         specialized: [{

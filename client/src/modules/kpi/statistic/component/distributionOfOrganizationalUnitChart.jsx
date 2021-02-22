@@ -127,7 +127,7 @@ function DistributionOfOrganizationalUnitChart(props) {
                 y: {
                     min: 0,
                     label: {
-                        text: translate('kpi.organizational_unit.dashboard.point'),
+                        text: translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.weight'),
                         position: 'outer-right'
                     },
                     padding: {

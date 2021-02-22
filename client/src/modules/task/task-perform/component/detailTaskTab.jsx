@@ -884,13 +884,17 @@ class DetailTaskTab extends Component {
                                 <a className="btn btn-app" onClick={() => this.handleCopyTask(id, currentRole)} title={translate('task.task_management.detail_copy_task')}>
                                     <i className="fa fa-clone" style={{ fontSize: "16px" }}></i>{translate('task.task_management.detail_copy_task')}
                                 </a>
+                            </React.Fragment>
+                        }
+                        {((currentRole === "accountable") && checkInactive) &&
+                            <React.Fragment>
                                 <a className="btn btn-app" onClick={() => this.handleSaveAsTemplate(id, currentRole)} title={translate('task.task_management.detail_save_as_template')}>
                                     <i className="fa fa-floppy-o" style={{ fontSize: "16px" }}></i>{translate('task.task_management.detail_save_as_template')}
                                 </a>
                             </React.Fragment>
                         }
                     
-                        {(((currentRole === "responsible" && task?.requestToCloseTask?.requestStatus !== 3) || (currentRole === "accountable" && task?.requestToCloseTask?.requestStatus === 1)) && checkInactive) && checkHasAccountable
+                        {task && statusTask !== "finished" && (((currentRole === "responsible" && task?.requestToCloseTask?.requestStatus !== 3) || (currentRole === "accountable" && task?.requestToCloseTask?.requestStatus === 1)) && checkInactive) && checkHasAccountable
                             && <a className="btn btn-app" onClick={() => this.handleShowRequestCloseTask(id)} title={currentRole === "responsible" ? translate('task.task_perform.request_close_task') : translate('task.task_perform.approval_close_task')}>
                                 <i className="fa fa-external-link-square" style={{ fontSize: "16px" }}></i>{currentRole === "responsible" ? translate('task.task_perform.request_close_task') : translate('task.task_perform.approval_close_task')}
                             </a>

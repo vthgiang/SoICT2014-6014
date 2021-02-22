@@ -6,15 +6,21 @@ import { DataTableSetting, DeleteNotification, PaginateBar } from "../../../../c
 import ExampleCreateForm from "./exampleCreateForm";
 import ExampleEditForm from "./exampleEditForm";
 import ExampleDetailInfo from "./exampleDetailInfo";
+import { getTableConfiguration } from '../../../../helpers/tableConfiguration';
 
 class ExampleManagementTable extends Component {
     constructor(props) {
         super(props);
+        const tableId = "table-manage-example2-class";
+        const defaultConfig = { limit: 5 }
+        const limit = getTableConfiguration(tableId, defaultConfig).limit;
+
         this.state = {
             exampleName: "",
             description: "",
             page: 1,
-            limit: 5
+            limit: limit,
+            tableId
         };
     }
 
@@ -66,8 +72,8 @@ class ExampleManagementTable extends Component {
         window.$('#modal-edit-example').modal('show');
     }
 
-    handleShowDetailInfo = async (id) => {
-        await this.setState((state) => {
+    handleShowDetailInfo = (id) => {
+        this.setState((state) => {
             return {
                 ...state,
                 exampleId: id
@@ -78,6 +84,7 @@ class ExampleManagementTable extends Component {
 
     render() {
         const { example, translate } = this.props;
+        const { tableId } = this.state;
         let lists = [];
         if (example.isLoading === false) {
             lists = example.lists
@@ -96,6 +103,7 @@ class ExampleManagementTable extends Component {
                     />
                 }
                 {
+                    this.state.exampleId &&
                     <ExampleDetailInfo
                         exampleId={this.state.exampleId}
                     />
@@ -111,20 +119,18 @@ class ExampleManagementTable extends Component {
                             <button type="button" className="btn btn-success" title={translate('manage_example.search')} onClick={this.handleSubmitSearch}>{translate('manage_example.search')}</button>
                         </div>
                     </div>
-                    <table id="example-table" className="table table-striped table-bordered table-hover">
+                    <table id={tableId} className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
                                 <th className="col-fixed" style={{ width: 60 }}>{translate('manage_example.index')}</th>
                                 <th>{translate('manage_example.exampleName')}</th>
                                 <th style={{ width: "120px", textAlign: "center" }}>{translate('table.action')}
                                     <DataTableSetting
-                                        tableId="example-table"
+                                        tableId={tableId}
                                         columnArr={[
                                             translate('manage_example.index'),
                                             translate('manage_example.exampleName')
                                         ]}
-                                        limit={this.state.limit}
-                                        hideColumnOption={true}
                                         setLimit={this.setLimit}
                                     />
                                 </th>
@@ -134,7 +140,7 @@ class ExampleManagementTable extends Component {
                             {(lists && lists.length !== 0) &&
                                 lists.map((example, index) => (
                                     <tr key={index}>
-                                        <td>{index + 1 + (page-1) * this.state.limit}</td>
+                                        <td>{index + 1 + (page - 1) * this.state.limit}</td>
                                         <td>{example.exampleName}</td>
                                         <td style={{ textAlign: "center" }}>
                                             <a className="edit text-green" style={{ width: '5px' }} title={translate('manage_example.detail_info_example')} onClick={() => this.handleShowDetailInfo(example._id)}><i className="material-icons">visibility</i></a>

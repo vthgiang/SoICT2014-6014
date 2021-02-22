@@ -153,11 +153,32 @@ class EvaluateByAccountableEmployee extends Component {
         return true;
     }
 
+    handleSortMonthEval = (evaluations) => {
+        // sắp xếp đánh giá theo thứ tự tháng
+        const sortedEvaluations = evaluations?.sort((a, b) => new Date(b.evaluatingMonth) - new Date(a.evaluatingMonth));
+        return sortedEvaluations;
+    }
+
+    getPreviousEvaluation = (task, date) => {
+        let evaluations = task.evaluations;
+        let sortedEvaluations = this.handleSortMonthEval(evaluations);
+
+        let evalMonth = moment(date, 'DD-MM-YYYY').endOf("month").toDate();
+        for(let i in sortedEvaluations){
+            let eva = sortedEvaluations[i];
+            console.log('new Date(eva?.evaluatingMonth) < evalMonth', new Date(eva?.evaluatingMonth) < evalMonth, new Date(eva?.evaluatingMonth) , evalMonth);
+            if(new Date(eva?.evaluatingMonth) <= evalMonth) {
+                return eva;
+            }
+        }
+        return null;
+    } 
+
     /**
      * Hàm xử lý dữ liệu khởi tạo
      *  @dateParam : để truyền vào thông tin ngày đánh giá. khi khởi tạo thì đang cho giá trị storedEvaluateMonth = endDate nên chỉ cần truyền vào 1 tham số này
      *  @evaluatingMonth : giá trị tháng đánh giá. Truyền vào khi thay đổi tháng đánh giá, hoặc thay đổi ngày đánh giá lần này (endDate)
-     * */  
+     * */
     getData = (dateParam, evaluatingMonthParam) => {
         const { user, KPIPersonalManager } = this.props;
         let { task, hasAccountable } = this.props;
@@ -175,7 +196,7 @@ class EvaluateByAccountableEmployee extends Component {
         let evaluations, prevEval;
 
         let splitter = dateParam.split("-");
-        if(evaluatingMonthParam) {
+        if (evaluatingMonthParam) {
             splitter = evaluatingMonthParam.split("-");
             console.log('splitter', splitter);
         }
@@ -198,20 +219,22 @@ class EvaluateByAccountableEmployee extends Component {
         let yearOfPrevEval = dateOfPrevEval.getFullYear();
 
         evaluations = task.evaluations.find(e => (monthOfEval === new Date(e.evaluatingMonth).getMonth() && yearOfEval === new Date(e.evaluatingMonth).getFullYear()));
-        prevEval = task.evaluations.find(e => ((monthOfPrevEval) === new Date(e.evaluatingMonth).getMonth() && yearOfPrevEval === new Date(e.evaluatingMonth).getFullYear()));
+        // prevEval = task.evaluations.find(e => ((monthOfPrevEval) === new Date(e.evaluatingMonth).getMonth() && yearOfPrevEval === new Date(e.evaluatingMonth).getFullYear()));
+        prevEval = this.getPreviousEvaluation(task, dateParam);
         if (prevEval) {
             prevDate = this.formatDate(prevEval.endDate);
             startTime = this.formatTime(prevEval.endDate);
-        } else {
-            let strPrevMonth = `${monthOfPrevEval + 1}-${yearOfPrevEval}`
-            // trong TH k có đánh giá tháng trước, so sánh tháng trước với tháng start date
-            if (!((yearOfPrevEval === new Date(startDateTask).getFullYear() && monthOfPrevEval < new Date(startDateTask).getMonth()) // bắt đầu tháng bất kì khác tháng 1
-                || (yearOfPrevEval < new Date(startDateTask).getFullYear()) // TH bắt đầu là tháng 1 - chọn đánh giá tháng 1
-            )) {
-                prevDate = moment(strPrevMonth, 'MM-YYYY').endOf("month").format('DD-MM-YYYY');
-                startTime = "12:00 AM";
-            }
-        }
+        } 
+        // else {
+        //     let strPrevMonth = `${monthOfPrevEval + 1}-${yearOfPrevEval}`
+        //     // trong TH k có đánh giá tháng trước, so sánh tháng trước với tháng start date
+        //     if (!((yearOfPrevEval === new Date(startDateTask).getFullYear() && monthOfPrevEval < new Date(startDateTask).getMonth()) // bắt đầu tháng bất kì khác tháng 1
+        //         || (yearOfPrevEval < new Date(startDateTask).getFullYear()) // TH bắt đầu là tháng 1 - chọn đánh giá tháng 1
+        //     )) {
+        //         prevDate = moment(strPrevMonth, 'MM-YYYY').endOf("month").format('DD-MM-YYYY');
+        //         startTime = "12:00 AM";
+        //     }
+        // }
         let automaticPoint = (evaluations && evaluations.results.length !== 0) ? evaluations.results[0].automaticPoint : undefined;
         let progress = evaluations ? evaluations.progress : 0;
 
@@ -223,7 +246,7 @@ class EvaluateByAccountableEmployee extends Component {
         if (hasAccountable === true && KPIPersonalManager && KPIPersonalManager.kpiSets) {
             cloneKpi = (KPIPersonalManager.kpiSets.kpis.filter(e => (e.type === 1)).map(x => { return x._id }));
         }
-        
+
         let info = {};
 
         let infoEval = task.taskInformations;
@@ -1061,7 +1084,7 @@ class EvaluateByAccountableEmployee extends Component {
         return time + suffix;
     }
 
-    validateDateTime = (evaluatingMonth, startDate, startTime, endDate, endTime, type ) => {
+    validateDateTime = (evaluatingMonth, startDate, startTime, endDate, endTime, type) => {
         let { translate } = this.props;
         let { isEval, storedEvaluatingMonth, task } = this.state;
 
@@ -1087,11 +1110,11 @@ class EvaluateByAccountableEmployee extends Component {
         // kiểm tra sâu rỗng 
         if (startDate.trim() === "" || startTime.trim() === "" || endDate.trim() === "" || endTime.trim() === "") {
             msg = translate('task.task_management.add_err_empty_end_date');
-        } 
+        }
         // kiểm tra ngày bắt đầu so với ngày kết thúc
         else if (startDateISO > endDateISO) {
             msg = translate('task.task_management.add_err_end_date');
-        } 
+        }
         else if (type === "start") {
             // kiểm tra điều kiện trong tháng đánh giá
             if (startDateISO > endOfMonth) {
@@ -1107,7 +1130,7 @@ class EvaluateByAccountableEmployee extends Component {
                     }
                 }
             }
-        } 
+        }
         else if (type === "end") {
             if (endDateISO < startOfMonth) {
                 console.log('endDateISO < startOfMonth');
@@ -1126,7 +1149,7 @@ class EvaluateByAccountableEmployee extends Component {
 
         return msg;
     }
-    
+
     // hàm cập nhật ngày đánh giá từ
     handleStartDateChange = (value) => {
         let { translate } = this.props;
@@ -1181,7 +1204,7 @@ class EvaluateByAccountableEmployee extends Component {
         });
 
     }
-    
+
     handleStartTimeChange = (value) => {
         let { translate } = this.props;
         let { evaluatingMonth, endDate, startDate, endTime, startTime } = this.state;
@@ -1241,7 +1264,7 @@ class EvaluateByAccountableEmployee extends Component {
     handleMonthOfEvaluationChange = (value) => {
         // indexReRender = indexReRender + 1;
         let { translate } = this.props;
-        let { userId ,evaluatingMonth, task, endDate, startDate, endTime, startTime } = this.state;
+        let { userId, evaluatingMonth, task, endDate, startDate, endTime, startTime } = this.state;
         let evalDate = moment(value, 'MM-YYYY').endOf('month').format('DD-MM-YYYY');
         let err = this.validateDateTime(value, startDate, startTime, evalDate, endDate, "end");
 
@@ -1274,9 +1297,9 @@ class EvaluateByAccountableEmployee extends Component {
         let dst2 = (dateValue.getTime() - startDateTask.getTime()); // < 0 -> err // denta start task
         let det2 = (endDateTask.getTime() - dateValue.getTime()); // < 0 -> err // denta end task
 
-        if(dst2 < 0) {
+        if (dst2 < 0) {
             errMonth = "Tháng đánh giá phải lớn hơn hoặc bằng tháng bắt đầu";
-        } else if(det2 < 0) {
+        } else if (det2 < 0) {
             // errMonth = "Tháng đánh giá phải nhỏ hơn hoặc bằng tháng kết thúc";
         }
 
@@ -1313,8 +1336,16 @@ class EvaluateByAccountableEmployee extends Component {
             }
         });
         if (!errMonth) {
-            this.props.handleChangeMonthEval({ evaluatingMonth: value, date: evalDate });
+            this.props.handleChangeMonthEval({ evaluatingMonth: value, date: evalDate, id: this.state.id });
         }
+    }
+
+    getEndTask = async () => {
+        let { task } = this.state;
+        let end = task?.endDate;
+        let endDate = this.formatDate(new Date(end));
+        let endTime = this.formatTime(new Date(end));
+        this.setState({ endDate: endDate, endTime:endTime });
     }
 
     validateDate = (value, willUpdateState = true) => {
@@ -1570,6 +1601,7 @@ class EvaluateByAccountableEmployee extends Component {
             }
         });
         // this.props.handleChangeDataStatus(1); // 1 = DATA_STATUS.QUERYING
+        this.props.handleChangeShowEval(this.state.id);
     }
 
     // hàm kiểm tra thông báo
@@ -1691,7 +1723,7 @@ class EvaluateByAccountableEmployee extends Component {
                                                 disabled={disabled}
                                             />
                                             < TimePicker
-                                                id={`time-picker-1-start-time-${id}-${perform}`}
+                                                id={`time-picker-1-start-time-${id}-${perform}-${this.props.id}`}
                                                 value={startTime}
                                                 onChange={this.handleStartTimeChange}
                                             />
@@ -1700,7 +1732,12 @@ class EvaluateByAccountableEmployee extends Component {
                                     </div>
                                     {/* ngày đánh giá */}
                                     <div className={`form-group col-md-6 ${errorOnEndDate === undefined ? "" : "has-error"}`}>
-                                        <label>{translate('task.task_management.eval_to')}<span className="text-red">*</span></label>
+                                        <label>
+                                            {translate('task.task_management.eval_to')}<span className="text-red">*</span>
+                                            <span className="pull-right" style={{ fontWeight: "normal", marginLeft: 10 }}>
+                                                <a style={{ cursor: "pointer" }} onClick={() => this.getEndTask()}>Lấy thời điểm kết thúc công việc</a>
+                                            </span>
+                                        </label>
                                         <DatePicker
                                             id={`end_date_${perform}-${id}`}
                                             value={endDate}
@@ -1708,7 +1745,7 @@ class EvaluateByAccountableEmployee extends Component {
                                             disabled={disabled}
                                         />
                                         < TimePicker
-                                            id={`time-picker-2-end-time-${id}-${perform}`}
+                                            id={`time-picker-2-end-time-${id}-${perform}-${this.props.id}`}
                                             value={endTime}
                                             onChange={this.handleEndTimeChange}
                                         />
@@ -1829,7 +1866,7 @@ class EvaluateByAccountableEmployee extends Component {
                                                             <span key={index}>
                                                                 ({index + 1})&nbsp;&nbsp;
                                                             <QuillEditor
-                                                                    id={`evaluateByAccountable${item._id}`}
+                                                                    id={`evaluateByAccountable${item._id}${this.props.id}`}
                                                                     quillValueDefault={item.description}
                                                                     isText={true}
                                                                 />

@@ -604,8 +604,6 @@ class CreateForm extends Component {
         const relationshipDocs = documents.administration.relationshipDocs.paginate.map(doc => { return { value: doc._id, text: doc.name } });
         let path = documentArchives ? this.findPath(archives, documentArchives) : "";
 
-        console.log('aaaaaaaa', role);
-
         return (
             <React.Fragment>
 

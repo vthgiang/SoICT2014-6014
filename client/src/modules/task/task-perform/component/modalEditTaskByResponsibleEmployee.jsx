@@ -507,7 +507,7 @@ class ModalEditTaskByResponsibleEmployee extends Component {
                                         className={`form-group ${errorTaskDescription === undefined ? "" : "has-error"}`}>
                                         <label>{translate('task.task_management.detail_description')}</label>
                                         <QuillEditor
-                                            id={"task-edit-by-responsible"}
+                                            id={`task-edit-by-responsible-${this.props.id}`}
                                             table={false}
                                             embeds={false}
                                             quillValueDefault={taskDescriptionDefault}

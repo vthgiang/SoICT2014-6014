@@ -11,14 +11,19 @@ import { formatCurrency } from "../../../../../../helpers/formatCurrency";
 import { PaginateBar, DataTableSetting, SelectMulti } from "../../../../../../common-components";
 import PaymentVoucherCreateForm from "./paymentVoucherCreateForm";
 import PaymentVoucherDetailForm from "./paymentVoucherDetailForm";
-
+import { getTableConfiguration } from '../../../../../../helpers/tableConfiguration';
 class PaymentVoucherManagementTable extends Component {
     constructor(props) {
         super(props);
+        const tableId = "payment-voucher-manager-table";
+        const defaultConfig = { limit: 5 }
+        const limit = getTableConfiguration(tableId, defaultConfig).limit;
+
         this.state = {
             page: 1,
-            limit: 5,
+            limit: limit,
             type: 2,
+            tableId
         };
     }
 
@@ -101,7 +106,7 @@ class PaymentVoucherManagementTable extends Component {
         const { payments } = this.props;
         const { totalPages, page, listPayments } = payments;
 
-        const { paymentDetail } = this.state;
+        const { paymentDetail, tableId } = this.state;
         return (
             <React.Fragment>
                 <div className="box-body qlcv">
@@ -128,11 +133,11 @@ class PaymentVoucherManagementTable extends Component {
                                 items={
                                     this.props.customers.list
                                         ? this.props.customers.list.map((customerItem) => {
-                                              return {
-                                                  value: customerItem._id,
-                                                  text: customerItem.name,
-                                              };
-                                          })
+                                            return {
+                                                value: customerItem._id,
+                                                text: customerItem.name,
+                                            };
+                                        })
                                         : []
                                 }
                                 multiple="multiple"
@@ -147,7 +152,7 @@ class PaymentVoucherManagementTable extends Component {
                             </button>
                         </div>
                     </div>
-                    <table id="payment-voucher-table" className="table table-striped table-bordered table-hover">
+                    <table id={tableId} className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
                                 <th>STT</th>
@@ -164,10 +169,8 @@ class PaymentVoucherManagementTable extends Component {
                                 >
                                     Hành động
                                     <DataTableSetting
-                                        tableId="bank-account-table"
+                                        tableId={tableId}
                                         columnArr={["STT", "Mã phiếu", "Nhà cung cấp", "Người thanh toán", "Số tiền thanh toán", "Ngày thanh toán"]}
-                                        limit={this.state.limit}
-                                        hideColumnOption={true}
                                         setLimit={this.setLimit}
                                     />
                                 </th>
@@ -202,10 +205,10 @@ class PaymentVoucherManagementTable extends Component {
                     {payments.isLoading ? (
                         <div className="table-info-panel">{translate("confirm.loading")}</div>
                     ) : (
-                        (typeof listPayments === "undefined" || listPayments.length === 0) && (
-                            <div className="table-info-panel">{translate("confirm.no_data")}</div>
-                        )
-                    )}
+                            (typeof listPayments === "undefined" || listPayments.length === 0) && (
+                                <div className="table-info-panel">{translate("confirm.no_data")}</div>
+                            )
+                        )}
                     <PaginateBar pageTotal={totalPages ? totalPages : 0} currentPage={page} func={this.setPage} />
                 </div>
             </React.Fragment>

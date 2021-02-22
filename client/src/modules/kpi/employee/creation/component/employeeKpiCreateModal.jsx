@@ -5,8 +5,9 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import { UserActions } from "../../../../super-admin/user/redux/actions"
 import { createKpiSetActions } from '../redux/actions';
+import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
 
-import { DatePicker, DialogModal, SelectBox } from '../../../../../../src/common-components';
+import { DialogModal, SelectBox } from '../../../../../../src/common-components';
 import getEmployeeSelectBoxItems from '../../../../task/organizationalUnitHelper';
 
 
@@ -45,30 +46,46 @@ class ModalCreateEmployeeKpiSet extends Component {
         }
     }
 
-    componentDidMount() {
+    componentDidMount = () => {
         this.props.getAllUserSameDepartment(localStorage.getItem("currentRole"));
     }
 
     shouldComponentUpdate = (nextProps, nextState) => {
-        const { user } = this.props;
+        const { user, createKpiUnit } = this.props;
         const { employeeKpiSet } = this.state;
 
+        if (createKpiUnit && createKpiUnit.currentKPI && nextProps.department && !nextProps.department.unitLoading && !nextProps.department.unit && createKpiUnit?.currentKPI?.organizationalUnit?.parent) {
+            this.props.getOrganizationalUnit(createKpiUnit?.currentKPI?.organizationalUnit?.parent);
+        }
+            
         // Khi truy vấn API đã có kết quả
-        if (!employeeKpiSet.approver && user.userdepartments && user.userdepartments.managers) {
-            if (Object.keys(user.userdepartments.managers).length > 0) { // Nếu có trưởng đơn vị
-                let members = user.userdepartments.managers[Object.keys(user.userdepartments.managers)[0]].members;
-                if (members.length) {
-                    this.setState(state => {
-                        return {
-                            ...state,
-                            employeeKpiSet: {
-                                ...state.employeeKpiSet,
-                                approver: members[0] && members[0]._id
-                            }
-                        };
-                    });
-                    return false; // Sẽ cập nhật lại state nên không cần render
-                }
+        if (!employeeKpiSet.approver && user.userdepartments && user.userdepartments.managers && Object.keys(user.userdepartments.managers).length > 0 && user.userdepartments.managers?.[Object.keys(user.userdepartments.managers)?.[0]]?.members?.length > 0) { // Nếu có trưởng đơn vị
+            let members = user.userdepartments.managers?.[Object.keys(user.userdepartments.managers)?.[0]]?.members;
+            if (members?.length) {
+                this.setState(state => {
+                    return {
+                        ...state,
+                        employeeKpiSet: {
+                            ...state.employeeKpiSet,
+                            approver: members[0] && members[0]._id
+                        }
+                    };
+                });
+                return false; // Sẽ cập nhật lại state nên không cần render
+            }
+        } else if (!employeeKpiSet.approver && nextProps.department?.unit?.managers?.[0]?.users && nextProps.department?.unit?.managers?.[0]?.users.length > 0) { // Nếu có trưởng đơn vị
+            let members = nextProps.department?.unit?.managers?.[0]?.users;
+            if (members?.length) {
+                this.setState(state => {
+                    return {
+                        ...state,
+                        employeeKpiSet: {
+                            ...state.employeeKpiSet,
+                            approver: members?.[0]?.userId?.id
+                        }
+                    };
+                });
+                return false; // Sẽ cập nhật lại state nên không cần render
             }
         }
 
@@ -82,7 +99,7 @@ class ModalCreateEmployeeKpiSet extends Component {
                 ...state,
                 employeeKpiSet: {
                     ...state.employeeKpiSet,
-                    approver: value,
+                    approver: value[0],
                 }
             }
         });
@@ -117,12 +134,31 @@ class ModalCreateEmployeeKpiSet extends Component {
     }
 
     render() {
-        const { user, translate } = this.props;
+        const { user, department, translate } = this.props;
         const { _id, employeeKpiSet, organizationalUnit } = this.state;
-        let managers;
+        let managers = [];
 
-        if (user.userdepartments) {
+        if (user?.userdepartments) {
             managers = getEmployeeSelectBoxItems([user.userdepartments], true, false, false);
+        }
+        if (department?.unit) {
+            let temp;
+            temp = {
+                text: department?.unit?.name,
+                value: []
+            }
+            if (department?.unit?.managers?.[0]?.users) {
+                department.unit.managers[0].users.map(item => {
+                    temp.value.push({
+                        value: item?.userId?.id,
+                        text: item?.userId?.name + ' (' + department.unit.managers[0]?.name + ')'
+                    })
+                })
+            }
+
+            if (managers) {
+                managers.push(temp);
+            }
         }
 
         return (
@@ -178,13 +214,14 @@ class ModalCreateEmployeeKpiSet extends Component {
 }
 
 function mapState(state) {
-    const { user } = state;
-    return { user };
+    const { user, createKpiUnit, department, createEmployeeKpiSet } = state;
+    return { user, createKpiUnit, department, createEmployeeKpiSet };
 }
 
 const actionCreators = {
     getAllUserSameDepartment: UserActions.getAllUserSameDepartment,
-    createEmployeeKpiSet: createKpiSetActions.createEmployeeKpiSet
+    createEmployeeKpiSet: createKpiSetActions.createEmployeeKpiSet,
+    getOrganizationalUnit: DepartmentActions.getOrganizationalUnit
 };
 
 const connectedModalCreateEmployeeKpiSet = connect(mapState, actionCreators)(withTranslate(ModalCreateEmployeeKpiSet));

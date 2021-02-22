@@ -24,15 +24,22 @@ import PurchaseOrderEditForm from "./purchaseOrderEditForm";
 import GoodReceiptCreateForm from "../../../warehouse/bill-management/components/good-receipts/goodReceiptCreateForm";
 import BillDetailForm from "../../../warehouse/bill-management/components/genaral/billDetailForm";
 import PurchaseOrderApproveForm from "./purchaseOrderApproveForm";
+import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
+
 class PurchaseOrderTable extends Component {
     constructor(props) {
         super(props);
+        const tableId = "purchase-order-table";
+        const defaultConfig = { limit: 5 }
+        const limit = getTableConfiguration(tableId, defaultConfig).limit;
+
         this.state = {
-            limit: 5,
+            limit: limit,
             page: 1,
             code: "",
             status: "",
             currentRole: localStorage.getItem("currentRole"),
+            tableId
         };
     }
 
@@ -190,7 +197,7 @@ class PurchaseOrderTable extends Component {
     };
 
     render() {
-        const { code, status, codeCreate, purchaseOrderEdit, purchaseOrderDetail, purchaseOrderAddBill, billCode, purchaseOrderApprove } = this.state;
+        const { code, status, codeCreate, purchaseOrderEdit, purchaseOrderDetail, purchaseOrderAddBill, billCode, purchaseOrderApprove, tableId } = this.state;
 
         const { translate, purchaseOrders } = this.props;
         const { totalPages, page, listPurchaseOrders } = purchaseOrders;
@@ -319,11 +326,11 @@ class PurchaseOrderTable extends Component {
                                 items={
                                     this.props.customers.list
                                         ? this.props.customers.list.map((customerItem) => {
-                                              return {
-                                                  value: customerItem._id,
-                                                  text: customerItem.name,
-                                              };
-                                          })
+                                            return {
+                                                value: customerItem._id,
+                                                text: customerItem.name,
+                                            };
+                                        })
                                         : []
                                 }
                                 multiple="multiple"
@@ -337,7 +344,7 @@ class PurchaseOrderTable extends Component {
                             </button>
                         </div>
                     </div>
-                    <table id="order-table" className="table table-striped table-bordered table-hover" style={{ marginTop: 20 }}>
+                    <table id={tableId} className="table table-striped table-bordered table-hover" style={{ marginTop: 20 }}>
                         <thead>
                             <tr>
                                 <th>STT</th>
@@ -355,10 +362,8 @@ class PurchaseOrderTable extends Component {
                                 >
                                     {translate("table.action")}
                                     <DataTableSetting
-                                        tableId="manufacturing-works-table"
+                                        tableId={tableId}
                                         columnArr={["STT", "Mã đơn", "Trạng thái", "Người tạo", "Tổng tiền"]}
-                                        limit={this.state.limit}
-                                        hideColumnOption={true}
                                         setLimit={this.setLimit}
                                     />
                                 </th>
@@ -427,10 +432,10 @@ class PurchaseOrderTable extends Component {
                     {purchaseOrders.isLoading ? (
                         <div className="table-info-panel">{translate("confirm.loading")}</div>
                     ) : (
-                        (typeof listPurchaseOrders === "undefined" || listPurchaseOrders.length === 0) && (
-                            <div className="table-info-panel">{translate("confirm.no_data")}</div>
-                        )
-                    )}
+                            (typeof listPurchaseOrders === "undefined" || listPurchaseOrders.length === 0) && (
+                                <div className="table-info-panel">{translate("confirm.no_data")}</div>
+                            )
+                        )}
                     <PaginateBar pageTotal={totalPages ? totalPages : 0} currentPage={page} func={this.setPage} />
                 </div>
             </React.Fragment>

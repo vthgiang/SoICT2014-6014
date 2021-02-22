@@ -12,7 +12,7 @@ import { TimesheetsActions } from '../redux/actions';
 import { AnnualLeaveActions } from '../../annual-leave/redux/actions';
 import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
 import { ConfigurationActions } from '../../../super-admin//module-configuration/redux/actions';
-
+import { getTableConfiguration } from '../../../../helpers/tableConfiguration';
 import './timesheet.css';
 
 class TimesheetsManagement extends Component {
@@ -21,6 +21,11 @@ class TimesheetsManagement extends Component {
         let allDayOfMonth = this.getAllDayOfMonth(this.formatDate(Date.now(), true));
         let dateNow = new Date();
         let dayNow = dateNow.getDate();
+
+        const tableId = "timesheets-management";
+        const defaultConfig = { limit: 5 }
+        const limit = getTableConfiguration(tableId, defaultConfig).limit;
+
         this.state = {
             allDayOfMonth: allDayOfMonth,
             dayNow: dayNow,
@@ -29,7 +34,8 @@ class TimesheetsManagement extends Component {
             employeeName: "",
             organizationalUnits: null,
             page: 0,
-            limit: 5,
+            limit: limit,
+            tableId,
         }
     }
 
@@ -401,7 +407,7 @@ class TimesheetsManagement extends Component {
     render() {
         const { translate, timesheets, annualLeave, department, modelConfiguration } = this.props;
 
-        const { month, limit, page, allDayOfMonth, dayNow, organizationalUnits, currentRowViewChart, currentRowView, currentRow, importExcel } = this.state;
+        const { month, limit, page, allDayOfMonth, dayNow, organizationalUnits, currentRowViewChart, currentRowView, currentRow, importExcel, tableId } = this.state;
 
         let timekeepingType, config, listAnnualLeaves = [], listTimesheets = [], exportData = [], humanResourceConfig = modelConfiguration.humanResourceConfig;
 
@@ -494,16 +500,21 @@ class TimesheetsManagement extends Component {
 
 
                     <DataTableSetting
-                        tableId="table-timesheets"
-                        limit={this.state.limit}
+                        tableId={tableId}
+                        columnArr={[
+                            translate('human_resource.staff_number'),
+                            translate('human_resource.staff_name'),
+                            translate('human_resource.timesheets.total_timesheets'),
+                            translate('general.action'),
+                            translate('human_resource.timesheets.shift_work'),
+                        ]}
                         setLimit={this.setLimit}
-                        hideColumnOption={false}
                     />
                     {
                         timekeepingType === 'shift' &&
                         <div id="croll-table" className="form-inline">
                             <div className="sticky col-lg-6 col-md-6 col-sm-7 col-xs-8 " style={{ padding: 0 }}>
-                                <table id="table-timesheets" className="keeping table table-bordered">
+                                <table id={tableId} className="keeping table table-bordered">
                                     <thead>
                                         <tr style={{ height: 58 }}>
                                             <th className="col-fixed not-sort">{translate('human_resource.staff_number')}</th>

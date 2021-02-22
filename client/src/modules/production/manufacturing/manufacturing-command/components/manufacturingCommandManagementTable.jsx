@@ -9,13 +9,19 @@ import { UserActions } from '../../../../super-admin/user/redux/actions';
 import ManufacturingLotCreateForm from '../../manufacturing-lot/components/manufacturingLotCreateForm';
 import QualityControlForm from './qualityControlForm';
 import { generateCode } from '../../../../../helpers/generateCode';
+import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
 class ManufacturingCommandManagementTable extends Component {
     constructor(props) {
         super(props);
+
+        const tableId = "manufacturing-command-table";
+        const defaultConfig = { limit: 5 }
+        const limit = getTableConfiguration(tableId, defaultConfig).limit;
+
         this.state = {
             currentRole: localStorage.getItem("currentRole"),
             page: 1,
-            limit: 5,
+            limit: limit,
             code: '',
             planCode: '',
             manufacturingOrderCode: '',
@@ -25,7 +31,8 @@ class ManufacturingCommandManagementTable extends Component {
             createdAt: '',
             fromDate: '',
             toDate: '',
-            status: []
+            status: [],
+            tableId
         }
     }
 
@@ -279,7 +286,7 @@ class ManufacturingCommandManagementTable extends Component {
             listCommands = manufacturingCommand.listCommands
         }
         const { totalPages, page } = manufacturingCommand;
-        const { code, accountables, planCode, createdAt, manufacturingOrderCode, fromDate, salesOrderCode, toDate, lotCode, status } = this.state;
+        const { code, accountables, planCode, createdAt, manufacturingOrderCode, fromDate, salesOrderCode, toDate, lotCode, status, tableId } = this.state;
         this.getUserArray();
         return (
             <React.Fragment>
@@ -403,7 +410,7 @@ class ManufacturingCommandManagementTable extends Component {
                             <button type="button" className="btn btn-success" title={translate('manufacturing.command.search')} onClick={this.handleSubmitSearch}>{translate('manufacturing.command.search')}</button>
                         </div>
                     </div>
-                    <table id="manufacturing-command-table" className="table table-striped table-bordered table-hover">
+                    <table id={tableId} className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
                                 <th>{translate('manufacturing.command.index')}</th>
@@ -419,7 +426,7 @@ class ManufacturingCommandManagementTable extends Component {
                                 <th>{translate('manufacturing.command.status')}</th>
                                 <th style={{ width: "120px", textAlign: "center" }}>{translate('general.action')}
                                     <DataTableSetting
-                                        tableId="manufacturing-command-table"
+                                        tableId={tableId}
                                         columnArr={[
                                             translate('manufacturing.command.index'),
                                             translate('manufacturing.command.code'),
@@ -433,8 +440,6 @@ class ManufacturingCommandManagementTable extends Component {
                                             translate('manufacturing.command.end_date'),
                                             translate('manufacturing.command.status')
                                         ]}
-                                        limit={this.state.limit}
-                                        hideColumnOption={true}
                                         setLimit={this.setLimit}
                                     />
                                 </th>

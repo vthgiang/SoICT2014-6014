@@ -7,14 +7,19 @@ import BillDetailForm from '../genaral/billDetailForm';
 import StockTakeEditForm from './stockTakeEditForm';
 import StockTakeCreateForm from './stockTakeCreateForm';
 import QualityControlForm from '../genaral/quatityControlForm';
-
+import { getTableConfiguration } from '../../../../../../helpers/tableConfiguration';
 class TakeManagement extends Component {
     constructor(props) {
         super(props);
+        const tableId = "take-management-table";
+        const defaultConfig = { limit: 5 }
+        const limit = getTableConfiguration(tableId, defaultConfig).limit;
+
         this.state = {
-            limit: 5,
+            limit: limit,
             page: 1,
-            group: '4'
+            group: '4',
+            tableId
         }
     }
 
@@ -56,7 +61,7 @@ class TakeManagement extends Component {
         const { translate, bills, stocks, user } = this.props;
         const { listPaginate, totalPages, page } = bills;
         const { listStocks } = stocks;
-        const { startDate, endDate, group, currentRow } = this.state;
+        const { startDate, endDate, group, currentRow, tableId } = this.state;
         const dataPartner = this.props.getPartner();
         return (
             <div id="bill-stock-takes">
@@ -184,7 +189,7 @@ class TakeManagement extends Component {
                         />
                     }
 
-                    <table id={`good-table`} className="table table-striped table-bordered table-hover" style={{ marginTop: '15px' }}>
+                    <table id={tableId} className="table table-striped table-bordered table-hover" style={{ marginTop: '15px' }}>
                         <thead>
                             <tr>
                                 <th style={{ width: '5%' }}>{translate('manage_warehouse.bill_management.index')}</th>
@@ -198,7 +203,7 @@ class TakeManagement extends Component {
                                 <th>{translate('manage_warehouse.bill_management.description')}</th>
                                 <th style={{ width: '120px' }}>{translate('table.action')}
                                     <DataTableSetting
-                                        tableId={`stock-take-table`}
+                                        tableId={tableId}
                                         columnArr={[
                                             translate('manage_warehouse.bill_management.index'),
                                             translate('manage_warehouse.bill_management.code'),
@@ -210,9 +215,7 @@ class TakeManagement extends Component {
                                             translate('manage_warehouse.bill_management.stock'),
                                             translate('manage_warehouse.bill_management.description')
                                         ]}
-                                        limit={this.state.limit}
                                         setLimit={this.props.setLimit}
-                                        hideColumnOption={true}
                                     />
                                 </th>
                             </tr>
@@ -226,35 +229,35 @@ class TakeManagement extends Component {
                                         <td>{translate(`manage_warehouse.bill_management.billType.${x.type}`)}</td>
                                         <td style={{ color: translate(`manage_warehouse.bill_management.bill_color.${x.status}`) }}>{translate(`manage_warehouse.bill_management.bill_status.${x.status}`)}</td>
                                         <td>{x.creator ? x.creator.name : "Creator is deleted"}</td>
-                                        <td>{x.approvers ? x.approvers.map((a, key) => { return <p key={key}>{a.approver.name}</p>}) : "approver is deleted"}</td>
+                                        <td>{x.approvers ? x.approvers.map((a, key) => { return <p key={key}>{a.approver.name}</p> }) : "approver is deleted"}</td>
                                         <td>{this.props.formatDate(x.updatedAt)}</td>
                                         <td>{x.fromStock ? x.fromStock.name : "Stock is deleted"}</td>
                                         <td>{x.description}</td>
                                         <td style={{ textAlign: 'center' }}>
                                             <a onClick={() => this.props.handleShowDetailInfo(x._id)}><i className="material-icons">view_list</i></a>
-                                            { this.props.checkRoleCanEdit(x) && <a onClick={() => this.handleEdit(x)} className="text-yellow" ><i className="material-icons">edit</i></a>}
+                                            {this.props.checkRoleCanEdit(x) && <a onClick={() => this.handleEdit(x)} className="text-yellow" ><i className="material-icons">edit</i></a>}
                                             {
                                                 this.props.checkRoleApprovers(x) && x.status === '1' &&
-                                                    <ConfirmNotification
-                                                        icon="question"
-                                                        title={translate('manage_warehouse.bill_management.approved_true')}
-                                                        content={translate('manage_warehouse.bill_management.approved_true') + " " + x.code}
-                                                        name="check_circle_outline"
-                                                        className="text-green"
-                                                        func={() => this.props.handleFinishedApproval(x)}
-                                                    />
-                                                }
-                                                {
+                                                <ConfirmNotification
+                                                    icon="question"
+                                                    title={translate('manage_warehouse.bill_management.approved_true')}
+                                                    content={translate('manage_warehouse.bill_management.approved_true') + " " + x.code}
+                                                    name="check_circle_outline"
+                                                    className="text-green"
+                                                    func={() => this.props.handleFinishedApproval(x)}
+                                                />
+                                            }
+                                            {
                                                 this.props.checkRoleQualityControlStaffs(x) && x.status === '5' &&
-                                                    <ConfirmNotification
-                                                        icon="question"
-                                                        title={translate('manage_warehouse.bill_management.staff_true')}
-                                                        content={translate('manage_warehouse.bill_management.staff_true') + " " + x.code}
-                                                        name="check_circle"
-                                                        className="text-green"
-                                                        func={() => this.handleFinishedQualityControlStaff(x)}
-                                                    />
-                                                }
+                                                <ConfirmNotification
+                                                    icon="question"
+                                                    title={translate('manage_warehouse.bill_management.staff_true')}
+                                                    content={translate('manage_warehouse.bill_management.staff_true') + " " + x.code}
+                                                    name="check_circle"
+                                                    className="text-green"
+                                                    func={() => this.handleFinishedQualityControlStaff(x)}
+                                                />
+                                            }
                                         </td>
                                     </tr>
                                 ))

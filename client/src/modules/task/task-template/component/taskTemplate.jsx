@@ -13,6 +13,7 @@ import { ModalViewTaskTemplate } from './viewTaskTemplateModal';
 import { ModalEditTaskTemplate } from './editTaskTemplateModal';
 import { TaskTemplateImportForm } from './taskTemplateImportForm';
 import { getTableConfiguration } from '../../../../helpers/tableConfiguration'
+import parse from 'html-react-parser';
 import './tasktemplate.css';
 
 class TaskTemplate extends Component {
@@ -157,7 +158,7 @@ class TaskTemplate extends Component {
                                     listTaskTemplates.map(item => item &&
                                         <tr key={item._id}>
                                             <td title={item.name}>{item.name}</td>
-                                            <td title={item.description}>{item.description}</td>
+                                            <td title={item.description}>{parse(item.description)}</td>
                                             <td title={item.numberOfUse}>{item.numberOfUse}</td>
                                             <td title={item.creator && item.creator.name}>{item.creator ? item.creator.name : translate('task.task_template.error_task_template_creator_null')}</td>
                                             <td title={item.organizationalUnit && item.organizationalUnit.name}>{item.organizationalUnit ? item.organizationalUnit.name : translate('task_template.error_task_template_organizational_unit_null')}</td>

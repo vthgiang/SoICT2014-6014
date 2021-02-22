@@ -502,7 +502,6 @@ class EditForm extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        console.log('aaaaaaaa', nextProps)
         if (nextProps.documentId !== prevState.documentId) {
             return {
                 ...prevState,
@@ -644,7 +643,6 @@ class EditForm extends Component {
                 relationshipDocs.push({ value: doc._id, text: doc.name })
             }
         });
-        console.log('bbbbbbbbb', documentUserCanView)
         const archives = documents.administration.archives.list;
         let path = documentArchives ? this.findPath(archives, documentArchives) : "";
         return (
