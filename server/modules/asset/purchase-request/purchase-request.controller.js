@@ -44,8 +44,10 @@ exports.createPurchaseRequest = async (req, res) => {
                 content: html,
                 sender: newRecommendProcure.user.name,
                 users: newRecommendProcure.manager,
-                type: 2,
-                shortContent: `<p><strong>${newRecommendProcure.user.name}</strong> xin đăng mua sắm thiết bị:  <strong>${newRecommendProcure.equipmentName}</strong>.</p>`
+                associatedDataObject: {
+                    dataType: 2,
+                    description: `<p><strong>${newRecommendProcure.user.name}</strong> xin đăng mua sắm thiết bị:  <strong>${newRecommendProcure.equipmentName}</strong>.</p>`
+                },
             };
 
             await NotificationServices.createNotification(req.portal, req.user.company._id, noti);
@@ -111,8 +113,10 @@ exports.updatePurchaseRequest = async (req, res) => {
                 content: html,
                 sender: recommendprocureUpdate.user.name,
                 users: recommendprocureUpdate.manager,
-                type: 2,
-                shortContent: `<p><strong>${recommendprocureUpdate.user.name}</strong> sửa đăng ký mua sắm thiết bị:  <strong>${recommendprocureUpdate.equipmentName}</strong>.</p>`
+                associatedDataObject: {
+                    dataType: 2,
+                    description: `<p><strong>${recommendprocureUpdate.user.name}</strong> sửa đăng ký mua sắm thiết bị:  <strong>${recommendprocureUpdate.equipmentName}</strong>.</p>`
+                },
             };
 
             await NotificationServices.createNotification(req.portal, req.user.company._id, noti);
