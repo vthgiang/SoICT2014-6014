@@ -884,6 +884,10 @@ class DetailTaskTab extends Component {
                                 <a className="btn btn-app" onClick={() => this.handleCopyTask(id, currentRole)} title={translate('task.task_management.detail_copy_task')}>
                                     <i className="fa fa-clone" style={{ fontSize: "16px" }}></i>{translate('task.task_management.detail_copy_task')}
                                 </a>
+                            </React.Fragment>
+                        }
+                        {((currentRole === "accountable") && checkInactive) &&
+                            <React.Fragment>
                                 <a className="btn btn-app" onClick={() => this.handleSaveAsTemplate(id, currentRole)} title={translate('task.task_management.detail_save_as_template')}>
                                     <i className="fa fa-floppy-o" style={{ fontSize: "16px" }}></i>{translate('task.task_management.detail_save_as_template')}
                                 </a>

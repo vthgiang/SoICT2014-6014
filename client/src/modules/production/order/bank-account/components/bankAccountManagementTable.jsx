@@ -5,16 +5,22 @@ import { BankAccountActions } from "../redux/actions";
 import { PaginateBar, DataTableSetting, SelectBox, DeleteNotification, ConfirmNotification } from "../../../../../common-components";
 import BankAccountCreateForm from "./bankAccountCreateForm";
 import BankAccountEditFrom from "./bankAccountEditFrom";
+import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
 
 class BankAccountManagementTable extends Component {
     constructor(props) {
         super(props);
+        const tableId = "bank-account-manager-table";
+        const defaultConfig = { limit: 5 }
+        const limit = getTableConfiguration(tableId, defaultConfig).limit;
+
         this.state = {
             page: 1,
-            limit: 5,
+            limit: limit,
             account: "", //Số tài khoản ngân hàng
             bankName: "",
             bankAcronym: "", //Tên viết tắt của ngân hàng
+            tableId,
         };
     }
 
@@ -98,7 +104,7 @@ class BankAccountManagementTable extends Component {
         const { bankAccounts } = this.props;
         const { totalPages, page, listBankAccounts } = bankAccounts;
 
-        const { account, bankName, bankAcronym, bankAccountEdit } = this.state;
+        const { account, bankName, bankAcronym, bankAccountEdit, tableId } = this.state;
         return (
             <React.Fragment>
                 <div className="box-body qlcv">
@@ -123,7 +129,7 @@ class BankAccountManagementTable extends Component {
                             </button>
                         </div>
                     </div>
-                    <table id="bank-account-table" className="table table-striped table-bordered table-hover">
+                    <table id={tableId} className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
                                 <th>STT</th>
@@ -141,7 +147,7 @@ class BankAccountManagementTable extends Component {
                                 >
                                     Hành động
                                     <DataTableSetting
-                                        tableId="bank-account-table"
+                                        tableId={tableId}
                                         columnArr={[
                                             "STT",
                                             "Số tài khoản",
@@ -151,8 +157,6 @@ class BankAccountManagementTable extends Component {
                                             "Trạng thái",
                                             "Người tạo",
                                         ]}
-                                        limit={this.state.limit}
-                                        hideColumnOption={true}
                                         setLimit={this.setLimit}
                                     />
                                 </th>
@@ -172,8 +176,8 @@ class BankAccountManagementTable extends Component {
                                             {item.status ? (
                                                 <span className="text-success">Đang sử dụng</span>
                                             ) : (
-                                                <span className="text-red">Đang vô hiệu hóa</span>
-                                            )}
+                                                    <span className="text-red">Đang vô hiệu hóa</span>
+                                                )}
                                         </td>
                                         <td>{item.creator.name}</td>
                                         <td style={{ textAlign: "center" }}>
@@ -195,10 +199,10 @@ class BankAccountManagementTable extends Component {
                     {bankAccounts.isLoading ? (
                         <div className="table-info-panel">{translate("confirm.loading")}</div>
                     ) : (
-                        (typeof listBankAccounts === "undefined" || listBankAccounts.length === 0) && (
-                            <div className="table-info-panel">{translate("confirm.no_data")}</div>
-                        )
-                    )}
+                            (typeof listBankAccounts === "undefined" || listBankAccounts.length === 0) && (
+                                <div className="table-info-panel">{translate("confirm.no_data")}</div>
+                            )
+                        )}
                     <PaginateBar pageTotal={totalPages ? totalPages : 0} currentPage={page} func={this.setPage} />
                 </div>
             </React.Fragment>

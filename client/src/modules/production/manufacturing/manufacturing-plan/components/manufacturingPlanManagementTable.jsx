@@ -8,13 +8,19 @@ import { manufacturingPlanActions } from '../redux/actions';
 import { worksActions } from '../../manufacturing-works/redux/actions';
 import { millActions } from '../../manufacturing-mill/redux/actions';
 import ManufacturingPlanDetailInfo from './manufacturingPlanDetailInfo';
+
+import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
 class ManufacturingPlanManagementTable extends Component {
     constructor(props) {
         super(props);
+        const tableId = "manufacturing-plan-manager-table";
+        const defaultConfig = { limit: 5 }
+        const limit = getTableConfiguration(tableId, defaultConfig).limit;
+
         this.state = {
             currentRole: localStorage.getItem("currentRole"),
             page: 1,
-            limit: 5,
+            limit: limit,
             code: '',
             startDate: '',
             endDate: '',
@@ -24,7 +30,8 @@ class ManufacturingPlanManagementTable extends Component {
             commandCode: '',
             manufacturingOrderCode: '',
             salesOrderCode: '',
-            progress: []
+            progress: [],
+            tableId
         }
     }
 
@@ -252,7 +259,7 @@ class ManufacturingPlanManagementTable extends Component {
         if (manufacturingPlan.listPlans && manufacturingPlan.isLoading === false) {
             listPlans = manufacturingPlan.listPlans;
         }
-        const { code, startDate, endDate, createdAt, commandCode, salesOrderCode } = this.state;
+        const { code, startDate, endDate, createdAt, commandCode, salesOrderCode, tableId } = this.state;
         const { totalPages, page } = manufacturingPlan;
         return (
             <React.Fragment>
@@ -368,7 +375,7 @@ class ManufacturingPlanManagementTable extends Component {
                         </div>
                     </div>
 
-                    <table id="manufacturing-plan-table" className="table table-striped table-bordered table-hover">
+                    <table id={tableId} className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
                                 <th>{translate('manufacturing.plan.index')}</th>
@@ -381,7 +388,7 @@ class ManufacturingPlanManagementTable extends Component {
                                 <th>{translate('manufacturing.plan.status')}</th>
                                 <th>{translate('general.action')}
                                     <DataTableSetting
-                                        tableId="manufacturing-plan-table"
+                                        tableId={tableId}
                                         columnArr={[
                                             translate('manufacturing.plan.index'),
                                             translate('manufacturing.plan.code'),
@@ -392,8 +399,6 @@ class ManufacturingPlanManagementTable extends Component {
                                             translate('manufacturing.plan.end_date'),
                                             translate('manufacturing.plan.status')
                                         ]}
-                                        limit={this.state.limit}
-                                        hideColumnOption={true}
                                         setLimit={this.setLimit}
                                     />
                                 </th>

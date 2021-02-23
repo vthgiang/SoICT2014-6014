@@ -10,14 +10,20 @@ import ExampleCreateForm from "./exampleCreateForm";
 import ExampleEditForm from "./exampleEditForm";
 import ExampleDetailInfo from "./exampleDetailInfo";
 import ExampleImportForm from "./exampleImortForm";
+import { getTableConfiguration } from '../../../../helpers/tableConfiguration';
 
 class ExampleManagementTable extends Component {
     constructor(props) {
         super(props);
+        const tableId = "table-manage-example1-class";
+        const defaultConfig = { limit: 5 }
+        const limit = getTableConfiguration(tableId, defaultConfig).limit;
+
         this.state = {
             exampleName: "",
             page: 1,
-            limit: 5
+            limit: limit,
+            tableId
         };
     }
 
@@ -104,7 +110,7 @@ class ExampleManagementTable extends Component {
 
     render() {
         const { example, translate } = this.props;
-        const { page, limit, currentRow,  } = this.state;
+        const { page, limit, currentRow, tableId } = this.state;
 
         let lists = [];
         if (example && example.isLoading === false) {
@@ -150,7 +156,7 @@ class ExampleManagementTable extends Component {
                             <button type="button" className="btn btn-success" title={translate('manage_example.search')} onClick={this.handleSubmitSearch}>{translate('manage_example.search')}</button>
                         </div>
                     </div>
-                    <table id="example-table" className="table table-striped table-bordered table-hover">
+                    <table id={tableId} className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
                                 <th className="col-fixed" style={{ width: 60 }}>{translate('manage_example.index')}</th>
@@ -158,14 +164,12 @@ class ExampleManagementTable extends Component {
                                 <th>{translate('manage_example.description')}</th>
                                 <th style={{ width: "120px", textAlign: "center" }}>{translate('table.action')}
                                     <DataTableSetting
-                                        tableId="example-table"
+                                        tableId={tableId}
                                         columnArr={[
                                             translate('manage_example.index'),
                                             translate('manage_example.exampleName'),
                                             translate('manage_example.description'),
                                         ]}
-                                        limit={limit}
-                                        hideColumnOption={true}
                                         setLimit={this.setLimit}
                                     />
                                 </th>

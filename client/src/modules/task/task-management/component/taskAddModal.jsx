@@ -50,8 +50,13 @@ class TaskAddModal extends Component {
     }
     
     onChangeTaskData = (value) => {
-        console.log("value",value)
         this.setState({ newTask: value })
+    }
+    onChangeStartTime = (value) => {
+        this.setState({ startTime: value });
+    }
+    onChangeEndTime = (value) => {
+        this.setState({ endTime: value });
     }
     convertDateTime = (date, time) => {
         let splitter = date.split("-");
@@ -63,7 +68,6 @@ class TaskAddModal extends Component {
         let startDateTask = this.convertDateTime(newTask.startDate, startTime);
         let endDateTask = this.convertDateTime(newTask.endDate, endTime);
 
-        console.log('start-end', startDateTask, endDateTask);
 
         // let startDate = newTask.startDate;
         // let endDate = newTask.endDate;
@@ -74,12 +78,11 @@ class TaskAddModal extends Component {
             startDate: startDateTask,
             endDate: endDateTask,
         });
-        console.log(newTask)
     }
     render() {
-        const { id, newTask } = this.state;
+        const { newTask } = this.state;
         const { tasktemplates, user, KPIPersonalManager, translate, tasks, department, taskProject, isProcess } = this.props;
-        const { task } = this.props;
+        const { task, id } = this.props;
 
         let units, userdepartments, listTaskTemplate, listKPIPersonal, usercompanys;
         let listDepartment = department?.list;
@@ -137,6 +140,10 @@ class TaskAddModal extends Component {
                     <AddTaskForm
                         quillId={this.props.id}
                         handleChangeTaskData={this.onChangeTaskData}
+                        handleChangeStartTime={this.onChangeStartTime}
+                        handleChangeEndTime={this.onChangeEndTime}
+                        id={id}
+                        task={task}
                     />
                     <ModalAddTaskProject />
                 </DialogModal>

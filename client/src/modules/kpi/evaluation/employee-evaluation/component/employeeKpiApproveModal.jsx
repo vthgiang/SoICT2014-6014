@@ -12,7 +12,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import { getStorage } from '../../../../../config';
 import Swal from 'sweetalert2';
 import parse from 'html-react-parser';
-
+import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
 // import { Comment } from '../../../employee/creation/component/comment'
 var translate = '';
 class EmployeeKpiApproveModal extends Component {
@@ -23,6 +23,9 @@ class EmployeeKpiApproveModal extends Component {
         let idUser = getStorage("userId");
         translate = this.props.translate;
 
+        const tableId = "employee-kpi-approve-modal";
+        getTableConfiguration(tableId);
+
         this.state = {
             currentUser: idUser,
             date: this.formatDateBack(Date.now()),
@@ -31,6 +34,7 @@ class EmployeeKpiApproveModal extends Component {
             compare: false,
             checkInput: false,
             checkWeight: false,
+            tableId,
         };
         this.newWeight = [];
     }
@@ -258,7 +262,7 @@ class EmployeeKpiApproveModal extends Component {
     render() {
         const { kpimembers } = this.props;
         const { translate } = this.props;
-        const { errorOnDate, date, compare, edit, checkWeight, perPage, checkEditting } = this.state;
+        const { errorOnDate, date, compare, edit, checkWeight, perPage, checkEditting, tableId } = this.state;
         let kpimember, kpimembercmp, month, totalWeight;
 
         if (kpimembers.currentKPI) {
@@ -349,9 +353,9 @@ class EmployeeKpiApproveModal extends Component {
                         <label>{`${translate('kpi.evaluation.employee_evaluation.kpi_this_month')} ${kpimember && month[1]}/${kpimember && month[0]}`} ({totalWeight}/100)</label>
                         {checkWeight && <p className="text-danger" style={{ fontWeight: 900 }}>{translate('kpi.evaluation.employee_evaluation.unsuitable_weight')}</p>}
                         {checkEditting && <p className="text-danger" style={{ fontWeight: 900 }}>{translate('kpi.evaluation.employee_evaluation.unsuitable_approval')}</p>}
-                        
+
                         {/* Danh sách KPI */}
-                        <table id="kpi-approve-table" className="table table-bordered table-striped table-hover">
+                        <table id={tableId} className="table table-bordered table-striped table-hover">
                             <thead>
                                 <tr>
                                     <th className="col-fixed" style={{ width: 50 }}>{translate('kpi.evaluation.employee_evaluation.index')}</th>
@@ -363,7 +367,7 @@ class EmployeeKpiApproveModal extends Component {
                                     <th>{translate('kpi.evaluation.employee_evaluation.result')}</th>
                                     <th className="col-fixed" style={{ width: 130 }}>
                                         {translate('kpi.evaluation.employee_evaluation.action')}
-                                        <DataTableSetting className="pull-right" tableId="kpi-approve-table"
+                                        <DataTableSetting className="pull-right" tableId={tableId}
                                             columnArr={[
                                                 'STT',
                                                 'Tên mục tiêu'
@@ -373,9 +377,7 @@ class EmployeeKpiApproveModal extends Component {
                                                 'Trạng thái',
                                                 'Kết quả đánh giá',
                                                 'Hành động']}
-                                            limit={perPage}
                                             setLimit={this.setLimit}
-                                            hideColumnOption={true}
                                         />
                                     </th>
                                 </tr>

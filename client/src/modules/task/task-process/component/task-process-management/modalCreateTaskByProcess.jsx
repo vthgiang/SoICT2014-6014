@@ -235,7 +235,6 @@ class ModalCreateTaskByProcess extends Component {
 
     // hàm cập nhật người thực hiện công việc
     handleChangeResponsible = async (value) => {
-        console.log(value)
         const modeling = this.modeler.get('modeling');
         let element1 = this.modeler.get('elementRegistry').get(this.state.id);
         let { user } = this.props
@@ -288,7 +287,6 @@ class ModalCreateTaskByProcess extends Component {
     // Các hàm sự kiện của BPMN element
     interactPopup = async (event) => {
         let element = event.element;
-        console.log(element);
         let nameStr = element.type.split(':');
 
         await this.setState(state => {

@@ -127,6 +127,27 @@ class EvaluateByConsultedEmployee extends Component {
         return true;
     }
 
+    handleSortMonthEval = (evaluations) => {
+        // sắp xếp đánh giá theo thứ tự tháng
+        const sortedEvaluations = evaluations?.sort((a, b) => new Date(b.evaluatingMonth) - new Date(a.evaluatingMonth));
+        return sortedEvaluations;
+    }
+
+    getPreviousEvaluation = (task, date) => {
+        let evaluations = task.evaluations;
+        let sortedEvaluations = this.handleSortMonthEval(evaluations);
+
+        let evalMonth = moment(date, 'DD-MM-YYYY').endOf("month").toDate();
+        for(let i in sortedEvaluations){
+            let eva = sortedEvaluations[i];
+            console.log('new Date(eva?.evaluatingMonth) < evalMonth', new Date(eva?.evaluatingMonth) < evalMonth, new Date(eva?.evaluatingMonth) , evalMonth);
+            if(new Date(eva?.evaluatingMonth) <= evalMonth) {
+                return eva;
+            }
+        }
+        return null;
+    }
+
     // hàm lấy dữ liệu khởi tạo
     getData = (dateParams, evaluatingMonthParam) => {
         const { user, KPIPersonalManager } = this.props;
@@ -179,27 +200,23 @@ class EvaluateByConsultedEmployee extends Component {
         let yearOfEval = dateOfEval.getFullYear();
         let yearOfPrevEval = dateOfPrevEval.getFullYear();
 
-        // let dateOfEval = new Date(splitter[2], splitter[1] - 1, splitter[0]);
-        // let monthOfEval = dateOfEval.getMonth();
-        // let yearOfEval = dateOfEval.getFullYear();
-        // evaluation = task.evaluations.find(e => (monthOfEval === new Date(e.date).getMonth() && yearOfEval === new Date(e.date).getFullYear()));
-
         evaluation = task.evaluations.find(e => (monthOfEval === new Date(e.evaluatingMonth).getMonth() && yearOfEval === new Date(e.evaluatingMonth).getFullYear()));
-
-        prevEval = task.evaluations.find(e => ((monthOfPrevEval) === new Date(e.evaluatingMonth).getMonth() && yearOfPrevEval === new Date(e.evaluatingMonth).getFullYear()));
+        prevEval = this.getPreviousEvaluation(task, dateParams);
+        // prevEval = task.evaluations.find(e => ((monthOfPrevEval) === new Date(e.evaluatingMonth).getMonth() && yearOfPrevEval === new Date(e.evaluatingMonth).getFullYear()));
         if (prevEval) {
             prevDate = this.formatDate(prevEval.endDate);
             startTime = this.formatTime(prevEval.endDate);
-        } else {
-            let strPrevMonth = `${monthOfPrevEval + 1}-${yearOfPrevEval}`
-            // trong TH k có đánh giá tháng trước, so sánh tháng trước với tháng start date
-            if (!((yearOfPrevEval === new Date(startDateTask).getFullYear() && monthOfPrevEval < new Date(startDateTask).getMonth()) // bắt đầu tháng bất kì khác tháng 1
-                || (yearOfPrevEval < new Date(startDateTask).getFullYear()) // TH bắt đầu là tháng 1 - chọn đánh giá tháng 1
-            )) {
-                prevDate = moment(strPrevMonth, 'MM-YYYY').endOf("month").format('DD-MM-YYYY');
-                startTime = "12:00 AM";
-            }
-        }
+        } 
+        // else {
+        //     let strPrevMonth = `${monthOfPrevEval + 1}-${yearOfPrevEval}`
+        //     // trong TH k có đánh giá tháng trước, so sánh tháng trước với tháng start date
+        //     if (!((yearOfPrevEval === new Date(startDateTask).getFullYear() && monthOfPrevEval < new Date(startDateTask).getMonth()) // bắt đầu tháng bất kì khác tháng 1
+        //         || (yearOfPrevEval < new Date(startDateTask).getFullYear()) // TH bắt đầu là tháng 1 - chọn đánh giá tháng 1
+        //     )) {
+        //         prevDate = moment(strPrevMonth, 'MM-YYYY').endOf("month").format('DD-MM-YYYY');
+        //         startTime = "12:00 AM";
+        //     }
+        // }
         let automaticPoint = (evaluation && evaluation.results.length !== 0) ? evaluation.results[0].automaticPoint : undefined;
 
         let point = undefined;
@@ -661,8 +678,16 @@ class EvaluateByConsultedEmployee extends Component {
             }
         });
         if (!errMonth) {
-            this.props.handleChangeMonthEval({ evaluatingMonth: value, date: evalDate });
+            this.props.handleChangeMonthEval({ evaluatingMonth: value, date: evalDate, id: this.state.id });
         }
+    }
+
+    getEndTask = async () => {
+        let { task } = this.state;
+        let end = task?.endDate;
+        let endDate = this.formatDate(new Date(end));
+        let endTime = this.formatTime(new Date(end));
+        this.setState({ endDate: endDate, endTime:endTime });
     }
 
     // hàm validate submit
@@ -685,14 +710,9 @@ class EvaluateByConsultedEmployee extends Component {
 
             employeePoint: this.state.point,
 
-            // date: this.formatDate(Date.now()),
-
             evaluatingMonth: this.state.storedEvaluatingMonth,
-            // date: this.state.date,
             startDate: startDateTask,
             endDate: endDateTask,
-            // startDate: this.state.startDate,
-            // endDate: this.state.endDate,
 
             automaticPoint: this.state.autoPoint
         }
@@ -705,6 +725,7 @@ class EvaluateByConsultedEmployee extends Component {
                 oldAutoPoint: state.autoPoint,
             }
         });
+        this.props.handleChangeShowEval(this.state.id);
     }
 
     // hàm kiểm tra thông báo
@@ -785,7 +806,7 @@ class EvaluateByConsultedEmployee extends Component {
                                             disabled={disabled}
                                         />
                                         < TimePicker
-                                            id={`time-picker-1-start-time-${id}-${perform}`}
+                                            id={`time-picker-1-start-time-${id}-${perform}-${this.props.id}`}
                                             value={startTime}
                                             onChange={this.handleStartTimeChange}
                                         />
@@ -794,16 +815,20 @@ class EvaluateByConsultedEmployee extends Component {
                                 </div>
                                 <div className="col-md-6">
                                     <div className={`form-group ${errorOnEndDate === undefined ? "" : "has-error"}`}>
-                                        <label>{translate('task.task_management.eval_to')}<span className="text-red">*</span></label>
+                                        <label>
+                                            {translate('task.task_management.eval_to')}<span className="text-red">*</span>
+                                            <span className="pull-right" style={{ fontWeight: "normal", marginLeft: 10 }}>
+                                                <a style={{ cursor: "pointer" }} onClick={() => this.getEndTask()}>Lấy thời điểm kết thúc công việc</a>
+                                            </span>
+                                        </label>
                                         <DatePicker
                                             id={`create_date_${id}_${perform}`}
                                             value={endDate}
                                             onChange={this.handleEndDateChange}
                                             disabled={disabled}
-                                        // || (checkNoteMonth && (dentaDate <= 20 && dentaDate > 0))
                                         />
                                         < TimePicker
-                                            id={`time-picker-2-end-time-${id}-${perform}`}
+                                            id={`time-picker-2-end-time-${id}-${perform}-${this.props.id}`}
                                             value={endTime}
                                             onChange={this.handleEndTimeChange}
                                         />

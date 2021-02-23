@@ -370,7 +370,6 @@ class Comment extends Component {
                                                 return (
                                                     <span key={idx}>
                                                         {parse(item)}
-                                                        <br />
                                                     </span>
                                                 );
                                             })
@@ -466,7 +465,6 @@ class Comment extends Component {
                                                                 return (
                                                                     <span key={idx}>
                                                                         {parse(item)}
-                                                                        <br />
                                                                     </span>
                                                                 );
                                                             })

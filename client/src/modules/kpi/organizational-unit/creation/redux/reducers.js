@@ -1,5 +1,4 @@
 import { createUnitKpiConstants } from "./constants";
-import { managerConstants } from '../../management/redux/constants';
 
 export function createKpiUnit(state = {}, action) {
     switch (action.type) {
@@ -221,27 +220,174 @@ export function createKpiUnit(state = {}, action) {
             isLoading: false
           };
       
-        case managerConstants.COPY_KPIUNIT_REQUEST:
+        case createUnitKpiConstants.COPY_KPIUNIT_REQUEST:
           return {
             ...state,
             adding: true,
             isLoading: false,
             currentKPI: null
           };
-        case managerConstants.COPY_KPIUNIT_SUCCESS:
+        case createUnitKpiConstants.COPY_KPIUNIT_SUCCESS:
           return {
             ...state,
             adding: false,
             currentKPI: action.payload,
             isLoading: false
           };
-        case managerConstants.COPY_KPIUNIT_FAILURE:
+        case createUnitKpiConstants.COPY_KPIUNIT_FAILURE:
           return {
             ...state,
             adding: false,
             error: action.payload,
             isLoading: false
           };
+          case createUnitKpiConstants.CREATE_COMMENT_REQUEST:
+            return {
+                ...state,
+                adding: true
+            }
+        case createUnitKpiConstants.CREATE_COMMENT_SUCCESS:
+            console.log(action.payload)
+            return {
+                ...state,
+                currentKPI: {
+                    ...state.currentKPI,
+                    comments: action.payload
+                }
+            }
+        case createUnitKpiConstants.CREATE_COMMENT_FAILURE:
+            return {
+                ...state,
+                error: action.payload,
+            }
+        case createUnitKpiConstants.CREATE_COMMENT_OF_COMMENT_REQUEST:
+            return {
+                ...state,
+                adding: true
+            }
+        case createUnitKpiConstants.CREATE_COMMENT_OF_COMMENT_SUCCESS:
+            return {
+                ...state,
+                currentKPI: {
+                    ...state.currentKPI,
+                    comments: action.payload
+                }
+            }
+        case createUnitKpiConstants.CREATE_COMMENT_OF_COMMENT_FAILURE:
+            return {
+                ...state,
+                error: action.payload,
+            }
+        case createUnitKpiConstants.EDIT_COMMENT_REQUEST:
+            return {
+                ...state,
+                editing: true
+            }
+        case createUnitKpiConstants.EDIT_COMMENT_SUCCESS:
+            return {
+                ...state,
+                idLoading: false,
+                currentKPI: {
+                    ...state.currentKPI,
+                    comments: action.payload,
+
+                }
+            }
+        case createUnitKpiConstants.EDIT_COMMENT_FAILURE:
+            return {
+                ...state,
+                error: action.payload,
+            }
+        case createUnitKpiConstants.DELETE_COMMENT_REQUEST:
+            return {
+                ...state,
+                editing: true
+            }
+        case createUnitKpiConstants.DELETE_COMMENT_SUCCESS:
+            return {
+                ...state,
+                currentKPI: {
+                    ...state.currentKPI,
+                    comments: action.payload
+                }
+            }
+        case createUnitKpiConstants.DELETE_COMMENT_FAILURE:
+            return {
+                ...state,
+                error: action.payload,
+            }
+        case createUnitKpiConstants.EDIT_COMMENT_OF_COMMENT_REQUEST:
+            return {
+                ...state,
+                editing: true
+            }
+        case createUnitKpiConstants.EDIT_COMMENT_OF_COMMENT_SUCCESS:
+            return {
+                ...state,
+                currentKPI: {
+                    ...state.currentKPI,
+                    comments: action.payload
+                }
+            }
+        case createUnitKpiConstants.EDIT_COMMENT_OF_COMMENT_FAILURE:
+            return {
+                ...state,
+                error: action.payload,
+            }
+        case createUnitKpiConstants.DELETE_COMMENT_OF_COMMENT_REQUEST:
+            return {
+                ...state,
+                deleting: true
+            }
+        case createUnitKpiConstants.DELETE_COMMENT_OF_COMMENT_SUCCESS:
+            return {
+                ...state,
+                currentKPI: {
+                    ...state.currentKPI,
+                    comments: action.payload
+                }
+            }
+        case createUnitKpiConstants.DELETE_COMMENT_OF_COMMENT_FAILURE:
+            return {
+                ...state,
+                error: action.payload,
+            }
+        case createUnitKpiConstants.DELETE_FILE_COMMENT_REQUEST:
+            return {
+                ...state,
+                deleting: true
+            }
+        case createUnitKpiConstants.DELETE_FILE_COMMENT_SUCCESS:
+            return {
+                ...state,
+                currentKPI: {
+                    ...state.currentKPI,
+                    comments: action.payload
+                }
+            }
+        case createUnitKpiConstants.DELETE_FILE_COMMENT_FAILURE:
+            return {
+                ...state,
+                error: action.payload,
+            }
+        case createUnitKpiConstants.DELETE_FILE_CHILD_COMMENT_REQUEST:
+            return {
+                ...state,
+                deleting: true
+            }
+        case createUnitKpiConstants.DELETE_FILE_CHILD_COMMENT_SUCCESS:
+            return {
+                ...state,
+                currentKPI: {
+                    ...state.currentKPI,
+                    comments: action.payload
+                }
+            }
+        case createUnitKpiConstants.DELETE_FILE_CHILD_COMMENT_FAILURE:
+            return {
+                ...state,
+                error: action.payload,
+            }
         default:
             return state
     }
