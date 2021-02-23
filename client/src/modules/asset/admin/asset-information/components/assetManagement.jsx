@@ -149,13 +149,10 @@ class AssetManagement extends Component {
 
     // Function lưu giá trị loại tài sản vào state khi thay đổi
     handleAssetTypeChange = (value) => {
-        if (value.length === 0) {
-            value = null;
-        }
         this.setState(state => {
             return {
                 ...state,
-                assetType: JSON.stringify(value),
+                assetType: value.length !== 0 ? JSON.stringify(value) : null,
             }
         })
     }
@@ -1070,7 +1067,7 @@ class AssetManagement extends Component {
                         code={currentRow.code}
                         assetName={currentRow.assetName}
                         serial={currentRow.serial}
-                        assetType={currentRow.assetType}
+                        assetType={JSON.stringify(currentRow.assetType)}
                         group={currentRow.group}
                         purchaseDate={currentRow.purchaseDate}
                         warrantyExpirationDate={currentRow.warrantyExpirationDate}
