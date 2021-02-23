@@ -497,7 +497,7 @@ class TaskOrganizationUnitDashboard extends Component {
                                             type={"icon_tooltip"} materialIcon={"help"}
                                             dataTooltip={['Tải công việc tính theo công thức tổng các tỉ số: số ngày thực hiện công việc trong tháng/(số người thực hiện + số người phê duyệt + số người hỗ trợ)']}
                                         /> */}
-                                        <a className="text-red" title={translate('document.delete')} onClick={() => this.showLoadTaskDoc()}>
+                                        <a className="text-red" title={translate('task.task_management.explain')} onClick={() => this.showLoadTaskDoc()}>
                                             <i className="material-icons" style={{ marginLeft: "10px" }}>help</i>
                                         </a>
                                     </div>
