@@ -6,16 +6,21 @@ import { PaginateBar, DataTableSetting, SelectBox, DeleteNotification, ConfirmNo
 import TaxCreateForm from "./taxCreateForm";
 import TaxDetailForm from "./taxDetailForm";
 import TaxEditForm from "./taxEditForm";
-
+import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
 class TaxManagementTable extends Component {
     constructor(props) {
         super(props);
+        const tableId = "tax-manager-table";
+        const defaultConfig = { limit: 5 }
+        const limit = getTableConfiguration(tableId, defaultConfig).limit;
+
         this.state = {
             page: 1,
-            limit: 5,
+            limit: limit,
             code: "",
             name: "",
             status: true,
+            tableId,
         };
     }
 
@@ -113,7 +118,7 @@ class TaxManagementTable extends Component {
         const { translate } = this.props;
         const { taxs } = this.props;
         const { totalPages, page, listTaxs } = taxs;
-        const { code, name } = this.state;
+        const { code, name, tableId } = this.state;
         return (
             <React.Fragment>
                 <TaxDetailForm taxId={this.state.taxId} />
@@ -154,7 +159,7 @@ class TaxManagementTable extends Component {
                             </button>
                         </div>
                     </div>
-                    <table id="tax-table" className="table table-striped table-bordered table-hover">
+                    <table id={tableId} className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
                                 <th>{translate("manage_order.tax.index")}</th>
@@ -170,7 +175,7 @@ class TaxManagementTable extends Component {
                                 >
                                     {translate("table.action")}
                                     <DataTableSetting
-                                        tableId="tax-table"
+                                        tableId={tableId}
                                         columnArr={[
                                             translate("manage_order.tax.index"),
                                             translate("manage_order.tax.code"),
@@ -178,8 +183,6 @@ class TaxManagementTable extends Component {
                                             translate("manage_order.tax.creator"),
                                             translate("manage_order.tax.status"),
                                         ]}
-                                        limit={this.state.limit}
-                                        hideColumnOption={true}
                                         setLimit={this.setLimit}
                                     />
                                 </th>
@@ -210,16 +213,16 @@ class TaxManagementTable extends Component {
                                                         func={() => this.disableTax(tax._id)}
                                                     />
                                                 ) : (
-                                                    <ConfirmNotification
-                                                        icon="disabled_by_default"
-                                                        name="disabled_by_default"
-                                                        className="text-red"
-                                                        title={"Click để thay đổi trạng thái"}
-                                                        content={`<h4>${"Kích hoạt thuế " + tax.name}</h4>
+                                                        <ConfirmNotification
+                                                            icon="disabled_by_default"
+                                                            name="disabled_by_default"
+                                                            className="text-red"
+                                                            title={"Click để thay đổi trạng thái"}
+                                                            content={`<h4>${"Kích hoạt thuế " + tax.name}</h4>
                                                     <br/> <h5>Điều này đồng nghĩa loại thuế này được mở khóa và có thể sử dụng</h5>`}
-                                                        func={() => this.disableTax(tax._id)}
-                                                    />
-                                                )}
+                                                            func={() => this.disableTax(tax._id)}
+                                                        />
+                                                    )}
                                             </center>
                                         </td>
                                         <td style={{ textAlign: "center" }}>
@@ -244,8 +247,8 @@ class TaxManagementTable extends Component {
                                                     <i className="material-icons">edit</i>
                                                 </a>
                                             ) : (
-                                                ""
-                                            )}
+                                                    ""
+                                                )}
                                             <DeleteNotification
                                                 content={"Bạn có chắc chắn muốn xóa thuế này"}
                                                 data={{
@@ -262,10 +265,10 @@ class TaxManagementTable extends Component {
                     {taxs.isLoading ? (
                         <div className="table-info-panel">{translate("confirm.loading")}</div>
                     ) : (
-                        (typeof listTaxs === "undefined" || listTaxs.length === 0) && (
-                            <div className="table-info-panel">{translate("confirm.no_data")}</div>
-                        )
-                    )}
+                            (typeof listTaxs === "undefined" || listTaxs.length === 0) && (
+                                <div className="table-info-panel">{translate("confirm.no_data")}</div>
+                            )
+                        )}
                     <PaginateBar pageTotal={totalPages ? totalPages : 0} currentPage={page} func={this.setPage} />
                 </div>
             </React.Fragment>

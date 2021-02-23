@@ -8,14 +8,21 @@ import ManufacturingWorksDetailForm from './manufacturingWorksDetailForm';
 import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
 import ManufacturingWorksEditForm from './manufacturingWorksEditForm';
 import { RoleActions } from '../../../../super-admin/role/redux/actions';
+import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
+
 class ManufacturingWorksManagementTable extends Component {
     constructor(props) {
         super(props);
+        const tableId = "manufacturing-works-table";
+        const defaultConfig = { limit: 5 }
+        const limit = getTableConfiguration(tableId, defaultConfig).limit;
+
         this.state = {
             page: 1,
-            limit: 5,
+            limit: limit,
             code: '',
-            name: ''
+            name: '',
+            tableId
         }
     }
 
@@ -98,6 +105,7 @@ class ManufacturingWorksManagementTable extends Component {
     render() {
         const { translate } = this.props;
         const { manufacturingWorks } = this.props;
+        const { tableId } = this.state;
         const { totalPages, page } = manufacturingWorks;
         let listWorks = [];
         if (manufacturingWorks.isLoading === false) {
@@ -139,7 +147,7 @@ class ManufacturingWorksManagementTable extends Component {
                             <button type="button" className="btn btn-success" title={translate('manufacturing.manufacturing_works.search')} onClick={this.handleSubmitSearch}>{translate('manufacturing.manufacturing_works.search')}</button>
                         </div>
                     </div>
-                    <table id="manufacturing-works-table" className="table table-striped table-bordered table-hover">
+                    <table id={tableId} className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
                                 <th>{translate('manufacturing.manufacturing_works.index')}</th>
@@ -151,7 +159,7 @@ class ManufacturingWorksManagementTable extends Component {
                                 <th>{translate('manufacturing.manufacturing_works.status')}</th>
                                 <th style={{ width: "120px", textAlign: "center" }}>{translate('table.action')}
                                     <DataTableSetting
-                                        tableId="manufacturing-works-table"
+                                        tableId={tableId}
                                         columnArr={[
                                             translate('manufacturing.manufacturing_works.index'),
                                             translate('manufacturing.manufacturing_works.code'),
@@ -161,8 +169,6 @@ class ManufacturingWorksManagementTable extends Component {
                                             translate('manufacturing.manufacturing_works.description'),
                                             translate('manufacturing.manufacturing_works.status')
                                         ]}
-                                        limit={this.state.limit}
-                                        hideColumnOption={true}
                                         setLimit={this.setLimit}
                                     />
                                 </th>

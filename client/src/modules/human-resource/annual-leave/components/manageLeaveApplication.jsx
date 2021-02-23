@@ -9,18 +9,23 @@ import { AnnualLeaveImportForm, AnnualLeaveCreateForm } from './combinedContent'
 
 import { AnnualLeaveActions } from '../redux/actions';
 import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
-
+import { getTableConfiguration } from '../../../../helpers/tableConfiguration';
 
 class ManageLeaveApplication extends Component {
     constructor(props) {
         super(props);
+        const tableId = "manage-leave-applicationn-table";
+        const defaultConfig = { limit: 5 }
+        const limit = getTableConfiguration(tableId, defaultConfig).limit;
+
         this.state = {
             dataStatus: 0,
             employeeNumber: "",
             employeeName: "",
             status: ['waiting_for_approval'],
             page: 0,
-            limit: 5,
+            limit: limit,
+            tableId
         }
     }
 
@@ -218,7 +223,7 @@ class ManageLeaveApplication extends Component {
 
     render() {
         const { translate, annualLeave } = this.props;
-        const { month, status, limit, page, currentRow, currentRowView, importAnnualLeave } = this.state;
+        const { month, status, limit, page, currentRow, currentRowView, importAnnualLeave, tableId } = this.state;
 
         let listAnnualLeaves = [];
         if (annualLeave.isLoading === false) {
@@ -286,7 +291,7 @@ class ManageLeaveApplication extends Component {
                     <AnnualLeaveCreateForm />
                     {importAnnualLeave && <AnnualLeaveImportForm />}
 
-                    <table className="table table-striped table-bordered table-hover">
+                    <table className="table table-striped table-bordered table-hover" id={tableId}>
                         <thead>
                             <tr>
                                 <th>{translate('human_resource.staff_number')}</th>
@@ -297,7 +302,7 @@ class ManageLeaveApplication extends Component {
                                 <th>{translate('human_resource.status')}</th>
                                 <th style={{ width: '120px', textAlign: 'center' }}>{translate('human_resource.annual_leave.table.action')}
                                     <DataTableSetting
-                                        tableId="annual-leave-table"
+                                        tableId={tableId}
                                         columnArr={[
                                             translate('human_resource.staff_number'),
                                             translate('human_resource.staff_name'),
@@ -307,9 +312,7 @@ class ManageLeaveApplication extends Component {
                                             translate('human_resource.annual_leave.table.reason'),
                                             translate('human_resource.status')
                                         ]}
-                                        limit={limit}
                                         setLimit={this.setLimit}
-                                        hideColumnOption={true}
                                     />
                                 </th>
                             </tr>

@@ -68,9 +68,6 @@ function getAllEmployeeKpiSetInOrganizationalUnitsByMonth(organizationalUnitIds,
 
 /** Khởi tạo KPI cá nhân */  
 function createEmployeeKpiSet(newKPI) {
-    var id = getStorage("userId");
-    newKPI = { ...newKPI, creator: id };
-
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/kpi/employee/creation/employee-kpi-sets`,
         method: 'POST',

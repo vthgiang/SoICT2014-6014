@@ -29,6 +29,7 @@ export function department(state = initState, action) {
 
             return {
                 ...state,
+                loading: true,
                 isLoading: true
             }
 
@@ -39,6 +40,7 @@ export function department(state = initState, action) {
 
             return {
                 ...state,
+                loading: false,
                 isLoading: false
             }
 
@@ -51,6 +53,29 @@ export function department(state = initState, action) {
                 isLoading: false
             };
 
+        case DepartmentConstants.GET_DEPARTMENT_REQUEST:
+            return {
+                ...state,
+                unitLoading: true,
+                loading: true,
+                isLoading: true
+            }
+        case DepartmentConstants.GET_DEPARTMENT_SUCCESS:
+            return {
+                ...state,
+                unitLoading: false,
+                loading: false,
+                unit: action.payload,
+                isLoading: false
+            }
+        case DepartmentConstants.GET_DEPARTMENT_FAILURE:
+            return {
+                ...state,
+                unitLoading: false,
+                loading: false,
+                isLoading: false
+            }
+    
         case DepartmentConstants.CREATE_DEPARTMENT_SUCCESS:
 
             return {

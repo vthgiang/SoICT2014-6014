@@ -7,6 +7,7 @@ import {
 
 export const DepartmentActions = {
     get,
+    getOrganizationalUnit,
     getDepartmentsThatUserIsManager,
     create,
     edit,
@@ -62,6 +63,26 @@ function getDepartmentsThatUserIsManager() {
     }
 }
 
+/** Lấy thông tin unit by id */
+function getOrganizationalUnit(id) {
+    return dispatch => {
+        dispatch({
+            type: DepartmentConstants.GET_DEPARTMENT_REQUEST
+        });
+        DepartmentServices.getOrganizationalUnit(id)
+            .then(res => {
+                dispatch({
+                    type: DepartmentConstants.GET_DEPARTMENT_SUCCESS,
+                    payload: res.data.content
+                });
+            })
+            .catch(err => {
+                dispatch({
+                    type: DepartmentConstants.GET_DEPARTMENT_FAILURE
+                });
+            })
+    }
+}
 /**
  * Tạo đơn vị 
  * @data thông tin về đơn vị

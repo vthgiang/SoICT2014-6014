@@ -318,7 +318,7 @@ class AssetEditForm extends Component {
                 code: nextProps.code,
                 assetName: nextProps.assetName,
                 serial: nextProps.serial,
-                assetType: nextProps.assetType && nextProps.assetType.map(o => o._id),
+                assetType: nextProps.assetType && JSON.parse(nextProps.assetType).map(o => o._id),
                 group: nextProps.group,
                 purchaseDate: nextProps.purchaseDate,
                 warrantyExpirationDate: nextProps.warrantyExpirationDate,
@@ -424,7 +424,7 @@ class AssetEditForm extends Component {
                                 code={code}
                                 assetName={assetName}
                                 serial={serial}
-                                assetTypeEdit={assetType}
+                                assetTypeEdit={JSON.stringify(assetType)}
                                 group={group}
                                 purchaseDate={purchaseDate}
                                 warrantyExpirationDate={warrantyExpirationDate}

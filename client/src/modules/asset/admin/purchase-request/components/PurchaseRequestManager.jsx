@@ -331,7 +331,7 @@ class PurchaseRequestManager extends Component {
                                         <td>{x.proponent ? x.proponent.email : ''}</td>
                                         <td>{x.equipmentName}</td>
                                         <td>{x.equipmentDescription}</td>
-                                        <td>{x.approver ? x.approver.email : ''}</td>
+                                        <td>{x.approver && x.status && x.approver.length ? x.approver[0].email : ''}</td>
                                         <td>{x.note}</td>
                                         <td>{this.formatStatus(x.status)}</td>
                                         <td style={{ textAlign: "center" }}>

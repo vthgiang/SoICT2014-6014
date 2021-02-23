@@ -7,6 +7,7 @@ import {
 
 export const DepartmentServices = {
     get,
+    getOrganizationalUnit,
     getDepartmentsThatUserIsManager,
     create,
     edit,
@@ -31,6 +32,14 @@ function getDepartmentsThatUserIsManager(currentRole) {
             managerOfOrganizationalUnit: id
         }
     }, false, true, 'super_admin.organization_unit');
+}
+
+/** Lấy thông tin unit by id */
+function getOrganizationalUnit(id) {
+    return sendRequest({
+        url: `${ process.env.REACT_APP_SERVER }/organizational-units/organizational-units/${id}`,
+        method: 'GET'
+    }, false, false, 'super_admin.organization_unit')
 }
 
 function create(department) {

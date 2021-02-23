@@ -11,10 +11,14 @@ import ManufacturingLotEditFrom from './manufacturingLotEditForm';
 import { StockActions } from '../../../warehouse/stock-management/redux/actions';
 import { UserActions } from '../../../../super-admin/user/redux/actions';
 import { generateCode } from '../../../../../helpers/generateCode';
-
+import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
 class ManufacturingLotManagementTable extends Component {
     constructor(props) {
         super(props);
+        const tableId = "manufacturing-lot-table";
+        const defaultConfig = { limit: 5 }
+        const limit = getTableConfiguration(tableId, defaultConfig).limit;
+
         this.state = {
             currentRole: localStorage.getItem("currentRole"),
             code: "",
@@ -22,7 +26,8 @@ class ManufacturingLotManagementTable extends Component {
             expirationDate: "",
             good: "",
             page: 1,
-            limit: 5
+            limit: limit,
+            tableId
         }
     }
 
@@ -162,7 +167,7 @@ class ManufacturingLotManagementTable extends Component {
     render() {
         const { translate, lots } = this.props;
         const { totalPages, page } = lots;
-        const { code, createdAt, expirationDate, good, manufacturingCommandCode } = this.state;
+        const { code, createdAt, expirationDate, good, manufacturingCommandCode, tableId } = this.state;
         let listManufacturingLots = [];
 
         if (lots.listManufacturingLots && lots.isLoading === false) {
@@ -259,7 +264,7 @@ class ManufacturingLotManagementTable extends Component {
                             <button type="button" className="btn btn-success" title={translate('manufacturing.command.search')} onClick={this.handleSubmitSearch}>{translate('manufacturing.command.search')}</button>
                         </div>
                     </div>
-                    <table id="manufacturing-lot-table" className="table table-striped table-bordered table-hover">
+                    <table id={tableId} className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
                                 <th>{translate('manufacturing.lot.index')}</th>
@@ -275,7 +280,7 @@ class ManufacturingLotManagementTable extends Component {
                                 <th>{translate('manufacturing.lot.status')}</th>
                                 <th style={{ width: "120px", textAlign: "center" }}>{translate('table.action')}
                                     <DataTableSetting
-                                        tableId="manufacturing-lot-table"
+                                        tableId={tableId}
                                         columnArr={[
                                             translate('manufacturing.lot.index'),
                                             translate('manufacturing.lot.code'),
@@ -289,8 +294,6 @@ class ManufacturingLotManagementTable extends Component {
                                             translate('manufacturing.lot.expiration_date'),
                                             translate('manufacturing.lot.status'),
                                         ]}
-                                        limit={this.state.limit}
-                                        hideColumnOption={true}
                                         setLimit={this.setLimit}
                                     />
                                 </th>

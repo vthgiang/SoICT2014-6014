@@ -956,7 +956,7 @@ exports.updateAssetInformation = async (
     oldAsset.assetName = data.assetName;
     oldAsset.code = data.code;
     oldAsset.serial = data.serial;
-    oldAsset.assetType = JSON.parse(data.assetType);
+    oldAsset.assetType = typeof (data.assetType) === "string" ? JSON.parse(data.assetType) : data.assetType;
     oldAsset.group = data.group;
     oldAsset.purchaseDate = data.purchaseDate;
     oldAsset.warrantyExpirationDate = data.warrantyExpirationDate;
@@ -1449,7 +1449,7 @@ exports.getIncidents = async (portal, params) => {
         ];
     }
 
-    let aggregateQuery = [ { $match: { 'managedBy': mongoose.Types.ObjectId(userId) } } ];
+    let aggregateQuery = [{ $match: { 'managedBy': mongoose.Types.ObjectId(userId) } }];
     if (assetSearch && assetSearch.length !== 0) {
         aggregateQuery = [...aggregateQuery, { $match: { $and: assetSearch } }];
     }
@@ -1491,7 +1491,7 @@ exports.getIncidents = async (portal, params) => {
                 incidentLogs: {
                     $elemMatch: { _id: mongoose.Types.ObjectId(item._id) },
                 },
-                managedBy : managedBy,
+                managedBy: managedBy,
             });
 
             if (asset) {
@@ -1502,7 +1502,7 @@ exports.getIncidents = async (portal, params) => {
             }
         }
         var incidentList = incidents.filter(x => x.asset !== null);
-        incidentLength = incidentList.length;  
+        incidentLength = incidentList.length;
     }
 
     return {

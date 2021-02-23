@@ -9,14 +9,19 @@ import GoodReturnCreateForm from './goodReturnCreateForm';
 import QualityControlForm from '../genaral/quatityControlForm';
 
 import { BillActions } from '../../redux/actions';
-
+import { getTableConfiguration } from '../../../../../../helpers/tableConfiguration';
 class ReturnManagement extends Component {
     constructor(props) {
         super(props);
+        const tableId = "return-management-table";
+        const defaultConfig = { limit: 5 }
+        const limit = getTableConfiguration(tableId, defaultConfig).limit;
+
         this.state = {
-            limit: 5,
+            limit: limit,
             page: 1,
-            group: '3'
+            group: '3',
+            tableId
         }
     }
 
@@ -30,9 +35,9 @@ class ReturnManagement extends Component {
         const group = '2';
         const status = '2';
         const fromStock = bill.fromStock._id;
-        await this.props.getBillsByStatus({ group, status, fromStock})
+        await this.props.getBillsByStatus({ group, status, fromStock })
         window.$('#modal-edit-bill-return').modal('show');
-        
+
     }
 
     findIndexOfStaff = (array, id) => {
@@ -57,12 +62,12 @@ class ReturnManagement extends Component {
         })
         window.$('#modal-quality-control-bill').modal('show');
     }
-    
+
     render() {
-        const { translate, bills, stocks, user} = this.props;
+        const { translate, bills, stocks, user } = this.props;
         const { listPaginate, totalPages, page } = bills;
         const { listStocks } = stocks;
-        const { startDate, endDate, group, currentRow } = this.state;
+        const { startDate, endDate, group, currentRow, tableId } = this.state;
         const dataPartner = this.props.getPartner();
         return (
             <div id="bill-good-returns">
@@ -86,7 +91,7 @@ class ReturnManagement extends Component {
                                 options={{ nonSelectedText: "Tổng các kho", allSelectedText: "Tổng các kho" }}
                                 className="form-control select2"
                                 style={{ width: "100%" }}
-                                items={listStocks.map((x, index) => { return { value: x._id, text: x.name }})}
+                                items={listStocks.map((x, index) => { return { value: x._id, text: x.name } })}
                                 onChange={this.props.handleStockChange}
                             />
                         </div>
@@ -117,7 +122,7 @@ class ReturnManagement extends Component {
                                 className="form-control select2"
                                 style={{ width: "100%" }}
                                 items={[
-                                    { value: '7', text: translate('manage_warehouse.bill_management.billType.7')},
+                                    { value: '7', text: translate('manage_warehouse.bill_management.billType.7') },
                                 ]}
                                 onChange={this.props.handleTypeChange}
                             />
@@ -165,11 +170,11 @@ class ReturnManagement extends Component {
                                 className="form-control select2"
                                 style={{ width: "100%" }}
                                 items={[
-                                    { value: '1', text: translate('manage_warehouse.bill_management.bill_status.1')},
-                                    { value: '2', text: translate('manage_warehouse.bill_management.bill_status.2')},
-                                    { value: '3', text: translate('manage_warehouse.bill_management.bill_status.3')},
-                                    { value: '4', text: translate('manage_warehouse.bill_management.bill_status.4')},
-                                    { value: '5', text: translate('manage_warehouse.bill_management.bill_status.5')},
+                                    { value: '1', text: translate('manage_warehouse.bill_management.bill_status.1') },
+                                    { value: '2', text: translate('manage_warehouse.bill_management.bill_status.2') },
+                                    { value: '3', text: translate('manage_warehouse.bill_management.bill_status.3') },
+                                    { value: '4', text: translate('manage_warehouse.bill_management.bill_status.4') },
+                                    { value: '5', text: translate('manage_warehouse.bill_management.bill_status.5') },
                                 ]}
                                 onChange={this.props.handleStatusChange}
                             />
@@ -181,7 +186,7 @@ class ReturnManagement extends Component {
                     <BillDetailForm />
                     {
                         currentRow &&
-                        <GoodReturnEditForm 
+                        <GoodReturnEditForm
                             billId={currentRow._id}
                             bill={currentRow.bill ? currentRow.bill._id : null}
                             fromStock={currentRow.fromStock ? currentRow.fromStock._id : null}
@@ -207,95 +212,93 @@ class ReturnManagement extends Component {
                         />
                     }
 
-                        <table id={`good-table`} className="table table-striped table-bordered table-hover" style={{marginTop: '15px'}}>
-                            <thead>
-                                <tr>
-                                    <th style={{ width: '5%' }}>{translate('manage_warehouse.bill_management.index')}</th>
-                                    <th>{translate('manage_warehouse.bill_management.code')}</th>
-                                    <th>{translate('manage_warehouse.bill_management.issued')}</th>
-                                    <th>{translate('manage_warehouse.bill_management.type')}</th>
-                                    <th>{translate('manage_warehouse.bill_management.status')}</th> 
-                                    <th>{translate('manage_warehouse.bill_management.creator')}</th> 
-                                    <th>{translate('manage_warehouse.bill_management.approved')}</th> 
-                                    <th>{translate('manage_warehouse.bill_management.date')}</th>
-                                    <th>{translate('manage_warehouse.bill_management.stock')}</th>
-                                    <th>{translate('manage_warehouse.bill_management.customer')}</th>
-                                    <th>{translate('manage_warehouse.bill_management.description')}</th>
-                                    <th style={{ width: '120px' }}>{translate('table.action')}
+                    <table id={tableId} className="table table-striped table-bordered table-hover" style={{ marginTop: '15px' }}>
+                        <thead>
+                            <tr>
+                                <th style={{ width: '5%' }}>{translate('manage_warehouse.bill_management.index')}</th>
+                                <th>{translate('manage_warehouse.bill_management.code')}</th>
+                                <th>{translate('manage_warehouse.bill_management.issued')}</th>
+                                <th>{translate('manage_warehouse.bill_management.type')}</th>
+                                <th>{translate('manage_warehouse.bill_management.status')}</th>
+                                <th>{translate('manage_warehouse.bill_management.creator')}</th>
+                                <th>{translate('manage_warehouse.bill_management.approved')}</th>
+                                <th>{translate('manage_warehouse.bill_management.date')}</th>
+                                <th>{translate('manage_warehouse.bill_management.stock')}</th>
+                                <th>{translate('manage_warehouse.bill_management.customer')}</th>
+                                <th>{translate('manage_warehouse.bill_management.description')}</th>
+                                <th style={{ width: '120px' }}>{translate('table.action')}
                                     <DataTableSetting
-                                            tableId={`good-return-table`}
-                                            columnArr={[
-                                                translate('manage_warehouse.bill_management.index'),
-                                                translate('manage_warehouse.bill_management.code'),
-                                                translate('manage_warehouse.bill_management.issued'),
-                                                translate('manage_warehouse.bill_management.type'),
-                                                translate('manage_warehouse.bill_management.status'),
-                                                translate('manage_warehouse.bill_management.creator'),
-                                                translate('manage_warehouse.bill_management.approved'),
-                                                translate('manage_warehouse.bill_management.date'),
-                                                translate('manage_warehouse.bill_management.stock'),
-                                                translate('manage_warehouse.bill_management.customer'),
-                                                translate('manage_warehouse.bill_management.description')
-                                            ]}
-                                            limit={this.state.limit}
-                                            setLimit={this.props.setLimit}
-                                            hideColumnOption={true}
-                                        />
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            { (typeof listPaginate !== undefined && listPaginate.length !== 0) &&
-                                    listPaginate.map((x, index) => (
-                                        <tr key={index}>
-                                            <td>{index + 1}</td>
-                                            <td>{x.code}</td>
-                                            <td><a href="#" onClick={() => this.props.handleShowDetailInfo(x.bill ? x.bill._id : '')}>{x.bill ? x.bill.code : ''}</a></td>
-                                            <td>{translate(`manage_warehouse.bill_management.billType.${x.type}`)}</td>
-                                            <td style={{ color: translate(`manage_warehouse.bill_management.bill_color.${x.status}`)}}>{translate(`manage_warehouse.bill_management.bill_status.${x.status}`)}</td>
-                                            <td>{x.creator ? x.creator.name : "Creator is deleted"}</td>
-                                            <td>{x.approvers ? x.approvers.map((a, key) => { return <p key={key}>{a.approver.name}</p>}) : "approver is deleted"}</td>
-                                            <td>{this.props.formatDate(x.updatedAt)}</td>
-                                            <td>{x.fromStock ? x.fromStock.name : "Stock is deleted"}</td>
-                                            <td>{x.customer ? x.customer.name : 'Customer is deleted'}</td>
-                                            <td>{x.description}</td>
-                                            <td style={{textAlign: 'center'}}>
-                                                <a onClick={() => this.props.handleShowDetailInfo(x._id)}><i className="material-icons">view_list</i></a>
-                                                { this.props.checkRoleCanEdit(x) && <a onClick={() => this.handleEdit(x)} className="text-yellow" ><i className="material-icons">edit</i></a>}
-                                                {
+                                        tableId={tableId}
+                                        columnArr={[
+                                            translate('manage_warehouse.bill_management.index'),
+                                            translate('manage_warehouse.bill_management.code'),
+                                            translate('manage_warehouse.bill_management.issued'),
+                                            translate('manage_warehouse.bill_management.type'),
+                                            translate('manage_warehouse.bill_management.status'),
+                                            translate('manage_warehouse.bill_management.creator'),
+                                            translate('manage_warehouse.bill_management.approved'),
+                                            translate('manage_warehouse.bill_management.date'),
+                                            translate('manage_warehouse.bill_management.stock'),
+                                            translate('manage_warehouse.bill_management.customer'),
+                                            translate('manage_warehouse.bill_management.description')
+                                        ]}
+                                        setLimit={this.props.setLimit}
+                                    />
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {(typeof listPaginate !== undefined && listPaginate.length !== 0) &&
+                                listPaginate.map((x, index) => (
+                                    <tr key={index}>
+                                        <td>{index + 1}</td>
+                                        <td>{x.code}</td>
+                                        <td><a href="#" onClick={() => this.props.handleShowDetailInfo(x.bill ? x.bill._id : '')}>{x.bill ? x.bill.code : ''}</a></td>
+                                        <td>{translate(`manage_warehouse.bill_management.billType.${x.type}`)}</td>
+                                        <td style={{ color: translate(`manage_warehouse.bill_management.bill_color.${x.status}`) }}>{translate(`manage_warehouse.bill_management.bill_status.${x.status}`)}</td>
+                                        <td>{x.creator ? x.creator.name : "Creator is deleted"}</td>
+                                        <td>{x.approvers ? x.approvers.map((a, key) => { return <p key={key}>{a.approver.name}</p> }) : "approver is deleted"}</td>
+                                        <td>{this.props.formatDate(x.updatedAt)}</td>
+                                        <td>{x.fromStock ? x.fromStock.name : "Stock is deleted"}</td>
+                                        <td>{x.customer ? x.customer.name : 'Customer is deleted'}</td>
+                                        <td>{x.description}</td>
+                                        <td style={{ textAlign: 'center' }}>
+                                            <a onClick={() => this.props.handleShowDetailInfo(x._id)}><i className="material-icons">view_list</i></a>
+                                            {this.props.checkRoleCanEdit(x) && <a onClick={() => this.handleEdit(x)} className="text-yellow" ><i className="material-icons">edit</i></a>}
+                                            {
                                                 this.props.checkRoleApprovers(x) && x.status === '1' &&
-                                                    <ConfirmNotification
-                                                        icon="question"
-                                                        title={translate('manage_warehouse.bill_management.approved_true')}
-                                                        content={translate('manage_warehouse.bill_management.approved_true') + " " + x.code}
-                                                        name="check_circle_outline"
-                                                        className="text-green"
-                                                        func={() => this.props.handleFinishedApproval(x)}
-                                                    />
-                                                }
-                                                {
+                                                <ConfirmNotification
+                                                    icon="question"
+                                                    title={translate('manage_warehouse.bill_management.approved_true')}
+                                                    content={translate('manage_warehouse.bill_management.approved_true') + " " + x.code}
+                                                    name="check_circle_outline"
+                                                    className="text-green"
+                                                    func={() => this.props.handleFinishedApproval(x)}
+                                                />
+                                            }
+                                            {
                                                 this.props.checkRoleQualityControlStaffs(x) && x.status === '5' &&
-                                                    <ConfirmNotification
-                                                        icon="question"
-                                                        title={translate('manage_warehouse.bill_management.staff_true')}
-                                                        content={translate('manage_warehouse.bill_management.staff_true') + " " + x.code}
-                                                        name="check_circle"
-                                                        className="text-green"
-                                                        func={() => this.handleFinishedQualityControlStaff(x)}
-                                                    />
-                                                }
-                                            </td>
-                                        </tr>
-                                    ))
-                                }
-                            </tbody>
-                        </table>
-                        {bills.isLoading ?
-                            <div className="table-info-panel">{translate('confirm.loading')}</div> :
-                            (typeof listPaginate === 'undefined' || listPaginate.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
-                        }
-                        <PaginateBar pageTotal = {totalPages} currentPage = {page} func = {this.props.setPage} />
-                    </div>
+                                                <ConfirmNotification
+                                                    icon="question"
+                                                    title={translate('manage_warehouse.bill_management.staff_true')}
+                                                    content={translate('manage_warehouse.bill_management.staff_true') + " " + x.code}
+                                                    name="check_circle"
+                                                    className="text-green"
+                                                    func={() => this.handleFinishedQualityControlStaff(x)}
+                                                />
+                                            }
+                                        </td>
+                                    </tr>
+                                ))
+                            }
+                        </tbody>
+                    </table>
+                    {bills.isLoading ?
+                        <div className="table-info-panel">{translate('confirm.loading')}</div> :
+                        (typeof listPaginate === 'undefined' || listPaginate.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                    }
+                    <PaginateBar pageTotal={totalPages} currentPage={page} func={this.props.setPage} />
+                </div>
             </div>
         );
     }

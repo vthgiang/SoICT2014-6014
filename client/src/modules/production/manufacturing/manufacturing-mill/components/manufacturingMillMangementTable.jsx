@@ -7,14 +7,20 @@ import ManufacturingMillCreateForm from './manafacturingMillCreateForm';
 import { worksActions } from '../../manufacturing-works/redux/actions';
 import ManufacturingMillEditForm from './manufacturingMillEditForm'
 import ManufacturingMillDetailForm from './manufacturingMillDetailForm';
+import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
 class ManufacturingMillMangementTable extends Component {
     constructor(props) {
+        const tableId = "manufacturing-mill-table";
+        const defaultConfig = { limit: 5 }
+        const limit = getTableConfiguration(tableId, defaultConfig).limit;
+
         super(props);
         this.state = {
             page: 1,
-            limit: 5,
+            limit: limit,
             code: '',
-            name: ''
+            name: '',
+            tableId
         }
     }
 
@@ -113,6 +119,7 @@ class ManufacturingMillMangementTable extends Component {
     render() {
         const { translate } = this.props;
         const { manufacturingMill } = this.props;
+        const { tableId } = this.state;
         const { page, totalPages } = manufacturingMill;
         let listMills = [];
         if (manufacturingMill.listMills) {
@@ -153,7 +160,7 @@ class ManufacturingMillMangementTable extends Component {
                             <button type="button" className="btn btn-success" title={translate('manufacturing.manufacturing_mill.search')} onClick={this.handleSubmitSearch}>{translate('manufacturing.manufacturing_mill.search')}</button>
                         </div>
                     </div>
-                    <table id="manufacturing-mill-table" className="table table-striped table-bordered table-hover">
+                    <table id={tableId} className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
                                 <th>{translate('manufacturing.manufacturing_mill.index')}</th>
@@ -165,7 +172,7 @@ class ManufacturingMillMangementTable extends Component {
                                 <th>{translate('manufacturing.manufacturing_mill.status')}</th>
                                 <th style={{ width: "120px", textAlign: "center" }}>{translate('table.action')}
                                     <DataTableSetting
-                                        tableId="manufacturing-mill-table"
+                                        tableId={tableId}
                                         columnArr={[
                                             translate('manufacturing.manufacturing_mill.index'),
                                             translate('manufacturing.manufacturing_mill.code'),
@@ -175,8 +182,6 @@ class ManufacturingMillMangementTable extends Component {
                                             translate('manufacturing.manufacturing_mill.description'),
                                             translate('manufacturing.manufacturing_mill.status'),
                                         ]}
-                                        limit={this.state.limit}
-                                        hideColumnOption={true}
                                         setLimit={this.setLimit}
                                     />
                                 </th>

@@ -6,19 +6,24 @@ import { formatDate } from '../../../../../../helpers/formatDate';
 import ManufacturingCommandDetailInfo from '../../../manufacturing-command/components/manufacturingCommandDetailInfo';
 import { commandActions } from '../../../manufacturing-command/redux/actions';
 import { millActions } from '../../../manufacturing-mill/redux/actions';
-
+import { getTableConfiguration } from '../../../../../../helpers/tableConfiguration';
 class HistoryCommandTable extends Component {
     constructor(props) {
         super(props);
+        const tableId = "history-command-table";
+        const defaultConfig = { limit: 5 }
+        const limit = getTableConfiguration(tableId, defaultConfig).limit;
+
         this.state = {
             page: 1,
-            limit: 5,
+            limit: limit,
             quantity_gt: '',
             quantity_lt: '',
             fromDate: '',
             toDate: '',
             manufacturingMills: '',
-            currentRole: localStorage.getItem('currentRole')
+            currentRole: localStorage.getItem('currentRole'),
+            tableId
         }
     }
 
@@ -127,7 +132,7 @@ class HistoryCommandTable extends Component {
 
     render() {
         const { translate, manufacturingCommand } = this.props;
-        const { quantity_gt, quantity_lt, fromDate, toDate } = this.state
+        const { quantity_gt, quantity_lt, fromDate, toDate, tableId } = this.state
         const { totalPages, page } = manufacturingCommand;
         let listCommands = [];
         if (manufacturingCommand.listCommands && manufacturingCommand.isLoading === false) {
@@ -195,7 +200,7 @@ class HistoryCommandTable extends Component {
                                     <button type="button" className="btn btn-success" title={translate('manufacturing.command.search')} onClick={this.handleSubmitSearch}>{translate('manufacturing.command.search')}</button>
                                 </div>
                             </div>
-                            <table id="manufacturing-command-table" className="table table-striped table-bordered table-hover">
+                            <table id={tableId} className="table table-striped table-bordered table-hover">
                                 <thead>
                                     <tr>
                                         <th>{translate('manufacturing.command.index')}</th>
@@ -211,7 +216,7 @@ class HistoryCommandTable extends Component {
                                         <th>{translate('manufacturing.command.status')}</th>
                                         <th style={{ width: "120px", textAlign: "center" }}>{translate('general.action')}
                                             <DataTableSetting
-                                                tableId="manufacturing-command-table"
+                                                tableId={tableId}
                                                 columnArr={[
                                                     translate('manufacturing.command.index'),
                                                     translate('manufacturing.command.code'),
@@ -225,8 +230,6 @@ class HistoryCommandTable extends Component {
                                                     translate('manufacturing.command.end_date'),
                                                     translate('manufacturing.command.status')
                                                 ]}
-                                                limit={this.state.limit}
-                                                hideColumnOption={true}
                                                 setLimit={this.setLimit}
                                             />
                                         </th>

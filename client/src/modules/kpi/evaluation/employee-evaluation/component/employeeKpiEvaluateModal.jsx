@@ -7,11 +7,13 @@ import { DialogModal } from '../../../../../common-components/index';
 import { ModalDetailTask } from '../../../../task/task-dashboard/task-personal-dashboard/modalDetailTask';
 import { withTranslate } from 'react-redux-multilingual';
 import parse from 'html-react-parser';
-
+import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
 class EmployeeKpiEvaluateModal extends Component {
     constructor(props) {
         super(props);
         this.DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
+        const tableId = "employee-kpi-evaluate-modal";
+        getTableConfiguration(tableId);
         this.state = {
             organizationalUnit: "",
             content: "",
@@ -23,7 +25,8 @@ class EmployeeKpiEvaluateModal extends Component {
             value: 0,
             valueNow: 0,
             dataStatus: this.DATA_STATUS.NOT_AVAILABLE,
-            type: 0
+            type: 0,
+            tableId
         };
     }
 
@@ -272,7 +275,7 @@ class EmployeeKpiEvaluateModal extends Component {
     render() {
         const { kpimembers } = this.props;
         const { translate, employeeKpiSet } = this.props;
-        const { taskId, content, contentName, perPage, points, tasks, taskImportanceDetail } = this.state;
+        const { taskId, content, contentName, perPage, points, tasks, taskImportanceDetail, tableId } = this.state;
         let list, myTask, exportData, currentKpi;
 
         if (kpimembers.tasks) {
@@ -364,7 +367,7 @@ class EmployeeKpiEvaluateModal extends Component {
                             </div>
                             <br /><br />
                             <h4>{translate('kpi.evaluation.employee_evaluation.task_list')}</h4>
-                            <DataTableSetting className="pull-right" tableId="employeeKpiEvaluate" tableContainerId="tree-table-container" tableWidth="1300px"
+                            <DataTableSetting className="pull-right" tableId={tableId} tableContainerId="tree-table-container" tableWidth="1300px"
                                 columnArr={[
                                     'STT',
                                     'Tên công việc',
@@ -374,10 +377,8 @@ class EmployeeKpiEvaluateModal extends Component {
                                     'Đóng góp (%)',
                                     'Điểm',
                                     'Độ quan trọng']}
-                                limit={perPage}
-                                setLimit={this.setLimit}
-                                hideColumnOption={true} />
-                            <table id="employeeKpiEvaluate" className="table table-hover table-bordered">
+                                setLimit={this.setLimit} />
+                            <table id={tableId} className="table table-hover table-bordered">
                                 <thead>
                                     <tr>
                                         <th title="STT" style={{ width: "50px" }} className="col-fixed">Stt</th>
