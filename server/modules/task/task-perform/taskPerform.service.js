@@ -209,11 +209,9 @@ exports.getTaskById = async (portal, id, userId) => {
         let tree = [];
         let k = 0;
         for (let i = 0; i < listRole.length; i++) {
-            let com = company[i];
             let r = listRole[i];
             let tr = await OrganizationalUnitService.getChildrenOfOrganizationalUnitsAsTree(
                 portal,
-                com,
                 r
             );
             if (tr) {

@@ -321,7 +321,7 @@ exports.getAllEmployeeKpiSetInOrganizationalUnit = async (portal, query) => {
  */
 exports.getAllChildrenOrganizational = async (portal, companyId, roleId, organizationalUnitId) => {  // portal, companyId, roleId, organizationalUnitId //
 
-    let arrayTreeOranizationalUnit = await OrganizationalUnitService.getChildrenOfOrganizationalUnitsAsTree(portal, companyId, roleId, organizationalUnitId); // portal, companyId, roleId, organizationalUnitId
+    let arrayTreeOranizationalUnit = await OrganizationalUnitService.getChildrenOfOrganizationalUnitsAsTree(portal, roleId, organizationalUnitId); // portal, companyId, roleId, organizationalUnitId
     let childrenOrganizationalUnits, temporaryChild, deg = 0;
 
     if (arrayTreeOranizationalUnit) {

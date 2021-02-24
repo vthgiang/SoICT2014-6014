@@ -173,10 +173,12 @@ exports.editOrganizationalUnitKpi = async (req, res) => {
             content: target
         });
     } catch (error) {
+        let messages = error && error.messages === 'organizational_unit_kpi_exist' ? ['organizational_unit_kpi_exist'] : ['edit_target_failure'];
+
         Logger.error(req.user.email, 'edit target kpi unit', req.portal)
         res.status(400).json({
             success: false,
-            messages: ['edit_target_failure'],
+            messages: messages,
             content: error
         })
     }
