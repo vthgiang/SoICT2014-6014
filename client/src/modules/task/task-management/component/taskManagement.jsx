@@ -209,20 +209,6 @@ class TaskManagement extends Component {
         if (oldCurrentPage !== index) {
             let content = this.state.currentTab;
             this.props.getPaginateTasks(content, organizationalUnit, newCurrentPage, perPage, status, priority, special, name, startDate, endDate, responsibleEmployees, accountableEmployees, creatorEmployees);
-
-            // if (content === "responsible") {
-            //     this.props.getResponsibleTaskByUser(organizationalUnit, newCurrentPage, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore);
-            // } else if (content === "accountable") {
-            //     this.props.getAccountableTaskByUser(organizationalUnit, newCurrentPage, perPage, status, priority, special, name, startDate, endDate);
-            // } else if (content === "consulted") {
-            //     this.props.getConsultedTaskByUser(organizationalUnit, newCurrentPage, perPage, status, priority, special, name, startDate, endDate);
-            // } else if (content === "creator") {
-            //     this.props.getCreatorTaskByUser(organizationalUnit, newCurrentPage, perPage, status, priority, special, name, startDate, endDate);
-            // } else if (content === "informed") {
-            //     this.props.getInformedTaskByUser(organizationalUnit, newCurrentPage, perPage, status, priority, special, name, startDate, endDate);
-            // } else {
-            //     this.props.getPaginateTasksByUser(organizationalUnit, newCurrentPage, perPage, status, priority, special, name, startDate, endDate);
-            // }
         };
     }
 
@@ -240,20 +226,6 @@ class TaskManagement extends Component {
         if (oldCurrentPage !== newCurrentPage) {
             let content = this.state.currentTab;
             this.props.getPaginateTasks(content, organizationalUnit, newCurrentPage, 20, status, priority, special, name, startDate, endDate, responsibleEmployees, accountableEmployees, creatorEmployees);
-
-            // if (content === "responsible") {
-            //     this.props.getResponsibleTaskByUser(organizationalUnit, newCurrentPage, 20, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore);
-            // } else if (content === "accountable") {
-            //     this.props.getAccountableTaskByUser(organizationalUnit, newCurrentPage, 20, status, priority, special, name, startDate, endDate);
-            // } else if (content === "consulted") {
-            //     this.props.getConsultedTaskByUser(organizationalUnit, newCurrentPage, 20, status, priority, special, name, startDate, endDate);
-            // } else if (content === "creator") {
-            //     this.props.getCreatorTaskByUser(organizationalUnit, newCurrentPage, 20, status, priority, special, name, startDate, endDate);
-            // } else if (content === "informed") {
-            //     this.props.getInformedTaskByUser(organizationalUnit, newCurrentPage, 20, status, priority, special, name, startDate, endDate);
-            // } else {
-            //     this.props.getPaginateTasksByUser(organizationalUnit, newCurrentPage, 20, status, priority, special, name, startDate, endDate);
-            // }
         };
     }
 
@@ -271,20 +243,6 @@ class TaskManagement extends Component {
         if (oldCurrentPage !== newCurrentPage) {
             let content = this.state.currentTab;
             this.props.getPaginateTasks(content, organizationalUnit, newCurrentPage, 20, status, priority, special, name, startDate, endDate, responsibleEmployees, accountableEmployees, creatorEmployees);
-
-            // if (content === "responsible") {
-            //     this.props.getResponsibleTaskByUser(organizationalUnit, newCurrentPage, 20, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore);
-            // } else if (content === "accountable") {
-            //     this.props.getAccountableTaskByUser(organizationalUnit, newCurrentPage, 20, status, priority, special, name, startDate, endDate);
-            // } else if (content === "consulted") {
-            //     this.props.getConsultedTaskByUser(organizationalUnit, newCurrentPage, 20, status, priority, special, name, startDate, endDate);
-            // } else if (content === "creator") {
-            //     this.props.getCreatorTaskByUser(organizationalUnit, newCurrentPage, 20, status, priority, special, name, startDate, endDate);
-            // } else if (content === "informed") {
-            //     this.props.getInformedTaskByUser(organizationalUnit, newCurrentPage, 20, status, priority, special, name, startDate, endDate);
-            // } else {
-            //     this.props.getPaginateTasksByUser(organizationalUnit, newCurrentPage, 20, status, priority, special, name, startDate, endDate);
-            // }
         };
     }
 
@@ -294,19 +252,6 @@ class TaskManagement extends Component {
         let content = this.state.currentTab;
         this.props.getPaginateTasks(content, organizationalUnit, 1, perPage, status, priority, special, name, startDate, endDate, responsibleEmployees, accountableEmployees, creatorEmployees);
 
-        // if (content === "responsible") {
-        //     this.props.getResponsibleTaskByUser(organizationalUnit, 1, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore);
-        // } else if (content === "accountable") {
-        //     this.props.getAccountableTaskByUser(organizationalUnit, 1, perPage, status, priority, special, name, startDate, endDate);
-        // } else if (content === "consulted") {
-        //     this.props.getConsultedTaskByUser(organizationalUnit, 1, perPage, status, priority, special, name, startDate, endDate);
-        // } else if (content === "creator") {
-        //     this.props.getCreatorTaskByUser(organizationalUnit, 1, perPage, status, priority, special, name, startDate, endDate);
-        // } else if (content === "informed") {
-        //     this.props.getInformedTaskByUser(organizationalUnit, 1, perPage, status, priority, special, name, startDate, endDate);
-        // } else {
-        //     this.props.getPaginateTasksByUser(organizationalUnit, 1, perPage, status, priority, special, name, startDate, endDate);
-        // }
         this.setState({
             currentPage: 1
         })
@@ -919,20 +864,13 @@ function mapState(state) {
 }
 
 const actionCreators = {
-    getResponsibleTaskByUser: taskManagementActions.getResponsibleTaskByUser,
-    getAccountableTaskByUser: taskManagementActions.getAccountableTaskByUser,
-    getConsultedTaskByUser: taskManagementActions.getConsultedTaskByUser,
-    getInformedTaskByUser: taskManagementActions.getInformedTaskByUser,
-    getCreatorTaskByUser: taskManagementActions.getCreatorTaskByUser,
-    getPaginateTasksByUser: taskManagementActions.getPaginateTasksByUser,
     getPaginateTasks: taskManagementActions.getPaginateTasks,
     editArchivedOfTask: performTaskAction.editArchivedOfTask,
     getDepartment: UserActions.getDepartmentOfUser,
-    getSubTask: taskManagementActions.getSubTask,
     startTimer: performTaskAction.startTimerTask,
     deleteTaskById: taskManagementActions._delete,
     getAllDepartment: DepartmentActions.get,
-    getAllTaskProject: TaskProjectAction.get,
+    getAllTaskProject: TaskProjectAction.get
 };
 const translateTaskManagement = connect(mapState, actionCreators)(withTranslate(TaskManagement));
 export { translateTaskManagement as TaskManagement };

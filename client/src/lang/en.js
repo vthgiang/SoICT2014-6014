@@ -3824,6 +3824,7 @@ export default {
                     edit_target_success: "Edit KPI target successful",
                     edit_target_failure:
                         "You have not entered enough information",
+                    organizational_unit_kpi_exist: "Mục tiêu KPI đã tồn tại"
                 },
                 // Dashboard KPI Unit
                 dashboard: {
