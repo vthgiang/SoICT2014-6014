@@ -4129,6 +4129,7 @@ export default {
                     weight: "Trọng số",
                     edit_target_success: "Chỉnh sửa mục tiêu KPI thành công",
                     edit_target_failure: "Bạn chưa nhập đủ thông tin",
+                    organizational_unit_kpi_exist: "Mục tiêu KPI đã tồn tại"
                 },
 
                 // Dashboard KPI Unit

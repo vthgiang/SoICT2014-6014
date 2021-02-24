@@ -168,7 +168,6 @@ const actionCreators = {
     getAllUserOfCompany: UserActions.getAllUserOfCompany,
     getChildrenOfOrganizationalUnits: UserActions.getChildrenOfOrganizationalUnitsAsTree,
     getAllUserInAllUnitsOfCompany: UserActions.getAllUserInAllUnitsOfCompany,
-    getPaginateTasksByUser: taskManagementActions.getPaginateTasksByUser,
 };
 
 const connectedModalAddTask = connect(mapState, actionCreators)(withTranslate(TaskAddModal));
