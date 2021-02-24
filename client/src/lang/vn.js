@@ -3915,6 +3915,8 @@ export default {
                     new_value: "Giá trị mới",
                     old_value: "Giá trị cũ",
                     auto_value: "Giá trị tự động",
+                    cal_all_kpis: '(*)Tính điểm toàn bộ KPI',
+                    update_task_importance: `(*)Cập nhật độ quan trọng công việc và Tính điểm KPI `,
 
                     /**
                      * Management
@@ -3944,6 +3946,7 @@ export default {
                     priority: "Độ ưu tiên",
                     formula: "Công thức",
                     explain_automatic_point: "Giải thích giá trị điểm tự động",
+
                 },
                 /**
                  * Thông báo từ service
