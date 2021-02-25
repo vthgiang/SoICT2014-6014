@@ -96,7 +96,7 @@ class Notification extends Component {
             showInfoNotifycation: noti,
         }, () => {
             !noti.readed && this.props.readedNotification({ id: noti._id, readAll: false });
-            window.$('#modal-notification-receivered').appendTo("body").modal('show');//appendTo("body") di chuyển modal ra cạnh body tag, nhằm tránh bị backDrop đè lên modal
+            window.$(`#modal-notification-receivered-${noti._id}`).appendTo("body").modal('show');//appendTo("body") di chuyển modal ra cạnh body tag, nhằm tránh bị backDrop đè lên modal
         })
     }
 
