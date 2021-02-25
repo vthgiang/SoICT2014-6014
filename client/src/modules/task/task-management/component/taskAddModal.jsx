@@ -42,13 +42,13 @@ class TaskAddModal extends Component {
                 taskProject: "",
             },
 
-            startTime: "12:00 AM",
-            endTime: "12:00 AM",
+            startTime: "08:00 AM",
+            endTime: "05:30 AM",
 
             currentRole: getStorage('currentRole'),
         };
     }
-    
+
     onChangeTaskData = (value) => {
         this.setState({ newTask: value })
     }
