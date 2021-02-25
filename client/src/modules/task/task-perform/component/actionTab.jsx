@@ -1288,17 +1288,22 @@ class ActionTab extends Component {
                                                     {editAction !== item._id && // khi chỉnh sửa thì ẩn action hiện tại đi
                                                         <React.Fragment>
                                                             <div className="content-level1" data-width="100%">
-                                                                {item.creator ?
-                                                                    <a style={{ cursor: "pointer" }}>{item.creator?.name} </a> :
-                                                                    item.name && <b>{item.name} </b>}
-                                                                {item.description.split('\n').map((item, idx) => {
-                                                                    return (
+                                                                {/* Tên người tạo hoạt động */}
+                                                                {
+                                                                    item.creator && <a style={{ cursor: "pointer" }}>{item.creator?.name} </a>
+                                                                }
+
+                                                                <div>
+                                                                    {
+                                                                        item.name && <b style={{ display: 'flex', marginTop: '4px' }}>{item.name} </b>
+                                                                    }
+                                                                    {item.description.split('\n').map((item, idx) => (
                                                                         <div key={idx}>
                                                                             {parse(item)}
                                                                         </div>
-                                                                    );
-                                                                })
-                                                                }
+                                                                    ))
+                                                                    }
+                                                                </div>
 
                                                                 <div className="btn-group pull-right">
                                                                     {(role === 'responsible' && item.creator && showSort === false) &&
