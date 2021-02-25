@@ -33,6 +33,15 @@ class InformationForm extends Component {
     }
 
     static getDerivedStateFromProps(props, state) {
+        //Trường hợp tạo ở form mẫu công việc
+        if (props.type !== state.type) {
+            return {
+                ...state,
+                taskInformations: props.initialData,
+                type: props.type
+            }
+        }
+        //trường hợp lưu thành mẫu chạy vào đây
         if (props.savedTaskAsTemplate && props.initialData && props.initialData.length > 0 && !state.taskInformations) {
             return {
                 ...state,

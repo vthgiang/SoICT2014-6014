@@ -53,7 +53,6 @@ class EditTaskTemplate extends Component {
 
     static getDerivedStateFromProps = (nextProps, prevState) => {
         if (nextProps.taskTemplateId !== prevState.taskTemplateId) {
-            console.log("change")
             return {
                 ...prevState,
                 taskTemplateId: nextProps.taskTemplateId,
@@ -396,7 +395,6 @@ class EditTaskTemplate extends Component {
     handleTaskActionsChange = (data) => {
         let { editingTemplate } = this.state;
         this.setState(state => {
-
             return {
                 ...state,
                 editingTemplate: {
@@ -404,8 +402,7 @@ class EditTaskTemplate extends Component {
                     taskActions: data
                 },
             }
-        })
-        this.props.onChangeTemplateData(this.state.editingTemplate);
+        }, () => this.props.onChangeTemplateData(this.state.editingTemplate));
     }
 
     handleTaskInformationsChange = (data) => {
@@ -418,8 +415,7 @@ class EditTaskTemplate extends Component {
                     taskInformations: data
                 },
             }
-        })
-        this.props.onChangeTemplateData(this.state.editingTemplate);
+        }, () => this.props.onChangeTemplateData(this.state.editingTemplate))
     }
 
     clickShowMore = () => {
@@ -435,7 +431,7 @@ class EditTaskTemplate extends Component {
 
         console.log('\n\n=======EDIT=========\n\n');
         var units, taskActions, taskInformations, listRole, usercompanys, userdepartments, departmentsThatUserIsManager, listRoles = [];
-        var { editingTemplate, id, showMore } = this.state;
+        var { editingTemplate, id, showMore, taskTemplateId } = this.state;
 
         const { department, user, translate, tasktemplates } = this.props;
         const { isProcess } = this.props;
@@ -703,12 +699,12 @@ class EditTaskTemplate extends Component {
                     <div className="row">
                         <div className={`${isProcess ? "col-lg-12" : "col-sm-6"}`}>
                             {/**Các hoạt động mẫu công việc này */}
-                            <ActionForm initialData={editingTemplate.taskActions} onDataChange={this.handleTaskActionsChange} type="edit" />
+                            <ActionForm initialData={editingTemplate.taskActions} onDataChange={this.handleTaskActionsChange} type={`edit-${taskTemplateId}`} />
                         </div>
 
                         <div className={`${isProcess ? "col-lg-12" : "col-sm-6"}`}>
                             {/**Các hoạt động mẫu công việc này */}
-                            <InformationForm initialData={editingTemplate.taskInformations} onDataChange={this.handleTaskInformationsChange} type="edit" />
+                            <InformationForm initialData={editingTemplate.taskInformations} onDataChange={this.handleTaskInformationsChange} type={`edit-${taskTemplateId}`} />
                         </div>
 
                     </div>

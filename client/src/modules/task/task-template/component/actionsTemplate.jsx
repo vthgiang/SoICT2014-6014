@@ -6,7 +6,6 @@ import Sortable from 'sortablejs';
 import { ErrorLabel, QuillEditor } from '../../../../common-components';
 import { TaskTemplateFormValidator } from './taskTemplateFormValidator';
 import parse from 'html-react-parser';
-
 class ActionForm extends Component {
     constructor(props) {
         super(props);
@@ -24,6 +23,13 @@ class ActionForm extends Component {
     }
 
     static getDerivedStateFromProps(props, state) {
+        if (props.type !== state.type) {
+            return {
+                ...state,
+                taskActions: props.initialData,
+                type: props.type
+            }
+        }
         if (props.savedTaskAsTemplate && props.initialData && props.initialData.length > 0 && !state.taskActions) {
             return {
                 ...state,
@@ -144,7 +150,13 @@ class ActionForm extends Component {
 
         this.setState({
             taskActions: newTaskActions,
-        }, () => this.props.onDataChange(taskActions));
+            action: {
+                name: '',
+                description: '',
+                mandatory: true,
+            },
+            quillValueDefault: ''
+        }, () => this.props.onDataChange(newTaskActions));
     }
 
     /** Sửa các thông tin của hành động */

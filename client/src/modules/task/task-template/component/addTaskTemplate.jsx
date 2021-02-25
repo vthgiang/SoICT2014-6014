@@ -307,7 +307,7 @@ class AddTaskTemplate extends Component {
                         taskActions: nextProps.savedTaskItem.taskActions.map(e => {
                             return {
                                 mandatory: e.mandatory,
-                                name: e.description,
+                                name: e.name ? e.name : e.description,
                                 description: e.description,
                             }
                         }),
