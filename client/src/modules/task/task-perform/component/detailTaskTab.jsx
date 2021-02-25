@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { performTaskAction } from './../redux/actions';
 import { taskManagementActions } from './../../task-management/redux/actions';
 import { UserActions } from '../../../super-admin/user/redux/actions';
+import { RoleActions } from '../../../super-admin/role/redux/actions';
 
 import { ModalEditTaskByResponsibleEmployee } from './modalEditTaskByResponsibleEmployee';
 import { ModalEditTaskByAccountableEmployee } from './modalEditTaskByAccountableEmployee';
@@ -25,6 +26,7 @@ import { ModalAddTaskTemplate } from '../../task-template/component/addTaskTempl
 import { RequestToCloseTaskModal } from './requestToCloseTaskModal';
 
 import TaskProjectAction from '../../task-project/redux/action';
+import { ROOT_ROLE } from '../../../../helpers/constants';
 class DetailTaskTab extends Component {
 
     constructor(props) {
@@ -32,6 +34,7 @@ class DetailTaskTab extends Component {
 
         let { translate } = this.props;
         var idUser = getStorage("userId");
+        let currentRole = getStorage("currentRole");
 
         let currentDate = new Date();
         let currentYear = currentDate.getFullYear();
@@ -56,6 +59,7 @@ class DetailTaskTab extends Component {
             pauseTimer: false,
             highestIndex: 0,
             currentUser: idUser,
+            currentRole,
             dataStatus: this.DATA_STATUS.NOT_AVAILABLE,
             showMore: {},
 
@@ -146,7 +150,9 @@ class DetailTaskTab extends Component {
     }
 
     componentDidMount() {
+        const { currentRole } = this.state;
         this.props.getAllTaskProject();
+        this.props.showInfoRole(currentRole);
     }
 
     handleChangeCollapseInfo = async () => {
@@ -685,7 +691,7 @@ class DetailTaskTab extends Component {
         return check;
     }
 
-    /** sắp xếp đánh giá theo thứ tự tháng */ 
+    /** sắp xếp đánh giá theo thứ tự tháng */
     handleSortMonthEval = (evaluations) => {
         const sortedEvaluations = evaluations.sort((a, b) => new Date(b.evaluatingMonth) - new Date(a.evaluatingMonth));
         return sortedEvaluations;
@@ -703,7 +709,7 @@ class DetailTaskTab extends Component {
     }
 
     render() {
-        const { tasks, performtasks, user, translate } = this.props;
+        const { tasks, performtasks, user, translate, role } = this.props;
         const { showToolbar, id, isProcess } = this.props; // props form parent component ( task, id, showToolbar, onChangeTaskRole() )
         const { currentUser, roles, currentRole, collapseInfo,
             showEdit, showEndTask, showEvaluate, showRequestClose,
@@ -739,7 +745,7 @@ class DetailTaskTab extends Component {
         if (task && task.accountableEmployees && task.accountableEmployees.length === 0) {
             checkHasAccountable = false;
         }
-        
+
         if (task) {
             statusTask = task.status;
         }
@@ -848,6 +854,9 @@ class DetailTaskTab extends Component {
             employeeCollaboratedWithUnitSelectBox = this.setSelectBoxOfUserSameDepartmentCollaborated(task);
         }
 
+        const checkCurrentRoleIsManager = role && role.item &&
+            role.item.parents.length > 0 && role.item.parents.filter(o => o.name === ROOT_ROLE.MANAGER)
+
         return (
             <React.Fragment>
                 {(showToolbar) &&
@@ -886,14 +895,14 @@ class DetailTaskTab extends Component {
                                 </a>
                             </React.Fragment>
                         }
-                        {((currentRole === "accountable") && checkInactive) &&
+                        {((currentRole === "accountable" || currentRole === "responsible") && checkInactive) && checkCurrentRoleIsManager && checkCurrentRoleIsManager.length > 0 &&
                             <React.Fragment>
                                 <a className="btn btn-app" onClick={() => this.handleSaveAsTemplate(id, currentRole)} title={translate('task.task_management.detail_save_as_template')}>
                                     <i className="fa fa-floppy-o" style={{ fontSize: "16px" }}></i>{translate('task.task_management.detail_save_as_template')}
                                 </a>
                             </React.Fragment>
                         }
-                    
+
                         {task && statusTask !== "finished" && (((currentRole === "responsible" && task?.requestToCloseTask?.requestStatus !== 3) || (currentRole === "accountable" && task?.requestToCloseTask?.requestStatus === 1)) && checkInactive) && checkHasAccountable
                             && <a className="btn btn-app" onClick={() => this.handleShowRequestCloseTask(id)} title={currentRole === "responsible" ? translate('task.task_perform.request_close_task') : translate('task.task_perform.approval_close_task')}>
                                 <i className="fa fa-external-link-square" style={{ fontSize: "16px" }}></i>{currentRole === "responsible" ? translate('task.task_perform.request_close_task') : translate('task.task_perform.approval_close_task')}
@@ -904,7 +913,7 @@ class DetailTaskTab extends Component {
                                 <i className="fa fa-rocket" style={{ fontSize: "16px" }}></i>{translate('task.task_perform.open_task_again')}
                             </a>
                         }
-                    
+
                         {
                             (collapseInfo === false) ?
                                 <a className="btn btn-app" data-toggle="collapse" href="#info" onClick={this.handleChangeCollapseInfo} role="button" aria-expanded="false" aria-controls="info">
@@ -1394,8 +1403,8 @@ class DetailTaskTab extends Component {
 
 
 function mapStateToProps(state) {
-    const { tasks, performtasks, user } = state;
-    return { tasks, performtasks, user };
+    const { tasks, performtasks, user, role } = state;
+    return { tasks, performtasks, user, role };
 
 }
 
@@ -1411,7 +1420,9 @@ const actionGetState = { //dispatchActionToProps
     confirmTask: performTaskAction.confirmTask,
     getAllUserInAllUnitsOfCompany: UserActions.getAllUserInAllUnitsOfCompany,
     getAllTaskProject: TaskProjectAction.get,
-    openTaskAgain: performTaskAction.openTaskAgain
+    openTaskAgain: performTaskAction.openTaskAgain,
+
+    showInfoRole: RoleActions.show,
 }
 
 const detailTask = connect(mapStateToProps, actionGetState)(withTranslate(DetailTaskTab));
