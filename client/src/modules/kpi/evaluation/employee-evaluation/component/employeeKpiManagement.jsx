@@ -916,6 +916,9 @@ class EmployeeKpiManagement extends Component {
                                         dateFormat="month-year"
                                     />
                                 </div>
+                                <div className="form-group">
+                                    <button type="button" className="btn btn-success" onClick={() => this.handleSearchData()}>{translate('kpi.evaluation.employee_evaluation.search')}</button>
+                                </div>
 
                                 {/* Button tìm kiếm và export */}
                                 <div className="dropdown pull-right" style={{ marginTop: "5px" }}>
@@ -924,9 +927,6 @@ class EmployeeKpiManagement extends Component {
                                         <li>{exportData && <ExportExcel id="export-employee-kpi-evaluation-management" type='link' buttonName="Báo cáo chung" exportData={exportData} style={{ marginRight: 15, marginTop: 5 }} />}</li>
                                         <li>{kpimember && <ExportExcel id="export-total-employee-kpi-evaluation-management" type='link' buttonName="Báo cáo tổng hợp" onClick={() => this.handleExportTotalData(kpimember)} />}</li>
                                     </ul>
-                                </div>
-                                <div className="form-group pull-right">
-                                    <button type="button" className="btn btn-success" onClick={() => this.handleSearchData()}>{translate('kpi.evaluation.employee_evaluation.search')}</button>
                                 </div>
                             </div>
                         </div>
