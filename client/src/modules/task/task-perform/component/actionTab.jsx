@@ -163,7 +163,6 @@ class ActionTab extends Component {
             // Trường hợp thêm mới hoạt động
             if (notifications.associatedData.dataType === "createTaskAction") {
                 const res = [...taskActions, notifications.associatedData.value[0]];
-                console.log("noti", notifications.associatedData.value[0])
                 props.refreshDataAfterCreateAction(res)
             }
 
@@ -345,7 +344,6 @@ class ActionTab extends Component {
     submitAction = async (taskId, index) => {
         let { newAction } = this.state;
 
-        console.log(newAction.descriptionDefault, newAction.description)
         const data = new FormData();
 
         data.append("creator", newAction.creator);
@@ -476,7 +474,6 @@ class ActionTab extends Component {
     }
 
     handleEditAction = async (item) => {
-        console.log(item)
         this.setState(state => {
             return {
                 ...state,
@@ -2158,13 +2155,11 @@ class ActionTab extends Component {
                                                                     onClick={
                                                                         item.acceptLog ?
                                                                             () => {
-                                                                                console.log("Hủy duyệt bấm giờ");
                                                                                 this.props.editTimeSheetLog(this.state.id, item._id, {
                                                                                     acceptLog: false
                                                                                 })
                                                                             } :
                                                                             () => {
-                                                                                console.log("Chấp nhận bấm giờ")
                                                                                 this.props.editTimeSheetLog(this.state.id, item._id, {
                                                                                     acceptLog: true
                                                                                 })

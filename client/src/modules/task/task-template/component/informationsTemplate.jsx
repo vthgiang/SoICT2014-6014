@@ -4,11 +4,11 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import { ErrorLabel, QuillEditor } from '../../../../common-components';
 import Sortable from 'sortablejs';
-import { TaskTemplateFormValidator} from './taskTemplateFormValidator';
+import { TaskTemplateFormValidator } from './taskTemplateFormValidator';
 import parse from 'html-react-parser';
 
-class InformationForm extends Component{
-    constructor(props){
+class InformationForm extends Component {
+    constructor(props) {
         super(props);
         this.INFO_TYPE = {
             TEXT: "text",
@@ -24,49 +24,61 @@ class InformationForm extends Component{
             extra: '',
             filledByAccountableEmployeesOnly: false
         };
-       
-        this.state={
-            information: {...this.EMPTY_INFORMATION},
-            taskInformations: this.props.initialData,
+
+        this.state = {
+            information: { ...this.EMPTY_INFORMATION },
             editInfo: false,
             quillValueDefault: null
         }
     }
-    componentDidMount(){
+
+    static getDerivedStateFromProps(props, state) {
+        if (props.savedTaskAsTemplate && props.initialData && props.initialData.length > 0 && !state.taskInformations) {
+            return {
+                ...state,
+                taskInformations: props.initialData,
+            }
+        } else {
+            return null;
+        }
+    }
+
+
+    componentDidMount() {
         // Load library for sort action table
         this.handleSortable();
     }
 
     /**Sắp xếp các item trong bảng */
     handleSortable = () => {
-        
+
         var el2 = document.getElementById('informations');
         Sortable.create(el2, {
             chosenClass: 'chosen',
             animation: 500,
-            onChange: async(evt) => {
+            onChange: async (evt) => {
                 window.$('#informations tr').each(function (index) {
                     window.$(this).find('td:nth-child(1)').html("p" + (index + 1));
                 });
             },
-            onEnd: async(evt) => {
+            onEnd: async (evt) => {
                 let taskInformations = this.state.taskInformations;
                 const item = taskInformations[evt.oldIndex];
                 taskInformations.splice(evt.oldIndex, 1);
                 taskInformations.splice(evt.newIndex, 0, item);
-            }, store:{
+            }, store: {
                 /**
                  * Khắc phục lỗi với thư viện Sortable. Chi tiết lỗi như sau:
                  * Khi lưu thứ tự sắp xếp mới vào state, do state thay đổi, react render lại.
                  * Sortable phát hiện cấu trúc DOM thay đổi nên tự động thay đổi trở lại thứ tự các phần tử
                  * Kết quả: thứ tự trong State lưu một đằng, giao diện hiển thị thể hiện một nẻo
-                 **/ 
+                 **/
                 set: (sortable) => {
                     this.setState({
                         keyPrefix: Math.random(), // force react to destroy children
                         order: sortable.toArray()
                     })
-                } 
+                }
             }
         });
     }
@@ -84,24 +96,18 @@ class InformationForm extends Component{
     }
 
     /**Lưu chỉnh sửa */
-    handleSaveEditedInformation = async (event) => {
+    handleSaveEditedInformation = (event) => {
         event.preventDefault(); // Ngăn không submit
-        const { indexInfo } = this.state;
-        
-        let taskInformations  = this.state.taskInformations;
-        var newTaskInformations;
-        if (taskInformations) {
-            newTaskInformations = taskInformations.map((item, index) => {
-                return (index === indexInfo) ? this.state.information : item;
-            })
-        }
-        await this.setState({
-                taskInformations: newTaskInformations,
-                editInfo: false,
-                information: {...this.EMPTY_INFORMATION},
-                quillValueDefault: this.EMPTY_INFORMATION.description
-        })
-        this.props.onDataChange(this.state.taskInformations);
+        let { indexInfo, taskInformations, information } = this.state;
+
+        taskInformations[indexInfo] = information;
+
+        this.setState({
+            taskInformations,
+            editInfo: false,
+            information: { ...this.EMPTY_INFORMATION },
+            quillValueDefault: this.EMPTY_INFORMATION.description
+        }, () => this.props.onDataChange(taskInformations))
     }
 
     handleCancelEditInformation = (event) => {
@@ -109,31 +115,31 @@ class InformationForm extends Component{
         this.setState({
             editInfo: false,
             warning: false,
-            information: {...this.EMPTY_INFORMATION},
+            information: { ...this.EMPTY_INFORMATION },
             quillValueDefault: this.EMPTY_INFORMATION.description
-        });        
+        });
     }
-    
+
     /**Xóa trắng các ô input */
     handleClearInformation = (event) => {
         event.preventDefault(); // Ngăn không submit
-        
+
         let warning = false;
-        if(this.state.oldType && this.state.editInfo === true){
-            if(this.INFO_TYPE.TEXT !== this.state.oldType){
+        if (this.state.oldType && this.state.editInfo === true) {
+            if (this.INFO_TYPE.TEXT !== this.state.oldType) {
                 warning = true;
             }
         }
         this.setState({
             warning: warning,
-            information: {...this.EMPTY_INFORMATION},
+            information: { ...this.EMPTY_INFORMATION },
             quillValueDefault: this.EMPTY_INFORMATION.description
         })
     }
 
     /**Xóa 1 trường thông tin trong danh sách */
     handleDeleteInformation = async (index) => {
-        let  taskInformations  = this.state.taskInformations;
+        let taskInformations = this.state.taskInformations;
         var newTaskInformations;
         if (taskInformations) {
             newTaskInformations = taskInformations.filter((item, x) => index !== x);
@@ -145,29 +151,33 @@ class InformationForm extends Component{
     }
 
     /**Thêm 1 trường thông tin */
-    handleAddInformation = async (event) => {
+    handleAddInformation = (event) => {
         event.preventDefault(); // Ngăn không submit
-        
-        await this.setState(state => {
-            const taskInformations = [...(this.state.taskInformations), state.information];
-            return {
-                ...state,
-                taskInformations: taskInformations,
-                information: Object.assign({}, this.EMPTY_INFORMATION),
-                quillValueDefault: this.EMPTY_INFORMATION.description
-            }
-        })
-        this.props.onDataChange(this.state.taskInformations);
+        let { taskInformations, information } = this.state;
+
+        if (!taskInformations)
+            taskInformations = [];
+
+        const newTaskInformations = [
+            ...taskInformations,
+            information,
+        ]
+
+        this.setState({
+            taskInformations: newTaskInformations,
+            information: Object.assign({}, this.EMPTY_INFORMATION),
+            quillValueDefault: this.EMPTY_INFORMATION.description
+        }, () => this.props.onDataChange(newTaskInformations))
     }
 
     /**
      * Bộ xử lý cho Information Form 
     **/
     isInfoFormValidated = () => {
-        let result = 
+        let result =
             this.validateInfoName(this.state.information.name, false) &&
             (this.state.information.type !== this.INFO_TYPE.SET ||
-                (this.state.information.type === this.INFO_TYPE.SET && 
+                (this.state.information.type === this.INFO_TYPE.SET &&
                     this.validateInfoSetOfValues(this.state.information.extra, false))
             );
         return result;
@@ -177,14 +187,14 @@ class InformationForm extends Component{
         let value = event.target.value;
         this.validateInfoName(value, true);
     }
-    validateInfoName = (value, willUpdateState=true) => {
+    validateInfoName = (value, willUpdateState = true) => {
         let msg = TaskTemplateFormValidator.validateInfoName(value);
 
-        if (willUpdateState){
+        if (willUpdateState) {
             this.state.information.name = value;
             this.state.information.errorOnName = msg;
-            this.setState(state =>{
-                return{
+            this.setState(state => {
+                return {
                     ...state,
                 };
             });
@@ -204,18 +214,18 @@ class InformationForm extends Component{
     }
 
     //function: show selection input
-    handleChangeInfoType = (event) => { 
+    handleChangeInfoType = (event) => {
         let value = event.target.value;
         this.state.information.type = value;
         let warning = false;
-        if(this.state.oldType && this.state.editInfo === true){
-            if(value !== this.state.oldType){
+        if (this.state.oldType && this.state.editInfo === true) {
+            if (value !== this.state.oldType) {
                 warning = true;
             }
         }
 
-        this.setState(state =>{
-            return{
+        this.setState(state => {
+            return {
                 ...state,
                 warning: warning,
             };
@@ -226,14 +236,14 @@ class InformationForm extends Component{
         let value = event.target.value;
         this.validateInfoSetOfValues(value);
     }
-    validateInfoSetOfValues = (value, willUpdateState=true) => {
+    validateInfoSetOfValues = (value, willUpdateState = true) => {
         let msg = TaskTemplateFormValidator.validateInfoSetOfValues(value);
 
-        if (willUpdateState){
+        if (willUpdateState) {
             this.state.information.extra = value;
             this.state.information.errorOnSetOfValues = msg;
-            this.setState(state =>{
-                return{
+            this.setState(state => {
+                return {
                     ...state,
                 };
             });
@@ -244,8 +254,8 @@ class InformationForm extends Component{
     handleChangeInfoFilledByAccountableEmployeesOnly = (event) => {
         let value = event.target.checked;
         this.state.information.filledByAccountableEmployeesOnly = value;
-        this.setState(state =>{
-            return{
+        this.setState(state => {
+            return {
                 ...state
             };
         });
@@ -261,30 +271,28 @@ class InformationForm extends Component{
         else if (type === "set_of_values") return translate('task_template.value_set');
     }
 
-    render(){
+    render() {
         const { translate } = this.props;
-        let { taskInformations, information, quillValueDefault } =this.state;
-        const { initialData, type } = this.props;
+        let { taskInformations, information, quillValueDefault } = this.state;
+        const { type } = this.props;
 
-        taskInformations = initialData;
-
-        return(
+        return (
 
             /**Form chứa các danh sách thông tin của mẫu công việc */
             <fieldset className="scheduler-border">
                 <legend className="scheduler-border">{translate('task_template.information_list')}</legend>
-                
+
                 {/**Tên trường thông tin*/}
-                <div className={`form-group ${this.state.information.errorOnName===undefined?"":"has-error"}`} >
+                <div className={`form-group ${this.state.information.errorOnName === undefined ? "" : "has-error"}`} >
                     <label className="control-label">{translate('task_template.infor_name')}</label>
                     <div>
                         <input type="text" className="form-control" placeholder={translate('task_template.infor_name')} value={information.name} onChange={this.handleChangeInfoName} />
-                        <ErrorLabel content={this.state.information.errorOnName}/>
+                        <ErrorLabel content={this.state.information.errorOnName} />
                     </div>
                 </div>
 
                 {/**Mô tả của trường thông tin */}
-                <div className={`form-group ${this.state.information.errorOnDescription===undefined?"":"has-error"}`} >
+                <div className={`form-group ${this.state.information.errorOnDescription === undefined ? "" : "has-error"}`} >
                     <label className="control-label" htmlFor="inputDescriptionInfo">{translate('task_template.description')}</label>
                     <QuillEditor
                         id={`informationsTemplate${type}`}
@@ -298,7 +306,7 @@ class InformationForm extends Component{
                     {/**Kiểu dữ liệu trường thông tin */}
                     <label className=" control-label">{translate('task_template.datatypes')}</label>
                     {
-                        this.props.isEdit === true && this.state.warning && <p style={{color: "#FF6A00"}}>Đổi kiểu dữ liệu sẽ xóa dữ liệu ở tháng hiện tại và đánh giá tháng hiện tại</p>
+                        this.props.isEdit === true && this.state.warning && <p style={{ color: "#FF6A00" }}>Đổi kiểu dữ liệu sẽ xóa dữ liệu ở tháng hiện tại và đánh giá tháng hiện tại</p>
                     }
                     <div style={{ width: '100%' }}>
                         <select onChange={this.handleChangeInfoType} className="form-control" id="seltype" value={information.type} name="type" >
@@ -311,32 +319,32 @@ class InformationForm extends Component{
                     </div>
                 </div>
 
-                { this.state.information.type === this.INFO_TYPE.SET?
-                    <div className={`form-group ${this.state.information.errorOnSetOfValues===undefined?"":"has-error"}`} >
+                { this.state.information.type === this.INFO_TYPE.SET ?
+                    <div className={`form-group ${this.state.information.errorOnSetOfValues === undefined ? "" : "has-error"}`} >
                         <label className="control-label">{translate('task_template.value_set')}</label>
-                        
+
                         <textarea rows={5} type="text" className="form-control" value={information.extra} onChange={this.handleChangeInfoSetOfValues} placeholder={`Nhập tập giá trị, mỗi giá trị một dòng`} ref={input => this.setOfValues = input} />
-                        <ErrorLabel content={this.state.information.errorOnSetOfValues}/>
+                        <ErrorLabel content={this.state.information.errorOnSetOfValues} />
                     </div>
                     : null
                 }
-                
+
                 <div className="form-group" >
 
                     {/**Chỉ quản lí được điền? */}
                     <label className="control-label">
-                    {translate('task_template.manager_fill')} &nbsp;
+                        {translate('task_template.manager_fill')} &nbsp;
                         <input type="checkbox" className="" checked={information.filledByAccountableEmployeesOnly} onChange={this.handleChangeInfoFilledByAccountableEmployeesOnly} />
                     </label>
                 </div>
 
                 {/**Các button lưu chỉnh sửa khi chỉnh sửa 1 trường thông tin, thêm một trường thông tin, xóa trắng các ô input  */}
-                <div className="pull-right" style={{marginBottom: "10px"}}>
+                <div className="pull-right" style={{ marginBottom: "10px" }}>
                     {this.state.editInfo ?
                         <React.Fragment>
                             <button className="btn btn-success" onClick={this.handleCancelEditInformation} style={{ marginLeft: "10px" }}>{translate('task_template.cancel_editing')}</button>
                             <button className="btn btn-success" disabled={!this.isInfoFormValidated()} onClick={this.handleSaveEditedInformation} style={{ marginLeft: "10px" }}>{translate('task_template.save')}</button>
-                        </React.Fragment>:
+                        </React.Fragment> :
                         <button className="btn btn-success" style={{ marginLeft: "10px" }} disabled={!this.isInfoFormValidated()} onClick={this.handleAddInformation}>{translate('task_template.add')}</button>
                     }
                     <button className="btn btn-primary" style={{ marginLeft: "10px" }} onClick={this.handleClearInformation}>{translate('task_template.delete')}</button>
@@ -358,18 +366,18 @@ class InformationForm extends Component{
                         {
                             (typeof taskInformations === 'undefined' || taskInformations.length === 0) ? <tr><td colSpan={6}><center>{translate('task_template.no_data')}</center></td></tr> :
                                 taskInformations.map((item, index) =>
-                                <tr key={`${this.state.keyPrefix}_${index}`}>
-                                    <td>p{index + 1}</td>
-                                    <td>{item.name}</td>
-                                    <td><div>{parse(item.description)}</div></td>
-                                    <td>{this.formatTypeInfo(item.type)}</td>
-                                    <td>{item.filledByAccountableEmployeesOnly ? translate('general.yes') : translate('general.no')}</td>
-                                    <td>
-                                        <a href="#abc" className="edit" title={translate('general.edit')} onClick={() => this.handleEditInformation(item, index)}><i className="material-icons"></i></a>
-                                        <a href="#abc" className="delete" title={translate('general.delete')} onClick={() => this.handleDeleteInformation(index)}><i className="material-icons"></i></a>
-                                    </td>
-                                </tr>
-                            )
+                                    <tr key={`${this.state.keyPrefix}_${index}`}>
+                                        <td>p{index + 1}</td>
+                                        <td>{item.name}</td>
+                                        <td><div>{parse(item.description)}</div></td>
+                                        <td>{this.formatTypeInfo(item.type)}</td>
+                                        <td>{item.filledByAccountableEmployeesOnly ? translate('general.yes') : translate('general.no')}</td>
+                                        <td>
+                                            <a href="#abc" className="edit" title={translate('general.edit')} onClick={() => this.handleEditInformation(item, index)}><i className="material-icons"></i></a>
+                                            <a href="#abc" className="delete" title={translate('general.delete')} onClick={() => this.handleDeleteInformation(index)}><i className="material-icons"></i></a>
+                                        </td>
+                                    </tr>
+                                )
                         }
                     </tbody>
                 </table>

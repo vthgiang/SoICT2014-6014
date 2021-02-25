@@ -1384,8 +1384,8 @@ class DetailTaskTab extends Component {
                     <TaskAddModal id={`copy-task-${id}`} task={task} />
                 }
                 {
-                    (id && showSaveAsTemplate === `${id}`) &&
-                    <ModalAddTaskTemplate savedTaskAsTemplate={true} savedTaskItem={task} savedTaskId={`${id}`} task={task} />
+                    showSaveAsTemplate &&
+                    <ModalAddTaskTemplate savedTaskAsTemplate={true} savedTaskItem={task} savedTaskId={showSaveAsTemplate} />
                 }
 
                 {
