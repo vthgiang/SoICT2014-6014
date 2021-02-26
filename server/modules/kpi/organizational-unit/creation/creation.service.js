@@ -293,13 +293,23 @@ exports.getAllOrganizationalUnitKpiSet = async (portal, data) => {
 }
 
 /**
- * Chỉnh sửa độ quan trọng của nhân viên 
+ * Chỉnh sửa độ quan trọng của nhân viên hoặc đơn vị
  * @id Id của tập KPI đơn vị
  */
-exports.editEmployeeImportancesInUnitKpi = async (portal, id, data) => {
+exports.editImportancesInUnitKpi = async (portal, id, data, type) => {
+    let keySet = {};
+    if (type === 'edit-employee-importance') {
+        keySet = {
+            employeeImportances: data
+        }
+    } else if (type === 'edit-organizational-unit-importance') {
+        keySet = {
+            organizationalUnitImportances: data
+        }
+    }
 
     let organizationalUnitKpiSet = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
-        .findByIdAndUpdate(id, { $set: { employeeImportances: data } }, { new: true })
+        .findByIdAndUpdate(id, { $set: keySet }, { new: true })
 
     organizationalUnitKpiSet = organizationalUnitKpiSet && await organizationalUnitKpiSet
         .populate("organizationalUnit creator")
@@ -536,7 +546,7 @@ exports.editOrganizationalUnitKpi = async (portal, data, id) => {
     
 
     let target;
-    if (checkTarget.length > 0) {
+    if (checkTarget.length > 0 && checkTarget?.[0]?._id.toString() !== id) {
         throw {
             messages: 'organizational_unit_kpi_exist'
         };

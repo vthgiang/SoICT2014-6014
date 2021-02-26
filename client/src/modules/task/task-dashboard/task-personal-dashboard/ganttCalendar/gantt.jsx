@@ -142,9 +142,9 @@ class Gantt extends Component {
   }
 
   render() {
-    const { zoom, tasks, ganttData } = this.props;
+    const { zoom, tasks, unit, line } = this.props;
     const task = tasks && tasks.task;
-    const heightCalc = ganttData ? (ganttData.data.length) * 35 + 80 : 0;
+    let heightCalc = line && line * 35 + 80;
     this.setZoom(zoom);
 
     return (

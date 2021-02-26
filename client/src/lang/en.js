@@ -3710,7 +3710,8 @@ export default {
                     delete_kpi_failure: "Delete KPI unsuccessfully",
                     copy_kpi_unit: "Copy KPI Unit",
                     employee_importance: "Employee importances",
-
+                    organizational_unit_importance: "Children organizational unit importances",
+                    
                     // Nhóm dành cho trọng số
                     weight_total: "Weight total",
                     not_satisfied: "Not satisfied",
@@ -3756,7 +3757,8 @@ export default {
                     content:
                         "This is the default target (if necessary, weights can be corrected)",
                     delete_title: "Delete",
-                    employee_importance_activated: "KPI has been activated, you can not edit employee importances!"
+                    employee_importance_activated: "KPI has been activated, you can not edit employee importances!",
+                    organizational_unit_importance_activated: "KPI has been activated, you can not edit children organizational unit importances!"
                 },
 
                 create_organizational_unit_kpi_modal: {

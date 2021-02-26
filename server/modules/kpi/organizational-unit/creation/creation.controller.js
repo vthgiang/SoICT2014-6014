@@ -43,7 +43,7 @@ exports.editOrganizationalUnitKpiSet = async (req, res) => {
         editOrganizationalUnitKpiSetStatus(req, res);
     } else {
         try {
-            let organizationalUnitKpiSet = await KPIUnitService.editEmployeeImportancesInUnitKpi(req.portal, req.params.id, req.body);
+            let organizationalUnitKpiSet = await KPIUnitService.editImportancesInUnitKpi(req.portal, req.params.id, req.body, req.query.type);
             Logger.info(req.user.email, ' Edit kpi unit ', req.portal);
             res.status(200).json({
                 success: true,
@@ -60,6 +60,7 @@ exports.editOrganizationalUnitKpiSet = async (req, res) => {
         }
     }
 }
+
 
 /**
  * Xóa tập KPI đơn vị 
