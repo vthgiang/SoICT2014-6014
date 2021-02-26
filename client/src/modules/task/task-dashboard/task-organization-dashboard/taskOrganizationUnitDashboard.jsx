@@ -366,6 +366,7 @@ class TaskOrganizationUnitDashboard extends Component {
                                                 tasks={tasks.organizationUnitTasks}
                                                 listEmployee={user && user.employees}
                                                 units={selectBoxUnit}
+                                                unitSelected={idsUnit}
                                             />
                                         }
                                     </div>
