@@ -3710,7 +3710,8 @@ export default {
                     delete_kpi_failure: "Delete KPI unsuccessfully",
                     copy_kpi_unit: "Copy KPI Unit",
                     employee_importance: "Employee importances",
-
+                    organizational_unit_importance: "Children organizational unit importances",
+                    
                     // Nhóm dành cho trọng số
                     weight_total: "Weight total",
                     not_satisfied: "Not satisfied",
