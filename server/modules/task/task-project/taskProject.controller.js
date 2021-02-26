@@ -44,7 +44,7 @@ exports.show = async (req, res) => {
 }
 
 exports.create = async (req, res) => {
-    try {console.log("create task project")
+    try {
         let tp = await TaskProjectService.create(req.portal, req.body);
 
         await Logger.info(req.user.email, 'create_task_project', req.portal)

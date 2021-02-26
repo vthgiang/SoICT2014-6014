@@ -10,7 +10,6 @@ const OrganizationalUnitService = require(`../../super-admin/organizational-unit
 const NotificationServices = require(`../../notification/notification.service`);
 const UserService = require('../../super-admin/user/user.service');
 
-const { sendEmail } = require(`../../../helpers/emailHelper`);
 const { connect } = require(`../../../helpers/dbHelper`);
 
 /*
@@ -3162,7 +3161,6 @@ exports.evaluateTaskByConsultedEmployees = async (portal, data, taskId) => {
         }
     );
 
-    // let newTask = await Task(connect(DB_CONNECTION, portal)).findById(taskId);
     let newTask = await Task(connect(DB_CONNECTION, portal))
         .findById(taskId)
         .populate([
@@ -3329,7 +3327,6 @@ exports.evaluateTaskByResponsibleEmployees = async (portal, data, taskId) => {
     // chuẩn hóa dữ liệu info
     for (let i in info) {
         if (info[i].value) {
-            // !== undefined || info[i].value !== null
             if (info[i].type === "number")
                 info[i].value = parseInt(info[i].value);
             else if (info[i].type === "set_of_values")
@@ -5142,22 +5139,6 @@ exports.editDocument = async (portal, taskId, documentId, body, files) => {
     return task.documents;
 };
 
-// exports.activateFollowingTask = async (taskId, activateTasks) => {
-//     for(let i in activateTasks) {
-//         await Task(connect(DB_CONNECTION, portal)).findOneAndUpdate(
-//             {
-//                 _id: taskId,
-//                 "followingTasks.task": activateTasks[i],
-//             },
-//             {
-//                 $set: {
-//                     "followingTasks.$.activated": true,
-//                 }
-//             },
-//         )
-//     }
-// }
-
 /**
  *  thêm bình luận
  */
@@ -5966,19 +5947,6 @@ exports.sortActions = async (portal, params, body) => {
             },
         }
     );
-
-
-    // await Task(connect(DB_CONNECTION, portal)).update(
-    //     { _id: taskId },
-    //     {
-    //         $push: {
-    //             taskActions: {
-    //                 $each: [],
-    //                 $sort: { order: 1 },
-    //             },
-    //         },
-    //     }
-    // );
 
     let task = await Task(connect(DB_CONNECTION, portal))
         .findOne({ _id: params.taskId })

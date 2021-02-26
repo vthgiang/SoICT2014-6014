@@ -277,7 +277,7 @@ class TaskTemplate extends Component {
                 confirmButtonText: translate('task_template.confirm')
             }).then((res) => {
                 if (res.value) {
-                    this.props._delete(id);
+                    this.props.deleteTaskTemplateById(id);
 
                     var test = window.$("#multiSelectUnit").val();
                     this.props.getTaskTemplateByUser(this.state.currentPage, this.state.perPage, test, "");
@@ -551,7 +551,7 @@ function mapState(state) {
 const actionCreators = {
     getTaskTemplateByUser: taskTemplateActions.getAllTaskTemplateByUser,
     getDepartment: UserActions.getDepartmentOfUser,
-    _delete: taskTemplateActions._delete,
+    deleteTaskTemplateById: taskTemplateActions.deleteTaskTemplateById,
     show: RoleActions.show,
 };
 const connectedTaskTemplate = connect(mapState, actionCreators)(withTranslate(TaskTemplate));

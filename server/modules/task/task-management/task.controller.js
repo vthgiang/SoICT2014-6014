@@ -11,8 +11,8 @@ const Logger = require(`../../../logs`);
  * @param {*} res 
  */
 exports.getTasks = async (req, res) => {
-    if (req.query.type === "all") {
-        getAllTasks(req, res);
+    if (req.query.type === "all_by_user") {
+        getTasksByUser(req, res);
     }
     else if (req.query.type === "responsible") {
         getPaginatedTasksThatUserHasResponsibleRole(req, res);
@@ -38,9 +38,6 @@ exports.getTasks = async (req, res) => {
     else if (req.query.type === "paginated_task_by_unit") {
         getPaginatedTasksByOrganizationalUnit(req, res);
     }
-    else if (req.query.type === "get_all_task_created_by_user") {
-        getAllTasksCreatedByUser(req, res);
-    }
     else if (req.query.type === "get_all_task_of_organizational_unit") {
         getAllTaskOfOrganizationalUnit(req, res);
     }
@@ -51,35 +48,6 @@ exports.getTasks = async (req, res) => {
         getAllTaskOfChildrenOrganizationalUnit(req, res)
     } else if (req.query.type === "priority") {
         getAllTaskByPriorityOfOrganizationalUnit(req, res)
-    }
-}
-
-/**
- * Lấy tất cả các công việc
- */
-getAllTasks = async (req, res) => {
-    if (req.query.userId !== undefined) {
-        getTasksByUser(req, res);
-    }
-    else {
-        try {
-            var task = await TaskManagementService.getAllTasks(req.portal);
-
-            await Logger.info(req.user.email, 'get_all_tasks', req.portal);
-            res.status(200).json({
-                success: true,
-                messages: ['get_all_task_success'],
-                content: task
-            });
-        } catch (error) {
-
-            await Logger.error(req.user.email, 'get_all_tasks', req.portal);
-            res.status(400).json({
-                success: false,
-                messages: ['get_all_task_fail'],
-                content: error
-            });
-        }
     }
 }
 
@@ -110,30 +78,6 @@ exports.getTaskEvaluations = async (req, res) => {
 
 }
 
-/**
- * Lấy công việc tạo bởi một người dùng
- */
-getAllTasksCreatedByUser = async (req, res) => {
-    try {
-        var tasks = await TaskManagementService.getTasksCreatedByUser(req.portal, req.query.userId);
-
-        await Logger.info(req.user.email, 'get_all_tasks_created_by_user', req.portal)
-        res.status(200).json({
-            success: true,
-            messages: ['get_tasks_by_role_success'],
-            content: tasks
-        });
-    } catch (error) {
-
-        await Logger.error(req.user.email, 'get_all_tasks_created_by_user', req.portal)
-        res.status(400).json({
-            success: false,
-            messages: ['get_tasks_by_role_fail'],
-            content: error
-        })
-    }
-
-}
 
 /**
  * Lấy công việc theo vai trò người thực hiện chính
