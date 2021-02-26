@@ -635,13 +635,6 @@ class TaskManagement extends Component {
             }
         }
 
-        // const userList = user && user.usercompanys ? user.usercompanys.map((obj) => ({
-        //     value: obj._id, text: `${obj.name} (${obj.email})`
-        // })) : [];
-
-        const userList = user && user.usersInUnitsOfCompany ?
-            getEmployeeSelectBoxItems(user.usersInUnitsOfCompany) : [];
-
         return (
             <React.Fragment>
                 <div className="box">

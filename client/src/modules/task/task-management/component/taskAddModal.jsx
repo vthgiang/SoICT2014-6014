@@ -82,8 +82,7 @@ class TaskAddModal extends Component {
     render() {
         const { newTask } = this.state;
         const { tasktemplates, user, KPIPersonalManager, translate, tasks, department, taskProject, isProcess } = this.props;
-        const { task, id } = this.props;
-
+        const { task, id, parentTask, currentTasks } = this.props;
         let units, userdepartments, listTaskTemplate, listKPIPersonal, usercompanys;
         let listDepartment = department?.list;
         let taskTemplate;
@@ -112,22 +111,7 @@ class TaskAddModal extends Component {
             usersInUnitsOfCompany = user.usersInUnitsOfCompany;
         }
 
-        let allUnitsMember = getEmployeeSelectBoxItems(usersInUnitsOfCompany);
-        let unitMembers = getEmployeeSelectBoxItems(usersOfChildrenOrganizationalUnit);
-
         if (KPIPersonalManager.kpipersonals) listKPIPersonal = KPIPersonalManager.kpipersonals;
-
-        let listParentTask = [{ value: "", text: `--${translate('task.task_management.add_parent_task')}--` }];
-
-        if (this.props.parentTask && this.props.parentTask !== "" && this.props.currentTasks) {
-            let taskItem = this.props.currentTasks.find(e => e._id === this.props.parentTask);
-            taskItem && listParentTask.push({ value: taskItem._id, text: taskItem.name })
-        }
-
-        if (tasks.listSearchTasks) {
-            let arr = tasks.listSearchTasks.map(x => { return { value: x._id, text: x.name } });
-            listParentTask = [...listParentTask, ...arr];
-        }
 
         return (
             <React.Fragment>
@@ -144,6 +128,8 @@ class TaskAddModal extends Component {
                         handleChangeEndTime={this.onChangeEndTime}
                         id={id}
                         task={task}
+                        parentTask={parentTask}
+                        currentTasks={currentTasks}
                     />
                     <ModalAddTaskProject />
                 </DialogModal>
