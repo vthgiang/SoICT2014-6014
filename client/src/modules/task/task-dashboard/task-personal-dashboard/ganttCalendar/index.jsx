@@ -236,7 +236,7 @@ class GanttCalendar extends Component {
       } else {
         if (moment(item.startDate) > moment(prevItem?.endDate)
           || moment(item.endDate) < moment(prevItem?.startDate)
-          && (item.responsibleEmployees[0].name == prevItem?.responsibleEmployees[0].name
+          && (item.responsibleEmployees[0]?.name == prevItem?.responsibleEmployees[0]?.name
             || item.responsibleEmployees.length != 1)
         ) {
           item.parentSplit = parentCount;
