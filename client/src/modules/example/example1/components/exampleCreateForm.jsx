@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { ButtonModal, DialogModal, ErrorLabel } from '../../../../common-components';
+import { DialogModal, ErrorLabel } from '../../../../common-components';
 import ValidationHelper from '../../../../helpers/validationHelper';
 
 import { exampleActions } from '../redux/actions';
@@ -20,6 +20,9 @@ class ExampleCreateForm extends Component {
         }
     }
 
+    /**
+     * Hàm dùng để kiểm tra xem form đã được validate hay chưa
+     */
     isFormValidated = () => {
         const { exampleNameError } = this.state;
         if (!exampleNameError.status) {
@@ -28,6 +31,10 @@ class ExampleCreateForm extends Component {
         return true;
     }
 
+
+    /**
+     * Hàm dùng để lưu thông tin của form và gọi service tạo mới ví dụ
+     */
     save = () => {
         if (this.isFormValidated()) {
             const { page, limit } = this.props;
@@ -44,6 +51,11 @@ class ExampleCreateForm extends Component {
         }
     }
 
+
+    /**
+     * Hàm xử lý khi tên ví dụ thay đổi
+     * @param {*} e 
+     */
     handleExampleName = (e) => {
         const { value } = e.target;
         let { translate } = this.props;
@@ -58,6 +70,11 @@ class ExampleCreateForm extends Component {
         })
     }
 
+
+    /**
+     * Hàm xử lý khi mô tả ví dụ thay đổi
+     * @param {*} e 
+     */
     handleExampleDescription = (e) => {
         const { value } = e.target;
         this.setState({
@@ -68,6 +85,7 @@ class ExampleCreateForm extends Component {
     render() {
         const { translate, example } = this.props;
         const { exampleName, description, exampleNameError } = this.state;
+
         return (
             <React.Fragment>
                 <DialogModal
@@ -82,11 +100,14 @@ class ExampleCreateForm extends Component {
                     maxWidth={500}
                 >
                     <form id="form-create-example" onSubmit={() => this.save(translate('manage_example.add_success'))}>
+                        {/* Tên ví dụ */}
                         <div className={`form-group ${exampleNameError.status ? "" : "has-error"}`}>
                             <label>{translate('manage_example.exampleName')}<span className="text-red">*</span></label>
                             <input type="text" className="form-control" value={exampleName} onChange={this.handleExampleName}></input>
                             <ErrorLabel content={exampleNameError.message} />
                         </div>
+
+                        {/* Mô tả ví dụ */}
                         <div className={`form-group`}>
                             <label>{translate('manage_example.example_description')}</label>
                             <input type="text" className="form-control" value={description} onChange={this.handleExampleDescription}></input>

@@ -164,8 +164,8 @@ class Notification extends Component {
                                     </span>
                                 </p>
                                 <div className="example">
-                                    <button type="button" class={`btn btn-sm btn-toggle ${sound ? 'active' : ''}`} data-toggle="button" aria-pressed="true" autocomplete="off" onClick={this.handleOnOffSound}>
-                                        <div class="handle"></div>
+                                    <button type="button" className={`btn btn-sm btn-toggle ${sound ? 'active' : ''}`} data-toggle="button" aria-pressed="true" autoComplete="off" onClick={this.handleOnOffSound}>
+                                        <div className="handle"></div>
                                     </button>
                                 </div>
                             </div>
