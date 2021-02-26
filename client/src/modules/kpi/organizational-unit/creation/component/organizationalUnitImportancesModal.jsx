@@ -8,71 +8,66 @@ import { createUnitKpiActions } from '../redux/actions.js';
 import { DialogModal } from '../../../../../common-components';
 import Swal from 'sweetalert2';
 
-function EmployeeImportancesModal(props) {
-    const { translate, user, createKpiUnit } = props;
+function OrganizationalUnitImportancesModal(props) {
+    const { translate, createKpiUnit, dashboardEvaluationEmployeeKpiSet } = props;
     const { organizationalUnit, organizationalUnitId, month } = props;
 
-    const [employeeImportancesState, setEmployeeImportancesState] = useState(null);
+    const [organizationalUnitImportancesState, setOrganizationalUnitImportancesState] = useState(null);
     const [state, setState] = useState({
-        updateEmployee: false,
+        updateOrganizationalUnit: false,
         importance: 0,
         editting: false
     });
-    const { editting, importance, updateEmployee } = state;
+    const { editting, importance, updateOrganizationalUnit } = state;
 
     useEffect(() => {
-        setEmployeeImportancesState(null);
+        setOrganizationalUnitImportancesState(null);
     }, [props.organizationalUnitId, props.createKpiUnit?.currentKPI])
 
     useEffect(() => {
         // Khởi tạo dữ liệu table độ quan trọng nhân viên
-        if (!employeeImportancesState && createKpiUnit?.currentKPI) {
-            let currentKpiUnit, employees = [];
+        if (!organizationalUnitImportancesState && createKpiUnit?.currentKPI) {
+            let currentKpiUnit, organizationalUnits = [];
         
             currentKpiUnit = createKpiUnit.currentKPI;
             if (currentKpiUnit) {
-                employees = currentKpiUnit?.employeeImportances?.map(item => {
-                    return { value: item?.employee?._id, text: item?.employee?.name, importance: item?.importance }
+                organizationalUnits = currentKpiUnit?.organizationalUnitImportances?.map(item => {
+                    return { value: item?.organizationalUnit?._id, text: item?.organizationalUnit?.name, importance: item?.importance }
                 })
             }
-            setEmployeeImportancesState(employees)
+            setOrganizationalUnitImportancesState(organizationalUnits)
         }
 
-        // Cập nhât dữ liệu table khi thêm nhân viên mới
-        if (employeeImportancesState && user?.employeesOfUnitsUserIsManager && user?.employeesOfUnitsUserIsManager?.[0]?.idUnit === organizationalUnitId && updateEmployee) {
-            let userdepartments, unitMembers, currentKPI, listEmployeeImportances, employeeImportances, employee;
-            employeeImportances = employeeImportancesState;
-            employee = employeeImportancesState.map(item => item?.value);
+        // Cập nhât dữ liệu table khi thêm đơn vị con mới
+        if (organizationalUnitImportancesState && organizationalUnit && updateOrganizationalUnit) {
+            let organizationalUnitChildren, currentKPI, listOrganizationalUnitImportances, organizationalUnitImportancesStateTemp, unit;
+            organizationalUnitImportancesStateTemp = organizationalUnitImportancesState;
+            unit = organizationalUnitImportancesState.map(item => item?.value);
 
-            // Lấy các nhân viên thuộc phòng ban hiện tại
-            if (user) {
-                userdepartments = user.employeesOfUnitsUserIsManager;
-                if (userdepartments) {
-                    unitMembers = userdepartments.map(item => item?.userId)
-                }
-            }
+            // Lấy các đơn vị con trực tiếp của phòng ban hiện tại
+            organizationalUnitChildren = organizationalUnit?.children;
             
-            // Lấy danh sách nhân viên có độ quan trọng lưu trong DB
+            // Lấy danh sách đơn vị có độ quan trọng lưu trong DB
             if (createKpiUnit) {
                 currentKPI = createKpiUnit.currentKPI;
                 if (currentKPI) {
-                    listEmployeeImportances = currentKPI?.employeeImportances?.map(item => item?.employee?._id);
+                    listOrganizationalUnitImportances = currentKPI?.organizationalUnitImportances?.map(item => item?.organizationalUnit?._id);
                 }
             }
 
-            // Thêm những nhân viên chưa có độ quan trọng trong DB
-            if (unitMembers?.length > 0) {
-                unitMembers.map(item => {
-                    if (!listEmployeeImportances || (listEmployeeImportances.indexOf(item?._id) === -1 && employee.indexOf(item?._id) === -1)) {
-                        employeeImportances.push({ value: item?._id, text: item?.name, importance: 100 })
+            // Thêm những đơn vị chưa có độ quan trọng trong DB
+            if (organizationalUnitChildren?.length > 0) {
+                organizationalUnitChildren.map(item => {
+                    if (!listOrganizationalUnitImportances || (listOrganizationalUnitImportances.indexOf(item?.id) === -1 && unit.indexOf(item?.id) === -1)) {
+                        organizationalUnitImportancesStateTemp.push({ value: item?.id, text: item?.name, importance: 100 })
                     }   
                 })
 
                 // Reset state trước khi lưu state mới
-                setEmployeeImportancesState(employeeImportances);
+                setOrganizationalUnitImportancesState(organizationalUnitImportancesStateTemp);
                 setState({
                     ...state,
-                    updateEmployee: false
+                    updateOrganizationalUnit: false
                 });
             }
         }
@@ -107,14 +102,14 @@ function EmployeeImportancesModal(props) {
 
     const handleSaveEdit = (index) => {
         if (importance >= 0 && importance <= 100) {
-            let employeeImportancesStateTemp = employeeImportancesState;
-            employeeImportancesStateTemp[index].importance = importance;
+            let organizationalUnitImportancesStateTemp = organizationalUnitImportancesState;
+            organizationalUnitImportancesStateTemp[index].importance = importance;
     
             setState({
                 ...state,
                 editting: ""
             })
-            setEmployeeImportancesState(employeeImportancesStateTemp);
+            setOrganizationalUnitImportancesState(organizationalUnitImportancesStateTemp);
         } else {
             Swal.fire({
                 title: 'Độ quan trọng phải từ 0 đến 100',
@@ -143,9 +138,8 @@ function EmployeeImportancesModal(props) {
         e.preventDefault();
         setState({
             ...state,
-            updateEmployee: true
+            updateOrganizationalUnit: true
         })
-        props.getAllEmployeeOfUnitByIds([props.organizationalUnitId], true);
     }
 
     const handleSubmit = () => {
@@ -155,32 +149,32 @@ function EmployeeImportancesModal(props) {
         if (createKpiUnit) {
             currentKPI = createKpiUnit.currentKPI;
         }
-        if (employeeImportancesState && employeeImportancesState.length !== 0) {
-            data = employeeImportancesState.map(item => {
+        if (organizationalUnitImportancesState && organizationalUnitImportancesState.length !== 0) {
+            data = organizationalUnitImportancesState.map(item => {
                 return {
-                    employee: item.value,
+                    organizationalUnit: item.value,
                     importance: item.importance
                 }
             })
 
-            props.editKPIUnit(currentKPI._id, data, 'edit-employee-importance')
+            props.editKPIUnit(currentKPI._id, data, 'edit-organizational-unit-importance')
         }
     }
 
     return (
         <React.Fragment>
             <DialogModal
-                modalID="employee-importances" isLoading={false}
-                formID="form-employee-importances"
-                title={`Độ quan trọng nhân viên ${organizationalUnit && organizationalUnit.name} tháng ${formatDate(month)}`}
+                modalID="organizational-unit-importances" isLoading={false}
+                formID="form-organizational-unit-importances"
+                title={`Độ quan trọng đơn vị con của ${organizationalUnit && organizationalUnit.name} tháng ${formatDate(month)}`}
                 msg_success={translate('kpi.organizational_unit.create_organizational_unit_kpi_set_modal.success')}
                 msg_faile={translate('kpi.organizational_unit.create_organizational_unit_kpi_set_modal.failure')}
                 func={handleSubmit}
                 hasNote={false}
             >
                 {/* Form khởi tạo KPI đơn vị */}
-                <form id="form-employee-importances" onSubmit={() => handleSubmit(translate('kpi.organizational_unit.create_organizational_unit_kpi_set_modal.success'))}>
-                    <button className='btn btn-primary pull-right' style={{ marginBottom: '15px' }} onClick={(e) => handleUpdateEmployee(e)}>Cập nhật nhân viên mới</button>
+                <form id="form-organizational-unit-importances" onSubmit={() => handleSubmit(translate('kpi.organizational_unit.create_organizational_unit_kpi_set_modal.success'))}>
+                    <button className='btn btn-primary pull-right' style={{ marginBottom: '15px' }} onClick={(e) => handleUpdateEmployee(e)}>Cập nhật đơn vị con mới</button>
 
                     <table className="table table-hover table-bordered">
                         <thead>
@@ -192,8 +186,8 @@ function EmployeeImportancesModal(props) {
                             </tr>
                         </thead>
                         <tbody>
-                            { employeeImportancesState && employeeImportancesState.length !== 0
-                                && employeeImportancesState.map((item, index) =>
+                            { organizationalUnitImportancesState && organizationalUnitImportancesState.length !== 0
+                                && organizationalUnitImportancesState.map((item, index) =>
                                     <tr key={item.value + organizationalUnitId + index}>
                                         <td>{index + 1}</td>
                                         <td>{item.text}</td>
@@ -230,13 +224,12 @@ function EmployeeImportancesModal(props) {
 
 
 function mapState(state) {
-    const { user, createKpiUnit } = state;
-    return { user, createKpiUnit }
+    const { user, createKpiUnit, dashboardEvaluationEmployeeKpiSet } = state;
+    return { user, createKpiUnit, dashboardEvaluationEmployeeKpiSet }
 }
 const actions = {
-    getAllEmployeeOfUnitByIds: UserActions.getAllEmployeeOfUnitByIds,
     editKPIUnit: createUnitKpiActions.editKPIUnit
 }
 
-const connectedEmployeeImportancesModal = connect(mapState, actions)(withTranslate(EmployeeImportancesModal));
-export { connectedEmployeeImportancesModal as EmployeeImportancesModal }
+const connectedOrganizationalUnitImportancesModal = connect(mapState, actions)(withTranslate(OrganizationalUnitImportancesModal));
+export { connectedOrganizationalUnitImportancesModal as OrganizationalUnitImportancesModal }

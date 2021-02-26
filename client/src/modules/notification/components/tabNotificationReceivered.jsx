@@ -308,7 +308,7 @@ class TabNotificationReceivered extends Component {
             }
         });
         !notification.readed && await this.props.readedNotification({ id: notification._id, readAll: false })
-        window.$('#modal-notification-receivered').modal('show');
+        window.$(`#modal-notification-receivered-${notification._id}`).modal('show');
     }
 
     convertContent = (content) => {

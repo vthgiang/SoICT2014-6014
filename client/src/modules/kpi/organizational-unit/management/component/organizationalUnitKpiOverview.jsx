@@ -476,7 +476,6 @@ class KPIUnitManager extends Component {
                                 </div>
 
                                 <div className="form-group">
-                                    <label></label>
                                     <button type="button" className="btn btn-success" onClick={() => this.handleSearchData()}>{translate('kpi.organizational_unit.management.over_view.search')}</button>
                                 </div>
 

@@ -40,8 +40,8 @@ class AddTaskForm extends Component {
                 parent: "",
                 taskProject: "",
             },
-            startTime: "12:00 AM",
-            endTime: "12:00 AM",
+            startTime: "08:00 AM",
+            endTime: "05:30 AM",
             currentRole: getStorage('currentRole'),
         };
     }
@@ -78,7 +78,7 @@ class AddTaskForm extends Component {
         var d = new Date(date);
         let time = moment(d).format("hh:mm");
         let suffix = " AM";
-        if(d.getHours() >= 12 && d.getHours() <= 23) {
+        if (d.getHours() >= 12 && d.getHours() <= 23) {
             suffix = " PM";
         }
         return time + suffix;
@@ -163,7 +163,7 @@ class AddTaskForm extends Component {
         let { newTask } = this.state;
         let startDate = this.convertDateTime(value, this.state.startTime);
         let endDate = this.convertDateTime(this.state.newTask.endDate, this.state.endTime);
-        if(startDate > endDate) {
+        if (startDate > endDate) {
             msg = translate('task.task_management.add_err_end_date');
         }
         if (willUpdateState) {
@@ -182,14 +182,14 @@ class AddTaskForm extends Component {
     }
 
     handleStartTimeChange = (value) => {
-        let { translate } =this.props;
+        let { translate } = this.props;
         let startDate = this.convertDateTime(this.state.newTask.startDate, value);
         let endDate = this.convertDateTime(this.state.newTask.endDate, this.state.endTime);
         let err;
-        if (value.trim() === "" ) {
+        if (value.trim() === "") {
             err = translate('task.task_management.add_err_empty_end_date');
         }
-        else if(startDate > endDate) {
+        else if (startDate > endDate) {
             err = translate('task.task_management.add_err_end_date');
         }
         this.setState(state => {
@@ -207,15 +207,15 @@ class AddTaskForm extends Component {
     }
 
     handleEndTimeChange = (value) => {
-        let { translate } =this.props;
+        let { translate } = this.props;
         let startDate = this.convertDateTime(this.state.newTask.startDate, this.state.startTime);
         let endDate = this.convertDateTime(this.state.newTask.endDate, value);
         let err;
-        console.log('startDate > endDate', startDate > endDate, startDate , endDate);
-        if (value.trim() === "" ) {
+        console.log('startDate > endDate', startDate > endDate, startDate, endDate);
+        if (value.trim() === "") {
             err = translate('task.task_management.add_err_empty_end_date');
         }
-        else if(startDate > endDate) {
+        else if (startDate > endDate) {
             err = translate('task.task_management.add_err_end_date');
         }
         this.setState(state => {
@@ -590,7 +590,7 @@ class AddTaskForm extends Component {
 
     render() {
         const { id, newTask, startTime, endTime } = this.state;
-        const { tasktemplates, user, KPIPersonalManager, translate, tasks, department, taskProject,isProcess,info } = this.props;
+        const { tasktemplates, user, KPIPersonalManager, translate, tasks, department, taskProject, isProcess, info } = this.props;
         const { task } = this.props;
         let units, userdepartments, listTaskTemplate, listKPIPersonal, usercompanys;
         let listDepartment = department?.list;
@@ -626,8 +626,7 @@ class AddTaskForm extends Component {
         if (KPIPersonalManager.kpipersonals) listKPIPersonal = KPIPersonalManager.kpipersonals;
 
         let listParentTask = [{ value: "", text: `--${translate('task.task_management.add_parent_task')}--` }];
-
-        if (this.props.parentTask && this.props.parentTask !== "" && this.props.currentTasks) {
+        if (newTask.parent && this.props.currentTasks) {
             let taskItem = this.props.currentTasks.find(e => e._id === this.props.parentTask);
             taskItem && listParentTask.push({ value: taskItem._id, text: taskItem.name })
         }
@@ -642,263 +641,263 @@ class AddTaskForm extends Component {
 
                 {/** Form chứa thông tin của task */}
 
-                    <div className="row">
-                        <div className={`${isProcess ? "col-lg-12" : "col-sm-6"}`}>
+                <div className="row">
+                    <div className={`${isProcess ? "col-lg-12" : "col-sm-6"}`}>
 
-                            {/* Thông tin công việc */}
-                            <fieldset className="scheduler-border">
-                                <legend className="scheduler-border">{translate('task.task_management.detail_info')}</legend>
+                        {/* Thông tin công việc */}
+                        <fieldset className="scheduler-border">
+                            <legend className="scheduler-border">{translate('task.task_management.detail_info')}</legend>
 
 
-                                <div className={'row'}>
-                                    {/* Đơn vị quản lý công việc */}
-                                    <div className="col-lg-6 col-md-6 col-ms-12 col-xs-12 form-group">
-                                        <label className="control-label">{translate('task.task_management.unit_manage_task')}<span className="text-red">*</span></label>
-                                        {listDepartment &&
-                                            <select value={newTask.organizationalUnit} className="form-control" onChange={this.handleChangeTaskOrganizationalUnit}>
-                                                {listDepartment.map(x => {
-                                                    return <option key={x._id} value={x._id}>{x.name}</option>
-                                                })}
-                                            </select>
-                                        }
-                                    </div>
-
-                                    {/* Độ ưu tiên công việc */}
-                                    <div className="col-lg-6 col-md-6 col-ms-12 col-xs-12 form-group">
-                                        <label className="control-label">{translate('task.task_management.detail_priority')}<span className="text-red">*</span></label>
-                                        <select className="form-control" value={newTask.priority} onChange={this.handleChangeTaskPriority}>
-                                            <option value={5}>{translate('task.task_management.urgent')}</option>
-                                            <option value={4}>{translate('task.task_management.high')}</option>
-                                            <option value={3}>{translate('task.task_management.standard')}</option>
-                                            <option value={2}>{translate('task.task_management.average')}</option>
-                                            <option value={1}>{translate('task.task_management.low')}</option>
+                            <div className={'row'}>
+                                {/* Đơn vị quản lý công việc */}
+                                <div className="col-lg-6 col-md-6 col-ms-12 col-xs-12 form-group">
+                                    <label className="control-label">{translate('task.task_management.unit_manage_task')}<span className="text-red">*</span></label>
+                                    {listDepartment &&
+                                        <select value={newTask.organizationalUnit} className="form-control" onChange={this.handleChangeTaskOrganizationalUnit}>
+                                            {listDepartment.map(x => {
+                                                return <option key={x._id} value={x._id}>{x.name}</option>
+                                            })}
                                         </select>
-                                    </div>
+                                    }
                                 </div>
 
-
-                                {/* Tên công việc */}
-                                <div className={`form-group ${newTask.errorOnName === undefined ? "" : "has-error"}`}>
-                                    <label>{translate('task.task_management.name')}<span className="text-red">*</span></label>
-                                    <input type="Name" className="form-control" placeholder={translate('task.task_management.name')} value={(newTask.name)} onChange={this.handleChangeTaskName} />
-                                    <ErrorLabel content={newTask.errorOnName} />
+                                {/* Độ ưu tiên công việc */}
+                                <div className="col-lg-6 col-md-6 col-ms-12 col-xs-12 form-group">
+                                    <label className="control-label">{translate('task.task_management.detail_priority')}<span className="text-red">*</span></label>
+                                    <select className="form-control" value={newTask.priority} onChange={this.handleChangeTaskPriority}>
+                                        <option value={5}>{translate('task.task_management.urgent')}</option>
+                                        <option value={4}>{translate('task.task_management.high')}</option>
+                                        <option value={3}>{translate('task.task_management.standard')}</option>
+                                        <option value={2}>{translate('task.task_management.average')}</option>
+                                        <option value={1}>{translate('task.task_management.low')}</option>
+                                    </select>
                                 </div>
+                            </div>
 
 
-                                {/* Mô tả công việc */}
-                                <div className={`form-group ${newTask.errorOnDescription === undefined ? "" : "has-error"}`}>
-                                    <label className="control-label">{translate('task.task_management.detail_description')}<span className="text-red">*</span></label>
-                                    <QuillEditor
-                                        id={`task-add-modal-${this.props.id}-${this.props.quillId}`}
-                                        table={false}
-                                        embeds={false}
-                                        getTextData={this.handleChangeTaskDescription}
-                                        height={150}
-                                        quillValueDefault={newTask.quillDescriptionDefault}
-                                        placeholder={translate('task.task_management.detail_description')}
+                            {/* Tên công việc */}
+                            <div className={`form-group ${newTask.errorOnName === undefined ? "" : "has-error"}`}>
+                                <label>{translate('task.task_management.name')}<span className="text-red">*</span></label>
+                                <input type="Name" className="form-control" placeholder={translate('task.task_management.name')} value={(newTask.name)} onChange={this.handleChangeTaskName} />
+                                <ErrorLabel content={newTask.errorOnName} />
+                            </div>
+
+
+                            {/* Mô tả công việc */}
+                            <div className={`form-group ${newTask.errorOnDescription === undefined ? "" : "has-error"}`}>
+                                <label className="control-label">{translate('task.task_management.detail_description')}<span className="text-red">*</span></label>
+                                <QuillEditor
+                                    id={`task-add-modal-${this.props.id}-${this.props.quillId}`}
+                                    table={false}
+                                    embeds={false}
+                                    getTextData={this.handleChangeTaskDescription}
+                                    height={150}
+                                    quillValueDefault={newTask.quillDescriptionDefault}
+                                    placeholder={translate('task.task_management.detail_description')}
+                                />
+                                <ErrorLabel content={newTask.errorOnDescription} />
+                            </div>
+
+                            {/* Ngày bắt đầu, kết thúc công việc */}
+                            <div className="row form-group">
+                                <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 ${newTask.errorOnStartDate === undefined ? "" : "has-error"}`}>
+                                    <label className="control-label">{translate('task.task_management.start_date')}<span className="text-red">*</span></label>
+                                    <DatePicker
+                                        id={`datepicker1-${id}-${this.props.id}`}
+                                        dateFormat="day-month-year"
+                                        value={newTask.startDate}
+                                        onChange={this.handleChangeTaskStartDate}
                                     />
-                                    <ErrorLabel content={newTask.errorOnDescription} />
+                                    < TimePicker
+                                        id={`time-picker-1-${id}-${this.props.id}`}
+                                        ref={`time-picker-1-${id}-${this.props.id}`}
+                                        value={startTime}
+                                        onChange={this.handleStartTimeChange}
+                                    />
+                                    <ErrorLabel content={newTask.errorOnStartDate} />
                                 </div>
-
-                                {/* Ngày bắt đầu, kết thúc công việc */}
-                                <div className="row form-group">
-                                    <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 ${newTask.errorOnStartDate === undefined ? "" : "has-error"}`}>
-                                        <label className="control-label">{translate('task.task_management.start_date')}<span className="text-red">*</span></label>
-                                        <DatePicker
-                                            id={`datepicker1-${id}-${this.props.id}`}
-                                            dateFormat="day-month-year"
-                                            value={newTask.startDate}
-                                            onChange={this.handleChangeTaskStartDate}
-                                        />
-                                        < TimePicker
-                                            id={`time-picker-1-${id}-${this.props.id}`}
-                                            ref={`time-picker-1-${id}-${this.props.id}`}
-                                            value={startTime}
-                                            onChange={this.handleStartTimeChange}
-                                        />
-                                        <ErrorLabel content={newTask.errorOnStartDate} />
-                                    </div>
-                                    <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 ${newTask.errorOnEndDate === undefined ? "" : "has-error"}`}>
-                                        <label className="control-label">{translate('task.task_management.end_date')}<span className="text-red">*</span></label>
-                                        <DatePicker
-                                            id={`datepicker2-${id}-${this.props.id}`}
-                                            value={newTask.endDate}
-                                            onChange={this.handleChangeTaskEndDate}
-                                        />
-                                        < TimePicker
-                                            id={`time-picker-2-${id}-${this.props.id}`}
-                                            ref={`time-picker-2-${id}-${this.props.id}`}
-                                            value={endTime}
-                                            onChange={this.handleEndTimeChange}
-                                        />
-                                        <ErrorLabel content={newTask.errorOnEndDate} />
-                                    </div>
+                                <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 ${newTask.errorOnEndDate === undefined ? "" : "has-error"}`}>
+                                    <label className="control-label">{translate('task.task_management.end_date')}<span className="text-red">*</span></label>
+                                    <DatePicker
+                                        id={`datepicker2-${id}-${this.props.id}`}
+                                        value={newTask.endDate}
+                                        onChange={this.handleChangeTaskEndDate}
+                                    />
+                                    < TimePicker
+                                        id={`time-picker-2-${id}-${this.props.id}`}
+                                        ref={`time-picker-2-${id}-${this.props.id}`}
+                                        value={endTime}
+                                        onChange={this.handleEndTimeChange}
+                                    />
+                                    <ErrorLabel content={newTask.errorOnEndDate} />
                                 </div>
-                            </fieldset>
-                        </div>
-
-
-                        <div className= {`${isProcess ? "col-lg-12" : "col-sm-6"}`} >
-
-                            {/* Phân định trách nhiệm công việc */}
-                            <fieldset className="scheduler-border">
-                                <legend className="scheduler-border">{translate('task.task_management.add_raci')} (RACI)</legend>
-
-                                {/* Những người thực hiện công việc */}
-                                <div className={`form-group ${newTask.errorOnResponsibleEmployees === undefined ? "" : "has-error"}`}>
-                                    <label className="control-label">{translate('task.task_management.responsible')}<span className="text-red">*</span></label>
-                                    {allUnitsMember &&
-                                        <SelectBox
-                                            id={`responsible-select-box${newTask.taskTemplate}-${id}`}
-                                            className="form-control select2"
-                                            style={{ width: "100%" }}
-                                            items={allUnitsMember}
-                                            onChange={this.handleChangeTaskResponsibleEmployees}
-                                            value={newTask.responsibleEmployees }
-                                            multiple={true}
-                                            options={{ placeholder: translate('task.task_management.add_resp') }}
-                                        />
-                                    }
-                                    <ErrorLabel content={newTask.errorOnResponsibleEmployees} />
-                                </div>
-
-                                {/* Những người quản lý/phê duyệt công việc */}
-                                <div className={`form-group ${newTask.errorOnAccountableEmployees === undefined ? "" : "has-error"}`}>
-                                    <label className="control-label">{translate('task.task_management.accountable')}<span className="text-red">*</span></label>
-                                    {allUnitsMember &&
-                                        <SelectBox
-                                            id={`accounatable-select-box${newTask.taskTemplate}-${id}`}
-                                            className="form-control select2"
-                                            style={{ width: "100%" }}
-                                            items={allUnitsMember}
-                                            onChange={this.handleChangeTaskAccountableEmployees}
-                                            value={newTask.accountableEmployees}
-                                            multiple={true}
-                                            options={{ placeholder: translate('task.task_management.add_acc') }}
-                                        />
-                                    }
-                                    <ErrorLabel content={newTask.errorOnAccountableEmployees} />
-                                </div>
-
-                                {/* Những người tư vấn công việc */}
-                                <div className='form-group'>
-                                    <label className="control-label">{translate('task.task_management.consulted')}</label>
-                                    {allUnitsMember &&
-                                        <SelectBox
-                                            id={`consulted-select-box${newTask.taskTemplate}-${id}`}
-                                            className="form-control select2"
-                                            style={{ width: "100%" }}
-                                            items={allUnitsMember}
-                                            onChange={this.handleChangeTaskConsultedEmployees}
-                                            value={newTask.consultedEmployees}
-                                            multiple={true}
-                                            options={{ placeholder: translate('task.task_management.add_cons') }}
-                                        />
-                                    }
-                                </div>
-
-                                {/* Những người quan sát công việc */}
-                                <div className='form-group'>
-                                    <label className="control-label">{translate('task.task_management.informed')}</label>
-                                    {allUnitsMember &&
-                                        <SelectBox
-                                            id={`informed-select-box${newTask.taskTemplate}-${id}`}
-                                            className="form-control select2"
-                                            style={{ width: "100%" }}
-                                            items={allUnitsMember}
-                                            onChange={this.handleChangeTaskInformedEmployees}
-                                            value={newTask.informedEmployees}
-                                            multiple={true}
-                                            options={{ placeholder: translate('task.task_management.add_inform') }}
-                                        />
-                                    }
-                                </div>
-                            </fieldset>
-                        </div>
+                            </div>
+                        </fieldset>
                     </div>
 
 
-                    <div className="row">
-                        <div className={`${isProcess ? "col-lg-12" : "col-sm-6"}`}>
-                            {/* Tùy chọn thêm */}
-                            <fieldset className="scheduler-border">
-                                <legend className="scheduler-border">{translate('task.task_management.task_additional_info')}</legend>
+                    <div className={`${isProcess ? "col-lg-12" : "col-sm-6"}`} >
 
-                                {/* Mẫu công việc */}
-                                {(listTaskTemplate) &&
-                                    <div className="form-group ">
-                                        <label className="control-label">{translate('task.task_management.add_template')} ({listDepartment.find(e => e._id === newTask.organizationalUnit)?.name})</label>
+                        {/* Phân định trách nhiệm công việc */}
+                        <fieldset className="scheduler-border">
+                            <legend className="scheduler-border">{translate('task.task_management.add_raci')} (RACI)</legend>
 
-                                        <select className="form-control" value={newTask.taskTemplate} onChange={this.handleChangeTaskTemplate}>
-                                            <option value="">--{translate('task.task_management.add_template_notice')}--</option>
-                                            {
-                                                listTaskTemplate.map(item => {
-                                                    return <option key={item._id} value={item._id}>{item.name}</option>
-                                                })
-                                            }
-                                        </select>
-                                    </div>
-                                }
-
-                                {/* Công việc liên quan */}
-                                <div className="form-group">
-                                    <label>{translate('task.task_management.add_parent_task')}
-                                        <ToolTip
-                                            type={"icon_tooltip"}
-                                            dataTooltip={[translate('task.task_management.search_task_by_typing')]}
-                                        />
-                                    </label>
-
+                            {/* Những người thực hiện công việc */}
+                            <div className={`form-group ${newTask.errorOnResponsibleEmployees === undefined ? "" : "has-error"}`}>
+                                <label className="control-label">{translate('task.task_management.responsible')}<span className="text-red">*</span></label>
+                                {allUnitsMember &&
                                     <SelectBox
-                                        id={`select-parent-new-task-${id}`}
+                                        id={`responsible-select-box${newTask.taskTemplate}-${id}`}
                                         className="form-control select2"
                                         style={{ width: "100%" }}
-                                        items={listParentTask}
-                                        multiple={false}
-                                        value={newTask.parent}
-                                        onChange={this.handleSelectedParent}
-                                        onSearch={this.onSearch}
+                                        items={allUnitsMember}
+                                        onChange={this.handleChangeTaskResponsibleEmployees}
+                                        value={newTask.responsibleEmployees}
+                                        multiple={true}
+                                        options={{ placeholder: translate('task.task_management.add_resp') }}
                                     />
-                                </div>
-
-
-                                {/* Đơn vị phối hợp thực hiện công việc */}
-                                {listDepartment &&
-                                    <div className="form-group">
-                                        <label>{translate('task.task_management.collaborated_with_organizational_units')}</label>
-                                        <SelectBox
-                                            id={`multiSelectUnitThatHaveCollaborated-${id}`}
-                                            className="form-control select2"
-                                            style={{ width: "100%" }}
-                                            items={listDepartment.filter(item => newTask && item._id !== newTask.organizationalUnit).map(x => {
-                                                return { text: x.name, value: x._id }
-                                            })}
-                                            options={{ placeholder: translate('kpi.evaluation.dashboard.select_units') }}
-                                            onChange={this.handleChangeCollaboratedWithOrganizationalUnits}
-                                            value={newTask.collaboratedWithOrganizationalUnits?.map(e => e.organizationalUnit)}
-                                            multiple={true}
-                                        />
-                                    </div>
                                 }
+                                <ErrorLabel content={newTask.errorOnResponsibleEmployees} />
+                            </div>
 
-                                {/* Dự án liên quan của công việc */}
+                            {/* Những người quản lý/phê duyệt công việc */}
+                            <div className={`form-group ${newTask.errorOnAccountableEmployees === undefined ? "" : "has-error"}`}>
+                                <label className="control-label">{translate('task.task_management.accountable')}<span className="text-red">*</span></label>
+                                {allUnitsMember &&
+                                    <SelectBox
+                                        id={`accounatable-select-box${newTask.taskTemplate}-${id}`}
+                                        className="form-control select2"
+                                        style={{ width: "100%" }}
+                                        items={allUnitsMember}
+                                        onChange={this.handleChangeTaskAccountableEmployees}
+                                        value={newTask.accountableEmployees}
+                                        multiple={true}
+                                        options={{ placeholder: translate('task.task_management.add_acc') }}
+                                    />
+                                }
+                                <ErrorLabel content={newTask.errorOnAccountableEmployees} />
+                            </div>
+
+                            {/* Những người tư vấn công việc */}
+                            <div className='form-group'>
+                                <label className="control-label">{translate('task.task_management.consulted')}</label>
+                                {allUnitsMember &&
+                                    <SelectBox
+                                        id={`consulted-select-box${newTask.taskTemplate}-${id}`}
+                                        className="form-control select2"
+                                        style={{ width: "100%" }}
+                                        items={allUnitsMember}
+                                        onChange={this.handleChangeTaskConsultedEmployees}
+                                        value={newTask.consultedEmployees}
+                                        multiple={true}
+                                        options={{ placeholder: translate('task.task_management.add_cons') }}
+                                    />
+                                }
+                            </div>
+
+                            {/* Những người quan sát công việc */}
+                            <div className='form-group'>
+                                <label className="control-label">{translate('task.task_management.informed')}</label>
+                                {allUnitsMember &&
+                                    <SelectBox
+                                        id={`informed-select-box${newTask.taskTemplate}-${id}`}
+                                        className="form-control select2"
+                                        style={{ width: "100%" }}
+                                        items={allUnitsMember}
+                                        onChange={this.handleChangeTaskInformedEmployees}
+                                        value={newTask.informedEmployees}
+                                        multiple={true}
+                                        options={{ placeholder: translate('task.task_management.add_inform') }}
+                                    />
+                                }
+                            </div>
+                        </fieldset>
+                    </div>
+                </div>
+
+
+                <div className="row">
+                    <div className={`${isProcess ? "col-lg-12" : "col-sm-6"}`}>
+                        {/* Tùy chọn thêm */}
+                        <fieldset className="scheduler-border">
+                            <legend className="scheduler-border">{translate('task.task_management.task_additional_info')}</legend>
+
+                            {/* Mẫu công việc */}
+                            {(listTaskTemplate) &&
+                                <div className="form-group ">
+                                    <label className="control-label">{translate('task.task_management.add_template')} ({listDepartment.find(e => e._id === newTask.organizationalUnit)?.name})</label>
+
+                                    <select className="form-control" value={newTask.taskTemplate} onChange={this.handleChangeTaskTemplate}>
+                                        <option value="">--{translate('task.task_management.add_template_notice')}--</option>
+                                        {
+                                            listTaskTemplate.map(item => {
+                                                return <option key={item._id} value={item._id}>{item.name}</option>
+                                            })
+                                        }
+                                    </select>
+                                </div>
+                            }
+
+                            {/* Công việc liên quan */}
+                            <div className="form-group">
+                                <label>{translate('task.task_management.add_parent_task')}
+                                    <ToolTip
+                                        type={"icon_tooltip"}
+                                        dataTooltip={[translate('task.task_management.search_task_by_typing')]}
+                                    />
+                                </label>
+
+                                <SelectBox
+                                    id={`select-parent-new-task-${newTask.parent}`}
+                                    className="form-control select2"
+                                    style={{ width: "100%" }}
+                                    items={listParentTask}
+                                    multiple={false}
+                                    value={newTask.parent}
+                                    onChange={this.handleSelectedParent}
+                                    onSearch={this.onSearch}
+                                />
+                            </div>
+
+
+                            {/* Đơn vị phối hợp thực hiện công việc */}
+                            {listDepartment &&
                                 <div className="form-group">
-                                    <label>
-                                        {translate('task.task_management.project')}
-                                    </label>
-                                    <TreeSelect
-                                        id={`select-task-project-task-${id}`}
-                                        mode='radioSelect'
-                                        data={taskProject.list}
-                                        handleChange={this.handleTaskProject}
-                                        value={[newTask.taskProject]}
-                                        action={() => { window.$('#modal-add-task-project').modal('show') }}
-                                        actionIcon='fa fa-plus'
+                                    <label>{translate('task.task_management.collaborated_with_organizational_units')}</label>
+                                    <SelectBox
+                                        id={`multiSelectUnitThatHaveCollaborated-${id}`}
+                                        className="form-control select2"
+                                        style={{ width: "100%" }}
+                                        items={listDepartment.filter(item => newTask && item._id !== newTask.organizationalUnit).map(x => {
+                                            return { text: x.name, value: x._id }
+                                        })}
+                                        options={{ placeholder: translate('kpi.evaluation.dashboard.select_units') }}
+                                        onChange={this.handleChangeCollaboratedWithOrganizationalUnits}
+                                        value={newTask.collaboratedWithOrganizationalUnits?.map(e => e.organizationalUnit)}
+                                        multiple={true}
                                     />
                                 </div>
-                            </fieldset>
-                        </div>
+                            }
+
+                            {/* Dự án liên quan của công việc */}
+                            <div className="form-group">
+                                <label>
+                                    {translate('task.task_management.project')}
+                                </label>
+                                <TreeSelect
+                                    id={`select-task-project-task-${id}`}
+                                    mode='radioSelect'
+                                    data={taskProject.list}
+                                    handleChange={this.handleTaskProject}
+                                    value={[newTask.taskProject]}
+                                    action={() => { window.$('#modal-add-task-project').modal('show') }}
+                                    actionIcon='fa fa-plus'
+                                />
+                            </div>
+                        </fieldset>
                     </div>
+                </div>
             </React.Fragment>
         );
     }

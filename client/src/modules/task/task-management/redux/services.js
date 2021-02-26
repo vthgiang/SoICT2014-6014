@@ -11,16 +11,19 @@ export const taskManagementService = {
     getConsultedTaskByUser,
     getInformedTaskByUser,
     getCreatorTaskByUser,
+    getPaginateTasksByUser,
+    getPaginateTasks,
+    getPaginatedTasksByOrganizationalUnit,
+
     addNewTask,
     editTask,
     deleteTaskById,
     getSubTask,
+
     getTasksByUser,
     getTaskEvaluations,
     getTaskInOrganizationUnitByMonth,
-    getPaginateTasksByUser,
-    getPaginateTasks,
-    getPaginatedTasksByOrganizationalUnit,
+    
     getTaskAnalysOfUser,
     getTaskByPriorityInOrganizationUnit,
     getTimeSheetOfUser,

@@ -318,14 +318,12 @@ function mapState(state) {
     return { tasks };
 }
 const actionCreators = {
-    getAllTaskByRole: taskManagementActions.getAllTaskByRole,
     getResponsibleTaskByUser: taskManagementActions.getResponsibleTaskByUser,
     getAccountableTaskByUser: taskManagementActions.getAccountableTaskByUser,
     getConsultedTaskByUser: taskManagementActions.getConsultedTaskByUser,
     getInformedTaskByUser: taskManagementActions.getInformedTaskByUser,
     getCreatorTaskByUser: taskManagementActions.getCreatorTaskByUser,
     getTaskByUser: taskManagementActions.getTasksByUser,
-    getPaginateTasksByUser: taskManagementActions.getPaginateTasksByUser,
 };
 const connectedHome = connect(mapState, actionCreators)(withTranslate(SuperHome));
 export { connectedHome as SuperHome };

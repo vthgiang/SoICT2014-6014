@@ -8,6 +8,7 @@ import { DateTimeConverter, SlimScroll } from '../../../common-components';
 import audioFile from './sound.mp3';
 import { NotificationFilterByModules } from '../../../helpers/NotificationFilterByModules';
 import NotificationReceiveredInfo from '../../../modules/notification/components/notificationReiceiveredInfo';
+import markAll from './mark_all.png';
 class Notification extends Component {
     constructor(props) {
         super(props);
@@ -96,10 +97,13 @@ class Notification extends Component {
             showInfoNotifycation: noti,
         }, () => {
             !noti.readed && this.props.readedNotification({ id: noti._id, readAll: false });
-            window.$('#modal-notification-receivered').appendTo("body").modal('show');//appendTo("body") di chuyển modal ra cạnh body tag, nhằm tránh bị backDrop đè lên modal
+            window.$(`#modal-notification-receivered-${noti._id}`).appendTo("body").modal('show');//appendTo("body") di chuyển modal ra cạnh body tag, nhằm tránh bị backDrop đè lên modal
         })
     }
 
+    handleReadAllNoti = () => {
+        this.props.readedNotification({ id: null, readAll: true })
+    }
 
     render() {
         const { translate } = this.props;
@@ -138,19 +142,41 @@ class Notification extends Component {
                         }
                     </a>
                     <ul className="dropdown-menu notify-dropdown">
-                        <li className="header text-center"><strong className="text-red">{notify.filter(notification => !notification.readed).length}</strong> {translate('notification.news')}</li>
+                        <div className="notification-header">
+                            <p style={{ margin: 0 }} ><strong className="text-red">{notify.filter(notification => !notification.readed).length}</strong> {translate('notification.news')}</p>
+                            <i className="fa fa-cog config-notification-icon" data-toggle="collapse" data-target={`#setting-notification`} aria-expanded="false" aria-hidden="true" ></i>
+                        </div>
+                        <div className="collapse popup-noti-setting" data-toggle="collapse" id={`setting-notification`} >
+                            <p className="close-noti-setting" data-toggle="collapse" data-target={`#setting-notification`}><i className="fa fa-times" aria-hidden="true"></i></p>
+                            <div className="mark-all-noti" onClick={this.handleReadAllNoti}>
+                                <img src={markAll} alt="mark_all" style={{ height: '20px', width: '20px', marginRight: '4px' }} />
+                                <p className="mark-all-text">Đánh dấu là xem tất cả</p>
+                            </div>
+                            <div className="notification-on-off" >
+                                <p style={{ display: 'flex', alignItems: 'center', marginBottom: 0 }}>
+                                    <span className="material-icons" style={{ color: "#585757", marginRight: '6px' }}>
+                                        {
+                                            sound ? `volume_up` : `volume_off`
+                                        }
+                                    </span>
+                                    <span>
+                                        Âm thanh thông báo
+                                    </span>
+                                </p>
+                                <div className="example">
+                                    <button type="button" class={`btn btn-sm btn-toggle ${sound ? 'active' : ''}`} data-toggle="button" aria-pressed="true" autocomplete="off" onClick={this.handleOnOffSound}>
+                                        <div class="handle"></div>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
                         <div className="nav-tabs-custom">
                             <ul className="notify-tabs nav nav-tabs">
                                 <li className="active"><a className="notify-action" href="#allNotificationDefault" data-toggle="tab" onClick={() => this.checkTabPaneScroll("allNotificationDefault")}>{`Chung (${notifyDefault.length})`}</a></li>
                                 <li><a className="notify-action" href="#allNotificationOfTask" data-toggle="tab" onClick={() => this.checkTabPaneScroll("allNotificationOfTask")}>{`Công việc (${notifyTaskUnRead.length})`}</a></li>
                                 <li><a className="notify-action" href="#allNotificationOfAsset" data-toggle="tab" onClick={() => this.checkTabPaneScroll("allNotificationOfAsset")}>{`Tài sản (${notifyAssetUnRead.length})`}</a></li>
                                 <li><a className="notify-action" href="#allNotificationOfKPI" data-toggle="tab" onClick={() => this.checkTabPaneScroll("allNotificationOfKPI")}>{`KPI (${notifyKPIUnRead.length})`}</a></li>
-                                <a style={{ display: 'flex', alignItems: 'center', marginRight: '5px' }}>
-                                    <span className="material-icons" style={{ cursor: 'pointer', marginLeft: '15px' }} onClick={this.handleOnOffSound}>
-                                        {
-                                            sound ? `volume_up` : `volume_off`
-                                        }
-                                    </span></a>
                             </ul>
 
                             <div className="tab-content">

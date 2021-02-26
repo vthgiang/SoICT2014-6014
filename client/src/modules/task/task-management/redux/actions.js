@@ -1,8 +1,8 @@
 import { taskManagementConstants } from "./constants";
 import { taskManagementService } from "./services";
 export const taskManagementActions = {
-    getAll,
-    getAllTaskByRole,
+    // getAll,
+    // getAllTaskByRole,
     getResponsibleTaskByUser,
     getAccountableTaskByUser,
     getConsultedTaskByUser,
@@ -17,16 +17,10 @@ export const taskManagementActions = {
     _delete,
     getSubTask,
 
-    editTaskByAccountableEmployees,
-    editTaskByResponsibleEmployees,
-
-    evaluateTaskByAccountableEmployees,
-    evaluateTaskByConsultedEmployees,
-    evaluateTaskByResponsibleEmployees,
-
     getTasksByUser,
     getTaskInOrganizationUnitByMonth,
     getTaskEvaluations,
+
     getTaskAnalysOfUser,
     getTaskByPriorityInOrganizationUnit,
     getTimeSheetOfUser,
@@ -471,114 +465,6 @@ function getSubTask(taskId) {
             .catch(error => {
                 dispatch({ type: taskManagementConstants.GET_SUBTASK_FAILURE, error });
             })
-    };
-}
-/**
- * edit Task By Accountable Employees
- * @param {*} data du lieu gui di
- * @param {*} taskId id task
- */
-function editTaskByAccountableEmployees(data, taskId) {
-    return dispatch => {
-        dispatch({ type: taskManagementConstants.EDIT_TASK_BY_ACCOUNTABLE_REQUEST, taskId });
-        taskManagementService.editTaskByAccountableEmployees(data, taskId)
-            .then(res => {
-                dispatch({
-                    type: taskManagementConstants.EDIT_TASK_BY_ACCOUNTABLE_SUCCESS,
-                    // payload: res.data.content.task
-                    payload: res.data.content
-                });
-            })
-            .catch(error => {
-                dispatch({ type: taskManagementConstants.EDIT_TASK_BY_ACCOUNTABLE_FAILURE, error });
-            });
-    };
-}
-
-/**
- * edit Task By Responsible Employees
- * @param {*} data du lieu gui di
- * @param {*} taskId id task
- */
-function editTaskByResponsibleEmployees(data, taskId) {
-    return dispatch => {
-        dispatch({ type: taskManagementConstants.EDIT_TASK_BY_RESPONSIBLE_REQUEST, taskId });
-        taskManagementService.editTaskByResponsibleEmployees(data, taskId)
-            .then(res => {
-                dispatch({
-                    type: taskManagementConstants.EDIT_TASK_BY_RESPONSIBLE_SUCCESS,
-                    // payload: res.data.content.task
-                    payload: res.data.content
-                });
-            })
-            .catch(error => {
-                dispatch({ type: taskManagementConstants.EDIT_TASK_BY_RESPONSIBLE_FAILURE, error });
-            });
-    };
-}
-
-/**
- * evaluate Task By Accountable Employees
- * @param {*} data du lieu gui di
- * @param {*} taskId id task
- */
-function evaluateTaskByAccountableEmployees(data, taskId) {
-    return dispatch => {
-        dispatch({ type: taskManagementConstants.EVALUATE_TASK_BY_ACCOUNTABLE_REQUEST, taskId });
-        taskManagementService.evaluateTaskByAccountableEmployees(data, taskId)
-            .then(res => {
-                dispatch({
-                    type: taskManagementConstants.EVALUATE_TASK_BY_ACCOUNTABLE_SUCCESS,
-                    // payload: res.data.content.task
-                    payload: res.data.content
-                });
-            })
-            .catch(error => {
-                dispatch({ type: taskManagementConstants.EVALUATE_TASK_BY_ACCOUNTABLE_FAILURE, error });
-            });
-    };
-}
-
-/**
- * evaluate Task By Consulted Employees
- * @param {*} data du lieu gui di
- * @param {*} taskId id task
- */
-function evaluateTaskByConsultedEmployees(data, taskId) {
-    return dispatch => {
-        dispatch({ type: taskManagementConstants.EVALUATE_TASK_BY_CONSULTED_REQUEST, taskId });
-        taskManagementService.evaluateTaskByConsultedEmployees(data, taskId)
-            .then(res => {
-                dispatch({
-                    type: taskManagementConstants.EVALUATE_TASK_BY_CONSULTED_SUCCESS,
-                    // payload: res.data.content.task
-                    payload: res.data.content
-                });
-            })
-            .catch(error => {
-                dispatch({ type: taskManagementConstants.EVALUATE_TASK_BY_CONSULTED_FAILURE, error });
-            });
-    };
-}
-
-/**
- * evaluate Task By Responsible Employees
- * @param {*} data du lieu gui di
- * @param {*} taskId id task
- */
-function evaluateTaskByResponsibleEmployees(data, taskId) {
-    return dispatch => {
-        dispatch({ type: taskManagementConstants.EVALUATE_TASK_BY_RESPONSIBLE_REQUEST, taskId });
-        taskManagementService.evaluateTaskByResponsibleEmployees(data, taskId)
-            .then(res => {
-                dispatch({
-                    type: taskManagementConstants.EVALUATE_TASK_BY_RESPONSIBLE_SUCCESS,
-                    payload: res.data.content
-                });
-            })
-            .catch(error => {
-                dispatch({ type: taskManagementConstants.EVALUATE_TASK_BY_RESPONSIBLE_FAILURE, error });
-            });
     };
 }
 

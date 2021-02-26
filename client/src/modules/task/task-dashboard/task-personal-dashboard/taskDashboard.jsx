@@ -676,7 +676,6 @@ function mapState(state) {
     return { tasks };
 }
 const actionCreators = {
-    getAllTaskByRole: taskManagementActions.getAllTaskByRole,
     getResponsibleTaskByUser: taskManagementActions.getResponsibleTaskByUser,
     getAccountableTaskByUser: taskManagementActions.getAccountableTaskByUser,
     getConsultedTaskByUser: taskManagementActions.getConsultedTaskByUser,

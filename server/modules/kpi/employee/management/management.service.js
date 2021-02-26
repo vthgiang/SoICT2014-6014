@@ -189,7 +189,8 @@ exports.getAllEmployeeKpiInOrganizationalUnit = async (portal, roleId, organizat
                 {
                     $addFields: {
                         'employeeKpis.parentNameOfUnitKpi': "$parentNameOfUnitKpi.name",
-                        'employeeKpis.parentOfUnitKpi': "$organizationalUnitKpis.parent"
+                        'employeeKpis.parentOfUnitKpi': "$organizationalUnitKpis.parent",
+                        'employeeKpis.organizationalUnitImportances': "$organizationalUnitImportances"
                     }
                 },
 
@@ -319,9 +320,9 @@ exports.getAllEmployeeKpiSetInOrganizationalUnit = async (portal, query) => {
 /** 
  * Lấy tất cả các đơn vị con của 1 đơn vị xếp vào 1 mảng 
  */
-exports.getAllChildrenOrganizational = async (portal, companyId, roleId, organizationalUnitId) => {  // portal, companyId, roleId, organizationalUnitId //
+exports.getAllChildrenOrganizational = async (portal, roleId, organizationalUnitId) => {  // portal, companyId, roleId, organizationalUnitId //
 
-    let arrayTreeOranizationalUnit = await OrganizationalUnitService.getChildrenOfOrganizationalUnitsAsTree(portal, companyId, roleId, organizationalUnitId); // portal, companyId, roleId, organizationalUnitId
+    let arrayTreeOranizationalUnit = await OrganizationalUnitService.getChildrenOfOrganizationalUnitsAsTree(portal, roleId, organizationalUnitId); // portal, companyId, roleId, organizationalUnitId
     let childrenOrganizationalUnits, temporaryChild, deg = 0;
 
     if (arrayTreeOranizationalUnit) {
@@ -364,16 +365,20 @@ exports.getAllChildrenOrganizational = async (portal, companyId, roleId, organiz
 /** 
  * Lấy tất cả EmployeeKpi thuộc các đơn vị con của đơn vị hiện tại 
  */
-exports.getAllEmployeeKpiInChildrenOrganizationalUnit = async (portal, companyId, roleId, month, organizationalUnitId) => {
+exports.getAllEmployeeKpiInChildrenOrganizationalUnit = async (portal, roleId, month, organizationalUnitId) => {
 
     let employeeKpisInChildrenOrganizationalUnit = [], childrenOrganizationalUnits;
 
-    childrenOrganizationalUnits = await this.getAllChildrenOrganizational(portal, companyId, roleId, organizationalUnitId);
+    childrenOrganizationalUnits = await this.getAllChildrenOrganizational(portal, roleId, organizationalUnitId);
 
     if (childrenOrganizationalUnits) {
         for (let i = 0; i < childrenOrganizationalUnits.length; i++) {
             employeeKpisInChildrenOrganizationalUnit.push(await this.getAllEmployeeKpiInOrganizationalUnit(portal, null, childrenOrganizationalUnits[i].id, month));
-            employeeKpisInChildrenOrganizationalUnit[i].unshift({ 'name': childrenOrganizationalUnits[i].name, 'deg': childrenOrganizationalUnits[i].deg })
+            employeeKpisInChildrenOrganizationalUnit[i].unshift({
+                'organizationalUnitId': childrenOrganizationalUnits[i].id,
+                'name': childrenOrganizationalUnits[i].name,
+                'deg': childrenOrganizationalUnits[i].deg
+            })
         }
     }
 

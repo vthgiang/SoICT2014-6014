@@ -1,13 +1,11 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-
-import { CustomLegendC3js } from '../../../../common-components'
 
 import c3 from 'c3';
 import 'c3/c3.css';
 
-function DistributionOfOrganizationalUnitChart(props) {
+function DistributionOfEmployeeKpiChart(props) {
     const { translate, createKpiUnit, organizationalUnitKPI } = props;
     const chartRef = useRef(null);
 
@@ -94,7 +92,7 @@ function DistributionOfOrganizationalUnitChart(props) {
             xs = dataChartTemp.xs;
         }
 
-        let chartTemp = c3.generate({
+        let chart = c3.generate({
             bindto: chartRef.current,
 
             padding: {
@@ -105,7 +103,7 @@ function DistributionOfOrganizationalUnitChart(props) {
 
             data: {
                 columns: dataChart,
-                type: 'spline'
+                type: 'spline',
             },
 
             axis: {
@@ -129,10 +127,6 @@ function DistributionOfOrganizationalUnitChart(props) {
                     label: {
                         text: translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.weight'),
                         position: 'outer-right'
-                    },
-                    padding: {
-                        top: 10,
-                        bottom: 10
                     }
                 }
             },
@@ -174,5 +168,5 @@ const actions = {
 
 }
 
-const connectedDistributionOfOrganizationalUnitChart = connect(mapState, actions)(withTranslate(DistributionOfOrganizationalUnitChart));
-export { connectedDistributionOfOrganizationalUnitChart as DistributionOfOrganizationalUnitChart }
+const connectedDistributionOfEmployeeKpiChart = connect(mapState, actions)(withTranslate(DistributionOfEmployeeKpiChart));
+export { connectedDistributionOfEmployeeKpiChart as DistributionOfEmployeeKpiChart }

@@ -29,8 +29,9 @@ const LoadTaskChart = (props) => {
                 for (let i in role) {
                     taskList = taskList.concat(allTask[role[i]]);
                 }
-                let improcessTask = taskList?.filter(x => x.status === "inprocess");
-
+                // Lấy tất cả công việc, ko chỉ lấy mõi công việc đang thực hiện.
+                // let improcessTask = taskList?.filter(x => x.status === "inprocess");
+                let improcessTask = taskList;
                 let startTime = new Date(startMonth.split("-")[0], startMonth.split('-')[1] - 1, 1);
                 let endTime = new Date(endMonth.split("-")[0], endMonth.split('-')[1] ? endMonth.split('-')[1] : 1, 1);
                 let listMonth = [], category = [];
@@ -59,17 +60,17 @@ const LoadTaskChart = (props) => {
                     if (startTime < endDate) {
                         for (let j = 0; j < period; j++) {
 
-                            let tmpStartDate = new Date(parseInt(category[j].split('-')[1]), parseInt(category[j].split('-')[0]), 1);
-                            let tmpEndDate = new Date(parseInt(category[j].split('-')[1]), parseInt(category[j].split('-')[0]) + 1, 0);
+                            let tmpStartMonth = new Date(parseInt(category[j].split('-')[1]), parseInt(category[j].split('-')[0]) - 1, 1);
+                            let tmpEndMonth = new Date(parseInt(category[j].split('-')[1]), parseInt(category[j].split('-')[0]), 0);
 
-                            if (tmpStartDate > startDate && tmpEndDate < endDate) {
-                                improcessDay = tmpEndDate.getDate();
+                            if (tmpStartMonth > startDate && tmpEndMonth < endDate) {
+                                improcessDay = tmpEndMonth.getDate();
                             }
                             // thang dau
-                            else if (tmpStartDate < startDate && tmpEndDate > startDate) {
-                                improcessDay = tmpEndDate.getDate() - startDate.getDate();
+                            else if (tmpStartMonth < startDate && tmpEndMonth > startDate) {
+                                improcessDay = tmpEndMonth.getDate() - startDate.getDate();
                             }
-                            else if (tmpStartDate < endDate && endDate < tmpEndDate) {
+                            else if (tmpStartMonth < endDate && endDate < tmpEndMonth) {
                                 improcessDay = endDate.getDate();
                             }
                             else {

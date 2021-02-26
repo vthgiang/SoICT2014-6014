@@ -3648,6 +3648,9 @@ export default {
                     priority: "Priority",
                     formula: "Formula",
                     explain_automatic_point: "Explain automatic value",
+                    cal_all_kpis: '(*)Calculator all kpi',
+                    update_task_importance: `(*)Update task importance level and Calculator KPI point`,
+
                 },
 
                 /**
@@ -3707,7 +3710,8 @@ export default {
                     delete_kpi_failure: "Delete KPI unsuccessfully",
                     copy_kpi_unit: "Copy KPI Unit",
                     employee_importance: "Employee importances",
-
+                    organizational_unit_importance: "Children organizational unit importances",
+                    
                     // Nhóm dành cho trọng số
                     weight_total: "Weight total",
                     not_satisfied: "Not satisfied",
@@ -3753,7 +3757,8 @@ export default {
                     content:
                         "This is the default target (if necessary, weights can be corrected)",
                     delete_title: "Delete",
-                    employee_importance_activated: "KPI has been activated, you can not edit employee importances!"
+                    employee_importance_activated: "KPI has been activated, you can not edit employee importances!",
+                    organizational_unit_importance_activated: "KPI has been activated, you can not edit children organizational unit importances!"
                 },
 
                 create_organizational_unit_kpi_modal: {
@@ -3824,6 +3829,7 @@ export default {
                     edit_target_success: "Edit KPI target successful",
                     edit_target_failure:
                         "You have not entered enough information",
+                    organizational_unit_kpi_exist: "Mục tiêu KPI đã tồn tại"
                 },
                 // Dashboard KPI Unit
                 dashboard: {
