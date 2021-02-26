@@ -23,6 +23,9 @@ function ExampleCreateForm(props) {
     const { exampleName, description, exampleNameError } = state;
 
 
+    /**
+     * Hàm dùng để kiểm tra xem form đã được validate hay chưa
+     */
     const isFormValidated = () => {
         if (!exampleNameError.status) {
             return false;
@@ -30,6 +33,10 @@ function ExampleCreateForm(props) {
         return true;
     }
 
+
+    /**
+     * Hàm dùng để lưu thông tin của form và gọi service tạo mới ví dụ
+     */
     const save = () => {
         if (isFormValidated() && exampleName) {
             props.createExample([{ exampleName, description }]);
@@ -41,6 +48,11 @@ function ExampleCreateForm(props) {
         }
     }
 
+
+    /**
+     * Hàm xử lý khi tên ví dụ thay đổi
+     * @param {*} e 
+     */
     const handleExampleName = (e) => {
         const { value } = e.target;
         let result = ValidationHelper.validateName(translate, value, 6, 255);
@@ -52,6 +64,11 @@ function ExampleCreateForm(props) {
         })
     }
 
+
+    /**
+     * Hàm xử lý khi mô tả ví dụ thay đổi
+     * @param {*} e 
+     */
     const handleExampleDescription = (e) => {
         const { value } = e.target;
         setState({
@@ -75,11 +92,14 @@ function ExampleCreateForm(props) {
                 maxWidth={500}
             >
                 <form id="form-create-example-hooks" onSubmit={() => save(translate('manage_example.add_success'))}>
+                    {/* Tên ví dụ */}
                     <div className={`form-group ${exampleNameError.status ? "" : "has-error"}`}>
                         <label>{translate('manage_example.exampleName')}<span className="text-red">*</span></label>
                         <input type="text" className="form-control" value={exampleName} onChange={handleExampleName}></input>
                         <ErrorLabel content={exampleNameError.message} />
                     </div>
+
+                    {/* Mô tả ví dụ */}
                     <div className={`form-group`}>
                         <label>{translate('manage_example.example_description')}</label>
                         <input type="text" className="form-control" value={description} onChange={handleExampleDescription}></input>
@@ -94,6 +114,7 @@ function mapState(state) {
     const example = state.example1;
     return { example }
 }
+
 const actions = {
     createExample: exampleActions.createExample,
     getExamples: exampleActions.getExamples,
