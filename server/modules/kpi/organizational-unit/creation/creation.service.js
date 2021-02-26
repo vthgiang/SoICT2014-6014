@@ -546,7 +546,7 @@ exports.editOrganizationalUnitKpi = async (portal, data, id) => {
     
 
     let target;
-    if (checkTarget.length > 0) {
+    if (checkTarget.length > 0 && checkTarget?.[0]?._id.toString() !== id) {
         throw {
             messages: 'organizational_unit_kpi_exist'
         };
