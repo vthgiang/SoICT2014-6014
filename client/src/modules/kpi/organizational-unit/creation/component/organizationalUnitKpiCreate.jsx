@@ -413,6 +413,13 @@ class OrganizationalUnitKpiCreate extends Component {
                     confirmButtonColor: '#3085d6',
                     confirmButtonText: 'Đồng ý'
                 })
+            case "edit_organizational_unit_importance":
+                return Swal.fire({
+                    title: translate('kpi.organizational_unit.create_organizational_unit_kpi_set.organizational_unit_importance_activated'),
+                    type: 'warning',
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'Đồng ý'
+                })
         }
     }
 
@@ -561,7 +568,7 @@ class OrganizationalUnitKpiCreate extends Component {
                                                         {this.checkEdittingPermission(currentKPI && currentKPI.organizationalUnit)
                                                             ? <span>
                                                                 {currentKPI.status === 1 ?
-                                                                    <a className="btn btn-app" onClick={() => this.swalOfUnitKpi("edit_employee_importance")}>
+                                                                    <a className="btn btn-app" onClick={() => this.swalOfUnitKpi("edit_organizational_unit_importance")}>
                                                                         <i className="fa fa-university" style={{ fontSize: "16px" }}></i>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.organizational_unit_importance')}
                                                                     </a>
                                                                     : <span>
