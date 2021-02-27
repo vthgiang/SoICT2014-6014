@@ -21,7 +21,7 @@ exports.get = async (req, res) => {
  * Lấy tất cả diagram
  */
 exports.getAllXmlDiagrams = async (req, res) => {
-	// try {
+	try {
 		var data = await TaskProcessService.getAllXmlDiagram(req.portal, req.query);
 		await Logger.info(req.user.email, `get all xml diagram `, req.portal);
 		res.status(200).json({
@@ -29,14 +29,14 @@ exports.getAllXmlDiagrams = async (req, res) => {
 			messages: ['get_all_success'],
 			content: data
 		});
-	// } catch (error) {
-	// 	await Logger.error(req.user.email, `get all xml diagram `, req.portal);
-	// 	res.status(400).json({
-	// 		success: false,
-	// 		messages: ['get_all_err'],
-	// 		content: error
-	// 	});
-	// }
+	} catch (error) {
+		await Logger.error(req.user.email, `get all xml diagram `, req.portal);
+		res.status(400).json({
+			success: false,
+			messages: ['get_all_err'],
+			content: error
+		});
+	}
 }
 /**
  * Lấy  diagram theo id
@@ -63,7 +63,7 @@ exports.getXmlDiagramById = async (req, res) => {
  * tạo mới diagram
  */
 exports.createXmlDiagram = async (req, res) => {
-	// try {
+	try {
 		var data = await TaskProcessService.createXmlDiagram(req.portal, req.body);
 		await Logger.info(req.user.email, `create xml diagram `, req.portal);
 		res.status(200).json({
@@ -71,21 +71,21 @@ exports.createXmlDiagram = async (req, res) => {
 			messages: ['create_success'],
 			content: data
 		});
-	// } catch (error) {
-	// 	await Logger.error(req.user.email, `create xml diagram `, req.portal);
-	// 	res.status(400).json({
-	// 		success: false,
-	// 		messages: ['create_error'],
-	// 		content: error
-	// 	});
-	// }
+	} catch (error) {
+		await Logger.error(req.user.email, `create xml diagram `, req.portal);
+		res.status(400).json({
+			success: false,
+			messages: ['create_error'],
+			content: error
+		});
+	}
 }
 
 /**
  * chỉnh sửa mới diagram
  */
 exports.editXmlDiagram = async (req, res) => {
-	// try {
+	try {
 		var data = await TaskProcessService.editXmlDiagram(req.portal, req.params, req.body);
 		await Logger.info(req.user.email, `edit xml diagram `, req.portal);
 		res.status(200).json({
@@ -93,14 +93,14 @@ exports.editXmlDiagram = async (req, res) => {
 			messages: ['edit_success'],
 			content: data
 		});
-	// } catch (error) {
-	// 	await Logger.error(req.user.email, `edit xml diagram `, req.portal);
-	// 	res.status(400).json({
-	// 		success: false,
-	// 		messages: ['edit_fail'],
-	// 		content: error
-	// 	});
-	// }
+	} catch (error) {
+		await Logger.error(req.user.email, `edit xml diagram `, req.portal);
+		res.status(400).json({
+			success: false,
+			messages: ['edit_fail'],
+			content: error
+		});
+	}
 }
 
 /**
@@ -137,7 +137,9 @@ exports.createTaskByProcess = async (req, res) => {
 		let process = data.process;
 		let mails = data.mailInfo;
 		for (let i in mails) {
+			
 			let task = mails[i].task;
+			console.log("task",task.organizationalUnit)
 			let user = mails[i].user;
 			let email = mails[i].email;
 			let html = mails[i].html;
