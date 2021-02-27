@@ -47,7 +47,7 @@ export function example1(state = initialState, action) {
         case exampleConstants.DELETE_EXAMPLE_SUCCESS:
             return {
                 ...state,
-                lists: state.lists.filter(example => (example._id !== action.payload.content._id)),
+                lists: state.lists.filter(example => (example?._id !== action.payload?._id)),
                 isLoading: false
             }
         case exampleConstants.CREATE_EXAMPLE_SUCCESS:
@@ -55,7 +55,7 @@ export function example1(state = initialState, action) {
                 ...state,
                 lists: [
                     ...state.lists,
-                    action.payload.example
+                    action.payload
                 ],
                 isLoading: false
             }

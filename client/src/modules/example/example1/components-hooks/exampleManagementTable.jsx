@@ -21,15 +21,15 @@ function ExampleManagementTable(props) {
     const [state, setState] = useState({
         exampleName: "",
         page: 1,
-        limit: getLimit,
+        perPage: getLimit,
         tableId: getTableId,
     })
 
     const { example, translate } = props;
-    const { exampleName, page, limit, currentRow, curentRowDetail, tableId } = state;
+    const { exampleName, page, perPage, currentRow, curentRowDetail, tableId } = state;
 
     useEffect(() => {
-        props.getExamples({ exampleName, page, limit });
+        props.getExamples({ exampleName, page, perPage });
     }, [])
 
     /**
@@ -51,7 +51,7 @@ function ExampleManagementTable(props) {
     const handleSubmitSearch = () => {
         props.getExamples({
             exampleName,
-            limit,
+            perPage,
             page: 1
         });
         setState({
@@ -73,7 +73,7 @@ function ExampleManagementTable(props) {
 
         props.getExamples({
             exampleName,
-            limit,
+            perPage,
             page: parseInt(pageNumber)
         });
     }
@@ -86,12 +86,12 @@ function ExampleManagementTable(props) {
     const setLimit = (number) => {
         setState({
             ...state,
-            limit: parseInt(number),
+            perPage: parseInt(number),
             page: 1
         });
         props.getExamples({
             exampleName,
-            limit: parseInt(number),
+            perPage: parseInt(number),
             page: 1
         });
     }
@@ -105,7 +105,7 @@ function ExampleManagementTable(props) {
         props.deleteExample(id);
         props.getExamples({
             exampleName,
-            limit,
+            perPage,
             page: example && example.lists && example.lists.length === 1 ? page - 1 : page
         });
     }
@@ -140,7 +140,7 @@ function ExampleManagementTable(props) {
         lists = example.lists
     }
 
-    const totalPage = example && Math.ceil(example.totalList / limit);
+    const totalPage = example && Math.ceil(example.totalList / perPage);
 
     return (
         <React.Fragment>
@@ -158,12 +158,12 @@ function ExampleManagementTable(props) {
 
             <ExampleCreateForm
                 page={page}
-                limit={limit}
+                perPage={perPage}
             />
 
             <ExampleImportForm
                 page={page}
-                limit={limit}
+                perPage={perPage}
             />
 
             <div className="box-body qlcv">
@@ -213,7 +213,7 @@ function ExampleManagementTable(props) {
                         {(lists && lists.length !== 0) &&
                             lists.map((example, index) => (
                                 <tr key={index}>
-                                    <td>{index + 1 + (page - 1) * limit}</td>
+                                    <td>{index + 1 + (page - 1) * perPage}</td>
                                     <td>{example.exampleName}</td>
                                     <td>{example.description}</td>
                                     <td style={{ textAlign: "center" }}>

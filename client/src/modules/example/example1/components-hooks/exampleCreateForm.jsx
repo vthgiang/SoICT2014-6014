@@ -19,7 +19,7 @@ function ExampleCreateForm(props) {
         }
     })
 
-    const { translate, example, page, limit } = props;
+    const { translate, example, page, perPage } = props;
     const { exampleName, description, exampleNameError } = state;
 
 
@@ -43,7 +43,7 @@ function ExampleCreateForm(props) {
             props.getExamples({
                 exampleName: "",
                 page: page,
-                limit: limit
+                perPage: perPage
             });
         }
     }

@@ -19,14 +19,14 @@ class ExampleManagementTable extends Component {
             exampleName: "",
             description: "",
             page: 1,
-            limit: limit,
+            perPage: limit,
             tableId
         };
     }
 
     componentDidMount() {
-        let { exampleName, page, limit } = this.state;
-        this.props.getOnlyExampleName({ exampleName, page, limit });
+        let { exampleName, page, perPage } = this.state;
+        this.props.getOnlyExampleName({ exampleName, page, perPage });
     }
 
     handleChangeExampleName = (e) => {
@@ -53,7 +53,7 @@ class ExampleManagementTable extends Component {
 
     setLimit = async (number) => {
         await this.setState({
-            limit: parseInt(number)
+            perPage: parseInt(number)
         });
         this.props.getOnlyExampleName(this.state);
     }
@@ -90,7 +90,7 @@ class ExampleManagementTable extends Component {
             lists = example.lists
         }
 
-        const totalPage = Math.ceil(example.totalList / this.state.limit);
+        const totalPage = Math.ceil(example.totalList / this.state.perPage);
         const page = this.state.page;
         return (
             <React.Fragment>
@@ -140,7 +140,7 @@ class ExampleManagementTable extends Component {
                             {(lists && lists.length !== 0) &&
                                 lists.map((example, index) => (
                                     <tr key={index}>
-                                        <td>{index + 1 + (page - 1) * this.state.limit}</td>
+                                        <td>{index + 1 + (page - 1) * this.state.perPage}</td>
                                         <td>{example.exampleName}</td>
                                         <td style={{ textAlign: "center" }}>
                                             <a className="edit text-green" style={{ width: '5px' }} title={translate('manage_example.detail_info_example')} onClick={() => this.handleShowDetailInfo(example._id)}><i className="material-icons">visibility</i></a>

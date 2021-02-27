@@ -14,9 +14,9 @@ function getOnlyExampleName(queryData) {
             url: `${process.env.REACT_APP_SERVER}/examples`,
             method: "GET",
             params: {
-                exampleName: queryData !== undefined ? queryData.exampleName : "",
-                page: queryData !== undefined ? queryData.page : null,
-                limit: queryData !== undefined ? queryData.limit : null
+                exampleName: queryData?.exampleName ? queryData.exampleName : "",
+                page: queryData?.page ? queryData.page : null,
+                perPage: queryData?.perPage ? queryData.perPage : null
             }
         },
         false,

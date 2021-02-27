@@ -7,7 +7,7 @@ const {
 } = require(`../../helpers/dbHelper`);
 
 // Tạo mới mảng Ví dụ
-exports.createExample = async (data, portal) => {
+exports.createExample = async (portal, data) => {
     let newExample;
     if (data && data.length !== 0) {
         for (let i = 0; i < data.length; i++) {
@@ -24,45 +24,61 @@ exports.createExample = async (data, portal) => {
 }
 
 // Lấy ra tất cả các thông tin Ví dụ theo mô hình lấy dữ liệu số  1
-exports.getExamples = async (params, portal) => {
-    let keySearch;
-    if (params.exampleName !== undefined && params.exampleName.length !== 0) {
+exports.getExamples = async (portal, data) => {
+    let keySearch = {};
+    if (data?.exampleName?.length > 0) {
         keySearch = {
-            ...keySearch,
             exampleName: {
-                $regex: params.exampleName,
+                $regex: data.exampleName,
                 $options: "i"
             }
         }
     }
+
+    let page, perPage;
+    page = data?.page ? Number(data.page) : 1;
+    perPage = data?.perPage ? Number(data.perPage) : 20;
+
     let totalList = await Example(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
-    let ExampleCollection = await Example(connect(DB_CONNECTION, portal)).find(keySearch)
-        .skip((params.page - 1) * params.limit)
-        .limit(params.limit);
-    return { data: ExampleCollection, totalList }
+    let examples = await Example(connect(DB_CONNECTION, portal)).find(keySearch)
+        .skip((page - 1) * perPage)
+        .limit(perPage);
+
+    return { 
+        data: examples, 
+        totalList 
+    }
 }
 
 // Lấy ra một phần thông tin Ví dụ (lấy ra exampleName) theo mô hình dữ liệu số  2
-exports.getOnlyExampleName = async (params, portal) => {
+exports.getOnlyExampleName = async (portal, data) => {
     let keySearch;
-    if (params.exampleName !== undefined && params.exampleName.length !== 0) {
+    if (data?.exampleName?.length > 0) {
         keySearch = {
-            ...keySearch,
             exampleName: {
-                $regex: params.exampleName,
+                $regex: data.exampleName,
                 $options: "i"
             }
         }
     }
+
+    let page, perPage;
+    page = data?.page ? Number(data.page) : 1;
+    perPage = data?.perPage ? Number(data.perPage) : 20;
+
     let totalList = await Example(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
     let ExampleCollection = await Example(connect(DB_CONNECTION, portal)).find(keySearch, { exampleName: 1 })
-        .skip(params.page * params.limit)
-        .limit(params.limit);
-    return { data: ExampleCollection, totalList }
+        .skip((page - 1) * perPage)
+        .limit(perPage);
+
+    return { 
+        data: ExampleCollection,
+        totalList 
+    }
 }
 
 // Lấy ra Ví dụ theo id
-exports.getExampleById = async (id, portal) => {
+exports.getExampleById = async (portal, id) => {
     let example = await Example(connect(DB_CONNECTION, portal)).findById({ _id: id });
     if (example) {
         return { example };
@@ -71,17 +87,11 @@ exports.getExampleById = async (id, portal) => {
 }
 
 // Chỉnh sửa một Ví dụ
-exports.editExample = async (id, data, portal) => {
+exports.editExample = async (portal, id, data) => {
     let oldExample = await Example(connect(DB_CONNECTION, portal)).findById(id);
     if (!oldExample) {
         return -1;
     }
-    // // Cach 1 de update
-    // else {
-    //     oldExample.planName = data.planName ? data.planName : oldExample.planName;
-    //     oldExample.description = data.description ? data.description : oldExample.description;
-    // }
-    // await oldExample.save();
 
     // Cach 2 de update
     await Example(connect(DB_CONNECTION, portal)).update({ _id: id }, { $set: data });
@@ -91,7 +101,7 @@ exports.editExample = async (id, data, portal) => {
 }
 
 // Xóa một Ví dụ
-exports.deleteExample = async (id, portal) => {
+exports.deleteExample = async (portal, id) => {
     let example = Example(connect(DB_CONNECTION, portal)).findByIdAndDelete({ _id: id });
     return example;
 }

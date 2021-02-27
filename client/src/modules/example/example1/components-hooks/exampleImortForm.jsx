@@ -19,7 +19,7 @@ function ExampleImportForm(props) {
     })
 
     const { importData, rowError, configData, checkFileImport, id } = state;
-    const { translate, page, limit } = props;              // Props from parent
+    const { translate, page, perPage } = props;              // Props from parent
 
     // Function Thay đổi cấu hình file import
     const handleChangeConfig = (value) => {
@@ -78,7 +78,7 @@ function ExampleImportForm(props) {
             importData && props.getExamples({
                 exampleName: "",
                 page: page,
-                limit: limit
+                perPage: perPage
             })
         }
     }

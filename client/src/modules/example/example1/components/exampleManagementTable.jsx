@@ -22,14 +22,14 @@ class ExampleManagementTable extends Component {
         this.state = {
             exampleName: "",
             page: 1,
-            limit: limit,
+            perPage: limit,
             tableId
         };
     }
 
     componentDidMount() {
-        let { exampleName, page, limit } = this.state;
-        this.props.getExamples({ exampleName, page, limit });
+        let { exampleName, page, perPage } = this.state;
+        this.props.getExamples({ exampleName, page, perPage });
     }
 
     /**
@@ -48,7 +48,7 @@ class ExampleManagementTable extends Component {
      * Hàm xử lý khi click nút tìm kiếm
      */
     handleSubmitSearch = () => {
-        const { exampleName, limit } = this.state;
+        const { exampleName, perPage } = this.state;
 
         this.setState(state => {
             return {
@@ -56,7 +56,7 @@ class ExampleManagementTable extends Component {
                 page: 1
             }
         });
-        this.props.getExamples({ exampleName, limit, page: 1 });
+        this.props.getExamples({ exampleName, perPage, page: 1 });
     }
 
 
@@ -65,7 +65,7 @@ class ExampleManagementTable extends Component {
      * @param {*} pageNumber Số trang định chuyển
      */
     setPage = (pageNumber) => {
-        const { exampleName, limit } = this.state;
+        const { exampleName, perPage } = this.state;
 
         this.setState(state => {
             return {
@@ -74,7 +74,7 @@ class ExampleManagementTable extends Component {
             }
         });
 
-        this.props.getExamples({ exampleName, limit, page: parseInt(pageNumber) });
+        this.props.getExamples({ exampleName, perPage, page: parseInt(pageNumber) });
     }
 
 
@@ -88,10 +88,10 @@ class ExampleManagementTable extends Component {
         this.setState(state => {
             return {
                 ...state,
-                limit: parseInt(number)
+                perPage: parseInt(number)
             }
         });
-        this.props.getExamples({ exampleName, limit: parseInt(number), page });
+        this.props.getExamples({ exampleName, perPage: parseInt(number), page });
     }
 
 
@@ -101,13 +101,14 @@ class ExampleManagementTable extends Component {
      */
     handleDelete = (id) => {
         const { example } = this.props;
-        const { exampleName, limit, page } = this.state;
+        const { exampleName, perPage, page } = this.state;
 
         this.props.deleteExample(id);
+        console.log("55555")
         this.props.getExamples({
             exampleName,
-            limit,
-            page: example && example.lists && example.lists.length === 1 ? page - 1 : page
+            perPage,
+            page: example?.lists?.length === 1 ? page - 1 : page
         });
     }
 
@@ -135,14 +136,14 @@ class ExampleManagementTable extends Component {
 
     render() {
         const { example, translate } = this.props;
-        const { page, limit, currentRow, tableId, currentRowDetail } = this.state;
+        const { page, perPage, currentRow, tableId, currentRowDetail } = this.state;
         let lists = [];
 
         if (example && example.isLoading === false) {
             lists = example.lists
         }
 
-        const totalPage = Math.ceil(example.totalList / limit);
+        const totalPage = Math.ceil(example.totalList / perPage);
         return (
             <React.Fragment>
                 {
@@ -164,12 +165,12 @@ class ExampleManagementTable extends Component {
 
                 <ExampleCreateForm
                     page={page}
-                    limit={limit}
+                    perPage={perPage}
                 />
 
                 <ExampleImportForm
                     page={page}
-                    limit={limit}
+                    perPage={perPage}
                 />
 
                 <div className="box-body qlcv">
@@ -221,7 +222,7 @@ class ExampleManagementTable extends Component {
                             {(lists && lists.length !== 0) &&
                                 lists.map((example, index) => (
                                     <tr key={index}>
-                                        <td>{index + 1 + (page - 1) * limit}</td>
+                                        <td>{index + 1 + (page - 1) * perPage}</td>
                                         <td>{example.exampleName}</td>
                                         <td>{example.description}</td>
                                         <td style={{ textAlign: "center" }}>
@@ -233,7 +234,7 @@ class ExampleManagementTable extends Component {
                                                     id: example._id,
                                                     info: example.exampleName
                                                 }}
-                                                func={this.props.deleteExample}
+                                                func={this.handleDelete}
                                             />
                                         </td>
                                     </tr>

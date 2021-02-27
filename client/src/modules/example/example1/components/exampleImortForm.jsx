@@ -79,14 +79,14 @@ class ExampleImportForm extends Component {
 
     save = () => {
         if (this.isFormValidated()) {
-            const { page, limit } = this.props;
+            const { page, perPage } = this.props;
             const { importData } = this.state;
             
             this.props.createExample(importData);
             this.props.getExamples({
                 exampleName: "",
                 page: page,
-                limit: limit
+                perPage: perPage
             })
         }
     }

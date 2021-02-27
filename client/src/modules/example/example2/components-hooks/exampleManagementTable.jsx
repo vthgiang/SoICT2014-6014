@@ -18,13 +18,13 @@ const ExampleManagementTable = (props) => {
         exampleName: "",
         description: "",
         page: 1,
-        limit: getLimit,
+        perPage: getLimit,
         tableId: getTableId,
     })
 
     useEffect(() => {
-        let { exampleName, limit } = state;
-        props.getOnlyExampleName({ exampleName, page, limit });
+        let { exampleName, perPage } = state;
+        props.getOnlyExampleName({ exampleName, page, perPage });
     }, [])
 
     const handleChangeExampleName = (e) => {
@@ -55,7 +55,7 @@ const ExampleManagementTable = (props) => {
     const setLimit = (number) => {
         setState({
             state,
-            limit: parseInt(number)
+            perPage: parseInt(number)
         });
         props.getOnlyExampleName(state);
     }
@@ -91,7 +91,7 @@ const ExampleManagementTable = (props) => {
         lists = example.lists
     }
 
-    const totalPage = Math.ceil(example.totalList / state.limit);
+    const totalPage = Math.ceil(example.totalList / state.perPage);
     const page = state.page;
     const { tableId } = state;
     return (
@@ -141,7 +141,7 @@ const ExampleManagementTable = (props) => {
                         {(lists && lists.length !== 0) &&
                             lists.map((example, index) => (
                                 <tr key={index}>
-                                    <td>{index + 1 + (page - 1) * state.limit}</td>
+                                    <td>{index + 1 + (page - 1) * state.perPage}</td>
                                     <td>{example.exampleName}</td>
                                     <td>{example.description}</td>
                                     <td style={{ textAlign: "center" }}>

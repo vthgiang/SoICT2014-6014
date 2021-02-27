@@ -37,7 +37,7 @@ class ExampleCreateForm extends Component {
      */
     save = () => {
         if (this.isFormValidated()) {
-            const { page, limit } = this.props;
+            const { page, perPage } = this.props;
             const { exampleName, description } = this.state;
 
             if (exampleName) {
@@ -45,7 +45,7 @@ class ExampleCreateForm extends Component {
                 this.props.getExamples({
                     exampleName: "",
                     page: page,
-                    limit: limit
+                    perPage: perPage
                 })
             }
         }
