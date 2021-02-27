@@ -26,12 +26,16 @@ function ExampleManagementTable(props) {
     })
 
     const { example, translate } = props;
-    const { exampleName, page, limit, currentRow, tableId } = state;
+    const { exampleName, page, limit, currentRow, curentRowDetail, tableId } = state;
 
     useEffect(() => {
         props.getExamples({ exampleName, page, limit });
     }, [])
 
+    /**
+     * Hàm xử lý khi tên ví dụ thay đổi
+     * @param {*} e 
+     */
     const handleChangeExampleName = (e) => {
         const { value } = e.target;
         setState({
@@ -40,6 +44,10 @@ function ExampleManagementTable(props) {
         });
     }
 
+
+    /**
+     * Hàm xử lý khi click nút tìm kiếm
+     */
     const handleSubmitSearch = () => {
         props.getExamples({
             exampleName,
@@ -52,6 +60,11 @@ function ExampleManagementTable(props) {
         });
     }
 
+
+    /**
+     * Hàm xử lý khi click chuyển trang
+     * @param {*} pageNumber Số trang định chuyển
+     */
     const setPage = (pageNumber) => {
         setState({
             ...state,
@@ -65,6 +78,11 @@ function ExampleManagementTable(props) {
         });
     }
 
+
+    /**
+     * Hàm xử lý thiết lập giới hạn hiển thị số bản ghi
+     * @param {*} number số bản ghi sẽ hiển thị
+     */
     const setLimit = (number) => {
         setState({
             ...state,
@@ -78,6 +96,11 @@ function ExampleManagementTable(props) {
         });
     }
 
+
+    /**
+     * Hàm xử lý khi click xóa 1 ví dụ
+     * @param {*} id của ví dụ cần xóa
+     */
     const handleDelete = (id) => {
         props.deleteExample(id);
         props.getExamples({
@@ -87,22 +110,29 @@ function ExampleManagementTable(props) {
         });
     }
 
+
+    /**
+     * Hàm xử lý khi click edit một ví vụ
+     * @param {*} example thông tin của ví dụ cần chỉnh sửa
+     */
     const handleEdit = (example) => {
         setState({
             ...state,
             currentRow: example
         });
-        console.log(111)
         window.$('#modal-edit-example-hooks').modal('show');
     }
 
-    const handleShowDetailInfo = (id) => {
+    /**
+     * Hàm xử lý khi click xem chi tiết một ví dụ
+     * @param {*} example thông tin của ví dụ cần xem
+     */
+    const handleShowDetailInfo = (example) => {
         setState({
             ...state,
-            exampleId: id
+            curentRowDetail: example,
         });
-
-        window.$(`#modal-detail-info-example-hooks`).modal('show');
+        window.$(`#modal-detail-info-example-hooks`).modal('show')
     }
 
     let lists = [];
@@ -119,13 +149,18 @@ function ExampleManagementTable(props) {
                 exampleName={currentRow && currentRow.exampleName}
                 description={currentRow && currentRow.description}
             />
+
             <ExampleDetailInfo
-                exampleId={state.exampleId}
+                exampleID={curentRowDetail && curentRowDetail._id}
+                exampleName={curentRowDetail && curentRowDetail.exampleName}
+                description={curentRowDetail && curentRowDetail.description}
             />
+
             <ExampleCreateForm
                 page={page}
                 limit={limit}
             />
+
             <ExampleImportForm
                 page={page}
                 limit={limit}
@@ -182,7 +217,7 @@ function ExampleManagementTable(props) {
                                     <td>{example.exampleName}</td>
                                     <td>{example.description}</td>
                                     <td style={{ textAlign: "center" }}>
-                                        <a className="edit text-green" style={{ width: '5px' }} title={translate('manage_example.detail_info_example')} onClick={() => handleShowDetailInfo(example._id)}><i className="material-icons">visibility</i></a>
+                                        <a className="edit text-green" style={{ width: '5px' }} title={translate('manage_example.detail_info_example')} onClick={() => handleShowDetailInfo(example)}><i className="material-icons">visibility</i></a>
                                         <a className="edit text-yellow" style={{ width: '5px' }} title={translate('manage_example.edit')} onClick={() => handleEdit(example)}><i className="material-icons">edit</i></a>
                                         <DeleteNotification
                                             content={translate('manage_example.delete')}
@@ -220,6 +255,7 @@ function mapState(state) {
     const example = state.example1;
     return { example }
 }
+
 const actions = {
     getExamples: exampleActions.getExamples,
     deleteExample: exampleActions.deleteExample

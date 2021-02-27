@@ -4,8 +4,6 @@ import {
 import { sendRequest } from '../../../../helpers/requestHelper';
 
 export const taskManagementService = {
-    getAll,
-    getAllTaskByRole,
     getResponsibleTaskByUser,
     getAccountableTaskByUser,
     getConsultedTaskByUser,
@@ -29,38 +27,6 @@ export const taskManagementService = {
     getTimeSheetOfUser,
     getAllUserTimeSheet
 };
-
-/**
- * lấy tất cả công việc
- */
-function getAll() {
-    return sendRequest({
-        url: `${process.env.REACT_APP_SERVER}/task/tasks`,
-        method: 'GET',
-        params: {
-            type: 'all',
-        }
-    }, false, true, 'task.task_management');
-}
-
-
-/**
- * lấy tất cả công việc theo vai trò
- * @param {*} userId id nhân viên
- * @param {*} role vai trò nhân viên
- */
-
-function getAllTaskByRole(userId, roleId) {
-    return sendRequest({
-        url: `${process.env.REACT_APP_SERVER}/task/tasks`,
-        method: 'GET',
-        params: {
-            type: 'get_all_task_created_by_user',
-            userId: userId,
-            roleId: roleId,
-        }
-    }, false, true, 'task.task_management');
-}
 
 
 /**
@@ -432,7 +398,7 @@ function getTasksByUser(data) {
         method: 'GET',
         params: {
             userId: id,
-            type: 'all',
+            type: 'all_by_user',
             organizationUnitId: data.organizationUnitId,
             data: data.type
         }

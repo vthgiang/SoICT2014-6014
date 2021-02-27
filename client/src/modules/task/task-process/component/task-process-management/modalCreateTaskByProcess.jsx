@@ -288,13 +288,13 @@ class ModalCreateTaskByProcess extends Component {
     interactPopup = async (event) => {
         let element = event.element;
         let nameStr = element.type.split(':');
-
-        await this.setState(state => {
+        console.log(this.props.department?.tree[0]?.id)
+        this.setState(state => {
             if (element.type === "bpmn:Task" || element.type === "bpmn:ExclusiveGateway") {
                 if (!state.info[`${element.businessObject.id}`] || (state.info[`${element.businessObject.id}`] && !state.info[`${element.businessObject.id}`].organizationalUnit)) {
                     state.info[`${element.businessObject.id}`] = {
                         ...state.info[`${element.businessObject.id}`],
-                        organizationalUnit: this.props.listOrganizationalUnit[0]?._id,
+                        organizationalUnit: this.props.department?.tree[0]?.id,
                     }
                 }  
                 return {
@@ -309,7 +309,7 @@ class ModalCreateTaskByProcess extends Component {
             else {
                 return { ...state, showInfo: false, type: element.type, name: '', id: element.businessObject.id, }
             }
-        })
+        },()=> console.log(this.state.info))
 
     }
 
@@ -483,15 +483,14 @@ class ModalCreateTaskByProcess extends Component {
     handleChangeInfo = (value) => {
         let info = {
             ...value,
-            code: this.state.id
+            code: this.state.id,
+            organizationalUnit: this.props.department.tree[0].id
         }
 
         this.setState(
             state => {
                 state.info[`${state.id}`] = info
             })
-        console.log(this.state.info)    
-
     }
 
     // validate quy trình

@@ -14,7 +14,8 @@ export const taskTemplateService = {
     deleteTaskTemplateById,    
     importTaskTemplate,
 };
-// get all task template
+
+/** get all task template */
 function getAll() {
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/task/task-templates`,
@@ -22,7 +23,7 @@ function getAll() {
     }, false, true, 'task.task_template');
 }
 
-// get a task template by id 
+/** get a task template by id */ 
 function getById(id) {
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/task/task-templates/${id}`,
@@ -30,7 +31,7 @@ function getById(id) {
     }, false, true, 'task.task_template');
 }
 
-// get all task template by Role
+/** get all task template by Role */
 function getAllTaskTemplateByRole(id) {
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/task/task-templates`,
@@ -41,8 +42,9 @@ function getAllTaskTemplateByRole(id) {
     }, false, true, 'task.task_template');
 }
 
-// get all task template by User
-// Để lấy tất cả kết quả: cho pageNumber=1, noResultsPerPage = 0
+/** get all task template by User
+*   Để lấy tất cả kết quả: cho pageNumber=1, noResultsPerPage = 0 
+*/
 function getAllTaskTemplateByUser(pageNumber, noResultsPerPage, arrayUnit, name) {
     var id = getStorage("userId");
 
@@ -59,7 +61,7 @@ function getAllTaskTemplateByUser(pageNumber, noResultsPerPage, arrayUnit, name)
     }, false, true, 'task.task_template');
 }
 
-// add new task template
+/** add new task template */
  function addNewTaskTemplate(newTaskTemplate) {
     var id = getStorage("userId");
     newTaskTemplate = {...newTaskTemplate, creator: id};
@@ -81,7 +83,7 @@ function editTaskTemplate(id, newTaskTemplate) {
 }
 
 
-// delete a task template
+/** delete a task template */
 function deleteTaskTemplateById(id) {
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/task/task-templates/${id}`,
@@ -89,8 +91,7 @@ function deleteTaskTemplateById(id) {
     }, true, true, 'task.task_template');
 }
 
-// import a task Task Template 
-
+/** import a task Task Template  */
 function importTaskTemplate(data){
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/task/task-templates/import`,

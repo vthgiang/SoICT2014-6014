@@ -5,7 +5,7 @@
 }
 
 .notifications-menu .notify-dropdown{
-    width: 400px !important;
+    width: 380px !important;
     border: 1px solid rgba(0,0,0,.15) !important;
     border-radius: 0.5rem ;
     box-shadow: 0 0.5rem 1rem rgb(0 0 0 / 18%) !important;
@@ -66,4 +66,146 @@
 .notify-dropdown .nav-tabs-custom > .nav-tabs > li {
     border-top: none;
     margin: 0;
+}
+
+.notify-dropdown .notification-header{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 7px 10px;
+    border-bottom: 1px solid #f4f4f4;
+}
+.notify-dropdown .config-notification-icon {
+    position: absolute;
+    right: 5px;
+    color: "#565555";
+    cursor: pointer;
+}
+
+.popup-noti-setting{
+    z-index: 1000;
+    position: absolute;
+    right: 10px;
+    width: 250px;
+    border-radius: 5px;
+    margin: 0px 0px 0px;
+    padding: 2px;
+    background-color: rgb(244 244 245);;
+    box-shadow: 1px 1px 3px rgb(45 45 45)
+}
+
+.example .btn-toggle {
+  top: 6px;
+  transform: translateY(-50%);
+  margin: 0 1rem 0 0;
+  padding: 0;
+  position: relative;
+  border: none;
+  height: 1.5rem;
+  width: 3rem;
+  border-radius: 1.5rem;
+  color: #6b7381;
+  background: #bdc1c8;
+}
+.btn-toggle:focus,
+.btn-toggle.focus,
+.btn-toggle:focus.active,
+.btn-toggle.focus.active {
+  outline: none;
+}
+.btn-toggle:before,
+.btn-toggle:after {
+  line-height: 1.5rem;
+  width: 4rem;
+  text-align: center;
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  position: absolute;
+  bottom: 0;
+  transition: opacity 0.25s;
+}
+.btn-toggle:before {
+  content: "Off";
+  left: -4rem;
+}
+.btn-toggle:after {
+  content: "On";
+  right: -4rem;
+  opacity: 0.5;
+}
+.btn-toggle > .handle {
+  position: absolute;
+  top: 0.1875rem;
+  left: 0.1875rem;
+  width: 1.125rem;
+  height: 1.125rem;
+  border-radius: 1.125rem;
+  background: #fff;
+  transition: left 0.25s;
+}
+.btn-toggle.active {
+  transition: background-color 0.25s;
+}
+.btn-toggle.active > .handle {
+  left: 1.6875rem;
+  transition: left 0.25s;
+}
+.btn-toggle.active:before {
+  opacity: 0.5;
+}
+.btn-toggle.active:after {
+  opacity: 1;
+}
+.btn-toggle.btn-sm:before,
+.btn-toggle.btn-sm:after {
+  line-height: -0.5rem;
+  color: #fff;
+  letter-spacing: 0.75px;
+  left: 0.4125rem;
+  width: 2.325rem;
+}
+.btn-toggle.btn-sm:before {
+  text-align: right;
+}
+.btn-toggle.btn-sm:after {
+  text-align: left;
+  opacity: 0;
+}
+.btn-toggle.btn-sm.active:before {
+  opacity: 0;
+}
+.btn-toggle.btn-sm.active:after {
+  opacity: 1;
+}
+.btn-toggle.active {
+  background-color: #29b5a8;
+}
+
+.close-noti-setting{
+  position: absolute;
+  top: 0;
+  right: 3px;
+  color: '#585656';
+  cursor: pointer;
+  margin: 0;
+}
+.mark-all-noti{
+  display: flex;
+  margin-top: 8px;
+  cursor: pointer;
+  padding: 10px;
+  align-items: center;
+  border-bottom: 1px solid rgba(189, 193, 200, 0.5);
+}
+.mark-all-text{
+  color: "#385898";
+  margin-bottom: 0;
+}
+.notification-on-off{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
 }

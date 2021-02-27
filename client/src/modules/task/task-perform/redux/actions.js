@@ -1,8 +1,7 @@
 import { performTaskConstants } from "./constants";
 import { taskManagementConstants } from "../../task-management/redux/constants";
-import { TaskProcessConstants } from "../../task-process/redux/constants";
-import { TaskProcessService } from "../../task-process/redux/services";
 import { performTaskService } from "./services";
+
 export const performTaskAction = {
     getTimesheetLogs,
     getTimerStatusTask,
@@ -14,9 +13,6 @@ export const performTaskAction = {
     createActionComment,
     editActionComment,
     deleteActionComment,
-
-    createResultTask,
-    editResultTask,
 
     createTaskAction,
     editTaskAction,
@@ -40,6 +36,7 @@ export const performTaskAction = {
 
     uploadFile,
     deleteFileTask,
+
     editTaskByAccountableEmployees,
     editTaskByResponsibleEmployees,
     editActivateOfTask,
@@ -70,6 +67,7 @@ export const performTaskAction = {
     deleteChildComment,
     deleteFileComment,
     deleteFileChildComment,
+    
     getAllPreceedingTasks,
 
     sortActions,
@@ -157,7 +155,6 @@ function getTimesheetLogs(taskId) {
 function getTimerStatusTask(taskId) { //param -- , user
     return dispatch => {
         dispatch({ type: performTaskConstants.GET_TIMERSTATUS_REQUEST });
-        //performTaskService.getTimerStatusTask(task,user)
         performTaskService.getTimerStatusTask(taskId)
             .then(
                 payload => dispatch({ type: performTaskConstants.GET_TIMERSTATUS_SUCCESS, payload }),

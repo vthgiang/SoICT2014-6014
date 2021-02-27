@@ -28,7 +28,7 @@ class TaskTimesheetLog extends Component {
 
     callApi = () => {
         if (!this.called && this.props.auth.calledAPI === CallApiStatus.FINISHED) {
-            this.props.getStatusTimer();
+            this.props.getTimerStatusTask();
             this.called = true;
         }
     }
@@ -328,7 +328,7 @@ const mapStateToProps = state => {
 }
 
 const mapDispatchToProps = {
-    getStatusTimer: performTaskAction.getTimerStatusTask,
+    getTimerStatusTask: performTaskAction.getTimerStatusTask,
     stopTimer: performTaskAction.stopTimerTask,
 }
 

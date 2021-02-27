@@ -136,10 +136,9 @@ export function taskProcess(state = {}, action) {
                 isLoading: true
             };
         case TaskProcessConstants.CREATE_TASK_BY_PROCESS_TEMPLATE_SUCCESS:
-
             return {
                 ...state,
-                xmlDiagram: action.payload.xmlDiagram,
+                xmlDiagram: action.payload.content,
             };
         case TaskProcessConstants.CREATE_TASK_BY_PROCESS_TEMPLATE_FAIL:
             return {

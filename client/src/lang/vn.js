@@ -4011,6 +4011,7 @@ export default {
                     delete_kpi_failure: "Xóa KPI không thành công",
                     copy_kpi_unit: "Sao chép KPI đơn vị",
                     employee_importance: "Độ quan trọng nhân viên",
+                    organizational_unit_importance: "Độ quan trọng đơn vị con",
 
                     // Nhóm dành cho trọng số
                     weight_total: "Tổng trọng số",
@@ -4055,7 +4056,8 @@ export default {
                     content:
                         "Đây là mục tiêu mặc định (nếu cần thiết có thể sửa trọng số)",
                     delete_title: "Xóa",
-                    employee_importance_activated: "KPI đã kích hoạt, bạn không thể chỉnh sửa độ quan trọng nhân viên"
+                    employee_importance_activated: "KPI đã kích hoạt, bạn không thể chỉnh sửa độ quan trọng nhân viên!",
+                    organizational_unit_importance_activated: "KPI đã kích hoạt, bạn không thể chỉnh sửa độ quan trọng đơn vị con!"
                 },
 
                 create_organizational_unit_kpi_modal: {
