@@ -197,7 +197,7 @@ class ActionTab extends Component {
                 }
             })
             this.props.getTimesheetLogs(nextProps.id);
-            this.props.getStatusTimer(nextProps.id);
+            this.props.getTimerStatusTask(nextProps.id);
             this.props.getSubTask(nextProps.id);
             this.props.getTaskLog(nextProps.id);
             return true;
@@ -2275,7 +2275,7 @@ const actionCreators = {
     stopTimer: performTaskAction.stopTimerTask,
     editTimeSheetLog: performTaskAction.editTimeSheetLog,
     getTimesheetLogs: performTaskAction.getTimesheetLogs,
-    getStatusTimer: performTaskAction.getTimerStatusTask,
+    getTimerStatusTask: performTaskAction.getTimerStatusTask,
     editTaskComment: performTaskAction.editTaskComment,
     deleteTaskComment: performTaskAction.deleteTaskComment,
     createTaskComment: performTaskAction.createTaskComment,

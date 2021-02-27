@@ -29,7 +29,6 @@ exports.show = async(portal, id) => {
 }
 
 exports.create = async(portal, data) => {
-    console.log("create task project sss")
     let tp = await TaskProject(connect(DB_CONNECTION, portal)).create(data);
 
     return tp;

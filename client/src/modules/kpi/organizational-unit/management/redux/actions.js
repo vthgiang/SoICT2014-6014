@@ -57,7 +57,8 @@ function copyKPIUnit(kpiId, data) {
             .then(res => {
                 dispatch({
                     type: managerConstants.COPY_KPIUNIT_SUCCESS,
-                    payload: res.data.content
+                    payload: res.data.content,
+                    typeService: data?.type
                 })
             })
             .catch(error => {

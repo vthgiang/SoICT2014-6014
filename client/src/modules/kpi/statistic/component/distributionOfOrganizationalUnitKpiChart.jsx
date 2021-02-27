@@ -86,8 +86,8 @@ function DistributionOfOrganizationalUnitKpiChart(props) {
 
                                 objectChidrenKpiWeight[kpi?.id].map(childrenKpi => {
                                     let importance = [];
-                                    importance = kpi?.listEmployeeKpi?.[0]?.organizationalUnitImportances.filter(item => item.organizationalUnit === childrenKpi.organizationalUnitId)
-                                    importance = importance.length > 0 ? importance?.[0]?.importance : 0;
+                                    importance = kpi?.listEmployeeKpi?.[0]?.organizationalUnitImportances?.filter(item => item?.organizationalUnit === childrenKpi?.organizationalUnitId)
+                                    importance = importance?.length > 0 ? importance?.[0]?.importance : 0;
 
                                     totalPoint = totalPoint + childrenKpi?.weight * importance;
                                     totalImportance = totalImportance + importance;

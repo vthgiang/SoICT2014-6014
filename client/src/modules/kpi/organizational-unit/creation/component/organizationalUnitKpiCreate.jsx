@@ -620,6 +620,7 @@ class OrganizationalUnitKpiCreate extends Component {
                                                     <tr>
                                                         <th title="Số thứ tự" style={{ width: "40px" }}>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.no_')}</th>
                                                         <th title="Tên mục tiêu">{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.target_name')}</th>
+                                                        {currentKPI?.organizationalUnit?.parent && <th title="Mục tiêu cha">{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.parents_target')}</th>}
                                                         <th title="Tiêu chí đánh giá">{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.evaluation_criteria')}</th>
                                                         <th title="Trọng số" className="col-sort-number" style={{ width: "100px" }}>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.weight')}</th>
                                                         {this.checkPermisson(organizationalUnit && organizationalUnit.managers) && <th style={{ width: "100px" }}>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.action')}</th>}
@@ -631,6 +632,7 @@ class OrganizationalUnitKpiCreate extends Component {
                                                             <tr key={item._id}>
                                                                 <td>{index + 1}</td>
                                                                 <td title={item.name}>{item.name}</td>
+                                                                {currentKPI?.organizationalUnit?.parent && <td title={item?.parent?.name}>{item?.parent?.name}</td>}
                                                                 <td title={parse(item.criteria)}>{parse(item.criteria)}</td>
                                                                 <td title={item.weight}>{item.weight}</td>
                                                                 {this.checkPermisson(organizationalUnit && organizationalUnit.managers) &&

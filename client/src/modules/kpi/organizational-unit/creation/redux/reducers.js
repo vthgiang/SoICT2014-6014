@@ -1,4 +1,5 @@
 import { createUnitKpiConstants } from "./constants";
+import { managerConstants } from '../../management/redux/constants';
 
 export function createKpiUnit(state = {}, action) {
     switch (action.type) {
@@ -220,27 +221,33 @@ export function createKpiUnit(state = {}, action) {
             isLoading: false
           };
       
-        case createUnitKpiConstants.COPY_KPIUNIT_REQUEST:
-          return {
-            ...state,
-            adding: true,
-            isLoading: false,
-            currentKPI: null
-          };
-        case createUnitKpiConstants.COPY_KPIUNIT_SUCCESS:
-          return {
-            ...state,
-            adding: false,
-            currentKPI: action.payload,
-            isLoading: false
-          };
-        case createUnitKpiConstants.COPY_KPIUNIT_FAILURE:
-          return {
-            ...state,
-            adding: false,
-            error: action.payload,
-            isLoading: false
-          };
+        case managerConstants.COPY_KPIUNIT_REQUEST:
+            if (action.typeService === 'copy-parent-kpi-to-unit') {
+                return {
+                ...state,
+                adding: true,
+                isLoading: false,
+                currentKPI: null
+                };
+            }
+        case managerConstants.COPY_KPIUNIT_SUCCESS:
+          if (action.typeService === 'copy-parent-kpi-to-unit') {
+            return {
+                ...state,
+                adding: false,
+                currentKPI: action.payload,
+                isLoading: false
+            };
+          } 
+        case managerConstants.COPY_KPIUNIT_FAILURE:
+            if (action.typeService === 'copy-parent-kpi-to-unit') {
+                    return {
+                    ...state,
+                    adding: false,
+                    error: action.payload,
+                    isLoading: false
+                };
+            }
           case createUnitKpiConstants.CREATE_COMMENT_REQUEST:
             return {
                 ...state,
