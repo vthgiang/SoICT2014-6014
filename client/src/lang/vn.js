@@ -68,6 +68,183 @@ export default {
             list_employee: "Danh sách nhân viên",
             detail: "Chi tiết",
             select_all: "Chọn tất cả",
+            add_import: "Thêm dữ liệu từ file",
+        },
+
+        menu: {
+            home: "Trang chủ",
+            system_administration: "Quản trị hệ thống",
+            manage_configuration: "Cấu hình hệ thống",
+            manage_system: "Sao lưu phục hồi",
+            manage_company: "Doanh nghiệp",
+            manage_role: "Quản lý phân quyền",
+            manage_link: "Quản lý trang",
+            manage_component: "Quản lý phân quyền trên các trang",
+
+            manage_department: "Quản lý cơ cấu tổ chức",
+            manage_user: "Quản lý người dùng",
+
+            manage_document: "Quản lý tài liệu văn bản",
+            documents_og: "Quản lý tài liệu văn bản đơn vị",
+            documents: "Tài liệu văn bản",
+
+            customer_Management: "Quản lý khách hàng",
+            crm_list: {
+                dashboard: "Bảng tin quản lý khách hàng",
+                customer: "Quản lý thông tin khách hàng",
+                lead: "Khách hàng thân thiết",
+                care: "Chăm sóc khách hàng",
+                group: "Nhóm khách hàng",
+                statistic: "Thống kê",
+                generalConfiguration: "Cấu hình chung",
+            },
+
+            task_template: "Mẫu Công Việc",
+            taskmanagement: "Quản Lý Công Việc",
+            manageDocument: "Quản lý văn bản",
+            manageDocumentType: "Quản lý loại văn bản",
+
+            leave_application: "Quản lý đơn xin nghỉ đơn vị",
+            manage_employee: "Quản lý nhân sự",
+            manage_work_plan: "Quản lý kế hoạch làm việc",
+            manage_training: "Quản lý đào tạo",
+            account: "Tài khoản",
+            annual_leave_personal: "Xin nghỉ phép",
+            manage_unit: "Quản lý nhân sự các đơn vị",
+            add_employee: "Thêm nhân viên",
+            list_employee: "Quản lý thông tin nhân viên",
+            detail_employee: "Thông tin cá nhân",
+            update_employee: "Cập nhật thông tin cá nhân",
+            dashboard_employee: "Bảng tin quản lý nhân sự",
+            dashboard_personal: "Bảng tin cá nhân",
+            dashboard_unit: "Bảng tin đơn vị",
+            employee_capacity: "Năng lực nhân viên",
+            discipline: "Quản lý khen thưởng - kỷ luật",
+            annual_leave: "Quản lý nghỉ phép",
+            manage_field: "Quản lý ngành nghề/lĩnh vực",
+            salary_employee: "Quản lý lương nhân viên",
+            time_keeping: "Chấm công nhân viên",
+            list_education: "Chương trình đào tạo bắt buộc",
+            training_plan: "Quản lý khoá đào tạo",
+            list_major: "Danh sách chuyên ngành",
+            list_career_position: "Danh sách vị trí công việc",
+            list_search_for_package: "Tìm kiếm nhân sự gói thầu",
+
+            manage_warehouse: "Quản lý kho",
+            dashboard_bill: "Bảng tin quản lý các phiếu",
+            dashboard_inventory: "Bảng tin quản lý hàng tồn",
+            stock_management: "Quản lý thông tin kho",
+            bin_location_management: "Quản lý thông tin lưu kho",
+            category_management: "Quản lý danh mục hàng hóa",
+            good_management: "Quản lý hàng hóa",
+            partner_management: "Quản lý đối tác",
+            proposal_management: "Quản lý phiếu đề nghị",
+            bill_management: "Quản lý thông tin phiếu",
+            inventory_management: "Quản lý hàng tồn kho",
+
+            manage_kpi: "Quản lý KPI",
+            kpi_unit_create: "Khởi tạo KPI đơn vị",
+            kpi_unit_evaluate: "Dữ liệu KPI đơn vị",
+            kpi_unit_overview: "Tổng quan KPI đơn vị",
+            kpi_unit_dashboard: "Dashboard KPI đơn vị",
+            kpi_unit_statistic: "Thống kê KPI đơn vị",
+            kpi_unit_manager: "Quản lý KPI đơn vị",
+            kpi_member_manager: "Đánh giá KPI nhân viên",
+            kpi_member_dashboard: "DashBoard KPI nhân viên",
+            kpi_personal_create: "Khởi tạo KPI cá nhân",
+            kpi_personal_evaluate: "Dữ liệu KPI cá nhân",
+            kpi_personal_overview: "Tổng quan KPI cá nhân",
+            kpi_personal_dashboard: "Dashboard KPI cá nhân",
+            kpi_personal_manager: "Quản lí KPI cá nhân",
+
+            notifications: "Thông báo",
+
+            tasks: "Quản lý công việc",
+            task: "Chi tiết công việc",
+            task_management: "Danh sách công việc",
+            task_management_of_unit: "Danh sách công việc đơn vị",
+            task_management_dashboard: "Dashboard công việc",
+            task_organization_management_dashboard:
+                "Dashboard công việc đơn vị",
+            task_management_process: "Danh sách quy trình",
+            task_process_template: "Mẫu quy trình",
+            all_time_sheet_log: 'Thống kê bấm giờ',
+
+            //*******START */
+            // Quản lý tài sản
+            // QUẢN LÝ
+
+            add_update_asset: "Thêm - Cập nhật tài sản",
+            add_asset_title: "Thêm mới tài sản - Cập nhật tài sản",
+            add_asset: "Thêm tài sản",
+            update_asset: "Cập nhật tài sản",
+            manage_repair_asset: "Quản lý sửa chữa, thay thế",
+            manage_usage_asset: "Quản lý sử dụng tài sản",
+            manage_distribute_asset: "Quản lý cấp phát, điều chuyển",
+            manage_room_asset: "Quản lý phòng & trang thiết bị",
+            manage_crash_asset: "Quản lý sự cố tài sản",
+
+            manage_asset: "Quản lý tài sản",
+            dashboard_asset: "DashBoard quản lý tài sản",
+            manage_type_asset: "Quản lý loại tài sản",
+            manage_info_asset: "Quản lý thông tin tài sản",
+            manage_maintainance_asset: "Quản lý bảo trì-sửa chữa",
+            manage_depreciation_asset: "Quản lý khấu hao tài sản",
+            manage_incident_asset: "Quản lý sự cố tài sản",
+            manage_recommend_procure: "Quản lý đề nghị mua sắm",
+            manage_recommend_distribute_asset: "Quản lý đăng ký sử dụng",
+            employee_manage_asset_info: "Tài sản quản lý",
+
+            view_building_list: "Xem danh sách mặt bằng",
+
+            // NHÂN VIÊN
+            recommend_equipment_procurement: "Đăng ký mua sắm thiết bị",
+            recommend_distribute_asset: "Đăng ký sử dụng thiết bị",
+            manage_assigned_asset: "Tài sản sử dụng",
+            //******END */
+
+            // QUẢN LÝ BÁO CÁO
+            report_management: "Quản lý báo cáo",
+            task_report: "Quản lý báo cáo công việc",
+
+            //QUẢN LÝ ĐƠN HÀNG
+            manage_orders: "Quản lý đơn hàng",
+            manage_sales_order: "Đơn bán hàng",
+            manage_purchase_order: "Đơn mua nguyên vật liệu",
+            manage_sales_order_dashboard: "Thống kê bán hàng",
+            manage_quote: "Báo giá",
+            manage_discount: "Giảm giá",
+            manage_tax: "Thuế",
+            manage_sla: "Cam kết chất lượng",
+            manage_business_department: "Phân vai trò đơn vị kinh doanh",
+            manage_payment: "Quản lý thu chi",
+            manage_bank_account: "Quản lý thông tin tài khoản ngân hàng",
+
+            // Quản lý kế hoạch sản xuất
+            manage_plans: "Quản lý kế hoạch sản xuất",
+            //VÍ DỤ EXAMPLE
+            manage_examples: "Ví dụ CRUD",
+            manage_examples_1: "CRUD theo mô hình số 1",
+            manage_examples_2: "CRUD theo mô hình số 2",
+            manage_examples_hooks_1: "CRUD Hooks theo mô hình 1",
+            manage_examples_hooks_2: "CRUD Hooks theo mô hình 2",
+
+            // Quản lý sản xuất
+            manage_manufacturing: "Quản lý sản xuất",
+            manage_manufacturing_plan: "Quản lý kế hoạch sản xuất",
+            manage_manufacturing_command: "Quản lý lệnh sản xuất",
+            manage_work_schedule: "Quản lý lịch sản xuất",
+            manage_purchasing_request:
+                "Quản lý phiếu đề nghị mua hàng",
+            manufacturing_dashboard: "Dashboard Quản lý sản xuất",
+            analysis_manufacturing_performance: "Phân tích hiệu suất sản xuất",
+            manage_manufacturing_works: "Quản lý nhà máy sản xuất",
+            manage_manufacturing_mill: "Quản lý xưởng sản xuất",
+            manage_manufacturing_lot: "Quản lý lô sản xuất",
+            manage_project: "Quản lý dự án",
+
+            user_guide: "Hướng dẫn sử dụng",
+            user_guide_detail: "Chi tiết hướng dẫn sử dụng",
         },
 
         intro: {
@@ -441,6 +618,7 @@ export default {
                     "Tên này đã được sử dụng cho 1 system component khác",
             },
         },
+
         super_admin: {
             system: {
                 edit_backup_info: "Chỉnh sửa thông tin phiên bản dữ liệu",
@@ -909,6 +1087,7 @@ export default {
                 "Chúng tôi không thể tìm thấy địa chỉ mà bạn đang tìm kiếm",
             back_to_home: "Quay lại trang chủ",
         },
+
         language: "Thiết lập ngôn ngữ",
         alert: {
             title: "Thông báo từ hệ thống",
@@ -1003,6 +1182,7 @@ export default {
             add_success: "Thêm mới thành công",
             add_faile: "Thêm mới thất bại",
         },
+
         page: {
             unit: "Đơn vị",
             position: "Chức vụ",
@@ -1034,182 +1214,6 @@ export default {
                 title_showmore: "Bấm để hiển thị thêm",
                 title_showless: "Bấm để hiển thị ít hơn"
             }
-        },
-
-        menu: {
-            home: "Trang chủ",
-            system_administration: "Quản trị hệ thống",
-            manage_configuration: "Cấu hình hệ thống",
-            manage_system: "Sao lưu phục hồi",
-            manage_company: "Doanh nghiệp",
-            manage_role: "Quản lý phân quyền",
-            manage_link: "Quản lý trang",
-            manage_component: "Quản lý phân quyền trên các trang",
-
-            manage_department: "Quản lý cơ cấu tổ chức",
-            manage_user: "Quản lý người dùng",
-
-            manage_document: "Quản lý tài liệu văn bản",
-            documents_og: "Quản lý tài liệu văn bản đơn vị",
-            documents: "Tài liệu văn bản",
-
-            customer_Management: "Quản lý khách hàng",
-            crm_list: {
-                dashboard: "Bảng tin quản lý khách hàng",
-                customer: "Quản lý thông tin khách hàng",
-                lead: "Khách hàng thân thiết",
-                care: "Chăm sóc khách hàng",
-                group: "Nhóm khách hàng",
-                statistic: "Thống kê",
-                generalConfiguration: "Cấu hình chung",
-            },
-
-            task_template: "Mẫu Công Việc",
-            taskmanagement: "Quản Lý Công Việc",
-            manageDocument: "Quản lý văn bản",
-            manageDocumentType: "Quản lý loại văn bản",
-
-            leave_application: "Quản lý đơn xin nghỉ đơn vị",
-            manage_employee: "Quản lý nhân sự",
-            manage_work_plan: "Quản lý kế hoạch làm việc",
-            manage_training: "Quản lý đào tạo",
-            account: "Tài khoản",
-            annual_leave_personal: "Xin nghỉ phép",
-            manage_unit: "Quản lý nhân sự các đơn vị",
-            add_employee: "Thêm nhân viên",
-            list_employee: "Quản lý thông tin nhân viên",
-            detail_employee: "Thông tin cá nhân",
-            update_employee: "Cập nhật thông tin cá nhân",
-            dashboard_employee: "Bảng tin quản lý nhân sự",
-            dashboard_personal: "Bảng tin cá nhân",
-            dashboard_unit: "Bảng tin đơn vị",
-            employee_capacity: "Năng lực nhân viên",
-            discipline: "Quản lý khen thưởng - kỷ luật",
-            annual_leave: "Quản lý nghỉ phép",
-            manage_field: "Quản lý ngành nghề/lĩnh vực",
-            salary_employee: "Quản lý lương nhân viên",
-            time_keeping: "Chấm công nhân viên",
-            list_education: "Chương trình đào tạo bắt buộc",
-            training_plan: "Quản lý khoá đào tạo",
-            list_major: "Danh sách chuyên ngành",
-            list_career_position: "Danh sách vị trí công việc",
-            list_search_for_package: "Tìm kiếm nhân sự gói thầu",
-
-            manage_warehouse: "Quản lý kho",
-            dashboard_bill: "Bảng tin quản lý các phiếu",
-            dashboard_inventory: "Bảng tin quản lý hàng tồn",
-            stock_management: "Quản lý thông tin kho",
-            bin_location_management: "Quản lý thông tin lưu kho",
-            category_management: "Quản lý danh mục hàng hóa",
-            good_management: "Quản lý hàng hóa",
-            partner_management: "Quản lý đối tác",
-            proposal_management: "Quản lý phiếu đề nghị",
-            bill_management: "Quản lý thông tin phiếu",
-            inventory_management: "Quản lý hàng tồn kho",
-
-            manage_kpi: "Quản lý KPI",
-            kpi_unit_create: "Khởi tạo KPI đơn vị",
-            kpi_unit_evaluate: "Dữ liệu KPI đơn vị",
-            kpi_unit_overview: "Tổng quan KPI đơn vị",
-            kpi_unit_dashboard: "Dashboard KPI đơn vị",
-            kpi_unit_statistic: "Thống kê KPI đơn vị",
-            kpi_unit_manager: "Quản lý KPI đơn vị",
-            kpi_member_manager: "Đánh giá KPI nhân viên",
-            kpi_member_dashboard: "DashBoard KPI nhân viên",
-            kpi_personal_create: "Khởi tạo KPI cá nhân",
-            kpi_personal_evaluate: "Dữ liệu KPI cá nhân",
-            kpi_personal_overview: "Tổng quan KPI cá nhân",
-            kpi_personal_dashboard: "Dashboard KPI cá nhân",
-            kpi_personal_manager: "Quản lí KPI cá nhân",
-
-            notifications: "Thông báo",
-
-            tasks: "Quản lý công việc",
-            task: "Chi tiết công việc",
-            task_management: "Danh sách công việc",
-            task_management_of_unit: "Danh sách công việc đơn vị",
-            task_management_dashboard: "Dashboard công việc",
-            task_organization_management_dashboard:
-                "Dashboard công việc đơn vị",
-            task_management_process: "Danh sách quy trình",
-            task_process_template: "Mẫu quy trình",
-            all_time_sheet_log: 'Thống kê bấm giờ',
-
-            //*******START */
-            // Quản lý tài sản
-            // QUẢN LÝ
-
-            add_update_asset: "Thêm - Cập nhật tài sản",
-            add_asset_title: "Thêm mới tài sản - Cập nhật tài sản",
-            add_asset: "Thêm tài sản",
-            update_asset: "Cập nhật tài sản",
-            manage_repair_asset: "Quản lý sửa chữa, thay thế",
-            manage_usage_asset: "Quản lý sử dụng tài sản",
-            manage_distribute_asset: "Quản lý cấp phát, điều chuyển",
-            manage_room_asset: "Quản lý phòng & trang thiết bị",
-            manage_crash_asset: "Quản lý sự cố tài sản",
-
-            manage_asset: "Quản lý tài sản",
-            dashboard_asset: "DashBoard quản lý tài sản",
-            manage_type_asset: "Quản lý loại tài sản",
-            manage_info_asset: "Quản lý thông tin tài sản",
-            manage_maintainance_asset: "Quản lý bảo trì-sửa chữa",
-            manage_depreciation_asset: "Quản lý khấu hao tài sản",
-            manage_incident_asset: "Quản lý sự cố tài sản",
-            manage_recommend_procure: "Quản lý đề nghị mua sắm",
-            manage_recommend_distribute_asset: "Quản lý đăng ký sử dụng",
-            employee_manage_asset_info: "Tài sản quản lý",
-
-            view_building_list: "Xem danh sách mặt bằng",
-
-            // NHÂN VIÊN
-            recommend_equipment_procurement: "Đăng ký mua sắm thiết bị",
-            recommend_distribute_asset: "Đăng ký sử dụng thiết bị",
-            manage_assigned_asset: "Tài sản sử dụng",
-            //******END */
-
-            // QUẢN LÝ BÁO CÁO
-            report_management: "Quản lý báo cáo",
-            task_report: "Quản lý báo cáo công việc",
-
-            //QUẢN LÝ ĐƠN HÀNG
-            manage_orders: "Quản lý đơn hàng",
-            manage_sales_order: "Đơn bán hàng",
-            manage_purchase_order: "Đơn mua nguyên vật liệu",
-            manage_sales_order_dashboard: "Thống kê bán hàng",
-            manage_quote: "Báo giá",
-            manage_discount: "Giảm giá",
-            manage_tax: "Thuế",
-            manage_sla: "Cam kết chất lượng",
-            manage_business_department: "Phân vai trò đơn vị kinh doanh",
-            manage_payment: "Quản lý thu chi",
-            manage_bank_account: "Quản lý thông tin tài khoản ngân hàng",
-
-            // Quản lý kế hoạch sản xuất
-            manage_plans: "Quản lý kế hoạch sản xuất",
-            //VÍ DỤ EXAMPLE
-            manage_examples: "Ví dụ CRUD",
-            manage_examples_1: "CRUD theo mô hình số 1",
-            manage_examples_2: "CRUD theo mô hình số 2",
-            manage_examples_hooks_1: "CRUD Hooks theo mô hình 1",
-            manage_examples_hooks_2: "CRUD Hooks theo mô hình 2",
-
-            // Quản lý sản xuất
-            manage_manufacturing: "Quản lý sản xuất",
-            manage_manufacturing_plan: "Quản lý kế hoạch sản xuất",
-            manage_manufacturing_command: "Quản lý lệnh sản xuất",
-            manage_work_schedule: "Quản lý lịch sản xuất",
-            manage_purchasing_request:
-                "Quản lý phiếu đề nghị mua hàng",
-            manufacturing_dashboard: "Dashboard Quản lý sản xuất",
-            analysis_manufacturing_performance: "Phân tích hiệu suất sản xuất",
-            manage_manufacturing_works: "Quản lý nhà máy sản xuất",
-            manage_manufacturing_mill: "Quản lý xưởng sản xuất",
-            manage_manufacturing_lot: "Quản lý lô sản xuất",
-            manage_project: "Quản lý dự án",
-
-            user_guide: "Hướng dẫn sử dụng",
-            user_guide_detail: "Chi tiết hướng dẫn sử dụng",
         },
 
         manage_system: {

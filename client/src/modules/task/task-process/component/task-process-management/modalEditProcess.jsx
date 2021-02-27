@@ -18,6 +18,7 @@ import { TaskProcessValidator } from "../process-template/taskProcessValidator";
 import { TaskProcessActions } from "../../redux/actions";
 import getEmployeeSelectBoxItems from "../../../organizationalUnitHelper";
 import { AddTaskForm } from "../../../task-management/component/addTaskForm";
+import { DepartmentActions } from "../../../../super-admin/organizational-unit/redux/actions";
 
 
 //Xóa element khỏi pallette theo data-action
@@ -68,6 +69,7 @@ class ModalEditProcess extends Component {
     componentDidMount() {
         this.props.getAllUsers();
         this.props.getAllUserOfCompany();
+        this.props.getAllDepartments();
         this.props.getAllUserInAllUnitsOfCompany()
 
         this.modeler.attachTo('#' + this.generateId);
@@ -134,8 +136,49 @@ class ModalEditProcess extends Component {
             }
 
             this.props.getChildrenOfOrganizationalUnits(defaultUnit && defaultUnit._id);
-
-            this.modeler.importXML(nextProps.data.xmlDiagram, function (err) { });
+            let modeler = this.modeler;
+            let modeling = this.modeling;
+            let state = this.state;
+            this.modeler.importXML(nextProps.data.xmlDiagram, function (err) {
+                                // chỉnh màu sắc task
+                                let infoTask = nextProps.data.tasks
+                                let info = state.info;
+                
+                                if (infoTask) {
+                                    for (let i in infoTask) {
+                                        if (infoTask[i].status === "finished") {
+                                            let element1 = (Object.keys(modeler.get('elementRegistry')).length > 0) && modeler.get('elementRegistry').get(infoTask[i].codeInProcess);
+                
+                                            element1 && modeling.setColor(element1, {
+                                                fill: '#f9f9f9', // 9695AD
+                                                stroke: '#c4c4c7'
+                                            });
+                
+                                            var outgoing = element1.outgoing;
+                                            outgoing.forEach(x => {
+                                                if (info[x.businessObject.targetRef.id].status === "inprocess") {
+                                                    var outgoingEdge = modeler.get('elementRegistry').get(x.id);
+                
+                                                    modeling.setColor(outgoingEdge, {
+                                                        stroke: '#c4c4c7',
+                                                        width: '5px'
+                                                    })
+                                                }
+                                            })
+                                        }
+                
+                                        if (infoTask[i].status === "inprocess") {
+                                            let element1 = (Object.keys(modeler.get('elementRegistry')).length > 0) && modeler.get('elementRegistry').get(infoTask[i].codeInProcess);
+                
+                                            element1 && modeling.setColor(element1, {
+                                                fill: '#84ffb8',
+                                                stroke: '#14984c', //E02001
+                                                width: '5px'
+                                            });
+                                        }
+                                    }
+                                }
+             });
             this.setState(state => {
                 return {
                     ...state,
@@ -149,47 +192,10 @@ class ModalEditProcess extends Component {
             let modeler = this.modeler;
             let modeling = this.modeling;
             let state = this.state;
-            this.modeler.importXML(nextProps.data.xmlDiagram, function (err) {
+            // this.modeler.importXML(nextProps.data.xmlDiagram, function (err) {
 
-                // chỉnh màu sắc task
-                let infoTask = nextProps.data.tasks
-                let info = state.info;
 
-                if (infoTask) {
-                    for (let i in infoTask) {
-                        if (infoTask[i].status === "finished") {
-                            let element1 = (Object.keys(modeler.get('elementRegistry')).length > 0) && modeler.get('elementRegistry').get(infoTask[i].codeInProcess);
-
-                            element1 && modeling.setColor(element1, {
-                                fill: '#f9f9f9', // 9695AD
-                                stroke: '#c4c4c7'
-                            });
-
-                            var outgoing = element1.outgoing;
-                            outgoing.forEach(x => {
-                                if (info[x.businessObject.targetRef.id].status === "inprocess") {
-                                    var outgoingEdge = modeler.get('elementRegistry').get(x.id);
-
-                                    modeling.setColor(outgoingEdge, {
-                                        stroke: '#c4c4c7',
-                                        width: '5px'
-                                    })
-                                }
-                            })
-                        }
-
-                        if (infoTask[i].status === "inprocess") {
-                            let element1 = (Object.keys(modeler.get('elementRegistry')).length > 0) && modeler.get('elementRegistry').get(infoTask[i].codeInProcess);
-
-                            element1 && modeling.setColor(element1, {
-                                fill: '#84ffb8',
-                                stroke: '#14984c', //E02001
-                                width: '5px'
-                            });
-                        }
-                    }
-                }
-            });
+            // });
             return true;
         }
         return true;
@@ -652,6 +658,7 @@ function mapState(state) {
 
 const actionCreators = {
     getAllUsers: UserActions.get,
+    getAllDepartments: DepartmentActions.get,
     getAllUserOfCompany: UserActions.getAllUserOfCompany,
     getDepartment: UserActions.getDepartmentOfUser,
     getTaskById: performTaskAction.getTaskById,

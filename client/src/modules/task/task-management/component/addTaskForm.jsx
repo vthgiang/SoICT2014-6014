@@ -183,6 +183,7 @@ class AddTaskForm extends Component {
 
     handleStartTimeChange = (value) => {
         let { translate } = this.props;
+        let { isProcess } = this.props;
         let startDate = this.convertDateTime(this.state.newTask.startDate, value);
         let endDate = this.convertDateTime(this.state.newTask.endDate, this.state.endTime);
         let err;
@@ -202,12 +203,13 @@ class AddTaskForm extends Component {
                 }
             }
         });
-        this.props.handleChangeStartTime(this.state.startTime);
+        isProcess && this.props.handleChangeStartTime(this.state.startTime);
         this.props.handleChangeTaskData(this.state.newTask)
     }
 
     handleEndTimeChange = (value) => {
         let { translate } = this.props;
+        let { isProcess } = this.props;
         let startDate = this.convertDateTime(this.state.newTask.startDate, this.state.startTime);
         let endDate = this.convertDateTime(this.state.newTask.endDate, value);
         let err;
@@ -228,7 +230,7 @@ class AddTaskForm extends Component {
                 }
             }
         });
-        this.props.handleChangeEndTime(this.state.endTime);
+        isProcess && this.props.handleChangeEndTime(this.state.endTime);
         this.props.handleChangeTaskData(this.state.newTask);
     }
     handleChangeTaskEndDate = (value) => {
@@ -453,6 +455,7 @@ class AddTaskForm extends Component {
                 taskProject: selected[0]
             }
         })
+        this.props.handleChangeTaskData(this.state.newTask)
     }
 
     // convert ISODate to String dd-mm-yyyy
@@ -481,7 +484,7 @@ class AddTaskForm extends Component {
                 return {
                     id: nextProps.id,
                     newTask: {
-                        organizationalUnit: (info && info.organizationalUnit) ? info.organizationalUnit._id : "",
+                        organizationalUnit: (info && info.organizationalUnit) ? info.organizationalUnit._id :  "",//nextProps.department?.tree[0]?.id
                         collaboratedWithOrganizationalUnits: (info && info.collaboratedWithOrganizationalUnits) ? info.collaboratedWithOrganizationalUnits : [],
                         name: (info && info.name) ? info.name : '',
                         responsibleEmployees: (info && info.responsibleEmployees) ? info.responsibleEmployees : [],
@@ -881,7 +884,9 @@ class AddTaskForm extends Component {
                             }
 
                             {/* Dự án liên quan của công việc */}
-                            <div className="form-group">
+                            {/** Tạm thời ẩn đi bên Process, nếu muốn hiện xóa check isProcess  */}
+                            {isProcess === false &&
+                                <div className="form-group">
                                 <label>
                                     {translate('task.task_management.project')}
                                 </label>
@@ -895,6 +900,7 @@ class AddTaskForm extends Component {
                                     actionIcon='fa fa-plus'
                                 />
                             </div>
+                            }
                         </fieldset>
                     </div>
                 </div>
