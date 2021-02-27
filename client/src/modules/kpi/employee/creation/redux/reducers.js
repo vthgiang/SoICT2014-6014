@@ -209,6 +209,7 @@ export function createEmployeeKpiSet(state = {}, action) {
                 isLoading: false
             };
         case createKpiSetConstants.CREATE_EMPLOYEE_KPI_SET_SUCCESS:
+        case managerConstants.COPY_KPIUNIT_SUCCESS:
             return {
                 ...state,
                 adding: false,
