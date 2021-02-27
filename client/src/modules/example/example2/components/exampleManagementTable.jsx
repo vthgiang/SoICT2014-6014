@@ -59,14 +59,22 @@ class ExampleManagementTable extends Component {
     }
 
     handleDelete = (id) => {
+        const { example } = this.props;
+        const { exampleName, perPage, page } = this.state;
+
         this.props.deleteExample(id);
+        this.props.getOnlyExampleName({
+            exampleName,
+            perPage,
+            page: example?.lists?.length === 1 ? page - 1 : page
+        });
     }
 
     handleEdit = async (example) => {
         await this.setState((state) => {
             return {
                 ...state,
-                currentRow: example
+                exampleEditting: example?._id
             }
         });
         window.$('#modal-edit-example').modal('show');
@@ -84,32 +92,30 @@ class ExampleManagementTable extends Component {
 
     render() {
         const { example, translate } = this.props;
-        const { tableId } = this.state;
+        const { tableId, exampleId, perPage, page, exampleEditting } = this.state;
         let lists = [];
         if (example.isLoading === false) {
             lists = example.lists
         }
 
-        const totalPage = Math.ceil(example.totalList / this.state.perPage);
-        const page = this.state.page;
+        const totalPage = Math.ceil(example.totalList / perPage);
         return (
             <React.Fragment>
                 {
-                    this.state.currentRow &&
                     <ExampleEditForm
-                        exampleId={this.state.currentRow._id}
-                        exampleName={this.state.currentRow.exampleName}
-                        description={this.state.currentRow.description}
+                        exampleId={exampleEditting}
                     />
                 }
                 {
-                    this.state.exampleId &&
                     <ExampleDetailInfo
-                        exampleId={this.state.exampleId}
+                        exampleId={exampleId}
                     />
                 }
                 <div className="box-body qlcv">
-                    <ExampleCreateForm />
+                    <ExampleCreateForm 
+                        page={page}
+                        perPage={perPage}
+                    />
                     <div className="form-inline">
                         <div className="form-group">
                             <label className="form-control-static">{translate('manage_example.exampleName')}</label>
@@ -151,7 +157,7 @@ class ExampleManagementTable extends Component {
                                                     id: example._id,
                                                     info: example.exampleName
                                                 }}
-                                                func={this.props.deleteExample}
+                                                func={this.handleDelete}
                                             />
                                         </td>
                                     </tr>

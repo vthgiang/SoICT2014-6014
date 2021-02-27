@@ -6,12 +6,14 @@ import ValidationHelper from '../../../../helpers/validationHelper';
 import { exampleActions } from '../redux/actions';
 
 const ExampleCreateForm = (props) => {
-
+    const { example, translate, page, perPage } = props;
+    
     const [state, setState] = useState({
         exampleName: "",
         description: "",
         exampleNameError: undefined
     })
+    const { exampleName, description, exampleNameError } = state;
 
     const isFormValidated = () => {
         const { exampleName } = state;
@@ -24,15 +26,18 @@ const ExampleCreateForm = (props) => {
 
     const save = () => {
         if (isFormValidated()) {
-            const { exampleName, description } = state;
             props.createExample([{ exampleName, description }]);
+            props.getOnlyExampleName({
+                exampleName: "",
+                page: page,
+                perPage: perPage
+            })
         }
     }
 
     const handleExampleName = (e) => {
         const { value } = e.target;
 
-        console.log(value);
         let { translate } = props;
         let { message } = ValidationHelper.validateName(translate, value, 6, 255);
 
@@ -50,8 +55,6 @@ const ExampleCreateForm = (props) => {
         });
     }
 
-    const { translate, example } = props;
-    const { exampleName, description, exampleNameError } = state;
     return (
         <React.Fragment>
             <ButtonModal modalID="modal-create-example" button_name={translate('manage_example.add')} title={translate('manage_example.add_title')} />
@@ -88,6 +91,7 @@ function mapStateToProps(state) {
 }
 
 const mapDispatchToProps = {
-    createExample: exampleActions.createExample
+    createExample: exampleActions.createExample,
+    getOnlyExampleName: exampleActions.getOnlyExampleName
 }
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(ExampleCreateForm)); 

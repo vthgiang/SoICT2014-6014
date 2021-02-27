@@ -7,18 +7,33 @@ import ValidationHelper from '../../../../helpers/validationHelper';
 
 
 const ExampleEditForm = (props) => {
+    const { example, translate, exampleEdit } = props;
 
     useEffect(() => {
-        props.exampleEdit && props.getExampleDetail(props.exampleEdit)
+        exampleEdit && props.getExampleDetail(exampleEdit)
     }, [props.exampleEdit])
 
-    const [state, setState] = useState({
-        exampleName: "",
-        description: ""
+    useEffect(() => {
+        let currentDetailExample;
+
+        if (example.currentDetailExample) {
+            currentDetailExample = example.currentDetailExample;
+        }
+        if (currentDetailExample && !exampleName && !description) {
+            setState({
+                exampleName: currentDetailExample.exampleName,
+                description: currentDetailExample.description
+            })
+        }
     })
 
+    const [state, setState] = useState({
+        exampleName: null,
+        description: null
+    })
+    const { exampleName, description, exampleNameError } = state;
+
     const isFormValidated = () => {
-        const { exampleName } = state;
         let { translate } = props;
         if (!ValidationHelper.validateName(translate, exampleName, 6, 255).status) {
             return false;
@@ -28,16 +43,12 @@ const ExampleEditForm = (props) => {
 
     const save = () => {
         if (isFormValidated) {
-            const { exampleId, exampleName } = state;
-            const { exampleEdit } = props;
-
             props.editExample(exampleEdit, { exampleName, description });
         }
     }
 
     const handleExampleName = (e) => {
         const { value } = e.target;
-        let { translate } = props;
         let { message } = ValidationHelper.validateName(translate, value, 6, 255);
         setState({
             exampleName: value,
@@ -52,9 +63,6 @@ const ExampleEditForm = (props) => {
             description: value
         })
     }
-
-    const { example, translate } = props;
-    const { exampleName, description, exampleNameError } = state;
 
     return (
         <React.Fragment>

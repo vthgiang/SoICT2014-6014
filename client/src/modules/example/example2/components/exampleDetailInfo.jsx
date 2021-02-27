@@ -22,7 +22,7 @@ class ExampleDetailInfo extends Component {
     render() {
         const { translate, example } = this.props;
         let currentDetailExample = {};
-        console.log(example.currentDetailExample);
+
         if (example.currentDetailExample) {
             currentDetailExample = example.currentDetailExample;
         }

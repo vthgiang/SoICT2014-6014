@@ -14,13 +14,18 @@ const ExampleManagementTable = (props) => {
     const defaultConfig = { limit: 5 }
     const getLimit = getTableConfiguration(getTableId, defaultConfig).limit;
 
+    const { example, translate } = props;
+
     const [state, setState] = useState({
         exampleName: "",
         description: "",
         page: 1,
         perPage: getLimit,
+        exampleEdit: null,
+        exampleId: null,
         tableId: getTableId,
     })
+    const { exampleName, page, perPage, exampleEdit, exampleId } = state;
 
     useEffect(() => {
         let { exampleName, perPage } = state;
@@ -54,7 +59,7 @@ const ExampleManagementTable = (props) => {
 
     const setLimit = (number) => {
         setState({
-            state,
+            ...state,
             perPage: parseInt(number)
         });
         props.getOnlyExampleName(state);
@@ -62,11 +67,14 @@ const ExampleManagementTable = (props) => {
 
     const handleDelete = (id) => {
         props.deleteExample(id);
+        props.getOnlyExampleName({
+            exampleName,
+            perPage,
+            page: example?.lists?.length === 1 ? page - 1 : page
+        });
     }
 
     const handleEdit = (example) => {
-        console.log("edit opened");
-
         setState({
             ...state,
             exampleEdit: example
@@ -85,29 +93,30 @@ const ExampleManagementTable = (props) => {
     }
 
 
-    const { example, translate, deleteExample } = props;
     let lists = [];
     if (example.isLoading === false) {
         lists = example.lists
     }
 
-    const totalPage = Math.ceil(example.totalList / state.perPage);
-    const page = state.page;
+    const totalPage = Math.ceil(example.totalList / perPage);
     const { tableId } = state;
     return (
         <React.Fragment>
             {
                 <ExampleEditForm
-                    exampleEdit={state.exampleEdit}
+                    exampleEdit={exampleEdit}
                 />
             }
             {
                 <ExampleDetailInfo
-                    exampleId={state.exampleId}
+                    exampleId={exampleId}
                 />
             }
             <div className="box-body qlcv">
-                <ExampleCreateForm />
+                <ExampleCreateForm 
+                    page={page}
+                    perPage={perPage}
+                />
                 <div className="form-inline">
                     <div className="form-group">
                         <label className="form-control-static">{translate('manage_example.exampleName')}</label>
@@ -122,14 +131,12 @@ const ExampleManagementTable = (props) => {
                         <tr>
                             <th className="col-fixed" style={{ width: 60 }}>{translate('manage_example.index')}</th>
                             <th>{translate('manage_example.exampleName')}</th>
-                            <th>{translate('manage_example.description')}</th>
                             <th style={{ width: "120px", textAlign: "center" }}>{translate('table.action')}
                                 <DataTableSetting
                                     tableId={tableId}
                                     columnArr={[
                                         translate('manage_example.index'),
                                         translate('manage_example.exampleName'),
-                                        translate('manage_example.description'),
 
                                     ]}
                                     setLimit={setLimit}
@@ -143,7 +150,6 @@ const ExampleManagementTable = (props) => {
                                 <tr key={index}>
                                     <td>{index + 1 + (page - 1) * state.perPage}</td>
                                     <td>{example.exampleName}</td>
-                                    <td>{example.description}</td>
                                     <td style={{ textAlign: "center" }}>
                                         <a className="edit text-green" style={{ width: '5px' }} title={translate('manage_example.detail_info_example')} onClick={() => handleShowDetailInfo(example._id)}><i className="material-icons">visibility</i></a>
                                         <a className="edit text-yellow" style={{ width: '5px' }} title={translate('manage_example.edit')} onClick={() => handleEdit(example._id)}><i className="material-icons">edit</i></a>

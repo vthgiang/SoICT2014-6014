@@ -20,7 +20,7 @@ exports.createExample = async (portal, data) => {
     }
 
     let example = await Example(connect(DB_CONNECTION, portal)).findById({ _id: newExample._id });;
-    return { example }
+    return example;
 }
 
 // Lấy ra tất cả các thông tin Ví dụ theo mô hình lấy dữ liệu số  1
@@ -81,7 +81,7 @@ exports.getOnlyExampleName = async (portal, data) => {
 exports.getExampleById = async (portal, id) => {
     let example = await Example(connect(DB_CONNECTION, portal)).findById({ _id: id });
     if (example) {
-        return { example };
+        return example;
     }
     return -1;
 }

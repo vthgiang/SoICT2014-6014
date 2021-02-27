@@ -25,6 +25,7 @@ export function example2(state = initialState, action) {
         case exampleConstants.CREATE_EXAMPLE_REQUEST:
         case exampleConstants.EDIT_EXAMPLE_REQUEST:
         case exampleConstants.GET_EXAMPLE_DETAIL_REQUEST:
+            console.log(state)
             return {
                 ...state,
                 isLoading: true
@@ -57,14 +58,14 @@ export function example2(state = initialState, action) {
                 ...state,
                 lists: [
                     ...state.lists,
-                    action.payload.example
+                    action.payload
                 ],
                 isLoading: false
             }
         case exampleConstants.EDIT_EXAMPLE_SUCCESS:
-            index = findIndex(state.lists, action.payload?.example?._id);
+            index = findIndex(state.lists, action.payload?._id);
             if (index !== -1) {
-                state.lists[index] = action.payload.example
+                state.lists[index] = action.payload
             }
             return {
                 ...state,
@@ -73,7 +74,7 @@ export function example2(state = initialState, action) {
         case exampleConstants.GET_EXAMPLE_DETAIL_SUCCESS:
             return {
                 ...state,
-                currentDetailExample: action.payload.example,
+                currentDetailExample: action.payload,
                 isLoading: false
             }
         default:
