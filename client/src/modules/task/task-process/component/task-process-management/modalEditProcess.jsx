@@ -18,6 +18,7 @@ import { TaskProcessValidator } from "../process-template/taskProcessValidator";
 import { TaskProcessActions } from "../../redux/actions";
 import getEmployeeSelectBoxItems from "../../../organizationalUnitHelper";
 import { AddTaskForm } from "../../../task-management/component/addTaskForm";
+import { DepartmentActions } from "../../../../super-admin/organizational-unit/redux/actions";
 
 
 //Xóa element khỏi pallette theo data-action
@@ -68,6 +69,7 @@ class ModalEditProcess extends Component {
     componentDidMount() {
         this.props.getAllUsers();
         this.props.getAllUserOfCompany();
+        this.props.getAllDepartments();
         this.props.getAllUserInAllUnitsOfCompany()
 
         this.modeler.attachTo('#' + this.generateId);
@@ -656,6 +658,7 @@ function mapState(state) {
 
 const actionCreators = {
     getAllUsers: UserActions.get,
+    getAllDepartments: DepartmentActions.get,
     getAllUserOfCompany: UserActions.getAllUserOfCompany,
     getDepartment: UserActions.getDepartmentOfUser,
     getTaskById: performTaskAction.getTaskById,
