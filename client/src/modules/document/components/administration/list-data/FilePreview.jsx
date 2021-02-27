@@ -16,8 +16,9 @@ function FilePreview(props) {
         props.FileData(file, 'filename', false);
     }, [props.file]);
 
-    let encode = props.auth.showFiles.length ? props.auth.showFiles[0].file : "";
-
+    let encode = "";
+    let blob = props.auth.showFiles.length ? props.auth.showFiles[0].blob : "";
+    if (blob) encode = URL.createObjectURL(blob);
 
     return (
         <React.Fragment>
