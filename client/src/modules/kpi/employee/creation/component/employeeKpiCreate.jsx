@@ -10,6 +10,7 @@ import { UserActions } from "../../../../super-admin/user/redux/actions";
 import { createKpiSetActions } from '../redux/actions';
 import { createUnitKpiActions } from '../../../organizational-unit/creation/redux/actions';
 import { AuthActions } from '../../../../auth/redux/actions';
+import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
 
 import { ModalCreateEmployeeKpi } from './employeeKpiAddTargetModal';
 import { ModalCreateEmployeeKpiSet } from './employeeKpiCreateModal';
@@ -76,7 +77,7 @@ class CreateEmployeeKpiSet extends Component {
     }
 
     shouldComponentUpdate = (nextProps, nextState) => {
-        const { user } = this.props;
+        const { createEmployeeKpiSet, createKpiUnit } = this.props;
         const { month, currentRole } = this.state;
 
         // Không re-render khi lựa chọn tháng ở DatePiker
@@ -84,24 +85,25 @@ class CreateEmployeeKpiSet extends Component {
             return false;
         }
 
-        // Khi truy vấn API đã có kết quả
-        if (!this.state.employeeKpiSet.approver && user.userdepartments && user.userdepartments.managers) {
-            if (Object.keys(user.userdepartments.managers).length > 0) { // Nếu có trưởng đơn vị
-                let members = user.userdepartments.managers[Object.keys(user.userdepartments.managers)[0]].members;
-                if (members.length) {
-                    this.setState(state => {
-                        return {
-                            ...state,
-                            employeeKpiSet: {
-                                ...this.state.employeeKpiSet,
-                                approver: members[0]
-                            }
-                        };
-                    });
-                    return false; // Sẽ cập nhật lại state nên không cần render
-                }
-            }
+        // Lấy thông tin đơn vị cha
+        if (createKpiUnit?.currentKPI?.organizationalUnit?.parent && nextProps.department && !nextProps.department.unitLoading && !nextProps.department.unit) {
+            this.props.getOrganizationalUnit(createKpiUnit?.currentKPI?.organizationalUnit?.parent);
         }
+
+        // Khi truy vấn API đã có kết quả
+        if (!this.state.employeeKpiSet.approver && createEmployeeKpiSet?.currentKPI?.approver && createEmployeeKpiSet?.currentKPILoading) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    employeeKpiSet: {
+                        ...this.state.employeeKpiSet,
+                        approver: createEmployeeKpiSet?.currentKPI?.approver?._id
+                    }
+                };
+            });
+            return false; // Sẽ cập nhật lại state nên không cần render
+        }
+
         if (nextProps.auth.user.avatar !== this.props.auth.user.avatar) {
             this.props.getEmployeeKpiSet({
                 roleId: currentRole,
@@ -224,7 +226,7 @@ class CreateEmployeeKpiSet extends Component {
                 ...state,
                 employeeKpiSet: {
                     ...state.employeeKpiSet,
-                    approver: value,
+                    approver: value[0],
                 }
             }
         });
@@ -266,7 +268,6 @@ class CreateEmployeeKpiSet extends Component {
         })
 
         let { employeeKpiSet } = this.state;
-
         if (employeeKpiSet.approver) {//&& kpipersonal.creater
             this.props.editEmployeeKpiSet(id, employeeKpiSet);
         }
@@ -479,7 +480,7 @@ class CreateEmployeeKpiSet extends Component {
 
 
     render() {
-        const { createEmployeeKpiSet, user, translate, createKpiUnit } = this.props;
+        const { createEmployeeKpiSet, user, translate, createKpiUnit, department } = this.props;
         const { editing, id, employeeKpi, employeeKpiSet, defaultDate, month } = this.state;
         let unitList, currentUnit, currentKPI, currentKPILoading, userdepartments, organizationalUnitsOfUser;
 
@@ -502,10 +503,29 @@ class CreateEmployeeKpiSet extends Component {
             currentKPILoading = createEmployeeKpiSet.currentKPILoading;
         }
 
-        let managers;
-        if (user) {
-            userdepartments = user.userdepartments;
+        let managers = [];
+
+        if (user?.userdepartments) {
             managers = getEmployeeSelectBoxItems([user.userdepartments], true, false, false);
+        }
+        if (department?.unit) {
+            let temp;
+            temp = {
+                text: department?.unit?.name,
+                value: []
+            }
+            if (department?.unit?.managers?.[0]?.users) {
+                department.unit.managers[0].users.map(item => {
+                    temp.value.push({
+                        value: item?.userId?.id,
+                        text: item?.userId?.name + ' (' + department.unit.managers[0]?.name + ')'
+                    })
+                })
+            }
+
+            if (managers) {
+                managers.unshift(temp);
+            }
         }
 
         return (
@@ -722,7 +742,11 @@ class CreateEmployeeKpiSet extends Component {
                                                 <a className="btn btn-app" data-toggle="modal" data-target="#createEmployeeKpiSet" data-backdrop="static" data-keyboard="false">
                                                     <i className="fa fa-calendar-plus-o" style={{ fontSize: "16px" }}></i>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.initialize_kpi_newmonth')} {this.formatDate(month)}
                                                 </a>
-                                                <ModalCreateEmployeeKpiSet organizationalUnit={currentUnit} month={month}/>
+                                                <ModalCreateEmployeeKpiSet 
+                                                    organizationalUnit={currentUnit} 
+                                                    month={month}
+                                                    managers={managers}
+                                                />
                                             </span>
                                             : <span>
                                                 <a className="btn btn-app" data-toggle="modal" data-target="#startKPIPersonal" data-backdrop="static" data-keyboard="false" onClick={() => this.handleStartOrganizationalUnitKpi()}>
@@ -774,6 +798,7 @@ function mapState(state) {
 const actionCreators = {
     getAllUserSameDepartment: UserActions.getAllUserSameDepartment,
     getDepartment: UserActions.getDepartmentOfUser,
+
     getEmployeeKpiSet: createKpiSetActions.getEmployeeKpiSet,
     deleteEmployeeKpi: createKpiSetActions.deleteEmployeeKpi,
     editEmployeeKpiSet: createKpiSetActions.editEmployeeKpiSet,
@@ -788,6 +813,9 @@ const actionCreators = {
     deleteChildComment: createKpiSetActions.deleteChildComment,
     deleteFileComment: createKpiSetActions.deleteFileComment,
     deleteFileChildComment: createKpiSetActions.deleteFileChildComment,
+
+    getOrganizationalUnit: DepartmentActions.getOrganizationalUnit,
+
     downloadFile: AuthActions.downloadFile,
 };
 

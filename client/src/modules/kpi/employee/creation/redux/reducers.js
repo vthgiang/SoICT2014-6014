@@ -209,7 +209,6 @@ export function createEmployeeKpiSet(state = {}, action) {
                 isLoading: false
             };
         case createKpiSetConstants.CREATE_EMPLOYEE_KPI_SET_SUCCESS:
-        case managerConstants.COPY_KPIUNIT_SUCCESS:
             return {
                 ...state,
                 adding: false,
@@ -370,23 +369,29 @@ export function createEmployeeKpiSet(state = {}, action) {
             }
 
         case managerConstants.COPY_KPIUNIT_REQUEST:
-            return {
-                ...state,
-                currentKPI: null,
-                isLoading: false
-            };
+            if (action.typeService === 'copy-parent-kpi-to-employee') {
+                return {
+                    ...state,
+                    currentKPI: null,
+                    isLoading: false
+                };
+            }
         case managerConstants.COPY_KPIUNIT_SUCCESS:
-            return {
-                ...state,
-                currentKPI: action.payload,
-                isLoading: false
-            };
+            if (action.typeService === 'copy-parent-kpi-to-employee') {
+                return {
+                    ...state,
+                    currentKPI: action.payload,
+                    isLoading: false
+                };
+            } 
         case managerConstants.COPY_KPIUNIT_FAILURE:
-            return {
-                ...state,
-                error: action.payload,
-                isLoading: false
-            };
+            if (action.typeService === 'copy-parent-kpi-to-employee') {
+                return {
+                    ...state,
+                    error: action.payload,
+                    isLoading: false
+                };
+            }
         default:
             return state
     }
