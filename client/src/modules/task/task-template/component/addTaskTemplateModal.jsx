@@ -150,7 +150,6 @@ class ModalAddTaskTemplate extends Component {
     }
 
     onChangeTemplateData = (value) => {
-        console.log("VALUE", value)
         this.setState({
             newTemplate: value
         });
@@ -158,7 +157,6 @@ class ModalAddTaskTemplate extends Component {
 
     render() {
         const { user, translate, savedTaskAsTemplate, savedTaskItem, savedTaskId } = this.props;
-
         return (
             <React.Fragment>
                 <DialogModal
@@ -168,15 +166,15 @@ class ModalAddTaskTemplate extends Component {
                     func={this.handleSubmit}
                     size={100}
                 >
-                    <AddTaskTemplate 
-                        onChangeTemplateData={this.onChangeTemplateData} 
+                    <AddTaskTemplate
+                        onChangeTemplateData={this.onChangeTemplateData}
 
                         // dùng cho chức năng lưu task thành template
-                        savedTaskAsTemplate={savedTaskAsTemplate} 
+                        savedTaskAsTemplate={savedTaskAsTemplate}
                         savedTaskItem={savedTaskItem}
                         savedTaskId={savedTaskId}
-                        // end
-                        
+                    // end
+
                     />
                 </DialogModal>
             </React.Fragment>

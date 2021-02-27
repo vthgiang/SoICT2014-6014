@@ -11,7 +11,7 @@ const CHART_INFO = {
 
 const InprocessOfUnitTask = (props) => {
     const [unit, setUnit] = useState([]);
-    const { translate, units } = props;
+    const { translate, units, unitSelected } = props;
 
     useEffect(() => {
         let { tasks } = props;
@@ -22,7 +22,7 @@ const InprocessOfUnitTask = (props) => {
 
         if (taskList && taskList.length !== 0) {
             let selectedUnit = unit;
-            if (selectedUnit.length == 0) selectedUnit = units.map(item => { return item.id });
+            if (selectedUnit.length == 0) selectedUnit = unitSelected;
 
             for (let i in selectedUnit) {
                 let delayedCnt = 0, intimeCnt = 0, notAchivedCnt = 0;
@@ -111,12 +111,11 @@ const InprocessOfUnitTask = (props) => {
 
     return (
         <React.Fragment>
-            <section className="form-inline" style={{ textAlign: "right" }}>
-                {/* Chọn đơn vị */}
+            {/* <section className="form-inline" style={{ textAlign: "right" }}>
                 <div className="form-group">
                     <label style={{ minWidth: "150px" }}>{translate('kpi.evaluation.dashboard.organizational_unit')}</label>
                     <SelectMulti id="multiSelectUnitInUnitTask"
-                        items={units.map(item => { return { value: item.id, text: item.name } })}
+                        items={units?.map(item => { return { value: item.id, text: item.name } })}
                         onChange={handleSelectUnit}
                         options={{ nonSelectedText: translate('task_template.select_all_units'), allSelectedText: translate('kpi.evaluation.dashboard.all_unit') }}>
                     </SelectMulti>
@@ -124,7 +123,7 @@ const InprocessOfUnitTask = (props) => {
                 <div className="form-group">
                     <button className="btn btn-success" onClick={handleSearchData}>{translate('task.task_management.filter')}</button>
                 </div>
-            </section>
+            </section> */}
 
             <section id="inprocessOfUnitTask"></section>
         </React.Fragment>

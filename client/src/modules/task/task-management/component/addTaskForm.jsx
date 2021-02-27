@@ -40,8 +40,8 @@ class AddTaskForm extends Component {
                 parent: "",
                 taskProject: "",
             },
-            startTime: "12:00 AM",
-            endTime: "12:00 AM",
+            startTime: "08:00 AM",
+            endTime: "05:30 AM",
             currentRole: getStorage('currentRole'),
         };
     }
@@ -629,8 +629,7 @@ class AddTaskForm extends Component {
         if (KPIPersonalManager.kpipersonals) listKPIPersonal = KPIPersonalManager.kpipersonals;
 
         let listParentTask = [{ value: "", text: `--${translate('task.task_management.add_parent_task')}--` }];
-
-        if (this.props.parentTask && this.props.parentTask !== "" && this.props.currentTasks) {
+        if (newTask.parent && this.props.currentTasks) {
             let taskItem = this.props.currentTasks.find(e => e._id === this.props.parentTask);
             taskItem && listParentTask.push({ value: taskItem._id, text: taskItem.name })
         }
@@ -853,7 +852,7 @@ class AddTaskForm extends Component {
                                 </label>
 
                                 <SelectBox
-                                    id={`select-parent-new-task-${id}`}
+                                    id={`select-parent-new-task-${newTask.parent}`}
                                     className="form-control select2"
                                     style={{ width: "100%" }}
                                     items={listParentTask}

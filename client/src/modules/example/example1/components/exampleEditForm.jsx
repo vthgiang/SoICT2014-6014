@@ -21,6 +21,9 @@ class ExampleEditForm extends Component {
         }
     }
 
+    /**
+     * Hàm dùng để kiểm tra xem form đã được validate hay chưa
+     */
     isFormValidated = () => {
         const { exampleNameError } = this.state;
         if (!exampleNameError.status) {
@@ -29,6 +32,10 @@ class ExampleEditForm extends Component {
         return true;
     }
 
+
+    /**
+     * Hàm dùng để lưu thông tin của form và gọi service tạo mới ví dụ
+     */
     save = () => {
         if (this.isFormValidated) {
             const { exampleID, exampleName, description } = this.state;
@@ -36,9 +43,14 @@ class ExampleEditForm extends Component {
         }
     }
 
+
+    /**
+     * Hàm xử lý khi tên ví dụ thay đổi
+     * @param {*} e 
+     */
     handleExampleName = (e) => {
         const { value } = e.target;
-        
+
         let { translate } = this.props;
         let result = ValidationHelper.validateName(translate, value, 6, 255);
 
@@ -51,6 +63,11 @@ class ExampleEditForm extends Component {
         });
     }
 
+
+    /**
+     * Hàm xử lý khi mô tả ví dụ thay đổi
+     * @param {*} e 
+     */
     handleExampleDescription = (e) => {
         const { value } = e.target;
         this.setState({
@@ -90,11 +107,14 @@ class ExampleEditForm extends Component {
                     maxWidth={500}
                 >
                     <form id={`form-edit-example`}>
+                        {/* Tên ví dụ */}
                         <div className={`form-group ${exampleNameError.status ? "" : "has-error"}`}>
                             <label>{translate('manage_example.exampleName')}<span className="text-red">*</span></label>
                             <input type="text" className="form-control" value={exampleName} onChange={this.handleExampleName} />
                             <ErrorLabel content={exampleNameError.message} />
                         </div>
+
+                        {/* Mô tả ví dụ */}
                         <div className={`form-group`}>
                             <label>{translate('manage_example.description')}</label>
                             <input type="text" className="form-control" value={description} onChange={this.handleExampleDescription} />

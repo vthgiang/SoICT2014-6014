@@ -296,7 +296,7 @@ exports.updateEmployeeKpiSetStatus = async (portal, id, statusId, companyId) => 
 /* Chỉnh sửa thông tin chung của KPI cá nhân */
 exports.editEmployeeKpiSet = async (portal, approver, id) => {
     let employeeKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
-        .findByIdAndUpdate(id, { $set: { approver: approver._id } }, { new: true })
+        .findByIdAndUpdate(id, { $set: { approver: approver } }, { new: true })
 
     employeeKpiSet = employeeKpiSet && await employeeKpiSet
         .populate("organizationalUnit creator approver ")

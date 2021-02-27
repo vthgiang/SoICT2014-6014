@@ -11,6 +11,7 @@ import { OrganizationalUnitKpiCreateModal } from './organizationalUnitKpiCreateM
 import { OrganizationalUnitKpiEditTargetModal } from './organizationalUnitKpiEditTargetModal';
 import { ModalCopyKPIUnit } from '../../management/component/organizationalUnitKpiCopyModal';
 import { EmployeeImportancesModal } from './employeeImportancesModal';
+import { OrganizationalUnitImportancesModal } from './organizationalUnitImportancesModal';
 
 import { createUnitKpiActions } from '../redux/actions.js';
 import { UserActions } from '../../../../super-admin/user/redux/actions';
@@ -412,6 +413,13 @@ class OrganizationalUnitKpiCreate extends Component {
                     confirmButtonColor: '#3085d6',
                     confirmButtonText: 'Đồng ý'
                 })
+            case "edit_organizational_unit_importance":
+                return Swal.fire({
+                    title: translate('kpi.organizational_unit.create_organizational_unit_kpi_set.organizational_unit_importance_activated'),
+                    type: 'warning',
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'Đồng ý'
+                })
         }
     }
 
@@ -424,11 +432,12 @@ class OrganizationalUnitKpiCreate extends Component {
         } = this.state;
 
 
-        let unitList, currentKPI, organizationalUnitKpiLoading, organizationalUnitsOfUserLoading, childrenOrganizationalUnitLoading;
+        let unitList, currentKPI, organizationalUnitKpiLoading, organizationalUnitsOfUserLoading, childrenOrganizationalUnit, childrenOrganizationalUnitLoading;
 
         let parentKpi = createKpiUnit && createKpiUnit.parent;
 
         if (dashboardEvaluationEmployeeKpiSet) {
+            childrenOrganizationalUnit = dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit;
             childrenOrganizationalUnitLoading = dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnitLoading
         }
 
@@ -552,6 +561,36 @@ class OrganizationalUnitKpiCreate extends Component {
                                                         </a>
                                                     </span>
                                                 }
+
+                                                {/* Chỉnh sửa độ quan trọng của đơn vị con */}
+                                                {selectBoxUnit?.filter(item => item?.id === currentKPI?.organizationalUnit?._id)?.[0]?.children && 
+                                                    <span>
+                                                        {this.checkEdittingPermission(currentKPI && currentKPI.organizationalUnit)
+                                                            ? <span>
+                                                                {currentKPI.status === 1 ?
+                                                                    <a className="btn btn-app" onClick={() => this.swalOfUnitKpi("edit_organizational_unit_importance")}>
+                                                                        <i className="fa fa-university" style={{ fontSize: "16px" }}></i>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.organizational_unit_importance')}
+                                                                    </a>
+                                                                    : <span>
+                                                                        <a className="btn btn-app" data-toggle="modal" data-target="#organizational-unit-importances" data-backdrop="static" data-keyboard="false">
+                                                                            <i className="fa fa-university" style={{ fontSize: "16px" }}></i>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.organizational_unit_importance')}
+                                                                        </a>
+                                                                        <OrganizationalUnitImportancesModal
+                                                                            organizationalUnit={selectBoxUnit?.filter(item => item?.id === currentKPI?.organizationalUnit?._id)?.[0]}
+                                                                            organizationalUnitId={currentKPI.organizationalUnit && currentKPI.organizationalUnit._id}
+                                                                            month={month}
+                                                                        />
+                                                                    </span>
+                                                                }
+                                                            </span>
+                                                            : <span>
+                                                                <a className="btn btn-app" onClick={() => this.swalEdittingPermission()}>
+                                                                    <i className="fa fa-university" style={{ fontSize: "16px" }}></i>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.organizational_unit_importance')}
+                                                                </a>
+                                                            </span>
+                                                        }
+                                                    </span>
+                                                }
                                             </div>
                                         }
                                         <div className="">
@@ -581,6 +620,7 @@ class OrganizationalUnitKpiCreate extends Component {
                                                     <tr>
                                                         <th title="Số thứ tự" style={{ width: "40px" }}>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.no_')}</th>
                                                         <th title="Tên mục tiêu">{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.target_name')}</th>
+                                                        {currentKPI?.organizationalUnit?.parent && <th title="Mục tiêu cha">{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.parents_target')}</th>}
                                                         <th title="Tiêu chí đánh giá">{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.evaluation_criteria')}</th>
                                                         <th title="Trọng số" className="col-sort-number" style={{ width: "100px" }}>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.weight')}</th>
                                                         {this.checkPermisson(organizationalUnit && organizationalUnit.managers) && <th style={{ width: "100px" }}>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.action')}</th>}
@@ -592,6 +632,7 @@ class OrganizationalUnitKpiCreate extends Component {
                                                             <tr key={item._id}>
                                                                 <td>{index + 1}</td>
                                                                 <td title={item.name}>{item.name}</td>
+                                                                {currentKPI?.organizationalUnit?.parent && <td title={item?.parent?.name}>{item?.parent?.name}</td>}
                                                                 <td title={parse(item.criteria)}>{parse(item.criteria)}</td>
                                                                 <td title={item.weight}>{item.weight}</td>
                                                                 {this.checkPermisson(organizationalUnit && organizationalUnit.managers) &&

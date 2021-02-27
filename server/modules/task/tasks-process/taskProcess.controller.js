@@ -149,7 +149,11 @@ exports.createTaskByProcess = async (req, res) => {
 				"level": "general", 
 				"content": html, 
 				"sender": task.organizationalUnit.name, 
-				"users": user 
+				"users": user,
+				associatedDataObject: {
+                dataType: 1,
+                description: `<strong>${req.user.name}</strong>: đã tạo mới công việc theo quy trình `
+            }
 			};
 			
 			// Gửi mail cho trưởng đơn vị phối hợp thực hiện công việc

@@ -74,9 +74,8 @@ class DialogModal extends Component {
                                             hasSaveButton && <button type="button" disabled={disableSubmit} className="btn btn-success" onClick={this.save}>{translate('form.save')}</button>
                                         }
                                         {
-                                            hasCloseButton && <button type="button" disabled={disableSubmit} className="btn btn-danger" onClick={() => this.closeModal(resetOnClose)}>{translate('form.close')}</button>
+                                            hasCloseButton && <button type="button" className="btn btn-danger" onClick={() => this.closeModal(resetOnClose)}>{translate('form.close')}</button>
                                         }
-                                        {/* <button type="button" className="btn btn-danger" onClick={() => this.closeModal(resetOnClose)}>{translate('form.close')}</button> */}
                                     </div>
                                 </div>
                             </div>

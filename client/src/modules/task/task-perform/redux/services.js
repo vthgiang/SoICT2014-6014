@@ -14,6 +14,7 @@ export const performTaskService = {
     createActionComment,
     deleteActionComment,
     editActionComment,
+
     createTaskAction,
     editTaskAction,
     deleteTaskAction,
@@ -25,16 +26,17 @@ export const performTaskService = {
     createCommentOfTaskComment,
     editCommentOfTaskComment,
     deleteCommentOfTaskComment,
+    
+    addTaskLog,
+    getTaskLog,
 
-    uploadFile,
     deleteFileAction,
     deleteFileCommentOfAction,
     deleteFileTaskComment,
     deleteFileChildTaskComment,
-    deleteFileTask,
 
-    addTaskLog,
-    getTaskLog,
+    uploadFile,
+    deleteFileTask,
 
     editTaskByAccountableEmployees,
     editTaskByResponsibleEmployees,

@@ -1,8 +1,6 @@
 import { taskManagementConstants } from "./constants";
 import { taskManagementService } from "./services";
 export const taskManagementActions = {
-    // getAll,
-    // getAllTaskByRole,
     getResponsibleTaskByUser,
     getAccountableTaskByUser,
     getConsultedTaskByUser,
@@ -26,61 +24,6 @@ export const taskManagementActions = {
     getTimeSheetOfUser,
     getAllUserTimeSheet,
 };
-
-/**
- * lấy tất cả công việc
- */
-
-function getAll() {
-    return dispatch => {
-        dispatch({
-            type: taskManagementConstants.GETALL_TASK_REQUEST
-        });
-
-        taskManagementService.getAll()
-            .then(res => {
-                dispatch({
-                    type: taskManagementConstants.GETALL_TASK_SUCCESS,
-                    payload: res.data.content
-                })
-            })
-            .catch(error => {
-                dispatch({
-                    type: taskManagementConstants.GETALL_TASK_FAILURE,
-                    error
-                })
-            });
-    };
-}
-
-/**
- * lấy tất cả công việc theo vai trò
- * @param {*} id id nhân viên
- * @param {*} role vai trò nhân viên
- */
-
-function getAllTaskByRole(id, role) {
-    return dispatch => {
-        dispatch({
-            type: taskManagementConstants.GETTASK_BYROLE_REQUEST,
-            id
-        });
-
-        taskManagementService.getAllTaskByRole(id, role)
-            .then(res => {
-                dispatch({
-                    type: taskManagementConstants.GETTASK_BYROLE_SUCCESS,
-                    payload: res.data.content
-                })
-            })
-            .catch(error => {
-                dispatch({
-                    type: taskManagementConstants.GETTASK_BYROLE_FAILURE,
-                    error
-                })
-            });
-    }
-}
 
 
 /**
