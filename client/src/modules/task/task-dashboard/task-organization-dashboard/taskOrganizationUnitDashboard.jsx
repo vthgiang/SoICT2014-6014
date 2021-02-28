@@ -18,7 +18,7 @@ import { SelectMulti, DatePicker, ToolTip } from '../../../../common-components/
 import Swal from 'sweetalert2';
 import { InprocessOfUnitTask } from './processOfUnitTasks';
 import ValidationHelper from '../../../../helpers/validationHelper';
-import GanttCalendar from '../task-personal-dashboard/ganttCalendar';
+import { GanttCalendar } from '../task-personal-dashboard/ganttCalendar';
 import GeneralTaskChart from './generalTaskChart';
 
 class TaskOrganizationUnitDashboard extends Component {

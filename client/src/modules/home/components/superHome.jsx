@@ -8,7 +8,7 @@ import { CalendarEmployee } from '../../task/task-dashboard/task-personal-dashbo
 import { withTranslate } from 'react-redux-multilingual';
 import { DatePicker, SlimScroll } from '../../../common-components';
 import Swal from 'sweetalert2';
-import GanttCalendar from '../../task/task-dashboard/task-personal-dashboard/ganttCalendar';
+import { GanttCalendar } from '../../task/task-dashboard/task-personal-dashboard/ganttCalendar';
 
 
 class SuperHome extends Component {

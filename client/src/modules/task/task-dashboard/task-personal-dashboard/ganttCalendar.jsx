@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
-// import { Gantt } from './gantt';
-import { Gantt } from './gantt';
-import Toolbar from './toolBar';
-import './ganttCalendar.css';
+import { connect } from 'react-redux';
 import moment from 'moment'
-import { SelectMulti } from '../../../../../common-components';
 import { withTranslate } from 'react-redux-multilingual';
+
+import { performTaskAction } from '../../task-perform/redux/actions';
+
+import { ModalDetailTask } from './modalDetailTask';
+
+import { SelectMulti, Gantt } from '../../../../common-components';
+
 class GanttCalendar extends Component {
   constructor(props) {
     super(props);
@@ -313,13 +316,20 @@ class GanttCalendar extends Component {
     return { data, count, line };
   }
 
+  attachEvent = (id) => {
+    const taskId = id.split('-')[1];
+    this.props.getTaskById(taskId);
+    window.$(`#modal-detail-task-Employee`).modal('show')
+  }
+
   render() {
-    const { translate, unit } = this.props;
+    const { translate, unit, tasks } = this.props;
     const { currentZoom, taskStatus } = this.state;
     const dataTask = {};
     const dataCalendar = unit ? this.getdataTaskUnit() : this.getdataTask();
     dataTask.data = dataCalendar.dataAllTask;
     const count = dataCalendar.countAllTask;
+    const task = tasks && tasks.task;
 
     return (
       <div className="gantt qlcv" >
@@ -346,23 +356,19 @@ class GanttCalendar extends Component {
             <button className="btn btn-success" onClick={this.handleSearchData}>{translate('task.task_management.filter')}</button>
           </div>
         </section>
-        <div className="zoom-bar">
-          <Toolbar
-            zoom={currentZoom}
-            onZoomChange={this.handleZoomChange}
-          />
-        </div>
-        <div className="gantt-container">
-          <Gantt
-            ganttData={dataTask}
-            zoom={currentZoom}
-            status={taskStatus}
-            count={dataCalendar.countAllTask}
-            line={dataCalendar.lineAllTask}
-            unit={unit}
-          />
-        </div>
 
+        {<ModalDetailTask action={'Employee'} task={task} />}
+        <Gantt
+          ganttData={dataTask}
+          zoom={currentZoom}
+          status={taskStatus}
+          count={dataCalendar.countAllTask}
+          line={dataCalendar.lineAllTask}
+          unit={unit}
+          onZoomChange={this.handleZoomChange}
+          attachEvent={this.attachEvent}
+        />
+        
         <div className="form-inline" style={{ textAlign: 'center' }}>
           <div className="form-group">
             <div id="in-time"></div>
@@ -376,12 +382,19 @@ class GanttCalendar extends Component {
             <div id="not-achieved"></div>
             <label id="label-for-calendar">{translate('task.task_management.not_achieved')}({count && count.notAchived ? count.notAchived : 0})</label>
           </div>
-
         </div>
       </div>
     );
   }
 }
 
-export default withTranslate(GanttCalendar);
+function mapState(state) {
+  const { tasks } = state;
+  return { tasks }
+}
+const actions = {
+  getTaskById: performTaskAction.getTaskById,
+}
+const GanttCalendarConnected = connect(mapState, actions)(withTranslate(GanttCalendar))
+export { GanttCalendarConnected as GanttCalendar }
 
