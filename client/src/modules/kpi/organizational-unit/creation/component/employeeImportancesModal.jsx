@@ -106,7 +106,7 @@ function EmployeeImportancesModal(props) {
     
 
     const handleChangeImportance = (e, employee) => {
-        let value = Number(e.target.value);
+        let value = e.target.value;
         let validation = ValidationHelper.validateNumberInput(translate, value, 0, 100);
 
         let employeeImportancesStateTemp = employeeImportancesState;
@@ -114,7 +114,7 @@ function EmployeeImportancesModal(props) {
             if (item.value === employee) {
                 return {
                     ...item,
-                    importance: validation?.status ? value : item.importance,
+                    importance: validation?.status ? Number(value) : item.importance,
                     errorOnImportance: validation.message,
                     status: validation.status
                 }

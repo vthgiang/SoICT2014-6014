@@ -99,7 +99,7 @@ function OrganizationalUnitImportancesModal(props) {
     }
 
     const handleChangeImportance = (e, organizationalUnit) => {
-        let value = Number(e.target.value);
+        let value = e.target.value;
         let validation = ValidationHelper.validateNumberInput(translate, value, 0, 100);
 
         let organizationalUnitImportancesStateTemp = organizationalUnitImportancesState;
@@ -107,7 +107,7 @@ function OrganizationalUnitImportancesModal(props) {
             if (item.value === organizationalUnit) {
                 return {
                     ...item,
-                    importance: validation?.status ? value : item.importance,
+                    importance: validation?.status ? Number(value) : item.importance,
                     errorOnImportance: validation.message,
                     status: validation.status
                 }
