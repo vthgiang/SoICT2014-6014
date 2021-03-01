@@ -484,7 +484,7 @@ class AddTaskForm extends Component {
                 return {
                     id: nextProps.id,
                     newTask: {
-                        organizationalUnit: (info && info.organizationalUnit) ? info.organizationalUnit._id :  "",//nextProps.department?.tree[0]?.id
+                        organizationalUnit: (info && info.organizationalUnit) ? info.organizationalUnit._id : "",//nextProps.department?.tree[0]?.id
                         collaboratedWithOrganizationalUnits: (info && info.collaboratedWithOrganizationalUnits) ? info.collaboratedWithOrganizationalUnits : [],
                         name: (info && info.name) ? info.name : '',
                         responsibleEmployees: (info && info.responsibleEmployees) ? info.responsibleEmployees : [],
@@ -852,7 +852,7 @@ class AddTaskForm extends Component {
                                 </label>
 
                                 <SelectBox
-                                    id={`select-parent-new-task-${newTask.parent}`}
+                                    id={`select-parent-new-task-${newTask.parent && newTask.parent._id}`}
                                     className="form-control select2"
                                     style={{ width: "100%" }}
                                     items={listParentTask}
@@ -887,19 +887,19 @@ class AddTaskForm extends Component {
                             {/** Tạm thời ẩn đi bên Process, nếu muốn hiện xóa check isProcess  */}
                             {isProcess === false &&
                                 <div className="form-group">
-                                <label>
-                                    {translate('task.task_management.project')}
-                                </label>
-                                <TreeSelect
-                                    id={`select-task-project-task-${id}`}
-                                    mode='radioSelect'
-                                    data={taskProject.list}
-                                    handleChange={this.handleTaskProject}
-                                    value={[newTask.taskProject]}
-                                    action={() => { window.$('#modal-add-task-project').modal('show') }}
-                                    actionIcon='fa fa-plus'
-                                />
-                            </div>
+                                    <label>
+                                        {translate('task.task_management.project')}
+                                    </label>
+                                    <TreeSelect
+                                        id={`select-task-project-task-${id}`}
+                                        mode='radioSelect'
+                                        data={taskProject.list}
+                                        handleChange={this.handleTaskProject}
+                                        value={[newTask.taskProject]}
+                                        action={() => { window.$('#modal-add-task-project').modal('show') }}
+                                        actionIcon='fa fa-plus'
+                                    />
+                                </div>
                             }
                         </fieldset>
                     </div>

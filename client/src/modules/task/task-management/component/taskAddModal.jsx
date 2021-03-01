@@ -38,12 +38,11 @@ class TaskAddModal extends Component {
                 organizationalUnit: "",
                 collaboratedWithOrganizationalUnits: [],
                 taskTemplate: "",
-                parent: "",
                 taskProject: "",
             },
 
             startTime: "08:00 AM",
-            endTime: "05:30 AM",
+            endTime: "05:30 PM",
 
             currentRole: getStorage('currentRole'),
         };
