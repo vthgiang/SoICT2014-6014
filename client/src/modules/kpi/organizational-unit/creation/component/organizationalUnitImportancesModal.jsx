@@ -2,11 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { connect }  from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { UserActions } from '../../../../super-admin/user/redux/actions';
 import { createUnitKpiActions } from '../redux/actions.js';
 
-import { DialogModal } from '../../../../../common-components';
-import Swal from 'sweetalert2';
+import { DialogModal, ErrorLabel } from '../../../../../common-components';
+import ValidationHelper from '../../../../../helpers/validationHelper';
 
 function OrganizationalUnitImportancesModal(props) {
     const { translate, createKpiUnit, dashboardEvaluationEmployeeKpiSet } = props;
@@ -14,11 +13,9 @@ function OrganizationalUnitImportancesModal(props) {
 
     const [organizationalUnitImportancesState, setOrganizationalUnitImportancesState] = useState(null);
     const [state, setState] = useState({
-        updateOrganizationalUnit: false,
-        importance: 0,
-        editting: false
+        updateOrganizationalUnit: false
     });
-    const { editting, importance, updateOrganizationalUnit } = state;
+    const { updateOrganizationalUnit } = state;
 
     useEffect(() => {
         setOrganizationalUnitImportancesState(null);
@@ -32,7 +29,12 @@ function OrganizationalUnitImportancesModal(props) {
             currentKpiUnit = createKpiUnit.currentKPI;
             if (currentKpiUnit) {
                 organizationalUnits = currentKpiUnit?.organizationalUnitImportances?.map(item => {
-                    return { value: item?.organizationalUnit?._id, text: item?.organizationalUnit?.name, importance: item?.importance }
+                    return { 
+                        value: item?.organizationalUnit?._id, 
+                        text: item?.organizationalUnit?.name, 
+                        importance: item?.importance,
+                        status: true
+                    }
                 })
             }
             setOrganizationalUnitImportancesState(organizationalUnits)
@@ -59,7 +61,12 @@ function OrganizationalUnitImportancesModal(props) {
             if (organizationalUnitChildren?.length > 0) {
                 organizationalUnitChildren.map(item => {
                     if (!listOrganizationalUnitImportances || (listOrganizationalUnitImportances.indexOf(item?.id) === -1 && unit.indexOf(item?.id) === -1)) {
-                        organizationalUnitImportancesStateTemp.push({ value: item?.id, text: item?.name, importance: 100 })
+                        organizationalUnitImportancesStateTemp.push({ 
+                            value: item?.id, 
+                            text: item?.name, 
+                            importance: 100,
+                            status: true
+                        })
                     }   
                 })
 
@@ -90,48 +97,25 @@ function OrganizationalUnitImportancesModal(props) {
 
         return [month, year].join('-');
     }
-   
 
-    const handleEdit = (value, importance) => {
-        setState({
-            ...state,
-            editting: value,
-            importance: importance
-        })
-    }
+    const handleChangeImportance = (e, organizationalUnit) => {
+        let value = Number(e.target.value);
+        let validation = ValidationHelper.validateNumberInput(translate, value, 0, 100);
 
-    const handleSaveEdit = (index) => {
-        if (importance >= 0 && importance <= 100) {
-            let organizationalUnitImportancesStateTemp = organizationalUnitImportancesState;
-            organizationalUnitImportancesStateTemp[index].importance = importance;
-    
-            setState({
-                ...state,
-                editting: ""
-            })
-            setOrganizationalUnitImportancesState(organizationalUnitImportancesStateTemp);
-        } else {
-            Swal.fire({
-                title: 'Độ quan trọng phải từ 0 đến 100',
-                type: 'warning',
-                confirmButtonColor: '#3085d6',
-                confirmButtonText: translate('kpi.organizational_unit.create_organizational_unit_kpi_set.confirm')
-            })
-        }
-    }
-    
-    const handleCancelEdit = () => {
-        setState({
-            ...state,
-            editting: ""
+        let organizationalUnitImportancesStateTemp = organizationalUnitImportancesState;
+        organizationalUnitImportancesStateTemp = organizationalUnitImportancesStateTemp.map(item => {
+            if (item.value === organizationalUnit) {
+                return {
+                    ...item,
+                    importance: validation?.status ? value : item.importance,
+                    errorOnImportance: validation.message,
+                    status: validation.status
+                }
+            } else {
+                return item
+            }
         })
-    }
-
-    const handleChangeImportance = (e) => {
-        setState({
-            ...state,
-            importance: Number(e.target.value)
-        })
+        setOrganizationalUnitImportancesState(organizationalUnitImportancesStateTemp)
     }
 
     const handleUpdateEmployee = (e) => {
@@ -161,6 +145,15 @@ function OrganizationalUnitImportancesModal(props) {
         }
     }
 
+    const isFormValidated = () => {
+        let error;
+        if (organizationalUnitImportancesState && organizationalUnitImportancesState.length !== 0) {
+            error = organizationalUnitImportancesState.filter(item => !item?.status);
+        }
+
+        return error?.length !== 0;
+    }
+
     return (
         <React.Fragment>
             <DialogModal
@@ -171,6 +164,7 @@ function OrganizationalUnitImportancesModal(props) {
                 msg_faile={translate('kpi.organizational_unit.create_organizational_unit_kpi_set_modal.failure')}
                 func={handleSubmit}
                 hasNote={false}
+                disableSubmit={isFormValidated()}
             >
                 {/* Form khởi tạo KPI đơn vị */}
                 <form id="form-organizational-unit-importances" onSubmit={() => handleSubmit(translate('kpi.organizational_unit.create_organizational_unit_kpi_set_modal.success'))}>
@@ -182,33 +176,23 @@ function OrganizationalUnitImportancesModal(props) {
                                 <th title={translate('kpi.organizational_unit.create_organizational_unit_kpi_set.no_')}>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.no_')}</th>
                                 <th title={translate('kpi.evaluation.employee_evaluation.name')}>{translate('kpi.evaluation.employee_evaluation.name')}</th>
                                 <th title={translate('kpi.organizational_unit.create_organizational_unit_kpi_set.employee_importance')}>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.employee_importance')}</th>
-                                <th title={translate('kpi.organizational_unit.management.over_view.action')}>{translate('kpi.organizational_unit.management.over_view.action')}</th>
                             </tr>
                         </thead>
                         <tbody>
                             { organizationalUnitImportancesState && organizationalUnitImportancesState.length !== 0
                                 && organizationalUnitImportancesState.map((item, index) =>
                                     <tr key={item.value + organizationalUnitId + index}>
-                                        <td>{index + 1}</td>
+                                        <td style={{ width: '40px' }}>{index + 1}</td>
                                         <td>{item.text}</td>
-                                        <td>
-                                            {editting === item.value
-                                                ? <input min="0" max="100"
-                                                    onChange={(e) => handleChangeImportance(e)}
-                                                    defaultValue={item.importance}
-                                                    style={{ width: "60px" }}
-                                                /> 
-                                                : item.importance
-                                            }
-                                        </td>
-                                        <td>
-                                            {editting === item.value
-                                                ? <div>
-                                                    <span><a style={{ cursor: 'pointer', color: '#398439' }} title={translate('kpi.evaluation.employee_evaluation.save_result')} onClick={() => handleSaveEdit(index)}><i className="material-icons">save</i></a></span>
-                                                    <span><a style={{ cursor: 'pointer', color: '#E34724' }} onClick={() => handleCancelEdit()}><i className="material-icons">cancel</i></a></span>
-                                                </div>
-                                                : <a style={{ cursor: 'pointer', color: '#FFC107' }} title={translate('kpi.organizational_unit.create_organizational_unit_kpi_set.edit')} onClick={() => handleEdit(item.value, item.importance)}><i className="material-icons">edit</i></a>
-                                            }
+                                        <td className={`form-group ${!item?.errorOnImportance? "": "has-error"}`}>
+                                            <input 
+                                                type="number"
+                                                min="0" max="100"
+                                                onChange={(e) => handleChangeImportance(e, item?.value)}
+                                                defaultValue={item.importance}
+                                                style={{ width: "60px", textAlign: 'center' }}
+                                            /> 
+                                            <ErrorLabel content={item?.errorOnImportance} />
                                         </td>
                                     </tr>
                                 )
