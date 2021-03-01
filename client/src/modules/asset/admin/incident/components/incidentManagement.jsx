@@ -35,7 +35,7 @@ class IncidentManagement extends Component {
             incidentType: "",
             page: 1,
             limit: limit,
-            managedBy: this.props.managedBy ? this.props.managedBy : ''
+            managedBy: this.props.managedBy ? this.props.managedBy : localStorage.getItem('userId')
         }
     }
 
