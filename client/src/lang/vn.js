@@ -61,6 +61,7 @@ export default {
                 empty_error: "Giá trị không được để trống",
                 not_existing_error: "Giá trị không tồn tại",
                 existing_error: "Giá trị đã tồn tại",
+                number_input_error: "Giá trị phải từ {min} đến {max}"
             },
             not_org_unit: "Bạn chưa có đơn vị",
             not_select_unit: "Chọn đơn vị",

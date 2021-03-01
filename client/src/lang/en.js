@@ -60,6 +60,7 @@ export default {
                 empty_error: "Value cannot be empty",
                 not_existing_error: "Value not existing",
                 existing_error: "Value existing",
+                number_input_error: "Value must be between {min} to {max}"
             },
             not_org_unit: "Not have organizational unit",
             not_select_unit: "Select units",
