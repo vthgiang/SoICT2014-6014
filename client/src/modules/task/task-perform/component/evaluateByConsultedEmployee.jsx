@@ -113,7 +113,6 @@ class EvaluateByConsultedEmployee extends Component {
             } else {
                 let date = nextProps.date;
                 let data = this.getData(date);
-                console.log('quangdz\n\n\n', nextProps.KPIPersonalManager.kpiSets, data);
                 this.setState(state => {
                     return {
                         ...state,
@@ -140,7 +139,6 @@ class EvaluateByConsultedEmployee extends Component {
         let evalMonth = moment(date, 'DD-MM-YYYY').endOf("month").toDate();
         for(let i in sortedEvaluations){
             let eva = sortedEvaluations[i];
-            console.log('new Date(eva?.evaluatingMonth) < evalMonth', new Date(eva?.evaluatingMonth) < evalMonth, new Date(eva?.evaluatingMonth) , evalMonth);
             if(new Date(eva?.evaluatingMonth) <= evalMonth) {
                 return eva;
             }
@@ -462,7 +460,6 @@ class EvaluateByConsultedEmployee extends Component {
         else if (type === "start") {
             // kiểm tra điều kiện trong tháng đánh giá
             if (startDateISO > endOfMonth) {
-                console.log('startDateISO > endOfMonth');
                 msg = 'Khoảng đánh giá phải chứa tháng đánh giá'
             }
 
@@ -477,7 +474,6 @@ class EvaluateByConsultedEmployee extends Component {
         }
         else if (type === "end") {
             if (endDateISO < startOfMonth) {
-                console.log('endDateISO < startOfMonth');
                 msg = 'Khoảng đánh giá phải chứa tháng đánh giá'
             }
 
@@ -638,7 +634,6 @@ class EvaluateByConsultedEmployee extends Component {
         let dst2 = (dateValue.getTime() - startDateTask.getTime()); // < 0 -> err // denta start task
         let det2 = (endDateTask.getTime() - dateValue.getTime()); // < 0 -> err // denta end task
 
-        console.log('dateValue.getTime() - startDate.getTime()', dateValue, startDate);
         if (dst2 < 0) {
             errMonth = "Tháng đánh giá phải lớn hơn hoặc bằng tháng bắt đầu";
         } else if (det2 < 0) {

@@ -4,7 +4,7 @@ const moment = require("moment");
 const nodemailer = require("nodemailer");
 const sumBy = require('lodash/sumBy');
 
-const { Task, User, UserRole, Role, OrganizationalUnit } = require(`../../../models`);
+const { Task, User, UserRole, Role, OrganizationalUnit, OrganizationalUnitKpi, EmployeeKpi } = require(`../../../models`);
 
 const OrganizationalUnitService = require(`../../super-admin/organizational-unit/organizationalUnit.service`);
 const NotificationServices = require(`../../notification/notification.service`);
@@ -1712,7 +1712,7 @@ exports.uploadFile = async (portal, params, body, files) => {
 /**
  * Thêm nhật ký cho một công việc
  */
-exports.addTaskLog = async (portal, params, body) => {
+exports.addTaskLog = async (portal, taskId, body) => {
     let { creator, title, description, createdAt } = body;
 
     let log = {
@@ -1724,23 +1724,98 @@ exports.addTaskLog = async (portal, params, body) => {
 
     await Task(connect(DB_CONNECTION, portal))
         .updateOne(
-            { '_id': params.taskId },
+            { '_id': taskId },
             { $push: { logs: log } },
             { new: true }
         )
         .populate("logs.creator");
     
-    let taskLog = await this.getTaskLog(portal, params);
+    let taskLog = await this.getTaskLog(portal, taskId);
 
     return taskLog;
 };
 
+// convert ISODate to String hh:mm AM/PM
+formatTime = (date) => {
+    let time = moment(date).format("HH:mm DD/MM/YYYY");
+    return time;
+}
+
+/** Tiện ích tạo mô tả lịch sử thay đổi khi đánh giá công việc */
+exports.evaluateTaskLogs = async (portal, userId, newTask, oldTask) => {
+    let description = '';
+    const { startDate, endDate, progress, status, results, kpi, unit, evaluatingMonth, role, employeePoint } = newTask;
+    let evaluatingMonthTemp = evaluatingMonth && new Date(evaluatingMonth.slice(6) + "-" + evaluatingMonth.slice(3, 5));
+    const evaluateTask = oldTask?.evaluations?.filter(item => {
+        let evaluatingMonthEva = new Date(item?.evaluatingMonth);
+        return evaluatingMonthEva.getMonth() === evaluatingMonthTemp.getMonth();
+    })[0]
+
+    if (unit && unit !== oldTask?.organizationalUnit?._id.toString()) {
+        description = description + 'Đơn vị mới: ' + oldTask?.organizationalUnit?.name + ".\n";
+    }
+    if (status && status?.[0] !== oldTask?.status) {
+        description = description + 'Trạng thái công việc mới: ' + status + ".\n";
+    }
+    if (progress && progress !== evaluateTask?.progress) {
+        description = description + 'Mức độ hoàn thành công việc mới: ' + progress + "%" + ".\n";
+    }
+    if (startDate && (new Date(startDate)).getTime() !== evaluateTask?.startDate.getTime()) {
+        description = description + 'Ngày bắt đầu mới: ' + formatTime(startDate) + ".\n";
+    }
+    if (endDate && (new Date(endDate)).getTime() !== evaluateTask?.endDate.getTime()) {
+        description = description + 'Ngày kết thúc mới: ' + formatTime(endDate) + ".\n";
+    }
+
+    let resultEvaluation = evaluateTask?.results?.filter(item => item?.employee?._id.toString() === userId && item?.role === role.toString())?.[0];
+    if (employeePoint && employeePoint !== resultEvaluation?.employeePoint) {
+        description = description + 'Điểm tự đánh giá mới: ' + employeePoint + ".\n";
+    }
+   
+    if (kpi?.length !== resultEvaluation?.kpis?.length) {
+        if (kpi?.length > 0) {
+            let dataKpi = await EmployeeKpi(connect(DB_CONNECTION, portal)).find({
+                '_id': { $in: kpi.map(item => mongoose.Types.ObjectId(item)) }
+            })
+            if (dataKpi?.length > 0) {
+                let nameKpi = "";
+                dataKpi?.map((item, index) => {
+                    nameKpi = nameKpi + item?.name + (index < kpi?.length - 1 ? ", " : "");
+                })
+                description = description + 'Tập KPI liên kết công việc mới: ' + nameKpi + ".\n";
+            }
+        } else {
+            description = description + 'Các KPI liên kết công việc đã bị xóa' + ".\n";
+        }
+    }
+
+    let result = Object.values(results)
+    if (evaluateTask?.results?.length > 0) {
+        evaluateTask.results.map(eva => {
+            let temp = result?.filter(item => item?.role === eva?.role);
+            if (temp?.length > 0) {
+                temp.map(item => {
+                    if (item?.target === "Point" && item?.value !== eva?.approvedPoint) {
+                        description = description + 'Điểm phê duyệt mới của ' + eva?.employee?.name 
+                                + " với vai trò " + eva?.role + " là: " + item?.value + ".\n";
+                    } 
+                    else if (item?.target === "Contribution" && item?.value !== eva?.contribution) {
+                        description = description + 'Phần trăm đóng góp mới của ' + eva?.employee?.name 
+                                + " với vai trò " + eva?.role + " là: " + item?.value + ".\n";
+                    }
+                })
+            }
+        })
+    }
+    return description;
+}
+
 /**
  * Lấy tất cả nhật ký của một công việc
  */
-exports.getTaskLog = async (portal, params) => {
+exports.getTaskLog = async (portal, taskId) => {
     let task = await Task(connect(DB_CONNECTION, portal))
-        .findById(params.taskId)
+        .findById(taskId)
         .populate("logs.creator");
 
     return task.logs.reverse();
@@ -3647,8 +3722,6 @@ exports.evaluateTaskByAccountableEmployees = async (portal, data, taskId) => {
         hasAccountable,
         checkSave,
         progress,
-        role,
-        // date,
         evaluatingMonth,
         startDate,
         endDate,
@@ -3862,7 +3935,7 @@ exports.evaluateTaskByAccountableEmployees = async (portal, data, taskId) => {
         await Task(connect(DB_CONNECTION, portal)).updateOne(
             {
                 _id: taskId,
-                "evaluations._id": evaluateId,
+                "evaluations._id": evalua, teId,
             },
             {
                 $push: {

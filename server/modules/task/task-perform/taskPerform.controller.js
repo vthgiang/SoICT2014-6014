@@ -3,6 +3,8 @@ const Logger = require(`../../../logs`);
 const NotificationServices = require(`../../notification/notification.service`);
 const { sendEmail } = require(`../../../helpers/emailHelper`);
 const { difference } = require('lodash');
+const moment = require('moment');
+
 // Điều hướng đến dịch vụ cơ sở dữ liệu của module thực hiện công việc
 
 /**
@@ -743,7 +745,7 @@ exports.deleteFileTaskComment = async (req, res) => {
  */
 exports.addTaskLog = async (req, res) => {
     try {
-        let task = await PerformTaskService.addTaskLog(req.portal, req.params, req.body);
+        let task = await PerformTaskService.addTaskLog(req.portal, req.params.taskId, req.body);
 
         await Logger.info(req.user.email, ` CREATE_TASK_LOG  `, req.portal);
         res.status(200).json({
@@ -766,7 +768,7 @@ exports.addTaskLog = async (req, res) => {
  */
 exports.getTaskLog = async (req, res) => {
     try {
-        let taskLog = await PerformTaskService.getTaskLog(req.portal, req.params);
+        let taskLog = await PerformTaskService.getTaskLog(req.portal, req.params.taskId);
         await Logger.info(req.user.email, ` GET_TASK_LOG  `, req.portal);
         res.status(200).json({
             success: true,
@@ -881,7 +883,7 @@ editTaskByResponsibleEmployees = async (req, res) => {
  * edit task by responsible employee
  */
 editTaskByAccountableEmployees = async (req, res) => {
-    // try {
+    try {
         var task = await PerformTaskService.editTaskByAccountableEmployees(req.portal, req.body.data, req.params.taskId);
         var user = task.user;
         var tasks = task.tasks;
@@ -948,14 +950,14 @@ editTaskByAccountableEmployees = async (req, res) => {
             messages: ['edit_task_success'],
             content: task.newTask
         })
-    // } catch (error) {
-    //     await Logger.error(req.user.email, ` edit task `, req.portal);
-    //     res.status(400).json({
-    //         success: false,
-    //         messages: ['edit_task_fail'],
-    //         content: error
-    //     });
-    // }
+    } catch (error) {
+        await Logger.error(req.user.email, ` edit task `, req.portal);
+        res.status(400).json({
+            success: false,
+            messages: ['edit_task_fail'],
+            content: error
+        });
+    }
 }
 
 /** Chỉnh sửa đơn vị phối hợp */
@@ -970,7 +972,7 @@ editEmployeeCollaboratedWithOrganizationalUnits = async (req, res) => {
             title: "Phân công công việc",
             description: data.descriptionLogs
         }
-        await PerformTaskService.addTaskLog(req.portal, req.params, log);
+        await PerformTaskService.addTaskLog(req.portal, req.params.taskId, log);
 
         // Gửi thông báo
         let notification = {
@@ -1032,12 +1034,28 @@ exports.editTaskInformation = async (req, res) => {
  */
 evaluateTaskByConsultedEmployees = async (req, res) => {
     try {
-        let task = await PerformTaskService.evaluateTaskByConsultedEmployees(req.portal, req.body.data, req.params.taskId);
+        const data = req.body.data;
+        let oldTask = await PerformTaskService.getTaskById(req.portal, req.params.taskId, req.user._id);
+        let task = await PerformTaskService.evaluateTaskByConsultedEmployees(req.portal, data, req.params.taskId);
+        
+        // Thêm nhật ký hoạt động
+        let description = await PerformTaskService.evaluateTaskLogs(req.portal, req.user._id, data, oldTask);
+        let log = {
+            createdAt: Date.now(),
+            creator: req.user._id,
+            title: "Chỉnh sửa thông tin đánh giá công việc tháng " + data?.evaluatingMonth?.slice(3) + " theo vai trò người tư vấn",
+            description: description
+        }
+        let taskLog = await PerformTaskService.addTaskLog(req.portal, req.params.taskId, log);
+
         await Logger.info(req.user.email, ` edit task  `, req.portal);
         res.status(200).json({
             success: true,
             messages: ['evaluate_task_success'],
-            content: task
+            content: {
+                task,
+                taskLog
+            }
         })
     } catch (error) {
         await Logger.error(req.user.email, ` edit task `, req.portal);
@@ -1052,22 +1070,38 @@ evaluateTaskByConsultedEmployees = async (req, res) => {
  * evaluate task by responsible employee
  */
 evaluateTaskByResponsibleEmployees = async (req, res) => {
-    // try {
-    let task = await PerformTaskService.evaluateTaskByResponsibleEmployees(req.portal, req.body.data, req.params.taskId);
-    await Logger.info(req.user.email, ` edit task  `, req.portal);
-    res.status(200).json({
-        success: true,
-        messages: ['evaluate_task_success'],
-        content: task
-    })
-    // } catch (error) {
-    //     await Logger.error(req.user.email, ` edit task `, req.portal);
-    //     res.status(400).json({
-    //         success: false,
-    //         messages: ['evaluate_task_fail'],
-    //         content: error
-    //     });
-    // }
+    try {
+        const data = req.body.data;
+        let oldTask = await PerformTaskService.getTaskById(req.portal, req.params.taskId, req.user._id);
+        let task = await PerformTaskService.evaluateTaskByResponsibleEmployees(req.portal, data, req.params.taskId);
+
+        // Thêm nhật ký hoạt động
+        let description = await PerformTaskService.evaluateTaskLogs(req.portal, req.user._id, data, oldTask);
+        let log = {
+            createdAt: Date.now(),
+            creator: req.user._id,
+            title: "Chỉnh sửa thông tin đánh giá công việc tháng " + data?.evaluatingMonth?.slice(3) + " theo vai trò người thực hiện",
+            description: description
+        }
+        let taskLog = await PerformTaskService.addTaskLog(req.portal, req.params.taskId, log);
+        
+        await Logger.info(req.user.email, ` edit task  `, req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ['evaluate_task_success'],
+            content: {
+                task,
+                taskLog
+            }
+        })
+    } catch (error) {
+        await Logger.error(req.user.email, ` edit task `, req.portal);
+        res.status(400).json({
+            success: false,
+            messages: ['evaluate_task_fail'],
+            content: error
+        });
+    }
 }
 
 /**
@@ -1075,12 +1109,28 @@ evaluateTaskByResponsibleEmployees = async (req, res) => {
  */
 evaluateTaskByAccountableEmployees = async (req, res) => {
     try {
-        let task = await PerformTaskService.evaluateTaskByAccountableEmployees(req.portal, req.body.data, req.params.taskId);
+        const data = req.body.data;
+        let oldTask = await PerformTaskService.getTaskById(req.portal, req.params.taskId, req.user._id);
+        let task = await PerformTaskService.evaluateTaskByAccountableEmployees(req.portal, data, req.params.taskId);
+        
+        // Thêm nhật ký hoạt động
+        let description = await PerformTaskService.evaluateTaskLogs(req.portal, req.user._id, data, oldTask);
+        let log = {
+            createdAt: Date.now(),
+            creator: req.user._id,
+            title: "Chỉnh sửa thông tin đánh giá công việc tháng " + data?.evaluatingMonth?.slice(3) + " theo vai trò người phê duyệt",
+            description: description
+        }
+        let taskLog = await PerformTaskService.addTaskLog(req.portal, req.params.taskId, log);
+
         await Logger.info(req.user.email, ` edit task  `, req.portal);
         res.status(200).json({
             success: true,
             messages: ['evaluate_task_success'],
-            content: task
+            content: {
+                task,
+                taskLog
+            }
         })
     } catch (error) {
         await Logger.error(req.user.email, ` edit task `, req.portal);

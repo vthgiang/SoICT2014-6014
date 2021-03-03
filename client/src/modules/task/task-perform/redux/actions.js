@@ -507,7 +507,6 @@ function editTaskByAccountableEmployees(data, taskId) {
             .then(res => {
                 dispatch({
                     type: performTaskConstants.EDIT_TASK_BY_ACCOUNTABLE_SUCCESS,
-                    // payload: res.data.content.task
                     payload: res.data.content
                 });
             })
@@ -529,7 +528,6 @@ function editTaskByResponsibleEmployees(data, taskId) {
             .then(res => {
                 dispatch({
                     type: performTaskConstants.EDIT_TASK_BY_RESPONSIBLE_SUCCESS,
-                    // payload: res.data.content.task
                     payload: res.data.content
                 });
             })
@@ -551,7 +549,6 @@ function evaluateTaskByAccountableEmployees(data, taskId) {
             .then(res => {
                 dispatch({
                     type: performTaskConstants.EVALUATE_TASK_BY_ACCOUNTABLE_SUCCESS,
-                    // payload: res.data.content.task
                     payload: res.data.content
                 });
             })
@@ -573,7 +570,6 @@ function evaluateTaskByConsultedEmployees(data, taskId) {
             .then(res => {
                 dispatch({
                     type: performTaskConstants.EVALUATE_TASK_BY_CONSULTED_SUCCESS,
-                    // payload: res.data.content.task
                     payload: res.data.content
                 });
             })

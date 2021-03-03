@@ -571,7 +571,8 @@ export function performtasks(state = {}, action) {
             return {
                 ...state,
                 isLoading: false,
-                task: action.payload
+                task: action.payload.task,
+                logs: action.payload.taskLog
             };
         case performTaskConstants.EVALUATE_TASK_BY_ACCOUNTABLE_FAILURE:
             return {
@@ -588,7 +589,8 @@ export function performtasks(state = {}, action) {
             return {
                 ...state,
                 isLoading: false,
-                task: action.payload
+                task: action.payload.task,
+                logs: action.payload.taskLog
             };
         case performTaskConstants.EVALUATE_TASK_BY_RESPONSIBLE_FAILURE:
             return {
@@ -605,7 +607,8 @@ export function performtasks(state = {}, action) {
             return {
                 ...state,
                 isLoading: false,
-                task: action.payload
+                task: action.payload.task,
+                logs: action.payload.taskLog
             };
         case performTaskConstants.EVALUATE_TASK_BY_CONSULTED_FAILURE:
             return {

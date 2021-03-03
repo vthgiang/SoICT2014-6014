@@ -139,7 +139,6 @@ class EvaluateByAccountableEmployee extends Component {
             } else {
                 let date = nextProps.date;
                 let data = this.getData(date);
-                console.log('quangdzuyen\n\n\n', nextProps.KPIPersonalManager.kpiSets, data);
                 this.setState(state => {
                     return {
                         ...state,
@@ -166,7 +165,6 @@ class EvaluateByAccountableEmployee extends Component {
         let evalMonth = moment(date, 'DD-MM-YYYY').endOf("month").toDate();
         for(let i in sortedEvaluations){
             let eva = sortedEvaluations[i];
-            console.log('new Date(eva?.evaluatingMonth) < evalMonth', new Date(eva?.evaluatingMonth) < evalMonth, new Date(eva?.evaluatingMonth) , evalMonth);
             if(new Date(eva?.evaluatingMonth) <= evalMonth) {
                 return eva;
             }
@@ -198,7 +196,6 @@ class EvaluateByAccountableEmployee extends Component {
         let splitter = dateParam.split("-");
         if (evaluatingMonthParam) {
             splitter = evaluatingMonthParam.split("-");
-            console.log('splitter', splitter);
         }
 
         let evaluatingMonth = `${splitter[1]}-${splitter[2]}`;
@@ -707,7 +704,6 @@ class EvaluateByAccountableEmployee extends Component {
         let { translate } = this.props;
         let msg = undefined;
         let res = this.calcSumContribution();
-        console.log('res', res);
         if (res.sum > 100) {
             msg = translate('task.task_perform.modal_approve_task.err_contribute');
         }
@@ -1015,7 +1011,6 @@ class EvaluateByAccountableEmployee extends Component {
 
     // hàm cập nhật thông tin tập giá trị
     handleSetOfValueChange = async (value, code) => {
-        console.log('valSet', value);
         this.setState(state => {
             state.info[`${code}`] = {
                 value: value,
@@ -1041,7 +1036,6 @@ class EvaluateByAccountableEmployee extends Component {
 
     // hàm cập nhật trạng thái
     handleStatusChange = (value) => {
-        console.log('valStatus', value);
         this.setState(state => {
             return {
                 ...state,
@@ -1067,7 +1061,7 @@ class EvaluateByAccountableEmployee extends Component {
             return {
                 ...state,
                 unit: value[0],
-                kpi: [],
+                kpi: []
             }
         });
         this.props.getAllKpiSetsOrganizationalUnitByMonth(this.state.userId, value[0], this.state.storedEvaluatingMonth);
@@ -1118,7 +1112,6 @@ class EvaluateByAccountableEmployee extends Component {
         else if (type === "start") {
             // kiểm tra điều kiện trong tháng đánh giá
             if (startDateISO > endOfMonth) {
-                console.log('startDateISO > endOfMonth');
                 msg = 'Khoảng đánh giá phải chứa tháng đánh giá'
             }
 
@@ -1133,7 +1126,6 @@ class EvaluateByAccountableEmployee extends Component {
         }
         else if (type === "end") {
             if (endDateISO < startOfMonth) {
-                console.log('endDateISO < startOfMonth');
                 msg = 'Khoảng đánh giá phải chứa tháng đánh giá'
             }
 
@@ -1410,89 +1402,6 @@ class EvaluateByAccountableEmployee extends Component {
         if (data === "responsible") return translate('task.task_management.responsible');
     }
 
-    // hàm ghi lại lich sử đánh giá
-    handleAddTaskLog = () => {
-        let title = '';
-        let description = '';
-
-        let { endDate, autoPoint, progress, status, results } = this.state;
-
-        if (endDate !== currentTask.endDate ||
-            autoPoint !== currentTask.automaticPoint ||
-            status !== currentTask.statusOptions ||
-            JSON.stringify(results) !== JSON.stringify(currentTask.results)
-        ) {
-            title = title + 'Chỉnh sửa thông tin đánh giá theo vai trò người thực hiện';
-
-            if (endDate !== currentTask.endDate) {
-                description = description + 'Ngày đánh giá mới: ' + endDate;
-            }
-
-            if (JSON.stringify(results) !== JSON.stringify(currentTask.results)) {
-                let inactiveEmp = currentTask.task.inactiveEmployees.map(e => e._id);
-
-                for (let i in currentTask.task.responsibleEmployees) {
-                    if (inactiveEmp.indexOf(currentTask.task.responsibleEmployees[i]._id) === -1) {
-                        if (results[`approvedPointResponsible${currentTask.task.responsibleEmployees[i]._id}`].value !== currentTask.results[`approvedPointResponsible${currentTask.task.responsibleEmployees[i]._id}`].value) {
-                            description = description === '' ? description + `Điểm đánh giá mới cho ${currentTask.task.responsibleEmployees[i].name}: ` + results[`approvedPointResponsible${currentTask.task.responsibleEmployees[i]._id}`].value : description + '. ' + `Điểm đánh giá mới cho ${currentTask.task.responsibleEmployees[i].name}: ` + results[`approvedPointResponsible${currentTask.task.responsibleEmployees[i]._id}`].value;
-                        }
-
-                        if (results[`contributeResponsible${currentTask.task.responsibleEmployees[i]._id}`].value !== currentTask.results[`contributeResponsible${currentTask.task.responsibleEmployees[i]._id}`].value) {
-                            description = description === '' ? description + `% đóng góp mới cho ${currentTask.task.responsibleEmployees[i].name}: ` + results[`contributeResponsible${currentTask.task.responsibleEmployees[i]._id}`].value : description + '. ' + `% đóng góp mới cho ${currentTask.task.responsibleEmployees[i].name}: ` + results[`contributeResponsible${currentTask.task.responsibleEmployees[i]._id}`].value;
-                        }
-                    }
-                }
-
-                for (let i in currentTask.task.consultedEmployees) {
-                    if (inactiveEmp.indexOf(currentTask.task.consultedEmployees[i]._id) === -1) {
-                        if (results[`approvedPointConsulted${currentTask.task.consultedEmployees[i]._id}`].value !== currentTask.results[`approvedPointConsulted${currentTask.task.consultedEmployees[i]._id}`].value) {
-                            description = description === '' ? description + `Điểm đánh giá mới cho ${currentTask.task.consultedEmployees[i].name}: ` + results[`approvedPointConsulted${currentTask.task.consultedEmployees[i]._id}`].value : description + '. ' + `Điểm đánh giá mới cho ${currentTask.task.consultedEmployees[i].name}: ` + results[`approvedPointConsulted${currentTask.task.consultedEmployees[i]._id}`].value;
-                        }
-
-                        if (results[`approvedPointConsulted${currentTask.task.consultedEmployees[i]._id}`].value !== currentTask.results[`approvedPointConsulted${currentTask.task.consultedEmployees[i]._id}`].value) {
-                            description = description === '' ? description + `% đóng góp mới cho ${currentTask.task.consultedEmployees[i].name}: ` + results[`approvedPointConsulted${currentTask.task.consultedEmployees[i]._id}`].value : description + '. ' + `% đóng góp mới cho ${currentTask.task.consultedEmployees[i].name}: ` + results[`approvedPointConsulted${currentTask.task.consultedEmployees[i]._id}`].value;
-                        }
-                    }
-                }
-
-                for (let i in currentTask.task.accountableEmployees) {
-                    if (inactiveEmp.indexOf(currentTask.task.accountableEmployees[i]._id) === -1) {
-                        if (results[`approvedPoint${currentTask.task.accountableEmployees[i]._id}`].value !== currentTask.results[`approvedPoint${currentTask.task.accountableEmployees[i]._id}`].value) {
-                            description = description === '' ? description + `Điểm đánh giá mới cho ${currentTask.task.accountableEmployees[i].name}: ` + results[`approvedPoint${currentTask.task.accountableEmployees[i]._id}`].value : description + '. ' + `Điểm đánh giá mới cho ${currentTask.task.accountableEmployees[i].name}: ` + results[`approvedPoint${currentTask.task.accountableEmployees[i]._id}`].value;
-                        }
-
-                        if (results[`approvedPoint${currentTask.task.accountableEmployees[i]._id}`].value !== currentTask.results[`approvedPoint${currentTask.task.accountableEmployees[i]._id}`].value) {
-                            description = description === '' ? description + `% đóng góp mới cho ${currentTask.task.accountableEmployees[i].name}: ` + results[`approvedPoint${currentTask.task.accountableEmployees[i]._id}`].value : description + '. ' + `% đóng góp mới cho ${currentTask.task.accountableEmployees[i].name}: ` + results[`approvedPoint${currentTask.task.accountableEmployees[i]._id}`].value;
-                        }
-                    }
-                }
-            }
-
-            if (autoPoint !== currentTask.automaticPoint) {
-                description = description === '' ? description + 'Điểm chấm tự động mới: ' + autoPoint : description + '. ' + 'Điểm chấm tự động mới: ' + autoPoint;
-            }
-
-            if (status !== currentTask.statusOptions) {
-                description = description === '' ? description + 'Trạng thái công việc mới: ' + status : description + '. ' + 'Trạng thái công việc mới: ' + status;
-            }
-        }
-
-        if (currentTask.task.progress !== progress) {
-            title = title === '' ? title + 'Chỉnh sửa thông tin công việc' : title + '. ' + 'Chỉnh sửa thông tin công việc';
-            description = description === '' ? description + 'Mức độ hoàn thành mới: ' + progress + "%" : description + '. ' + 'Mức độ hoàn thành mới: ' + progress + "%";
-        }
-
-        if (title !== '' || description !== '') {
-            this.props.addTaskLog({
-                createdAt: Date.now(),
-                creator: getStorage("userId"),
-                title: title,
-                description: description,
-            }, this.state.task._id)
-        }
-
-    }
-
     // format tháng
     formatMonth(date) {
         let d = new Date(date),
@@ -1550,12 +1459,6 @@ class EvaluateByAccountableEmployee extends Component {
                 evaluationId = evaluation?._id;
 
                 await this.props.deleteEvaluation(taskId, evaluationId);
-                this.props.addTaskLog({
-                    createdAt: Date.now(),
-                    creator: getStorage("userId"),
-                    title: `Xóa đánh giá công việc tháng ${this.formatMonth(new Date())}`,
-                    description: ``,
-                }, taskId);
                 this.props.handleChangeDataStatus(1); // 1 = DATA_STATUS.QUERYING
             }
         });
@@ -1591,8 +1494,6 @@ class EvaluateByAccountableEmployee extends Component {
         }
 
         await this.props.evaluateTaskByAccountableEmployees(data, taskId);
-
-        this.handleAddTaskLog();
 
         this.setState(state => {
             return {
@@ -1631,13 +1532,10 @@ class EvaluateByAccountableEmployee extends Component {
             errorInfo, errorOnStartDate, errorOnEndDate, errorApprovedPoint, errorContribute, errSumContribution, indexReRender, unit, kpi, evaluation } = this.state;
         const { id, perform, role, hasAccountable } = this.props;
 
-        console.log('quang acc', this.state);
         let listKpi = [];
         if (KPIPersonalManager && KPIPersonalManager.kpiSets) {
             listKpi = KPIPersonalManager.kpiSets.kpis;
-            console.log('quanydsd', listKpi);
         }
-        console.log('listKPI', listKpi);
 
         let listUnits = [];
         if (user.organizationalUnitsOfUser && user.organizationalUnitsOfUser.length > 0) {
@@ -2030,7 +1928,6 @@ const mapState = (state) => {
     return { tasks, performtasks, KPIPersonalManager, user };
 }
 const getState = {
-    addTaskLog: performTaskAction.addTaskLog,
     deleteEvaluation: performTaskAction.deleteEvaluation,
     evaluateTaskByAccountableEmployees: performTaskAction.evaluateTaskByAccountableEmployees,
     getAllKpiSetsOrganizationalUnitByMonth: managerKpiActions.getAllKpiSetsOrganizationalUnitByMonth,
