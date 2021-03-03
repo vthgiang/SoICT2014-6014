@@ -1,23 +1,28 @@
-import React, { useEffect } from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
-
-import { exampleActions } from '../../example2/redux/actions';
 
 import { DialogModal } from '../../../../common-components';
 
 const ExampleDetailInfo = (props) => {
+    const [state, setState] = useState({
+        exampleID: undefined,
+    })
 
     const { translate, example } = props;
-    let currentDetailExample;
+    const { exampleID } = state;
 
-    if (example) {
-        currentDetailExample = example.currentDetailExample;
+    // Nhận giá trị từ component cha
+    if (props.exampleID !== exampleID) {
+        setState({
+            ...state,
+            exampleID: props.exampleID,
+            exampleName: props.exampleName,
+            description: props.description,
+        })
     }
 
-    useEffect(() => {
-        props.exampleId && props.getExampleDetail(props.exampleId);
-    }, [props.exampleId])
+    const { exampleName, description } = state
 
     return (
         <React.Fragment>
@@ -31,13 +36,16 @@ const ExampleDetailInfo = (props) => {
                 hasNote={false}
             >
                 <form id={`form-detail-example-hooks`}>
+                    {/* Tên ví dụ */}
                     <div className={`form-group`}>
                         <label>{translate('manage_example.exampleName')}:</label>
-                        <span> {currentDetailExample && currentDetailExample.exampleName}</span>
+                        <span> {exampleName}</span>
                     </div>
+
+                    {/* Mô tả ví dụ */}
                     <div className={`form-group`}>
                         <label>{translate('manage_example.description')}:</label>
-                        <span> {currentDetailExample && currentDetailExample.description}</span>
+                        <span> {description}</span>
                     </div>
                 </form>
             </DialogModal>
@@ -46,13 +54,9 @@ const ExampleDetailInfo = (props) => {
 }
 
 function mapStateToProps(state) {
-    const example = state.example2;
+    const example = state.example1;
     return { example };
 }
 
-const mapDispatchToProps = {
-    getExampleDetail: exampleActions.getExampleDetail
-}
-
-const connectedExampleDetailInfo = React.memo(connect(mapStateToProps, mapDispatchToProps)(withTranslate(ExampleDetailInfo)));
+const connectedExampleDetailInfo = React.memo(connect(mapStateToProps, null)(withTranslate(ExampleDetailInfo)));
 export { connectedExampleDetailInfo as ExampleDetailInfo }

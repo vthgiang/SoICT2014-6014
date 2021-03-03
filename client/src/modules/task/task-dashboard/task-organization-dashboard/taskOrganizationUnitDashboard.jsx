@@ -18,7 +18,7 @@ import { SelectMulti, DatePicker, ToolTip } from '../../../../common-components/
 import Swal from 'sweetalert2';
 import { InprocessOfUnitTask } from './processOfUnitTasks';
 import ValidationHelper from '../../../../helpers/validationHelper';
-import GanttCalendar from '../task-personal-dashboard/ganttCalendar';
+import { GanttCalendar } from '../task-personal-dashboard/ganttCalendar';
 import GeneralTaskChart from './generalTaskChart';
 
 class TaskOrganizationUnitDashboard extends Component {
@@ -366,6 +366,7 @@ class TaskOrganizationUnitDashboard extends Component {
                                                 tasks={tasks.organizationUnitTasks}
                                                 listEmployee={user && user.employees}
                                                 units={selectBoxUnit}
+                                                unitSelected={idsUnit}
                                             />
                                         }
                                     </div>
@@ -497,7 +498,7 @@ class TaskOrganizationUnitDashboard extends Component {
                                             type={"icon_tooltip"} materialIcon={"help"}
                                             dataTooltip={['Tải công việc tính theo công thức tổng các tỉ số: số ngày thực hiện công việc trong tháng/(số người thực hiện + số người phê duyệt + số người hỗ trợ)']}
                                         /> */}
-                                        <a className="text-red" title={translate('document.delete')} onClick={() => this.showLoadTaskDoc()}>
+                                        <a className="text-red" title={translate('task.task_management.explain')} onClick={() => this.showLoadTaskDoc()}>
                                             <i className="material-icons" style={{ marginLeft: "10px" }}>help</i>
                                         </a>
                                     </div>

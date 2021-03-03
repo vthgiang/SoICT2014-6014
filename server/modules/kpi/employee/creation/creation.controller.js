@@ -91,7 +91,11 @@ exports.getAllEmployeeKpiSetOfAllEmployeeInOrganizationalUnitByMonth = async (re
 /** Khởi tạo KPI cá nhân */
 exports.createEmployeeKpiSet = async (req, res) => {
     try {
-        let employeeKpiSet = await EmployeeKpiSetService.createEmployeeKpiSet(req.portal, req.body);
+        let data = {
+            ...req.body,
+            creator: req.user._id
+        }
+        let employeeKpiSet = await EmployeeKpiSetService.createEmployeeKpiSet(req.portal, data);
 
         await Logger.info(req.user.email, ` create employee kpi set `, req.portal)
         res.status(200).json({

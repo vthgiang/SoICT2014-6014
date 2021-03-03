@@ -112,7 +112,7 @@ exports.getAllEmployeeKpiSetInOrganizationalUnit = async (req, res) => {
  */
 exports.getAllEmployeeKpiInChildrenOrganizationalUnit = async (req, res) => {
     try {
-        let employeeKpisInChildrenOrganizationalUnit = await overviewService.getAllEmployeeKpiInChildrenOrganizationalUnit(req.portal, req.user.company._id, req.query.roleId, req.query.month, req.query.organizationalUnitId);
+        let employeeKpisInChildrenOrganizationalUnit = await overviewService.getAllEmployeeKpiInChildrenOrganizationalUnit(req.portal, req.query.roleId, req.query.month, req.query.organizationalUnitId);
 
         Logger.info(req.user.email, ' get all employee kpi set in organizational unit ', req.portal);
         res.status(200).json({

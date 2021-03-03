@@ -1,17 +1,19 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { withTranslate } from 'react-redux-multilingual';
+import Swal from 'sweetalert2';
 
 import { dashboardOrganizationalUnitKpiActions } from '../../organizational-unit/dashboard/redux/actions';
 import { createUnitKpiActions } from '../../organizational-unit/creation/redux/actions';
 import { DashboardEvaluationEmployeeKpiSetAction } from '../../evaluation/dashboard/redux/actions';
 
 import { DetailsOfOrganizationalUnitKpiForm } from './detailsOfOrganizationalUnitKpiForm';
-import { DistributionOfOrganizationalUnitChart } from './distributionOfOrganizationalUnitChart';
+import { DistributionOfEmployeeKpiChart } from './distributionOfEmployeeKpiChart';
+import { DistributionOfOrganizationalUnitKpiChart } from './distributionOfOrganizationalUnitKpiChart';
+import { FunctionHelperStatisticKpi } from './functionHelperStatisticKpi';
 
 import { SelectBox, DatePicker, Tree, SlimScroll } from '../../../../common-components';
 
-import { withTranslate } from 'react-redux-multilingual';
-import Swal from 'sweetalert2';
 
 var translate = '';
 class StatisticsOfOrganizationalUnitKpi extends Component {
@@ -108,155 +110,6 @@ class StatisticsOfOrganizationalUnitKpi extends Component {
         }
 
         return false;
-    }
-
-    /** Hàm tiện ích lấy các KPI con có cùng parent */
-    getArrayListChildTargetOrganizationUnitKpi = () => {
-        const { createKpiUnit, dashboardOrganizationalUnitKpi, translate } = this.props;
-
-        let listOrganizationalUnitKpi, listChildTarget, arrayListChildTargetSameParent;
-
-        if (createKpiUnit.currentKPI && createKpiUnit.currentKPI.kpis) {
-            listOrganizationalUnitKpi = createKpiUnit.currentKPI.kpis
-        }
-        if (dashboardOrganizationalUnitKpi.employeeKpisOfChildUnit !== []) {
-            listChildTarget = dashboardOrganizationalUnitKpi.employeeKpisOfChildUnit
-        }
-
-        if (listOrganizationalUnitKpi && listChildTarget) {
-            arrayListChildTargetSameParent = listOrganizationalUnitKpi.map(parent => {
-
-                let index = 0;
-                let maxDeg = listChildTarget[listChildTarget.length - 1][0].deg;
-
-                let listChildTargetSameParent = [];
-
-                while (index <= maxDeg) {
-
-                    let listChildTargetSameDeg = listChildTarget.filter(item => item[0].deg === index);
-
-                    if (listChildTargetSameDeg) {
-                        if (index === 0) {
-                            listChildTargetSameParent[index] = listChildTargetSameDeg.map(item => {
-                                let organizationalUnit = {
-                                    organizationalUnit: item[0].name
-                                }
-                                let kpis = item.filter(kpi => kpi._id === parent.name).map(kpi => {
-                                    return Object.assign(kpi, organizationalUnit);
-                                })
-
-                                return kpis
-                            });
-                        } else {
-                            let parentNameOfUnitKpi = listChildTargetSameParent[index - 1].map(kpi => {
-                                if (kpi[0]) {
-                                    return kpi[0]._id;
-                                }
-                            })
-
-                            listChildTargetSameParent[index] = listChildTargetSameDeg.map(item => {
-                                let organizationalUnit = {
-                                    organizationalUnit: item[0].name
-                                }
-                                let kpis = item.filter(kpi => {
-                                    if (kpi.employeeKpi && kpi.employeeKpi[0].parentNameOfUnitKpi[0]) {
-                                        return parentNameOfUnitKpi.includes(kpi.employeeKpi[0].parentNameOfUnitKpi[0]);
-                                    }
-                                }).map(kpi => {
-                                    return Object.assign(kpi, organizationalUnit);
-                                })
-
-                                return kpis;
-                            });
-                        }
-                    }
-
-                    index++;
-                };
-
-                return listChildTargetSameParent;
-            })
-        }
-
-        return arrayListChildTargetSameParent;
-    }
-
-    /** Hàm tiện ích lấy các công việc cùng KPI */
-    getArrayListTaskSameOrganizationUnitKpi = () => {
-        const { createKpiUnit, dashboardOrganizationalUnitKpi } = this.props;
-
-        let listOrganizationalUnitKpi, listTask, arrayListTaskSameOrganizationUnitKpi;
-        let arrayListChildTargetSameParent = this.getArrayListChildTargetOrganizationUnitKpi();
-
-        if (createKpiUnit) {
-            listOrganizationalUnitKpi = createKpiUnit.currentKPI && createKpiUnit.currentKPI.kpis;
-        }
-        if (dashboardOrganizationalUnitKpi.tasksOfChildrenOrganizationalUnit !== []) {
-            listTask = dashboardOrganizationalUnitKpi.tasksOfChildrenOrganizationalUnit;
-        }
-
-        if (listOrganizationalUnitKpi && listTask) {
-            arrayListTaskSameOrganizationUnitKpi = listOrganizationalUnitKpi.map(parent => {
-                let temporaryArrayListTaskSameOrganizationUnitKpi = [];
-
-                if (arrayListChildTargetSameParent !== [] && arrayListChildTargetSameParent && listTask) {
-                    let listChildTargetSameParent;
-
-                    if (arrayListChildTargetSameParent) {
-                        listChildTargetSameParent = arrayListChildTargetSameParent.filter(item => {
-                            if (item[0][0][0]) {
-                                return item[0][0][0]._id === parent.name;
-                            }
-                        });
-                    }
-
-                    if (listChildTargetSameParent.length !== 0) {
-                        listChildTargetSameParent = [...listChildTargetSameParent[0]];
-
-                        listChildTargetSameParent.map(deg => {
-                            if (deg.length !== 0) {
-                                deg.map(unit => {
-                                    if (unit.length !== 0) {
-                                        unit.map(kpi => {
-                                            if (kpi.employeeKpi[0].creator.length !== 0) {
-                                                kpi.employeeKpi.map(employeeKpi => {
-                                                    if (listTask) {
-                                                        listTask.map(task => {
-                                                            let list = task.filter(item => {
-                                                                let kpi, length = 0;
-
-                                                                if (item.evaluations) {
-                                                                    item.evaluations.results.map(item => {
-                                                                        kpi = item.kpis.filter(kpi => kpi === employeeKpi._id);
-                                                                        length = length + kpi.length;
-                                                                    });
-                                                                    return length !== 0 && length !== undefined;
-                                                                } else {
-                                                                    return false
-                                                                }
-                                                            })
-
-                                                            temporaryArrayListTaskSameOrganizationUnitKpi = temporaryArrayListTaskSameOrganizationUnitKpi.concat(list);
-                                                        })
-                                                    }
-                                                })
-                                            }
-                                        })
-                                    }
-                                })
-                            }
-                        })
-                    }
-                }
-
-                temporaryArrayListTaskSameOrganizationUnitKpi = Array.from(new Set(temporaryArrayListTaskSameOrganizationUnitKpi));
-                temporaryArrayListTaskSameOrganizationUnitKpi.unshift({ name: parent.name });
-
-                return temporaryArrayListTaskSameOrganizationUnitKpi;
-            })
-        }
-
-        return arrayListTaskSameOrganizationUnitKpi;
     }
 
 
@@ -375,16 +228,18 @@ class StatisticsOfOrganizationalUnitKpi extends Component {
 
                             // Phần tử tree
                             treeData.push({
-                                id: kpi.employeeKpi[0].parent ? kpi.employeeKpi[0].parent : this.TREE_INDEX,
-                                text: kpi.organizationalUnit + ' - ' + kpi._id,
-                                name: kpi._id,
+                                id: kpi?.employeeKpi?.[0]?.parent ? kpi?.employeeKpi?.[0]?.parent : this.TREE_INDEX,
+                                text: kpi?.organizationalUnit + ' - ' + kpi?._id,
+                                name: kpi?._id,
                                 state: { "opened": true },
-                                parent: kpi.employeeKpi[0].parentOfUnitKpi && organizationalUnit && organizationalUnit.text !== kpi.organizationalUnit ? kpi.employeeKpi[0].parentOfUnitKpi.toString() : "#",
-                                organizationalUnit: kpi.organizationalUnit,
-                                weight: kpi.employeeKpi[0].parentWeight,
+                                parent: kpi?.employeeKpi?.[0]?.parentOfUnitKpi && organizationalUnit && organizationalUnit.text !== kpi.organizationalUnit ? kpi.employeeKpi[0].parentOfUnitKpi.toString() : "#",
+                                organizationalUnit: kpi?.organizationalUnit,
+                                weight: kpi?.employeeKpi?.[0]?.parentWeight,
                                 listEmployeeKpi: listEmployeeKpi,
                                 listTask: listTask,
-                                listParticipant: listParticipantFilter
+                                listParticipant: listParticipantFilter,
+                                deg: kpi?.deg,
+                                organizationalUnitId: kpi?.organizationalUnitId
                             })
 
                             this.TREE_INDEX++;
@@ -399,11 +254,26 @@ class StatisticsOfOrganizationalUnitKpi extends Component {
     }
 
     setTreeData = () => {
+        const { createKpiUnit, dashboardOrganizationalUnitKpi } = this.props;
         const { organizationalUnitId } = this.state;
 
+        let listOrganizationalUnitKpi, listChildTarget, listTask;
+        /* Sử dụng JSON để deep copy array and object
+        *   Mục đích: Khi thay đổi giá trị sâu trong array và object, không ảnh hưởng đế giá trị gốc lưu trong redux    
+        */
+        if (createKpiUnit?.currentKPI?.kpis) {
+            listOrganizationalUnitKpi = JSON.parse(JSON.stringify(createKpiUnit.currentKPI.kpis));
+        }
+        if (dashboardOrganizationalUnitKpi?.employeeKpisOfChildUnit && dashboardOrganizationalUnitKpi.employeeKpisOfChildUnit !== []) {
+            listChildTarget = JSON.parse(JSON.stringify(dashboardOrganizationalUnitKpi.employeeKpisOfChildUnit));
+        }
+        if (dashboardOrganizationalUnitKpi?.tasksOfChildrenOrganizationalUnit && dashboardOrganizationalUnitKpi.tasksOfChildrenOrganizationalUnit !== []) {
+            listTask = JSON.parse(JSON.stringify(dashboardOrganizationalUnitKpi.tasksOfChildrenOrganizationalUnit));
+        }
+
         let organizationalUnitSelectBox = this.setSelectBox();
-        let arrayListChildTargetSameOrganizationUnitKpi = this.getArrayListChildTargetOrganizationUnitKpi();
-        let arrayListTaskSameOrganizationUnitKpi = this.getArrayListTaskSameOrganizationUnitKpi();
+        let arrayListChildTargetSameOrganizationUnitKpi = FunctionHelperStatisticKpi.getArrayListChildTargetOrganizationUnitKpi(listOrganizationalUnitKpi, listChildTarget);
+        let arrayListTaskSameOrganizationUnitKpi = FunctionHelperStatisticKpi.getArrayListTaskSameOrganizationUnitKpi(listOrganizationalUnitKpi, listTask, listChildTarget);
         let organizationalUnit, treeDatas = [];
 
         if (organizationalUnitId && organizationalUnitSelectBox) {
@@ -417,14 +287,14 @@ class StatisticsOfOrganizationalUnitKpi extends Component {
 
         if (arrayListChildTargetSameOrganizationUnitKpi && arrayListChildTargetSameOrganizationUnitKpi.length !== 0 && organizationalUnit && arrayListTaskSameOrganizationUnitKpi) {
             for (let i = (arrayListChildTargetSameOrganizationUnitKpi.length - 1); i >= 0; i--) {
-                let listTaskSameParent = arrayListTaskSameOrganizationUnitKpi.filter(item => arrayListChildTargetSameOrganizationUnitKpi[i][0][0][0] && item[0].name === arrayListChildTargetSameOrganizationUnitKpi[i][0][0][0]._id);
+                let listTaskSameParent = arrayListTaskSameOrganizationUnitKpi.filter(item => arrayListChildTargetSameOrganizationUnitKpi?.[i]?.[0]?.[0]?.[0] && item?.[0]?.name === arrayListChildTargetSameOrganizationUnitKpi?.[i]?.[0]?.[0]?.[0]?._id);
                 let treeData = [];
 
                 if (arrayListChildTargetSameOrganizationUnitKpi[i]) {
                     for (let j = (arrayListChildTargetSameOrganizationUnitKpi[i].length - 1); j >= 0; j--) {
                         treeData[j] = [];
-                        treeData[j] = this.traversesListChildTargetSameParent(arrayListChildTargetSameOrganizationUnitKpi[i][j], treeData[j + 1], listTaskSameParent, organizationalUnit[0]);
-                        treeDatas = treeData[j].concat(treeDatas);
+                        treeData[j] = this.traversesListChildTargetSameParent(arrayListChildTargetSameOrganizationUnitKpi?.[i]?.[j], treeData?.[j + 1], listTaskSameParent, organizationalUnit?.[0]);
+                        treeDatas = treeData?.[j]?.concat(treeDatas);
                     }
                 }
             }
@@ -524,9 +394,9 @@ class StatisticsOfOrganizationalUnitKpi extends Component {
     }
 
     render() {
-        const { translate, dashboardEvaluationEmployeeKpiSet, createKpiUnit } = this.props;
+        const { translate, dashboardEvaluationEmployeeKpiSet, createKpiUnit, dashboardOrganizationalUnitKpi } = this.props;
         const { details, month } = this.state;
-        let childrenOrganizationalUnit, childrenOrganizationalUnitLoading, currentKPI, organizationalUnitKpiLoading;
+        let childrenOrganizationalUnit, childrenOrganizationalUnitLoading, currentKPI, organizationalUnitKpiLoading, listChildTarget;
         let dataTree = this.setTreeData();
         let organizationalUnitSelectBox = this.setSelectBox();
 
@@ -537,6 +407,9 @@ class StatisticsOfOrganizationalUnitKpi extends Component {
         if (createKpiUnit) {
             currentKPI = createKpiUnit.currentKPI;
             organizationalUnitKpiLoading = createKpiUnit.organizationalUnitKpiLoading;
+        }
+        if (dashboardOrganizationalUnitKpi) {
+            listChildTarget = dashboardOrganizationalUnitKpi.employeeKpisOfChildUnit;
         }
 
         // Config select time
@@ -625,10 +498,24 @@ class StatisticsOfOrganizationalUnitKpi extends Component {
                             <div className="row">
                                 <div className="col-xs-12" style={{ padding: 10 }}>
                                     <div className="description-box" style={{ height: "100%" }}>
-                                        <h4 className="box-title">Biểu đồ phân bố KPI đơn vị tháng {month.slice(5, 7) + "-" + month.slice(0, 4)}</h4>
+                                        <h4 className="box-title">Biểu đồ phân tích KPI đơn vị dựa trên KPI nhân viên tháng {month.slice(5, 7) + "-" + month.slice(0, 4)}</h4>
 
-                                        <DistributionOfOrganizationalUnitChart
+                                        <DistributionOfEmployeeKpiChart
                                             organizationalUnitKPI={dataTree.filter(item => item.parent === '#')}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="row">
+                                <div className="col-xs-12" style={{ padding: 10 }}>
+                                    <div className="description-box" style={{ height: "100%" }}>
+                                        <h4 className="box-title">Biểu đồ phân tích KPI đơn vị dựa trên KPI đơn vị con tháng {month.slice(5, 7) + "-" + month.slice(0, 4)}</h4>
+
+                                        <DistributionOfOrganizationalUnitKpiChart
+                                            organizationalUnitKPI={dataTree.filter(item => item.parent === '#')}
+                                            dataTreeUnitKpi={dataTree}
+                                            maxDeg={listChildTarget?.[listChildTarget.length - 1]?.[0]?.deg}
                                         />
                                     </div>
                                 </div>

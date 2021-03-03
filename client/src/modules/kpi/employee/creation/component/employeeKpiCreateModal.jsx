@@ -6,7 +6,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import { UserActions } from "../../../../super-admin/user/redux/actions"
 import { createKpiSetActions } from '../redux/actions';
 
-import { DatePicker, DialogModal, SelectBox } from '../../../../../../src/common-components';
+import { DialogModal, SelectBox } from '../../../../../../src/common-components';
 import getEmployeeSelectBoxItems from '../../../../task/organizationalUnitHelper';
 
 
@@ -36,8 +36,10 @@ class ModalCreateEmployeeKpiSet extends Component {
                 employeeKpiSet: {
                     ...prevState.employeeKpiSet,
                     organizationalUnit: nextProps.organizationalUnit && nextProps.organizationalUnit._id,
-                    month: nextProps.month
+                    month: nextProps.month,
+                    approver: nextProps.managers?.[1]?.value?.[0]?.value
                 },
+                managers: nextProps.managers,
                 organizationalUnit: nextProps.organizationalUnit
             }
         } else {
@@ -45,34 +47,8 @@ class ModalCreateEmployeeKpiSet extends Component {
         }
     }
 
-    componentDidMount() {
+    componentDidMount = () => {
         this.props.getAllUserSameDepartment(localStorage.getItem("currentRole"));
-    }
-
-    shouldComponentUpdate = (nextProps, nextState) => {
-        const { user } = this.props;
-        const { employeeKpiSet } = this.state;
-
-        // Khi truy vấn API đã có kết quả
-        if (!employeeKpiSet.approver && user.userdepartments && user.userdepartments.managers) {
-            if (Object.keys(user.userdepartments.managers).length > 0) { // Nếu có trưởng đơn vị
-                let members = user.userdepartments.managers[Object.keys(user.userdepartments.managers)[0]].members;
-                if (members.length) {
-                    this.setState(state => {
-                        return {
-                            ...state,
-                            employeeKpiSet: {
-                                ...state.employeeKpiSet,
-                                approver: members[0] && members[0]._id
-                            }
-                        };
-                    });
-                    return false; // Sẽ cập nhật lại state nên không cần render
-                }
-            }
-        }
-
-        return true;
     }
 
     /**Thay đổi người phê duyệt */
@@ -82,7 +58,7 @@ class ModalCreateEmployeeKpiSet extends Component {
                 ...state,
                 employeeKpiSet: {
                     ...state.employeeKpiSet,
-                    approver: value,
+                    approver: value[0],
                 }
             }
         });
@@ -117,13 +93,9 @@ class ModalCreateEmployeeKpiSet extends Component {
     }
 
     render() {
-        const { user, translate } = this.props;
-        const { _id, employeeKpiSet, organizationalUnit } = this.state;
-        let managers;
-
-        if (user.userdepartments) {
-            managers = getEmployeeSelectBoxItems([user.userdepartments], true, false, false);
-        }
+        const { translate } = this.props;
+        const { _id, employeeKpiSet, organizationalUnit, managers } = this.state;
+        
 
         return (
             <React.Fragment>
@@ -159,7 +131,7 @@ class ModalCreateEmployeeKpiSet extends Component {
                                     items={managers}
                                     multiple={false}
                                     onChange={this.handleApproverChange}
-                                    value={employeeKpiSet ? employeeKpiSet.approver : ""}
+                                    value={employeeKpiSet?.approver}
                                 />
                             </div>
                         }
@@ -178,8 +150,8 @@ class ModalCreateEmployeeKpiSet extends Component {
 }
 
 function mapState(state) {
-    const { user } = state;
-    return { user };
+    const { user, createKpiUnit, department, createEmployeeKpiSet } = state;
+    return { user, createKpiUnit, department, createEmployeeKpiSet };
 }
 
 const actionCreators = {

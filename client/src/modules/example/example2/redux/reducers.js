@@ -25,6 +25,7 @@ export function example2(state = initialState, action) {
         case exampleConstants.CREATE_EXAMPLE_REQUEST:
         case exampleConstants.EDIT_EXAMPLE_REQUEST:
         case exampleConstants.GET_EXAMPLE_DETAIL_REQUEST:
+            console.log(state)
             return {
                 ...state,
                 isLoading: true
@@ -42,14 +43,14 @@ export function example2(state = initialState, action) {
         case exampleConstants.GET_ALL_ONLY_EXAMPLE_NAME_SUCCESS:
             return {
                 ...state,
-                lists: action.payload.content.data,
-                totalList: action.payload.content.totalList,
+                lists: action.payload.data,
+                totalList: action.payload.totalList,
                 isLoading: false
             }
         case exampleConstants.DELETE_EXAMPLE_SUCCESS:
             return {
                 ...state,
-                lists: state.lists.filter(example => (example._id !== action.payload.content._id)),
+                lists: state.lists.filter(example => (example?._id !== action.payload?._id)),
                 isLoading: false
             }
         case exampleConstants.CREATE_EXAMPLE_SUCCESS:
@@ -57,14 +58,14 @@ export function example2(state = initialState, action) {
                 ...state,
                 lists: [
                     ...state.lists,
-                    action.payload.content.example
+                    action.payload
                 ],
                 isLoading: false
             }
         case exampleConstants.EDIT_EXAMPLE_SUCCESS:
-            index = findIndex(state.lists, action.payload.content.example._id);
+            index = findIndex(state.lists, action.payload?._id);
             if (index !== -1) {
-                state.lists[index] = action.payload.content.example
+                state.lists[index] = action.payload
             }
             return {
                 ...state,
@@ -73,7 +74,7 @@ export function example2(state = initialState, action) {
         case exampleConstants.GET_EXAMPLE_DETAIL_SUCCESS:
             return {
                 ...state,
-                currentDetailExample: action.payload.content.example,
+                currentDetailExample: action.payload,
                 isLoading: false
             }
         default:

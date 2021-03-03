@@ -6,7 +6,6 @@ import Sortable from 'sortablejs';
 import { ErrorLabel, QuillEditor } from '../../../../common-components';
 import { TaskTemplateFormValidator } from './taskTemplateFormValidator';
 import parse from 'html-react-parser';
-
 class ActionForm extends Component {
     constructor(props) {
         super(props);
@@ -19,8 +18,25 @@ class ActionForm extends Component {
             EMPTY_ACTION: Object.assign({}, EMPTY_ACTION),
             editAction: false,
             action: Object.assign({}, EMPTY_ACTION),
-            taskActions: this.props.initialData,
             quillValueDefault: null
+        }
+    }
+
+    static getDerivedStateFromProps(props, state) {
+        if (props.type !== state.type) {
+            return {
+                ...state,
+                taskActions: props.initialData,
+                type: props.type
+            }
+        }
+        if (props.savedTaskAsTemplate && props.initialData && props.initialData.length > 0 && !state.taskActions) {
+            return {
+                ...state,
+                taskActions: props.initialData,
+            }
+        } else {
+            return null;
         }
     }
 
@@ -94,6 +110,7 @@ class ActionForm extends Component {
         action.mandatory = value;
         this.setState({ action });
     }
+
     /** cancel editing an action*/
     handleCancelEditAction = (event) => {
         event.preventDefault(); // Ngăn không submit     
@@ -120,19 +137,26 @@ class ActionForm extends Component {
     }
 
     /**Thêm 1 hoạt động */
-    handleAddAction = async (event) => {
+    handleAddAction = (event) => {
         event.preventDefault(); // Ngăn không submit
+        let { taskActions, action } = this.state;
 
-        await this.setState(state => {
-            const taskActions = [...this.state.taskActions, state.action];
-            return {
-                ...state,
-                taskActions: taskActions,
-                action: Object.assign({}, state.EMPTY_ACTION),
-                quillValueDefault: state.EMPTY_ACTION.description
-            }
-        });
-        this.props.onDataChange(this.state.taskActions);
+        if (!taskActions)
+            taskActions = [];
+        const newTaskActions = [
+            ...taskActions,
+            action,
+        ]
+
+        this.setState({
+            taskActions: newTaskActions,
+            action: {
+                name: '',
+                description: '',
+                mandatory: true,
+            },
+            quillValueDefault: ''
+        }, () => this.props.onDataChange(newTaskActions));
     }
 
     /** Sửa các thông tin của hành động */
@@ -149,50 +173,37 @@ class ActionForm extends Component {
     }
 
     /**Lưu sau khi chỉnh sửa thông tin hoạt động */
-    handleSaveEditedAction = async (event) => {
+    handleSaveEditedAction = (event) => {
         event.preventDefault(); // Ngăn không submit
-        const { indexAction } = this.state;
-        let taskActions = this.state.taskActions;
-        var newTaskActions;
-        if (taskActions) {
-            newTaskActions = taskActions.map((item, index) => {
-                return (index === indexAction) ? this.state.action : item;
-            })
-        }
-        await this.setState(state => {
-            return {
-                ...state,
-                taskActions: newTaskActions,
-                editAction: false,
-                action: { ...state.EMPTY_ACTION },
-                quillValueDefault: state.EMPTY_ACTION.description
-            }
-        })
-        this.props.onDataChange(this.state.taskActions);
+
+        let { indexAction, taskActions, action } = this.state;
+        taskActions[indexAction] = action;
+
+        this.setState({
+            taskActions,
+            editAction: false,
+            action: { ...this.state.EMPTY_ACTION },
+            quillValueDefault: this.state.EMPTY_ACTION.description
+        }, () => this.props.onDataChange(taskActions))
     }
 
     /**Xóa 1 hành động */
-    handleDeleteAction = async (index) => {
-        let taskActions = this.state.taskActions;
-        let newTaskActionsArray;
-        if (taskActions) {
-            newTaskActionsArray = taskActions.filter((item, x) => index !== x);
-        }
-        await this.setState(state => {
+    handleDeleteAction = (index) => {
+        let { taskActions } = this.state;
+        taskActions.splice(index, 1);
+
+        this.setState(state => {
             return {
                 ...state,
-                taskActions: newTaskActionsArray
+                taskActions
             }
-        })
-        this.props.onDataChange(this.state.taskActions);
+        }, () => this.props.onDataChange(taskActions))
     }
 
     render() {
         const { translate } = this.props;
-        var { action, taskActions, quillValueDefault } = this.state;
-        const { initialData, type } = this.props;
-
-        taskActions = initialData;
+        let { action, taskActions, quillValueDefault } = this.state;
+        const { type } = this.props;
 
         return (
             /**Form chứa các thông tin của phần hoạt động của 1 task-template*/
@@ -253,7 +264,7 @@ class ActionForm extends Component {
                                 taskActions.map((item, index) =>
                                     <tr key={`${this.state.keyPrefix}_${index}`}>
                                         <td>{index + 1}</td>
-                                        <td>{item.name}</td>
+                                        <td>{parse(item.name)}</td>
                                         <td><div>{parse(item.description)}</div></td>
                                         <td>{item.mandatory ? "Có" : "Không"}</td>
                                         {/**các button sửa, xóa 1 hoạt động */}

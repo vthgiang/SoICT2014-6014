@@ -123,7 +123,7 @@ exports.getUsers = async (portal, company, query) => {
             return users;
         }
     } else if (unitId) {
-        return getAllUserInUnitAndItsSubUnits(portal, company, unitId);
+        return getAllUserInUnitAndItsSubUnits(portal, unitId);
     }
 };
 
@@ -218,7 +218,7 @@ exports.getAllEmployeeOfUnitByIds = async (portal, id) => {
  * @id Id công ty
  * @unitID Id của của đơn vị cần lấy đơn vị con
  */
-getAllUserInUnitAndItsSubUnits = async (portal, id, unitId) => {
+getAllUserInUnitAndItsSubUnits = async (portal, unitId) => {
     //Lấy tất cả các đơn vị con của 1 đơn vị
     var data;
 
@@ -230,7 +230,6 @@ getAllUserInUnitAndItsSubUnits = async (portal, id, unitId) => {
 
         data = await OrganizationalUnitService.getChildrenOfOrganizationalUnitsAsTree(
             portal,
-            id,
             organizationalUnit.managers[0]
         );
 

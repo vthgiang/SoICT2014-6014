@@ -6,21 +6,27 @@ import { DataTableSetting, DeleteNotification, PaginateBar } from "../../../../c
 import ExampleCreateForm from "./exampleCreateForm";
 import ExampleEditForm from "./exampleEditForm";
 import ExampleDetailInfo from "./exampleDetailInfo";
+import { getTableConfiguration } from '../../../../helpers/tableConfiguration';
 
 class ExampleManagementTable extends Component {
     constructor(props) {
         super(props);
+        const tableId = "table-manage-example2-class";
+        const defaultConfig = { limit: 5 }
+        const limit = getTableConfiguration(tableId, defaultConfig).limit;
+
         this.state = {
             exampleName: "",
             description: "",
             page: 1,
-            limit: 5
+            perPage: limit,
+            tableId
         };
     }
 
     componentDidMount() {
-        let { exampleName, page, limit } = this.state;
-        this.props.getOnlyExampleName({ exampleName, page, limit });
+        let { exampleName, page, perPage } = this.state;
+        this.props.getOnlyExampleName({ exampleName, page, perPage });
     }
 
     handleChangeExampleName = (e) => {
@@ -47,27 +53,35 @@ class ExampleManagementTable extends Component {
 
     setLimit = async (number) => {
         await this.setState({
-            limit: parseInt(number)
+            perPage: parseInt(number)
         });
         this.props.getOnlyExampleName(this.state);
     }
 
     handleDelete = (id) => {
+        const { example } = this.props;
+        const { exampleName, perPage, page } = this.state;
+
         this.props.deleteExample(id);
+        this.props.getOnlyExampleName({
+            exampleName,
+            perPage,
+            page: example?.lists?.length === 1 ? page - 1 : page
+        });
     }
 
     handleEdit = async (example) => {
         await this.setState((state) => {
             return {
                 ...state,
-                currentRow: example
+                exampleEditting: example?._id
             }
         });
         window.$('#modal-edit-example').modal('show');
     }
 
-    handleShowDetailInfo = async (id) => {
-        await this.setState((state) => {
+    handleShowDetailInfo = (id) => {
+        this.setState((state) => {
             return {
                 ...state,
                 exampleId: id
@@ -78,30 +92,30 @@ class ExampleManagementTable extends Component {
 
     render() {
         const { example, translate } = this.props;
+        const { tableId, exampleId, perPage, page, exampleEditting } = this.state;
         let lists = [];
         if (example.isLoading === false) {
             lists = example.lists
         }
 
-        const totalPage = Math.ceil(example.totalList / this.state.limit);
-        const page = this.state.page;
+        const totalPage = Math.ceil(example.totalList / perPage);
         return (
             <React.Fragment>
                 {
-                    this.state.currentRow &&
                     <ExampleEditForm
-                        exampleId={this.state.currentRow._id}
-                        exampleName={this.state.currentRow.exampleName}
-                        description={this.state.currentRow.description}
+                        exampleId={exampleEditting}
                     />
                 }
                 {
                     <ExampleDetailInfo
-                        exampleId={this.state.exampleId}
+                        exampleId={exampleId}
                     />
                 }
                 <div className="box-body qlcv">
-                    <ExampleCreateForm />
+                    <ExampleCreateForm 
+                        page={page}
+                        perPage={perPage}
+                    />
                     <div className="form-inline">
                         <div className="form-group">
                             <label className="form-control-static">{translate('manage_example.exampleName')}</label>
@@ -111,20 +125,18 @@ class ExampleManagementTable extends Component {
                             <button type="button" className="btn btn-success" title={translate('manage_example.search')} onClick={this.handleSubmitSearch}>{translate('manage_example.search')}</button>
                         </div>
                     </div>
-                    <table id="example-table" className="table table-striped table-bordered table-hover">
+                    <table id={tableId} className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
                                 <th className="col-fixed" style={{ width: 60 }}>{translate('manage_example.index')}</th>
                                 <th>{translate('manage_example.exampleName')}</th>
                                 <th style={{ width: "120px", textAlign: "center" }}>{translate('table.action')}
                                     <DataTableSetting
-                                        tableId="example-table"
+                                        tableId={tableId}
                                         columnArr={[
                                             translate('manage_example.index'),
                                             translate('manage_example.exampleName')
                                         ]}
-                                        limit={this.state.limit}
-                                        hideColumnOption={true}
                                         setLimit={this.setLimit}
                                     />
                                 </th>
@@ -134,7 +146,7 @@ class ExampleManagementTable extends Component {
                             {(lists && lists.length !== 0) &&
                                 lists.map((example, index) => (
                                     <tr key={index}>
-                                        <td>{index + 1 + (page-1) * this.state.limit}</td>
+                                        <td>{index + 1 + (page - 1) * this.state.perPage}</td>
                                         <td>{example.exampleName}</td>
                                         <td style={{ textAlign: "center" }}>
                                             <a className="edit text-green" style={{ width: '5px' }} title={translate('manage_example.detail_info_example')} onClick={() => this.handleShowDetailInfo(example._id)}><i className="material-icons">visibility</i></a>
@@ -145,7 +157,7 @@ class ExampleManagementTable extends Component {
                                                     id: example._id,
                                                     info: example.exampleName
                                                 }}
-                                                func={this.props.deleteExample}
+                                                func={this.handleDelete}
                                             />
                                         </td>
                                     </tr>

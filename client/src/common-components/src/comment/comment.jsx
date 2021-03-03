@@ -368,9 +368,8 @@ class Comment extends Component {
                                             <a style={{ cursor: "pointer" }}>{item.creator?.name} </a>
                                             {item.description.split('\n').map((item, idx) => {
                                                 return (
-                                                    <span key={idx}>
+                                                    <span key={item._id}>
                                                         {parse(item)}
-                                                        <br />
                                                     </span>
                                                 );
                                             })
@@ -397,7 +396,7 @@ class Comment extends Component {
                                                     {showfile.some(obj => obj === item._id) &&
                                                         <div>
                                                             {item.files.map((elem, index) => {
-                                                                return <div key={index} className="show-files-task">
+                                                                return <div key={elem._id} className="show-files-task">
                                                                     {this.isImage(elem.name) ?
                                                                         <ApiImage
                                                                             className="attachment-img files-attach"
@@ -464,9 +463,8 @@ class Comment extends Component {
                                                             <a style={{ cursor: "pointer" }}>{child.creator?.name} </a>
                                                             {child?.description?.split('\n').map((item, idx) => {
                                                                 return (
-                                                                    <span key={idx}>
+                                                                    <span key={item._id}>
                                                                         {parse(item)}
-                                                                        <br />
                                                                     </span>
                                                                 );
                                                             })
@@ -492,7 +490,7 @@ class Comment extends Component {
                                                                     {showfile.some(obj => obj === child._id) &&
                                                                         <li style={{ display: "inline-table" }}>
                                                                             {child.files.map((elem, index) => {
-                                                                                return <div key={index} className="show-files-task">
+                                                                                return <div key={elem._id} className="show-files-task">
                                                                                     {this.isImage(elem.name) ?
                                                                                         <ApiImage
                                                                                             className="attachment-img files-attach"
@@ -539,7 +537,7 @@ class Comment extends Component {
                                                             {child.files.length > 0 &&
                                                                 <div className="tool-level2" style={{ marginTop: "-10px" }}>
                                                                     {child.files.map((file, index) => {
-                                                                        return <div key={index}>
+                                                                        return <div key={file._id}>
                                                                             <a style={{ cursor: "pointer" }}>{file.name} &nbsp;</a><a style={{ cursor: "pointer" }} className="link-black text-sm btn-box-tool" onClick={() => { this.handleDeleteFile(file._id, file.name, child._id, item._id, data._id, "childComment") }}><i className="fa fa-times"></i></a>
                                                                         </div>
                                                                     })}

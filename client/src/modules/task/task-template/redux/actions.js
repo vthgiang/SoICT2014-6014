@@ -8,11 +8,11 @@ export const taskTemplateActions = {
     getTaskTemplateById,
     addTaskTemplate,
     editTaskTemplate,
-    _delete,
+    deleteTaskTemplateById,
     importTaskTemplate,
 };
 
-// Get all tasktemplate
+/** Get all tasktemplate */
 function getAll() {
     return dispatch => {
         dispatch({ type: taskTemplateConstants.GETALL_TEMPLATE_REQUEST } );
@@ -27,7 +27,7 @@ function getAll() {
     };
 }
 
-// Get all task template by role
+/** Get all task template by role */
 function getAllTaskTemplateByRole(id) {
     return dispatch => {
         dispatch({ type: taskTemplateConstants.GETTEMPLATE_BYROLE_REQUEST, id });
@@ -40,7 +40,7 @@ function getAllTaskTemplateByRole(id) {
     };
 }
 
-// Get all task template by user
+/** Get all task template by user */
 function getAllTaskTemplateByUser(pageNumber, noResultsPerPage, arrayUnit, name="") {
     return dispatch => {
         dispatch({ type: taskTemplateConstants.GETTEMPLATE_BYUSER_REQUEST});
@@ -55,7 +55,7 @@ function getAllTaskTemplateByUser(pageNumber, noResultsPerPage, arrayUnit, name=
     };
 }
 
-// Get task template by id
+/** Get task template by id */
 function getTaskTemplateById(id) {
     return dispatch => {
         dispatch({ type: taskTemplateConstants.GETTEMPLATE_BYID_REQUEST});
@@ -67,7 +67,7 @@ function getTaskTemplateById(id) {
     };
 }
 
-// Add a new target of unit
+/** Add a new target of unit */
 function addTaskTemplate(taskTemplate) {
     return dispatch => {
         dispatch({ type: taskTemplateConstants.ADDNEW_TEMPLATE_REQUEST } );
@@ -79,7 +79,7 @@ function addTaskTemplate(taskTemplate) {
     };
 }
 
-// Edit a task template
+/** Edit a task template */
 function editTaskTemplate(id, taskTemplate) {
     return dispatch => {
         dispatch({type: taskTemplateConstants.EDIT_TEMPLATE_REQUEST});
@@ -93,8 +93,8 @@ function editTaskTemplate(id, taskTemplate) {
 
 
 
-// prefixed function name with underscore because delete is a reserved word in javascript
-function _delete(id) {
+/** prefixed function name with underscore because delete is a reserved word in javascript */
+function deleteTaskTemplateById(id) {
     return dispatch => {
         dispatch({ type: taskTemplateConstants.DELETE_TEMPLATE_REQUEST});
 
@@ -105,7 +105,7 @@ function _delete(id) {
     };
 }
 
-// Import mẫu công việc
+/** Import mẫu công việc */
 function importTaskTemplate(data) {
     return dispatch => {
         dispatch({

@@ -96,8 +96,10 @@ class OrganizationalUnitKpiAddTargetModal extends Component {
     }
 
     handleWeightChange = (e) => {
+        const { translate } = this.props;
+
         let value = e.target.value;
-        let validation = this.validateWeight(this.props.translate, value);
+        let validation = ValidationHelper.validateNumberInput(translate, value, 0, 100);
 
         this.setState(state => {
             return {
@@ -106,30 +108,6 @@ class OrganizationalUnitKpiAddTargetModal extends Component {
                 weight: value,
             }
         });
-    }
-
-    validateWeight = (translate, value) => {
-        let validation = ValidationHelper.validateEmpty(translate, value);
-
-        if (!validation.status) {
-            return validation;
-        }
-        
-        if (value < 0) {
-            return {
-                status: false,
-                message: this.props.translate('kpi.employee.employee_kpi_set.create_employee_kpi_modal.validate_weight.less_than_0')
-            };
-        } else if(value > 100){
-            return {
-                status: false,
-                message: this.props.translate('kpi.employee.employee_kpi_set.create_employee_kpi_modal.validate_weight.greater_than_100')
-            };
-        } else {
-            return {
-                status: true
-            };
-        }
     }
 
     
@@ -141,7 +119,7 @@ class OrganizationalUnitKpiAddTargetModal extends Component {
         
         validatateName = ValidationHelper.validateName(translate, name);
         validateCriteria = ValidationHelper.validateDescription(translate, criteria);
-        validateWeight = this.validateWeight(translate, weight)
+        validateWeight = ValidationHelper.validateNumberInput(translate, weight, 0, 100);
         
         result = validatateName.status && validateCriteria.status && validateWeight.status;
         return result;

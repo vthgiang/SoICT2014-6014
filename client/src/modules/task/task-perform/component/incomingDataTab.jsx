@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from "react-redux-multilingual";
-import { CommentInProcess } from './commentInProcess';
+import parse from 'html-react-parser';
+
 import { ApiImage, Comment } from '../../../../common-components'
+
 import { AuthActions } from '../../../auth/redux/actions';
 import { performTaskAction } from '../redux/actions';
-import { performtasks } from '../redux/reducers';
 class IncomingDataTab extends Component {
 
     constructor(props) {
@@ -52,15 +53,15 @@ class IncomingDataTab extends Component {
                 {
                     listTask && listTask.map((task, index) =>
                         <React.Fragment>
-                            <div key={index} className="description-box incoming-content">
+                            <div key={task._id + index} className="description-box incoming-content">
                                 <h4>{task.name}</h4>
                                 {/** Danh sách thông tin */}
                                 <strong>{translate('task.task_process.information')}:</strong>
                                 {
                                     task.taskInformations && task.taskInformations.length !== 0 ?
-                                        task.taskInformations.map((info, key) =>
+                                        task.taskInformations.map((info, index) =>
                                             info.isOutput &&
-                                            <ul key={key}>
+                                            <ul key={info._id + index}>
                                                 <li>
                                                     <strong>{info.name}:</strong>
                                                     <span>{info.value}</span>
@@ -75,15 +76,15 @@ class IncomingDataTab extends Component {
                                 <strong>{translate('task.task_process.document')}:</strong>
                                 {
                                     task.documents && task.documents.length !== 0
-                                        ? task.documents.map((document, key) =>
+                                        ? task.documents.map((document, index) =>
                                             document.isOutput &&
-                                            <ul key={key}>
-                                                <li><strong>{document.description} ({document.files.length} tài liệu)</strong></li>
+                                            <ul key={document._id}>
+                                                <li><strong>{parse(document.description)} ({document.files.length} tài liệu)</strong></li>
                                                 {
                                                     document.files
                                                     && document.files.length !== 0
                                                     && document.files.map((file, index) =>
-                                                        <div key={index}>
+                                                        <div key={file._id}>
                                                             {this.isImage(file.name) ?
                                                                 <ApiImage
                                                                     className="attachment-img files-attach"

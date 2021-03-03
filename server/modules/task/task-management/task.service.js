@@ -9,13 +9,6 @@ const overviewService = require(`../../kpi/employee/management/management.servic
 const { sendEmail } = require(`../../../helpers/emailHelper`);
 const { connect } = require(`../../../helpers/dbHelper`);
 
-/**
- * Lấy tất cả các công việc
- */
-exports.getAllTasks = async (portal) => {
-    var tasks = await Task(connect(DB_CONNECTION, portal)).find();
-    return tasks;
-}
 
 /**
  * Lấy tất cả công việc theo id mẫu công việc thỏa mãn điều kiện
@@ -254,17 +247,6 @@ exports.getTaskEvaluations = async (portal, data) => {
     }
 }
 
-
-/**
- * Lấy mẫu công việc theo chức danh và người dùng
- * @id : id người dùng
- */
-exports.getTasksCreatedByUser = async (portal, id) => {
-    var tasks = await Task(connect(DB_CONNECTION, portal)).find({
-        creator: id
-    }).populate({ path: 'taskTemplate' }); // , model: TaskTemplate 
-    return tasks;
-}
 
 /**
  * Lấy công việc theo người dùng ,...$_id

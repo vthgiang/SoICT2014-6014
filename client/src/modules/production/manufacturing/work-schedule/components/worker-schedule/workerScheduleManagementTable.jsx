@@ -8,21 +8,26 @@ import { worksActions } from '../../../manufacturing-works/redux/actions';
 import { workScheduleActions } from '../../redux/actions';
 import WorkerScheduleCreateForm from './workerScheduleCreateForm';
 import './workerScheduleManagementTable.css'
-
+import { getTableConfiguration } from '../../../../../../helpers/tableConfiguration';
 class WorkerScheduleManagementTable extends Component {
     constructor(props) {
         super(props);
         let currentDate = Date.now();
         let currentMonthYear = formatYearMonth(currentDate);
         let allDaysOfMonth = this.getAllDaysOfMonth(currentMonthYear);
+
+        const tableId = "info-mill-table-worker";
+        const defaultConfig = { limit: 5 }
+        const limit = getTableConfiguration(tableId, defaultConfig).limit;
         this.state = {
-            limit: 5,
+            limit: limit,
             page: 1,
             month: currentMonthYear,
             allDaysOfMonth: allDaysOfMonth,
             name: '',
             works: [],
-            currentRole: localStorage.getItem('currentRole')
+            currentRole: localStorage.getItem('currentRole'),
+            tableId
         }
     }
 
@@ -171,7 +176,7 @@ class WorkerScheduleManagementTable extends Component {
         }
         const { totalPages, page } = workSchedule;
 
-        const { month, allDaysOfMonth, name } = this.state;
+        const { month, allDaysOfMonth, name, tableId } = this.state;
 
         const arrayStatus = [0, 6, 1, 2, 3, 4];
         return (
@@ -235,14 +240,12 @@ class WorkerScheduleManagementTable extends Component {
                     }
                 </div>
                 <DataTableSetting
-                    tableId="info-mill-table-worker"
-                    limit={this.state.limit}
+                    tableId={tableId}
                     setLimit={this.setLimit}
-                    hideColumnOption={false}
                 />
                 <div id="croll-table-worker" className="form-inline">
                     <div className="col-lg-6 col-md-6 col-sm-7 col-xs-8" style={{ padding: 0 }}>
-                        <table id="info-mill-table-worker" className="table table-bordered not-sort">
+                        <table id={tableId} className="table table-bordered not-sort">
                             <thead>
                                 <tr>
                                     <th>{translate('manufacturing.work_schedule.employee_name')}</th>
@@ -299,35 +302,35 @@ class WorkerScheduleManagementTable extends Component {
                             <tbody>
                                 {
                                     listWorkSchedulesWorker.length !== 0 && listWorkSchedulesWorker.map((schedule, index1) =>
-                                        (
-                                            schedule.turns.map((turn, index2) => (
-                                                <tr key={index2}>
-                                                    {
-                                                        turn.map((command, index3) => {
-                                                            if (command !== null)
-                                                                return (
-                                                                    <td key={index3} className="tooltip-checkbox">
-                                                                        {/* <input type="checkbox" disabled={true} style={{ backgroundColor: translate(`manufacturing.work_schedule.${command.status}.color`) }}>
-                                                                        </input> */}
-                                                                        <span className="icon" title={translate(`manufacturing.work_schedule.${command.status}.content`)} style={{ backgroundColor: translate(`manufacturing.work_schedule.${command.status}.color`) }}></span>
-                                                                        <span className="tooltiptext">
-                                                                            <a style={{ color: "white" }} onClick={() => this.handleShowDetailManufacturingCommand(command)}>{command.code}</a>
-                                                                        </span>
-                                                                    </td>
-                                                                )
-
+                                    (
+                                        schedule.turns.map((turn, index2) => (
+                                            <tr key={index2}>
+                                                {
+                                                    turn.map((command, index3) => {
+                                                        if (command !== null)
                                                             return (
-                                                                <td key={index3}>
-                                                                    {/* <input type="checkbox" disabled={true} /> */}
-                                                                    <span className="icon" style={{ backgroundColor: "white" }}></span>
+                                                                <td key={index3} className="tooltip-checkbox">
+                                                                    {/* <input type="checkbox" disabled={true} style={{ backgroundColor: translate(`manufacturing.work_schedule.${command.status}.color`) }}>
+                                                                        </input> */}
+                                                                    <span className="icon" title={translate(`manufacturing.work_schedule.${command.status}.content`)} style={{ backgroundColor: translate(`manufacturing.work_schedule.${command.status}.color`) }}></span>
+                                                                    <span className="tooltiptext">
+                                                                        <a style={{ color: "white" }} onClick={() => this.handleShowDetailManufacturingCommand(command)}>{command.code}</a>
+                                                                    </span>
                                                                 </td>
-                                                            );
-                                                        })
-                                                    }
-                                                </tr>
+                                                            )
 
-                                            ))
-                                        )
+                                                        return (
+                                                            <td key={index3}>
+                                                                {/* <input type="checkbox" disabled={true} /> */}
+                                                                <span className="icon" style={{ backgroundColor: "white" }}></span>
+                                                            </td>
+                                                        );
+                                                    })
+                                                }
+                                            </tr>
+
+                                        ))
+                                    )
                                     )
                                 }
                             </tbody>

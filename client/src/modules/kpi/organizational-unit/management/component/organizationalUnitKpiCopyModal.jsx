@@ -76,8 +76,7 @@ class ModalCopyKPIUnit extends Component {
                 type: 'copy-parent-kpi-to-employee',
                 idunit: idunit,
                 datenew: monthDefault,
-                approver: approver ? approver : (approverDefault && approverDefault[0]
-                    && approverDefault[0].value && approverDefault[0].value[0] && approverDefault[0].value[0].value)
+                approver: approver ? approver : approverDefault?.[1]?.value?.[0]?.value
             }
 
             this.props.copyKPIUnit(kpiId, data);
@@ -124,11 +123,11 @@ class ModalCopyKPIUnit extends Component {
                         <SelectBox
                             id={`copy-kpi-unit-approver`}
                             className="form-control select2"
-                            style={{ width: "40%" }}
+                            style={{ width: "100%" }}
                             items={approverDefault}
                             multiple={false}
                             onChange={this.handleApproverChange}
-                            value={approver}
+                            value={approver ? approver : approverDefault?.[1]?.value?.[0]?.value}
                         />
                         <br/>
                     </div>

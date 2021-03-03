@@ -5,24 +5,29 @@ import { DataTableSetting, DeleteNotification, PaginateBar, SelectMulti } from '
 
 import ArchiveDetailForm from './archiveDetailForm';
 import ArchiveEditForm from './archiveEditForm';
-import { BinLocationActions} from '../../redux/actions';
+import { BinLocationActions } from '../../redux/actions';
 import { GoodActions } from '../../../../common-production/good-management/redux/actions';
 import { StockActions } from '../../../../warehouse/stock-management/redux/actions';
-
+import { getTableConfiguration } from '../../../../../../helpers/tableConfiguration';
 class ArchiveManagementTable extends Component {
     constructor(props) {
         super(props);
+        const tableId = "archive-management-table";
+        const defaultConfig = { limit: 5 }
+        const limit = getTableConfiguration(tableId, defaultConfig).limit;
+
         this.state = {
             currentRole: localStorage.getItem("currentRole"),
             page: 1,
-            limit: 5,
+            limit: limit,
             path: '',
             status: '',
-            stock: ''
+            stock: '',
+            tableId
         }
     }
 
-    componentDidMount(){
+    componentDidMount() {
         let { page, limit, currentRole } = this.state;
         this.props.getChildBinLocations({ page, limit, managementLocation: currentRole });
         this.props.getAllGoods();
@@ -107,111 +112,109 @@ class ArchiveManagementTable extends Component {
         this.props.getChildBinLocations(data);
     }
 
-    render (){
+    render() {
         const { translate, binLocations, stocks } = this.props;
         const { listStocks } = stocks;
         const { listPaginate, totalPages, page } = binLocations;
-        const { currentRow } = this.state;
+        const { currentRow, tableId } = this.state;
 
         return (
-                <div className="box-body qlcv">
-                    <div className="form-inline">
-                        <div className="form-group">
-                            <label className="form-control-static">{translate('manage_warehouse.bin_location_management.stock')}</label>
-                            <SelectMulti
-                                id={`select-multi-stock-bin_location`}
-                                multiple="multiple"
-                                options={{ nonSelectedText: translate('manage_warehouse.bin_location_management.choose_status'), allSelectedText: translate('manage_warehouse.bin_location_management.all_type') }}
-                                className="form-control select2"
-                                style={{ width: "100%" }}
-                                items={listStocks.map((x, index) => { return { value: x._id, text: x.name }})}
-                                onChange={this.handleStockChange}
-                            />
-                        </div>
-                        <div className="form-group">
-                            <label className="form-control-static">{translate('manage_warehouse.bin_location_management.status')}</label>
-                            <SelectMulti
-                                id={`select-multi-status-bin_location`}
-                                multiple="multiple"
-                                options={{ nonSelectedText: translate('manage_warehouse.bin_location_management.choose_status'), allSelectedText: translate('manage_warehouse.bin_location_management.all_type') }}
-                                className="form-control select2"
-                                style={{ width: "100%" }}
-                                items={[
-                                    { value: '1', text: translate('manage_warehouse.bin_location_management.1.status')},
-                                    { value: '2', text: translate('manage_warehouse.bin_location_management.2.status')},
-                                    { value: '3', text: translate('manage_warehouse.bin_location_management.3.status')},
-                                    { value: '4', text: translate('manage_warehouse.bin_location_management.4.status')},
-                                    { value: '5', text: translate('manage_warehouse.bin_location_management.5.status')},
-                                ]}
-                                onChange={this.handleStatusChange}
-                            />
-                        </div>
-                    </div>
-                    <div className="form-inline">
-                        <div className="form-group">
-                            <label className="form-control-static">{translate('manage_warehouse.bin_location_management.code')}</label>
-                            <input type="text" className="form-control" name="code" onChange={this.handleCodeChange} placeholder={translate('manage_warehouse.bin_location_management.code')} autoComplete="off" />
-                        </div>
-                        <div className="form-group">
-                            <label></label>
-                            <button type="button" className="btn btn-success" title={translate('manage_warehouse.bin_location_management.search')} onClick={this.handleSubmitSearch}>{translate('manage_warehouse.good_management.search')}</button>
-                        </div>
-                    </div>
-                    <ArchiveDetailForm />
-                    { currentRow && 
-                        <ArchiveEditForm
-                            binId={currentRow._id}
-                            binCapacity={currentRow.capacity}
-                            binContained={currentRow.contained}
-                            binEnableGoods={currentRow.enableGoods}
-                            binStatus={currentRow.status}
-                            binUnit={currentRow.unit}
-                            binParent={currentRow.parent}
-                            page={this.state.page}
-                            limit={this.state.limit}
+            <div className="box-body qlcv">
+                <div className="form-inline">
+                    <div className="form-group">
+                        <label className="form-control-static">{translate('manage_warehouse.bin_location_management.stock')}</label>
+                        <SelectMulti
+                            id={`select-multi-stock-bin_location`}
+                            multiple="multiple"
+                            options={{ nonSelectedText: translate('manage_warehouse.bin_location_management.choose_status'), allSelectedText: translate('manage_warehouse.bin_location_management.all_type') }}
+                            className="form-control select2"
+                            style={{ width: "100%" }}
+                            items={listStocks.map((x, index) => { return { value: x._id, text: x.name } })}
+                            onChange={this.handleStockChange}
                         />
-                    }
-                    <table id="category-table" className="table table-striped table-bordered table-hover" style={{marginTop: '15px'}}>
-                        <thead>
-                            <tr>
-                                {/* <th style={{ width: "5%" }}>{translate('manage_warehouse.bin_location_management.index')}</th> */}
-                                <th>{translate('manage_warehouse.bin_location_management.code')}</th>
-                                <th>{translate('manage_warehouse.bin_location_management.status')}</th>
-                                <th>{translate('manage_warehouse.bin_location_management.capacity')}</th>
-                                <th>{translate('manage_warehouse.bin_location_management.contained')}</th>
-                                <th>{translate('manage_warehouse.bin_location_management.goods')}</th>
-                                <th style={{ width: '120px', textAlign: 'center' }}>{translate('table.action')}
+                    </div>
+                    <div className="form-group">
+                        <label className="form-control-static">{translate('manage_warehouse.bin_location_management.status')}</label>
+                        <SelectMulti
+                            id={`select-multi-status-bin_location`}
+                            multiple="multiple"
+                            options={{ nonSelectedText: translate('manage_warehouse.bin_location_management.choose_status'), allSelectedText: translate('manage_warehouse.bin_location_management.all_type') }}
+                            className="form-control select2"
+                            style={{ width: "100%" }}
+                            items={[
+                                { value: '1', text: translate('manage_warehouse.bin_location_management.1.status') },
+                                { value: '2', text: translate('manage_warehouse.bin_location_management.2.status') },
+                                { value: '3', text: translate('manage_warehouse.bin_location_management.3.status') },
+                                { value: '4', text: translate('manage_warehouse.bin_location_management.4.status') },
+                                { value: '5', text: translate('manage_warehouse.bin_location_management.5.status') },
+                            ]}
+                            onChange={this.handleStatusChange}
+                        />
+                    </div>
+                </div>
+                <div className="form-inline">
+                    <div className="form-group">
+                        <label className="form-control-static">{translate('manage_warehouse.bin_location_management.code')}</label>
+                        <input type="text" className="form-control" name="code" onChange={this.handleCodeChange} placeholder={translate('manage_warehouse.bin_location_management.code')} autoComplete="off" />
+                    </div>
+                    <div className="form-group">
+                        <label></label>
+                        <button type="button" className="btn btn-success" title={translate('manage_warehouse.bin_location_management.search')} onClick={this.handleSubmitSearch}>{translate('manage_warehouse.good_management.search')}</button>
+                    </div>
+                </div>
+                <ArchiveDetailForm />
+                { currentRow &&
+                    <ArchiveEditForm
+                        binId={currentRow._id}
+                        binCapacity={currentRow.capacity}
+                        binContained={currentRow.contained}
+                        binEnableGoods={currentRow.enableGoods}
+                        binStatus={currentRow.status}
+                        binUnit={currentRow.unit}
+                        binParent={currentRow.parent}
+                        page={this.state.page}
+                        limit={this.state.limit}
+                    />
+                }
+                <table id={tableId} className="table table-striped table-bordered table-hover" style={{ marginTop: '15px' }}>
+                    <thead>
+                        <tr>
+                            {/* <th style={{ width: "5%" }}>{translate('manage_warehouse.bin_location_management.index')}</th> */}
+                            <th>{translate('manage_warehouse.bin_location_management.code')}</th>
+                            <th>{translate('manage_warehouse.bin_location_management.status')}</th>
+                            <th>{translate('manage_warehouse.bin_location_management.capacity')}</th>
+                            <th>{translate('manage_warehouse.bin_location_management.contained')}</th>
+                            <th>{translate('manage_warehouse.bin_location_management.goods')}</th>
+                            <th style={{ width: '120px', textAlign: 'center' }}>{translate('table.action')}
                                 <DataTableSetting
-                                        tableId="category-table"
-                                        columnArr={[
-                                            // translate('manage_warehouse.bin_location_management.index'),
-                                            translate('manage_warehouse.bin_location_management.code'),
-                                            translate('manage_warehouse.bin_location_management.status'),
-                                            translate('manage_warehouse.bin_location_management.capacity'),
-                                            translate('manage_warehouse.bin_location_management.contained'),
-                                            translate('manage_warehouse.bin_location_management.goods'),
-                                        ]}
-                                        limit={this.state.limit}
-                                        setLimit={this.setLimit}
-                                        hideColumnOption={true}
-                                    />
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        { (typeof listPaginate !== undefined && listPaginate.length !== 0) &&
-                                listPaginate.map((x, index) => (
-                                    <tr key={index}>
-                                        {/* <td>{index + 1}</td> */}
-                                        <td>{x.path}</td>
-                                        <td style={{ color: translate(`manage_warehouse.bin_location_management.${x.status}.color`)}}>{translate(`manage_warehouse.bin_location_management.${x.status}.status`)}</td>
-                                        <td>{x.capacity ? x.capacity : 0} {x.unit}</td>
-                                        <td>{x.contained ? x.contained : 0} {x.unit}</td>
-                                        <td>{(x.enableGoods && x.enableGoods.length > 0) && x.enableGoods.map((x, i) => { return <p key={i}>{ x.good.name }({x.contained}{x.good.baseUnit})</p> })}</td>
-                                        <td style={{textAlign: 'center'}}>
-                                            <a onClick={() => this.handleShowDetailInfo(x)}><i className="material-icons">view_list</i></a>
-                                            <a onClick={() => this.handleEdit(x)} href={`#${x._id}`} className="text-yellow" ><i className="material-icons">edit</i></a>
-                                            {/* <DeleteNotification
+                                    tableId={tableId}
+                                    columnArr={[
+                                        // translate('manage_warehouse.bin_location_management.index'),
+                                        translate('manage_warehouse.bin_location_management.code'),
+                                        translate('manage_warehouse.bin_location_management.status'),
+                                        translate('manage_warehouse.bin_location_management.capacity'),
+                                        translate('manage_warehouse.bin_location_management.contained'),
+                                        translate('manage_warehouse.bin_location_management.goods'),
+                                    ]}
+                                    setLimit={this.setLimit}
+                                />
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {(typeof listPaginate !== undefined && listPaginate.length !== 0) &&
+                            listPaginate.map((x, index) => (
+                                <tr key={index}>
+                                    {/* <td>{index + 1}</td> */}
+                                    <td>{x.path}</td>
+                                    <td style={{ color: translate(`manage_warehouse.bin_location_management.${x.status}.color`) }}>{translate(`manage_warehouse.bin_location_management.${x.status}.status`)}</td>
+                                    <td>{x.capacity ? x.capacity : 0} {x.unit}</td>
+                                    <td>{x.contained ? x.contained : 0} {x.unit}</td>
+                                    <td>{(x.enableGoods && x.enableGoods.length > 0) && x.enableGoods.map((x, i) => { return <p key={i}>{x.good.name}({x.contained}{x.good.baseUnit})</p> })}</td>
+                                    <td style={{ textAlign: 'center' }}>
+                                        <a onClick={() => this.handleShowDetailInfo(x)}><i className="material-icons">view_list</i></a>
+                                        <a onClick={() => this.handleEdit(x)} href={`#${x._id}`} className="text-yellow" ><i className="material-icons">edit</i></a>
+                                        {/* <DeleteNotification
                                                 content={translate('manage_warehouse.category_management.delete_info')}
                                                 data={{
                                                     id: x._id,
@@ -219,21 +222,21 @@ class ArchiveManagementTable extends Component {
                                                 }}
                                                 func={this.props.deleteBinLocations}
                                             /> */}
-                                        </td>
-                                    </tr>
-                                ))
+                                    </td>
+                                </tr>
+                            ))
                         }
-                        </tbody>
-                    </table>
-                    {binLocations.isLoading ?
-                        <div className="table-info-panel">{translate('confirm.loading')}</div> :
-                        (typeof listPaginate === 'undefined' || listPaginate.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
-                    }
-                    <PaginateBar pageTotal = {totalPages} currentPage = {page} func = {this.setPage} />
-                </div>
+                    </tbody>
+                </table>
+                {binLocations.isLoading ?
+                    <div className="table-info-panel">{translate('confirm.loading')}</div> :
+                    (typeof listPaginate === 'undefined' || listPaginate.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                }
+                <PaginateBar pageTotal={totalPages} currentPage={page} func={this.setPage} />
+            </div>
         );
     }
-    
+
 }
 
 const mapStateToProps = state => state;

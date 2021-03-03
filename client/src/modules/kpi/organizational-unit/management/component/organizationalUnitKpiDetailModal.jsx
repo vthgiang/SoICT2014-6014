@@ -147,11 +147,11 @@ class ModalDetailKPI extends Component {
         return exportData;
 
     }
-    handleSetPointKPI = (id) => {
+    handleSetPointKPI = () => {
         let kpiUnitSet = this.props.id;
         let date = this.props.date;
-        let kpiUnit = id;
-        this.props.calculateKPIUnit(kpiUnitSet, date, kpiUnit);
+        //let kpiUnit = id;
+        this.props.calculateKPIUnit(kpiUnitSet, date);
     }
 
     render() {
@@ -175,7 +175,12 @@ class ModalDetailKPI extends Component {
                 size={100}>
                 {/* Danh sách mục tiêu của KPI đơn vị tháng được chọn */}
                 <div className="col-xs-12 col-sm-4">
-                    <div className="box box-solid" style={{ border: "1px solid #ecf0f6", borderBottom: "none" }}>
+                    <div className="form-group">
+                        <button className="btn btn-success" style={{ width: "100%" }} onClick={() => this.handleSetPointKPI()}>
+                            {translate('kpi.evaluation.employee_evaluation.calc_kpi_point')}
+                        </button>
+                    </div>
+                    <div className="box box-solid" style={{ border: "1px solid #ecf0f6", borderBottom: "none", height: "35em", overflow: "auto" }}>
                         <div className="box-header with-border">
                             <h3 className="box-title" style={{ fontWeight: 800 }}>{translate('kpi.organizational_unit.management.detail_modal.list_kpi_unit')}</h3>
                         </div>
@@ -219,11 +224,7 @@ class ModalDetailKPI extends Component {
                                     </div>
                                 </div>
                                 <div className="form-inline pull-right">
-                                    <div className="form-group">
-                                        <button className="btn btn-success" onClick={() => this.handleSetPointKPI(item._id)}>
-                                            {translate('kpi.evaluation.employee_evaluation.calc_kpi_point')}
-                                        </button>
-                                    </div>
+
                                     <div className="form-group">
                                         {detailExportData && <ExportExcel id="export-unit-kpi-management-detail-kpi" exportData={detailExportData} style={{ marginLeft: 5 }} />}
                                     </div>

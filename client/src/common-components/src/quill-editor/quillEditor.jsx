@@ -70,32 +70,51 @@ class QuillEditor extends Component {
                         })
                     }
                     
-                    if (insert === " ") {   // Handle event type space
-                        let text, temp = selection - 2;
+                    if (insert === " " || insert === "\n") {   // Handle event type space and enter
+                        let text, temp;
+                        if (insert === "\n") {
+                            selection = selection + 1;
+                        }
+                        temp = selection - 2;
+
                         while (temp >= 0) {
                             text = quill.getText(temp, 1);
-                            if (text?.toString() === " ") {
+                            if (text?.toString() === " " || text?.toString() === "\n") {
                                 break;
                             } else {
                                 temp--;
                             }
                         }
 
-                        text = quill.getText(temp + 1, selection - temp - 2);
-                        if (text?.startsWith("http://") || text?.startsWith("https://") && (text !== "https://") && (text !== "http://")) {
+                        text = quill.getText(temp + 1, selection - temp - 2)?.toString();
+                        if ((text?.startsWith("http://") || text?.startsWith("https://")) && (text !== "https://") && (text !== "http://")) {
                             quill.deleteText(temp + 1, selection - temp - 2);
                             quill.insertText(temp + 1, text, 'link', text);
                         } else if (text?.endsWith("@gmail.com") || (text?.endsWith("@sis.hust.edu.vn"))) {
                             quill.deleteText(temp + 1, selection - temp - 2);
                             quill.insertText(temp + 1, text, 'link', "mailto:" + text);
+
+                            // Remove attr target for link email
+                            window.$('.ql-editor a').map(function() {
+                                if (this.href?.startsWith("mailto:")) {
+                                    window.$(this).removeAttr("target")
+                                }
+                            })
                         }
                     } else if (insert && insert.length > 1) {   // Handle event paste
-                        if (insert?.startsWith("http://") || insert?.startsWith("https://") && (insert !== "https://") && (insert !== "http://")) {
+                        if ((insert?.startsWith("http://") || insert?.startsWith("https://")) && (insert !== "https://") && (insert !== "http://")) {
                             quill.deleteText(selection, insert.length);
                             quill.insertText(selection, insert, 'link', insert);
                         } else if (insert?.endsWith("@gmail.com") || (insert?.endsWith("@sis.hust.edu.vn"))) {
                             quill.deleteText(selection, insert.length);
                             quill.insertText(selection, insert, 'link', "mailto:" + insert);
+                            
+                            // Remove attr target for link email
+                            window.$('.ql-editor a').map(function() {
+                                if (this.href?.startsWith("mailto:")) {
+                                    window.$(this).removeAttr("target")
+                                }
+                            })
                         }
                     }
                     

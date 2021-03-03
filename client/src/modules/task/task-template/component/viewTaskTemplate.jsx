@@ -209,7 +209,7 @@ class ViewTaskTemplate extends Component {
                                                 <p>
                                                     <b className="number">{index + 1}</b>
                                                     <span className="content">
-                                                        {item.name}
+                                                        {parse(item.name)}
                                                         {
                                                             item.mandatory && <span className="note">{translate('task_template.mandatory')}</span>
                                                         }

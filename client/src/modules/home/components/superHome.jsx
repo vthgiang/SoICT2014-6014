@@ -8,7 +8,7 @@ import { CalendarEmployee } from '../../task/task-dashboard/task-personal-dashbo
 import { withTranslate } from 'react-redux-multilingual';
 import { DatePicker, SlimScroll } from '../../../common-components';
 import Swal from 'sweetalert2';
-import GanttCalendar from '../../task/task-dashboard/task-personal-dashboard/ganttCalendar';
+import { GanttCalendar } from '../../task/task-dashboard/task-personal-dashboard/ganttCalendar';
 
 
 class SuperHome extends Component {
@@ -318,14 +318,12 @@ function mapState(state) {
     return { tasks };
 }
 const actionCreators = {
-    getAllTaskByRole: taskManagementActions.getAllTaskByRole,
     getResponsibleTaskByUser: taskManagementActions.getResponsibleTaskByUser,
     getAccountableTaskByUser: taskManagementActions.getAccountableTaskByUser,
     getConsultedTaskByUser: taskManagementActions.getConsultedTaskByUser,
     getInformedTaskByUser: taskManagementActions.getInformedTaskByUser,
     getCreatorTaskByUser: taskManagementActions.getCreatorTaskByUser,
     getTaskByUser: taskManagementActions.getTasksByUser,
-    getPaginateTasksByUser: taskManagementActions.getPaginateTasksByUser,
 };
 const connectedHome = connect(mapState, actionCreators)(withTranslate(SuperHome));
 export { connectedHome as SuperHome };

@@ -178,7 +178,7 @@ section#dx-service {
 }
 
 section#dx-service > h3 {
-    color: #fff;
+    color: #444444;
     font-weight: 600;
     font-size: 3.5rem;
 }
@@ -291,7 +291,7 @@ div.dx-card > .dx-card-header {
 
 div.dx-card > .dx-card-body > h4 {
     font-weight: bolder;
-    color: #fff;
+    color:#444444;
 }
 
 div.dx-card > .dx-card-body > p {

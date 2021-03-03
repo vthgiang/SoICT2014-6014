@@ -20,18 +20,18 @@ export const AuthActions = {
     checkExistsPassword2,
 }
 
-function login(user){
+function login(user) {
     return dispatch => {
-        dispatch({type: AuthConstants.LOGIN_REQUEST});
+        dispatch({ type: AuthConstants.LOGIN_REQUEST });
         AuthService.login(user)
             .then(res => {
                 setStorage('jwt', res.data.content.token);
                 setStorage('userId', res.data.content.user._id);
                 setStorage('portal', res.data.content.user.portal);
-                if(res.data.content.user.company!== undefined){
+                if (res.data.content.user.company !== undefined) {
                     setStorage('companyId', res.data.content.user.company._id);
                 }
-                if(res.data.content.user.roles.length > 0) 
+                if (res.data.content.user.roles.length > 0)
                     setStorage('currentRole', res.data.content.user.roles[0].roleId._id);
                 dispatch({
                     type: AuthConstants.LOGIN_SUCCESS,
@@ -40,45 +40,45 @@ function login(user){
                 dispatch({ type: SocketConstants.CONNECT_SOCKET_IO })
             })
             .catch(err => {
-                dispatch({type: AuthConstants.LOGIN_FAILE, payload: err.response.data.messages[0]});
+                dispatch({ type: AuthConstants.LOGIN_FAILE, payload: err.response.data.messages[0] });
                 dispatch({ type: SocketConstants.DISCONNECT_SOCKET_IO })
             })
     }
 }
 
-function logout(){
+function logout() {
     return dispatch => {
-        dispatch({type: AuthConstants.LOGOUT_REQUEST});
+        dispatch({ type: AuthConstants.LOGOUT_REQUEST });
         AuthService.logout()
             .then(res => {
                 // Do sẽ reset localStorage và redux, không cần gọi dispatch({type: AuthConstants.LOGOUT_SUCCESS});
-                dispatch({type: SocketConstants.DISCONNECT_SOCKET_IO})
-                dispatch({type: 'RESET'})
+                dispatch({ type: SocketConstants.DISCONNECT_SOCKET_IO })
+                dispatch({ type: 'RESET' })
             })
             .catch(err => {
-                dispatch({type: AuthConstants.LOGOUT_FAILE});
+                dispatch({ type: AuthConstants.LOGOUT_FAILE });
             })
     }
 }
 
-function logoutAllAccount(){
+function logoutAllAccount() {
     return dispatch => {
-        dispatch({type: AuthConstants.LOGOUT_ALL_REQUEST});
+        dispatch({ type: AuthConstants.LOGOUT_ALL_REQUEST });
         AuthService.logoutAllAccount()
             .then(res => {
                 // Do sẽ reset localStorage và redux, Không cần gọi dispatch({type: AuthConstants.LOGOUT_ALL_SUCCESS});
-                dispatch({type: SocketConstants.DISCONNECT_SOCKET_IO})
-                dispatch({type: 'RESET'});
+                dispatch({ type: SocketConstants.DISCONNECT_SOCKET_IO })
+                dispatch({ type: 'RESET' });
             })
             .catch(err => {
-                dispatch({type: AuthConstants.LOGOUT_ALL_FAILE});
+                dispatch({ type: AuthConstants.LOGOUT_ALL_FAILE });
             })
     }
 }
 
-function editProfile(data){
+function editProfile(data) {
     return dispatch => {
-        dispatch({type: AuthConstants.EDIT_PROFILE_REQUEST});
+        dispatch({ type: AuthConstants.EDIT_PROFILE_REQUEST });
         AuthService.editProfile(data)
             .then(res => {
                 dispatch({
@@ -87,14 +87,14 @@ function editProfile(data){
                 });
             })
             .catch(err => {
-                dispatch({type: AuthConstants.EDIT_PROFILE_FAILE});
+                dispatch({ type: AuthConstants.EDIT_PROFILE_FAILE });
             })
     }
 }
 
-function changeInformation(data){
+function changeInformation(data) {
     return dispatch => {
-        dispatch({ type: AuthConstants.CHANGE_USER_INFORMATION_REQUEST});
+        dispatch({ type: AuthConstants.CHANGE_USER_INFORMATION_REQUEST });
         AuthService.changeInformation(data)
             .then(res => {
                 dispatch({
@@ -103,51 +103,51 @@ function changeInformation(data){
                 });
             })
             .catch(err => {
-                dispatch({ type: AuthConstants.CHANGE_USER_INFORMATION_FAILE});
+                dispatch({ type: AuthConstants.CHANGE_USER_INFORMATION_FAILE });
             })
     }
 }
 
-function changePassword(data){
+function changePassword(data) {
     return dispatch => {
         dispatch({ type: AuthConstants.CHANGE_USER_PASSWORD_REQUEST });
         AuthService.changePassword(data)
-        .then(res => {
-            dispatch({
-                type: AuthConstants.CHANGE_USER_PASSWORD_SUCCESS,
-                payload: res.data.content
-            });
-        })
-        .catch(err => {
-            dispatch({ type: AuthConstants.CHANGE_USER_PASSWORD_FAILE });
-        })
-    }
-}
-
-function getLinksOfRole(idRole){
-    return dispatch => {
-        dispatch({ type: AuthConstants.GET_LINKS_OF_ROLE_REQUEST });
-        return new Promise((resolve, reject)=>{
-            AuthService.getLinksOfRole(idRole)
             .then(res => {
                 dispatch({
-                    type: AuthConstants.GET_LINKS_OF_ROLE_SUCCESS,
+                    type: AuthConstants.CHANGE_USER_PASSWORD_SUCCESS,
                     payload: res.data.content
                 });
-                resolve(res);
             })
             .catch(err => {
-                dispatch({type: AuthConstants.GET_LINKS_OF_ROLE_FAILE});
-                reject(err);
+                dispatch({ type: AuthConstants.CHANGE_USER_PASSWORD_FAILE });
             })
-        })
-        
     }
 }
 
-function refresh(){
+function getLinksOfRole(idRole) {
     return dispatch => {
-        dispatch({ type: AuthConstants.REFRESH_DATA_USER_REQUEST});
+        dispatch({ type: AuthConstants.GET_LINKS_OF_ROLE_REQUEST });
+        return new Promise((resolve, reject) => {
+            AuthService.getLinksOfRole(idRole)
+                .then(res => {
+                    dispatch({
+                        type: AuthConstants.GET_LINKS_OF_ROLE_SUCCESS,
+                        payload: res.data.content
+                    });
+                    resolve(res);
+                })
+                .catch(err => {
+                    dispatch({ type: AuthConstants.GET_LINKS_OF_ROLE_FAILE });
+                    reject(err);
+                })
+        })
+
+    }
+}
+
+function refresh() {
+    return dispatch => {
+        dispatch({ type: AuthConstants.REFRESH_DATA_USER_REQUEST });
         AuthService.refresh()
             .then(res => {
                 dispatch({
@@ -156,14 +156,14 @@ function refresh(){
                 })
             })
             .catch(err => {
-                dispatch({type: AuthConstants.REFRESH_DATA_USER_FAILE});
+                dispatch({ type: AuthConstants.REFRESH_DATA_USER_FAILE });
             })
     }
 }
 
-function forgotPassword(data){
+function forgotPassword(data) {
     return dispatch => {
-        dispatch({type: AuthConstants.FORGOT_PASSWORD_REQUEST});
+        dispatch({ type: AuthConstants.FORGOT_PASSWORD_REQUEST });
         AuthService.forgotPassword(data)
             .then(res => {
                 dispatch({
@@ -172,14 +172,14 @@ function forgotPassword(data){
                 });
             })
             .catch(err => {
-                dispatch({type: AuthConstants.FORGOT_PASSWORD_FAILE});
+                dispatch({ type: AuthConstants.FORGOT_PASSWORD_FAILE });
             })
     }
 }
 
-function resetPassword(data){
+function resetPassword(data) {
     return dispatch => {
-        dispatch({type: AuthConstants.RESET_PASSWORD_REQUEST});
+        dispatch({ type: AuthConstants.RESET_PASSWORD_REQUEST });
         AuthService.resetPassword(data)
             .then(res => {
                 dispatch({
@@ -188,15 +188,15 @@ function resetPassword(data){
                 });
             })
             .catch(err => {
-                dispatch({type: AuthConstants.RESET_PASSWORD_FAILE});
+                dispatch({ type: AuthConstants.RESET_PASSWORD_FAILE });
             })
-        
+
     }
 }
 
-function getComponentOfUserInLink(curentRole, linkId){
+function getComponentOfUserInLink(curentRole, linkId) {
     return dispatch => {
-        dispatch({ type: AuthConstants.GET_COMPONENTS_OF_USER_IN_LINK_REQUEST});
+        dispatch({ type: AuthConstants.GET_COMPONENTS_OF_USER_IN_LINK_REQUEST });
         AuthService.getComponentOfUserInLink(curentRole, linkId)
             .then(res => {
                 dispatch({
@@ -205,24 +205,26 @@ function getComponentOfUserInLink(curentRole, linkId){
                 })
             })
             .catch(err => {
-                dispatch({type: AuthConstants.GET_COMPONENTS_OF_USER_IN_LINK_FAILE});
+                dispatch({ type: AuthConstants.GET_COMPONENTS_OF_USER_IN_LINK_FAILE });
             })
     }
 }
-function downloadFile(path, fileName, save=true) {
+function downloadFile(path, fileName, save = true) {
     return dispatch => {
         dispatch({ type: AuthConstants.DOWNLOAD_FILE_REQUEST });
         AuthService.downloadFile(path)
             .then(res => {
                 if (!save) {
                     let fileLoad = new FileReader();
+
                     fileLoad.readAsDataURL(res.data);
                     fileLoad.onload = () => {
                         dispatch({
                             type: AuthConstants.DOWNLOAD_FILE_SUCCESS,
                             payload: {
                                 fileName: fileName,
-                                file: fileLoad.result
+                                file: fileLoad.result,
+                                blob: res.data,
                             }
                         });
                     }
@@ -238,30 +240,30 @@ function downloadFile(path, fileName, save=true) {
     }
 }
 
-function answerAuthQuestion(data){
+function answerAuthQuestion(data) {
     return dispatch => {
         dispatch({ type: AuthConstants.ANSWER_AUTH_QUESTIONS_REQUEST });
-        return new Promise((resolve, reject)=>{
+        return new Promise((resolve, reject) => {
             AuthService.answerAuthQuestion(data)
-            .then(res => {
-                dispatch({
-                    type: AuthConstants.ANSWER_AUTH_QUESTIONS_SUCCESS,
-                    payload: res.data.content
-                });
-                resolve(res);
-            })
-            .catch(err => {
-                dispatch({type: AuthConstants.ANSWER_AUTH_QUESTIONS_FAILE});
-                reject(err);
-            })
+                .then(res => {
+                    dispatch({
+                        type: AuthConstants.ANSWER_AUTH_QUESTIONS_SUCCESS,
+                        payload: res.data.content
+                    });
+                    resolve(res);
+                })
+                .catch(err => {
+                    dispatch({ type: AuthConstants.ANSWER_AUTH_QUESTIONS_FAILE });
+                    reject(err);
+                })
         })
-        
+
     }
 }
 
 function checkExistsPassword2() {
     return dispatch => {
-        dispatch({type: AuthConstants.CHECK_PASSWORD2_EXITS_REQUEST});
+        dispatch({ type: AuthConstants.CHECK_PASSWORD2_EXITS_REQUEST });
         AuthService.checkExistsPassword2()
             .then(res => {
                 dispatch({
@@ -270,8 +272,8 @@ function checkExistsPassword2() {
                 });
             })
             .catch(err => {
-                dispatch({type: AuthConstants.CHECK_PASSWORD2_EXITS_FAILE});
+                dispatch({ type: AuthConstants.CHECK_PASSWORD2_EXITS_FAILE });
             })
-        
+
     }
 }

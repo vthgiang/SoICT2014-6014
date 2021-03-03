@@ -23,12 +23,22 @@ const OrganizationalUnitKpiSetSchema = new Schema({
     employeeImportances: [{
         employee: {
             type: Schema.Types.ObjectId,
-            ref: 'User',
+            ref: 'User'
         },
         importance: {
             type: Number,
             default: 100,
         },
+    }],
+    organizationalUnitImportances: [{
+        organizationalUnit: {
+            type: Schema.Types.ObjectId,
+            ref: 'OrganizationalUnit'
+        },
+        importance: {
+            type: Number,
+            default: 100
+        }
     }],
     // Danh sách các KPI trong tập kpi này
     kpis: [{

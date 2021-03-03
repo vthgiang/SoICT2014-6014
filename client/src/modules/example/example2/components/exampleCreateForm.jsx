@@ -25,8 +25,16 @@ class ExampleCreateForm extends Component {
 
     save = () => {
         if (this.isFormValidated()) {
+            const { page, perPage } = this.props;
             const { exampleName, description } = this.state;
-            this.props.createExample([{ exampleName, description }]);
+            if (exampleName) {
+                this.props.createExample([{ exampleName, description }]);
+                this.props.getOnlyExampleName({
+                    exampleName: "",
+                    page: page,
+                    perPage: perPage
+                })
+            }
         }
     }
 
@@ -87,6 +95,7 @@ function mapStateToProps(state) {
 }
 
 const mapDispatchToProps = {
-    createExample: exampleActions.createExample
+    createExample: exampleActions.createExample,
+    getOnlyExampleName: exampleActions.getOnlyExampleName,
 }
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(ExampleCreateForm)); 

@@ -1,8 +1,7 @@
 import { performTaskConstants } from "./constants";
 import { taskManagementConstants } from "../../task-management/redux/constants";
-import { TaskProcessConstants } from "../../task-process/redux/constants";
-import { TaskProcessService } from "../../task-process/redux/services";
 import { performTaskService } from "./services";
+
 export const performTaskAction = {
     getTimesheetLogs,
     getTimerStatusTask,
@@ -14,9 +13,6 @@ export const performTaskAction = {
     createActionComment,
     editActionComment,
     deleteActionComment,
-
-    createResultTask,
-    editResultTask,
 
     createTaskAction,
     editTaskAction,
@@ -40,6 +36,7 @@ export const performTaskAction = {
 
     uploadFile,
     deleteFileTask,
+
     editTaskByAccountableEmployees,
     editTaskByResponsibleEmployees,
     editActivateOfTask,
@@ -70,6 +67,7 @@ export const performTaskAction = {
     deleteChildComment,
     deleteFileComment,
     deleteFileChildComment,
+    
     getAllPreceedingTasks,
 
     sortActions,
@@ -157,7 +155,6 @@ function getTimesheetLogs(taskId) {
 function getTimerStatusTask(taskId) { //param -- , user
     return dispatch => {
         dispatch({ type: performTaskConstants.GET_TIMERSTATUS_REQUEST });
-        //performTaskService.getTimerStatusTask(task,user)
         performTaskService.getTimerStatusTask(taskId)
             .then(
                 payload => dispatch({ type: performTaskConstants.GET_TIMERSTATUS_SUCCESS, payload }),
@@ -510,7 +507,6 @@ function editTaskByAccountableEmployees(data, taskId) {
             .then(res => {
                 dispatch({
                     type: performTaskConstants.EDIT_TASK_BY_ACCOUNTABLE_SUCCESS,
-                    // payload: res.data.content.task
                     payload: res.data.content
                 });
             })
@@ -532,7 +528,6 @@ function editTaskByResponsibleEmployees(data, taskId) {
             .then(res => {
                 dispatch({
                     type: performTaskConstants.EDIT_TASK_BY_RESPONSIBLE_SUCCESS,
-                    // payload: res.data.content.task
                     payload: res.data.content
                 });
             })
@@ -554,7 +549,6 @@ function evaluateTaskByAccountableEmployees(data, taskId) {
             .then(res => {
                 dispatch({
                     type: performTaskConstants.EVALUATE_TASK_BY_ACCOUNTABLE_SUCCESS,
-                    // payload: res.data.content.task
                     payload: res.data.content
                 });
             })
@@ -576,7 +570,6 @@ function evaluateTaskByConsultedEmployees(data, taskId) {
             .then(res => {
                 dispatch({
                     type: performTaskConstants.EVALUATE_TASK_BY_CONSULTED_SUCCESS,
-                    // payload: res.data.content.task
                     payload: res.data.content
                 });
             })

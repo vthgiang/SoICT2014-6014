@@ -60,6 +60,7 @@ export default {
                 empty_error: "Value cannot be empty",
                 not_existing_error: "Value not existing",
                 existing_error: "Value existing",
+                number_input_error: "Value must be between {min} to {max}"
             },
             not_org_unit: "Not have organizational unit",
             not_select_unit: "Select units",
@@ -67,6 +68,172 @@ export default {
             list_employee: "Employee list",
             detail: "Detail",
             select_all: "Select all",
+            add_import: "Add data from file",
+        },
+
+        menu: {
+            home: "Home Page",
+            system_administration: "System Administration",
+            manage_configuration: "Configuration",
+            manage_system: "Backup and Restore",
+            manage_company: "Manage Company",
+            manage_role: "Manage Roles",
+            manage_link: "Manage Pages",
+            manage_component: "Manage permissions on page",
+
+            manage_department: "Manage Departments",
+            manage_user: "Manage Users",
+
+            manage_document: "Manage Documents",
+            documents_og: "Manage document organizational unit",
+            documents: "Documents",
+            crm: "CRM",
+            crm_list: {
+                customer: "Customers",
+                lead: "Leads",
+                care: "Cares",
+                group: "Groups",
+                statistic: "Statistics",
+                generalConfiguration: "generalConfiguration",
+            },
+
+            task_template: "Task Template",
+            cocautochuc: "Organizational Structure",
+            taskmanagement: "Task Management",
+            manageDocument: "Manage Document",
+            manageDocumentType: "Manage Document Type",
+
+            leave_application: "Manage leave application",
+            manage_employee: "Manage Staffs",
+            manage_training: "Manage Training",
+            account: "Account",
+            annual_leave_personal: "Annual Leave",
+            manage_unit: "Manage Units",
+            manage_work_plan: "Manage Work Plan",
+            add_employee: "Add New Staffs",
+            list_employee: "Manage Staffs Information",
+            detail_employee: "Personal Information",
+            update_employee: "Update Personal Information",
+            dashboard_employee: "DashBoard Manage Staffs ",
+            dashboard_personal: "DashBoard personal",
+            dashboard_unit: "DashBoard unit",
+            employee_capacity: "Employee capacity",
+            discipline: "Manage Commendation And Discipline",
+            annual_leave: "Manage Annual Leave",
+            salary_employee: "Manage Salary",
+            manage_field: "Manage career/fields",
+            time_keeping: "Attendance Staff",
+            list_education: "Training Programs",
+            training_plan: "Manage Training Courses",
+            list_major: "Manage majors",
+            list_career_position: "Manage career position",
+            list_search_for_package: "Search employee for package",
+
+            manage_warehouse: "Manage warehouses",
+            dashboard_material: "Dashboad manage materials",
+
+            manage_kpi: "Manage KPI",
+            kpi_unit_create: "Create unit KPI",
+            kpi_unit_evaluate: "Evaluate unit KPI",
+            kpi_unit_overview: "Overview unit KPI",
+            kpi_unit_dashboard: "Dashboard unit KPI",
+            kpi_unit_statistic: "Statistic unit KPI",
+            kpi_unit_manager: "Manage unit KPI",
+            kpi_member_manager: "Evaluate Employee KPI",
+            kpi_member_dashboard: "DashBoard KPI Member",
+            kpi_personal_create: "Create personal KPI",
+            kpi_personal_evaluate: "Evaluate personal KPI",
+            kpi_personal_overview: "Overview personal KPI",
+            kpi_personal_dashboard: "DashBoard personal KPI",
+            kpi_personal_manager: "Manager personal KPI",
+
+            notifications: "Notifications",
+
+            tasks: "Task management",
+            task: "Detailed Task",
+            task_management: "Task list",
+            task_management_of_unit: "Unit task list",
+            task_management_dashboard: "Task dashboard",
+            task_organization_management_dashboard: "Unit task dashboard",
+            task_management_process: "Process list",
+            task_process_template: "Process template",
+            all_time_sheet_log: 'All Timesheetlogs',
+            //*******START */
+            // Quản lý tài sản
+            // QUẢN LÝ
+
+            add_update_asset: "Add - Update asset",
+            add_asset_title: "Add new asset - Update asset",
+            add_asset: "Add new asset",
+            update_asset: "Update asset",
+            manage_repair_asset: "Manage repair asset",
+            manage_usage_asset: "Manage usage asset",
+            manage_distribute_asset: "Manage distribute asset",
+            manage_room_asset: "Manage room asset",
+            manage_crash_asset: "Manage crash asset",
+
+            manage_asset: "Manage assets",
+            dashboard_asset: "DashBoard manage assets",
+            manage_type_asset: "Manage type assets",
+            manage_info_asset: "Manage infomation assets",
+            manage_maintainance_asset: "Manage maintainance assets",
+            manage_depreciation_asset: "Manage depreciation assets",
+            manage_incident_asset: "Manage incident assets",
+            manage_recommend_procure: "Manage purchase request",
+            manage_recommend_distribute_asset: "Manage use request",
+            employee_manage_asset_info: "Manage managed assets",
+
+            view_building_list: "View building list",
+            // NHÂN VIÊN
+            recommend_equipment_procurement: "Recommend equipment procurement",
+            recommend_distribute_asset: "Recommend distribute asset",
+            manage_assigned_asset: "Manage assigned assets",
+            //******END */
+
+            // QUẢN LÝ BÁO CÁO
+            report_management: "Report management",
+            task_report: "Manage task reports",
+
+            //QUẢN LÝ ĐƠN HÀNG
+            manage_orders: "Manage Order",
+            manage_sales_order: "Sales Order",
+            manage_purchase_order: "Purchase Order",
+            manage_quote: "Quote",
+            manage_sales_order_dashboard: "Sales Order Statistics",
+            manage_discount: "Discount",
+            manage_tax: "Tax",
+            manage_sla: "Service Level Agreement",
+            manage_business_department: "Business Department",
+            manage_payment: "Receipts And Payments",
+            manage_bank_account: "Bank Account",
+
+            //QUẢN LÝ KẾ HOẠCH SẢN XUẤT
+            manage_plans: "Manage Plans",
+
+            //VÍ DỤ EXAMPLE
+            manage_examples: "CRUD example",
+            manage_examples_1: "CRUD by model 1",
+            manage_examples_2: "CRUD by model 2",
+            manage_examples_hooks_1: "CRUD Hooks by model 1",
+            manage_examples_hooks_2: "CRUD Hooks by model 2",
+
+            // Quản lý sản xuất
+            manage_manufacturing: "Manage manufacturing",
+            manage_manufacturing_plan: "Manage manufacturing plan",
+            manage_manufacturing_command: "Manage manufacturing command",
+            manage_manufacturing_process: "Manage manufacturing process",
+            manage_manufacturing_schedule: "Manage manufacturing schedule",
+            manage_purchasing_request: "Manage purchasing request",
+            manufacturing_dashboard: "Manufacturing Dashboard",
+            analysis_manufacturing_performance:
+                "Analysis manufacturing performance",
+            manage_manufacturing_works: "Manage manufacturing works",
+            manage_manufacturing_mill: "Manage manufacturing mill",
+            manage_project: "Manage Project",
+
+
+            user_guide: "User guide",
+            user_guide_detail: "User guide detail",
         },
 
         intro: {
@@ -427,6 +594,7 @@ export default {
                 system_component_name_exist: "Component name exist",
             },
         },
+
         super_admin: {
             system: {
                 edit_backup_info: "Edit backup version information",
@@ -767,7 +935,9 @@ export default {
             content: "System cannot search this page for you",
             back_to_home: "Back to homepage",
         },
+
         language: "Setting language",
+        
         alert: {
             title: "Notification from system",
             log_again: "Error! Log in again!",
@@ -854,6 +1024,7 @@ export default {
             add_success: "Add new success",
             add_faile: "Add new faile",
         },
+
         page: {
             unit: "Unit",
             position: "Position",
@@ -885,171 +1056,6 @@ export default {
                 title_showmore: "Click to show more",
                 title_showless: "Click to show less"
             }
-        },
-
-        menu: {
-            home: "Home Page",
-            system_administration: "System Administration",
-            manage_configuration: "Configuration",
-            manage_system: "Backup and Restore",
-            manage_company: "Manage Company",
-            manage_role: "Manage Roles",
-            manage_link: "Manage Pages",
-            manage_component: "Manage permissions on page",
-
-            manage_department: "Manage Departments",
-            manage_user: "Manage Users",
-
-            manage_document: "Manage Documents",
-            documents_og: "Manage document organizational unit",
-            documents: "Documents",
-            crm: "CRM",
-            crm_list: {
-                customer: "Customers",
-                lead: "Leads",
-                care: "Cares",
-                group: "Groups",
-                statistic: "Statistics",
-                generalConfiguration: "generalConfiguration",
-            },
-
-            task_template: "Task Template",
-            cocautochuc: "Organizational Structure",
-            taskmanagement: "Task Management",
-            manageDocument: "Manage Document",
-            manageDocumentType: "Manage Document Type",
-
-            leave_application: "Manage leave application",
-            manage_employee: "Manage Staffs",
-            manage_training: "Manage Training",
-            account: "Account",
-            annual_leave_personal: "Annual Leave",
-            manage_unit: "Manage Units",
-            manage_work_plan: "Manage Work Plan",
-            add_employee: "Add New Staffs",
-            list_employee: "Manage Staffs Information",
-            detail_employee: "Personal Information",
-            update_employee: "Update Personal Information",
-            dashboard_employee: "DashBoard Manage Staffs ",
-            dashboard_personal: "DashBoard personal",
-            dashboard_unit: "DashBoard unit",
-            employee_capacity: "Employee capacity",
-            discipline: "Manage Commendation And Discipline",
-            annual_leave: "Manage Annual Leave",
-            salary_employee: "Manage Salary",
-            manage_field: "Manage career/fields",
-            time_keeping: "Attendance Staff",
-            list_education: "Training Programs",
-            training_plan: "Manage Training Courses",
-            list_major: "Manage majors",
-            list_career_position: "Manage career position",
-            list_search_for_package: "Search employee for package",
-
-            manage_warehouse: "Manage warehouses",
-            dashboard_material: "Dashboad manage materials",
-
-            manage_kpi: "Manage KPI",
-            kpi_unit_create: "Create unit KPI",
-            kpi_unit_evaluate: "Evaluate unit KPI",
-            kpi_unit_overview: "Overview unit KPI",
-            kpi_unit_dashboard: "Dashboard unit KPI",
-            kpi_unit_statistic: "Statistic unit KPI",
-            kpi_unit_manager: "Manage unit KPI",
-            kpi_member_manager: "Evaluate Employee KPI",
-            kpi_member_dashboard: "DashBoard KPI Member",
-            kpi_personal_create: "Create personal KPI",
-            kpi_personal_evaluate: "Evaluate personal KPI",
-            kpi_personal_overview: "Overview personal KPI",
-            kpi_personal_dashboard: "DashBoard personal KPI",
-            kpi_personal_manager: "Manager personal KPI",
-
-            notifications: "Notifications",
-
-            tasks: "Task management",
-            task: "Detailed Task",
-            task_management: "Task list",
-            task_management_of_unit: "Unit task list",
-            task_management_dashboard: "Task dashboard",
-            task_organization_management_dashboard: "Unit task dashboard",
-            task_management_process: "Process list",
-            task_process_template: "Process template",
-            all_time_sheet_log: 'All Timesheetlogs',
-            //*******START */
-            // Quản lý tài sản
-            // QUẢN LÝ
-
-            add_update_asset: "Add - Update asset",
-            add_asset_title: "Add new asset - Update asset",
-            add_asset: "Add new asset",
-            update_asset: "Update asset",
-            manage_repair_asset: "Manage repair asset",
-            manage_usage_asset: "Manage usage asset",
-            manage_distribute_asset: "Manage distribute asset",
-            manage_room_asset: "Manage room asset",
-            manage_crash_asset: "Manage crash asset",
-
-            manage_asset: "Manage assets",
-            dashboard_asset: "DashBoard manage assets",
-            manage_type_asset: "Manage type assets",
-            manage_info_asset: "Manage infomation assets",
-            manage_maintainance_asset: "Manage maintainance assets",
-            manage_depreciation_asset: "Manage depreciation assets",
-            manage_incident_asset: "Manage incident assets",
-            manage_recommend_procure: "Manage purchase request",
-            manage_recommend_distribute_asset: "Manage use request",
-            employee_manage_asset_info: "Manage managed assets",
-
-            view_building_list: "View building list",
-            // NHÂN VIÊN
-            recommend_equipment_procurement: "Recommend equipment procurement",
-            recommend_distribute_asset: "Recommend distribute asset",
-            manage_assigned_asset: "Manage assigned assets",
-            //******END */
-
-            // QUẢN LÝ BÁO CÁO
-            report_management: "Report management",
-            task_report: "Manage task reports",
-
-            //QUẢN LÝ ĐƠN HÀNG
-            manage_orders: "Manage Order",
-            manage_sales_order: "Sales Order",
-            manage_purchase_order: "Purchase Order",
-            manage_quote: "Quote",
-            manage_sales_order_dashboard: "Sales Order Statistics",
-            manage_discount: "Discount",
-            manage_tax: "Tax",
-            manage_sla: "Service Level Agreement",
-            manage_business_department: "Business Department",
-            manage_payment: "Receipts And Payments",
-            manage_bank_account: "Bank Account",
-
-            //QUẢN LÝ KẾ HOẠCH SẢN XUẤT
-            manage_plans: "Manage Plans",
-
-            //VÍ DỤ EXAMPLE
-            manage_examples: "CRUD example",
-            manage_examples_1: "CRUD by model 1",
-            manage_examples_2: "CRUD by model 2",
-            manage_examples_hooks_1: "CRUD Hooks by model 1",
-            manage_examples_hooks_2: "CRUD Hooks by model 2",
-
-            // Quản lý sản xuất
-            manage_manufacturing: "Manage manufacturing",
-            manage_manufacturing_plan: "Manage manufacturing plan",
-            manage_manufacturing_command: "Manage manufacturing command",
-            manage_manufacturing_process: "Manage manufacturing process",
-            manage_manufacturing_schedule: "Manage manufacturing schedule",
-            manage_purchasing_request: "Manage purchasing request",
-            manufacturing_dashboard: "Manufacturing Dashboard",
-            analysis_manufacturing_performance:
-                "Analysis manufacturing performance",
-            manage_manufacturing_works: "Manage manufacturing works",
-            manage_manufacturing_mill: "Manage manufacturing mill",
-            manage_project: "Manage Project",
-
-
-            user_guide: "User guide",
-            user_guide_detail: "User guide detail",
         },
 
         manage_system: {
@@ -3648,6 +3654,9 @@ export default {
                     priority: "Priority",
                     formula: "Formula",
                     explain_automatic_point: "Explain automatic value",
+                    cal_all_kpis: '(*)Calculator all kpi',
+                    update_task_importance: `(*)Update task importance level and Calculator KPI point`,
+
                 },
 
                 /**
@@ -3707,7 +3716,8 @@ export default {
                     delete_kpi_failure: "Delete KPI unsuccessfully",
                     copy_kpi_unit: "Copy KPI Unit",
                     employee_importance: "Employee importances",
-
+                    organizational_unit_importance: "Children organizational unit importances",
+                    
                     // Nhóm dành cho trọng số
                     weight_total: "Weight total",
                     not_satisfied: "Not satisfied",
@@ -3753,7 +3763,8 @@ export default {
                     content:
                         "This is the default target (if necessary, weights can be corrected)",
                     delete_title: "Delete",
-                    employee_importance_activated: "KPI has been activated, you can not edit employee importances!"
+                    employee_importance_activated: "KPI has been activated, you can not edit employee importances!",
+                    organizational_unit_importance_activated: "KPI has been activated, you can not edit children organizational unit importances!"
                 },
 
                 create_organizational_unit_kpi_modal: {
@@ -3824,6 +3835,7 @@ export default {
                     edit_target_success: "Edit KPI target successful",
                     edit_target_failure:
                         "You have not entered enough information",
+                    organizational_unit_kpi_exist: "Mục tiêu KPI đã tồn tại"
                 },
                 // Dashboard KPI Unit
                 dashboard: {
@@ -3928,8 +3940,10 @@ export default {
                     detail_participant: "Participant detail",
                     detail_employee_kpi: "Employee KPI detail",
                     email: "Email",
-                    weight_current: "Current KPI weights",
-                    weight_analysis: "KPI weighting according to actual analysis"
+                    weight_established: "Established weight",
+                    weight_analysis_employee: "The KPI weight is based on the established weight analysis of the employee KPI",
+                    weight_analysis_children_unit: "The KPI weight is based on the established weight analysis of the children unit KPI",
+                    weight_analysis_tree_unit: "The KPI weight is based on the established weight analysis of the tree unit KPI",
                 },
 
                 //Thông điệp khác trả về từ server

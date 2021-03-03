@@ -11,16 +11,22 @@ import { TaskReportCreateForm } from './taskReportCreateForm';
 import { TaskReportEditForm } from './taskReportEditForm';
 import { TaskReportDetailForm } from './taskReportDetailForm';
 import './transferList.css';
+import { getTableConfiguration } from '../../../../helpers/tableConfiguration';
 
 class TaskReportManager extends Component {
     constructor(props) {
         super(props);
+        const tableId = "task-report-management-table";
+        const defaultConfig = { limit: 5 }
+        const limit = getTableConfiguration(tableId, defaultConfig).limit;
+
         this.state = {
-            limit: 5,
+            limit: limit,
             page: 0,
             name: '',
             month: null,
             currentRole: localStorage.getItem("userId"),
+            tableId
         }
     }
     componentDidMount() {
@@ -225,7 +231,7 @@ class TaskReportManager extends Component {
 
     render() {
         const { reports, translate, user } = this.props;
-        const { limit, page, currentEditRow, currentViewRow } = this.state;
+        const { limit, page, currentEditRow, currentViewRow, tableId } = this.state;
 
         let pageTotal = (reports.totalList % limit === 0) ?
             parseInt(reports.totalList / limit) :
@@ -304,19 +310,17 @@ class TaskReportManager extends Component {
                     </div>
 
                     <DataTableSetting
-                        tableId="report_manager"
+                        tableId={tableId}
                         columnArr={[
                             translate('report_manager.name'),
                             translate('report_manager.description'),
                             translate('report_manager.creator'),
                         ]}
-                        limit={this.state.limit}
                         setLimit={this.setLimit}
-                        hideColumnOption={true}
                     />
 
                     {/* table hiển thị danh sách báo cáo công việc */}
-                    <table className="table table-hover table-striped table-bordered" id="report_manager">
+                    <table className="table table-hover table-striped table-bordered" id={tableId}>
                         <thead>
                             <tr>
                                 <th>{translate('report_manager.name')}</th>

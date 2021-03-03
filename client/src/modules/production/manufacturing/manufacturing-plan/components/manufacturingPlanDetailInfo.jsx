@@ -9,14 +9,19 @@ import { SalesOrderActions } from '../../../order/sales-order/redux/actions';
 import ManufacturingCommandDetailInfo from '../../manufacturing-command/components/manufacturingCommandDetailInfo';
 import { commandActions } from '../../manufacturing-command/redux/actions';
 import { manufacturingPlanActions } from '../redux/actions';
-
+import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
 class ManufacturingPlanDetailInfo extends Component {
     constructor(props) {
         super(props);
+        const tableId = "manufacturing-plan-detailinfo-table";
+        const defaultConfig = { limit: 5 }
+        const limit = getTableConfiguration(tableId, defaultConfig).limit;
+
         this.state = {
             page: 1,
-            limit: 5,
-            currentRole: localStorage.getItem('currentRole')
+            limit: limit,
+            currentRole: localStorage.getItem('currentRole'),
+            tableId
         }
     }
 
@@ -73,6 +78,7 @@ class ManufacturingPlanDetailInfo extends Component {
 
     render() {
         const { translate, manufacturingPlan, manufacturingCommand } = this.props;
+        const { tableId } = this.state;
         let currentPlan = {};
         if (manufacturingPlan.currentPlan && manufacturingPlan.isLoading === false) {
             currentPlan = manufacturingPlan.currentPlan;
@@ -242,7 +248,7 @@ class ManufacturingPlanDetailInfo extends Component {
                             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                 <fieldset className="scheduler-border">
                                     <legend className="scheduler-border">{translate('manufacturing.plan.list_commands')}</legend>
-                                    <table id="manufacturing-command-table" className="table table-striped table-bordered table-hover">
+                                    <table id={tableId} className="table table-striped table-bordered table-hover">
                                         <thead>
                                             <tr>
                                                 <th>{translate('manufacturing.command.index')}</th>
@@ -257,7 +263,7 @@ class ManufacturingPlanDetailInfo extends Component {
                                                 <th>{translate('manufacturing.command.status')}</th>
                                                 <th style={{ width: "120px", textAlign: "center" }}>{translate('general.action')}
                                                     <DataTableSetting
-                                                        tableId="manufacturing-command-table"
+                                                        tableId={tableId}
                                                         columnArr={[
                                                             translate('manufacturing.command.index'),
                                                             translate('manufacturing.command.code'),
@@ -270,8 +276,6 @@ class ManufacturingPlanDetailInfo extends Component {
                                                             translate('manufacturing.command.end_date'),
                                                             translate('manufacturing.command.status')
                                                         ]}
-                                                        limit={this.state.limit}
-                                                        hideColumnOption={true}
                                                         setLimit={this.setLimit}
                                                     />
                                                 </th>

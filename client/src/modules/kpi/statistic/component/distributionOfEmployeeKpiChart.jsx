@@ -1,13 +1,11 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-
-import { CustomLegendC3js } from '../../../../common-components'
 
 import c3 from 'c3';
 import 'c3/c3.css';
 
-function DistributionOfOrganizationalUnitChart(props) {
+function DistributionOfEmployeeKpiChart(props) {
     const { translate, createKpiUnit, organizationalUnitKPI } = props;
     const chartRef = useRef(null);
 
@@ -36,7 +34,7 @@ function DistributionOfOrganizationalUnitChart(props) {
 
     /** Thiết lập dữ liệu biểu đồ */
     const setDataMultiChart = (organizationalUnitKPI) => {
-        let dataChartAnalysis = [translate('kpi.organizational_unit.statistics.weight_analysis')], dataChartDefault = [translate('kpi.organizational_unit.statistics.weight_current')], xs = ['x'];
+        let dataChartAnalysis = [translate('kpi.organizational_unit.statistics.weight_analysis_employee')], dataChartDefault = [translate('kpi.organizational_unit.statistics.weight_established')], xs = ['x'];
         let objectEmployeeImportance;
 
         objectEmployeeImportance = setEmployeeImportance();
@@ -93,8 +91,10 @@ function DistributionOfOrganizationalUnitChart(props) {
             dataChart = dataChartTemp.dataChart;
             xs = dataChartTemp.xs;
         }
+        let types = {};
+        types[dataChart[1][0]] = 'spline';
 
-        let chartTemp = c3.generate({
+        let chart = c3.generate({
             bindto: chartRef.current,
 
             padding: {
@@ -105,7 +105,14 @@ function DistributionOfOrganizationalUnitChart(props) {
 
             data: {
                 columns: dataChart,
-                type: 'spline'
+                type: 'bar',
+                types: types
+            },
+            
+            bar: {
+                width: {
+                    ratio: 0.1 // this makes bar width 50% of length between ticks
+                }
             },
 
             axis: {
@@ -125,14 +132,9 @@ function DistributionOfOrganizationalUnitChart(props) {
                 },
                 
                 y: {
-                    min: 0,
                     label: {
-                        text: translate('kpi.organizational_unit.dashboard.point'),
+                        text: translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.weight'),
                         position: 'outer-right'
-                    },
-                    padding: {
-                        top: 10,
-                        bottom: 10
                     }
                 }
             },
@@ -174,5 +176,5 @@ const actions = {
 
 }
 
-const connectedDistributionOfOrganizationalUnitChart = connect(mapState, actions)(withTranslate(DistributionOfOrganizationalUnitChart));
-export { connectedDistributionOfOrganizationalUnitChart as DistributionOfOrganizationalUnitChart }
+const connectedDistributionOfEmployeeKpiChart = connect(mapState, actions)(withTranslate(DistributionOfEmployeeKpiChart));
+export { connectedDistributionOfEmployeeKpiChart as DistributionOfEmployeeKpiChart }

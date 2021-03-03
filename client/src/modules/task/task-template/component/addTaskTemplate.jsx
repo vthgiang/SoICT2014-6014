@@ -82,7 +82,7 @@ class AddTaskTemplate extends Component {
                 }
             };
         });
-        
+
         this.props.onChangeTemplateData(this.state.newTemplate);
     }
 
@@ -286,8 +286,10 @@ class AddTaskTemplate extends Component {
         if (nextProps.savedTaskAsTemplate && nextProps.savedTaskId !== this.state.savedTaskId) {
             this.setState(state => {
                 return {
+                    ...state,
                     savedTaskId: nextProps.savedTaskId,
                     id: nextProps.savedTaskId,
+                    savedTaskAsTemplate: nextProps.savedTaskAsTemplate,
                     newTemplate: {
                         organizationalUnit: nextProps.savedTaskItem.organizationalUnit._id,
                         collaboratedWithOrganizationalUnits: nextProps.savedTaskItem.collaboratedWithOrganizationalUnits.map(e => e.organizationalUnit._id),
@@ -305,7 +307,7 @@ class AddTaskTemplate extends Component {
                         taskActions: nextProps.savedTaskItem.taskActions.map(e => {
                             return {
                                 mandatory: e.mandatory,
-                                name: e.description,
+                                name: e.name ? e.name : e.description,
                                 description: e.description,
                             }
                         }),
@@ -379,9 +381,8 @@ class AddTaskTemplate extends Component {
 
     render() {
 
-        console.log('stateeee', this.state);
         var units, taskActions, taskInformations, listRole, usercompanys, userdepartments, departmentsThatUserIsManager, listRoles = [];
-        const { newTemplate, showMore, accountableEmployees, responsibleEmployees, id } = this.state;
+        const { savedTaskAsTemplate, newTemplate, showMore, accountableEmployees, responsibleEmployees, id } = this.state;
         const { department, user, translate, tasktemplates, isProcess } = this.props;
         if (newTemplate.taskActions) taskActions = newTemplate.taskActions;
         if (newTemplate.taskInformations) taskInformations = newTemplate.taskInformations;
@@ -652,11 +653,11 @@ class AddTaskTemplate extends Component {
                     <div className="row">
                         {/**Các hoạt động trong mẫu công việc */}
                         <div className={`${isProcess ? "col-lg-12" : "col-sm-6"}`}>
-                            <ActionForm initialData={taskActions} onDataChange={this.handleTaskActionsChange} />
+                            <ActionForm initialData={taskActions} onDataChange={this.handleTaskActionsChange} savedTaskAsTemplate={savedTaskAsTemplate} />
                         </div>
                         {/**Các thông tin cần có mẫu công việc */}
                         <div className={`${isProcess ? "col-lg-12" : "col-sm-6"}`}>
-                            <InformationForm initialData={taskInformations} onDataChange={this.handleTaskInformationsChange} />
+                            <InformationForm initialData={taskInformations} onDataChange={this.handleTaskInformationsChange} savedTaskAsTemplate={savedTaskAsTemplate} />
                         </div>
                     </div>
                 }

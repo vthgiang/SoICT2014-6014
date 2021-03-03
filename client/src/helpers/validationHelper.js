@@ -62,6 +62,30 @@ export default class ValidationHelper {
         return { status: true };
     }
 
+    /**
+     * Kiểm tra giá trị là số trong khoảng
+     * @param {*} value giá trị nhập vào
+     * @param {*} max giá trị max
+     * @param {*} min giá trị min
+     */
+    static validateNumberInput = (translate, value, min = 0, max = 100) => {
+        let validation = this.validateEmpty(translate, value);
+
+        if (!validation.status) {
+            return validation;
+        }
+        
+        if(value <= max && value >= min){
+            return {
+                status: true
+            };
+        } else {
+            return {
+                status: false,
+                message: translate('general.validate.number_input_error', {min, max})
+            };
+        }
+    }
 
     /**-------------------------------
      * CÁC PHƯƠNG THỨC CẤP 2

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
-import { DialogModal, ImportFileExcel } from '../../../../common-components';
+import { DialogModal, ImportFileExcel, ExportExcel } from '../../../../common-components';
 import { UserActions } from '../redux/actions';
 
 const configData = {
@@ -27,6 +27,57 @@ const configData = {
         columnName: "Phân quyền",
         description: "Phân quyền được cấp cho người dùng",
         value: "Phân quyền"
+    }
+}
+
+const dataImportTemplate = (listRole) => {
+    let role, data = [];
+    if (listRole && listRole.list) {
+        role = listRole.list;
+        role.forEach((x, index) => {
+            data.push({ STT: index + 1, name: x.name });
+        })
+    }
+
+    return {
+        fileName: 'Thông tin người dùng',
+        dataSheets: [
+            {
+                sheetName: 'sheet1',
+                sheetTitle: 'Thông tin người dùng',
+                tables: [
+                    {
+                        columns: [
+                            { key: "name", value: "Tên" },
+                            { key: "email", value: "Email" },
+                            { key: "roles", value: "Phân quyền" },
+                        ],
+                        data: [
+                            {
+                                name: "Nguyễn Văn A",
+                                email: "nva.vnist@gmail.com",
+                                roles: "Nhân viên kỹ thuật",
+                            }
+                        ]
+                    }
+                ]
+            },
+
+            {
+                sheetName: 'sheet2',
+                sheetTitle: 'Thông tin các phân quyền',
+                tables: [
+                    {
+                        columns: [
+                            { key: "STT", value: "Số thứ tự" },
+                            { key: "name", value: "Tên phân quyền" },
+                        ],
+                        data: data
+                    }
+                ]
+            },
+
+        ]
     }
 }
 
@@ -58,7 +109,6 @@ const ModalImportUser = ({ user, role, translate, importUsers, limit }) => {
         let newData = data.map(u => {
             let userRoles = u.roles.split(',');
             userRoles = userRoles.map(ur => _convertRoleNameToId(ur));
-
             return {
                 name: u.name,
                 email: u.email,
@@ -77,11 +127,19 @@ const ModalImportUser = ({ user, role, translate, importUsers, limit }) => {
             func={_importUser}
             size={75}
         >
-            <ImportFileExcel
-                configData={configData}
-                handleImportExcel={_handleImport}
-            />
-            <button type="button" className="btn btn-success" style={{ position: 'absolute', top: 15, right: 15 }}>Download file mẫu</button>
+            <div className="row" style={{ display: 'flex', alignItems: 'center' }}>
+                <div className="col-md-6">
+                    <ImportFileExcel
+                        configData={configData}
+                        handleImportExcel={_handleImport}
+                    />
+                </div>
+                <div className="col-md-6">
+                    <div className="form-group">
+                        <ExportExcel type="link" id="downloadTemplateImport-user" buttonName={translate('human_resource.download_file')} exportData={dataImportTemplate(role)} style={{ marginLeft: '10px' }} />
+                    </div>
+                </div>
+            </div>
         </DialogModal>
     );
 }

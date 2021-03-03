@@ -10,23 +10,32 @@ import { ExampleDetailInfo } from "./exampleDetailInfo";
 import { ExampleImportForm } from "./exampleImortForm";
 
 import { exampleActions } from "../redux/actions";
+import { getTableConfiguration } from '../../../../helpers/tableConfiguration';
 
 function ExampleManagementTable(props) {
+    const getTableId = "table-manage-example1-hooks";
+    const defaultConfig = { limit: 5 }
+    const getLimit = getTableConfiguration(getTableId, defaultConfig).limit;
 
     // Khởi tạo state
     const [state, setState] = useState({
         exampleName: "",
         page: 1,
-        limit: 5,
+        perPage: getLimit,
+        tableId: getTableId,
     })
 
     const { example, translate } = props;
-    const { exampleName, page, limit, currentRow } = state;
+    const { exampleName, page, perPage, currentRow, curentRowDetail, tableId } = state;
 
     useEffect(() => {
-        props.getExamples({ exampleName, page, limit });
+        props.getExamples({ exampleName, page, perPage });
     }, [])
 
+    /**
+     * Hàm xử lý khi tên ví dụ thay đổi
+     * @param {*} e 
+     */
     const handleChangeExampleName = (e) => {
         const { value } = e.target;
         setState({
@@ -35,10 +44,14 @@ function ExampleManagementTable(props) {
         });
     }
 
+
+    /**
+     * Hàm xử lý khi click nút tìm kiếm
+     */
     const handleSubmitSearch = () => {
         props.getExamples({
             exampleName,
-            limit,
+            perPage,
             page: 1
         });
         setState({
@@ -47,6 +60,11 @@ function ExampleManagementTable(props) {
         });
     }
 
+
+    /**
+     * Hàm xử lý khi click chuyển trang
+     * @param {*} pageNumber Số trang định chuyển
+     */
     const setPage = (pageNumber) => {
         setState({
             ...state,
@@ -55,49 +73,66 @@ function ExampleManagementTable(props) {
 
         props.getExamples({
             exampleName,
-            limit,
+            perPage,
             page: parseInt(pageNumber)
         });
     }
 
+
+    /**
+     * Hàm xử lý thiết lập giới hạn hiển thị số bản ghi
+     * @param {*} number số bản ghi sẽ hiển thị
+     */
     const setLimit = (number) => {
         setState({
             ...state,
-            limit: parseInt(number),
+            perPage: parseInt(number),
             page: 1
         });
         props.getExamples({
             exampleName,
-            limit: parseInt(number),
+            perPage: parseInt(number),
             page: 1
         });
     }
 
+
+    /**
+     * Hàm xử lý khi click xóa 1 ví dụ
+     * @param {*} id của ví dụ cần xóa
+     */
     const handleDelete = (id) => {
         props.deleteExample(id);
         props.getExamples({
             exampleName,
-            limit,
+            perPage,
             page: example && example.lists && example.lists.length === 1 ? page - 1 : page
         });
     }
 
+
+    /**
+     * Hàm xử lý khi click edit một ví vụ
+     * @param {*} example thông tin của ví dụ cần chỉnh sửa
+     */
     const handleEdit = (example) => {
         setState({
             ...state,
             currentRow: example
         });
-        console.log(111)
         window.$('#modal-edit-example-hooks').modal('show');
     }
 
-    const handleShowDetailInfo = (id) => {
+    /**
+     * Hàm xử lý khi click xem chi tiết một ví dụ
+     * @param {*} example thông tin của ví dụ cần xem
+     */
+    const handleShowDetailInfo = (example) => {
         setState({
             ...state,
-            exampleId: id
+            curentRowDetail: example,
         });
-
-        window.$(`#modal-detail-info-example-hooks`).modal('show');
+        window.$(`#modal-detail-info-example-hooks`).modal('show')
     }
 
     let lists = [];
@@ -105,7 +140,7 @@ function ExampleManagementTable(props) {
         lists = example.lists
     }
 
-    const totalPage = example && Math.ceil(example.totalList / limit);
+    const totalPage = example && Math.ceil(example.totalList / perPage);
 
     return (
         <React.Fragment>
@@ -114,18 +149,23 @@ function ExampleManagementTable(props) {
                 exampleName={currentRow && currentRow.exampleName}
                 description={currentRow && currentRow.description}
             />
+
             <ExampleDetailInfo
-                exampleId={state.exampleId}
+                exampleID={curentRowDetail && curentRowDetail._id}
+                exampleName={curentRowDetail && curentRowDetail.exampleName}
+                description={curentRowDetail && curentRowDetail.description}
             />
+
             <ExampleCreateForm
                 page={page}
-                limit={limit}
+                perPage={perPage}
             />
+
             <ExampleImportForm
                 page={page}
-                limit={limit}
+                perPage={perPage}
             />
-            
+
             <div className="box-body qlcv">
                 <div className="form-inline">
                     {/* Button thêm mới */}
@@ -138,7 +178,7 @@ function ExampleManagementTable(props) {
                                 {translate('manage_example.add_example')}</a></li>
                         </ul>
                     </div>
-                    
+
                     {/* Tìm kiếm */}
                     <div className="form-group">
                         <label className="form-control-static">{translate('manage_example.exampleName')}</label>
@@ -148,9 +188,9 @@ function ExampleManagementTable(props) {
                         <button type="button" className="btn btn-success" title={translate('manage_example.search')} onClick={() => handleSubmitSearch()}>{translate('manage_example.search')}</button>
                     </div>
                 </div>
-                
+
                 {/* Danh sách các ví dụ */}
-                <table id="example-table" className="table table-striped table-bordered table-hover">
+                <table id={tableId} className="table table-striped table-bordered table-hover">
                     <thead>
                         <tr>
                             <th className="col-fixed" style={{ width: 60 }}>{translate('manage_example.index')}</th>
@@ -158,14 +198,12 @@ function ExampleManagementTable(props) {
                             <th>{translate('manage_example.description')}</th>
                             <th style={{ width: "120px", textAlign: "center" }}>{translate('table.action')}
                                 <DataTableSetting
-                                    tableId="example-table"
+                                    tableId={tableId}
                                     columnArr={[
                                         translate('manage_example.index'),
                                         translate('manage_example.exampleName'),
                                         translate('manage_example.description'),
                                     ]}
-                                    limit={limit}
-                                    hideColumnOption={true}
                                     setLimit={setLimit}
                                 />
                             </th>
@@ -175,11 +213,11 @@ function ExampleManagementTable(props) {
                         {(lists && lists.length !== 0) &&
                             lists.map((example, index) => (
                                 <tr key={index}>
-                                    <td>{index + 1 + (page-1) * limit}</td>
+                                    <td>{index + 1 + (page - 1) * perPage}</td>
                                     <td>{example.exampleName}</td>
                                     <td>{example.description}</td>
                                     <td style={{ textAlign: "center" }}>
-                                        <a className="edit text-green" style={{ width: '5px' }} title={translate('manage_example.detail_info_example')} onClick={() => handleShowDetailInfo(example._id)}><i className="material-icons">visibility</i></a>
+                                        <a className="edit text-green" style={{ width: '5px' }} title={translate('manage_example.detail_info_example')} onClick={() => handleShowDetailInfo(example)}><i className="material-icons">visibility</i></a>
                                         <a className="edit text-yellow" style={{ width: '5px' }} title={translate('manage_example.edit')} onClick={() => handleEdit(example)}><i className="material-icons">edit</i></a>
                                         <DeleteNotification
                                             content={translate('manage_example.delete')}
@@ -217,6 +255,7 @@ function mapState(state) {
     const example = state.example1;
     return { example }
 }
+
 const actions = {
     getExamples: exampleActions.getExamples,
     deleteExample: exampleActions.deleteExample

@@ -7,11 +7,13 @@ import { DialogModal } from '../../../../../common-components/index';
 import { ModalDetailTask } from '../../../../task/task-dashboard/task-personal-dashboard/modalDetailTask';
 import { withTranslate } from 'react-redux-multilingual';
 import parse from 'html-react-parser';
-
+import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
 class EmployeeKpiEvaluateModal extends Component {
     constructor(props) {
         super(props);
         this.DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
+        const tableId = "employee-kpi-evaluate-modal";
+        getTableConfiguration(tableId);
         this.state = {
             organizationalUnit: "",
             content: "",
@@ -23,7 +25,8 @@ class EmployeeKpiEvaluateModal extends Component {
             value: 0,
             valueNow: 0,
             dataStatus: this.DATA_STATUS.NOT_AVAILABLE,
-            type: 0
+            type: 0,
+            tableId
         };
     }
 
@@ -272,7 +275,7 @@ class EmployeeKpiEvaluateModal extends Component {
     render() {
         const { kpimembers } = this.props;
         const { translate, employeeKpiSet } = this.props;
-        const { taskId, content, contentName, perPage, points, tasks, taskImportanceDetail } = this.state;
+        const { taskId, content, contentName, perPage, points, tasks, taskImportanceDetail, tableId } = this.state;
         let list, myTask, exportData, currentKpi;
 
         if (kpimembers.tasks) {
@@ -286,7 +289,6 @@ class EmployeeKpiEvaluateModal extends Component {
             exportData = this.convertDataToExportData(myTask, contentName, employeeKpiSet.creator.name);
         }
         currentKpi = list && list.length ? list.filter(item => item._id == content)[0] : "";
-        console.log('rrrrrrrrrrrrrrrr', kpimembers.tasks, taskImportanceDetail);
         return (
             <DialogModal
                 modalID={"employee-kpi-evaluation-modal"}
@@ -294,20 +296,26 @@ class EmployeeKpiEvaluateModal extends Component {
                 hasSaveButton={false}
                 size={100}>
                 <div className="col-xs-12 col-sm-4">
+                    <div className="form-group">
+                        <button className="btn btn-success" style={{ width: "95%" }} onClick={() => this.handleSetPointAllKPI()}>
+                            {translate('kpi.evaluation.employee_evaluation.calc_kpi_point')}
+                        </button>
+                        <ToolTip
+                            type="icon_tooltip"
+                            dataTooltip={[
+                                translate('kpi.evaluation.employee_evaluation.cal_all_kpis')
+                            ]}
+                        />
+                    </div>
                     <div className="box box-solid" style={{ border: "1px solid #ecf0f6", borderBottom: "none" }}>
                         <div className="box-header with-border">
                             <h3 className="box-title" style={{ fontWeight: 800 }}>{translate('kpi.evaluation.employee_evaluation.KPI_list')}</h3>
-                            <button className="btn btn-success" style={{ marginLeft: "15px" }} onClick={() => this.handleSetPointAllKPI()}>
+                            {/* <button className="btn btn-success" style={{ marginLeft: "15px" }} onClick={() => this.handleSetPointAllKPI()}>
                                 {translate('kpi.evaluation.employee_evaluation.calc_kpi_point')}
-                            </button>
-                            <ToolTip
-                                type="icon_tooltip"
-                                dataTooltip={[
-                                    '(*)Tính điểm toàn bộ KPI'
-                                ]}
-                            />
+                            </button> */}
+
                         </div>
-                        <div className="box-body no-padding">
+                        <div className="box-body no-padding" style={{ height: "35em", overflow: "auto" }}>
                             <ul className="nav nav-pills nav-stacked">
                                 {list && list.map((item, index) =>
                                     <li key={index} className={content === item._id ? "active" : undefined}>
@@ -330,7 +338,7 @@ class EmployeeKpiEvaluateModal extends Component {
                                 <ToolTip
                                     type="icon_tooltip"
                                     dataTooltip={[
-                                        `(*)Tính điểm KPI ${currentKpi ? currentKpi.name : ""}`
+                                        ` ${translate('kpi.evaluation.employee_evaluation.update_task_importance')} ${currentKpi ? currentKpi.name : ""}`,
                                     ]}
                                 />
                             </button>
@@ -364,7 +372,7 @@ class EmployeeKpiEvaluateModal extends Component {
                             </div>
                             <br /><br />
                             <h4>{translate('kpi.evaluation.employee_evaluation.task_list')}</h4>
-                            <DataTableSetting className="pull-right" tableId="employeeKpiEvaluate" tableContainerId="tree-table-container" tableWidth="1300px"
+                            <DataTableSetting className="pull-right" tableId={tableId} tableContainerId="tree-table-container" tableWidth="1300px"
                                 columnArr={[
                                     'STT',
                                     'Tên công việc',
@@ -374,10 +382,8 @@ class EmployeeKpiEvaluateModal extends Component {
                                     'Đóng góp (%)',
                                     'Điểm',
                                     'Độ quan trọng']}
-                                limit={perPage}
-                                setLimit={this.setLimit}
-                                hideColumnOption={true} />
-                            <table id="employeeKpiEvaluate" className="table table-hover table-bordered">
+                                setLimit={this.setLimit} />
+                            <table id={tableId} className="table table-hover table-bordered">
                                 <thead>
                                     <tr>
                                         <th title="STT" style={{ width: "50px" }} className="col-fixed">Stt</th>

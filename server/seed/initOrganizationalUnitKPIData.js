@@ -8,6 +8,8 @@ const {
     OrganizationalUnitKpi,
     OrganizationalUnitKpiSet,
     User,
+    UserRole,
+    Role,
     OrganizationalUnit,
     Task
 } = require('../models');
@@ -49,6 +51,8 @@ const initSampleCompanyDB = async () => {
         if (!db.models.OrganizationalUnitKpi) OrganizationalUnitKpi(db);
         if (!db.models.OrganizationalUnitKpiSet) OrganizationalUnitKpiSet(db);
         if (!db.models.User) User(db);
+        if (!db.models.UserRole) UserRole(db);
+        if (!db.models.Role) Role(db);
         if (!db.models.OrganizationalUnit) OrganizationalUnit(db);
         if (!db.models.Task) Task(db);
         console.log("models_list", db.models);
@@ -87,7 +91,62 @@ const initSampleCompanyDB = async () => {
     ----------------------------------------------------------------------------------------------- */
 
     console.log("Khởi tạo Organizational Unit Kpi Set");
-
+    // Thêm độ quan trọng đơn vị
+    let organizationalUnitImportances = await OrganizationalUnit(vnistDB).find({
+        parent: organizationalUnit_1
+    })
+    if (organizationalUnitImportances && organizationalUnitImportances.length > 0) {
+        organizationalUnitImportances = organizationalUnitImportances.map(item => {
+            return {
+                organizationalUnit: item?._id,
+                importance: 100
+            }
+        })
+    }
+    // Thêm độ quan trọng nhân viên
+    let employeeImportances = [];
+    let organizationalUnit = await OrganizationalUnit(vnistDB).findById(organizationalUnit_1);
+    let allRoles = [
+        ...organizationalUnit.employees,
+        ...organizationalUnit.managers,
+        ...organizationalUnit.deputyManagers,
+    ];
+    let employees = await UserRole(vnistDB)
+        .find({
+            roleId: {
+                $in: allRoles,
+            },
+        })
+        .populate("userId roleId");
+    for (let j in employees) {
+        let check = 0;
+        for (let k in employeeImportances) {
+            if (
+                String(employees[j].userId._id) ==
+                String(employeeImportances[k].userId._id)
+            ) {
+                check = 1;
+                break;
+            }
+        }
+        if (check == 0) {
+            let employee = {
+                _id: employees[j]._id,
+                idUnit: organizationalUnit_1,
+                userId: employees[j].userId,
+                roleId: employees[j].roleId,
+            };
+            employeeImportances.push(employee);
+        }
+    }
+    if (employeeImportances && employeeImportances.length !== 0) {
+        employeeImportances = employeeImportances.map(item => {
+            return {
+                employee: item?.userId?._id,
+                importance: 100
+            }
+        })
+    }
     var organizationalUnitKpiSet = await OrganizationalUnitKpiSet(vnistDB).insertMany([
         {
             organizationalUnit: organizationalUnit_1,
@@ -97,7 +156,9 @@ const initSampleCompanyDB = async () => {
             automaticPoint: 85,
             employeePoint: 89,
             approvedPoint: 79,
-            status: 1
+            status: 1,
+            employeeImportances: employeeImportances,
+            organizationalUnitImportances: organizationalUnitImportances
         }, {
             organizationalUnit: organizationalUnit_1,
             creator: manager,
@@ -106,7 +167,9 @@ const initSampleCompanyDB = async () => {
             automaticPoint: 86,
             employeePoint: 94,
             approvedPoint: 81,
-            status: 0
+            status: 0,
+            employeeImportances: employeeImportances,
+            organizationalUnitImportances: organizationalUnitImportances
         },
     ]);
 
@@ -1336,7 +1399,63 @@ const initSampleCompanyDB = async () => {
      */
 
     console.log("Khởi tạo Organizational Unit Kpi Set");
+    // Thêm độ quan trọng đơn vị
+    organizationalUnitImportances = await OrganizationalUnit(vnistDB).find({
+        parent: organizationalUnit_2
+    })
+    if (organizationalUnitImportances && organizationalUnitImportances.length > 0) {
+        organizationalUnitImportances = organizationalUnitImportances.map(item => {
+            return {
+                organizationalUnit: item?._id,
+                importance: 100
+            }
+        })
+    }
+    // Thêm độ quan trọng nhân viên
+    employeeImportances = [];
+    organizationalUnit = await OrganizationalUnit(vnistDB).findById(organizationalUnit_2);
+    allRoles = [
+        ...organizationalUnit.employees,
+        ...organizationalUnit.managers,
+        ...organizationalUnit.deputyManagers,
+    ];
+    employees = await UserRole(vnistDB)
+        .find({
+            roleId: {
+                $in: allRoles,
+            },
+        })
+        .populate("userId roleId");
 
+    for (let j in employees) {
+        let check = 0;
+        for (let k in employeeImportances) {
+            if (
+                String(employees[j].userId._id) ==
+                String(employeeImportances[k].userId._id)
+            ) {
+                check = 1;
+                break;
+            }
+        }
+        if (check == 0) {
+            let employee = {
+                _id: employees[j]._id,
+                idUnit: organizationalUnit_2,
+                userId: employees[j].userId,
+                roleId: employees[j].roleId,
+            };
+            employeeImportances.push(employee);
+        }
+    }
+    if (employeeImportances && employeeImportances.length !== 0) {
+        employeeImportances = employeeImportances.map(item => {
+            return {
+                employee: item?.userId?._id,
+                importance: 100
+            }
+        })
+    }
     organizationalUnitKpiSet = await OrganizationalUnitKpiSet(vnistDB).insertMany([
         {
             organizationalUnit: organizationalUnit_2,
@@ -1346,7 +1465,9 @@ const initSampleCompanyDB = async () => {
             automaticPoint: 88,
             employeePoint: 75,
             approvedPoint: 55,
-            status: 1
+            status: 1,
+            employeeImportances: employeeImportances,
+            organizationalUnitImportances: organizationalUnitImportances
         }, {
             organizationalUnit: organizationalUnit_2,
             creator: manager,
@@ -1355,7 +1476,9 @@ const initSampleCompanyDB = async () => {
             automaticPoint: 89,
             employeePoint: 77,
             approvedPoint: 62,
-            status: 1
+            status: 1,
+            employeeImportances: employeeImportances,
+            organizationalUnitImportances: organizationalUnitImportances
         },
     ]);
 

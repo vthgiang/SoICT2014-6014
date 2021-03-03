@@ -13,6 +13,7 @@ import { MajorActions } from '../../../major/redux/actions';
 import { SearchDataImportForm } from './searchDataImportForm';
 import { ViewEmployeeCVForm } from './viewEmployeeCVForm';
 import { formatDate } from '../../../../../helpers/formatDate';
+import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
 
 
 class SearchEmployeeForPackage extends Component {
@@ -32,14 +33,19 @@ class SearchEmployeeForPackage extends Component {
             }
         }
 
+        const tableId = "search-employee-for-package";
+        const defaultConfig = { limit: 5 }
+        const limit = getTableConfiguration(tableId, defaultConfig).limit;
+
         this.state = {
             searchForPackage: true,
             // organizationalUnits: organizationalUnits,
             status: 'active',
             page: 0,
-            limit: 5,
+            limit: limit,
             listSuggest: {},
-            listSuggestForProps: {}
+            listSuggestForProps: {},
+            tableId
         }
     }
 
@@ -586,7 +592,7 @@ class SearchEmployeeForPackage extends Component {
         const { showMore, importEmployee, limit, page, currentRow, currentRowView,
             certificatesEndDate, certificatesType, certificatesName,
             professionalSkill, majorInfo, exp, sameExp, majorID,
-            field, position, posName, action, listSuggest, listSuggestForProps } = this.state; // filterField, filterPosition, filterAction, 
+            field, position, posName, action, listSuggest, listSuggestForProps, tableId } = this.state; // filterField, filterPosition, filterAction, 
 
         let listEmployees = [];
         if (employeesManager.listEmployees) {
@@ -894,7 +900,7 @@ class SearchEmployeeForPackage extends Component {
 
 
                     <h4>Danh sách nhân viên tìm kiếm</h4>
-                    <table id="employee-table" className="table table-striped table-bordered table-hover">
+                    <table id={tableId} className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
                                 <th>{translate('human_resource.staff_name')}</th>
@@ -905,7 +911,7 @@ class SearchEmployeeForPackage extends Component {
                                 <th>Bằng cấp</th>
                                 <th style={{ width: '120px', textAlign: 'center' }}>{translate('general.action')}
                                     <DataTableSetting
-                                        tableId="employee-table"
+                                        tableId={tableId}
                                         columnArr={[
                                             translate('human_resource.staff_name'),
                                             "Vị trí công việc",
@@ -914,9 +920,7 @@ class SearchEmployeeForPackage extends Component {
                                             "Chứng chỉ",
                                             "Bằng cấp",
                                         ]}
-                                        limit={this.state.limit}
                                         setLimit={this.setLimit}
-                                        hideColumnOption={true}
                                     />
                                 </th>
                             </tr>
@@ -928,7 +932,7 @@ class SearchEmployeeForPackage extends Component {
                                         <td>{x.fullName}</td>
                                         <td>
                                             {x.career?.length > 0 ? (x.career?.map((e, key) => {
-                                                return <li key={key}>{new Date(e.startDate).getFullYear()} - {new Date(e.endDate).getFullYear()} : {e?.position? (e?.position?.name) : "Không có thông tin vị trí"}</li>
+                                                return <li key={key}>{new Date(e.startDate).getFullYear()} - {new Date(e.endDate).getFullYear()} : {e?.position ? (e?.position?.name) : "Không có thông tin vị trí"}</li>
                                             })) : <p>Chưa có dữ liệu</p>}
                                         </td>
                                         <td>{this.formatSkill(x.professionalSkill)}</td>

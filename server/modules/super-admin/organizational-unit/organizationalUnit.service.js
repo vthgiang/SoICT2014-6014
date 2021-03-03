@@ -32,7 +32,13 @@ exports.getOrganizationalUnits = async (portal, id) => {
  * @id đơn vị
  */
 exports.getOrganizationalUnit = async (portal, id) => {
-    return await OrganizationalUnit(connect(DB_CONNECTION, portal)).findById(id);
+    return await OrganizationalUnit(connect(DB_CONNECTION, portal))
+        .findById(id)
+        .populate([
+            { path: 'managers', populate: { path: 'users', populate: { path: 'userId' } } },
+            { path: 'deputyManagers', populate: { path: 'users', populate: { path: 'userId' } } },
+            { path: 'employees', populate: { path: 'users', populate: { path: 'userId' } } }
+        ]);
 }
 
 /**
@@ -69,7 +75,7 @@ exports.getOrganizationalUnitsAsTree = async (portal, id = undefined) => {
  * @role Id của role ứng với đơn vị cần lấy đơn vị con
  * @organizationalUnit id của đơn vị 
  */
-exports.getChildrenOfOrganizationalUnitsAsTree = async (portal, id, role, organizationalUnitId = undefined) => {
+exports.getChildrenOfOrganizationalUnitsAsTree = async (portal, role, organizationalUnitId = undefined) => {
     let organizationalUnit;
 
     if (!organizationalUnitId) {

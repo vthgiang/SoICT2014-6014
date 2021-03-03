@@ -20,7 +20,7 @@ function getOnlyExampleName(queryData) {
             .then((res) => {
                 dispatch({
                     type: exampleConstants.GET_ALL_ONLY_EXAMPLE_NAME_SUCCESS,
-                    payload: res.data
+                    payload: res.data.content
                 });
             })
             .catch((error) => {
@@ -43,7 +43,7 @@ function deleteExample(id) {
             .then((res) => {
                 dispatch({
                     type: exampleConstants.DELETE_EXAMPLE_SUCCESS,
-                    payload: res.data
+                    payload: res.data.content
                 });
             })
             .catch((error) => {
@@ -65,7 +65,7 @@ function createExample(data) {
             .then((res) => {
                 dispatch({
                     type: exampleConstants.CREATE_EXAMPLE_SUCCESS,
-                    payload: res.data
+                    payload: res.data.content
                 });
             })
             .catch((error) => {
@@ -87,7 +87,7 @@ function editExample(id, data) {
             .then((res) => {
                 dispatch({
                     type: exampleConstants.EDIT_EXAMPLE_SUCCESS,
-                    payload: res.data
+                    payload: res.data.content
                 });
             })
             .catch((error) => {
@@ -109,7 +109,7 @@ function getExampleDetail(id) {
             .then((res) => {
                 dispatch({
                     type: exampleConstants.GET_EXAMPLE_DETAIL_SUCCESS,
-                    payload: res.data
+                    payload: res.data.content
                 });
             })
             .catch((error) => {
