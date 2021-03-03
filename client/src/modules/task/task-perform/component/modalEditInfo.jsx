@@ -7,8 +7,8 @@ import { InformationForm } from '../../task-template/component/informationsTempl
 class ModalEditInfo extends Component {
     constructor(props) {
         super(props);
-        this.state = {}
-
+        this.state = {
+        }
     }
 
     handleTaskInformationChange = (data) => {
@@ -33,7 +33,7 @@ class ModalEditInfo extends Component {
     render() {
         let task;
         const { tasks } = this.props;
-        const { taskInformation } = this.props;
+        const { taskInformation, type = "default" } = this.props;
 
         if (typeof tasks.task !== 'undefined' && tasks.task !== null) task = tasks.task;
 
@@ -47,7 +47,12 @@ class ModalEditInfo extends Component {
                     hasSaveButton={false}
                 >
                     <div>
-                        <InformationForm isEdit={true} initialData={taskInformation} onDataChange={this.handleTaskInformationChange} />
+                        <InformationForm 
+                            isEdit={true} 
+                            initialData={taskInformation} 
+                            onDataChange={this.handleTaskInformationChange} 
+                            type={type}
+                        />
                     </div>
                 </DialogModal>
             </React.Fragment>
