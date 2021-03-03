@@ -34,7 +34,7 @@ function DistributionOfEmployeeKpiChart(props) {
 
     /** Thiết lập dữ liệu biểu đồ */
     const setDataMultiChart = (organizationalUnitKPI) => {
-        let dataChartAnalysis = [translate('kpi.organizational_unit.statistics.weight_analysis')], dataChartDefault = [translate('kpi.organizational_unit.statistics.weight_current')], xs = ['x'];
+        let dataChartAnalysis = [translate('kpi.organizational_unit.statistics.weight_analysis_employee')], dataChartDefault = [translate('kpi.organizational_unit.statistics.weight_established')], xs = ['x'];
         let objectEmployeeImportance;
 
         objectEmployeeImportance = setEmployeeImportance();
@@ -91,6 +91,8 @@ function DistributionOfEmployeeKpiChart(props) {
             dataChart = dataChartTemp.dataChart;
             xs = dataChartTemp.xs;
         }
+        let types = {};
+        types[dataChart[1][0]] = 'spline';
 
         let chart = c3.generate({
             bindto: chartRef.current,
@@ -103,7 +105,14 @@ function DistributionOfEmployeeKpiChart(props) {
 
             data: {
                 columns: dataChart,
-                type: 'spline',
+                type: 'bar',
+                types: types
+            },
+            
+            bar: {
+                width: {
+                    ratio: 0.1 // this makes bar width 50% of length between ticks
+                }
             },
 
             axis: {
@@ -123,7 +132,6 @@ function DistributionOfEmployeeKpiChart(props) {
                 },
                 
                 y: {
-                    min: 0,
                     label: {
                         text: translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.weight'),
                         position: 'outer-right'

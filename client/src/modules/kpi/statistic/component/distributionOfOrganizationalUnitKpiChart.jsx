@@ -56,9 +56,9 @@ function DistributionOfOrganizationalUnitKpiChart(props) {
 
     /** Thiết lập dữ liệu biểu đồ */
     const setDataMultiChart = (organizationalUnitKPI, dataTreeUnitKpi, maxDeg) => {
-        let dataChartAnalysisChidrenUnit = ['Trọng số KPI phân tích theo KPI đơn vị con'],
-            dataChartAnalysisTreeUnit = ['Trọng số KPI phân tích theo cây KPI đơn vị'],
-            dataChartDefault = [translate('kpi.organizational_unit.statistics.weight_current')],
+        let dataChartAnalysisChidrenUnit = [translate('kpi.organizational_unit.statistics.weight_analysis_children_unit')],
+            dataChartAnalysisTreeUnit = [translate('kpi.organizational_unit.statistics.weight_analysis_tree_unit')],
+            dataChartDefault = [translate('kpi.organizational_unit.statistics.weight_established')],
             xs = ['x'];
         let objectChidrenKpiWeight = {};
         

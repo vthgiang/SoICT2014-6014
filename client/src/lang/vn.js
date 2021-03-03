@@ -4239,8 +4239,10 @@ export default {
                     detail_participant: "Chi tiết người tham gia",
                     detail_employee_kpi: "Chi tiết KPI nhân viên",
                     email: "Email",
-                    weight_current: "Trọng số KPI hiện tại",
-                    weight_analysis: "Trọng số KPI theo phân tích thực tế"
+                    weight_established: "Trọng số KPI đang thiết lập",
+                    weight_analysis_employee: "Trọng số KPI theo phân tích trọng số đang thiết lập của KPI nhân viên",
+                    weight_analysis_children_unit: "Trọng số KPI theo phân tích trọng số đang thiết lập của KPI đơn vị con",
+                    weight_analysis_tree_unit: "Trọng số KPI theo phân tích trọng số đang thiết lập của cây KPI đơn vị",
                 },
 
                 //Thông điệp khác trả về từ server

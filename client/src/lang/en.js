@@ -3940,8 +3940,10 @@ export default {
                     detail_participant: "Participant detail",
                     detail_employee_kpi: "Employee KPI detail",
                     email: "Email",
-                    weight_current: "Current KPI weights",
-                    weight_analysis: "KPI weighting according to actual analysis"
+                    weight_established: "Established weight",
+                    weight_analysis_employee: "The KPI weight is based on the established weight analysis of the employee KPI",
+                    weight_analysis_children_unit: "The KPI weight is based on the established weight analysis of the children unit KPI",
+                    weight_analysis_tree_unit: "The KPI weight is based on the established weight analysis of the tree unit KPI",
                 },
 
                 //Thông điệp khác trả về từ server
