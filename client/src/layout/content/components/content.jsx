@@ -186,24 +186,17 @@ class Content extends Component {
 
                     let sort = (ascOrder) => {
                         let rows = table.find("tbody>tr");
-
-                        for (let k = 0; k < tableHeadings.length; ++k) {
-                            if (k !== j) {
-                                let thNotChoice = window.$(tableHeadings[k]);
-                                let listdiv = thNotChoice.find("div.sort")
-                                window.$(listdiv[0]).find("i.fa.fa-caret-up")[0].style.color = "rgb(226 222 222)"
-                                window.$(listdiv[0]).find("i.fa.fa-caret-down")[0].style.color = "rgb(226 222 222)"
-                            } else {
-                                let thNotChoice = window.$(tableHeadings[k]);
-                                let listdiv = thNotChoice.find("div.sort")
-                                if (ascOrder) {
-                                    window.$(listdiv[0]).find("i.fa.fa-caret-up")[0].style.color = "black"
-                                    window.$(listdiv[0]).find("i.fa.fa-caret-down")[0].style.color = "rgb(226 222 222)"
-                                } else {
-                                    window.$(listdiv[0]).find("i.fa.fa-caret-up")[0].style.color = "rgb(226 222 222)"
-                                    window.$(listdiv[0]).find("i.fa.fa-caret-down")[0].style.color = "black"
-                                }
-                            }
+                        let thNotChoice = window.$(tableHeadings[j]);
+                        let listdiv = thNotChoice.find("div.sort")
+                        if (ascOrder == true) {
+                            window.$(listdiv[0]).find("i.fa.fa-sort-amount-asc")[0].style.display = "block"
+                            window.$(listdiv[0]).find("i.fa.fa-sort")[0].style.display = "none"
+                        } else if (ascOrder == false) {
+                            window.$(listdiv[0]).find("i.fa.fa-sort-amount-desc")[0].style.display = "block"
+                            window.$(listdiv[0]).find("i.fa.fa-sort-amount-asc")[0].style.display = "none"
+                        } else {
+                            window.$(listdiv[0]).find("i.fa.fa-sort-amount-desc")[0].style.display = "none"
+                            window.$(listdiv[0]).find("i.fa.fa-sort")[0].style.display = "block"
                         }
 
                         if (th[0].className == "col-sort-number") {
@@ -216,8 +209,15 @@ class Content extends Component {
                             });
                         } else {
                             rows.sort((a, b) => {
-                                let keyA = nonAccentVietnamese(window.$(window.$(a).find("td")[j]).text());
-                                let keyB = nonAccentVietnamese(window.$(window.$(b).find("td")[j]).text());
+                                let keyA, keyB;
+                                if (ascOrder == "return") {
+                                    keyA = nonAccentVietnamese(window.$(window.$(a).find("td")[0]).text());
+                                    keyB = nonAccentVietnamese(window.$(window.$(b).find("td")[0]).text());
+                                } else {
+                                    keyA = nonAccentVietnamese(window.$(window.$(a).find("td")[j]).text());
+                                    keyB = nonAccentVietnamese(window.$(window.$(b).find("td")[j]).text());
+                                }
+
                                 keyA = convertDate(keyA);
                                 keyB = convertDate(keyB);
                                 if (keyA < keyB) return ascOrder ? -1 : 1;
@@ -231,18 +231,23 @@ class Content extends Component {
                         });
                     }
 
-                    let up = window.$("<i>", { style: 'width: 100%; float: left; cursor: pointer; color: rgb(226 222 222) ', class: 'fa fa-caret-up' });
-                    let down = window.$("<i>", { style: 'width: 100%; float: left; cursor: pointer; margin-top: -5px; color: rgb(226 222 222)', class: 'fa fa-caret-down' });
+                    let up = window.$("<i>", { style: 'width: 100%; float: left; cursor: pointer; color: rgb(226 222 222) ', class: 'fa fa-sort' });
+                    let down = window.$("<i>", { style: 'width: 100%; float: left; cursor: pointer; color: black; display: none ', class: 'fa fa-sort-amount-asc' });
+                    let requestReturn = window.$("<i>", { style: 'width: 100%; float: left; cursor: pointer; color: black; display: none ', class: 'fa fa-sort-amount-desc' });
                     up.click(() => {
                         sort(true);
                     })
+
                     down.click(() => {
                         sort(false);
                     })
 
+                    requestReturn.click(() => {
+                        sort("return")
+                    })
 
-                    let div = window.$("<div>", { style: 'float: left; margin-top: -2px', class: 'sort' });
-                    div.append(up, down);
+                    let div = window.$("<div>", { style: 'float: left; margin-top: 3px; margin-right: 4px', class: 'sort' });
+                    div.append(up, down, requestReturn);
                     th.prepend(div);
                 }
             }
