@@ -330,6 +330,7 @@ class TaskOrganizationUnitDashboard extends Component {
                                     <GanttCalendar
                                         tasks={tasks}
                                         unit={true}
+                                        unitSelected={idsUnit}
                                     />
                                 </div>
 

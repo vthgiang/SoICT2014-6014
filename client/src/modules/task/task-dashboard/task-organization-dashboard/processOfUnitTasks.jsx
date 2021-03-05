@@ -100,7 +100,7 @@ const InprocessOfUnitTask = (props) => {
             axis: {
                 x: {
                     type: 'category',
-                    categories: units.map(item => { return item.name })
+                    categories: units?.map(item => { return item.name })
                 },
                 rotated: true
             }
