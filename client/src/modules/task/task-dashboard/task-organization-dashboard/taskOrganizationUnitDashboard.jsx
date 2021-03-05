@@ -500,7 +500,7 @@ class TaskOrganizationUnitDashboard extends Component {
                                             dataTooltip={['Tải công việc tính theo công thức tổng các tỉ số: số ngày thực hiện công việc trong tháng/(số người thực hiện + số người phê duyệt + số người hỗ trợ)']}
                                         /> */}
                                         <a className="text-red" title={translate('task.task_management.explain')} onClick={() => this.showLoadTaskDoc()}>
-                                            <i className="material-icons" style={{ marginLeft: "10px" }}>help</i>
+                                            <i className="fa fa-exclamation-circle" style={{ color: '#06c', marginLeft: '5px' }} />
                                         </a>
                                     </div>
                                     <div className="box-body qlcv">
