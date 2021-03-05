@@ -9,7 +9,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import { DatePicker, SlimScroll } from '../../../common-components';
 import Swal from 'sweetalert2';
 import { GanttCalendar } from '../../task/task-dashboard/task-personal-dashboard/ganttCalendar';
-
+import GeneralTaskPersonalChart from '../../task/task-dashboard/task-personal-dashboard/generalTaskPersonalChart';
 
 class SuperHome extends Component {
     constructor(props) {
@@ -218,76 +218,21 @@ class SuperHome extends Component {
                         </div>
                     </div>
                 </div>
-
-                <div className="row row-equal-height" style={{ marginBottom: '20px' }}>
-                    <div className="col-xs-12 col-sm-6 col-md-6">
-                        <div className="box box-primary" style={{ height: "100%" }}>
+                {/* Tổng quan công việc cá nhân */}
+                <div className="row">
+                    <div className="col-xs-12">
+                        <div className="box box-primary">
                             <div className="box-header with-border">
-                                <div className="box-title">{translate('task.task_management.dashboard_overdue')}</div>
+                                <div className="box-title">Tổng quan công việc</div>
                             </div>
-
-                            <div id="dashboard-overdue" className="box-body dashboard-overdue">
-                                {
-                                    (tasks && tasks.tasksbyuser) ?
-                                        <ul className="todo-list">
-                                            {
-                                                (tasks.tasksbyuser.expire.length !== 0) ?
-                                                    tasks.tasksbyuser.expire.map((item, key) =>
-                                                        <li key={key}>
-                                                            <span className="handle">
-                                                                <i className="fa fa-ellipsis-v" />
-                                                                <i className="fa fa-ellipsis-v" />
-                                                            </span>
-                                                            <span className="text"><a href={`/task?taskId=${item.task._id}`} target="_blank">{item.task.name}</a></span>
-                                                            <small className="label label-danger"><i className="fa fa-clock-o" /> &nbsp;{item.totalDays} {translate('task.task_management.calc_days')}</small>
-                                                        </li>
-                                                    ) : "Không có công việc quá hạn"
-                                            }
-                                        </ul> : "Đang tải dữ liệu"
-                                }
-                            </div>
-                            <SlimScroll
-                                outerComponentId={"dashboard-overdue"}
-                                maxHeight={300}
-                                verticalScroll={true}
-                                activate={true}
+                            <GeneralTaskPersonalChart
+                                tasks={tasks}
                             />
                         </div>
-                    </div>
-                    <div className="col-xs-12 col-sm-6 col-md-6">
-                        <div className="box box-primary" style={{ height: "100%" }}>
-                            <div className="box-header with-border">
-                                <div className="box-title">{translate('task.task_management.dashboard_about_to_overdue')}</div>
-                            </div>
-                            <div id="dashboard-about-to-overdue" className="box-body dashboard-about-to-overdue">
-                                {
-                                    (tasks && tasks.tasksbyuser) ?
-                                        <ul className="todo-list">
-                                            {
-                                                (tasks.tasksbyuser.deadlineincoming.length !== 0) ?
-                                                    tasks.tasksbyuser.deadlineincoming.map((item, key) =>
-                                                        <li key={key}>
-                                                            <span className="handle">
-                                                                <i className="fa fa-ellipsis-v" />
-                                                                <i className="fa fa-ellipsis-v" />
-                                                            </span>
-                                                            <span className="text"><a href={`/task?taskId=${item.task._id}`} target="_blank">{item.task.name}</a></span>
-                                                            <small className="label label-warning"><i className="fa fa-clock-o" /> &nbsp;{item.totalDays} {translate('task.task_management.calc_days')}</small>
-                                                        </li>
-                                                    ) : "Không có công việc nào sắp hết hạn"
-                                            }
-                                        </ul> : "Đang tải dữ liệu"
-                                }
-                            </div>
-                            <SlimScroll
-                                outerComponentId={"dashboard-about-to-overdue"}
-                                maxHeight={300}
-                                verticalScroll={true}
-                                activate={true}
-                            />
-                        </div>
+
                     </div>
                 </div>
+
 
                 {/* Lịch công việc chi tiết */}
                 <div className="row">
