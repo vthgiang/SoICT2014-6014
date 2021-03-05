@@ -123,15 +123,6 @@ class EvaluateByResponsibleEmployee extends Component {
             return false;
         }
 
-        // if(dataStatus === this.DATA_STATUS.QUERYING){
-        //     this.setState(state=>{
-        //         return {
-        //             ...state,
-        //             dataStatus: this.DATA_STATUS.FINISHED,
-        //         }
-        //     });
-        //     return true;
-        // }
         return true;
     }
 
@@ -241,7 +232,6 @@ class EvaluateByResponsibleEmployee extends Component {
             evaluation = task.evaluations.find(e => (monthOfEval === new Date(e.evaluatingMonth).getMonth() && yearOfEval === new Date(e.evaluatingMonth).getFullYear()));
 
             prevEval = this.getPreviousEvaluation(task, dateParam);
-            // prevEval = task.evaluations.find(e => ((monthOfPrevEval) === new Date(e.evaluatingMonth).getMonth() && yearOfPrevEval === new Date(e.evaluatingMonth).getFullYear()));
 
             if (prevEval) {
                 prevDate = this.formatDate(prevEval.endDate);
@@ -707,8 +697,6 @@ class EvaluateByResponsibleEmployee extends Component {
 
         let err = this.validateDateTime(evaluatingMonth, startDate, startTime, endDate, value, "end");
 
-        // let data = this.getData(this.state.storedEvaluatingMonth, this.state.storedEvaluatingMonth);
-
         let automaticPoint = this.state.autoPoint;
         let taskInfo = {
             task: this.state.task,
@@ -1018,8 +1006,8 @@ class EvaluateByResponsibleEmployee extends Component {
                 break;
             }
         }
-        // evaluatingMonth.trim() !== "" && 
-        return (errorOnMonth === undefined && errorOnStartDate === undefined && errorOnEndDate === undefined && errorOnDate === undefined && errorOnPoint === undefined && errorOnProgress === undefined
+
+        return (evaluatingMonth && evaluatingMonth.trim() !== "" && errorOnMonth === undefined && errorOnStartDate === undefined && errorOnEndDate === undefined && errorOnDate === undefined && errorOnPoint === undefined && errorOnProgress === undefined
             && errorOnInfoDate === undefined && errorOnTextInfo === undefined && errorOnNumberInfo === undefined) ? true : false;
     }
 

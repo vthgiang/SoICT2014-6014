@@ -1370,7 +1370,7 @@ class EvaluateByAccountableEmployee extends Component {
 
     // hàm validate submit
     isFormValidated = () => {
-        const { errorOnMonth, errorOnDate, errorOnEndDate, errorOnStartDate, errorOnPoint, errorOnAccountablePoint, errorOnAccountableContribution, errorOnMyPoint,
+        const { evaluatingMonth, errorOnMonth, errorOnDate, errorOnEndDate, errorOnStartDate, errorOnPoint, errorOnAccountablePoint, errorOnAccountableContribution, errorOnMyPoint,
             errorOnProgress, errorOnInfoDate, errorOnInfoBoolean, errorOnNumberInfo, errorOnTextInfo, errorApprovedPoint, errorContribute, errSumContribution } = this.state;
         let { info, results, empPoint, progress, } = this.state;
 
@@ -1394,7 +1394,7 @@ class EvaluateByAccountableEmployee extends Component {
             }
         }
 
-        return checkErrorApprovedPoint && checkErrorContribute && (errorOnStartDate === undefined && errorOnEndDate === undefined && errorOnMonth === undefined && errorOnDate === undefined && errorOnPoint === undefined
+        return evaluatingMonth && evaluatingMonth.trim() !== "" && checkErrorApprovedPoint && checkErrorContribute && (errorOnStartDate === undefined && errorOnEndDate === undefined && errorOnMonth === undefined && errorOnDate === undefined && errorOnPoint === undefined
             && errorOnInfoDate === undefined && errorOnAccountablePoint === undefined && errorOnProgress === undefined
             && errorOnAccountableContribution === undefined && errorOnMyPoint === undefined && errSumContribution === undefined
             && errorOnInfoBoolean === undefined && errorOnNumberInfo === undefined && errorOnTextInfo === undefined) ? true : false;
