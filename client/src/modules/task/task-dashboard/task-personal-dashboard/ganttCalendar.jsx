@@ -171,11 +171,14 @@ class GanttCalendar extends Component {
 
   // Xử lý công việc đơn vị
   getdataTaskUnit = () => {
-    const { tasks } = this.props;
+    const { tasks, unitSelected } = this.props;
     const { organizationUnitTasks } = tasks;
     const listtask = organizationUnitTasks && organizationUnitTasks.tasks;
+    //Lay cac cong viec cua cac unit da chon
+    const tasksOfSelectedUnit = listtask?.filter(x =>
+      unitSelected.includes(x?.organizationalUnit?._id))
 
-    const unitData = this.getDataGroupByEmployee(listtask);
+    const unitData = this.getDataGroupByEmployee(tasksOfSelectedUnit);
     const dataAllTask = unitData.data;
     const countAllTask = unitData.count;
     const lineAllTask = unitData.line;
@@ -368,7 +371,7 @@ class GanttCalendar extends Component {
           onZoomChange={this.handleZoomChange}
           attachEvent={this.attachEvent}
         />
-        
+
         <div className="form-inline" style={{ textAlign: 'center' }}>
           <div className="form-group">
             <div id="in-time"></div>

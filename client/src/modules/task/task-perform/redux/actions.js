@@ -26,7 +26,6 @@ export const performTaskAction = {
     editCommentOfTaskComment,
     deleteCommentOfTaskComment,
 
-    addTaskLog,
     getTaskLog,
 
     deleteFileAction,
@@ -465,20 +464,7 @@ function deleteFileChildTaskComment(fileId, actionId, taskId, type) {
             );
     }
 }
-// Hàm thêm nhật ký cho một công việc
-function addTaskLog(log, taskId) {
-    return dispatch => {
-        dispatch({ type: performTaskConstants.ADD_TASK_LOG_REQUEST });
-        performTaskService.addTaskLog(log, taskId)
-            .then(
-                res => dispatch({
-                    type: performTaskConstants.ADD_TASK_LOG_SUCCESS,
-                    payload: res.data.content
-                }),
-                error => dispatch({ type: performTaskConstants.ADD_TASK_LOG_FAILURE, error })
-            );
-    }
-}
+
 
 // Hàm lấy tất cả nhật ký của một công việc
 function getTaskLog(taskId) {
