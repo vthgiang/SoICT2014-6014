@@ -41,7 +41,7 @@ class AddTaskForm extends Component {
                 taskProject: "",
             },
             startTime: "08:00 AM",
-            endTime: "05:30 AM",
+            endTime: "05:30 PM",
             currentRole: getStorage('currentRole'),
         };
     }
