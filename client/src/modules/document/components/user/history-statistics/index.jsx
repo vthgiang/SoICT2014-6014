@@ -47,7 +47,6 @@ class DocumentUserHistoryStatistics extends Component {
         const { downloaded, common, latest } = user;
         const { isLoading } = this.props.documents;
         const { currentRow } = this.state;
-
         return (
             <React.Fragment>
                 {
@@ -67,6 +66,7 @@ class DocumentUserHistoryStatistics extends Component {
                         documentRelationshipDocuments={currentRow.relationshipDocuments}
 
                         documentRoles={currentRow.roles}
+                        documentUserCanView={currentRow.userCanView}
 
                         documentArchivedRecordPlaceInfo={currentRow.archivedRecordPlaceInfo}
                         documentArchivedRecordPlaceOrganizationalUnit={currentRow.archivedRecordPlaceOrganizationalUnit}

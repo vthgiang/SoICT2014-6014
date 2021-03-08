@@ -380,6 +380,7 @@ class DocumentNew extends Component {
                             documentRelationshipDocuments={currentRow.relationshipDocuments ? currentRow.relationshipDocuments.map(document => document.name) : []}
 
                             documentRoles={currentRow.roles}
+                            documentUserCanView={currentRow.userCanView}
 
                             documentArchivedRecordPlaceInfo={currentRow.archivedRecordPlaceInfo}
                             documentArchivedRecordPlaceOrganizationalUnit={currentRow.archivedRecordPlaceOrganizationalUnit}

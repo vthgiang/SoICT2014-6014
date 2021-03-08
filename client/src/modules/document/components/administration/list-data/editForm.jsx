@@ -416,11 +416,12 @@ class EditForm extends Component {
         }
         if (documentUserCanView !== this.props.documentUserCanView) {
             if (!title.includes("Chỉnh sửa phân quyền người xem")) {
-                title += "Chỉnh sửa phân quyền người xem. "
+                title += "Chỉnh sửa phân quyền người xem. ";
+
             }
             description += "Các phân quyền người xem mới: "
             for (let i = 0; i < documentUserCanView.length; i++) {
-                formData.append('roles[]', documentUserCanView[i]);
+                formData.append('userCanView[]', documentUserCanView[i]);
                 let nameRole = userList.filter(item => item.value === documentUserCanView[i])
                 description += nameRole[0].text + " ";
             }
