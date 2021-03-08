@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-
 import moment from 'moment';
 
 import { DatePicker, DialogModal, ErrorLabel, SelectBox } from '../../../../../common-components';
 
-import { AssetCreateValidator } from '../../../base/create-tab/components/assetCreateValidator';
 import { DepreciationActions } from '../redux/actions';
+
+import ValidationHelper from '../../../../../helpers/validationHelper';
 
 class DepreciationEditForm extends Component {
     constructor(props) {
@@ -32,18 +32,18 @@ class DepreciationEditForm extends Component {
         this.validateCost(value, true);
     }
     validateCost = (value, willUpdateState = true) => {
-        let msg = AssetCreateValidator.validateCost(value, this.props.translate)
+        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
 
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnCost: msg,
+                    errorOnCost: message,
                     cost: value
                 }
             });
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
     /**
@@ -54,18 +54,18 @@ class DepreciationEditForm extends Component {
         this.validateResidualValue(value, true);
     }
     validateResidualValue = (value, willUpdateState = true) => {
-        let msg = AssetCreateValidator.validateResidualValue(value, this.props.translate)
+        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
 
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnResidualValue: msg,
+                    errorOnResidualValue: message,
                     residualValue: value
                 }
             });
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
     /**
@@ -76,18 +76,18 @@ class DepreciationEditForm extends Component {
         this.validateUsefulLife(value, true);
     }
     validateUsefulLife = (value, willUpdateState = true) => {
-        let msg = AssetCreateValidator.validateUsefulLife(value, this.props.translate)
+        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
 
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnUsefulLife: msg,
+                    errorOnUsefulLife: message,
                     usefulLife: value
                 }
             });
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
     /**
@@ -97,18 +97,18 @@ class DepreciationEditForm extends Component {
         this.validateStartDepreciation(value, true);
     }
     validateStartDepreciation = (value, willUpdateState = true) => {
-        let msg = AssetCreateValidator.validateStartDepreciation(value, this.props.translate)
+        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
 
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnStartDepreciation: msg,
+                    errorOnStartDepreciation: message,
                     startDepreciation: value,
                 }
             });
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
     /**
@@ -119,18 +119,18 @@ class DepreciationEditForm extends Component {
         this.validateEstimatedTotalProduction(value, true);
     }
     validateEstimatedTotalProduction = (value, willUpdateState = true) => {
-        let msg = AssetCreateValidator.validateEstimatedTotalProduction(value, this.props.translate)
+        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
 
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnEstimatedTotalProduction: msg,
+                    errorOnEstimatedTotalProduction: message,
                     estimatedTotalProduction: value,
                 }
             });
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
     /**
@@ -273,19 +273,20 @@ class DepreciationEditForm extends Component {
         this.validateValue(value, index);
     }
     validateValue = (value, className, willUpdateState = true) => {
-        let msg = AssetCreateValidator.validateUnitsProducedDuringTheYear(value, this.props.translate);
+        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
+
         if (willUpdateState) {
             var { unitsProducedDuringTheYears } = this.state;
             unitsProducedDuringTheYears[className] = { ...unitsProducedDuringTheYears[className], unitsProducedDuringTheYear: value }
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnValue: msg,
+                    errorOnValue: message,
                     unitsProducedDuringTheYears: unitsProducedDuringTheYears
                 }
             });
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
     /**

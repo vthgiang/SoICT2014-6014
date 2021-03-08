@@ -514,13 +514,13 @@ exports.editManufaturingCommand = async (id, data, portal) => {
             path: "manufacturingMill",
             select: "code name"
         }, {
-            path: "responsibles"
+            path: "responsibles",select:"_id  name email avatar"
         }, {
-            path: "accountables"
+            path: "accountables",select:"_id  name email avatar"
         }, {
-            path: "approvers.approver"
+            path: "approvers.approver", select:"_id  name email avatar"
         }, {
-            path: "creator"
+            path: "creator", select:"_id  name email avatar"
         }, {
             path: "qualityControlStaffs.staff"
         }, {

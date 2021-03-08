@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
-import { UserActions } from '../../../super-admin/user/redux/actions';
 import { taskTemplateActions } from '../redux/actions';
 import { EditTaskTemplate } from './editTaskTemplate';
 import { DialogModal } from '../../../../common-components';
 import { TaskTemplateFormValidator } from './taskTemplateFormValidator';
+import ValidationHelper from '../../../../helpers/validationHelper';
 
 class ModalEditTaskTemplate extends Component {
 
@@ -79,31 +78,31 @@ class ModalEditTaskTemplate extends Component {
     }
 
     validateTaskTemplateName = (value, willUpdateState = true) => {
-        let msg = TaskTemplateFormValidator.validateTaskTemplateName(value);
+        let { message } = ValidationHelper.validateName(this.props.translate, value);
 
         if (willUpdateState) {
             let { editingTemplate } = this.state;
             editingTemplate.name = value;
-            editingTemplate.errorOnName = msg;
+            editingTemplate.errorOnName = message;
             this.setState({
                 editingTemplate
             })
         }
-        return msg == undefined;
+        return message == undefined;
     }
 
     validateTaskTemplateDesc = (value, willUpdateState = true) => {
-        let msg = TaskTemplateFormValidator.validateTaskTemplateDescription(value);
+        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
 
         if (willUpdateState) {
             let { editingTemplate } = this.state;
             editingTemplate.description = value;
-            editingTemplate.errorOnDescription = msg;
+            editingTemplate.errorOnDescription = message;
             this.setState({
                 editingTemplate
             })
         }
-        return msg == undefined;
+        return message == undefined;
     }
 
     validateTaskTemplateFormula = (value, willUpdateState = true) => {
@@ -121,7 +120,7 @@ class ModalEditTaskTemplate extends Component {
     }
 
     validateTaskTemplateUnit = (value, willUpdateState = true) => {
-        let msg = TaskTemplateFormValidator.validateTaskTemplateUnit(value);
+        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
 
         if (willUpdateState) {
             this.setState(state => {
@@ -130,7 +129,7 @@ class ModalEditTaskTemplate extends Component {
                     editingTemplate: { // update lại unit, và reset các selection phía sau
                         ...this.state.editingTemplate,
                         organizationalUnit: value,
-                        errorOnUnit: msg,
+                        errorOnUnit: message,
                         readByEmployees: [],
                         responsibleEmployees: [],
                         accountableEmployees: [],
@@ -140,21 +139,21 @@ class ModalEditTaskTemplate extends Component {
                 };
             });
         }
-        return msg == undefined;
+        return message == undefined;
     }
 
     validateTaskTemplateRead = (value, willUpdateState = true) => {
-        let msg = TaskTemplateFormValidator.validateTaskTemplateRead(value);
+        let { message } = ValidationHelper.validateArrayLength(this.props.translate, value);
 
         if (willUpdateState) {
             let { editingTemplate } = this.state;
             editingTemplate.readByEmployees = value;
-            editingTemplate.errorOnRead = msg;
+            editingTemplate.errorOnRead = message;
             this.setState({
                 editingTemplate
             })
         }
-        return msg == undefined;
+        return message == undefined;
     }
 
     onChangeTemplateData = (value) => {

@@ -4,7 +4,7 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import { DialogModal, ErrorLabel, DatePicker } from '../../../../../common-components';
 
-import { EmployeeCreateValidator } from './combinedContent';
+import ValidationHelper from '../../../../../helpers/validationHelper';
 
 class SocialInsuranceEditModal extends Component {
     constructor(props) {
@@ -19,17 +19,18 @@ class SocialInsuranceEditModal extends Component {
     }
     validateExperienceUnit = (value, willUpdateState = true) => {
         const { translate } = this.props;
-        let msg = EmployeeCreateValidator.validateExperienceUnit(value, translate)
+        let { message } = ValidationHelper.validateEmpty(translate, value);
+
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnUnit: msg,
+                    errorOnUnit: message,
                     company: value,
                 }
             });
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
     /**
@@ -42,17 +43,18 @@ class SocialInsuranceEditModal extends Component {
     }
     validateExperiencePosition = (value, willUpdateState = true) => {
         const { translate } = this.props;
-        let msg = EmployeeCreateValidator.validateExperiencePosition(value, translate)
+        let { message } = ValidationHelper.validateEmpty(translate, value);
+
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnPosition: msg,
+                    errorOnPosition: message,
                     position: value,
                 }
             });
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
     /** Bắt sự kiện thay đổi mức lương đóng */
@@ -62,17 +64,18 @@ class SocialInsuranceEditModal extends Component {
     }
     validateMoney = (value, willUpdateState = true) => {
         const { translate } = this.props;
-        let msg = EmployeeCreateValidator.validateMoney(value, translate)
+        let { message } = ValidationHelper.validateEmpty(translate, value);
+
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnMoney: msg,
+                    errorOnMoney: message,
                     money: value,
                 }
             });
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
     /**

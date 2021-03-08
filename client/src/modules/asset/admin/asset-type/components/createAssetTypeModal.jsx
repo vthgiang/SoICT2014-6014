@@ -4,9 +4,9 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import { DialogModal, TreeSelect, ErrorLabel } from '../../../../../common-components';
 
-import { AssetCreateValidator } from '../../../base/create-tab/components/combinedContent';
 import { AssetTypeActions } from '../redux/actions';
 import { generateCode } from "../../../../../helpers/generateCode";
+import ValidationHelper from '../../../../../helpers/validationHelper';
 
 class CreateAssetTypeModal extends Component {
     constructor(props) {
@@ -113,19 +113,20 @@ class CreateAssetTypeModal extends Component {
         this.validateNameField(value, index);
     }
     validateNameField = (value, className, willUpdateState = true) => {
-        let msg = AssetCreateValidator.validateNameField(value, this.props.translate);
+        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
+
         if (willUpdateState) {
             var { defaultInfo } = this.state;
             defaultInfo[className] = { ...defaultInfo[className], nameField: value }
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnNameField: msg,
+                    errorOnNameField: message,
                     defaultInfo: defaultInfo
                 }
             });
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
     /**
@@ -136,7 +137,6 @@ class CreateAssetTypeModal extends Component {
         this.validateValue(value, index);
     }
     validateValue = (value, className, willUpdateState = true) => {
-        // let msg = AssetCreateValidator.validateValue(value, this.props.translate);
         let msg = undefined;
         if (willUpdateState) {
             var { defaultInfo } = this.state;

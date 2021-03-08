@@ -63,6 +63,54 @@ export default class ValidationHelper {
     }
 
     /**
+     * Kiểm tra giá trị min
+     * @param {*} value giá trị nhập vào
+     * @param {*} min giá trị min
+     */
+    static validateNumberInputMin = (translate, value, min = 0) => {
+        let validation = this.validateEmpty(translate, value);
+
+        if (!validation.status) {
+            return validation;
+        }
+        
+        if(value >= min){
+            return {
+                status: true
+            };
+        } else {
+            return {
+                status: false,
+                message: translate('general.validate.number_input_error_min', {min})
+            };
+        }
+    }
+
+    /**
+     * Kiểm tra giá trị max
+     * @param {*} value giá trị nhập vào
+     * @param {*} max giá trị max
+     */
+     static validateNumberInputMax = (translate, value, max = 100) => {
+        let validation = this.validateEmpty(translate, value);
+
+        if (!validation.status) {
+            return validation;
+        }
+        
+        if(value <= max){
+            return {
+                status: true
+            };
+        } else {
+            return {
+                status: false,
+                message: translate('general.validate.number_input_error_max', {max})
+            };
+        }
+    }
+
+    /**
      * Kiểm tra giá trị là số trong khoảng
      * @param {*} value giá trị nhập vào
      * @param {*} max giá trị max
@@ -85,6 +133,17 @@ export default class ValidationHelper {
                 message: translate('general.validate.number_input_error', {min, max})
             };
         }
+    }
+
+    /**
+     * Kiểm tra giá trị phải có số ký tự tối đa
+     * @param {*} value giá trị nhập vào
+     * @param {*} max số ký tự tối đa
+     */
+     static validateArrayLength = (translate, value) => {
+        if(value.length === 0)
+            return { status: false, message: translate('general.validate.empty_error') };
+        return { status: true };
     }
 
     /**-------------------------------
@@ -148,6 +207,23 @@ export default class ValidationHelper {
             return result;
         
         result = this.validateLength(translate, password, min, max)
+        if(!result.status)
+            return result;
+
+        return { status: true };
+    }
+
+    
+    /**
+     * Kiểm tra mã không chứa ký tự đặc biệt
+     * @param {*} code mã
+     */
+    static validateCode = (translate, code) => {
+        let result = this.validateEmpty(translate, code);
+        if(!result.status)
+            return result;
+        
+        result = this.validateInvalidCharacter(translate, code)
         if(!result.status)
             return result;
 

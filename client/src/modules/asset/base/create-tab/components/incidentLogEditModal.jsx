@@ -4,9 +4,9 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import { DatePicker, DialogModal, ErrorLabel, SelectBox } from '../../../../../common-components';
 
-import { AssetCreateValidator } from './combinedContent';
-
 import { UserActions } from '../../../../super-admin/user/redux/actions';
+
+import ValidationHelper from '../../../../../helpers/validationHelper';
 
 class IncidentLogEditModal extends Component {
     constructor(props) {
@@ -42,17 +42,18 @@ class IncidentLogEditModal extends Component {
         this.validateIncidentCode(value, true);
     }
     validateIncidentCode = (value, willUpdateState = true) => {
-        let msg = AssetCreateValidator.validateIncidentCode(value, this.props.translate)
+        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
+
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnIncidentCode: msg,
+                    errorOnIncidentCode: message,
                     incidentCode: value,
                 }
             });
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
     // Bắt sự kiện thay đổi loại sự cố
@@ -79,17 +80,18 @@ class IncidentLogEditModal extends Component {
         this.validateDateOfIncident(value, true);
     }
     validateDateOfIncident = (value, willUpdateState = true) => {
-        let msg = AssetCreateValidator.validateDateOfIncident(value, this.props.translate)
+        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
+
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnDateOfIncident: msg,
+                    errorOnDateOfIncident: message,
                     dateOfIncident: value,
                 }
             });
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
 
@@ -99,17 +101,18 @@ class IncidentLogEditModal extends Component {
         this.validateIncidentDescription(value, true);
     }
     validateIncidentDescription = (value, willUpdateState = true) => {
-        let msg = AssetCreateValidator.validateIncidentDescription(value, this.props.translate)
+        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
+
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnDescription: msg,
+                    errorOnDescription: message,
                     description: value,
                 }
             });
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
     // Bắt sự kiện thay đổi loại sự cố

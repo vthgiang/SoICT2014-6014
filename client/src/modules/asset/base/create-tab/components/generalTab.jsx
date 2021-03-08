@@ -4,7 +4,6 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import { DatePicker, ErrorLabel, SelectBox, TreeSelect, ApiImage } from '../../../../../common-components';
 import "./addAsset.css";
-import { AssetCreateValidator } from './combinedContent';
 import { UserActions } from '../../../../super-admin/user/redux/actions';
 import { AssetTypeActions } from '../../../admin/asset-type/redux/actions';
 import { string2literal } from '../../../../../helpers/handleResponse';
@@ -94,15 +93,16 @@ class GeneralTab extends Component {
         this.validateCode(value, true);
     }
     validateCode = (value, willUpdateState = true) => {
-        let msg = AssetCreateValidator.validateCode(value, this.props.translate)
+        let { message } = ValidationHelper.validateCode(this.props.translate, value);
+
         if (willUpdateState) {
             this.setState({
-                errorOnCode: msg,
+                errorOnCode: message,
                 code: value,
             });
             this.props.handleChange("code", value);
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
     /**
@@ -113,18 +113,19 @@ class GeneralTab extends Component {
         this.validateAssetName(value, true);
     }
     validateAssetName = (value, willUpdateState = true) => {
-        let msg = AssetCreateValidator.validateAssetName(value, this.props.translate)
+        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
+
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnAssetName: msg,
+                    errorOnAssetName: message,
                     assetName: value,
                 }
             });
             this.props.handleChange("assetName", value);
         }
-        return msg === undefined;
+        return message === undefined;
     };
 
     /**
@@ -135,19 +136,19 @@ class GeneralTab extends Component {
         this.validateSerial(value, true);
     }
     validateSerial = (value, willUpdateState = true) => {
-        let msg = AssetCreateValidator.validateSerial(value, this.props.translate)
+        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
 
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnSerial: msg,
+                    errorOnSerial: message,
                     serial: value,
                 }
             });
             this.props.handleChange("serial", value);
         }
-        return msg === undefined;
+        return message === undefined;
     };
 
     /**
@@ -186,19 +187,19 @@ class GeneralTab extends Component {
         this.validatePurchaseDate(value, true)
     }
     validatePurchaseDate = (value, willUpdateState = true) => {
-        let msg = AssetCreateValidator.validatePurchaseDate(value, this.props.translate)
+        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
 
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnPurchaseDate: msg,
+                    errorOnPurchaseDate: message,
                     purchaseDate: value,
                 }
             });
             this.props.handleChange("purchaseDate", value);
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
     /**
@@ -208,19 +209,19 @@ class GeneralTab extends Component {
         this.validateWarrantyExpirationDate(value, true)
     }
     validateWarrantyExpirationDate = (value, willUpdateState = true) => {
-        let msg = AssetCreateValidator.validateWarrantyExpirationDate(value, this.props.translate)
+        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
 
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnWarrantyExpirationDate: msg,
+                    errorOnWarrantyExpirationDate: message,
                     warrantyExpirationDate: value,
                 }
             });
             this.props.handleChange("warrantyExpirationDate", value);
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
     /**
@@ -259,19 +260,19 @@ class GeneralTab extends Component {
         this.validateHandoverFromDate(value, true)
     }
     validateHandoverFromDate = (value, willUpdateState = true) => {
-        let msg = AssetCreateValidator.validateHandoverFromDate(value, this.props.translate)
+        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
 
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnHandoverFromDate: msg,
+                    errorOnHandoverFromDate: message,
                     handoverFromDate: value,
                 }
             });
             this.props.handleChange("handoverFromDate", value);
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
     /**
@@ -281,19 +282,19 @@ class GeneralTab extends Component {
         this.validateHandoverToDate(value, true)
     }
     validateHandoverToDate = (value, willUpdateState = true) => {
-        let msg = AssetCreateValidator.validateHandoverToDate(value, this.props.translate)
+        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
 
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnHandoverToDate: msg,
+                    errorOnHandoverToDate: message,
                     handoverToDate: value,
                 }
             });
             this.props.handleChange("handoverToDate", value);
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
     /**
@@ -392,21 +393,22 @@ class GeneralTab extends Component {
         this.validateNameField(value, index);
     }
     validateNameField = (value, className, willUpdateState = true) => {
-        let msg = AssetCreateValidator.validateNameField(value, this.props.translate);
+        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
+
         if (willUpdateState) {
             var { detailInfo } = this.state;
             detailInfo[className] = { ...detailInfo[className], nameField: value }
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnNameField: msg,
-                    errorOnNameFieldPosition: msg ? className : null,
+                    errorOnNameField: message,
+                    errorOnNameFieldPosition: message ? className : null,
                     detailInfo: detailInfo
                 }
             });
             this.props.handleChange("detailInfo", detailInfo);
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
     /**
@@ -417,21 +419,22 @@ class GeneralTab extends Component {
         this.validateValue(value, index);
     }
     validateValue = (value, className, willUpdateState = true) => {
-        let msg = AssetCreateValidator.validateValue(value, this.props.translate);
+        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
+
         if (willUpdateState) {
             var { detailInfo } = this.state;
             detailInfo[className] = { ...detailInfo[className], value: value }
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnValue: msg,
-                    errorOnValuePosition: msg ? className : null,
+                    errorOnValue: message,
+                    errorOnValuePosition: message ? className : null,
                     detailInfo: detailInfo
                 }
             });
             this.props.handleChange("detailInfo", detailInfo);
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
     /**

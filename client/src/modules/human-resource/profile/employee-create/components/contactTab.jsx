@@ -4,8 +4,7 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import { ErrorLabel } from '../../../../../common-components';
 
-import { EmployeeCreateValidator } from './employeeCreateValidator';
-
+import ValidationHelper from '../../../../../helpers/validationHelper';
 class ContactTab extends Component {
     constructor(props) {
         super(props);
@@ -28,18 +27,19 @@ class ContactTab extends Component {
     }
     validatePhone = (value, willUpdateState = true) => {
         const { translate } = this.props;
-        let msg = EmployeeCreateValidator.validatePhone(value, translate)
+        let { message } = ValidationHelper.validateEmpty(translate, value);
+
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnPhoneNumber: msg,
+                    errorOnPhoneNumber: message,
                     phoneNumber: value,
                 }
             });
             this.props.handleChange("phoneNumber", value);
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
     /** Function bắt sự kiện thay đổi emailPersonal 1  */
@@ -49,18 +49,19 @@ class ContactTab extends Component {
     }
     validateEmail1 = (value, willUpdateState = true) => {
         const { translate } = this.props;
-        let msg = EmployeeCreateValidator.validateEmail(value, translate)
+        let { message } = ValidationHelper.validateEmail(translate, value);
+
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnPersonalEmail: msg,
+                    errorOnPersonalEmail: message,
                     personalEmail: value,
                 }
             });
             this.props.handleChange("personalEmail", value);
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
     /** Function bắt sự kiện thay đổi emailPersonal 2 */
@@ -70,18 +71,19 @@ class ContactTab extends Component {
     }
     validateEmail2 = (value, willUpdateState = true) => {
         const { translate } = this.props;
-        let msg = EmployeeCreateValidator.validateEmail(value, translate)
+        let { message } = ValidationHelper.validateEmail(translate, value);
+
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnPersonalEmail2: msg,
+                    errorOnPersonalEmail2: message,
                     personalEmail2: value,
                 }
             });
             this.props.handleChange("personalEmail2", value);
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
     /** Function bắt sự kiện thay đổi email người liên hệ  */
@@ -91,18 +93,19 @@ class ContactTab extends Component {
     }
     validateEmergencyContactPersonEmail = (value, willUpdateState = true) => {
         const { translate } = this.props;
-        let msg = EmployeeCreateValidator.validateEmail(value, translate)
+        let { message } = ValidationHelper.validateEmail(translate, value);
+
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnEmergencyContactPersonEmail: msg,
+                    errorOnEmergencyContactPersonEmail: message,
                     emergencyContactPersonEmail: value,
                 }
             });
             this.props.handleChange("emergencyContactPersonEmail", value);
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
     /** Function bắt sự kiện thay đổi địa chỉ chỗ ở hiện tại */
@@ -112,18 +115,19 @@ class ContactTab extends Component {
     }
     validateAddress = (value, willUpdateState = true) => {
         const { translate } = this.props;
-        let msg = EmployeeCreateValidator.validateAddress(value, translate)
+        let { message } = ValidationHelper.validateEmpty(translate, value);
+
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnTemporaryResidence: msg,
+                    errorOnTemporaryResidence: message,
                     temporaryResidence: value,
                 }
             });
             this.props.handleChange("temporaryResidence", value);
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
