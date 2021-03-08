@@ -39,7 +39,8 @@ exports.copyKPI = async (portal, kpiId, data) => {
 
         organizationalUnitOldKPISet = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
             .findById(kpiId)
-            .populate("organizationalUnit creator")
+            .populate("organizationalUnit")
+            .populate({path: "creator", select :"_id name email avatar"})
             .populate({ path: "kpis", populate: { path: 'parent' } });
     
         
@@ -60,7 +61,8 @@ exports.copyKPI = async (portal, kpiId, data) => {
 
         organizationalUnitKpiSet = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
             .findById(organizationalUnitNewKpi._id)
-            .populate("organizationalUnit creator")
+            .populate("organizationalUnit")
+            .populate({path: "creator", select :"_id name email avatar"})
             .populate({ path: "kpis", populate: { path: 'parent' } });
         
         return organizationalUnitKpiSet;
@@ -107,7 +109,8 @@ exports.copyParentKPIUnitToChildrenKPIEmployee = async (portal, kpiId, data) => 
 
         organizationalUnitOldKPISet = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
             .findById(kpiId)
-            .populate("organizationalUnit creator")
+            .populate("organizationalUnit")
+            .populate({path: "creator", select :"_id name email avatar"})
             .populate({ path: "kpis", populate: { path: 'parent' } });
     
         
@@ -134,7 +137,9 @@ exports.copyParentKPIUnitToChildrenKPIEmployee = async (portal, kpiId, data) => 
                 status: { $ne: 3 },
                 date: { $gte: newDate, $lt: nextNewDate }
             })
-            .populate("organizationalUnit creator approver")
+            .populate("organizationalUnit")
+            .populate({path: "creator", select :"_id name email avatar"})
+            .populate({path: "approver", select :"_id name email avatar"})
             .populate({ path: "kpis", populate: { path: 'parent' } })
             .populate([
                 { path: 'comments.creator', select: 'name email avatar ' },
@@ -149,7 +154,8 @@ exports.copyParentKPIUnitToChildrenKPIEmployee = async (portal, kpiId, data) => 
 exports.calculateKpiUnit = async (portal, data) => {
     //const month = data.date.getMoth() + 1;
     let kpiUnitSet = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal)).findOne({ _id: data.idKpiUnitSet })
-        .populate("organizationalUnit creator")
+        .populate("organizationalUnit")
+        .populate({path: "creator", select :"_id name email avatar"})
         .populate({ path: "kpis", populate: { path: 'parent' } });
 
     let organizationUnitKpiAutomaticPoint = 0;

@@ -297,7 +297,7 @@ _checkManagers = async (v, id) => {
 exports.getTaskTimesheetLogs = async (portal, params) => {
     let timesheetLogs = await Task(connect(DB_CONNECTION, portal))
         .findById(params.taskId)
-        .populate("timesheetLogs.creator");
+        .populate({path: "timesheetLogs.creator", select: "_id name email avatar"});
     return timesheetLogs.timesheetLogs;
 };
 
@@ -1728,7 +1728,7 @@ exports.addTaskLog = async (portal, taskId, body) => {
             { $push: { logs: log } },
             { new: true }
         )
-        .populate("logs.creator");
+        .populate({ path: "logs.creator", select: "_id name emmail avatar"});
 
     let taskLog = await this.getTaskLog(portal, taskId);
 
