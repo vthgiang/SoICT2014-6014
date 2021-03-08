@@ -8,16 +8,14 @@ import { UserActions } from '../../../super-admin/user/redux/actions';
 import { DistributionOfEmployee } from './distributionOfEmployee';
 import { DomainOfTaskResultsChart } from '../task-personal-dashboard/domainOfTaskResultsChart';
 import { TaskStatusChart } from '../task-personal-dashboard/taskStatusChart';
-import { CalendarOrganizationUnit } from './calendarOrganizationUnit';
 import { LoadTaskOrganizationChart } from './loadTaskOrganizationChart';
 import { AverageResultsOfTaskInOrganizationalUnit } from './averageResultsOfTaskInOrganizationalUnit';
 import { AllTimeSheetLogsByUnit } from './allTimeSheetLogByUnit'
 
 import { withTranslate } from 'react-redux-multilingual';
-import { SelectMulti, DatePicker, ToolTip } from '../../../../common-components/index';
+import { SelectMulti, DatePicker } from '../../../../common-components/index';
 import Swal from 'sweetalert2';
 import { InprocessOfUnitTask } from './processOfUnitTasks';
-import ValidationHelper from '../../../../helpers/validationHelper';
 import { GanttCalendar } from '../task-personal-dashboard/ganttCalendar';
 import GeneralTaskChart from './generalTaskChart';
 
@@ -76,7 +74,7 @@ class TaskOrganizationUnitDashboard extends Component {
         await this.props.getDepartment();
         await this.props.getChildrenOfOrganizationalUnitsAsTree(localStorage.getItem("currentRole"));
         await this.props.getAllUserSameDepartment(localStorage.getItem("currentRole"));
-        await this.props.getTaskInOrganizationUnitByMonth(this.state.idsUnit, new Date(this.state.startMonth), new Date(this.state.endMonth));
+        await this.props.getTaskInOrganizationUnitByMonth([], new Date(this.state.startMonth), new Date(this.state.endMonth));
 
         await this.setState(state => {
             return {
@@ -92,11 +90,23 @@ class TaskOrganizationUnitDashboard extends Component {
         let { idsUnit, checkUnit, startMonth, endMonth } = this.state;
         let data, organizationUnit = "organizationUnit";
 
+        // Trưởng hợp đổi 2 role cùng là trưởng đơn vị, cập nhật lại select box chọn đơn vị
+        if (idsUnit && dashboardEvaluationEmployeeKpiSet && !dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    idsUnit: null
+                }
+            })
+
+            return true;
+        }
+
         if (idsUnit !== nextState.idsUnit) {
             return false;
         }
 
-        if (!idsUnit.length && dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit
+        if (!idsUnit?.length && dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit
             || (nextState.checkUnit !== checkUnit
                 || nextState.startMonth !== startMonth
                 || nextState.endMonth !== endMonth)
@@ -129,7 +139,7 @@ class TaskOrganizationUnitDashboard extends Component {
                     startMonth: nextState.startMonth,
                     endMonth: nextState.endMonth,
                     checkUnit: nextState.checkUnit,
-                    idsUnit: !idsUnit.length ? units : nextState.idsUnit,
+                    idsUnit: !idsUnit?.length ? units : nextState.idsUnit,
                     selectBoxUnit: childrenOrganizationalUnit
                 }
             });
@@ -495,10 +505,6 @@ class TaskOrganizationUnitDashboard extends Component {
                                 <div className="box box-primary">
                                     <div className="box-header with-border">
                                         <div className="box-title">{translate('task.task_management.load_task_chart_unit')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
-                                        {/* <ToolTip
-                                            type={"icon_tooltip"} materialIcon={"help"}
-                                            dataTooltip={['Tải công việc tính theo công thức tổng các tỉ số: số ngày thực hiện công việc trong tháng/(số người thực hiện + số người phê duyệt + số người hỗ trợ)']}
-                                        /> */}
                                         <a className="text-red" title={translate('task.task_management.explain')} onClick={() => this.showLoadTaskDoc()}>
                                             <i className="fa fa-exclamation-circle" style={{ color: '#06c', marginLeft: '5px' }} />
                                         </a>
