@@ -4,11 +4,11 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import { DialogModal, ErrorLabel, DatePicker, SelectBox, UploadFile } from '../../../../../common-components';
 
-import { PurchaseRequestFromValidator } from './PurchaseRequestFromValidator';
-
 import { RecommendProcureActions } from '../redux/actions';
 import { UserActions } from '../../../../super-admin/user/redux/actions';
 import { convertJsonObjectToFormData } from '../../../../../helpers/jsonObjectToFormDataObjectConverter';
+import ValidationHelper from '../../../../../helpers/validationHelper';
+
 class PurchaseRequestEditForm extends Component {
     constructor(props) {
         super(props);
@@ -23,17 +23,18 @@ class PurchaseRequestEditForm extends Component {
         this.validateRecommendNumber(value, true);
     }
     validateRecommendNumber = (value, willUpdateState = true) => {
-        let msg = PurchaseRequestFromValidator.validateRecommendNumber(value, this.props.translate)
+        let { message } = ValidationHelper.validateCode(this.props.translate, value);
+
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnRecommendNumber: msg,
+                    errorOnRecommendNumber: message,
                     recommendNumber: value,
                 }
             });
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
     // Bắt sự kiện thay đổi "Ngày lập"
@@ -60,17 +61,18 @@ class PurchaseRequestEditForm extends Component {
         this.validateEquipment(value, true);
     }
     validateEquipment = (value, willUpdateState = true) => {
-        let msg = PurchaseRequestFromValidator.validateEquipment(value, this.props.translate)
+        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
+
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnEquipment: msg,
+                    errorOnEquipment: message,
                     equipmentName: value,
                 }
             });
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
     // Bắt sự kiện thay đổi "Mô tảThiết bị đề nghị mua"
@@ -79,17 +81,18 @@ class PurchaseRequestEditForm extends Component {
         this.validateEquipmentDescription(value, true);
     }
     validateEquipmentDescription = (value, willUpdateState = true) => {
-        let msg = PurchaseRequestFromValidator.validateEquipmentDescription(value, this.props.translate)
+        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
+
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnEquipmentDescription: msg,
+                    errorOnEquipmentDescription: message,
                     equipmentDescription: value,
                 }
             });
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
     // Bắt sự kiện thay đổi "Nhà cung cấp"
@@ -107,17 +110,18 @@ class PurchaseRequestEditForm extends Component {
         this.validateTotal(value, true);
     }
     validateTotal = (value, willUpdateState = true) => {
-        let msg = PurchaseRequestFromValidator.validateTotal(value, this.props.translate)
+        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
+
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnTotal: msg,
+                    errorOnTotal: message,
                     total: value,
                 }
             });
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
     // Bắt sự kiện thay đổi "Đơn vị tính"
@@ -126,17 +130,18 @@ class PurchaseRequestEditForm extends Component {
         this.validateUnit(value, true);
     }
     validateUnit = (value, willUpdateState = true) => {
-        let msg = PurchaseRequestFromValidator.validateUnit(value, this.props.translate)
+        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
+
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnUnit: msg,
+                    errorOnUnit: message,
                     unit: value,
                 }
             });
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
     // Bắt sự kiện thay đổi "Giá trị dự tính"
@@ -185,17 +190,18 @@ class PurchaseRequestEditForm extends Component {
     }
 
     validateApprover = (value, willUpdateState = true) => {
-        let msg = PurchaseRequestFromValidator.validateApprover(value, this.props.translate)
+        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
+
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnApprover: msg,
+                    errorOnApprover: message,
                     approver: value,
                 }
             });
         }
-        return msg === undefined;
+        return message === undefined;
     }
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
     isFormValidated = () => {

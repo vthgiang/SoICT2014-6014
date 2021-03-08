@@ -4,10 +4,9 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import { DatePicker, DialogModal, ErrorLabel, SelectBox } from '../../../../../common-components';
 
-import { MaintainanceFormValidator } from './maintainanceFormValidator';
-
 import { MaintainanceActions } from '../redux/actions';
 import { AssetManagerActions } from '../../asset-information/redux/actions';
+import ValidationHelper from '../../../../../helpers/validationHelper';
 
 class MaintainanceEditForm extends Component {
     constructor(props) {
@@ -33,17 +32,18 @@ class MaintainanceEditForm extends Component {
         this.validateMaintainanceCode(value, true);
     }
     validateMaintainanceCode = (value, willUpdateState = true) => {
-        let msg = MaintainanceFormValidator.validateMaintainanceCode(value, this.props.translate)
+        let { message } = ValidationHelper.validateCode(this.props.translate, value);
+
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnMaintainanceCode: msg,
+                    errorOnMaintainanceCode: message,
                     maintainanceCode: value,
                 }
             });
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
     // Bắt sự kiện thay đổi "Ngày lập"
@@ -51,17 +51,18 @@ class MaintainanceEditForm extends Component {
         this.validateCreateDate(value, true);
     }
     validateCreateDate = (value, willUpdateState = true) => {
-        let msg = MaintainanceFormValidator.validateCreateDate(value, this.props.translate)
+        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
+
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnCreateDate: msg,
+                    errorOnCreateDate: message,
                     createDate: value,
                 }
             });
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
     // Bắt sự kiện thay đổi loại phiếu
@@ -91,17 +92,18 @@ class MaintainanceEditForm extends Component {
         this.validateDescription(value, true);
     }
     validateDescription = (value, willUpdateState = true) => {
-        let msg = MaintainanceFormValidator.validateDescription(value, this.props.translate)
+        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
+
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnDescription: msg,
+                    errorOnDescription: message,
                     description: value,
                 }
             });
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
     // Bắt sự kiện thay đổi "Ngày thực hiện"
@@ -109,17 +111,18 @@ class MaintainanceEditForm extends Component {
         this.validateStartDate(value, true);
     }
     validateStartDate = (value, willUpdateState = true) => {
-        let msg = MaintainanceFormValidator.validateStartDate(value, this.props.translate)
+        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
+
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnStartDate: msg,
+                    errorOnStartDate: message,
                     startDate: value,
                 }
             });
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
     // Bắt sự kiện thay đổi "Ngày hoàn thành"
@@ -136,17 +139,18 @@ class MaintainanceEditForm extends Component {
         this.validateExpense(value, true);
     }
     validateExpense = (value, willUpdateState = true) => {
-        let msg = MaintainanceFormValidator.validateExpense(value, this.props.translate)
+        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
+
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnExpense: msg,
+                    errorOnExpense: message,
                     expense: value,
                 }
             });
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
     // Bắt sự kiện thay đổi "Trạng thái phiếu"

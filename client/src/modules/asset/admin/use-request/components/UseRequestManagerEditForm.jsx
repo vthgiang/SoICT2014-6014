@@ -4,11 +4,12 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import { DialogModal, TimePicker, ErrorLabel, DatePicker, SelectBox } from '../../../../../common-components';
 
-import { UseRequestFromValidator } from '../../../user/use-request/components/UseRequestFromValidator';
 import { UseRequestActions } from '../../../admin/use-request/redux/actions'
 import { RecommendDistributeActions } from '../../../user/use-request/redux/actions';
 import { UserActions } from "../../../../super-admin/user/redux/actions";
 import { AssetManagerActions } from '../../asset-information/redux/actions';
+
+import ValidationHelper from '../../../../../helpers/validationHelper';
 
 class UseRequestManagerEditForm extends Component {
     constructor(props) {
@@ -57,17 +58,18 @@ class UseRequestManagerEditForm extends Component {
         this.validateRecommendNumber(value, true);
     }
     validateRecommendNumber = (value, willUpdateState = true) => {
-        let msg = UseRequestFromValidator.validateRecommendNumber(value, this.props.translate)
+        let { message } = ValidationHelper.validateCode(this.props.translate, value);
+
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnRecommendNumber: msg,
+                    errorOnRecommendNumber: message,
                     recommendNumber: value,
                 }
             });
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
     // Bắt sự kiện thay đổi "Ngày lập"
@@ -75,19 +77,20 @@ class UseRequestManagerEditForm extends Component {
         this.validateDateCreate(value, true);
     }
     validateDateCreate = (value, willUpdateState = true) => {
-        let msg = UseRequestFromValidator.validateDateCreate(value, this.props.translate)
+        let { message } = ValidationHelper.validateCode(this.props.translate, value);
+
         let partCreate = value.split('-');
         let dateCreate = [partCreate[2], partCreate[1], partCreate[0]].join('-');
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnDateCreate: msg,
+                    errorOnDateCreate: message,
                     dateCreate: dateCreate,
                 }
             });
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
     /**
@@ -106,17 +109,18 @@ class UseRequestManagerEditForm extends Component {
         this.validateReqContent(value, true);
     }
     validateReqContent = (value, willUpdateState = true) => {
-        let msg = UseRequestFromValidator.validateReqContent(value, this.props.translate)
+        let { message } = ValidationHelper.validateCode(this.props.translate, value);
+
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnReqContent: msg,
+                    errorOnReqContent: message,
                     reqContent: value,
                 }
             });
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
     /**
@@ -133,17 +137,18 @@ class UseRequestManagerEditForm extends Component {
         this.validateDateStartUse(value, true);
     }
     validateDateStartUse = (value, willUpdateState = true) => {
-        let msg = UseRequestFromValidator.validateDateStartUse(value, this.props.translate)
+        let { message } = ValidationHelper.validateCode(this.props.translate, value);
+
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnDateStartUse: msg,
+                    errorOnDateStartUse: message,
                     dateStartUse: value,
                 }
             });
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
     // Bắt sự kiện thay đổi "Thời gian đăng ký sử dụng đến ngày"
@@ -151,17 +156,18 @@ class UseRequestManagerEditForm extends Component {
         this.validateDateEndUse(value, true);
     }
     validateDateEndUse = (value, willUpdateState = true) => {
-        let msg = UseRequestFromValidator.validateDateEndUse(value, this.props.translate)
+        let { message } = ValidationHelper.validateCode(this.props.translate, value);
+
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnDateEndUse: msg,
+                    errorOnDateEndUse: message,
                     dateEndUse: value,
                 }
             });
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
     //Bắt sự kiện thay đổi "Người phê duyệt"
@@ -186,17 +192,18 @@ class UseRequestManagerEditForm extends Component {
         this.validateNote(value, true);
     }
     validateNote = (value, willUpdateState = true) => {
-        let msg = UseRequestFromValidator.validateNote(value, this.props.translate)
+        let { message } = ValidationHelper.validateCode(this.props.translate, value);
+
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnReason: msg,
+                    errorOnReason: message,
                     note: value,
                 }
             });
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
     handleStartTimeChange = (value) => {

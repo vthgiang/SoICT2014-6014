@@ -1,6 +1,5 @@
-import {
-    VALIDATOR
-} from '../../../../../helpers/validator';
+import { ValidationHelper } from '../../../../../helpers/validationHelper';
+
 export const UsageFormValidator = {
 
     validateStartDate, // ngày bắt đầu sử dụng
@@ -10,34 +9,26 @@ export const UsageFormValidator = {
 }
 
 function validateUsedByUser(value, translate) {
-    let msg = undefined;
-    if (value.trim() === "") {
-        msg = "Người sử dụng không được để trống";
-    }
-    return msg;
+    let msg = ValidationHelper.validateEmpty(translate, value);
+
+    return msg?.message;
 }
 function validateStartDate(value, translate) {
-    let msg = undefined;
-    if (value.trim() === "") {
-        msg = "Ngày bắt đầu sử dụng không được để trống";
-    }
-    return msg;
+    let msg = ValidationHelper.validateEmpty(translate, value);
+
+    return msg?.message;
 }
 
 function validateEndDate(value, translate) {
-    let msg = undefined;
-    if (value.trim() === "") {
-        msg = "Ngày kết thúc sử dụng không được để trống";
-    }
-    return msg;
+    let msg = ValidationHelper.validateEmpty(translate, value);
+
+    return msg?.message;
 }
 
 // Function kiểm tra nội dung
 function validateDescription(value, translate) {
-    let msg = undefined;
-    if (value.trim() === "") {
-        msg = "Nội dung không được để trống";
-    }
-    return msg;
+    let msg = ValidationHelper.validateEmpty(translate, value);
+
+    return msg?.message;
 }
 

@@ -4,9 +4,8 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import { DialogModal, ButtonModal, ErrorLabel, DatePicker } from '../../../../../common-components';
 
-import { AssetCreateValidator } from './combinedContent';
-
 import { generateCode } from "../../../../../helpers/generateCode";
+import ValidationHelper from '../../../../../helpers/validationHelper';
 
 class MaintainanceLogAddModal extends Component {
     constructor(props) {
@@ -68,17 +67,18 @@ class MaintainanceLogAddModal extends Component {
         this.validateMaintainanceCode(value, true);
     }
     validateMaintainanceCode = (value, willUpdateState = true) => {
-        let msg = AssetCreateValidator.validateMaintainanceCode(value, this.props.translate)
+        let { message } = ValidationHelper.validateCode(this.props.translate, value);
+
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnMaintainanceCode: msg,
+                    errorOnMaintainanceCode: message,
                     maintainanceCode: value,
                 }
             });
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
     // Bắt sự kiện thay đổi "Ngày lập"
@@ -86,17 +86,18 @@ class MaintainanceLogAddModal extends Component {
         this.validateCreateDate(value, true);
     }
     validateCreateDate = (value, willUpdateState = true) => {
-        let msg = AssetCreateValidator.validateCreateDate(value, this.props.translate)
+        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
+
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnCreateDate: msg,
+                    errorOnCreateDate: message,
                     createDate: value,
                 }
             });
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
     // Bắt sự kiện thay đổi loại phiếu
@@ -114,17 +115,18 @@ class MaintainanceLogAddModal extends Component {
         this.validateDescription(value, true);
     }
     validateDescription = (value, willUpdateState = true) => {
-        let msg = AssetCreateValidator.validateDescription(value, this.props.translate)
+        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
+
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnDescription: msg,
+                    errorOnDescription: message,
                     description: value,
                 }
             });
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
     // Bắt sự kiện thay đổi "Ngày thực hiện"
@@ -132,17 +134,18 @@ class MaintainanceLogAddModal extends Component {
         this.validateStartDate(value, true);
     }
     validateStartDate = (value, willUpdateState = true) => {
-        let msg = AssetCreateValidator.validateStartDate(value, this.props.translate)
+        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
+
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnStartDate: msg,
+                    errorOnStartDate: message,
                     startDate: value,
                 }
             });
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
     // Bắt sự kiện thay đổi "Ngày hoàn thành"
@@ -159,17 +162,18 @@ class MaintainanceLogAddModal extends Component {
         this.validateExpense(value, true);
     }
     validateExpense = (value, willUpdateState = true) => {
-        let msg = AssetCreateValidator.validateExpense(value, this.props.translate)
+        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
+
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnExpense: msg,
+                    errorOnExpense: message,
                     expense: value,
                 }
             });
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
     // Bắt sự kiện thay đổi "Trạng thái phiếu"
