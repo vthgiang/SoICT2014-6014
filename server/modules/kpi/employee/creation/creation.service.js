@@ -50,7 +50,9 @@ exports.getEmployeeKpiSet = async (portal, data) => {
 
     let employeeKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
         .findOne({ creator: data.userId, organizationalUnit: department._id, status: { $ne: 3 }, date: { $lt: nextMonth, $gte: month } })
-        .populate("organizationalUnit creator approver")
+        .populate("organizationalUnit")
+        .populate({ path: 'creator', select: '_id name email avatar' })
+        .populate({path: 'approver', select: '_id name email avatar'})
         .populate({ path: "kpis", populate: { path: 'parent' } })
         .populate([
             { path: 'comments.creator', select: 'name email avatar ' },
@@ -204,7 +206,9 @@ exports.createEmployeeKpiSet = async (portal, data) => {
         }
 
         employeeKpiSet = employeeKpiSet && await employeeKpiSet
-            .populate("organizationalUnit creator approver")
+            .populate("organizationalUnit")
+            .populate({path: "creator", select :"_id name email avatar"})
+            .populate({path: "approver", select :"_id name email avatar"})
             .populate({ path: "kpis", populate: { path: 'parent' } })
             .execPopulate();
 
@@ -231,7 +235,9 @@ exports.createEmployeeKpi = async (portal, data) => {
         );
     employeeKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
         .findById(employeeKpiSetId)
-        .populate('creator approver organizationalUnit')
+        .populate('organizationalUnit')
+        .populate({path: "creator", select :"_id name email avatar"})
+        .populate({path: "approver", select :"_id name email avatar"})
         .populate({ path: "kpis", populate: { path: 'parent' } })
         .populate([
             { path: 'comments.creator', select: 'name email avatar ' },
@@ -250,7 +256,9 @@ exports.deleteEmployeeKpi = async (portal, id, employeeKpiSetId) => {
         .findByIdAndUpdate(employeeKpiSetId, { $pull: { kpis: id } }, { new: true })
 
     employeeKpiSet = employeeKpiSet && await employeeKpiSet
-        .populate("organizationalUnit creator approver")
+        .populate("organizationalUnit")
+        .populate({path: "creator", select :"_id name email avatar"})
+            .populate({path: "approver", select :"_id name email avatar"})
         .populate({ path: "kpis", populate: { path: 'parent' } })
         .populate([
             { path: 'comments.creator', select: 'name email avatar ' },
@@ -268,7 +276,9 @@ exports.updateEmployeeKpiSetStatus = async (portal, id, statusId, companyId) => 
         .findByIdAndUpdate(id, { $set: { status: statusId } }, { new: true })
 
     employeeKpiSet = employeeKpiSet && await employeeKpiSet
-        .populate("organizationalUnit creator approver")
+        .populate("organizationalUnit")
+        .populate({path: "creator", select :"_id name email avatar"})
+        .populate({path: "approver", select :"_id name email avatar"})
         .populate({ path: "kpis", populate: { path: 'parent' } })
         .populate([
             { path: 'comments.creator', select: 'name email avatar ' },
@@ -299,7 +309,9 @@ exports.editEmployeeKpiSet = async (portal, approver, id) => {
         .findByIdAndUpdate(id, { $set: { approver: approver } }, { new: true })
 
     employeeKpiSet = employeeKpiSet && await employeeKpiSet
-        .populate("organizationalUnit creator approver ")
+        .populate("organizationalUnit ")
+        .populate({path: "creator", select :"_id name email avatar"})
+        .populate({path: "approver", select :"_id name email avatar"})
         .populate({ path: "kpis", populate: { path: 'parent' } })
         .populate([
             { path: 'comments.creator', select: 'name email avatar ' },
