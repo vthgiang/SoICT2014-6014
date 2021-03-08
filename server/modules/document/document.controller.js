@@ -641,38 +641,38 @@ exports.importDocumentDomain = async (req, res) => {
     }
 };
 exports.getDocumentsThatRoleCanView = async (req, res) => {
-    // try {
-    const docs = await DocumentServices.getDocumentsThatRoleCanView(
-        req.portal,
-        req.query,
-        req.user._id,
-        req.user.company._id
-    );
+    try {
+        const docs = await DocumentServices.getDocumentsThatRoleCanView(
+            req.portal,
+            req.query,
+            req.user._id,
+            req.user.company._id
+        );
 
-    await Logger.info(
-        req.user.email,
-        "get_document_that_role_can_view",
-        req.portal
-    );
-    res.status(200).json({
-        success: true,
-        messages: ["get_document_that_role_can_view_success"],
-        content: docs,
-    });
-    // } catch (error) {
-    //     await Logger.error(
-    //         req.user.email,
-    //         "get_document_that_role_can_view",
-    //         req.portal
-    //     );
-    //     res.status(400).json({
-    //         success: false,
-    //         messages: Array.isArray(error)
-    //             ? error
-    //             : ["get_document_that_role_can_view_faile"],
-    //         content: error,
-    //     });
-    // }
+        await Logger.info(
+            req.user.email,
+            "get_document_that_role_can_view",
+            req.portal
+        );
+        res.status(200).json({
+            success: true,
+            messages: ["get_document_that_role_can_view_success"],
+            content: docs,
+        });
+    } catch (error) {
+        await Logger.error(
+            req.user.email,
+            "get_document_that_role_can_view",
+            req.portal
+        );
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error)
+                ? error
+                : ["get_document_that_role_can_view_faile"],
+            content: error,
+        });
+    }
 };
 
 exports.getDocumentsUserStatistical = async (req, res) => {

@@ -363,7 +363,6 @@ class DocumentCommon extends Component {
             dataExport = common.totalDocs;
         }
         let exportData = dataExport ? this.convertDataToExportData(dataExport) : "";
-        console.log('aaaaaaaaaa', paginate);
         return (
             <div className="qlcv">
                 <React.Fragment>
@@ -386,6 +385,7 @@ class DocumentCommon extends Component {
                             documentRelationshipDocuments={currentRow.relationshipDocuments ? currentRow.relationshipDocuments.map(document => document.name) : []}
 
                             documentRoles={currentRow.roles}
+                            documentUserCanView={currentRow.userCanView}
 
                             documentArchivedRecordPlaceInfo={currentRow.archivedRecordPlaceInfo}
                             documentArchivedRecordPlaceOrganizationalUnit={currentRow.archivedRecordPlaceOrganizationalUnit}

@@ -5,6 +5,7 @@ import { DataTableSetting, DateTimeConverter, PaginateBar, TreeSelect, SelectBox
 import { DocumentActions } from '../../../redux/actions';
 import { RoleActions } from '../../../../super-admin/role/redux/actions';
 import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
+import { UserActions } from '../../../../super-admin/user/redux/actions';
 import DocumentInformation from './documentInformation';
 import { getStorage } from '../../../../../config';
 import ListDownload from '../../administration/list-data/listDownload';
@@ -52,6 +53,7 @@ class UserDocumentsData extends Component {
         this.props.getDocumentDomains();
         this.props.getDocumentArchive();
         this.props.getDocumentCategories();
+        this.props.getAllUser();
     }
 
     toggleDocumentInformation = async (data) => {
@@ -464,6 +466,7 @@ class UserDocumentsData extends Component {
                             documentRelationshipDocuments={currentRow.relationshipDocuments ? currentRow.relationshipDocuments.map(document => document.name) : []}
 
                             documentRoles={currentRow.roles}
+                            documentUserCanView={currentRow.userCanView}
 
                             documentArchivedRecordPlaceInfo={currentRow.archivedRecordPlaceInfo}
                             documentArchivedRecordPlaceOrganizationalUnit={currentRow.archivedRecordPlaceOrganizationalUnit}
@@ -631,6 +634,7 @@ const mapDispatchToProps = {
     getDocumentDomains: DocumentActions.getDocumentDomains,
     getDocumentCategories: DocumentActions.getDocumentCategories,
     getDocumentArchive: DocumentActions.getDocumentArchive,
+    getAllUser: UserActions.get,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(UserDocumentsData));

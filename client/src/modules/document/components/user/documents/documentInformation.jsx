@@ -118,8 +118,6 @@ class DocumentInformation extends Component {
         const relationshipDocs = documents.administration.data.list.filter(doc => doc._id !== documentId).map(doc => { return { value: doc._id, text: doc.name } })
         let roles = this.findDocumentRole(roleList, documentRoles);
         let users = this.findUser(userList, documentUserCanView);
-        console.log('uuuuuuuuuu', users);
-        // let users = this.findUser()
         let logs = documentLogs.reverse();
         return (
             <React.Fragment>
@@ -235,7 +233,7 @@ class DocumentInformation extends Component {
                                     <div className="row">
                                         <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
                                             <strong>{translate('document.relationship.description')}&emsp; </strong>
-                                            {documentRelationshipDescription ? documentRelationshipDescription : translate('general.no_data')}
+                                            {documentRelationshipDescription && documentRelationshipDescription !== "undefined" ? documentRelationshipDescription : translate('general.no_data')}
                                         </div>
 
                                         <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
