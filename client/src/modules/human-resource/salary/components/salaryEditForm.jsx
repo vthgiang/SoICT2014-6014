@@ -4,9 +4,9 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import { DialogModal, ErrorLabel, DatePicker, SelectBox } from '../../../../common-components';
 
-import { SalaryFormValidator } from './salaryFormValidator';
-
 import { SalaryActions } from '../redux/actions';
+
+import ValidationHelper from '../../../../helpers/validationHelper';
 
 class SalaryEditForm extends Component {
     constructor(props) {
@@ -21,17 +21,18 @@ class SalaryEditForm extends Component {
     }
     validateMainSalary = (value, willUpdateState = true) => {
         let { translate } = this.props;
-        let msg = SalaryFormValidator.validateMainSalary(value, translate);
+        let { message } = ValidationHelper.validateEmpty(translate, value);
+
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnMainSalary: msg,
+                    errorOnMainSalary: message,
                     mainSalary: value,
                 }
             });
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
 
@@ -77,19 +78,20 @@ class SalaryEditForm extends Component {
     }
     validateNameSalary = (value, className, willUpdateState = true) => {
         let { translate } = this.props;
-        let msg = SalaryFormValidator.validateNameSalary(value, translate);
+        let { message } = ValidationHelper.validateEmpty(translate, value);
+
         if (willUpdateState) {
             let { bonus } = this.state;
             bonus[className] = { ...bonus[className], nameBonus: value }
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnNameSalary: msg,
+                    errorOnNameSalary: message,
                     bonus: bonus
                 }
             });
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
     /** Bắt sự kiện chỉnh sửa tiền lương thưởng khác  */
@@ -99,19 +101,20 @@ class SalaryEditForm extends Component {
     }
     validateMoreMoneySalary = (value, className, willUpdateState = true) => {
         let { translate } = this.props;
-        let msg = SalaryFormValidator.validateMoreMoneySalary(value, translate);
+        let { message } = ValidationHelper.validateEmpty(translate, value);
+
         if (willUpdateState) {
             let { bonus } = this.state;
             bonus[className] = { ...bonus[className], number: value }
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnMoreMoneySalary: msg,
+                    errorOnMoreMoneySalary: message,
                     bonus: bonus
                 }
             });
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
     /**

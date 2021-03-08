@@ -4,7 +4,7 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import { DialogModal, ButtonModal, ErrorLabel, UploadFile, SelectBox } from '../../../../../common-components';
 
-import { EmployeeCreateValidator } from './combinedContent';
+import ValidationHelper from '../../../../../helpers/validationHelper';
 
 class DegreeAddModal extends Component {
     constructor(props) {
@@ -46,17 +46,18 @@ class DegreeAddModal extends Component {
     }
     validateName = (value, willUpdateState = true) => {
         const { translate } = this.props;
-        let msg = EmployeeCreateValidator.validateNameDegree(value, translate)
+        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
+
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnName: msg,
+                    errorOnName: message,
                     name: value,
                 }
             });
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
     /** Bắt sự kiện thay đổi nơi đào tạo */
@@ -66,17 +67,18 @@ class DegreeAddModal extends Component {
     }
     validateIssuedBy = (value, willUpdateState = true) => {
         const { translate } = this.props;
-        let msg = EmployeeCreateValidator.validateIssuedByDegree(value, translate)
+        let { message } = ValidationHelper.validateEmpty(translate, value);
+
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnIssuedBy: msg,
+                    errorOnIssuedBy: message,
                     issuedBy: value,
                 }
             });
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
     /** Bắt sự kiện thay đổi năm tốt nghiệp */
@@ -86,17 +88,18 @@ class DegreeAddModal extends Component {
     }
     validateYear = (value, willUpdateState = true) => {
         const { translate } = this.props;
-        let msg = EmployeeCreateValidator.validateYearDegree(value, translate)
+        let { message } = ValidationHelper.validateEmpty(translate, value);
+
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnYear: msg,
+                    errorOnYear: message,
                     year: value,
                 }
             });
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
     /** Bắt sự kiện thay đổi xếp loại */

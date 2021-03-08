@@ -4,7 +4,7 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import { DialogModal, ErrorLabel, DatePicker } from '../../../../../common-components';
 
-import { EmployeeCreateValidator } from './combinedContent';
+import ValidationHelper from '../../../../../helpers/validationHelper';
 
 class ModalEditExperience extends Component {
     constructor(props) {
@@ -19,17 +19,18 @@ class ModalEditExperience extends Component {
     }
     validateExperienceUnit = (value, willUpdateState = true) => {
         const { translate } = this.props;
-        let msg = EmployeeCreateValidator.validateExperienceUnit(value, translate)
+        let { message } = ValidationHelper.validateEmpty(translate, value);
+
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnUnit: msg,
+                    errorOnUnit: message,
                     company: value,
                 }
             });
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
     /** Bắt sự kiện thay đổi chức vụ */
@@ -39,17 +40,18 @@ class ModalEditExperience extends Component {
     }
     validateExperiencePosition = (value, willUpdateState = true) => {
         const { translate } = this.props;
-        let msg = EmployeeCreateValidator.validateExperiencePosition(value, translate)
+        let { message } = ValidationHelper.validateEmpty(translate, value);
+
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnPosition: msg,
+                    errorOnPosition: message,
                     position: value,
                 }
             });
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
     /**
