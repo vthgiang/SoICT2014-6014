@@ -128,7 +128,7 @@ const GeneralTaskPersonalChart = (props) => {
                             <span className="material-icons" style={{ fontWeight: "bold", marginRight: '10px' }}>
                                 {unConfirm ? `keyboard_arrow_down` : `keyboard_arrow_up`}
 
-                            </span>{`${translate('task.task_dashboard.unconfirmed_task')} (${state.unconfirmedTask?.length})`}
+                            </span>{`${translate('task.task_dashboard.unconfirmed_task')} (${state.unconfirmedTask ? state.unconfirmedTask.length : 0})`}
                         </p>
                         <div className="collapse" data-toggle="collapse " id="show-task-un-confirm">
                             {state.unconfirmedTask &&
@@ -136,8 +136,8 @@ const GeneralTaskPersonalChart = (props) => {
 
                                     {(state.unconfirmedTask.length !== 0) ?
                                         state.unconfirmedTask.map((item, key) => (
-                                            <li key={key}>
-                                                <span className="handle text"><a href={`/task?taskId=${item._id}`} target="_blank">{item.name}</a></span>
+                                            <li key={key} style={{ border: 'none', borderBottom: '1px solid #f4f4f4' }}>
+                                                <span className="handle text"><a href={`/task?taskId=${item._id}`} target="_blank">{`${key + 1}. ${item.name}`}</a></span>
                                                 <small className="label label-warning">{item.createdToNow} {translate('task.task_dashboard.day_ago')}</small>
                                             </li>
                                         )) : <small style={{ color: "#696767" }}>{translate('task.task_dashboard.no_task')}</small>
@@ -156,7 +156,7 @@ const GeneralTaskPersonalChart = (props) => {
                             <span className="material-icons" style={{ fontWeight: "bold", marginRight: '10px' }}>
                                 {todo ? `keyboard_arrow_down` : `keyboard_arrow_up`}
 
-                            </span>{`${translate('task.task_dashboard.to_do_task')} (${state.todoTask?.length})`}
+                            </span>{`${translate('task.task_dashboard.to_do_task')} (${state.todoTask ? state.todoTask.length : 0})`}
                         </p>
                         <div className="collapse" data-toggle="collapse " id="show-task-need-to-do">
                             {
@@ -165,8 +165,8 @@ const GeneralTaskPersonalChart = (props) => {
                                     {
                                         (state.todoTask.length !== 0) ?
                                             state.todoTask.map((item, key) =>
-                                                <li key={key}>
-                                                    <span className="handle text"><a href={`/task?taskId=${item._id}`} target="_blank">{item.name}</a></span>
+                                                <li key={key} style={{ border: 'none', borderBottom: '1px solid #f4f4f4' }} >
+                                                    <span className="handle text"><a href={`/task?taskId=${item._id}`} target="_blank">{`${key + 1}. ${item.name}`}</a></span>
                                                     <small className="label label-primary">{item.progress}% - {translate('task.task_dashboard.rest')} {item.nowToEnd} {translate('task.task_dashboard.day')}</small>
                                                 </li>
                                             ) : <small style={{ color: "#696767" }}>{translate('task.task_dashboard.no_task')}</small>
@@ -184,7 +184,7 @@ const GeneralTaskPersonalChart = (props) => {
                             <span className="material-icons" style={{ fontWeight: "bold", marginRight: '10px' }}>
                                 {delay ? `keyboard_arrow_down` : `keyboard_arrow_up`}
 
-                            </span>{`${translate('task.task_dashboard.delay_task')} (${state.delayTask?.length})`}
+                            </span>{`${translate('task.task_dashboard.delay_task')} (${state.delayTask ? state.delayTask.length : 0})`}
                         </p>
                         <div className="collapse" data-toggle="collapse " id="show-task-delay">
                             {
@@ -193,8 +193,8 @@ const GeneralTaskPersonalChart = (props) => {
                                     {
                                         (state.delayTask.length !== 0) ?
                                             state.delayTask.map((item, key) =>
-                                                <li key={key}>
-                                                    <span className="handle text"><a href={`/task?taskId=${item._id}`} target="_blank">{item.name}</a></span>
+                                                <li key={key} style={{ border: 'none', borderBottom: '1px solid #f4f4f4' }}>
+                                                    <span className="handle text"><a href={`/task?taskId=${item._id}`} target="_blank">{`${key + 1}. ${item.name}`}</a></span>
                                                     <small className="label label-warning">{item.progress}% - {translate('task.task_dashboard.rest')} {item.nowToEnd} {translate('task.task_dashboard.day')}</small>
                                                 </li>
                                             ) : <small style={{ color: "#696767" }}>{translate('task.task_dashboard.no_task')}</small>
@@ -212,7 +212,7 @@ const GeneralTaskPersonalChart = (props) => {
                             <span className="material-icons" style={{ fontWeight: "bold", marginRight: '10px' }}>
                                 {noneUpdate ? `keyboard_arrow_down` : `keyboard_arrow_up`}
 
-                            </span>{`${translate('task.task_dashboard.none_update_recently')} (${state.noneUpdateTask?.length})`}
+                            </span>{`${translate('task.task_dashboard.none_update_recently')} (${state.noneUpdateTask ? state.noneUpdateTask.length : 0})`}
                         </p>
 
                         <div className="collapse" data-toggle="collapse " id="show-task-none-update">
@@ -222,8 +222,8 @@ const GeneralTaskPersonalChart = (props) => {
                                     {
                                         (state.noneUpdateTask.length !== 0) ?
                                             state.noneUpdateTask.map((item, key) =>
-                                                <li key={key}>
-                                                    <span className="handle text"><a href={`/task?taskId=${item._id}`} target="_blank">{item.name}</a></span>
+                                                <li key={key} style={{ border: 'none', borderBottom: '1px solid #f4f4f4' }}>
+                                                    <span className="handle text"><a href={`/task?taskId=${item._id}`} target="_blank">{`${key + 1}. ${item.name}`}</a></span>
                                                     <small className="label label-warning"><i className="fa fa-clock-o" /> &nbsp;
                                                 {translate('task.task_dashboard.updated')} {item.updatedToNow}
                                                         {translate('task.task_dashboard.day_ago')}</small>
@@ -246,7 +246,7 @@ const GeneralTaskPersonalChart = (props) => {
                             <span className="material-icons" style={{ fontWeight: "bold", marginRight: '10px' }}>
                                 {urgent ? `keyboard_arrow_down` : `keyboard_arrow_up`}
 
-                            </span>{`${translate('task.task_dashboard.urgent_task')} (${state.urgentTask?.length})`}
+                            </span>{`${translate('task.task_dashboard.urgent_task')} (${state.urgentTask ? state.urgentTask.length : 0})`}
                         </p>
                         <div className="collapse" data-toggle="collapse " id="show-task-urgent">
                             {
@@ -255,8 +255,8 @@ const GeneralTaskPersonalChart = (props) => {
                                     {
                                         (state.urgentTask.length !== 0) ?
                                             state.urgentTask.map((item, key) =>
-                                                <li key={key}>
-                                                    <span className="handle text"><a href={`/task?taskId=${item._id}`} target="_blank">{item.name}</a></span>
+                                                <li key={key} style={{ border: 'none', borderBottom: '1px solid #f4f4f4' }}>
+                                                    <span className="handle text"><a href={`/task?taskId=${item._id}`} target="_blank">{`${key + 1}. ${item.name}`}</a></span>
                                                     <small className="label label-danger">{item.createdToNow} {translate('task.task_dashboard.day_ago')}</small>
 
                                                 </li>
@@ -275,7 +275,7 @@ const GeneralTaskPersonalChart = (props) => {
                             <span className="material-icons" style={{ fontWeight: "bold", marginRight: '10px' }}>
                                 {inTime ? `keyboard_arrow_down` : `keyboard_arrow_up`}
 
-                            </span>{`${translate('task.task_dashboard.intime_task')} (${state.intimeTask?.length})`}
+                            </span>{`${translate('task.task_dashboard.intime_task')} (${state.intimeTask ? state.intimeTask.length : 0})`}
                         </p>
                         <div className="collapse" data-toggle="collapse " id="show-task-intime">
                             {
@@ -284,8 +284,8 @@ const GeneralTaskPersonalChart = (props) => {
                                     {
                                         (state.intimeTask.length !== 0) ?
                                             state.intimeTask.map((item, key) =>
-                                                <li key={key}>
-                                                    <span className="handle text"><a href={`/task?taskId=${item._id}`} target="_blank">{item.name}</a></span>
+                                                <li key={key} style={{ border: 'none', borderBottom: '1px solid #f4f4f4' }}>
+                                                    <span className="handle text"><a href={`/task?taskId=${item._id}`} target="_blank">{`${key + 1}. ${item.name}`}</a></span>
                                                     <small className="label label-success">{item.progress}% - {translate('task.task_dashboard.rest')} {item.nowToEnd} {translate('task.task_dashboard.day')}</small>
                                                 </li>
                                             ) : <small style={{ color: "#696767" }}>{translate('task.task_dashboard.no_task')}</small>
@@ -303,7 +303,7 @@ const GeneralTaskPersonalChart = (props) => {
                             <span className="material-icons" style={{ fontWeight: "bold", marginRight: '10px' }}>
                                 {overdue ? `keyboard_arrow_down` : `keyboard_arrow_up`}
 
-                            </span>{`${translate('task.task_dashboard.overdue_task')} (${state.overdueTask?.length})`}
+                            </span>{`${translate('task.task_dashboard.overdue_task')} (${state.overdueTask ? state.overdueTask.length : 0})`}
                         </p>
                         <div className="collapse" data-toggle="collapse " id="show-task-overdue">
                             {
@@ -312,8 +312,8 @@ const GeneralTaskPersonalChart = (props) => {
                                     {
                                         (state.overdueTask.length !== 0) ?
                                             state.overdueTask.map((item, key) =>
-                                                <li key={key}>
-                                                    <span className="handle text"><a href={`/task?taskId=${item._id}`} target="_blank">{item.name}</a></span>
+                                                <li key={key} style={{ border: 'none', borderBottom: '1px solid #f4f4f4' }}>
+                                                    <span className="handle text"><a href={`/task?taskId=${item._id}`} target="_blank">{`${key + 1}. ${item.name}`}</a></span>
                                                     <small className="label label-danger">{translate('task.task_dashboard.overdue')} {item.nowToEnd} {translate('task.task_dashboard.day')}</small>
                                                 </li>
                                             ) : <small style={{ color: "#696767" }}>{translate('task.task_dashboard.no_task')}</small>
