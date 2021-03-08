@@ -594,6 +594,7 @@ class TaskOrganizationUnitDashboard extends Component {
                         </div>
                         {/*Dashboard tải công việc */}
                         <div className="row">
+                            <div className="col-xs-12">
                                 <div className="box box-primary">
                                     <div className="box-header with-border">
                                         <div className="box-title">{translate('task.task_management.load_task_chart_unit')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
@@ -614,6 +615,7 @@ class TaskOrganizationUnitDashboard extends Component {
                                         }
                                     </div>
                                 </div>
+                            </div>
                         </div>
                         <div>
                             <AllTimeSheetLogsByUnit
