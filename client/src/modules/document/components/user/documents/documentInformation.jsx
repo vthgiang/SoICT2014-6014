@@ -95,10 +95,10 @@ class DocumentInformation extends Component {
     }
 
     findUser(users, arr_id) {
-        let data = arr_id.map(id => {
+        let data = arr_id && arr_id.length > 0 ? arr_id.map(id => {
             let name = users.filter(user => id && id === user.value);
             return name.map(x => x.text);
-        })
+        }) : []
         return data;
     }
 
@@ -246,8 +246,8 @@ class DocumentInformation extends Component {
                                     <div className="row">
                                         <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
                                             <strong>{translate('document.roles')}&emsp; </strong>
-                                            {roles && roles.length ? roles.map(y =>
-                                                <div>{y[0]}</div>
+                                            {roles && roles.length ? roles.map((y, index) =>
+                                                <div key={index}>{y[0]}</div>
                                             ) : translate('general.no_data')}
                                         </div>
 
@@ -260,8 +260,8 @@ class DocumentInformation extends Component {
                                     <div className="row">
                                         <div className="form-group col-lg-12 col-md-12 col-ms-12 col-xs-12">
                                             <strong>{translate('document.users')}&emsp; </strong>
-                                            {users && users.length ? users.map(y =>
-                                                <div>{y[0]}</div>
+                                            {users && users.length ? users.map((y, index) =>
+                                                <div key={index}>{y[0]}</div>
                                             ) : translate('general.no_data')}
                                         </div>
 
