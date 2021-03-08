@@ -552,27 +552,31 @@ class TaskDashboard extends Component {
                     </div>
                 </div>
 
-                <TasksIsNotLinked />
-                <TaskHasActionNotEvaluated />
+                <div className="row">
+                    <TasksIsNotLinked />
+                    <TaskHasActionNotEvaluated />
+                </div>
 
                 {/*Biểu đồ dashboard tải công việc */}
-                <div className="col-xs-12">
-                    <div className="box box-primary">
-                        <div className="box-header with-border inline">
-                            <div className="box-title">{translate('task.task_management.load_task_chart')}</div>
-                            <a className="text-red" title={translate('task.task_management.explain')} onClick={() => this.showLoadTaskDoc()}>
-                                <i className="fa fa-exclamation-circle" style={{ color: '#06c', marginLeft: '5px' }} />
-                            </a>
-                        </div>
+                <div className="row">
+                    <div className="col-xs-12">
+                        <div className="box box-primary">
+                            <div className="box-header with-border">
+                                <div className="box-title">{translate('task.task_management.load_task_chart')}</div>
+                                <a className="text-red" title={translate('task.task_management.explain')} onClick={() => this.showLoadTaskDoc()}>
+                                    <i className="fa fa-exclamation-circle" style={{ color: '#06c', marginLeft: '5px' }} />
+                                </a>
+                            </div>
 
-                        <div className="box-body qlcv">
-                            {callAction &&
-                                <LoadTaskChart
-                                    callAction={!willUpdate}
-                                    startMonth={startMonth}
-                                    endMonth={endMonth}
-                                />
-                            }
+                            <div className="box-body qlcv">
+                                {callAction &&
+                                    <LoadTaskChart
+                                        callAction={!willUpdate}
+                                        startMonth={startMonth}
+                                        endMonth={endMonth}
+                                    />
+                                }
+                            </div>
                         </div>
                     </div>
                 </div>
