@@ -182,6 +182,7 @@ class GanttCalendar extends Component {
     const dataAllTask = unitData.data;
     const countAllTask = unitData.count;
     const lineAllTask = unitData.line;
+
     return {
       dataAllTask,
       countAllTask,
@@ -194,7 +195,7 @@ class GanttCalendar extends Component {
     let line = 0, parentCount = 0, currentParent = -1;
     let data = [];
     let count = { delay: 0, intime: 0, notAchived: 0 };
-    let taskFilter = [], taskSorted = [];
+    let taskFilter = [], sortTaskArr = [];
     let status = this.state.taskStatus;
 
     // Lọc công việc theo trạng thái
@@ -207,35 +208,39 @@ class GanttCalendar extends Component {
     }
 
     // sắp xếp các công việc theo tên ngươi thực hiện
-    let sortTask = {};
+    let sortTaskObj = {};
     for (let i in taskFilter) {
       let item = taskFilter[i];
       if (item.responsibleEmployees) {
         //cong viec 1 nguoi thuc hien
         if (item.responsibleEmployees.length == 1) {
           let employee = item.responsibleEmployees[0].name;
-          if (!sortTask[employee]) sortTask[employee] = [];
-          sortTask[employee].push(item)
+          if (!sortTaskObj[employee]) sortTaskObj[employee] = [];
+          sortTaskObj[employee].push(item)
         }
         // cong viec nhieu nguoi thuc hien
         else {
-          if (!sortTask.multipleEmployee) sortTask.multipleEmployee = [];
-          sortTask.multipleEmployee.push(item)
+          if (!sortTaskObj.multipleEmployee) sortTaskObj.multipleEmployee = [];
+          sortTaskObj.multipleEmployee.push(item)
         }
       }
     }
 
     // chuyen object thanh mang cong viec
-    for (let key in sortTask) {
-      if (sortTask.hasOwnProperty(key) && key != 'multipleEmployee') {
-        taskSorted = taskSorted.concat(sortTask[key]);
+    for (let key in sortTaskObj) {
+
+      if (sortTaskObj.hasOwnProperty(key) && key != 'multipleEmployee') {
+        sortTaskArr = sortTaskArr.concat(sortTaskObj[key]);
       }
     }
-    taskSorted = sortTask.multipleEmployee && taskSorted.concat(sortTask.multipleEmployee);
 
-    for (let i in taskSorted) {
-      let item = taskSorted[i];
-      let prevItem = taskSorted[i - 1];
+    if (sortTaskObj.multipleEmployee) {
+      sortTaskArr = sortTaskArr.concat(sortTaskObj.multipleEmployee)
+    }
+
+    for (let i in sortTaskArr) {
+      let item = sortTaskArr[i];
+      let prevItem = sortTaskArr[i - 1];
 
       if (i == 0) {
         item.parentSplit = 0;
@@ -254,8 +259,8 @@ class GanttCalendar extends Component {
       }
     }
 
-    for (let i in taskSorted) {
-      let item = taskSorted[i];
+    for (let i in sortTaskArr) {
+      let item = sortTaskArr[i];
       let start = moment(item.startDate);
       let end = moment(item.endDate);
       let now = moment(new Date());
@@ -289,8 +294,8 @@ class GanttCalendar extends Component {
         groupNameLabel = "Công việc nhiều người thực hiện";
       }
       else {
-        groupNameLabel = item && taskSorted[i - 1] && taskSorted[i - 1].responsibleEmployees[0] && item.responsibleEmployees[0]
-          && taskSorted[i - 1].responsibleEmployees[0].name === item.responsibleEmployees[0].name
+        groupNameLabel = item && sortTaskArr[i - 1] && sortTaskArr[i - 1].responsibleEmployees[0] && item.responsibleEmployees[0]
+          && sortTaskArr[i - 1].responsibleEmployees[0].name === item.responsibleEmployees[0].name
           ? "" : item?.responsibleEmployees[0]?.name;
       }
       if (item.parentSplit != currentParent) {
@@ -306,6 +311,7 @@ class GanttCalendar extends Component {
         currentParent++;
         line++;
       }
+
       data.push({
         id: `taskUnit-${item._id}`,
         text: item.status == "inprocess" ? `${item.name} - ${item.progress}%` : `${item.name}`,

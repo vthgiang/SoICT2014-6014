@@ -35,7 +35,7 @@ const GeneralTaskPersonalChart = (props) => {
                 let createdToNow = now.diff(created, 'days');
                 let nowToEnd = end.diff(now, 'days');
 
-                // viec 7 {translate('task.task_dashboard.day')} chua update
+                // viec 7 ngay chua update
                 if (updatedToNow >= 7) {
                     let add = {
                         ...taskOfUser[i],
