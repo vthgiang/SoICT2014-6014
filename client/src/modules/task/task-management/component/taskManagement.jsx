@@ -54,9 +54,10 @@ class TaskManagement extends Component {
     }
 
     componentDidMount() {
+        const { perPage, currentPage } = this.state;
         this.props.getDepartment();
         this.props.getAllDepartment();
-        this.props.getPaginateTasks(this.state.currentTab, [], '1', '20', this.state.status, null, null, null, null, null, null, null, null);
+        this.props.getPaginateTasks(this.state.currentTab, [], currentPage, perPage, this.state.status, null, null, null, null, null, null, null, null);
         this.props.getAllTaskProject();
     }
 
@@ -213,7 +214,7 @@ class TaskManagement extends Component {
     }
 
     nextPage = async (pageTotal) => {
-        let { organizationalUnit, status, priority, special, name, startDate, endDate, responsibleEmployees, accountableEmployees, creatorEmployees } = this.state;
+        let { organizationalUnit, status, priority, special, name, startDate, endDate, responsibleEmployees, accountableEmployees, creatorEmployees, perPage } = this.state;
 
         let oldCurrentPage = this.state.currentPage;
         await this.setState(state => {
@@ -225,12 +226,12 @@ class TaskManagement extends Component {
         let newCurrentPage = this.state.currentPage;
         if (oldCurrentPage !== newCurrentPage) {
             let content = this.state.currentTab;
-            this.props.getPaginateTasks(content, organizationalUnit, newCurrentPage, 20, status, priority, special, name, startDate, endDate, responsibleEmployees, accountableEmployees, creatorEmployees);
+            this.props.getPaginateTasks(content, organizationalUnit, newCurrentPage, perPage, status, priority, special, name, startDate, endDate, responsibleEmployees, accountableEmployees, creatorEmployees);
         };
     }
 
     backPage = async () => {
-        let { organizationalUnit, status, priority, special, name, startDate, endDate, responsibleEmployees, accountableEmployees, creatorEmployees } = this.state;
+        let { organizationalUnit, status, priority, special, name, startDate, endDate, responsibleEmployees, accountableEmployees, creatorEmployees, perPage } = this.state;
 
         let oldCurrentPage = this.state.currentPage;
         await this.setState(state => {
@@ -242,7 +243,7 @@ class TaskManagement extends Component {
         let newCurrentPage = this.state.currentPage;
         if (oldCurrentPage !== newCurrentPage) {
             let content = this.state.currentTab;
-            this.props.getPaginateTasks(content, organizationalUnit, newCurrentPage, 20, status, priority, special, name, startDate, endDate, responsibleEmployees, accountableEmployees, creatorEmployees);
+            this.props.getPaginateTasks(content, organizationalUnit, newCurrentPage, perPage, status, priority, special, name, startDate, endDate, responsibleEmployees, accountableEmployees, creatorEmployees);
         };
     }
 
