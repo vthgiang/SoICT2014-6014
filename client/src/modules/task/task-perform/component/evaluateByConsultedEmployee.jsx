@@ -18,7 +18,6 @@ class EvaluateByConsultedEmployee extends Component {
         this.DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
 
         this.state = {
-            // id: id,
             isEval: isEval,
             info: data.info,
             task: data.task,
@@ -56,7 +55,6 @@ class EvaluateByConsultedEmployee extends Component {
         if (nextProps.id !== prevState.id) {
             return {
                 ...prevState,
-                // id: nextProps.id,
 
                 errorOnEndDate: undefined, // Khi nhận thuộc tính mới, cần lưu ý reset lại các gợi ý nhắc lỗi, nếu không các lỗi cũ sẽ hiển thị lại
                 errorOnStartDate: undefined,
@@ -177,8 +175,6 @@ class EvaluateByConsultedEmployee extends Component {
 
             let dentaDate = 0;
 
-            // this.props.getAllKpiSetsOrganizationalUnitByMonth(idUser, unit, date);
-
             let cloneKpi = []
             if (KPIPersonalManager && KPIPersonalManager.kpiSets) {
                 cloneKpi = (KPIPersonalManager.kpiSets.kpis.filter(e => (e.type === 2)).map(x => { return x._id }));
@@ -209,21 +205,11 @@ class EvaluateByConsultedEmployee extends Component {
 
             evaluation = task.evaluations.find(e => (monthOfEval === new Date(e.evaluatingMonth).getMonth() && yearOfEval === new Date(e.evaluatingMonth).getFullYear()));
             prevEval = this.getPreviousEvaluation(task, dateParams);
-            // prevEval = task.evaluations.find(e => ((monthOfPrevEval) === new Date(e.evaluatingMonth).getMonth() && yearOfPrevEval === new Date(e.evaluatingMonth).getFullYear()));
+
             if (prevEval) {
                 prevDate = this.formatDate(prevEval.endDate);
                 startTime = this.formatTime(prevEval.endDate);
             }
-            // else {
-            //     let strPrevMonth = `${monthOfPrevEval + 1}-${yearOfPrevEval}`
-            //     // trong TH k có đánh giá tháng trước, so sánh tháng trước với tháng start date
-            //     if (!((yearOfPrevEval === new Date(startDateTask).getFullYear() && monthOfPrevEval < new Date(startDateTask).getMonth()) // bắt đầu tháng bất kì khác tháng 1
-            //         || (yearOfPrevEval < new Date(startDateTask).getFullYear()) // TH bắt đầu là tháng 1 - chọn đánh giá tháng 1
-            //     )) {
-            //         prevDate = moment(strPrevMonth, 'MM-YYYY').endOf("month").format('DD-MM-YYYY');
-            //         startTime = "12:00 AM";
-            //     }
-            // }
             let automaticPoint = (evaluation && evaluation.results.length !== 0) ? evaluation.results[0].automaticPoint : undefined;
 
             let point = undefined;
@@ -245,7 +231,6 @@ class EvaluateByConsultedEmployee extends Component {
                     point = res.employeePoint ? res.employeePoint : undefined;
 
                 }
-                // date = this.formatDate(evaluations.date);
                 progress = evaluation.progress;
             }
 
@@ -262,13 +247,6 @@ class EvaluateByConsultedEmployee extends Component {
                             type: infoEval[i].type
                         }
                     }
-                    // else if (!infoEval[i].filledByAccountableEmployeesOnly) {
-                    //     info[`${infoEval[i].code}`] = {
-                    //         // value: this.formatDate(Date.now()),
-                    //         code: infoEval[i].code,
-                    //         type: infoEval[i].type
-                    //     }
-                    // }
                 }
                 else if (infoEval[i].type === "set_of_values") {
                     let splitSetOfValues = infoEval[i].extra.split('\n');
@@ -279,13 +257,6 @@ class EvaluateByConsultedEmployee extends Component {
                             type: infoEval[i].type
                         }
                     }
-                    // else if (!infoEval[i].filledByAccountableEmployeesOnly) {
-                    //     info[`${infoEval[i].code}`] = {
-                    //         value: [splitSetOfValues[0]],
-                    //         code: infoEval[i].code,
-                    //         type: infoEval[i].type
-                    //     }
-                    // }
                 }
                 else {
                     if (infoEval[i].value) {
@@ -533,7 +504,6 @@ class EvaluateByConsultedEmployee extends Component {
         let err = this.validateDateTime(evaluatingMonth, startDate, startTime, value, endTime, "end");
 
         let data = this.getData(value, this.state.storedEvaluatingMonth);
-        // this.props.getAllKpiSetsOrganizationalUnitByMonth(idUser, this.state.unit, value);
 
         let automaticPoint = data.automaticPoint;
         let taskInfo = {
@@ -713,8 +683,8 @@ class EvaluateByConsultedEmployee extends Component {
 
     // hàm validate submit
     isFormValidated = () => {
-        let { point, errorOnPoint, errorOnEndDate, errorOnMonth, errorOnStartDate } = this.state;
-        return (point !== undefined && errorOnPoint === undefined && errorOnStartDate === undefined && errorOnEndDate === undefined && errorOnMonth === undefined) ? true : false;
+        let { evaluatingMonth, point, errorOnPoint, errorOnEndDate, errorOnMonth, errorOnStartDate } = this.state;
+        return (evaluatingMonth && evaluatingMonth.trim() !== "" && point !== undefined && errorOnPoint === undefined && errorOnStartDate === undefined && errorOnEndDate === undefined && errorOnMonth === undefined) ? true : false;
     }
 
     // hàm submit

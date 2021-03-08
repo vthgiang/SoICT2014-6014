@@ -113,11 +113,11 @@ class AddTaskTemplate extends Component {
     }
 
     validateTaskTemplateNumberOfDaysTaken = (value, willUpdateState = true) => {
-        let msg = TaskTemplateFormValidator.validateTaskTemplateNumberOfDaysTaken(value);
+        let { message } = ValidationHelper.validateNumberInputMin(this.props.translate, value, 0);
 
         if (willUpdateState) {
             this.state.newTemplate.numberOfDaysTaken = value;
-            this.state.newTemplate.errorOnNumberOfDaysTaken = msg;
+            this.state.newTemplate.errorOnNumberOfDaysTaken = message;
             this.setState(state => {
                 return {
                     ...state,
@@ -125,7 +125,7 @@ class AddTaskTemplate extends Component {
             });
         }
         this.props.onChangeTemplateData(this.state.newTemplate);
-        return msg === undefined;
+        return message === undefined;
     }
 
     handleChangeTaskPriority = (e) => {
@@ -151,7 +151,7 @@ class AddTaskTemplate extends Component {
     }
 
     validateTaskTemplateUnit = (value, willUpdateState = true) => {
-        let msg = TaskTemplateFormValidator.validateTaskTemplateUnit(value);
+        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
 
         if (willUpdateState) {
             this.setState(state => {
@@ -161,7 +161,7 @@ class AddTaskTemplate extends Component {
                         ...this.state.newTemplate,
                         organizationalUnit: value,
                         collaboratedWithOrganizationalUnits: [],
-                        errorOnUnit: msg,
+                        errorOnUnit: message,
                         readByEmployees: [],
                         responsibleEmployees: [],
                         accountableEmployees: [],
@@ -172,7 +172,7 @@ class AddTaskTemplate extends Component {
             });
         }
         this.props.onChangeTemplateData(this.state.newTemplate);
-        return msg === undefined;
+        return message === undefined;
     }
 
     handleChangeCollaboratedWithOrganizationalUnits = (value) => {

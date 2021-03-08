@@ -281,7 +281,7 @@ exports.editLot = async (id, data, portal) => {
             { path: 'lotLogs.binLocations.binLocation' },
             { path: 'lotLogs.stock', select: 'id name' },
             { path: 'manufacturingCommand' },
-            { path: 'creator' }
+            { path: 'creator',select:"_id name email avatar" }
         ])
 }
 
@@ -476,7 +476,7 @@ exports.getAllManufacturingLot = async (query, user, portal) => {
                         }]
                     }]
                 }, {
-                    path: "creator"
+                    path: "creator",select:"_id name email avatar"
                 }],
                 sort: {
                     "updatedAt": "desc"
@@ -515,7 +515,7 @@ exports.getDetailManufacturingLot = async (id, portal) => {
                 }]
             }]
         }, {
-            path: "creator"
+            path: "creator",select:"_id name email avatar"
         }, {
             path: 'lotLogs.bill', select: 'id code type'
         }, {

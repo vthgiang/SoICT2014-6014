@@ -277,7 +277,7 @@ class ModalDetailKPIPersonal extends Component {
                             </div>
 
                             {/**Xử lí khi người dùng muốn xem chi tiết mục tiêu */}
-                            <div className="box-body no-padding">
+                            <div className="box-body no-padding" style={{ height: "calc(60vh - 110px)", overflow: "auto" }}>
                                 <ul className="nav nav-pills nav-stacked">
                                     {list && list.map((item, index) =>
                                         <li key={index} className={this.state.content === item._id ? "active" : ""}>
@@ -328,61 +328,63 @@ class ModalDetailKPIPersonal extends Component {
 
 
                                     <h4>{translate('kpi.evaluation.employee_evaluation.task_list')}</h4>
-                                    <DataTableSetting className="pull-right" tableId="employeeKpiEvaluate" tableContainerId="tree-table-container" tableWidth="1300px"
-                                        columnArr={[
-                                            translate('kpi.evaluation.employee_evaluation.index'),
-                                            translate('task.task_management.name'),
-                                            translate('kpi.evaluation.employee_evaluation.work_duration_time'),
-                                            translate('kpi.evaluation.employee_evaluation.evaluate_time'),
-                                            translate('kpi.evaluation.employee_evaluation.status'),
-                                            translate('kpi.evaluation.employee_evaluation.contribution'),
-                                            translate('kpi.evaluation.employee_evaluation.point'),
-                                            translate('kpi.evaluation.employee_evaluation.importance_level')]}
-                                        limit={this.state.perPage}
-                                        setLimit={this.setLimit}
-                                        hideColumnOption={true} />
+                                    <div class="table-wrapper-scroll-y my-custom-scrollbar" style={{ height: "calc(80vh - 160px)", overflow: "auto" }}>
+                                        <DataTableSetting className="pull-right" tableId="employeeKpiEvaluate" tableContainerId="tree-table-container" tableWidth="1300px"
+                                            columnArr={[
+                                                translate('kpi.evaluation.employee_evaluation.index'),
+                                                translate('task.task_management.name'),
+                                                translate('kpi.evaluation.employee_evaluation.work_duration_time'),
+                                                translate('kpi.evaluation.employee_evaluation.evaluate_time'),
+                                                translate('kpi.evaluation.employee_evaluation.status'),
+                                                translate('kpi.evaluation.employee_evaluation.contribution'),
+                                                translate('kpi.evaluation.employee_evaluation.point'),
+                                                translate('kpi.evaluation.employee_evaluation.importance_level')]}
+                                            limit={this.state.perPage}
+                                            setLimit={this.setLimit}
+                                            hideColumnOption={true} />
 
-                                    {/**Table danh sách công việc của mục tiêu */}
-                                    <table id="employeeKpiEvaluate" className="table table-hover table-bordered">
-                                        <thead>
-                                            <tr>
-                                                <th title={translate('kpi.evaluation.employee_evaluation.index')} style={{ width: "40px" }} className="col-fixed"></th>
-                                                <th title={translate('task.task_management.name')}>{translate('task.task_management.name')}</th>
-                                                <th title={translate('kpi.evaluation.employee_evaluation.work_duration_time')}>{translate('kpi.evaluation.employee_evaluation.work_duration_time')}</th>
-                                                <th title={translate('kpi.evaluation.employee_evaluation.evaluate_time')}>{translate('kpi.evaluation.employee_evaluation.evaluate_time')}</th>
-                                                <th title={translate('kpi.evaluation.employee_evaluation.status')}>{translate('kpi.evaluation.employee_evaluation.status')}</th>
-                                                <th title={translate('kpi.evaluation.employee_evaluation.contribution')}>{translate('kpi.evaluation.employee_evaluation.contribution')} (%)</th>
-                                                <th title={translate('kpi.evaluation.employee_evaluation.point')}>{translate('kpi.evaluation.employee_evaluation.point')}</th>
-                                                <th title={translate('kpi.evaluation.employee_evaluation.importance_level')}>{translate('kpi.evaluation.employee_evaluation.importance_level')}</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {
-                                                (kpimembers.tasks !== undefined && Array.isArray(kpimembers.tasks)) ?
-                                                    (kpimembers.tasks.map((itemTask, index) =>
+                                        {/**Table danh sách công việc của mục tiêu */}
+                                        <table id="employeeKpiEvaluate" className="table table-hover table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th title={translate('kpi.evaluation.employee_evaluation.index')} style={{ width: "40px" }} className="col-fixed"></th>
+                                                    <th title={translate('task.task_management.name')}>{translate('task.task_management.name')}</th>
+                                                    <th title={translate('kpi.evaluation.employee_evaluation.work_duration_time')}>{translate('kpi.evaluation.employee_evaluation.work_duration_time')}</th>
+                                                    <th title={translate('kpi.evaluation.employee_evaluation.evaluate_time')}>{translate('kpi.evaluation.employee_evaluation.evaluate_time')}</th>
+                                                    <th title={translate('kpi.evaluation.employee_evaluation.status')}>{translate('kpi.evaluation.employee_evaluation.status')}</th>
+                                                    <th title={translate('kpi.evaluation.employee_evaluation.contribution')}>{translate('kpi.evaluation.employee_evaluation.contribution')} (%)</th>
+                                                    <th title={translate('kpi.evaluation.employee_evaluation.point')}>{translate('kpi.evaluation.employee_evaluation.point')}</th>
+                                                    <th title={translate('kpi.evaluation.employee_evaluation.importance_level')}>{translate('kpi.evaluation.employee_evaluation.importance_level')}</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {
+                                                    (kpimembers.tasks !== undefined && Array.isArray(kpimembers.tasks)) ?
+                                                        (kpimembers.tasks.map((itemTask, index) =>
 
-                                                        <tr key={index}>
-                                                            <td>{index + 1}</td>
-                                                            <td><a style={{ cursor: 'pointer' }} onClick={() => this.handleClickTaskName(itemTask.taskId)}>{itemTask.name}</a></td>
-                                                            <td>{this.formatDate(itemTask.startDate)}<br /> <i className="fa fa-angle-double-down"></i><br /> {this.formatDate(itemTask.endDate)}</td>
-                                                            <td>{this.formatDate(itemTask.preEvaDate)}<br /> <i className="fa fa-angle-double-down"></i><br /> {this.formatDate(itemTask.date)}</td>
-                                                            <td>{this.formatTaskStatus(translate, itemTask.status)}</td>
-                                                            <td>{itemTask.results.contribution ? itemTask.results.contribution : 0}%</td>
-                                                            <td>{itemTask.results.automaticPoint + '-' + itemTask.results.employeePoint + '-' + itemTask.results.approvedPoint}</td>
-                                                            <td>
-                                                                <div>
-                                                                    {translate('kpi.evaluation.employee_evaluation.evaluated_value')}: {itemTask.results.taskImportanceLevel}
-                                                                </div>
-                                                                <div>
-                                                                    <a href="#modal-taskimportance-auto" onClick={() => this.showDetailTaskImportanceCal(itemTask)}>
-                                                                        {translate('kpi.evaluation.employee_evaluation.auto_value')}: {itemTask.taskImportanceLevelCal}
-                                                                    </a>
-                                                                </div>
-                                                            </td>
-                                                        </tr>)) : <tr><td colSpan={8}>{translate('general.no_data')}</td></tr>
-                                            }
-                                        </tbody>
-                                    </table>
+                                                            <tr key={index}>
+                                                                <td>{index + 1}</td>
+                                                                <td><a style={{ cursor: 'pointer' }} onClick={() => this.handleClickTaskName(itemTask.taskId)}>{itemTask.name}</a></td>
+                                                                <td>{this.formatDate(itemTask.startDateTask)}<br /> <i className="fa fa-angle-double-down"></i><br /> {this.formatDate(itemTask.endDateTask)}</td>
+                                                                <td>{itemTask.startDate ? this.formatDate(itemTask.startDate) : ""}<br /> <i className="fa fa-angle-double-down"></i><br /> {itemTask.endDate ? this.formatDate(itemTask.endDate) : ""}</td>
+                                                                <td>{this.formatTaskStatus(translate, itemTask.status)}</td>
+                                                                <td>{itemTask.results.contribution ? itemTask.results.contribution : 0}%</td>
+                                                                <td>{itemTask.results.automaticPoint + '-' + itemTask.results.employeePoint + '-' + itemTask.results.approvedPoint}</td>
+                                                                <td>
+                                                                    <div>
+                                                                        {translate('kpi.evaluation.employee_evaluation.evaluated_value')}: {itemTask.results.taskImportanceLevel}
+                                                                    </div>
+                                                                    <div>
+                                                                        <a href="#modal-taskimportance-auto" onClick={() => this.showDetailTaskImportanceCal(itemTask)}>
+                                                                            {translate('kpi.evaluation.employee_evaluation.auto_value')}: {itemTask.taskImportanceLevelCal}
+                                                                        </a>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>)) : <tr><td colSpan={8}>{translate('general.no_data')}</td></tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
                                     {
                                         taskImportanceDetail &&
                                         <TaskDialog

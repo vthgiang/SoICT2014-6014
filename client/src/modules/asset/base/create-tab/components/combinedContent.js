@@ -6,8 +6,6 @@ export * from './incidentLogTab';
 export * from './disposalTab';
 export * from './fileTab';
 
-export * from './assetCreateValidator';
-
 export * from './usageLogAddModal';
 export * from './usageLogEditModal';
 export * from './usageLogDetailModal';

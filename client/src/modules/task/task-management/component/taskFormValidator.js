@@ -1,40 +1,8 @@
-import { VALIDATOR } from '../../../../helpers/validator';
-
 export const TaskFormValidator = {
-    validateTaskUnit,
-    validateTaskName,
-    validateTaskDescription,
-    validateTaskResponsibleEmployees,
-    validateTaskAccountableEmployees,
     validateTaskStartDate,
     validateTaskEndDate,
 }
 
-function validateTaskUnit(value, translate) {
-    let msg = undefined;
-    if (value.trim() === ""){
-        msg = translate('task.task_management.add_err_empty_unit');
-    }
-    return msg;
-}
-
-function validateTaskName(value, translate) {
-    let msg = undefined;
-    if (value.trim() === ""){
-        msg = translate('task.task_management.add_err_empty_name');
-    } else if (!VALIDATOR.isValidName(value)){
-        msg = translate('task.task_management.add_err_special_character');
-    }
-    return msg;
-}
-
-function validateTaskDescription(value, translate) {
-    let msg = undefined;
-    if (value.trim() === ""){
-        msg = translate('task.task_management.add_err_empty_description');
-    }
-    return msg;
-}
 
 /**
  * @param {*} value Định dạng: dd-mm-yyyy
@@ -78,22 +46,6 @@ function _validateTaskDate(startDate, endDate, translate){
     var endDate = new Date(endDate.replace(pattern,'$3-$2-$1'));
     if (startDate > endDate){
         msg = translate('task.task_management.add_err_end_date');
-    }
-    return msg;
-}
-
-
-function validateTaskResponsibleEmployees(value, translate) {
-    let msg = undefined;
-    if (value.length === 0){
-        msg = translate('task.task_management.add_err_empty_responsible');
-    }
-    return msg;
-}
-function validateTaskAccountableEmployees(value, translate) {
-    let msg = undefined;
-    if (value.length === 0){
-        msg = translate('task.task_management.add_err_empty_accountable');
     }
     return msg;
 }

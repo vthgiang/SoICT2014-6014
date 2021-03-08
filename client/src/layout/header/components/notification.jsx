@@ -40,7 +40,7 @@ class Notification extends Component {
                 audio.volume = 0.7;
                 audio.play();
             }
-            this.props.receiveNofitication(data);
+            this.props.receiveNotification(data);
         });
     }
 
@@ -288,7 +288,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = {
     getAllManualNotifications: NotificationActions.getAllManualNotifications,
     getAllNotifications: NotificationActions.getAllNotifications,
-    receiveNofitication: NotificationActions.receiveNotification,
+    receiveNotification: NotificationActions.receiveNotification,
     readedNotification: NotificationActions.readedNotification,
 }
 

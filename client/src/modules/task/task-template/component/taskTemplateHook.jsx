@@ -11,6 +11,7 @@ import { SelectBox, ErrorLabel } from '../../../../common-components';
 import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
 import { TaskTemplateFormValidator } from './taskTemplateFormValidator';
 import { getStorage } from '../../../../config';
+import ValidationHelper from '../../../../helpers/validationHelper';
 
 const AddTaskTemplate = (props) => {
     let userId = getStorage("userId");
@@ -154,18 +155,18 @@ const AddTaskTemplate = (props) => {
     }
 
     const validateTaskTemplateName = async (value, willUpdateState = true) => {
-        let msg = TaskTemplateFormValidator.validateTaskTemplateName(value);
+        let { message } = ValidationHelper.validateName(props.translate, value);
 
         if (willUpdateState) {
             state.newTemplate.name = value;
-            state.newTemplate.errorOnName = msg;
+            state.newTemplate.errorOnName = message;
             setState({
                 ...state,
             });
         }
         // console.log('stst', state.newTemplate);
         props.onChangeTemplateData(state.newTemplate);
-        return msg === undefined;
+        return message === undefined;
     }
 
     const handleTaskTemplateDesc = (event) => {
@@ -174,7 +175,7 @@ const AddTaskTemplate = (props) => {
     }
 
     const validateTaskTemplateDescription = (value, willUpdateState = true) => {
-        let msg = TaskTemplateFormValidator.validateTaskTemplateDescription(value);
+        let { message } = ValidationHelper.validateEmpty(props.translate, value);
 
         if (willUpdateState) {
             state.newTemplate.description = value;
@@ -184,7 +185,7 @@ const AddTaskTemplate = (props) => {
             });
         }
         props.onChangeTemplateData(state.newTemplate);
-        return msg === undefined;
+        return message === undefined;
     }
 
     const handleTaskTemplateFormula = (event) => {
@@ -212,17 +213,17 @@ const AddTaskTemplate = (props) => {
     }
 
     const validateTaskTemplateNumberOfDaysTaken = (value, willUpdateState = true) => {
-        let msg = TaskTemplateFormValidator.validateTaskTemplateNumberOfDaysTaken(value);
+        let { message } = ValidationHelper.validateNumberInputMin(props.translate, value, 0);
 
         if (willUpdateState) {
             state.newTemplate.numberOfDaysTaken = value;
-            state.newTemplate.errorOnNumberOfDaysTaken = msg;
+            state.newTemplate.errorOnNumberOfDaysTaken = message;
             setState({
                 ...state,
             });
         }
         props.onChangeTemplateData(state.newTemplate);
-        return msg === undefined;
+        return message === undefined;
     }
 
     const handleChangeTaskPriority = (event) => {
@@ -250,7 +251,7 @@ const AddTaskTemplate = (props) => {
     }
 
     const validateTaskTemplateUnit = (value, willUpdateState = true) => {
-        let msg = TaskTemplateFormValidator.validateTaskTemplateUnit(value);
+        let { message } = ValidationHelper.validateEmpty(props.translate, value);
 
         if (willUpdateState) {
             setState({
@@ -259,7 +260,7 @@ const AddTaskTemplate = (props) => {
                     ...state.newTemplate,
                     organizationalUnit: value,
                     collaboratedWithOrganizationalUnits: [],
-                    errorOnUnit: msg,
+                    errorOnUnit: message,
                     readByEmployees: [],
                     responsibleEmployees: [],
                     accountableEmployees: [],
@@ -269,7 +270,7 @@ const AddTaskTemplate = (props) => {
             });
         }
         props.onChangeTemplateData(state.newTemplate);
-        return msg === undefined;
+        return message === undefined;
     }
 
     const handleChangeCollaboratedWithOrganizationalUnits = (value) => {
@@ -288,19 +289,19 @@ const AddTaskTemplate = (props) => {
     }
 
     const validateTaskTemplateRead = (value, willUpdateState = true) => {
-        let msg = TaskTemplateFormValidator.validateTaskTemplateRead(value);
+        let { message } = ValidationHelper.validateArrayLength(props.translate, value);
 
         if (willUpdateState) {
             let { newTemplate } = state;
             newTemplate.readByEmployees = value;
-            newTemplate.errorOnRead = msg;
+            newTemplate.errorOnRead = message;
             setState({
                 ...state,
                 newTemplate
             });
         }
         props.onChangeTemplateData(state.newTemplate);
-        return msg === undefined;
+        return message === undefined;
     }
 
     const handleTaskTemplateResponsible = (value) => {

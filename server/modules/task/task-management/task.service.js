@@ -499,7 +499,10 @@ exports.getPaginatedTasks = async (portal, task) => {
 
     taskList = await Task(connect(DB_CONNECTION, portal)).find(optionQuery).sort({ 'createdAt': -1 })
         .skip(perPage * (page - 1)).limit(perPage).populate([
-            { path: "organizationalUnit creator parent responsibleEmployees accountableEmployees" },
+            { path: "organizationalUnit parent" },
+            {path: 'creator', select : "_id name email avatar"},
+            {path: 'responsibleEmployees', select : "_id name email avatar"},
+            {path: 'accountableEmployees', select : "_id name email avatar"},
             { path: "timesheetLogs.creator", select: "name" },
         ]);
 
@@ -656,7 +659,11 @@ exports.getPaginatedTasksThatUserHasResponsibleRole = async (portal, task) => {
             keySearchPeriod
         ]
     }).sort({ 'createdAt': -1 })
-        .skip(perPage * (page - 1)).limit(perPage).populate({ path: "organizationalUnit creator parent responsibleEmployees" });
+        .skip(perPage * (page - 1)).limit(perPage)
+        .populate({ path: "organizationalUnit parent" })
+        .populate({path: "creator", select :"_id name email avatar"})
+        .populate({path: "responsibleEmployees", select :"_id name email avatar"})
+    
 
     var totalCount = await Task(connect(DB_CONNECTION, portal)).countDocuments({
         $and: [
@@ -816,7 +823,9 @@ exports.getPaginatedTasksThatUserHasAccountableRole = async (portal, task) => {
             keySearchPeriod
         ]
     }).sort({ 'createdAt': -1 })
-        .skip(perPage * (page - 1)).limit(perPage).populate({ path: "organizationalUnit creator parent" });
+        .skip(perPage * (page - 1)).limit(perPage)
+        .populate({ path: "organizationalUnit parent" })
+        .populate({ path: 'creator', select: "_id name  email avatar"})
 
     var totalCount = await Task(connect(DB_CONNECTION, portal)).countDocuments({
         $and: [
@@ -974,7 +983,9 @@ exports.getPaginatedTasksThatUserHasConsultedRole = async (portal, task) => {
             keySearchPeriod
         ]
     }).sort({ 'createdAt': -1 })
-        .skip(perPage * (page - 1)).limit(perPage).populate({ path: "organizationalUnit creator parent" });
+        .skip(perPage * (page - 1)).limit(perPage)
+        .populate({ path: "organizationalUnit parent" })
+        .populate({ path: " creator", select:"_id name email avatar" });
 
     var totalCount = await Task(connect(DB_CONNECTION, portal)).countDocuments({
         $and: [
@@ -1132,7 +1143,9 @@ exports.getPaginatedTasksCreatedByUser = async (portal, task) => {
             keySearchPeriod
         ]
     }).sort({ 'createdAt': -1 })
-        .skip(perPage * (page - 1)).limit(perPage).populate({ path: "organizationalUnit creator parent" });
+        .skip(perPage * (page - 1)).limit(perPage)
+        .populate({ path: "organizationalUnit parent" })
+        .populate({path: "creator", select :"_id name email avatar"})
 
     var totalCount = await Task(connect(DB_CONNECTION, portal)).countDocuments({
         $and: [
@@ -1292,7 +1305,9 @@ exports.getPaginatedTasksThatUserHasInformedRole = async (portal, task) => {
         ]
     }).sort({ 'createdAt': -1 })
         .skip(perPage * (page - 1)).limit(perPage)
-        .populate({ path: "organizationalUnit creator parent" });
+        .populate({ path: "organizationalUnit parent" })
+        .populate({path: "creator", select :"_id name email avatar"})
+
 
     var totalCount = await Task(connect(DB_CONNECTION, portal)).countDocuments({
         $and: [
@@ -1576,7 +1591,11 @@ exports.getPaginatedTasksByUser = async (portal, task, type = "paginated_task_by
         ]
     }).sort({ 'createdAt': -1 })
         .skip(perPage * (page - 1)).limit(perPage)
-        .populate({ path: "organizationalUnit creator parent responsibleEmployees accountableEmployees " });
+        .populate({ path: "organizationalUnit parent " })
+        .populate({path: "creator", select :"_id name email avatar"})
+        .populate({path: "responsibleEmployees", select :"_id name email avatar"})
+        .populate({path: "accountableEmployees", select :"_id name email avatar"})
+    
 
     let totalCount = await Task(connect(DB_CONNECTION, portal)).countDocuments({
         $and: [
@@ -1633,7 +1652,9 @@ exports.getAllTaskOfOrganizationalUnitByMonth = async (portal, task) => {
     }
 
     organizationUnitTasks = await Task(connect(DB_CONNECTION, portal)).find(keySearch).sort({ 'createdAt': -1 })
-        .populate({ path: "organizationalUnit creator parent responsibleEmployees" });
+        .populate({ path: "organizationalUnit parent" })
+        .populate({path: "creator", select :"_id name email avatar"})
+        .populate({path: "responsibleEmployees", select :"_id name email avatar"})
     return {
         "tasks": organizationUnitTasks
     };
@@ -1681,7 +1702,10 @@ exports.getAllTaskByPriorityOfOrganizationalUnit = async (portal, task) => {
         };
     }
     const data = await Task(connect(DB_CONNECTION, portal)).find({ ...keySearch, endDate: { $gte: new Date(date) } }) // lấy những việc còn thời hạn
-        .populate({ path: "organizationalUnit creator parent responsibleEmployees" }).lean();
+        .populate({ path: "organizationalUnit parent" })
+        .populate({path: "creator", select :"_id name email avatar"})
+        .populate({path: "responsibleEmployees", select :"_id name email avatar"})
+        .lean();
 
     let taskUrgent = [], taskNeedToDo = [];
     const nowDate = new Date();
@@ -1738,7 +1762,10 @@ exports.getAllTaskByPriorityOfOrganizationalUnit = async (portal, task) => {
     }
     // lấy việc quá hạn
     const tasksExpire = await Task(connect(DB_CONNECTION, portal)).find(keySearch)
-        .populate({ path: "organizationalUnit creator parent responsibleEmployees" }).lean();
+        .populate({ path: "organizationalUnit parent" })
+        .populate({path: "creator", select :"_id name email avatar"})
+        .populate({path: "responsibleEmployees", select :"_id name email avatar"})
+        .lean();
     let tasksExpireUrgent = [];
 
     // Quá hạn (cv cấp 1, 2, 3, 4, 5 :25 %, 20%, 15%,10%, 5% số ngày đã quá )
@@ -1781,7 +1808,9 @@ exports.getAllTaskByPriorityOfOrganizationalUnit = async (portal, task) => {
  * @param {*} task công việc vừa tạo
  */
 exports.sendEmailForCreateTask = async (portal, task) => {
-    task = await task.populate("organizationalUnit creator parent").execPopulate();
+    task = await task.populate("organizationalUnit parent")
+        .populate({path: "creator", select :"_id name email avatar"})
+        .execPopulate();
 
     var transporter = nodemailer.createTransport({
         service: 'Gmail',

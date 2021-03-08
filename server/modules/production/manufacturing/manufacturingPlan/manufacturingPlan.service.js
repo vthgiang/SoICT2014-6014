@@ -250,7 +250,7 @@ exports.getAllManufacturingPlans = async (query, portal) => {
         let plans = await ManufacturingPlan(connect(DB_CONNECTION, portal))
             .find(options)
             .populate([{
-                path: "creator"
+                path: "creator", select: "_id name email avatar"
             }, {
                 path: "manufacturingCommands"
             }, {
@@ -350,7 +350,7 @@ exports.getManufacturingPlanById = async (id, portal) => {
         }, {
             path: 'approvers.approver',
         }, {
-            path: 'creator',
+            path: 'creator', select:" id name email avatar"
         }]);
 
     return { manufacturingPlan }
@@ -440,11 +440,11 @@ exports.editManufacturingPlan = async (id, data, portal) => {
     const manufacturingPlan = await ManufacturingPlan(connect(DB_CONNECTION, portal))
         .findById({ _id: oldPlan._id })
         .populate([{
-            path: "creator"
+            path: "creator", select:"_id name email avatar"
         }, {
             path: "manufacturingCommands"
         }, {
-            path: "approvers.approver"
+            path: "approvers.approver", select:"_id name email avatar"
         }]);
     return { manufacturingPlan }
 }
@@ -503,11 +503,11 @@ exports.getNumberPlans = async (data, portal) => {
     let plans = await ManufacturingPlan(connect(DB_CONNECTION, portal))
         .find(options)
         .populate([{
-            path: "creator"
+            path: "creator",select:"_id name email avatar"
         }, {
             path: "manufacturingCommands"
         }, {
-            path: "approvers.approver"
+            path: "approvers.approver", select:"_id name email avatar"
         }]).sort({
             "updatedAt": "desc"
         });

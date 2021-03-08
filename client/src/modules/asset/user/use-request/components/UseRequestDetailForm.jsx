@@ -4,8 +4,6 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import { DialogModal, ErrorLabel, DatePicker, SelectBox, TimePicker } from '../../../../../common-components';
 
-import { UseRequestFromValidator } from './UseRequestFromValidator';
-
 import { RecommendDistributeActions } from '../redux/actions';
 import { AssetManagerActions } from '../../../admin/asset-information/redux/actions';
 import { UserActions } from '../../../../super-admin/user/redux/actions';

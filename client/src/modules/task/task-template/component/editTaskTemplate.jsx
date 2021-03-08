@@ -11,6 +11,7 @@ import { TaskTemplateFormValidator } from './taskTemplateFormValidator';
 import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
 import { InformationForm } from './informationsTemplate';
 import { getStorage } from '../../../../config';
+import ValidationHelper from '../../../../helpers/validationHelper';
 
 class EditTaskTemplate extends Component {
 
@@ -192,11 +193,11 @@ class EditTaskTemplate extends Component {
     }
 
     validateTaskTemplateName = (value, willUpdateState = true) => {
-        let msg = TaskTemplateFormValidator.validateTaskTemplateName(value);
+        let { message } = ValidationHelper.validateName(this.props.translate, value);
 
         if (willUpdateState) {
             this.state.editingTemplate.name = value;
-            this.state.editingTemplate.errorOnName = msg;
+            this.state.editingTemplate.errorOnName = message;
             this.setState(state => {
                 return {
                     ...state,
@@ -204,7 +205,7 @@ class EditTaskTemplate extends Component {
             });
         }
         this.props.onChangeTemplateData(this.state.editingTemplate);
-        return msg == undefined;
+        return message == undefined;
     }
 
     handleTaskTemplateDesc = (event) => {
@@ -213,18 +214,18 @@ class EditTaskTemplate extends Component {
     }
 
     validateTaskTemplateDesc = (value, willUpdateState = true) => {
-        let msg = TaskTemplateFormValidator.validateTaskTemplateDescription(value);
+        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
 
         if (willUpdateState) {
             let { editingTemplate } = this.state;
             editingTemplate.description = value;
-            editingTemplate.errorOnDescription = msg;
+            editingTemplate.errorOnDescription = message;
             this.setState({
                 editingTemplate
             });
         }
         this.props.onChangeTemplateData(this.state.editingTemplate);
-        return msg == undefined;
+        return message == undefined;
     }
 
     handleTaskTemplateNumberOfDaysTaken = (event) => {
@@ -233,18 +234,18 @@ class EditTaskTemplate extends Component {
     }
 
     validateTaskTemplateNumberOfDaysTaken = (value, willUpdateState = true) => {
-        let msg = TaskTemplateFormValidator.validateTaskTemplateNumberOfDaysTaken(value);
+        let { message } = ValidationHelper.validateNumberInputMin(this.props.translate, value, 0);
 
         if (willUpdateState) {
             let { editingTemplate } = this.state;
             editingTemplate.numberOfDaysTaken = value;
-            editingTemplate.errorOnNumberOfDaysTaken = msg;
+            editingTemplate.errorOnNumberOfDaysTaken = message;
             this.setState({
                 editingTemplate
             });
         }
         this.props.onChangeTemplateData(this.state.editingTemplate);
-        return msg === undefined;
+        return message === undefined;
     }
 
     handleTaskTemplateFormula = (event) => {
@@ -292,7 +293,6 @@ class EditTaskTemplate extends Component {
     }
 
     validateTaskTemplateUnit = (value, willUpdateState = true) => {
-        // let msg = TaskTemplateFormValidator.validateTaskTemplateUnit(value);
         let msg;
 
         if (willUpdateState) {
@@ -339,18 +339,18 @@ class EditTaskTemplate extends Component {
     }
 
     validateTaskTemplateRead = (value, willUpdateState = true) => {
-        let msg = TaskTemplateFormValidator.validateTaskTemplateRead(value);
+        let { message } = ValidationHelper.validateArrayLength(this.props.translate, value);
 
         if (willUpdateState) {
             let { editingTemplate } = this.state;
             editingTemplate.readByEmployees = value;
-            editingTemplate.errorOnRead = msg;
+            editingTemplate.errorOnRead = message;
             this.setState({
                 editingTemplate
             });
         }
         this.props.onChangeTemplateData(this.state.editingTemplate);
-        return msg == undefined;
+        return message == undefined;
     }
 
     handleTaskTemplateResponsible = (value) => {
