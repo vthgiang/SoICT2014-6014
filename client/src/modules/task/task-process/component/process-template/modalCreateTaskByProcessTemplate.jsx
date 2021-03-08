@@ -8,7 +8,6 @@ import { FormCreateTaskByProcess } from "./formCreateTaskByProcess";
 import { UserActions } from "../../../../super-admin/user/redux/actions";
 import { TaskProcessActions } from "../../redux/actions";
 import { TaskFormValidator } from "../../../task-management/component/taskFormValidator";
-import { TaskProcessValidator } from './taskProcessValidator';
 import ElementFactory from 'bpmn-js/lib/features/modeling/ElementFactory';
 import { isAny } from 'bpmn-js/lib/features/modeling/util/ModelingUtil'
 import BpmnModeler from 'bpmn-js/lib/Modeler';
@@ -19,6 +18,7 @@ import 'bpmn-js/dist/assets/bpmn-font/css/bpmn.css';
 import 'bpmn-js/dist/assets/diagram-js.css';
 import './processDiagram.css'
 import getEmployeeSelectBoxItems from "../../../organizationalUnitHelper";
+import ValidationHelper from '../../../../../helpers/validationHelper';
 
 // custom element
 ElementFactory.prototype._getDefaultSize = function (semantic) {
@@ -176,12 +176,13 @@ class ModalCreateTaskByProcessTemplate extends Component {
     // hàm cập nhật Tên Quy trình
     handleChangeBpmnName = async (e) => {
         let { value } = e.target;
-        let msg = TaskProcessValidator.validateProcessName(value, this.props.translate);
+        let { message } = ValidationHelper.validateName(this.props.translate, value);
+
         await this.setState(state => {
             return {
                 ...state,
                 processName: value,
-                errorOnProcessName: msg,
+                errorOnProcessName: message,
             }
         });
     }
@@ -189,12 +190,13 @@ class ModalCreateTaskByProcessTemplate extends Component {
     // hàm cập nhật mô tả quy trình
     handleChangeBpmnDescription = async (e) => {
         let { value } = e.target;
-        let msg = TaskProcessValidator.validateProcessDescription(value, this.props.translate);
+        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
+
         await this.setState(state => {
             return {
                 ...state,
                 processDescription: value,
-                errorOnProcessDescription: msg,
+                errorOnProcessDescription: message,
             }
         });
     }
@@ -317,24 +319,28 @@ class ModalCreateTaskByProcessTemplate extends Component {
 
     // Hàm cập nhật người được xem quy trình
     handleChangeViewer = async (value) => {
+        let { message } = ValidationHelper.validateArrayLength(this.props.translate, value);
+
         await this.setState(state => {
 
             return {
                 ...state,
                 viewer: value,
-                errorOnViewer: TaskProcessValidator.validateViewer(value, this.props.translate),
+                errorOnViewer: message,
             }
         })
     }
 
     // Hàm cập nhật người quản lý quy trình
     handleChangeManager = async (value) => {
+        let { message } = ValidationHelper.validateArrayLength(this.props.translate, value);
+
         await this.setState(state => {
 
             return {
                 ...state,
                 manager: value,
-                errorOnManager: TaskProcessValidator.validateManager(value, this.props.translate),
+                errorOnManager: message,
             }
         })
     }
