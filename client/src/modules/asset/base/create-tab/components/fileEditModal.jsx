@@ -4,7 +4,7 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import { DialogModal, ErrorLabel, UploadFile } from '../../../../../common-components';
 
-import { AssetCreateValidator } from './combinedContent';
+import ValidationHelper from '../../../../../helpers/validationHelper';
 
 class FileEditModal extends Component {
     constructor(props) {
@@ -45,17 +45,18 @@ class FileEditModal extends Component {
         this.validateNameFile(value, true);
     }
     validateNameFile = (value, willUpdateState = true) => {
-        let msg = AssetCreateValidator.validateNameFile(value, this.props.translate)
+        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
+
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnNameFile: msg,
+                    errorOnNameFile: message,
                     name: value,
                 }
             });
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
     // Bắt sự kiên thay đổi mô tả
@@ -64,17 +65,18 @@ class FileEditModal extends Component {
         this.validateDiscFile(value, true);
     }
     validateDiscFile = (value, willUpdateState = true) => {
-        let msg = AssetCreateValidator.validateDiscFile(value, this.props.translate)
+        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
+
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnDiscFile: msg,
+                    errorOnDiscFile: message,
                     description: value,
                 }
             });
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form

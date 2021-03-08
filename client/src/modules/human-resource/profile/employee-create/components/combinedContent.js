@@ -11,7 +11,6 @@ export * from './salaryTab';
 export * from './fileTab';
 export * from './careerMajorTab';
 
-export * from './employeeCreateValidator';
 export * from './socialInsuranceEditModal';
 export * from './degreeEditModal';
 export * from './degreeAddModal';

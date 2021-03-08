@@ -4,11 +4,10 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import { DialogModal, ErrorLabel, DatePicker, SelectBox } from '../../../../common-components';
 
-import { SalaryFormValidator } from './combinedContent';
-
 import { SalaryActions } from '../redux/actions';
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import { EmployeeManagerActions } from '../../profile/employee-management/redux/actions';
+import ValidationHelper from '../../../../helpers/validationHelper';
 
 class SalaryCreateForm extends Component {
     constructor(props) {
@@ -53,19 +52,20 @@ class SalaryCreateForm extends Component {
     }
     validateEmployeeNumber = (value, willUpdateState = true) => {
         let { translate } = this.props;
-        let msg = SalaryFormValidator.validateEmployeeNumber(value, translate);
+        let { message } = ValidationHelper.validateEmpty(translate, value);
+
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnEmployee: msg,
+                    errorOnEmployee: message,
                     employee: value,
                     organizationalUnit: "",
                 }
             });
 
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
     /** Function bắt sự kiện thay đổi đơn vị */
@@ -74,17 +74,18 @@ class SalaryCreateForm extends Component {
     }
     validateOrganizationalUnit = (value, willUpdateState = true) => {
         let { translate } = this.props;
-        let msg = SalaryFormValidator.validateEmployeeNumber(value, translate);
+        let { message } = ValidationHelper.validateEmpty(translate, value);
+
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnOrganizationalUnit: msg,
+                    errorOnOrganizationalUnit: message,
                     organizationalUnit: value,
                 }
             });
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
 
@@ -97,17 +98,18 @@ class SalaryCreateForm extends Component {
     }
     validateMonthSalary = (value, willUpdateState = true) => {
         let { translate } = this.props;
-        let msg = SalaryFormValidator.validateMonthSalary(value, translate);
+        let { message } = ValidationHelper.validateEmpty(translate, value);
+
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnMonthSalary: msg,
+                    errorOnMonthSalary: message,
                     month: value,
                 }
             });
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
     /** Function bắt sự kiện thay đổi tiền lương chính */
@@ -117,17 +119,18 @@ class SalaryCreateForm extends Component {
     }
     validateMainSalary = (value, willUpdateState = true) => {
         let { translate } = this.props;
-        let msg = SalaryFormValidator.validateMainSalary(value, translate);
+        let { message } = ValidationHelper.validateEmpty(translate, value);
+
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnMainSalary: msg,
+                    errorOnMainSalary: message,
                     mainSalary: value,
                 }
             });
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
     /** Function bắt sự kiện thay đổi đơn vị tiền lương */
@@ -172,19 +175,20 @@ class SalaryCreateForm extends Component {
     }
     validateNameSalary = (value, className, willUpdateState = true) => {
         let { translate } = this.props;
-        let msg = SalaryFormValidator.validateNameSalary(value, translate);
+        let { message } = ValidationHelper.validateEmpty(translate, value);
+
         if (willUpdateState) {
             let { bonus } = this.state;
             bonus[className] = { ...bonus[className], nameBonus: value }
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnNameSalary: msg,
+                    errorOnNameSalary: message,
                     bonus: bonus
                 }
             });
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
     /** Bắt sự kiện chỉnh sửa tiền lương thưởng khác */
@@ -194,19 +198,20 @@ class SalaryCreateForm extends Component {
     }
     validateMoreMoneySalary = (value, className, willUpdateState = true) => {
         let { translate } = this.props;
-        let msg = SalaryFormValidator.validateMoreMoneySalary(value, translate);
+        let { message } = ValidationHelper.validateEmpty(translate, value);
+
         if (willUpdateState) {
             let { bonus } = this.state;
             bonus[className] = { ...bonus[className], number: value }
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnMoreMoneySalary: msg,
+                    errorOnMoreMoneySalary: message,
                     bonus: bonus
                 }
             });
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
     /**

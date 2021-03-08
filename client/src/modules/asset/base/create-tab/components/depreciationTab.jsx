@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-
 import moment from 'moment';
 
 import { DatePicker, ErrorLabel, SelectBox } from '../../../../../common-components';
 
-import { AssetCreateValidator } from './assetCreateValidator';
+import ValidationHelper from '../../../../../helpers/validationHelper';
 
 class DepreciationTab extends Component {
     constructor(props) {
@@ -67,19 +66,19 @@ class DepreciationTab extends Component {
         this.validateResidualValue(value, true);
     }
     validateResidualValue = (value, willUpdateState = true) => {
-        let msg = AssetCreateValidator.validateResidualValue(value, this.props.translate)
-        if (willUpdateState) {
+        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
 
+        if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnResidualValue: msg,
+                    errorOnResidualValue: message,
                     residualValue: value
                 }
             });
             this.props.handleChange("residualValue", value);
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
     /**
@@ -103,20 +102,20 @@ class DepreciationTab extends Component {
         this.validateStartDepreciation(value, true);
     }
     validateStartDepreciation = (value, willUpdateState = true) => {
-        console.log('value', value);
-        let msg = AssetCreateValidator.validateStartDepreciation(value, this.props.translate)
+        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
+
         if (willUpdateState) {
 
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnStartDepreciation: msg,
+                    errorOnStartDepreciation: message,
                     startDepreciation: value,
                 }
             });
             this.props.handleChange("startDepreciation", value);
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
     /**
@@ -174,20 +173,20 @@ class DepreciationTab extends Component {
         this.validateEstimatedTotalProduction(value, true);
     }
     validateEstimatedTotalProduction = (value, willUpdateState = true) => {
-        let msg = AssetCreateValidator.validateEstimatedTotalProduction(value, this.props.translate)
+        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
 
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnEstimatedTotalProduction: msg,
+                    errorOnEstimatedTotalProduction: message,
                     estimatedTotalProduction: value,
                 }
             });
 
             this.props.handleChange("estimatedTotalProduction", value);
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
     /**
@@ -278,22 +277,23 @@ class DepreciationTab extends Component {
         this.validateValue(value, index);
     }
     validateValue = (value, className, willUpdateState = true) => {
-        let msg = AssetCreateValidator.validateUnitsProducedDuringTheYear(value, this.props.translate);
+        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
+
         if (willUpdateState) {
             var { unitsProducedDuringTheYears } = this.state;
             unitsProducedDuringTheYears[className] = { ...unitsProducedDuringTheYears[className], unitsProducedDuringTheYear: value }
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnValue: msg,
-                    errorOnValuePosition: msg ? className : null,
+                    errorOnValue: message,
+                    errorOnValuePosition: message ? className : null,
                     unitsProducedDuringTheYears: unitsProducedDuringTheYears
                 }
             });
 
             this.props.handleChange("unitsProducedDuringTheYears", unitsProducedDuringTheYears);
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
     /**

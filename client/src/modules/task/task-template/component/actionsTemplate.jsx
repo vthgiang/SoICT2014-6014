@@ -3,8 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import Sortable from 'sortablejs';
-import { ErrorLabel, QuillEditor } from '../../../../common-components';
-import { TaskTemplateFormValidator } from './taskTemplateFormValidator';
+import { QuillEditor } from '../../../../common-components';
 import parse from 'html-react-parser';
 class ActionForm extends Component {
     constructor(props) {

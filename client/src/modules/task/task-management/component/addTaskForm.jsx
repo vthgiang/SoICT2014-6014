@@ -3,18 +3,16 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { getStorage } from '../../../../config';
-import { getTimeFromFormatDate } from '../../../../helpers/stringMethod';
+import ValidationHelper from '../../../../helpers/validationHelper';
 
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions'
-import { managerKpiActions } from '../../../kpi/employee/management/redux/actions';
 import { taskTemplateActions } from '../../task-template/redux/actions';
 import { taskManagementActions } from '../redux/actions';
 
-import { DialogModal, DatePicker, TimePicker, SelectBox, ErrorLabel, ToolTip, TreeSelect, QuillEditor } from '../../../../common-components';
+import { DatePicker, TimePicker, SelectBox, ErrorLabel, ToolTip, TreeSelect, QuillEditor } from '../../../../common-components';
 import { TaskFormValidator } from './taskFormValidator';
 import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
-import ModalAddTaskProject from '../../task-project/component/modalAddTaskProject';
 import moment from 'moment';
 
 class AddTaskForm extends Component {
@@ -101,11 +99,11 @@ class AddTaskForm extends Component {
     }
     validateTaskName = (value, willUpdateState = true) => {
         let { translate } = this.props;
-        let msg = TaskFormValidator.validateTaskName(value, translate);
+        let { message } = ValidationHelper.validateEmpty(translate, value);
 
         if (willUpdateState) {
             this.state.newTask.name = value;
-            this.state.newTask.errorOnName = msg;
+            this.state.newTask.errorOnName = message;
             this.setState(state => {
                 return {
                     ...state,
@@ -114,7 +112,7 @@ class AddTaskForm extends Component {
             this.props.handleChangeTaskData(this.state.newTask)
             this.props.isProcess && this.props.handleChangeName(this.state.newTask.name)
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
     handleChangeTaskProject = (e) => {
@@ -136,7 +134,7 @@ class AddTaskForm extends Component {
     }
     validateTaskDescription = (value, willUpdateState = true) => {
         let { translate } = this.props;
-        let msg = TaskFormValidator.validateTaskDescription(value, translate);
+        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
 
         if (willUpdateState) {
             this.setState(state => {
@@ -145,13 +143,13 @@ class AddTaskForm extends Component {
                     newTask: {
                         ...state.newTask,
                         description: value,
-                        errorOnDescription: msg
+                        errorOnDescription: message
                     }
                 };
             });
             this.props.handleChangeTaskData(this.state.newTask)
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
     handleChangeTaskStartDate = (value) => {
@@ -389,11 +387,11 @@ class AddTaskForm extends Component {
     }
     validateTaskResponsibleEmployees = (value, willUpdateState = true) => {
         let { translate } = this.props;
-        let msg = TaskFormValidator.validateTaskResponsibleEmployees(value, translate);
+        let { message } = ValidationHelper.validateArrayLength(this.props.translate, value);
 
         if (willUpdateState) {
             this.state.newTask.responsibleEmployees = value;
-            this.state.newTask.errorOnResponsibleEmployees = msg;
+            this.state.newTask.errorOnResponsibleEmployees = message;
             this.setState(state => {
                 return {
                     ...state,
@@ -402,7 +400,7 @@ class AddTaskForm extends Component {
             this.props.handleChangeTaskData(this.state.newTask)
             this.props.isProcess && this.props.handleChangeResponsible(this.state.newTask.responsibleEmployees)
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
 
@@ -411,11 +409,11 @@ class AddTaskForm extends Component {
     }
     validateTaskAccountableEmployees = (value, willUpdateState = true) => {
         let { translate } = this.props;
-        let msg = TaskFormValidator.validateTaskAccountableEmployees(value, translate);
+        let { message } = ValidationHelper.validateArrayLength(this.props.translate, value);
 
         if (willUpdateState) {
             this.state.newTask.accountableEmployees = value;
-            this.state.newTask.errorOnAccountableEmployees = msg;
+            this.state.newTask.errorOnAccountableEmployees = message;
             this.setState(state => {
                 return {
                     ...state,
@@ -424,7 +422,7 @@ class AddTaskForm extends Component {
             this.props.handleChangeTaskData(this.state.newTask)
             this.props.isProcess && this.props.handleChangeAccountable(this.state.newTask.accountableEmployees)
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
 

@@ -4,7 +4,8 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import { DialogModal, ButtonModal, ErrorLabel, DatePicker, UploadFile } from '../../../../../common-components';
 
-import { EmployeeCreateValidator } from './combinedContent';
+import ValidationHelper from '../../../../../helpers/validationHelper';
+
 class CertificateAddModal extends Component {
     constructor(props) {
         super(props);
@@ -65,17 +66,18 @@ class CertificateAddModal extends Component {
     }
     validateNameCertificate = (value, willUpdateState = true) => {
         const { translate } = this.props;
-        let msg = EmployeeCreateValidator.validateNameCertificate(value, translate);
+        let { message } = ValidationHelper.validateEmpty(translate, value);
+
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnName: msg,
+                    errorOnName: message,
                     name: value,
                 }
             });
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
     /** Bắt sự kiện thay đổi nơi cấp */
@@ -85,17 +87,18 @@ class CertificateAddModal extends Component {
     }
     validateIssuedByCertificate = (value, willUpdateState = true) => {
         const { translate } = this.props;
-        let msg = EmployeeCreateValidator.validateIssuedByCertificate(value, translate)
+        let { message } = ValidationHelper.validateEmpty(translate, value);
+
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnUnit: msg,
+                    errorOnUnit: message,
                     issuedBy: value,
                 }
             });
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
     /**

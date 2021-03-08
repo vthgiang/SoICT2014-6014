@@ -8,6 +8,7 @@ import { taskTemplateActions } from '../redux/actions';
 import { DialogModal } from '../../../../common-components';
 import { TaskTemplateFormValidator } from './taskTemplateFormValidator';
 import { AddTaskTemplate } from './addTaskTemplate';
+import ValidationHelper from '../../../../helpers/validationHelper';
 
 class ModalAddTaskTemplate extends Component {
     constructor(props) {
@@ -67,33 +68,33 @@ class ModalAddTaskTemplate extends Component {
 
 
     validateTaskTemplateName = (value, willUpdateState = true) => {
-        let msg = TaskTemplateFormValidator.validateTaskTemplateName(value);
+        let { message } = ValidationHelper.validateName(this.props.translate, value);
 
         if (willUpdateState) {
             this.state.newTemplate.name = value;
-            this.state.newTemplate.errorOnName = msg;
+            this.state.newTemplate.errorOnName = message;
             this.setState(state => {
                 return {
                     ...state,
                 };
             });
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
     validateTaskTemplateDescription = (value, willUpdateState = true) => {
-        let msg = TaskTemplateFormValidator.validateTaskTemplateDescription(value);
+        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
 
         if (willUpdateState) {
             this.state.newTemplate.description = value;
-            this.state.newTemplate.errorOnDescription = msg;
+            this.state.newTemplate.errorOnDescription = message;
             this.setState(state => {
                 return {
                     ...state,
                 };
             });
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
     validateTaskTemplateFormula = (value, willUpdateState = true) => {
@@ -112,7 +113,7 @@ class ModalAddTaskTemplate extends Component {
     }
 
     validateTaskTemplateUnit = (value, willUpdateState = true) => {
-        let msg = TaskTemplateFormValidator.validateTaskTemplateUnit(value);
+        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
 
         if (willUpdateState) {
             this.setState(state => {
@@ -121,7 +122,7 @@ class ModalAddTaskTemplate extends Component {
                     newTemplate: { // update lại unit, và reset các selection phía sau
                         ...this.state.newTemplate,
                         organizationalUnit: value,
-                        errorOnUnit: msg,
+                        errorOnUnit: message,
                         readByEmployees: [],
                         responsibleEmployees: [],
                         accountableEmployees: [],
@@ -131,22 +132,22 @@ class ModalAddTaskTemplate extends Component {
                 };
             });
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
     validateTaskTemplateRead = (value, willUpdateState = true) => {
-        let msg = TaskTemplateFormValidator.validateTaskTemplateRead(value);
+        let { message } = ValidationHelper.validateArrayLength(this.props.translate, value);
 
         if (willUpdateState) {
             this.state.newTemplate.readByEmployees = value;
-            this.state.newTemplate.errorOnRead = msg;
+            this.state.newTemplate.errorOnRead = message;
             this.setState(state => {
                 return {
                     ...state,
                 };
             });
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
     onChangeTemplateData = (value) => {

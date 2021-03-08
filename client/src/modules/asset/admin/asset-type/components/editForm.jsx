@@ -4,8 +4,8 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import { TreeSelect, ErrorLabel } from '../../../../../common-components';
 
-import { AssetCreateValidator } from '../../../base/create-tab/components/combinedContent';
 import { AssetTypeActions } from '../redux/actions';
+import ValidationHelper from '../../../../../helpers/validationHelper';
 
 class EditForm extends Component {
     constructor(props) {
@@ -104,20 +104,21 @@ class EditForm extends Component {
         this.validateNameField(value, index);
     }
     validateNameField = (value, className, willUpdateState = true) => {
-        let msg = AssetCreateValidator.validateNameField(value, this.props.translate);
+        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
+
         if (willUpdateState) {
             var { defaultInfo } = this.state;
             defaultInfo[className] = { ...defaultInfo[className], nameField: value }
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnNameField: msg,
-                    errorPosition: msg ? className : null,
+                    errorOnNameField: message,
+                    errorPosition: message ? className : null,
                     defaultInfo: defaultInfo
                 }
             });
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
     /**
