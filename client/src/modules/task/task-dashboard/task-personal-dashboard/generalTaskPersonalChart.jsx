@@ -126,7 +126,7 @@ const GeneralTaskPersonalChart = (props) => {
                     <div className="col-md-12">
                         <p data-toggle="collapse" data-target="#show-task-un-confirm" aria-expanded="false" style={{ display: "flex", alignItems: "center", fontWeight: "bold", cursor: "pointer" }} onClick={() => showTaskUnConfirm(!unConfirm)}>
                             <span className="material-icons" style={{ fontWeight: "bold", marginRight: '10px' }}>
-                                {unConfirm ? `keyboard_arrow_down` : `keyboard_arrow_up`}
+                                {unConfirm ? `keyboard_arrow_up` : `keyboard_arrow_down`}
 
                             </span>{`${translate('task.task_dashboard.unconfirmed_task')} (${state.unconfirmedTask ? state.unconfirmedTask.length : 0})`}
                         </p>
@@ -154,7 +154,7 @@ const GeneralTaskPersonalChart = (props) => {
                     <div className="col-md-12">
                         <p data-toggle="collapse" data-target="#show-task-need-to-do" aria-expanded="false" style={{ display: "flex", alignItems: "center", fontWeight: "bold", cursor: "pointer" }} onClick={() => showTaskTodo(!todo)}>
                             <span className="material-icons" style={{ fontWeight: "bold", marginRight: '10px' }}>
-                                {todo ? `keyboard_arrow_down` : `keyboard_arrow_up`}
+                                {todo ? `keyboard_arrow_up` : `keyboard_arrow_down`}
 
                             </span>{`${translate('task.task_dashboard.to_do_task')} (${state.todoTask ? state.todoTask.length : 0})`}
                         </p>
@@ -182,7 +182,7 @@ const GeneralTaskPersonalChart = (props) => {
                     <div className="col-md-12">
                         <p data-toggle="collapse" data-target="#show-task-delay" aria-expanded="false" style={{ display: "flex", alignItems: "center", fontWeight: "bold", cursor: "pointer" }} onClick={() => showTaskDelay(!delay)}>
                             <span className="material-icons" style={{ fontWeight: "bold", marginRight: '10px' }}>
-                                {delay ? `keyboard_arrow_down` : `keyboard_arrow_up`}
+                                {delay ? `keyboard_arrow_up` : `keyboard_arrow_down`}
 
                             </span>{`${translate('task.task_dashboard.delay_task')} (${state.delayTask ? state.delayTask.length : 0})`}
                         </p>
@@ -210,7 +210,7 @@ const GeneralTaskPersonalChart = (props) => {
                     <div className="col-md-12">
                         <p data-toggle="collapse" data-target="#show-task-none-update" aria-expanded="false" style={{ display: "flex", alignItems: "center", fontWeight: "bold", cursor: "pointer" }} onClick={() => showTaskNoneUpdate(!noneUpdate)}>
                             <span className="material-icons" style={{ fontWeight: "bold", marginRight: '10px' }}>
-                                {noneUpdate ? `keyboard_arrow_down` : `keyboard_arrow_up`}
+                                {noneUpdate ? `keyboard_arrow_up` : `keyboard_arrow_down`}
 
                             </span>{`${translate('task.task_dashboard.none_update_recently')} (${state.noneUpdateTask ? state.noneUpdateTask.length : 0})`}
                         </p>
@@ -244,7 +244,7 @@ const GeneralTaskPersonalChart = (props) => {
                     <div className="col-md-12">
                         <p data-toggle="collapse" data-target="#show-task-urgent" aria-expanded="false" style={{ display: "flex", alignItems: "center", fontWeight: "bold", cursor: "pointer" }} onClick={() => showTaskUrgent(!urgent)}>
                             <span className="material-icons" style={{ fontWeight: "bold", marginRight: '10px' }}>
-                                {urgent ? `keyboard_arrow_down` : `keyboard_arrow_up`}
+                                {urgent ? `keyboard_arrow_up` : `keyboard_arrow_down`}
 
                             </span>{`${translate('task.task_dashboard.urgent_task')} (${state.urgentTask ? state.urgentTask.length : 0})`}
                         </p>
@@ -273,7 +273,7 @@ const GeneralTaskPersonalChart = (props) => {
                     <div className="col-md-12">
                         <p data-toggle="collapse" data-target="#show-task-intime" aria-expanded="false" style={{ display: "flex", alignItems: "center", fontWeight: "bold", cursor: "pointer" }} onClick={() => showTaskInTime(!inTime)}>
                             <span className="material-icons" style={{ fontWeight: "bold", marginRight: '10px' }}>
-                                {inTime ? `keyboard_arrow_down` : `keyboard_arrow_up`}
+                                {inTime ? `keyboard_arrow_up` : `keyboard_arrow_down`}
 
                             </span>{`${translate('task.task_dashboard.intime_task')} (${state.intimeTask ? state.intimeTask.length : 0})`}
                         </p>
@@ -301,7 +301,7 @@ const GeneralTaskPersonalChart = (props) => {
                     <div className="col-md-12">
                         <p data-toggle="collapse" data-target="#show-task-overdue" aria-expanded="false" style={{ display: "flex", alignItems: "center", fontWeight: "bold", cursor: "pointer" }} onClick={() => showTaskOverdue(!overdue)}>
                             <span className="material-icons" style={{ fontWeight: "bold", marginRight: '10px' }}>
-                                {overdue ? `keyboard_arrow_down` : `keyboard_arrow_up`}
+                                {overdue ? `keyboard_arrow_up` : `keyboard_arrow_down`}
 
                             </span>{`${translate('task.task_dashboard.overdue_task')} (${state.overdueTask ? state.overdueTask.length : 0})`}
                         </p>
