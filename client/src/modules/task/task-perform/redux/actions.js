@@ -235,8 +235,12 @@ function stopTimerTask(taskId, newTimer) {
                         type: performTaskConstants.STOP_TIMER_SUCCESS,
                         payload: payload.data.content
                     })
+                    // dispatch({
+                    //     type: taskManagementConstants.EDIT_TASK_SUCCESS,
+                    //     payload: payload.data.content
+                    // })
                     dispatch({
-                        type: taskManagementConstants.EDIT_TASK_SUCCESS,
+                        type: taskManagementConstants.UPDATE_TASK_SUCCESS,
                         payload: payload.data.content
                     })
                 },
