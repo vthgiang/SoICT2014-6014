@@ -5,13 +5,12 @@ import { taskManagementActions } from '../../task-management/redux/actions';
 
 import { TaskStatusChart } from './taskStatusChart';
 import { DomainOfTaskResultsChart } from './domainOfTaskResultsChart';
-import { CalendarEmployee } from './calendarEmployee';
 import { GanttCalendar } from './ganttCalendar';
 import { AverageResultsOfTask } from './averageResultsOfTask';
 
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DatePicker, ToolTip } from '../../../../common-components';
+import { DatePicker } from '../../../../common-components';
 import Swal from 'sweetalert2';
 import { TasksIsNotLinked } from './tasksIsNotLinked';
 import { TaskHasActionNotEvaluated } from './taskHasActionNotEvaluated';
@@ -19,8 +18,6 @@ import { InprocessTask } from './inprocessTask';
 import { LoadTaskChart } from './loadTaskChart';
 import { convertTime } from '../../../../helpers/stringMethod';
 import { getStorage } from '../../../../config';
-import LoadTaskInformation from './loadTaskInformation'
-import ProcessOfTask from './processOfTask'
 import moment from 'moment';
 import GeneralTaskPersonalChart from './generalTaskPersonalChart';
 class TaskDashboard extends Component {
@@ -423,9 +420,6 @@ class TaskDashboard extends Component {
                             <div className="box-header with-border">
                                 <div className="box-title">{translate('task.task_management.tasks_calendar')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
                             </div>
-                            {/* <CalendarEmployee
-                                tasks={tasks}
-                            /> */}
                             <GanttCalendar
                                 tasks={tasks}
                                 unit={false}
@@ -557,44 +551,32 @@ class TaskDashboard extends Component {
                         </div>
                     </div>
                 </div>
-                {/* <div className="row">
 
-                    <div className="col-xs-12 col-sm-12 col-md-6">
-                        <div className="box box-primary">
-                            <div className="box-header with-border">
-                                <div className="box-title">{translate('task.task_management.dashboard_about_to_overdue')}</div>
-                            </div>
-                            <ProcessOfTask
-                                tasks={tasks}
-                            />
-
-                        </div>
-                    </div>
-                </div> */}
-
-                <TasksIsNotLinked />
-                <TaskHasActionNotEvaluated />
+                <div className="row">
+                    <TasksIsNotLinked />
+                    <TaskHasActionNotEvaluated />
+                </div>
 
                 {/*Biểu đồ dashboard tải công việc */}
-                <div className="col-xs-12">
-                    <div className="box box-primary">
-                        <div className="box-header with-border inline">
-                            <div className="box-title">{translate('task.task_management.load_task_chart')}</div>
-                            <a className="text-red" title={translate('task.task_management.explain')} onClick={() => this.showLoadTaskDoc()}>
-                                <i className="material-icons" style={{ marginLeft: "10px" }}>help</i>
-                            </a>
+                <div className="row">
+                    <div className="col-xs-12">
+                        <div className="box box-primary">
+                            <div className="box-header with-border">
+                                <div className="box-title">{translate('task.task_management.load_task_chart')}</div>
+                                <a className="text-red" title={translate('task.task_management.explain')} onClick={() => this.showLoadTaskDoc()}>
+                                    <i className="fa fa-exclamation-circle" style={{ color: '#06c', marginLeft: '5px' }} />
+                                </a>
+                            </div>
 
-                        </div>
-
-
-                        <div className="box-body qlcv">
-                            {callAction &&
-                                <LoadTaskChart
-                                    callAction={!willUpdate}
-                                    startMonth={startMonth}
-                                    endMonth={endMonth}
-                                />
-                            }
+                            <div className="box-body qlcv">
+                                {callAction &&
+                                    <LoadTaskChart
+                                        callAction={!willUpdate}
+                                        startMonth={startMonth}
+                                        endMonth={endMonth}
+                                    />
+                                }
+                            </div>
                         </div>
                     </div>
                 </div>
