@@ -4115,5 +4115,17 @@ export default {
                 create_works: "Create works",
             },
         },
+
+        // Quản lý dự án
+        project: {
+            code: "Project code",
+            name: "Project name",
+            startDate: "Start date",
+            endDate: "End date",
+            parent: "Dự án cha",
+            manager: "Manager",
+            description: "Description",
+            add_title: "Add new project"
+        }
     },
 };

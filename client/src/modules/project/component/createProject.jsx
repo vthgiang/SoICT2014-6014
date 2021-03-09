@@ -4,25 +4,68 @@ import { ButtonModal, DialogModal, ErrorLabel, TreeSelect, DatePicker, SelectBox
 import { withTranslate } from 'react-redux-multilingual';
 import ValidationHelper from '../../../helpers/validationHelper';
 import { ProjectActions } from '../redux/actions';
-import { UserActions } from '../../super-admin/user/redux/actions';
+import getEmployeeSelectBoxItems from '../../task/organizationalUnitHelper';
+
 const ProjectCreateForm = (props) => {
 
     const [state, setState] = useState({
         projectName: "",
         description: "",
         code: "",
-        stateDate: "",
-        endDate: "",
-        description: "",
-        managerProject: [],
-        memberProject: [],
         projectNameError: undefined,
 
     });
-    useEffect(() => {
+    const [startDate, setStartDate] = useState("")
+    const [endDate, setEndDate] = useState("")
+    const [projectParent, setProjectParent] = useState("")
+    const [managerProject, setManagerProject] = useState([])
 
-        props.getAllUser();
-    }, [])
+    const handleProjectCode = (e) => {
+        const { value } = e.target;
+
+        setState({
+            ...state,
+            code: value
+        });
+    }
+
+    const handleProjectName = (e) => {
+        const { value } = e.target;
+        let { translate } = props;
+        let { message } = ValidationHelper.validateName(translate, value, 6, 255);
+
+        setState({
+            ...state,
+            projectName: value,
+            projectNameError: message
+        })
+    }
+
+    const handleParent = (value) => {
+        setProjectParent(value[0]);
+    }
+
+
+    const handleStartDate = (value) => {
+        setStartDate(value);
+    }
+
+
+    const handleEndDate = (value) => {
+        setEndDate(value);
+    }
+
+    const handleManagerProject = (value) => {
+        setManagerProject(value);
+    }
+
+    const handleProjectDescription = (e) => {
+        const { value } = e.target;
+        setState({
+            ...state,
+            description: value,
+        });
+    }
 
     const isFormValidated = () => {
         const { projectName } = state;
@@ -35,171 +78,93 @@ const ProjectCreateForm = (props) => {
 
     const save = () => {
         if (isFormValidated()) {
-            const { projectName, code, projectParent, startDate, endDate, managerProject } = state;
+            const { projectName, code, description } = state;
+            let partStartDate = startDate.split('-');
+            let start = new Date([partStartDate[2], partStartDate[1], partStartDate[0]].join('-'));
+
+            let partEndDate = endDate.split('-');
+            let end = new Date([partEndDate[2], partEndDate[1], partEndDate[0]].join('-'));
+
             props.createProject({
                 name: projectName,
                 code: code,
                 parent: projectParent,
-                startDate: startDate,
-                endDate: endDate,
+                startDate: start,
+                endDate: end,
                 projectManager: managerProject,
                 description: description,
-                projectMembers: memberProject,
             });
         }
     }
 
-    const handleProjectName = (e) => {
-        const { value } = e.target;
-
-        console.log(value);
-        let { translate } = props;
-        let { message } = ValidationHelper.validateName(translate, value, 6, 255);
-
-        setState({
-            projectName: value,
-            projectNameError: message
-        })
-    }
-
-    const handleProjectCode = (e) => {
-        const { value } = e.target;
-        setState({
-            ...state,
-            code: value
-        });
-    }
-
-    const handleParent = (value) => {
-        setState({
-            ...state,
-            projectParent: value[0],
-        });
-    }
-
-
-    const handleStartDate = (value) => {
-        setState({
-            ...state,
-            stateDate: value,
-        });
-    }
-    const handleEndDate = (value) => {
-        setState({
-            ...state,
-            endDate: value,
-        });
-    }
-
-    const handleManagerProject = (value) => {
-        setState({
-            ...state,
-            managerProject: value,
-        });
-    }
-
-    const handleMemberProject = (value) => {
-        setState({
-            ...state,
-            memberProject: value,
-        });
-    }
-
-    const handleProjectDescription = (value) => {
-        setState({
-            ...state,
-            description: value,
-        });
-    }
-
     const { translate, project, user } = props;
-    const { projectName, code, projectNameError, projectParent, managerProject, startDate, endDate,
-        description, memberProject } = state;
-    const list = project.data.list;
 
-    console.log('aloooooooooo', props, user);
+    const listUsers = user && user.usersInUnitsOfCompany ? getEmployeeSelectBoxItems(user.usersInUnitsOfCompany) : []
+
+    const { projectName, code, projectNameError, description } = state;
+
+    const list = project.data.list;
+    console.log('project', projectParent)
     return (
         <React.Fragment>
             {/* <ButtonModal modalID="modal-create-example" button_name={translate('manage_example.add')} title={translate('manage_example.add_title')} /> */}
             <DialogModal
                 modalID="modal-create-project" isLoading={project.isLoading}
                 formID="form-create-project"
-                title={translate('manage_example.add_title')}
-                msg_success={translate('manage_example.add_success')}
-                msg_faile={translate('manage_example.add_fail')}
+                title={translate('project.add_title')}
                 func={save}
                 disableSubmit={!isFormValidated()}
-                size={100}
-                maxWidth={500}
+                size={75}
             >
-                <form id="form-create-project" onSubmit={() => save(translate('manage_example.add_success'))}>
-                    <div className="tab-content">
-                        <div className="tab-pane active">
-                            {/* <div className="row"> */}
-                            <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                <div className={`form-group ${!projectNameError ? "" : "has-error"}`}>
-                                    <label>Tên dự án<span className="text-red">*</span></label>
-                                    <input type="text" className="form-control" value={projectName} onChange={handleProjectName}></input>
-                                    <ErrorLabel content={projectNameError} />
-                                </div>
-                                <div className={`form-group`}>
-                                    <label>Mã dự án</label>
-                                    <input type="text" className="form-control" value={code} onChange={handleProjectCode}></input>
-                                </div>
-                                <div className="form-group">
-                                    <label>Ngày bắt đầu</label>
-                                    <DatePicker
-                                        id={`project-state-date`}
-                                        onChange={handleStartDate}
-                                    />
-                                </div>
-                                <div className="form-group">
-                                    <label>Ngày kết thúc</label>
-                                    <DatePicker
-                                        id={`project-end-date`}
-                                        onChange={handleEndDate}
-                                    />
-                                </div>
-                                <div className="form-group">
-                                    <label>Dự án cha</label>
-                                    <TreeSelect data={list} value={projectParent} handleChange={handleParent} mode="radioSelect" />
-                                </div>
-                                <div>
-                                    <label>Người quản trị dự án</label>
-                                    <SelectBox
-                                        id={`select-project-manager`}
-                                        className="form-control select2"
-                                        style={{ width: "100%" }}
-                                        items={
-                                            user.list.length ? user.list.map(user => { return { value: user ? user._id : null, text: user ? `${user.name} - ${user.email}` : "" } }) : []
-                                        }
-                                        onChange={handleManagerProject}
-                                        value={managerProject}
-                                        multiple={true}
-                                    />
-                                </div>
-                                <div className={`form-group`}>
-                                    <label>Mô tả</label>
-                                    <input type="text" className="form-control" value={description} onChange={handleProjectDescription}></input>
-                                </div>
-                                <div>
-                                    <label>Người tham gia dự án</label>
-                                    <SelectBox
-                                        id={`select-project-memember`}
-                                        className="form-control select2"
-                                        style={{ width: "100%" }}
-                                        items={
-                                            user.list.length ? user.list.map(user => { return { value: user ? user._id : null, text: user ? `${user.name} - ${user.email}` : "" } }) : []
-                                        }
-                                        onChange={handleMemberProject}
-                                        value={memberProject}
-                                        multiple={true}
-                                    />
-                                </div>
-                            </div>
+                <form id="form-create-project">
+                    <div className={`form-group`}>
+                        <label>{translate('project.code')}</label>
+                        <input type="text" className="form-control" value={code} onChange={handleProjectCode}></input>
+                    </div>
 
+                    <div className={`form-group ${!projectNameError ? "" : "has-error"}`}>
+                        <label>{translate('project.name')}<span className="text-red">*</span></label>
+                        <input type="text" className="form-control" value={projectName} onChange={handleProjectName}></input>
+                        <ErrorLabel content={projectNameError} />
+                    </div>
 
-                        </div>
+                    <div className="form-group">
+                        <label>{translate('project.startDate')}</label>
+                        <DatePicker
+                            id={`project-state-date`}
+                            value={startDate}
+                            onChange={handleStartDate}
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label>{translate('project.endDate')}</label>
+                        <DatePicker
+                            id={`project-end-date`}
+                            value={endDate}
+                            onChange={handleEndDate}
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label>{translate('project.parent')}</label>
+                        <TreeSelect data={list} value={projectParent} handleChange={handleParent} mode="radioSelect" />
+                    </div>
+                    <div className="form-group">
+                        <label>{translate('project.manager')}</label>
+                        {listUsers &&
+                            <SelectBox
+                                id={`select-project-manager`}
+                                className="form-control select2"
+                                style={{ width: "100%" }}
+                                items={listUsers}
+                                onChange={handleManagerProject}
+                                value={managerProject}
+                                multiple={true}
+                            />
+                        }
+                    </div>
+                    <div className={`form-group`}>
+                        <label>{translate('project.description')}</label>
+                        <textarea type="text" className="form-control" value={description} onChange={handleProjectDescription} />
                     </div>
                 </form>
             </DialogModal>
@@ -214,7 +179,5 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = {
     createProject: ProjectActions.createProject,
-
-    getAllUser: UserActions.get,
 }
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(ProjectCreateForm)); 
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(ProjectCreateForm));

@@ -33,6 +33,7 @@ export default {
             no_data: "Không có dữ liệu",
             success: "Thành công",
             error: "Lỗi",
+            stt: 'STT',
             new_notification: "Bạn có thông báo mới!",
             auth_alert: {
                 title:
@@ -5633,5 +5634,18 @@ export default {
                 sub_product: "số lượng phế phẩm"
             }
         },
+
+        project: {
+            code: "Mã dự án",
+            name: "Tên dự án",
+            startDate: "Ngày bắt đầu dự án",
+            endDate: "Ngày kết thúc dự án",
+            parent: "Dự án cha",
+            manager: "Người quản trị",
+            description: "Mô tả dự án",
+            add_title: "Thêm mới dự án",
+            detail_title: "Chi tiết dự án",
+            edit_title: "Chỉnh sửa dự án"
+        }
     },
 };
