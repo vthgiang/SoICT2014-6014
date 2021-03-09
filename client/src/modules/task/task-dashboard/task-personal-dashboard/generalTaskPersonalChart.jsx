@@ -119,33 +119,64 @@ const GeneralTaskPersonalChart = (props) => {
 
     return (
         <div className="qlcv box-body" style={{ maxHeight: "350px", overflow: "auto" }}>
-            {/* Công việc chưa xác nhận */}
-            {/* <div className="row" > */}
-            <div className="col-md-6">
+            <div className="col-md-4">
+                {/* Công việc Khẩn cấp */}
                 <div className="row" style={{ marginBottom: '15px' }}>
                     <div className="col-md-12">
-                        <p data-toggle="collapse" data-target="#show-task-un-confirm" aria-expanded="false" style={{ display: "flex", alignItems: "center", fontWeight: "bold", cursor: "pointer" }} onClick={() => showTaskUnConfirm(!unConfirm)}>
+                        <p data-toggle="collapse" data-target="#show-task-urgent" aria-expanded="false" style={{ display: "flex", alignItems: "center", fontWeight: "bold", cursor: "pointer" }} onClick={() => showTaskUrgent(!urgent)}>
                             <span className="material-icons" style={{ fontWeight: "bold", marginRight: '10px' }}>
-                                {unConfirm ? `keyboard_arrow_up` : `keyboard_arrow_down`}
+                                {urgent ? `keyboard_arrow_up` : `keyboard_arrow_down`}
 
-                            </span>{`${translate('task.task_dashboard.unconfirmed_task')} (${state.unconfirmedTask ? state.unconfirmedTask.length : 0})`}
+                            </span>
+                            <span className="text-red">{`${translate('task.task_dashboard.urgent_task')} (${state.urgentTask ? state.urgentTask.length : 0})`}</span>
                         </p>
-                        <div className="collapse" data-toggle="collapse " id="show-task-un-confirm">
-                            {state.unconfirmedTask &&
-                                <ul className="todo-list" data-widget="todo-list">
+                        <div className="collapse" data-toggle="collapse " id="show-task-urgent">
+                            {
+                                state.urgentTask &&
+                                <ul className="todo-list">
+                                    {
+                                        (state.urgentTask.length !== 0) ?
+                                            state.urgentTask.map((item, key) =>
+                                                <li key={key} style={{ border: 'none', borderBottom: '1px solid #f4f4f4' }}>
+                                                    <span className="handle text"><a href={`/task?taskId=${item._id}`} target="_blank">{`${key + 1}. ${item.name}`}</a></span>
+                                                    <small className="label label-danger">{item.createdToNow} {translate('task.task_dashboard.day_ago')}</small>
 
-                                    {(state.unconfirmedTask.length !== 0) ?
-                                        state.unconfirmedTask.map((item, key) => (
-                                            <li key={key} style={{ border: 'none', borderBottom: '1px solid #f4f4f4' }}>
-                                                <span className="handle text"><a href={`/task?taskId=${item._id}`} target="_blank">{`${key + 1}. ${item.name}`}</a></span>
-                                                <small className="label label-warning">{item.createdToNow} {translate('task.task_dashboard.day_ago')}</small>
-                                            </li>
-                                        )) : <small style={{ color: "#696767" }}>{translate('task.task_dashboard.no_task')}</small>
+                                                </li>
+                                            ) : <small style={{ color: "#696767" }}>{translate('task.task_dashboard.no_task')}</small>
                                     }
-
                                 </ul>
                             }
                         </div>
+                    </div>
+                </div>
+
+                {/* Công việc trễ tiến độ */}
+                <div className="row" style={{ marginBottom: '15px' }}>
+                    <div className="col-md-12">
+                        <p data-toggle="collapse" data-target="#show-task-delay" aria-expanded="false" style={{ display: "flex", alignItems: "center", fontWeight: "bold", cursor: "pointer" }} onClick={() => showTaskDelay(!delay)}>
+                            <span className="material-icons" style={{ fontWeight: "bold", marginRight: '10px' }}>
+                                {delay ? `keyboard_arrow_up` : `keyboard_arrow_down`}
+
+                            </span>
+                            <span className="text-yellow">{`${translate('task.task_dashboard.delay_task')} (${state.delayTask ? state.delayTask.length : 0})`}</span>
+                        </p>
+                        <div className="collapse" data-toggle="collapse " id="show-task-delay">
+                            {
+                                state.delayTask &&
+                                <ul className="todo-list">
+                                    {
+                                        (state.delayTask.length !== 0) ?
+                                            state.delayTask.map((item, key) =>
+                                                <li key={key} style={{ border: 'none', borderBottom: '1px solid #f4f4f4' }}>
+                                                    <span className="handle text"><a href={`/task?taskId=${item._id}`} target="_blank">{`${key + 1}. ${item.name}`}</a></span>
+                                                    <small className="label label-warning">{item.progress}% - {translate('task.task_dashboard.rest')} {item.nowToEnd} {translate('task.task_dashboard.day')}</small>
+                                                </li>
+                                            ) : <small style={{ color: "#696767" }}>{translate('task.task_dashboard.no_task')}</small>
+                                    }
+                                </ul>
+                            }
+                        </div>
+
                     </div>
                 </div>
 
@@ -177,97 +208,6 @@ const GeneralTaskPersonalChart = (props) => {
                     </div>
                 </div>
 
-                {/* Công việc trễ tiến độ */}
-                <div className="row" style={{ marginBottom: '15px' }}>
-                    <div className="col-md-12">
-                        <p data-toggle="collapse" data-target="#show-task-delay" aria-expanded="false" style={{ display: "flex", alignItems: "center", fontWeight: "bold", cursor: "pointer" }} onClick={() => showTaskDelay(!delay)}>
-                            <span className="material-icons" style={{ fontWeight: "bold", marginRight: '10px' }}>
-                                {delay ? `keyboard_arrow_up` : `keyboard_arrow_down`}
-
-                            </span>{`${translate('task.task_dashboard.delay_task')} (${state.delayTask ? state.delayTask.length : 0})`}
-                        </p>
-                        <div className="collapse" data-toggle="collapse " id="show-task-delay">
-                            {
-                                state.delayTask &&
-                                <ul className="todo-list">
-                                    {
-                                        (state.delayTask.length !== 0) ?
-                                            state.delayTask.map((item, key) =>
-                                                <li key={key} style={{ border: 'none', borderBottom: '1px solid #f4f4f4' }}>
-                                                    <span className="handle text"><a href={`/task?taskId=${item._id}`} target="_blank">{`${key + 1}. ${item.name}`}</a></span>
-                                                    <small className="label label-warning">{item.progress}% - {translate('task.task_dashboard.rest')} {item.nowToEnd} {translate('task.task_dashboard.day')}</small>
-                                                </li>
-                                            ) : <small style={{ color: "#696767" }}>{translate('task.task_dashboard.no_task')}</small>
-                                    }
-                                </ul>
-                            }
-                        </div>
-                    </div>
-                </div>
-
-                {/* Công việc chưa cập nhật trong tuần qua */}
-                <div className="row" style={{ marginBottom: '15px' }}>
-                    <div className="col-md-12">
-                        <p data-toggle="collapse" data-target="#show-task-none-update" aria-expanded="false" style={{ display: "flex", alignItems: "center", fontWeight: "bold", cursor: "pointer" }} onClick={() => showTaskNoneUpdate(!noneUpdate)}>
-                            <span className="material-icons" style={{ fontWeight: "bold", marginRight: '10px' }}>
-                                {noneUpdate ? `keyboard_arrow_up` : `keyboard_arrow_down`}
-
-                            </span>{`${translate('task.task_dashboard.none_update_recently')} (${state.noneUpdateTask ? state.noneUpdateTask.length : 0})`}
-                        </p>
-
-                        <div className="collapse" data-toggle="collapse " id="show-task-none-update">
-                            {
-                                state.noneUpdateTask &&
-                                <ul className="todo-list">
-                                    {
-                                        (state.noneUpdateTask.length !== 0) ?
-                                            state.noneUpdateTask.map((item, key) =>
-                                                <li key={key} style={{ border: 'none', borderBottom: '1px solid #f4f4f4' }}>
-                                                    <span className="handle text"><a href={`/task?taskId=${item._id}`} target="_blank">{`${key + 1}. ${item.name}`}</a></span>
-                                                    <small className="label label-warning"><i className="fa fa-clock-o" /> &nbsp;
-                                                {translate('task.task_dashboard.updated')} {item.updatedToNow}
-                                                        {translate('task.task_dashboard.day_ago')}</small>
-                                                </li>
-                                            ) : <small style={{ color: "#696767" }}>{translate('task.task_dashboard.no_task')}</small>
-                                    }
-                                </ul>
-                            }
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div className="col-md-6">
-                {/* Công việc khẩn cấp */}
-                <div className="row" style={{ marginBottom: '15px' }}>
-                    <div className="col-md-12">
-                        <p data-toggle="collapse" data-target="#show-task-urgent" aria-expanded="false" style={{ display: "flex", alignItems: "center", fontWeight: "bold", cursor: "pointer" }} onClick={() => showTaskUrgent(!urgent)}>
-                            <span className="material-icons" style={{ fontWeight: "bold", marginRight: '10px' }}>
-                                {urgent ? `keyboard_arrow_up` : `keyboard_arrow_down`}
-
-                            </span>{`${translate('task.task_dashboard.urgent_task')} (${state.urgentTask ? state.urgentTask.length : 0})`}
-                        </p>
-                        <div className="collapse" data-toggle="collapse " id="show-task-urgent">
-                            {
-                                state.urgentTask &&
-                                <ul className="todo-list">
-                                    {
-                                        (state.urgentTask.length !== 0) ?
-                                            state.urgentTask.map((item, key) =>
-                                                <li key={key} style={{ border: 'none', borderBottom: '1px solid #f4f4f4' }}>
-                                                    <span className="handle text"><a href={`/task?taskId=${item._id}`} target="_blank">{`${key + 1}. ${item.name}`}</a></span>
-                                                    <small className="label label-danger">{item.createdToNow} {translate('task.task_dashboard.day_ago')}</small>
-
-                                                </li>
-                                            ) : <small style={{ color: "#696767" }}>{translate('task.task_dashboard.no_task')}</small>
-                                    }
-                                </ul>
-                            }
-                        </div>
-                    </div>
-                </div>
-
                 {/* Công việc đúng hạn */}
                 <div className="row" style={{ marginBottom: '15px' }}>
                     <div className="col-md-12">
@@ -275,7 +215,8 @@ const GeneralTaskPersonalChart = (props) => {
                             <span className="material-icons" style={{ fontWeight: "bold", marginRight: '10px' }}>
                                 {inTime ? `keyboard_arrow_up` : `keyboard_arrow_down`}
 
-                            </span>{`${translate('task.task_dashboard.intime_task')} (${state.intimeTask ? state.intimeTask.length : 0})`}
+                            </span>
+                            <span className="text-green">{`${translate('task.task_dashboard.intime_task')} (${state.intimeTask ? state.intimeTask.length : 0})`}</span>
                         </p>
                         <div className="collapse" data-toggle="collapse " id="show-task-intime">
                             {
@@ -295,6 +236,15 @@ const GeneralTaskPersonalChart = (props) => {
                         </div>
                     </div>
                 </div>
+            </div>
+
+            <div className="col-md-4">
+                <div className="row" style={{ marginBottom: '15px' }}>
+                    <div className="col-md-12">
+                        <p data-toggle="collapse" aria-expanded="false" style={{ height: '21px' }} >
+                        </p>
+                    </div>
+                </div>
 
                 {/* Công việc quá hạn */}
                 <div className="row" style={{ marginBottom: '15px' }}>
@@ -303,7 +253,8 @@ const GeneralTaskPersonalChart = (props) => {
                             <span className="material-icons" style={{ fontWeight: "bold", marginRight: '10px' }}>
                                 {overdue ? `keyboard_arrow_up` : `keyboard_arrow_down`}
 
-                            </span>{`${translate('task.task_dashboard.overdue_task')} (${state.overdueTask ? state.overdueTask.length : 0})`}
+                            </span>
+                            <span className="text-red">{`${translate('task.task_dashboard.overdue_task')} (${state.overdueTask ? state.overdueTask.length : 0})`}</span>
                         </p>
                         <div className="collapse" data-toggle="collapse " id="show-task-overdue">
                             {
@@ -324,8 +275,79 @@ const GeneralTaskPersonalChart = (props) => {
                     </div>
                 </div>
 
+                {/* Công việc chưa xác nhận */}
+                <div className="row" style={{ marginBottom: '15px' }}>
+                    <div className="col-md-12">
+                        <p data-toggle="collapse" data-target="#show-task-un-confirm" aria-expanded="false" style={{ display: "flex", alignItems: "center", fontWeight: "bold", cursor: "pointer" }} onClick={() => showTaskUnConfirm(!unConfirm)}>
+                            <span className="material-icons" style={{ fontWeight: "bold", marginRight: '10px' }}>
+                                {unConfirm ? `keyboard_arrow_up` : `keyboard_arrow_down`}
+
+                            </span>{`${translate('task.task_dashboard.unconfirmed_task')} (${state.unconfirmedTask ? state.unconfirmedTask.length : 0})`}
+                        </p>
+                        <div className="collapse" data-toggle="collapse " id="show-task-un-confirm">
+                            {state.unconfirmedTask &&
+                                <ul className="todo-list" data-widget="todo-list">
+
+                                    {(state.unconfirmedTask.length !== 0) ?
+                                        state.unconfirmedTask.map((item, key) => (
+                                            <li key={key} style={{ border: 'none', borderBottom: '1px solid #f4f4f4' }}>
+                                                <span className="handle text"><a href={`/task?taskId=${item._id}`} target="_blank">{`${key + 1}. ${item.name}`}</a></span>
+                                                <small className="label label-primary">{item.createdToNow} {translate('task.task_dashboard.day_ago')}</small>
+                                            </li>
+                                        )) : <small style={{ color: "#696767" }}>{translate('task.task_dashboard.no_task')}</small>
+                                    }
+
+                                </ul>
+                            }
+                        </div>
+                    </div>
+                </div>
             </div>
-            {/* </div> */}
+
+            <div className="col-md-4">
+                <div className="row" style={{ marginBottom: '15px' }}>
+                    <div className="col-md-12">
+                        <p data-toggle="collapse" aria-expanded="false" style={{ height: '21px' }} ></p>
+                    </div>
+                </div>
+
+                <div className="row" style={{ marginBottom: '15px' }}>
+                    <div className="col-md-12">
+                        <p data-toggle="collapse" aria-expanded="false" style={{ height: '21px' }} ></p>
+                    </div>
+                </div>
+
+                {/* Công việc chưa cập nhật */}
+                <div className="row" style={{ marginBottom: '15px' }}>
+                    <div className="col-md-12">
+                        <p data-toggle="collapse" data-target="#show-task-none-update" aria-expanded="false" style={{ display: "flex", alignItems: "center", fontWeight: "bold", cursor: "pointer" }} onClick={() => showTaskNoneUpdate(!noneUpdate)}>
+                            <span className="material-icons" style={{ fontWeight: "bold", marginRight: '10px' }}>
+                                {noneUpdate ? `keyboard_arrow_up` : `keyboard_arrow_down`}
+
+                            </span>{`${translate('task.task_dashboard.none_update_recently')} (${state.noneUpdateTask ? state.noneUpdateTask.length : 0})`}
+                        </p>
+
+                        <div className="collapse" data-toggle="collapse " id="show-task-none-update">
+                            {
+                                state.noneUpdateTask &&
+                                <ul className="todo-list">
+                                    {
+                                        (state.noneUpdateTask.length !== 0) ?
+                                            state.noneUpdateTask.map((item, key) =>
+                                                <li key={key} style={{ border: 'none', borderBottom: '1px solid #f4f4f4' }}>
+                                                    <span className="handle text"><a href={`/task?taskId=${item._id}`} target="_blank">{`${key + 1}. ${item.name}`}</a></span>
+                                                    <small className="label label-primary"><i className="fa fa-clock-o" /> &nbsp;
+                                                {translate('task.task_dashboard.updated')} {item.updatedToNow}
+                                                        {translate('task.task_dashboard.day_ago')}</small>
+                                                </li>
+                                            ) : <small style={{ color: "#696767" }}>{translate('task.task_dashboard.no_task')}</small>
+                                    }
+                                </ul>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     )
 }

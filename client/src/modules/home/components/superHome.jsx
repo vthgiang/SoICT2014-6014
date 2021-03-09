@@ -223,7 +223,7 @@ class SuperHome extends Component {
                     <div className="col-xs-12">
                         <div className="box box-primary">
                             <div className="box-header with-border">
-                                <div className="box-title">Tổng quan công việc</div>
+                                <div className="box-title">{`Tổng quan công việc (${tasks && tasks.tasks ? tasks.tasks.length : 0})`}</div>
                             </div>
                             <GeneralTaskPersonalChart
                                 tasks={tasks}

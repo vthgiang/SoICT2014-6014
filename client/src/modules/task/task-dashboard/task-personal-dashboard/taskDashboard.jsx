@@ -403,7 +403,7 @@ class TaskDashboard extends Component {
                     <div className="col-md-12">
                         <div className="box box-primary">
                             <div className="box-header with-border">
-                                <div className="box-title">Tổng quan công việc</div>
+                                <div className="box-title">{`Tổng quan công việc (${tasks && tasks.tasks ? tasks.tasks.length : 0} công việc)`}</div>
                             </div>
                             <GeneralTaskPersonalChart
                                 tasks={tasks}
