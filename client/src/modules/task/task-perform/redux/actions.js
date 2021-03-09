@@ -213,6 +213,8 @@ function editTimeSheetLog(taskId, timesheetlogId, data) {
                     type: performTaskConstants.EDIT_TIME_SHEET_LOG_SUCCESS, 
                     payload: res.data.content 
                 });
+
+                dispatch({type: taskManagementConstants.UPDATE_TASK_SUCCESS, payload: res.data.content})
                 resolve(res)
             }).catch(error => {
                 dispatch({ type: performTaskConstants.EDIT_TIME_SHEET_LOG_FAILE, error });
@@ -495,6 +497,7 @@ function editTaskByAccountableEmployees(data, taskId) {
                     type: performTaskConstants.EDIT_TASK_BY_ACCOUNTABLE_SUCCESS,
                     payload: res.data.content
                 });
+                dispatch({ type: taskManagementConstants.UPDATE_TASK_SUCCESS, payload: res.data.content.task })
             })
             .catch(error => {
                 dispatch({ type: performTaskConstants.EDIT_TASK_BY_ACCOUNTABLE_FAILURE, error });
@@ -516,6 +519,8 @@ function editTaskByResponsibleEmployees(data, taskId) {
                     type: performTaskConstants.EDIT_TASK_BY_RESPONSIBLE_SUCCESS,
                     payload: res.data.content
                 });
+
+                dispatch({ type: taskManagementConstants.UPDATE_TASK_SUCCESS, payload: res.data.content.task })
             })
             .catch(error => {
                 dispatch({ type: performTaskConstants.EDIT_TASK_BY_RESPONSIBLE_FAILURE, error });
