@@ -567,9 +567,9 @@ exports.editTimeSheetLog = async (portal, taskId, timesheetlogId, data) => {
  * Dừng bấm giờ: Lưu thời gian kết thúc và số giờ chạy (endTime và time)
  */
 exports.stopTimesheetLog = async (portal, params, body) => {
-    const now = new Date();
     let stoppedAt;
     let timer, duration;
+    
     // Add log timer
     if (body.addlogStartedAt && body.addlogStoppedAt) {
         let getAddlogStartedAt = new Date(body.addlogStartedAt);
@@ -591,12 +591,10 @@ exports.stopTimesheetLog = async (portal, params, body) => {
         ).populate({ path: "timesheetLogs.creator", select: "name" });
 
     } else {
-        // tắt như bình thường hoặc hẹn giờ tắt bấm giờ
-        if (body.stoppedAt) {
-            let getStoppedTime = new Date(body.stoppedAt);
-            stoppedAt = getStoppedTime;
+        if (body.autoStopped === 1) {
+            stoppedAt = new Date();
         } else {
-            stoppedAt = now;
+            stoppedAt = new Date(body.stoppedAt);
         }
 
         // Lưu vào timeSheetLog
