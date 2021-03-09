@@ -2973,6 +2973,7 @@ export default {
 
                 col_name: "Tên công việc",
                 col_organization: "Đơn vị",
+                col_project:"Dự án",
                 col_priority: "Độ ưu tiên",
                 col_start_date: "Ngày bắt đầu",
                 col_end_date: "Ngày kết thúc",

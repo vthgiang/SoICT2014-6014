@@ -500,9 +500,10 @@ exports.getPaginatedTasks = async (portal, task) => {
     taskList = await Task(connect(DB_CONNECTION, portal)).find(optionQuery).sort({ 'createdAt': -1 })
         .skip(perPage * (page - 1)).limit(perPage).populate([
             { path: "organizationalUnit parent" },
-            {path: 'creator', select : "_id name email avatar"},
-            {path: 'responsibleEmployees', select : "_id name email avatar"},
-            {path: 'accountableEmployees', select : "_id name email avatar"},
+            { path: 'creator', select: "_id name email avatar" },
+            { path: 'taskProject', select: "_id name" },
+            { path: 'responsibleEmployees', select : "_id name email avatar" },
+            { path: 'accountableEmployees', select : "_id name email avatar" },
             { path: "timesheetLogs.creator", select: "name" },
         ]);
 

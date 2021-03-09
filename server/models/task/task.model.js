@@ -673,7 +673,7 @@ const TaskSchema = new Schema(
 
         taskProject: { //tên dự án công việc thuộc về
             type: Schema.Types.ObjectId,
-            ref: 'TaskProject'
+            ref: 'Project'
         },
     },
     {

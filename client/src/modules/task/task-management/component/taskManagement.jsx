@@ -11,7 +11,7 @@ import { UserActions } from '../../../super-admin/user/redux/actions';
 import { performTaskAction } from "../../task-perform/redux/actions";
 import { taskManagementActions } from '../redux/actions';
 import TaskProjectAction from '../../task-project/redux/action';
-
+import { ProjectActions } from "../../../project/redux/actions";
 import { TaskAddModal } from './taskAddModal';
 import { ModalPerform } from '../../task-perform/component/modalPerform';
 import { duration } from 'moment';
@@ -24,7 +24,7 @@ class TaskManagement extends Component {
         let userId = getStorage("userId");
         super(props);
         const tableId = "tree-table-task-management";
-        const defaultConfig = { limit: 20, hiddenColumns: ["2", "6", "7"] }
+        const defaultConfig = { limit: 20, hiddenColumns: ["2", "7", "8"] }
         const limit = getTableConfiguration(tableId, defaultConfig).limit;
         this.state = {
             displayType: 'table',
@@ -58,7 +58,7 @@ class TaskManagement extends Component {
         this.props.getDepartment();
         this.props.getAllDepartment();
         this.props.getPaginateTasks(this.state.currentTab, [], currentPage, perPage, this.state.status, null, null, null, null, null, null, null, null);
-        this.props.getAllTaskProject();
+        this.props.getProjects({ calledId: "" });
     }
 
     shouldComponentUpdate(nextProps, nextState) {
@@ -481,7 +481,7 @@ class TaskManagement extends Component {
     }
 
     render() {
-        const { tasks, user, translate, taskProject } = this.props;
+        const { tasks, user, translate, taskProject, project } = this.props;
         const { currentTaskId, currentPage, currentTab, parentTask, startDate, endDate, perPage, status, monthTimeSheetLog, tableId, responsibleEmployees } = this.state;
         let currentTasks, units = [];
 
@@ -498,6 +498,7 @@ class TaskManagement extends Component {
             { name: translate('task.task_management.col_name'), key: "name" },
             { name: translate('task.task_management.detail_description'), key: "description" },
             { name: translate('task.task_management.col_organization'), key: "organization" },
+            { name: translate('task.task_management.col_project'), key: "project" },
             { name: translate('task.task_management.col_priority'), key: "priority" },
             { name: translate('task.task_management.responsible'), key: "responsibleEmployees" },
             { name: translate('task.task_management.accountable'), key: "accountableEmployees" },
@@ -518,6 +519,7 @@ class TaskManagement extends Component {
                     name: dataTemp[n].name,
                     description: dataTemp[n].description ? parse(dataTemp[n].description) : null,
                     organization: dataTemp[n].organizationalUnit ? dataTemp[n].organizationalUnit.name : translate('task.task_management.err_organizational_unit'),
+                    project: dataTemp[n].taskProject ? dataTemp[n].taskProject.name : null,
                     priority: this.formatPriority(dataTemp[n].priority),
                     responsibleEmployees: dataTemp[n].responsibleEmployees ? dataTemp[n].responsibleEmployees.map(o => o.name).join(', ') : null,
                     accountableEmployees: dataTemp[n].accountableEmployees ? dataTemp[n].accountableEmployees.map(o => o.name).join(', ') : null,
@@ -563,7 +565,7 @@ class TaskManagement extends Component {
                 return result;
             }
 
-            let convertDataProject = taskProject.list.map(p => {
+            let convertDataProject = project && project.data && project.data.list.map(p => {
                 return {
                     ...p,
                     id: 'pj' + p._id,
@@ -635,6 +637,8 @@ class TaskManagement extends Component {
                 }
             }
         }
+
+        console.log('dataTree', dataTree)
 
         return (
             <React.Fragment>
@@ -853,8 +857,8 @@ class TaskManagement extends Component {
 }
 
 function mapState(state) {
-    const { tasks, user, department, taskProject } = state;
-    return { tasks, user, department, taskProject };
+    const { tasks, user, department, project } = state;
+    return { tasks, user, department, project };
 }
 
 const actionCreators = {
@@ -864,7 +868,7 @@ const actionCreators = {
     startTimer: performTaskAction.startTimerTask,
     deleteTaskById: taskManagementActions._delete,
     getAllDepartment: DepartmentActions.get,
-    getAllTaskProject: TaskProjectAction.get
+    getProjects: ProjectActions.getProjects,
 };
 const translateTaskManagement = connect(mapState, actionCreators)(withTranslate(TaskManagement));
 export { translateTaskManagement as TaskManagement };

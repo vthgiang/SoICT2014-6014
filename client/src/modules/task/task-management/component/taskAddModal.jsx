@@ -82,35 +82,35 @@ class TaskAddModal extends Component {
         const { newTask } = this.state;
         const { tasktemplates, user, KPIPersonalManager, translate, tasks, department, taskProject, isProcess } = this.props;
         const { task, id, parentTask, currentTasks } = this.props;
-        let units, userdepartments, listTaskTemplate, listKPIPersonal, usercompanys;
-        let listDepartment = department?.list;
-        let taskTemplate;
-        if (tasktemplates.taskTemplate) {
-            taskTemplate = tasktemplates.taskTemplate;
-        }
+        // let units, userdepartments, listTaskTemplate, listKPIPersonal, usercompanys;
+        // let listDepartment = department?.list;
+        // let taskTemplate;
+        // if (tasktemplates.taskTemplate) {
+        //     taskTemplate = tasktemplates.taskTemplate;
+        // }
 
-        if (tasktemplates.items && newTask.organizationalUnit) {
-            // listTaskTemplate = tasktemplates.items.filter(function (taskTemplate) {
-            //     return taskTemplate.organizationalUnit._id === newTask.organizationalUnit;
-            // });
-            listTaskTemplate = tasktemplates.items
-        }
-        if (user.organizationalUnitsOfUser) {
-            units = user.organizationalUnitsOfUser;
-        }
-        if (user.userdepartments) userdepartments = user.userdepartments;
-        if (user.usercompanys) usercompanys = user.usercompanys;
+        // if (tasktemplates.items && newTask.organizationalUnit) {
+        //     // listTaskTemplate = tasktemplates.items.filter(function (taskTemplate) {
+        //     //     return taskTemplate.organizationalUnit._id === newTask.organizationalUnit;
+        //     // });
+        //     listTaskTemplate = tasktemplates.items
+        // }
+        // if (user.organizationalUnitsOfUser) {
+        //     units = user.organizationalUnitsOfUser;
+        // }
+        // if (user.userdepartments) userdepartments = user.userdepartments;
+        // if (user.usercompanys) usercompanys = user.usercompanys;
 
-        let usersOfChildrenOrganizationalUnit;
-        if (user.usersOfChildrenOrganizationalUnit) {
-            usersOfChildrenOrganizationalUnit = user.usersOfChildrenOrganizationalUnit;
-        }
-        let usersInUnitsOfCompany;
-        if (user && user.usersInUnitsOfCompany) {
-            usersInUnitsOfCompany = user.usersInUnitsOfCompany;
-        }
+        // let usersOfChildrenOrganizationalUnit;
+        // if (user.usersOfChildrenOrganizationalUnit) {
+        //     usersOfChildrenOrganizationalUnit = user.usersOfChildrenOrganizationalUnit;
+        // }
+        // let usersInUnitsOfCompany;
+        // if (user && user.usersInUnitsOfCompany) {
+        //     usersInUnitsOfCompany = user.usersInUnitsOfCompany;
+        // }
 
-        if (KPIPersonalManager.kpipersonals) listKPIPersonal = KPIPersonalManager.kpipersonals;
+        // if (KPIPersonalManager.kpipersonals) listKPIPersonal = KPIPersonalManager.kpipersonals;
 
         return (
             <React.Fragment>

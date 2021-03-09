@@ -40,7 +40,9 @@ exports.get = async (portal, query) => {
         });
     }
     else
-        project = await Project(connect(DB_CONNECTION, portal)).find(options).populate({path: "projectManager", select:"_id name"});
+        project = await Project(connect(DB_CONNECTION, portal)).find(options)
+            .populate({ path: "projectManager", select: "_id name" })
+            .populate({ path: "parent"});
     return project;
 }
 
