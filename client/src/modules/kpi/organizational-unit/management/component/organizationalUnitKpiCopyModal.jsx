@@ -76,7 +76,7 @@ class ModalCopyKPIUnit extends Component {
                 type: 'copy-parent-kpi-to-employee',
                 idunit: idunit,
                 datenew: monthDefault,
-                approver: approver ? approver : approverDefault?.[1]?.value?.[0]?.value
+                approver: approver ? approver : (approverDefault?.[1]?.value?.[0]?.value ? approverDefault?.[1]?.value?.[0]?.value : approverDefault?.[0]?.value?.[0]?.value)
             }
 
             this.props.copyKPIUnit(kpiId, data);
