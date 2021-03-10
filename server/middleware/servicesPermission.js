@@ -276,7 +276,7 @@ exports.links = [
             { path: '/kpi/organizational-unit/creation/organizational-unit-kpi-sets/:setKpiId/comments/:commentId/child-comments/:childCommentId', method: 'DELETE' },
             { path: '/kpi/organizational-unit/creation/organizational-unit-kpi-sets/:setKpiId/comments/:commentId:/files/:fileId', method: 'DELETE' },
             { path: '/kpi/organizational-unit/creation/organizational-unit-kpi-sets/:setKpiId/comments/:commentId/child-comments/:childCommentId/files/:fileId', method: 'DELETE' },
-         
+
             { path: '/kpi/employee/creation/employee-kpi-sets', method: 'GET' },
             { path: '/kpi/employee/creation/employee-kpi-sets', method: 'POST' },
             { path: '/kpi/employee/creation/employee-kpi-sets/:id/edit', method: 'POST' },
@@ -454,6 +454,7 @@ exports.links = [
 
             // Recommend-procure
             { path: '/purchase-request/purchase-request', method: 'GET' },
+            { path: '/purchase-request/use-approver', method: 'GET' },
             { path: '/purchase-request/purchase-request', method: 'POST' },
             { path: '/purchase-request/purchase-request/:id', method: 'PUT' },
             { path: '/purchase-request/purchase-request/:id', method: 'DELETE' },

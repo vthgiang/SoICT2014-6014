@@ -211,7 +211,7 @@ class PurchaseRequestCreateForm extends Component {
     componentDidMount = () => {
         this.props.getAllDepartments();
         this.props.getRoleSameDepartment(localStorage.getItem("currentRole"));
-
+        this.props.getUserApprover();
         // Mỗi khi modal mở, cần sinh lại code
         window.$('#modal-create-recommendprocure').on('shown.bs.modal', this.regenerateCode)
     }
@@ -281,8 +281,7 @@ class PurchaseRequestCreateForm extends Component {
             recommendNumber, dateCreate, equipmentName, equipmentDescription, supplier, total, unit, estimatePrice, recommendUnits, approver,
             errorOnEquipment, errorOnEquipmentDescription, errorOnTotal, errorOnUnit, errorOnApprover
         } = this.state;
-
-        var userlist = user.list;
+        var userlist = recommendProcure && recommendProcure.listuser ? recommendProcure.listuser : user.list;
         const departmentlist = department.list && department.list.map(obj => ({ value: obj._id, text: obj.name }));
         return (
             <React.Fragment>
@@ -441,6 +440,7 @@ function mapState(state) {
 const actionCreators = {
     getUser: UserActions.get,
     createRecommendProcure: RecommendProcureActions.createRecommendProcure,
+    getUserApprover: RecommendProcureActions.getUserApprover,
     getAllDepartments: DepartmentActions.get,
     getRoleSameDepartment: UserActions.getRoleSameDepartment,
 };
