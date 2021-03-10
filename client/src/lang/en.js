@@ -2677,12 +2677,14 @@ export default {
                 coefficient: "Coefficient",
 
                 special: "Special",
+                creator_time: "Creator time",
                 select_all_special: "Selected all",
                 select_special: "Select special",
                 select_all_role: "Selected all",
                 select_role: "Select role",
                 stored: "Stored",
                 current_month: "Current month",
+                current_week: "Current week",
 
                 assigned_collaborate: "Task assignment status",
                 not_assigned: "Unassigned task",

@@ -2942,12 +2942,14 @@ export default {
                 coefficient: "Hệ số",
 
                 special: "Đặc tính",
+                creator_time: "Thời gian tạo",
                 select_all_special: "Chọn tất cả các đặc tính",
                 select_special: "Chọn đặc tính",
                 select_all_role: "Chọn tất cả các vai trò",
                 select_role: "Chọn vai trò",
                 stored: "Lưu trong kho",
                 current_month: "Tháng hiện tại",
+                current_week: "Tuần hiện tại",
 
                 assigned_collaborate: "Sắp xếp nhân viên cho công việc liên đơn vị",
                 not_assigned: "Chưa xác nhận sắp xếp nhân viên",

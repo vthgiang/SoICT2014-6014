@@ -253,7 +253,9 @@ exports.getTaskEvaluations = async (portal, data) => {
  * @task dữ liệu trong params
  */
 exports.getPaginatedTasks = async (portal, task) => {
-    let { perPage, number, role, user, organizationalUnit, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime, responsibleEmployees, accountableEmployees, creatorEmployees} = task;
+    let { perPage, number, role, user, organizationalUnit, status, priority, special, name,
+        startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime,responsibleEmployees,
+        accountableEmployees, creatorEmployees, creatorTime, projectSearch } = task;
     let taskList;
     perPage = Number(perPage);
     let page = Number(number);
@@ -489,6 +491,56 @@ exports.getPaginatedTasks = async (portal, task) => {
         }
     }
 
+    // tìm kiếm công việc theo dự án
+    if (projectSearch && projectSearch.length > 0) {
+        keySearch = {
+            ...keySearch,
+            taskProject: {
+                $in: projectSearch,
+            }
+        }
+    }
+
+    // Tìm kiếm công việc theo ngày tạo tuần hiện tại
+    if (creatorTime && creatorTime === "currentWeek") {
+        let curr = new Date()
+        let week = []
+
+        for (let i = 1; i <= 7; i++) {
+            let first = curr.getDate() - curr.getDay() + i 
+            let day = new Date(curr.setDate(first)).toISOString().slice(0, 10)
+            week.push(day)
+        }
+
+        const firstDayOfWeek = week[0];
+        const lastDayOfWeek = week[week.length - 1];
+
+        keySearch = {
+            ...keySearch,
+            createdAt: {
+                $gte: new Date(firstDayOfWeek), $lte: new Date(lastDayOfWeek)
+            }
+        }
+    }
+
+    // tìm kiếm công việc theo ngày tạo tháng hiện tại
+    if (creatorTime && creatorTime === 'currentMonth') {
+        const now = new Date();
+        const currentYear = now.getFullYear();
+        const currentMonth = now.getMonth();
+        const month = new Date(currentYear + '-' + (currentMonth + 1));
+        const nextMonth = new Date(currentYear + '-' + (currentMonth + 1));
+        nextMonth.setMonth(nextMonth.getMonth() + 1);
+
+        keySearch = {
+            ...keySearch,
+            createdAt: {
+                $gt: new Date(month), $lte: new Date(nextMonth)
+            }
+        }
+    }
+
+    
     let optionQuery = {
         $and: [
             keySearch,
