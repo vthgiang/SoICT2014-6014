@@ -1268,7 +1268,7 @@ class Routes extends Component {
                         component={TaskComponent}
                     />
                     <PrivateRoute
-                        isLoading={false}
+                        isLoading={this.props.tasks.isLoading}
                         key={"task-management-dashboard"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
@@ -1287,7 +1287,7 @@ class Routes extends Component {
                         component={TaskDashboard}
                     />
                     <PrivateRoute
-                        isLoading={false}
+                        isLoading={this.props.tasks.isLoading}
                         key={"task-organization-management-dashboard"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
