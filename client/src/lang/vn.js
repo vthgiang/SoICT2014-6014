@@ -3594,7 +3594,7 @@ export default {
                 unit: "Đơn vị",
                 all_tasks: "Tổng số công việc",
                 confirmed_task: "Công việc đã xác nhận thực hiện",
-                none_update_recently: "Công việc chưa cập nhật gần đây",
+                none_update_recently: "Công việc chưa cập nhật trong 7 ngày gần đây",
                 intime_task: "Công việc đúng tiến độ",
                 delay_task: "Công việc trễ tiến độ",
                 overdue_task: "Công việc quá hạn",
