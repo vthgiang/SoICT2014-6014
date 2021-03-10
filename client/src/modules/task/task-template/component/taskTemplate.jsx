@@ -164,7 +164,7 @@ class TaskTemplate extends Component {
                                             <td title={item.organizationalUnit && item.organizationalUnit.name}>{item.organizationalUnit ? item.organizationalUnit.name : translate('task_template.error_task_template_organizational_unit_null')}</td>
                                             <td>
                                                 <a href="#abc" onClick={() => this.handleView(item._id)} title={translate('task.task_template.view_detail_of_this_task_template')}>
-                                                    <i className="material-icons" style={!this.checkPermisson(currentUnit && currentUnit[0] ? currentUnit[0].managers : "", "") ? { paddingLeft: "35px" } : { paddingLeft: "0px" }}>view_list</i>
+                                                    <i className="material-icons" >view_list</i>
                                                 </a>
 
                                                 {/**Check quyền xem có được xóa hay sửa mẫu công việc không */}
