@@ -271,3 +271,6 @@
 .bpmn-icon-intermediate-event-none {
     display: none !important;
 }
+.entry.bpmn-icon-screw-wrench, .entry.bpmn-icon-text-annotation {
+    display: none;
+}
