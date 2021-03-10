@@ -3593,6 +3593,8 @@ export default {
                 general_unit_task: "Tổng quan công việc đơn vị",
                 unit: "Đơn vị",
                 all_tasks: "Tổng số công việc",
+                all_tasks_inprocess: "Tổng số công việc đang thưc hiện",
+                all_tasks_finished: "Tổng số công việc đã hoàn thành",
                 confirmed_task: "Công việc đã xác nhận thực hiện",
                 none_update_recently: "Công việc chưa cập nhật trong 7 ngày gần đây",
                 intime_task: "Công việc đúng tiến độ",
