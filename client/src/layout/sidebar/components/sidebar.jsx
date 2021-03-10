@@ -31,7 +31,7 @@ class SideBar extends Component {
 
         return (
             <React.Fragment>
-                <aside className="main-sidebar" style={{ minHeight: "100vh" }}>
+                <aside className="main-sidebar" style={{ minHeight: "100vh" }} >
                     <section className="sidebar">
                         <div className="user-panel" style={{ borderBottom: "0.2px solid #4B545C" }}>
                             <div className="pull-left image">
@@ -55,10 +55,10 @@ class SideBar extends Component {
                                         </Link>
                                     </React.Fragment>
                                 ) : (
-                                        <p style={{ fontSize: "10px" }}>
-                                            <i className="fa fa-circle text-success"></i> Online{" "}
-                                        </p>
-                                    )}
+                                    <p style={{ fontSize: "10px" }}>
+                                        <i className="fa fa-circle text-success"></i> Online{" "}
+                                    </p>
+                                )}
                             </div>
                         </div>
                         <ul className="sidebar-menu" data-widget="tree" ref="sideBarMenu">
@@ -68,23 +68,6 @@ class SideBar extends Component {
                                     name: "menu.home",
                                     path: "/home",
                                     icon: "fa fa-home",
-                                }}
-                            />
-
-                            {/* Bảng tin nhân viên */}
-                            <Item
-                                item={{
-                                    name: "menu.dashboard_personal",
-                                    path: "/dashboard-personal",
-                                    icon: "fa fa-newspaper-o",
-                                }}
-                            />
-                            {/* Bảng tin đơn vị */}
-                            <Item
-                                item={{
-                                    name: "menu.dashboard_unit",
-                                    path: "/dashboard-unit",
-                                    icon: "fa fa-newspaper-o",
                                 }}
                             />
 
@@ -110,6 +93,24 @@ class SideBar extends Component {
                                             path: "/hr-annual-leave-personal",
                                         },
                                     ],
+                                }}
+                            />
+
+                            {/* Bảng tin nhân viên */}
+                            <Item
+                                item={{
+                                    name: "menu.dashboard_personal",
+                                    path: "/dashboard-personal",
+                                    icon: "fa fa-newspaper-o",
+                                }}
+                            />
+
+                            {/* Bảng tin đơn vị */}
+                            <Item
+                                item={{
+                                    name: "menu.dashboard_unit",
+                                    path: "/dashboard-unit",
+                                    icon: "fa fa-newspaper-o",
                                 }}
                             />
 
@@ -197,123 +198,160 @@ class SideBar extends Component {
                                 }}
                             />
 
-                            {/* Quản lý tài liệu */}
+                            {/* Mãu công việc */}
                             <Item
                                 item={{
-                                    name: "menu.manage_document",
-                                    icon: "fa fa-folder-open",
-                                    path: "/documents-management",
-                                }}
-                            />
-                            <Item
-                                item={{
-                                    name: "menu.documents_og",
-                                    icon: "fa fa-folder-open",
-                                    path: "/documents/organizational-unit",
-                                }}
-                            />
-                            <Item
-                                item={{
-                                    name: "menu.documents",
-                                    icon: "fa fa-file-text",
-                                    path: "/documents",
+                                    name: "menu.task_template",
+                                    icon: "fa fa-flash",
+                                    path: "/task-template",
                                 }}
                             />
 
-                            {/* Quản lý kho */}
+                            {/* Task management */}
                             <GroupItem
                                 groupItem={{
-                                    name: "menu.manage_warehouse",
-                                    icon: "fa fa-safari",
+                                    name: "menu.tasks",
+                                    icon: "fa fa-tasks",
                                     list: [
                                         {
-                                            name: "menu.dashboard_inventory",
-                                            icon: "fa fa-dashboard",
-                                            path: "/dashboard-inventory",
+                                            name: "menu.task_organization_management_dashboard",
+                                            icon: "fa fa-circle-o",
+                                            path: "/task-organization-management-dashboard",
                                         },
                                         {
-                                            name: "menu.dashboard_bill",
-                                            icon: "fa fa-dashboard",
-                                            path: "/dashboard-bill",
+                                            name: "menu.task_management_dashboard",
+                                            icon: "fa fa-circle-o",
+                                            path: "/task-management-dashboard",
                                         },
                                         {
-                                            name: "menu.stock_management",
-                                            icon: "fa fa-bank",
-                                            path: "/stock-management",
+                                            name: "menu.task_management_of_unit",
+                                            icon: "fa fa-circle-o",
+                                            path: "/task-management-unit",
                                         },
                                         {
-                                            name: "menu.bin_location_management",
-                                            icon: "fa fa-sitemap",
-                                            path: "/bin-location-management",
+                                            name: "menu.task_management",
+                                            icon: "fa fa-circle-o",
+                                            path: "/task-management",
                                         },
                                         {
-                                            name: "menu.category_management",
-                                            icon: "fa fa-cubes",
-                                            path: "/category-management",
+                                            name: "menu.task_process_template",
+                                            icon: "fa fa-circle-o",
+                                            path: "/task-process-template",
                                         },
                                         {
-                                            name: "menu.good_management",
-                                            icon: "fa fa-gift",
-                                            path: "/good-management",
+                                            name: "menu.task_management_process",
+                                            icon: "fa fa-circle-o",
+                                            path: "/task-process-management",
                                         },
                                         {
-                                            name: "menu.bill_management",
-                                            icon: "fa fa-reorder",
-                                            path: "/bill-management",
-                                        },
-                                        {
-                                            name: "menu.inventory_management",
-                                            icon: "fa fa-times-circle-o",
-                                            path: "/inventory-management",
+                                            name: "menu.all_time_sheet_log",
+                                            icon: "fa fa-circle-o",
+                                            path: "/time-sheet-log/all",
                                         },
                                     ],
                                 }}
                             />
 
-                            {/* Quản lý khách hàng */}
+                            {/* Quản lý dự án */}
+                            <Item
+                                item={{
+                                    name: "menu.manage_project",
+                                    icon: "fa fa-folder-open",
+                                    path: "/projects-management",
+                                }}
+                            />
+
+                            {/* kpi-management */}
                             <GroupItem
                                 groupItem={{
-                                    name: "menu.customer_Management",
-                                    icon: "fa fa-users",
+                                    name: "menu.manage_kpi",
+                                    icon: "fa fa-dashboard",
                                     list: [
                                         {
-                                            name: "menu.crm_list.dashboard",
-                                            icon: "fa fa-dashboard",
-                                            path: "/crm/dashboard",
-                                        },
-                                        {
-                                            name: "menu.crm_list.customer",
+                                            name: "menu.kpi_unit_dashboard",
                                             icon: "fa fa-circle-o",
-                                            path: "/crm/customer",
+                                            path: "/kpi-units/dashboard",
                                         },
                                         {
-                                            name: "menu.crm_list.lead",
+                                            name: "menu.kpi_unit_create",
                                             icon: "fa fa-circle-o",
-                                            path: "/crm/lead",
+                                            path: "/kpi-units/create",
                                         },
                                         {
-                                            name: "menu.crm_list.care",
+                                            name: "menu.kpi_unit_manager",
                                             icon: "fa fa-circle-o",
-                                            path: "/crm/care",
+                                            path: "/kpi-units/manager",
                                         },
                                         {
-                                            name: "menu.crm_list.group",
+                                            name: "menu.kpi_unit_statistic",
                                             icon: "fa fa-circle-o",
-                                            path: "/crm/group",
+                                            path: "/kpi-units/statistic",
                                         },
                                         {
-                                            name: "menu.crm_list.statistic",
+                                            name: "menu.kpi_member_dashboard",
                                             icon: "fa fa-circle-o",
-                                            path: "/crm/statistic",
+                                            path: "/kpi-member/dashboard",
                                         },
                                         {
-                                            name: "menu.crm_list.generalConfiguration",
-                                            icon: "fa fa-gear",
-                                            path: "/crm/generalConfiguration",
+                                            name: "menu.kpi_member_manager",
+                                            icon: "fa fa-circle-o",
+                                            path: "/kpi-member/manager",
                                         },
+                                        {
+                                            name: "menu.kpi_personal_dashboard",
+                                            icon: "fa fa-circle-o",
+                                            path: "/kpi-personals/dashboard",
+                                        },
+                                        {
+                                            name: "menu.kpi_personal_create",
+                                            icon: "fa fa-circle-o",
+                                            path: "/kpi-personals/create",
+                                        },
+                                        {
+                                            name: "menu.kpi_personal_manager",
+                                            icon: "fa fa-circle-o",
+                                            path: "/kpi-personals/manager",
+                                        },
+
+                                        // { name: 'menu.kpi_unit_overview', icon: 'fa fa-circle-o', path: '/kpi-units/overview' },
+                                        // { name: 'menu.kpi_personal_overview', icon: 'fa fa-circle-o', path: '/kpi-personals/overview' },
                                     ],
                                 }}
                             />
+
+                            {/* Quản lý nhân sự */}
+                            <GroupItem
+                                groupItem={{
+                                    name: "menu.manage_employee",
+                                    icon: "fa fa-address-book",
+                                    list: [
+                                        { name: "menu.dashboard_employee", icon: "fa fa-dashboard", path: "/hr-dashboard-employee" },
+                                        { name: "menu.manage_unit", icon: "fa fa-sitemap", path: "/hr-manage-department" },
+                                        { name: "menu.add_employee", icon: "fa fa-user-plus", path: "/hr-add-employee" },
+                                        { name: "menu.list_employee", icon: "fa fa-address-card", path: "/hr-list-employee" },
+                                        { name: "menu.salary_employee", icon: "fa fa-line-chart", path: "/hr-salary-employee" },
+                                        { name: "menu.time_keeping", icon: "fa fa-calculator", path: "/hr-time-keeping" },
+                                        { name: "menu.discipline", icon: "fa fa-balance-scale", path: "/hr-discipline" },
+                                        { name: "menu.annual_leave", icon: "fa fa-calendar-times-o", path: "/hr-annual-leave" },
+                                        { name: "menu.manage_work_plan", icon: "fa fa-calendar", path: "/hr-manage-work-plan" },
+                                        { name: "menu.manage_field", icon: "fa fa-list-ul", path: "/hr-manage-field" },
+                                        // nhân sự gói thầu
+                                        { name: "menu.list_search_for_package", icon: "fa fa-calendar", path: "/hr-search-for-package" },
+                                        { name: "menu.list_major", icon: "fa fa-calendar", path: "/hr-list-major" },
+                                        { name: "menu.list_career_position", icon: "fa fa-calendar", path: "/hr-list-career-position" },
+                                    ],
+                                }}
+                            />
+
+                            {/* Quản lý đơn xin nghỉ phép đơn vị */}
+                            <Item
+                                item={{
+                                    name: "menu.leave_application",
+                                    icon: "fa fa-envelope",
+                                    path: "/hr-manage-leave-application",
+                                }}
+                            />
+
 
                             {/* Quan ly tai san */}
                             <GroupItem
@@ -390,38 +428,30 @@ class SideBar extends Component {
                                 }}
                             />
 
-                            {/* Quản lý đơn xin nghỉ phép đơn vị */}
+
+                            {/* Quản lý tài liệu */}
                             <Item
                                 item={{
-                                    name: "menu.leave_application",
-                                    icon: "fa fa-envelope",
-                                    path: "/hr-manage-leave-application",
+                                    name: "menu.manage_document",
+                                    icon: "fa fa-folder-open",
+                                    path: "/documents-management",
+                                }}
+                            />
+                            <Item
+                                item={{
+                                    name: "menu.documents_og",
+                                    icon: "fa fa-folder-open",
+                                    path: "/documents/organizational-unit",
+                                }}
+                            />
+                            <Item
+                                item={{
+                                    name: "menu.documents",
+                                    icon: "fa fa-file-text",
+                                    path: "/documents",
                                 }}
                             />
 
-                            {/* Quản lý nhân sự */}
-                            <GroupItem
-                                groupItem={{
-                                    name: "menu.manage_employee",
-                                    icon: "fa fa-address-book",
-                                    list: [
-                                        { name: "menu.dashboard_employee", icon: "fa fa-dashboard", path: "/hr-dashboard-employee" },
-                                        { name: "menu.manage_unit", icon: "fa fa-sitemap", path: "/hr-manage-department" },
-                                        { name: "menu.add_employee", icon: "fa fa-user-plus", path: "/hr-add-employee" },
-                                        { name: "menu.list_employee", icon: "fa fa-address-card", path: "/hr-list-employee" },
-                                        { name: "menu.salary_employee", icon: "fa fa-line-chart", path: "/hr-salary-employee" },
-                                        { name: "menu.time_keeping", icon: "fa fa-calculator", path: "/hr-time-keeping" },
-                                        { name: "menu.discipline", icon: "fa fa-balance-scale", path: "/hr-discipline" },
-                                        { name: "menu.annual_leave", icon: "fa fa-calendar-times-o", path: "/hr-annual-leave" },
-                                        { name: "menu.manage_work_plan", icon: "fa fa-calendar", path: "/hr-manage-work-plan" },
-                                        { name: "menu.manage_field", icon: "fa fa-list-ul", path: "/hr-manage-field" },
-                                        // nhân sự gói thầu
-                                        { name: "menu.list_search_for_package", icon: "fa fa-calendar", path: "/hr-search-for-package" },
-                                        { name: "menu.list_major", icon: "fa fa-calendar", path: "/hr-list-major" },
-                                        { name: "menu.list_career_position", icon: "fa fa-calendar", path: "/hr-list-career-position" },
-                                    ],
-                                }}
-                            />
 
                             {/* Quản lý đào tạo */}
                             <GroupItem
@@ -443,60 +473,48 @@ class SideBar extends Component {
                                 }}
                             />
 
-                            {/* kpi-management */}
+
+                            {/* Quản lý khách hàng */}
                             <GroupItem
                                 groupItem={{
-                                    name: "menu.manage_kpi",
-                                    icon: "fa fa-dashboard",
+                                    name: "menu.customer_Management",
+                                    icon: "fa fa-users",
                                     list: [
                                         {
-                                            name: "menu.kpi_unit_dashboard",
-                                            icon: "fa fa-circle-o",
-                                            path: "/kpi-units/dashboard",
+                                            name: "menu.crm_list.dashboard",
+                                            icon: "fa fa-dashboard",
+                                            path: "/crm/dashboard",
                                         },
                                         {
-                                            name: "menu.kpi_unit_create",
+                                            name: "menu.crm_list.customer",
                                             icon: "fa fa-circle-o",
-                                            path: "/kpi-units/create",
+                                            path: "/crm/customer",
                                         },
                                         {
-                                            name: "menu.kpi_unit_manager",
+                                            name: "menu.crm_list.lead",
                                             icon: "fa fa-circle-o",
-                                            path: "/kpi-units/manager",
+                                            path: "/crm/lead",
                                         },
                                         {
-                                            name: "menu.kpi_unit_statistic",
+                                            name: "menu.crm_list.care",
                                             icon: "fa fa-circle-o",
-                                            path: "/kpi-units/statistic",
+                                            path: "/crm/care",
                                         },
                                         {
-                                            name: "menu.kpi_member_dashboard",
+                                            name: "menu.crm_list.group",
                                             icon: "fa fa-circle-o",
-                                            path: "/kpi-member/dashboard",
+                                            path: "/crm/group",
                                         },
                                         {
-                                            name: "menu.kpi_member_manager",
+                                            name: "menu.crm_list.statistic",
                                             icon: "fa fa-circle-o",
-                                            path: "/kpi-member/manager",
+                                            path: "/crm/statistic",
                                         },
                                         {
-                                            name: "menu.kpi_personal_dashboard",
-                                            icon: "fa fa-circle-o",
-                                            path: "/kpi-personals/dashboard",
+                                            name: "menu.crm_list.generalConfiguration",
+                                            icon: "fa fa-gear",
+                                            path: "/crm/generalConfiguration",
                                         },
-                                        {
-                                            name: "menu.kpi_personal_create",
-                                            icon: "fa fa-circle-o",
-                                            path: "/kpi-personals/create",
-                                        },
-                                        {
-                                            name: "menu.kpi_personal_manager",
-                                            icon: "fa fa-circle-o",
-                                            path: "/kpi-personals/manager",
-                                        },
-
-                                        // { name: 'menu.kpi_unit_overview', icon: 'fa fa-circle-o', path: '/kpi-units/overview' },
-                                        // { name: 'menu.kpi_personal_overview', icon: 'fa fa-circle-o', path: '/kpi-personals/overview' },
                                     ],
                                 }}
                             />
@@ -561,65 +579,56 @@ class SideBar extends Component {
                                 }}
                             />
 
-                            <Item
-                                item={{
-                                    name: "menu.task_template",
-                                    icon: "fa fa-flash",
-                                    path: "/task-template",
-                                }}
-                            />
-                            <Item
-                                item={{
-                                    name: "menu.manage_project",
-                                    icon: "fa fa-folder-open",
-                                    path: "/projects-management",
-                                }}
-                            />
-
-                            {/* Task management */}
+                            {/* Quản lý kho */}
                             <GroupItem
                                 groupItem={{
-                                    name: "menu.tasks",
-                                    icon: "fa fa-tasks",
+                                    name: "menu.manage_warehouse",
+                                    icon: "fa fa-safari",
                                     list: [
                                         {
-                                            name: "menu.task_organization_management_dashboard",
-                                            icon: "fa fa-circle-o",
-                                            path: "/task-organization-management-dashboard",
+                                            name: "menu.dashboard_inventory",
+                                            icon: "fa fa-dashboard",
+                                            path: "/dashboard-inventory",
                                         },
                                         {
-                                            name: "menu.task_management_dashboard",
-                                            icon: "fa fa-circle-o",
-                                            path: "/task-management-dashboard",
+                                            name: "menu.dashboard_bill",
+                                            icon: "fa fa-dashboard",
+                                            path: "/dashboard-bill",
                                         },
                                         {
-                                            name: "menu.task_management_of_unit",
-                                            icon: "fa fa-circle-o",
-                                            path: "/task-management-unit",
+                                            name: "menu.stock_management",
+                                            icon: "fa fa-bank",
+                                            path: "/stock-management",
                                         },
                                         {
-                                            name: "menu.task_management",
-                                            icon: "fa fa-circle-o",
-                                            path: "/task-management",
+                                            name: "menu.bin_location_management",
+                                            icon: "fa fa-sitemap",
+                                            path: "/bin-location-management",
                                         },
                                         {
-                                            name: "menu.task_process_template",
-                                            icon: "fa fa-circle-o",
-                                            path: "/task-process-template",
+                                            name: "menu.category_management",
+                                            icon: "fa fa-cubes",
+                                            path: "/category-management",
                                         },
                                         {
-                                            name: "menu.task_management_process",
-                                            icon: "fa fa-circle-o",
-                                            path: "/task-process-management",
+                                            name: "menu.good_management",
+                                            icon: "fa fa-gift",
+                                            path: "/good-management",
                                         },
                                         {
-                                            name: "menu.all_time_sheet_log",
-                                            icon: "fa fa-circle-o",
-                                            path: "/time-sheet-log/all",
+                                            name: "menu.bill_management",
+                                            icon: "fa fa-reorder",
+                                            path: "/bill-management",
+                                        },
+                                        {
+                                            name: "menu.inventory_management",
+                                            icon: "fa fa-times-circle-o",
+                                            path: "/inventory-management",
                                         },
                                     ],
                                 }}
                             />
+
 
                             {/* Report management */}
                             <GroupItem
@@ -638,36 +647,6 @@ class SideBar extends Component {
 
                             {/* Quản lý kế hoạch sản xuất */}
                             {/* <Item item={{ name: 'menu.manage_plans', icon: 'fa fa-calendar', path: '/manage-plans' }} /> */}
-
-                            {/* CRUD ví dụ theo 2 mô hình lấy dữ liệu */}
-                            <GroupItem
-                                groupItem={{
-                                    name: "menu.manage_examples",
-                                    icon: "fa fa-edit",
-                                    list: [
-                                        {
-                                            name: "menu.manage_examples_1",
-                                            icon: "fa fa-circle",
-                                            path: "/manage-examples-1",
-                                        },
-                                        {
-                                            name: "menu.manage_examples_hooks_1",
-                                            icon: "fa fa-circle",
-                                            path: "/manage-examples-hooks-1",
-                                        },
-                                        {
-                                            name: "menu.manage_examples_2",
-                                            icon: "fa fa-adjust",
-                                            path: "/manage-examples-2",
-                                        },
-                                        {
-                                            name: "menu.manage_examples_hooks_2",
-                                            icon: "fa fa-adjust",
-                                            path: "/manage-examples-hooks-2",
-                                        },
-                                    ],
-                                }}
-                            />
 
                             {/* Quản lý sản xuất */}
                             <GroupItem
@@ -723,6 +702,38 @@ class SideBar extends Component {
                                     ],
                                 }}
                             />
+
+                            {/* CRUD ví dụ theo 2 mô hình lấy dữ liệu */}
+                            <GroupItem
+                                groupItem={{
+                                    name: "menu.manage_examples",
+                                    icon: "fa fa-edit",
+                                    list: [
+                                        {
+                                            name: "menu.manage_examples_1",
+                                            icon: "fa fa-circle",
+                                            path: "/manage-examples-1",
+                                        },
+                                        {
+                                            name: "menu.manage_examples_hooks_1",
+                                            icon: "fa fa-circle",
+                                            path: "/manage-examples-hooks-1",
+                                        },
+                                        {
+                                            name: "menu.manage_examples_2",
+                                            icon: "fa fa-adjust",
+                                            path: "/manage-examples-2",
+                                        },
+                                        {
+                                            name: "menu.manage_examples_hooks_2",
+                                            icon: "fa fa-adjust",
+                                            path: "/manage-examples-hooks-2",
+                                        },
+                                    ],
+                                }}
+                            />
+
+
                             {/* Hướng dẫn sử dụng */}
                             <Item
                                 item={{

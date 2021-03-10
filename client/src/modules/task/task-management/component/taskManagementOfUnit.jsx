@@ -46,7 +46,7 @@ class TaskManagementOfUnit extends Component {
 
     shouldComponentUpdate = async (nextProps, nextState) => {
         const { dashboardEvaluationEmployeeKpiSet } = this.props;
-        let { currentTab, organizationalUnit, status, priority, special, name, startDate, endDate, isAssigned, responsibleEmployees, accountableEmployees, creatorEmployees } = this.state;
+        let { currentTab, organizationalUnit, status, priority, special, name, startDate, endDate, isAssigned, responsibleEmployees, accountableEmployees, creatorEmployees, perPage, currentPage } = this.state;
 
         if (organizationalUnit !== nextState.organizationalUnit ||
             currentTab !== nextState.currentTab ||
@@ -92,7 +92,7 @@ class TaskManagementOfUnit extends Component {
                 }
             });
 
-            await this.props.getPaginatedTasksByOrganizationalUnit(units, 1, 20, status, [], [], null, null, null, isAssigned, responsibleEmployees, accountableEmployees, creatorEmployees);
+            await this.props.getPaginatedTasksByOrganizationalUnit(units, currentPage, perPage, status, [], [], null, null, null, isAssigned, responsibleEmployees, accountableEmployees, creatorEmployees);
             return true;
         }
 
@@ -187,7 +187,7 @@ class TaskManagementOfUnit extends Component {
     }
 
     nextPage = async (pageTotal) => {
-        let { organizationalUnit, status, priority, special, name, startDate, endDate, isAssigned, responsibleEmployees, accountableEmployees, creatorEmployees } = this.state;
+        let { organizationalUnit, status, priority, special, name, startDate, endDate, isAssigned, responsibleEmployees, accountableEmployees, creatorEmployees, perPage } = this.state;
 
         let oldCurrentPage = this.state.currentPage;
         await this.setState(state => {
@@ -198,12 +198,12 @@ class TaskManagementOfUnit extends Component {
         })
         let newCurrentPage = this.state.currentPage;
         if (oldCurrentPage !== newCurrentPage) {
-            this.props.getPaginatedTasksByOrganizationalUnit(organizationalUnit, newCurrentPage, 20, status, priority, special, name, startDate, endDate, isAssigned, responsibleEmployees, accountableEmployees, creatorEmployees);
+            this.props.getPaginatedTasksByOrganizationalUnit(organizationalUnit, newCurrentPage, perPage, status, priority, special, name, startDate, endDate, isAssigned, responsibleEmployees, accountableEmployees, creatorEmployees);
         };
     }
 
     backPage = async () => {
-        let { organizationalUnit, status, priority, special, name, startDate, endDate, isAssigned, responsibleEmployees, accountableEmployees, creatorEmployees } = this.state;
+        let { organizationalUnit, status, priority, special, name, startDate, endDate, isAssigned, responsibleEmployees, accountableEmployees, creatorEmployees, perPage } = this.state;
 
         let oldCurrentPage = this.state.currentPage;
         await this.setState(state => {
@@ -214,7 +214,7 @@ class TaskManagementOfUnit extends Component {
         })
         let newCurrentPage = this.state.currentPage;
         if (oldCurrentPage !== newCurrentPage) {
-            this.props.getPaginatedTasksByOrganizationalUnit(organizationalUnit, newCurrentPage, 20, status, priority, special, name, startDate, endDate, isAssigned, responsibleEmployees, accountableEmployees, creatorEmployees);
+            this.props.getPaginatedTasksByOrganizationalUnit(organizationalUnit, newCurrentPage, perPage, status, priority, special, name, startDate, endDate, isAssigned, responsibleEmployees, accountableEmployees, creatorEmployees);
         };
     }
 
@@ -449,7 +449,7 @@ class TaskManagementOfUnit extends Component {
                 data[n] = {
                     ...dataTemp[n],
                     name: dataTemp[n].name,
-                    description: parse(dataTemp[n].description),
+                    description: dataTemp?.[n]?.description ? parse(dataTemp[n].description) : "",
                     organization: dataTemp[n].organizationalUnit ? dataTemp[n].organizationalUnit.name : translate('task.task_management.err_organizational_unit'),
                     priority: this.formatPriority(dataTemp[n].priority),
                     responsibleEmployees: dataTemp[n].responsibleEmployees && dataTemp[n].responsibleEmployees.map(o => o.name).join(', '),
@@ -498,7 +498,7 @@ class TaskManagementOfUnit extends Component {
                                         </SelectMulti>
                                     }
                                 </div>
-
+                                
                                 {/* Trạng thái công việc */}
                                 <div className="form-group">
                                     <label>{translate('task.task_management.status')}</label>

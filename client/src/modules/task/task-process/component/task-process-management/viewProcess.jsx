@@ -149,7 +149,7 @@ class ViewProcess extends Component {
 
                             var outgoing = element1.outgoing;
                             outgoing.forEach(x => {
-                                if (info[x.businessObject.targetRef.id].status === "inprocess") {
+                                if (info?.[x?.businessObject?.targetRef?.id]?.status === "inprocess") {
                                     var outgoingEdge = modeler.get('elementRegistry').get(x.id);
 
                                     modeling.setColor(outgoingEdge, {

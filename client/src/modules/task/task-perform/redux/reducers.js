@@ -1,5 +1,4 @@
 import { performTaskConstants } from "./constants";
-import { TaskProcessConstants } from "../../task-process/redux/constants"
 export function performtasks(state = {}, action) {
     switch (action.type) {
         case performTaskConstants.GETTASK_BYID_REQUEST:
@@ -537,7 +536,8 @@ export function performtasks(state = {}, action) {
             return {
                 ...state,
                 isLoading: false,
-                task: action.payload
+                task: action.payload.task,
+                logs: action.payload.taskLog
             };
         case performTaskConstants.EDIT_TASK_BY_ACCOUNTABLE_FAILURE:
             return {
@@ -554,7 +554,8 @@ export function performtasks(state = {}, action) {
             return {
                 ...state,
                 isLoading: false,
-                task: action.payload
+                task: action.payload.task,
+                logs: action.payload.taskLog
             };
         case performTaskConstants.EDIT_TASK_BY_RESPONSIBLE_FAILURE:
             return {

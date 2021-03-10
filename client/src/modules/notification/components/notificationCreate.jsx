@@ -7,9 +7,9 @@ import { DialogModal, SelectBox, QuillEditor } from '../../../common-components'
 import { DepartmentActions } from '../../super-admin/organizational-unit/redux/actions';
 import { UserActions } from '../../super-admin/user/redux/actions';
 import { NotificationActions } from '../redux/actions';
-import { NotificationValidator } from './notificationValidator';
 import { UploadFile } from '../../../common-components'
 import { convertJsonObjectToFormData } from '../../../helpers/jsonObjectToFormDataObjectConverter';
+import ValidationHelper from '../../../helpers/validationHelper';
 
 class NotificationCreate extends Component {
     constructor(props) {
@@ -34,17 +34,18 @@ class NotificationCreate extends Component {
         this.validateTitle(value, true);
     }
     validateTitle = (value, willUpdateState = true) => {
-        let msg = NotificationValidator.validateTitle(value)
+        let { message } = ValidationHelper.validateCode(this.props.translate, value);
+
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    notificationTitleError: msg,
+                    notificationTitleError: message,
                     notificationTitle: value,
                 }
             });
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
     handleSender = (e) => {
@@ -52,17 +53,18 @@ class NotificationCreate extends Component {
         this.validateSender(value, true);
     }
     validateSender = (value, willUpdateState = true) => {
-        let msg = NotificationValidator.validateSender(value)
+        let { message } = ValidationHelper.validateName(this.props.translate, value);
+
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    notificationSenderError: msg,
+                    notificationSenderError: message,
                     notificationSender: value,
                 }
             });
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
     handleContent = (data, imgs) => {

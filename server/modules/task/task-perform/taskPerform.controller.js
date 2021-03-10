@@ -843,10 +843,11 @@ exports.evaluateTask = async (req, res) => {
  */
 editTaskByResponsibleEmployees = async (req, res) => {
     try {
-        var task = await PerformTaskService.editTaskByResponsibleEmployees(req.portal, req.body.data, req.params.taskId);
-        var user = task.user;
-        var tasks = task.tasks;
-        var data = {
+        let oldTask = await PerformTaskService.getTaskById(req.portal, req.params.taskId, req.user._id);
+        let task = await PerformTaskService.editTaskByResponsibleEmployees(req.portal, req.body.data, req.params.taskId);
+        let user = task.user;
+        let tasks = task.tasks;
+        let data = {
             "organizationalUnits": tasks.organizationalUnit,
             "title": "Cập nhật thông tin công việc",
             "level": "general",
@@ -864,11 +865,24 @@ editTaskByResponsibleEmployees = async (req, res) => {
         let title = "Cập nhật thông tin công việc: " + task.tasks.name;
         sendEmail(task.email, title, '', `<p><strong>${user.name}</strong> đã cập nhật thông tin công việc với vai trò người thực hiện <a href="${process.env.WEBSITE}/task?taskId=${req.params.taskId}">${process.env.WEBSITE}/task?taskId=${req.params.taskId}</a></p>`);
 
+        // Thêm nhật ký hoạt động
+        let description = await PerformTaskService.createDescriptionEditTaskLogs(req.portal, req.user._id, task.newTask, oldTask);
+        let log = {
+            createdAt: Date.now(),
+            creator: req.user._id,
+            title: "Chỉnh sửa thông tin công việc theo vai trò người thực hiện",
+            description: description
+        }
+        let taskLog = await PerformTaskService.addTaskLog(req.portal, req.params.taskId, log);
+
         await Logger.info(req.user.email, ` edit task  `, req.portal);
         res.status(200).json({
             success: true,
             messages: ['edit_task_success'],
-            content: task.newTask
+            content: {
+                task: task.newTask,
+                taskLog
+            }
         })
     } catch (error) {
         await Logger.error(req.user.email, ` edit task `, req.portal);
@@ -884,10 +898,11 @@ editTaskByResponsibleEmployees = async (req, res) => {
  */
 editTaskByAccountableEmployees = async (req, res) => {
     try {
-        var task = await PerformTaskService.editTaskByAccountableEmployees(req.portal, req.body.data, req.params.taskId);
-        var user = task.user;
-        var tasks = task.tasks;
-        var data = {
+        let oldTask = await PerformTaskService.getTaskById(req.portal, req.params.taskId, req.user._id);
+        let task = await PerformTaskService.editTaskByAccountableEmployees(req.portal, req.body.data, req.params.taskId);
+        let user = task.user;
+        let tasks = task.tasks;
+        let data = {
             "organizationalUnits": tasks.organizationalUnit,
             "title": "Cập nhật thông tin công việc",
             "level": "general",
@@ -944,11 +959,23 @@ editTaskByAccountableEmployees = async (req, res) => {
         additionalCollabEmail && additionalCollabEmail.length !== 0
             && await sendEmail(additionalCollabEmail, "Đơn vị bạn được mời phối hợp thực hiện công việc mới", '', additionalCollabHtml);
         
+        let description = await PerformTaskService.createDescriptionEditTaskLogs(req.portal, req.user._id, task.newTask, oldTask);
+        let log = {
+            createdAt: Date.now(),
+            creator: req.user._id,
+            title: "Chỉnh sửa thông tin công việc theo vai trò người phê duyệt",
+            description: description
+        }
+        let taskLog = await PerformTaskService.addTaskLog(req.portal, req.params.taskId, log);
+
         await Logger.info(req.user.email, ` edit task  `, req.portal);
         res.status(200).json({
             success: true,
             messages: ['edit_task_success'],
-            content: task.newTask
+            content: {
+                task: task.newTask,
+                taskLog
+            }
         })
     } catch (error) {
         await Logger.error(req.user.email, ` edit task `, req.portal);
@@ -1039,7 +1066,7 @@ evaluateTaskByConsultedEmployees = async (req, res) => {
         let task = await PerformTaskService.evaluateTaskByConsultedEmployees(req.portal, data, req.params.taskId);
         
         // Thêm nhật ký hoạt động
-        let description = await PerformTaskService.evaluateTaskLogs(req.portal, req.user._id, data, oldTask);
+        let description = await PerformTaskService.createDescriptionEvaluationTaskLogs(req.portal, req.user._id, data, oldTask);
         let log = {
             createdAt: Date.now(),
             creator: req.user._id,
@@ -1076,7 +1103,7 @@ evaluateTaskByResponsibleEmployees = async (req, res) => {
         let task = await PerformTaskService.evaluateTaskByResponsibleEmployees(req.portal, data, req.params.taskId);
 
         // Thêm nhật ký hoạt động
-        let description = await PerformTaskService.evaluateTaskLogs(req.portal, req.user._id, data, oldTask);
+        let description = await PerformTaskService.createDescriptionEvaluationTaskLogs(req.portal, req.user._id, data, oldTask);
         let log = {
             createdAt: Date.now(),
             creator: req.user._id,
@@ -1114,7 +1141,7 @@ evaluateTaskByAccountableEmployees = async (req, res) => {
         let task = await PerformTaskService.evaluateTaskByAccountableEmployees(req.portal, data, req.params.taskId);
         
         // Thêm nhật ký hoạt động
-        let description = await PerformTaskService.evaluateTaskLogs(req.portal, req.user._id, data, oldTask);
+        let description = await PerformTaskService.createDescriptionEvaluationTaskLogs(req.portal, req.user._id, data, oldTask);
         let log = {
             createdAt: Date.now(),
             creator: req.user._id,

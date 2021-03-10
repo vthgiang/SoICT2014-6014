@@ -199,7 +199,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
         var d = new Date(date);
         let time = moment(d).format("hh:mm");
         let suffix = " AM";
-        if(d.getHours() >= 12 && d.getHours() <= 23) {
+        if (d.getHours() >= 12 && d.getHours() <= 23) {
             suffix = " PM";
         }
         return time + suffix;
@@ -648,7 +648,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
         } else {
             let startDate = this.convertDateTime(value, this.state.startTime);
             let endDate = this.convertDateTime(this.state.endDate, this.state.endTime);
-            if(startDate > endDate) {
+            if (startDate > endDate) {
                 msg = translate('task.task_management.add_err_end_date');
             }
         }
@@ -676,7 +676,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
         } else {
             let startDate = this.convertDateTime(this.state.startDate, this.state.startTime);
             let endDate = this.convertDateTime(value, this.state.endTime);
-            if(startDate > endDate) {
+            if (startDate > endDate) {
                 msg = translate('task.task_management.add_err_end_date');
             }
         }
@@ -848,134 +848,6 @@ class ModalEditTaskByAccountableEmployee extends Component {
         });
     }
 
-    handleAddTaskLog = (inactiveEmployees) => {
-        let currentTask = this.state.task;
-        let { taskName, organizationalUnit, collaboratedWithOrganizationalUnits, taskDescription, statusOptions, priorityOptions, startDate, endDate, formula, progress, responsibleEmployees, accountableEmployees, consultedEmployees, informedEmployees } = this.state;
-
-        let title = '';
-        let description = '';
-
-        if (taskName !== currentTask.name || taskDescription !== currentTask.description) {
-            title = title + 'Chỉnh sửa thông tin cơ bản';
-
-            if (taskName !== currentTask.name) {
-                description = description + 'Tên công việc mới: ' + taskName;
-            }
-
-            if (taskDescription !== currentTask.description) {
-                description = description === '' ? description + 'Mô tả công việc mới: ' + taskDescription : description + '. ' + 'Mô tả công việc mới: ' + taskDescription;
-            }
-        }
-
-        let previousCollaboratedUnit = currentTask.collaboratedWithOrganizationalUnits;
-
-        if (statusOptions[0] !== currentTask.status ||
-            priorityOptions[0] !== currentTask.priority ||
-            startDate !== currentTask.startDate ||
-            endDate !== currentTask.endDate ||
-            formula !== currentTask.formula ||
-            JSON.stringify(previousCollaboratedUnit.map(e => { if (e) return e.organizationalUnit._id })) !== JSON.stringify(collaboratedWithOrganizationalUnits) ||
-            JSON.stringify(responsibleEmployees) !== JSON.stringify(currentTask.responsibleEmployees.map(employee => { return employee._id })) ||
-            JSON.stringify(accountableEmployees) !== JSON.stringify(currentTask.accountableEmployees.map(employee => { return employee._id })) ||
-            JSON.stringify(consultedEmployees) !== JSON.stringify(currentTask.consultedEmployees.map(employee => { return employee._id })) ||
-            JSON.stringify(informedEmployees) !== JSON.stringify(currentTask.informedEmployees.map(employee => { return employee._id })) ||
-            JSON.stringify(inactiveEmployees) !== JSON.stringify(currentTask.inactiveEmployees.map(employee => { return employee._id }))
-        ) {
-            const { user } = this.props;
-            let usercompanys;
-            if (user.usercompanys) usercompanys = user.usercompanys;
-
-            title = title === '' ? title + 'Chỉnh sửa thông tin chi tiết' : title + '. ' + 'Chỉnh sửa thông tin chi tiết';
-
-            if (JSON.stringify(previousCollaboratedUnit) !== JSON.stringify(collaboratedWithOrganizationalUnits)) {
-                let collabUnitNameArr = [];
-                for (const element of previousCollaboratedUnit) {
-                    collabUnitNameArr.push(element.organizationalUnit.name)
-                }
-                description = description === '' ? description + 'Những đơn vị phối hợp thực hiện công việc mới: ' + JSON.stringify(collabUnitNameArr) : description + '. ' + 'Những đơn vị phối hợp thực hiện công việc mới: ' + JSON.stringify(collabUnitNameArr);
-            }
-
-            if (statusOptions[0] !== currentTask.status) {
-                description = description === '' ? description + 'Trạng thái công việc mới: ' + this.formatStatus(statusOptions[0]) : description + '. ' + 'Trạng thái công việc mới: ' + this.formatStatus(statusOptions[0]);
-            }
-
-            if (priorityOptions[0] !== currentTask.priority) {
-                description = description === '' ? description + 'Mức độ ưu tiên mới: ' + this.formatPriority(parseInt(priorityOptions[0])) : description + '. ' + 'Mức độ ưu tiên mới: ' + this.formatPriority(parseInt(priorityOptions[0]));
-            }
-
-            if (startDate !== currentTask.startDate) {
-                description = description === '' ? description + 'Ngày bắt đầu mới: ' + startDate : description + '.' + 'Ngày bắt đầu mới: ' + startDate;
-            }
-
-            if (endDate !== currentTask.endDate) {
-                description = description === '' ? description + 'Ngày kết thúc mới: ' + endDate : description + '.' + 'Ngày kết thúc mới: ' + endDate;
-            }
-
-            if (formula !== currentTask.formula) {
-                description = description === '' ? description + 'Công thức tính điểm mới: ' + formula : description + '.' + 'Công thức tính điểm mới: ' + formula;
-            }
-
-            if (JSON.stringify(responsibleEmployees) !== JSON.stringify(currentTask.responsibleEmployees.map(employee => { return employee._id }))) {
-                let responsibleEmployeesArr = [];
-                for (const element of responsibleEmployees) {
-                    let a = usercompanys.filter(item => item._id === element);
-                    responsibleEmployeesArr.push(a[0].name)
-                }
-                description = description === '' ? description + 'Những người thực hiện công việc mới: ' + JSON.stringify(responsibleEmployeesArr) : description + '. ' + 'Những người thực hiện công việc mới: ' + JSON.stringify(responsibleEmployeesArr);
-            }
-
-            if (JSON.stringify(accountableEmployees) !== JSON.stringify(currentTask.accountableEmployees.map(employee => { return employee._id }))) {
-                let accountableEmployeesArr = [];
-                for (const element of accountableEmployees) {
-                    let a = usercompanys.filter(item => item._id === element);
-                    accountableEmployeesArr.push(a[0].name)
-                }
-                description = description === '' ? description + 'Những người phê duyệt công việc mới: ' + JSON.stringify(accountableEmployeesArr) : description + '. ' + 'Những người phê duyệt công việc mới: ' + JSON.stringify(accountableEmployeesArr);
-            }
-
-            if (JSON.stringify(consultedEmployees) !== JSON.stringify(currentTask.consultedEmployees.map(employee => { return employee._id }))) {
-                let consultedEmployeesArr = [];
-                for (const element of consultedEmployees) {
-                    let a = usercompanys.filter(item => item._id === element);
-                    consultedEmployeesArr.push(a[0].name)
-                }
-                description = description === '' ? description + 'Những người tư vấn công việc mới: ' + JSON.stringify(consultedEmployeesArr) : description + '. ' + 'Những người tư vấn công việc mới: ' + JSON.stringify(consultedEmployeesArr);
-            }
-
-            if (JSON.stringify(informedEmployees) !== JSON.stringify(currentTask.informedEmployees.map(employee => { return employee._id }))) {
-                let informedEmployeesArr = [];
-                for (const element of informedEmployees) {
-                    let a = usercompanys.filter(item => item._id === element);
-                    informedEmployeesArr.push(a[0].name)
-                }
-                description = description === '' ? description + 'Những người quan sát công việc mới: ' + JSON.stringify(informedEmployeesArr) : description + '. ' + 'Những người quan sát công việc mới: ' + JSON.stringify(informedEmployeesArr);
-            }
-
-            if (JSON.stringify(inactiveEmployees) !== JSON.stringify(currentTask.inactiveEmployees.map(employee => { return employee._id }))) {
-                let inactiveEmployeesArr = [];
-                for (const element of inactiveEmployees) {
-                    let a = usercompanys.filter(item => item._id === element);
-                    inactiveEmployeesArr.push(a[0].name)
-                }
-                description = description === '' ? description + 'Những người không tham giá công việc nữa: ' + JSON.stringify(inactiveEmployeesArr) : description + '. ' + 'Những người không tham giá công việc nữa: ' + JSON.stringify(inactiveEmployeesArr);
-            }
-        }
-        if (progress !== currentTask.progress) {
-            title = title === '' ? title + 'Chỉnh sửa thông tin đánh giá công việc tháng này' : title + '. ' + 'Chỉnh sửa thông tin đánh giá công việc tháng này';
-            description = description === '' ? description + 'Mức độ hoàn thành mới: ' + progress + "%" : description + '. ' + 'Mức độ hoàn thành mới: ' + progress + "%";
-        }
-
-        if (title !== '' || description !== '') {
-            this.props.addTaskLog({
-                createdAt: Date.now(),
-
-                creator: getStorage("userId"),
-                title: title,
-                description: description,
-            }, currentTask._id)
-        }
-    }
-
     save = () => {
         let listInactive = this.state.listInactive, taskId, inactiveEmployees = [];
         taskId = this.props.id;
@@ -1011,10 +883,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
             taskProject: this.state.taskProjectName,
             info: this.state.info,
         }
-        console.log('data', data);
         this.props.editTaskByAccountableEmployees(data, taskId);
-
-        this.handleAddTaskLog(inactiveEmployees);
     }
 
     formatPriority = (data) => {
@@ -1050,14 +919,14 @@ class ModalEditTaskByAccountableEmployee extends Component {
     }
 
     handleStartTimeChange = (value) => {
-        let { translate } =this.props;
+        let { translate } = this.props;
         let startDate = this.convertDateTime(this.state.startDate, value);
         let endDate = this.convertDateTime(this.state.endDate, this.state.endTime);
         let err;
-        if (value.trim() === "" ) {
+        if (value.trim() === "") {
             err = translate('task.task_management.add_err_empty_end_date');
         }
-        else if(startDate > endDate) {
+        else if (startDate > endDate) {
             err = translate('task.task_management.add_err_end_date');
         }
         this.setState(state => {
@@ -1070,15 +939,15 @@ class ModalEditTaskByAccountableEmployee extends Component {
     }
 
     handleEndTimeChange = (value) => {
-        let { translate } =this.props;
+        let { translate } = this.props;
         let startDate = this.convertDateTime(this.state.startDate, this.state.startTime);
         let endDate = this.convertDateTime(this.state.endDate, value);
         let err;
-        console.log('startDate > endDate', startDate > endDate, startDate , endDate);
-        if (value.trim() === "" ) {
+        console.log('startDate > endDate', startDate > endDate, startDate, endDate);
+        if (value.trim() === "") {
             err = translate('task.task_management.add_err_empty_end_date');
         }
-        else if(startDate > endDate) {
+        else if (startDate > endDate) {
             err = translate('task.task_management.add_err_end_date');
         }
         this.setState(state => {
@@ -1089,7 +958,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
             }
         });
     }
-    
+
     convertDateTime = (date, time) => {
         let splitter = date.split("-");
         let strDateTime = `${splitter[2]}-${splitter[1]}-${splitter[0]} ${time}`;
@@ -1100,7 +969,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
     render() {
         console.log('new edit Task', this.state);
 
-        const { user, tasktemplates, department, translate, taskProject } = this.props;
+        const { user, tasktemplates, department, translate, project } = this.props;
         const { task, organizationalUnit, collaboratedWithOrganizationalUnits, errorOnEndDate, errorOnStartDate, errorTaskName, errorTaskDescription, errorOnFormula, taskName, taskDescription, statusOptions, priorityOptions, taskDescriptionDefault,
             startDate, endDate, startTime, endTime, formula, responsibleEmployees, accountableEmployees, consultedEmployees, informedEmployees, inactiveEmployees, parent, parentTask
             , taskProjectName } = this.state;
@@ -1219,7 +1088,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                         <TreeSelect
                                             id={`select-task-project-task-edit-by-accountable-${id}`}
                                             mode='radioSelect'
-                                            data={taskProject.list}
+                                            data={project.data.list}
                                             handleChange={this.handleTaskProject}
                                             value={[taskProjectName]}
                                         />
@@ -1507,14 +1376,13 @@ class ModalEditTaskByAccountableEmployee extends Component {
 }
 
 function mapStateToProps(state) {
-    const { tasks, user, tasktemplates, performtasks, department, taskProject } = state;
-    return { tasks, user, tasktemplates, performtasks, department, taskProject };
+    const { tasks, user, tasktemplates, performtasks, department, project } = state;
+    return { tasks, user, tasktemplates, performtasks, department, project };
 }
 
 const actionGetState = { //dispatchActionToProps
     getAllUserSameDepartment: UserActions.getAllUserSameDepartment,
     editTaskByAccountableEmployees: performTaskAction.editTaskByAccountableEmployees,
-    addTaskLog: performTaskAction.addTaskLog,
     getPaginateTasksByUser: taskManagementActions.getPaginateTasksByUser,
 }
 

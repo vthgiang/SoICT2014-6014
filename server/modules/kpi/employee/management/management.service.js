@@ -63,7 +63,8 @@ exports.copyKPI = async (portal, id, data) => {
 
         oldEmployeeKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
             .findById(id)
-            .populate("organizationalUnit creator")
+            .populate("organizationalUnit")
+            .populate({path: "creator", select :"_id name email avatar"})
             .populate({ path: "kpis", populate: { path: 'parent' } });
 
         newEmployeeKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
@@ -92,7 +93,8 @@ exports.copyKPI = async (portal, id, data) => {
 
         employeeKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
             .findById(newEmployeeKpiSet)
-            .populate("organizationalUnit creator")
+            .populate("organizationalUnit")
+            .populate({path: "creator", select :"_id name email avatar"})
             .populate({ path: "kpis", populate: { path: 'parent' } })
 
         return employeeKpiSet;
@@ -442,7 +444,8 @@ exports.getChildTargetByParentId = async (portal, data) => {
                     .findOne({
                         kpis: kpiunits[i].target[j]._id
                     })
-                    .populate("organizationalUnit creator")
+                    .populate("organizationalUnit")
+                    .populate({path: "creator", select :"_id name email avatar"})
                     .select("organizationalUnit creator");
                 target = {
                     organizationalUnit: employeekpiset.organizationalUnit,

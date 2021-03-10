@@ -26,7 +26,6 @@ export const performTaskAction = {
     editCommentOfTaskComment,
     deleteCommentOfTaskComment,
 
-    addTaskLog,
     getTaskLog,
 
     deleteFileAction,
@@ -214,6 +213,8 @@ function editTimeSheetLog(taskId, timesheetlogId, data) {
                     type: performTaskConstants.EDIT_TIME_SHEET_LOG_SUCCESS, 
                     payload: res.data.content 
                 });
+
+                dispatch({type: taskManagementConstants.UPDATE_TASK_SUCCESS, payload: res.data.content})
                 resolve(res)
             }).catch(error => {
                 dispatch({ type: performTaskConstants.EDIT_TIME_SHEET_LOG_FAILE, error });
@@ -234,8 +235,12 @@ function stopTimerTask(taskId, newTimer) {
                         type: performTaskConstants.STOP_TIMER_SUCCESS,
                         payload: payload.data.content
                     })
+                    // dispatch({
+                    //     type: taskManagementConstants.EDIT_TASK_SUCCESS,
+                    //     payload: payload.data.content
+                    // })
                     dispatch({
-                        type: taskManagementConstants.EDIT_TASK_SUCCESS,
+                        type: taskManagementConstants.UPDATE_TASK_SUCCESS,
                         payload: payload.data.content
                     })
                 },
@@ -465,20 +470,7 @@ function deleteFileChildTaskComment(fileId, actionId, taskId, type) {
             );
     }
 }
-// Hàm thêm nhật ký cho một công việc
-function addTaskLog(log, taskId) {
-    return dispatch => {
-        dispatch({ type: performTaskConstants.ADD_TASK_LOG_REQUEST });
-        performTaskService.addTaskLog(log, taskId)
-            .then(
-                res => dispatch({
-                    type: performTaskConstants.ADD_TASK_LOG_SUCCESS,
-                    payload: res.data.content
-                }),
-                error => dispatch({ type: performTaskConstants.ADD_TASK_LOG_FAILURE, error })
-            );
-    }
-}
+
 
 // Hàm lấy tất cả nhật ký của một công việc
 function getTaskLog(taskId) {
@@ -509,6 +501,7 @@ function editTaskByAccountableEmployees(data, taskId) {
                     type: performTaskConstants.EDIT_TASK_BY_ACCOUNTABLE_SUCCESS,
                     payload: res.data.content
                 });
+                dispatch({ type: taskManagementConstants.UPDATE_TASK_SUCCESS, payload: res.data.content.task })
             })
             .catch(error => {
                 dispatch({ type: performTaskConstants.EDIT_TASK_BY_ACCOUNTABLE_FAILURE, error });
@@ -530,6 +523,8 @@ function editTaskByResponsibleEmployees(data, taskId) {
                     type: performTaskConstants.EDIT_TASK_BY_RESPONSIBLE_SUCCESS,
                     payload: res.data.content
                 });
+
+                dispatch({ type: taskManagementConstants.UPDATE_TASK_SUCCESS, payload: res.data.content.task })
             })
             .catch(error => {
                 dispatch({ type: performTaskConstants.EDIT_TASK_BY_RESPONSIBLE_FAILURE, error });

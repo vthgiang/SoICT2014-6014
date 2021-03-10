@@ -70,7 +70,7 @@ const InprocessOfUnitTask = (props) => {
 
     const barChart = (delayed, intime, notAchived) => {
         let height = unit.length * 60;
-        let heightOfChart = height > 320 ? height : 320;
+        let heightOfChart = height > 500 ? height : 500;
 
         const pie = c3.generate({
             bindto: document.getElementById("inprocessOfUnitTask"),
@@ -100,7 +100,7 @@ const InprocessOfUnitTask = (props) => {
             axis: {
                 x: {
                     type: 'category',
-                    categories: units.map(item => { return item.name })
+                    categories: units?.map(item => { return item.name })
                 },
                 rotated: true
             }

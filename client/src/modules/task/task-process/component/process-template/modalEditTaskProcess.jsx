@@ -7,7 +7,6 @@ import { DialogModal, SelectBox, ErrorLabel } from "../../../../../common-compon
 import { UserActions } from "../../../../super-admin/user/redux/actions";
 import { TaskProcessActions } from "../../redux/actions";
 import { EditTaskTemplate } from "../../../task-template/component/editTaskTemplate";
-import { TaskProcessValidator } from './taskProcessValidator';
 import { is } from 'bpmn-js/lib/util/ModelUtil';
 import { isAny } from 'bpmn-js/lib/features/modeling/util/ModelingUtil'
 
@@ -18,6 +17,7 @@ import PaletteProvider from 'bpmn-js/lib/features/palette/PaletteProvider';
 import 'bpmn-js/dist/assets/bpmn-font/css/bpmn.css';
 import 'bpmn-js/dist/assets/diagram-js.css';
 import './processDiagram.css'
+import ValidationHelper from '../../../../../helpers/validationHelper';
 
 
 //Xóa element khỏi pallette theo data-action
@@ -181,11 +181,13 @@ class ModalEditTaskProcess extends Component {
     // Cập nhật tên quy trình
     handleChangeBpmnName = async (e) => {
         let { value } = e.target;
+		let { message } = ValidationHelper.validateName(this.props.translate, value);
+
         await this.setState(state => {
             return {
                 ...state,
                 processName: value,
-                errorOnProcessName: TaskProcessValidator.validateProcessName(value, this.props.translate),
+                errorOnProcessName: message,
             }
         });
     }
@@ -193,23 +195,27 @@ class ModalEditTaskProcess extends Component {
     // cập nhật mô tả quy trình
     handleChangeBpmnDescription = async (e) => {
         let { value } = e.target;
+        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
+
         await this.setState(state => {
             return {
                 ...state,
                 processDescription: value,
-                errorOnProcessDescription: TaskProcessValidator.validateProcessDescription(value, this.props.translate),
+                errorOnProcessDescription: message,
             }
         });
     }
 
     // Cập nhật người được xem
     handleChangeViewer = async (value) => {
+        let { message } = ValidationHelper.validateArrayLength(this.props.translate, value);
+
         await this.setState(state => {
 
             return {
                 ...state,
                 viewer: value,
-                errorOnViewer: TaskProcessValidator.validateViewer(value, this.props.translate),
+                errorOnViewer: message,
             }
         })
 
@@ -217,12 +223,14 @@ class ModalEditTaskProcess extends Component {
 
     // Cập nhật người quản lý
     handleChangeManager = async (value) => {
+        let { message } = ValidationHelper.validateArrayLength(this.props.translate, value);
+
         await this.setState(state => {
 
             return {
                 ...state,
                 manager: value,
-                errorOnManager: TaskProcessValidator.validateManager(value, this.props.translate),
+                errorOnManager: message,
             }
         })
     }

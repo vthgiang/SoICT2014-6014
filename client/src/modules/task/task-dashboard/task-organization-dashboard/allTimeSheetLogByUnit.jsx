@@ -80,7 +80,6 @@ class AllTimeSheetLogsByUnit extends Component {
         const { tasks, translate } = this.props;
         const { organizationUnitTasks, userDepartment, startMonth, endMonth } = this.props;
         const { month, currentRowTimeSheetLog } = this.state;
-        console.log("Dòng 76", this.props)
         var allTimeSheet = [], timesheetlogs = []
         if (userDepartment) {
             for (let i in userDepartment) {

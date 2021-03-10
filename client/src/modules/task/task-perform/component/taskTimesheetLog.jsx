@@ -105,6 +105,8 @@ class TaskTimesheetLog extends Component {
         let stoppedAt = new Date(); // mặc định lấy thời điểm hiện tại
         let autoStopped = 1;
         let check = true;
+
+        // Nếu hẹn giờ tắt bấm giờ
         if (this.state.showEndDate) {
             if (this.state.dateStop && this.state.timeStop) {
                 stoppedAt = new Date((this.state.dateStop + " " + this.state.timeStop).replace(/-/g, '/'));
@@ -120,6 +122,7 @@ class TaskTimesheetLog extends Component {
                 autoStopped = 2;
             }
         }
+
         const timer = {
             employee: getStorage("userId"),
             startedAt: performtasks.currentTimer.timesheetLogs[0].startedAt,

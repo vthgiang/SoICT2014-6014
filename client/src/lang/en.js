@@ -60,7 +60,9 @@ export default {
                 empty_error: "Value cannot be empty",
                 not_existing_error: "Value not existing",
                 existing_error: "Value existing",
-                number_input_error: "Value must be between {min} to {max}"
+                number_input_error: "Value must be between {min} to {max}",
+                number_input_error_min: "Value must be greater than {min}",
+                number_input_error_max: "Value must be less than {max}"
             },
             not_org_unit: "Not have organizational unit",
             not_select_unit: "Select units",
@@ -2675,12 +2677,14 @@ export default {
                 coefficient: "Coefficient",
 
                 special: "Special",
+                creator_time: "Creator time",
                 select_all_special: "Selected all",
                 select_special: "Select special",
                 select_all_role: "Selected all",
                 select_role: "Select role",
                 stored: "Stored",
                 current_month: "Current month",
+                current_week: "Current week",
 
                 assigned_collaborate: "Task assignment status",
                 not_assigned: "Unassigned task",
@@ -3288,6 +3292,8 @@ export default {
                 general_unit_task: "General unit task dashboard",
                 unit: "Organizational unit",
                 all_tasks: "All tasks",
+                all_tasks_inprocess: "All tasks inprocess",
+                all_tasks_finished: "All tasks finished",
                 confirmed_task: "Confirmed tasks",
                 none_update_recently: "None updated recently tasks",
                 intime_task: "Intime tasks",
@@ -4113,5 +4119,17 @@ export default {
                 create_works: "Create works",
             },
         },
+
+        // Quản lý dự án
+        project: {
+            code: "Project code",
+            name: "Project name",
+            startDate: "Start date",
+            endDate: "End date",
+            parent: "Dự án cha",
+            manager: "Manager",
+            description: "Description",
+            add_title: "Add new project"
+        }
     },
 };

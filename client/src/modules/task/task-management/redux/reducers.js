@@ -588,6 +588,14 @@ export function tasks(state = {
                 allTimeSheetLogs: action.payload,
                 isLoading: false
             };
+        
+        
+        case taskManagementConstants.UPDATE_TASK_SUCCESS:
+             return {
+                ...state,
+                tasks: state.tasks.map(t=>(t._id === action.payload._id) ? action.payload : t),
+                isLoading: false
+            };
 
         default:
             return state

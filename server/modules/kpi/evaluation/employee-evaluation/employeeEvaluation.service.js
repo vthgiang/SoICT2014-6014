@@ -113,7 +113,9 @@ exports.getEmployeeKPISets = async (portal, data) => {
         .find(keySearch)
         .skip(perPage * (page - 1))
         .limit(perPage)
-        .populate("organizationalUnit creator approver")
+        .populate("organizationalUnit")
+        .populate({path: "creator", select :"_id name email avatar"})
+        .populate({path: "approver", select :"_id name email avatar"})
         .populate({ path: "kpis", populate: { path: 'parent' } })
         .populate([
             { path: 'comments.creator', select: 'name email avatar ' },
@@ -141,7 +143,9 @@ exports.getKpisByMonth = async (portal, data) => {
     let month = new Date(date[1], date[0], 0);
     let employeeKpiSets = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
         .findOne({ creator: data.userId, date: month })
-        .populate("organizationalUnit creator approver")
+        .populate("organizationalUnit")
+        .populate({path: "creator", select :"_id name email avatar"})
+        .populate({path: "approver", select :"_id name email avatar"})
         .populate({ path: "kpis", populate: { path: 'parent' } })
         .populate([
             { path: 'comments.creator', select: 'name email avatar ' },
@@ -168,7 +172,9 @@ exports.approveAllKpis = async (portal, id, companyId) => {
         }))
     }
     employee_kpi_set = employee_kpi_set && await employee_kpi_set
-        .populate("organizationalUnit creator approver")
+        .populate("organizationalUnit")
+        .populate({path: "creator", select :"_id name email avatar"})
+        .populate({path: "approver", select :"_id name email avatar"})
         .populate({ path: "kpis", populate: { path: 'parent' } })
         .populate([
             { path: 'comments.creator', select: 'name email avatar ' },
@@ -226,7 +232,9 @@ exports.editStatusKpi = async (portal, data, query, companyId) => {
         .findByIdAndUpdate(employee_kpi_set._id, { $set: { status: checkFullApprove } }, { new: true })
 
     employee_kpi_set = employee_kpi_set && await employee_kpi_set
-        .populate("organizationalUnit creator approver")
+        .populate("organizationalUnit")
+        .populate({path: "creator", select :"_id name email avatar"})
+        .populate({path: "approver", select :"_id name email avatar"})
         .populate({ path: "kpis", populate: { path: 'parent' } })
         .populate([
             { path: 'comments.creator', select: 'name email avatar ' },
@@ -293,7 +301,9 @@ exports.editKpi = async (portal, id, data) => {
 exports.getKpisByKpiSetId = async (portal, id) => {
     let employee_kpi_set = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
         .findById(id)
-        .populate("organizationalUnit creator approver")
+        .populate("organizationalUnit")
+        .populate({path: "creator", select :"_id name email avatar"})
+        .populate({path: "approver", select :"_id name email avatar"})
         .populate({ path: "kpis", populate: { path: 'parent' } })
         .populate([
             { path: 'comments.creator', select: 'name email avatar ' },
@@ -486,7 +496,7 @@ exports.getTasksByListKpis = async (portal, data) => {
 
         let employee_kpi_set = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
             .findById(data[i])
-            .populate("creator")
+            .populate({path: "creator", select :"_id name email avatar"})
             .populate({ path: "kpis" })
         listkpis.push(employee_kpi_set);
     }
@@ -689,7 +699,9 @@ exports.setPointAllKpi = async (portal, idEmployee, idKpiSet, data) => {
                 },
             },
             { new: true }
-        ).populate("organizationalUnit creator approver")
+    ).populate("organizationalUnit")
+        .populate({path: "creator", select :"_id name email avatar"})
+        .populate({ path: "approver", select: "_id name email avatar" })
         .populate({ path: "kpis", populate: { path: 'parent' } })
         .populate([
             { path: 'comments.creator', select: 'name email avatar ' },

@@ -4,8 +4,8 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import { ErrorLabel, QuillEditor } from '../../../../common-components';
 import Sortable from 'sortablejs';
-import { TaskTemplateFormValidator } from './taskTemplateFormValidator';
 import parse from 'html-react-parser';
+import ValidationHelper from '../../../../helpers/validationHelper';
 
 class InformationForm extends Component {
     constructor(props) {
@@ -197,18 +197,18 @@ class InformationForm extends Component {
         this.validateInfoName(value, true);
     }
     validateInfoName = (value, willUpdateState = true) => {
-        let msg = TaskTemplateFormValidator.validateInfoName(value);
+        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
 
         if (willUpdateState) {
             this.state.information.name = value;
-            this.state.information.errorOnName = msg;
+            this.state.information.errorOnName = message;
             this.setState(state => {
                 return {
                     ...state,
                 };
             });
         }
-        return msg == undefined;
+        return message == undefined;
     }
 
     handleChangeInfoDesc = (value, imgs) => {
@@ -246,18 +246,18 @@ class InformationForm extends Component {
         this.validateInfoSetOfValues(value);
     }
     validateInfoSetOfValues = (value, willUpdateState = true) => {
-        let msg = TaskTemplateFormValidator.validateInfoSetOfValues(value);
+        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
 
         if (willUpdateState) {
             this.state.information.extra = value;
-            this.state.information.errorOnSetOfValues = msg;
+            this.state.information.errorOnSetOfValues = message;
             this.setState(state => {
                 return {
                     ...state,
                 };
             });
         }
-        return msg == undefined;
+        return message == undefined;
     }
 
     handleChangeInfoFilledByAccountableEmployeesOnly = (event) => {

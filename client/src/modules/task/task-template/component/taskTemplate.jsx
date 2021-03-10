@@ -68,6 +68,7 @@ class TaskTemplate extends Component {
         }
         let exportData = this.convertDataToExportData(list);
 
+
         return (
             <div className="box">
                 <div className="box-body qlcv" id="table-task-template">
@@ -156,24 +157,24 @@ class TaskTemplate extends Component {
                             {
                                 (typeof listTaskTemplates !== 'undefined' && listTaskTemplates.length !== 0) ?
                                     listTaskTemplates.map(item => item &&
-                                        <tr key={item._id}>
-                                            <td title={item.name}>{item.name}</td>
-                                            <td title={item.description}>{parse(item.description)}</td>
-                                            <td title={item.numberOfUse}>{item.numberOfUse}</td>
-                                            <td title={item.creator && item.creator.name}>{item.creator ? item.creator.name : translate('task.task_template.error_task_template_creator_null')}</td>
-                                            <td title={item.organizationalUnit && item.organizationalUnit.name}>{item.organizationalUnit ? item.organizationalUnit.name : translate('task_template.error_task_template_organizational_unit_null')}</td>
+                                        <tr key={item?._id}>
+                                            <td title={item?.name}>{item?.name}</td>
+                                            <td title={item?.description}>{parse(item?.description ? item.description : "")}</td>
+                                            <td title={item?.numberOfUse}>{item?.numberOfUse}</td>
+                                            <td title={item?.creator?.name}>{item?.creator?.name ? item.creator.name : translate('task.task_template.error_task_template_creator_null')}</td>
+                                            <td title={item?.organizationalUnit?.name}>{item?.organizationalUnit?.name ? item.organizationalUnit.name : translate('task_template.error_task_template_organizational_unit_null')}</td>
                                             <td>
-                                                <a href="#abc" onClick={() => this.handleView(item._id)} title={translate('task.task_template.view_detail_of_this_task_template')}>
-                                                    <i className="material-icons" style={!this.checkPermisson(currentUnit && currentUnit[0] ? currentUnit[0].managers : "", "") ? { paddingLeft: "35px" } : { paddingLeft: "0px" }}>view_list</i>
+                                                <a href="#abc" onClick={() => this.handleView(item?._id)} title={translate('task.task_template.view_detail_of_this_task_template')}>
+                                                    <i className="material-icons" >view_list</i>
                                                 </a>
 
                                                 {/**Check quyền xem có được xóa hay sửa mẫu công việc không */}
-                                                {this.checkPermisson(item.organizationalUnit.managers, item.creator._id) &&
+                                                {this.checkPermisson(item?.organizationalUnit?.managers, item?.creator?._id) &&
                                                     <React.Fragment>
                                                         <a href="cursor:{'pointer'}" onClick={() => this.handleEdit(item)} className="edit" title={translate('task_template.edit_this_task_template')}>
                                                             <i className="material-icons">edit</i>
                                                         </a>
-                                                        <a href="cursor:{'pointer'}" onClick={() => this.handleDelete(item._id, item.numberOfUse)} className="delete" title={translate('task_template.delete_this_task_template')}>
+                                                        <a href="cursor:{'pointer'}" onClick={() => this.handleDelete(item?._id, item?.numberOfUse)} className="delete" title={translate('task_template.delete_this_task_template')}>
                                                             <i className="material-icons"></i>
                                                         </a>
                                                     </React.Fragment>

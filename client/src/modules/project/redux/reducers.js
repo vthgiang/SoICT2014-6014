@@ -50,7 +50,6 @@ export function project(state = initState, action) {
             }
 
         case ProjectConstants.GET_PROJECTS_SUCCESS:
-            console.log('rrrrrrrrrrrrrr', action);
             if (action.calledId === "paginate") {
                 return {
                     ...state,
@@ -102,11 +101,11 @@ export function project(state = initState, action) {
             if (index !== -1) state.data.list.splice(index, 1);
             indexPaginate = findIndex(state.data.paginate, action.payload);
             if (indexPaginate !== -1) state.data.paginate.splice(indexPaginate, 1);
-            console.log('aaaaaaaaaaaaaa', state.data.list, index, action.payload)
             return {
                 ...state,
                 isLoading: false
             };
+        
         case ProjectConstants.EDIT_PROJECTS_SUCCESS:
             index = findIndex(state.data.list, action.payload._id);
             if (index !== -1) state.data.list[index] = action.payload;

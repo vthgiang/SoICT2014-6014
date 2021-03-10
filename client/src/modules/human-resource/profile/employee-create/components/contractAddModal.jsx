@@ -3,7 +3,8 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { DialogModal, ButtonModal, ErrorLabel, DatePicker, UploadFile } from '../../../../../common-components';
-import { EmployeeCreateValidator } from './combinedContent';
+import ValidationHelper from '../../../../../helpers/validationHelper';
+
 class ContractAddModal extends Component {
     constructor(props) {
         super(props);
@@ -64,17 +65,18 @@ class ContractAddModal extends Component {
     }
     validateNameContract = (value, willUpdateState = true) => {
         const { translate } = this.props;
-        let msg = EmployeeCreateValidator.validateNameContract(value, translate)
+        let { message } = ValidationHelper.validateEmpty(translate, value);
+
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnNameContract: msg,
+                    errorOnNameContract: message,
                     name: value,
                 }
             });
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
     /** Bắt sự kiện thay đổi tên hợp đồng lao động */
@@ -84,17 +86,18 @@ class ContractAddModal extends Component {
     }
     validateTypeContract = (value, willUpdateState = true) => {
         const { translate } = this.props;
-        let msg = EmployeeCreateValidator.validateTypeContract(value, translate)
+        let { message } = ValidationHelper.validateEmpty(translate, value);
+
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnTypeContract: msg,
+                    errorOnTypeContract: message,
                     contractType: value,
                 }
             });
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
 
