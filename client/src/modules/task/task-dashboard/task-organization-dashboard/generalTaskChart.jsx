@@ -273,7 +273,7 @@ const GeneralTaskChart = (props) => {
     }
 
     return (
-        <div style={{ height: "300px", overflowY: 'auto' }}>
+        <div style={{ height: "410px", overflowY: 'auto' }}>
             <DataTableSetting className="pull-right" tableId='generalTaskUnit' tableContainerId="tree-table-container" tableWidth="1300px"
                 columnArr={[
                     translate('task.task_dashboard.unit'),

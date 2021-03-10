@@ -3291,7 +3291,9 @@ export default {
             task_dashboard: {
                 general_unit_task: "General unit task dashboard",
                 unit: "Organizational unit",
+                unit_lowercase : "organizational unit",
                 all_tasks: "All tasks",
+                 of: "of",
                 all_tasks_inprocess: "All tasks inprocess",
                 all_tasks_finished: "All tasks finished",
                 confirmed_task: "Confirmed tasks",
