@@ -26,7 +26,7 @@ function DistributionOfEmployeeKpiChart(props) {
                 employeeImportances.map(item => {
                     objectEmployeeImportance[item?.employee?._id] = item?.importance;
                 })
-            } 
+            }
         }
 
         return objectEmployeeImportance;
@@ -41,7 +41,7 @@ function DistributionOfEmployeeKpiChart(props) {
 
         if (organizationalUnitKPI && organizationalUnitKPI.length !== 0) {
             organizationalUnitKPI.map(unitKpi => {
-                let totalPoint = 0, totalImportance = 0, average; 
+                let totalPoint = 0, totalImportance = 0, average;
                 if (unitKpi && unitKpi.listEmployeeKpi && unitKpi.listEmployeeKpi.length !== 0) {
                     unitKpi.listEmployeeKpi.map(employeeKpi => {
                         if (employeeKpi.creator && employeeKpi.creator[0] && objectEmployeeImportance[employeeKpi.creator[0]]) {
@@ -78,8 +78,8 @@ function DistributionOfEmployeeKpiChart(props) {
             while (chart.hasChildNodes()) {
                 chart.removeChild(chart.lastChild);
             }
-        } 
-    } 
+        }
+    }
 
     /** Render biểu đồ */
     const multiLineChart = (organizationalUnitKPI) => {
@@ -91,8 +91,6 @@ function DistributionOfEmployeeKpiChart(props) {
             dataChart = dataChartTemp.dataChart;
             xs = dataChartTemp.xs;
         }
-        let types = {};
-        types[dataChart[1][0]] = 'spline';
 
         let chart = c3.generate({
             bindto: chartRef.current,
@@ -105,14 +103,6 @@ function DistributionOfEmployeeKpiChart(props) {
 
             data: {
                 columns: dataChart,
-                type: 'bar',
-                types: types
-            },
-            
-            bar: {
-                width: {
-                    ratio: 0.1 // this makes bar width 50% of length between ticks
-                }
             },
 
             axis: {
@@ -130,7 +120,7 @@ function DistributionOfEmployeeKpiChart(props) {
                         }
                     }
                 },
-                
+
                 y: {
                     label: {
                         text: translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.weight'),
