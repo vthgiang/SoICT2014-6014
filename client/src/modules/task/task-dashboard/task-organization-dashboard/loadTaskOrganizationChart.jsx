@@ -22,7 +22,7 @@ const LoadTaskOrganizationChart = (props) => {
         // let data = [];
         if (taskList.length) {
             let selectedUnit = idsUnit;
-            if (selectedUnit.length == 0) selectedUnit = units.map(item => { return item.id });
+            if (selectedUnit?.length > 0) selectedUnit = units.map(item => { return item.id });
 
             // Lấy tất cả các công việc thay vì mỗi các công việc đang thực hiện
             // let improcessTask = taskList?.filter(x => x.status === "inprocess");
