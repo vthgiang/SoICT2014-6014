@@ -223,7 +223,6 @@ function mapState(state) {
 }
 
 const actions = {
-    getAllEmployeeOfUnitByIds: UserActions.getAllEmployeeOfUnitByIds,
 };
 
 const connectedDistributionOfEmployee = connect(mapState, actions)(withTranslate(DistributionOfEmployee));

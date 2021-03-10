@@ -21,8 +21,7 @@ const InprocessOfUnitTask = (props) => {
         let notAchived = [translate('task.task_management.not_achieved')];
 
         if (taskList && taskList.length !== 0) {
-            let selectedUnit = unit;
-            if (selectedUnit.length == 0) selectedUnit = unitSelected;
+            let selectedUnit = unitSelected;
 
             for (let i in selectedUnit) {
                 let delayedCnt = 0, intimeCnt = 0, notAchivedCnt = 0;

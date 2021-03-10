@@ -96,6 +96,8 @@ export function user(state = initState, action) {
             }
             return {
                 ...state,
+                employeesLoading: true,
+                employees: null,
                 loading: true,
                 isLoading: true
             };
@@ -110,6 +112,7 @@ export function user(state = initState, action) {
             }
             return {
                 ...state,
+                employeesLoading: false,
                 loading: false,
                 employees: action.payload,
                 isLoading: false
@@ -119,6 +122,8 @@ export function user(state = initState, action) {
         case UserConstants.GET_ALL_EMPLOYEE_OF_UNIT_BY_ID_FAILURE:
             return {
                 ...state,
+                employeesLoading: false,
+                loading: false,
                 error: action.payload,
                 isLoading: false
             };
@@ -212,7 +217,6 @@ export function user(state = initState, action) {
             };
 
         case UserConstants.IMPORT_USERS_SUCCESS:
-            console.log('list', action.payload)
             return {
                 ...state,
                 listPaginate: action.payload.docs,

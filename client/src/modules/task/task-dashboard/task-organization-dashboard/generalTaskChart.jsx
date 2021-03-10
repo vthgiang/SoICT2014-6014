@@ -123,7 +123,6 @@ const GeneralTaskChart = (props) => {
         // Dem cong viec cua tat ca cac unit da chon
         let dataRow = countTask(tasksOfSelectedUnit, 'Tổng');
         dataTable.push(dataRow);
-        console.log('dataTable', dataTable);
 
         // Dem cong viec cua tung unit da chon
         let listUnit = [];
@@ -234,7 +233,6 @@ const GeneralTaskChart = (props) => {
             }
         }
 
-        console.log('dataTable', dataTable)
         setstate(dataTable);
 
 
@@ -274,20 +272,6 @@ const GeneralTaskChart = (props) => {
 
     return (
         <div style={{ height: "410px", overflowY: 'auto' }}>
-            <DataTableSetting className="pull-right" tableId='generalTaskUnit' tableContainerId="tree-table-container" tableWidth="1300px"
-                columnArr={[
-                    translate('task.task_dashboard.unit'),
-                    translate('task.task_dashboard.all_tasks'),
-                    translate('task.task_dashboard.all_task_inprocess'),
-                    translate('task.task_dashboard.all_task_finished'),
-                    translate('task.task_dashboard.confirmed_task'),
-                    translate('task.task_dashboard.none_update_recently'),
-                    translate('task.task_dashboard.intime_task'),
-                    translate('task.task_dashboard.delay_task'),
-                    translate('task.task_dashboard.overdue_task')]}
-            />
-
-
             <TreeTable
                 tableId="generalTaskUnit"
                 behaviour="show-children"

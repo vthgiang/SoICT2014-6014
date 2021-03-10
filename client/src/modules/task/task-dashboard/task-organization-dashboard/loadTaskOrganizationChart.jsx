@@ -8,7 +8,7 @@ import c3 from 'c3';
 import 'c3/c3.css';
 
 const LoadTaskOrganizationChart = (props) => {
-    const { translate, units, idsUnit } = props;
+    const { translate, units, idsUnit, tasks } = props;
     let { startMonth, endMonth } = props;
 
     const ref = useRef({
@@ -17,12 +17,9 @@ const LoadTaskOrganizationChart = (props) => {
     });
 
     useEffect(() => {
-        let { tasks } = props;
-        let taskList = tasks?.organizationUnitTasks?.tasks;
-        // let data = [];
-        if (taskList.length) {
+        let taskList = tasks?.organizationUnitTasks?.tasks; 
+        if (taskList?.length > 0) {
             let selectedUnit = idsUnit;
-            if (selectedUnit?.length > 0) selectedUnit = units.map(item => { return item.id });
 
             // Lấy tất cả các công việc thay vì mỗi các công việc đang thực hiện
             // let improcessTask = taskList?.filter(x => x.status === "inprocess");
@@ -95,9 +92,7 @@ const LoadTaskOrganizationChart = (props) => {
             }
             barChart(data, category);
         }
-
-
-    }, [props])
+    })
 
     const barChart = (data, category) => {
         ref.current.dataChart = data;
@@ -141,13 +136,15 @@ const LoadTaskOrganizationChart = (props) => {
         <React.Fragment>
             <section id={"weightTaskOrganizationChart"} className="c3-chart-container enable-pointer">
                 <div id="weightTaskOrganization"></div>
-                <CustomLegendC3js
-                    chart={ref.current.chart}
-                    chartId={"weightTaskOrganizationChart"}
-                    legendId={"weightTaskOrganizationChartLegend"}
-                    title={`${translate('general.list_unit')} (${ref.current.dataChart && ref.current.dataChart.length})`}
-                    dataChartLegend={ref.current.dataChart && ref.current.dataChart.map(item => item[0])}
-                />
+                { ref?.current?.dataChart?.length > 0 
+                    && <CustomLegendC3js
+                        chart={ref.current.chart}
+                        chartId={"weightTaskOrganizationChart"}
+                        legendId={"weightTaskOrganizationChartLegend"}
+                        title={`${translate('general.list_unit')} (${ref?.current?.dataChart?.length})`}
+                        dataChartLegend={ref.current.dataChart && ref.current.dataChart.map(item => item[0])}
+                    />
+                }
             </section>
         </React.Fragment>
     )
