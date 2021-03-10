@@ -169,7 +169,7 @@ class TaskTemplate extends Component {
                                                 </a>
 
                                                 {/**Check quyền xem có được xóa hay sửa mẫu công việc không */}
-                                                {this.checkPermisson(item.organizationalUnit && item.organizationalUnit.managers, item.creator._id) &&
+                                                {this.checkPermisson(item.organizationalUnit && item.organizationalUnit.managers, item.creator && item.creator._id) &&
                                                     <React.Fragment>
                                                         <a href="cursor:{'pointer'}" onClick={() => this.handleEdit(item)} className="edit" title={translate('task_template.edit_this_task_template')}>
                                                             <i className="material-icons">edit</i>
