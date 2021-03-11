@@ -1,0 +1,11 @@
+.general_task_unit {
+    height: 500px;
+    overflow-y: auto;
+}
+
+.general_task_unit thead th {
+    position: sticky;
+    top: -1px;
+    background: #fff;
+    z-index: 111111;
+}

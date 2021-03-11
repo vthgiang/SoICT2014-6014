@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import moment from 'moment'
-import { DataTableSetting, TreeTable } from '../../../../common-components';
+import { TreeTable } from '../../../../common-components';
 import { withTranslate } from 'react-redux-multilingual';
+import './generalTaskChart.css';
 
 const GeneralTaskChart = (props) => {
     const { translate } = props;
@@ -277,7 +278,7 @@ const GeneralTaskChart = (props) => {
     }
 
     return (
-        <div style={{ height: "410px", overflowY: 'auto' }}>
+        <div className="general_task_unit">
             <TreeTable
                 tableId="generalTaskUnit"
                 behaviour="show-children"
