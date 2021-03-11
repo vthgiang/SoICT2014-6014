@@ -283,7 +283,7 @@ exports.getPaginatedTasks = async (portal, task) => {
         $or: roleArr,
         isArchived: false
     };
-    let keySearchSpecial = {}, keySearchPeriod = {};
+    let keySearchSpecial = {}, keySearchPeriod = {}, keySeachDateTime = {};
 
     if (organizationalUnit) {
         keySearch = {
@@ -443,8 +443,8 @@ exports.getPaginatedTasks = async (portal, task) => {
         endDate = new Date(endDate);
         endDate.setMonth(endDate.getMonth() + 1);
         
-        keySearch = {
-            ...keySearch,
+        keySeachDateTime = {
+            ...keySeachDateTime,
             $or: [
                 { 'endDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
                 { 'startDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
@@ -539,11 +539,12 @@ exports.getPaginatedTasks = async (portal, task) => {
             }
         }
     }
-
+    
     
     let optionQuery = {
         $and: [
             keySearch,
+            keySeachDateTime,
             keySearchSpecial,
             keySearchPeriod
         ]
