@@ -22,7 +22,7 @@ class DomainOfTaskResultsChart extends Component {
 
         this.DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
 
-        this.ROLE = { RESPONSIBLE: 0, ACCOUNTABLE: 1, CONSULTED: 2, INFORMED: 3, CREATOR: 4 };
+        this.ROLE = { RESPONSIBLE: 0, ACCOUNTABLE: 1, CONSULTED: 2 };
         this.ROLE_SELECTBOX = [
             {
                 text: translate('task.task_management.responsible'),
@@ -131,8 +131,6 @@ class DomainOfTaskResultsChart extends Component {
             else if (!nextProps.tasks.responsibleTasks
                 || !nextProps.tasks.accountableTasks
                 || !nextProps.tasks.consultedTasks
-                || !nextProps.tasks.informedTasks
-                || !nextProps.tasks.creatorTasks
             ) {
                 return false;           // Đang lấy dữ liệu, ko cần render lại
             };
@@ -221,12 +219,10 @@ class DomainOfTaskResultsChart extends Component {
         if (TaskOrganizationUnitDashboard) {
             listTask = tasks.organizationUnitTasks;
         }
-        else if (tasks.responsibleTasks && tasks.accountableTasks && tasks.consultedTasks && tasks.informedTasks && tasks.creatorTasks) {
+        else if (tasks.responsibleTasks && tasks.accountableTasks && tasks.consultedTasks) {
             listTaskByRole[this.ROLE.RESPONSIBLE] = tasks.responsibleTasks;
             listTaskByRole[this.ROLE.ACCOUNTABLE] = tasks.accountableTasks;
             listTaskByRole[this.ROLE.CONSULTED] = tasks.consultedTasks;
-            listTaskByRole[this.ROLE.INFORMED] = tasks.informedTasks;
-            listTaskByRole[this.ROLE.CREATOR] = tasks.creatorTasks;
 
             if (role.length !== 0) {
                 role.map(role => {
