@@ -35,14 +35,6 @@ class DomainOfTaskResultsChart extends Component {
             {
                 text: translate('task.task_management.consulted'),
                 value: this.ROLE.CONSULTED
-            },
-            {
-                text: translate('task.task_management.informed'),
-                value: this.ROLE.INFORMED
-            },
-            {
-                text: translate('task.task_management.creator'),
-                value: this.ROLE.CREATOR
             }
         ];
 
@@ -200,7 +192,7 @@ class DomainOfTaskResultsChart extends Component {
             }
         })
     }
-    
+
     // Lọc công việc trùng lặp
     filterDuplicateTask = (listTask) => {
         let idArray = listTask.map(item => item && item._id);
