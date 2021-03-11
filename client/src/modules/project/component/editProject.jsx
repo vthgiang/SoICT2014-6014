@@ -141,7 +141,7 @@ const ProjectEditForm = (props) => {
                     <div className="form-group">
                         <label>{translate('project.startDate')}</label>
                         <DatePicker
-                            id={`project-state-date`}
+                            id={`edit-project-state-date`}
                             value={startDate}
                             onChange={handleStartDate}
                         />
@@ -150,7 +150,7 @@ const ProjectEditForm = (props) => {
                     <div className="form-group">
                         <label>{translate('project.endDate')}</label>
                         <DatePicker
-                            id={`project-end-date`}
+                            id={`edit-project-end-date`}
                             value={endDate}
                             onChange={handleEndDate}
                         />

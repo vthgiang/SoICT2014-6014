@@ -104,7 +104,7 @@ const ProjectCreateForm = (props) => {
     const { projectName, code, projectNameError, description } = state;
 
     const list = project.data.list;
-    console.log('project', projectParent)
+
     return (
         <React.Fragment>
             {/* <ButtonModal modalID="modal-create-example" button_name={translate('manage_example.add')} title={translate('manage_example.add_title')} /> */}
@@ -131,17 +131,19 @@ const ProjectCreateForm = (props) => {
                     <div className="form-group">
                         <label>{translate('project.startDate')}</label>
                         <DatePicker
-                            id={`project-state-date`}
+                            id={`create-project-state-date`}
                             value={startDate}
                             onChange={handleStartDate}
+                            disabled={false}
                         />
                     </div>
                     <div className="form-group">
                         <label>{translate('project.endDate')}</label>
                         <DatePicker
-                            id={`project-end-date`}
+                            id={`create-project-end-date`}
                             value={endDate}
                             onChange={handleEndDate}
+                            disabled={false}
                         />
                     </div>
                     <div className="form-group">
