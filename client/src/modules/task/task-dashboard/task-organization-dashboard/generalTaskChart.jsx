@@ -117,8 +117,8 @@ const GeneralTaskChart = (props) => {
 
         const listEmployee = {};
         //Lay cac cong viec cua cac unit da chon
-        const tasksOfSelectedUnit = allTasks && allTasks.filter(x =>
-            unitSelected.includes(x && x.organizationalUnit && x.organizationalUnit._id))
+        const tasksOfSelectedUnit = allTasks?.filter(x =>
+            unitSelected?.includes(x?.organizationalUnit?._id))
 
         // Dem cong viec cua tat ca cac unit da chon
         let dataRow = countTask(tasksOfSelectedUnit, 'Tổng');
