@@ -146,30 +146,9 @@ class ActionTab extends Component {
     static getDerivedStateFromProps(props, prevState) {
         const { performtasks, notifications } = props;
         let state = {};
-        if (notifications && notifications.associatedData && performtasks && performtasks.task && notifications.associatedData.value && notifications.associatedData.value.length > 0) {
-            let { taskComments } = performtasks.task;
-            let { taskActions } = performtasks.task;
-            // Trường hợp thêm mới bình luận (tab trao doi)
-            if (notifications.associatedData.dataType === "createTaskComment") {
-                const res = [...taskComments, notifications.associatedData.value[0]];
-                props.refreshDataAfterComment(res);
-            }
-            // trường hợp thêm comment cho comment (tab trao doi)
-            if (notifications.associatedData.dataType === "createTaskSubComment") {
-                // add thêm sub comment mới 
-                const res = taskComments.map(obj => notifications.associatedData.value.find(o => o._id === obj._id) || obj);
-                props.refreshDataAfterComment(res);
-            }
-            // Trường hợp thêm mới hoạt động
-            if (notifications.associatedData.dataType === "createTaskAction") {
-                const res = [...taskActions, notifications.associatedData.value[0]];
-                props.refreshDataAfterCreateAction(res)
-            }
-
-            // Thêm bình luạn cho hoạt động
-            if (notifications.associatedData.dataType === "createCommentOfTaskactions") {
-                const res = taskActions.map(obj => notifications.associatedData.value.find(o => o._id === obj._id) || obj)
-                props.refreshDataAfterCreateAction(res);
+        if (notifications && notifications.associatedData && performtasks && performtasks.task && notifications.associatedData.value) {
+            if (notifications.associatedData.dataType === "realtime_tasks") {
+                props.refreshData(notifications.associatedData.value);
             }
             notifications.associatedData = {}; // reset lại ... 
         }
@@ -2299,8 +2278,7 @@ const actionCreators = {
     getAllPreceedingTasks: performTaskAction.getAllPreceedingTasks,
     sortActions: performTaskAction.sortActions,
 
-    refreshDataAfterComment: performTaskAction.refreshDataAfterComment,
-    refreshDataAfterCreateAction: performTaskAction.refreshDataAfterCreateAction,
+    refreshData: performTaskAction.refreshData,
 };
 
 const actionTab = connect(mapState, actionCreators)(withTranslate(ActionTab));

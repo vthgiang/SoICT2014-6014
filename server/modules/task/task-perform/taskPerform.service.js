@@ -841,15 +841,125 @@ exports.createCommentOfTaskAction = async (portal, params, body, files, user) =>
             },
         }, { new: true }
     ).populate([
-        { path: "taskActions.creator", select: "name email avatar" },
-        {
-            path: "taskActions.comments.creator",
-            select: "name email avatar",
-        },
-        {
-            path: "taskActions.evaluations.creator",
-            select: "name email avatar",
-        }])
+            { path: "parent", select: "name" },
+            { path: "taskTemplate", select: "formula" },
+            { path: "organizationalUnit" },
+            { path: "collaboratedWithOrganizationalUnits.organizationalUnit" },
+            { path: "requestToCloseTask.requestedBy", select: "name email _id active" },
+            {
+                path:
+                    "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator inactiveEmployees",
+                select: "name email _id active avatar",
+            },
+            {
+                path: "evaluations.results.employee",
+                select: "name email _id active",
+            },
+            {
+                path: "evaluations.results.organizationalUnit",
+                select: "name _id",
+            },
+            { path: "evaluations.results.kpis" },
+            { path: "taskActions.creator", select: "name email avatar" },
+            {
+                path: "taskActions.comments.creator",
+                select: "name email avatar",
+            },
+            { path: "commentsInProcess.creator", select: "name email avatar" },
+            {
+                path: "commentsInProcess.comments.creator",
+                select: "name email avatar",
+            },
+            {
+                path: "taskActions.evaluations.creator",
+                select: "name email avatar ",
+            },
+            { path: "taskComments.creator", select: "name email avatar" },
+            {
+                path: "taskComments.comments.creator",
+                select: "name email avatar",
+            },
+            { path: "documents.creator", select: "name email avatar" },
+            { path: "followingTasks.task" },
+            {
+                path: "preceedingTasks.task",
+                populate: [
+                    {
+                        path: "commentsInProcess.creator",
+                        select: "name email avatar",
+                    },
+                    {
+                        path: "commentsInProcess.comments.creator",
+                        select: "name email avatar",
+                    },
+                ],
+            },
+            { path: "timesheetLogs.creator", select: "name avatar _id email" },
+            { path: "hoursSpentOnTask.contributions.employee", select: "name" },
+            {
+                path: "process",
+                populate: {
+                    path: "tasks",
+                    populate: [
+                        { path: "parent", select: "name" },
+                        { path: "taskTemplate", select: "formula" },
+                        { path: "organizationalUnit" },
+                        {
+                            path:
+                                "collaboratedWithOrganizationalUnits.organizationalUnit",
+                        },
+                        {
+                            path:
+                                "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator",
+                            select: "name email _id active avatar",
+                        },
+                        {
+                            path: "evaluations.results.employee",
+                            select: "name email _id active",
+                        },
+                        {
+                            path: "evaluations.results.organizationalUnit",
+                            select: "name _id",
+                        },
+                        { path: "evaluations.results.kpis" },
+                        {
+                            path: "taskActions.creator",
+                            select: "name email avatar",
+                        },
+                        {
+                            path: "taskActions.comments.creator",
+                            select: "name email avatar",
+                        },
+                        {
+                            path: "taskActions.evaluations.creator",
+                            select: "name email avatar ",
+                        },
+                        {
+                            path: "taskComments.creator",
+                            select: "name email avatar",
+                        },
+                        {
+                            path: "taskComments.comments.creator",
+                            select: "name email avatar",
+                        },
+                        {
+                            path: "documents.creator",
+                            select: "name email avatar",
+                        },
+                        { path: "process" },
+                        {
+                            path: "commentsInProcess.creator",
+                            select: "name email avatar",
+                        },
+                        {
+                            path: "commentsInProcess.comments.creator",
+                            select: "name email avatar",
+                        },
+                    ],
+                },
+            },
+    ]);
+    
     const { taskActions } = commentOfTaskAction;
 
     // Lấy ra hoạt động cha
@@ -876,12 +986,12 @@ exports.createCommentOfTaskAction = async (portal, params, body, files, user) =>
     userReceive = userReceive.filter(obj => obj.toString() !== user._id.toString())
 
     const associatedData = {
-        dataType: "createCommentOfTaskactions",
-        value: taskActions.filter(obj => obj._id.toString() === params.actionId.toString())
+        dataType: "realtime_tasks",
+        value: commentOfTaskAction,
     }
 
     const data = {
-        organizationalUnits: commentOfTaskAction.organizationalUnit._id,
+        organizationalUnits: commentOfTaskAction.organizationalUnit && commentOfTaskAction.organizationalUnit._id,
         title: "Cập nhật thông tin công việc ",
         level: "general",
         content: `<p><strong>${user.name}</strong> đã bình luận về hoạt động trong công việc: <a href="${process.env.WEBSITE}/task?taskId=${params.taskId}">${process.env.WEBSITE}/task?taskId=${params.taskId}</a></p>`,
@@ -1029,21 +1139,136 @@ exports.createTaskAction = async (portal, params, body, files) => {
                 },
             }, { new: true })
         .populate([
-            { path: "taskActions.creator", select: 'name email avatar company' },
-            { path: "taskActions.comments.creator", select: 'name email avatar' },
-            { path: "taskActions.evaluations.creator", select: 'name email avatar ' }])
+            { path: "parent", select: "name" },
+            { path: "taskTemplate", select: "formula" },
+            { path: "organizationalUnit" },
+            { path: "collaboratedWithOrganizationalUnits.organizationalUnit" },
+            { path: "requestToCloseTask.requestedBy", select: "name email _id active" },
+            {
+                path:
+                    "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator inactiveEmployees",
+                select: "name email _id active avatar",
+            },
+            {
+                path: "evaluations.results.employee",
+                select: "name email _id active",
+            },
+            {
+                path: "evaluations.results.organizationalUnit",
+                select: "name _id",
+            },
+            { path: "evaluations.results.kpis" },
+            { path: "taskActions.creator", select: "name email avatar" },
+            {
+                path: "taskActions.comments.creator",
+                select: "name email avatar",
+            },
+            { path: "commentsInProcess.creator", select: "name email avatar" },
+            {
+                path: "commentsInProcess.comments.creator",
+                select: "name email avatar",
+            },
+            {
+                path: "taskActions.evaluations.creator",
+                select: "name email avatar ",
+            },
+            { path: "taskComments.creator", select: "name email avatar" },
+            {
+                path: "taskComments.comments.creator",
+                select: "name email avatar",
+            },
+            { path: "documents.creator", select: "name email avatar" },
+            { path: "followingTasks.task" },
+            {
+                path: "preceedingTasks.task",
+                populate: [
+                    {
+                        path: "commentsInProcess.creator",
+                        select: "name email avatar",
+                    },
+                    {
+                        path: "commentsInProcess.comments.creator",
+                        select: "name email avatar",
+                    },
+                ],
+            },
+            { path: "timesheetLogs.creator", select: "name avatar _id email" },
+            { path: "hoursSpentOnTask.contributions.employee", select: "name" },
+            {
+                path: "process",
+                populate: {
+                    path: "tasks",
+                    populate: [
+                        { path: "parent", select: "name" },
+                        { path: "taskTemplate", select: "formula" },
+                        { path: "organizationalUnit" },
+                        {
+                            path:
+                                "collaboratedWithOrganizationalUnits.organizationalUnit",
+                        },
+                        {
+                            path:
+                                "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator",
+                            select: "name email _id active avatar",
+                        },
+                        {
+                            path: "evaluations.results.employee",
+                            select: "name email _id active",
+                        },
+                        {
+                            path: "evaluations.results.organizationalUnit",
+                            select: "name _id",
+                        },
+                        { path: "evaluations.results.kpis" },
+                        {
+                            path: "taskActions.creator",
+                            select: "name email avatar",
+                        },
+                        {
+                            path: "taskActions.comments.creator",
+                            select: "name email avatar",
+                        },
+                        {
+                            path: "taskActions.evaluations.creator",
+                            select: "name email avatar ",
+                        },
+                        {
+                            path: "taskComments.creator",
+                            select: "name email avatar",
+                        },
+                        {
+                            path: "taskComments.comments.creator",
+                            select: "name email avatar",
+                        },
+                        {
+                            path: "documents.creator",
+                            select: "name email avatar",
+                        },
+                        { path: "process" },
+                        {
+                            path: "commentsInProcess.creator",
+                            select: "name email avatar",
+                        },
+                        {
+                            path: "commentsInProcess.comments.creator",
+                            select: "name email avatar",
+                        },
+                    ],
+                },
+            },
+        ]);
 
     // let user = await User(connect(DB_CONNECTION, portal)).findOne({ _id: body.creator }); // Thừa 
-    let getUser;
+    let getUser, accEmployees;
     if (task) {
         const length = task.taskActions.length;
         getUser = task.taskActions[length - 1].creator;
+
+        accEmployees = task.accountableEmployees.map(o => o._id);
     }
 
-    // let tasks = await Task(connect(DB_CONNECTION, portal)).findOne({ _id: params.taskId }); Thừa .. giá trị trả về giống trên
-
     // Danh sách người phê duyệt được gửi mail
-    let userEmail = await User(connect(DB_CONNECTION, portal)).find({ _id: { $in: task.accountableEmployees } });
+    let userEmail = await User(connect(DB_CONNECTION, portal)).find({ _id: { $in: accEmployees } });
     let email = userEmail.map(item => item.email);
     return { taskActions: task.taskActions, tasks: task, userCreator: getUser, email: email };
 }
@@ -1144,29 +1369,136 @@ exports.createTaskComment = async (portal, params, body, files, user) => {
             },
         }, { new: true })
         .populate([
+            { path: "parent", select: "name" },
+            { path: "taskTemplate", select: "formula" },
+            { path: "organizationalUnit" },
+            { path: "collaboratedWithOrganizationalUnits.organizationalUnit" },
+            { path: "requestToCloseTask.requestedBy", select: "name email _id active" },
+            {
+                path:
+                    "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator inactiveEmployees",
+                select: "name email _id active avatar",
+            },
+            {
+                path: "evaluations.results.employee",
+                select: "name email _id active",
+            },
+            {
+                path: "evaluations.results.organizationalUnit",
+                select: "name _id",
+            },
+            { path: "evaluations.results.kpis" },
+            { path: "taskActions.creator", select: "name email avatar" },
+            {
+                path: "taskActions.comments.creator",
+                select: "name email avatar",
+            },
+            { path: "commentsInProcess.creator", select: "name email avatar" },
+            {
+                path: "commentsInProcess.comments.creator",
+                select: "name email avatar",
+            },
+            {
+                path: "taskActions.evaluations.creator",
+                select: "name email avatar ",
+            },
             { path: "taskComments.creator", select: "name email avatar" },
             {
                 path: "taskComments.comments.creator",
                 select: "name email avatar",
             },
+            { path: "documents.creator", select: "name email avatar" },
+            { path: "followingTasks.task" },
             {
-                path: "taskActions.evaluations.creator",
-                select: "name email avatar",
+                path: "preceedingTasks.task",
+                populate: [
+                    {
+                        path: "commentsInProcess.creator",
+                        select: "name email avatar",
+                    },
+                    {
+                        path: "commentsInProcess.comments.creator",
+                        select: "name email avatar",
+                    },
+                ],
             },
+            { path: "timesheetLogs.creator", select: "name avatar _id email" },
+            { path: "hoursSpentOnTask.contributions.employee", select: "name" },
             {
-                path: "organizationalUnit"
-            }
+                path: "process",
+                populate: {
+                    path: "tasks",
+                    populate: [
+                        { path: "parent", select: "name" },
+                        { path: "taskTemplate", select: "formula" },
+                        { path: "organizationalUnit" },
+                        {
+                            path:
+                                "collaboratedWithOrganizationalUnits.organizationalUnit",
+                        },
+                        {
+                            path:
+                                "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator",
+                            select: "name email _id active avatar",
+                        },
+                        {
+                            path: "evaluations.results.employee",
+                            select: "name email _id active",
+                        },
+                        {
+                            path: "evaluations.results.organizationalUnit",
+                            select: "name _id",
+                        },
+                        { path: "evaluations.results.kpis" },
+                        {
+                            path: "taskActions.creator",
+                            select: "name email avatar",
+                        },
+                        {
+                            path: "taskActions.comments.creator",
+                            select: "name email avatar",
+                        },
+                        {
+                            path: "taskActions.evaluations.creator",
+                            select: "name email avatar ",
+                        },
+                        {
+                            path: "taskComments.creator",
+                            select: "name email avatar",
+                        },
+                        {
+                            path: "taskComments.comments.creator",
+                            select: "name email avatar",
+                        },
+                        {
+                            path: "documents.creator",
+                            select: "name email avatar",
+                        },
+                        { path: "process" },
+                        {
+                            path: "commentsInProcess.creator",
+                            select: "name email avatar",
+                        },
+                        {
+                            path: "commentsInProcess.comments.creator",
+                            select: "name email avatar",
+                        },
+                    ],
+                },
+            },
         ]);
 
-    const userReceive = [...taskComment.responsibleEmployees, ...taskComment.accountableEmployees].filter(obj => JSON.stringify(obj) !== JSON.stringify(user._id))
-
+    const resEmployees = taskComment.responsibleEmployees && taskComment.responsibleEmployees.map(o => o._id);
+    const accEmployees = taskComment.accountableEmployees && taskComment.accountableEmployees.map(o => o._id);
+    
+    const userReceive = [...resEmployees, ...accEmployees].filter(obj => JSON.stringify(obj) !== JSON.stringify(user._id))
     const associatedData = {
-        dataType: "createTaskComment",
-        value: [taskComment.taskComments[taskComment.taskComments.length - 1]]
+        dataType: "realtime_tasks",
+        value: taskComment
     }
 
     const data = {
-        organizationalUnits: taskComment.organizationalUnit._id,
+        organizationalUnits: taskComment.organizationalUnit && taskComment.organizationalUnit._id,
         title: "Cập nhật thông tin công việc ",
         level: "general",
         content: `<p><strong>${user.name}</strong> đã thêm một bình luận trong công việc: <a href="${process.env.WEBSITE}/task?taskId=${params.taskId}">${process.env.WEBSITE}/task?taskId=${params.taskId}</a></p>`,
@@ -1275,16 +1607,124 @@ exports.createCommentOfTaskComment = async (portal, params, body, files, user) =
             },
         }, { new: true })
         .populate([
-            { path: "taskComments.creator", select: "name email avatar" },
+            { path: "parent", select: "name" },
+            { path: "taskTemplate", select: "formula" },
+            { path: "organizationalUnit" },
+            { path: "collaboratedWithOrganizationalUnits.organizationalUnit" },
+            { path: "requestToCloseTask.requestedBy", select: "name email _id active" },
             {
-                path: "taskComments.comments.creator",
+                path:
+                    "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator inactiveEmployees",
+                select: "name email _id active avatar",
+            },
+            {
+                path: "evaluations.results.employee",
+                select: "name email _id active",
+            },
+            {
+                path: "evaluations.results.organizationalUnit",
+                select: "name _id",
+            },
+            { path: "evaluations.results.kpis" },
+            { path: "taskActions.creator", select: "name email avatar" },
+            {
+                path: "taskActions.comments.creator",
+                select: "name email avatar",
+            },
+            { path: "commentsInProcess.creator", select: "name email avatar" },
+            {
+                path: "commentsInProcess.comments.creator",
                 select: "name email avatar",
             },
             {
                 path: "taskActions.evaluations.creator",
                 select: "name email avatar ",
             },
-        ])
+            { path: "taskComments.creator", select: "name email avatar" },
+            {
+                path: "taskComments.comments.creator",
+                select: "name email avatar",
+            },
+            { path: "documents.creator", select: "name email avatar" },
+            { path: "followingTasks.task" },
+            {
+                path: "preceedingTasks.task",
+                populate: [
+                    {
+                        path: "commentsInProcess.creator",
+                        select: "name email avatar",
+                    },
+                    {
+                        path: "commentsInProcess.comments.creator",
+                        select: "name email avatar",
+                    },
+                ],
+            },
+            { path: "timesheetLogs.creator", select: "name avatar _id email" },
+            { path: "hoursSpentOnTask.contributions.employee", select: "name" },
+            {
+                path: "process",
+                populate: {
+                    path: "tasks",
+                    populate: [
+                        { path: "parent", select: "name" },
+                        { path: "taskTemplate", select: "formula" },
+                        { path: "organizationalUnit" },
+                        {
+                            path:
+                                "collaboratedWithOrganizationalUnits.organizationalUnit",
+                        },
+                        {
+                            path:
+                                "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator",
+                            select: "name email _id active avatar",
+                        },
+                        {
+                            path: "evaluations.results.employee",
+                            select: "name email _id active",
+                        },
+                        {
+                            path: "evaluations.results.organizationalUnit",
+                            select: "name _id",
+                        },
+                        { path: "evaluations.results.kpis" },
+                        {
+                            path: "taskActions.creator",
+                            select: "name email avatar",
+                        },
+                        {
+                            path: "taskActions.comments.creator",
+                            select: "name email avatar",
+                        },
+                        {
+                            path: "taskActions.evaluations.creator",
+                            select: "name email avatar ",
+                        },
+                        {
+                            path: "taskComments.creator",
+                            select: "name email avatar",
+                        },
+                        {
+                            path: "taskComments.comments.creator",
+                            select: "name email avatar",
+                        },
+                        {
+                            path: "documents.creator",
+                            select: "name email avatar",
+                        },
+                        { path: "process" },
+                        {
+                            path: "commentsInProcess.creator",
+                            select: "name email avatar",
+                        },
+                        {
+                            path: "commentsInProcess.comments.creator",
+                            select: "name email avatar",
+                        },
+                    ],
+                },
+            },
+        ]);
 
     const { taskComments } = taskcomment;
     // Lấy ra bình luận cha
@@ -1299,7 +1739,8 @@ exports.createCommentOfTaskComment = async (portal, params, body, files, user) =
 
     // Lấy danh sách user dự tính gửi thông báo
     let userReceive = [getTaskComment[0].creator._id];
-    // Lấy người liên quan đến trong subcomment 
+
+    // Lấy người liên quan đến trong subcomment
     const subCommentLength = getTaskComment[0].comments.length;
 
     for (let index = 0; index < subCommentLength; index++) {
@@ -1310,11 +1751,11 @@ exports.createCommentOfTaskComment = async (portal, params, body, files, user) =
     userReceive = userReceive.filter(obj => obj.toString() !== user._id.toString())
 
     const associatedData = {
-        dataType: "createTaskSubComment",
-        value: taskComments.filter(obj => obj._id.toString() === params.commentId.toString())
+        dataType: "realtime_tasks",
+        value: taskcomment
     }
     const data = {
-        organizationalUnits: taskcomment.organizationalUnit._id,
+        organizationalUnits: taskcomment.organizationalUnit && taskcomment.organizationalUnit._id,
         title: "Cập nhật thông tin công việc ",
         level: "general",
         content: `<p><strong>${user.name}</strong> đã trả lời bình luận của bạn trong công việc: <a href="${process.env.WEBSITE}/task?taskId=${params.taskId}">${process.env.WEBSITE}/task?taskId=${params.taskId}</a></p>`,
