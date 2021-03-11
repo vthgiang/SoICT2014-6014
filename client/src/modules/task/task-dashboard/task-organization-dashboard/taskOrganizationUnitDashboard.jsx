@@ -110,24 +110,7 @@ class TaskOrganizationUnitDashboard extends Component {
         let { idsUnit, distributionOfEmployeeChart, allTimeSheetLogsByUnit } = this.state;
         let data, organizationUnit = "organizationUnit";
 
-        if ((!distributionOfEmployeeChart.employees || !allTimeSheetLogsByUnit.employees) && nextProps.user?.employees) {
-            let employeesDistributionOfEmployeeChart = this.filterArraySkipAndLimit(nextProps.user?.employees, distributionOfEmployeeChart?.page, distributionOfEmployeeChart?.perPage);
-            let employeesAllTimeSheetLogsByUnit = this.filterArraySkipAndLimit(nextProps.user?.employees, allTimeSheetLogsByUnit?.page, allTimeSheetLogsByUnit?.perPage);
-            this.setState(state => {
-                return {
-                    ...state,
-                    distributionOfEmployeeChart: {
-                        ...state.distributionOfEmployeeChart,
-                        employees: employeesDistributionOfEmployeeChart
-                    },
-                    allTimeSheetLogsByUnit: {
-                        ...state.allTimeSheetLogsByUnit,
-                        employees: employeesAllTimeSheetLogsByUnit
-                    }
-                }
-            })
-            return true;
-        }
+        
 
         // Trưởng hợp đổi 2 role cùng là trưởng đơn vị, cập nhật lại select box chọn đơn vị
         if ((distributionOfEmployeeChart?.employees || allTimeSheetLogsByUnit?.employees) && user?.employeesLoading) {
@@ -230,6 +213,25 @@ class TaskOrganizationUnitDashboard extends Component {
             return true;
         }
 
+        if ((!distributionOfEmployeeChart.employees || !allTimeSheetLogsByUnit.employees) && nextProps.user?.employees) {
+            let employeesDistributionOfEmployeeChart = this.filterArraySkipAndLimit(nextProps.user?.employees, distributionOfEmployeeChart?.page, distributionOfEmployeeChart?.perPage);
+            let employeesAllTimeSheetLogsByUnit = this.filterArraySkipAndLimit(nextProps.user?.employees, allTimeSheetLogsByUnit?.page, allTimeSheetLogsByUnit?.perPage);
+            this.setState(state => {
+                return {
+                    ...state,
+                    distributionOfEmployeeChart: {
+                        ...state.distributionOfEmployeeChart,
+                        employees: employeesDistributionOfEmployeeChart
+                    },
+                    allTimeSheetLogsByUnit: {
+                        ...state.allTimeSheetLogsByUnit,
+                        employees: employeesAllTimeSheetLogsByUnit
+                    }
+                }
+            })
+            return true;
+        }
+        
         return true;
     }
 
