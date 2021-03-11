@@ -127,32 +127,36 @@ const GeneralTaskChart = (props) => {
         // Dem cong viec cua tung unit da chon
         let listUnit = [];
         units && units.forEach(unit => {
-            if (unitSelected.includes(unit && unit.id)) {
+            if (unitSelected?.includes(unit && unit.id)) {
                 listUnit.push(unit);
             }
         });
 
         if (employees && employees.length) {
             for (let i in employees) {
-                let x = employees[i].userId
-                listEmployee[x.id] = x.name;
+                let x = employees?.[i]?.userId
+                if (listEmployee?.[x?.id])
+                    listEmployee[x.id] = x?.name;
             }
         }
 
         let data = {};
         for (let i in tasksOfSelectedUnit) {
             let result = processTask(tasksOfSelectedUnit[i])
-            let unitName = tasksOfSelectedUnit[i].organizationalUnit && tasksOfSelectedUnit[i].organizationalUnit.name;
+            let unitName = tasksOfSelectedUnit?.[i]?.organizationalUnit?.name;
 
             for (let j in result) {
-                if (!data[unitName]) {
+                if (data && !data?.[unitName]) {
                     data[unitName] = {};
                 }
-                if (!data[unitName][result[j]]) {
+                if (data?.[unitName] && !data?.[unitName]?.[result?.[j]]) {
                     data[unitName][result[j]] = 0;
                 }
-                data[unitName][result[j]]++;
-                data[unitName].name = unitName;
+
+                if (data[unitName]) {
+                    data[unitName][result[j]]++;
+                    data[unitName].name = unitName;
+                }
 
                 let resEmployee = tasksOfSelectedUnit[i].responsibleEmployees;
                 let employeeInTask = [];
@@ -165,21 +169,23 @@ const GeneralTaskChart = (props) => {
 
                 for (let k in uniqueEmployeeId) {
                     let idEmployee = uniqueEmployeeId[k];
-                    if (!data[unitName][idEmployee]) {
+                    if (data?.[unitName] && !data[unitName][idEmployee]) {
                         data[unitName][idEmployee] = {}
                     }
-                    if (!data[unitName][idEmployee][result[j]]) {
+                    if (data?.[unitName]?.[idEmployee] && !data[unitName][idEmployee][result?.[j]]) {
                         data[unitName][idEmployee][result[j]] = 0;
                     }
-                    data[unitName][idEmployee][result[j]]++;
-                    data[unitName][idEmployee].name = idEmployee;
+                    if (data?.[unitName]?.[idEmployee]) {
+                        data[unitName][idEmployee][result[j]]++;
+                        data[unitName][idEmployee].name = idEmployee;
+                    }
                 }
             }
         }
 
 
         for (let i in listUnit) {
-            let unitName = listUnit[i]?.name;
+            let unitName = listUnit?.[i]?.name;
             if (!Object.keys(data).includes(unitName)) {
                 dataTable.push({
                     parent: null,
@@ -215,17 +221,17 @@ const GeneralTaskChart = (props) => {
                 for (let key in unit) {
                     if (unit[key].name) {
                         dataTable.push({
-                            _id: unit[key].name,
+                            _id: unit?.[key]?.name,
                             parent: unitName,
-                            confirmedTask: unit[key].confirmedTask ? unit[key].confirmedTask : 0,
-                            delayTask: unit[key].delayTask ? unit[key].delayTask : 0,
-                            intimeTask: unit[key].intimeTask ? unit[key].intimeTask : 0,
-                            name: listEmployee[unit[key].name],
-                            noneUpdateTask: unit[key].noneUpdateTask ? unit[key].noneUpdateTask : 0,
-                            overdueTask: unit[key].overdueTask ? unit[key].overdueTask : 0,
-                            totalTask: unit[key].totalTask ? unit[key].totalTask : 0,
-                            taskFinished: unit[key].taskFinished ? unit[key].taskFinished : 0,
-                            taskInprocess: unit[key].taskInprocess ? unit[key].taskInprocess : 0,
+                            confirmedTask: unit?.[key]?.confirmedTask ? unit[key].confirmedTask : 0,
+                            delayTask: unit?.[key]?.delayTask ? unit[key].delayTask : 0,
+                            intimeTask: unit?.[key]?.intimeTask ? unit[key].intimeTask : 0,
+                            name: listEmployee?.[unit?.[key].name],
+                            noneUpdateTask: unit?.[key]?.noneUpdateTask ? unit[key].noneUpdateTask : 0,
+                            overdueTask: unit?.[key]?.overdueTask ? unit[key].overdueTask : 0,
+                            totalTask: unit?.[key]?.totalTask ? unit[key].totalTask : 0,
+                            taskFinished: unit?.[key]?.taskFinished ? unit[key].taskFinished : 0,
+                            taskInprocess: unit?.[key]?.taskInprocess ? unit[key].taskInprocess : 0,
                             organization: false
                         });
                     }
