@@ -117,8 +117,8 @@ const GeneralTaskChart = (props) => {
 
         const listEmployee = {};
         //Lay cac cong viec cua cac unit da chon
-        const tasksOfSelectedUnit = allTasks.filter(x =>
-            unitSelected.includes(x?.organizationalUnit?._id))
+        const tasksOfSelectedUnit = allTasks && allTasks.filter(x =>
+            unitSelected.includes(x && x.organizationalUnit && x.organizationalUnit._id))
 
         // Dem cong viec cua tat ca cac unit da chon
         let dataRow = countTask(tasksOfSelectedUnit, 'Tổng');
@@ -127,7 +127,7 @@ const GeneralTaskChart = (props) => {
         // Dem cong viec cua tung unit da chon
         let listUnit = [];
         units && units.forEach(unit => {
-            if (unitSelected.includes(unit?.id)) {
+            if (unitSelected.includes(unit && unit.id)) {
                 listUnit.push(unit);
             }
         });
@@ -142,7 +142,7 @@ const GeneralTaskChart = (props) => {
         let data = {};
         for (let i in tasksOfSelectedUnit) {
             let result = processTask(tasksOfSelectedUnit[i])
-            let unitName = tasksOfSelectedUnit[i].organizationalUnit.name;
+            let unitName = tasksOfSelectedUnit[i].organizationalUnit && tasksOfSelectedUnit[i].organizationalUnit.name;
 
             for (let j in result) {
                 if (!data[unitName]) {
