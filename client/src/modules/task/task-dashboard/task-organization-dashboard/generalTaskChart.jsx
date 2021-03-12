@@ -135,9 +135,8 @@ const GeneralTaskChart = (props) => {
 
         if (employees && employees.length) {
             for (let i in employees) {
-                let x = employees?.[i]?.userId
-                if (listEmployee?.[x?.id])
-                    listEmployee[x.id] = x?.name;
+                let x = employees[i].userId
+                listEmployee[x.id] = x.name;
             }
         }
 
