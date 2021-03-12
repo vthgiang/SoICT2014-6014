@@ -554,10 +554,10 @@ class TaskManagement extends Component {
                     }
                     data[n] = { ...data[n], action: ["edit", ["add", archived, del]] }
                 }
-                if (dataTemp[n].responsibleEmployees.find(e => e._id === userId) || dataTemp[n].consultedEmployees.indexOf(userId) !== -1) {
+                if (dataTemp[n].responsibleEmployees && dataTemp[n].responsibleEmployees.find(e => e._id === userId) || dataTemp[n].consultedEmployees && dataTemp[n].consultedEmployees.indexOf(userId) !== -1) {
                     data[n] = { ...data[n], action: ["edit", "startTimer", ["add", archived]] }
                 }
-                if (dataTemp[n].accountableEmployees.filter(o => o._id === userId).length > 0) {
+                if (dataTemp[n].accountableEmployees && dataTemp[n].accountableEmployees.filter(o => o._id === userId).length > 0) {
                     data[n] = { ...data[n], action: ["edit", "startTimer", ["add", archived, "delete"]] }
                 }
                 // Do mới thêm populate accountableEmployees bên server nên đoạn code dưới sai

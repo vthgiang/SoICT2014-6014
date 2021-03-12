@@ -38,7 +38,7 @@ class AllTimeSheetLogsByUnit extends Component {
         }
     }
 
-   
+
     handleInforTimeSheet = async (value) => {
         const { organizationUnitTasks, userDepartment } = this.props;
         let inforTimeSheetLog = []
@@ -50,7 +50,8 @@ class AllTimeSheetLogsByUnit extends Component {
                         if (creator == value.userId) {
                             let timesheet = {
                                 ...organizationUnitTasks.tasks[i].timesheetLogs[j],
-                                taskName: organizationUnitTasks.tasks[i].name
+                                taskName: organizationUnitTasks.tasks[i].name,
+                                taskId: organizationUnitTasks.tasks[i]._id,
                             }
                             inforTimeSheetLog.push(timesheet)
                         }
@@ -118,7 +119,7 @@ class AllTimeSheetLogsByUnit extends Component {
                     <thead>
                         <tr>
                             <th style={{ width: '60px' }}>STT</th>
-                            <th>{translate('manage_user.name')}</th>
+                            <th>Họ và tên</th>
                             <th>Tổng thời gian bấm giờ</th>
                             <th>Bấm giờ tự chọn</th>
                             <th>Bấm giờ tự động</th>
