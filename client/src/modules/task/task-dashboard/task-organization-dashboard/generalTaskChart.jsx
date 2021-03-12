@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import moment from 'moment'
-import { TreeTable } from '../../../../common-components';
+import { TreeTable, DataTableSetting } from '../../../../common-components';
 import { withTranslate } from 'react-redux-multilingual';
 import './generalTaskChart.css';
+import _cloneDeep from 'lodash/cloneDeep';
 
 const GeneralTaskChart = (props) => {
     const { translate } = props;
@@ -113,7 +114,7 @@ const GeneralTaskChart = (props) => {
     }
 
     useEffect(() => {
-        const { tasks, units, unitSelected, employees } = props;
+        const { tasks, units, unitSelected, employees, unitNameSelected } = props;
         const allTasks = tasks?.tasks;
 
         const listEmployee = {};
@@ -239,6 +240,7 @@ const GeneralTaskChart = (props) => {
             }
         }
 
+        state && state.length > 0 && convertDataExport(state);
         setstate(dataTable);
 
 
@@ -276,8 +278,89 @@ const GeneralTaskChart = (props) => {
         }
     }
 
+
+    const convertDataExport = (data) => {
+        const { translate, unitNameSelected } = props;
+        let newData = _cloneDeep(data);
+        newData = newData.map((o, index) => ({
+            STT: index + 1,
+            unit: o.name ? o.name : "",
+            allTask: o.totalTask ? o.totalTask : 0,
+            allTaskInprocess: o.taskInprocess ? o.taskInprocess : 0,
+            allTaskFinished: o.taskFinished ? o.taskFinished : 0,
+            confirmedTask: o.confirmedTask ? o.confirmedTask : 0,
+            noneUpdate: o.noneUpdateTask ? o.noneUpdateTask : 0,
+            intimeTask: o.intimeTask ? o.intimeTask : 0,
+            delayTask: o.delayTask ? o.delayTask : 0,
+            overdueTask: o.overdueTask ? o.overdueTask : 0,
+        }))
+        const listUnitSelect = unitNameSelected && unitNameSelected.length > 0 ?
+            unitNameSelected.map((o, index) => (
+                { STT: index + 1, name: o }
+            ))
+            : [];
+
+        let exportData = {
+            fileName: `${translate('task.task_dashboard.general_unit_task_title_file_export')}`,
+            dataSheets: [
+                {
+                    sheetName: 'sheet1',
+                    sheetTitle: `${translate('task.task_dashboard.general_unit_task')} của ${props.unitNameSelected && props.unitNameSelected.length} đơn vị`,
+                    tables: [
+                        {
+                            note: `Chú ý: Xem danh sách ${props.unitNameSelected && props.unitNameSelected.length} đơn vị ở sheet thứ 2 `,
+                            noteHeight: 20,
+                            columns: [
+                                { key: "STT", value: 'STT', width: 7 },
+                                { key: "unit", value: translate('task.task_dashboard.unit'), width: 20 },
+                                { key: "allTask", value: translate('task.task_dashboard.all_tasks'), width: 20 },
+                                { key: "allTaskInprocess", value: translate('task.task_dashboard.all_tasks_inprocess'), width: 25 },
+                                { key: "allTaskFinished", value: translate('task.task_dashboard.all_tasks_finished') },
+                                { key: "confirmedTask", value: translate('task.task_dashboard.confirmed_task') },
+                                { key: "noneUpdate", value: translate('task.task_dashboard.none_update_recently') },
+                                { key: "intimeTask", value: translate('task.task_dashboard.intime_task'), width: 25 },
+                                { key: "delayTask", value: translate('task.task_dashboard.delay_task'), width: 25 },
+                                { key: "overdueTask", value: translate('task.task_dashboard.overdue_task'), width: 25 },
+                            ],
+                            data: newData,
+                        }
+                    ]
+                },
+                {
+                    sheetName: 'sheet2',
+                    sheetTitle: `Danh sách ${props.unitNameSelected && props.unitNameSelected.length} đơn vị`,
+                    tables: [
+                        {
+                            columns: [
+                                { key: "STT", value: "Số thứ tự" },
+                                { key: "name", value: "Tên đơn vị" },
+                            ],
+                            data: listUnitSelect
+                        }
+                    ]
+                }
+            ]
+        }
+        if (exportData)
+            props.handleDataExport(exportData)
+    }
+
     return (
         <div className="general_task_unit">
+            <DataTableSetting className="pull-right" tableId='generalTaskUnit' tableContainerId="tree-table-container" tableWidth="1300px"
+                columnArr={[
+                    translate('task.task_dashboard.unit'),
+                    translate('task.task_dashboard.all_tasks'),
+                    translate('task.task_dashboard.all_task_inprocess'),
+                    translate('task.task_dashboard.all_task_finished'),
+                    translate('task.task_dashboard.confirmed_task'),
+                    translate('task.task_dashboard.none_update_recently'),
+                    translate('task.task_dashboard.intime_task'),
+                    translate('task.task_dashboard.delay_task'),
+                    translate('task.task_dashboard.overdue_task')
+                ]}
+            />
+
             <TreeTable
                 tableId="generalTaskUnit"
                 behaviour="show-children"

@@ -13,13 +13,13 @@ import { AverageResultsOfTaskInOrganizationalUnit } from './averageResultsOfTask
 import { AllTimeSheetLogsByUnit } from './allTimeSheetLogByUnit'
 
 import { withTranslate } from 'react-redux-multilingual';
-import { SelectMulti, DatePicker, PaginateBar, DataTableSetting } from '../../../../common-components/index';
+import { SelectMulti, DatePicker, PaginateBar, DataTableSetting, ExportExcel } from '../../../../common-components/index';
 import Swal from 'sweetalert2';
 import { InprocessOfUnitTask } from './processOfUnitTasks';
 import { GanttCalendar } from '../task-personal-dashboard/ganttCalendar';
 import GeneralTaskChart from './generalTaskChart';
 import { getTableConfiguration } from '../../../../helpers/tableConfiguration'
-
+import isEqual from 'lodash/isEqual';
 
 class TaskOrganizationUnitDashboard extends Component {
     constructor(props) {
@@ -429,6 +429,19 @@ class TaskOrganizationUnitDashboard extends Component {
             }
         })
     }
+
+    handleDataExport = (data) => {
+        let { dataExport } = this.state;
+        if (!isEqual(dataExport, data)) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    dataExport: data,
+                }
+            })
+        }
+    }
+
     render() {
         const { tasks, translate, user, dashboardEvaluationEmployeeKpiSet } = this.props;
         let { idsUnit, startMonth, endMonth, selectBoxUnit, distributionOfEmployeeChart, allTimeSheetLogsByUnit } = this.state;
@@ -498,7 +511,7 @@ class TaskOrganizationUnitDashboard extends Component {
                                                 idsUnit && idsUnit.length < 2 ?
                                                     <>
                                                         <span>{`${translate('task.task_dashboard.general_unit_task')} ${translate('task.task_management.lower_from')} ${startMonthTitle} ${translate('task.task_management.lower_to')} ${endMonthTitle} ${translate('task.task_dashboard.of_unit')}`}</span>
-                                                        <span style={{ fontWeight: "bold" }}>{this.getUnitName(selectBoxUnit, idsUnit).map(o => o).join(", ")}</span>
+                                                        <span style={{ fontWeight: "bold" }}>{` ${this.getUnitName(selectBoxUnit, idsUnit).map(o => o).join(", ")}`}</span>
                                                     </>
                                                     :
                                                     <span onClick={() => this.showUnitGeneraTask(selectBoxUnit, idsUnit)}>
@@ -509,19 +522,9 @@ class TaskOrganizationUnitDashboard extends Component {
                                             }
 
                                         </div>
-                                        <DataTableSetting className="pull-right" tableId='generalTaskUnit' tableContainerId="tree-table-container" tableWidth="1300px"
-                                            columnArr={[
-                                                translate('task.task_dashboard.unit'),
-                                                translate('task.task_dashboard.all_tasks'),
-                                                translate('task.task_dashboard.all_task_inprocess'),
-                                                translate('task.task_dashboard.all_task_finished'),
-                                                translate('task.task_dashboard.confirmed_task'),
-                                                translate('task.task_dashboard.none_update_recently'),
-                                                translate('task.task_dashboard.intime_task'),
-                                                translate('task.task_dashboard.delay_task'),
-                                                translate('task.task_dashboard.overdue_task')
-                                            ]}
-                                        />
+                                        {
+                                            this.state.dataExport && <ExportExcel id="export-general-task" buttonName={translate('human_resource.name_button_export')} exportData={this.state.dataExport} style={{ marginTop: 0 }} />
+                                        }
                                     </div>
 
                                     <div className="box-body qlcv">
@@ -531,6 +534,8 @@ class TaskOrganizationUnitDashboard extends Component {
                                                 units={selectBoxUnit}
                                                 employees={user.employees}
                                                 unitSelected={idsUnit}
+                                                unitNameSelected={this.getUnitName(selectBoxUnit, idsUnit)}
+                                                handleDataExport={this.handleDataExport}
                                             />
                                         }
                                     </div>

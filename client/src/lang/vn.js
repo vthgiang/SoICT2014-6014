@@ -3591,6 +3591,7 @@ export default {
             },
             task_dashboard: {
                 general_unit_task: "Tổng quan công việc",
+                general_unit_task_title_file_export: "Tổng quan công việc đơn vị",
                 unit: "Đơn vị",
                 unit_lowercase : "đơn vị",
                 of_unit: "của đơn vị",

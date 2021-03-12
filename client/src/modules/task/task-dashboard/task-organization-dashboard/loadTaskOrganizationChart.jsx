@@ -17,7 +17,7 @@ const LoadTaskOrganizationChart = (props) => {
     });
 
     useEffect(() => {
-        let taskList = tasks?.organizationUnitTasks?.tasks; 
+        let taskList = tasks?.organizationUnitTasks?.tasks;
         if (taskList?.length > 0) {
             let selectedUnit = idsUnit;
 
@@ -81,7 +81,7 @@ const LoadTaskOrganizationChart = (props) => {
                                     improcessDay = 0;
                                 }
                                 array[j] += Math.round(improcessDay /
-                                    (improcessTask[k].accountableEmployees.length + improcessTask[k].consultedEmployees.length + improcessTask[k].responsibleEmployees.length))
+                                    (improcessTask[k] && improcessTask[k].accountableEmployees && improcessTask[k].accountableEmployees.length + improcessTask[k] && improcessTask[k].consultedEmployees && improcessTask[k] && improcessTask[k].consultedEmployees.length + improcessTask[k] && improcessTask[k].responsibleEmployees && improcessTask[k].responsibleEmployees.length))
                             }
 
                         }
@@ -136,7 +136,7 @@ const LoadTaskOrganizationChart = (props) => {
         <React.Fragment>
             <section id={"weightTaskOrganizationChart"} className="c3-chart-container enable-pointer">
                 <div id="weightTaskOrganization"></div>
-                { ref?.current?.dataChart?.length > 0 
+                {ref?.current?.dataChart?.length > 0
                     && <CustomLegendC3js
                         chart={ref.current.chart}
                         chartId={"weightTaskOrganizationChart"}
