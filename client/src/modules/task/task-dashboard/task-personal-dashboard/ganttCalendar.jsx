@@ -214,7 +214,7 @@ class GanttCalendar extends Component {
     const listtask = organizationUnitTasks && organizationUnitTasks.tasks;
     //Lay cac cong viec cua cac unit da chon
     const tasksOfSelectedUnit = listtask?.filter(x =>
-      unitSelected.includes(x?.organizationalUnit?._id))
+      unitSelected?.includes(x?.organizationalUnit?._id))
 
     const unitData = this.getDataGroupByEmployee(tasksOfSelectedUnit);
     const dataAllTask = unitData.data;

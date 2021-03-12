@@ -309,7 +309,7 @@ function getPaginatedTasksByOrganizationalUnit(unit, number, perPage, status, pr
  * @param {*} endDate kết thúc công việc
  */
 
-function getPaginateTasks(role, unit, number, perPage, status, priority, special, name, startDate, endDate,responsibleEmployees,accountableEmployees, creatorEmployees, startDateAfter, endDateBefore, aPeriodOfTime) {
+function getPaginateTasks(role, unit, number, perPage, status, priority, special, name, startDate, endDate,responsibleEmployees,accountableEmployees, creatorEmployees,creatorTime, projectSearch, startDateAfter, endDateBefore, aPeriodOfTime) {
     var user = getStorage("userId");
 
     return sendRequest({
@@ -331,6 +331,8 @@ function getPaginateTasks(role, unit, number, perPage, status, priority, special
             responsibleEmployees: responsibleEmployees,
             accountableEmployees: accountableEmployees,
             creatorEmployees: creatorEmployees,
+            creatorTime:creatorTime,
+            projectSearch:projectSearch,
             startDateAfter: startDateAfter,
             endDateBefore: endDateBefore,
             aPeriodOfTime: aPeriodOfTime

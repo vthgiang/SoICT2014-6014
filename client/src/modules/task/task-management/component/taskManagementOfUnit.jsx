@@ -449,7 +449,7 @@ class TaskManagementOfUnit extends Component {
                 data[n] = {
                     ...dataTemp[n],
                     name: dataTemp[n].name,
-                    description: parse(dataTemp[n].description),
+                    description: dataTemp?.[n]?.description ? parse(dataTemp[n].description) : "",
                     organization: dataTemp[n].organizationalUnit ? dataTemp[n].organizationalUnit.name : translate('task.task_management.err_organizational_unit'),
                     priority: this.formatPriority(dataTemp[n].priority),
                     responsibleEmployees: dataTemp[n].responsibleEmployees && dataTemp[n].responsibleEmployees.map(o => o.name).join(', '),
@@ -498,7 +498,7 @@ class TaskManagementOfUnit extends Component {
                                         </SelectMulti>
                                     }
                                 </div>
-
+                                
                                 {/* Trạng thái công việc */}
                                 <div className="form-group">
                                     <label>{translate('task.task_management.status')}</label>

@@ -21,8 +21,7 @@ const InprocessOfUnitTask = (props) => {
         let notAchived = [translate('task.task_management.not_achieved')];
 
         if (taskList && taskList.length !== 0) {
-            let selectedUnit = unit;
-            if (selectedUnit.length == 0) selectedUnit = unitSelected;
+            let selectedUnit = unitSelected;
 
             for (let i in selectedUnit) {
                 let delayedCnt = 0, intimeCnt = 0, notAchivedCnt = 0;
@@ -70,7 +69,7 @@ const InprocessOfUnitTask = (props) => {
 
     const barChart = (delayed, intime, notAchived) => {
         let height = unit.length * 60;
-        let heightOfChart = height > 320 ? height : 320;
+        let heightOfChart = height > 500 ? height : 500;
 
         const pie = c3.generate({
             bindto: document.getElementById("inprocessOfUnitTask"),

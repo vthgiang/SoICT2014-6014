@@ -399,7 +399,7 @@ class ProcessTemplate extends Component {
                     {
                         this.state.currentRow !== undefined &&
                         <ModalViewTaskProcess
-                            title={translate("task.task_process.add_modal")}
+                            title={translate("task.task_process.view_process_template_modal")}
                             listOrganizationalUnit={listOrganizationalUnit}
                             data={currentRow}
                             idProcess={currentRow._id}

@@ -174,6 +174,7 @@ exports.getAllEmployeeKpiInOrganizationalUnit = async (portal, roleId, organizat
                 },
                 {
                     $addFields: {
+                        'employeeKpis.parent': "$organizationalUnitKpis._id",
                         'employeeKpis.parentName': "$organizationalUnitKpis.name",
                         'employeeKpis.parentWeight': "$organizationalUnitKpis.weight"
                     }
@@ -246,7 +247,6 @@ exports.getAllEmployeeKpiInOrganizationalUnit = async (portal, roleId, organizat
  * @query {*} month
  */
 exports.getAllEmployeeKpiSetInOrganizationalUnit = async (portal, query) => {
-
     let beginOfCurrentMonth = new Date(query.month);
     let endOfCurrentMonth = new Date(beginOfCurrentMonth.getFullYear(), beginOfCurrentMonth.getMonth() + 1);
 

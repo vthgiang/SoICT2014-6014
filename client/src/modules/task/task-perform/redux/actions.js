@@ -70,8 +70,7 @@ export const performTaskAction = {
     getAllPreceedingTasks,
 
     sortActions,
-    refreshDataAfterComment,
-    refreshDataAfterCreateAction,
+    refreshData,
     evaluationAllAction,
 };
 
@@ -213,6 +212,8 @@ function editTimeSheetLog(taskId, timesheetlogId, data) {
                     type: performTaskConstants.EDIT_TIME_SHEET_LOG_SUCCESS, 
                     payload: res.data.content 
                 });
+
+                dispatch({type: taskManagementConstants.UPDATE_TASK_SUCCESS, payload: res.data.content})
                 resolve(res)
             }).catch(error => {
                 dispatch({ type: performTaskConstants.EDIT_TIME_SHEET_LOG_FAILE, error });
@@ -233,8 +234,12 @@ function stopTimerTask(taskId, newTimer) {
                         type: performTaskConstants.STOP_TIMER_SUCCESS,
                         payload: payload.data.content
                     })
+                    // dispatch({
+                    //     type: taskManagementConstants.EDIT_TASK_SUCCESS,
+                    //     payload: payload.data.content
+                    // })
                     dispatch({
-                        type: taskManagementConstants.EDIT_TASK_SUCCESS,
+                        type: taskManagementConstants.UPDATE_TASK_SUCCESS,
                         payload: payload.data.content
                     })
                 },
@@ -495,6 +500,7 @@ function editTaskByAccountableEmployees(data, taskId) {
                     type: performTaskConstants.EDIT_TASK_BY_ACCOUNTABLE_SUCCESS,
                     payload: res.data.content
                 });
+                dispatch({ type: taskManagementConstants.UPDATE_TASK_SUCCESS, payload: res.data.content.task })
             })
             .catch(error => {
                 dispatch({ type: performTaskConstants.EDIT_TASK_BY_ACCOUNTABLE_FAILURE, error });
@@ -516,6 +522,8 @@ function editTaskByResponsibleEmployees(data, taskId) {
                     type: performTaskConstants.EDIT_TASK_BY_RESPONSIBLE_SUCCESS,
                     payload: res.data.content
                 });
+
+                dispatch({ type: taskManagementConstants.UPDATE_TASK_SUCCESS, payload: res.data.content.task })
             })
             .catch(error => {
                 dispatch({ type: performTaskConstants.EDIT_TASK_BY_RESPONSIBLE_FAILURE, error });
@@ -1171,14 +1179,9 @@ function sortActions(taskId, data) {
     };
 }
 
-function refreshDataAfterComment(data) {
+function refreshData(data) {
     return dispatch =>
-        dispatch({ type: performTaskConstants.REFRESH_DATA_AFTER_COMMENT_SUCCESS, payload: data });
-}
-
-function refreshDataAfterCreateAction(data) {
-    return dispatch =>
-        dispatch({ type: performTaskConstants.REFRESH_DATA_AFTER_CREATE_ACTION_SUCCESS, payload: data });
+        dispatch({ type: performTaskConstants.REFRESH_DATA_TASK, payload: data });
 }
 
 function evaluationAllAction(taskId, evaluation) {

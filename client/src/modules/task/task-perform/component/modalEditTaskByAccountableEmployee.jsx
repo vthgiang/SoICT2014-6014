@@ -199,7 +199,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
         var d = new Date(date);
         let time = moment(d).format("hh:mm");
         let suffix = " AM";
-        if(d.getHours() >= 12 && d.getHours() <= 23) {
+        if (d.getHours() >= 12 && d.getHours() <= 23) {
             suffix = " PM";
         }
         return time + suffix;
@@ -265,8 +265,6 @@ class ModalEditTaskByAccountableEmployee extends Component {
     }
 
     handleSetOfValueChange = async (value, code) => {
-        console.log('set', value);
-
         this.setState(state => {
             state.info[`${code}`] = {
                 value: value,
@@ -648,7 +646,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
         } else {
             let startDate = this.convertDateTime(value, this.state.startTime);
             let endDate = this.convertDateTime(this.state.endDate, this.state.endTime);
-            if(startDate > endDate) {
+            if (startDate > endDate) {
                 msg = translate('task.task_management.add_err_end_date');
             }
         }
@@ -676,7 +674,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
         } else {
             let startDate = this.convertDateTime(this.state.startDate, this.state.startTime);
             let endDate = this.convertDateTime(value, this.state.endTime);
-            if(startDate > endDate) {
+            if (startDate > endDate) {
                 msg = translate('task.task_management.add_err_end_date');
             }
         }
@@ -791,7 +789,6 @@ class ModalEditTaskByAccountableEmployee extends Component {
                 collaboratedWithOrganizationalUnits: value
             };
         });
-        console.log('new edit Task', this.state);
     }
 
     handleSelectedStatus = (value) => {
@@ -812,7 +809,6 @@ class ModalEditTaskByAccountableEmployee extends Component {
                 parent: val,
             }
         })
-        console.log('ppppp', value, this.state.parent);
     }
 
     handleSelectedResponsibleEmployee = (value) => {
@@ -919,14 +915,14 @@ class ModalEditTaskByAccountableEmployee extends Component {
     }
 
     handleStartTimeChange = (value) => {
-        let { translate } =this.props;
+        let { translate } = this.props;
         let startDate = this.convertDateTime(this.state.startDate, value);
         let endDate = this.convertDateTime(this.state.endDate, this.state.endTime);
         let err;
-        if (value.trim() === "" ) {
+        if (value.trim() === "") {
             err = translate('task.task_management.add_err_empty_end_date');
         }
-        else if(startDate > endDate) {
+        else if (startDate > endDate) {
             err = translate('task.task_management.add_err_end_date');
         }
         this.setState(state => {
@@ -939,15 +935,15 @@ class ModalEditTaskByAccountableEmployee extends Component {
     }
 
     handleEndTimeChange = (value) => {
-        let { translate } =this.props;
+        let { translate } = this.props;
         let startDate = this.convertDateTime(this.state.startDate, this.state.startTime);
         let endDate = this.convertDateTime(this.state.endDate, value);
         let err;
-        console.log('startDate > endDate', startDate > endDate, startDate , endDate);
-        if (value.trim() === "" ) {
+        console.log('startDate > endDate', startDate > endDate, startDate, endDate);
+        if (value.trim() === "") {
             err = translate('task.task_management.add_err_empty_end_date');
         }
-        else if(startDate > endDate) {
+        else if (startDate > endDate) {
             err = translate('task.task_management.add_err_end_date');
         }
         this.setState(state => {
@@ -958,7 +954,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
             }
         });
     }
-    
+
     convertDateTime = (date, time) => {
         let splitter = date.split("-");
         let strDateTime = `${splitter[2]}-${splitter[1]}-${splitter[0]} ${time}`;
@@ -969,7 +965,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
     render() {
         console.log('new edit Task', this.state);
 
-        const { user, tasktemplates, department, translate, taskProject } = this.props;
+        const { user, tasktemplates, department, translate, project } = this.props;
         const { task, organizationalUnit, collaboratedWithOrganizationalUnits, errorOnEndDate, errorOnStartDate, errorTaskName, errorTaskDescription, errorOnFormula, taskName, taskDescription, statusOptions, priorityOptions, taskDescriptionDefault,
             startDate, endDate, startTime, endTime, formula, responsibleEmployees, accountableEmployees, consultedEmployees, informedEmployees, inactiveEmployees, parent, parentTask
             , taskProjectName } = this.state;
@@ -992,7 +988,6 @@ class ModalEditTaskByAccountableEmployee extends Component {
 
                 //không có parent trong arr
                 !hasParentItem && listParentTask.unshift({ value: parentTask._id, text: parentTask.name })
-                console.log('arr', arr);
                 for (let i in arr) {
                     if (arr[i].value === parentTask._id) {
                         listParentTask.unshift({ value: parentTask._id, text: parentTask.name })
@@ -1088,7 +1083,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                         <TreeSelect
                                             id={`select-task-project-task-edit-by-accountable-${id}`}
                                             mode='radioSelect'
-                                            data={taskProject.list}
+                                            data={project.data.list}
                                             handleChange={this.handleTaskProject}
                                             value={[taskProjectName]}
                                         />
@@ -1376,8 +1371,8 @@ class ModalEditTaskByAccountableEmployee extends Component {
 }
 
 function mapStateToProps(state) {
-    const { tasks, user, tasktemplates, performtasks, department, taskProject } = state;
-    return { tasks, user, tasktemplates, performtasks, department, taskProject };
+    const { tasks, user, tasktemplates, performtasks, department, project } = state;
+    return { tasks, user, tasktemplates, performtasks, department, project };
 }
 
 const actionGetState = { //dispatchActionToProps

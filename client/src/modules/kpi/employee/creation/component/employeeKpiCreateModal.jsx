@@ -30,17 +30,18 @@ class ModalCreateEmployeeKpiSet extends Component {
     }
 
     static getDerivedStateFromProps = (nextProps, prevState) => {
-        if (nextProps.organizationalUnit !== prevState.organizationalUnit || nextProps.month !== prevState.month) {
+        if (nextProps.managers?.length > 0 && nextProps.organizationalUnit?._id && nextProps.month && (nextProps.organizationalUnit?._id !== prevState.organizationalUnit?._id || nextProps.month !== prevState.month)) {
             return {
                 ...prevState,
                 employeeKpiSet: {
                     ...prevState.employeeKpiSet,
                     organizationalUnit: nextProps.organizationalUnit && nextProps.organizationalUnit._id,
                     month: nextProps.month,
-                    approver: nextProps.managers?.[1]?.value?.[0]?.value
+                    approver: nextProps.managers?.[1]?.value?.[0]?.value ? nextProps.managers?.[1]?.value?.[0]?.value : nextProps.managers?.[0]?.value?.[0]?.value
                 },
                 managers: nextProps.managers,
-                organizationalUnit: nextProps.organizationalUnit
+                organizationalUnit: nextProps.organizationalUnit,
+                month: nextProps.month
             }
         } else {
             return null;
@@ -58,7 +59,7 @@ class ModalCreateEmployeeKpiSet extends Component {
                 ...state,
                 employeeKpiSet: {
                     ...state.employeeKpiSet,
-                    approver: value[0],
+                    approver: value[0]
                 }
             }
         });
@@ -68,8 +69,7 @@ class ModalCreateEmployeeKpiSet extends Component {
     handleCreateEmployeeKpiSet = async () => {
         const { employeeKpiSet } = this.state;
 
-
-        if (employeeKpiSet.organizationalUnit && employeeKpiSet.month && employeeKpiSet.approver) {//&& employeeKpiSet.creator
+        if (employeeKpiSet.approver) {//&& employeeKpiSet.creator
             this.props.createEmployeeKpiSet(employeeKpiSet);
             window.$("#createEmployeeKpiSet").modal("hide");
         }
@@ -96,7 +96,6 @@ class ModalCreateEmployeeKpiSet extends Component {
         const { translate } = this.props;
         const { _id, employeeKpiSet, organizationalUnit, managers } = this.state;
         
-
         return (
             <React.Fragment>
                 <DialogModal

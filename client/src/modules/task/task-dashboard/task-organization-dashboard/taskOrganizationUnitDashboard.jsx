@@ -8,18 +8,18 @@ import { UserActions } from '../../../super-admin/user/redux/actions';
 import { DistributionOfEmployee } from './distributionOfEmployee';
 import { DomainOfTaskResultsChart } from '../task-personal-dashboard/domainOfTaskResultsChart';
 import { TaskStatusChart } from '../task-personal-dashboard/taskStatusChart';
-import { CalendarOrganizationUnit } from './calendarOrganizationUnit';
 import { LoadTaskOrganizationChart } from './loadTaskOrganizationChart';
 import { AverageResultsOfTaskInOrganizationalUnit } from './averageResultsOfTaskInOrganizationalUnit';
 import { AllTimeSheetLogsByUnit } from './allTimeSheetLogByUnit'
 
 import { withTranslate } from 'react-redux-multilingual';
-import { SelectMulti, DatePicker, ToolTip } from '../../../../common-components/index';
+import { SelectMulti, DatePicker, PaginateBar, DataTableSetting, ExportExcel } from '../../../../common-components/index';
 import Swal from 'sweetalert2';
 import { InprocessOfUnitTask } from './processOfUnitTasks';
-import ValidationHelper from '../../../../helpers/validationHelper';
 import { GanttCalendar } from '../task-personal-dashboard/ganttCalendar';
 import GeneralTaskChart from './generalTaskChart';
+import { getTableConfiguration } from '../../../../helpers/tableConfiguration'
+import isEqual from 'lodash/isEqual';
 
 class TaskOrganizationUnitDashboard extends Component {
     constructor(props) {
@@ -47,7 +47,7 @@ class TaskOrganizationUnitDashboard extends Component {
             endMonth = month;
         }
         this.INFO_SEARCH = {
-            idsUnit: [],
+            idsUnit: null,
             checkUnit: 0,
             startMonth: [startYear, startMonth].join('-'),
             endMonth: [year, endMonth].join('-'),
@@ -55,6 +55,12 @@ class TaskOrganizationUnitDashboard extends Component {
             startMonthTitle: [startMonth, startYear].join('-'),
             endMonthTitle: [endMonth, year].join('-'),
         }
+
+        const defaultConfig = { limit: 10 }
+        this.allTimeSheetLogsByUnitId = "all-time-sheet-logs"
+        this.distributionOfEmployeeChartId = "distribution-of-employee-chart";
+        const distributionOfEmployeeChartPerPage = getTableConfiguration(this.distributionOfEmployeeChartId, defaultConfig).limit;
+        const allTimeSheetLogsByUnitIdPerPage = getTableConfiguration(this.allTimeSheetLogsByUnitId, defaultConfig).limit;
 
         this.state = {
             userID: "",
@@ -66,7 +72,19 @@ class TaskOrganizationUnitDashboard extends Component {
 
             checkUnit: this.INFO_SEARCH.checkUnit,
             startMonth: this.INFO_SEARCH.startMonth,
-            endMonth: this.INFO_SEARCH.endMonth
+            endMonth: this.INFO_SEARCH.endMonth,
+
+            distributionOfEmployeeChart: {
+                page: 1,
+                perPage: distributionOfEmployeeChartPerPage,
+                employees: null
+            },
+
+            allTimeSheetLogsByUnit: {
+                page: 1,
+                perPage: allTimeSheetLogsByUnitIdPerPage,
+                employees: null
+            }
         };
 
 
@@ -76,7 +94,7 @@ class TaskOrganizationUnitDashboard extends Component {
         await this.props.getDepartment();
         await this.props.getChildrenOfOrganizationalUnitsAsTree(localStorage.getItem("currentRole"));
         await this.props.getAllUserSameDepartment(localStorage.getItem("currentRole"));
-        await this.props.getTaskInOrganizationUnitByMonth(this.state.idsUnit, new Date(this.state.startMonth), new Date(this.state.endMonth));
+        await this.props.getTaskInOrganizationUnitByMonth([], new Date(this.state.startMonth), new Date(this.state.endMonth));
 
         await this.setState(state => {
             return {
@@ -88,19 +106,46 @@ class TaskOrganizationUnitDashboard extends Component {
     }
 
     shouldComponentUpdate = async (nextProps, nextState) => {
-        const { dashboardEvaluationEmployeeKpiSet } = this.props;
-        let { idsUnit, checkUnit, startMonth, endMonth } = this.state;
+        const { dashboardEvaluationEmployeeKpiSet, user } = this.props;
+        let { idsUnit, distributionOfEmployeeChart, allTimeSheetLogsByUnit } = this.state;
         let data, organizationUnit = "organizationUnit";
 
-        if (idsUnit !== nextState.idsUnit) {
-            return false;
+
+
+        // Trưởng hợp đổi 2 role cùng là trưởng đơn vị, cập nhật lại select box chọn đơn vị
+        if ((distributionOfEmployeeChart?.employees || allTimeSheetLogsByUnit?.employees) && user?.employeesLoading) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    distributionOfEmployeeChart: {
+                        ...state.distributionOfEmployeeChart,
+                        page: 1,
+                        employees: null
+                    },
+                    allTimeSheetLogsByUnit: {
+                        ...state.allTimeSheetLogsByUnit,
+                        page: 1,
+                        employees: null
+                    }
+                }
+            })
+
+            return true;
         }
 
-        if (!idsUnit.length && dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit
-            || (nextState.checkUnit !== checkUnit
-                || nextState.startMonth !== startMonth
-                || nextState.endMonth !== endMonth)
-        ) {
+        // Trưởng hợp đổi 2 role cùng là trưởng đơn vị, cập nhật lại select box chọn đơn vị
+        if (idsUnit && dashboardEvaluationEmployeeKpiSet && !dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    idsUnit: null
+                }
+            })
+
+            return true;
+        }
+
+        if (!idsUnit && dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit) {
             let childrenOrganizationalUnit = [], queue = [], currentOrganizationalUnit;
 
             if (dashboardEvaluationEmployeeKpiSet) {
@@ -129,7 +174,7 @@ class TaskOrganizationUnitDashboard extends Component {
                     startMonth: nextState.startMonth,
                     endMonth: nextState.endMonth,
                     checkUnit: nextState.checkUnit,
-                    idsUnit: !idsUnit.length ? units : nextState.idsUnit,
+                    idsUnit: !idsUnit?.length ? units : nextState.idsUnit,
                     selectBoxUnit: childrenOrganizationalUnit
                 }
             });
@@ -145,11 +190,8 @@ class TaskOrganizationUnitDashboard extends Component {
 
             await this.props.getTaskByUser(data);
 
+            return true;
         } else if (nextState.dataStatus === this.DATA_STATUS.QUERYING) {
-            if (!nextProps.tasks.organizationUnitTasks) {
-                return false;
-            }
-
             this.setState(state => {
                 return {
                     ...state,
@@ -157,6 +199,7 @@ class TaskOrganizationUnitDashboard extends Component {
                     callAction: true
                 }
             });
+            return true;
         } else if (nextState.dataStatus === this.DATA_STATUS.AVAILABLE && nextState.willUpdate) {
             this.setState(state => {
                 return {
@@ -168,19 +211,41 @@ class TaskOrganizationUnitDashboard extends Component {
 
             return true;
         }
-        return false;
+
+        if ((!distributionOfEmployeeChart.employees || !allTimeSheetLogsByUnit.employees) && nextProps.user?.employees) {
+            let employeesDistributionOfEmployeeChart = this.filterArraySkipAndLimit(nextProps.user?.employees, distributionOfEmployeeChart?.page, distributionOfEmployeeChart?.perPage);
+            let employeesAllTimeSheetLogsByUnit = this.filterArraySkipAndLimit(nextProps.user?.employees, allTimeSheetLogsByUnit?.page, allTimeSheetLogsByUnit?.perPage);
+            this.setState(state => {
+                return {
+                    ...state,
+                    distributionOfEmployeeChart: {
+                        ...state.distributionOfEmployeeChart,
+                        employees: employeesDistributionOfEmployeeChart
+                    },
+                    allTimeSheetLogsByUnit: {
+                        ...state.allTimeSheetLogsByUnit,
+                        employees: employeesAllTimeSheetLogsByUnit
+                    }
+                }
+            })
+            return true;
+        }
+
+        return true;
+    }
+
+    formatDate = (date) => {
+        if (date) {
+            let data = date.split("-");
+            data = data[1] + "-" + data[0]
+            return data;
+        }
     }
 
     handleChangeOrganizationUnit = async (value) => {
         let checkUnit = this.state.checkUnit + 1;
         this.INFO_SEARCH.checkUnit = checkUnit;
-
-        this.setState(state => {
-            return {
-                ...state,
-                idsUnit: value
-            }
-        })
+        this.INFO_SEARCH.idsUnit = value;
     }
 
     handleSelectMonthStart = async (value) => {
@@ -218,15 +283,16 @@ class TaskOrganizationUnitDashboard extends Component {
                     startMonth: this.INFO_SEARCH.startMonth,
                     endMonth: this.INFO_SEARCH.endMonth,
                     checkUnit: this.INFO_SEARCH.checkUnit,
+                    idsUnit: this.INFO_SEARCH.idsUnit
                 }
             })
 
-            await this.props.getTaskInOrganizationUnitByMonth(this.state.idsUnit, this.state.startMonth, this.state.endMonth);
+            await this.props.getAllEmployeeOfUnitByIds(this.INFO_SEARCH.idsUnit);
+            await this.props.getTaskInOrganizationUnitByMonth(this.INFO_SEARCH.idsUnit, this.state.startMonth, this.state.endMonth);
         }
     }
 
     showLoadTaskDoc = () => {
-        const { translate } = this.props;
         Swal.fire({
             icon: "question",
 
@@ -240,9 +306,145 @@ class TaskOrganizationUnitDashboard extends Component {
         })
     }
 
+    filterArraySkipAndLimit = (arrays, page, limit) => {
+        let employees;
+        if (arrays?.length > 0) {
+            employees = arrays.filter((item, index) => {
+                if (index >= (page - 1) * limit && index < page * limit) {
+                    return true;
+                }
+                else return false;
+            })
+        }
+        return employees;
+    }
+
+    handlePaginationDistributionOfEmployeeChart = (page) => {
+        const { user } = this.props;
+        const { distributionOfEmployeeChart } = this.state;
+        let employees;
+
+        if (user) {
+            employees = this.filterArraySkipAndLimit(user?.employees, page, distributionOfEmployeeChart?.perPage);
+        }
+        this.setState(state => {
+            return {
+                ...state,
+                distributionOfEmployeeChart: {
+                    ...state.distributionOfEmployeeChart,
+                    employees: employees,
+                    page: page
+                }
+            }
+        })
+    }
+
+    setLimitDistributionOfEmployeeChart = (limit) => {
+        const { user } = this.props;
+        let employees;
+
+        if (user) {
+            employees = this.filterArraySkipAndLimit(user?.employees, 1, limit);
+        }
+
+        this.setState(state => {
+            return {
+                ...state,
+                distributionOfEmployeeChart: {
+                    ...state.distributionOfEmployeeChart,
+                    employees: employees,
+                    page: 1,
+                    perPage: limit
+                }
+            }
+        })
+    }
+
+    getUnitName = (arrayUnit, arrUnitId) => {
+        let data = [];
+        arrayUnit.forEach(x => {
+            arrUnitId.forEach(y => {
+                if (x.id === y)
+                    data.push(x.name)
+            })
+        })
+        return data;
+    }
+
+    showUnitGeneraTask = (selectBoxUnit, idsUnit) => {
+        if (idsUnit && idsUnit.length > 0) {
+            const listUnit = this.getUnitName(selectBoxUnit, idsUnit);
+            Swal.fire({
+                html: `<h3 style="color: red"><div>Danh sách các đơn vị </div> </h3>
+                    <ul style="text-align:left;font-size: 16px;">
+                        ${listUnit && listUnit.length > 0 &&
+                    listUnit.map(o => (
+                        `<li style="padding: 7px">${o}</li>`
+                    )).join('')
+                    }
+                    </ul>
+                `,
+                width: "40%"
+            })
+        }
+    }
+
+    handlePaginationAllTimeSheetLogs = (page) => {
+        const { user } = this.props;
+        const { allTimeSheetLogsByUnit } = this.state;
+        let employees;
+
+        if (user) {
+            employees = this.filterArraySkipAndLimit(user?.employees, page, allTimeSheetLogsByUnit?.perPage);
+        }
+        this.setState(state => {
+            return {
+                ...state,
+                allTimeSheetLogsByUnit: {
+                    ...state.allTimeSheetLogsByUnit,
+                    employees: employees,
+                    page: page
+                }
+            }
+        })
+    }
+
+    setLimitAllTimeSheetLogs = (limit) => {
+        const { user } = this.props;
+        let employees;
+
+        if (user) {
+            employees = this.filterArraySkipAndLimit(user?.employees, 1, limit);
+        }
+
+        this.setState(state => {
+            return {
+                ...state,
+                allTimeSheetLogsByUnit: {
+                    ...state.allTimeSheetLogsByUnit,
+                    employees: employees,
+                    page: 1,
+                    perPage: limit
+                }
+            }
+        })
+    }
+
+    handleDataExport = (data) => {
+        let { dataExport } = this.state;
+        if (!isEqual(dataExport, data)) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    dataExport: data,
+                }
+            })
+        }
+    }
+
     render() {
         const { tasks, translate, user, dashboardEvaluationEmployeeKpiSet } = this.props;
-        let { idsUnit, startMonth, endMonth, selectBoxUnit } = this.state;
+        let { idsUnit, startMonth, endMonth, selectBoxUnit, distributionOfEmployeeChart, allTimeSheetLogsByUnit } = this.state;
         let { startMonthTitle, endMonthTitle } = this.INFO_SEARCH;
         let childrenOrganizationalUnit = [];
         let currentOrganizationalUnit, currentOrganizationalUnitLoading;
@@ -251,6 +453,7 @@ class TaskOrganizationUnitDashboard extends Component {
             currentOrganizationalUnit = dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit;
             currentOrganizationalUnitLoading = dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnitLoading;
         }
+
 
         return (
             <React.Fragment>
@@ -303,18 +506,36 @@ class TaskOrganizationUnitDashboard extends Component {
                             <div className="col-xs-12">
                                 <div className="box box-primary">
                                     <div className="box-header with-border">
-                                        <div className="box-title">{translate('task.task_dashboard.general_unit_task')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
-                                    </div>
-                                    <div className="box-body qlcv">
-                                        {/* {this.state.callAction && tasks && tasks.organizationUnitTasks && */}
+                                        <div className="box-title">
+                                            {
+                                                idsUnit && idsUnit.length < 2 ?
+                                                    <>
+                                                        <span>{`${translate('task.task_dashboard.general_unit_task')} ${translate('task.task_management.lower_from')} ${startMonthTitle} ${translate('task.task_management.lower_to')} ${endMonthTitle} ${translate('task.task_dashboard.of_unit')}`}</span>
+                                                        <span style={{ fontWeight: "bold" }}>{` ${this.getUnitName(selectBoxUnit, idsUnit).map(o => o).join(", ")}`}</span>
+                                                    </>
+                                                    :
+                                                    <span onClick={() => this.showUnitGeneraTask(selectBoxUnit, idsUnit)}>
+                                                        <span>{`${translate('task.task_dashboard.general_unit_task')} ${translate('task.task_management.lower_from')} ${startMonthTitle} ${translate('task.task_management.lower_to')} ${endMonthTitle} ${translate('task.task_dashboard.of')} `} </span>
+                                                        <a style={{ cursor: 'pointer', fontWeight: 'bold' }}>{idsUnit && idsUnit.length}</a>
+                                                        <span>{` ${translate('task.task_dashboard.unit_lowercase')}`}</span>
+                                                    </span>
+                                            }
 
-                                        {/* } */}
+                                        </div>
+                                        {
+                                            this.state.dataExport && <ExportExcel id="export-general-task" buttonName={translate('human_resource.name_button_export')} exportData={this.state.dataExport} style={{ marginTop: 0 }} />
+                                        }
+                                    </div>
+
+                                    <div className="box-body qlcv">
                                         {this.state.callAction && tasks && tasks.organizationUnitTasks &&
                                             <GeneralTaskChart
                                                 tasks={tasks.organizationUnitTasks}
                                                 units={selectBoxUnit}
                                                 employees={user.employees}
                                                 unitSelected={idsUnit}
+                                                unitNameSelected={this.getUnitName(selectBoxUnit, idsUnit)}
+                                                handleDataExport={this.handleDataExport}
                                             />
                                         }
                                     </div>
@@ -336,19 +557,33 @@ class TaskOrganizationUnitDashboard extends Component {
 
                             </div>
                         </div>
+
+                        {/* Đóng góp công việc */}
                         <div className="row">
                             <div className="col-xs-12">
                                 <div className="box box-primary">
                                     <div className="box-header with-border">
                                         <div className="box-title">{translate('task.task_management.distribution_Of_Employee')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
+                                        <DataTableSetting
+                                            tableId={this.distributionOfEmployeeChartId}
+                                            setLimit={this.setLimitDistributionOfEmployeeChart}
+                                        />
                                     </div>
                                     <div className="box-body qlcv">
-                                        {this.state.callAction && tasks && tasks.organizationUnitTasks &&
-                                            <DistributionOfEmployee
-                                                tasks={tasks.organizationUnitTasks}
-                                                listEmployee={user && user.employees}
-                                                units={idsUnit}
-                                            />
+                                        {tasks && tasks.organizationUnitTasks &&
+                                            <React.Fragment>
+                                                <DistributionOfEmployee
+                                                    tasks={tasks.organizationUnitTasks}
+                                                    listEmployee={distributionOfEmployeeChart?.employees}
+                                                />
+                                                <PaginateBar
+                                                    display={distributionOfEmployeeChart?.employees?.length}
+                                                    total={user?.employees?.length}
+                                                    pageTotal={user?.employees?.length && Math.ceil(user?.employees?.length / distributionOfEmployeeChart?.perPage)}
+                                                    currentPage={distributionOfEmployeeChart?.page}
+                                                    func={this.handlePaginationDistributionOfEmployeeChart}
+                                                />
+                                            </React.Fragment>
                                         }
                                     </div>
                                 </div>
@@ -430,75 +665,12 @@ class TaskOrganizationUnitDashboard extends Component {
                             </div>
                         </div>
 
-                        <div className="row">
-                            <div className="col-xs-6">
-                                <div className="box box-primary">
-                                    <div className="box-header with-border">
-                                        <div className="box-title">{translate('task.task_management.dashboard_overdue')}</div>
-                                    </div>
-
-                                    <div className="box-body" style={{ height: "380px", overflow: "auto" }}>
-                                        {
-                                            (tasks && tasks.tasksbyuser) ?
-                                                <ul className="todo-list">
-                                                    {
-                                                        (tasks.tasksbyuser.expire.length !== 0) ?
-                                                            tasks.tasksbyuser.expire.map((item, key) =>
-                                                                <li key={key}>
-                                                                    <span className="handle">
-                                                                        <i className="fa fa-ellipsis-v" />
-                                                                        <i className="fa fa-ellipsis-v" />
-                                                                    </span>
-                                                                    <span className="text"><a href={`/task?taskId=${item.task._id}`} target="_blank">{item.task.name}</a></span>
-                                                                    <small className="label label-danger"><i className="fa fa-clock-o" /> &nbsp;{item.totalDays} {translate('task.task_management.calc_days')}</small>
-                                                                </li>
-                                                            ) : "Không có công việc quá hạn"
-                                                    }
-                                                </ul> : "Đang tải dữ liệu"
-                                        }
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="col-xs-6">
-                                <div className="box box-primary">
-                                    <div className="box-header with-border">
-                                        <div className="box-title">{translate('task.task_management.dashboard_about_to_overdue')}</div>
-                                    </div>
-                                    <div className="box-body" style={{ height: "380px", overflow: "auto" }}>
-                                        {
-                                            (tasks && tasks.tasksbyuser) ?
-                                                <ul className="todo-list">
-                                                    {
-                                                        (tasks.tasksbyuser.deadlineincoming.length !== 0) ?
-                                                            tasks.tasksbyuser.deadlineincoming.map((item, key) =>
-                                                                <li key={key}>
-                                                                    <span className="handle">
-                                                                        <i className="fa fa-ellipsis-v" />
-                                                                        <i className="fa fa-ellipsis-v" />
-                                                                    </span>
-                                                                    <span className="text"><a href={`/task?taskId=${item.task._id}`} target="_blank" >{item.task.name}</a></span>
-                                                                    <small className="label label-warning"><i className="fa fa-clock-o" /> &nbsp;{item.totalDays} {translate('task.task_management.calc_days')}</small>
-                                                                </li>
-                                                            ) : "Không có công việc nào sắp hết hạn"
-                                                    }
-                                                </ul> : "Đang tải dữ liệu"
-                                        }
-                                    </div>
-
-                                </div>
-                            </div>
-
-                        </div>
                         {/*Dashboard tải công việc */}
                         <div className="row">
                             <div className="col-xs-12">
                                 <div className="box box-primary">
                                     <div className="box-header with-border">
                                         <div className="box-title">{translate('task.task_management.load_task_chart_unit')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
-                                        {/* <ToolTip
-                                            type={"icon_tooltip"} materialIcon={"help"}
-                                            dataTooltip={['Tải công việc tính theo công thức tổng các tỉ số: số ngày thực hiện công việc trong tháng/(số người thực hiện + số người phê duyệt + số người hỗ trợ)']}
-                                        /> */}
                                         <a className="text-red" title={translate('task.task_management.explain')} onClick={() => this.showLoadTaskDoc()}>
                                             <i className="fa fa-exclamation-circle" style={{ color: '#06c', marginLeft: '5px' }} />
                                         </a>
@@ -506,7 +678,7 @@ class TaskOrganizationUnitDashboard extends Component {
                                     <div className="box-body qlcv">
                                         {this.state.callAction && tasks && tasks.organizationUnitTasks &&
                                             <LoadTaskOrganizationChart
-                                                tasks={tasks.organizationUnitTasks}
+                                                tasks={tasks?.organizationUnitTasks}
                                                 listEmployee={user && user.employees}
                                                 units={selectBoxUnit}
                                                 startMonth={startMonth}
@@ -518,13 +690,35 @@ class TaskOrganizationUnitDashboard extends Component {
                                 </div>
                             </div>
                         </div>
-                        <div>
-                            <AllTimeSheetLogsByUnit
-                                userDepartment={user.employees}
-                                organizationUnitTasks={tasks.organizationUnitTasks}
-                                startMonth={startMonth}
-                                endMonth={endMonth}
-                            />
+
+                        {/* Thống kê bấm giờ */}
+                        <div className="row">
+                            <div className="col-xs-12 col-md-12">
+                                <div className="box box-primary">
+                                    <div className="box-header with-border">
+                                        <div className="box-title">Thống kê bấm giờ từ tháng {this.formatDate(startMonth)} đến tháng {this.formatDate(endMonth)}</div>
+                                        <DataTableSetting
+                                            tableId={this.allTimeSheetLogsByUnitId}
+                                            setLimit={this.setLimitAllTimeSheetLogs}
+                                        />
+                                    </div>
+                                    <div className="box-body qlcv">
+                                        <AllTimeSheetLogsByUnit
+                                            userDepartment={allTimeSheetLogsByUnit?.employees}
+                                            organizationUnitTasks={tasks.organizationUnitTasks}
+                                            startMonth={startMonth}
+                                            endMonth={endMonth}
+                                        />
+                                        <PaginateBar
+                                            display={allTimeSheetLogsByUnit?.employees?.length}
+                                            total={user?.employees?.length}
+                                            pageTotal={user?.employees?.length && allTimeSheetLogsByUnit?.perPage !== 0 && Math.ceil(user?.employees?.length / allTimeSheetLogsByUnit?.perPage)}
+                                            currentPage={allTimeSheetLogsByUnit?.page}
+                                            func={this.handlePaginationAllTimeSheetLogs}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </React.Fragment>
                     : currentOrganizationalUnitLoading

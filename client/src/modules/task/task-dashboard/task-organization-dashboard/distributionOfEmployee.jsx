@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import { UserActions } from '../../../super-admin/user/redux/actions';
 
-import { SelectBox, SelectMulti } from '../../../../common-components/index';
+import { SelectMulti } from '../../../../common-components/index';
 import { withTranslate } from 'react-redux-multilingual';
 
 import c3 from 'c3';
@@ -20,14 +20,13 @@ class DistributionOfEmployee extends Component {
         }
     }
 
-    shouldComponentUpdate(nextState) {
-        if (!this.props.listEmployee) return false;
+    shouldComponentUpdate(nextProps, nextState) {
+        this.pieChart();
+        return true;
+    }
 
-        else {
-            this.pieChart();
-            return true;
-        }
-
+    componentDidUpdate = () => {
+        this.pieChart();
     }
 
     handleSelectStatus = async (value) => {
@@ -47,6 +46,7 @@ class DistributionOfEmployee extends Component {
         });
         this.pieChart();
     }
+
     filterByStatus(task) {
         let stt = this.state.status;
         for (let i in stt) {
@@ -110,7 +110,19 @@ class DistributionOfEmployee extends Component {
         return data;
     }
 
+    removePreviousChart() {
+        const chart = document.getElementById("distributionChart");
+
+        if (chart) {
+            while (chart.hasChildNodes()) {
+                chart.removeChild(chart.lastChild);
+            }
+        } 
+    }
+
     pieChart = async () => {
+        this.removePreviousChart();
+
         const { translate } = this.props;
 
         let data = await this.getData();
@@ -200,7 +212,6 @@ class DistributionOfEmployee extends Component {
 
                 {/* Biểu đồ đóng góp */}
                 <section id="distributionChart"></section>
-
             </React.Fragment>
         )
     }
@@ -212,7 +223,6 @@ function mapState(state) {
 }
 
 const actions = {
-    getAllEmployeeOfUnitByIds: UserActions.getAllEmployeeOfUnitByIds,
 };
 
 const connectedDistributionOfEmployee = connect(mapState, actions)(withTranslate(DistributionOfEmployee));

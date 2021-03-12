@@ -6,6 +6,7 @@ export const RecommendProcureActions = {
     createRecommendProcure,
     updateRecommendProcure,
     deleteRecommendProcure,
+    getUserApprover,
 };
 
 // Lấy danh sách phiếu đề nghị mua sắm thiết bị
@@ -29,6 +30,25 @@ function searchRecommendProcures(data) {
     }
 }
 
+function getUserApprover() {
+
+    return async dispatch => {
+        try {
+            const result = await RecommendProcureService.getUserApprover();
+
+            dispatch({
+                type: RecommendProcureConstants.GET_USER_APPROVER_SUCCESS,
+                payload: result.data.content
+            })
+
+        } catch (error) {
+            dispatch({
+                type: RecommendProcureConstants.GET_USER_APPROVER_FAILURE,
+                error: error.response.data
+            });
+        }
+    }
+}
 // Tạo mới thông tin phiếu đề nghị mua sắm thiết bị
 function createRecommendProcure(data) {
     return async dispatch => {

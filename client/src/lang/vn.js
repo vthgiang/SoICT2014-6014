@@ -33,6 +33,7 @@ export default {
             no_data: "Không có dữ liệu",
             success: "Thành công",
             error: "Lỗi",
+            stt: 'STT',
             new_notification: "Bạn có thông báo mới!",
             auth_alert: {
                 title:
@@ -2941,12 +2942,14 @@ export default {
                 coefficient: "Hệ số",
 
                 special: "Đặc tính",
+                creator_time: "Thời gian tạo",
                 select_all_special: "Chọn tất cả các đặc tính",
                 select_special: "Chọn đặc tính",
                 select_all_role: "Chọn tất cả các vai trò",
                 select_role: "Chọn vai trò",
                 stored: "Lưu trong kho",
                 current_month: "Tháng hiện tại",
+                current_week: "Tuần hiện tại",
 
                 assigned_collaborate: "Sắp xếp nhân viên cho công việc liên đơn vị",
                 not_assigned: "Chưa xác nhận sắp xếp nhân viên",
@@ -2972,6 +2975,7 @@ export default {
 
                 col_name: "Tên công việc",
                 col_organization: "Đơn vị",
+                col_project:"Dự án",
                 col_priority: "Độ ưu tiên",
                 col_start_date: "Ngày bắt đầu",
                 col_end_date: "Ngày kết thúc",
@@ -3586,14 +3590,20 @@ export default {
                 task_template_name_exist: "Tên mẫu công việc đã tồn tại",
             },
             task_dashboard: {
-                general_unit_task: "Tổng quan công việc đơn vị",
+                general_unit_task: "Tổng quan công việc",
+                general_unit_task_title_file_export: "Tổng quan công việc đơn vị",
                 unit: "Đơn vị",
-                all_tasks: "Tổng số công việc",
-                confirmed_task: "Công việc đã xác nhận thực hiện",
-                none_update_recently: "Công việc chưa cập nhật gần đây",
-                intime_task: "Công việc đúng tiến độ",
-                delay_task: "Công việc trễ tiến độ",
-                overdue_task: "Công việc quá hạn",
+                unit_lowercase : "đơn vị",
+                of_unit: "của đơn vị",
+                of: "của",
+                all_tasks: "Tổng số công việc",
+                all_tasks_inprocess: "Đang thực hiện",
+                all_tasks_finished: "Đã hoàn thành",
+                confirmed_task: "Đã xác nhận thực hiện",
+                none_update_recently: "Chưa cập nhật trong 7 ngày qua",
+                intime_task: "Đúng tiến độ",
+                delay_task: "Trễ tiến độ",
+                overdue_task: "Quá hạn",
                 no_task: "Không có công việc nào",
                 unconfirmed_task: "Công việc chưa xác nhận thực hiện",
                 urgent_task: "Công việc khẩn cấp",
@@ -5633,5 +5643,18 @@ export default {
                 sub_product: "số lượng phế phẩm"
             }
         },
+
+        project: {
+            code: "Mã dự án",
+            name: "Tên dự án",
+            startDate: "Ngày bắt đầu dự án",
+            endDate: "Ngày kết thúc dự án",
+            parent: "Dự án cha",
+            manager: "Người quản trị",
+            description: "Mô tả dự án",
+            add_title: "Thêm mới dự án",
+            detail_title: "Chi tiết dự án",
+            edit_title: "Chỉnh sửa dự án"
+        }
     },
 };

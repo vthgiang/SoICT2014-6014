@@ -674,11 +674,42 @@ class EvaluateByConsultedEmployee extends Component {
     }
 
     getEndTask = async () => {
+        let { translate } = this.props;
         let { task } = this.state;
         let end = task?.endDate;
         let endDate = this.formatDate(new Date(end));
         let endTime = this.formatTime(new Date(end));
-        this.setState({ endDate: endDate, endTime: endTime });
+
+        let { evaluatingMonth, startDate, startTime, idUser } = this.state;
+
+        let err = this.validateDateTime(evaluatingMonth, startDate, startTime, endDate, endTime, "end");
+
+        let data = this.getData(endDate, this.state.storedEvaluatingMonth);
+
+        let automaticPoint = data.automaticPoint;
+        let taskInfo = {
+            task: data.task,
+            progress: this.state.progress,
+            date: endDate,
+            time: endTime,
+            info: this.state.info,
+        };
+
+        automaticPoint = AutomaticTaskPointCalculator.calcAutoPoint(taskInfo);
+        if (isNaN(automaticPoint)) automaticPoint = undefined
+        if (automaticPoint < 0) automaticPoint = 0;
+
+        this.setState(state => {
+            return {
+                ...state,
+                errorOnEndDate: err,
+                endDate: endDate,
+                endTime: endTime,
+                autoPoint: automaticPoint,
+                oldAutoPoint: data.automaticPoint,
+                indexReRender: state.indexReRender + 1,
+            }
+        });
     }
 
     // hàm validate submit

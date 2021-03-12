@@ -622,7 +622,7 @@ class AddTaskForm extends Component {
         }
 
         let allUnitsMember = getEmployeeSelectBoxItems(usersInUnitsOfCompany);
-        let unitMembers = getEmployeeSelectBoxItems(usersOfChildrenOrganizationalUnit);
+        // let unitMembers = getEmployeeSelectBoxItems(usersOfChildrenOrganizationalUnit);
 
         if (KPIPersonalManager.kpipersonals) listKPIPersonal = KPIPersonalManager.kpipersonals;
 

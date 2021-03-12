@@ -253,7 +253,9 @@ exports.getTaskEvaluations = async (portal, data) => {
  * @task dữ liệu trong params
  */
 exports.getPaginatedTasks = async (portal, task) => {
-    let { perPage, number, role, user, organizationalUnit, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime, responsibleEmployees, accountableEmployees, creatorEmployees} = task;
+    let { perPage, number, role, user, organizationalUnit, status, priority, special, name,
+        startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime,responsibleEmployees,
+        accountableEmployees, creatorEmployees, creatorTime, projectSearch } = task;
     let taskList;
     perPage = Number(perPage);
     let page = Number(number);
@@ -281,7 +283,7 @@ exports.getPaginatedTasks = async (portal, task) => {
         $or: roleArr,
         isArchived: false
     };
-    let keySearchSpecial = {}, keySearchPeriod = {};
+    let keySearchSpecial = {}, keySearchPeriod = {}, keySeachDateTime = {};
 
     if (organizationalUnit) {
         keySearch = {
@@ -441,8 +443,8 @@ exports.getPaginatedTasks = async (portal, task) => {
         endDate = new Date(endDate);
         endDate.setMonth(endDate.getMonth() + 1);
         
-        keySearch = {
-            ...keySearch,
+        keySeachDateTime = {
+            ...keySeachDateTime,
             $or: [
                 { 'endDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
                 { 'startDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
@@ -489,9 +491,60 @@ exports.getPaginatedTasks = async (portal, task) => {
         }
     }
 
+    // tìm kiếm công việc theo dự án
+    if (projectSearch && projectSearch.length > 0) {
+        keySearch = {
+            ...keySearch,
+            taskProject: {
+                $in: projectSearch,
+            }
+        }
+    }
+
+    // Tìm kiếm công việc theo ngày tạo tuần hiện tại
+    if (creatorTime && creatorTime === "currentWeek") {
+        let curr = new Date()
+        let week = []
+
+        for (let i = 1; i <= 7; i++) {
+            let first = curr.getDate() - curr.getDay() + i 
+            let day = new Date(curr.setDate(first)).toISOString().slice(0, 10)
+            week.push(day)
+        }
+
+        const firstDayOfWeek = week[0];
+        const lastDayOfWeek = week[week.length - 1];
+
+        keySearch = {
+            ...keySearch,
+            createdAt: {
+                $gte: new Date(firstDayOfWeek), $lte: new Date(lastDayOfWeek)
+            }
+        }
+    }
+
+    // tìm kiếm công việc theo ngày tạo tháng hiện tại
+    if (creatorTime && creatorTime === 'currentMonth') {
+        const now = new Date();
+        const currentYear = now.getFullYear();
+        const currentMonth = now.getMonth();
+        const month = new Date(currentYear + '-' + (currentMonth + 1));
+        const nextMonth = new Date(currentYear + '-' + (currentMonth + 1));
+        nextMonth.setMonth(nextMonth.getMonth() + 1);
+
+        keySearch = {
+            ...keySearch,
+            createdAt: {
+                $gt: new Date(month), $lte: new Date(nextMonth)
+            }
+        }
+    }
+    
+    
     let optionQuery = {
         $and: [
             keySearch,
+            keySeachDateTime,
             keySearchSpecial,
             keySearchPeriod
         ]
@@ -500,9 +553,10 @@ exports.getPaginatedTasks = async (portal, task) => {
     taskList = await Task(connect(DB_CONNECTION, portal)).find(optionQuery).sort({ 'createdAt': -1 })
         .skip(perPage * (page - 1)).limit(perPage).populate([
             { path: "organizationalUnit parent" },
-            {path: 'creator', select : "_id name email avatar"},
-            {path: 'responsibleEmployees', select : "_id name email avatar"},
-            {path: 'accountableEmployees', select : "_id name email avatar"},
+            { path: 'creator', select: "_id name email avatar" },
+            { path: 'taskProject', select: "_id name" },
+            { path: 'responsibleEmployees', select : "_id name email avatar" },
+            { path: 'accountableEmployees', select : "_id name email avatar" },
             { path: "timesheetLogs.creator", select: "name" },
         ]);
 

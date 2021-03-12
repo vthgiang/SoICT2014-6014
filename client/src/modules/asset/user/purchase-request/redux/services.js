@@ -5,6 +5,19 @@ export const RecommendProcureService = {
     createRecommendProcure,
     updateRecommendProcure,
     deleteRecommendProcure,
+    getUserApprover
+
+}
+
+
+
+function getUserApprover() {
+    return sendRequest(
+        {
+            url: `${process.env.REACT_APP_SERVER}/purchase-request/use-approver`,
+            method: "GET",
+        }, false, true, "asset.purchase_request"
+    );
 }
 
 // Lấy danh sách phiếu đề nghị mua sắm thiết bị

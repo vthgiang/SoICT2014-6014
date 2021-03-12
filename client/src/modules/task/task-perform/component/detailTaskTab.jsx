@@ -25,7 +25,7 @@ import { TaskAddModal } from '../../task-management/component/taskAddModal';
 import { ModalAddTaskTemplate } from '../../task-template/component/addTaskTemplateModal';
 import { RequestToCloseTaskModal } from './requestToCloseTaskModal';
 
-import TaskProjectAction from '../../task-project/redux/action';
+import { ProjectActions } from "../../../project/redux/actions";
 import { ROOT_ROLE } from '../../../../helpers/constants';
 class DetailTaskTab extends Component {
 
@@ -151,7 +151,7 @@ class DetailTaskTab extends Component {
 
     componentDidMount() {
         const { currentRole } = this.state;
-        this.props.getAllTaskProject();
+        this.props.getProjects({ calledId: "" });
         this.props.showInfoRole(currentRole);
     }
 
@@ -1419,7 +1419,7 @@ const actionGetState = { //dispatchActionToProps
     editHoursSpentInEvaluate: performTaskAction.editHoursSpentInEvaluate,
     confirmTask: performTaskAction.confirmTask,
     getAllUserInAllUnitsOfCompany: UserActions.getAllUserInAllUnitsOfCompany,
-    getAllTaskProject: TaskProjectAction.get,
+    getProjects: ProjectActions.getProjects,
     openTaskAgain: performTaskAction.openTaskAgain,
 
     showInfoRole: RoleActions.show,

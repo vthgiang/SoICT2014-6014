@@ -38,13 +38,7 @@ class AllTimeSheetLogsByUnit extends Component {
         }
     }
 
-    formatDate = (date) => {
-        if (date) {
-            let data = date.split("-");
-            data = data[1] + "-" + data[0]
-            return data;
-        }
-    }
+
     handleInforTimeSheet = async (value) => {
         const { organizationUnitTasks, userDepartment } = this.props;
         let inforTimeSheetLog = []
@@ -56,7 +50,8 @@ class AllTimeSheetLogsByUnit extends Component {
                         if (creator == value.userId) {
                             let timesheet = {
                                 ...organizationUnitTasks.tasks[i].timesheetLogs[j],
-                                taskName: organizationUnitTasks.tasks[i].name
+                                taskName: organizationUnitTasks.tasks[i].name,
+                                taskId: organizationUnitTasks.tasks[i]._id,
                             }
                             inforTimeSheetLog.push(timesheet)
                         }
@@ -119,53 +114,42 @@ class AllTimeSheetLogsByUnit extends Component {
         }
 
         return (
-            <div className="row">
-                <div className="col-xs-12 col-md-12">
-                    <div className="box box-primary">
-                        <div className="box-header with-border">
-                            <div className="box-title">
-                                Thống kê bấm giờ từ tháng {this.formatDate(startMonth)} đến tháng {this.formatDate(endMonth)}
-                            </div>
-                        </div>
-                        <div className="box-body qlcv">
-                            <table className="table table-hover table-striped table-bordered" id="table-user-timesheetlogs">
-                                <thead>
-                                    <tr>
-                                        <th style={{ width: '60px' }}>STT</th>
-                                        <th>{translate('manage_user.name')}</th>
-                                        <th>Tổng thời gian bấm giờ</th>
-                                        <th>Bấm giờ tự chọn</th>
-                                        <th>Bấm giờ tự động</th>
-                                        <th>Bấm giờ tự tắt</th>
+            <React.Fragment>
+                <table className="table table-hover table-striped table-bordered" id="table-user-timesheetlogs">
+                    <thead>
+                        <tr>
+                            <th style={{ width: '60px' }}>STT</th>
+                            <th>Họ và tên</th>
+                            <th>Tổng thời gian bấm giờ</th>
+                            <th>Bấm bù giờ</th>
+                            <th>Bấm hẹn giờ</th>
+                            <th>Bấm giờ</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {
+                            timesheetlogs?.length > 0 && timesheetlogs.map((tsl, index) => {
+                                return (
+                                    <tr key={index}>
+                                        <td>{index + 1}</td>
+                                        <td><a onClick={() => this.handleInforTimeSheet(tsl)}>{tsl.name}</a></td>
+                                        <td>{convertTime(tsl.totalhours)}</td>
+                                        <td>{convertTime(tsl.manualtimer)}</td>
+                                        <td>{convertTime(tsl.autotimer)}</td>
+                                        <td>{convertTime(tsl.logtimer)}</td>
                                     </tr>
-                                </thead>
-                                <tbody>
-                                    {
-                                        timesheetlogs.length && timesheetlogs.map((tsl, index) => {
-                                            return (
-                                                <tr key={index}>
-                                                    <td>{index + 1}</td>
-                                                    <td><a onClick={() => this.handleInforTimeSheet(tsl)}>{tsl.name}</a></td>
-                                                    <td>{convertTime(tsl.totalhours)}</td>
-                                                    <td>{convertTime(tsl.manualtimer)}</td>
-                                                    <td>{convertTime(tsl.autotimer)}</td>
-                                                    <td>{convertTime(tsl.logtimer)}</td>
-                                                </tr>
-                                            )
-                                        })
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
+                                )
+                            })
+                        }
+                    </tbody>
+                </table>
                 { currentRowTimeSheetLog &&
                     <InforTimeSheetLog
                         timesheetlogs={currentRowTimeSheetLog.timesheetlogs}
                         data={currentRowTimeSheetLog.data}
                     />
                 }
-            </div>
+            </React.Fragment>
         )
     }
 }
