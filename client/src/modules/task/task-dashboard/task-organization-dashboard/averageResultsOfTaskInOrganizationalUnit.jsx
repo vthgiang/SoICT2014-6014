@@ -192,44 +192,45 @@ function AverageResultsOfTaskInOrganizationalUnit(props) {
                                         }
                             
                                         if (result?.automaticPoint && result?.taskImportanceLevel && dataSumPointAndCoefficient
-                                            && dataSumPointAndCoefficient?.[task?.organizationalUnit?._id]?.sumAutomaticPointCoefficient
-                                            && dataSumPointAndCoefficient?.[task?.organizationalUnit?._id]?.sumCoefficientAutomatic
+                                            && dataSumPointAndCoefficient?.[task?.organizationalUnit?._id]?.sumAutomaticPointCoefficient >= 0
+                                            && dataSumPointAndCoefficient?.[task?.organizationalUnit?._id]?.sumCoefficientAutomatic >= 0
                                         ) {
                                             dataSumPointAndCoefficient[task.organizationalUnit._id].sumAutomaticPointCoefficient = dataSumPointAndCoefficient?.[task?.organizationalUnit?._id]?.sumAutomaticPointCoefficient + result?.automaticPoint * result?.taskImportanceLevel * totalDay;
                                             dataSumPointAndCoefficient[task.organizationalUnit._id].sumCoefficientAutomatic = dataSumPointAndCoefficient?.[task?.organizationalUnit?._id]?.sumCoefficientAutomatic + result?.taskImportanceLevel * totalDay;
                                         }
                                         if (result?.employeePoint && dataSumPointAndCoefficient
-                                            && dataSumPointAndCoefficient?.[task?.organizationalUnit?._id]?.sumEmployeePointCoefficient
-                                            && dataSumPointAndCoefficient?.[task?.organizationalUnit?._id]?.sumCoefficientEmployee
+                                            && dataSumPointAndCoefficient?.[task?.organizationalUnit?._id]?.sumEmployeePointCoefficient >= 0
+                                            && dataSumPointAndCoefficient?.[task?.organizationalUnit?._id]?.sumCoefficientEmployee >= 0
                                         ) {
                                             dataSumPointAndCoefficient[task.organizationalUnit._id].sumEmployeePointCoefficient = dataSumPointAndCoefficient?.[task?.organizationalUnit?._id]?.sumEmployeePointCoefficient + result?.employeePoint * result?.taskImportanceLevel * totalDay;
                                             dataSumPointAndCoefficient[task.organizationalUnit._id].sumCoefficientEmployee = dataSumPointAndCoefficient?.[task?.organizationalUnit?._id]?.sumCoefficientEmployee + result?.taskImportanceLevel * totalDay;
                                         }
                                         if (result?.approvedPoint && dataSumPointAndCoefficient
-                                            && dataSumPointAndCoefficient?.[task?.organizationalUnit?._id]?.sumApprovedPointCoefficient
-                                            && dataSumPointAndCoefficient?.[task?.organizationalUnit?._id]?.sumCoefficientApproved
+                                            && dataSumPointAndCoefficient?.[task?.organizationalUnit?._id]?.sumApprovedPointCoefficient >= 0
+                                            && dataSumPointAndCoefficient?.[task?.organizationalUnit?._id]?.sumCoefficientApproved >= 0
                                         ) {
                                             dataSumPointAndCoefficient[task.organizationalUnit._id].sumApprovedPointCoefficient = dataSumPointAndCoefficient?.[task.organizationalUnit?._id]?.sumApprovedPointCoefficient + result?.approvedPoint * result?.taskImportanceLevel * totalDay;
                                             dataSumPointAndCoefficient[task.organizationalUnit._id].sumCoefficientApproved = dataSumPointAndCoefficient?.[task?.organizationalUnit?._id]?.sumCoefficientApproved + result?.taskImportanceLevel * totalDay;
                                         }
                                     } else {
                                         if (result?.automaticPoint
-                                            && dataSumPointAndCoefficient?.[task?.organizationalUnit?._id]?.sumAutomaticPointNotCoefficient
-                                            && dataSumPointAndCoefficient?.[task?.organizationalUnit?._id]?.sumNotCoefficientAutomatic
+                                            && dataSumPointAndCoefficient?.[task?.organizationalUnit?._id]?.sumAutomaticPointNotCoefficient >= 0
+                                            && dataSumPointAndCoefficient?.[task?.organizationalUnit?._id]?.sumNotCoefficientAutomatic >= 0
                                         ) {
                                             dataSumPointAndCoefficient[task.organizationalUnit._id].sumAutomaticPointNotCoefficient = dataSumPointAndCoefficient?.[task?.organizationalUnit?._id]?.sumAutomaticPointNotCoefficient + result?.automaticPoint;
                                             dataSumPointAndCoefficient[task.organizationalUnit._id].sumNotCoefficientAutomatic++;
                                         }
                                         if (result.employeePoint
-                                            && dataSumPointAndCoefficient?.[task?.organizationalUnit?._id]?.sumEmployeePointNotCoefficient
-                                            && dataSumPointAndCoefficient?.[task?.organizationalUnit?._id]?.sumNotCoefficientEmployee
+                                            && dataSumPointAndCoefficient?.[task?.organizationalUnit?._id]?.sumEmployeePointNotCoefficient >= 0
+                                            && dataSumPointAndCoefficient?.[task?.organizationalUnit?._id]?.sumNotCoefficientEmployee >= 0
                                         ) {
                                             dataSumPointAndCoefficient[task.organizationalUnit._id].sumEmployeePointNotCoefficient = dataSumPointAndCoefficient?.[task?.organizationalUnit._id]?.sumEmployeePointNotCoefficient + result?.employeePoint;
                                             dataSumPointAndCoefficient[task.organizationalUnit._id].sumNotCoefficientEmployee++;
                                         }
                                         if (result.approvedPoint
-                                            && dataSumPointAndCoefficient?.[task?.organizationalUnit?._id]?.sumApprovedPointNotCoefficient
-                                            && dataSumPointAndCoefficient?.[task?.organizationalUnit?._id]?.sumNotCoefficientApproved) {
+                                            && dataSumPointAndCoefficient?.[task?.organizationalUnit?._id]?.sumApprovedPointNotCoefficient >= 0
+                                            && dataSumPointAndCoefficient?.[task?.organizationalUnit?._id]?.sumNotCoefficientApproved >= 0
+                                        ) {
                                             dataSumPointAndCoefficient[task.organizationalUnit._id].sumApprovedPointNotCoefficient = dataSumPointAndCoefficient?.[task?.organizationalUnit?._id]?.sumApprovedPointNotCoefficient + result?.approvedPoint;
                                             dataSumPointAndCoefficient[task.organizationalUnit._id].sumNotCoefficientApproved++;
                                         }
