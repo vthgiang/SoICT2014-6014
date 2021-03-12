@@ -88,11 +88,11 @@ const InprocessTask = (props) => {
                 ],
                 type: 'pie',
             },
-
-            pie: {
-                label: {
-                    format: function (value, ratio, id) {
+            tooltip: {
+                format: {
+                    value: function (value) {
                         return value;
+
                     }
                 }
             },

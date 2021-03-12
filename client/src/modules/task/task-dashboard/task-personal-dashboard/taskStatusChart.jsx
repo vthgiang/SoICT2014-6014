@@ -42,7 +42,7 @@ function TaskStatusChart(props) {
 
     // Khai báo state
     const { role } = state;
-    
+
     useEffect(() => {
         if (tasks.responsibleTasks
             && tasks.accountableTasks
@@ -52,7 +52,7 @@ function TaskStatusChart(props) {
         ) {
             pieChart();
         }
-    }) 
+    })
 
     const handleSelectRole = (value) => {
         let role = value.map(item => Number(item));
@@ -104,7 +104,7 @@ function TaskStatusChart(props) {
 
             listTask = filterDuplicateTask(listTask);
         };
-        
+
         if (listTask) {
             listTask = TaskOrganizationUnitDashboard ? listTask.tasks : listTask; // neu la listTask cua organizationUnit
 
@@ -152,9 +152,9 @@ function TaskStatusChart(props) {
         removePreviosChart();
 
         let dataPieChart = setDataPieChart();
-
+        console.log('dataPieChart', dataPieChart)
         let chart = c3.generate({
-            bindto: document.getElementById('pie-chart-status'),             
+            bindto: document.getElementById('pie-chart-status'),
 
             data: {                                 // Dữ liệu biểu đồ
                 columns: dataPieChart,
@@ -168,12 +168,12 @@ function TaskStatusChart(props) {
                 right: 20,
                 left: 20
             },
-            
+
             tooltip: {
                 format: {
-                    value: function (value, ratio, id, index) { 
-                        return value; 
-                        
+                    value: function (value, ratio, id, index) {
+                        return value;
+
                     }
                 }
             }
