@@ -265,8 +265,6 @@ class ModalEditTaskByAccountableEmployee extends Component {
     }
 
     handleSetOfValueChange = async (value, code) => {
-        console.log('set', value);
-
         this.setState(state => {
             state.info[`${code}`] = {
                 value: value,
@@ -791,7 +789,6 @@ class ModalEditTaskByAccountableEmployee extends Component {
                 collaboratedWithOrganizationalUnits: value
             };
         });
-        console.log('new edit Task', this.state);
     }
 
     handleSelectedStatus = (value) => {
@@ -812,7 +809,6 @@ class ModalEditTaskByAccountableEmployee extends Component {
                 parent: val,
             }
         })
-        console.log('ppppp', value, this.state.parent);
     }
 
     handleSelectedResponsibleEmployee = (value) => {
@@ -992,7 +988,6 @@ class ModalEditTaskByAccountableEmployee extends Component {
 
                 //không có parent trong arr
                 !hasParentItem && listParentTask.unshift({ value: parentTask._id, text: parentTask.name })
-                console.log('arr', arr);
                 for (let i in arr) {
                     if (arr[i].value === parentTask._id) {
                         listParentTask.unshift({ value: parentTask._id, text: parentTask.name })

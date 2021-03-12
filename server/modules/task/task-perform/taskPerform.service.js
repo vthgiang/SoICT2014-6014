@@ -2420,8 +2420,8 @@ exports.getIdEvaluationOfThisMonth = async (portal, taskId) => {
     } else {
         let chk = initTask.evaluations.find(
             (e) =>
-                monthOfParams === e.evaluatingMonth.getMonth() &&
-                yearOfParams === e.evaluatingMonth.getFullYear()
+                monthOfParams === e.evaluatingMonth && e.evaluatingMonth.getMonth() &&
+                yearOfParams === e.evaluatingMonth && e.evaluatingMonth.getFullYear()
         );
         if (!chk) {
             // có evaluate nhưng k có tháng này
