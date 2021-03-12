@@ -110,7 +110,7 @@ class TaskOrganizationUnitDashboard extends Component {
         let { idsUnit, distributionOfEmployeeChart, allTimeSheetLogsByUnit } = this.state;
         let data, organizationUnit = "organizationUnit";
 
-        
+
 
         // Trưởng hợp đổi 2 role cùng là trưởng đơn vị, cập nhật lại select box chọn đơn vị
         if ((distributionOfEmployeeChart?.employees || allTimeSheetLogsByUnit?.employees) && user?.employeesLoading) {
@@ -145,8 +145,7 @@ class TaskOrganizationUnitDashboard extends Component {
             return true;
         }
 
-        if (!idsUnit && dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit)
-        {
+        if (!idsUnit && dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit) {
             let childrenOrganizationalUnit = [], queue = [], currentOrganizationalUnit;
 
             if (dashboardEvaluationEmployeeKpiSet) {
@@ -231,7 +230,7 @@ class TaskOrganizationUnitDashboard extends Component {
             })
             return true;
         }
-        
+
         return true;
     }
 
@@ -661,66 +660,6 @@ class TaskOrganizationUnitDashboard extends Component {
                             </div>
                         </div>
 
-                        {/* CÔng việc quá hạn, sắp hết hạn */}
-                        <div className="row">
-                            <div className="col-xs-6">
-                                <div className="box box-primary">
-                                    <div className="box-header with-border">
-                                        <div className="box-title">{translate('task.task_management.dashboard_overdue')}</div>
-                                    </div>
-
-                                    <div className="box-body" style={{ height: "380px", overflow: "auto" }}>
-                                        {
-                                            (tasks && tasks.tasksbyuser) ?
-                                                <ul className="todo-list">
-                                                    {
-                                                        (tasks.tasksbyuser.expire.length !== 0) ?
-                                                            tasks.tasksbyuser.expire.map((item, key) =>
-                                                                <li key={key}>
-                                                                    <span className="handle">
-                                                                        <i className="fa fa-ellipsis-v" />
-                                                                        <i className="fa fa-ellipsis-v" />
-                                                                    </span>
-                                                                    <span className="text"><a href={`/task?taskId=${item.task._id}`} target="_blank">{item.task.name}</a></span>
-                                                                    <small className="label label-danger"><i className="fa fa-clock-o" /> &nbsp;{item.totalDays} {translate('task.task_management.calc_days')}</small>
-                                                                </li>
-                                                            ) : "Không có công việc quá hạn"
-                                                    }
-                                                </ul> : "Đang tải dữ liệu"
-                                        }
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="col-xs-6">
-                                <div className="box box-primary">
-                                    <div className="box-header with-border">
-                                        <div className="box-title">{translate('task.task_management.dashboard_about_to_overdue')}</div>
-                                    </div>
-                                    <div className="box-body" style={{ height: "380px", overflow: "auto" }}>
-                                        {
-                                            (tasks && tasks.tasksbyuser) ?
-                                                <ul className="todo-list">
-                                                    {
-                                                        (tasks.tasksbyuser.deadlineincoming.length !== 0) ?
-                                                            tasks.tasksbyuser.deadlineincoming.map((item, key) =>
-                                                                <li key={key}>
-                                                                    <span className="handle">
-                                                                        <i className="fa fa-ellipsis-v" />
-                                                                        <i className="fa fa-ellipsis-v" />
-                                                                    </span>
-                                                                    <span className="text"><a href={`/task?taskId=${item.task._id}`} target="_blank" >{item.task.name}</a></span>
-                                                                    <small className="label label-warning"><i className="fa fa-clock-o" /> &nbsp;{item.totalDays} {translate('task.task_management.calc_days')}</small>
-                                                                </li>
-                                                            ) : "Không có công việc nào sắp hết hạn"
-                                                    }
-                                                </ul> : "Đang tải dữ liệu"
-                                        }
-                                    </div>
-
-                                </div>
-                            </div>
-
-                        </div>
                         {/*Dashboard tải công việc */}
                         <div className="row">
                             <div className="col-xs-12">
