@@ -52,6 +52,7 @@ class GanttCalendar extends Component {
     let taskFilter = [];
     let status = this.state.taskStatus;
     let parentCount = 0, currentParent = -1;
+    let splitTask = {};
 
     for (let i in status) {
       for (let j in group) {
@@ -61,31 +62,68 @@ class GanttCalendar extends Component {
       }
     }
 
+    // split task
+
+    if (taskFilter[0]) splitTask[0] = [taskFilter[0]];
+
     for (let i in taskFilter) {
-      if (i == 0) {
-        taskFilter[i].parentSplit = 0;
-      } else {
-        if (moment(taskFilter[i].startDate) > moment(taskFilter[i - 1]?.endDate)
-          || moment(taskFilter[i].endDate) < moment(taskFilter[i - 1]?.startDate)) {
-          taskFilter[i].parentSplit = parentCount;
+      let left = moment(taskFilter[i].startDate);
+      let right = moment(taskFilter[i].endDate);
+      if (i == 0) continue;
+      for (let parent in splitTask) {
+        let idx = 0;
+
+        if (splitTask[parent]) {
+
+          // duyet cac cong viec trong 1 dong
+          var intersect = false;
+          let currentLine = splitTask[parent];
+
+          for (let j in currentLine) {
+            // Kiem tra xem co trung cong viec nao k
+
+            let currentLeft = moment(currentLine[j].startDate);
+            let currentRight = moment(currentLine[j].endDate);
+            if ((left >= currentLeft && left <= currentRight) || (currentLeft >= left && currentLeft <= right)) {
+              intersect = true;
+              break;
+            }
+          }
+          if (!intersect) {
+            splitTask[idx].push(taskFilter[i]);
+            break;
+          }
         }
-        else {
-          parentCount++;
-          taskFilter[i].parentSplit = parentCount;
+      }
+      if (intersect) {
+        let nextId = Object.keys(splitTask).length;
+        splitTask[nextId] = [];
+        splitTask[nextId].push(taskFilter[i])
+      }
+    }
+
+    let taskFilterSplit = [];
+    for (let key in splitTask) {
+      if (splitTask[key]) {
+        for (let i in splitTask[key]) {
+          if (splitTask[key][i]) {
+            splitTask[key][i].parentSplit = parseInt(key);
+            taskFilterSplit.push(splitTask[key][i]);
+          }
         }
       }
     }
 
-    for (let i in taskFilter) {
-      let start = moment(taskFilter[i].startDate);
-      let end = moment(taskFilter[i].endDate);
+    for (let i in taskFilterSplit) {
+      let start = moment(taskFilterSplit[i].startDate);
+      let end = moment(taskFilterSplit[i].endDate);
       let now = moment(new Date());
       let duration = end.diff(start, 'days');
       if (duration == 0) duration = 1;
       let process = 0;
 
       // Tô màu công việc
-      if (taskFilter[i].status != "inprocess") {
+      if (taskFilterSplit[i].status != "inprocess") {
         process = 3;
       }
       else if (now > end) {
@@ -93,7 +131,7 @@ class GanttCalendar extends Component {
         count.notAchived++;
       }
       else {
-        let processDay = Math.floor(taskFilter[i].progress * duration / 100);
+        let processDay = Math.floor(taskFilterSplit[i].progress * duration / 100);
         let uptonow = now.diff(start, 'days');
 
         if (uptonow > processDay) {
@@ -105,10 +143,10 @@ class GanttCalendar extends Component {
           count.intime++;
         }
       }
-      if (taskFilter[i].parentSplit != currentParent) {
+      if (taskFilterSplit[i].parentSplit != currentParent) {
 
         data.push({
-          id: `${groupName}-${taskFilter[i].parentSplit}`,
+          id: `${groupName}-${taskFilterSplit[i].parentSplit}`,
           text: "",
           role: i == 0 ? label : "",
           start_date: null,
@@ -119,13 +157,13 @@ class GanttCalendar extends Component {
         line++;
       }
       data.push({
-        id: `${groupName}-${taskFilter[i]._id}`,
-        text: taskFilter[i].status == "inprocess" ? `${taskFilter[i].name} - ${taskFilter[i].progress}%` : `${taskFilter[i].name}`,
-        start_date: moment(taskFilter[i].startDate).format("YYYY-MM-DD"),
+        id: `${groupName}-${taskFilterSplit[i]._id}`,
+        text: taskFilterSplit[i].status == "inprocess" ? `${taskFilterSplit[i].name} - ${taskFilterSplit[i].progress}%` : `${taskFilterSplit[i].name}`,
+        start_date: moment(taskFilterSplit[i].startDate).format("YYYY-MM-DD"),
         duration: duration,
-        progress: taskFilter[i].status === "inprocess" ? taskFilter[i].progress / 100 : 0,
+        progress: taskFilterSplit[i].status === "inprocess" ? taskFilterSplit[i].progress / 100 : 0,
         process: process,
-        parent: `${groupName}-${taskFilter[i].parentSplit}`
+        parent: `${groupName}-${taskFilterSplit[i].parentSplit}`
       });
     }
     return { data, count, line };
@@ -195,7 +233,7 @@ class GanttCalendar extends Component {
     let line = 0, parentCount = 0, currentParent = -1;
     let data = [];
     let count = { delay: 0, intime: 0, notAchived: 0 };
-    let taskFilter = [], sortTaskArr = [];
+    let taskFilter = [], sortTaskArr = [], splitTask = [];
     let status = this.state.taskStatus;
 
     // Lọc công việc theo trạng thái
@@ -225,6 +263,70 @@ class GanttCalendar extends Component {
         }
       }
     }
+
+    // split task
+    for (let employee in sortTaskObj) {
+      if (sortTaskObj[employee] && sortTaskObj[employee].length) {
+        splitTask[0] = [sortTaskObj[employee][0]];
+        break;
+      }
+    }
+    console.log("first element", splitTask);
+    // for(let employee in sortTaskObj){
+    //   if(sortTaskObj[employee]){
+
+    //   }
+    // }
+    // if (taskFilter[0]) splitTask[0] = [taskFilter[0]];
+
+    // for (let i in taskFilter) {
+    //   let left = moment(taskFilter[i].startDate);
+    //   let right = moment(taskFilter[i].endDate);
+    //   if (i == 0) continue;
+    //   for (let parent in splitTask) {
+    //     let idx = 0;
+
+    //     if (splitTask[parent]) {
+
+    //       // duyet cac cong viec trong 1 dong
+    //       var intersect = false;
+    //       let currentLine = splitTask[parent];
+
+    //       for (let j in currentLine) {
+    //         // Kiem tra xem co trung cong viec nao k
+
+    //         let currentLeft = moment(currentLine[j].startDate);
+    //         let currentRight = moment(currentLine[j].endDate);
+    //         if ((left >= currentLeft && left <= currentRight) || (currentLeft >= left && currentLeft <= right)) {
+    //           intersect = true;
+    //           break;
+    //         }
+    //       }
+    //       if (!intersect) {
+    //         splitTask[idx].push(taskFilter[i]);
+    //         break;
+    //       }
+    //     }
+    //   }
+    //   if (intersect) {
+    //     let nextId = Object.keys(splitTask).length;
+    //     splitTask[nextId] = [];
+    //     splitTask[nextId].push(taskFilter[i])
+    //   }
+    // }
+
+    // let taskFilterSplit = [];
+    // for (let key in splitTask) {
+    //   if (splitTask[key]) {
+    //     for (let i in splitTask[key]) {
+    //       if (splitTask[key][i]) {
+    //         splitTask[key][i].parentSplit = parseInt(key);
+    //         taskFilterSplit.push(splitTask[key][i]);
+    //       }
+    //     }
+    //   }
+    // }
+    console.log("arrrrrr", sortTaskObj);
 
     // chuyen object thanh mang cong viec
     for (let key in sortTaskObj) {

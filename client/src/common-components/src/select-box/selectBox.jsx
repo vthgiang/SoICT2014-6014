@@ -152,7 +152,7 @@ class SelectBox extends Component {
                 }
             });
             if (onChange) {
-                onChange(value); // Thông báo lại cho parent component về giá trị mới (để parent component lưu vào state của nó)
+                this.props.onChange(value); // Thông báo lại cho parent component về giá trị mới (để parent component lưu vào state của nó)
             }
         });
 
