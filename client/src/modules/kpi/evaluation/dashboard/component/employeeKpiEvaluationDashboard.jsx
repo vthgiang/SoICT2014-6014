@@ -107,7 +107,9 @@ class EmployeeKpiEvaluationDashboard extends Component {
             });
 
             if (dashboardEvaluationEmployeeKpiSet && dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit && dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit.id) {
-                this.props.getAllEmployeeOfUnitByIds([dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit.id]);
+                this.props.getAllEmployeeOfUnitByIds({
+                    organizationalUnitIds: [dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit.id]
+                });
                 this.props.getAllEmployeeKpiSetOfUnitByIds([dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit.id]);
             }
 
@@ -229,7 +231,7 @@ class EmployeeKpiEvaluationDashboard extends Component {
 
             if (this.IDS.length > 0) {
                 this.props.getAllEmployeeKpiSetOfUnitByIds(this.IDS);
-                this.props.getAllEmployeeOfUnitByIds(this.IDS);
+                this.props.getAllEmployeeOfUnitByIds({ organizationalUnitIds: this.IDS });
                 this.props.getChildrenOfOrganizationalUnitsAsTree(localStorage.getItem("currentRole"));
                 this.props.getAllUserOfDepartment(this.IDS);
             }

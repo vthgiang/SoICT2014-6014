@@ -159,7 +159,7 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
 
         for (let i = 1; i < arrayPoint.length; i++) {
             let newDate = new Date(arrayPoint[i].date);
-            newDate = newDate.getFullYear() + "-" + (newDate.getMonth() + 1) + "-" + (newDate.getDate() - 1);
+            newDate = newDate.getFullYear() + "-" + (newDate.getMonth() + 1) + "-" + "01";
 
             dateAxisX.push(newDate);
 

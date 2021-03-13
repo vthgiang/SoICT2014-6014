@@ -96,28 +96,49 @@ export function user(state = initState, action) {
             }
             return {
                 ...state,
-                employeesLoading: true,
-                employees: null,
                 loading: true,
-                isLoading: true
+                isLoading: true,
+                employeeForDistributionChart: {
+                    loading: true,
+                    employees: action.typeState === "forDistributionChart" ? null : state.employeeForDistributionChart?.employees,
+                    totalEmployee: action.typeState === "forDistributionChart" ? null : state.employeeForDistributionChart?.totalEmployee,
+                    totalPage: action.typeState === "forDistributionChart" ? null : state.employeeForDistributionChart?.totalPage,
+                },
+                employeeForAllTimeSheetLogs: {
+                    loading: true,
+                    employees: action.typeState === "forAllTimeSheetLogs" ? null : state.employeeForAllTimeSheetLogs?.employees,
+                    totalEmployee: action.typeState === "forAllTimeSheetLogs" ? null : state.employeeForAllTimeSheetLogs?.totalEmployee,
+                    totalPage: action.typeState === "forAllTimeSheetLogs" ? null : state.employeeForAllTimeSheetLogs?.totalPage,
+                }
             };
 
         case UserConstants.GET_ALL_EMPLOYEE_OF_UNIT_BY_ID_SUCCESS:
             if(action.callApi){
                 return {
                     ...state,
-                    employeesOfUnitsUserIsManager: action.payload,
+                    employeesOfUnitsUserIsManager: action.payload?.employees,
                     isLoading: false
                 };
             }
+
             return {
                 ...state,
-                employeesLoading: false,
                 loading: false,
-                employees: action.payload,
-                isLoading: false
+                isLoading: false,            
+                employees: !action.typeState ? action.payload?.employees : state.employees,
+                employeeForDistributionChart: {
+                    loading: false,
+                    employees: action.typeState === "forDistributionChart" ? action.payload?.employees : state.employeeForDistributionChart?.employees,
+                    totalEmployee: action.typeState === "forDistributionChart" ? action.payload?.totalEmployee : state.employeeForDistributionChart?.totalEmployee,
+                    totalPage: action.typeState === "forDistributionChart" ? action.payload?.totalPage : state.employeeForDistributionChart?.totalPage,
+                },
+                employeeForAllTimeSheetLogs: {
+                    loading: false,
+                    employees: action.typeState === "forAllTimeSheetLogs" ? action.payload?.employees : state.employeeForAllTimeSheetLogs?.employees,
+                    totalEmployee: action.typeState === "forAllTimeSheetLogs" ? action.payload?.totalEmployee : state.employeeForAllTimeSheetLogs?.totalEmployee,
+                    totalPage: action.typeState === "forAllTimeSheetLogs" ? action.payload?.totalPage : state.employeeForAllTimeSheetLogs?.totalPage,
+                }
             };
-
 
         case UserConstants.GET_ALL_EMPLOYEE_OF_UNIT_BY_ID_FAILURE:
             return {

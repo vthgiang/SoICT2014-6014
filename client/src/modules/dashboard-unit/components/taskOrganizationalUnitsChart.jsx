@@ -66,7 +66,10 @@ class TaskOrganizationalUnitsChart extends Component {
         const { startDate, endDate } = this.state;
         let { childOrganizationalUnit } = this.props;
         childOrganizationalUnit = childOrganizationalUnit.map(x => x.id);
-        this.props.getAllEmployeeOfUnitByIds(childOrganizationalUnit, "employeesOfUnistsUserIsManager");
+        this.props.getAllEmployeeOfUnitByIds({ 
+            organizationalUnitIds: childOrganizationalUnit,
+            callApi: "employeesOfUnistsUserIsManager"
+        });
         this.props.getTaskInOrganizationUnitByMonth(childOrganizationalUnit, this.formatString(startDate), this.formatString(endDate));
     }
 

@@ -39,7 +39,7 @@ function get(params) {
  *  Lấy tất cả nhân viên trong đơn vị theo mảng id đơn vị
  * @param {*} ids
  */
-function getAllEmployeeOfUnitByIds(ids) {
+function getAllEmployeeOfUnitByIds(data) {
     let role = getStorage("currentRole");
     return sendRequest(
         {
@@ -47,7 +47,9 @@ function getAllEmployeeOfUnitByIds(ids) {
             method: "GET",
             params: {
                 role: role,
-                ids: ids,
+                ids: data?.organizationalUnitIds,
+                page: data?.page,
+                perPage: data?.perPage
             },
         },
         false,

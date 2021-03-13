@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const {
     OrganizationalUnit,
     User,
@@ -168,48 +169,72 @@ exports.getAllEmployeeOfUnitByRole = async (portal, role) => {
  * Lấy tất cả nhân viên theo mảng id đơn vị
  * @id Mảng id các đơn vị
  */
-exports.getAllEmployeeOfUnitByIds = async (portal, id) => {
-    let data = [];
-    for (let i = 0; i < id.length; i++) {
-        let organizationalUnit = await OrganizationalUnit(
-            connect(DB_CONNECTION, portal)
-        ).findById(id[i]);
-        let allRoles = [
-            ...organizationalUnit.employees,
-            ...organizationalUnit.managers,
-            ...organizationalUnit.deputyManagers,
-        ];
-        let employees = await UserRole(connect(DB_CONNECTION, portal))
-            .find({
-                roleId: {
-                    $in: allRoles,
-                },
-            })
-            .populate("userId roleId");
+exports.getAllEmployeeOfUnitByIds = async (portal, query) => {
+    let { ids, page, perPage } = query;
 
-        for (let j in employees) {
-            let check = 0;
-            for (let k in data) {
-                if (
-                    String(employees[j].userId._id) ==
-                    String(data[k].userId._id)
-                ) {
-                    check = 1;
-                    break;
-                }
-            }
-            if (check == 0) {
-                let employee = {
-                    _id: employees[j]._id,
-                    idUnit: id[i],
-                    userId: employees[j].userId,
-                    roleId: employees[j].roleId,
-                };
-                data.push(employee);
-            }
+    let employees = [], roles = [], countDocument;
+    let organizationalUnits = await OrganizationalUnit(connect(DB_CONNECTION, portal))
+        .find({
+            '_id': { $in: ids.map(item => mongoose.Types.ObjectId(item)) }
+        })
+
+    for(let i = 0; i < organizationalUnits.length; i++) {
+        roles = [
+            ...roles,
+            ...organizationalUnits[i].employees,
+            ...organizationalUnits[i].managers,
+            ...organizationalUnits[i].deputyManagers
+        ]
+    }
+
+    let keyQuery = [
+        { $match: {
+            'roleId': { $in: roles }
+        }},
+
+        { $group: { 
+            '_id': '$userId',
+            'user': { $push: "$$ROOT" }
+        }}
+    ]
+    let keyCountDocument = [
+        ...keyQuery, 
+        {
+            $count: "totalEmployee"
+        }
+    ];
+
+    if (perPage >= 0) {
+        perPage = Number(perPage);
+        if (page) {
+            page = Number(page);
+            keyQuery = [
+                ...keyQuery,
+                { $skip: perPage * (page - 1) },
+                { $limit: perPage }
+            ]
+        } else {
+            keyQuery = [
+                ...keyQuery,
+                { $limit: perPage }
+            ]
         }
     }
-    return data;
+
+   
+    employees = await UserRole(connect(DB_CONNECTION, portal)).aggregate(keyQuery)
+    employees = employees.map(item => item?.user?.[0]);
+    await User(connect(DB_CONNECTION, portal)).populate(employees, { path: "userId" });
+    await Role(connect(DB_CONNECTION, portal)).populate(employees, { path: 'roleId' });
+    countDocument = await UserRole(connect(DB_CONNECTION, portal)).aggregate(keyCountDocument);
+    let totalEmployee = countDocument?.[0]?.totalEmployee;
+    let totalPage = totalEmployee && perPage ? Math.ceil(totalEmployee / perPage) : 1;
+
+    return {
+        employees,
+        totalEmployee,
+        totalPage
+    };
 };
 
 /**

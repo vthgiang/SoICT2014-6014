@@ -41,6 +41,7 @@ function AverageResultsOfTaskInOrganizationalUnit(props) {
     ];
 
     // Khởi tạo state
+    const [dataChart, setDataChart] = useState();
     const [state, setState] = useState({
         userId: localStorage.getItem("userId"),
 
@@ -64,7 +65,7 @@ function AverageResultsOfTaskInOrganizationalUnit(props) {
     });
     const currentState = ref.current;
     const chart = useRef();
-    const dataChart = useRef();
+    const dataChartRef = useRef();
 
     useEffect(() => {
         if (currentState.criteria === criteria && currentState.typePoint === typePoint) {
@@ -351,14 +352,29 @@ function AverageResultsOfTaskInOrganizationalUnit(props) {
 
     const averageChart = () => {
         removePreviosChart();
-        dataChart.current = setDataAverageChart();
+        
+        let data = setDataAverageChart();
+        let check = false;
+        if (data?.length !== dataChartRef.current?.length) {
+            check = true;
+        } else if (data?.length > 0) {
+            data.map(item => item[0]).map(item => {
+                if (!dataChartRef.current?.map(item => item[0])?.includes(item)) {
+                    check = true;
+                }
+            })
+        }
+        if (check) {
+            dataChartRef.current = data;
+            setDataChart(data)
+        }
         
         chart.current = c3.generate({
             bindto: document.getElementById('averageChartUnitChart'),             // Đẩy chart vào thẻ div có id="chart"
 
             data: {
                 x: 'x',
-                columns: dataChart.current,
+                columns: data,
             },
 
             // Căn lề biểu đồ
@@ -441,8 +457,8 @@ function AverageResultsOfTaskInOrganizationalUnit(props) {
                     chart={chart.current}
                     chartId={"averageChartUnit"}
                     legendId={"averageChartUnitLegend"}
-                    title={dataChart.current && `${translate('general.list_unit')} (${dataChart.current.length - 1})`}
-                    dataChartLegend={dataChart.current && dataChart.current.filter((item, index) => index !== 0).map(item => item[0])}
+                    title={dataChartRef.current && `${translate('general.list_unit')} (${dataChartRef.current?.length - 1})`}
+                    dataChartLegend={dataChartRef.current && dataChartRef.current.filter((item, index) => index !== 0).map(item => item[0])}
                 />
             </section>
         </React.Fragment>

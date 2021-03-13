@@ -10,7 +10,7 @@ import 'c3/c3.css';
 const LoadTaskOrganizationChart = (props) => {
     const { translate, units, idsUnit, tasks } = props;
     let { startMonth, endMonth } = props;
-
+    const [dataChart, setDataChart] = useState();
     const ref = useRef({
         chart: null,
         dataChart: null
@@ -90,12 +90,26 @@ const LoadTaskOrganizationChart = (props) => {
                 }
                 data[i] = [...data[i], ...array];
             }
+
+            let check = false;
+            if (data?.length !== ref.current.dataChart?.length) {
+                check = true;
+            } else if (data?.length > 0) {
+                data.map(item => item[0]).map(item => {
+                    if (!ref.current.dataChart?.map(item => item[0])?.includes(item)) {
+                        check = true;
+                    }
+                })
+            }
+            if (check) {
+                ref.current.dataChart = data;
+                setDataChart(data)
+            }
             barChart(data, category);
         }
     })
 
     const barChart = (data, category) => {
-        ref.current.dataChart = data;
         ref.current.chart = c3.generate({
             bindto: document.getElementById("weightTaskOrganization"),
 
@@ -131,20 +145,17 @@ const LoadTaskOrganizationChart = (props) => {
         });
     }
 
-
     return (
         <React.Fragment>
             <section id={"weightTaskOrganizationChart"} className="c3-chart-container enable-pointer">
                 <div id="weightTaskOrganization"></div>
-                {ref?.current?.dataChart?.length > 0
-                    && <CustomLegendC3js
-                        chart={ref.current.chart}
-                        chartId={"weightTaskOrganizationChart"}
-                        legendId={"weightTaskOrganizationChartLegend"}
-                        title={`${translate('general.list_unit')} (${ref?.current?.dataChart?.length})`}
-                        dataChartLegend={ref.current.dataChart && ref.current.dataChart.map(item => item[0])}
-                    />
-                }
+                <CustomLegendC3js
+                    chart={ref.current.chart}
+                    chartId={"weightTaskOrganizationChart"}
+                    legendId={"weightTaskOrganizationChartLegend"}
+                    title={`${translate('general.list_unit')} (${dataChart?.length > 0 ? dataChart?.length : 0})`}
+                    dataChartLegend={dataChart && dataChart.map(item => item[0])}
+                />
             </section>
         </React.Fragment>
     )

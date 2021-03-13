@@ -129,12 +129,12 @@ class ResultsOfOrganizationalUnitKpiChart extends Component {
             date = ['x'];
 
             listOrganizationalUnitKpiSetEachYear.forEach(x => {
-                automaticPoint.push(x.automaticPoint);
-                employeePoint.push(x.employeePoint);
-                approvedPoint.push(x.approvedPoint);
+                automaticPoint.push(x?.automaticPoint);
+                employeePoint.push(x?.employeePoint);
+                approvedPoint.push(x?.approvedPoint);
 
-                let newDate = new Date(x.date);
-                newDate = newDate.getFullYear() + "-" + (newDate.getMonth() + 1) + "-" + (newDate.getDate() - 1);
+                let newDate = new Date(x?.date);
+                newDate = newDate?.getFullYear() + "-" + (newDate?.getMonth() + 1) + "-" + "01";
                 date.push(newDate);
             });
         }
@@ -219,7 +219,7 @@ class ResultsOfOrganizationalUnitKpiChart extends Component {
                 x: {
                     type: 'timeseries',
                     tick: {
-                        format: function (x) { return (x.getMonth() + 1) + "-" + x.getFullYear(); }
+                        format: function (x) { return (x?.getMonth() + 1) + "-" + x?.getFullYear(); }
                     }
                 },
                 y: {
