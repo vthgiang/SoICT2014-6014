@@ -718,7 +718,7 @@ getAllTaskOfOrganizationalUnit = async (req, res) => {
 /** Lấy tất cả task của các đơn vị con của đơn vị hiện tại */
 getAllTaskOfChildrenOrganizationalUnit = async (req, res) => {
     try {
-        let tasksOfChildrenOrganizationalUnit = await TaskManagementService.getAllTaskOfChildrenOrganizationalUnit(req.portal, req.user.company._id, req.query.roleId, req.query.month, req.query.organizationalUnitId); // req.portal === req.user.company._id
+        let tasksOfChildrenOrganizationalUnit = await TaskManagementService.getAllTaskOfChildrenOrganizationalUnit(req.portal, req.query.roleId, req.query.month, req.query.organizationalUnitId); // req.portal === req.user.company._id
 
         Logger.info(req.user.email, 'get_all_task_of_children_organizational_unit', req.portal);
         res.status(200).json({

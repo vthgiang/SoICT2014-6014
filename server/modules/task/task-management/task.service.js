@@ -2316,11 +2316,11 @@ exports.getAllTaskOfOrganizationalUnit = async (portal, roleId, organizationalUn
  * @param {*} organizationalUnitId 
  * @param {*} month 
  */
-exports.getAllTaskOfChildrenOrganizationalUnit = async (portal, companyId, roleId, month, organizationalUnitId) => {
+exports.getAllTaskOfChildrenOrganizationalUnit = async (portal, roleId, month, organizationalUnitId) => {
 
     let tasksOfChildrenOrganizationalUnit = [], childrenOrganizationalUnits;
 
-    childrenOrganizationalUnits = await overviewService.getAllChildrenOrganizational(portal, companyId, roleId, organizationalUnitId);
+    childrenOrganizationalUnits = await overviewService.getAllChildrenOrganizational(portal, roleId, organizationalUnitId);
 
     if (childrenOrganizationalUnits) {
         for (let i = 0; i < childrenOrganizationalUnits.length; i++) {
