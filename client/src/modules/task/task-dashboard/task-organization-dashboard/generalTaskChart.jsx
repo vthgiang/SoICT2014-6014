@@ -242,8 +242,6 @@ const GeneralTaskChart = (props) => {
 
         state && state.length > 0 && convertDataExport(state);
         setstate(dataTable);
-
-
     }, [props.employees]);
 
 

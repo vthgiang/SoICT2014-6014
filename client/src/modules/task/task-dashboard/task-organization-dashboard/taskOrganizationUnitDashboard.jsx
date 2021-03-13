@@ -362,8 +362,8 @@ class TaskOrganizationUnitDashboard extends Component {
 
     getUnitName = (arrayUnit, arrUnitId) => {
         let data = [];
-        arrayUnit.forEach(x => {
-            arrUnitId.forEach(y => {
+        arrayUnit && arrayUnit.forEach(x => {
+            arrUnitId && arrUnitId.length > 0 && arrUnitId.forEach(y => {
                 if (x.id === y)
                     data.push(x.name)
             })
@@ -444,7 +444,7 @@ class TaskOrganizationUnitDashboard extends Component {
 
     render() {
         const { tasks, translate, user, dashboardEvaluationEmployeeKpiSet } = this.props;
-        let { idsUnit, startMonth, endMonth, selectBoxUnit, distributionOfEmployeeChart, allTimeSheetLogsByUnit } = this.state;
+        let { idsUnit, startMonth, endMonth, selectBoxUnit, distributionOfEmployeeChart, allTimeSheetLogsByUnit, dataExport } = this.state;
         let { startMonthTitle, endMonthTitle } = this.INFO_SEARCH;
         let childrenOrganizationalUnit = [];
         let currentOrganizationalUnit, currentOrganizationalUnitLoading;
@@ -523,7 +523,7 @@ class TaskOrganizationUnitDashboard extends Component {
 
                                         </div>
                                         {
-                                            this.state.dataExport && <ExportExcel id="export-general-task" buttonName={translate('human_resource.name_button_export')} exportData={this.state.dataExport} style={{ marginTop: 0 }} />
+                                            dataExport && <ExportExcel id="export-general-task" buttonName={translate('human_resource.name_button_export')} exportData={dataExport} style={{ marginTop: 0 }} />
                                         }
                                     </div>
 
@@ -534,7 +534,7 @@ class TaskOrganizationUnitDashboard extends Component {
                                                 units={selectBoxUnit}
                                                 employees={user.employees}
                                                 unitSelected={idsUnit}
-                                                unitNameSelected={this.getUnitName(selectBoxUnit, idsUnit)}
+                                                unitNameSelected={idsUnit && this.getUnitName(selectBoxUnit, idsUnit)}
                                                 handleDataExport={this.handleDataExport}
                                             />
                                         }
