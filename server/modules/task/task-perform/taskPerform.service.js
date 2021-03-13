@@ -566,7 +566,7 @@ exports.editTimeSheetLog = async (portal, taskId, timesheetlogId, data) => {
 /**
  * Dừng bấm giờ: Lưu thời gian kết thúc và số giờ chạy (endTime và time)
  */
-exports.stopTimesheetLog = async (portal, params, body) => {
+exports.stopTimesheetLog = async (portal, params, body, user) => {
     let stoppedAt;
     let timer, duration;
     
@@ -583,6 +583,7 @@ exports.stopTimesheetLog = async (portal, params, body) => {
             duration,
             autoStopped: body.autoStopped,
             description: body.addlogDescription,
+            creator: user._id,
         }
         timer = await Task(connect(DB_CONNECTION, portal)).findByIdAndUpdate(
             params.taskId,

@@ -129,7 +129,7 @@ exports.startTimesheetLog = async (req, res) => {
  */
 exports.stopTimesheetLog = async (req, res) => {
     try {
-        let timer = await PerformTaskService.stopTimesheetLog(req.portal, req.params, req.body);
+        let timer = await PerformTaskService.stopTimesheetLog(req.portal, req.params, req.body, req.user);
         await Logger.info(req.user.email, 'stop_timer_success', req.portal)
         res.status(200).json({
             success: true,
