@@ -534,6 +534,8 @@ class TaskOrganizationUnitDashboard extends Component {
                                                 units={selectBoxUnit}
                                                 employees={user.employees}
                                                 unitSelected={idsUnit}
+                                                startMonthTitle={startMonthTitle}
+                                                endMonthTitle={endMonthTitle}
                                                 unitNameSelected={idsUnit && this.getUnitName(selectBoxUnit, idsUnit)}
                                                 handleDataExport={this.handleDataExport}
                                             />

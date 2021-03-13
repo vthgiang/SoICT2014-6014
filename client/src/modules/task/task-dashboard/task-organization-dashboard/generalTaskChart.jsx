@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef, useLayoutEffect } from 'react'
 import moment from 'moment'
 import { TreeTable, DataTableSetting } from '../../../../common-components';
 import { withTranslate } from 'react-redux-multilingual';
@@ -9,7 +9,7 @@ const GeneralTaskChart = (props) => {
     const { translate } = props;
     const dataTable = []
     const [state, setstate] = useState([]);
-
+    const checkExport = useRef(false);
 
     const countTask = (tasklist, name) => {
         let confirmedTask = 0, noneUpdateTask = 0, intimeTask = 0, delayTask = 0, overdueTask = 0, taskFinished = 0, taskInprocess = 0;
@@ -112,6 +112,12 @@ const GeneralTaskChart = (props) => {
         return propNames
 
     }
+
+    useLayoutEffect(() => {
+        if (checkExport) {
+            state && state.length > 0 && convertDataExport(state);
+        }
+    }, [state])
 
     useEffect(() => {
         const { tasks, units, unitSelected, employees, unitNameSelected } = props;
@@ -240,7 +246,7 @@ const GeneralTaskChart = (props) => {
             }
         }
 
-        state && state.length > 0 && convertDataExport(state);
+        checkExport.current = true;
         setstate(dataTable);
     }, [props.employees]);
 
@@ -278,7 +284,7 @@ const GeneralTaskChart = (props) => {
 
 
     const convertDataExport = (data) => {
-        const { translate, unitNameSelected } = props;
+        const { translate, unitNameSelected, startMonthTitle, endMonthTitle } = props;
         let newData = _cloneDeep(data);
         newData = newData.map((o, index) => ({
             STT: index + 1,
@@ -303,7 +309,7 @@ const GeneralTaskChart = (props) => {
             dataSheets: [
                 {
                     sheetName: 'sheet1',
-                    sheetTitle: `${translate('task.task_dashboard.general_unit_task')} của ${props.unitNameSelected && props.unitNameSelected.length} đơn vị`,
+                    sheetTitle: `${translate('task.task_dashboard.general_unit_task')} của ${props.unitNameSelected && props.unitNameSelected.length} đơn vị từ ${startMonthTitle} đến ${endMonthTitle} `,
                     tables: [
                         {
                             note: `Chú ý: Xem danh sách ${props.unitNameSelected && props.unitNameSelected.length} đơn vị ở sheet thứ 2 `,
