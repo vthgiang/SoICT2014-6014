@@ -109,7 +109,7 @@ import { manufacturingPlan } from "../modules/production/manufacturing/manufactu
 import { manufacturingCommand } from "../modules/production/manufacturing/manufacturing-command/redux/reducers";
 
 import { project } from "../modules/project/redux/reducers";
-
+import { newsFeeds } from "../modules/home/redux/reducers";
 
 const appReducer = combineReducers({
     socket,
@@ -232,10 +232,9 @@ const appReducer = combineReducers({
 
     // project
     project,
-    Intl
+    Intl,
 
-
-
+    newsFeeds
 });
 
 const rootReducer = (state, action) => {

@@ -271,7 +271,6 @@ class GanttCalendar extends Component {
         break;
       }
     }
-    console.log("first element", splitTask);
     // for(let employee in sortTaskObj){
     //   if(sortTaskObj[employee]){
 
@@ -326,7 +325,6 @@ class GanttCalendar extends Component {
     //     }
     //   }
     // }
-    console.log("arrrrrr", sortTaskObj);
 
     // chuyen object thanh mang cong viec
     for (let key in sortTaskObj) {
