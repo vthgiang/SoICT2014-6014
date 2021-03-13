@@ -37,9 +37,9 @@ class InforTimeSheetLog extends Component {
                 >
                     <div className="description-box">
                         <div><strong>Tổng thời gian:</strong>{convertTime(this.props.data.totalhours)}</div>
-                        <div><strong>Bấm giờ tự chọn:</strong> {convertTime(this.props.data.manualtimer)}</div>
-                        <div><strong>Bấm giờ tự động:</strong> {convertTime(this.props.data.autotimer)}</div>
-                        <div><strong>Bấm giờ tự tắt:</strong> {convertTime(this.props.data.logtimer)}</div>
+                        <div><strong>Bấm bù giờ:</strong> {convertTime(this.props.data.manualtimer)}</div>
+                        <div><strong>Bấm hẹn giờ:</strong> {convertTime(this.props.data.autotimer)}</div>
+                        <div><strong>Bấm giờ:</strong> {convertTime(this.props.data.logtimer)}</div>
                     </div>
                     <table className="table table-hover table-striped table-bordered" id="table-user-timesheetlogs">
                         <thead>
