@@ -430,11 +430,13 @@ exports.createOrganizationalUnitKpiSet = async (portal, data) => {
     }
 
     // Thêm độ quan trọng nhân viên
-    let users = await UserService.getAllEmployeeOfUnitByIds(portal, [organizationalUnitId]);
+    let users = await UserService.getAllEmployeeOfUnitByIds(portal, {
+        ids: [organizationalUnitId]
+    });
     let employeeImportances = [];
 
     if (users && users.length !== 0) {
-        employeeImportances = users.map(item => {
+        employeeImportances = users?.employees?.map(item => {
             return {
                 employee: item?.userId?._id,
                 importance: 100

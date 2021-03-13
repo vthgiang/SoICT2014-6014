@@ -783,9 +783,11 @@ exports.stopTimesheetLog = async (portal, params, body, user) => {
 exports.getCurrentTaskTimesheetLogOfEmployeeInOrganizationalUnit = async (portal, data) => {
     const { organizationalUnitId } = data;
     let employees;
-    let users = await UserService.getAllEmployeeOfUnitByIds(portal, organizationalUnitId);
+    let users = await UserService.getAllEmployeeOfUnitByIds(portal, {
+        ids: organizationalUnitId
+    });
     if (users && users.length !== 0) {
-        employees = users.map(item => item?.userId?._id)
+        employees = users?.employees?.map(item => item?.userId?._id)
     }
 
     const now = new Date();

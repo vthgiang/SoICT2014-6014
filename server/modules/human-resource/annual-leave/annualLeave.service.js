@@ -475,8 +475,10 @@ exports.updateAnnualLeave = async (portal, id, data) => {
  * @param {*} company : Id công ty
  */
 exports.importAnnualLeave = async (portal, data, company) => {
-    let users = await UserService.getAllEmployeeOfUnitByIds(portal, [data[0].organizationalUnit]);
-    users = users.map(x => x.userId.email);
+    let users = await UserService.getAllEmployeeOfUnitByIds(portal, {
+        ids: [data[0].organizationalUnit]
+    });
+    users = users?.employees?.map(x => x.userId.email);
     let employeeInfo = await Employee(connect(DB_CONNECTION, portal)).find({
         company: company,
         emailInCompany: {
