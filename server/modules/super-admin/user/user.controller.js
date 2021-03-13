@@ -55,16 +55,15 @@ getAllEmployeeOfUnitByRole = async (req, res) => {
 };
 getAllEmployeeOfUnitByIds = async (req, res) => {
     try {
-        const employees = await UserService.getAllEmployeeOfUnitByIds(req.portal, req.query.ids);
+        const data = await UserService.getAllEmployeeOfUnitByIds(req.portal, req.query);
 
         await Logger.info(req.user.email, `get_all_employee_success`, req.portal);
         res.status(200).json({
             success: true,
             messages: ['get_all_employee_success'],
-            content: employees
+            content: data
         });
     } catch (error) {
-
         await Logger.error(req.user.email, `GET_ALL_EMPLOYEE`, req.portal);
         res.status(400).json({
             messages: ['get_all_employee_fail'],
