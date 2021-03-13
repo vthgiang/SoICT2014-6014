@@ -211,8 +211,7 @@ class ResultsOfOrganizationalUnitKpiChart extends Component {
 
             data: {
                 x: 'x',
-                columns: dataMultiLineChart,
-                type: 'spline'
+                columns: dataMultiLineChart
             },
 
             axis: {
