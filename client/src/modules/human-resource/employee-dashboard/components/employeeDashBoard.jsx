@@ -31,7 +31,9 @@ class DashBoardEmployees extends Component {
         let partMonth = month.split('-');
         let newMonth = [partMonth[1], partMonth[0]].join('-');
 
-        this.props.getAllEmployeeOfUnitByIds(organizationalUnits && organizationalUnits.length !== 0 ? organizationalUnits : childOrganizationalUnit.map(x => x.id));
+        this.props.getAllEmployeeOfUnitByIds({
+            organizationalUnitIds: organizationalUnits && organizationalUnits.length !== 0 ? organizationalUnits : childOrganizationalUnit.map(x => x.id)
+        });
         /* Lấy danh sách nhân viên  */
         this.props.getAllEmployee({ organizationalUnits: organizationalUnits, status: ["active", 'maternity_leave', 'unpaid_leave', 'probationary', 'sick_leave'] });
 
@@ -113,7 +115,9 @@ class DashBoardEmployees extends Component {
             arrayUnitShow = null;
         };
 
-        this.props.getAllEmployeeOfUnitByIds(arrayUnitShow && arrayUnitShow.length !== 0 ? arrayUnitShow : childOrganizationalUnit.map(x => x.id));
+        this.props.getAllEmployeeOfUnitByIds({
+            organizationalUnitIds: arrayUnitShow && arrayUnitShow.length !== 0 ? arrayUnitShow : childOrganizationalUnit.map(x => x.id)
+        });
         /* Lấy danh sách nhân viên  */
         this.props.getAllEmployee({ organizationalUnits: arrayUnitShow, status: ["active", 'maternity_leave', 'unpaid_leave', 'probationary', 'sick_leave'] });
 

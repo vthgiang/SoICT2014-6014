@@ -148,15 +148,6 @@ class WorkerScheduleCreateForm extends Component {
 
     shouldComponentUpdate = (nextPorps, nextState) => {
         if (nextState.showModal !== this.state.showModal) {
-            // const { manufacturingWorks } = this.props;
-            // const { listWorks } = manufacturingWorks;
-            // let arrayOrganizationalUnitIds = []
-            // if (listWorks.length) {
-            //     listWorks.map((works) => {
-            //         arrayOrganizationalUnitIds.push(works.organizationalUnit._id)
-            //     });
-            // }
-            // this.props.getAllEmployeeOfUnitByIds(arrayOrganizationalUnitIds);
             this.props.getAllUsersByWorksManageRole({ currentRole: localStorage.getItem('currentRole') });
             return false;
         }
@@ -267,7 +258,6 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = {
     createWorkSchedule: workScheduleActions.createWorkSchedule,
-    // getAllEmployeeOfUnitByIds: UserActions.getAllEmployeeOfUnitByIds,
     getAllUsersByWorksManageRole: worksActions.getAllUsersByWorksManageRole
 }
 

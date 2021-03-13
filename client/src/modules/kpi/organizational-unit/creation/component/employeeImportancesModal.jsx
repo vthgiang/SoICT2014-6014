@@ -131,7 +131,10 @@ function EmployeeImportancesModal(props) {
             ...state,
             updateEmployee: true
         })
-        props.getAllEmployeeOfUnitByIds([props.organizationalUnitId], true);
+        props.getAllEmployeeOfUnitByIds({
+            organizationalUnitIds: [props.organizationalUnitId], 
+            callApi: true
+        });
     }
 
     const handleSubmit = () => {
