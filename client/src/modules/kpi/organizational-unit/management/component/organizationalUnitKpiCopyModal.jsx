@@ -14,6 +14,25 @@ class ModalCopyKPIUnit extends Component {
         };
     }
 
+    static getDerivedStateFromProps(props, state) {
+        if (props.kpiId !== state.kpiId) {
+            let listKpiUnit = {};
+            if (props.kpiunit?.kpis?.length > 0) {
+                props.kpiunit.kpis.map(item => {
+                    listKpiUnit[item._id] = true;
+                })
+            }
+            
+            return {
+                ...state,
+                kpiId: props.kpiId,
+                listKpiUnit: listKpiUnit
+            }
+        } else {
+            return null
+        }
+    }
+
     formatDate(date) {
         let d = new Date(date),
             month = '' + (d.getMonth() + 1),
@@ -53,21 +72,25 @@ class ModalCopyKPIUnit extends Component {
 
     handleSubmit = () => {
         const { kpiId, idunit, monthDefault, approverDefault, type = 'default' } = this.props;
-        const { month, approver } = this.state;
-      
+        const { month, approver, listKpiUnit } = this.state;
+        let arrayKpiUnit = Object.keys(listKpiUnit);
+        
         if (type === 'default') {
             let data = {  
                 type: 'default',
                 idunit: idunit,
-                datenew: month
+                datenew: month,
+                listKpiUnit: arrayKpiUnit.filter(item => listKpiUnit?.[item])
             }
 
             this.props.copyKPIUnit(kpiId, data);
         } else if (type === 'copy-parent-kpi-to-unit') {
+
             let data = {  
                 type: 'copy-parent-kpi-to-unit',
                 idunit: idunit,
-                datenew: monthDefault
+                datenew: monthDefault,
+                listKpiUnit: arrayKpiUnit.filter(item => listKpiUnit?.[item])
             }
 
             this.props.copyKPIUnit(kpiId, data);
@@ -76,7 +99,8 @@ class ModalCopyKPIUnit extends Component {
                 type: 'copy-parent-kpi-to-employee',
                 idunit: idunit,
                 datenew: monthDefault,
-                approver: approver ? approver : (approverDefault?.[1]?.value?.[0]?.value ? approverDefault?.[1]?.value?.[0]?.value : approverDefault?.[0]?.value?.[0]?.value)
+                approver: approver ? approver : (approverDefault?.[1]?.value?.[0]?.value ? approverDefault?.[1]?.value?.[0]?.value : approverDefault?.[0]?.value?.[0]?.value),
+                listKpiUnit: arrayKpiUnit.filter(item => listKpiUnit?.[item])
             }
 
             this.props.copyKPIUnit(kpiId, data);
@@ -84,9 +108,23 @@ class ModalCopyKPIUnit extends Component {
         
     }
 
+    handleKpiUnit = (id) => {
+        let listKpiUnit = this.state.listKpiUnit;
+        if (listKpiUnit) {
+            listKpiUnit[id] = !listKpiUnit[id];
+        }
+
+        this.setState(state => {
+            return {
+                ...state,
+                listKpiUnit: listKpiUnit
+            }
+        })
+    }
+
     render() {
         const { kpiunit, translate, kpiId, type = 'default', monthDefault, approverDefault } = this.props;
-        const { month, errorOnDate, approver } = this.state;
+        const { month, errorOnDate, approver, listKpiUnit } = this.state;
         
         return (
             <DialogModal
@@ -135,10 +173,10 @@ class ModalCopyKPIUnit extends Component {
 
                 <div className="form-group"  style={{ margin: "0px 10px"}}>
                     <label>{translate('kpi.organizational_unit.management.copy_modal.list_target')}</label>
-                    <ul>
+                    <ul style={{ listStyle: "none" }}>
                         {kpiunit && typeof kpiunit && kpiunit.kpis.length &&
                             kpiunit.kpis.map(item => {
-                                return <li key={item._id}>{item.name + " (" + item.weight + ")"}</li>
+                                return <li key={item._id}><input type="checkbox" checked={listKpiUnit?.[item?._id]} disabled={item?.type !== 0} onChange={() => this.handleKpiUnit(item?._id)}></input><span>{item.name + " (" + item.weight + ")"}</span></li>
                             })
                         }
                     </ul>

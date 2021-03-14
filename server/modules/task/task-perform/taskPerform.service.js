@@ -566,7 +566,7 @@ exports.editTimeSheetLog = async (portal, taskId, timesheetlogId, data) => {
 /**
  * Dừng bấm giờ: Lưu thời gian kết thúc và số giờ chạy (endTime và time)
  */
-exports.stopTimesheetLog = async (portal, params, body) => {
+exports.stopTimesheetLog = async (portal, params, body, user) => {
     let stoppedAt;
     let timer, duration;
     
@@ -583,6 +583,7 @@ exports.stopTimesheetLog = async (portal, params, body) => {
             duration,
             autoStopped: body.autoStopped,
             description: body.addlogDescription,
+            creator: user._id,
         }
         timer = await Task(connect(DB_CONNECTION, portal)).findByIdAndUpdate(
             params.taskId,
@@ -782,9 +783,11 @@ exports.stopTimesheetLog = async (portal, params, body) => {
 exports.getCurrentTaskTimesheetLogOfEmployeeInOrganizationalUnit = async (portal, data) => {
     const { organizationalUnitId } = data;
     let employees;
-    let users = await UserService.getAllEmployeeOfUnitByIds(portal, organizationalUnitId);
+    let users = await UserService.getAllEmployeeOfUnitByIds(portal, {
+        ids: organizationalUnitId
+    });
     if (users && users.length !== 0) {
-        employees = users.map(item => item?.userId?._id)
+        employees = users?.employees?.map(item => item?.userId?._id)
     }
 
     const now = new Date();

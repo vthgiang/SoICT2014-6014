@@ -67,7 +67,7 @@ class ComponentInfor extends Component {
         this.props.getListDiscipline({ organizationalUnits: organizationalUnits, month: monthNew });
 
         /* Lấy dữ liệu công việc của nhân viên trong đơn vị */
-        this.props.getAllEmployeeOfUnitByIds(organizationalUnits);
+        this.props.getAllEmployeeOfUnitByIds({ organizationalUnitIds: organizationalUnits });
         this.props.getTaskInOrganizationUnitByMonth(organizationalUnits, monthNew, monthNew);
 
         /* Lấy dữ liệu kết quả kpi của nhân viên */
@@ -116,7 +116,7 @@ class ComponentInfor extends Component {
         this.props.getListDiscipline({ organizationalUnits: organizationalUnits, month: monthNew });
 
         /* Lấy dữ liệu công việc của nhân viên trong đơn vị */
-        this.props.getAllEmployeeOfUnitByIds(organizationalUnits);
+        this.props.getAllEmployeeOfUnitByIds({ organizationalUnitIds: organizationalUnits });
         this.props.getTaskInOrganizationUnitByMonth(organizationalUnits, monthNew, monthNew);
 
         /* Lấy dữ liệu kết quả kpi của nhân viên */

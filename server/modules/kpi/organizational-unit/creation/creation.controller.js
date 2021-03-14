@@ -262,7 +262,7 @@ getAllOrganizationalUnitKpiSetByTime = async (req, res) => {
  */
 getAllOrganizationalUnitKpiSetByTimeOfChildUnit = async (req, res) => {
     try {
-        let childOrganizationalUnitKpiSets = await KPIUnitService.getAllOrganizationalUnitKpiSetByTimeOfChildUnit(req.portal, req.user.company._id, req.query);
+        let childOrganizationalUnitKpiSets = await KPIUnitService.getAllOrganizationalUnitKpiSetByTimeOfChildUnit(req.portal, req.query);
         
         Logger.info(req.user.email, ' get all organizational unit kpi set each year of child unit ', req.portal);
         res.status(200).json({

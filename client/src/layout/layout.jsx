@@ -8,11 +8,18 @@ import Footer from './footer/components/footer';
 class Layout extends Component {
     constructor(props) {
         super(props);
-        this.state = { }
+        this.state = {}
     }
 
-    render() { 
-        const {auth, translate} = this.props;
+    componentDidUpdate = () => {
+        const { translate } = this.props;
+        if (this.props.pageName) {
+            document.title = translate(`menu.${this.props.pageName}`);
+        }
+    }
+
+    render() {
+        const { auth, translate } = this.props;
 
         return (
             <React.Fragment>
@@ -22,16 +29,16 @@ class Layout extends Component {
                     userEmail={auth.user.email}
                 />
                 <SideBar />
-                <Content arrPage={this.props.arrPage} isLoading={this.props.isLoading} pageName={ translate(`menu.${this.props.pageName}`) }>{ this.props.children }</Content>
+                <Content arrPage={this.props.arrPage} isLoading={this.props.isLoading} pageName={translate(`menu.${this.props.pageName}`)}>{this.props.children}</Content>
                 <Footer />
             </React.Fragment>
         );
     }
 }
- 
+
 const mapStateToProps = state => {
-    const {auth} = state;
-    return {auth};
+    const { auth } = state;
+    return { auth };
 }
 
-export default connect( mapStateToProps, null )( withTranslate(Layout) );
+export default connect(mapStateToProps, null)(withTranslate(Layout));
