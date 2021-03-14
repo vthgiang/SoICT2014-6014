@@ -35,16 +35,23 @@ const GeneralTaskPersonalChart = (props) => {
                 let createdToNow = now.diff(created, 'days');
                 let nowToEnd = end.diff(now, 'days');
 
-                // viec 7 ngay chua update
-                if (updatedToNow >= 7) {
-                    let add = {
-                        ...taskOfUser[i],
-                        updatedToNow
-                    }
-                    noneUpdateTask.push(add);
-                }
-
                 if (taskOfUser[i].status === 'inprocess') {
+                    // cac cong viec khan cap
+                    if (taskOfUser[i].priority === 5) {
+                        let add = {
+                            ...taskOfUser[i],
+                            createdToNow
+                        }
+                        urgentTask.push(add)
+                    }
+                    // viec 7 ngay chua update
+                    if (updatedToNow >= 7) {
+                        let add = {
+                            ...taskOfUser[i],
+                            updatedToNow
+                        }
+                        noneUpdateTask.push(add);
+                    }
                     if (now <= end) {
                         //viec can lam
                         let add = {
@@ -91,16 +98,6 @@ const GeneralTaskPersonalChart = (props) => {
                     }
                     unconfirmedTask.push(add)
                 }
-
-                // cac cong viec khan cap
-                if (taskOfUser[i].priority === 5) {
-                    let add = {
-                        ...taskOfUser[i],
-                        createdToNow
-                    }
-                    urgentTask.push(add)
-                }
-
             }
 
             setState({

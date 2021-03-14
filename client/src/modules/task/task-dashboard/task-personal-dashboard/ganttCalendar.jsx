@@ -49,6 +49,7 @@ class GanttCalendar extends Component {
 
   // Phân nhóm công việc cá nhân
   getDataGroupByRole = (data, group, groupName, label, count, line) => {
+    console.log("\n\n\n\n\n");
     let taskFilter = [];
     let status = this.state.taskStatus;
     let parentCount = 0, currentParent = -1;
@@ -63,20 +64,24 @@ class GanttCalendar extends Component {
     }
 
     // split task
-
     if (taskFilter[0]) splitTask[0] = [taskFilter[0]];
 
     for (let i in taskFilter) {
       let left = moment(taskFilter[i].startDate);
       let right = moment(taskFilter[i].endDate);
+      let name = taskFilter[i].name;
+      let intersect;
       if (i == 0) continue;
+
+      // console.log("dang xet cong viec ", taskFilter[i].name);
+
       for (let parent in splitTask) {
         let idx = 0;
+        // intersect = false;
 
         if (splitTask[parent]) {
-
           // duyet cac cong viec trong 1 dong
-          var intersect = false;
+          // intersect = false;
           let currentLine = splitTask[parent];
 
           for (let j in currentLine) {
@@ -84,12 +89,17 @@ class GanttCalendar extends Component {
 
             let currentLeft = moment(currentLine[j].startDate);
             let currentRight = moment(currentLine[j].endDate);
+            let currentName = currentLine[j].name;
             if ((left >= currentLeft && left <= currentRight) || (currentLeft >= left && currentLeft <= right)) {
               intersect = true;
+              // console.log("2 cong viec trung nhau", name, "\n", currentName);
               break;
             }
           }
+          // console.log("!intersect", intersect);
+
           if (!intersect) {
+            // console.log("!intersect");
             splitTask[idx].push(taskFilter[i]);
             break;
           }
@@ -101,6 +111,8 @@ class GanttCalendar extends Component {
         splitTask[nextId].push(taskFilter[i])
       }
     }
+
+    // console.log("split", splitTask);
 
     let taskFilterSplit = [];
     for (let key in splitTask) {
@@ -118,7 +130,7 @@ class GanttCalendar extends Component {
       let start = moment(taskFilterSplit[i].startDate);
       let end = moment(taskFilterSplit[i].endDate);
       let now = moment(new Date());
-      let duration = end.diff(start, 'days');
+      let duration = end.diff(start, 'days') + 1;
       if (duration == 0) duration = 1;
       let process = 0;
 
@@ -200,6 +212,10 @@ class GanttCalendar extends Component {
     let countAllTask = infData.count;
     let lineAllTask = infData.line;
 
+    // let accData = this.getDataGroupByRole(data, acc, 'acc', translate('task.task_management.accountable_role'), count, line);
+    // let dataAllTask = accData.data;
+    // let countAllTask = accData.count;
+    // let lineAllTask = accData.line;
     return {
       dataAllTask,
       countAllTask,
@@ -271,7 +287,7 @@ class GanttCalendar extends Component {
         break;
       }
     }
-    console.log("first element", splitTask);
+    // console.log("first element", splitTask);
     // for(let employee in sortTaskObj){
     //   if(sortTaskObj[employee]){
 
@@ -326,7 +342,7 @@ class GanttCalendar extends Component {
     //     }
     //   }
     // }
-    console.log("arrrrrr", sortTaskObj);
+    // console.log("arrrrrr", sortTaskObj);
 
     // chuyen object thanh mang cong viec
     for (let key in sortTaskObj) {
@@ -366,7 +382,7 @@ class GanttCalendar extends Component {
       let start = moment(item.startDate);
       let end = moment(item.endDate);
       let now = moment(new Date());
-      let duration = end.diff(start, 'days');
+      let duration = end.diff(start, 'days') + 1;
       let process = 0;
       let employeeName = item.responsibleEmployees[0] && item.responsibleEmployees[0].name;
       let groupNameLabel = item.responsibleEmployees[0] && item.responsibleEmployees[0].name;
