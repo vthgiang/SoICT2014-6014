@@ -66,7 +66,7 @@ class TaskOrganizationalUnitsChart extends Component {
         const { startDate, endDate } = this.state;
         let { childOrganizationalUnit } = this.props;
         childOrganizationalUnit = childOrganizationalUnit.map(x => x.id);
-        this.props.getAllEmployeeOfUnitByIds({ 
+        this.props.getAllEmployeeOfUnitByIds({
             organizationalUnitIds: childOrganizationalUnit,
             callApi: "employeesOfUnistsUserIsManager"
         });
@@ -303,17 +303,17 @@ class TaskOrganizationalUnitsChart extends Component {
         let employeesOfUnitsUserIsManager = user.employeesOfUnitsUserIsManager;
         let employeeOfUnits = [];
         if (totalTask) {
-            childOrganizationalUnit.forEach(x => {
-                let count = employeesOfUnitsUserIsManager.filter(e => e.idUnit.toString() === x.id.toString())
+            childOrganizationalUnit && childOrganizationalUnit.forEach(x => {
+                let count = employeesOfUnitsUserIsManager && employeesOfUnitsUserIsManager.filter(e => e?.idUnit?.toString() === x?.id?.toString())
                 employeeOfUnits = [...employeeOfUnits, count.length ? count.length : 1]
             })
         }
 
         let data = [["x", ...arrMonth]];
-        childOrganizationalUnit.forEach((x, index) => {
+        childOrganizationalUnit && childOrganizationalUnit.forEach((x, index) => {
             let taskOfUnist = [];
             if (listTask.length !== 0) {
-                taskOfUnist = listTask.filter(t => t.organizationalUnit._id === x.id);
+                taskOfUnist = listTask.filter(t => t.organizationalUnit?._id === x.id);
             }
             let row = [...arrMonth];
             row = row.map(r => {
