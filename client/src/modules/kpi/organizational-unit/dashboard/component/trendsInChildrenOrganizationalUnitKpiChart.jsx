@@ -18,7 +18,6 @@ class TrendsInChildrenOrganizationalUnitKpiChart extends Component {
         
         this.DATA_STATUS = {NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3};
         this.chart = null;
-        this.dataChart = null;
         
         this.state = {
             currentRole: null,
@@ -507,10 +506,9 @@ class TrendsInChildrenOrganizationalUnitKpiChart extends Component {
         this.removePreviousBarChart();
         
         const { createKpiUnit } = this.props;
+        let numberOfParticipants, numberOfEmployeeKpis, executionTimes, numberOfTasks, weight, data, listOrganizationalUnitKpi, titleX = ['x'];
+        let numberOfParticipantsArray = [], numberOfEmployeeKpisArray = [], executionTimesArray = [], numberOfTasksArray = [], weightArray = [];
 
-        let numberOfParticipants, numberOfEmployeeKpis, executionTimes, numberOfTasks, weight, listOrganizationalUnitKpi;
-        let data, titleX;
-           
         if(createKpiUnit.currentKPI) {
             listOrganizationalUnitKpi = createKpiUnit.currentKPI.kpis;
         }
@@ -521,35 +519,31 @@ class TrendsInChildrenOrganizationalUnitKpiChart extends Component {
         numberOfTasks = this.setNumberOfTaskData();
         weight = this.setWeightData();
         
-        data = [               
-            executionTimes,
-            numberOfParticipants,
-            numberOfTasks,
-            numberOfEmployeeKpis,
-            weight
-        ]
-
-        if(data) {
-            titleX = data.map(x => x.name);
-            titleX = ['x'].concat(titleX);
-        }
-
+        executionTimesArray.push(executionTimes?.name);
+        numberOfEmployeeKpisArray.push(numberOfEmployeeKpis?.name);
+        numberOfParticipantsArray.push(numberOfParticipants?.name);
+        numberOfTasksArray.push(numberOfTasks?.name);
+        weightArray.push(weight?.name);
+        
         if(listOrganizationalUnitKpi) {
-            this.dataChart = listOrganizationalUnitKpi.map(kpis => {
-                let temporary;
-                temporary = data.map(x => {
-                    return x[kpis.name] ? x[kpis.name] : 0;
-                })
-                
-                temporary = [kpis.name].concat(temporary);
-
-                return temporary;
+            listOrganizationalUnitKpi.map(kpis => {
+                titleX.push(kpis?.name);
+                executionTimesArray.push(executionTimes?.[kpis?.name]);
+                numberOfEmployeeKpisArray.push(numberOfEmployeeKpis?.[kpis?.name]);
+                numberOfParticipantsArray.push(numberOfParticipants?.[kpis?.name]);
+                numberOfTasksArray.push(numberOfTasks?.[kpis?.name]);
+                weightArray.push(weight?.[kpis?.name]);
             })
         }
 
-        if (this.dataChart) {
-            this.dataChart.unshift(titleX);
-        }
+        let dataChart = [
+            titleX,
+            executionTimesArray,
+            numberOfEmployeeKpisArray,
+            numberOfParticipantsArray,
+            numberOfTasksArray,
+            weightArray
+        ]
 
         this.chart = c3.generate({
             bindto: this.refs.chart,                
@@ -567,24 +561,10 @@ class TrendsInChildrenOrganizationalUnitKpiChart extends Component {
 
             data: {                             
                 x: 'x',
-                columns: this.dataChart,
-                type: 'bar',
-                groups: [
-                    listOrganizationalUnitKpi.map(x => x.name)
-                ],
-                stack: {
-                    normalize: true
-                }
-            },
-
-            bar: {                              
-                width: {
-                    ratio: 0.8
-                }
+                columns: dataChart
             },
 
             axis: {                            
-                rotated: true,
                 x: {
                     type: 'category',
                     tick: {
@@ -615,10 +595,18 @@ class TrendsInChildrenOrganizationalUnitKpiChart extends Component {
                 show: false
             }
         });
+
+        this.setState(state => {
+            return {
+                ...state,
+                dataChart: dataChart
+            }
+        })
     }
     
     render() {
         const { createKpiUnit, translate } = this.props;
+        const { dataChart } = this.state;
         let currentKpi, organizationalUnitKpiLoading;
 
         if(createKpiUnit) {
@@ -636,7 +624,7 @@ class TrendsInChildrenOrganizationalUnitKpiChart extends Component {
                             chartId={"trendsInChildrenUnit"}
                             legendId={"trendsInChildrenUnitLegend"}
                             title={`${translate('kpi.evaluation.employee_evaluation.KPI_list')} (${currentKpi.kpis && currentKpi.kpis.length})`}
-                            dataChartLegend={this.dataChart && this.dataChart.filter((item, index) => index > 0).map(item => item[0])}
+                            dataChartLegend={dataChart && dataChart.filter((item, index) => index > 0).map(item => item[0])}
                         />
                     </section>
                     : organizationalUnitKpiLoading && <section>{translate('kpi.organizational_unit.dashboard.no_data')}</section>

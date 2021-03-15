@@ -291,7 +291,8 @@ class OrganizationalUnitKpiDashboard extends Component {
                                                     onChange={this.handleSelectTypeChildUnit}
                                                     value={childUnitChart}
                                                 />
-                                            </div></div>
+                                            </div>
+                                        </div>
                                         {childUnitChart === 1 ?
                                             <TrendsInOrganizationalUnitKpiChart
                                                 organizationalUnitId={organizationalUnitId}
@@ -314,17 +315,17 @@ class OrganizationalUnitKpiDashboard extends Component {
                             <div className="row">
                                 <div className="col-xs-12">
                                     <div className="box box-primary">
+                                        <div className="box-header with-border">
+                                            <div className="box-title">{translate('kpi.organizational_unit.dashboard.distributive')}{this.state.date}</div>
+                                        </div>
                                         <div className="box-body">
-                                            <div className="box-header with-border">
-                                                <div className="box-title">{translate('kpi.organizational_unit.dashboard.distributive')}{this.state.date}</div>
-                                            </div>
-                                            {childOrganizationalUnit && (this.state.dataStatus === this.DATA_STATUS.AVAILABLE)
-                                                &&
-                                                <DistributionOfOrganizationalUnitKpiChart
-                                                    organizationalUnitId={organizationalUnitId}
-                                                    month={month}
-                                                />
-                                            }
+                                        {childOrganizationalUnit && (this.state.dataStatus === this.DATA_STATUS.AVAILABLE)
+                                            &&
+                                            <DistributionOfOrganizationalUnitKpiChart
+                                                organizationalUnitId={organizationalUnitId}
+                                                month={month}
+                                            />
+                                        }
                                         </div>
                                     </div>
                                 </div>
@@ -342,12 +343,14 @@ class OrganizationalUnitKpiDashboard extends Component {
                                             <div className="box-title">{translate('kpi.organizational_unit.dashboard.statiscial')} {this.state.date}</div>
                                             {statisticsOfOrganizationalUnitKpiResultChartData && <ExportExcel type="link" id="export-statistic-organizational-unit-kpi-results-chart" exportData={statisticsOfOrganizationalUnitKpiResultChartData} style={{ marginLeft: 10 }} />}
                                         </div>
-                                        <StatisticsOfOrganizationalUnitKpiResultsChart
-                                            organizationalUnitId={organizationalUnitId}
-                                            month={month}
-                                            organizationalUnit={childOrganizationalUnit}
-                                            onDataAvailable={this.handleStatisticsOfOrganizationalUnitKpiResultChartDataAvailable}
-                                        />
+                                        <div className="box-body">
+                                            <StatisticsOfOrganizationalUnitKpiResultsChart
+                                                organizationalUnitId={organizationalUnitId}
+                                                month={month}
+                                                organizationalUnit={childOrganizationalUnit}
+                                                onDataAvailable={this.handleStatisticsOfOrganizationalUnitKpiResultChartDataAvailable}
+                                            />
+                                        </div>
                                     </div>
                                 </div>
                             </div>
