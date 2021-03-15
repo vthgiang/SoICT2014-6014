@@ -168,6 +168,18 @@ class DistributionOfOrganizationalUnitKpiChart extends Component {
             window.$('#distributionOfUnitLegend').show();
         }
 
+        let data = kindOfChart === this.KIND_OF_CHART.LINE 
+            ? {
+                x: 'x',
+                columns: dataLineChart,
+                type: 'spline',
+            }
+            : {
+                x: null,
+                columns: dataPieChart,
+                type: 'pie',
+            };
+
         this.chart = c3.generate({
             bindto: this.refs.chart,
 
@@ -177,11 +189,7 @@ class DistributionOfOrganizationalUnitKpiChart extends Component {
                 right: 20
             },
 
-            data: {
-                x: 'x',
-                columns: kindOfChart === this.KIND_OF_CHART.LINE ? dataLineChart : dataPieChart,
-                type: kindOfChart === this.KIND_OF_CHART.LINE ? 'spline' : 'pie',
-            },
+            data: data,
 
             tooltip: {
                 format: {
