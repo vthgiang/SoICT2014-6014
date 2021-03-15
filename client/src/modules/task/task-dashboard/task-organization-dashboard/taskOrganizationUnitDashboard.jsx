@@ -13,7 +13,7 @@ import { AverageResultsOfTaskInOrganizationalUnit } from './averageResultsOfTask
 import { AllTimeSheetLogsByUnit } from './allTimeSheetLogByUnit'
 
 import { withTranslate } from 'react-redux-multilingual';
-import { SelectMulti, DatePicker, PaginateBar, DataTableSetting, ExportExcel } from '../../../../common-components/index';
+import { SelectMulti, DatePicker, LazyLoadComponent, DataTableSetting, ExportExcel } from '../../../../common-components/index';
 import Swal from 'sweetalert2';
 import { InprocessOfUnitTask } from './processOfUnitTasks';
 import { GanttCalendar } from '../task-personal-dashboard/ganttCalendar';
@@ -61,7 +61,7 @@ class TaskOrganizationUnitDashboard extends Component {
         const allTimeSheetLogsByUnitIdPerPage = getTableConfiguration(this.allTimeSheetLogsByUnitId, defaultConfig).limit;
         this.distributionOfEmployeeChartId = "distribution-of-employee-chart";
         const distributionOfEmployeeChartPerPage = getTableConfiguration(this.distributionOfEmployeeChartId, defaultConfig).limit;
-        
+
         this.state = {
             userID: "",
             idsUnit: this.INFO_SEARCH.idsUnit,
@@ -258,7 +258,7 @@ class TaskOrganizationUnitDashboard extends Component {
                 organizationalUnitIds: this.INFO_SEARCH.idsUnit,
                 page: 1
             }
-    
+
             await this.props.getAllEmployeeOfUnitByIds({
                 ...data,
                 type: "forDistributionChart",
@@ -341,7 +341,7 @@ class TaskOrganizationUnitDashboard extends Component {
         }
     }
 
-    
+
     render() {
         const { tasks, translate, user, dashboardEvaluationEmployeeKpiSet } = this.props;
         let { idsUnit, startMonth, endMonth, selectBoxUnit, distributionOfEmployeeChart, allTimeSheetLogsByUnit, dataExport } = this.state;
@@ -429,16 +429,18 @@ class TaskOrganizationUnitDashboard extends Component {
 
                                     <div className="box-body qlcv">
                                         {this.state.callAction && tasks && tasks.organizationUnitTasks &&
-                                            <GeneralTaskChart
-                                                tasks={tasks.organizationUnitTasks}
-                                                units={selectBoxUnit}
-                                                employees={user.employees}
-                                                unitSelected={idsUnit}
-                                                startMonthTitle={startMonthTitle}
-                                                endMonthTitle={endMonthTitle}
-                                                unitNameSelected={idsUnit && this.getUnitName(selectBoxUnit, idsUnit)}
-                                                handleDataExport={this.handleDataExport}
-                                            />
+                                            <LazyLoadComponent once={true}>
+                                                <GeneralTaskChart
+                                                    tasks={tasks.organizationUnitTasks}
+                                                    units={selectBoxUnit}
+                                                    employees={user.employees}
+                                                    unitSelected={idsUnit}
+                                                    startMonthTitle={startMonthTitle}
+                                                    endMonthTitle={endMonthTitle}
+                                                    unitNameSelected={idsUnit && this.getUnitName(selectBoxUnit, idsUnit)}
+                                                    handleDataExport={this.handleDataExport}
+                                                />
+                                            </LazyLoadComponent>
                                         }
                                     </div>
                                 </div>
@@ -450,11 +452,13 @@ class TaskOrganizationUnitDashboard extends Component {
                                     <div className="box-header with-border">
                                         <div className="box-title">{translate('task.task_management.tasks_calendar')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
                                     </div>
-                                    <GanttCalendar
-                                        tasks={tasks}
-                                        unit={true}
-                                        unitSelected={idsUnit}
-                                    />
+                                    <LazyLoadComponent once={true}>
+                                        <GanttCalendar
+                                            tasks={tasks}
+                                            unit={true}
+                                            unitSelected={idsUnit}
+                                        />
+                                    </LazyLoadComponent>
                                 </div>
 
                             </div>
@@ -465,7 +469,7 @@ class TaskOrganizationUnitDashboard extends Component {
                             <div className="col-xs-12">
                                 <div className="box box-primary">
                                     {tasks && tasks.organizationUnitTasks &&
-                                        <React.Fragment>
+                                        <LazyLoadComponent once={true}>
                                             <DistributionOfEmployee
                                                 unitIds={idsUnit}
                                                 tasks={tasks.organizationUnitTasks}
@@ -473,7 +477,7 @@ class TaskOrganizationUnitDashboard extends Component {
                                                 startMonthTitle={startMonthTitle}
                                                 endMonthTitle={endMonthTitle}
                                             />
-                                        </React.Fragment>
+                                        </LazyLoadComponent>
                                     }
                                 </div>
                             </div>
@@ -487,12 +491,14 @@ class TaskOrganizationUnitDashboard extends Component {
                                     </div>
                                     <div className="box-body qlcv">
                                         {this.state.callAction && tasks && tasks.organizationUnitTasks &&
-                                            <InprocessOfUnitTask
-                                                tasks={tasks.organizationUnitTasks}
-                                                listEmployee={user && user.employees}
-                                                units={selectBoxUnit}
-                                                unitSelected={idsUnit}
-                                            />
+                                            <LazyLoadComponent once={true}>
+                                                <InprocessOfUnitTask
+                                                    tasks={tasks.organizationUnitTasks}
+                                                    listEmployee={user && user.employees}
+                                                    units={selectBoxUnit}
+                                                    unitSelected={idsUnit}
+                                                />
+                                            </LazyLoadComponent>
                                         }
                                     </div>
                                 </div>
@@ -506,13 +512,15 @@ class TaskOrganizationUnitDashboard extends Component {
                                     </div>
                                     <div className="box-body qlcv">
                                         {this.state.callAction &&
-                                            <DomainOfTaskResultsChart
-                                                callAction={!this.state.willUpdate}
-                                                TaskOrganizationUnitDashboard={true}
-                                                units={idsUnit}
-                                                startMonth={startMonth}
-                                                endMonth={endMonth}
-                                            />
+                                            <LazyLoadComponent once={true}>
+                                                <DomainOfTaskResultsChart
+                                                    callAction={!this.state.willUpdate}
+                                                    TaskOrganizationUnitDashboard={true}
+                                                    units={idsUnit}
+                                                    startMonth={startMonth}
+                                                    endMonth={endMonth}
+                                                />
+                                            </LazyLoadComponent>
                                         }
                                     </div>
                                 </div>
@@ -522,15 +530,17 @@ class TaskOrganizationUnitDashboard extends Component {
                                     <div className="box-header with-border">
                                         <div className="box-title">{translate('task.task_management.detail_status')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
                                     </div>
-                                    <div className="box-body qlcv" style={{ height: '384px' }}>
+                                    <div className="box-body qlcv" style={{ maxHeight: '384px' }}>
                                         {this.state.callAction &&
-                                            <TaskStatusChart
-                                                callAction={!this.state.willUpdate}
-                                                TaskOrganizationUnitDashboard={true}
-                                                startMonth={startMonth}
-                                                endMonth={endMonth}
-                                                units={idsUnit}
-                                            />
+                                            <LazyLoadComponent once={true}>
+                                                <TaskStatusChart
+                                                    callAction={!this.state.willUpdate}
+                                                    TaskOrganizationUnitDashboard={true}
+                                                    startMonth={startMonth}
+                                                    endMonth={endMonth}
+                                                    units={idsUnit}
+                                                />
+                                            </LazyLoadComponent>
                                         }
                                     </div>
                                 </div>
@@ -543,12 +553,14 @@ class TaskOrganizationUnitDashboard extends Component {
                                     <div className="box-header with-border">
                                         <div className="box-title">Kết quả trung bình công việc các đơn vị {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
                                     </div>
-                                    <div className="box-body qlcv">
-                                        <AverageResultsOfTaskInOrganizationalUnit
-                                            units={idsUnit}
-                                            startMonth={startMonth}
-                                            endMonth={endMonth}
-                                        />
+                                    <div className="box-body">
+                                        <LazyLoadComponent once={true}>
+                                            <AverageResultsOfTaskInOrganizationalUnit
+                                                units={idsUnit}
+                                                startMonth={startMonth}
+                                                endMonth={endMonth}
+                                            />
+                                        </LazyLoadComponent>
                                     </div>
                                 </div>
                             </div>
@@ -564,17 +576,19 @@ class TaskOrganizationUnitDashboard extends Component {
                                             <i className="fa fa-exclamation-circle" style={{ color: '#06c', marginLeft: '5px' }} />
                                         </a>
                                     </div>
-                                    <div className="box-body qlcv">
+                                    <div className="box-body">
                                         {tasks && tasks.organizationUnitTasks &&
-                                            <LoadTaskOrganizationChart
-                                                tasks={tasks?.organizationUnitTasks}
-                                                listEmployee={user && user.employees}
-                                                units={selectBoxUnit}
-                                                startMonth={startMonth}
-                                                endMonth={endMonth}
-                                                idsUnit={idsUnit}
-                                                employeeLoading={user?.employeeLoading}
-                                            />
+                                            <LazyLoadComponent once={true}>
+                                                <LoadTaskOrganizationChart
+                                                    tasks={tasks?.organizationUnitTasks}
+                                                    listEmployee={user && user.employees}
+                                                    units={selectBoxUnit}
+                                                    startMonth={startMonth}
+                                                    endMonth={endMonth}
+                                                    idsUnit={idsUnit}
+                                                    employeeLoading={user?.employeeLoading}
+                                                />
+                                            </LazyLoadComponent>
                                         }
                                     </div>
                                 </div>

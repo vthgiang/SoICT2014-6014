@@ -10,7 +10,7 @@ import { AverageResultsOfTask } from './averageResultsOfTask';
 
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DatePicker } from '../../../../common-components';
+import { DatePicker, LazyLoadComponent } from '../../../../common-components';
 import Swal from 'sweetalert2';
 import { TasksIsNotLinked } from './tasksIsNotLinked';
 import { TaskHasActionNotEvaluated } from './taskHasActionNotEvaluated';
@@ -405,9 +405,11 @@ class TaskDashboard extends Component {
                             <div className="box-header with-border">
                                 <div className="box-title">{`Tổng quan công việc (${tasks && tasks.tasks ? tasks.tasks.length : 0} công việc)`}</div>
                             </div>
-                            <GeneralTaskPersonalChart
-                                tasks={tasks}
-                            />
+                            <LazyLoadComponent once={true}>
+                                <GeneralTaskPersonalChart
+                                    tasks={tasks}
+                                />
+                            </LazyLoadComponent>
                         </div>
 
                     </div>
@@ -419,11 +421,14 @@ class TaskDashboard extends Component {
                         <div className="box box-primary">
                             <div className="box-header with-border">
                                 <div className="box-title">{translate('task.task_management.tasks_calendar')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
+
                             </div>
-                            <GanttCalendar
-                                tasks={tasks}
-                                unit={false}
-                            />
+                            <LazyLoadComponent once={true}>
+                                <GanttCalendar
+                                    tasks={tasks}
+                                    unit={false}
+                                />
+                            </LazyLoadComponent>
                         </div>
 
                     </div>
@@ -436,13 +441,15 @@ class TaskDashboard extends Component {
                             <div className="box-header with-border">
                                 <div className="box-title">{translate('task.task_management.dashboard_area_result')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
                             </div>
-                            <div className="box-body qlcv">
+                            <div className="box-body">
                                 {callAction &&
-                                    <DomainOfTaskResultsChart
-                                        callAction={!willUpdate}
-                                        startMonth={startMonth}
-                                        endMonth={endMonth}
-                                    />
+                                    <LazyLoadComponent once={true}>
+                                        <DomainOfTaskResultsChart
+                                            callAction={!willUpdate}
+                                            startMonth={startMonth}
+                                            endMonth={endMonth}
+                                        />
+                                    </LazyLoadComponent>
                                 }
                             </div>
                         </div>
@@ -454,11 +461,13 @@ class TaskDashboard extends Component {
                             <div className="box-header with-border">
                                 <div className="box-title">{translate('task.task_management.detail_average_results')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
                             </div>
-                            <div className="box-body qlcv">
-                                <AverageResultsOfTask
-                                    startMonth={startMonth}
-                                    endMonth={endMonth}
-                                />
+                            <div className="box-body">
+                                <LazyLoadComponent once={true}>
+                                    <AverageResultsOfTask
+                                        startMonth={startMonth}
+                                        endMonth={endMonth}
+                                    />
+                                </LazyLoadComponent>
                             </div>
                         </div>
                     </div>
@@ -470,10 +479,12 @@ class TaskDashboard extends Component {
                                 <div className="box-title">{translate('task.task_management.detail_status')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
                             </div>
                             <div className="box-body qlcv">
-                                <TaskStatusChart
-                                    startMonth={startMonth}
-                                    endMonth={endMonth}
-                                />
+                                <LazyLoadComponent once={true}>
+                                    <TaskStatusChart
+                                        startMonth={startMonth}
+                                        endMonth={endMonth}
+                                    />
+                                </LazyLoadComponent>
                             </div>
                         </div>
                     </div>
@@ -483,11 +494,13 @@ class TaskDashboard extends Component {
                                 <div className="box-title">{translate('task.task_management.calc_progress')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
                             </div>
                             <div className="box-body qlcv">
-                                <InprocessTask
-                                    startMonth={startMonth}
-                                    endMonth={endMonth}
-                                    tasks={tasks.tasks}
-                                />
+                                <LazyLoadComponent once={true}>
+                                    <InprocessTask
+                                        startMonth={startMonth}
+                                        endMonth={endMonth}
+                                        tasks={tasks.tasks}
+                                    />
+                                </LazyLoadComponent>
                             </div>
                         </div>
                     </div>

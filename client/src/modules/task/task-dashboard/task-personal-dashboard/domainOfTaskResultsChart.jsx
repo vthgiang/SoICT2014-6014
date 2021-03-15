@@ -376,37 +376,38 @@ class DomainOfTaskResultsChart extends Component {
 
         return (
             <React.Fragment>
-                {!TaskOrganizationUnitDashboard
-                    && <section className="form-inline">
+                <div className="qlcv">
+                    {!TaskOrganizationUnitDashboard
+                        &&
+                        <div className="form-inline" >
+                            <div className="form-group">
+                                <label style={{ width: "auto" }}>{translate('task.task_management.role')}</label>
+                                <SelectMulti
+                                    id="multiSelectDomainOfTaskResults"
+                                    items={this.ROLE_SELECTBOX}
+                                    onChange={this.handleSelectRole}
+                                    options={{ allSelectedText: translate('task.task_management.select_all_status') }}
+                                    value={this.DATA_SEARCH.role}
+                                />
+                            </div>
+                        </div>
+                    }
+                    <div className="form-inline" >
                         <div className="form-group">
-                            <label>{translate('task.task_management.role')}</label>
-                            <SelectMulti
-                                id="multiSelectDomainOfTaskResults"
-                                items={this.ROLE_SELECTBOX}
-                                onChange={this.handleSelectRole}
-                                options={{ allSelectedText: translate('task.task_management.select_all_status') }}
-                                value={this.DATA_SEARCH.role}
+                            <label style={{ width: "auto" }}>{translate('kpi.organizational_unit.dashboard.organizational_unit')}</label>
+                            <SelectBox
+                                id={`typePointOfResultsTaskSelectBox`}
+                                className="form-control select2"
+                                style={{ width: "100%" }}
+                                items={this.TYPEPOINT_SELECTBOX}
+                                multiple={false}
+                                onChange={this.handleSelectTypePoint}
+                                value={this.DATA_SEARCH.typePoint}
                             />
                         </div>
-                    </section>
-                }
-                <section className="form-inline">
-                    <div className="form-group">
-                        <label>Loại điểm</label>
-                        <SelectBox
-                            id={`typePointOfResultsTaskSelectBox`}
-                            className="form-control select2"
-                            style={{ width: "100%" }}
-                            items={this.TYPEPOINT_SELECTBOX}
-                            multiple={false}
-                            onChange={this.handleSelectTypePoint}
-                            value={this.DATA_SEARCH.typePoint}
-                        />
+                        <button type="button" className="btn btn-success" onClick={this.handleSearchData}>{translate('kpi.evaluation.employee_evaluation.search')}</button>
                     </div>
-
-                    <button type="button" className="btn btn-success" onClick={this.handleSearchData}>{translate('kpi.evaluation.employee_evaluation.search')}</button>
-                </section>
-
+                </div>
                 <div ref="chart"></div>
             </React.Fragment>
         )
