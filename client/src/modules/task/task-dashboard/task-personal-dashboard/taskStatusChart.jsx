@@ -152,7 +152,7 @@ function TaskStatusChart(props) {
         removePreviosChart();
 
         let dataPieChart = setDataPieChart();
-        console.log('dataPieChart', dataPieChart)
+        // console.log('dataPieChart', dataPieChart)
         let chart = c3.generate({
             bindto: document.getElementById('pie-chart-status'),
 

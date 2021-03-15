@@ -49,7 +49,6 @@ class GanttCalendar extends Component {
 
   // Phân nhóm công việc cá nhân
   getDataGroupByRole = (data, group, groupName, label, count, line) => {
-    console.log("\n\n\n\n\n");
     let taskFilter = [];
     let status = this.state.taskStatus;
     let parentCount = 0, currentParent = -1;
@@ -69,50 +68,36 @@ class GanttCalendar extends Component {
     for (let i in taskFilter) {
       let left = moment(taskFilter[i].startDate);
       let right = moment(taskFilter[i].endDate);
-      let name = taskFilter[i].name;
       let intersect;
+
       if (i == 0) continue;
-
-      // console.log("dang xet cong viec ", taskFilter[i].name);
-
       for (let parent in splitTask) {
-        let idx = 0;
-        // intersect = false;
+        let currentLine = splitTask[parent];
 
-        if (splitTask[parent]) {
-          // duyet cac cong viec trong 1 dong
-          // intersect = false;
-          let currentLine = splitTask[parent];
+        for (let j in currentLine) {
+          // Kiem tra xem co trung cong viec nao k
+          intersect = false;
+          let currentLeft = moment(currentLine[j].startDate);
+          let currentRight = moment(currentLine[j].endDate);
 
-          for (let j in currentLine) {
-            // Kiem tra xem co trung cong viec nao k
-
-            let currentLeft = moment(currentLine[j].startDate);
-            let currentRight = moment(currentLine[j].endDate);
-            let currentName = currentLine[j].name;
-            if ((left >= currentLeft && left <= currentRight) || (currentLeft >= left && currentLeft <= right)) {
-              intersect = true;
-              // console.log("2 cong viec trung nhau", name, "\n", currentName);
-              break;
-            }
-          }
-          // console.log("!intersect", intersect);
-
-          if (!intersect) {
-            // console.log("!intersect");
-            splitTask[idx].push(taskFilter[i]);
+          if ((left >= currentLeft && left <= currentRight) || (currentLeft >= left && currentLeft <= right)) {
+            intersect = true;
             break;
           }
+        }
+
+        if (!intersect) {
+          splitTask[parent].push(taskFilter[i]);
+          break;
         }
       }
       if (intersect) {
         let nextId = Object.keys(splitTask).length;
+
         splitTask[nextId] = [];
         splitTask[nextId].push(taskFilter[i])
       }
     }
-
-    // console.log("split", splitTask);
 
     let taskFilterSplit = [];
     for (let key in splitTask) {
@@ -168,6 +153,7 @@ class GanttCalendar extends Component {
         currentParent++;
         line++;
       }
+
       data.push({
         id: `${groupName}-${taskFilterSplit[i]._id}`,
         text: taskFilterSplit[i].status == "inprocess" ? `${taskFilterSplit[i].name} - ${taskFilterSplit[i].progress}%` : `${taskFilterSplit[i].name}`,
@@ -212,10 +198,6 @@ class GanttCalendar extends Component {
     let countAllTask = infData.count;
     let lineAllTask = infData.line;
 
-    // let accData = this.getDataGroupByRole(data, acc, 'acc', translate('task.task_management.accountable_role'), count, line);
-    // let dataAllTask = accData.data;
-    // let countAllTask = accData.count;
-    // let lineAllTask = accData.line;
     return {
       dataAllTask,
       countAllTask,
@@ -228,35 +210,20 @@ class GanttCalendar extends Component {
     const { tasks, unitSelected } = this.props;
     const { organizationUnitTasks } = tasks;
     const listtask = organizationUnitTasks && organizationUnitTasks.tasks;
-    //Lay cac cong viec cua cac unit da chon
     const tasksOfSelectedUnit = listtask?.filter(x =>
       unitSelected?.includes(x?.organizationalUnit?._id))
 
-    const unitData = this.getDataGroupByEmployee(tasksOfSelectedUnit);
-    const dataAllTask = unitData.data;
-    const countAllTask = unitData.count;
-    const lineAllTask = unitData.line;
-
-    return {
-      dataAllTask,
-      countAllTask,
-      lineAllTask
-    };
-  }
-
-  // Phân nhóm công việc đơn vị
-  getDataGroupByEmployee = (group) => {
-    let line = 0, parentCount = 0, currentParent = -1;
+    let line = 0;
     let data = [];
     let count = { delay: 0, intime: 0, notAchived: 0 };
-    let taskFilter = [], sortTaskArr = [], splitTask = [];
+    let taskFilter = [];
     let status = this.state.taskStatus;
 
     // Lọc công việc theo trạng thái
     for (let i in status) {
-      for (let j in group) {
-        if (group[j].status === status[i]) {
-          taskFilter.push(group[j])
+      for (let j in tasksOfSelectedUnit) {
+        if (tasksOfSelectedUnit[j].status === status[i]) {
+          taskFilter.push(tasksOfSelectedUnit[j])
         }
       }
     }
@@ -280,168 +247,173 @@ class GanttCalendar extends Component {
       }
     }
 
-    // split task
-    for (let employee in sortTaskObj) {
-      if (sortTaskObj[employee] && sortTaskObj[employee].length) {
-        splitTask[0] = [sortTaskObj[employee][0]];
-        break;
+    let dataEmployee;
+    for (let groupName in sortTaskObj) {
+      let label = groupName;
+
+      if (groupName == "multipleEmployee") {
+        label = "Nhiều người thực hiện";
       }
-    }
-    // console.log("first element", splitTask);
-    // for(let employee in sortTaskObj){
-    //   if(sortTaskObj[employee]){
-
-    //   }
-    // }
-    // if (taskFilter[0]) splitTask[0] = [taskFilter[0]];
-
-    // for (let i in taskFilter) {
-    //   let left = moment(taskFilter[i].startDate);
-    //   let right = moment(taskFilter[i].endDate);
-    //   if (i == 0) continue;
-    //   for (let parent in splitTask) {
-    //     let idx = 0;
-
-    //     if (splitTask[parent]) {
-
-    //       // duyet cac cong viec trong 1 dong
-    //       var intersect = false;
-    //       let currentLine = splitTask[parent];
-
-    //       for (let j in currentLine) {
-    //         // Kiem tra xem co trung cong viec nao k
-
-    //         let currentLeft = moment(currentLine[j].startDate);
-    //         let currentRight = moment(currentLine[j].endDate);
-    //         if ((left >= currentLeft && left <= currentRight) || (currentLeft >= left && currentLeft <= right)) {
-    //           intersect = true;
-    //           break;
-    //         }
-    //       }
-    //       if (!intersect) {
-    //         splitTask[idx].push(taskFilter[i]);
-    //         break;
-    //       }
-    //     }
-    //   }
-    //   if (intersect) {
-    //     let nextId = Object.keys(splitTask).length;
-    //     splitTask[nextId] = [];
-    //     splitTask[nextId].push(taskFilter[i])
-    //   }
-    // }
-
-    // let taskFilterSplit = [];
-    // for (let key in splitTask) {
-    //   if (splitTask[key]) {
-    //     for (let i in splitTask[key]) {
-    //       if (splitTask[key][i]) {
-    //         splitTask[key][i].parentSplit = parseInt(key);
-    //         taskFilterSplit.push(splitTask[key][i]);
-    //       }
-    //     }
-    //   }
-    // }
-    // console.log("arrrrrr", sortTaskObj);
-
-    // chuyen object thanh mang cong viec
-    for (let key in sortTaskObj) {
-
-      if (sortTaskObj.hasOwnProperty(key) && key != 'multipleEmployee') {
-        sortTaskArr = sortTaskArr.concat(sortTaskObj[key]);
-      }
+      dataEmployee = this.getDataGroupByRole(data, sortTaskObj[groupName], groupName, label, count, line)
+      data = dataEmployee.data;
+      count = dataEmployee.count;
+      line = dataEmployee.line;
     }
 
-    if (sortTaskObj.multipleEmployee) {
-      sortTaskArr = sortTaskArr.concat(sortTaskObj.multipleEmployee)
-    }
+    const dataAllTask = dataEmployee ? dataEmployee.data : [];
+    const countAllTask = dataEmployee ? dataEmployee.count : {};
+    const lineAllTask = dataEmployee ? dataEmployee.line : {};
 
-    for (let i in sortTaskArr) {
-      let item = sortTaskArr[i];
-      let prevItem = sortTaskArr[i - 1];
-
-      if (i == 0) {
-        item.parentSplit = 0;
-      } else {
-        if (moment(item.startDate) > moment(prevItem?.endDate)
-          || moment(item.endDate) < moment(prevItem?.startDate)
-          && (item.responsibleEmployees[0]?.name == prevItem?.responsibleEmployees[0]?.name
-            || item.responsibleEmployees.length != 1)
-        ) {
-          item.parentSplit = parentCount;
-        }
-        else {
-          parentCount++;
-          item.parentSplit = parentCount;
-        }
-      }
-    }
-
-    for (let i in sortTaskArr) {
-      let item = sortTaskArr[i];
-      let start = moment(item.startDate);
-      let end = moment(item.endDate);
-      let now = moment(new Date());
-      let duration = end.diff(start, 'days') + 1;
-      let process = 0;
-      let employeeName = item.responsibleEmployees[0] && item.responsibleEmployees[0].name;
-      let groupNameLabel = item.responsibleEmployees[0] && item.responsibleEmployees[0].name;
-
-      // Tô màu công việc
-      if (item.status != "inprocess") {
-        process = 3;
-      }
-      else if (now > end) {
-        process = 2; // Quá hạn
-        count.notAchived++;
-      }
-      else {
-        let processDay = Math.floor(item.progress * duration / 100);
-        let uptonow = now.diff(start, 'days');
-        if (uptonow > processDay) {
-          process = 0; // Trễ hạn
-          count.delay++;
-        }
-        else if (uptonow <= processDay) {
-          process = 1; // Đúng hạn
-          count.intime++;
-        }
-      }
-
-      if (item && item.responsibleEmployees && item.responsibleEmployees.length > 1) {
-        groupNameLabel = "Công việc nhiều người thực hiện";
-      }
-      else {
-        groupNameLabel = item && sortTaskArr[i - 1] && sortTaskArr[i - 1].responsibleEmployees[0] && item.responsibleEmployees[0]
-          && sortTaskArr[i - 1].responsibleEmployees[0].name === item.responsibleEmployees[0].name
-          ? "" : item?.responsibleEmployees[0]?.name;
-      }
-      if (item.parentSplit != currentParent) {
-
-        data.push({
-          id: `${employeeName}-${item.parentSplit}`,
-          text: "",
-          role: groupNameLabel,
-          start_date: null,
-          duration: null,
-          render: "split"
-        });
-        currentParent++;
-        line++;
-      }
-
-      data.push({
-        id: `taskUnit-${item._id}`,
-        text: item.status == "inprocess" ? `${item.name} - ${item.progress}%` : `${item.name}`,
-        start_date: moment(item.startDate).format("YYYY-MM-DD"),
-        duration: duration != 0 ? duration : 1,
-        progress: item.status === "inprocess" ? item.progress / 100 : 0,
-        process: process,
-        parent: `${employeeName}-${item.parentSplit}`
-      });
-    }
-    return { data, count, line };
+    return {
+      dataAllTask,
+      countAllTask,
+      lineAllTask
+    };
   }
+
+  // Phân nhóm công việc đơn vị
+  // getDataGroupByEmployee = (group) => {
+  //   let line = 0, parentCount = 0, currentParent = -1;
+  //   let data = [];
+  //   let count = { delay: 0, intime: 0, notAchived: 0 };
+  //   let taskFilter = [], sortTaskArr = [], splitTask = [];
+  //   let status = this.state.taskStatus;
+
+  //   // Lọc công việc theo trạng thái
+  //   for (let i in status) {
+  //     for (let j in group) {
+  //       if (group[j].status === status[i]) {
+  //         taskFilter.push(group[j])
+  //       }
+  //     }
+  //   }
+
+  //   // sắp xếp các công việc theo tên ngươi thực hiện
+  //   let sortTaskObj = {};
+  //   for (let i in taskFilter) {
+  //     let item = taskFilter[i];
+  //     if (item.responsibleEmployees) {
+  //       //cong viec 1 nguoi thuc hien
+  //       if (item.responsibleEmployees.length == 1) {
+  //         let employee = item.responsibleEmployees[0].name;
+  //         if (!sortTaskObj[employee]) sortTaskObj[employee] = [];
+  //         sortTaskObj[employee].push(item)
+  //       }
+  //       // cong viec nhieu nguoi thuc hien
+  //       else {
+  //         if (!sortTaskObj.multipleEmployee) sortTaskObj.multipleEmployee = [];
+  //         sortTaskObj.multipleEmployee.push(item)
+  //       }
+  //     }
+  //   }
+
+  //   // split task
+  //   for (let employee in sortTaskObj) {
+  //     if (sortTaskObj[employee] && sortTaskObj[employee].length) {
+  //       splitTask[0] = [sortTaskObj[employee][0]];
+  //       break;
+  //     }
+  //   }
+
+  //   // chuyen object thanh mang cong viec
+  //   for (let key in sortTaskObj) {
+
+  //     if (sortTaskObj.hasOwnProperty(key) && key != 'multipleEmployee') {
+  //       sortTaskArr = sortTaskArr.concat(sortTaskObj[key]);
+  //     }
+  //   }
+
+  //   if (sortTaskObj.multipleEmployee) {
+  //     sortTaskArr = sortTaskArr.concat(sortTaskObj.multipleEmployee)
+  //   }
+  //   // console.log("sortTaskObj", sortTaskObj);
+
+  //   for (let i in sortTaskArr) {
+  //     let item = sortTaskArr[i];
+  //     let prevItem = sortTaskArr[i - 1];
+
+  //     if (i == 0) {
+  //       item.parentSplit = 0;
+  //     } else {
+  //       if (moment(item.startDate) > moment(prevItem?.endDate)
+  //         || moment(item.endDate) < moment(prevItem?.startDate)
+  //         && (item.responsibleEmployees[0]?.name == prevItem?.responsibleEmployees[0]?.name
+  //           || item.responsibleEmployees.length != 1)
+  //       ) {
+  //         item.parentSplit = parentCount;
+  //       }
+  //       else {
+  //         parentCount++;
+  //         item.parentSplit = parentCount;
+  //       }
+  //     }
+  //   }
+
+  //   for (let i in sortTaskArr) {
+  //     let item = sortTaskArr[i];
+  //     let start = moment(item.startDate);
+  //     let end = moment(item.endDate);
+  //     let now = moment(new Date());
+  //     let duration = end.diff(start, 'days');
+  //     let process = 0;
+  //     let employeeName = item.responsibleEmployees[0] && item.responsibleEmployees[0].name;
+  //     let groupNameLabel = item.responsibleEmployees[0] && item.responsibleEmployees[0].name;
+
+  //     // Tô màu công việc
+  //     if (item.status != "inprocess") {
+  //       process = 3;
+  //     }
+  //     else if (now > end) {
+  //       process = 2; // Quá hạn
+  //       count.notAchived++;
+  //     }
+  //     else {
+  //       let processDay = Math.floor(item.progress * duration / 100);
+  //       let uptonow = now.diff(start, 'days');
+  //       if (uptonow > processDay) {
+  //         process = 0; // Trễ hạn
+  //         count.delay++;
+  //       }
+  //       else if (uptonow <= processDay) {
+  //         process = 1; // Đúng hạn
+  //         count.intime++;
+  //       }
+  //     }
+
+  //     if (item && item.responsibleEmployees && item.responsibleEmployees.length > 1) {
+  //       groupNameLabel = "Công việc nhiều người thực hiện";
+  //     }
+  //     else {
+  //       groupNameLabel = item && sortTaskArr[i - 1] && sortTaskArr[i - 1].responsibleEmployees[0] && item.responsibleEmployees[0]
+  //         && sortTaskArr[i - 1].responsibleEmployees[0].name === item.responsibleEmployees[0].name
+  //         ? "" : item?.responsibleEmployees[0]?.name;
+  //     }
+  //     if (item.parentSplit != currentParent) {
+
+  //       data.push({
+  //         id: `${employeeName}-${item.parentSplit}`,
+  //         text: "",
+  //         role: groupNameLabel,
+  //         start_date: null,
+  //         duration: null,
+  //         render: "split"
+  //       });
+  //       currentParent++;
+  //       line++;
+  //     }
+
+  //     data.push({
+  //       id: `taskUnit-${item._id}`,
+  //       text: item.status == "inprocess" ? `${item.name} - ${item.progress}%` : `${item.name}`,
+  //       start_date: moment(item.startDate).format("YYYY-MM-DD"),
+  //       duration: duration != 0 ? duration : 1,
+  //       progress: item.status === "inprocess" ? item.progress / 100 : 0,
+  //       process: process,
+  //       parent: `${employeeName}-${item.parentSplit}`
+  //     });
+  //   }
+  //   return { data, count, line };
+  // }
 
   attachEvent = (id) => {
     const taskId = id.split('-')[1];

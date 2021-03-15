@@ -21,7 +21,7 @@ class Gantt extends Component {
 
     dataProcessor = null;
 
-    initZoom() { 
+    initZoom() {
         const { translate } = this.props;
         const { gantt } = this.state;
 
@@ -69,7 +69,7 @@ class Gantt extends Component {
 
     setZoom(value) {
         const { gantt } = this.state;
-        
+
         if (gantt?.ext?.zoom) {
             gantt.ext.zoom.setLevel(value);
         }
@@ -87,7 +87,7 @@ class Gantt extends Component {
             gantt.init(`gantt-${ganttId}`);
             this.initGanttDataProcessor();
             gantt.parse(this.props.ganttData);
-    
+
             // Thêm marker thời gian hiện tại
             const dateToStr = gantt.date.date_to_str(gantt.config.task_date);
             const markerId = gantt.addMarker({
@@ -116,20 +116,20 @@ class Gantt extends Component {
             gantt.config.details_on_dblclick = false;
             gantt.config.columns = [{ name: 'role', label: unit ? translate('task.task_management.responsible') : translate('task.task_management.role'), align: "center", resize: true, width: 120 }]
             gantt.config.xml_date = "%Y-%m-%d %H:%i";
-    
+
             // Màu sắc cho công việc
             gantt.templates.task_class = function (start, end, task) {
-            switch (task.process) {
-                case 0:
-                return "delay";
-                case 1:
-                return "intime";
-                case 2:
-                return "notAchive";
-                default: return "none";
-            }
+                switch (task.process) {
+                    case 0:
+                        return "delay";
+                    case 1:
+                        return "intime";
+                    case 2:
+                        return "notAchive";
+                    default: return "none";
+                }
             };
-    
+
             // Thêm và custom tooltip
             gantt.plugins({
                 tooltip: true,
@@ -140,9 +140,9 @@ class Gantt extends Component {
                     <br/>
                     <b>${translate('task.task_dashboard.start_date')}:</b> ${moment(start).format('DD-MM-YYYY')} 
                     <br/>
-                    <b>${translate('task.task_dashboard.end_date')}:</b> ${moment(end).format('DD-MM-YYYY')}`;
+                    <b>${translate('task.task_dashboard.end_date')}:</b> ${moment(end).subtract(1, 'days').format('DD-MM-YYYY')}`;
             };
-    
+
             gantt.attachEvent("onTaskDblClick", (id, mode) => {
                 this.props.attachEvent(id);
             });
@@ -177,8 +177,8 @@ class Gantt extends Component {
 }
 
 function mapState(state) {
-    const {  } = state;
-    return {  }
+    const { } = state;
+    return {}
 }
 const actions = {
 }
