@@ -14,6 +14,9 @@ import { DatePicker, TimePicker, SelectBox, ErrorLabel, ToolTip, TreeSelect, Qui
 import { TaskFormValidator } from './taskFormValidator';
 import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
 import moment from 'moment';
+import ModalAddProject from '../../../project/component/createProject';
+import { RoleActions } from '../../../super-admin/role/redux/actions';
+import { ROOT_ROLE } from '../../../../helpers/constants';
 
 class AddTaskForm extends Component {
 
@@ -45,8 +48,8 @@ class AddTaskForm extends Component {
     }
 
     componentDidMount() {
-        // this.props.getAllDepartment();
-        // get id current role
+        const { currentRole } = this.state;
+        this.props.showInfoRole(currentRole);
         this.props.getTaskTemplateByUser(1, 0, [], ""); //pageNumber, noResultsPerPage, arrayUnit, name=""
         // Lấy tất cả nhân viên trong công ty
         this.props.getAllUserOfCompany();
@@ -452,8 +455,7 @@ class AddTaskForm extends Component {
                 ...this.state.newTask,
                 taskProject: selected[0]
             }
-        })
-        this.props.handleChangeTaskData(this.state.newTask)
+        }, () => this.props.handleChangeTaskData(this.state.newTask))
     }
 
     // convert ISODate to String dd-mm-yyyy
@@ -591,9 +593,8 @@ class AddTaskForm extends Component {
 
     render() {
         const { id, newTask, startTime, endTime } = this.state;
-        const { tasktemplates, user, KPIPersonalManager, translate, tasks, department, taskProject, isProcess, info } = this.props;
-        const { task } = this.props;
-        let units, userdepartments, listTaskTemplate, listKPIPersonal, usercompanys;
+        const { tasktemplates, user, translate, tasks, department, project, isProcess, info, role } = this.props;
+        let listTaskTemplate;
         let listDepartment = department?.list;
         let taskTemplate;
         if (tasktemplates.taskTemplate) {
@@ -606,25 +607,13 @@ class AddTaskForm extends Component {
             // });
             listTaskTemplate = tasktemplates.items
         }
-        if (user.organizationalUnitsOfUser) {
-            units = user.organizationalUnitsOfUser;
-        }
-        if (user.userdepartments) userdepartments = user.userdepartments;
-        if (user.usercompanys) usercompanys = user.usercompanys;
 
-        let usersOfChildrenOrganizationalUnit;
-        if (user.usersOfChildrenOrganizationalUnit) {
-            usersOfChildrenOrganizationalUnit = user.usersOfChildrenOrganizationalUnit;
-        }
         let usersInUnitsOfCompany;
         if (user && user.usersInUnitsOfCompany) {
             usersInUnitsOfCompany = user.usersInUnitsOfCompany;
         }
 
         let allUnitsMember = getEmployeeSelectBoxItems(usersInUnitsOfCompany);
-        // let unitMembers = getEmployeeSelectBoxItems(usersOfChildrenOrganizationalUnit);
-
-        if (KPIPersonalManager.kpipersonals) listKPIPersonal = KPIPersonalManager.kpipersonals;
 
         let listParentTask = [{ value: "", text: `--${translate('task.task_management.add_parent_task')}--` }];
         if (newTask.parent && this.props.currentTasks) {
@@ -637,11 +626,13 @@ class AddTaskForm extends Component {
             listParentTask = [...listParentTask, ...arr];
         }
 
+        const checkCurrentRoleIsManager = role && role.item &&
+            role.item.parents.length > 0 && role.item.parents.filter(o => o.name === ROOT_ROLE.MANAGER)
         return (
             <React.Fragment>
 
                 {/** Form chứa thông tin của task */}
-
+                <ModalAddProject />
                 <div className="row">
                     <div className={`${isProcess ? "col-lg-12" : "col-sm-6"}`}>
 
@@ -883,7 +874,7 @@ class AddTaskForm extends Component {
 
                             {/* Dự án liên quan của công việc */}
                             {/** Tạm thời ẩn đi bên Process, nếu muốn hiện xóa check isProcess  */}
-                            {isProcess === false &&
+                            {!isProcess &&
                                 <div className="form-group">
                                     <label>
                                         {translate('task.task_management.project')}
@@ -891,11 +882,11 @@ class AddTaskForm extends Component {
                                     <TreeSelect
                                         id={`select-task-project-task-${id}`}
                                         mode='radioSelect'
-                                        data={taskProject.list}
+                                        data={project?.data?.list}
                                         handleChange={this.handleTaskProject}
                                         value={[newTask.taskProject]}
-                                        action={() => { window.$('#modal-add-task-project').modal('show') }}
-                                        actionIcon='fa fa-plus'
+                                        action={checkCurrentRoleIsManager && checkCurrentRoleIsManager.length > 0 ? () => { window.$('#modal-create-project').modal('show') } : null}
+                                        actionIcon={checkCurrentRoleIsManager && checkCurrentRoleIsManager.length > 0 && 'fa fa-plus'}
                                     />
                                 </div>
                             }
@@ -908,8 +899,8 @@ class AddTaskForm extends Component {
 }
 
 function mapState(state) {
-    const { tasktemplates, tasks, user, KPIPersonalManager, department, taskProject } = state;
-    return { tasktemplates, tasks, user, KPIPersonalManager, department, taskProject };
+    const { tasktemplates, tasks, user, KPIPersonalManager, department, project, role } = state;
+    return { tasktemplates, tasks, user, KPIPersonalManager, department, project, role };
 }
 
 const actionCreators = {
@@ -924,6 +915,8 @@ const actionCreators = {
     getChildrenOfOrganizationalUnits: UserActions.getChildrenOfOrganizationalUnitsAsTree,
     getAllUserInAllUnitsOfCompany: UserActions.getAllUserInAllUnitsOfCompany,
     getPaginateTasksByUser: taskManagementActions.getPaginateTasksByUser,
+
+    showInfoRole: RoleActions.show,
 };
 
 const connectedAddTaskForm = connect(mapState, actionCreators)(withTranslate(AddTaskForm));

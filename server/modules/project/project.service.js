@@ -53,8 +53,16 @@ exports.show = async (portal, id) => {
 }
 
 exports.create = async (portal, data) => {
-    let project = await Project(connect(DB_CONNECTION, portal)).create(data);
+    let newData = {};
+    if (data) {
+        for (let i in data) {
+            if (data[i] && data[i].length > 0) {
+                newData = {...newData, [i]: data[i]}
+            }
+        }
+    }
 
+    let project = await Project(connect(DB_CONNECTION, portal)).create(newData);
     return project;
 }
 
