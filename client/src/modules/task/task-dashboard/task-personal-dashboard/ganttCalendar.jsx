@@ -157,14 +157,15 @@ class GanttCalendar extends Component {
       data.push({
         id: `${groupName}-${taskFilterSplit[i]._id}`,
         text: taskFilterSplit[i].status == "inprocess" ? `${taskFilterSplit[i].name} - ${taskFilterSplit[i].progress}%` : `${taskFilterSplit[i].name}`,
-        start_date: moment(taskFilterSplit[i].startDate).format("YYYY-MM-DD h:mm"),
+        start_date: moment(taskFilterSplit[i].startDate).format("YYYY-MM-DD HH:mm"),
         // duration: duration,
-        end_date: moment(taskFilterSplit[i].endDate).format("YYYY-MM-DD h:mm"),
+        end_date: moment(taskFilterSplit[i].endDate).format("YYYY-MM-DD HH:mm"),
         progress: taskFilterSplit[i].status === "inprocess" ? taskFilterSplit[i].progress / 100 : 0,
         process: process,
         parent: `${groupName}-${taskFilterSplit[i].parentSplit}`
       });
     }
+
     return { data, count, line };
   }
 

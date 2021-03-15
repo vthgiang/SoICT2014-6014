@@ -102,6 +102,16 @@ class Gantt extends Component {
         return true;
     }
 
+    componentDidUpdate = () => {
+        const { gantt } = this.state;
+
+        // Focus vào ngày hiện tại
+        let date = new Date();
+        let date_x = gantt.posFromDate(date);
+        let scroll_to = Math.max(date_x - gantt.config.task_scroll_offset, 0);
+        gantt.scrollTo(scroll_to);
+    }
+
     componentDidMount() {
         const { unit, translate } = this.props;
         const { gantt } = this.state;
@@ -138,9 +148,9 @@ class Gantt extends Component {
             gantt.templates.tooltip_text = function (start, end, task) {
                 return `<b>${translate('task.task_dashboard.task_name')}:</b> ${task.text} 
                     <br/>
-                    <b>${translate('task.task_dashboard.start_date')}:</b> ${moment(start).format('h:mm DD-MM-YYYY')} 
+                    <b>${translate('task.task_dashboard.start_date')}:</b> ${moment(start).format("DD-MM-YYYY hh:mm A")} 
                     <br/>
-                    <b>${translate('task.task_dashboard.end_date')}:</b> ${moment(end).format('h:mm DD-MM-YYYY')}`;
+                    <b>${translate('task.task_dashboard.end_date')}:</b> ${moment(end).format("DD-MM-YYYY hh:mm A")}`;
             };
 
             gantt.attachEvent("onTaskDblClick", (id, mode) => {
