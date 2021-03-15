@@ -115,7 +115,7 @@ class GanttCalendar extends Component {
       let start = moment(taskFilterSplit[i].startDate);
       let end = moment(taskFilterSplit[i].endDate);
       let now = moment(new Date());
-      let duration = end.diff(start, 'days') + 1;
+      let duration = end.diff(start, 'days');
       if (duration == 0) duration = 1;
       let process = 0;
 
@@ -157,8 +157,9 @@ class GanttCalendar extends Component {
       data.push({
         id: `${groupName}-${taskFilterSplit[i]._id}`,
         text: taskFilterSplit[i].status == "inprocess" ? `${taskFilterSplit[i].name} - ${taskFilterSplit[i].progress}%` : `${taskFilterSplit[i].name}`,
-        start_date: moment(taskFilterSplit[i].startDate).format("YYYY-MM-DD"),
-        duration: duration,
+        start_date: moment(taskFilterSplit[i].startDate).format("YYYY-MM-DD h:mm"),
+        // duration: duration,
+        end_date: moment(taskFilterSplit[i].endDate).format("YYYY-MM-DD h:mm"),
         progress: taskFilterSplit[i].status === "inprocess" ? taskFilterSplit[i].progress / 100 : 0,
         process: process,
         parent: `${groupName}-${taskFilterSplit[i].parentSplit}`

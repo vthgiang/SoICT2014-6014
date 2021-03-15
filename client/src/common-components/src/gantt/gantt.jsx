@@ -138,9 +138,9 @@ class Gantt extends Component {
             gantt.templates.tooltip_text = function (start, end, task) {
                 return `<b>${translate('task.task_dashboard.task_name')}:</b> ${task.text} 
                     <br/>
-                    <b>${translate('task.task_dashboard.start_date')}:</b> ${moment(start).format('DD-MM-YYYY')} 
+                    <b>${translate('task.task_dashboard.start_date')}:</b> ${moment(start).format('h:mm DD-MM-YYYY')} 
                     <br/>
-                    <b>${translate('task.task_dashboard.end_date')}:</b> ${moment(end).subtract(1, 'days').format('DD-MM-YYYY')}`;
+                    <b>${translate('task.task_dashboard.end_date')}:</b> ${moment(end).format('h:mm DD-MM-YYYY')}`;
             };
 
             gantt.attachEvent("onTaskDblClick", (id, mode) => {
