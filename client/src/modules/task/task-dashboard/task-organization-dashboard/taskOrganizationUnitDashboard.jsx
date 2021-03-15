@@ -414,7 +414,7 @@ class TaskOrganizationUnitDashboard extends Component {
                                                         <span style={{ fontWeight: "bold" }}>{` ${this.getUnitName(selectBoxUnit, idsUnit).map(o => o).join(", ")}`}</span>
                                                     </>
                                                     :
-                                                    <span onClick={() => this.showUnitGeneraTask(selectBoxUnit, idsUnit)}>
+                                                    <span onClick={() => this.showUnitGeneraTask(selectBoxUnit, idsUnit)} style={{ cursor: 'pointer' }}>
                                                         <span>{`${translate('task.task_dashboard.general_unit_task')} ${translate('task.task_management.lower_from')} ${startMonthTitle} ${translate('task.task_management.lower_to')} ${endMonthTitle} ${translate('task.task_dashboard.of')} `} </span>
                                                         <a style={{ cursor: 'pointer', fontWeight: 'bold' }}>{idsUnit && idsUnit.length}</a>
                                                         <span>{` ${translate('task.task_dashboard.unit_lowercase')}`}</span>

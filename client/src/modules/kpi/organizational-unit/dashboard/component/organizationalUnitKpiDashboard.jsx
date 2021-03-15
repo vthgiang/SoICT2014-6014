@@ -12,6 +12,7 @@ import { StatisticsOfOrganizationalUnitKpiResultsChart } from './statisticsOfOrg
 
 import { SelectBox, DatePicker, LazyLoadComponent, ExportExcel } from '../../../../../common-components/index';
 import { withTranslate } from 'react-redux-multilingual';
+import Swal from 'sweetalert2';
 
 
 class OrganizationalUnitKpiDashboard extends Component {
@@ -74,11 +75,11 @@ class OrganizationalUnitKpiDashboard extends Component {
             if (!nextProps.dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit) {
                 return false
             }
-
             this.setState(state => {
                 return {
                     ...state,
-                    dataStatus: this.DATA_STATUS.AVAILABLE
+                    dataStatus: this.DATA_STATUS.AVAILABLE,
+                    organizationalUnitId: nextProps.dashboardEvaluationEmployeeKpiSet?.childrenOrganizationalUnit?.id,
                 }
             })
             return false;
@@ -166,12 +167,42 @@ class OrganizationalUnitKpiDashboard extends Component {
         })
     }
 
+    getOrganizationalUnit = (data) => {
+        this.setState(state => {
+            return {
+                ...state,
+                organizationalUnitOfChartAllKpis: data
+            }
+        })
+    }
+
+    showUnitResultsOfAllOrganizationalUnitKpiChart = (units) => {
+        if (units?.length > 0) {
+            Swal.fire({
+                html: `<h3 style="color: red"><div>Danh sách các đơn vị </div> </h3>
+                    <ul style="text-align:left;font-size: 16px;">
+                        ${units.map(o => (
+                            `<li style="padding: 7px">${o}</li>`
+                            )).join('')
+                        }
+                    </ul>
+                `,
+                width: "40%"
+            })
+        }
+    }
+
     render() {
         const { dashboardEvaluationEmployeeKpiSet, translate } = this.props;
-        const { childUnitChart, organizationalUnitId, month, resultsOfOrganizationalUnitKpiChartData, resultsOfAllOrganizationalUnitsKpiChartData, statisticsOfOrganizationalUnitKpiResultChartData } = this.state;
+        const { childUnitChart, organizationalUnitId, 
+            month, date, resultsOfOrganizationalUnitKpiChartData, 
+            resultsOfAllOrganizationalUnitsKpiChartData, 
+            statisticsOfOrganizationalUnitKpiResultChartData,
+            organizationalUnitOfChartAllKpis
+        } = this.state;
 
         let childOrganizationalUnit, childrenOrganizationalUnit, childrenOrganizationalUnitLoading;
-        let organizationalUnitSelectBox, typeChartSelectBox;
+        let organizationalUnitSelectBox, typeChartSelectBox, currentOrganizationalUnit;
 
         if (dashboardEvaluationEmployeeKpiSet) {
             childrenOrganizationalUnit = dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit;
@@ -215,8 +246,8 @@ class OrganizationalUnitKpiDashboard extends Component {
 
         // Tạo các select box
         if (childOrganizationalUnit) {
-
             organizationalUnitSelectBox = childOrganizationalUnit.map(x => { return { 'text': x.name, 'value': x.id } });
+            currentOrganizationalUnit = childOrganizationalUnit.filter(item => item?.id === organizationalUnitId)?.[0]?.name;
         }
         typeChartSelectBox = [
             { 'text': 'Đơn vị hiện tại', 'value': 1 },
@@ -275,7 +306,7 @@ class OrganizationalUnitKpiDashboard extends Component {
                             <div className="col-xs-12">
                                 <div className="box box-primary">
                                     <div className="box-header with-border">
-                                        <div className="box-title">{translate('kpi.organizational_unit.dashboard.trend')} {this.state.date}</div>
+                                        <div className="box-title">{translate('kpi.organizational_unit.dashboard.trend')} {currentOrganizationalUnit} {translate('general.month')} {date}</div>
                                     </div>
 
                                     <div className="box-body qlcv" style={{ minHeight: "420px" }}>
@@ -316,7 +347,7 @@ class OrganizationalUnitKpiDashboard extends Component {
                                 <div className="col-xs-12">
                                     <div className="box box-primary">
                                         <div className="box-header with-border">
-                                            <div className="box-title">{translate('kpi.organizational_unit.dashboard.distributive')}{this.state.date}</div>
+                                            <div className="box-title">{translate('kpi.organizational_unit.dashboard.distributive')} {currentOrganizationalUnit} {translate('general.month')} {date}</div>
                                         </div>
                                         <div className="box-body">
                                         {childOrganizationalUnit && (this.state.dataStatus === this.DATA_STATUS.AVAILABLE)
@@ -340,7 +371,7 @@ class OrganizationalUnitKpiDashboard extends Component {
                                 <div className="col-xs-12">
                                     <div className="box box-primary">
                                         <div className="box-header with-border">
-                                            <div className="box-title">{translate('kpi.organizational_unit.dashboard.statiscial')} {this.state.date}</div>
+                                            <div className="box-title">{translate('kpi.organizational_unit.dashboard.statiscial')} {currentOrganizationalUnit} {translate('general.month')} {date}</div>
                                             {statisticsOfOrganizationalUnitKpiResultChartData && <ExportExcel type="link" id="export-statistic-organizational-unit-kpi-results-chart" exportData={statisticsOfOrganizationalUnitKpiResultChartData} style={{ marginLeft: 10 }} />}
                                         </div>
                                         <div className="box-body">
@@ -365,7 +396,7 @@ class OrganizationalUnitKpiDashboard extends Component {
                                     <div className="col-xs-12">
                                         <div className="box box-primary">
                                             <div className="box-header with-border">
-                                                <div className="box-title">{translate('kpi.organizational_unit.dashboard.result_kpi_unit')}</div>
+                                                <div className="box-title">{translate('kpi.organizational_unit.dashboard.result_kpi_unit')} {currentOrganizationalUnit}</div>
                                                 {resultsOfOrganizationalUnitKpiChartData && <ExportExcel type="link" id="export-organizational-unit-kpi-results-chart" exportData={resultsOfOrganizationalUnitKpiChartData} style={{ marginLeft: 10 }} />}
                                             </div>
                                             <div className="box-body qlcv">
@@ -393,12 +424,22 @@ class OrganizationalUnitKpiDashboard extends Component {
                                     <div className="col-xs-12">
                                         <div className="box box-primary">
                                             <div className="box-header with-border">
-                                                <div className="box-title">{translate('kpi.organizational_unit.dashboard.result_kpi_units')}</div>
+                                                <div className="box-title">
+                                                    {translate('kpi.organizational_unit.dashboard.result_kpi_unit')}
+                                                    {organizationalUnitOfChartAllKpis?.length > 1 
+                                                        ? <span onClick={() => this.showUnitResultsOfAllOrganizationalUnitKpiChart(organizationalUnitOfChartAllKpis)} style={{ cursor: 'pointer' }}> 
+                                                            <a style={{ fontWeight: 'bold' }}> {organizationalUnitOfChartAllKpis.length} </a>{translate('kpi.organizational_unit.dashboard.organizational_unit_low_case')}
+                                                        </span>
+                                                        : ` ${organizationalUnitOfChartAllKpis?.[0]}`
+                                                    }
+                                                </div> 
                                                 {resultsOfAllOrganizationalUnitsKpiChartData && <ExportExcel type="link" id="export-all-organizational-unit-kpi-results-chart" exportData={resultsOfAllOrganizationalUnitsKpiChartData} style={{ marginLeft: 10 }} />}
                                             </div>
                                             <div className="box-body qlcv">
                                                 <ResultsOfAllOrganizationalUnitKpiChart
-                                                    onDataAvailable={this.handleResultsOfAllOrganizationalUnitsKpiChartDataAvailable} />
+                                                    onDataAvailable={this.handleResultsOfAllOrganizationalUnitsKpiChartDataAvailable}
+                                                    getOrganizationalUnit={this.getOrganizationalUnit}
+                                                />
                                             </div>
                                         </div>
                                     </div>

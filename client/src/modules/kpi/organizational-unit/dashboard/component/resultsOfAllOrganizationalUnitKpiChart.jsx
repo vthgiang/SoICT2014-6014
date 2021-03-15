@@ -209,15 +209,16 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
     }
 
     multiLineChart = () => {
+        const { translate } = this.props;
         this.removePreviosChart();
 
         let xs = {};
-        const { translate } = this.props;
-        this.dataChart = this.setDataMultiLineChart();
+        let dataChart = this.setDataMultiLineChart();
+        this.props.getOrganizationalUnit(dataChart.filter((item, index) => index%2 === 1).map(item => item?.[0]));
 
-        for (let i = 0; i < this.dataChart.length; i = i + 2) {
+        for (let i = 0; i < dataChart.length; i = i + 2) {
             let temporary = {};
-            temporary[this.dataChart[i + 1][0]] = this.dataChart[i][0];
+            temporary[dataChart[i + 1][0]] = dataChart[i][0];
             xs = Object.assign(xs, temporary);
         }
 
@@ -232,7 +233,7 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
 
             data: {
                 xs: xs,
-                columns: this.dataChart
+                columns: dataChart
             },
 
             axis: {
@@ -261,6 +262,12 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
             }
         })
 
+        this.setState(state => {
+            return {
+                ...state,
+                dataChart: dataChart
+            }
+        })
     }
 
     handleExportData = (exportData) => {
@@ -347,6 +354,7 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
 
     render() {
         const { createKpiUnit, translate } = this.props;
+        const { dataChart, kindOfPoint } = this.state;
         let organizationalUnitKpiSetsOfChildUnit;
 
         if (createKpiUnit.organizationalUnitKpiSetsOfChildUnit) {
@@ -398,9 +406,9 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
 
                 <section className="box-body" style={{ textAlign: "right" }}>
                     <div className="btn-group">
-                        <button type="button" className={`btn btn-xs ${this.state.kindOfPoint === this.KIND_OF_POINT.AUTOMATIC ? 'btn-danger' : null}`} onClick={() => this.handleSelectKindOfPoint(this.KIND_OF_POINT.AUTOMATIC)}>{translate('kpi.evaluation.dashboard.auto_point')}</button>
-                        <button type="button" className={`btn btn-xs ${this.state.kindOfPoint === this.KIND_OF_POINT.EMPLOYEE ? 'btn-danger' : null}`} onClick={() => this.handleSelectKindOfPoint(this.KIND_OF_POINT.EMPLOYEE)}>{translate('kpi.evaluation.dashboard.employee_point')}</button>
-                        <button type="button" className={`btn btn-xs ${this.state.kindOfPoint === this.KIND_OF_POINT.APPROVED ? 'btn-danger' : null}`} onClick={() => this.handleSelectKindOfPoint(this.KIND_OF_POINT.APPROVED)}>{translate('kpi.evaluation.dashboard.approve_point')}</button>
+                        <button type="button" className={`btn btn-xs ${kindOfPoint === this.KIND_OF_POINT.AUTOMATIC ? 'btn-danger' : null}`} onClick={() => this.handleSelectKindOfPoint(this.KIND_OF_POINT.AUTOMATIC)}>{translate('kpi.evaluation.dashboard.auto_point')}</button>
+                        <button type="button" className={`btn btn-xs ${kindOfPoint === this.KIND_OF_POINT.EMPLOYEE ? 'btn-danger' : null}`} onClick={() => this.handleSelectKindOfPoint(this.KIND_OF_POINT.EMPLOYEE)}>{translate('kpi.evaluation.dashboard.employee_point')}</button>
+                        <button type="button" className={`btn btn-xs ${kindOfPoint === this.KIND_OF_POINT.APPROVED ? 'btn-danger' : null}`} onClick={() => this.handleSelectKindOfPoint(this.KIND_OF_POINT.APPROVED)}>{translate('kpi.evaluation.dashboard.approve_point')}</button>
                     </div>
                 </section>
                 <section id={"resultsOfAllUnit"} className="c3-chart-container">
@@ -409,8 +417,8 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
                         chart={this.chart}
                         chartId={"resultsOfAllUnit"}
                         legendId={"resultsOfAllUnitLegend"}
-                        title={this.dataChart && `${translate('general.list_unit')} (${this.dataChart.length/2})`}
-                        dataChartLegend={this.dataChart && this.dataChart.filter((item, index) => index % 2 === 1).map(item => item[0])}
+                        title={dataChart && `${translate('general.list_unit')} (${dataChart.length/2})`}
+                        dataChartLegend={dataChart && dataChart.filter((item, index) => index % 2 === 1).map(item => item[0])}
                     />
                 </section>
             </React.Fragment>
