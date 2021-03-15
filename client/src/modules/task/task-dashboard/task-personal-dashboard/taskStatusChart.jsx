@@ -183,19 +183,20 @@ function TaskStatusChart(props) {
     return (
         <React.Fragment>
             {!TaskOrganizationUnitDashboard &&
-                <section className="form-inline">
-                    <div className="form-group">
-                        <label>{translate('task.task_management.role')}</label>
-                        <SelectMulti
-                            id={`roleOfStatusTaskSelectBox`}
-                            items={ROLE_SELECTBOX}
-                            multiple={true}
-                            onChange={handleSelectRole}
-                            options={{ allSelectedText: translate('task.task_management.select_all_status') }}
-                            value={role}
-                        />
+                <div className="qlcv">
+                    <div className="form-inline" >
+                        <div className="form-group">
+                            <label style={{ width: 'auto' }}>{translate('task.task_management.role')}</label>
+                            <SelectMulti
+                                id={`roleOfStatusTaskSelectBox`}
+                                items={ROLE_SELECTBOX}
+                                multiple={true}
+                                onChange={handleSelectRole}
+                                options={{ allSelectedText: translate('task.task_management.select_all_status') }}
+                                value={role} />
+                        </div>
                     </div>
-                </section>
+                </div>
             }
 
             <section id="pie-chart-status"></section>

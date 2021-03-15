@@ -792,9 +792,6 @@ exports.links = [
         url: '/employee-manage-info-asset',
         apis: ['@all']
     }, {
-        url: '/employee-manage-incident-asset',
-        apis: ['@all']
-    }, {
         url: '/employee-manage-asset-use-request',
         apis: ['@all']
     }, {

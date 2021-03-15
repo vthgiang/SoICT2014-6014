@@ -36,7 +36,6 @@ class ResultsOfOrganizationalUnitKpiChart extends Component {
     }
 
     componentDidMount = () => {
-        console.log("\n\n\n\n\n\n", localStorage.getItem("currentRole"))
         this.props.getAllOrganizationalUnitKpiSetByTime(localStorage.getItem("currentRole"), this.props.organizationalUnitId, this.state.startDate, this.state.endDate);
 
         this.setState(state => {

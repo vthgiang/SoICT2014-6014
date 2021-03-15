@@ -35,6 +35,8 @@ export default {
             error: "Lỗi",
             stt: 'STT',
             new_notification: "Bạn có thông báo mới!",
+            month: "tháng",
+            value: "Giá trị",
             auth_alert: {
                 title:
                     "Hệ thống xác nhận có lỗi xảy ra trong phiên làm việc của bạn!",
@@ -4154,17 +4156,19 @@ export default {
                 // Dashboard KPI Unit
                 dashboard: {
                     organizational_unit: "Đơn vị",
+                    organizational_unit_low_case: "đơn vị",
                     month: "Tháng",
                     trend: "Xu hướng thực hiện mục tiêu của nhân viên",
-                    distributive: "Phân phối KPI đơn vị tháng ",
-                    statiscial: "Thống kê kết quả KPI đơn vị tháng ",
-                    result_kpi_unit: "Kết quả KPI đơn vị",
-                    result_kpi_units: "Kết quả KPI các đơn vị",
+                    distributive: "Phân phối KPI",
+                    statiscial: "Thống kê kết quả KPI",
+                    result_kpi_unit: "Kết quả KPI",
                     start_date: "Từ tháng",
                     end_date: "Đến tháng",
                     search: "Tìm kiếm",
                     point: "Điểm",
                     no_data: "Không có dữ liệu",
+                    line_chart: "Biểu đồ đường",
+                    pie_chart: "Biểu đồ quạt",
                     trend_chart: {
                         execution_time: "Thời gian thực hiện (Ngày)",
                         participants: "Số người tham gia",

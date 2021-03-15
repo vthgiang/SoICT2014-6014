@@ -54,7 +54,7 @@ function AverageResultsOfTaskInOrganizationalUnit(props) {
         startMonth: null,
         endMonth: null
     });
-    
+
     // Khai báo state
     const { criteria, typePoint, units, startMonth, endMonth } = state;
 
@@ -71,7 +71,7 @@ function AverageResultsOfTaskInOrganizationalUnit(props) {
         if (currentState.criteria === criteria && currentState.typePoint === typePoint) {
             if (tasks.organizationUnitTasks) {
                 averageChart();
-            } 
+            }
         }
 
         // Cập nhật ref
@@ -79,8 +79,8 @@ function AverageResultsOfTaskInOrganizationalUnit(props) {
             criteria: criteria,
             typePoint: typePoint
         }
-    }) 
-    
+    })
+
 
     if (props.startMonth !== startMonth || props.endMonth !== endMonth || props.units !== units) {
         setState({
@@ -191,7 +191,7 @@ function AverageResultsOfTaskInOrganizationalUnit(props) {
                                             let lastDayInMonth = new Date(dateEvaluation.getFullYear(), dateEvaluation.getMonth() + 1, 0);
                                             totalDay = Math.round((lastDayInMonth.getTime() - firstDayInMonth.getTime()) / 1000 / 60 / 60 / 24);
                                         }
-                            
+
                                         if (result?.automaticPoint && result?.taskImportanceLevel && dataSumPointAndCoefficient
                                             && dataSumPointAndCoefficient?.[task?.organizationalUnit?._id]?.sumAutomaticPointCoefficient >= 0
                                             && dataSumPointAndCoefficient?.[task?.organizationalUnit?._id]?.sumCoefficientAutomatic >= 0
@@ -352,7 +352,7 @@ function AverageResultsOfTaskInOrganizationalUnit(props) {
 
     const averageChart = () => {
         removePreviosChart();
-        
+
         let data = setDataAverageChart();
         let check = false;
         if (data?.length !== dataChartRef.current?.length) {
@@ -368,7 +368,7 @@ function AverageResultsOfTaskInOrganizationalUnit(props) {
             dataChartRef.current = data;
             setDataChart(data)
         }
-        
+
         chart.current = c3.generate({
             bindto: document.getElementById('averageChartUnitChart'),             // Đẩy chart vào thẻ div có id="chart"
 
@@ -421,36 +421,40 @@ function AverageResultsOfTaskInOrganizationalUnit(props) {
 
     return (
         <React.Fragment>
-            <section className="form-inline">
-                <div className="form-group">
-                    <label>Tiêu chí</label>
-                    <SelectBox
-                        id={`criteriaOfAverageUnitSelectBox`}
-                        className="form-control select2"
-                        style={{ width: "100%" }}
-                        items={CRITERIA_SELECTBOX}
-                        multiple={false}
-                        onChange={handleSelectCriteria}
-                        value={criteria}
-                    />
+            <div className="qlcv">
+                <div className="form-inline" >
+                    <div className="form-group">
+                        <label style={{ width: 'auto' }}>Tiêu chí</label>
+                        <SelectBox
+                            id={`criteriaOfAverageUnitSelectBox`}
+                            className="form-control select2"
+                            style={{ width: "100%" }}
+                            items={CRITERIA_SELECTBOX}
+                            multiple={false}
+                            onChange={handleSelectCriteria}
+                            value={criteria}
+                        />
+                    </div>
                 </div>
-            </section>
-            <section className="form-inline">
-                <div className="form-group">
-                    <label>Loại điểm</label>
-                    <SelectBox
-                        id={`typePointOfAverageResultsTaskSelectBox`}
-                        className="form-control select2"
-                        style={{ width: "100%" }}
-                        items={TYPEPOINT_SELECTBOX}
-                        multiple={false}
-                        onChange={handleSelectTypePoint}
-                        value={typePoint}
-                    />
+                <div className="form-inline" >
+                    <div className="form-group">
+                        <label style={{ width: 'auto' }}>Loại điểm</label>
+                        <SelectBox
+                            id={`typePointOfAverageResultsTaskSelectBox`}
+                            className="form-control select2"
+                            style={{ width: "100%" }}
+                            items={TYPEPOINT_SELECTBOX}
+                            multiple={false}
+                            onChange={handleSelectTypePoint}
+                            value={typePoint}
+                        />
+                    </div>
+                    <button type="button" className="btn btn-success" onClick={handleSearchData}>{translate('kpi.evaluation.employee_evaluation.search')}</button>
                 </div>
+            </div>
 
-                <button type="button" className="btn btn-success" onClick={handleSearchData}>{translate('kpi.evaluation.employee_evaluation.search')}</button>
-            </section>
+
+
             <section id={"averageChartUnit"} className="c3-chart-container">
                 <div id="averageChartUnitChart"></div>
                 <CustomLegendC3js

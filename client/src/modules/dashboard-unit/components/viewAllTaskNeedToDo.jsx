@@ -42,7 +42,7 @@ const ViewAllTaskNeedToDo = (props) => {
                                     <tr key={index}>
                                         <td>{index + 1}</td>
                                         <td>{obj.name}</td>
-                                        <td><a href={`${process.env.REACT_APP_WEBSITE}/task?taskId=${obj._id}`} target="_blank">Xem chi tiết</a></td>
+                                        <td><a href={`/task?taskId=${obj._id}`} target="_blank">Xem chi tiết</a></td>
                                     </tr>
                                 ))
                             }

@@ -868,17 +868,6 @@ const LINKS = [{
     components: getComponentsInLink('/employee-manage-info-asset')
 },
 {
-    url: '/employee-manage-incident-asset',
-    description: 'Quản lý thông tin sự cố tài sản',
-    category: LINK_CATEGORY.ASSET.name,
-    roles: [
-        ROOT_ROLES.MANAGER.name,
-        ROOT_ROLES.DEPUTY_MANAGER.name,
-        ROOT_ROLES.EMPLOYEE.name,
-    ],
-    components: getComponentsInLink('/employee-manage-incident-asset')
-},
-{
     url: '/employee-manage-asset-use-request',
     description: 'Quản lý đăng kí sử dụng tài sản',
     category: LINK_CATEGORY.ASSET.name,

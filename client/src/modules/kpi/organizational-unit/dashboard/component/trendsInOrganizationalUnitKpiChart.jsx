@@ -16,7 +16,6 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
 
         this.DATA_STATUS = {NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3};
         this.chart = null;
-        this.dataChart = null;
 
         this.state = {
             currentRole: null,
@@ -186,7 +185,7 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
         let currentDate = now.getDate();
         let currentTime = new Date(currentYear, currentMonth, currentDate);
 
-        if (createKpiUnit.currentKPI && createKpiUnit.currentKPI.kpis) {
+        if (createKpiUnit?.currentKPI?.kpis) {
             listOrganizationalUnitKpi = createKpiUnit.currentKPI.kpis;
         }
 
@@ -194,24 +193,24 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
 
         if (listOrganizationalUnitKpi && arrayListTaskSameOrganizationUnitKpi) {
             listOrganizationalUnitKpi.map(parent => {
-                let key = listOrganizationalUnitKpi.indexOf(parent);
+                let key = listOrganizationalUnitKpi?.indexOf(parent);
                 let temporary = {};
                 let executionTime = 0;
 
                 arrayListTaskSameOrganizationUnitKpi[key].map(x => {
-                    let date1 = new Date(x.evaluations.date);
-                    let date2 = new Date(x.startDate);
+                    let date1 = new Date(x?.evaluations?.date);
+                    let date2 = new Date(x?.startDate);
                     if(x.evaluations.date) {
-                        executionTime = executionTime + (date1.getTime() - date2.getTime())/(3600*24*1000)
+                        executionTime = executionTime + (date1?.getTime() - date2?.getTime())/(3600*24*1000)
                     } else {
-                        executionTime = executionTime + (currentTime.getTime() - date2.getTime())/(3600*24*1000)
+                        executionTime = executionTime + (currentTime?.getTime() - date2?.getTime())/(3600*24*1000)
                     }
                 })
 
-                if (arrayListTaskSameOrganizationUnitKpi.length !== 0 && listOrganizationalUnitKpi) {
+                if (arrayListTaskSameOrganizationUnitKpi?.length > 0 && listOrganizationalUnitKpi) {
                     executionTime = executionTime/arrayListTaskSameOrganizationUnitKpi.length;
                 }
-                temporary[parent.name] = executionTime;
+                temporary[parent?.name] = Math.round(Number(executionTime) * 1000) / 1000;
 
                 executionTimes = Object.assign(executionTimes, temporary);
             })
@@ -395,11 +394,13 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
     } 
 
     barChart = () => {
+        const { translate } = this.props;
         this.removePreviousBarChart();
 
         const { createKpiUnit } = this.props;
-        let numberOfParticipants, numberOfEmployeeKpis, executionTimes, numberOfTasks, weight, data, listOrganizationalUnitKpi, titleX;
-           
+        let numberOfParticipants, numberOfEmployeeKpis, executionTimes, numberOfTasks, weight, listOrganizationalUnitKpi, titleX = ['x'];
+        let numberOfParticipantsArray = [], numberOfEmployeeKpisArray = [], executionTimesArray = [], numberOfTasksArray = [], weightArray = [];
+
         if(createKpiUnit.currentKPI) {
             listOrganizationalUnitKpi = createKpiUnit.currentKPI.kpis;
         }
@@ -410,33 +411,32 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
         numberOfTasks = this.setNumberOfTaskData();
         weight = this.setWeightData();
         
-        data = [               
-            executionTimes,
-            numberOfParticipants,
-            numberOfTasks,
-            numberOfEmployeeKpis,
-            weight
-        ]
+        executionTimesArray.push(executionTimes?.name);
+        numberOfEmployeeKpisArray.push(numberOfEmployeeKpis?.name);
+        numberOfParticipantsArray.push(numberOfParticipants?.name);
+        numberOfTasksArray.push(numberOfTasks?.name);
+        weightArray.push(weight?.name);
         
-        if(data) {
-            titleX = data.map(x => x.name);
-            titleX = ['x'].concat(titleX);
-        }
-
         if(listOrganizationalUnitKpi) {
-            this.dataChart = listOrganizationalUnitKpi.map(kpis => {
-                let temporary;
-                temporary = data.map(x => {
-                    return x[kpis.name] ? x[kpis.name] : 0;
-                })
-                
-                temporary = [kpis.name].concat(temporary);
-
-                return temporary;
+            listOrganizationalUnitKpi.map(kpis => {
+                titleX.push(kpis?.name);
+                executionTimesArray.push(executionTimes?.[kpis?.name]);
+                numberOfEmployeeKpisArray.push(numberOfEmployeeKpis?.[kpis?.name]);
+                numberOfParticipantsArray.push(numberOfParticipants?.[kpis?.name]);
+                numberOfTasksArray.push(numberOfTasks?.[kpis?.name]);
+                weightArray.push(weight?.[kpis?.name]);
             })
         }
 
-        this.dataChart.unshift(titleX);
+        let dataChart = [
+            titleX,
+            executionTimesArray,
+            numberOfEmployeeKpisArray,
+            numberOfParticipantsArray,
+            numberOfTasksArray,
+            weightArray
+        ]
+
         this.chart = c3.generate({
             bindto: this.refs.chart,                
 
@@ -444,59 +444,38 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
                 height: 350                     
             },
 
-            padding: {                          
+            padding: {
                 top: 20,
-                left: 100,
-                right: 20,
-                bottom: 20
+                bottom: 50,
+                right: 20
             },
 
             data: {                             
                 x: 'x',
-                columns: this.dataChart,
-                type: 'bar',
-                groups: [
-                    listOrganizationalUnitKpi.map(x => x.name)
-                ],
-                stack: {
-                    normalize: true
-                }
-            },
-
-            bar: {                              
-                width: {
-                    ratio: 0.8
-                }
+                columns: dataChart
             },
 
             axis: {                            
-                rotated: true,
                 x: {
                     type: 'category',
                     tick: {
-                        outer: true
+                        format: function (x) {
+                            if (titleX && titleX.length > 1) {
+                                if (titleX[x + 1].length > 30) {
+                                    return titleX[x + 1].slice(0, 30) + "...";
+                                } else {
+                                    return titleX[x + 1]
+                                }
+                            }
+                        }
                     }
-                }
-            },
-
-            tooltip: {
-                position: function () {
-                    let position = c3.chart.internal.fn.tooltipPosition.apply(this, arguments);
-                    return position;
                 },
-                contents: function (data) {
-                    let value = '<div style="overflow-y: scroll; max-height: 300px; pointer-events: auto;">';
-                    value = value + '<table class=\'c3-tooltip\'>';
 
-                    data.forEach((val) => {
-                        value = value + '<tr><td class=\'name\'>' + val.name + '</td>'
-                                    +'<td class=\'value\'>' + (Math.round(Number(val.value) * 1000) / 1000) + '</td></tr>';
-                    });
-
-                    value = value + '</table>';
-                    value = value + '</div>';
-                    
-                    return value;
+                y: {
+                    label: {
+                        text: translate('general.value'),
+                        position: 'outer-right'
+                    }
                 }
             },
 
@@ -504,10 +483,18 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
                 show: false
             }
         });
+
+        this.setState(state => {
+            return {
+                ...state,
+                titleX: titleX
+            }
+        })
     }
     
     render() {
         const { createKpiUnit, translate } = this.props;
+        const { titleX } = this.state;
         let currentKpi, organizationalUnitKpiLoading;
 
         if(createKpiUnit) {
@@ -526,7 +513,7 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
                             chartId={"trendsInUnit"}
                             legendId={"trendsInUnitLegend"}
                             title={`${translate('kpi.evaluation.employee_evaluation.KPI_list')} (${currentKpi.kpis && currentKpi.kpis.length})`}
-                            dataChartLegend={this.dataChart && this.dataChart.filter((item, index) => index > 0).map(item => item[0])}
+                            dataChartLegend={titleX && titleX.filter((item, index) => index > 0)}
                         />
                     </section>
                     : organizationalUnitKpiLoading && <section>{translate('kpi.organizational_unit.dashboard.no_data')}</section>

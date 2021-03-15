@@ -173,8 +173,6 @@ class ComponentInfor extends Component {
         let year = partMonth[1];
         const employeeKpiSetByMonth = createEmployeeKpiSet.employeeKpiSetByMonth
 
-        console.log('employeeKpiSetByMonth', createEmployeeKpiSet.employeeKpiSetByMonth)
-
         /* Lấy số ngày nghỉ phép còn lại của nhân viên */
         let numberAnnualLeave = 0;
         let maximumNumberOfLeaveDays = 0;
@@ -195,16 +193,16 @@ class ComponentInfor extends Component {
             let tasks = [];
             let accountableTask = [], consultedTask = [], responsibleTask = [], informedTask = [];
             taskListByStatus && taskListByStatus.forEach(task => {
-                if (task.accountableEmployees.includes(listEmployee[i].userId._id)) {
+                if (task.accountableEmployees?.includes(listEmployee[i]?.userId?._id)) {
                     accountableTask = [...accountableTask, task._id]
                 }
-                if (task.consultedEmployees.includes(listEmployee[i].userId._id)) {
+                if (task.consultedEmployees?.includes(listEmployee[i]?.userId?._id)) {
                     consultedTask = [...consultedTask, task._id]
                 }
-                if (task.responsibleEmployees.includes(listEmployee[i].userId._id)) {
+                if (task.responsibleEmployees?.includes(listEmployee[i]?.userId?._id)) {
                     responsibleTask = [...responsibleTask, task._id]
                 }
-                if (task.informedEmployees.includes(listEmployee[i].userId._id)) {
+                if (task.informedEmployees?.includes(listEmployee[i]?.userId?._id)) {
                     informedTask = [...informedTask, task._id]
                 }
             });
@@ -217,8 +215,8 @@ class ComponentInfor extends Component {
             };
 
             employeeTasks = [...employeeTasks, {
-                _id: listEmployee[i].userId._id,
-                name: listEmployee[i].userId.name,
+                _id: listEmployee[i]?.userId?._id,
+                name: listEmployee[i]?.userId?.name,
                 accountableTask: accountableTask.length,
                 consultedTask: consultedTask.length,
                 responsibleTask: responsibleTask.length,
@@ -248,13 +246,13 @@ class ComponentInfor extends Component {
         for (let i in listEmployee) {
             let totalOvertime = 0, totalHoursOff = 0;
             listOvertimeOfUnitsByStartDateAndEndDate && listOvertimeOfUnitsByStartDateAndEndDate.forEach(x => {
-                if (listEmployee[i].userId.email === x.employee.emailInCompany) {
+                if (listEmployee[i]?.userId?.email === x.employee?.emailInCompany) {
                     totalOvertime = x.totalOvertime ? x.totalOvertime : 0;
                     totalHoursOff = x.totalHoursOff ? x.totalHoursOff : 0;
                 };
             });
-            employeeOvertime = [...employeeOvertime, { _id: listEmployee[i].userId._id, name: listEmployee[i].userId.name, totalHours: totalOvertime }];
-            employeeHoursOff = [...employeeHoursOff, { _id: listEmployee[i].userId._id, name: listEmployee[i].userId.name, totalHours: totalHoursOff }];
+            employeeOvertime = [...employeeOvertime, { _id: listEmployee[i]?.userId?._id, name: listEmployee[i]?.userId?.name, totalHours: totalOvertime }];
+            employeeHoursOff = [...employeeHoursOff, { _id: listEmployee[i]?.userId?._id, name: listEmployee[i]?.userId?.name, totalHours: totalHoursOff }];
         };
         /* Sắp xếp theo thứ tự giảm dần */
         if (employeeOvertime.length !== 0) {
