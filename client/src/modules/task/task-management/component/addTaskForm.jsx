@@ -6,17 +6,16 @@ import { getStorage } from '../../../../config';
 import ValidationHelper from '../../../../helpers/validationHelper';
 
 import { UserActions } from '../../../super-admin/user/redux/actions';
-import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions'
 import { taskTemplateActions } from '../../task-template/redux/actions';
 import { taskManagementActions } from '../redux/actions';
 
 import { DatePicker, TimePicker, SelectBox, ErrorLabel, ToolTip, TreeSelect, QuillEditor } from '../../../../common-components';
 import { TaskFormValidator } from './taskFormValidator';
 import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
-import moment from 'moment';
 import ModalAddProject from '../../../project/component/createProject';
 import { RoleActions } from '../../../super-admin/role/redux/actions';
 import { ROOT_ROLE } from '../../../../helpers/constants';
+import dayjs from "dayjs";
 
 class AddTaskForm extends Component {
 
@@ -52,37 +51,20 @@ class AddTaskForm extends Component {
         this.props.showInfoRole(currentRole);
         this.props.getTaskTemplateByUser(1, 0, [], ""); //pageNumber, noResultsPerPage, arrayUnit, name=""
         // Lấy tất cả nhân viên trong công ty
-        this.props.getAllUserOfCompany();
+        // this.props.getAllUserOfCompany();
         this.props.getAllUserInAllUnitsOfCompany();
         this.props.getPaginateTasksByUser([], "1", "5", [], [], [], null, null, null, null, null, false, "listSearch");
     }
 
-    handleSubmit = async (event) => {
-        const { newTask, startTime, endTime } = this.state;
-        let startDateTask = this.convertDateTime(newTask.startDate, startTime);
-        let endDateTask = this.convertDateTime(newTask.endDate, endTime);
-
-        this.props.addTask({
-            ...newTask,
-            startDate: startDateTask,
-            endDate: endDateTask
-        });
-    }
-
     convertDateTime = (date, time) => {
         let splitter = date.split("-");
-        let strDateTime = `${splitter[2]}-${splitter[1]}-${splitter[0]} ${time}`;
-        return new Date(strDateTime);
+        let strDateTime = `${splitter[2]}/${splitter[1]}/${splitter[0]} ${time}`;
+        return dayjs(strDateTime).format('YYYY/MM/DD HH:mm:ss');
     }
+
     // convert ISODate to String hh:mm AM/PM
     formatTime(date) {
-        var d = new Date(date);
-        let time = moment(d).format("hh:mm");
-        let suffix = " AM";
-        if (d.getHours() >= 12 && d.getHours() <= 23) {
-            suffix = " PM";
-        }
-        return time + suffix;
+        return dayjs(date).format("hh:mm A");
     }
 
     isTaskFormValidated = () => {
@@ -184,15 +166,16 @@ class AddTaskForm extends Component {
 
     handleStartTimeChange = (value) => {
         let { translate } = this.props;
-        let { isProcess } = this.props;
         let startDate = this.convertDateTime(this.state.newTask.startDate, value);
         let endDate = this.convertDateTime(this.state.newTask.endDate, this.state.endTime);
-        let err;
+        let err, resetErr;
+
         if (value.trim() === "") {
             err = translate('task.task_management.add_err_empty_end_date');
         }
         else if (startDate > endDate) {
             err = translate('task.task_management.add_err_end_date');
+            resetErr = undefined;
         }
         this.setState(state => {
             return {
@@ -201,26 +184,29 @@ class AddTaskForm extends Component {
                 newTask: {
                     ...state.newTask,
                     errorOnStartDate: err,
+                    errorOnEndDate: resetErr,
                 }
             }
+        }, () => {
+            this.props.handleChangeStartTime(this.state.startTime);
+            this.props.handleChangeTaskData(this.state.newTask)
         });
-        isProcess && this.props.handleChangeStartTime(this.state.startTime);
-        this.props.handleChangeTaskData(this.state.newTask)
     }
 
     handleEndTimeChange = (value) => {
         let { translate } = this.props;
-        let { isProcess } = this.props;
         let startDate = this.convertDateTime(this.state.newTask.startDate, this.state.startTime);
         let endDate = this.convertDateTime(this.state.newTask.endDate, value);
-        let err;
-        console.log('startDate > endDate', startDate > endDate, startDate, endDate);
+        let err, resetErr;
+
         if (value.trim() === "") {
             err = translate('task.task_management.add_err_empty_end_date');
         }
         else if (startDate > endDate) {
             err = translate('task.task_management.add_err_end_date');
+            resetErr = undefined;
         }
+
         this.setState(state => {
             return {
                 ...state,
@@ -228,15 +214,19 @@ class AddTaskForm extends Component {
                 newTask: {
                     ...state.newTask,
                     errorOnEndDate: err,
+                    errorOnStartDate: resetErr,
                 }
             }
+        }, () => {
+            this.props.handleChangeEndTime(this.state.endTime);
+            this.props.handleChangeTaskData(this.state.newTask);
         });
-        isProcess && this.props.handleChangeEndTime(this.state.endTime);
-        this.props.handleChangeTaskData(this.state.newTask);
     }
+
     handleChangeTaskEndDate = (value) => {
         this.validateTaskEndDate(value, true);
     }
+
     validateTaskEndDate = (value, willUpdateState = true) => {
         let { translate } = this.props;
         let { newTask } = this.state;
@@ -271,7 +261,6 @@ class AddTaskForm extends Component {
         event.preventDefault();
         let value = event.target.value;
         if (value) {
-            this.props.getAllUserOfDepartment(value);
             this.props.getChildrenOfOrganizationalUnits(value);
             this.props.getTaskTemplateByUser(1, 10000, [value], ""); //pageNumber, noResultsPerPage, arrayUnit, name=""
             this.setState(state => {
@@ -600,7 +589,6 @@ class AddTaskForm extends Component {
         if (tasktemplates.taskTemplate) {
             taskTemplate = tasktemplates.taskTemplate;
         }
-
         if (tasktemplates.items && newTask.organizationalUnit) {
             // listTaskTemplate = tasktemplates.items.filter(function (taskTemplate) {
             //     return taskTemplate.organizationalUnit._id === newTask.organizationalUnit;
@@ -899,18 +887,12 @@ class AddTaskForm extends Component {
 }
 
 function mapState(state) {
-    const { tasktemplates, tasks, user, KPIPersonalManager, department, project, role } = state;
-    return { tasktemplates, tasks, user, KPIPersonalManager, department, project, role };
+    const { tasktemplates, tasks, user, department, project, role } = state;
+    return { tasktemplates, tasks, user, department, project, role };
 }
 
 const actionCreators = {
-    getTaskTemplate: taskTemplateActions.getTaskTemplateById,
     getTaskTemplateByUser: taskTemplateActions.getAllTaskTemplateByUser,
-    addTask: taskManagementActions.addTask,
-    getDepartment: UserActions.getDepartmentOfUser,
-    getAllDepartment: DepartmentActions.get,
-    getAllUserSameDepartment: UserActions.getAllUserSameDepartment,
-    getAllUserOfDepartment: UserActions.getAllUserOfDepartment,
     getAllUserOfCompany: UserActions.getAllUserOfCompany,
     getChildrenOfOrganizationalUnits: UserActions.getChildrenOfOrganizationalUnitsAsTree,
     getAllUserInAllUnitsOfCompany: UserActions.getAllUserInAllUnitsOfCompany,
