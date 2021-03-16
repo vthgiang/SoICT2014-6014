@@ -406,9 +406,10 @@ class TaskDashboard extends Component {
                                 <div className="box-title">{`Tổng quan công việc (${tasks && tasks.tasks ? tasks.tasks.length : 0} công việc)`}</div>
                             </div>
                             <LazyLoadComponent once={true}>
-                                <GeneralTaskPersonalChart
-                                    tasks={tasks}
-                                />
+                                {
+                                    tasks && (tasks.tasks || tasks.accountableTasks || tasks.responsibleTasks || tasks.consultedTasks) &&
+                                    <GeneralTaskPersonalChart tasks={tasks} />
+                                }
                             </LazyLoadComponent>
                         </div>
 
@@ -441,7 +442,7 @@ class TaskDashboard extends Component {
                             <div className="box-header with-border">
                                 <div className="box-title">{translate('task.task_management.dashboard_area_result')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
                             </div>
-                            <div className="box-body">
+                            <div className="box-body qlcv">
                                 {callAction &&
                                     <LazyLoadComponent once={true}>
                                         <DomainOfTaskResultsChart

@@ -106,17 +106,17 @@ class DetailTaskTab extends Component {
                         roles.push(this.ROLE.RESPONSIBLE);
                     }
 
-                    tmp = task.accountableEmployees.find(item => item._id === userId);
+                    tmp = task.accountableEmployees && task.accountableEmployees.find(item => item._id === userId);
                     if (tmp) {
                         roles.push(this.ROLE.ACCOUNTABLE);
                     }
 
-                    tmp = task.consultedEmployees.find(item => item._id === userId);
+                    tmp = task.consultedEmployees && task.consultedEmployees.find(item => item._id === userId);
                     if (tmp) {
                         roles.push(this.ROLE.CONSULTED);
                     }
 
-                    tmp = task.informedEmployees.find(item => item._id === userId);
+                    tmp = task.informedEmployees && task.informedEmployees.find(item => item._id === userId);
                     if (tmp) {
                         roles.push(this.ROLE.INFORMED);
                     }

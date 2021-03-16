@@ -727,7 +727,7 @@ class EvaluateByAccountableEmployee extends Component {
         let checkAllEvalContribution = false;
 
         let numOfMember = 0;
-        numOfMember = task.accountableEmployees.length + task.responsibleEmployees.length + task.consultedEmployees.length;
+        numOfMember = task?.accountableEmployees?.length + task?.responsibleEmployees?.length + task?.consultedEmployees?.length;
 
         for (let i in results) {
             if (results[i].target === "Contribution") {
@@ -1469,14 +1469,14 @@ class EvaluateByAccountableEmployee extends Component {
     checkHasEval = (date, performtasks) => {
         let monthOfEval;
         let yearOfEval;
-        if(date) {
+        if (date) {
             let splitter = date.split("-");
             let dateOfEval = new Date(splitter[2], splitter[1] - 1, splitter[0]);
 
             monthOfEval = dateOfEval.getMonth();
             yearOfEval = dateOfEval.getFullYear();
         }
-        
+
         let taskId, evaluation;
         taskId = performtasks.task?._id;
         evaluation = performtasks.task?.evaluations.find(e => (monthOfEval === new Date(e.evaluatingMonth).getMonth() && yearOfEval === new Date(e.evaluatingMonth).getFullYear()));
@@ -1900,7 +1900,7 @@ class EvaluateByAccountableEmployee extends Component {
                                                 )
                                             }
                                             { // Chấm điểm phê duyệt cho người tư vấn
-                                                task && task.consultedEmployees.map((item, index) =>
+                                                task && task.consultedEmployees && task.consultedEmployees.map((item, index) =>
                                                 (task.inactiveEmployees.indexOf(item._id) === -1 &&
                                                     <tr key={index} style={{ verticalAlign: "top" }}>
                                                         <td><div style={{ marginTop: 10 }}>{item.name}</div></td>

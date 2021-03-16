@@ -3604,6 +3604,7 @@ export default {
                 confirmed_task: "Đã xác nhận thực hiện",
                 none_update_recently: "Chưa cập nhật trong 7 ngày qua",
                 intime_task: "Đúng tiến độ",
+                incoming_task: "Công việc sắp hết hạn",
                 delay_task: "Trễ tiến độ",
                 overdue_task: "Quá hạn",
                 no_task: "Không có công việc nào",
