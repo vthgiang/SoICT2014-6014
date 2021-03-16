@@ -288,7 +288,7 @@ class PurchaseRequestCreateForm extends Component {
             recommendNumber, dateCreate, equipmentName, equipmentDescription, supplier, total, unit, estimatePrice, recommendUnits, approver,
             errorOnEquipment, errorOnEquipmentDescription, errorOnTotal, errorOnUnit, errorOnApprover
         } = this.state;
-        var userlist = recommendProcure && recommendProcure.listuser ? recommendProcure.listuser : user.list;
+        var userlist = recommendProcure && recommendProcure.listuser ? recommendProcure.listuser : [];
         const departmentlist = department.list && department.list.map(obj => ({ value: obj._id, text: obj.name }));
         return (
             <React.Fragment>

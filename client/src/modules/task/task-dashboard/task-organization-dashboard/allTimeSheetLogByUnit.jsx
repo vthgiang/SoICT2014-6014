@@ -134,9 +134,9 @@ class AllTimeSheetLogsByUnit extends Component {
                                         <th style={{ width: '60px' }}>STT</th>
                                         <th>{translate('manage_user.name')}</th>
                                         <th>Tổng thời gian bấm giờ</th>
-                                        <th>Bấm giờ tự chọn</th>
-                                        <th>Bấm giờ tự động</th>
-                                        <th>Bấm giờ tự tắt</th>
+                                        <th>Bấm bù giờ</th>
+                                        <th>Bấm hẹn giờ</th>
+                                        <th>Bấm giờ</th>
                                     </tr>
                                 </thead>
                                 <tbody>
