@@ -46,7 +46,8 @@ function copyKPIUnit(kpiId, data) {
             idunit: data?.idunit,
             datenew: data?.datenew,
             approver: data?.approver,
-            listKpiUnit: data?.listKpiUnit
+            listKpiUnit: data?.listKpiUnit,
+            organizationalUnitIdCopy: data?.organizationalUnitIdCopy
         }
     }, true, true, 'kpi.organizational_unit');
 }

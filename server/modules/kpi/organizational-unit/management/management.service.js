@@ -2,6 +2,7 @@ const Models = require(`../../../../models`);
 const { OrganizationalUnitKpiSet, OrganizationalUnitKpi, EmployeeKpiSet, EmployeeKpi } = Models;
 const { connect } = require(`../../../../helpers/dbHelper`);
 const EmployeeKpiService = require(`../../employee/management/management.service`);
+const mongoose = require("mongoose");
 
 
 /**
@@ -37,14 +38,26 @@ exports.copyKPI = async (portal, kpiId, data) => {
                 kpis: []
             })
 
-        organizationalUnitOldKPISet = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
-            .findById(kpiId)
-            .populate("organizationalUnit")
-            .populate({path: "creator", select :"_id name email avatar"})
-            .populate({ path: "kpis", populate: { path: 'parent' } });
+        if (data.type === 'default') {
+            organizationalUnitOldKPISet = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
+                .findById(kpiId)
+                .populate("organizationalUnit")
+                .populate({path: "creator", select :"_id name email avatar"})
+                .populate({ path: "kpis", populate: { path: 'parent' } });
+        } else {
+            organizationalUnitOldKPISet = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
+                .findOne({
+                    organizationalUnit: mongoose.Types.ObjectId(data?.organizationalUnitIdCopy),
+                    date: { $gte: newDate, $lt: nextNewDate }
+                })
+                .populate("organizationalUnit")
+                .populate({path: "creator", select :"_id name email avatar"})
+                .populate({ path: "kpis", populate: { path: 'parent' } });
+        }
+        
     
         
-        for (let i in organizationalUnitOldKPISet.kpis) {
+        for (let i in organizationalUnitOldKPISet?.kpis) {
             if (data?.listKpiUnit?.includes(organizationalUnitOldKPISet.kpis?.[i]?._id.toString())) {
                 let target = await OrganizationalUnitKpi(connect(DB_CONNECTION, portal))
                     .create({
@@ -117,19 +130,21 @@ exports.copyParentKPIUnitToChildrenKPIEmployee = async (portal, kpiId, data) => 
     
         
         for (let i in organizationalUnitOldKPISet.kpis) {
-            let target = await EmployeeKpi(connect(DB_CONNECTION, portal))
-                .create({
-                    name: organizationalUnitOldKPISet.kpis[i].name,
-                    parent: organizationalUnitOldKPISet.kpis[i]._id,
-                    weight: organizationalUnitOldKPISet.kpis[i].weight,
-                    criteria: organizationalUnitOldKPISet.kpis[i].criteria,
-                    type: organizationalUnitOldKPISet.kpis[i].type
-                })
-            
-            employeeKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
-                .findByIdAndUpdate(
-                    employeeNewKpiSet._id, { $push: { kpis: target._id } }, { new: true }
-                );
+            if (data?.listKpiUnit?.includes(organizationalUnitOldKPISet.kpis?.[i]?._id.toString())) {
+                let target = await EmployeeKpi(connect(DB_CONNECTION, portal))
+                    .create({
+                        name: organizationalUnitOldKPISet.kpis[i].name,
+                        parent: organizationalUnitOldKPISet.kpis[i]._id,
+                        weight: organizationalUnitOldKPISet.kpis[i].weight,
+                        criteria: organizationalUnitOldKPISet.kpis[i].criteria,
+                        type: organizationalUnitOldKPISet.kpis[i].type
+                    })
+                
+                employeeKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
+                    .findByIdAndUpdate(
+                        employeeNewKpiSet._id, { $push: { kpis: target._id } }, { new: true }
+                    );
+            }
         }
 
         employeeKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))

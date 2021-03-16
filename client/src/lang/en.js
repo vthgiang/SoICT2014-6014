@@ -3900,7 +3900,7 @@ export default {
                                 "Remember to change the link to the parent target to get the new KPI!",
                         },
                         create: "Employee KPI set information on",
-                        organizational_unit: "Department",
+                        organizational_unit: "Copy from department",
                         month: "Month",
                         list_target: "List target",
                         setting: "Constitute",

@@ -49,7 +49,8 @@ class OrganizationalUnitKpiCreate extends Component {
             editing: false,
             submitted: false,
 
-            currentRole: localStorage.getItem("currentRole")
+            currentRole: localStorage.getItem("currentRole"),
+            userId: localStorage.getItem("userId")
         };
 
     }
@@ -428,7 +429,8 @@ class OrganizationalUnitKpiCreate extends Component {
         const { translate } = this.props;
         const {
             id, organizationalUnitKpi, organizationalUnit,
-            defaultDate, selectBoxUnit, organizationalUnitId, month
+            defaultDate, selectBoxUnit, organizationalUnitId, month,
+            userId
         } = this.state;
 
 
@@ -711,8 +713,15 @@ class OrganizationalUnitKpiCreate extends Component {
                                                             <i className="fa fa-copy" style={{ fontSize: "16px" }}></i>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.copy_kpi_unit')}
                                                         </a>
                                                         <ModalCopyKPIUnit
-                                                            kpiId={parentKpi && parentKpi._id}
-                                                            idunit={organizationalUnit && organizationalUnit.id}
+                                                            kpiId={parentKpi?._id}
+                                                            idunit={organizationalUnit?.id}
+                                                            organizationalUnitSelect={selectBoxUnit?.filter(item => { // Nếu kp là trưởng đơn vị hiện tại, lấy các đơn vị cùng cha với đơn vị hiện tại và đơn vị cha đó
+                                                                return (                                              // Nếu là trưởng đơn vị hiện tại, lấy đơn vị cha
+                                                                        (organizationalUnit?.parent_id && !organizationalUnit?.managers?.includes(userId) && item?.parent_id === organizationalUnit?.parent_id) 
+                                                                        || item?.id === organizationalUnit?.parent_id
+                                                                    )
+                                                                    && (item?.id !== organizationalUnit?.id)
+                                                            })}
                                                             kpiunit={parentKpi}
                                                             editMonth={true}
                                                             monthDefault={month}
