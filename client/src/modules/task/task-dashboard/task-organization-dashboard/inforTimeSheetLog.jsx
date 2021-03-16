@@ -37,8 +37,8 @@ class InforTimeSheetLog extends Component {
                 >
                     <div className="description-box">
                         <div><strong>Tổng thời gian:</strong>{convertTime(this.props.data.totalhours)}</div>
-                        <div><strong>Bấm bù giờ:</strong> {convertTime(this.props.data.manualtimer)}</div>
-                        <div><strong>Bấm hẹn giờ:</strong> {convertTime(this.props.data.autotimer)}</div>
+                        <div><strong>Bấm bù giờ:</strong> {convertTime(this.props.data.manualtimer)}</div>
+                        <div><strong>Bấm hẹn giờ:</strong> {convertTime(this.props.data.autotimer)}</div>
                         <div><strong>Bấm giờ:</strong> {convertTime(this.props.data.logtimer)}</div>
                     </div>
                     <table className="table table-hover table-striped table-bordered" id="table-user-timesheetlogs">
@@ -56,9 +56,9 @@ class InforTimeSheetLog extends Component {
                             {
                                 timesheetlogs && timesheetlogs.length ? timesheetlogs.map((tsl, index) => {
                                     return (
-                                        <tr>
+                                        <tr key={index}>
                                             <td>{index + 1}</td>
-                                            <td><a href={`/task?taskId=${tsl._id}`} target="_blank">{tsl.taskName}</a></td>
+                                            <td><a href={`/task?taskId=${tsl.taskId}`} target="_blank">{tsl.taskName}</a></td>
                                             <td>{moment(tsl.startedAt).format("HH:mm:ss DD/MM/YYYY")}</td>
                                             <td>{moment(tsl.stoppedAt).format("HH:mm:ss DD/MM/YYYY")}</td>
                                             <td>{this.convertType(tsl.autoStopped)}</td>
@@ -76,10 +76,6 @@ class InforTimeSheetLog extends Component {
     }
 };
 
-function mapState(state) {
-};
 
-const actionCreators = {
-};
-const inforTimeSheetLog = connect(mapState, actionCreators)(withTranslate(InforTimeSheetLog));
+const inforTimeSheetLog = connect(null, null)(withTranslate(InforTimeSheetLog));
 export { inforTimeSheetLog as InforTimeSheetLog };

@@ -36,7 +36,6 @@ class ResultsOfOrganizationalUnitKpiChart extends Component {
     }
 
     componentDidMount = () => {
-        console.log("\n\n\n\n\n\n", localStorage.getItem("currentRole"))
         this.props.getAllOrganizationalUnitKpiSetByTime(localStorage.getItem("currentRole"), this.props.organizationalUnitId, this.state.startDate, this.state.endDate);
 
         this.setState(state => {
@@ -129,12 +128,12 @@ class ResultsOfOrganizationalUnitKpiChart extends Component {
             date = ['x'];
 
             listOrganizationalUnitKpiSetEachYear.forEach(x => {
-                automaticPoint.push(x.automaticPoint);
-                employeePoint.push(x.employeePoint);
-                approvedPoint.push(x.approvedPoint);
+                automaticPoint.push(x?.automaticPoint);
+                employeePoint.push(x?.employeePoint);
+                approvedPoint.push(x?.approvedPoint);
 
-                let newDate = new Date(x.date);
-                newDate = newDate.getFullYear() + "-" + (newDate.getMonth() + 1) + "-" + (newDate.getDate() - 1);
+                let newDate = new Date(x?.date);
+                newDate = newDate?.getFullYear() + "-" + (newDate?.getMonth() + 1) + "-" + "01";
                 date.push(newDate);
             });
         }
@@ -211,15 +210,14 @@ class ResultsOfOrganizationalUnitKpiChart extends Component {
 
             data: {
                 x: 'x',
-                columns: dataMultiLineChart,
-                type: 'spline'
+                columns: dataMultiLineChart
             },
 
             axis: {
                 x: {
                     type: 'timeseries',
                     tick: {
-                        format: function (x) { return (x.getMonth() + 1) + "-" + x.getFullYear(); }
+                        format: function (x) { return (x?.getMonth() + 1) + "-" + x?.getFullYear(); }
                     }
                 },
                 y: {

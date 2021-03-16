@@ -61,6 +61,12 @@ div.react-dropdown-tree-select {
   display: none;
 }
 
+.qlcv .dropdown .dropdown-content{
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-height: 350px;
+}
+
 .qlcv .node.focused {
   background-color: transparent;
 }

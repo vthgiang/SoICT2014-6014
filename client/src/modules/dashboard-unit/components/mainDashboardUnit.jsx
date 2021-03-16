@@ -115,7 +115,7 @@ class MainDashboardUnit extends Component {
         this.props.getAllEmployee({ status: ["active", 'maternity_leave', 'unpaid_leave', 'probationary', 'sick_leave'], page: 0, limit: 10000, birthdate: newMonth, organizationalUnits: arrayUnitShow });
 
         /* Lấy dữ liệu công việc của nhân viên trong đơn vị */
-        this.props.getAllEmployeeOfUnitByIds(arrayUnitShow);
+        this.props.getAllEmployeeOfUnitByIds({ organizationalUnitIds: arrayUnitShow });
         this.props.getTaskInOrganizationUnitByMonth(arrayUnitShow, newMonth, newMonth, "in_month");
 
         /** Lấy dữ liệu công việc sắp hết hạn */
@@ -342,7 +342,7 @@ class MainDashboardUnit extends Component {
         this.props.getAllEmployee({ status: ["active", 'maternity_leave', 'unpaid_leave', 'probationary', 'sick_leave'], page: 0, limit: 10000, birthdate: newMonth, organizationalUnits: organizationalUnits });
 
         /* Lấy dữ liệu công việc của nhân viên trong đơn vị */
-        this.props.getAllEmployeeOfUnitByIds(organizationalUnits);
+        this.props.getAllEmployeeOfUnitByIds({ organizationalUnitIds: organizationalUnits });
         this.props.getTaskInOrganizationUnitByMonth(organizationalUnits, newMonth, newMonth, "in_month");
 
         /** Lấy dữ liệu công việc sắp hết hạn */

@@ -45,18 +45,20 @@ exports.copyKPI = async (portal, kpiId, data) => {
     
         
         for (let i in organizationalUnitOldKPISet.kpis) {
-            let target = await OrganizationalUnitKpi(connect(DB_CONNECTION, portal))
-                .create({
-                    name: organizationalUnitOldKPISet.kpis[i].name,
-                    parent: data.type !== 'default' ? organizationalUnitOldKPISet.kpis[i]._id : null,
-                    weight: organizationalUnitOldKPISet.kpis[i].weight,
-                    criteria: organizationalUnitOldKPISet.kpis[i].criteria,
-                    type: organizationalUnitOldKPISet.kpis[i].type
-                })
-            organizationalUnitKpiSet = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
-                .findByIdAndUpdate(
-                    organizationalUnitNewKpi, { $push: { kpis: target._id } }, { new: true }
-                );
+            if (data?.listKpiUnit?.includes(organizationalUnitOldKPISet.kpis?.[i]?._id.toString())) {
+                let target = await OrganizationalUnitKpi(connect(DB_CONNECTION, portal))
+                    .create({
+                        name: organizationalUnitOldKPISet.kpis[i].name,
+                        parent: data.type !== 'default' ? organizationalUnitOldKPISet.kpis[i]._id : null,
+                        weight: organizationalUnitOldKPISet.kpis[i].weight,
+                        criteria: organizationalUnitOldKPISet.kpis[i].criteria,
+                        type: organizationalUnitOldKPISet.kpis[i].type
+                    })
+                organizationalUnitKpiSet = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
+                    .findByIdAndUpdate(
+                        organizationalUnitNewKpi, { $push: { kpis: target._id } }, { new: true }
+                    );
+            }
         }
 
         organizationalUnitKpiSet = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))

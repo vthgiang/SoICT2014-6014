@@ -129,7 +129,7 @@ exports.startTimesheetLog = async (req, res) => {
  */
 exports.stopTimesheetLog = async (req, res) => {
     try {
-        let timer = await PerformTaskService.stopTimesheetLog(req.portal, req.params, req.body);
+        let timer = await PerformTaskService.stopTimesheetLog(req.portal, req.params, req.body, req.user);
         await Logger.info(req.user.email, 'stop_timer_success', req.portal)
         res.status(200).json({
             success: true,
@@ -184,19 +184,21 @@ exports.createTaskAction = async (req, res) => {
             })
         }
 
-        let  task = await PerformTaskService.createTaskAction(req.portal, req.params, req.body, files);
+        let task = await PerformTaskService.createTaskAction(req.portal, req.params, req.body, files);
         let taskAction = task.taskActions;
         let tasks = task.tasks;
         let userCreator = task.userCreator;
         // message gửi cho người phê duyệt
 
         const associatedData = {
-            dataType: "createTaskAction",
-            value: [taskAction[taskAction.length - 1]]
+            dataType: "realtime_tasks",
+            value: task.tasks
         }
-        const accountableFilter = tasks.accountableEmployees.filter(obj => obj.toString() !== req.user._id.toString());
+        let accountableFilter = tasks.accountableEmployees.filter(obj => obj._id.toString() !== req.user._id.toString());
+        accountableFilter = accountableFilter.map(o => o._id);
+        
         const associatedDataforAccountable = {
-            "organizationalUnits": tasks.organizationalUnit,
+            "organizationalUnits": tasks.organizationalUnit && tasks.organizationalUnit._id,
             "title": "Phê duyệt hoạt động",
             "level": "general",
             "content": `<p><strong>${userCreator.name}</strong> đã thêm mới hoạt động cho công việc <strong>${tasks.name}</strong>, bạn có thể vào để phê duyệt hoạt động này <a href="${process.env.WEBSITE}/task?taskId=${tasks._id}" target="_blank">${process.env.WEBSITE}/task?taskId=${tasks._id}</a></p>`,
@@ -212,13 +214,15 @@ exports.createTaskAction = async (req, res) => {
        
         // message gửi cho người thực hiện
         // Loại người tạo hoặt động khỏi danh sách người nhận thông báo
-        let userReceive = tasks.responsibleEmployees.filter(obj => obj.toString() !== req.user._id.toString());
-        userReceive = userReceive.map(user => user.toString());
-        let accountable = tasks.accountableEmployees.map(acc => acc.toString());
+        let userReceive = tasks.responsibleEmployees.filter(obj => obj._id.toString() !== req.user._id.toString());
+        userReceive = userReceive.map(user => user._id.toString());
+        let accountable = tasks.accountableEmployees.map(acc => acc._id.toString());
+
         // Lọc trong danh sách userReceive có chứa người phê duyệt hay ko.. 1 người có thể có nhiều vai trò(mục đích gửi 1 lần thông báo tới ngươi phê duyệt)
         userReceive = difference(userReceive, accountable)
+
         const associatedDataforResponsible = {
-            "organizationalUnits": tasks.organizationalUnit,
+            "organizationalUnits": tasks.organizationalUnit && tasks.organizationalUnit._id,
             "title": "Thêm mới hoạt động",
             "level": "general",
             "content": `<p><strong>${userCreator.name}</strong> đã thêm mới hoạt động cho công việc <strong>${tasks.name}</strong>, chi tiết công việc: <a href="${process.env.WEBSITE}/task?taskId=${tasks._id}" target="_blank">${process.env.WEBSITE}/task?taskId=${tasks._id}</a></p>`,

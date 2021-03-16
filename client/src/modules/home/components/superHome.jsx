@@ -225,9 +225,12 @@ class SuperHome extends Component {
                             <div className="box-header with-border">
                                 <div className="box-title">{`Tổng quan công việc (${tasks && tasks.tasks ? tasks.tasks.length : 0})`}</div>
                             </div>
-                            <GeneralTaskPersonalChart
-                                tasks={tasks}
-                            />
+                            {
+                                tasks && (tasks.tasks || tasks.accountableTasks || tasks.responsibleTasks || tasks.consultedTasks) &&
+                                <GeneralTaskPersonalChart
+                                    tasks={tasks}
+                                />
+                            }
                         </div>
 
                     </div>

@@ -727,7 +727,7 @@ class EvaluateByAccountableEmployee extends Component {
         let checkAllEvalContribution = false;
 
         let numOfMember = 0;
-        numOfMember = task.accountableEmployees.length + task.responsibleEmployees.length + task.consultedEmployees.length;
+        numOfMember = task?.accountableEmployees?.length + task?.responsibleEmployees?.length + task?.consultedEmployees?.length;
 
         for (let i in results) {
             if (results[i].target === "Contribution") {
@@ -1351,11 +1351,42 @@ class EvaluateByAccountableEmployee extends Component {
     }
 
     getEndTask = async () => {
+        let { translate } = this.props;
         let { task } = this.state;
         let end = task?.endDate;
         let endDate = this.formatDate(new Date(end));
         let endTime = this.formatTime(new Date(end));
-        this.setState({ endDate: endDate, endTime: endTime });
+
+        let { evaluatingMonth, startDate, startTime, userId } = this.state;
+
+        let err = this.validateDateTime(evaluatingMonth, startDate, startTime, endDate, endTime, "end");
+
+        let data = this.getData(endDate, this.state.storedEvaluatingMonth);
+
+        let automaticPoint = data.automaticPoint;
+        let taskInfo = {
+            task: data.task,
+            progress: this.state.progress,
+            date: endDate,
+            time: endTime,
+            info: this.state.info,
+        };
+
+        automaticPoint = AutomaticTaskPointCalculator.calcAutoPoint(taskInfo);
+        if (isNaN(automaticPoint)) automaticPoint = undefined
+        if (automaticPoint < 0) automaticPoint = 0;
+
+        this.setState(state => {
+            return {
+                ...state,
+                errorOnEndDate: err,
+                endDate: endDate,
+                endTime: endTime,
+                autoPoint: automaticPoint,
+                oldAutoPoint: data.automaticPoint,
+                indexReRender: state.indexReRender + 1,
+            }
+        });
     }
 
     validateDate = (value, willUpdateState = true) => {
@@ -1438,14 +1469,14 @@ class EvaluateByAccountableEmployee extends Component {
     checkHasEval = (date, performtasks) => {
         let monthOfEval;
         let yearOfEval;
-        if(date) {
+        if (date) {
             let splitter = date.split("-");
             let dateOfEval = new Date(splitter[2], splitter[1] - 1, splitter[0]);
 
             monthOfEval = dateOfEval.getMonth();
             yearOfEval = dateOfEval.getFullYear();
         }
-        
+
         let taskId, evaluation;
         taskId = performtasks.task?._id;
         evaluation = performtasks.task?.evaluations.find(e => (monthOfEval === new Date(e.evaluatingMonth).getMonth() && yearOfEval === new Date(e.evaluatingMonth).getFullYear()));
@@ -1869,7 +1900,7 @@ class EvaluateByAccountableEmployee extends Component {
                                                 )
                                             }
                                             { // Chấm điểm phê duyệt cho người tư vấn
-                                                task && task.consultedEmployees.map((item, index) =>
+                                                task && task.consultedEmployees && task.consultedEmployees.map((item, index) =>
                                                 (task.inactiveEmployees.indexOf(item._id) === -1 &&
                                                     <tr key={index} style={{ verticalAlign: "top" }}>
                                                         <td><div style={{ marginTop: 10 }}>{item.name}</div></td>

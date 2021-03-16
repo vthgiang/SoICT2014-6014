@@ -3,7 +3,7 @@ import { homeConstants } from "./constants";
 let initState = {
     newsfeed: []
 }
-export function feeds(state = initState, action) {
+export function newsFeeds(state = initState, action) {
     switch (action.type) {
         case homeConstants.GET_NEWSFEED_REQUEST:
             return {
@@ -14,7 +14,7 @@ export function feeds(state = initState, action) {
             return {
                 ...state,
                 newsfeedLoading: false,
-                newsfeed: [...state.newsfeed, action.payload]
+                newsfeed: [...state.newsfeed, ...action.payload]
             }
         case homeConstants.GET_NEWSFEED_FAILURE:
             return {
@@ -22,5 +22,7 @@ export function feeds(state = initState, action) {
                 newsfeedLoading: false,
                 error: action.payload
             }
+        default: 
+            return state
     }
 }

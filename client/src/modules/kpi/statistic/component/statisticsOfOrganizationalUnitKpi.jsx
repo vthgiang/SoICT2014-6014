@@ -426,7 +426,6 @@ class StatisticsOfOrganizationalUnitKpi extends Component {
         const { details, month } = this.state;
         let childrenOrganizationalUnit, childrenOrganizationalUnitLoading, currentKPI, organizationalUnitKpiLoading, listChildTarget;
         let dataTree = this.setTreeData();
-        console.log("5555", dataTree)
         let organizationalUnitSelectBox = this.setSelectBox();
 
         if (dashboardEvaluationEmployeeKpiSet) {

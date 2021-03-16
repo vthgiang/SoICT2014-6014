@@ -954,15 +954,11 @@ export function performtasks(state = {}, action) {
                 ...state,
                 error: action.error
             };
-        case performTaskConstants.REFRESH_DATA_AFTER_COMMENT_SUCCESS:
+        
+        case performTaskConstants.REFRESH_DATA_TASK:
             return {
                 ...state,
-                task: {...state.task, taskComments: action.payload},
-            }
-        case performTaskConstants.REFRESH_DATA_AFTER_CREATE_ACTION_SUCCESS:
-            return {
-                ...state,
-                task: {...state.task, taskActions: action.payload},
+                task: action.payload,
             }
 
         case performTaskConstants.EDIT_TIME_SHEET_LOG_REQUEST:

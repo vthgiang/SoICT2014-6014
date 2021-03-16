@@ -25,7 +25,7 @@ import { TaskAddModal } from '../../task-management/component/taskAddModal';
 import { ModalAddTaskTemplate } from '../../task-template/component/addTaskTemplateModal';
 import { RequestToCloseTaskModal } from './requestToCloseTaskModal';
 
-import TaskProjectAction from '../../task-project/redux/action';
+import { ProjectActions } from "../../../project/redux/actions";
 import { ROOT_ROLE } from '../../../../helpers/constants';
 class DetailTaskTab extends Component {
 
@@ -106,17 +106,17 @@ class DetailTaskTab extends Component {
                         roles.push(this.ROLE.RESPONSIBLE);
                     }
 
-                    tmp = task.accountableEmployees.find(item => item._id === userId);
+                    tmp = task.accountableEmployees && task.accountableEmployees.find(item => item._id === userId);
                     if (tmp) {
                         roles.push(this.ROLE.ACCOUNTABLE);
                     }
 
-                    tmp = task.consultedEmployees.find(item => item._id === userId);
+                    tmp = task.consultedEmployees && task.consultedEmployees.find(item => item._id === userId);
                     if (tmp) {
                         roles.push(this.ROLE.CONSULTED);
                     }
 
-                    tmp = task.informedEmployees.find(item => item._id === userId);
+                    tmp = task.informedEmployees && task.informedEmployees.find(item => item._id === userId);
                     if (tmp) {
                         roles.push(this.ROLE.INFORMED);
                     }
@@ -151,7 +151,7 @@ class DetailTaskTab extends Component {
 
     componentDidMount() {
         const { currentRole } = this.state;
-        this.props.getAllTaskProject();
+        this.props.getProjects({ calledId: "" });
         this.props.showInfoRole(currentRole);
     }
 
@@ -1419,7 +1419,7 @@ const actionGetState = { //dispatchActionToProps
     editHoursSpentInEvaluate: performTaskAction.editHoursSpentInEvaluate,
     confirmTask: performTaskAction.confirmTask,
     getAllUserInAllUnitsOfCompany: UserActions.getAllUserInAllUnitsOfCompany,
-    getAllTaskProject: TaskProjectAction.get,
+    getProjects: ProjectActions.getProjects,
     openTaskAgain: performTaskAction.openTaskAgain,
 
     showInfoRole: RoleActions.show,
