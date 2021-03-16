@@ -750,7 +750,7 @@ const GeneralTaskPersonalChart = (props) => {
                 <div className="row" style={{ marginBottom: '15px' }}>
                     <div className="col-md-12">
                         <div style={{ display: 'flex', alignItems: 'center' }}>
-                            <p data-toggle="collapse" data-target="#show-task-has-action-res" aria-expanded="false" style={{ display: "flex", alignItems: "center", fontWeight: "bold", cursor: "pointer" }} onClick={() => showTaskHasActionsAccountable(!taskHasActionsAccountable)}>
+                            <p data-toggle="collapse" data-target="#show-task-need-evaluation-action" aria-expanded="false" style={{ display: "flex", alignItems: "center", fontWeight: "bold", cursor: "pointer" }} onClick={() => showTaskHasActionsAccountable(!taskHasActionsAccountable)}>
                                 <span className="material-icons" style={{ fontWeight: "bold", marginRight: '10px' }}>
                                     {taskHasActionsAccountable ? `keyboard_arrow_up` : `keyboard_arrow_down`}
 
@@ -764,7 +764,7 @@ const GeneralTaskPersonalChart = (props) => {
                         </div>
 
 
-                        <div className="collapse" data-toggle="collapse " id="show-task-has-action-res">
+                        <div className="collapse" data-toggle="collapse " id="show-task-need-evaluation-action">
                             {
                                 state.taskHasActionsAccountable &&
                                 <ul className="todo-list">
