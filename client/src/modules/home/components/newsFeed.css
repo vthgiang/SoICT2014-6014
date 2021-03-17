@@ -1,0 +1,18 @@
+.newsfeed-content-level1 {
+    padding: 5px 10px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    
+    margin-left: 50px;
+    margin-top: -45px;
+    margin-bottom: 0px;
+    margin-right: 20px;
+
+    position: relative;
+
+    line-height: 150%
+}
+
+.newsfeed-content-level1 > a, .newsfeed-content-level2 > a{
+    font-weight: 700;
+}
