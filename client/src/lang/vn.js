@@ -4203,7 +4203,7 @@ export default {
                                 "Hãy nhớ thay đổi liên kết đến mục tiêu cha để được tính KPI mới!",
                         },
                         create: "Thông tin tập KPI cá nhân tháng",
-                        organizational_unit: "Đơn vị",
+                        organizational_unit: "Đơn vị sao chép",
                         month: "Tháng",
                         list_target: "Danh sách mục tiêu",
                         setting: "Thiết lập",

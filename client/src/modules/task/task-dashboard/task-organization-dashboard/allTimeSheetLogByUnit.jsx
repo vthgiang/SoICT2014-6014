@@ -50,7 +50,7 @@ class AllTimeSheetLogsByUnit extends Component {
         if (nextProps.user?.employeeForAllTimeSheetLogs?.loading !== user?.employeeForAllTimeSheetLogs?.loading) {
             return true
         }
-    
+
         let data = {
             type: type,
             organizationalUnitIds: nextProps.unitIds,
@@ -66,7 +66,7 @@ class AllTimeSheetLogsByUnit extends Component {
 
         return true;
     }
-   
+
     handleInforTimeSheet = async (value) => {
         const { organizationUnitTasks } = this.props;
         let inforTimeSheetLog = []
@@ -117,7 +117,7 @@ class AllTimeSheetLogsByUnit extends Component {
             page: page,
             perPage: perPage
         }
-        
+
         this.props.getAllEmployeeOfUnitByIds(data);
     }
 
@@ -147,7 +147,7 @@ class AllTimeSheetLogsByUnit extends Component {
         const { organizationUnitTasks, startMonthTitle, endMonthTitle } = this.props;
         const { currentRowTimeSheetLog, page } = this.state;
         let allTimeSheet = [], timesheetlogs = [];
-        let listEmployee; 
+        let listEmployee;
 
         if (user) {
             listEmployee = user?.employeeForAllTimeSheetLogs?.employees;
@@ -230,7 +230,7 @@ class AllTimeSheetLogsByUnit extends Component {
                             }
                         </tbody>
                     </table>
-                    { currentRowTimeSheetLog &&
+                    {currentRowTimeSheetLog &&
                         <InforTimeSheetLog
                             timesheetlogs={currentRowTimeSheetLog.timesheetlogs}
                             data={currentRowTimeSheetLog.data}

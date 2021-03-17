@@ -29,15 +29,19 @@ export const createUnitKpiActions = {
  * @param {*} organizationalUnitId 
  * @param {*} month 
  */
-function getCurrentKPIUnit(roleId, organizationalUnitId = undefined, month = undefined) {
+function getCurrentKPIUnit(roleId, organizationalUnitId = undefined, month = undefined, type = 'default') {
     return dispatch => {
-        dispatch({ type: createUnitKpiConstants.GETCURRENT_KPIUNIT_REQUEST });
+        dispatch({ 
+            type: createUnitKpiConstants.GETCURRENT_KPIUNIT_REQUEST,
+            typeState: type
+        });
 
         createUnitKpiServices.getCurrentKPIUnit(roleId, organizationalUnitId, month)
             .then(res => {
                 dispatch({
                     type: createUnitKpiConstants.GETCURRENT_KPIUNIT_SUCCESS,
-                    payload: res.data.content
+                    payload: res.data.content,
+                    typeState: type
                 });
             })
             .catch(error => {

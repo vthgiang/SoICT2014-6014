@@ -151,11 +151,11 @@ class TaskDashboard extends Component {
     convertType = (value) => {
         // 1: Tắt bấm giờ bằng tay, 2: Tắt bấm giờ tự động với thời gian hẹn trc, 3: add log timer
         if (value == 1) {
-            return "Bấm giờ tự chọn"
+            return "Bấm giờ bù giờ"
         } else if (value == 2) {
-            return "Bấm giờ tự động"
+            return "Bấm hẹn giờ"
         } else {
-            return "Bấm giờ tự tắt"
+            return "Bấm giờ"
         }
     }
 
