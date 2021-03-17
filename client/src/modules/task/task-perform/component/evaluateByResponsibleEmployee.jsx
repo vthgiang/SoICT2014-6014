@@ -8,7 +8,9 @@ import { TaskInformationForm } from './taskInformationForm';
 import { AutomaticTaskPointCalculator } from './automaticTaskPointCalculator';
 import { ModalShowAutoPointInfo } from './modalShowAutoPointInfo';
 import { getStorage } from '../../../../config';
-import moment from 'moment'
+import moment from 'moment';
+import dayjs from 'dayjs';
+import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
 import "./scrollBar.css";
 
 var currentTask;
@@ -168,7 +170,7 @@ class EvaluateByResponsibleEmployee extends Component {
         let evalMonth = moment(date, 'DD-MM-YYYY').endOf("month").toDate();
         for (let i in sortedEvaluations) {
             let eva = sortedEvaluations[i];
-            if(new Date(eva?.evaluatingMonth) <= evalMonth) {
+            if (new Date(eva?.evaluatingMonth) <= evalMonth) {
                 return eva;
             }
         }
@@ -485,7 +487,7 @@ class EvaluateByResponsibleEmployee extends Component {
             info: {},
             checkSave: checkSave,
         }
-        
+
 
     }
 
@@ -729,100 +731,79 @@ class EvaluateByResponsibleEmployee extends Component {
 
     // hàm cập nhật tháng đánh giá
     handleMonthOfEvaluationChange = (value) => {
-        // indexReRender = indexReRender + 1;
-        let { translate } = this.props;
-        let { evaluatingMonth, task, idUser, endDate, startDate, endTime, startTime } = this.state;
-        let evalDate = moment(value, 'MM-YYYY').endOf('month').format('DD-MM-YYYY');
+        dayjs.extend(isSameOrAfter)
+        let { task, idUser } = this.state;
+        let splitValue, result, startDateTask, errMonth;
 
-        let err
-        //  = this.validateDateTime(value, startDate, startTime, evalDate, endDate, "end");
-
-        let startDateTask = new Date(task.startDate);
-        let endDateTask = new Date(task.endDate);
-
-        let splitter = evalDate.split('-');
-        let dateValue = new Date(splitter[2], splitter[1] - 1, splitter[0]);
-
-        // validate tháng đánh giá
-        let errMonth;
+        // validate tháng đánh giá đã tồn tại
         if (value.trim() === "") {
             errMonth = "Hãy chọn tháng đánh giá";
-        }
+        } else {
+            splitValue = value.split("-");
+            const newValue = `${splitValue[1]}-${splitValue[0]}`;
 
-        let monthOfEval = dateValue.getMonth();
-        let yearOfEval = dateValue.getFullYear();
+            const evalDate = moment(newValue).endOf('month').format('DD-MM-YYYY');
 
-        let tmp = task.evaluations.find(e => (monthOfEval === new Date(e.evaluatingMonth).getMonth() && yearOfEval === new Date(e.evaluatingMonth).getFullYear()));
+            const monthOfEval = dayjs(newValue).format("M") - 1;
+            const yearOfEval = parseInt(dayjs(newValue).format("YYYY"));
 
-        if (tmp) {
-            errMonth = "Tháng này đã có đánh giá";
-        }
-
-        // validate tháng đánh giá phải trong thời gian làm việc.
-        // đưa về cùng ngày - giờ để so sánh tháng năm
-        dateValue.setDate(15);
-        startDateTask.setDate(15);
-        endDateTask.setDate(15);
-        dateValue.setHours(0);
-        startDateTask.setHours(0);
-        endDateTask.setHours(0);
-
-        // tính hiệu giữa ngày đánh giá so với ngày bắt đầu và ngày kết thúc của công việc
-        let dst2 = (dateValue.getTime() - startDateTask.getTime()); // < 0 -> err // denta start task
-        let det2 = (endDateTask.getTime() - dateValue.getTime()); // < 0 -> err // denta end task
-
-        if (dst2 < 0) {
-            errMonth = "Tháng đánh giá phải lớn hơn hoặc bằng tháng bắt đầu";
-        } else if (det2 < 0) {
-            // errMonth = "Tháng đánh giá phải nhỏ hơn hoặc bằng tháng kết thúc";
-        }
-
-        let data = this.getData(evalDate, evalDate);
-        this.props.getAllKpiSetsOrganizationalUnitByMonth(idUser, this.state.unit, evalDate);
-
-        let automaticPoint = data.autoPoint;
-        let taskInfo = {
-            task: data.task,
-            progress: data.progress,
-            date: evalDate,
-            time: data.endTime,
-            info: data.info,
-        };
-
-        automaticPoint = AutomaticTaskPointCalculator.calcAutoPoint(taskInfo);
-        console.log('automatic', automaticPoint);
-        if (isNaN(automaticPoint)) automaticPoint = undefined
-        if (automaticPoint < 0) automaticPoint = 0;
-
-        this.setState(state => {
-            return {
-                ...state,
-                kpi: [],
-                evaluatingMonth: value,
-                storedEvaluatingMonth: evalDate,
-                endDate: evalDate,
-                startDate: data.startDate,
-                startTime: data.startTime,
-                endTime: data.endTime,
-                autoPoint: automaticPoint,
-                oldAutoPoint: data.autoPoint,
-                errorOnEndDate: err,
-                errorOnMonth: errMonth,
-                indexReRender: state.indexReRender + 1,
-
-                info: data.info,
-                point: data.point,
-                date: data.date,
-                progress: data.progress,
-                calcAuto: data.calcAuto,
-                checkSave: data.checkSave,
-                prevDate: data.prevDate,
-                dentaDate: data.dentaDate,
-                evaluation: data.evaluation,
+            const tmp = task.evaluations.find(e => (monthOfEval === new Date(e.evaluatingMonth).getMonth() && yearOfEval === new Date(e.evaluatingMonth).getFullYear()));
+            if (tmp) {
+                errMonth = "Tháng này đã có đánh giá";
             }
-        });
-        if (!errMonth) {
-            this.props.handleChangeMonthEval({ evaluatingMonth: value, date: evalDate, id: this.state.id });
+
+            startDateTask = dayjs(task.startDate).format("YYYY-MM"); // Lấy năm tháng của ngày bắt đầu công việc vd: 2021-02
+            result = dayjs(newValue).isSameOrAfter(dayjs(startDateTask)); // check xem thangs danh gia co lớn hơn hoặc bằng tháng bắt đầu công việc hay không
+
+            if (!result) {
+                errMonth = "Tháng đánh giá phải lớn hơn hoặc bằng tháng bắt đầu công việc";
+            }
+
+            let data = this.getData(evalDate, evalDate);
+            this.props.getAllKpiSetsOrganizationalUnitByMonth(idUser, this.state.unit, evalDate);
+
+            let automaticPoint = data.autoPoint;
+            let taskInfo = {
+                task: data.task,
+                progress: data.progress,
+                date: evalDate,
+                time: data.endTime,
+                info: data.info,
+            };
+
+            automaticPoint = AutomaticTaskPointCalculator.calcAutoPoint(taskInfo);
+            if (isNaN(automaticPoint)) automaticPoint = undefined
+            if (automaticPoint < 0) automaticPoint = 0;
+
+            this.setState(state => {
+                return {
+                    ...state,
+                    kpi: [],
+                    evaluatingMonth: value,
+                    storedEvaluatingMonth: evalDate,
+                    endDate: evalDate,
+                    startDate: data.startDate,
+                    startTime: data.startTime,
+                    endTime: data.endTime,
+                    autoPoint: automaticPoint,
+                    oldAutoPoint: data.autoPoint,
+                    errorOnMonth: errMonth,
+                    indexReRender: state.indexReRender + 1,
+
+                    info: data.info,
+                    point: data.point,
+                    date: data.date,
+                    progress: data.progress,
+                    calcAuto: data.calcAuto,
+                    checkSave: data.checkSave,
+                    prevDate: data.prevDate,
+                    dentaDate: data.dentaDate,
+                    evaluation: data.evaluation,
+                }
+            });
+            if (!errMonth) {
+                this.props.handleChangeMonthEval({ evaluatingMonth: value, date: evalDate, id: this.state.id });
+            }
         }
     }
 
@@ -1125,6 +1106,7 @@ class EvaluateByResponsibleEmployee extends Component {
             checkSave: this.state.checkSave,
         }
 
+        console.log('data', data);
         await this.props.evaluateTaskByResponsibleEmployees(data, taskId);
         this.setState(state => {
             return {
