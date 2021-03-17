@@ -1,5 +1,6 @@
 const TaskManagementService = require('./task.service');
 const NotificationServices = require(`../../notification/notification.service`);
+const NewsFeed = require('../../newsFeed/newsFeed.service');
 const { sendEmail } = require(`../../../helpers/emailHelper`);
 const Logger = require(`../../../logs`);
 // Điều hướng đến dịch vụ cơ sở dữ liệu của module quản lý công việc
@@ -465,6 +466,19 @@ exports.createTask = async (req, res) => {
         await sendEmail(email, "Bạn có công việc mới", '', html);
         collaboratedEmail && collaboratedEmail.length !== 0
             && await sendEmail(collaboratedEmail, "Đơn vị bạn được phối hợp thực hiện công việc mới", '', collaboratedHtml);
+        await NewsFeed.createNewsFeed(req.portal, {
+            title: data?.title,
+            description: data?.content,
+            creator: req.user._id,
+            relatedUsers: data?.users
+        });
+        console.log("collaboratedData?.users", collaboratedData?.users)
+        await NewsFeed.createNewsFeed(req.portal, {
+            title: collaboratedData?.title,
+            description: collaboratedData?.content,
+            creator: req.user._id,
+            relatedUsers: collaboratedData?.users
+        });
 
         await Logger.info(req.user.email, 'create_task', req.portal)
         res.status(200).json({
@@ -473,6 +487,7 @@ exports.createTask = async (req, res) => {
             content: task
         });
     } catch (error) {
+        console.log(error)
         await Logger.error(req.user.email, 'create_task', req.portal)
         res.status(400).json({
             success: false,

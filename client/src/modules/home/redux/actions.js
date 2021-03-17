@@ -2,11 +2,12 @@ import { homeConstants } from "./constants";
 import { homeServices } from "./services";
 
 export const homeActions = {
-    getNewsfeed
+    getNewsfeed,
+    receiveNewsFeed
 };
 
 
-// Lấy tập KPI cá nhân hiện tại
+/** Lấy tập KPI cá nhân hiện tại */
 function getNewsfeed(data) {
     return dispatch => {
         dispatch({ type: homeConstants.GET_NEWSFEED_REQUEST });
@@ -25,4 +26,12 @@ function getNewsfeed(data) {
                 })
             })
     }
+}
+
+/** Lấy dữ liệu realtime */
+function receiveNewsFeed(data) {
+    return dispatch => dispatch({ 
+        type: homeConstants.RECEIVE_NEWSFEED_SUCCESS,
+        payload: data 
+    });
 }

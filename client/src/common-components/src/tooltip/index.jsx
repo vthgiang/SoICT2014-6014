@@ -55,7 +55,7 @@ class ToolTip extends Component {
     }
 
     displayTitleContent = (data) => {
-        const { translate } = this.props;
+        const { translate, title = true } = this.props;
 
         let convertData = [];
         let min = data.length > 5 ? data.length - 5 : 0;
@@ -69,14 +69,15 @@ class ToolTip extends Component {
             return null;
         else return <React.Fragment>
             <div className="tooltip2">
-                <b>{translate("general.detail")}</b>
+                {title && <b>{translate("general.detail")}</b>}
                 <span className="tooltip2text">
                     {convertData.map((content, i) => {
-                        return <p key={i} className="text-left" style={{
-                            border: '0.2px solid gray',
-                            borderRadius: '1px',
-                            padding: '3px'
-                        }}>{content}</p>
+                        return <div key={i} className="text-left" style={{
+                            borderLeft: '5px solid #d0cdcd',
+                            borderTop: '5px solid #d0cdcd',
+                            borderRadius: '10px',
+                            padding: '0px 15px'
+                        }}>{content}</div>
                     })}
                 </span>
             </div>
