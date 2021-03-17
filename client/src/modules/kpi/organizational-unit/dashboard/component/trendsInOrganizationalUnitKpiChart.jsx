@@ -5,10 +5,9 @@ import { withTranslate } from 'react-redux-multilingual';
 import { dashboardOrganizationalUnitKpiActions } from '../redux/actions';
 import { createUnitKpiActions } from '../../creation/redux/actions';
 
-import { CustomLegendC3js } from '../../../../../common-components';
-
 import c3 from 'c3';
 import 'c3/c3.css';
+
 class TrendsInOrganizationalUnitKpiChart extends Component {
 
     constructor(props) {
@@ -411,32 +410,33 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
         numberOfTasks = this.setNumberOfTaskData();
         weight = this.setWeightData();
         
-        executionTimesArray.push(executionTimes?.name);
-        numberOfEmployeeKpisArray.push(numberOfEmployeeKpis?.name);
-        numberOfParticipantsArray.push(numberOfParticipants?.name);
-        numberOfTasksArray.push(numberOfTasks?.name);
-        weightArray.push(weight?.name);
+        executionTimesArray.push(executionTimes?.name ? executionTimes.name : null);
+        numberOfEmployeeKpisArray.push(numberOfEmployeeKpis?.name ? numberOfEmployeeKpis.name : null);
+        numberOfParticipantsArray.push(numberOfParticipants?.name ? numberOfParticipants.name : null);
+        numberOfTasksArray.push(numberOfTasks?.name ? numberOfTasks.name : null);
+        weightArray.push(weight?.name ? weight.name : null);
         
         if(listOrganizationalUnitKpi) {
             listOrganizationalUnitKpi.map(kpis => {
                 titleX.push(kpis?.name);
-                executionTimesArray.push(executionTimes?.[kpis?.name]);
-                numberOfEmployeeKpisArray.push(numberOfEmployeeKpis?.[kpis?.name]);
-                numberOfParticipantsArray.push(numberOfParticipants?.[kpis?.name]);
-                numberOfTasksArray.push(numberOfTasks?.[kpis?.name]);
-                weightArray.push(weight?.[kpis?.name]);
+                executionTimesArray.push(executionTimes?.[kpis?.name] ? executionTimes[kpis.name] : null);
+                numberOfEmployeeKpisArray.push(numberOfEmployeeKpis?.[kpis?.name] ? numberOfEmployeeKpis[kpis.name] : null);
+                numberOfParticipantsArray.push(numberOfParticipants?.[kpis?.name] ? numberOfParticipants[kpis.name] : null);
+                numberOfTasksArray.push(numberOfTasks?.[kpis?.name] ? numberOfTasks[kpis.name] : null);
+                weightArray.push(weight?.[kpis?.name] ? weight[kpis.name] : null);
             })
         }
 
         let dataChart = [
             titleX,
-            executionTimesArray,
-            numberOfEmployeeKpisArray,
-            numberOfParticipantsArray,
             numberOfTasksArray,
+            executionTimesArray,
+            numberOfParticipantsArray,
+            numberOfEmployeeKpisArray,
             weightArray
         ]
 
+        console.log(this.refs.chart, dataChart)
         this.chart = c3.generate({
             bindto: this.refs.chart,                
 
@@ -461,8 +461,8 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
                     tick: {
                         format: function (x) {
                             if (titleX && titleX.length > 1) {
-                                if (titleX[x + 1].length > 30) {
-                                    return titleX[x + 1].slice(0, 30) + "...";
+                                if (titleX[x + 1].length > 60) {
+                                    return titleX[x + 1].slice(0, 60) + "...";
                                 } else {
                                     return titleX[x + 1]
                                 }
@@ -480,21 +480,13 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
             },
 
             legend: {
-                show: false
+                show: true
             }
         });
-
-        this.setState(state => {
-            return {
-                ...state,
-                titleX: titleX
-            }
-        })
     }
     
     render() {
         const { createKpiUnit, translate } = this.props;
-        const { titleX } = this.state;
         let currentKpi, organizationalUnitKpiLoading;
 
         if(createKpiUnit) {
@@ -505,17 +497,7 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
         return (
             <React.Fragment>
                 {currentKpi ?
-                    <section id={"trendsInUnit"} className="c3-chart-container enable-pointer">
-                        <div ref="chart"></div>
-                       
-                        <CustomLegendC3js
-                            chart={this.chart}
-                            chartId={"trendsInUnit"}
-                            legendId={"trendsInUnitLegend"}
-                            title={`${translate('kpi.evaluation.employee_evaluation.KPI_list')} (${currentKpi.kpis && currentKpi.kpis.length})`}
-                            dataChartLegend={titleX && titleX.filter((item, index) => index > 0)}
-                        />
-                    </section>
+                    <div ref="chart"></div>
                     : organizationalUnitKpiLoading && <section>{translate('kpi.organizational_unit.dashboard.no_data')}</section>
                 }
             </React.Fragment>
