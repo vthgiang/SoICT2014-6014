@@ -569,8 +569,8 @@ class TrendsInChildrenOrganizationalUnitKpiChart extends Component {
                     tick: {
                         format: function (x) {
                             if (titleX && titleX.length > 1) {
-                                if (titleX[x + 1].length > 60) {
-                                    return titleX[x + 1].slice(0, 60) + "...";
+                                if (titleX[x + 1].length > 30) {
+                                    return titleX[x + 1].slice(0, 30) + "...";
                                 } else {
                                     return titleX[x + 1]
                                 }
@@ -587,8 +587,13 @@ class TrendsInChildrenOrganizationalUnitKpiChart extends Component {
                 }
             },
             
-            legend: {
-                show: true
+            tooltip: {
+                format: {
+                    title: function (d) {
+                        if (titleX?.length > 1)
+                            return titleX[d + 1];
+                    }
+                }
             }
         });
     }

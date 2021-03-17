@@ -436,7 +436,6 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
             weightArray
         ]
 
-        console.log(this.refs.chart, dataChart)
         this.chart = c3.generate({
             bindto: this.refs.chart,                
 
@@ -461,8 +460,8 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
                     tick: {
                         format: function (x) {
                             if (titleX && titleX.length > 1) {
-                                if (titleX[x + 1].length > 60) {
-                                    return titleX[x + 1].slice(0, 60) + "...";
+                                if (titleX[x + 1].length > 30) {
+                                    return titleX[x + 1].slice(0, 30) + "...";
                                 } else {
                                     return titleX[x + 1]
                                 }
@@ -479,8 +478,13 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
                 }
             },
 
-            legend: {
-                show: true
+            tooltip: {
+                format: {
+                    title: function (d) {
+                        if (titleX?.length > 1)
+                            return titleX[d + 1];
+                    }
+                }
             }
         });
     }
