@@ -1,15 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { withTranslate } from 'react-redux-multilingual';
+import Swal from 'sweetalert2';
 
 import { taskManagementActions } from '../../task/task-management/redux/actions';
 
-import { CalendarEmployee } from '../../task/task-dashboard/task-personal-dashboard/calendarEmployee';
-
-import { withTranslate } from 'react-redux-multilingual';
 import { DatePicker, SlimScroll } from '../../../common-components';
-import Swal from 'sweetalert2';
 import { GanttCalendar } from '../../task/task-dashboard/task-personal-dashboard/ganttCalendar';
 import GeneralTaskPersonalChart from '../../task/task-dashboard/task-personal-dashboard/generalTaskPersonalChart';
+import { NewsFeed } from './newsFeed';
 
 class SuperHome extends Component {
     constructor(props) {
@@ -244,16 +243,18 @@ class SuperHome extends Component {
                             <div className="box-header with-border">
                                 <div className="box-title">{translate('task.task_management.tasks_calendar')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
                             </div>
-                            {/* <CalendarEmployee
-                                startMonth={startMonth}
-                                endMonth={endMonth}
-                                home={true}
-                            /> */}
                             <GanttCalendar
                                 tasks={tasks}
                                 unitOrganization={false}
                             />
                         </div>
+                    </div>
+                </div>
+
+                {/* News feed */}
+                <div className="row">
+                    <div className="col-xs-12">
+                        <NewsFeed/>
                     </div>
                 </div>
             </React.Fragment>
