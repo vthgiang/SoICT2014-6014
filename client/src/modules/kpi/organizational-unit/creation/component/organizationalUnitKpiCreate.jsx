@@ -17,6 +17,7 @@ import { createUnitKpiActions } from '../redux/actions.js';
 import { UserActions } from '../../../../super-admin/user/redux/actions';
 import { DashboardEvaluationEmployeeKpiSetAction } from '../../../evaluation/dashboard/redux/actions';
 import { AuthActions } from '../../../../auth/redux/actions';
+import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
 
 var translate = '';
 
@@ -57,6 +58,7 @@ class OrganizationalUnitKpiCreate extends Component {
 
     componentDidMount() {
         // Get department list of company
+        this.props.getDepartmentsThatUserIsManager();
         this.props.getChildrenOfOrganizationalUnitsAsTree(localStorage.getItem("currentRole"));
         this.props.getDepartment();
         this.props.getCurrentKPIUnit(localStorage.getItem('currentRole'));
@@ -425,7 +427,7 @@ class OrganizationalUnitKpiCreate extends Component {
     }
 
     render() {
-        const { user, createKpiUnit, dashboardEvaluationEmployeeKpiSet } = this.props;
+        const { user, createKpiUnit, dashboardEvaluationEmployeeKpiSet, department } = this.props;
         const { translate } = this.props;
         const {
             id, organizationalUnitKpi, organizationalUnit,
@@ -451,6 +453,48 @@ class OrganizationalUnitKpiCreate extends Component {
         if (createKpiUnit) {
             currentKPI = createKpiUnit.currentKPI;
             organizationalUnitKpiLoading = createKpiUnit.organizationalUnitKpiLoading
+        }
+
+        // Lọc các đơn vị có thể sao chép KPI
+        // Lấy các đơn vị nó làm trưởng và đơn vị cha
+        let listOrganizationalUnitCopy, listUnitOfUser, listIdOfExistUnit = [];
+
+        if (department) {
+            listUnitOfUser = department.departmentsThatUserIsManager;
+        }
+
+        listOrganizationalUnitCopy = selectBoxUnit?.filter(item => { 
+            return (                                              
+                    (organizationalUnit?.parent_id && item?.parent_id === organizationalUnit?.parent_id)
+                    || item?.id === organizationalUnit?.parent_id
+                )
+                && (item?.id !== organizationalUnit?.id)
+        })
+
+        if (listOrganizationalUnitCopy?.length > 0) {
+            listIdOfExistUnit = listOrganizationalUnitCopy.map(item => item?.id)
+        }
+        
+        if (!listIdOfExistUnit?.includes(createKpiUnit?.parent?.organizationalUnit?._id) && listOrganizationalUnitCopy) {
+            let parentKPI = createKpiUnit?.parent?.organizationalUnit;
+
+            listOrganizationalUnitCopy.push({
+                ...parentKPI,
+                id: parentKPI?._id
+            })
+            listIdOfExistUnit.push(parentKPI?._id)
+        }
+
+        if (listUnitOfUser?.length > 0 && listOrganizationalUnitCopy) {
+            listUnitOfUser.map(item => {
+                if (item?.parent === organizationalUnit?.parent_id && !listIdOfExistUnit?.includes(item?._id) && (item?._id !== organizationalUnit?.id)) {
+                    listOrganizationalUnitCopy.push({
+                        ...item,
+                        id: item?._id
+                    })
+                    listIdOfExistUnit.push(item?._id)
+                }
+            })
         }
 
         return (
@@ -715,13 +759,7 @@ class OrganizationalUnitKpiCreate extends Component {
                                                         <ModalCopyKPIUnit
                                                             kpiId={parentKpi?._id}
                                                             idunit={organizationalUnit?.id}
-                                                            organizationalUnitSelect={selectBoxUnit?.filter(item => { // Nếu kp là trưởng đơn vị hiện tại, lấy các đơn vị cùng cha với đơn vị hiện tại và đơn vị cha đó
-                                                                return (                                              // Nếu là trưởng đơn vị hiện tại, lấy đơn vị cha
-                                                                        (organizationalUnit?.parent_id && !organizationalUnit?.managers?.includes(userId) && item?.parent_id === organizationalUnit?.parent_id) 
-                                                                        || item?.id === organizationalUnit?.parent_id
-                                                                    )
-                                                                    && (item?.id !== organizationalUnit?.id)
-                                                            })}
+                                                            organizationalUnitSelect={listOrganizationalUnitCopy}
                                                             kpiunit={parentKpi}
                                                             editMonth={true}
                                                             monthDefault={month}
@@ -776,6 +814,7 @@ const actionCreators = {
     deleteFileComment: createUnitKpiActions.deleteFileComment,
     deleteFileChildComment: createUnitKpiActions.deleteFileChildComment,
     downloadFile: AuthActions.downloadFile,
+    getDepartmentsThatUserIsManager: DepartmentActions.getDepartmentsThatUserIsManager
 };
 const connectedOrganizationalUnitKpiCreate = connect(mapState, actionCreators)(withTranslate(OrganizationalUnitKpiCreate));
 export { connectedOrganizationalUnitKpiCreate as OrganizationalUnitKpiCreate };

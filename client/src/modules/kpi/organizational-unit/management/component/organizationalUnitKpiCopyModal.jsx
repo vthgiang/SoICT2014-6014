@@ -127,7 +127,7 @@ class ModalCopyKPIUnit extends Component {
     }
 
     handleSubmit = () => {
-        const { kpiId, idunit, monthDefault, approverDefault, type = this.TYPE.DEFAULT } = this.props;
+        const { kpiId, idunit, monthDefault, approverDefault, type = this.TYPE.DEFAULT, kpiunit } = this.props;
         const { month, approver, listKpiUnit, organizationalUnitId } = this.state;
         let arrayKpiUnit = Object.keys(listKpiUnit);
         
@@ -141,13 +141,13 @@ class ModalCopyKPIUnit extends Component {
 
             this.props.copyKPIUnit(kpiId, data);
         } else if (type === this.TYPE.COPY_PARENT_KPI_TO_UNIT) {
-
             let data = {  
                 type: this.TYPE.COPY_PARENT_KPI_TO_UNIT,
                 idunit: idunit,
                 organizationalUnitIdCopy: organizationalUnitId,
                 datenew: monthDefault,
-                listKpiUnit: arrayKpiUnit.filter(item => listKpiUnit?.[item])
+                listKpiUnit: arrayKpiUnit.filter(item => listKpiUnit?.[item]),
+                matchParent: kpiunit?.organizationalUnit?._id === organizationalUnitId
             }
 
             this.props.copyKPIUnit(kpiId, data);
@@ -215,8 +215,7 @@ class ModalCopyKPIUnit extends Component {
                             className="form-control select2"
                             style={{ width: "100%" }}
                             items={organizationalUnitSelect?.length > 0 
-                                ? organizationalUnitSelect.map(item => { return { value: item.id, text: item.name } })
-                                : [{ value: kpiunit?.organizationalUnit?._id, text: kpiunit?.organizationalUnit?.name }]
+                                && organizationalUnitSelect.map(item => { return { value: item.id, text: item.name } })
                             }
                             multiple={false}
                             onChange={this.handleSelectOrganizationalUnit}

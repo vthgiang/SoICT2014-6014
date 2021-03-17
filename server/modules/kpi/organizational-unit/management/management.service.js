@@ -52,7 +52,7 @@ exports.copyKPI = async (portal, kpiId, data) => {
                 })
                 .populate("organizationalUnit")
                 .populate({path: "creator", select :"_id name email avatar"})
-                .populate({ path: "kpis", populate: { path: 'parent' } });
+                .populate({ path: "kpis" });
         }
         
     
@@ -61,12 +61,13 @@ exports.copyKPI = async (portal, kpiId, data) => {
             if (data?.listKpiUnit?.includes(organizationalUnitOldKPISet.kpis?.[i]?._id.toString())) {
                 let target = await OrganizationalUnitKpi(connect(DB_CONNECTION, portal))
                     .create({
-                        name: organizationalUnitOldKPISet.kpis[i].name,
-                        parent: data.type !== 'default' ? organizationalUnitOldKPISet.kpis[i]._id : null,
-                        weight: organizationalUnitOldKPISet.kpis[i].weight,
-                        criteria: organizationalUnitOldKPISet.kpis[i].criteria,
-                        type: organizationalUnitOldKPISet.kpis[i].type
+                        name: organizationalUnitOldKPISet.kpis[i]?.name,
+                        parent: data.type !== 'default' ? (JSON.parse(data?.matchParent?.toLowerCase()) ? organizationalUnitOldKPISet.kpis[i]?._id : organizationalUnitOldKPISet.kpis[i]?.parent) : null,
+                        weight: organizationalUnitOldKPISet.kpis[i]?.weight,
+                        criteria: organizationalUnitOldKPISet.kpis[i]?.criteria,
+                        type: organizationalUnitOldKPISet.kpis[i]?.type
                     })
+
                 organizationalUnitKpiSet = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
                     .findByIdAndUpdate(
                         organizationalUnitNewKpi, { $push: { kpis: target._id } }, { new: true }
@@ -75,7 +76,7 @@ exports.copyKPI = async (portal, kpiId, data) => {
         }
 
         organizationalUnitKpiSet = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
-            .findById(organizationalUnitNewKpi._id)
+            .findById(organizationalUnitNewKpi?._id)
             .populate("organizationalUnit")
             .populate({path: "creator", select :"_id name email avatar"})
             .populate({ path: "kpis", populate: { path: 'parent' } });
