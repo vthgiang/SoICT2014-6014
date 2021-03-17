@@ -144,7 +144,7 @@ class AllTimeSheetLogsByUnit extends Component {
 
     render() {
         const { translate, user } = this.props;
-        const { organizationUnitTasks, startMonthTitle, endMonthTitle } = this.props;
+        const { organizationUnitTasks, startMonthTitle, endMonthTitle, unitIds, selectBoxUnit } = this.props;
         const { currentRowTimeSheetLog, page } = this.state;
         let allTimeSheet = [], timesheetlogs = [];
         let listEmployee;
@@ -195,7 +195,22 @@ class AllTimeSheetLogsByUnit extends Component {
         return (
             <React.Fragment>
                 <div className="box-header with-border">
-                    <div className="box-title">Thống kê bấm giờ từ tháng {startMonthTitle} đến tháng {endMonthTitle}</div>
+                    <div className="box-title">
+                        Thống kê bấm giờ từ tháng {startMonthTitle} đến tháng {endMonthTitle}
+                        {
+                            unitIds && unitIds.length < 2 ?
+                                <>
+                                    <spn>{` ${translate('task.task_dashboard.of_unit')}`}</spn>
+                                    <span style={{ fontWeight: "bold" }}>{` ${this.props.getUnitName(selectBoxUnit, unitIds).map(o => o).join(", ")}`}</span>
+                                </>
+                                :
+                                <span onClick={() => this.props.showUnitGeneraTask(selectBoxUnit, unitIds)} style={{ cursor: 'pointer' }}>
+                                    <span>{` ${translate('task.task_dashboard.of')}`}</span>
+                                    <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {unitIds && unitIds.length}</a>
+                                    <span>{` ${translate('task.task_dashboard.unit_lowercase')}`}</span>
+                                </span>
+                        }
+                    </div>
                     <DataTableSetting
                         tableId={this.allTimeSheetLogsByUnitId}
                         setLimit={this.setLimitAllTimeSheetLogs}

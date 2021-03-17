@@ -3032,6 +3032,7 @@ export default {
                 detail_link: "Link công việc",
                 detail_priority: "Độ ưu tiên công việc",
                 detail_status: "Trạng thái công việc",
+                average_task_result: "Kết quả trung bình công việc",
                 detail_time: "Thời gian thực hiện công việc",
                 detail_average_results: "Kết quả trung bình công việc",
 
@@ -4173,8 +4174,8 @@ export default {
                     trend_chart: {
                         execution_time: "Thời gian thực hiện (Ngày)",
                         participants: "Số người tham gia",
-                        amount_tasks: "Số lượng công việc",
-                        amount_employee_kpi: "Số lượng KPI nhân viên",
+                        amount_tasks: "Số công việc",
+                        amount_employee_kpi: "Số KPI nhân viên",
                         weight: "Trọng số",
                     },
                     result_kpi_unit_chart: {

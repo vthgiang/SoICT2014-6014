@@ -2766,6 +2766,7 @@ export default {
                 detail_link: "Task link",
                 detail_priority: "Priority",
                 detail_status: "Status",
+                average_task_result: "Average task results",
                 detail_time: "Working duration",
                 detail_average_results: "Average results of task",
 
