@@ -8,6 +8,7 @@ import { getStorage } from "../../../../config";
 import { CallApiStatus } from '../../../auth/redux/reducers'
 import TextareaAutosize from 'react-textarea-autosize';
 import { performTaskAction } from './../redux/actions';
+
 import './taskTimesheetLog.css';
 import Swal from 'sweetalert2'
 class TaskTimesheetLog extends Component {
@@ -42,6 +43,15 @@ class TaskTimesheetLog extends Component {
     componentDidMount = () => {
         this.setState({ showEndDate: false });
         this.callApi();
+
+        if (this.props.socket.io) {
+            this.props.socket.io.on("stop timers", status => {
+                console.log('stop timers', status)
+                if (status && status.stopTimerAllDevices) {
+                    this.props.stopTimeAllDevices(status);
+                }
+            })
+        }
     }
 
 
@@ -73,7 +83,11 @@ class TaskTimesheetLog extends Component {
             clearInterval(this.timer);
             this.timer = null;
         }
+        if (this.props.socket.io) {
+            this.props.socket.io.off('stop timers');
+        }
     }
+
     handleStopTimer = (e) => {
         e.stopPropagation();
         const { auth } = this.props;
@@ -84,6 +98,7 @@ class TaskTimesheetLog extends Component {
             }
         });
     }
+
     resumeTimer = () => {
         this.setState(state => {
             return {
@@ -188,13 +203,6 @@ class TaskTimesheetLog extends Component {
                 });
             }
 
-            //Check thời gian kết thúc không được gian lận
-            // if(milisec - Date.now() > 300000) {
-            //     this.setState({
-            //         disabled: true,
-            //         errorOnEndDate: "Thời điểm kết thúc không được vượt quá hiện tại"
-            //     });
-            // }
         }
     }
 
@@ -261,7 +269,6 @@ class TaskTimesheetLog extends Component {
         const { showEndDate, disabled, errorOnEndDate, currentUser, time } = this.state
         const currentTimer = performtasks.currentTimer;
         const a = this.getDiffTime(this.state.time, currentTimer?.timesheetLogs[0].startedAt);
-
         return (
             <React.Fragment>
                 {
@@ -326,13 +333,14 @@ class TaskTimesheetLog extends Component {
 }
 
 const mapStateToProps = state => {
-    const { translate, performtasks, auth } = state;
-    return { translate, performtasks, auth };
+    const { translate, performtasks, auth, socket } = state;
+    return { translate, performtasks, auth, socket };
 }
 
 const mapDispatchToProps = {
     getTimerStatusTask: performTaskAction.getTimerStatusTask,
     stopTimer: performTaskAction.stopTimerTask,
+    stopTimeAllDevices: performTaskAction.stopTimeAllDevices
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(TaskTimesheetLog));

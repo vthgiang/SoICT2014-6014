@@ -339,7 +339,7 @@ exports.startTimesheetLog = async (portal, params, body) => {
     };
 
     /* check và tìm công việc đang được hẹn tắt bấm giờ:
-    * Nếu công tìm được công việc có thời gian kết thúc bấm giờ lớn hơn thời gin hiện tại
+    * Nếu công tìm được công việc có thời gian kết thúc bấm giờ lớn hơn thời gian hiện tại
     * => Thì chứng tỏ công việc đấy đang được hẹn tắt giờ
     */
     let checkAutoTSLog = await Task(connect(DB_CONNECTION, portal)).findOne({
@@ -776,6 +776,25 @@ exports.stopTimesheetLog = async (portal, params, body, user) => {
         ]);
     newTask.evaluations.reverse();
 
+    // tự động tắt bấm giờ 1 công việc khi mở nhiều tab, trình duyệt,
+    const userIdReceive = user._id;
+    let socketIdOfUserReceive = [];
+    CONNECTED_CLIENTS.forEach(o => {
+        if (o.userId === userIdReceive) {
+            socketIdOfUserReceive = [...socketIdOfUserReceive, o.socketId];
+        }
+    })
+
+    if (socketIdOfUserReceive.length > 0) {
+        socketIdOfUserReceive.forEach(obj => {
+            SOCKET_IO.to(obj).emit("stop timers", {
+                taskId: params.taskId,
+                stopTimerAllDevices: true
+            });
+        })
+    }
+    console.log('socketIdOfUserReceive', socketIdOfUserReceive);
+    
     return newTask;
 };
 

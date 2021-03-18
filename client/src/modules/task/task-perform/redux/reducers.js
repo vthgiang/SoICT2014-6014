@@ -103,6 +103,10 @@ export function performtasks(state = {}, action) {
                 ...state,
                 loading: true
             };
+            
+         case performTaskConstants.STOP_TIMER_ALL_DEVICES_SUCCESS:
+            return { ...state, currentTimer: null };
+        
         case performTaskConstants.STOP_TIMER_SUCCESS:
             return (state.task && action.payload && state.task._id && action.payload._id && state.task._id === action.payload._id)
             ? {
@@ -112,6 +116,9 @@ export function performtasks(state = {}, action) {
                 currentTimer: null
             }
             :{ ...state, currentTimer: null };
+
+       
+        
         case performTaskConstants.STOP_TIMER_FAILURE:
             return {
                 ...state,

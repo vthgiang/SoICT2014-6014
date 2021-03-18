@@ -8,6 +8,7 @@ export const performTaskAction = {
     getCurrentTaskTimesheetLogOfEmployeeInOrganizationalUnit,
     startTimerTask,
     stopTimerTask,
+    stopTimeAllDevices,
     editTimeSheetLog,
 
     createActionComment,
@@ -223,6 +224,12 @@ function editTimeSheetLog(taskId, timesheetlogId, data) {
     };
 }
 
+function stopTimeAllDevices(data) {
+    console.log('STOP_TIMER_ALL_DEVICES_SUCCESS', data);
+    return dispatch =>
+        dispatch({ type: performTaskConstants.STOP_TIMER_ALL_DEVICES_SUCCESS, payload: data });
+}
+
 // stop timer task
 function stopTimerTask(taskId, newTimer) {
     return dispatch => {
@@ -249,6 +256,7 @@ function stopTimerTask(taskId, newTimer) {
             );
     };
 }
+
 
 // add comment task
 function createActionComment(taskId, actionId, newComment) {
