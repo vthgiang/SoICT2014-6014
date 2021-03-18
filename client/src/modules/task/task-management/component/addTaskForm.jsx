@@ -350,15 +350,17 @@ class AddTaskForm extends Component {
 
 
     handleSelectedParent = async (value) => {
-        let val = value[0];
+        const val = value[0];
 
         this.setState(state => {
-            state.newTask.parent = val;
             return {
-                ...state,
+                newTask: {
+                    ...state.newTask,
+                    parent: val
+                }
             }
-        })
-        this.props.handleChangeTaskData(this.state.newTask)
+        }, () => this.props.handleChangeTaskData(this.state.newTask))
+
     }
 
     onSearch = async (txt) => {
@@ -616,6 +618,8 @@ class AddTaskForm extends Component {
 
         const checkCurrentRoleIsManager = role && role.item &&
             role.item.parents.length > 0 && role.item.parents.filter(o => o.name === ROOT_ROLE.MANAGER)
+
+        console.log('stateeeee', this.state.newTask)
         return (
             <React.Fragment>
 
@@ -829,7 +833,7 @@ class AddTaskForm extends Component {
                                 </label>
 
                                 <SelectBox
-                                    id={`select-parent-new-task-${newTask.parent && newTask.parent._id}`}
+                                    id={`select-parent-new-task-${id}`}
                                     className="form-control select2"
                                     style={{ width: "100%" }}
                                     items={listParentTask}
