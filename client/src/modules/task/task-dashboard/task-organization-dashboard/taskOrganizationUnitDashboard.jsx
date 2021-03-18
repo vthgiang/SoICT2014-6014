@@ -526,8 +526,8 @@ class TaskOrganizationUnitDashboard extends Component {
                                                 <InprocessOfUnitTask
                                                     tasks={tasks.organizationUnitTasks}
                                                     listEmployee={user && user.employees}
-                                                    units={selectBoxUnit}
                                                     unitSelected={idsUnit}
+                                                    unitNameSelected={idsUnit && this.getUnitName(selectBoxUnit, idsUnit)}
                                                 />
                                             </LazyLoadComponent>
                                         }
