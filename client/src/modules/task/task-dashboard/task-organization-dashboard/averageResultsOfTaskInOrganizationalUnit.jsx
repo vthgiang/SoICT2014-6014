@@ -424,7 +424,7 @@ function AverageResultsOfTaskInOrganizationalUnit(props) {
             <div className="qlcv">
                 <div className="form-inline" >
                     <div className="form-group">
-                        <label style={{ width: 'auto' }}>Tiêu chí</label>
+                        <label>Tiêu chí</label>
                         <SelectBox
                             id={`criteriaOfAverageUnitSelectBox`}
                             className="form-control select2"
@@ -438,7 +438,7 @@ function AverageResultsOfTaskInOrganizationalUnit(props) {
                 </div>
                 <div className="form-inline" >
                     <div className="form-group">
-                        <label style={{ width: 'auto' }}>Loại điểm</label>
+                        <label>Loại điểm</label>
                         <SelectBox
                             id={`typePointOfAverageResultsTaskSelectBox`}
                             className="form-control select2"
@@ -449,11 +449,11 @@ function AverageResultsOfTaskInOrganizationalUnit(props) {
                             value={typePoint}
                         />
                     </div>
-                    <button type="button" className="btn btn-success" onClick={handleSearchData}>{translate('kpi.evaluation.employee_evaluation.search')}</button>
+                    <div className="form-group">
+                        <button type="button" className="btn btn-success" onClick={handleSearchData}>{translate('kpi.evaluation.employee_evaluation.search')}</button>
+                    </div>
                 </div>
             </div>
-
-
 
             <section id={"averageChartUnit"} className="c3-chart-container">
                 <div id="averageChartUnitChart"></div>
