@@ -3,16 +3,26 @@ import moment from 'moment'
 import { TreeTable, DataTableSetting } from '../../../../common-components';
 import { withTranslate } from 'react-redux-multilingual';
 import './generalTaskChart.css';
+import ViewAllGeneralTask from './viewAllGeneralTask';
 import _cloneDeep from 'lodash/cloneDeep';
+import useDeepCompareEffect from 'use-deep-compare-effect'
 
 const GeneralTaskChart = (props) => {
     const { translate } = props;
     const dataTable = []
     const [state, setstate] = useState([]);
+    const [collapse, setCollapse] = useState({
+
+    });
+    const [showDetailTask, setShowTask] = useState({
+        tasks: [],
+        nameUnit: "",
+    });
+
     const checkExport = useRef(false);
 
     const countTask = (tasklist, name) => {
-        let confirmedTask = 0, noneUpdateTask = 0, intimeTask = 0, delayTask = 0, overdueTask = 0, taskFinished = 0, taskInprocess = 0;
+        let confirmedTask = [], noneUpdateTask = [], intimeTask = [], delayTask = [], overdueTask = [], taskFinished = [], taskInprocess = [];
 
         for (let i in tasklist) {
             let start = moment(tasklist[i]?.startDate);
@@ -22,15 +32,15 @@ const GeneralTaskChart = (props) => {
             let duration = end.diff(start, 'days');
             let uptonow = now.diff(lastUpdate, 'days');
             if (tasklist[i]?.confirmedByEmployees?.length) {
-                confirmedTask++;
+                confirmedTask = [...confirmedTask, tasklist[i]];
             }
             if (uptonow >= 7) {
-                noneUpdateTask++;
+                noneUpdateTask = [...noneUpdateTask, tasklist[i]];
             }
             if (tasklist[i]?.status === 'inprocess') {
                 if (now > end) {
                     // Quá hạn
-                    overdueTask++;
+                    overdueTask = [...overdueTask, tasklist[i]];
                 }
                 else {
                     let processDay = Math.floor(tasklist[i]?.progress * duration / 100);
@@ -38,26 +48,24 @@ const GeneralTaskChart = (props) => {
 
                     if (startToNow > processDay) {
                         // Trễ hạn
-                        delayTask++;
+                        delayTask = [...delayTask, tasklist[i]];
                     }
                     else if (startToNow <= processDay) {
                         // Đúng hạn
-                        intimeTask++;
+                        intimeTask = [...intimeTask, tasklist[i]];
                     }
                 }
             }
             if (tasklist[i] && tasklist[i].status === "finished") {
-                taskFinished++;
+                taskFinished = [...taskFinished, tasklist[i]];
             }
             if (tasklist[i] && tasklist[i].status === "inprocess") {
-                taskInprocess++;
+                taskInprocess = [...taskInprocess, tasklist[i]];
             }
         }
         return {
-            parent: null,
-            _id: 'parent',
             name: name ? name : "",
-            totalTask: tasklist.length,
+            totalTask: tasklist,
             confirmedTask,
             noneUpdateTask,
             intimeTask,
@@ -65,7 +73,8 @@ const GeneralTaskChart = (props) => {
             overdueTask,
             taskFinished,
             taskInprocess,
-            organization: true
+            organization: true,
+            show: true,
         }
     }
 
@@ -113,14 +122,63 @@ const GeneralTaskChart = (props) => {
 
     }
 
+    const freshListEmployee = (listEmployee) => {
+        let arr = [];
+        let result = [];
+        listEmployee && listEmployee.forEach((x, index) => {
+            if (x.managers) {
+                for (const [key, value] of Object.entries(x.managers)) {
+                    if (value.members && value.members.length > 0) {
+                        value.members.forEach((o) => {
+                            arr = [...arr, o];
+                        });
+                    }
+                }
+            }
+
+            if (x.deputyManagers) {
+                for (const [key, value] of Object.entries(x.deputyManagers)) {
+                    if (value.members && value.members.length > 0) {
+                        value.members.forEach((o) => {
+                            arr = [...arr, o];
+                        });
+                    }
+                }
+            }
+
+            if (x.employees) {
+                for (const [key, value] of Object.entries(x.employees)) {
+                    if (value.members && value.members.length > 0) {
+                        value.members.forEach((o) => {
+                            arr = [...arr, o];
+                        });
+                    }
+                }
+            }
+
+            // Lọc các nhân viên trùng nhau sau khi thực hiện ở trên
+            // vì 1 nhân viên có thể có nhiều chức ở các đơn vị khác nhau nên chỉ lọc lấy 1 cái
+            const seen = new Set();
+            const filteredArr = arr.filter((el) => {
+                const duplicate = seen.has(el._id);
+                seen.add(el._id);
+                return !duplicate;
+            });
+            result = [...filteredArr];
+        })
+        return result;
+    }
+
+
     useLayoutEffect(() => {
         if (checkExport) {
             state && state.length > 0 && convertDataExport(state);
         }
     }, [state])
 
-    useEffect(() => {
-        const { tasks, units, unitSelected, employees, unitNameSelected } = props;
+    useDeepCompareEffect(() => {
+        console.count();
+        const { tasks, units, unitSelected, employees } = props;
         const allTasks = tasks?.tasks;
 
         const listEmployee = {};
@@ -140,10 +198,11 @@ const GeneralTaskChart = (props) => {
             }
         });
 
-        if (employees && employees.length) {
-            for (let i in employees) {
-                let x = employees[i].userId
-                listEmployee[x.id] = x.name;
+        const employeesNew = freshListEmployee(employees);
+        if (employeesNew && employeesNew.length) {
+            for (let i in employeesNew) {
+                let x = employeesNew[i]
+                listEmployee[x._id] = x.name;
             }
         }
 
@@ -157,11 +216,11 @@ const GeneralTaskChart = (props) => {
                     data[unitName] = {};
                 }
                 if (data?.[unitName] && !data?.[unitName]?.[result?.[j]]) {
-                    data[unitName][result[j]] = 0;
+                    data[unitName][result[j]] = [];
                 }
 
                 if (data[unitName]) {
-                    data[unitName][result[j]]++;
+                    data[unitName][result[j]] = [...data[unitName][result[j]], tasksOfSelectedUnit[i]];
                     data[unitName].name = unitName;
                 }
 
@@ -180,10 +239,10 @@ const GeneralTaskChart = (props) => {
                         data[unitName][idEmployee] = {}
                     }
                     if (data?.[unitName]?.[idEmployee] && !data[unitName][idEmployee][result?.[j]]) {
-                        data[unitName][idEmployee][result[j]] = 0;
+                        data[unitName][idEmployee][result[j]] = [];
                     }
                     if (data?.[unitName]?.[idEmployee]) {
-                        data[unitName][idEmployee][result[j]]++;
+                        data[unitName][idEmployee][result[j]] = [...data[unitName][idEmployee][result[j]], tasksOfSelectedUnit[i]];
                         data[unitName][idEmployee].name = idEmployee;
                     }
                 }
@@ -195,51 +254,56 @@ const GeneralTaskChart = (props) => {
             let unitName = listUnit?.[i]?.name;
             if (!Object.keys(data).includes(unitName)) {
                 dataTable.push({
-                    parent: null,
+                    parent: true,
                     _id: unitName,
-                    confirmedTask: 0,
-                    delayTask: 0,
-                    intimeTask: 0,
+                    confirmedTask: [],
+                    delayTask: [],
+                    intimeTask: [],
                     name: unitName,
-                    noneUpdateTask: 0,
-                    overdueTask: 0,
-                    totalTask: 0,
-                    taskFinished: 0,
-                    taskInprocess: 0,
-                    organization: true
+                    noneUpdateTask: [],
+                    overdueTask: [],
+                    totalTask: [],
+                    taskFinished: [],
+                    taskInprocess: [],
+                    organization: true,
+                    show: true,
                 });
             }
             else {
                 let unit = data[unitName];
+                // Thêm số công việc của cả phòng vào mảng dataTable
                 dataTable.push({
-                    parent: null,
+                    parent: true,
                     _id: unitName,
-                    confirmedTask: unit.confirmedTask ? unit.confirmedTask : 0,
-                    delayTask: unit.delayTask ? unit.delayTask : 0,
-                    intimeTask: unit.intimeTask ? unit.intimeTask : 0,
+                    confirmedTask: unit.confirmedTask ? unit.confirmedTask : [],
+                    delayTask: unit.delayTask ? unit.delayTask : [],
+                    intimeTask: unit.intimeTask ? unit.intimeTask : [],
                     name: unitName,
-                    noneUpdateTask: unit.noneUpdateTask ? unit.noneUpdateTask : 0,
-                    overdueTask: unit.overdueTask ? unit.overdueTask : 0,
-                    totalTask: unit.totalTask ? unit.totalTask : 0,
-                    taskFinished: unit.taskFinished ? unit.taskFinished : 0,
-                    taskInprocess: unit.taskInprocess ? unit.taskInprocess : 0,
-                    organization: true
+                    noneUpdateTask: unit.noneUpdateTask ? unit.noneUpdateTask : [],
+                    overdueTask: unit.overdueTask ? unit.overdueTask : [],
+                    totalTask: unit.totalTask ? unit.totalTask : [],
+                    taskFinished: unit.taskFinished ? unit.taskFinished : [],
+                    taskInprocess: unit.taskInprocess ? unit.taskInprocess : [],
+                    organization: true,
+                    show: true,
                 });
+                // Thêm số công việc tuwngf nhaan vieen trong phòng vào mảng dataTable
                 for (let key in unit) {
                     if (unit[key].name) {
                         dataTable.push({
                             _id: unit?.[key]?.name,
                             parent: unitName,
-                            confirmedTask: unit?.[key]?.confirmedTask ? unit[key].confirmedTask : 0,
-                            delayTask: unit?.[key]?.delayTask ? unit[key].delayTask : 0,
-                            intimeTask: unit?.[key]?.intimeTask ? unit[key].intimeTask : 0,
+                            confirmedTask: unit?.[key]?.confirmedTask ? unit[key].confirmedTask : [],
+                            delayTask: unit?.[key]?.delayTask ? unit[key].delayTask : [],
+                            intimeTask: unit?.[key]?.intimeTask ? unit[key].intimeTask : [],
                             name: listEmployee?.[unit?.[key].name],
-                            noneUpdateTask: unit?.[key]?.noneUpdateTask ? unit[key].noneUpdateTask : 0,
-                            overdueTask: unit?.[key]?.overdueTask ? unit[key].overdueTask : 0,
-                            totalTask: unit?.[key]?.totalTask ? unit[key].totalTask : 0,
-                            taskFinished: unit?.[key]?.taskFinished ? unit[key].taskFinished : 0,
-                            taskInprocess: unit?.[key]?.taskInprocess ? unit[key].taskInprocess : 0,
-                            organization: false
+                            noneUpdateTask: unit?.[key]?.noneUpdateTask ? unit[key].noneUpdateTask : [],
+                            overdueTask: unit?.[key]?.overdueTask ? unit[key].overdueTask : [],
+                            totalTask: unit?.[key]?.totalTask ? unit[key].totalTask : [],
+                            taskFinished: unit?.[key]?.taskFinished ? unit[key].taskFinished : [],
+                            taskInprocess: unit?.[key]?.taskInprocess ? unit[key].taskInprocess : [],
+                            organization: false,
+                            show: true,
                         });
                     }
                 }
@@ -247,40 +311,9 @@ const GeneralTaskChart = (props) => {
         }
 
         checkExport.current = true;
+
         setstate(dataTable);
-    }, [props.employees]);
-
-
-    let column = [
-        { name: translate('task.task_dashboard.unit'), key: "unit" },
-        { name: translate('task.task_dashboard.all_tasks'), key: "all_task" },
-        { name: translate('task.task_dashboard.all_tasks_inprocess'), key: "all_task_inprocess" },
-        { name: translate('task.task_dashboard.all_tasks_finished'), key: "all_task_finished" },
-        { name: translate('task.task_dashboard.confirmed_task'), key: "confirmed_task" },
-        { name: translate('task.task_dashboard.none_update_recently'), key: "none_update" },
-        { name: translate('task.task_dashboard.intime_task'), key: "intime_task" },
-        { name: translate('task.task_dashboard.delay_task'), key: "delay_task" },
-        { name: translate('task.task_dashboard.overdue_task'), key: "overdue_task" },
-    ];
-
-    let data = [];
-    if (state && state.length > 0) {
-        for (let i in state) {
-            data[i] = {
-                _id: state[i]._id,
-                unit: state[i].name,
-                all_task: state[i].totalTask,
-                all_task_inprocess: state[i].taskInprocess,
-                all_task_finished: state[i].taskFinished,
-                confirmed_task: state[i].confirmedTask,
-                none_update: state[i].noneUpdateTask,
-                intime_task: state[i].intimeTask,
-                delay_task: state[i].delayTask,
-                overdue_task: state[i].overdueTask,
-                parent: state[i].parent,
-            }
-        }
-    }
+    }, [props.tasks]);
 
 
     const convertDataExport = (data) => {
@@ -349,14 +382,52 @@ const GeneralTaskChart = (props) => {
             props.handleDataExport(exportData)
     }
 
+    // Xử lý click vào row unit show hide row children
+    const toggleCollapse = (idParent, parent) => {
+        let cloneArr = _cloneDeep(state);
+        // Chỉ có những row nào mà có parent, tức là tên unit
+        if (parent) {
+            cloneArr = cloneArr.map(obj => {
+                // check con của unit click set laij biến show
+                if (idParent === obj.parent) {
+                    obj.show = !obj.show;
+                }
+                return obj;
+            })
+            // cập nhật state
+            setstate(cloneArr);
+
+            let title = `collapse${idParent}`;
+            setCollapse({
+                ...collapse,
+                [title]: !collapse.hasOwnProperty([title]) ? false : !collapse[title]
+            })
+        }
+    }
+
+    const handleShowGeneralTask = (tasks, name, index, type) => {
+        if (tasks?.length > 0) {
+            setShowTask({
+                ...showDetailTask,
+                tasks: tasks,
+                nameUnit: name,
+                rowIndex: index,
+                taskType: type,
+
+            });
+            window.$('#modal-view-all-general-task').modal('show');
+        }
+    }
+
     return (
         <div className="general_task_unit">
+            <ViewAllGeneralTask showDetailTask={showDetailTask} />
             <DataTableSetting className="pull-right" tableId='generalTaskUnit' tableContainerId="tree-table-container" tableWidth="1300px"
                 columnArr={[
                     translate('task.task_dashboard.unit'),
                     translate('task.task_dashboard.all_tasks'),
-                    translate('task.task_dashboard.all_task_inprocess'),
-                    translate('task.task_dashboard.all_task_finished'),
+                    translate('task.task_dashboard.all_tasks_inprocess'),
+                    translate('task.task_dashboard.all_tasks_finished'),
                     translate('task.task_dashboard.confirmed_task'),
                     translate('task.task_dashboard.none_update_recently'),
                     translate('task.task_dashboard.intime_task'),
@@ -365,13 +436,48 @@ const GeneralTaskChart = (props) => {
                 ]}
             />
 
-            <TreeTable
-                tableId="generalTaskUnit"
-                behaviour="show-children"
-                column={column}
-                data={data}
-                actions={false}
-            />
+            <table id='general-list-task' className="table table-striped table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th title={translate('task.task_dashboard.unit')} style={{ width: '135px' }}>{translate('task.task_dashboard.unit')}</th>
+                        <th title={translate('task.task_dashboard.all_tasks')}>{translate('task.task_dashboard.all_tasks')}</th>
+                        <th title={translate('task.task_dashboard.all_tasks_inprocess')}>{translate('task.task_dashboard.all_tasks_inprocess')}</th>
+                        <th title={translate('task.task_dashboard.all_tasks_finished')}>{translate('task.task_dashboard.all_tasks_finished')}</th>
+                        <th title={translate('task.task_dashboard.confirmed_task')}>{translate('task.task_dashboard.confirmed_task')}</th>
+                        <th title={translate('task.task_dashboard.none_update_recently')}>{translate('task.task_dashboard.none_update_recently')}</th>
+                        <th title={translate('task.task_dashboard.intime_task')}>{translate('task.task_dashboard.intime_task')}</th>
+                        <th title={translate('task.task_dashboard.delay_task')}>{translate('task.task_dashboard.delay_task')}</th>
+                        <th title={translate('task.task_dashboard.overdue_task')}>{translate('task.task_dashboard.overdue_task')}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {
+                        state.map((x, index) => {
+                            return (
+                                <tr key={index} style={{ fontWeight: x.organization ? 600 : 500, display: x.show ? "table-row" : "none" }} >
+                                    <td style={{ display: x.parent === true ? 'flex' : 'table-cell', cursor: 'pointer' }} onClick={() => toggleCollapse(x?._id, x.parent)}>
+                                        {
+                                            x.parent === true && <span className="material-icons" style={{ fontWeight: "bold", marginRight: '5px' }}>
+                                                {collapse && collapse[`collapse${x?._id}`] === false ? `keyboard_arrow_up` : `keyboard_arrow_down`}
+                                            </span>
+                                        }
+                                        <span>{x.name}</span>
+                                    </td>
+                                    <td><a onClick={() => handleShowGeneralTask(x.totalTask, x.name, index, 'totalTask')}>{x.totalTask.length}</a></td>
+                                    <td><a onClick={() => handleShowGeneralTask(x.taskInprocess, x.name, index, 'taskInprocess')}>{x.taskInprocess.length}</a></td>
+                                    <td><a onClick={() => handleShowGeneralTask(x.taskFinished, x.name, index, 'taskFinished')}>{x.taskFinished.length}</a></td>
+                                    <td><a onClick={() => handleShowGeneralTask(x.confirmedTask, x.name, index, 'confirmedTask')}>{x.confirmedTask.length}</a></td>
+                                    <td><a onClick={() => handleShowGeneralTask(x.noneUpdateTask, x.name, index, 'noneUpdateTask')}>{x.noneUpdateTask.length}</a></td>
+                                    <td><a onClick={() => handleShowGeneralTask(x.intimeTask, x.name, index, 'intimeTask')}>{x.intimeTask.length}</a></td>
+                                    <td><a onClick={() => handleShowGeneralTask(x.delayTask, x.name, index, 'delayTask')}>{x.delayTask.length}</a></td>
+                                    <td><a onClick={() => handleShowGeneralTask(x.overdueTask, x.name, index, 'overdueTask')}>{x.overdueTask.length}</a></td>
+                                </tr>
+                            )
+                        })
+                    }
+                </tbody>
+            </table>
+
         </div>
 
     )

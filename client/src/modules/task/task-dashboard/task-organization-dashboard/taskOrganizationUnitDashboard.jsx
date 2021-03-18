@@ -84,7 +84,7 @@ class TaskOrganizationUnitDashboard extends Component {
         await this.props.getChildrenOfOrganizationalUnitsAsTree(localStorage.getItem("currentRole"));
         await this.props.getAllUserSameDepartment(localStorage.getItem("currentRole"));
         await this.props.getTaskInOrganizationUnitByMonth([], new Date(this.state.startMonth), new Date(this.state.endMonth));
-
+        await this.props.getAllUserInAllUnitsOfCompany();
         await this.setState(state => {
             return {
                 ...state,
@@ -428,19 +428,17 @@ class TaskOrganizationUnitDashboard extends Component {
                                     </div>
 
                                     <div className="box-body qlcv">
-                                        {this.state.callAction && tasks && tasks.organizationUnitTasks &&
-                                            <LazyLoadComponent once={true}>
-                                                <GeneralTaskChart
-                                                    tasks={tasks.organizationUnitTasks}
-                                                    units={selectBoxUnit}
-                                                    employees={user.employees}
-                                                    unitSelected={idsUnit}
-                                                    startMonthTitle={startMonthTitle}
-                                                    endMonthTitle={endMonthTitle}
-                                                    unitNameSelected={idsUnit && this.getUnitName(selectBoxUnit, idsUnit)}
-                                                    handleDataExport={this.handleDataExport}
-                                                />
-                                            </LazyLoadComponent>
+                                        {this.state.callAction && tasks && tasks.organizationUnitTasks?.tasks?.length > 0 &&
+                                            <GeneralTaskChart
+                                                tasks={tasks.organizationUnitTasks}
+                                                units={selectBoxUnit}
+                                                employees={user.usersInUnitsOfCompany}
+                                                unitSelected={idsUnit}
+                                                startMonthTitle={startMonthTitle}
+                                                endMonthTitle={endMonthTitle}
+                                                unitNameSelected={idsUnit && this.getUnitName(selectBoxUnit, idsUnit)}
+                                                handleDataExport={this.handleDataExport}
+                                            />
                                         }
                                     </div>
                                 </div>
@@ -729,6 +727,7 @@ const actionCreators = {
     getAllUserSameDepartment: UserActions.getAllUserSameDepartment,
     getChildrenOfOrganizationalUnitsAsTree: DashboardEvaluationEmployeeKpiSetAction.getChildrenOfOrganizationalUnitsAsTree,
     getAllEmployeeOfUnitByIds: UserActions.getAllEmployeeOfUnitByIds,
+    getAllUserInAllUnitsOfCompany: UserActions.getAllUserInAllUnitsOfCompany,
 };
 
 const connectedTaskDashboardUnit = connect(mapState, actionCreators)(withTranslate(TaskOrganizationUnitDashboard));

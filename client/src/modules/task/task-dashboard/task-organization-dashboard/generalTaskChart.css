@@ -3,7 +3,7 @@
     overflow-y: auto;
 }
 
-.general_task_unit thead th {
+.general_task_unit #general-list-task thead th {
     position: sticky;
     top: -1px;
     background: #fff;
