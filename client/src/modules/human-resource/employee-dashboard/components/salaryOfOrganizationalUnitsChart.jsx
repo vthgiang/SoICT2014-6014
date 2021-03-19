@@ -120,7 +120,7 @@ class SalaryOfOrganizationalUnitsChart extends Component {
         let ratioX = organizationalUnitsName.map(x => x.name);
         let data1 = organizationalUnitsName.map(x => x.salary);
         let dataChart = {
-            nameData: 'Lương thưởng',
+            nameData: 'Thu nhập',
             ratioX: ratioX,
             data1: ['data1', ...data1],
         }

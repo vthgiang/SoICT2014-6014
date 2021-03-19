@@ -25,6 +25,18 @@ class DashBoardEmployees extends Component {
         }
     };
 
+    static getDerivedStateFromProps(props, state) {
+        if (!state.arrayUnitShow && props && props.childOrganizationalUnit) {
+            return {
+                ...state,
+                arrayUnitShow: props.childOrganizationalUnit.map(x => x.id)
+            }
+        } else {
+            return null;
+        }
+
+    }
+
     componentDidMount() {
         const { organizationalUnits, month } = this.state;
         const { childOrganizationalUnit } = this.props
@@ -198,7 +210,7 @@ class DashBoardEmployees extends Component {
                                 <span className="info-box-icon bg-aqua"><i className="fa fa-users"></i></span>
                                 <div className="info-box-content">
                                     <span className="info-box-text">Số nhân viên</span>
-                                    <span className="info-box-number">
+                                    <span className="info-box-number" style={{ fontSize: '20px' }}>
                                         {listAllEmployees.length}
                                     </span>
                                 </div>
@@ -207,10 +219,10 @@ class DashBoardEmployees extends Component {
 
                         <div className="col-lg-3 col-md-3 col-sm-6 col-xs-6">
                             <div className="info-box with-border">
-                                <span className="info-box-icon bg-yellow"><i className="fa fa-tasks"></i></span>
+                                <span className="info-box-icon bg-yellow"><i className="fa fa-clock-o" aria-hidden="true"></i></span>
                                 <div className="info-box-content">
                                     <span className="info-box-text">Số giờ nghỉ phép</span>
-                                    <span className="info-box-number">
+                                    <span className="info-box-number" style={{ fontSize: '20px' }}>
                                         {totalHourAnnualLeave}
                                     </span>
                                 </div>
@@ -222,7 +234,7 @@ class DashBoardEmployees extends Component {
                                 <span className="info-box-icon bg-green"><i className="fa fa-gift"></i></span>
                                 <div className="info-box-content">
                                     <span className="info-box-text">Số khen thưởng</span>
-                                    <span className="info-box-number">
+                                    <span className="info-box-number" style={{ fontSize: '20px' }}>
                                         {discipline.totalListCommendation ? discipline.totalListCommendation.length : 0}
                                     </span>
                                 </div>
@@ -233,7 +245,7 @@ class DashBoardEmployees extends Component {
                                 <span className="info-box-icon bg-red"><i className="fa fa-balance-scale"></i></span>
                                 <div className="info-box-content">
                                     <span className="info-box-text">Số kỷ luật</span>
-                                    <span className="info-box-number">
+                                    <span className="info-box-number" style={{ fontSize: '20px' }}>
                                         {discipline.totalListDiscipline ? discipline.totalListDiscipline.length : 0}
                                     </span>
                                 </div>

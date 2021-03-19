@@ -4,12 +4,12 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { AnnualLeaveActions } from '../../annual-leave/redux/actions';
-import { SelectMulti } from '../../../../common-components';
+import { SelectMulti, SlimScroll } from '../../../../common-components';
 
 import c3 from 'c3';
 import 'c3/c3.css';
 import * as d3 from 'd3';
-
+import './employeeDashBoard.css';
 class AnnualLeaveChartAndTable extends Component {
     constructor(props) {
         super(props);
@@ -256,7 +256,7 @@ class AnnualLeaveChartAndTable extends Component {
                     <div className="box-header with-border">
                         <h3 className="box-title">Xu hướng nghỉ phép của nhân viên trong tuần trước và tuần tới</h3>
                     </div>
-                    <div className="box-body">
+                    <div className="box-body" >
                         <div className="qlcv" style={{ marginBottom: 15 }}>
                             <div className="form-inline">
                                 <div className="form-group">
@@ -279,32 +279,35 @@ class AnnualLeaveChartAndTable extends Component {
                                 'Không có đơn xin nghỉ phép nào'}
                             <div ref="barChartAndTable"></div>
                         </div>
-                        <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 20 }}>
-                            <thead>
-                                <tr>
-                                    <th>Đơn vị</th>
-                                    <th>Số nhân viên nghỉ hôm qua</th>
-                                    <th>Số nhân viên nghỉ hôm nay</th>
-                                    <th>Số nhân viên nghỉ ngày mai</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {listAnnual && listAnnual.length &&
-                                    listAnnual.map(x => {
-                                        return (
-                                            <tr key={x.id}>
-                                                <td>{x.name}</td>
-                                                <td>{x.countPrev}</td>
-                                                <td>{x.countCurrent}</td>
-                                                <td>{x.countNext}</td>
-                                            </tr>
-                                        )
-                                    })
-                                }
-                            </tbody>
-                        </table>
+                        <div id="annualLeave-table">
+                            <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 20 }}>
+                                <thead>
+                                    <tr>
+                                        <th>Đơn vị</th>
+                                        <th>Số nhân viên nghỉ hôm qua</th>
+                                        <th>Số nhân viên nghỉ hôm nay</th>
+                                        <th>Số nhân viên nghỉ ngày mai</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {listAnnual && listAnnual.length &&
+                                        listAnnual.map(x => {
+                                            return (
+                                                <tr key={x.id}>
+                                                    <td>{x.name}</td>
+                                                    <td>{x.countPrev}</td>
+                                                    <td>{x.countCurrent}</td>
+                                                    <td>{x.countNext}</td>
+                                                </tr>
+                                            )
+                                        })
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
+                <SlimScroll verticalScroll={true} outerComponentId={"annualLeave-table"} maxHeight={400} activate={true} />
             </React.Fragment >
         )
     }
