@@ -434,44 +434,55 @@ class EmployeeKpiEvaluationDashboard extends Component {
                                 </div>
                             </div>
                         </div>
+
                         <div className="row">
-                            <div className="col-md-3 col-sm-6 form-inline">
-                                <div className="info-box">
-                                    <span className="info-box-icon bg-aqua"><i className="fa fa-cogs" /></span>
-                                    <div className="info-box-content">
-                                        <span className="info-box-text">{`KPI ${translate('kpi.evaluation.dashboard.setting_up')}`}</span>
-                                        <span className="info-box-number">{`${settingUpKpi}/${totalKpi}`}</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="col-md-3 col-sm-6 form-inline">
-                                <div className="info-box">
-                                    <span className="info-box-icon bg-green"><i className="fa fa-comments-o" /></span>
-                                    <div className="info-box-content">
-                                        <span className="info-box-text">{`KPI ${translate('kpi.evaluation.dashboard.awaiting_approval')}`}</span>
-                                        <span className="info-box-number">{`${awaitingApprovalKpi}/${totalKpi}`}</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="clearfix visible-sm-block" />
-                            <div className="col-md-3 col-sm-6 form-inline">
-                                <div className="info-box">
-                                    <span className="info-box-icon bg-red"><i className="fa fa-thumbs-o-up" /></span>
-                                    <div className="info-box-content">
-                                        <span className="info-box-text">{`KPI ${translate('kpi.evaluation.dashboard.activated')}`}</span>
-                                        <span className="info-box-number">{`${activatedKpi}/${totalKpi}`}</span>
-                                    </div>
-                                </div>
-                            </div>
+                            {/* Số nhân viên */}
                             <div className="col-md-3 col-sm-6 form-inline">
                                 <div className="info-box">
                                     <span className="info-box-icon bg-yellow"><i className="fa fa-users" /></span>
                                     <div className="info-box-content">
                                         <span className="info-box-text">{translate('kpi.evaluation.dashboard.number_of_employee')}</span>
-                                        <span className="info-box-number">{numberOfEmployee}</span>
+                                        <span className="info-box-number" style={{ fontSize: '20px' }}>{numberOfEmployee ? numberOfEmployee : 0}</span>
                                     </div>
                                 </div>
                             </div>
+
+                            {/* Đã kích hoạt */}
+                            <div className="clearfix visible-sm-block" />
+                            <div className="col-md-3 col-sm-6 form-inline">
+                                <div className="info-box">
+                                    <span className="info-box-icon bg-red"><i className="fa fa-thumbs-o-up" /></span>
+                                    <div className="info-box-content">
+                                        <span className="info-box-text">{`${translate('kpi.evaluation.dashboard.activated')}`}</span>
+                                        <span className="info-box-number" style={{ fontSize: '20px' }}>{`${activatedKpi ? activatedKpi : 0}`}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Chờ phê duyệt */}
+                            <div className="col-md-3 col-sm-6 form-inline">
+                                <div className="info-box">
+                                    <span className="info-box-icon bg-green"><i className="fa fa-comments-o" /></span>
+                                    <div className="info-box-content">
+                                        <span className="info-box-text">{`${translate('kpi.evaluation.dashboard.awaiting_approval')}`}</span>
+                                        <span className="info-box-number" style={{ fontSize: '20px' }}>{`${awaitingApprovalKpi ? awaitingApprovalKpi : 0}`}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Đng thiết lập */}
+                            <div className="col-md-3 col-sm-6 form-inline">
+                                <div className="info-box">
+                                    <span className="info-box-icon bg-aqua"><i className="fa fa-cogs" /></span>
+                                    <div className="info-box-content">
+                                        <span className="info-box-text">{`${translate('kpi.evaluation.dashboard.setting_up')}`}</span>
+                                        <span className="info-box-number" style={{ fontSize: '20px' }}>{`${settingUpKpi ? settingUpKpi : 0}`}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
                         </div>
                         <div className="row">
                             <div className="col-md-12">
@@ -584,18 +595,21 @@ class EmployeeKpiEvaluationDashboard extends Component {
                                         </div>
 
                                         <div className="col-sm-12 col-xs-12">
-                                            {unitMembers &&
-                                                <StatisticsOfEmployeeKpiSetChart
-                                                    userId={infosearch.userId}
-                                                    startMonth={infosearch.startMonth}
-                                                    endMonth={infosearch.endMonth}
-                                                    info={infosearch}
-                                                    unitId={currentUnit}
-                                                    userName={userName}
-                                                    organizationalUnitIds={ids}
-                                                    onDataAvailable={this.handleStatisticsOfEmployeeKpiSetChartDataAvailable}
-                                                />
-                                            }
+                                            <div className="qlcv">
+                                                {unitMembers &&
+                                                    <StatisticsOfEmployeeKpiSetChart
+                                                        userId={infosearch.userId}
+                                                        startMonth={infosearch.startMonth}
+                                                        endMonth={infosearch.endMonth}
+                                                        info={infosearch}
+                                                        unitId={currentUnit}
+                                                        userName={userName}
+                                                        organizationalUnitIds={ids}
+                                                        onDataAvailable={this.handleStatisticsOfEmployeeKpiSetChartDataAvailable}
+                                                    />
+                                                }
+                                            </div>
+
                                         </div>
                                     </div>
                                 </div>

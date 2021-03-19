@@ -324,8 +324,8 @@ class KPIPersonalManager extends Component {
 
                     {/**Select box chọn trạng thái để tìm kiếm */}
                     <div className="form-inline">
-                         {/**Chọn ngày bắt đầu */}
-                         <div className="form-group">
+                        {/**Chọn ngày bắt đầu */}
+                        <div className="form-group">
                             <label>{translate('kpi.evaluation.employee_evaluation.from')}:</label>
                             <DatePicker id='start_date'
                                 value={startDateDefault}
@@ -367,22 +367,8 @@ class KPIPersonalManager extends Component {
                             <button type="button" className="btn btn-success" onClick={() => this.handleSearchData()}>{
                                 translate('kpi.organizational_unit.management.over_view.search')}</button>
                         </div>
-                        {exportData && <ExportExcel id="export-employee-kpi-management" exportData={exportData} style={{ marginRight: 15, marginTop: 5 }} />}
+                        {exportData && <ExportExcel id="export-employee-kpi-management" exportData={exportData} />}
                     </div>
-
-                    {/**Table chứa danh sách các tập KPI */}
-                    <DataTableSetting className="pull-right" tableId={tableId} tableContainerId="tree-table-container" tableWidth="1300px"
-                        columnArr={[
-                            translate('kpi.evaluation.employee_evaluation.index'),
-                            translate('kpi.evaluation.employee_evaluation.time'),
-                            translate('kpi.evaluation.employee_evaluation.status'),
-                            translate('kpi.evaluation.employee_evaluation.number_of_targets'),
-                            translate('kpi.evaluation.employee_evaluation.system_evaluate'),
-                            translate('kpi.evaluation.employee_evaluation.result_self_evaluate'),
-                            translate('kpi.evaluation.employee_evaluation.evaluation_management'),
-                            translate('kpi.evaluation.employee_evaluation.action')
-                        ]}
-                        setLimit={this.setLimit} />
 
                     <table id={tableId} className="table table-hover table-bordered">
                         <thead>
@@ -394,7 +380,21 @@ class KPIPersonalManager extends Component {
                                 <th title={translate('kpi.evaluation.employee_evaluation.system_evaluate')}>{translate('kpi.evaluation.employee_evaluation.system_evaluate')}</th>
                                 <th title={translate('kpi.evaluation.employee_evaluation.result_self_evaluate')}>{translate('kpi.evaluation.employee_evaluation.result_self_evaluate')}</th>
                                 <th title={translate('kpi.evaluation.employee_evaluation.evaluation_management')}>{translate('kpi.evaluation.employee_evaluation.evaluation_management')}</th>
-                                <th title={translate('kpi.evaluation.employee_evaluation.action')}>{translate('kpi.evaluation.employee_evaluation.action')}</th>
+                                <th title={translate('kpi.evaluation.employee_evaluation.action')}>{translate('kpi.evaluation.employee_evaluation.action')}
+                                    {/**Table chứa danh sách các tập KPI */}
+                                    <DataTableSetting className="pull-right" tableId={tableId} tableContainerId="tree-table-container" tableWidth="1300px"
+                                        columnArr={[
+                                            translate('kpi.evaluation.employee_evaluation.index'),
+                                            translate('kpi.evaluation.employee_evaluation.time'),
+                                            translate('kpi.evaluation.employee_evaluation.status'),
+                                            translate('kpi.evaluation.employee_evaluation.number_of_targets'),
+                                            translate('kpi.evaluation.employee_evaluation.system_evaluate'),
+                                            translate('kpi.evaluation.employee_evaluation.result_self_evaluate'),
+                                            translate('kpi.evaluation.employee_evaluation.evaluation_management'),
+                                            translate('kpi.evaluation.employee_evaluation.action')
+                                        ]}
+                                        setLimit={this.setLimit} />
+                                </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -421,7 +421,7 @@ class KPIPersonalManager extends Component {
                         </tbody>
                     </table>
                     {(kpipersonal && kpipersonal.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>}
-               
+
                     <PaginateBar
                         display={kpipersonal?.length}
                         total={kpimembers?.totalCountEmployeeKpiSet}
