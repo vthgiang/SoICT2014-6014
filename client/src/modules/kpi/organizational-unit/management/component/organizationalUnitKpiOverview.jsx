@@ -71,6 +71,21 @@ class KPIUnitManager extends Component {
     }
 
 
+    static getDerivedStateFromProps(props, state) {
+        const { user } = props;
+        let { organizationalUnit } = state;
+        if (organizationalUnit && organizationalUnit.length === 0 && user && user.userdepartments) {
+            const unit = [user.userdepartments._id];
+            return {
+                ...state,
+                organizationalUnit: unit,
+            }
+        } else {
+            return null;
+        }
+
+
+    }
     shouldComponentUpdate = (nextProps, nextState) => {
         const { currentRole, infosearch, startDate, endDate, status, organizationalUnit } = this.state;
 
@@ -198,7 +213,7 @@ class KPIUnitManager extends Component {
         })
     }
 
-    
+
     handleSearchData = async () => {
         await this.setState(state => {
             return {
@@ -251,7 +266,7 @@ class KPIUnitManager extends Component {
         }
     }
 
-    
+
     handleGetDataPagination = async (index) => {
         await this.setState(state => {
             return {
@@ -479,43 +494,41 @@ class KPIUnitManager extends Component {
                                     <button type="button" className="btn btn-success" onClick={() => this.handleSearchData()}>{translate('kpi.organizational_unit.management.over_view.search')}</button>
                                 </div>
 
-                                {exportData && <ExportExcel id="export-unit-kpi-management-overview" exportData={exportData} style={{ marginRight: 15, marginTop: 5 }} />}
+                                {exportData && <ExportExcel id="export-unit-kpi-management-overview" exportData={exportData} style={{ margin: 0 }} buttonName={"Xuất"} />}
                             </div>
-
-
-
-                            <DataTableSetting
-                                className="pull-right"
-                                tableId={tableId}
-                                tableContainerId="kpiTableContainer"
-                                tableWidth="1300px"
-                                columnArr={[
-                                    'Người tạo',
-                                    'Thời gian',
-                                    'Trạng thái',
-                                    'Số lượng mục tiêu',
-                                    'Kết quả đánh giá',
-                                    'Xem chi tiết',
-                                    'Tạo KPI tháng mới',
-                                    'Cập nhật'
-                                ]}
-                                setLimit={this.setLimit}
-                                hideColumnOption={true}
-                            />
 
                             {/* Danh sách các KPI của đơn vị */}
                             <table id={tableId} className="table table-hover table-bordered">
                                 <thead>
                                     <tr>
-                                        <th title={translate('kpi.organizational_unit.management.over_view.creator')}>{translate('kpi.organizational_unit.management.over_view.creator')}</th>
-                                        <th title={translate('task.task_management.col_organization')}>{translate('task.task_management.col_organization')}</th>
                                         <th title={translate('kpi.organizational_unit.management.over_view.time')}>{translate('kpi.organizational_unit.management.over_view.time')}</th>
+                                        <th title={translate('task.task_management.col_organization')}>{translate('task.task_management.col_organization')}</th>
                                         <th title={translate('kpi.organizational_unit.management.over_view.status')}>{translate('kpi.organizational_unit.management.over_view.status')}</th>
                                         <th title={translate('kpi.organizational_unit.management.over_view.number_target')}>{translate('kpi.organizational_unit.management.over_view.number_target')}</th>
+                                        <th title={translate('kpi.organizational_unit.management.over_view.creator')}>{translate('kpi.organizational_unit.management.over_view.creator')}</th>
                                         <th title={translate('kpi.evaluation.employee_evaluation.system_evaluate')}>{translate('kpi.evaluation.employee_evaluation.system_evaluate')}</th>
                                         <th title={translate('kpi.evaluation.employee_evaluation.result_self_evaluate')}>{translate('kpi.evaluation.employee_evaluation.result_self_evaluate')}</th>
                                         <th title={translate('kpi.evaluation.employee_evaluation.evaluation_management')}>{translate('kpi.evaluation.employee_evaluation.evaluation_management')}</th>
-                                        <th title={translate('kpi.organizational_unit.management.over_view.action')}>{translate('kpi.organizational_unit.management.over_view.action')}</th>
+                                        <th title={translate('kpi.organizational_unit.management.over_view.action')}>{translate('kpi.organizational_unit.management.over_view.action')}
+                                            <DataTableSetting
+                                                className="pull-right"
+                                                tableId={tableId}
+                                                tableContainerId="kpiTableContainer"
+                                                tableWidth="1300px"
+                                                columnArr={[
+                                                    'Người tạo',
+                                                    'Thời gian',
+                                                    'Trạng thái',
+                                                    'Số lượng mục tiêu',
+                                                    'Kết quả đánh giá',
+                                                    'Xem chi tiết',
+                                                    'Tạo KPI tháng mới',
+                                                    'Cập nhật'
+                                                ]}
+                                                setLimit={this.setLimit}
+                                                hideColumnOption={true}
+                                            />
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -524,11 +537,11 @@ class KPIUnitManager extends Component {
                                             ? listkpi.map((item, index) => {
                                                 if (item) {
                                                     return <tr key={index + 1}>
-                                                        <td>{item.creator && item.creator.name}</td>
-                                                        <td>{item.organizationalUnit && item.organizationalUnit.name}</td>
                                                         <td>{this.formatDate(item.date)}</td>
+                                                        <td>{item.organizationalUnit && item.organizationalUnit.name}</td>
                                                         <td>{this.checkStatusKPI(item.status)}</td>
                                                         <td>{item.kpis.length}</td>
+                                                        <td>{item.creator && item.creator.name}</td>
                                                         <td>{item.automaticPoint === null ? translate('kpi.evaluation.employee_evaluation.not_evaluated_yet') : item.automaticPoint}</td>
                                                         <td>{item.employeePoint === null ? translate('kpi.evaluation.employee_evaluation.not_evaluated_yet') : item.employeePoint}</td>
                                                         <td>{item.approvedPoint === null ? translate('kpi.evaluation.employee_evaluation.not_evaluated_yet') : item.approvedPoint}</td>

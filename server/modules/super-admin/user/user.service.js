@@ -718,6 +718,7 @@ _getAllUsersInOrganizationalUnit = async (portal, department) => {
         deputyManagers: {},
         employees: {},
         department: department.name,
+        _id: department._id,
     };
 
     tmp.forEach((item) => {
