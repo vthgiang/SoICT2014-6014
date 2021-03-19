@@ -453,7 +453,7 @@ class TaskOrganizationUnitDashboard extends Component {
                                             {
                                                 idsUnit && idsUnit.length < 2 ?
                                                     <>
-                                                        <spn>{` ${translate('task.task_dashboard.of_unit')}`}</spn>
+                                                        <span>{` ${translate('task.task_dashboard.of_unit')}`}</span>
                                                         <span style={{ fontWeight: "bold" }}>{` ${this.getUnitName(selectBoxUnit, idsUnit).map(o => o).join(", ")}`}</span>
                                                     </>
                                                     :
@@ -508,7 +508,7 @@ class TaskOrganizationUnitDashboard extends Component {
                                             {
                                                 idsUnit && idsUnit.length < 2 ?
                                                     <>
-                                                        <spn>{` ${translate('task.task_dashboard.of_unit')}`}</spn>
+                                                        <span>{` ${translate('task.task_dashboard.of_unit')}`}</span>
                                                         <span style={{ fontWeight: "bold" }}>{` ${this.getUnitName(selectBoxUnit, idsUnit).map(o => o).join(", ")}`}</span>
                                                     </>
                                                     :
