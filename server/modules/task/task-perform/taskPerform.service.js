@@ -5452,7 +5452,8 @@ exports.requestAndApprovalCloseTask = async (portal, taskId, data) => {
                 "taskStatus": taskStatus,
                 "description": description,
                 "requestStatus": 1
-            }
+            },
+            "status": 'wait_for_approval'
         }
     }
     else if (type === 'cancel_request') {
@@ -5462,7 +5463,8 @@ exports.requestAndApprovalCloseTask = async (portal, taskId, data) => {
                 "taskStatus": taskStatus,
                 "description": description,
                 "requestStatus": 0
-            }
+            },
+            "status": 'inprocess'
         }
     }
     else if (type === 'approval') {
@@ -5483,7 +5485,8 @@ exports.requestAndApprovalCloseTask = async (portal, taskId, data) => {
                 "taskStatus": taskStatus,
                 "description": description,
                 "requestStatus": 2
-            }
+            },
+            "status": 'inprocess'
         }
     }
 

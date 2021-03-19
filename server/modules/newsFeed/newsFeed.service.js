@@ -17,25 +17,24 @@ exports.getNewsFeed = async (portal, data) => {
     }
     skip = (perPage * (page - 1)) ? (perPage * (page - 1)) : 0;
 
-    console.log(userId) 
-    let newsFeeds = await NewsFeed(connect(DB_CONNECTION, portal)).find({
-        "_id": { $nin: currentNewsfeed },
-        "relatedUsers": { $in: userId }
-    })
-    .sort({ 'updatedAt': -1 })
-    .skip(skip)
-    .limit(perPage)
-    .populate([
-        {path: "creator", select :"_id name email avatar"}
-    ])
+    let newsFeeds = await NewsFeed(connect(DB_CONNECTION, portal))
+        .find({
+            "_id": { $nin: currentNewsfeed },
+            "relatedUsers": { $in: userId }
+        })
+        .sort({ 'updatedAt': -1 })
+        .skip(skip)
+        .limit(perPage)
+        .populate([
+            {path: "creator", select:"_id name email avatar"},
+            {path: 'task', select: "_id name"}
+        ])
 
-    console.log(newsFeeds.length)
     return newsFeeds
 }
 
 exports.createNewsFeed = async (portal, data) => {
-    console.log(data)
-    const { title, description, creator, relatedUsers } = data;
+    const { title, description, creator, relatedUsers, taskId } = data;
 
     let newsFeed = await NewsFeed(connect(DB_CONNECTION, portal))
         .create({
@@ -43,15 +42,16 @@ exports.createNewsFeed = async (portal, data) => {
             description: description,
             creator: creator,
             relatedUsers: relatedUsers,
+            task: taskId,
             comments: []
         })
 
     newsFeed = newsFeed && await newsFeed.populate([
-        {path: "creator", select :"_id name email avatar"}
+        {path: "creator", select:"_id name email avatar"},
+        {path: 'task', select: "_id name"}
     ])
     .execPopulate();
 
-    console.log("CONNECTED_CLIENTS", CONNECTED_CLIENTS)
     if (relatedUsers?.length > 0) {
         relatedUsers.map(user => {
             const arr = CONNECTED_CLIENTS.filter(

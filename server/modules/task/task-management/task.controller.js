@@ -472,7 +472,6 @@ exports.createTask = async (req, res) => {
             creator: req.user._id,
             relatedUsers: data?.users
         });
-        console.log("collaboratedData?.users", collaboratedData?.users)
         await NewsFeed.createNewsFeed(req.portal, {
             title: collaboratedData?.title,
             description: collaboratedData?.content,
@@ -487,7 +486,6 @@ exports.createTask = async (req, res) => {
             content: task
         });
     } catch (error) {
-        console.log(error)
         await Logger.error(req.user.email, 'create_task', req.portal)
         res.status(400).json({
             success: false,
