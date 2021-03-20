@@ -107,7 +107,7 @@ function UserGuide(props) {
     rolesUser = auth?.user?.roles;
     let currentRoleInfo = rolesUser?.filter(elem => elem.roleId.id === currentRole).map(elem => { return elem.roleId })[0];
 
-    let TaskGuide = { user: [], manager: [] }, DocumentGuide = { user: [], manager: [] },
+    let TaskGuide = { user: [], manager: [] }, DocumentGuide = { user: [], manager: [], Administrator: [] },
         HrGuide = { user: [], manager: [] }, kpiGuide = { user: [], manager: [] }, AssetGuide = { user: [], manager: [] }, SystemGuide = [];
     let roleAdmin = roles.find(x => x.name === "Admin");
     let roleSuperAdmin = roles.find(x => x.name === "Super Admin");
@@ -127,7 +127,10 @@ function UserGuide(props) {
         }
         else if (currentRoleInfo.id === roleManager.id || currentRoleInfo.parents.includes(roleManager.id)) {
             TaskGuide = UserGuideTask;
-            DocumentGuide = UserGuideDocument;
+            DocumentGuide = {
+                manager: [...UserGuideDocument.manager],
+                user: [...UserGuideDocument.user]
+            };
             HrGuide = UserGuideHr;
             kpiGuide = UserGuideKpi;
             AssetGuide = UserGuideAsset;
@@ -302,7 +305,7 @@ function UserGuide(props) {
                     <div className="row">
                         {/* Module tài liệu */}
                         {
-                            DocumentGuide.manager.length || DocumentGuide.user.length ?
+                            DocumentGuide?.Administrator?.length || DocumentGuide.manager.length || DocumentGuide.user.length ?
                                 <section className="col-lg-6 col-md-6">
                                     <div className="box">
                                         <div className="box-header with-border">
@@ -312,28 +315,34 @@ function UserGuide(props) {
                                         </div>
                                         <div className="box-body">
                                             {/* Administrator */}
-                                            <p data-toggle="collapse" data-target="#show-asset-guide-document-for-admin" aria-expanded="false" style={{ display: "flex", alignItems: "center", fontWeight: "bold", cursor: "pointer" }} onClick={() => showUserGuideDocumentForAdmin()}>
-                                                <span className="material-icons" style={{ fontWeight: "bold", marginRight: '10px' }}>
-                                                    {documentForAdmin ? `keyboard_arrow_up` : `keyboard_arrow_down`}
+                                            {
+                                                DocumentGuide?.Administrator?.length ?
+                                                    <div>
+                                                        <p data-toggle="collapse" data-target="#show-asset-guide-document-for-admin" aria-expanded="false" style={{ display: "flex", alignItems: "center", fontWeight: "bold", cursor: "pointer" }} onClick={() => showUserGuideDocumentForAdmin()}>
+                                                            <span className="material-icons" style={{ fontWeight: "bold", marginRight: '10px' }}>
+                                                                {documentForAdmin ? `keyboard_arrow_up` : `keyboard_arrow_down`}
 
-                                                </span>{`Administrator (${DocumentGuide.Administrator.length})`}</p>
-                                            <div className="collapse" data-toggle="collapse " id="show-asset-guide-document-for-admin">
-                                                <ul className="todo-list" data-widget="todo-list">
-                                                    {
-                                                        DocumentGuide.Administrator.length > 0 && DocumentGuide.Administrator.map((obj, index) => (
-                                                            <li style={{ borderLeft: 'none', cursor: "pointer" }} key={index}>
-                                                                <div className="icheck-primary" style={{ display: "flex" }}>
-                                                                    <span className="material-icons" style={{ marginRight: '10px' }}>
-                                                                        link
+                                                            </span>{`Administrator (${DocumentGuide?.Administrator?.length})`}</p>
+                                                        <div className="collapse" data-toggle="collapse " id="show-asset-guide-document-for-admin">
+                                                            <ul className="todo-list" data-widget="todo-list">
+                                                                {
+                                                                    DocumentGuide?.Administrator?.length > 0 && DocumentGuide?.Administrator?.map((obj, index) => (
+                                                                        <li style={{ borderLeft: 'none', cursor: "pointer" }} key={index}>
+                                                                            <div className="icheck-primary" style={{ display: "flex" }}>
+                                                                                <span className="material-icons" style={{ marginRight: '10px' }}>
+                                                                                    link
                                                                      </span>
-                                                                    {/* <a href={`${process.env.REACT_APP_WEBSITE + obj.detailPage}?name=document&type=user&id=${obj.id}&fileName=${obj.fileName}`} title="Xem chi tiet" target="_blank">{obj.pageName}</a> */}
-                                                                    <a href="#show-detail" title="Xem chi tiet" onClick={() => showFilePreview(obj)}>{obj.pageName}</a>
-                                                                </div>
-                                                            </li>
-                                                        ))
-                                                    }
-                                                </ul>
-                                            </div>
+                                                                                {/* <a href={`${process.env.REACT_APP_WEBSITE + obj.detailPage}?name=document&type=user&id=${obj.id}&fileName=${obj.fileName}`} title="Xem chi tiet" target="_blank">{obj.pageName}</a> */}
+                                                                                <a href="#show-detail" title="Xem chi tiet" onClick={() => showFilePreview(obj)}>{obj.pageName}</a>
+                                                                            </div>
+                                                                        </li>
+                                                                    ))
+                                                                }
+                                                            </ul>
+                                                        </div>
+                                                    </div> : <> </>
+
+                                            }
 
                                             {/* Quanr lys */}
                                             {DocumentGuide.manager.length ?
@@ -364,15 +373,15 @@ function UserGuide(props) {
                                             }
 
                                             {/* Nguoiwf dung */}
-                                            <p data-toggle="collapse" data-target="#show-asset-guide-document-for-user" aria-expanded="false" style={{ display: "flex", alignItems: "center", fontWeight: "bold", cursor: "pointer" }} onClick={() => showUserGuideDocumentForUser()}>
+                                            <p data-toggle="collapse" data-target="#show-document-guide-for-user" aria-expanded="false" style={{ display: "flex", alignItems: "center", fontWeight: "bold", cursor: "pointer" }} onClick={() => showUserGuideDocumentForUser()}>
                                                 <span className="material-icons" style={{ fontWeight: "bold", marginRight: '10px' }}>
                                                     {documentForUser ? `keyboard_arrow_up` : `keyboard_arrow_down`}
 
                                                 </span>{`User (${DocumentGuide.user.length})`}</p>
-                                            <div className="collapse" data-toggle="collapse " id="show-asset-guide-document-for-user">
+                                            <div className="collapse" data-toggle="collapse " id="show-document-guide-for-user">
                                                 <ul className="todo-list" data-widget="todo-list">
                                                     {
-                                                        DocumentGuide.manager.length > 0 && DocumentGuide.manager.map((obj, index) => (
+                                                        DocumentGuide.user.length > 0 && DocumentGuide.user.map((obj, index) => (
                                                             <li style={{ borderLeft: 'none', cursor: "pointer" }} key={index}>
                                                                 <div className="icheck-primary" style={{ display: "flex" }}>
                                                                     <span className="material-icons" style={{ marginRight: '10px' }}>
