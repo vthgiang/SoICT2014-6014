@@ -63,8 +63,13 @@ class OrganizationalUnitKpiCreateModal extends Component {
     }
     
     render() {
-        const { translate } = this.props; 
+        const { translate, createKpiUnit } = this.props; 
         const { organizationalUnit, month } = this.state;
+        let parentKpi;
+
+        if (createKpiUnit) {
+            parentKpi = createKpiUnit?.parent?.kpis;
+        }
 
         return (
             <React.Fragment>
@@ -95,8 +100,12 @@ class OrganizationalUnitKpiCreateModal extends Component {
                         <div className="form-group">
                             <label className="col-sm-12">{translate('kpi.organizational_unit.create_organizational_unit_kpi_set_modal.default_target')}</label>
                             <ul>
-                                <li>Hỗ trợ thực hiện công việc</li>
-                                <li>Phê duyệt công việc</li>
+                                {parentKpi?.length > 0
+                                    && parentKpi.filter(item => item?.type !== 0)
+                                        .map(
+                                            item => <li key={item?._id}>{item?.name} (5)</li>
+                                        )
+                                }
                             </ul>
                         </div>
 

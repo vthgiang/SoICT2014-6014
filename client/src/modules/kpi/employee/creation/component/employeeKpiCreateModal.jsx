@@ -93,9 +93,14 @@ class ModalCreateEmployeeKpiSet extends Component {
     }
 
     render() {
-        const { translate } = this.props;
+        const { translate, createKpiUnit } = this.props;
         const { _id, employeeKpiSet, organizationalUnit, managers } = this.state;
-        
+        let parentKpi;
+
+        if (createKpiUnit) {
+            parentKpi = createKpiUnit?.currentKPI?.kpis;
+        }
+
         return (
             <React.Fragment>
                 <DialogModal
@@ -137,8 +142,12 @@ class ModalCreateEmployeeKpiSet extends Component {
                         <div className="col-sm-12 form-group" >
                             <label>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set_modal.default_target')}</label>
                             <ul>
-                                <li>Hỗ trợ thực hiện công việc</li>
-                                <li>Phê duyệt công việc</li>
+                                {parentKpi?.length > 0
+                                    && parentKpi.filter(item => item?.type !== 0)
+                                        .map(
+                                            item => <li key={item?._id}>{item?.name} (5)</li>
+                                        )
+                                }
                             </ul>
                         </div>
                     </form>
