@@ -18,6 +18,10 @@ const NewsFeedSchema = new Schema(
             type: Schema.Types.ObjectId,
             ref: "User",
         }],
+        task: {
+            type: Schema.Types.ObjectId,
+            ref: "Task"
+        },
         comments: [{
             creator: {
                 type: Schema.Types.ObjectId,

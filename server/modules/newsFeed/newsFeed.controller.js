@@ -8,7 +8,6 @@ exports.getNewsFeed = async (req, res) => {
             currentNewsfeed: req.query.currentNewsfeed ? req.query.currentNewsfeed : [],
             userId: req.user._id
         }
-        console.log("3333", req.query)
         let newsFeeds = await NewsFeedService.getNewsFeed(req.portal, data);
 
         await Logger.info(req.user.email, 'get_all_user_time_sheet_success', req.portal)
@@ -18,7 +17,6 @@ exports.getNewsFeed = async (req, res) => {
             content: newsFeeds
         })
     } catch (error) {
-        console.log(error)
         await Logger.error(req.user.email, 'get_all_user_time_sheet_faile', req.portal)
         res.status(400).json({
             success: false,

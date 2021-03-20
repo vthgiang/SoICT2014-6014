@@ -908,7 +908,7 @@ class DetailTaskTab extends Component {
                                 <i className="fa fa-external-link-square" style={{ fontSize: "16px" }}></i>{currentRole === "responsible" ? translate('task.task_perform.request_close_task') : translate('task.task_perform.approval_close_task')}
                             </a>
                         }
-                        {task && statusTask !== "inprocess" && checkInactive
+                        {task && statusTask !== "inprocess" && statusTask !== "wait_for_approval" && checkInactive
                             && <a className="btn btn-app" onClick={() => this.handleOpenTaskAgain(id)} title={translate('task.task_perform.open_task_again')}>
                                 <i className="fa fa-rocket" style={{ fontSize: "16px" }}></i>{translate('task.task_perform.open_task_again')}
                             </a>
