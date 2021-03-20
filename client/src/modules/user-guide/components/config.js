@@ -131,22 +131,22 @@ export const UserGuideDocument = {
     user: [
         {
             pageName: "Quản lý tài liệu văn bản cá nhân",
-            fileName: 'Quanlytailieunguoidung.pdf',
-            url: '/upload/user-guide/document/Quanlytailieunguoidung.pdf',
+            fileName: 'quanlytailieunguoidung.pdf',
+            url: '/upload/user-guide/document/quanlytailieunguoidung.pdf',
         }
     ],
     manager: [
         {
             pageName: "Quản lý tài liệu văn bản đơn vị",
-            fileName: 'Quanlytailieudonvi.pdf',
-            url: '/upload/user-guide/document/Quanlytailieudonvi.pdf',
+            fileName: 'quanlytailieudonvi.pdf',
+            url: '/upload/user-guide/document/quanlytailieudonvi.pdf',
         }
     ],
     Administrator: [
         {
             pageName: "Quản lý tài liệu văn bản công ty",
-            fileName: 'Quanlytailieucongty.pdf',
-            url: '/upload/user-guide/document/Quanlytailieucongty.pdf',
+            fileName: 'quanlytailieucongty.pdf',
+            url: '/upload/user-guide/document/quanlytailieucongty.pdf',
         }
     ]
 
