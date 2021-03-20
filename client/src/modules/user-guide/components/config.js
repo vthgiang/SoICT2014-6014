@@ -1,11 +1,6 @@
 export const UserGuideTask = {
     user: [
             {
-                pageName: "Thực hiện công việc",
-                fileName: 'thuchiencv.pdf',
-                url: '/upload/user-guide/task/thuchiencv.pdf',
-            },
-            {
                 pageName: "Chi tiết công việc",
                 fileName: 'chitietcongviec.pdf',
                 url: '/upload/user-guide/task/chitietcongviec.pdf'
@@ -14,13 +9,13 @@ export const UserGuideTask = {
         manager: [
             {
                 pageName: "Mẫu công việc",
-                fileName: 'maucv.pdf',
-                url: '/upload/user-guide/task/maucv.pdf',
+                fileName: 'maucongviec.pdf',
+                url: '/upload/user-guide/task/maucongviec.pdf',
             },
             {
-                pageName: "Quản lý công việc",
-                fileName: 'quanlycv.pdf',
-                url: '/upload/user-guide/task/quanlycv.pdf',
+                pageName: "Tạo công việc",
+                fileName: 'taocongviecj.pdf',
+                url: '/upload/user-guide/task/taocongviecj.pdf',
             },
             {
                 pageName: "Chi tiết công việc",
@@ -29,44 +24,56 @@ export const UserGuideTask = {
             },
             {
                 pageName: "Danh sách công việc đơn vị",
-                fileName: 'danhsachcvdonvi.pdf',
-                url: '/upload/user-guide/task/danhsachcvdonvi.pdf'
-            }
+                fileName: 'danhsachcongviecdonvi.pdf',
+                url: '/upload/user-guide/task/danhsachcongviecdonvi.pdf'
+            },
+            {
+                pageName: "Dashboard công việc",
+                fileName: 'dashboardcv.pdf',
+                url: '/upload/user-guide/task/dashboardcv.pdf'
+            },
+            {
+                pageName: "Dashboard công việc đơn vị",
+                fileName: 'dashboardcvdonvi.pdf',
+                url: '/upload/user-guide/task/dashboardcvdonvi.pdf'
+            },
     ]
 }
+
+
 export const UserGuideKpi = {
     user: [
         {
-            pageName: "Khởi tạo kpi cá nhân",
+            pageName: "Khởi tạo KPI cá nhân",
             fileName: 'khoitaokpicanhan.pdf',
             url: '/upload/user-guide/kpi/khoitaokpicanhan.pdf',
-        },
-        {
-            pageName: "Đánh giá kpi cá nhân",
-            fileName: 'danhgiakpicanhan.pdf',
-            url: '/upload/user-guide/kpi/danhgiakpicanhan.pdf',
-        },
+        }
     ],
     manager: [
         {
-            pageName: "Khởi tạo kpi công ty",
+            pageName: "Khởi tạo KPI công ty",
             fileName: 'khoitaokpicongty.pdf',
             url: '/upload/user-guide/kpi/khoitaokpicongty.pdf',
         },
         {
-            pageName: "Khởi tạo kpi đơn vị",
+            pageName: "Khởi tạo KPI đơn vị",
             fileName: 'khoitaokpidonvi.pdf',
             url: '/upload/user-guide/kpi/khoitaokpidonvi.pdf',
         },
         {
-            pageName: "Phê duyệt kpi đầu tháng",
+            pageName: "Phê duyệt KPI đầu tháng",
             fileName: 'pheduyetkpidauthang.pdf',
             url: '/upload/user-guide/kpi/pheduyetkpidauthang.pdf',
         },
         {
-            pageName: "Đánh giá Kpi đơn vị",
-            fileName: 'danhgiakpidonvi.pdf',
-            url: '/upload/user-guide/kpi/danhgiakpidonvi.pdf',
+            pageName: "Đánh giá KPI cá nhân",
+            fileName: 'danhgiakpi.pdf',
+            url: '/upload/user-guide/kpi/danhgiakpi.pdf',
+        },
+        {
+            pageName: "Đánh giá KPI đơn vị",
+            fileName: 'danhgiakpi.pdf',
+            url: '/upload/user-guide/kpi/danhgiakpi.pdf',
         },
         {
             pageName: "Thống kê kpi đơn vị",
@@ -123,59 +130,47 @@ export const UserGuideAsset = {
 export const UserGuideDocument = {
     user: [
         {
-            pageName: "Tài liệu văn bản",
-            fileName: 'tailieuvanban.pdf',
-            url: '/upload/user-guide/document/tailieuvanban.pdf',
+            pageName: "Quản lý tài liệu văn bản cá nhân",
+            fileName: 'Quanlytailieunguoidung.pdf',
+            url: '/upload/user-guide/document/Quanlytailieunguoidung.pdf',
         }
     ],
     manager: [
         {
             pageName: "Quản lý tài liệu văn bản đơn vị",
-            fileName: 'quanlytailieudonvi.pdf',
-            url: '/upload/user-guide/document/quanlytailieudonvi.pdf',
+            fileName: 'Quanlytailieudonvi.pdf',
+            url: '/upload/user-guide/document/Quanlytailieudonvi.pdf',
+        }
+    ],
+    Administrator: [
+        {
+            pageName: "Quản lý tài liệu văn bản công ty",
+            fileName: 'Quanlytailieucongty.pdf',
+            url: '/upload/user-guide/document/Quanlytailieucongty.pdf',
         }
     ]
 
 }
+
+
 export const UserGuideHr = {
     manager: [
         {
-            pageName: "Quản lý thông tin nhân viên",
-            fileName: 'quanlythongtinnhanvien.pdf',
-            url: '/upload/user-guide/hr/quanlythongtinnhanvien.pdf',
-        },
+            pageName: "Quản lý nhân sự - quản lý",
+            fileName: 'quanlynhansu.pdf',
+            url: '/upload/user-guide/hr/quanlynhansu.pdf',
+        }
+    ],
+    user: [
         {
-            pageName: "Quản lý nhân sự các đơn vị",
-            fileName: 'quanlynhansudonvi.pdf',
-            url: '/upload/user-guide/hr/quanlynhansudonvi.pdf',
-        },
-        {
-            pageName: "Quản lý nghỉ phép",
-            fileName: 'quanlynghiphep.pdf',
-            url: '/upload/user-guide/hr/quanlynghiphep.pdf',
-        },
-        {
-            pageName: "Quản lý lương nhân viên",
-            fileName: 'quanlyluongnhanvien.pdf',
-            url: '/upload/user-guide/hr/quanlyluongnhanvien.pdf',
-        },
-        {
-            pageName: "Quản lý khen thưởng - kỷ luật",
-            fileName: 'quanlykhenthuong-kyluat.pdf',
-            url: '/upload/user-guide/hr/quanlykhenthuong-kyluat.pdf',
-        },
-        {
-            pageName: "Năng lực nhân viên",
-            fileName: 'nanglucnhanvien.pdf',
-            url: '/upload/user-guide/hr/nanglucnhanvien.pdf',
-        },
-        {
-            pageName: "Bảng tin nhân sự",
-            fileName: 'bangtinnhansu.pdf',
-            url: '/upload/user-guide/hr/bangtinnhansu.pdf',
-        },
+            pageName: "Quản lý nhân sự - cá nhân",
+            fileName: 'nhanviennhansu.pdf',
+            url: '/upload/user-guide/hr/nhanviennhansu.pdf',
+        }
     ]
 }
+
+
 export const UserGuideSystem = [
     {
         pageName: "Cấu hình hệ thống",
