@@ -187,15 +187,23 @@ class EmployeeKpiApproveModal extends Component {
         }
     }
 
-    handleEditStatusTarget = (event, id, status, listTarget) => {
+    handleEditStatusTarget = (event, kpi, status, listTarget) => {
         event.preventDefault();
+        if (kpi?.approvedPoint >= 0) {
+            Swal.fire({
+                title: translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.edit_target.evaluated'),
+                type: 'warning',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: translate('kpi.evaluation.employee_evaluation.confirm')
+            })
+        }
 
         const { edit } = this.state;
 
         if (edit === "") {
             let totalWeight;
             if (listTarget) {
-                totalWeight = listTarget.filter(item => item.status === 1 || item._id === id).map(item => parseInt(item.weight)).reduce((sum, number) => sum + number, 0);
+                totalWeight = listTarget.filter(item => item.status === 1 || item._id === kpi?.id).map(item => parseInt(item.weight)).reduce((sum, number) => sum + number, 0);
             }
 
             if (totalWeight > 100 && listTarget) {
@@ -206,8 +214,8 @@ class EmployeeKpiApproveModal extends Component {
                     }
                 })
             } else {
-                if (id) {
-                    this.props.editStatusKpi(id, status);
+                if (kpi?.id) {
+                    this.props.editStatusKpi(kpi?.id, status);
                     this.setState(state => {
                         return {
                             ...state,
@@ -401,8 +409,8 @@ class EmployeeKpiApproveModal extends Component {
                                         <td>
                                             {edit === item._id ? <a style={{ cursor: 'pointer' }} className="approve" title={translate('kpi.evaluation.employee_evaluation.save_result')} onClick={() => this.handleSaveEdit(item)}><i className="material-icons">save</i></a>
                                                 : <a style={{ cursor: 'pointer' }} className="edit" title={translate('kpi.evaluation.employee_evaluation.edit_target')} onClick={() => this.handleEdit(item)}><i className="material-icons">edit</i></a>}
-                                            <a style={{ cursor: 'pointer' }} className="add_circle" title={translate('kpi.evaluation.employee_evaluation.pass')} onClick={(event) => kpimember && this.handleEditStatusTarget(event, item._id, 1, kpimember.kpis)}><i className="material-icons">check</i></a>
-                                            <a style={{ cursor: 'pointer' }} className="delete" title={translate('kpi.evaluation.employee_evaluation.fail')} onClick={(event) => this.handleEditStatusTarget(event, item._id, 0)}><i className="material-icons">clear</i></a>
+                                            <a style={{ cursor: 'pointer' }} className="add_circle" title={translate('kpi.evaluation.employee_evaluation.pass')} onClick={(event) => kpimember && this.handleEditStatusTarget(event, item, 1, kpimember.kpis)}><i className="material-icons">check</i></a>
+                                            <a style={{ cursor: 'pointer' }} className="delete" title={translate('kpi.evaluation.employee_evaluation.fail')} onClick={(event) => this.handleEditStatusTarget(event, item, 0)}><i className="material-icons">clear</i></a>
                                         </td>
                                     </tr>
                                 )}

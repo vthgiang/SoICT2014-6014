@@ -528,11 +528,11 @@ class TrendsInChildrenOrganizationalUnitKpiChart extends Component {
         if(listOrganizationalUnitKpi) {
             listOrganizationalUnitKpi.map(kpis => {
                 titleX.push(kpis?.name);
-                executionTimesArray.push(executionTimes?.[kpis?.name] ? executionTimes[kpis.name] : null);
-                numberOfEmployeeKpisArray.push(numberOfEmployeeKpis?.[kpis?.name] ? numberOfEmployeeKpis[kpis.name] : null);
-                numberOfParticipantsArray.push(numberOfParticipants?.[kpis?.name] ? numberOfParticipants[kpis.name] : null);
-                numberOfTasksArray.push(numberOfTasks?.[kpis?.name] ? numberOfTasks[kpis.name] : null);
-                weightArray.push(weight?.[kpis?.name] ? weight[kpis.name] : null);
+                executionTimesArray.push(executionTimes?.[kpis?.name] ? executionTimes[kpis.name] : 0);
+                numberOfEmployeeKpisArray.push(numberOfEmployeeKpis?.[kpis?.name] ? numberOfEmployeeKpis[kpis.name] : 0);
+                numberOfParticipantsArray.push(numberOfParticipants?.[kpis?.name] ? numberOfParticipants[kpis.name] : 0);
+                numberOfTasksArray.push(numberOfTasks?.[kpis?.name] ? numberOfTasks[kpis.name] : 0);
+                weightArray.push(weight?.[kpis?.name] ? weight[kpis.name] : 0);
             })
         }
 
