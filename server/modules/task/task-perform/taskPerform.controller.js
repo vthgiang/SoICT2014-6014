@@ -1,7 +1,7 @@
 const PerformTaskService = require('./taskPerform.service');
 const Logger = require(`../../../logs`);
 const NotificationServices = require(`../../notification/notification.service`);
-const NewsFeed = require('../../newsFeed/newsFeed.service');
+const NewsFeed = require('../../news-feed/newsFeed.service');
 const { sendEmail } = require(`../../../helpers/emailHelper`);
 const { difference } = require('lodash');
 const moment = require('moment');
@@ -884,7 +884,11 @@ editTaskByResponsibleEmployees = async (req, res) => {
             title: log?.title,
             description: log?.description,
             creator: req.user._id,
-            taskId: tasks?._id,
+            associatedDataObject: { 
+                dataType: 1,
+                value: tasks?._id,
+                description: tasks?.description
+            },
             relatedUsers: data?.users
         });
 
@@ -985,7 +989,11 @@ editTaskByAccountableEmployees = async (req, res) => {
             title: log?.title,
             description: log?.description,
             creator: req.user._id,
-            taskId: tasks?._id,
+            associatedDataObject: { 
+                dataType: 1,
+                value: tasks?._id,
+                description: tasks?.description
+            },
             relatedUsers: data?.users
         });
         deletedCollabEmail && deletedCollabEmail.length !== 0
@@ -993,7 +1001,11 @@ editTaskByAccountableEmployees = async (req, res) => {
                 title: deletedCollabData?.title,
                 description: deletedCollabData?.content,
                 creator: req.user._id,
-                taskId: tasks?._id,
+                associatedDataObject: { 
+                    dataType: 1,
+                    value: tasks?._id,
+                    description: tasks?.description
+                },
                 relatedUsers: deletedCollabData?.users
             });
         additionalCollabEmail && additionalCollabEmail.length !== 0
@@ -1001,7 +1013,11 @@ editTaskByAccountableEmployees = async (req, res) => {
                 title: additionalCollabData?.title,
                 description: additionalCollabData?.content,
                 creator: req.user._id,
-                taskId: tasks?._id,
+                associatedDataObject: { 
+                    dataType: 1,
+                    value: tasks?._id,
+                    description: tasks?.description
+                },
                 relatedUsers: additionalCollabData?.users
             });
 
@@ -1054,6 +1070,19 @@ editEmployeeCollaboratedWithOrganizationalUnits = async (req, res) => {
         await NotificationServices.createNotification(req.portal, data.task.organizationalUnit.company, notification);
         data.email && data.email.length !== 0
             && await sendEmail(data.email, "Phân công công việc", '', data.html);
+
+        // Tạo newsfeed
+        await NewsFeed.createNewsFeed(req.portal, {
+            title: log?.title,
+            description: log?.description,
+            creator: req.user._id,
+            associatedDataObject: { 
+                dataType: 1,
+                value: data?.lengthtask?._id,
+                description: data?.task?.description
+            },
+            relatedUsers: notification?.users?.map(item => item?._id)
+        });
 
         await Logger.info(req.user.email, ` edit collaborate with organizational unit `, req.portal);
         res.status(200).json({
@@ -1117,7 +1146,11 @@ evaluateTaskByConsultedEmployees = async (req, res) => {
             title: log?.title,
             description: log?.description,
             creator: req.user._id,
-            taskId: task?._id,
+            associatedDataObject: { 
+                dataType: 1,
+                value: task?._id,
+                description: task?.description
+            },
             relatedUsers: task?.accountableEmployees?.map(item => item?._id)
         });
 
@@ -1163,7 +1196,11 @@ evaluateTaskByResponsibleEmployees = async (req, res) => {
             title: log?.title,
             description: log?.description,
             creator: req.user._id,
-            taskId: task?._id,
+            associatedDataObject: { 
+                dataType: 1,
+                value: task?._id,
+                description: task?.description
+            },
             relatedUsers: task?.accountableEmployees?.map(item => item?._id)
         });
 
@@ -1210,7 +1247,11 @@ evaluateTaskByAccountableEmployees = async (req, res) => {
             title: log?.title,
             description: log?.description,
             creator: req.user._id,
-            taskId: task?._id,
+            associatedDataObject: { 
+                dataType: 1,
+                value: task?._id,
+                description: task?.description
+            },
             relatedUsers: task?.accountableEmployees?.map(item => item?._id).filter(item => item !== req.user._id)
         });
 
@@ -1446,7 +1487,11 @@ requestAndApprovalCloseTask = async (req, res) => {
             title: dataNotification?.title,
             description: dataNotification?.content,
             creator: req.user._id,
-            taskId: task?._id,
+            associatedDataObject: { 
+                dataType: 1,
+                value: task?._id,
+                description: task?.description
+            },
             relatedUsers: dataNotification?.users
         });
 

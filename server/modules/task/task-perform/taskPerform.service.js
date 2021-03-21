@@ -793,7 +793,6 @@ exports.stopTimesheetLog = async (portal, params, body, user) => {
             });
         })
     }
-    console.log('socketIdOfUserReceive', socketIdOfUserReceive);
     
     return newTask;
 };
@@ -2235,7 +2234,15 @@ exports.createDescriptionEvaluationTaskLogs = async (portal, userId, newTask, ol
         descriptionLog = descriptionLog + '<span>Điểm tự đánh giá mới: ' + employeePoint + ".</span></br>";
     }
 
-    if (kpi?.length !== resultEvaluation?.kpis?.length) {
+    let checkKpi = false;
+    if (kpi?.length === resultEvaluation?.kpis?.length && resultEvaluation?.kpis?.length > 0) {
+        resultEvaluation.kpis.map(item => {
+            if (!kpi.includes(item?._id?.toString())) {
+                checkKpi = true;
+            }
+        })
+    }
+    if (kpi?.length !== resultEvaluation?.kpis?.length || checkKpi) {
         if (kpi?.length > 0) {
             let dataKpi = await EmployeeKpi(connect(DB_CONNECTION, portal)).find({
                 '_id': { $in: kpi.map(item => mongoose.Types.ObjectId(item)) }
@@ -2247,7 +2254,7 @@ exports.createDescriptionEvaluationTaskLogs = async (portal, userId, newTask, ol
                 })
                 descriptionLog = descriptionLog + '<span>Tập KPI liên kết công việc mới: ' + nameKpi + ".</span></br>";
             }
-        } else {
+        } else if (resultEvaluation?.kpis) {
             descriptionLog = descriptionLog + '<span>Các KPI liên kết công việc đã bị xóa' + ".</span></br>";
         }
     }
@@ -2259,11 +2266,11 @@ exports.createDescriptionEvaluationTaskLogs = async (portal, userId, newTask, ol
                 let temp = result?.filter(item => item?.role === eva?.role);
                 if (temp?.length > 0) {
                     temp.map(item => {
-                        if (item?.target === "Point" && item?.value !== eva?.approvedPoint) {
+                        if (item?.value && item?.target === "Point" && item?.value !== eva?.approvedPoint) {
                             descriptionLog = descriptionLog + '<span>Điểm phê duyệt mới của ' + eva?.employee?.name 
                                     + " với vai trò " + eva?.role + " là: " + item?.value + ".</span></br>";
                         } 
-                        else if (item?.target === "Contribution" && item?.value !== eva?.contribution) {
+                        else if (item?.value && item?.target === "Contribution" && item?.value !== eva?.contribution) {
                             descriptionLog = descriptionLog + '<span>Phần trăm đóng góp mới của ' + eva?.employee?.name 
                                     + " với vai trò " + eva?.role + " là: " + item?.value + ".</span></br>";
                         }

@@ -27,14 +27,14 @@ exports.getNewsFeed = async (portal, data) => {
         .limit(perPage)
         .populate([
             {path: "creator", select:"_id name email avatar"},
-            {path: 'task', select: "_id name"}
+            {path: 'associatedDataObject.value', select: "_id name"}
         ])
 
     return newsFeeds
 }
 
 exports.createNewsFeed = async (portal, data) => {
-    const { title, description, creator, relatedUsers, taskId } = data;
+    const { title, description, creator, relatedUsers, associatedDataObject } = data;
 
     let newsFeed = await NewsFeed(connect(DB_CONNECTION, portal))
         .create({
@@ -42,7 +42,11 @@ exports.createNewsFeed = async (portal, data) => {
             description: description,
             creator: creator,
             relatedUsers: relatedUsers,
-            task: taskId,
+            associatedDataObject: { 
+                dataType: associatedDataObject?.dataType,
+                value: associatedDataObject?.value,
+                description: associatedDataObject?.description
+            },
             comments: []
         })
 
