@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { DialogModal } from '../../../../common-components';
+import dayjs from 'dayjs';
 
 const ViewAllGeneralTask = (props) => {
     const tasks = props && props.showDetailTask && props.showDetailTask.tasks;
@@ -31,6 +32,11 @@ const ViewAllGeneralTask = (props) => {
             `Danh sách công việc ${taskType[type]} của ${unitName} `
     }
 
+    // convert ISODate to String hh:mm AM/PM
+    const formatTime = (date) => {
+        return dayjs(date).format("DD-MM-YYYY hh:mm A")
+    }
+
     return (
         <React.Fragment>
             <DialogModal
@@ -40,13 +46,14 @@ const ViewAllGeneralTask = (props) => {
                 hasSaveButton={false}
                 hasNote={false}
             >
-                <form className="form-group" id={`modal-view-all-task-need-to-do`}>
+                <div id={`modal-view-all-task-need-to-do`}>
                     <table className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
                                 <th className="col-fixed" style={{ width: 80 }}>STT</th>
                                 <th>Tên công việc</th>
-                                <th>Link chi tiết tới công việc</th>
+                                <th>Thời gian thực hiện công việc</th>
+                                <th>Tiến độ thực hiện</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -54,14 +61,15 @@ const ViewAllGeneralTask = (props) => {
                                 tasks && tasks.length > 0 && tasks.map((obj, index) => (
                                     <tr key={index}>
                                         <td>{index + 1}</td>
-                                        <td>{obj.name}</td>
-                                        <td><a href={`/task?taskId=${obj._id}`} target="_blank">Xem chi tiết</a></td>
+                                        <td><a href={`/task?taskId=${obj._id}`} target="_blank">{obj.name}</a></td>
+                                        <td>{`${formatTime(obj.startDate)} đến ${formatTime(obj.endDate)}`}</td>
+                                        <td>{`${obj.progress}%`}</td>
                                     </tr>
                                 ))
                             }
                         </tbody>
                     </table>
-                </form>
+                </div>
             </DialogModal>
         </React.Fragment>
     )
