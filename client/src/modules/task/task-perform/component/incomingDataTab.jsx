@@ -45,13 +45,14 @@ class IncomingDataTab extends Component {
         let listTask = [];
         if (performtasks?.preceedingTasks) {
             performtasks.preceedingTasks.forEach(item => {
-                listTask.push(item.task);
+                if (item.task)
+                    listTask.push(item.task);
             })
         }
         return (
             <React.Fragment>
                 {
-                    listTask && listTask.map((task, index) =>
+                    listTask && listTask.length > 0 && listTask.map((task, index) =>
                         <React.Fragment>
                             <div key={task._id + index} className="description-box incoming-content">
                                 <h4>{task.name}</h4>
@@ -120,7 +121,7 @@ class IncomingDataTab extends Component {
                                             data={task}
                                             comments={task.commentsInProcess}
                                             currentTask={performtasks?.task?._id}
-                                            type= "incoming"
+                                            type="incoming"
                                             createComment={(dataId, data, type) => this.props.createComment(dataId, data, type)}
                                             editComment={(dataId, commentId, data, type) => this.props.editComment(dataId, commentId, data, type)}
                                             deleteComment={(dataId, commentId, type) => this.props.deleteComment(dataId, commentId, type)}
