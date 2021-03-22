@@ -496,7 +496,6 @@ class TaskManagement extends Component {
         const { tasks, user, translate, taskProject, project } = this.props;
         const { currentTaskId, currentPage, currentTab, parentTask, startDate, endDate, perPage, status, monthTimeSheetLog, tableId, responsibleEmployees, creatorTime, projectSearch } = this.state;
         let currentTasks, units = [];
-        console.log('this', this.state);
         if (tasks) {
             currentTasks = tasks.tasks;
         }
