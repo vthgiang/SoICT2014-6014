@@ -705,14 +705,14 @@ class Table extends Component {
                                     <td>{doc.versions.length ? this.formatDate(doc.versions[doc.versions.length - 1].issuingDate) : null}</td>
                                     <td>{doc.versions.length ? this.formatDate(doc.versions[doc.versions.length - 1].effectiveDate) : null}</td>
                                     <td>{doc.versions.length ? this.formatDate(doc.versions[doc.versions.length - 1].expiredDate) : null}</td>
-                                    <td>
+                                    <td style={{ textAlign: 'center' }}>
                                         <a href="#" onClick={() => this.requestDownloadDocumentFile(doc._id, doc.name, doc.versions.length - 1)}>
-                                            <u>{doc.versions.length && doc.versions[doc.versions.length - 1].file ? translate('document.download') : ""}</u>
+                                            <u>{doc.versions.length && doc.versions[doc.versions.length - 1].file ? <i title={translate('document.download')} className="fa fa-download"style={{ marginRight: '5px' }}/> : ""}</u>
                                         </a>
 
                                         <a href="#" onClick={() => this.showFilePreview(doc.versions.length && doc.versions[doc.versions.length - 1].file)}>
                                             <u>{doc.versions.length && doc.versions[doc.versions.length - 1].file && this.checkTypeFile(doc.versions[doc.versions.length - 1].file) ?
-                                                <i className="material-icons">preview</i> : ""}</u>
+                                                <i title={translate('document.preview')} className="fa fa-eye"></i> : ""}</u>
                                         </a>
                                     </td>
                                     <td>

@@ -749,6 +749,7 @@ export default {
             upload_file_scan: "Upload file scan",
             choose_file: "Choose file",
             download: "Download",
+            preview: "Preview",
             no_version: "Not have different version",
             no_blank_description: "Description should'n empty",
             no_blank_name: "Name shouldn't empty",
@@ -3418,6 +3419,8 @@ export default {
                                 "KPI is being approved, you can not edit!",
                             activated:
                                 "KPI is being activated, you can not edit!",
+                            evaluated: 
+                                "KPI is being evaluated, you can not edit!"
                         },
                         request_approval_kpi: {
                             approve:

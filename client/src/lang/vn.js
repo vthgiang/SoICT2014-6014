@@ -783,6 +783,7 @@ export default {
             upload_file_scan: "File scan tài liệu",
             choose_file: "Chọn file",
             download: "Tải xuống",
+            preview: "Xem trước",
             no_version: "Không có phiên bản nào khác",
             no_blank_description: "Mô tả không được để trống",
             no_blank_name: "Tên không được để trống",
@@ -3728,6 +3729,8 @@ export default {
                                 "KPI đang được phê duyệt, Bạn không thể chỉnh sửa!",
                             activated:
                                 "KPI đã được kích hoạt, Bạn không thể chỉnh sửa!",
+                            evaluated: 
+                                "KPI đã được đánh giá, Bạn không thể chỉnh sửa!",
                         },
                         delete_kpi: {
                             kpi: "Bạn chắc chắn muốn xóa KPI này?",

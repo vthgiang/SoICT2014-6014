@@ -172,7 +172,6 @@ class DistributionOfOrganizationalUnitKpiChart extends Component {
             ? {
                 x: 'x',
                 columns: dataLineChart,
-                type: 'spline',
             }
             : {
                 x: null,

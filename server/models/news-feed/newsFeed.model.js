@@ -18,9 +18,16 @@ const NewsFeedSchema = new Schema(
             type: Schema.Types.ObjectId,
             ref: "User",
         }],
-        task: {
-            type: Schema.Types.ObjectId,
-            ref: "Task"
+        associatedDataObject: { 
+            dataType: { // Task: 1, Asset: 2, KPI: 3
+                type: Number
+            },
+            value: { // ID của object
+                type: String
+            },
+            description: {
+                type: String
+            },
         },
         comments: [{
             creator: {

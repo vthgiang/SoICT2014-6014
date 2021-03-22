@@ -6,7 +6,7 @@ import { DepartmentActions } from '../../../super-admin/organizational-unit/redu
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import { taskTemplateActions } from '../redux/actions';
 import { ActionForm } from '../component/actionsTemplate';
-import { SelectBox, ErrorLabel } from '../../../../common-components';
+import { SelectBox, ErrorLabel, QuillEditor } from '../../../../common-components';
 import { TaskTemplateFormValidator } from './taskTemplateFormValidator';
 import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
 import { InformationForm } from './informationsTemplate';
@@ -54,10 +54,14 @@ class EditTaskTemplate extends Component {
 
     static getDerivedStateFromProps = (nextProps, prevState) => {
         if (nextProps.taskTemplateId !== prevState.taskTemplateId) {
+            let editingTemplate = {
+                ...nextProps.taskTemplate,
+                quillDescriptionDefault: nextProps.taskTemplate?.description
+            }
             return {
                 ...prevState,
                 taskTemplateId: nextProps.taskTemplateId,
-                editingTemplate: nextProps.taskTemplate,
+                editingTemplate: editingTemplate,
                 errorOnName: undefined, // Khi nhận thuộc tính mới, cần lưu ý reset lại các gợi ý nhắc lỗi, nếu không các lỗi cũ sẽ hiển thị lại
                 errorOnDescription: undefined,
                 errorOnRead: undefined,
@@ -91,6 +95,7 @@ class EditTaskTemplate extends Component {
                         consultedEmployees: (info && info.consultedEmployees) ? info.consultedEmployees.map(item => { if (item) return item._id }) : [],
                         informedEmployees: (info && info.informedEmployees) ? info.informedEmployees.map(item => { if (item) return item._id }) : [],
                         description: (info && info.description) ? info.description : '',
+                        quillDescriptionDefault: (info && info.description) ? info.description : '',
                         creator: (info && info.creator) ? info.creator : getStorage("userId"),
                         numberOfDaysTaken: (info && info.numberOfDaysTaken) ? info.numberOfDaysTaken : '',
                         formula: (info && info.formula) ? info.formula : '',
@@ -133,6 +138,7 @@ class EditTaskTemplate extends Component {
                     consultedEmployees: nextProps.taskTemplate.consultedEmployees,
                     informedEmployees: nextProps.taskTemplate.informedEmployees,
                     description: nextProps.taskTemplate.description,
+                    quillDescriptionDefault: nextProps.taskTemplate.description,
                     numberOfDaysTaken: nextProps.taskTemplate.numberOfDaysTaken,
                     formula: nextProps.taskTemplate.formula,
                     priority: nextProps.taskTemplate.priority,
@@ -208,8 +214,7 @@ class EditTaskTemplate extends Component {
         return message == undefined;
     }
 
-    handleTaskTemplateDesc = (event) => {
-        let value = event.target.value;
+    handleTaskTemplateDesc = (value, imgs) => {
         this.validateTaskTemplateDesc(value, true);
     }
 
@@ -328,7 +333,6 @@ class EditTaskTemplate extends Component {
                 }
             };
         });
-        console.log('quangdz', this.state.collaboratedWithOrganizationalUnits);
         this.props.onChangeTemplateData(this.state.editingTemplate);
     }
 
@@ -428,8 +432,6 @@ class EditTaskTemplate extends Component {
     }
 
     render() {
-
-        console.log('\n\n=======EDIT=========\n\n');
         var units, taskActions, taskInformations, listRole, usercompanys, userdepartments, departmentsThatUserIsManager, listRoles = [];
         var { editingTemplate, id, showMore, taskTemplateId } = this.state;
 
@@ -476,6 +478,7 @@ class EditTaskTemplate extends Component {
         var allUnitsMember = getEmployeeSelectBoxItems(usersInUnitsOfCompany);
         // let unitMembers = getEmployeeSelectBoxItems(usersOfChildrenOrganizationalUnit);
 
+        console.log("editingTemplate", editingTemplate)
         return (
             <React.Fragment>
                 {/**Form chứa thông tin của mẫu công việc đang sửa */}
@@ -576,8 +579,15 @@ class EditTaskTemplate extends Component {
                         {/**Mô tả mẫu công việc này */}
                         <div className={`form-group `} >
                             <label className="control-label" htmlFor="inputDescriptionTaskTemplate">{translate('task_template.description')} <span style={{ color: "red" }}>*</span></label>
-                            <textarea rows={5} type="Description" className="form-control" id="inputDescriptionTaskTemplate" name="description" placeholder={translate('task_template.description')} value={editingTemplate.description} onChange={this.handleTaskTemplateDesc} />
-                            {/* <ErrorLabel content={this.state.editingTemplate.errorOnDescription} /> */}
+                            <QuillEditor
+                                id={`input-description-task-template-${this.props.taskTemplateId}`}
+                                table={false}
+                                embeds={false}
+                                getTextData={this.handleTaskTemplateDesc}
+                                height={80}
+                                quillValueDefault={editingTemplate.quillDescriptionDefault}
+                                placeholder={translate('task_template.description')}
+                            />
                         </div>
                     </div>
 
