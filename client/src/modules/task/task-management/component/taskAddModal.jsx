@@ -28,6 +28,8 @@ class TaskAddModal extends Component {
                 taskTemplate: "",
                 taskProject: "",
             },
+            startTime: "08:00 AM",
+            endTime: "05:30 PM",
             currentRole: getStorage('currentRole'),
         };
     }
@@ -52,7 +54,6 @@ class TaskAddModal extends Component {
         const { newTask, startTime, endTime } = this.state;
         let startDateTask = this.convertDateTime(newTask.startDate, startTime);
         let endDateTask = this.convertDateTime(newTask.endDate, endTime);
-
         this.props.addTask({
             ...newTask,
             startDate: startDateTask,
