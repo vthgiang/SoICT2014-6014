@@ -11,8 +11,8 @@ import { ResultsOfAllOrganizationalUnitKpiChart } from './resultsOfAllOrganizati
 import { StatisticsOfOrganizationalUnitKpiResultsChart } from './statisticsOfOrganizationalUnitKpiResultsChart';
 
 import { SelectBox, DatePicker, LazyLoadComponent, ExportExcel } from '../../../../../common-components/index';
+import { showListInSwal } from '../../../../../helpers/showListInSwal';
 import { withTranslate } from 'react-redux-multilingual';
-import Swal from 'sweetalert2';
 
 
 class OrganizationalUnitKpiDashboard extends Component {
@@ -174,22 +174,6 @@ class OrganizationalUnitKpiDashboard extends Component {
                 organizationalUnitOfChartAllKpis: data
             }
         })
-    }
-
-    showUnitResultsOfAllOrganizationalUnitKpiChart = (units) => {
-        if (units?.length > 0) {
-            Swal.fire({
-                html: `<h3 style="color: red"><div>Danh sách các đơn vị </div> </h3>
-                    <ul style="text-align:left;font-size: 16px;">
-                        ${units.map(o => (
-                            `<li style="padding: 7px">${o}</li>`
-                            )).join('')
-                        }
-                    </ul>
-                `,
-                width: "40%"
-            })
-        }
     }
 
     render() {
@@ -427,7 +411,7 @@ class OrganizationalUnitKpiDashboard extends Component {
                                                 <div className="box-title">
                                                     {translate('kpi.organizational_unit.dashboard.result_kpi_unit')}
                                                     {organizationalUnitOfChartAllKpis?.length > 1 
-                                                        ? <span onClick={() => this.showUnitResultsOfAllOrganizationalUnitKpiChart(organizationalUnitOfChartAllKpis)} style={{ cursor: 'pointer' }}> 
+                                                        ? <span onClick={() => showListInSwal(organizationalUnitOfChartAllKpis, translate('general.list_unit'))} style={{ cursor: 'pointer' }}> 
                                                             <a style={{ fontWeight: 'bold' }}> {organizationalUnitOfChartAllKpis.length} </a>{translate('kpi.organizational_unit.dashboard.organizational_unit_low_case')}
                                                         </span>
                                                         : ` ${organizationalUnitOfChartAllKpis?.[0]}`

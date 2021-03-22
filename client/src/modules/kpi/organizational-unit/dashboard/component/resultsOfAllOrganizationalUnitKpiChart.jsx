@@ -214,7 +214,9 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
 
         let xs = {};
         let dataChart = this.setDataMultiLineChart();
-        this.props.getOrganizationalUnit(dataChart.filter((item, index) => index%2 === 1).map(item => item?.[0]));
+        if (this.props.getOrganizationalUnit) {
+            this.props.getOrganizationalUnit(dataChart.filter((item, index) => index%2 === 1).map(item => item?.[0]));
+        }
 
         for (let i = 0; i < dataChart.length; i = i + 2) {
             let temporary = {};

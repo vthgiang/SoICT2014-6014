@@ -8,7 +8,10 @@ const ViewAllTaskUrgent = (props) => {
     let taskUrgent = props.data;
 
     taskUrgent = taskUrgent.reduce((groups, item) => {
-        groups[item.organizationalUnit.name] = [...groups[item.organizationalUnit.name] || [], item];
+        if (item?.organizationalUnit?.name) {
+            groups[item.organizationalUnit.name] = [...groups[item.organizationalUnit.name] || [], item];
+        }
+
         return groups;
     }, []);
 
@@ -39,7 +42,7 @@ const ViewAllTaskUrgent = (props) => {
                         </thead>
                         <tbody>
                             {
-                                taskUrgentUnit.length > 0 && taskUrgentUnit.map((obj, index) => (
+                                taskUrgentUnit?.length > 0 && taskUrgentUnit.map((obj, index) => (
                                     <tr key={index}>
                                         <td>{index + 1}</td>
                                         <td>{obj.name}</td>

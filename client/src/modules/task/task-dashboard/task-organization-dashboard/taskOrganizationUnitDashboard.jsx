@@ -20,6 +20,7 @@ import { GanttCalendar } from '../task-personal-dashboard/ganttCalendar';
 import GeneralTaskChart from './generalTaskChart';
 import { getTableConfiguration } from '../../../../helpers/tableConfiguration'
 import isEqual from 'lodash/isEqual';
+import { showListInSwal } from '../../../../helpers/showListInSwal';
 
 class TaskOrganizationUnitDashboard extends Component {
     constructor(props) {
@@ -141,16 +142,16 @@ class TaskOrganizationUnitDashboard extends Component {
                     startMonth: nextState.startMonth,
                     endMonth: nextState.endMonth,
                     checkUnit: nextState.checkUnit,
-                    idsUnit: !idsUnit?.length ? units : nextState.idsUnit,
+                    idsUnit: !idsUnit?.length ? [units?.[0]] : nextState.idsUnit,
                     selectBoxUnit: childrenOrganizationalUnit
                 }
             });
             data = {
-                organizationUnitId: units,
+                organizationUnitId: [units?.[0]],
                 type: organizationUnit,
             }
 
-            if (units.length) {
+            if (units?.length) {
                 await this.props.getTaskInOrganizationUnitByMonth(units, this.state.startMonth, this.state.endMonth);
             }
 
@@ -312,20 +313,10 @@ class TaskOrganizationUnitDashboard extends Component {
     }
 
     showUnitGeneraTask = (selectBoxUnit, idsUnit) => {
+        const { translate } = this.props
         if (idsUnit && idsUnit.length > 0) {
             const listUnit = this.getUnitName(selectBoxUnit, idsUnit);
-            Swal.fire({
-                html: `<h3 style="color: red"><div>Danh sách các đơn vị </div> </h3>
-                    <ul style="text-align:left;font-size: 16px;">
-                        ${listUnit && listUnit.length > 0 &&
-                    listUnit.map(o => (
-                        `<li style="padding: 7px">${o}</li>`
-                    )).join('')
-                    }
-                    </ul>
-                `,
-                width: "40%"
-            })
+            showListInSwal(listUnit, translate('general.list_unit'))
         }
     }
 

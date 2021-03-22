@@ -87,7 +87,7 @@ class TaskManagementOfUnit extends Component {
             this.setState((state) => {
                 return {
                     ...state,
-                    organizationalUnit: units,
+                    organizationalUnit: [units?.[0]],
                     selectBoxUnit: childrenOrganizationalUnit
                 }
             });
