@@ -59,9 +59,9 @@ class DetailsOfOrganizationalUnitKpiForm extends Component {
                         <div className="form-group">
                             <a title={translate('kpi.organizational_unit.statistics.detail_employee_kpi')} data-toggle="modal" data-target="#modal-employee-kpi-detail" data-backdrop="static" data-keyboard="false" style={{ cursor: "pointer" }}>
                                 <strong>{translate('kpi.organizational_unit.dashboard.trend_chart.amount_employee_kpi')}:  </strong>
-                                {details && details.listEmployeeKpi && details.listEmployeeKpi.length}
+                                {details?.listEmployeeKpi?.length}
                             </a>
-                            <DetailOfEmployeeKpiDialogModal listEmployeeKpi={details.listEmployeeKpi}/>
+                            <DetailOfEmployeeKpiDialogModal listEmployeeKpi={details?.listEmployeeKpi}/>
                         </div>
 
                         {/** Chi tiết số lượng công việc */}

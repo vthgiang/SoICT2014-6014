@@ -497,7 +497,7 @@ class StatisticsOfOrganizationalUnitKpi extends Component {
                                         {currentKPI
                                             ? <React.Fragment>
                                                 <h4 className="box-title">Cây KPI đơn vị tháng {month.slice(5, 7) + "-" + month.slice(0, 4)}</h4>
-                                                <div className="details-tree" id="details-tree">
+                                                <div className="details-tree" id="details-tree" style={{ maxHeight: "500px" }}>
                                                     <Tree
                                                         id="tree-qlcv-document"
                                                         onChanged={this.onChanged}
@@ -514,12 +514,9 @@ class StatisticsOfOrganizationalUnitKpi extends Component {
                                 </div>
 
                                 <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6" style={{ padding: 10 }}>
-                                    {
-                                        details &&
-                                        <DetailsOfOrganizationalUnitKpiForm
-                                            details={details}
-                                        />
-                                    }
+                                    <DetailsOfOrganizationalUnitKpiForm
+                                        details={details ? details : dataTree?.[0]}
+                                    />
                                 </div>
                             </div>
 
