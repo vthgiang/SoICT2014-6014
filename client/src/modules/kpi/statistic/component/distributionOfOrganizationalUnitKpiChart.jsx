@@ -167,7 +167,6 @@ function DistributionOfOrganizationalUnitKpiChart(props) {
 
             data: {
                 columns: dataChart,
-                type: 'spline',
             },
 
             axis: {

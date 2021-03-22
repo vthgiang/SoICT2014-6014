@@ -91,6 +91,18 @@ const LoadTaskOrganizationChart = (props) => {
                 data[i] = [...data[i], ...array];
             }
 
+            if (data?.length > 0) {
+                data = data.map(item => {
+                    item = item.map(x => {
+                        if (!x || x === NaN || x === Infinity) {
+                            return 0
+                        } else {
+                            return x
+                        }
+                    });
+                    return item;
+                })
+            }
             let check = false;
             if (data?.length !== ref.current.dataChart?.length) {
                 check = true;
@@ -110,6 +122,7 @@ const LoadTaskOrganizationChart = (props) => {
     })
 
     const barChart = (data, category) => {
+        console.log(data)
         ref.current.chart = c3.generate({
             bindto: document.getElementById("weightTaskOrganization"),
 
