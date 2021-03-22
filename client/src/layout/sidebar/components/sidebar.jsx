@@ -71,31 +71,6 @@ class SideBar extends Component {
                                 }}
                             />
 
-                            {/* Tài khoản cá nhân */}
-                            <GroupItem
-                                groupItem={{
-                                    name: "menu.account",
-                                    icon: "fa fa-user-circle",
-                                    list: [
-                                        {
-                                            name: "menu.detail_employee",
-                                            icon: "fa fa-user-o",
-                                            path: "/hr-detail-employee",
-                                        },
-                                        {
-                                            name: "menu.update_employee",
-                                            icon: "fa fa-pencil-square-o",
-                                            path: "/hr-update-employee",
-                                        },
-                                        {
-                                            name: "menu.annual_leave_personal",
-                                            icon: "fa fa-calendar",
-                                            path: "/hr-annual-leave-personal",
-                                        },
-                                    ],
-                                }}
-                            />
-
                             {/* Bảng tin nhân viên */}
                             <Item
                                 item={{
@@ -207,10 +182,10 @@ class SideBar extends Component {
                                 }}
                             />
 
-                            {/* Task management */}
+                            {/* Công việc đơn vị */}
                             <GroupItem
                                 groupItem={{
-                                    name: "menu.tasks",
+                                    name: "menu.task_management_unit",
                                     icon: "fa fa-tasks",
                                     list: [
                                         {
@@ -219,52 +194,18 @@ class SideBar extends Component {
                                             path: "/task-organization-management-dashboard",
                                         },
                                         {
-                                            name: "menu.task_management_dashboard",
-                                            icon: "fa fa-circle-o",
-                                            path: "/task-management-dashboard",
-                                        },
-                                        {
                                             name: "menu.task_management_of_unit",
                                             icon: "fa fa-circle-o",
                                             path: "/task-management-unit",
                                         },
-                                        {
-                                            name: "menu.task_management",
-                                            icon: "fa fa-circle-o",
-                                            path: "/task-management",
-                                        },
-                                        {
-                                            name: "menu.task_process_template",
-                                            icon: "fa fa-circle-o",
-                                            path: "/task-process-template",
-                                        },
-                                        {
-                                            name: "menu.task_management_process",
-                                            icon: "fa fa-circle-o",
-                                            path: "/task-process-management",
-                                        },
-                                        {
-                                            name: "menu.all_time_sheet_log",
-                                            icon: "fa fa-circle-o",
-                                            path: "/time-sheet-log/all",
-                                        },
-                                    ],
+                                    ]
                                 }}
                             />
 
-                            {/* Quản lý dự án */}
-                            <Item
-                                item={{
-                                    name: "menu.manage_project",
-                                    icon: "fa fa-folder-open",
-                                    path: "/projects-management",
-                                }}
-                            />
-
-                            {/* kpi-management */}
+                            {/* KPI đơn vị */}
                             <GroupItem
                                 groupItem={{
-                                    name: "menu.manage_kpi",
+                                    name: "menu.manage_kpi_unit",
                                     icon: "fa fa-dashboard",
                                     list: [
                                         {
@@ -297,6 +238,72 @@ class SideBar extends Component {
                                             icon: "fa fa-circle-o",
                                             path: "/kpi-member/manager",
                                         },
+                                    ]
+                                }}
+                            />
+
+                            {/* Nhân sự đơn vị */}
+                            <GroupItem
+                                groupItem={{
+                                    name: "menu.employee_unit",
+                                    icon: "fa fa-users",
+                                    list: [
+                                        {
+                                            name: "menu.leave_application",
+                                            icon: "fa fa-envelope",
+                                            path: "/hr-manage-leave-application",
+                                        },
+                                        {
+                                            name: "menu.employee_infomation",
+                                            icon: "fa fa-users",
+                                            path: "/employees-infomation",
+                                        },
+                                    ]
+
+                                }}
+                            />
+
+                            {/* Công việc cá nhân */}
+                            <GroupItem
+                                groupItem={{
+                                    name: "menu.tasks",
+                                    icon: "fa fa-tasks",
+                                    list: [
+                                        {
+                                            name: "menu.task_management_dashboard",
+                                            icon: "fa fa-circle-o",
+                                            path: "/task-management-dashboard",
+                                        },
+                                        {
+                                            name: "menu.task_management",
+                                            icon: "fa fa-circle-o",
+                                            path: "/task-management",
+                                        },
+                                        {
+                                            name: "menu.task_process_template",
+                                            icon: "fa fa-circle-o",
+                                            path: "/task-process-template",
+                                        },
+                                        {
+                                            name: "menu.task_management_process",
+                                            icon: "fa fa-circle-o",
+                                            path: "/task-process-management",
+                                        },
+                                        {
+                                            name: "menu.all_time_sheet_log",
+                                            icon: "fa fa-circle-o",
+                                            path: "/time-sheet-log/all",
+                                        },
+                                    ],
+                                }}
+                            />
+
+                            {/* KPI cá nhân */}
+                            <GroupItem
+                                groupItem={{
+                                    name: "menu.manage_kpi_personal",
+                                    icon: "fa fa-dashboard",
+                                    list: [
                                         {
                                             name: "menu.kpi_personal_dashboard",
                                             icon: "fa fa-circle-o",
@@ -312,10 +319,16 @@ class SideBar extends Component {
                                             icon: "fa fa-circle-o",
                                             path: "/kpi-personals/manager",
                                         },
-
-                                        // { name: 'menu.kpi_unit_overview', icon: 'fa fa-circle-o', path: '/kpi-units/overview' },
-                                        // { name: 'menu.kpi_personal_overview', icon: 'fa fa-circle-o', path: '/kpi-personals/overview' },
                                     ],
+                                }}
+                            />
+
+                            {/* Quản lý dự án */}
+                            <Item
+                                item={{
+                                    name: "menu.manage_project",
+                                    icon: "fa fa-folder-open",
+                                    path: "/projects-management",
                                 }}
                             />
 
@@ -340,15 +353,6 @@ class SideBar extends Component {
                                         { name: "menu.list_major", icon: "fa fa-calendar", path: "/hr-list-major" },
                                         { name: "menu.list_career_position", icon: "fa fa-calendar", path: "/hr-list-career-position" },
                                     ],
-                                }}
-                            />
-
-                            {/* Quản lý đơn xin nghỉ phép đơn vị */}
-                            <Item
-                                item={{
-                                    name: "menu.leave_application",
-                                    icon: "fa fa-envelope",
-                                    path: "/hr-manage-leave-application",
                                 }}
                             />
 
@@ -740,6 +744,32 @@ class SideBar extends Component {
                                     name: "menu.user_guide",
                                     path: "/user-guide",
                                     icon: "fa fa-newspaper-o",
+                                }}
+                            />
+
+
+                            {/* Tài khoản cá nhân */}
+                            <GroupItem
+                                groupItem={{
+                                    name: "menu.account",
+                                    icon: "fa fa-user-circle",
+                                    list: [
+                                        {
+                                            name: "menu.detail_employee",
+                                            icon: "fa fa-user-o",
+                                            path: "/hr-detail-employee",
+                                        },
+                                        {
+                                            name: "menu.update_employee",
+                                            icon: "fa fa-pencil-square-o",
+                                            path: "/hr-update-employee",
+                                        },
+                                        {
+                                            name: "menu.annual_leave_personal",
+                                            icon: "fa fa-calendar",
+                                            path: "/hr-annual-leave-personal",
+                                        },
+                                    ],
                                 }}
                             />
                         </ul>

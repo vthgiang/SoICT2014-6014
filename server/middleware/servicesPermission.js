@@ -944,5 +944,9 @@ exports.links = [
     }, {
         url: '/time-sheet-log/all',
         apis: ['@all']
+    },
+    {
+        url: '/employees-infomation',
+        apis: ['@all']
     }
 ];
