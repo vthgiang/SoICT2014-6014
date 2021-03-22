@@ -27,6 +27,7 @@ import { RequestToCloseTaskModal } from './requestToCloseTaskModal';
 
 import { ProjectActions } from "../../../project/redux/actions";
 import { ROOT_ROLE } from '../../../../helpers/constants';
+import dayjs from 'dayjs';
 class DetailTaskTab extends Component {
 
     constructor(props) {
@@ -699,13 +700,7 @@ class DetailTaskTab extends Component {
 
     // convert ISODate to String hh:mm AM/PM
     formatTime(date) {
-        var d = new Date(date);
-        let time = moment(d).format("DD-MM-YYYY hh:mm A");
-        // let suffix = " AM";
-        // if(d.getHours() >= 12 && d.getHours() <= 23) {
-        //     suffix = " PM";
-        // }
-        return time;
+        return dayjs(date).format("DD-MM-YYYY hh:mm A")
     }
 
     render() {

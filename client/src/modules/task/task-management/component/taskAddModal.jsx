@@ -6,7 +6,6 @@ import { getStorage } from '../../../../config';
 import ModalAddTaskProject from '../../task-project/component/modalAddTaskProject';
 import { taskManagementActions } from '../redux/actions';
 import { AddTaskForm } from './addTaskForm';
-import dayjs from "dayjs";
 class TaskAddModal extends Component {
 
     constructor(props) {
@@ -46,7 +45,7 @@ class TaskAddModal extends Component {
     convertDateTime = (date, time) => {
         let splitter = date.split("-");
         let strDateTime = `${splitter[2]}/${splitter[1]}/${splitter[0]} ${time}`;
-        return dayjs(strDateTime).format('YYYY/MM/DD HH:mm:ss');
+        return new Date(strDateTime);
     }
 
     handleSubmit = () => {
