@@ -1,96 +1,87 @@
-import React, { Component } from 'react';
+import React, { Component, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal, ErrorLabel } from '../../../../../common-components';
 import ValidationHelper from '../../../../../helpers/validationHelper';
 import { DocumentActions } from '../../../redux/actions';
 
-class EditForm extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {}
-    }
+function EditForm(props) {
 
-    handleName = (e) => {
+    const [state, setState] = useState({})
+    const handleName = (e) => {
         const value = e.target.value;
-        const {translate} = this.props;
-        const {message} = ValidationHelper.validateName(translate, value, 1, 255);
-        this.setState({
+        const { translate } = props;
+        const { message } = ValidationHelper.validateName(translate, value, 1, 255);
+        setState({
+            ...state,
             name: value,
             nameError: message
         })
     }
 
-    handleDescription = (e) => {
+    const handleDescription = (e) => {
         const value = e.target.value;
-        this.setState({
+        setState({
+            ...state,
             description: value
         })
     }
 
-    isValidateForm = ()=>{
-        const {translate} = this.props;
-        const {name} = this.state;
-        if(!ValidationHelper.validateName(translate, name, 1, 255).status) return false;
+    const isValidateForm = () => {
+        const { translate } = props;
+        const { name } = state;
+        if (!ValidationHelper.validateName(translate, name, 1, 255).status) return false;
         return true;
     }
-
-    static getDerivedStateFromProps(nextProps, prevState){
-        if (nextProps.categoryId !== prevState.categoryId) {
-            return {
-                ...prevState,
-                categoryId: nextProps.categoryId,
-                name: nextProps.categoryName,
-                description: nextProps.categoryDescription,
-                nameError: undefined
-            } 
-        } else {
-            return null
-        }
-    }
-
-    save = () => {
-        if(this.isValidateForm()) {
-            const { categoryId, name, description } = this.state;
-            this.props.editDocumentCategory(categoryId, {
+    useEffect(() => {
+        setState({
+            ...state,
+            categoryId: props.categoryId,
+            name: props.categoryName,
+            description: props.categoryDescription,
+            nameError: undefined
+        })
+    }, [props.categoryId])
+    const save = () => {
+        if (isValidateForm()) {
+            const { categoryId, name, description } = state;
+            props.editDocumentCategory(categoryId, {
                 name,
                 description
             });
         }
     }
 
-    render() {
-        const { translate }=this.props;
-        const { name, description, nameError } = this.state;
-    
-        return ( 
-            <DialogModal
-                modalID="modal-edit-document-category"
-                formID="form-edit-document-category"
-                title={translate('document.administration.categories.edit')}
-                disableSubmit = {!this.isValidateForm()}
-                func={this.save}
-            >
-                <form id="form-edit-document-category">
-                    <div className={`form-group ${nameError === undefined ? "" : "has-error"}`}>
-                        <label>{ translate('document.administration.categories.name') }<span className="text-red">*</span></label>
-                        <input type="text" className="form-control" onChange={this.handleName} value={name}/>
-                        <ErrorLabel content = {nameError}/>
-                    </div>
-                    <div className="form-group">
-                        <label>{ translate('document.administration.categories.description') }<span className="text-red">*</span></label>
-                        <textarea type="text" className="form-control" onChange={this.handleDescription} value={description}/>
-                    </div>
-                </form>
-            </DialogModal>
-         );
-    }
+    const { translate } = props;
+    const { name, description, nameError } = state;
+
+    return (
+        <DialogModal
+            modalID="modal-edit-document-category"
+            formID="form-edit-document-category"
+            title={translate('document.administration.categories.edit')}
+            disableSubmit={!isValidateForm()}
+            func={save}
+        >
+            <form id="form-edit-document-category">
+                <div className={`form-group ${nameError === undefined ? "" : "has-error"}`}>
+                    <label>{translate('document.administration.categories.name')}<span className="text-red">*</span></label>
+                    <input type="text" className="form-control" onChange={handleName} value={name} />
+                    <ErrorLabel content={nameError} />
+                </div>
+                <div className="form-group">
+                    <label>{translate('document.administration.categories.description')}<span className="text-red">*</span></label>
+                    <textarea type="text" className="form-control" onChange={handleDescription} value={description} />
+                </div>
+            </form>
+        </DialogModal>
+    );
 }
- 
+
 const mapStateToProps = state => state;
 
 const mapDispatchToProps = {
     editDocumentCategory: DocumentActions.editDocumentCategory
 }
 
-export default connect( mapStateToProps, mapDispatchToProps )( withTranslate(EditForm) );
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(EditForm));

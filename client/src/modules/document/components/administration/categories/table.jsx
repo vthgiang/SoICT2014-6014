@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component,useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import Swal from 'sweetalert2';
@@ -8,31 +8,25 @@ import { DocumentActions } from '../../../redux/actions';
 
 import CreateForm from './createForm';
 import EditForm from './editForm';
-import { CategoryImportForm } from './categoryImportForm';
+import { CategoryImportForm } from '../../../components/administration/categories/categoryImportForm';
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
-class Table extends Component {
-    constructor(props) {
-        super(props);
-        const tableId = "table-manage-document-categories";
-        const defaultConfig = { limit: 5 }
-        const limit = getTableConfiguration(tableId, defaultConfig).limit;
+function Table(props) {
 
-        this.state = {
-            tableId,
-            option: 'name',
-            value: '',
-            limit: limit,
-            page: 1
-        }
-    }
-
-    componentDidMount() {
-        //  this.props.getDocumentCategories();
-        this.props.getDocumentCategories({ page: this.state.page, limit: this.state.limit });
-    }
-
-    deleteDocumentCategory = (id, info) => {
-        const { translate } = this.props;
+    const TableId = "table-manage-document-categories";
+    const defaultConfig = { limit: 5 }
+    const Limit = getTableConfiguration(TableId, defaultConfig).limit;
+    const [state, setState] = useState({
+        tableId: TableId,
+        option: 'name',
+        value: '',
+        limit: Limit,
+        page: 1
+    })
+    useEffect(() => {
+        props.getDocumentCategories({ page: state.page, limit: state.limit });
+    }, [])
+    const deleteDocumentCategory = (id, info) => {
+        const { translate } = props;
         Swal.fire({
             html: `<h4 style="color: red"><div>${translate('document.administration.categories.delete')}</div> <div>"${info}" ?</div></h4>`,
             icon: 'warning',
@@ -43,16 +37,19 @@ class Table extends Component {
             confirmButtonText: translate('general.yes'),
         }).then((result) => {
             if (result.value) {
-                this.props.deleteDocumentCategory(id);
+                props.deleteDocumentCategory(id);
             }
         })
     }
 
-    showModalEditCategory = async (currentRow) => {
-        await this.setState({ currentRow });
+    const showModalEditCategory = async (currentRow) => {
+        await setState({
+            ...state,
+            currentRow: currentRow
+        });
         window.$('#modal-edit-document-category').modal('show');
     }
-    convertDataToExportData = (data) => {
+    const convertDataToExportData = (data) => {
         data = data.map((x, index) => {
             return {
                 STT: index + 1,
@@ -82,114 +79,120 @@ class Table extends Component {
         }
         return exportData;
     }
-    render() {
-        const { translate } = this.props;
-        const { isLoading } = this.props.documents;
-        const { categories } = this.props.documents.administration;
-        const { paginate } = categories;
-        const { currentRow, tableId } = this.state;
-        const { list } = categories;
-        let dataExport = [];
-        if (isLoading === false) {
-            dataExport = list;
-        }
-        let exportData = this.convertDataToExportData(dataExport);
-        return (
-            <React.Fragment>
-                <CreateForm />
-                {
-                    currentRow &&
-                    <EditForm
-                        categoryId={currentRow._id}
-                        categoryName={currentRow.name}
-                        categoryDescription={currentRow.description}
-                    />
-                }
-                <ExportExcel id="export-document-category" exportData={exportData} style={{ marginRight: 5 }} buttonName={translate('document.export')} />
-                <SearchBar
-                    columns={[
-                        { title: translate('document.administration.categories.name'), value: 'name' },
-                        { title: translate('document.administration.categories.description'), value: 'description' }
-                    ]}
-                    option={this.state.option}
-                    setOption={this.setOption}
-                    search={this.searchWithOption}
-                />
-                <table className="table table-hover table-striped table-bordered" id={tableId}>
-                    <thead>
-                        <tr>
-                            <th>{translate('document.administration.categories.name')}</th>
-                            <th>{translate('document.administration.categories.description')}</th>
-                            <th style={{ width: '120px', textAlign: 'center' }}>
-                                {translate('general.action')}
-                                <DataTableSetting
-                                    columnArr={[
-                                        translate('document.administration.categories.name'),
-                                        translate('document.administration.categories.description')
-                                    ]}
-                                    setLimit={this.setLimit}
-                                    tableId={tableId}
-                                />
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {
-                            paginate.length > 0 ?
-                                paginate.map(docType =>
-                                    <tr key={docType._id}>
-                                        <td>{docType.name}</td>
-                                        <td>{docType.description}</td>
-                                        <td>
-                                            <a className="text-yellow" onClick={() => this.showModalEditCategory(docType)} title={translate('document.administration.categories.edit')}><i className="material-icons">edit</i></a>
-                                            <a className="text-red" onClick={() => this.deleteDocumentCategory(docType._id, docType.name)} title={translate('document.administration.categories.delete')}><i className="material-icons">delete</i></a>
-                                        </td>
-                                    </tr>) :
-                                isLoading ?
-                                    <tr><td colSpan={3}>{translate('general.loading')}</td></tr> : <tr><td colSpan={3}>{translate('general.no_data')}</td></tr>
-                        }
-                    </tbody>
-                </table>
-                <PaginateBar pageTotal={categories.totalPages} currentPage={categories.page} func={this.setPage} />
-            </React.Fragment>
-        );
-    }
-
-
-    setPage = async (page) => {
-        this.setState({ page });
+    const setPage = async (page) => {
+        setState({
+            ...state,
+            page: page
+        });
         const data = {
-            limit: this.state.limit,
+            limit: state.limit,
             page: page,
-            key: this.state.option,
-            value: this.state.value
+            key: state.option,
+            value: state.value
         };
-        await this.props.getDocumentCategories(data);
+        await props.getDocumentCategories(data);
     }
 
-    setLimit = (number) => {
-        if (this.state.limit !== number) {
-            this.setState({ limit: number });
-            const data = { limit: number, page: this.state.page };
-            this.props.getDocumentCategories(data);
+    const setLimit = (number) => {
+        if (state.limit !== number) {
+            setState({
+                ...state,
+                limit: number
+            });
+            const data = { limit: number, page: state.page };
+            props.getDocumentCategories(data);
         }
     }
 
-    setOption = (title, option) => {
-        this.setState({
+    const setOption = (title, option) => {
+        setState({
+            ...state,
             [title]: option
         });
     }
 
-    searchWithOption = async () => {
+    const searchWithOption = async () => {
         const data = {
-            limit: this.state.limit,
+            limit: state.limit,
             page: 1,
-            key: this.state.option,
-            value: this.state.value
+            key: state.option,
+            value: state.value
         };
-        await this.props.getDocumentCategories(data);
+        await props.getDocumentCategories(data);
     }
+    const { translate } = props;
+    const { isLoading } = props.documents;
+    const { categories } = props.documents.administration;
+    const { paginate } = categories;
+    const { currentRow, tableId } = state;
+    const { list } = categories;
+    let dataExport = [];
+    if (isLoading === false) {
+        dataExport = list;
+    }
+    let exportData = convertDataToExportData(dataExport);
+    return (
+        <React.Fragment>
+            <CreateForm />
+            {
+                currentRow &&
+                <EditForm
+                    categoryId={currentRow._id}
+                    categoryName={currentRow.name}
+                    categoryDescription={currentRow.description}
+                />
+            }
+            <ExportExcel id="export-document-category" exportData={exportData} style={{ marginRight: 5 }} buttonName={translate('document.export')} />
+            <SearchBar
+                columns={[
+                    { title: translate('document.administration.categories.name'), value: 'name' },
+                    { title: translate('document.administration.categories.description'), value: 'description' }
+                ]}
+                option={state.option}
+                setOption={setOption}
+                search={searchWithOption}
+            />
+            <table className="table table-hover table-striped table-bordered" id={tableId}>
+                <thead>
+                    <tr>
+                        <th>{translate('document.administration.categories.name')}</th>
+                        <th>{translate('document.administration.categories.description')}</th>
+                        <th style={{ width: '120px', textAlign: 'center' }}>
+                            {translate('general.action')}
+                            <DataTableSetting
+                                columnArr={[
+                                    translate('document.administration.categories.name'),
+                                    translate('document.administration.categories.description')
+                                ]}
+                                setLimit={setLimit}
+                                tableId={tableId}
+                            />
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {
+                        paginate.length > 0 ?
+                            paginate.map(docType =>
+                                <tr key={docType._id}>
+                                    <td>{docType.name}</td>
+                                    <td>{docType.description}</td>
+                                    <td>
+                                        <a className="text-yellow" onClick={() => showModalEditCategory(docType)} title={translate('document.administration.categories.edit')}><i className="material-icons">edit</i></a>
+                                        <a className="text-red" onClick={() => deleteDocumentCategory(docType._id, docType.name)} title={translate('document.administration.categories.delete')}><i className="material-icons">delete</i></a>
+                                    </td>
+                                </tr>) :
+                            isLoading ?
+                                <tr><td colSpan={3}>{translate('general.loading')}</td></tr> : <tr><td colSpan={3}>{translate('general.no_data')}</td></tr>
+                    }
+                </tbody>
+            </table>
+            <PaginateBar pageTotal={categories.totalPages} currentPage={categories.page} func={setPage} />
+        </React.Fragment>
+    );
+
+
+
 }
 
 const mapStateToProps = state => state;
