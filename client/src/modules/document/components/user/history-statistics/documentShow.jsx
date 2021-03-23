@@ -1,58 +1,37 @@
-import React, { Component, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { DataTableSetting, DateTimeConverter, PaginateBar, TreeSelect, SelectBox, ExportExcel } from '../../../../../common-components';
+import { DateTimeConverter, DataTableSetting, TreeSelect, SelectBox, ExportExcel, PaginateBar } from '../../../../../common-components';
 import { DocumentActions } from '../../../redux/actions';
 import { RoleActions } from '../../../../super-admin/role/redux/actions';
 import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
-import DocumentInformation from './documentInformation';
 import { getStorage } from '../../../../../config';
-import ListDownload from '../../administration/list-data/listDownload';
-import ListView from '../../administration/list-data/listView';
+import DocumentInformation from '../documents/documentInformation';
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
 
-const getIndex = (array, id) => {
-    let index = -1;
-    for (let i = 0; i < array.length; i++) {
-        if (array[i]._id === id) {
-            index = i;
-            break;
-        }
-    }
-    return index;
-}
-function UserDocumentsData(props) {
-    const TableId = "table-user-documents-data";
+function DocumentShow(props) {
+    const { type,typeId }= props
+    const TableId = `table-manage-document-${typeId}`;
     const defaultConfig = { limit: 5 }
     const Limit = getTableConfiguration(TableId, defaultConfig).limit;
     const [state, setState] = useState({
-        tableId: TableId,
-        category: "",
-        domain: "",
-        archive: "",
-        name: "",
-        option: {
-            category: "",
-            domain: "",
-            archive: "",
-        },
+        option: 'name',
+        value: '',
         limit: Limit,
-        page: 1
+        page: 1,
+        tableId: TableId
     })
-
-
     useEffect(() => {
         props.getAllRoles();
         props.getAllDepartments();
         props.getAllDocuments(getStorage('currentRole'));
         props.getAllDocuments(getStorage('currentRole'), { page: state.page, limit: state.limit });
-        props.getDocumentDomains();
-        props.getDocumentArchive();
-        props.getDocumentCategories();
+        props.getUserDocumentStatistics(type, { page: state.page, limit: state.limit });
     }, [])
-
+    
     const toggleDocumentInformation = async (data) => {
         await setState({
+            ...state,
             currentRow: data
         });
         window.$('#modal-information-user-document').modal('show');
@@ -66,38 +45,20 @@ function UserDocumentsData(props) {
     function requestDownloadDocumentFileScan(id, fileName, numberVersion) {
         props.downloadDocumentFileScan(id, fileName, numberVersion);
     }
-
-    // useEffect(() => {
-    //     const { data } = props.documents.user;
-    //     if (currentRow) {
-    //         const index = getIndex(data.paginate, currentRow._id);
-    //         if (data.paginate[index].versions.length !== currentRow.versions.length) {
-    //             return {
-    //                 ...state,
-    //                 currentRow: data.paginate[index]
-    //             }
-    //         }
-    //         else return null;
-    //     } else {
-    //         return null;
-    //     }
-    // }, [props.documents.user])
-    //     static getDerivedStateFromProps(nextProps, prevState) {
-    //     const { data } = nextProps.documents.user;
-    //     if (prevState.currentRow) {
-    //         const index = getIndex(data.paginate, prevState.currentRow._id);
-    //         if (data.paginate[index].versions.length !== prevState.currentRow.versions.length) {
-    //             return {
-    //                 ...prevState,
-    //                 currentRow: data.paginate[index]
-    //             }
-    //         }
-    //         else return null;
-    //     } else {
-    //         return null;
-    //     }
-    // }
-
+    function setOption(title, option) {
+        setState({
+            ...state,
+            [title]: option
+        });
+    }
+    const findPath = (select) => {
+        const archives = props.documents.administration.archives.list;
+        let paths = select.map(s => {
+            let archive = archives.filter(arch => arch._id === s);
+            return archive[0] ? archive[0].path : "";
+        })
+        return paths;
+    }
     const formatDate = (date, monthYear = false) => {
         if (date) {
             let d = new Date(date),
@@ -115,7 +76,37 @@ function UserDocumentsData(props) {
             return date
         }
     }
-
+    function handleCategoryChange(value) {
+        setState({
+            ...state,
+            category: value,
+        })
+    }
+    function handleDomainChange(value) {
+        setState({
+            ...state,
+            domain: value
+        });
+    }
+    function handleDomains(value) {
+        setState({
+            ...state,
+            documentDomains: value
+        });
+    }
+    function handleNameChange(e) {
+        const value = e.target.value;
+        setState({
+            ...state,
+            name: value.trim(),
+        })
+    }
+    function handleArchiveChange(value) {
+        setState({
+            ...state,
+            archive: value,
+        })
+    }
 
     const findRole = (id) => {
         const listRole = props.role.list;
@@ -123,6 +114,33 @@ function UserDocumentsData(props) {
         if (role && role.length)
             return role[0].name;
         else return "";
+    }
+    function handleIssuingBodyChange(e) {
+        const value = e.target.value;
+        setState({
+            ...state,
+            issuingBody: value.trim(),
+        })
+    }
+    function handleArchivedRecordPlaceOrganizationalUnit(value) {
+        setState({
+            ...state,
+            organizationUnit: value,
+        })
+    }
+    const searchWithOption = async () => {
+        let path = state.archive ? findPath(state.archive) : "";
+        const data = {
+            limit: state.limit,
+            page: 1,
+            name: state.name,
+            category: state.category ? state.category[0] : "",
+            domains: state.domain ? state.domain : "",
+            archives: path && path.length ? path : "",
+            issuingBody: state.issuingBody ? state.issuingBody : "",
+            organizationUnit: state.organizationUnit ? state.organizationUnit : "",
+        };
+        await props.getUserDocumentStatistics(type, data);
     }
     const convertDataToExportData = (data) => {
 
@@ -309,6 +327,7 @@ function UserDocumentsData(props) {
 
         return exportData
     }
+
     const convertData = (data) => {
         let array = data.map(item => {
             return {
@@ -319,155 +338,69 @@ function UserDocumentsData(props) {
         array.unshift({ value: "", text: "Tất cả các loại" });
         return array;
     }
-    function handleCategoryChange(value) {
-        setState(state => {
-            return {
-                ...state,
-                category: value,
-            }
-        })
-    }
-    function handleDomainChange(value) {
-        setState({
-            ...state,
-            domain: value
-        });
-    }
-    function handleDomains(value) {
-        setState({
-            ...state,
-            documentDomains: value
-        });
-    }
-    function handleNameChange(e) {
-        const value = e.target.value;
-        setState(state => {
-            return {
-                ...state,
-                name: value.trim(),
-            }
-        })
-    }
-    function handleArchiveChange(value) {
-        setState(state => {
-            return {
-                ...state,
-                archive: value,
-            }
-        })
-    }
-
-    function handleIssuingBodyChange(e) {
-        const { value } = e.target;
-        setState({
-            ...state,
-            issuingBody: value,
-        })
-    }
-
     const setPage = async (page) => {
         setState({ page });
         let path = state.archive ? findPath(state.archive) : "";
+        setState({ page });
         const data = {
             limit: state.limit,
             page: page,
             name: state.name,
             category: state.category ? state.category[0] : "",
             domains: state.domain ? state.domain : "",
-            archives: path && path.length ? path[0] : "",
+            archives: path && path.length ? path : "",
         };
-        await props.getAllDocuments(getStorage('currentRole'), data);
+        await props.getUserDocumentStatistics(type, data);
     }
 
     function setLimit(number) {
         if (state.limit !== number) {
-            setState({
-                ...state,
-                limit: number
-            });
+            setState({ limit: number });
             const data = { limit: number, page: state.page };
-            props.getAllDocuments(getStorage('currentRole'), data);
+            props.getUserDocumentStatistics(type, data);
         }
     }
-
-    function setOption(title, option) {
-        setState({
-            ...state,
-            [title]: option
-        });
-    }
-    function findPath(select) {
-        const archives = props.documents.administration.archives.list;
-        let paths = select.map(s => {
-            let archive = archives.filter(arch => arch._id === s);
-            return archive[0] ? archive[0].path : "";
-        })
-        return paths;
-
-    }
-    function handleIssuingBodyChange(e) {
-        const value = e.target.value;
-        setState(state => {
-            return {
-                ...state,
-                issuingBody: value.trim(),
-            }
-        })
-    }
-    function handleArchivedRecordPlaceOrganizationalUnit(value) {
-        setState(state => {
-            return {
-                ...state,
-                organizationUnit: value,
-            }
-        })
-    }
-
-    const searchWithOption = async () => {
-        let path = state.archive ? findPath(state.archive) : "";
-        const data = {
-            limit: state.limit,
-            page: 1,
-            name: state.name,
-            category: state.category ? state.category[0] : "",
-            domains: state.domain ? state.domain : "",
-            archives: path && path.length ? path : "",
-            issuingBody: state.issuingBody ? state.issuingBody : "",
-            organizationUnit: state.organizationUnit ? state.organizationUnit : "",
-        };
-        await props.getAllDocuments(getStorage('currentRole'), data);
-    }
-
     const { translate, department } = props;
+    const { user } = props.documents;
+    const { common } = user;
+    let dataShow=null
+    switch(type){
+        case "common":
+            dataShow = user.common
+            break
+            
+        case "downloaded":
+            dataShow = user.downloaded
+            break
+        case "latest":
+            dataShow = user.latest
+            break
+        default:
+            break
+    }
+    let paginate = dataShow.paginate;
+    console.log(paginate);
+    
+    const { isLoading } = props.documents;
     const { domains, categories, archives } = props.documents.administration;
     const docs = props.documents.user.data;
-    const { paginate } = docs;
-    const { isLoading } = props.documents;
     const { currentRow, archive, category, domain, tableId } = state;
     const listDomain = domains.list
     const listCategory = convertData(categories.list)
     const listArchive = archives.list;
     let list = [];
     if (isLoading === false) {
-        list = docs.paginate;
+        list = docs.list;
     }
-
-    let exportData = convertDataToExportData(list);
+    let dataExport = [];
+    if (isLoading === false) {
+        dataExport = dataShow.list;
+    }
+    let exportData = dataExport ? convertDataToExportData(dataExport) : "";
     return (
         <div className="qlcv">
             <React.Fragment>
-                {
-                    currentRow &&
-                    <ListView
-                        docs={currentRow}
-                    />
-                }
-                {
-                    currentRow &&
-                    <ListDownload
-                        docs={currentRow}
-                    />
-                }
+
                 {
                     currentRow !== undefined &&
                     <DocumentInformation
@@ -493,12 +426,12 @@ function UserDocumentsData(props) {
                         documentLogs={currentRow.logs}
                     />
                 }
-                {<ExportExcel id="export-document" exportData={exportData} style={{ marginLeft: 5 }} />}
+                {<ExportExcel id="export-document-downloaded" exportData={exportData} style={{ marginLeft: 5 }} />}
                 <div className="form-inline">
                     <div className="form-group">
                         <label>{translate('document.category')}</label>
                         <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
-                            id={`stattus-category`}
+                            id={`stattus-category-${typeId}`}
                             style={{ width: "100%" }}
                             items={listCategory}
                             onChange={handleCategoryChange}
@@ -562,11 +495,9 @@ function UserDocumentsData(props) {
                     </div>
 
                 </div>
-
                 <table className="table table-hover table-striped table-bordered" id={tableId}>
                     <thead>
                         <tr>
-                            <th>{translate('document.doc_version.issuing_body')}</th>
                             <th>{translate('document.name')}</th>
                             <th>{translate('document.description')}</th>
                             <th>{translate('document.issuing_date')}</th>
@@ -574,7 +505,6 @@ function UserDocumentsData(props) {
                             <th>{translate('document.expired_date')}</th>
                             <th>{translate('document.upload_file')}</th>
                             <th>{translate('document.upload_file_scan')}</th>
-
                             <th style={{ width: '120px', textAlign: 'center' }}>
                                 {translate('general.action')}
                                 <DataTableSetting
@@ -586,7 +516,6 @@ function UserDocumentsData(props) {
                                         translate('document.expired_date'),
                                         translate('document.upload_file'),
                                         translate('document.upload_file_scan'),
-
                                     ]}
                                     setLimit={setLimit}
                                     tableId={tableId}
@@ -596,17 +525,16 @@ function UserDocumentsData(props) {
                     </thead>
                     <tbody>
                         {
-                            paginate.length > 0 ?
+                            paginate && paginate.length > 0 ?
                                 paginate.map(doc =>
                                     <tr key={doc._id}>
-                                        <td>{doc.issuingBody}</td>
                                         <td>{doc.name}</td>
-                                        <td>{doc.description ? doc.description : ""}</td>
+                                        <td>{doc.description}</td>
                                         <td>{doc.versions.length ? formatDate(doc.versions[doc.versions.length - 1].issuingDate) : null}</td>
                                         <td>{doc.versions.length ? formatDate(doc.versions[doc.versions.length - 1].effectiveDate) : null}</td>
                                         <td>{doc.versions.length ? formatDate(doc.versions[doc.versions.length - 1].expiredDate) : null}</td>
                                         <td>
-                                            <a href="#" onClick={() => requestDownloadDocumentFile(doc._id, doc.name, doc.versions.length - 1, false)}>
+                                            <a href="#" onClick={() => requestDownloadDocumentFile(doc._id, doc.name, doc.versions.length - 1)}>
                                                 <u>{doc.versions.length && doc.versions[doc.versions.length - 1].file ? translate('document.download') : ""}</u>
                                             </a>
                                         </td>
@@ -615,27 +543,21 @@ function UserDocumentsData(props) {
                                                 <u>{doc.versions.length && doc.versions[doc.versions.length - 1].scannedFileOfSignedDocument ? translate('document.download') : ""}</u>
                                             </a>
                                         </td>
-
-                                        <td>
-                                            <a className="text-green" title={translate('document.view')} onClick={() => toggleDocumentInformation(doc)}>
-                                                <i className="material-icons">visibility</i>
-                                            </a>
+                                        <td style={{ width: '10px' }}>
+                                            <a className="text-green" title={translate('document.edit')} onClick={() => toggleDocumentInformation(doc)}><i className="material-icons">visibility</i></a>
                                         </td>
-                                    </tr>) : null
+                                    </tr>) :
+                                isLoading ?
+                                    <tr><td colSpan={10}>{translate('general.loading')}</td></tr> : <tr><td colSpan={10}>{translate('general.no_data')}</td></tr>
                         }
 
                     </tbody>
                 </table>
-                {
-                    isLoading ?
-                        <div className="table-info-panel">{translate('confirm.loading')}</div> :
-                        paginate.length === 0 && <div className="table-info-panel">{translate('confirm.no_data')}</div>
-                }
-
-                <PaginateBar pageTotal={docs.totalPages} currentPage={docs.page} func={setPage} />
+                <PaginateBar pageTotal={dataShow.totalPages} currentPage={dataShow.page} func={setPage} />
             </React.Fragment>
-        </div >
-    );
+        </div>
+    )
+    
 }
 
 const mapStateToProps = state => state;
@@ -647,9 +569,7 @@ const mapDispatchToProps = {
     increaseNumberView: DocumentActions.increaseNumberView,
     downloadDocumentFile: DocumentActions.downloadDocumentFile,
     downloadDocumentFileScan: DocumentActions.downloadDocumentFileScan,
-    getDocumentDomains: DocumentActions.getDocumentDomains,
-    getDocumentCategories: DocumentActions.getDocumentCategories,
-    getDocumentArchive: DocumentActions.getDocumentArchive,
+    getUserDocumentStatistics: DocumentActions.getUserDocumentStatistics
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(UserDocumentsData));
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(DocumentShow));
