@@ -219,7 +219,7 @@ class SuperHome extends Component {
                 </div>
                 {/* Tổng quan công việc cá nhân */}
                 <div className="row">
-                    <div className="col-xs-12">
+                    <div className="col-md-12">
                         <div className="box box-primary">
                             <div className="box-header with-border">
                                 <div className="box-title">{`Tổng quan công việc (${tasks && tasks.tasks ? tasks.tasks.length : 0})`}</div>
@@ -254,7 +254,7 @@ class SuperHome extends Component {
                 {/* News feed */}
                 <div className="row">
                     <div className="col-xs-12">
-                        <NewsFeed/>
+                        <NewsFeed />
                     </div>
                 </div>
             </React.Fragment>

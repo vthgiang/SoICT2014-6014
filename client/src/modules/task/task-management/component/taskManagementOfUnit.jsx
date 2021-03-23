@@ -22,7 +22,7 @@ class TaskManagementOfUnit extends Component {
         const limit = getTableConfiguration(tableId, defaultConfig).limit;
 
         this.state = {
-            organizationalUnit: [],
+            organizationalUnit: null,
             perPage: limit,
             currentPage: 1,
             tableId,
@@ -61,7 +61,16 @@ class TaskManagementOfUnit extends Component {
             return false;
         }
 
-        if (organizationalUnit && organizationalUnit.length === 0 && dashboardEvaluationEmployeeKpiSet && dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit) {
+        if (organizationalUnit && !dashboardEvaluationEmployeeKpiSet?.childrenOrganizationalUnitLoading) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    organizationalUnit: null
+                }
+            })
+        }
+
+        if (!organizationalUnit && dashboardEvaluationEmployeeKpiSet?.childrenOrganizationalUnit) {
             let childrenOrganizationalUnit = [], queue = [], currentOrganizationalUnit;
 
             // Khởi tạo selectbox đơn vị
@@ -92,17 +101,11 @@ class TaskManagementOfUnit extends Component {
                 }
             });
 
-            await this.props.getPaginatedTasksByOrganizationalUnit(units, currentPage, perPage, status, [], [], null, null, null, isAssigned, responsibleEmployees, accountableEmployees, creatorEmployees);
+            await this.props.getPaginatedTasksByOrganizationalUnit([units?.[0]], currentPage, perPage, status, [], [], null, null, null, isAssigned, responsibleEmployees, accountableEmployees, creatorEmployees);
             return true;
         }
 
         return true;
-    }
-
-    componentDidUpdate(prevProps, prevState) {
-        if (prevProps.tasks.tasks && this.props.tasks.tasks && prevProps.tasks.tasks.length !== this.props.tasks.tasks.length) {
-            this.handleUpdateData();
-        }
     }
 
     formatDate(date) {
