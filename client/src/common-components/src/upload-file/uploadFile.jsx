@@ -57,7 +57,7 @@ class UploadFile extends Component {
                 files: files
             }, () => {
                 if (sendDataAfterDelete)
-                    this.props.onChange(this.state.files)
+                    this.props.onChange(files)
             })
         }
 
@@ -89,7 +89,7 @@ class UploadFile extends Component {
     };
 
     shouldComponentUpdate(nextProps, nextState) {
-        if (!UploadFile.isEqual(nextState.files, this.state.files) && !nextProps.importFile) {
+        if (!UploadFile.isEqual(nextState.files, this.state.files) && !nextProps.importFile && this.state.files) {
             this.props.onChange(nextState.files ? nextState.files : []);
         };
         if (nextState.files && nextState.files.length === 0 && !nextProps.importFile) {
