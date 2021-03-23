@@ -66,7 +66,7 @@
     color: rgb(25 25 25);
 }
 .faqs-page .item-question:after {
-	 content: "\f107";
+	 content: "\f106";
 	 font-family: FontAwesome;
 	 font-weight: normal;
 	 position: absolute;
@@ -78,7 +78,7 @@
 }
 .faqs-page .item-question.collapsed:after {
 	 color: #111;
-	 content: "\f106";
+	 content: "\f107";
 }
 .faqs-page .item-question span.index {
 	width: 25px;
@@ -153,4 +153,10 @@
 }
 .deadlinecoming-label{
     background-color: #f39c12 ;
+}
+
+.priority-task-wraper{
+    display: flex;
+    align-items: center;
+    margin-top: 5px;
 }
