@@ -248,6 +248,10 @@ export default {
             user_guide_detail: "User guide detail",
         },
 
+        news_feed: {
+            news_feed: 'News feed'
+        },
+
         intro: {
             title: "Digital workspace solutions for businesses",
             contents: [

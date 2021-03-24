@@ -106,9 +106,9 @@ function NewsFeed(props) {
         <React.Fragment>
             <div className="box" id="newsfeed">
                 <div className="box-header with-border">
-                    <div className="box-title">Newsfeed</div>
+                    <div className="box-title">{translate('news_feed.news_feed')}</div>
                 </div>
-                <div id="newsfeed-body">
+                <div id="newsfeed-body" className="newsfeed-body">
                     { newsFeeds?.newsFeed?.length > 0 
                         && newsFeeds?.newsFeed?.map((newsfeed, index) =>
                             <div className="description-box newsfeed-box" key={newsfeed?._id + index}>
@@ -134,7 +134,7 @@ function NewsFeed(props) {
                                 </ul>
 
                                 {showComments[newsfeed?._id] 
-                                    && <div className="row" style={{ display: 'flex', flex: 'no-wrap', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', marginTop: '15px', paddingTop: '20px', borderTop: '1px solid #ebebeb' }}>
+                                    && <div className="row newsfeed-comments">
                                         <div className="col-xs-12">
                                             <Comment
                                                 commentId={newsfeed?._id}
