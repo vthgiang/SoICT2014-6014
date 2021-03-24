@@ -77,14 +77,12 @@ class EmployeeKpiManagement extends Component {
         this.props.getChildrenOfOrganizationalUnitsAsTree(localStorage.getItem("currentRole"));
     }
 
-    shouldComponentUpdate = (nextProps, nextStates) => {
-        const { dataStatus } = this.state;
-
-        if (dataStatus === this.DATA_STATUS.QUERYING) {
-            if (!nextProps.kpimembers.tasksList) {
+    shouldComponentUpdate = (nextProps, nextState) => {
+        if (nextState.dataStatus === this.DATA_STATUS.QUERYING) {
+            if (!nextProps.kpimembers?.tasksList || !nextProps.kpimembers?.kpimembers || !nextProps.managerKpiUnit?.kpis) {
                 return false;
             } else {
-                let exportData = this.convertDataToExportTotalData();
+                let exportData = this.convertDataToExportTotalData(nextProps.kpimembers, nextProps.managerKpiUnit);
                 if (exportData) ExportExcel.export(exportData);
 
                 this.setState(state => {
@@ -93,7 +91,7 @@ class EmployeeKpiManagement extends Component {
                         dataStatus: this.DATA_STATUS.FINISHED,
                     }
                 });
-                return false;
+                return true;
             }
         }
 
@@ -469,8 +467,8 @@ class EmployeeKpiManagement extends Component {
         }
     }
 
-    convertDataToExportTotalData = () => {
-        const { kpimembers, managerKpiUnit, user, translate } = this.props;
+    convertDataToExportTotalData = (kpimembers, managerKpiUnit) => {
+        const { user, translate } = this.props;
         let listTasks, listKpis, data = {}, convertedData = [], listKpiUnit = [], unitName;
 
         if (user.userdepartments) {
@@ -626,21 +624,21 @@ class EmployeeKpiManagement extends Component {
                                     (index === 0) ? {
                                         title: "Thông tin chung KPI " + (unitName) + " " + item.sheetName,
                                         value: [
-                                            "Số nhân viên: " + sheetInfo[idx].employeeNumber,
-                                            "Số lượng KPI đơn vị: " + sheetInfo[idx].kpisUnitNumber,
-                                            "Điểm KPI tự động của đơn vị: " + sheetInfo[idx].automaticPoint,
-                                            "Điểm KPI tự đánh giá của đơn vị: " + sheetInfo[idx].employeePoint,
-                                            "Điểm KPI được phê duyệt của đơn vị: " + sheetInfo[idx].approverPoint,
-                                            "Số công việc được đánh giá: " + item.numTask
+                                            "Số nhân viên: " + sheetInfo?.[idx]?.employeeNumber,
+                                            "Số lượng KPI đơn vị: " + sheetInfo?.[idx]?.kpisUnitNumber,
+                                            "Điểm KPI tự động của đơn vị: " + sheetInfo?.[idx]?.automaticPoint,
+                                            "Điểm KPI tự đánh giá của đơn vị: " + sheetInfo?.[idx]?.employeePoint,
+                                            "Điểm KPI được phê duyệt của đơn vị: " + sheetInfo?.[idx]?.approverPoint,
+                                            "Số công việc được đánh giá: " + item?.numTask
                                         ]
                                     } : "",
                                     {
-                                        title: "Báo cáo " + (item.names[index] ? item.names[index] : "") + " " + item.sheetName,
+                                        title: "Báo cáo " + (item?.names?.[index] ? item.names[index] : "") + " " + item?.sheetName,
                                         value: [
-                                            "Số KPI: " + item.kpiNum[index],
-                                            "Điểm KPI tự động: " + item.kpiSetAutomaticPoint[index],
-                                            "Điểm KPI tự đánh giá: " + item.kpiSetEmployeePoint[index],
-                                            "Điểm KPI được phê duyệt: " + item.kpiSetApproverPoint[index]
+                                            "Số KPI: " + item?.kpiNum?.[index],
+                                            "Điểm KPI tự động: " + item?.kpiSetAutomaticPoint?.[index],
+                                            "Điểm KPI tự đánh giá: " + item?.kpiSetEmployeePoint?.[index],
+                                            "Điểm KPI được phê duyệt: " + item?.kpiSetApproverPoint?.[index]
                                         ]
                                     }],
                                 merges: [{
