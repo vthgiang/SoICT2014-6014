@@ -134,27 +134,22 @@ class TaskOrganizationUnitDashboard extends Component {
                 }
             }
 
-            let units = childrenOrganizationalUnit.map(item => item.id);
-
             this.setState((state) => {
                 return {
                     ...state,
                     startMonth: nextState.startMonth,
                     endMonth: nextState.endMonth,
                     checkUnit: nextState.checkUnit,
-                    idsUnit: !idsUnit?.length ? [units?.[0]] : nextState.idsUnit,
+                    idsUnit: !idsUnit?.length ? [childrenOrganizationalUnit?.[0]?.id] : nextState.idsUnit,
                     selectBoxUnit: childrenOrganizationalUnit
                 }
             });
             data = {
-                organizationUnitId: [units?.[0]],
+                organizationUnitId: [childrenOrganizationalUnit?.[0]?.id],
                 type: organizationUnit,
             }
 
-            if (units?.length) {
-                await this.props.getTaskInOrganizationUnitByMonth(units, this.state.startMonth, this.state.endMonth);
-            }
-
+            await this.props.getTaskInOrganizationUnitByMonth([childrenOrganizationalUnit?.[0]?.id], this.state.startMonth, this.state.endMonth);
             await this.props.getTaskByUser(data);
 
             return true;

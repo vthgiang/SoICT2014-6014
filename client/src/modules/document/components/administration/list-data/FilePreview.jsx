@@ -9,8 +9,6 @@ import FileViewer from 'react-file-viewer';
 //import docx2html from 'docx2html';
 function FilePreview(props) {
 
-
-
     useEffect(() => {
         let { file } = props;
         props.FileData(file, 'filename', false);

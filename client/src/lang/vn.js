@@ -179,7 +179,7 @@ export default {
 
             tasks: "Công việc cá nhân",
             task: "Chi tiết công việc",
-            task_management: "Danh sách công việc",
+            task_management: "Danh sách công việc cá nhân",
             task_management_of_unit: "Danh sách công việc đơn vị",
             task_management_dashboard: "Dashboard công việc",
             task_organization_management_dashboard:

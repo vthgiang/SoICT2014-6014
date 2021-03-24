@@ -1,173 +1,154 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal, DatePicker, ErrorLabel, UploadFile } from '../../../../../common-components';
 
-class AddVersion extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            name: "",
-            documentIssuingDate: "",
-            documentEffectiveDate: "",
-            documentExpiredDate: "",
+function AddVersion(props) {
+    const [state, setState] = useState({
+        name: "",
+        documentIssuingDate: "",
+        documentEffectiveDate: "",
+        documentExpiredDate: "",
 
-            file: "",
-            urlFile: "",
-            fileUpload: "",
+        file: "",
+        urlFile: "",
+        fileUpload: "",
 
-            fileScan: "",
-            urlFileScan: "",
-            fileScanUpload: "",
-
-        }
-    }
-    handleChangeVersionName = (e) => {
+        fileScan: "",
+        urlFileScan: "",
+        fileScanUpload: "",
+    })
+    const handleChangeVersionName = (e) => {
         const value = e.target.value;
-        this.validateVersionName(value, true)
+        validateVersionName(value, true)
     }
 
-    handleUploadFile = (value) => {
+    function handleUploadFile(value) {
+        const { file, urlFile, fileUpload } = state
         if (value.length !== 0) {
-            this.setState({
-                file: value[0].fileName,
-                urlFile: value[0].urlFile,
-                fileUpload: value[0].fileUpload
+            if (file !== value[0].fileName && urlFile !== value[0].urlFile && fileUpload !== value[0].fileUpload) {
+                setState({
+                    ...state,
+                    file: value[0].fileName,
+                    urlFile: value[0].urlFile,
+                    fileUpload: value[0].fileUpload
 
-            })
-        } else {
-            this.setState({
-                file: "",
-                urlFile: "",
-                fileUpload: ""
-            })
-        }
+                })
+            }
+        } 
 
     }
 
-    handleUploadFileScan = (value) => {
+    function handleUploadFileScan(value) {
+        const { fileScan, urlFileScan, fileScanUpload } = state
         if (value.length !== 0) {
-            this.setState({
-                fileScan: value[0].fileName,
-                urlFileScan: value[0].urlFile,
-                fileScanUpload: value[0].fileUpload
+            if (fileScan !== value[0].fileName && urlFileScan !== value[0].urlFile && fileScanUpload !== value[0].fileUpload) {
+                setState({
+                    ...state,
+                    fileScan: value[0].fileName,
+                    urlFileScan: value[0].urlFile,
+                    fileScanUpload: value[0].fileUpload
 
-            })
-        } else {
-            this.setState({
-                fileScan: "",
-                urlFileScan: "",
-                fileScanUpload: ""
-            })
-        }
-
-    }
-    handleIssuingDate = (value) => {
-        this.setState(state => {
-            return {
-                ...state,
-                documentIssuingDate: value,
+                })
             }
+        } 
+    }
+    const handleIssuingDate = (value) => {
+        setState({
+            ...state,
+            documentIssuingDate: value,
         })
     }
 
-    handleEffectiveDate = (value) => {
-        this.setState(state => {
-            return {
-                ...state,
-                documentEffectiveDate: value,
-            }
+    const handleEffectiveDate = (value) => {
+        setState({
+            ...state,
+            documentEffectiveDate: value,
         })
     }
 
-    handleExpiredDate = (value) => {
-        this.setState(state => {
-            return {
-                ...state,
-                documentExpiredDate: value,
-            }
+    const handleExpiredDate = (value) => {
+        setState({
+            ...state,
+            documentExpiredDate: value,
         })
     }
-    validateVersionName = (value, willUpdateState) => {
+    const validateVersionName = (value, willUpdateState) => {
         let msg = undefined;
-        const { translate } = this.props;
+        const { translate } = props;
         if (!value) {
             msg = translate('document.doc_version.no_blank_version_name');
         }
         if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    versionName: value,
-                    errorVersionName: msg,
-                }
+            setState({
+                ...state,
+                versionName: value,
+                errorVersionName: msg,
             })
         }
         return msg === undefined;
     }
-    isValidateFormAddVersion = () => {
-        return this.validateVersionName(this.state.versionName, false);
+    const isValidateFormAddVersion = () => {
+        return validateVersionName(state.versionName, false);
     }
 
-    save = () => {
-        if (this.isValidateFormAddVersion()) {
-            return this.props.handleChange(this.state);
+    const save = () => {
+        if (isValidateFormAddVersion()) {
+            return props.handleChange(state);
         }
     }
 
 
-    render() {
-        const { translate } = this.props;
-        const { errorVersionName } = this.state;
-
-        return (
-            <DialogModal
-                modalID="sub-modal-add-document-new-version"
-                formID="sub-form-add-document-new-version"
-                title={translate('document.add_version')}
-                disableSubmit={!this.isValidateFormAddVersion()}
-                func={this.save}
-            >
-                <React.Fragment>
-                    <div className={`form-group ${!errorVersionName ? "" : "has-error"}`}>
-                        <label>{translate('document.doc_version.name')}<span className="text-red">*</span></label>
-                        <input type="text" onChange={this.handleChangeVersionName} className="form-control" />
-                        <ErrorLabel content={errorVersionName} />
-                    </div>
-                    <div className="form-group">
-                        <label>{translate('document.upload_file')}</label>
-                        <UploadFile multiple={true} onChange={this.handleUploadFile} />
-                    </div>
-                    <div className="form-group">
-                        <label>{translate('document.upload_file_scan')}</label>
-                        <UploadFile multiple={true} onChange={this.handleUploadFileScan} />
-                    </div>
-                    <div className="form-group">
-                        <label>{translate('document.doc_version.issuing_date')}</label>
-                        <DatePicker
-                            id={`document-add-version-issuing-date`}
-                            onChange={this.handleIssuingDate}
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label>{translate('document.doc_version.effective_date')}</label>
-                        <DatePicker
-                            id={`document-add-version-effective-date`}
-                            onChange={this.handleEffectiveDate}
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label>{translate('document.doc_version.expired_date')}</label>
-                        <DatePicker
-                            id={`document-add-version-expired-date`}
-                            onChange={this.handleExpiredDate}
-                        />
-                    </div>
-                </React.Fragment>
-            </DialogModal>
-        )
-    }
+    const { translate } = props;
+    const { errorVersionName } = state;
+    return (
+        <DialogModal
+            modalID="sub-modal-add-document-new-version"
+            formID="sub-form-add-document-new-version"
+            title={translate('document.add_version')}
+            disableSubmit={!isValidateFormAddVersion()}
+            func={save}
+        >
+            <React.Fragment>
+                <div className={`form-group ${!errorVersionName ? "" : "has-error"}`}>
+                    <label>{translate('document.doc_version.name')}<span className="text-red">*</span></label>
+                    <input type="text" onChange={handleChangeVersionName} className="form-control" />
+                    <ErrorLabel content={errorVersionName} />
+                </div>
+                <div className="form-group">
+                    <label>{translate('document.upload_file')}</label>
+                    <UploadFile multiple={true} onChange={handleUploadFile} />
+                </div>
+                <div className="form-group">
+                    <label>{translate('document.upload_file_scan')}</label>
+                    <UploadFile multiple={true} onChange={handleUploadFileScan} />
+                </div>
+                <div className="form-group">
+                    <label>{translate('document.doc_version.issuing_date')}</label>
+                    <DatePicker
+                        id={`document-add-version-issuing-date`}
+                        onChange={handleIssuingDate}
+                    />
+                </div>
+                <div className="form-group">
+                    <label>{translate('document.doc_version.effective_date')}</label>
+                    <DatePicker
+                        id={`document-add-version-effective-date`}
+                        onChange={handleEffectiveDate}
+                    />
+                </div>
+                <div className="form-group">
+                    <label>{translate('document.doc_version.expired_date')}</label>
+                    <DatePicker
+                        id={`document-add-version-expired-date`}
+                        onChange={handleExpiredDate}
+                    />
+                </div>
+            </React.Fragment>
+        </DialogModal>
+    )
 }
+
 
 const mapStateToProps = state => state;
 

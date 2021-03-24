@@ -1,23 +1,23 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+import parse from 'html-react-parser';
 import Swal from 'sweetalert2';
-import { DataTableSetting, DatePicker, PaginateBar, SelectBox, SelectMulti, Tree, TreeTable } from '../../../../common-components';
-import { convertTime, getFormatDateFromTime } from '../../../../helpers/stringMethod';
+
+import { DataTableSetting, DatePicker, PaginateBar, SelectBox, SelectMulti, Tree, TreeTable, ExportExcel } from '../../../../common-components';
+import { getFormatDateFromTime } from '../../../../helpers/stringMethod';
 import { getStorage } from '../../../../config';
 
 import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import { performTaskAction } from "../../task-perform/redux/actions";
 import { taskManagementActions } from '../redux/actions';
-import TaskProjectAction from '../../task-project/redux/action';
 import { ProjectActions } from "../../../project/redux/actions";
 import { TaskAddModal } from './taskAddModal';
 import { ModalPerform } from '../../task-perform/component/modalPerform';
-import { duration } from 'moment';
 import { getTableConfiguration } from '../../../../helpers/tableConfiguration'
-import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
-import parse from 'html-react-parser';
+
+import { convertDataToExportData, getTotalTimeSheetLogs, formatPriority, formatStatus } from './functionHelpers';
 
 class TaskManagement extends Component {
     constructor(props) {
@@ -286,25 +286,6 @@ class TaskManagement extends Component {
         })
     }
 
-    getTotalTimeSheetLogs = (timesheetLogs) => {
-        let totalTime = timesheetLogs.reduce(function (tong, cur) {
-            if (cur.stoppedAt && cur.acceptLog) return tong + cur.duration;
-            else return tong;
-        }, 0);
-        let tt = this.convertTime(totalTime);
-
-        return tt;
-    }
-
-    convertTime = (ms) => {
-        if (!ms) return '00:00:00';
-        let hour = Math.floor(ms / (60 * 60 * 1000));
-        let minute = Math.floor((ms - hour * 60 * 60 * 1000) / (60 * 1000));
-        let second = Math.floor((ms - hour * 60 * 60 * 1000 - minute * 60 * 1000) / 1000);
-
-        return `${hour > 9 ? hour : `0${hour}`}:${minute > 9 ? minute : `0${minute}`}:${second > 9 ? second : `0${second}`}`;
-    }
-
     handleShowModal = async (id) => {
         await this.setState({
             currentTaskId: id
@@ -321,25 +302,6 @@ class TaskManagement extends Component {
             parentTask: id
         });
         window.$(`#addNewTask-undefined`).modal('show')
-    }
-
-
-    formatPriority = (data) => {
-        const { translate } = this.props;
-        if (data === 1) return translate('task.task_management.low');
-        if (data === 2) return translate('task.task_management.average');
-        if (data === 3) return translate('task.task_management.standard');
-        if (data === 4) return translate('task.task_management.high');
-        if (data === 5) return translate('task.task_management.urgent');
-    }
-
-    formatStatus = (data) => {
-        const { translate } = this.props;
-        if (data === "inprocess") return translate('task.task_management.inprocess');
-        else if (data === "wait_for_approval") return translate('task.task_management.wait_for_approval');
-        else if (data === "finished") return translate('task.task_management.finished');
-        else if (data === "delayed") return translate('task.task_management.delayed');
-        else if (data === "canceled") return translate('task.task_management.canceled');
     }
 
     handleRoleChange = (value) => {
@@ -448,17 +410,7 @@ class TaskManagement extends Component {
         });
     }
 
-    getTotalTimeSheet = (ts) => {
-        let total = 0;
-        for (let i = 0; i < ts.length; i++) {
-            let tslog = ts[i];
-            if (typeof (tslog.duration) === 'number' && tslog.acceptLog) {
-                total = total + Number(tslog.duration);
-            }
-        }
-        return convertTime(total);
-    }
-
+    
     handleChangeResponsibleEmployees = (e) => {
         const { value } = e.target;
         this.setState({
@@ -496,6 +448,7 @@ class TaskManagement extends Component {
         const { tasks, user, translate, taskProject, project } = this.props;
         const { currentTaskId, currentPage, currentTab, parentTask, startDate, endDate, perPage, status, monthTimeSheetLog, tableId, responsibleEmployees, creatorTime, projectSearch } = this.state;
         let currentTasks, units = [];
+
         if (tasks) {
             currentTasks = tasks.tasks;
         }
@@ -531,15 +484,15 @@ class TaskManagement extends Component {
                     description: dataTemp[n].description ? parse(dataTemp[n].description) : null,
                     organization: dataTemp[n].organizationalUnit ? dataTemp[n].organizationalUnit.name : translate('task.task_management.err_organizational_unit'),
                     project: dataTemp[n].taskProject ? dataTemp[n].taskProject.name : null,
-                    priority: this.formatPriority(dataTemp[n].priority),
+                    priority: formatPriority(translate, dataTemp[n].priority),
                     responsibleEmployees: dataTemp[n].responsibleEmployees ? dataTemp[n].responsibleEmployees.map(o => o.name).join(', ') : null,
                     accountableEmployees: dataTemp[n].accountableEmployees ? dataTemp[n].accountableEmployees.map(o => o.name).join(', ') : null,
                     creatorEmployees: dataTemp[n].creator ? dataTemp[n].creator.name : null,
                     startDate: getFormatDateFromTime(dataTemp[n].startDate, 'dd-mm-yyyy'),
                     endDate: getFormatDateFromTime(dataTemp[n].endDate, 'dd-mm-yyyy'),
-                    status: this.formatStatus(dataTemp[n].status),
+                    status: formatStatus(translate, dataTemp[n].status),
                     progress: dataTemp[n].progress ? dataTemp[n].progress + "%" : "0%",
-                    totalLoggedTime: this.getTotalTimeSheetLogs(dataTemp[n].timesheetLogs),
+                    totalLoggedTime: getTotalTimeSheetLogs(dataTemp[n].timesheetLogs),
                     parent: dataTemp[n].parent ? dataTemp[n].parent._id : null
                 }
                 let archived = "store";
@@ -659,6 +612,8 @@ class TaskManagement extends Component {
             })
         }
 
+        let exportData = convertDataToExportData(translate, currentTasks, translate("menu.task_management"));
+
         return (
             <React.Fragment>
                 <div className="box">
@@ -667,9 +622,12 @@ class TaskManagement extends Component {
                             <button className="btn btn-primary" type="button" style={{ borderRadius: 0, marginLeft: 10, backgroundColor: 'transparent', borderRadius: '4px', color: '#367fa9' }} title="Dạng bảng" onClick={() => this.handleDisplayType('table')}><i className="fa fa-list"></i> Dạng bảng</button>
                             <button className="btn btn-primary" type="button" style={{ borderRadius: 0, marginLeft: 10, backgroundColor: 'transparent', borderRadius: '4px', color: '#367fa9' }} title="Dạng cây" onClick={() => this.handleDisplayType('tree')}><i className="fa fa-sitemap"></i> Dạng cây</button>
                             <button className="btn btn-primary" type="button" style={{ borderRadius: 0, marginLeft: 10, backgroundColor: 'transparent', borderRadius: '4px', color: '#367fa9' }} onClick={() => { window.$('#tasks-filter').slideToggle() }}><i className="fa fa-filter"></i> Lọc</button>
+                            
+                            {exportData && <ExportExcel id="list-task-employee" buttonName="Báo cáo" exportData={exportData} style={{ marginLeft: '10px' }}/>}
                             {currentTab !== "informed" &&
                                 <button type="button" onClick={() => { this.handleAddTask("") }} className="btn btn-success pull-right" title={translate('task.task_management.add_title')}>{translate('task.task_management.add_task')}</button>
                             }
+
                             <TaskAddModal currentTasks={(currentTasks && currentTasks.length !== 0) && this.list_to_tree(currentTasks)} parentTask={parentTask} />
                         </div>
 
@@ -861,6 +819,8 @@ class TaskManagement extends Component {
                             ]}
                             setLimit={this.setLimit}
                         />
+
+                        {/* Dạng bảng */}
                         <div id="tree-table-container" style={{ marginTop: '20px' }}>
                             <TreeTable
                                 tableId={tableId}
@@ -882,6 +842,8 @@ class TaskManagement extends Component {
                                 funcDelete={this.handleDelete}
                             />
                         </div>
+
+                        {/* Dạng cây */}
                         <div id="tasks-list-tree" style={{ display: 'none', marginTop: '30px' }}>
                             <Tree id="tasks-list-treeview"
                                 plugins={false}
