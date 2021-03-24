@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DialogModal, DatePicker } from '../../../../../common-components';
+import { DialogModal } from '../../../../../common-components';
 
 import { createUnitKpiActions } from '../redux/actions';
 
@@ -101,10 +101,14 @@ class OrganizationalUnitKpiCreateModal extends Component {
                             <label className="col-sm-12">{translate('kpi.organizational_unit.create_organizational_unit_kpi_set_modal.default_target')}</label>
                             <ul>
                                 {parentKpi?.length > 0
-                                    && parentKpi.filter(item => item?.type !== 0)
+                                    ? parentKpi.filter(item => item?.type !== 0)
                                         .map(
                                             item => <li key={item?._id}>{item?.name} (5)</li>
                                         )
+                                    : <>
+                                        <li key={"default1"}>{"Phê duyệt công việc"} (5)</li>
+                                        <li key={"default2"}>{"Hỗ trợ thực hiện công việc"} (5)</li>
+                                    </>
                                 }
                             </ul>
                         </div>
