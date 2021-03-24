@@ -71,6 +71,23 @@
     width: calc((100% - 30px)/5);
 } 
 
+.angle-right-custom{
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+.task-name{
+    color: "#171717";
+    margin-right: 10px;
+}
+.task-name:hover, .task-project-name:hover{
+    opacity: .7;
+}
+
+.task-project-name{
+    color: #676767;
+}
+
 
 /* COLLAPSE */
 

@@ -115,7 +115,7 @@ const GeneralTaskPersonalChart = (props) => {
             roleName = [...roleName, translate('task.task_management.consulted')]
 
         if (currentTask.informedEmployees && currentTask.informedEmployees.includes(userId))
-            roleName = [...roleName, translate('task.task_management.consulted')]
+            roleName = [...roleName, translate('task.task_management.informed')]
 
         return roleName.join(", ")
     }
@@ -176,8 +176,8 @@ const GeneralTaskPersonalChart = (props) => {
         <div className="qlcv box-body">
             <div className="nav-tabs-custom" >
                 <ul className="general-tabs nav nav-tabs">
-                    <li className="active"><a className="general-task-type" href="#allGeneralTaskUrgent" data-toggle="tab" ><img style={{ width: '22px', height: '18px', marginRight: '5px' }} src={urgentIcon} alt="urgent" />{`${translate('task.task_dashboard.urgent_task')} `} <span>{`(${state.urgentTask ? state.urgentTask.length : 0})`}</span></a></li>
-                    <li><a className="general-task-type" href="#allGeneralTaskTodo" data-toggle="tab" ><img src={todoIcon} alt="todo" style={{ width: '18px', marginRight: '5px' }} />  {`${translate('task.task_dashboard.to_do_task')} `}<span>{`(${state.todoTask ? state.todoTask.length : 0})`}</span></a></li>
+                    <li className="active"><a className="general-task-type" href="#allGeneralTaskUrgent" data-toggle="tab" ><img style={{ width: '18px', height: '18px', marginRight: '5px' }} src={urgentIcon} alt="urgent" />{`${translate('task.task_dashboard.urgent_task')} `} <span>{`(${state.urgentTask ? state.urgentTask.length : 0})`}</span></a></li>
+                    <li><a className="general-task-type" href="#allGeneralTaskTodo" data-toggle="tab" ><img src={todoIcon} alt="todo" style={{ width: '20px', marginRight: '5px' }} />  {`${translate('task.task_dashboard.to_do_task')} `}<span>{`(${state.todoTask ? state.todoTask.length : 0})`}</span></a></li>
                     <li><a className="general-task-type" href="#allGeneralTaskOverdue" data-toggle="tab" >{`${translate('task.task_dashboard.overdue_task')} `}<span>{`(${state.overdueTask ? state.overdueTask.length : 0})`}</span></a></li>
                     <li><a className="general-task-type" href="#allGeneralTaskDelay" data-toggle="tab" >{`${translate('task.task_dashboard.delay_task')} `}<span>{`(${state.delayTask ? state.delayTask.length : 0})`}</span></a></li>
                     <li><a className="general-task-type" href="#allGeneralTaskDeedlineNow" data-toggle="tab" >{`Hạn hôm nay `}<span>{`(${state.deadlineNow ? state.deadlineNow.length : 0})`}</span></a></li>
@@ -196,7 +196,14 @@ const GeneralTaskPersonalChart = (props) => {
                                             state.urgentTask.map((obj, index) => (
                                                 <div className="panel panel-default" key={index}>
                                                     <a role="button" className="item-question collapsed" data-toggle="collapse" data-parent="#accordion-urgent" href={`#collapse-urgent${index}`} aria-expanded="true" aria-controls="collapse1a">
-                                                        <span className="index">{index + 1}</span> <span style={{ color: "#171717", }}>{obj.name}</span> <small className="label label-danger" style={{ fontSize: '9px', marginLeft: '5px', borderRadius: '.5em' }}>{obj.progress}% - {translate('task.task_dashboard.rest')} {obj.nowToEnd} {translate('task.task_dashboard.day')}</small>
+                                                        <span className="index">{index + 1}</span>
+                                                        <span className="task-name">{obj.name}</span>
+                                                        {
+                                                            obj.taskProject && obj.taskProject.name &&
+                                                            <><i className="fa fa-angle-right angle-right-custom" aria-hidden="true"></i>
+                                                                <a className="task-project-name" title="dự án">{obj.taskProject.name}</a></>
+                                                        }
+                                                        <small className="label label-danger" style={{ fontSize: '9px', marginLeft: '5px', borderRadius: '.5em' }}>{obj.progress}% - {translate('task.task_dashboard.rest')} {obj.nowToEnd} {translate('task.task_dashboard.day')}</small>
                                                     </a>
                                                     <div id={`collapse-urgent${index}`} className="panel-collapse collapse" role="tabpanel">
                                                         <div className="panel-body">
@@ -240,7 +247,14 @@ const GeneralTaskPersonalChart = (props) => {
                                             state.todoTask.map((obj, index) => (
                                                 <div className="panel panel-default" key={index}>
                                                     <a role="button" className="item-question collapsed" data-toggle="collapse" data-parent="#accordion-todo" href={`#collapse-todo${index}`} aria-expanded="false" aria-controls={`#collapse-todo${index}`}>
-                                                        <span className="index">{index + 1}</span> <span style={{ color: "#171717", }}>{obj.name}</span> <small className="label label-primary" style={{ fontSize: '9px', marginLeft: '5px', borderRadius: '.5em' }}>{obj.progress}% - {translate('task.task_dashboard.rest')} {obj.nowToEnd} {translate('task.task_dashboard.day')}</small>
+                                                        <span className="index">{index + 1}</span>
+                                                        <span className="task-name">{obj.name}</span>
+                                                        {
+                                                            obj.taskProject && obj.taskProject.name &&
+                                                            <><i className="fa fa-angle-right angle-right-custom" aria-hidden="true"></i>
+                                                                <a className="task-project-name" title="dự án">{obj.taskProject.name}</a></>
+                                                        }
+                                                        <small className="label label-primary" style={{ fontSize: '9px', marginLeft: '5px', borderRadius: '.5em' }}>{obj.progress}% - {translate('task.task_dashboard.rest')} {obj.nowToEnd} {translate('task.task_dashboard.day')}</small>
                                                     </a>
                                                     <div id={`collapse-todo${index}`} className="panel-collapse collapse" role="tabpanel">
                                                         <div className="panel-body">
@@ -287,7 +301,12 @@ const GeneralTaskPersonalChart = (props) => {
                                                 <div className="panel panel-default" key={index}>
                                                     <a role="button" className="item-question collapsed" data-toggle="collapse" data-parent="#accordion-overdue" href={`#collapse-overdue${index}`} aria-expanded="true" aria-controls="collapse1a">
                                                         <span className="index">{index + 1}</span>
-                                                        <span style={{ color: "#171717", }}>{obj.name}</span>
+                                                        <span className="task-name">{obj.name}</span>
+                                                        {
+                                                            obj.taskProject && obj.taskProject.name &&
+                                                            <><i className="fa fa-angle-right angle-right-custom" aria-hidden="true"></i>
+                                                                <a className="task-project-name" title="dự án">{obj.taskProject.name}</a></>
+                                                        }
                                                         <small className="label label-danger" style={{ fontSize: '9px', marginLeft: '5px', borderRadius: '.5em' }}>{translate('task.task_dashboard.overdue')} {obj.nowToEnd} {translate('task.task_dashboard.day')}</small>
                                                     </a>
                                                     <div id={`collapse-overdue${index}`} className="panel-collapse collapse" role="tabpanel">
@@ -334,7 +353,13 @@ const GeneralTaskPersonalChart = (props) => {
                                             state.delayTask.map((obj, index) => (
                                                 <div className="panel panel-default" key={index}>
                                                     <a role="button" className="item-question collapsed" data-toggle="collapse" data-parent="#accordion-delay" href={`#collapse-delay${index}`} aria-expanded="true" aria-controls="collapse1a">
-                                                        <span className="index">{index + 1}</span> <span style={{ color: "#171717", }}>{obj.name}</span>
+                                                        <span className="index">{index + 1}</span>
+                                                        <span className="task-name">{obj.name}</span>
+                                                        {
+                                                            obj.taskProject && obj.taskProject.name &&
+                                                            <><i className="fa fa-angle-right angle-right-custom" aria-hidden="true"></i>
+                                                                <a className="task-project-name" title="dự án">{obj.taskProject.name}</a></>
+                                                        }
                                                         <small className="label" style={{ fontSize: '9px', marginLeft: '5px', borderRadius: '.5em', backgroundColor: "#db8b0b" }}>{obj.progress}% - {translate('task.task_dashboard.rest')} {obj.nowToEnd} {translate('task.task_dashboard.day')}</small>
                                                     </a>
                                                     <div id={`collapse-delay${index}`} className="panel-collapse collapse" role="tabpanel">
@@ -383,12 +408,18 @@ const GeneralTaskPersonalChart = (props) => {
                                             state.deadlineNow.map((obj, index) => (
                                                 <div className="panel panel-default" key={index}>
                                                     <a role="button" className="item-question collapsed" data-toggle="collapse" data-parent="#accordion-deadlinenow" href={`#collapse-deadlinenow${index}`} aria-expanded="true" aria-controls="collapse1a">
-                                                        <span className="index">{index + 1}</span> <span style={{ color: "#171717", }}>{obj.name}</span>
+                                                        <span className="index">{index + 1}</span>
+                                                        <span className="task-name">{obj.name}</span>
+                                                        {
+                                                            obj.taskProject && obj.taskProject.name &&
+                                                            <><i className="fa fa-angle-right angle-right-custom" aria-hidden="true"></i>
+                                                                <a className="task-project-name" title="dự án">{obj.taskProject.name}</a></>
+                                                        }
                                                     </a>
                                                     <div id={`collapse-deadlinenow${index}`} className="panel-collapse collapse" role="tabpanel">
                                                         <div className="panel-body">
                                                             <div className="time-todo-range">
-                                                                <span style={{ marginRight: '10px' }}>Thời gian thực hiện công việc: </span> <span style={{ marginRight: '5px' }}><i className="fa fa-clock-o" style={{ marginRight: '1px' }}> </i> {formatTime(obj.startDate)}</span> <span style={{ marginRight: '5px' }}>-</span> <span> <i className="fa fa-clock-o" style={{ marginRight: '1px' }}> </i>{formatTime(obj.endDate)}</span>
+                                                                <span style={{ marginRight: '10px' }}>Thời gian thực hiện công việc: </span> <span style={{ marginRight: '5px' }}><i className="fa fa-clock-o" style={{ marginRight: '1px', color: "rgb(191 71 71)" }}> </i> {formatTime(obj.startDate)}</span> <span style={{ marginRight: '5px' }}>-</span> <span> <i className="fa fa-clock-o" style={{ marginRight: '4px', color: "rgb(191 71 71)" }}> </i>{formatTime(obj.endDate)}</span>
                                                             </div>
 
                                                             <div className="priority-task-wraper">
@@ -430,13 +461,19 @@ const GeneralTaskPersonalChart = (props) => {
                                             props.tasks.tasksbyuser.deadlineincoming.map((obj, index) => (
                                                 <div className="panel panel-default" key={index}>
                                                     <a role="button" className="item-question collapsed" data-toggle="collapse" data-parent="#accordion-deadlineincoming" href={`#collapse-deadlineincoming${index}`} aria-expanded="true" aria-controls="collapse1a">
-                                                        <span className="index">{index + 1}</span> <span style={{ color: "#171717", }}>{obj.task && obj.task.name}</span>
+                                                        <span className="index">{index + 1}</span>
+                                                        <span className="task-name">{obj.task && obj.task.name}</span>
+                                                        {
+                                                            obj.task && obj.task.taskProject && obj.task.taskProject.name &&
+                                                            <><i className="fa fa-angle-right angle-right-custom" aria-hidden="true"></i>
+                                                                <a className="task-project-name" title="dự án">{obj.task.taskProject.name}</a></>
+                                                        }
                                                         <small className="label" style={{ fontSize: '9px', marginLeft: '5px', borderRadius: '.5em', backgroundColor: "#db8b0b" }}>{obj.task && obj.task.progress}% - {translate('task.task_dashboard.rest')} {obj.nowToEnd} {translate('task.task_dashboard.day')}</small>
                                                     </a>
                                                     <div id={`collapse-deadlineincoming${index}`} className="panel-collapse collapse" role="tabpanel">
                                                         <div className="panel-body">
                                                             <div className="time-todo-range">
-                                                                <span style={{ marginRight: '10px' }}>Thời gian thực hiện công việc: </span> <span style={{ marginRight: '5px' }}><i className="fa fa-clock-o" style={{ marginRight: '1px' }}> </i> {formatTime(obj.startDate)}</span> <span style={{ marginRight: '5px' }}>-</span> <span> <i className="fa fa-clock-o" style={{ marginRight: '1px' }}> </i>{formatTime(obj.endDate)}</span>
+                                                                <span style={{ marginRight: '10px' }}>Thời gian thực hiện công việc: </span> <span style={{ marginRight: '5px' }}><i className="fa fa-clock-o" style={{ marginRight: '1px', color: "rgb(191 71 71)" }}> </i> {formatTime(obj.startDate)}</span> <span style={{ marginRight: '5px' }}>-</span> <span> <i className="fa fa-clock-o" style={{ marginRight: '4px', color: "rgb(191 71 71)" }}> </i>{formatTime(obj.endDate)}</span>
                                                             </div>
 
                                                             <div className="priority-task-wraper">
@@ -480,13 +517,19 @@ const GeneralTaskPersonalChart = (props) => {
                                             state.intimeTask.map((obj, index) => (
                                                 <div className="panel panel-default" key={index}>
                                                     <a role="button" className="item-question collapsed" data-toggle="collapse" data-parent="#accordion-intime" href={`#collapse-intime${index}`} aria-expanded="true" aria-controls="collapse1a">
-                                                        <span className="index">{index + 1}</span> <span style={{ color: "#171717", }}>{obj.name}</span>
+                                                        <span className="index">{index + 1}</span>
+                                                        <span className="task-name">{obj.name}</span>
+                                                        {
+                                                            obj.taskProject && obj.taskProject.name &&
+                                                            <><i className="fa fa-angle-right angle-right-custom" aria-hidden="true"></i>
+                                                                <a className="task-project-name" title="dự án">{obj.taskProject.name}</a></>
+                                                        }
                                                         <small className="label label-success" style={{ fontSize: '9px', marginLeft: '5px', borderRadius: '.5em' }}>{obj.progress}% - {translate('task.task_dashboard.rest')} {obj.nowToEnd} {translate('task.task_dashboard.day')}</small>
                                                     </a>
                                                     <div id={`collapse-intime${index}`} className="panel-collapse collapse" role="tabpanel">
                                                         <div className="panel-body">
                                                             <div className="time-todo-range">
-                                                                <span style={{ marginRight: '10px' }}>Thời gian thực hiện công việc: </span> <span style={{ marginRight: '5px' }}><i className="fa fa-clock-o" style={{ marginRight: '1px' }}> </i> {formatTime(obj.startDate)}</span> <span style={{ marginRight: '5px' }}>-</span> <span> <i className="fa fa-clock-o" style={{ marginRight: '4px' }}> </i>{formatTime(obj.endDate)}</span>
+                                                                <span style={{ marginRight: '10px' }}>Thời gian thực hiện công việc: </span> <span style={{ marginRight: '5px' }}><i className="fa fa-clock-o" style={{ marginRight: '1px', color: "rgb(191 71 71)" }}> </i> {formatTime(obj.startDate)}</span> <span style={{ marginRight: '5px' }}>-</span> <span> <i className="fa fa-clock-o" style={{ marginRight: '4px', color: "rgb(191 71 71)" }}> </i>{formatTime(obj.endDate)}</span>
                                                             </div>
 
                                                             <div className="priority-task-wraper">
