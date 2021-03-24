@@ -2,10 +2,11 @@ import React, { useEffect, useState } from 'react'
 import { withTranslate } from 'react-redux-multilingual';
 import moment from 'moment';
 import Swal from 'sweetalert2';
-import useDeepCompareEffect from 'use-deep-compare-effect'
 import dayjs from 'dayjs';
 import { SlimScroll } from '../../../../common-components';
 import "./generalTaskPersonalChart.css";
+import urgentIcon from './warning.png';
+import todoIcon from './to-do-list.png';
 const GeneralTaskPersonalChart = (props) => {
     const { translate } = props;
     const [state, setState] = useState({
@@ -100,6 +101,25 @@ const GeneralTaskPersonalChart = (props) => {
         })
     }, [props.tasks.tasks])
 
+
+    const roleInTask = (currentTask) => {
+        const { userId } = state;
+        let roleName = [];
+        if (currentTask.responsibleEmployees && currentTask.responsibleEmployees.includes(userId))
+            roleName = [...roleName, translate('task.task_management.responsible')]
+
+        if (currentTask.accountableEmployees && currentTask.accountableEmployees.includes(userId))
+            roleName = [...roleName, translate('task.task_management.accountable')]
+
+        if (currentTask.consultedEmployees && currentTask.consultedEmployees.includes(userId))
+            roleName = [...roleName, translate('task.task_management.consulted')]
+
+        if (currentTask.informedEmployees && currentTask.informedEmployees.includes(userId))
+            roleName = [...roleName, translate('task.task_management.consulted')]
+
+        return roleName.join(", ")
+    }
+
     // chú thích quá hạn
     const showTaskOverDueDescription = () => {
         Swal.fire({
@@ -151,12 +171,13 @@ const GeneralTaskPersonalChart = (props) => {
         if (data === 4) return translate('task.task_management.high');
         if (data === 5) return translate('task.task_management.urgent');
     }
+
     return (
         <div className="qlcv box-body">
             <div className="nav-tabs-custom" >
                 <ul className="general-tabs nav nav-tabs">
-                    <li className="active"><a className="general-task-type" href="#allGeneralTaskUrgent" data-toggle="tab" >{`${translate('task.task_dashboard.urgent_task')} `} <span>{`(${state.urgentTask ? state.urgentTask.length : 0})`}</span></a></li>
-                    <li><a className="general-task-type" href="#allGeneralTaskTodo" data-toggle="tab" >{`${translate('task.task_dashboard.to_do_task')} `}<span>{`(${state.todoTask ? state.todoTask.length : 0})`}</span></a></li>
+                    <li className="active"><a className="general-task-type" href="#allGeneralTaskUrgent" data-toggle="tab" ><img style={{ width: '22px', height: '18px', marginRight: '5px' }} src={urgentIcon} alt="urgent" />{`${translate('task.task_dashboard.urgent_task')} `} <span>{`(${state.urgentTask ? state.urgentTask.length : 0})`}</span></a></li>
+                    <li><a className="general-task-type" href="#allGeneralTaskTodo" data-toggle="tab" ><img src={todoIcon} alt="todo" style={{ width: '18px', marginRight: '5px' }} />  {`${translate('task.task_dashboard.to_do_task')} `}<span>{`(${state.todoTask ? state.todoTask.length : 0})`}</span></a></li>
                     <li><a className="general-task-type" href="#allGeneralTaskOverdue" data-toggle="tab" >{`${translate('task.task_dashboard.overdue_task')} `}<span>{`(${state.overdueTask ? state.overdueTask.length : 0})`}</span></a></li>
                     <li><a className="general-task-type" href="#allGeneralTaskDelay" data-toggle="tab" >{`${translate('task.task_dashboard.delay_task')} `}<span>{`(${state.delayTask ? state.delayTask.length : 0})`}</span></a></li>
                     <li><a className="general-task-type" href="#allGeneralTaskDeedlineNow" data-toggle="tab" >{`Hạn hôm nay `}<span>{`(${state.deadlineNow ? state.deadlineNow.length : 0})`}</span></a></li>
@@ -192,6 +213,11 @@ const GeneralTaskPersonalChart = (props) => {
                                                                     <div className="fillmult" data-width={`${obj.progress}%`} style={{ width: `${obj.progress}%`, backgroundColor: obj.progress < 50 ? "#dc0000" : "#28a745" }}></div>
                                                                     <span className="perc">{obj.progress}%</span>
                                                                 </div>
+                                                            </div>
+
+                                                            <div className="role-in-task">
+                                                                <span style={{ marginRight: '10px' }}>Vai trò trong công việc: </span>
+                                                                <span>{roleInTask(obj)}</span>
                                                             </div>
                                                             <a href={`/task?taskId=${obj._id}`} target="_blank" className="seemore-task">Xem chi tiết</a>
                                                         </div>
@@ -233,6 +259,11 @@ const GeneralTaskPersonalChart = (props) => {
                                                                     <div className="fillmult" data-width={`${obj.progress}%`} style={{ width: `${obj.progress}%`, backgroundColor: obj.progress < 50 ? "#dc0000" : "#28a745" }}></div>
                                                                     <span className="perc">{obj.progress}%</span>
                                                                 </div>
+                                                            </div>
+
+                                                            <div className="role-in-task">
+                                                                <span style={{ marginRight: '10px' }}>Vai trò trong công việc: </span>
+                                                                <span>{roleInTask(obj)}</span>
                                                             </div>
                                                             <a href={`/task?taskId=${obj._id}`} target="_blank" className="seemore-task">Xem chi tiết</a>
                                                         </div>
@@ -277,6 +308,11 @@ const GeneralTaskPersonalChart = (props) => {
                                                                     <span className="perc">{obj.progress}%</span>
                                                                 </div>
                                                             </div>
+
+                                                            <div className="role-in-task">
+                                                                <span style={{ marginRight: '10px' }}>Vai trò trong công việc: </span>
+                                                                <span>{roleInTask(obj)}</span>
+                                                            </div>
                                                             <a href={`/task?taskId=${obj._id}`} target="_blank" className="seemore-task">Xem chi tiết</a>
                                                         </div>
                                                     </div>
@@ -319,6 +355,12 @@ const GeneralTaskPersonalChart = (props) => {
                                                                     <span className="perc">{obj.progress}%</span>
                                                                 </div>
                                                             </div>
+
+                                                            <div className="role-in-task">
+                                                                <span style={{ marginRight: '10px' }}>Vai trò trong công việc: </span>
+                                                                <span>{roleInTask(obj)}</span>
+                                                            </div>
+
                                                             <a href={`/task?taskId=${obj._id}`} target="_blank" className="seemore-task">Xem chi tiết</a>
                                                         </div>
                                                     </div>
@@ -363,6 +405,11 @@ const GeneralTaskPersonalChart = (props) => {
                                                                 </div>
                                                             </div>
 
+                                                            <div className="role-in-task">
+                                                                <span style={{ marginRight: '10px' }}>Vai trò trong công việc: </span>
+                                                                <span>{roleInTask(obj)}</span>
+                                                            </div>
+                                                            <a href={`/task?taskId=${obj._id}`} target="_blank" className="seemore-task">Xem chi tiết</a>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -406,6 +453,12 @@ const GeneralTaskPersonalChart = (props) => {
                                                                 </div>
                                                             </div>
 
+                                                            <div className="role-in-task">
+                                                                <span style={{ marginRight: '10px' }}>Vai trò trong công việc: </span>
+                                                                <span>{roleInTask(obj.task)}</span>
+                                                            </div>
+                                                            <a href={`/task?taskId=${obj.task._id}`} target="_blank" className="seemore-task">Xem chi tiết</a>
+
                                                         </div>
                                                     </div>
                                                 </div>
@@ -447,6 +500,11 @@ const GeneralTaskPersonalChart = (props) => {
                                                                     <div className="fillmult" data-width={`${obj.progress}%`} style={{ width: `${obj.progress}%`, backgroundColor: obj.progress < 50 ? "#dc0000" : "#28a745" }}></div>
                                                                     <span className="perc">{obj.progress}%</span>
                                                                 </div>
+                                                            </div>
+
+                                                            <div className="role-in-task">
+                                                                <span style={{ marginRight: '10px' }}>Vai trò trong công việc: </span>
+                                                                <span>{roleInTask(obj)}</span>
                                                             </div>
                                                             <a href={`/task?taskId=${obj._id}`} target="_blank" className="seemore-task">Xem chi tiết</a>
                                                         </div>
