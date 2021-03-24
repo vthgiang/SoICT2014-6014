@@ -24,9 +24,14 @@ export function newsFeeds(state = initState, action) {
             }
         
         case homeConstants.RECEIVE_NEWSFEED_SUCCESS:
+            let newsFeedSocket = state.newsFeed;
+            newsFeedSocket.forEach((item, index) => {
+                if (item?._id === action.payload?._id) newsFeedSocket.splice(index, 1);
+            });
+
             return {
                 ...state,
-                newsFeed: [action.payload, ...state.newsFeed]
+                newsFeed: [action.payload, ...newsFeedSocket]
             }
         case homeConstants.CREATE_COMMENT_REQUEST:
             return {

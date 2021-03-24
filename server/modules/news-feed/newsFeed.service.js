@@ -30,6 +30,9 @@ exports.getNewsFeed = async (portal, data) => {
             { path: 'comments.creator', select: 'name email avatar' }
         ])
 
+    newsFeeds.map(item => {
+        item.content = item?.content?.reverse();
+    })
     return newsFeeds
 }
 
@@ -72,6 +75,7 @@ exports.createNewsFeed = async (portal, data) => {
             { path: "content.creator", select:"name email avatar" },
             { path: 'comments.creator', select: 'name email avatar' }
         ])
+    newsFeed?.content?.reverse();
 
     if (relatedUsers?.length > 0) {
         relatedUsers.map(user => {
