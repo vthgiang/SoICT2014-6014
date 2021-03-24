@@ -16,3 +16,12 @@
 .newsfeed-content-level1 > a, .newsfeed-content-level2 > a{
     font-weight: 700;
 }
+
+.newsfeed-box {
+    border-radius: 5px !important;
+    margin: 10px 10% !important;
+    border: 1px solid #ebebeb !important;
+    -webkit-box-shadow: 2px 2px 20px 0px #ebebeb !important;
+    -moz-box-shadow: 2px 2px 20px 0px rgba(235,235,235,1) !important;
+    box-shadow: 2px 2px 20px 0px rgba(235,235,235,1) !important;
+}

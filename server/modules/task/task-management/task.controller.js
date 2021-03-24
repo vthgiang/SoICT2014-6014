@@ -473,7 +473,7 @@ exports.createTask = async (req, res) => {
             associatedDataObject: { 
                 dataType: 1,
                 value: task?._id,
-                description: task?.description
+                description: task?.name
             },
             relatedUsers: data?.users
         });
@@ -484,7 +484,7 @@ exports.createTask = async (req, res) => {
             associatedDataObject: { 
                 dataType: 1,
                 value: task?._id,
-                description: task?.description
+                description: task?.name
             },
             relatedUsers: collaboratedData?.users
         });
