@@ -723,6 +723,32 @@ class SideBar extends Component {
                                     ],
                                 }}
                             />
+
+                            {/* Quản lý vận chuyển */}
+                            <GroupItem
+                                groupItem={{
+                                    name: "menu.manage_transport",
+                                    icon: "fa fa-truck",
+                                    list: [
+                                        {
+                                            name: "menu.manufacturing_dashboard",
+                                            icon: "fa fa-dashboard",
+                                            path: "/manufacturing-dashboard",
+                                        },
+                                        {
+                                            name: "menu.manage_transport_requirements",
+                                            icon: "fa fa-calendar-o",
+                                            path: "/example10",
+                                        },
+                                        {
+                                            name: "menu.manage_transport_requirements",
+                                            icon: "fa fa-calendar-o",
+                                            path: "/manage-transport-requirements",
+                                        },
+                                    ],
+                                }}
+                            />
+
                             {/* Hướng dẫn sử dụng */}
                             <Item
                                 item={{

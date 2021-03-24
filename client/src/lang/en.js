@@ -231,6 +231,9 @@ export default {
             manage_manufacturing_mill: "Manage manufacturing mill",
             manage_project: "Manage Project",
 
+            // Quản lý vận chuyển
+            manage_transport: "Manage transport",
+            manage_transport_requirements: "Manage transport requirements",
 
             user_guide: "User guide",
             user_guide_detail: "User guide detail",
@@ -4112,6 +4115,10 @@ export default {
                 search: "Search",
                 create_works: "Create works",
             },
+        },
+
+        manage_transport: {
+            add_requirements: "Add a new requirement",
         },
     },
 };

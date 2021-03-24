@@ -108,6 +108,9 @@ import { workSchedule } from "../modules/production/manufacturing/work-schedule/
 import { manufacturingPlan } from "../modules/production/manufacturing/manufacturing-plan/redux/reducers";
 import { manufacturingCommand } from "../modules/production/manufacturing/manufacturing-command/redux/reducers";
 
+// Transport
+import { transportRequirements } from '../modules/production/transport/transport-requirements/redux/reducers'
+
 import { project } from "../modules/project/redux/reducers";
 
 
@@ -214,7 +217,7 @@ const appReducer = combineReducers({
 
     //plane
     plan,
-
+    
     //example1
     example1,
 
@@ -229,6 +232,10 @@ const appReducer = combineReducers({
     workSchedule,
     manufacturingPlan,
     manufacturingCommand,
+
+    // production - transport
+
+    transportRequirements,
 
     // project
     project,

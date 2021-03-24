@@ -243,6 +243,10 @@ export default {
             manage_manufacturing_mill: "Quản lý xưởng sản xuất",
             manage_manufacturing_lot: "Quản lý lô sản xuất",
             manage_project: "Quản lý dự án",
+            
+            // Quản lý vận chuyển
+            manage_transport: "Quản lý vận chuyển",
+            manage_transport_requirements: "Yêu cầu vận chuyển",
 
             user_guide: "Hướng dẫn sử dụng",
             user_guide_detail: "Chi tiết hướng dẫn sử dụng",
@@ -5631,5 +5635,8 @@ export default {
                 sub_product: "số lượng phế phẩm"
             }
         },
+        manage_transport: {
+            add_requirements: "Thêm yêu cầu vận chuyển",
+        }
     },
 };

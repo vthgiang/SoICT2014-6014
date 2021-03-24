@@ -107,6 +107,10 @@ const LINK_CATEGORY = {
         name: "manufacturing-management",
         description: "Quản lý sản xuất"
     },
+    TRANSPORT: {
+        name: "transport-managerment",
+        description: "Quản lý vận chuyển"
+    },
     PROJECT: {
         name: "projects-manager",
         description: "Quản lý dự án",
@@ -1391,6 +1395,16 @@ const LINKS = [{
         ROOT_ROLES.ADMIN.name
     ],
     components: getComponentsInLink('/manage-manufacturing-lot'),
+},
+// Quan li van chuyen transport
+{
+    url: "/manage-transport-requirements",
+    description: "Quản lý yêu cầu vận chuyển",
+    category: LINK_CATEGORY.TRANSPORT.name,
+    roles: [
+        ROOT_ROLES.SUPER_ADMIN.name,
+        ROOT_ROLES.ADMIN.name
+    ]
 },
 
 // Quan li du an
