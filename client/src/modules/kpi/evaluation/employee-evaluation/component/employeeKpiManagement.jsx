@@ -529,9 +529,9 @@ class EmployeeKpiManagement extends Component {
                         let endTaskD = new Date(x.endDate);
                         let startApproveD = new Date(x.preEvaDate);
                         let endApproveD = new Date(x.date);
-                        let automaticPoint = (x.results.automaticPoint === null) ? "Chưa đánh giá" : parseInt(x.results.automaticPoint);
-                        let employeePoint = (x.results.employeePoint === null) ? "Chưa đánh giá" : parseInt(x.results.employeePoint);
-                        let approverPoint = (x.results.approvedPoint === null) ? "Chưa đánh giá" : parseInt(x.results.approvedPoint);
+                        let automaticPoint = (x?.results?.automaticPoint < 0) ? "Chưa đánh giá" : parseInt(x.results.automaticPoint);
+                        let employeePoint = (x?.results?.employeePoint < 0) ? "Chưa đánh giá" : parseInt(x.results.employeePoint);
+                        let approverPoint = (x?.results?.approvedPoint < 0) ? "Chưa đánh giá" : parseInt(x.results.approvedPoint);
                         let status = this.formatTaskStatus(translate, x.status);
                         let contributionPoint = parseInt(x.results.contribution);
                         let importantLevel = parseInt(x.results.taskImportanceLevel);
@@ -588,7 +588,7 @@ class EmployeeKpiManagement extends Component {
                 let automaticPoint = (listKpiUnit[i].automaticPoint === null) ? "Chưa đánh giá" : parseInt(listKpiUnit[i].automaticPoint);
                 let employeePoint = (listKpiUnit[i].employeePoint === null) ? "Chưa đánh giá" : parseInt(listKpiUnit[i].employeePoint);
                 let approverPoint = (listKpiUnit[i].approvedPoint === null) ? "Chưa đánh giá" : parseInt(listKpiUnit[i].approvedPoint);
-                if (time === (convertedData[i].time)) {
+                if (time === (convertedData?.[i]?.time)) {
                     let info = {
                         employeeNumber,
                         kpisUnitNumber,
