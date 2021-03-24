@@ -1274,6 +1274,7 @@ export default {
             info: "Thông tin về đơn vị",
             name: "Tên đơn vị",
             description: "Mô tả về đơn vị",
+            total_employee: "Số lượng nhân viên",
             parent: "Đơn vị cha",
             select_parent: "Chọn đơn vị cha",
             no_parent: "Không có đơn vị cha",
