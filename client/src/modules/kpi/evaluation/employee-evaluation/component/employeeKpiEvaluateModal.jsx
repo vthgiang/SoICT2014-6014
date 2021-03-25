@@ -146,8 +146,11 @@ class EmployeeKpiEvaluateModal extends Component {
     handleSetPointAllKPI = () => {
         let employeeId = this.props.employeeKpiSet.creator._id;
         let { employeeKpiSet } = this.props;
-        let kpis = employeeKpiSet.kpis.map(element => element._id);
 
+        let kpis = employeeKpiSet.kpis.map(element => ({
+            id: element._id,
+            type: element.type
+        }));
         this.props.setPointAllKPI(employeeId, employeeKpiSet._id, employeeKpiSet.date, kpis);
 
     }
