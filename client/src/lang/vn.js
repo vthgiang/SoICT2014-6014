@@ -3419,6 +3419,7 @@ export default {
                 get_timer_status_fail:
                     "Lấy trạng thái bấm giờ hiện tại thất bại",
                 start_timer_fail: "Bắt đầu bấm giờ thất bại",
+                timer_exist_another_task: "Bạn đã bấm giờ cho công việc khác",
                 pause_timer_fail: "Tạm dừng bấm giờ thất bại",
                 continue_timer_fail: "Tiếp tục bấm giờ thất bại",
                 stop_timer_fail: "Kết thúc bấm giờ thất bại",

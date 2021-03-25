@@ -108,7 +108,7 @@ getCurrentTaskTimesheetLogOfEmployeeInOrganizationalUnit = async (req, res) => {
  */
 exports.startTimesheetLog = async (req, res) => {
     try {
-        let timerStatus = await PerformTaskService.startTimesheetLog(req.portal, req.params, req.body);
+        let timerStatus = await PerformTaskService.startTimesheetLog(req.portal, req.params, req.body, req.user);
         await Logger.info(req.user.email, 'start_timer_success', req.portal)
         res.status(200).json({
             success: true,
