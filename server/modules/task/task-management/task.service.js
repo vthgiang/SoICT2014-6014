@@ -554,7 +554,6 @@ exports.getPaginatedTasks = async (portal, task) => {
         .skip(perPage * (page - 1)).limit(perPage).populate([
             { path: "organizationalUnit parent" },
             { path: 'creator', select: "_id name email avatar" },
-            { path: 'taskProject', select: "_id name" },
             { path: 'responsibleEmployees', select : "_id name email avatar" },
             { path: 'accountableEmployees', select : "_id name email avatar" },
             { path: "timesheetLogs.creator", select: "name" },
@@ -717,7 +716,6 @@ exports.getPaginatedTasksThatUserHasResponsibleRole = async (portal, task) => {
         .populate({ path: "organizationalUnit parent" })
         .populate({path: "creator", select :"_id name email avatar"})
         .populate({ path: "responsibleEmployees", select: "_id name email avatar" })
-        .populate({path: "taskProject", select: "_id name"})
     
 
     var totalCount = await Task(connect(DB_CONNECTION, portal)).countDocuments({
@@ -881,7 +879,6 @@ exports.getPaginatedTasksThatUserHasAccountableRole = async (portal, task) => {
         .skip(perPage * (page - 1)).limit(perPage)
         .populate({ path: "organizationalUnit parent" })
         .populate({ path: 'creator', select: "_id name  email avatar"})
-        .populate({ path: "taskProject", select: "_id name" })
     
     var totalCount = await Task(connect(DB_CONNECTION, portal)).countDocuments({
         $and: [
@@ -1042,7 +1039,6 @@ exports.getPaginatedTasksThatUserHasConsultedRole = async (portal, task) => {
         .skip(perPage * (page - 1)).limit(perPage)
         .populate({ path: "organizationalUnit parent" })
         .populate({ path: " creator", select: "_id name email avatar" })
-        .populate({path: "taskProject", select: "_id name"})
 
     var totalCount = await Task(connect(DB_CONNECTION, portal)).countDocuments({
         $and: [
@@ -1203,7 +1199,6 @@ exports.getPaginatedTasksCreatedByUser = async (portal, task) => {
         .skip(perPage * (page - 1)).limit(perPage)
         .populate({ path: "organizationalUnit parent" })
         .populate({path: "creator", select :"_id name email avatar"})
-        .populate({path: "taskProject", select: "_id name"})
     var totalCount = await Task(connect(DB_CONNECTION, portal)).countDocuments({
         $and: [
             keySearch,
@@ -1364,7 +1359,6 @@ exports.getPaginatedTasksThatUserHasInformedRole = async (portal, task) => {
         .skip(perPage * (page - 1)).limit(perPage)
         .populate({ path: "organizationalUnit parent" })
         .populate({ path: "creator", select: "_id name email avatar" })
-        .populate({path: "taskProject", select: "_id name"})
 
 
     var totalCount = await Task(connect(DB_CONNECTION, portal)).countDocuments({
@@ -2127,7 +2121,7 @@ exports.getTasksByUser = async (portal, data) => {
                 { informedEmployees: data.userId }
             ],
             status: "inprocess"
-        }).populate({path: "taskProject", select: "_id name"})
+        })
     }
 
     if (data.data == "organizationUnit") {

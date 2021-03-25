@@ -16,7 +16,7 @@ import { ProjectActions } from "../../../project/redux/actions";
 import { TaskAddModal } from './taskAddModal';
 import { ModalPerform } from '../../task-perform/component/modalPerform';
 import { getTableConfiguration } from '../../../../helpers/tableConfiguration'
-
+import { getProjectName } from '../../organizationalUnitHelper';
 import { convertDataToExportData, getTotalTimeSheetLogs, formatPriority, formatStatus } from './functionHelpers';
 
 class TaskManagement extends Component {
@@ -410,7 +410,7 @@ class TaskManagement extends Component {
         });
     }
 
-    
+
     handleChangeResponsibleEmployees = (e) => {
         const { value } = e.target;
         this.setState({
@@ -445,7 +445,7 @@ class TaskManagement extends Component {
     }
 
     render() {
-        const { tasks, user, translate, taskProject, project } = this.props;
+        const { tasks, user, translate, project } = this.props;
         const { currentTaskId, currentPage, currentTab, parentTask, startDate, endDate, perPage, status, monthTimeSheetLog, tableId, responsibleEmployees, creatorTime, projectSearch } = this.state;
         let currentTasks, units = [];
 
@@ -483,7 +483,7 @@ class TaskManagement extends Component {
                     name: dataTemp[n].name,
                     description: dataTemp[n].description ? parse(dataTemp[n].description) : null,
                     organization: dataTemp[n].organizationalUnit ? dataTemp[n].organizationalUnit.name : translate('task.task_management.err_organizational_unit'),
-                    project: dataTemp[n].taskProject ? dataTemp[n].taskProject.name : null,
+                    project: dataTemp[n].taskProject ? getProjectName(dataTemp[n].taskProject, project.data && project.data.list) : null,
                     priority: formatPriority(translate, dataTemp[n].priority),
                     responsibleEmployees: dataTemp[n].responsibleEmployees ? dataTemp[n].responsibleEmployees.map(o => o.name).join(', ') : null,
                     accountableEmployees: dataTemp[n].accountableEmployees ? dataTemp[n].accountableEmployees.map(o => o.name).join(', ') : null,
@@ -622,8 +622,8 @@ class TaskManagement extends Component {
                             <button className="btn btn-primary" type="button" style={{ borderRadius: 0, marginLeft: 10, backgroundColor: 'transparent', borderRadius: '4px', color: '#367fa9' }} title="Dạng bảng" onClick={() => this.handleDisplayType('table')}><i className="fa fa-list"></i> Dạng bảng</button>
                             <button className="btn btn-primary" type="button" style={{ borderRadius: 0, marginLeft: 10, backgroundColor: 'transparent', borderRadius: '4px', color: '#367fa9' }} title="Dạng cây" onClick={() => this.handleDisplayType('tree')}><i className="fa fa-sitemap"></i> Dạng cây</button>
                             <button className="btn btn-primary" type="button" style={{ borderRadius: 0, marginLeft: 10, backgroundColor: 'transparent', borderRadius: '4px', color: '#367fa9' }} onClick={() => { window.$('#tasks-filter').slideToggle() }}><i className="fa fa-filter"></i> Lọc</button>
-                            
-                            {exportData && <ExportExcel id="list-task-employee" buttonName="Báo cáo" exportData={exportData} style={{ marginLeft: '10px' }}/>}
+
+                            {exportData && <ExportExcel id="list-task-employee" buttonName="Báo cáo" exportData={exportData} style={{ marginLeft: '10px' }} />}
                             {currentTab !== "informed" &&
                                 <button type="button" onClick={() => { this.handleAddTask("") }} className="btn btn-success pull-right" title={translate('task.task_management.add_title')}>{translate('task.task_management.add_task')}</button>
                             }

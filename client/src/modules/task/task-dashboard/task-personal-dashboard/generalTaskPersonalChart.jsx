@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import moment from 'moment';
 import Swal from 'sweetalert2';
@@ -7,8 +8,10 @@ import { SlimScroll } from '../../../../common-components';
 import "./generalTaskPersonalChart.css";
 import urgentIcon from './warning.png';
 import todoIcon from './to-do-list.png';
+import { getProjectName } from '../../organizationalUnitHelper';
+
 const GeneralTaskPersonalChart = (props) => {
-    const { translate } = props;
+    const { translate, project } = props;
     const [state, setState] = useState({
         userId: localStorage.getItem("userId")
     })
@@ -199,9 +202,9 @@ const GeneralTaskPersonalChart = (props) => {
                                                         <span className="index">{index + 1}</span>
                                                         <span className="task-name">{obj.name}</span>
                                                         {
-                                                            obj.taskProject && obj.taskProject.name &&
+                                                            obj.taskProject &&
                                                             <><i className="fa fa-angle-right angle-right-custom" aria-hidden="true"></i>
-                                                                <a className="task-project-name" title="dự án">{obj.taskProject.name}</a></>
+                                                                <a className="task-project-name" title="dự án">{getProjectName(obj.taskProject, project && project.data && project.data.list)}</a></>
                                                         }
                                                         <small className="label label-danger" style={{ fontSize: '9px', marginLeft: '5px', borderRadius: '.5em' }}>{obj.progress}% - {translate('task.task_dashboard.rest')} {obj.nowToEnd} {translate('task.task_dashboard.day')}</small>
                                                     </a>
@@ -250,9 +253,9 @@ const GeneralTaskPersonalChart = (props) => {
                                                         <span className="index">{index + 1}</span>
                                                         <span className="task-name">{obj.name}</span>
                                                         {
-                                                            obj.taskProject && obj.taskProject.name &&
+                                                            obj.taskProject &&
                                                             <><i className="fa fa-angle-right angle-right-custom" aria-hidden="true"></i>
-                                                                <a className="task-project-name" title="dự án">{obj.taskProject.name}</a></>
+                                                                <a className="task-project-name" title="dự án">{getProjectName(obj.taskProject, project && project.data && project.data.list)}</a></>
                                                         }
                                                         <small className="label label-primary" style={{ fontSize: '9px', marginLeft: '5px', borderRadius: '.5em' }}>{obj.progress}% - {translate('task.task_dashboard.rest')} {obj.nowToEnd} {translate('task.task_dashboard.day')}</small>
                                                     </a>
@@ -303,9 +306,9 @@ const GeneralTaskPersonalChart = (props) => {
                                                         <span className="index">{index + 1}</span>
                                                         <span className="task-name">{obj.name}</span>
                                                         {
-                                                            obj.taskProject && obj.taskProject.name &&
+                                                            obj.taskProject &&
                                                             <><i className="fa fa-angle-right angle-right-custom" aria-hidden="true"></i>
-                                                                <a className="task-project-name" title="dự án">{obj.taskProject.name}</a></>
+                                                                <a className="task-project-name" title="dự án">{getProjectName(obj.taskProject, project && project.data && project.data.list)}</a></>
                                                         }
                                                         <small className="label label-danger" style={{ fontSize: '9px', marginLeft: '5px', borderRadius: '.5em' }}>{translate('task.task_dashboard.overdue')} {obj.nowToEnd} {translate('task.task_dashboard.day')}</small>
                                                     </a>
@@ -356,9 +359,9 @@ const GeneralTaskPersonalChart = (props) => {
                                                         <span className="index">{index + 1}</span>
                                                         <span className="task-name">{obj.name}</span>
                                                         {
-                                                            obj.taskProject && obj.taskProject.name &&
+                                                            obj.taskProject &&
                                                             <><i className="fa fa-angle-right angle-right-custom" aria-hidden="true"></i>
-                                                                <a className="task-project-name" title="dự án">{obj.taskProject.name}</a></>
+                                                                <a className="task-project-name" title="dự án">{getProjectName(obj.taskProject, project && project.data && project.data.list)}</a></>
                                                         }
                                                         <small className="label" style={{ fontSize: '9px', marginLeft: '5px', borderRadius: '.5em', backgroundColor: "#db8b0b" }}>{obj.progress}% - {translate('task.task_dashboard.rest')} {obj.nowToEnd} {translate('task.task_dashboard.day')}</small>
                                                     </a>
@@ -411,9 +414,9 @@ const GeneralTaskPersonalChart = (props) => {
                                                         <span className="index">{index + 1}</span>
                                                         <span className="task-name">{obj.name}</span>
                                                         {
-                                                            obj.taskProject && obj.taskProject.name &&
+                                                            obj.taskProject &&
                                                             <><i className="fa fa-angle-right angle-right-custom" aria-hidden="true"></i>
-                                                                <a className="task-project-name" title="dự án">{obj.taskProject.name}</a></>
+                                                                <a className="task-project-name" title="dự án">{getProjectName(obj.taskProject, project && project.data && project.data.list)}</a></>
                                                         }
                                                     </a>
                                                     <div id={`collapse-deadlinenow${index}`} className="panel-collapse collapse" role="tabpanel">
@@ -464,9 +467,9 @@ const GeneralTaskPersonalChart = (props) => {
                                                         <span className="index">{index + 1}</span>
                                                         <span className="task-name">{obj.task && obj.task.name}</span>
                                                         {
-                                                            obj.task && obj.task.taskProject && obj.task.taskProject.name &&
+                                                            obj.task && obj.task.taskProject &&
                                                             <><i className="fa fa-angle-right angle-right-custom" aria-hidden="true"></i>
-                                                                <a className="task-project-name" title="dự án">{obj.task.taskProject.name}</a></>
+                                                                <a className="task-project-name" title="dự án">{getProjectName(obj.task.taskProject, project && project.data && project.data.list)}</a></>
                                                         }
                                                         <small className="label" style={{ fontSize: '9px', marginLeft: '5px', borderRadius: '.5em', backgroundColor: "#db8b0b" }}>{obj.task && obj.task.progress}% - {translate('task.task_dashboard.rest')} {obj.nowToEnd} {translate('task.task_dashboard.day')}</small>
                                                     </a>
@@ -520,9 +523,9 @@ const GeneralTaskPersonalChart = (props) => {
                                                         <span className="index">{index + 1}</span>
                                                         <span className="task-name">{obj.name}</span>
                                                         {
-                                                            obj.taskProject && obj.taskProject.name &&
+                                                            obj.taskProject &&
                                                             <><i className="fa fa-angle-right angle-right-custom" aria-hidden="true"></i>
-                                                                <a className="task-project-name" title="dự án">{obj.taskProject.name}</a></>
+                                                                <a className="task-project-name" title="dự án">{getProjectName(obj.taskProject, project && project.data && project.data.list)}</a></>
                                                         }
                                                         <small className="label label-success" style={{ fontSize: '9px', marginLeft: '5px', borderRadius: '.5em' }}>{obj.progress}% - {translate('task.task_dashboard.rest')} {obj.nowToEnd} {translate('task.task_dashboard.day')}</small>
                                                     </a>
@@ -571,5 +574,9 @@ const GeneralTaskPersonalChart = (props) => {
         </div>
     )
 }
+function mapState(state) {
+    const { project } = state;
+    return { project };
+}
 
-export default withTranslate(GeneralTaskPersonalChart)
+export default connect(mapState, null)(withTranslate(GeneralTaskPersonalChart))
