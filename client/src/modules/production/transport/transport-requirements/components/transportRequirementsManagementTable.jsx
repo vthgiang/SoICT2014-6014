@@ -8,7 +8,7 @@ import { DataTableSetting, DeleteNotification, PaginateBar } from "../../../../.
 // import { ExampleEditForm } from "./exampleEditForm";
 // import { ExampleDetailInfo } from "./exampleDetailInfo";
 // import { ExampleImportForm } from "./exampleImortForm";
-import { TransportRequirementsCreateForm } from "./transportRequirementsCreateForm"
+import { TransportRequirementsCreateForm } from "./create-transport-requirements/transportRequirementsCreateForm"
 
 import { transportRequirementsActions } from "../redux/actions";
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
@@ -171,15 +171,15 @@ function TransportRequirementsManagementTable(props) {
             <div className="box-body qlcv">
                 <div className="form-inline">
                     {/* Button thêm mới */}
-                    <div className="dropdown pull-right" style={{ marginBottom: 15 }}>
-                        <button type="button" className="btn btn-success dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('manage_example.add_title')} >{translate('manage_example.add')}</button>
-                        <ul className="dropdown-menu pull-right" style={{ marginTop: 0 }}>
+                    {/* <div className="dropdown pull-right" style={{ marginBottom: 15 }}> */}
+                        {/* <button type="button" className="btn btn-success dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('manage_example.add_title')} >{translate('manage_example.add')}</button> */}
+                        {/* <ul className="dropdown-menu pull-right" style={{ marginTop: 0 }}>
                             <li><a style={{ cursor: 'pointer' }} onClick={() => window.$('#modal-import-file-example-hooks').modal('show')} title={translate('manage_example.add_multi_example')}>
                                 {translate('human_resource.salary.add_import')}</a></li>
                             <li><a style={{ cursor: 'pointer' }} onClick={() => window.$('#modal-create-transport-requirements').modal('show')} title={translate('manage_example.add_one_example')}>
                                 {translate('manage_example.add_example')}</a></li>
-                        </ul>
-                    </div>
+                        </ul> */}
+                    {/* </div> */}
 
                     {/* Tìm kiếm */}
                     <div className="form-group">

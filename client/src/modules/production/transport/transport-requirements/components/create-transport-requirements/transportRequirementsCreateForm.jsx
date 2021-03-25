@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 
-import { ButtonModal, DialogModal, ErrorLabel } from '../../../../../common-components';
+import { ButtonModal, DialogModal, ErrorLabel } from '../../../../../../common-components';
 import { withTranslate } from 'react-redux-multilingual';
-import ValidationHelper from '../../../../../helpers/validationHelper';
+import ValidationHelper from '../../../../../../helpers/validationHelper';
 
-import { exampleActions } from '../redux/actions';
+import { TransportGeneralInfo } from '../create-transport-requirements/transportGeneralInfo';
+
+import { exampleActions } from '../../redux/actions';
 
 function TransportRequirementsCreateForm(props) {
 
@@ -16,8 +18,12 @@ function TransportRequirementsCreateForm(props) {
         exampleNameError: {
             message: undefined,
             status: true
-        }
+        },
+        step: 0,
     })
+
+
+
 
     const { translate, example, page, perPage } = props;
     const { exampleName, description, exampleNameError } = state;
@@ -64,26 +70,29 @@ function TransportRequirementsCreateForm(props) {
         })
     }
 
-
-    /**
-     * Hàm xử lý khi mô tả ví dụ thay đổi
-     * @param {*} e 
-     */
-    const handleExampleDescription = (e) => {
-        const { value } = e.target;
+    const setCurrentStep = (e, step) => {
+        e.preventDefault();
         setState({
             ...state,
-            description: value
+            step: step,
         });
     }
-
+    useEffect(() => {
+        console.log(state, '- Has changed')
+    },[state])
 
     return (
         <React.Fragment>
+            <ButtonModal
+                    // onButtonCallBack={this.handleClickCreateCode}
+                    modalID={"modal-create-transport-requirements"}
+                    button_name={"Yêu cầu vận chuyển mới"}
+                    title={"Yêu cầu vận chuyển mới"}
+            />
             <DialogModal
                 modalID="modal-create-transport-requirements" 
                 isLoading={false}
-                formID="form-create-example-hooks"
+                formID="form-create-transport-requirements"
                 title={translate('manage_transport.add_requirements')}
                 msg_success={translate('manage_example.add_success')}
                 msg_faile={translate('manage_example.add_fail')}
@@ -94,17 +103,45 @@ function TransportRequirementsCreateForm(props) {
             >
                 <form id="form-create-transport-requirements" onSubmit={() => save(translate('manage_example.add_success'))}>
                     {/* Tên ví dụ */}
-                    <div className={`form-group ${exampleNameError.status ? "" : "has-error"}`}>
-                        <label>{translate('manage_example.exampleName')}<span className="text-red">*</span></label>
+                    {/* <div className={`form-group ${exampleNameError.status ? "" : "has-error"}`}>
+                        <label>{"Tên khách hàng"}<span className="text-red">*</span></label>
                         <input type="text" className="form-control" value={exampleName} onChange={handleExampleName}></input>
                         <ErrorLabel content={exampleNameError.message} />
-                    </div>
-
-                    {/* Mô tả ví dụ */}
-                    <div className={`form-group`}>
-                        <label>{translate('manage_example.example_description')}</label>
-                        <input type="text" className="form-control" value={description} onChange={handleExampleDescription}></input>
-                    </div>
+                    </div> */}
+                    <ul className="breadcrumbs">
+                        <li key="1">
+                            <a
+                                className={`${state.step >= 0 ? "quote-active-tab" : "quote-defaul-tab"}`}
+                                onClick={(e) => setCurrentStep(e, 0)}
+                                style={{ cursor: "pointer" }}
+                            >
+                                <span>Thông tin vận chuyển</span>
+                            </a>
+                        </li>
+                        <li key="2">
+                            <a
+                                className={`${state.step >= 1 ? "quote-active-tab" : "quote-defaul-tab"} 
+                                `}
+                                onClick={(e) => setCurrentStep(e, 1)}
+                                style={{ cursor: "pointer" }}
+                            >
+                                <span>Chọn thời gian</span>
+                            </a>
+                        </li>
+                        <li key="3">
+                            <a
+                                className={`${state.step >= 2 ? "quote-active-tab" : "quote-defaul-tab"} `}
+                                onClick={(e) => setCurrentStep(e, 2)}
+                                style={{ cursor: "pointer" }}
+                            >
+                                <span>Xác nhận yêu cầu</span>
+                            </a>
+                        </li>
+                    </ul>
+                
+                    {state.step === 0 && (
+                        <TransportGeneralInfo />
+                    )}
                 </form>
             </DialogModal>
         </React.Fragment>
