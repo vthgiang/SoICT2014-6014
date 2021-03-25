@@ -5,10 +5,11 @@ import moment from 'moment';
 import Swal from 'sweetalert2';
 import dayjs from 'dayjs';
 import { SlimScroll } from '../../../../common-components';
+
 import "./generalTaskPersonalChart.css";
 import urgentIcon from './warning.png';
 import todoIcon from './to-do-list.png';
-import { getProjectName } from '../../organizationalUnitHelper';
+import { getRoleInTask, checkPrioritySetColor, formatPriority, getProjectName } from '../../../../helpers/taskModuleHelpers';
 
 const GeneralTaskPersonalChart = (props) => {
     const { translate, project } = props;
@@ -105,24 +106,6 @@ const GeneralTaskPersonalChart = (props) => {
     }, [props.tasks.tasks])
 
 
-    const roleInTask = (currentTask) => {
-        const { userId } = state;
-        let roleName = [];
-        if (currentTask.responsibleEmployees && currentTask.responsibleEmployees.includes(userId))
-            roleName = [...roleName, translate('task.task_management.responsible')]
-
-        if (currentTask.accountableEmployees && currentTask.accountableEmployees.includes(userId))
-            roleName = [...roleName, translate('task.task_management.accountable')]
-
-        if (currentTask.consultedEmployees && currentTask.consultedEmployees.includes(userId))
-            roleName = [...roleName, translate('task.task_management.consulted')]
-
-        if (currentTask.informedEmployees && currentTask.informedEmployees.includes(userId))
-            roleName = [...roleName, translate('task.task_management.informed')]
-
-        return roleName.join(", ")
-    }
-
     // chú thích quá hạn
     const showTaskOverDueDescription = () => {
         Swal.fire({
@@ -155,24 +138,6 @@ const GeneralTaskPersonalChart = (props) => {
     // chú thích hạn hôm nay
     const formatTime = (date) => {
         return dayjs(date).format("DD-MM-YYYY hh:mm A")
-    }
-
-    const checkPriority = (value) => {
-        const valueConvert = parseInt(value);
-        if (valueConvert === 1) return "#808080"
-        if (valueConvert === 2) return "#ffa707"
-        if (valueConvert === 3) return "#28A745"
-        if (valueConvert === 4) return "#ff5707"
-        if (valueConvert === 5) return "#ff0707"
-    }
-
-    const formatPriority = (data) => {
-        const { translate } = props;
-        if (data === 1) return translate('task.task_management.low');
-        if (data === 2) return translate('task.task_management.average');
-        if (data === 3) return translate('task.task_management.standard');
-        if (data === 4) return translate('task.task_management.high');
-        if (data === 5) return translate('task.task_management.urgent');
     }
 
     return (
@@ -215,7 +180,7 @@ const GeneralTaskPersonalChart = (props) => {
                                                             </div>
                                                             <div className="priority-task-wraper">
                                                                 <span style={{ marginRight: '10px' }}>Độ ưu tiên công việc: </span>
-                                                                <span style={{ color: checkPriority(obj.priority) }}>{formatPriority(obj.priority)}</span>
+                                                                <span style={{ color: checkPrioritySetColor(obj.priority) }}>{formatPriority(obj.priority, translate)}</span>
                                                             </div>
                                                             <div className="progress-task-wraper">
                                                                 <span style={{ marginRight: '10px' }}>Tiến độ hiện tại: </span>
@@ -227,7 +192,7 @@ const GeneralTaskPersonalChart = (props) => {
 
                                                             <div className="role-in-task">
                                                                 <span style={{ marginRight: '10px' }}>Vai trò trong công việc: </span>
-                                                                <span>{roleInTask(obj)}</span>
+                                                                <span>{getRoleInTask(state.userId, obj, translate)}</span>
                                                             </div>
                                                             <a href={`/task?taskId=${obj._id}`} target="_blank" className="seemore-task">Xem chi tiết</a>
                                                         </div>
@@ -267,7 +232,7 @@ const GeneralTaskPersonalChart = (props) => {
 
                                                             <div className="priority-task-wraper">
                                                                 <span style={{ marginRight: '10px' }}>Độ ưu tiên công việc: </span>
-                                                                <span style={{ color: checkPriority(obj.priority) }}>{formatPriority(obj.priority)}</span>
+                                                                <span style={{ color: checkPrioritySetColor(obj.priority) }}>{formatPriority(obj.priority, translate)}</span>
                                                             </div>
 
                                                             <div className="progress-task-wraper">
@@ -280,7 +245,7 @@ const GeneralTaskPersonalChart = (props) => {
 
                                                             <div className="role-in-task">
                                                                 <span style={{ marginRight: '10px' }}>Vai trò trong công việc: </span>
-                                                                <span>{roleInTask(obj)}</span>
+                                                                <span>{getRoleInTask(state.userId, obj, translate)}</span>
                                                             </div>
                                                             <a href={`/task?taskId=${obj._id}`} target="_blank" className="seemore-task">Xem chi tiết</a>
                                                         </div>
@@ -320,7 +285,7 @@ const GeneralTaskPersonalChart = (props) => {
 
                                                             <div className="priority-task-wraper">
                                                                 <span style={{ marginRight: '10px' }}>Độ ưu tiên công việc: </span>
-                                                                <span style={{ color: checkPriority(obj.priority) }}>{formatPriority(obj.priority)}</span>
+                                                                <span style={{ color: checkPrioritySetColor(obj.priority) }}>{formatPriority(obj.priority, translate)}</span>
                                                             </div>
 
                                                             <div className="progress-task-wraper">
@@ -333,7 +298,7 @@ const GeneralTaskPersonalChart = (props) => {
 
                                                             <div className="role-in-task">
                                                                 <span style={{ marginRight: '10px' }}>Vai trò trong công việc: </span>
-                                                                <span>{roleInTask(obj)}</span>
+                                                                <span>{getRoleInTask(state.userId, obj, translate)}</span>
                                                             </div>
                                                             <a href={`/task?taskId=${obj._id}`} target="_blank" className="seemore-task">Xem chi tiết</a>
                                                         </div>
@@ -373,7 +338,7 @@ const GeneralTaskPersonalChart = (props) => {
 
                                                             <div className="priority-task-wraper">
                                                                 <span style={{ marginRight: '10px' }}>Độ ưu tiên công việc: </span>
-                                                                <span style={{ color: checkPriority(obj.priority) }}>{formatPriority(obj.priority)}</span>
+                                                                <span style={{ color: checkPrioritySetColor(obj.priority) }}>{formatPriority(obj.priority, translate)}</span>
                                                             </div>
 
                                                             <div className="progress-task-wraper">
@@ -386,7 +351,7 @@ const GeneralTaskPersonalChart = (props) => {
 
                                                             <div className="role-in-task">
                                                                 <span style={{ marginRight: '10px' }}>Vai trò trong công việc: </span>
-                                                                <span>{roleInTask(obj)}</span>
+                                                                <span>{getRoleInTask(state.userId, obj, translate)}</span>
                                                             </div>
 
                                                             <a href={`/task?taskId=${obj._id}`} target="_blank" className="seemore-task">Xem chi tiết</a>
@@ -427,7 +392,7 @@ const GeneralTaskPersonalChart = (props) => {
 
                                                             <div className="priority-task-wraper">
                                                                 <span style={{ marginRight: '10px' }}>Độ ưu tiên công việc: </span>
-                                                                <span style={{ color: checkPriority(obj.priority) }}>{formatPriority(obj.priority)}</span>
+                                                                <span style={{ color: checkPrioritySetColor(obj.priority) }}>{formatPriority(obj.priority, translate)}</span>
                                                             </div>
 
                                                             <div className="progress-task-wraper">
@@ -441,7 +406,7 @@ const GeneralTaskPersonalChart = (props) => {
 
                                                             <div className="role-in-task">
                                                                 <span style={{ marginRight: '10px' }}>Vai trò trong công việc: </span>
-                                                                <span>{roleInTask(obj)}</span>
+                                                                <span>{getRoleInTask(state.userId, obj, translate)}</span>
                                                             </div>
                                                             <a href={`/task?taskId=${obj._id}`} target="_blank" className="seemore-task">Xem chi tiết</a>
                                                         </div>
@@ -481,7 +446,7 @@ const GeneralTaskPersonalChart = (props) => {
 
                                                             <div className="priority-task-wraper">
                                                                 <span style={{ marginRight: '10px' }}>Độ ưu tiên công việc: </span>
-                                                                <span style={{ color: checkPriority(obj.task.priority) }}>{formatPriority(obj.task.priority)}</span>
+                                                                <span style={{ color: checkPrioritySetColor(obj.task.priority) }}>{formatPriority(obj.task.priority, translate)}</span>
                                                             </div>
 
                                                             <div className="progress-task-wraper">
@@ -495,7 +460,7 @@ const GeneralTaskPersonalChart = (props) => {
 
                                                             <div className="role-in-task">
                                                                 <span style={{ marginRight: '10px' }}>Vai trò trong công việc: </span>
-                                                                <span>{roleInTask(obj.task)}</span>
+                                                                <span>{getRoleInTask(state.userId, obj.task, translate)}</span>
                                                             </div>
                                                             <a href={`/task?taskId=${obj.task._id}`} target="_blank" className="seemore-task">Xem chi tiết</a>
 
@@ -537,7 +502,7 @@ const GeneralTaskPersonalChart = (props) => {
 
                                                             <div className="priority-task-wraper">
                                                                 <span style={{ marginRight: '10px' }}>Độ ưu tiên công việc: </span>
-                                                                <span style={{ color: checkPriority(obj.priority) }}>{formatPriority(obj.priority)}</span>
+                                                                <span style={{ color: checkPrioritySetColor(obj.priority) }}>{formatPriority(obj.priority, translate)}</span>
                                                             </div>
 
                                                             <div className="progress-task-wraper">
@@ -550,7 +515,7 @@ const GeneralTaskPersonalChart = (props) => {
 
                                                             <div className="role-in-task">
                                                                 <span style={{ marginRight: '10px' }}>Vai trò trong công việc: </span>
-                                                                <span>{roleInTask(obj)}</span>
+                                                                <span>{getRoleInTask(state.userId, obj, translate)}</span>
                                                             </div>
                                                             <a href={`/task?taskId=${obj._id}`} target="_blank" className="seemore-task">Xem chi tiết</a>
                                                         </div>

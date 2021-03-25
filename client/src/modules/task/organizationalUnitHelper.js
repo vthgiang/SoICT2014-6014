@@ -94,14 +94,4 @@ var getEmployeeSelectBoxItems = (usersOfChildrenOrganizationalUnit, includeManag
     return unitMembers;
 }
 
-export const getProjectName = (id, listProject) => {
-    if (id && listProject && listProject.length > 0) {
-        const projectLength = listProject.length;
-        for (let i = 0; i < projectLength; i++){
-            if (listProject[i]._id === id) 
-                return listProject[i].name
-        }
-    }
-}
-
 export default getEmployeeSelectBoxItems;

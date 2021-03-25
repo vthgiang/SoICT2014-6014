@@ -6,6 +6,7 @@ import Swal from 'sweetalert2';
 
 import { DataTableSetting, DatePicker, PaginateBar, SelectBox, SelectMulti, Tree, TreeTable, ExportExcel } from '../../../../common-components';
 import { getFormatDateFromTime } from '../../../../helpers/stringMethod';
+import { getProjectName } from '../../../../helpers/taskModuleHelpers';
 import { getStorage } from '../../../../config';
 
 import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
@@ -16,7 +17,6 @@ import { ProjectActions } from "../../../project/redux/actions";
 import { TaskAddModal } from './taskAddModal';
 import { ModalPerform } from '../../task-perform/component/modalPerform';
 import { getTableConfiguration } from '../../../../helpers/tableConfiguration'
-import { getProjectName } from '../../organizationalUnitHelper';
 import { convertDataToExportData, getTotalTimeSheetLogs, formatPriority, formatStatus } from './functionHelpers';
 
 class TaskManagement extends Component {
