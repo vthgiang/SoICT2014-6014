@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Swal from 'sweetalert2';
 import { withTranslate } from 'react-redux-multilingual';
-import { DataTableSetting, DatePicker, PaginateBar, SelectBox, SelectMulti, TreeTable } from '../../../../common-components';
-import { getStorage } from '../../../../config';
+import { DataTableSetting, DatePicker, PaginateBar, SelectBox, SelectMulti, TreeTable, ExportExcel, Tree } from '../../../../common-components';
+import { getFormatDateFromTime } from '../../../../helpers/stringMethod';
 
 import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
 import { UserActions } from '../../../super-admin/user/redux/actions';
@@ -13,6 +13,8 @@ import { taskManagementActions } from '../redux/actions';
 import { ModalPerform } from '../../task-perform/component/modalPerform';
 import { getTableConfiguration } from '../../../../helpers/tableConfiguration';
 import parse from 'html-react-parser';
+import { convertDataToExportData, getTotalTimeSheetLogs, formatPriority, formatStatus } from './functionHelpers';
+
 class TaskManagementOfUnit extends Component {
 
     constructor(props) {
@@ -22,7 +24,7 @@ class TaskManagementOfUnit extends Component {
         const limit = getTableConfiguration(tableId, defaultConfig).limit;
 
         this.state = {
-            organizationalUnit: [],
+            organizationalUnit: null,
             perPage: limit,
             currentPage: 1,
             tableId,
@@ -61,7 +63,16 @@ class TaskManagementOfUnit extends Component {
             return false;
         }
 
-        if (organizationalUnit && organizationalUnit.length === 0 && dashboardEvaluationEmployeeKpiSet && dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit) {
+        if (organizationalUnit && !dashboardEvaluationEmployeeKpiSet?.childrenOrganizationalUnitLoading) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    organizationalUnit: null
+                }
+            })
+        }
+
+        if (!organizationalUnit && dashboardEvaluationEmployeeKpiSet?.childrenOrganizationalUnit) {
             let childrenOrganizationalUnit = [], queue = [], currentOrganizationalUnit;
 
             // Khởi tạo selectbox đơn vị
@@ -92,31 +103,11 @@ class TaskManagementOfUnit extends Component {
                 }
             });
 
-            await this.props.getPaginatedTasksByOrganizationalUnit(units, currentPage, perPage, status, [], [], null, null, null, isAssigned, responsibleEmployees, accountableEmployees, creatorEmployees);
+            await this.props.getPaginatedTasksByOrganizationalUnit([units?.[0]], currentPage, perPage, status, [], [], null, null, null, isAssigned, responsibleEmployees, accountableEmployees, creatorEmployees);
             return true;
         }
 
         return true;
-    }
-
-    componentDidUpdate(prevProps, prevState) {
-        if (prevProps.tasks.tasks && this.props.tasks.tasks && prevProps.tasks.tasks.length !== this.props.tasks.tasks.length) {
-            this.handleUpdateData();
-        }
-    }
-
-    formatDate(date) {
-        let d = new Date(date),
-            month = '' + (d.getMonth() + 1),
-            day = '' + d.getDate(),
-            year = d.getFullYear();
-
-        if (month.length < 2)
-            month = '0' + month;
-        if (day.length < 2)
-            day = '0' + day;
-
-        return [day, month, year].join('-');
     }
 
     list_to_tree = (list) => {
@@ -218,6 +209,22 @@ class TaskManagementOfUnit extends Component {
         };
     }
 
+    handleDisplayType = (displayType) => {
+        this.setState({
+            displayType
+        });
+        switch (displayType) {
+            case 'table':
+                window.$('#tree-table-container').show();
+                window.$('#tasks-list-tree').hide();
+                break;
+            default:
+                window.$('#tree-table-container').hide();
+                window.$('#tasks-list-tree').show();
+                break;
+        }
+    }
+
     handleGetDataPerPage = (perPage) => {
         let { organizationalUnit, status, priority, special, name, startDate, endDate, isAssigned, responsibleEmployees, accountableEmployees, creatorEmployees } = this.state;
 
@@ -262,18 +269,6 @@ class TaskManagementOfUnit extends Component {
         })
     }
 
-    convertTime = (duration) => {
-        let seconds = Math.floor((duration / 1000) % 60),
-            minutes = Math.floor((duration / (1000 * 60)) % 60),
-            hours = Math.floor((duration / (1000 * 60 * 60)) % 24);
-
-        hours = (hours < 10) ? "0" + hours : hours;
-        minutes = (minutes < 10) ? "0" + minutes : minutes;
-        seconds = (seconds < 10) ? "0" + seconds : seconds;
-
-        return hours + ":" + minutes + ":" + seconds;
-    }
-
     handleShowModal = async (id) => {
         await this.setState(state => {
             return {
@@ -282,24 +277,6 @@ class TaskManagementOfUnit extends Component {
             }
         })
         window.$(`#modelPerformTask${id}`).modal('show');
-    }
-
-    formatPriority = (data) => {
-        const { translate } = this.props;
-        if (data === 1) return translate('task.task_management.low');
-        if (data === 2) return translate('task.task_management.average');
-        if (data === 3) return translate('task.task_management.standard');
-        if (data === 4) return translate('task.task_management.high');
-        if (data === 5) return translate('task.task_management.urgent');
-    }
-
-    formatStatus = (data) => {
-        const { translate } = this.props;
-        if (data === "inprocess") return translate('task.task_management.inprocess');
-        else if (data === "wait_for_approval") return translate('task.task_management.wait_for_approval');
-        else if (data === "finished") return translate('task.task_management.finished');
-        else if (data === "delayed") return translate('task.task_management.delayed');
-        else if (data === "canceled") return translate('task.task_management.canceled');
     }
 
     handleChangeIsAssigned = (value) => {
@@ -451,15 +428,15 @@ class TaskManagementOfUnit extends Component {
                     name: dataTemp[n].name,
                     description: dataTemp?.[n]?.description ? parse(dataTemp[n].description) : "",
                     organization: dataTemp[n].organizationalUnit ? dataTemp[n].organizationalUnit.name : translate('task.task_management.err_organizational_unit'),
-                    priority: this.formatPriority(dataTemp[n].priority),
+                    priority: formatPriority(translate, dataTemp[n].priority),
                     responsibleEmployees: dataTemp[n].responsibleEmployees && dataTemp[n].responsibleEmployees.map(o => o.name).join(', '),
                     accountableEmployees: dataTemp[n].accountableEmployees && dataTemp[n].accountableEmployees.map(o => o.name).join(', '),
                     creatorEmployees: dataTemp[n].creator && dataTemp[n].creator.name,
-                    startDate: this.formatDate(dataTemp[n].startDate),
-                    endDate: this.formatDate(dataTemp[n].endDate),
-                    status: this.formatStatus(dataTemp[n].status),
+                    startDate: getFormatDateFromTime(dataTemp[n].startDate, 'dd-mm-yyyy'),
+                    endDate: getFormatDateFromTime(dataTemp[n].endDate, 'dd-mm-yyyy'),
+                    status: formatStatus(translate, dataTemp[n].status),
                     progress: dataTemp[n].progress ? dataTemp[n].progress + "%" : "0%",
-                    totalLoggedTime: this.convertTime(dataTemp[n].hoursSpentOnTask.totalHoursSpent),
+                    totalLoggedTime: getTotalTimeSheetLogs(dataTemp[n].timesheetLogs),
                     parent: dataTemp[n].parent ? dataTemp[n].parent._id : null
                 }
             }
@@ -474,12 +451,22 @@ class TaskManagementOfUnit extends Component {
             currentOrganizationalUnitLoading = dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnitLoading;
         }
 
+        let exportData = convertDataToExportData(translate, currentTasks, translate("menu.task_management_of_unit"));
+
         return (
             <React.Fragment>
                 { currentOrganizationalUnit
                     ? <div className="box">
                         <div className="box-body qlcv">
-                            <div className="form-inline">
+                            <div style={{ height: "40px" }}>
+                                <button className="btn btn-primary" type="button" style={{ borderRadius: 0, marginLeft: 10, backgroundColor: 'transparent', borderRadius: '4px', color: '#367fa9' }} title="Dạng bảng" onClick={() => this.handleDisplayType('table')}><i className="fa fa-list"></i> Dạng bảng</button>
+                                {/* <button className="btn btn-primary" type="button" style={{ borderRadius: 0, marginLeft: 10, backgroundColor: 'transparent', borderRadius: '4px', color: '#367fa9' }} title="Dạng cây" onClick={() => this.handleDisplayType('tree')}><i className="fa fa-sitemap"></i> Dạng cây</button> */}
+                                <button className="btn btn-primary" type="button" style={{ borderRadius: 0, marginLeft: 10, backgroundColor: 'transparent', borderRadius: '4px', color: '#367fa9' }} onClick={() => { window.$('#tasks-filter').slideToggle() }}><i className="fa fa-filter"></i> Lọc</button>
+                                
+                                {exportData && <ExportExcel id="list-task-employee" buttonName="Báo cáo" exportData={exportData} style={{ marginLeft: '10px' }}/>}
+                            </div>
+
+                            <div id="tasks-filter" className="form-inline" style={{ display: 'none' }}>
                                 {/* Đợn vị tham gia công việc */}
                                 <div className="form-group">
                                     <label>{translate('task.task_management.department')}</label>
@@ -652,6 +639,7 @@ class TaskManagementOfUnit extends Component {
                                 setLimit={this.setLimit}
                             />
 
+                            {/* Dạng bảng */}
                             <div id="tree-table-container">
                                 <TreeTable
                                     tableId={tableId}
@@ -663,8 +651,17 @@ class TaskManagementOfUnit extends Component {
                                     }}
                                     funcEdit={this.handleShowModal}
                                 />
-
                             </div>
+
+                            {/* Dạng cây */}
+                            {/* <div id="tasks-list-tree" style={{ display: 'none', marginTop: '30px' }}>
+                                <Tree id="tasks-list-treeview"
+                                    plugins={false}
+                                    onChanged={this.handleShowTask}
+                                    data={dataTree}
+                                />
+                            </div> */}
+
                             {
                                 currentTaskId &&
                                 <ModalPerform
@@ -672,6 +669,8 @@ class TaskManagementOfUnit extends Component {
                                     id={currentTaskId}
                                 />
                             }
+
+                            {/* Paginate */}
                             <PaginateBar
                                 display={tasks.tasks?.length}
                                 total={tasks.totalCount}

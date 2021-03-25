@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import React, { Component, useEffect, useState } from 'react';
+import { connect, useSelector } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import Swal from 'sweetalert2';
 import { DialogModal, ButtonModal, DateTimeConverter, SelectBox, DatePicker, TreeSelect, ErrorLabel, UploadFile } from '../../../../../common-components';
@@ -7,149 +7,167 @@ import { DocumentActions } from '../../../redux/actions';
 import moment from 'moment';
 import { getStorage } from "../../../../../config";
 import EditVersion from "./editVersion";
-class EditForm extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            documentVersionName: "",
-            page: 1,
-            limit: 5,
 
+function areEqual(prevProps, nextProps) {
+    if (prevProps.documentId === nextProps.documentId && prevProps.documentVersions.length === nextProps.documentVersions.length ){
+        return true
+    } else {
+        return false
+    }
+}
+function EditForm(props) {
+    function handleName(e) {
+        const value = e.target.value;
+        validateName(value, true)
+    }
+
+    function handleCategory(value){
+        validateCategory(value[0], true);
+    }
+
+    function handleDomains(value) {
+        setState({
+            ...state,
+            documentDomains: value
+        });
+    }
+    function handleArchives(value) {
+        setState({
+            ...state,
+            documentArchives: value
+        });
+    }
+
+    function handleDescription(e) {
+        const { value } = e.target;
+        setState({
+            ...state,
+            documentDescription: value
+        });
+    }
+
+    function handleIssuingBody(e) {
+        const value = e.target.value;
+        setState({
+            ...state,
+            documentIssuingBody: value,
+        })
+    }
+    function handleOfficialNumber(e) {
+        const value = e.target.value.trim();
+        validateOfficialNumber(value, true);
+    }
+
+    function handleSigner(e) {
+        const value = e.target.value;
+        setState({
+            ...state,
+            documentSigner: value,
+        })
+    }
+    function handleRelationshipDescription(e) {
+        const { value } = e.target;
+        setState({
+            ...state,
+            documentRelationshipDescription: value
+        });
+    }
+    function handleChangeVersionName(e) {
+        const value = e.target.value;
+        validateVersionName(value, true)
+    }
+    function handleRelationshipDocuments(value) {
+        setState({
+            ...state,
+            relatedDocuments: value
+        });
+    }
+
+    function handleRoles(value) {
+        setState({
+            ...state,
+            documentRoles: value
+        });
+    }
+    function handleUserCanView(value) {
+        setState({
+            ...state,
+            documentUserCanView: value
+        });
+    }
+
+
+    function handleArchivedRecordPlaceOrganizationalUnit(value) {
+        setState({
+            ...state,
+            documentArchivedRecordPlaceOrganizationalUnit: value[0]
+        });
+    }
+
+    function handleVersionName(e) {
+        const value = e.target.value;
+        setState({
+            ...state,
+            documentVersionName: value,
+        })
+    }
+    function handleArchivedRecordPlaceManager(e) {
+        const { value } = e.target;
+        setState({
+            ...state,
+            documentArchivedRecordPlace: {
+                ...state.documentArchivedRecordPlace,
+                manager: value
+            }
+        });
+    }
+
+    function handleVersionName(e) {
+        const value = e.target.value;
+        setState({
+            ...state,
+            documentVersionName: value,
+        })
+    }
+
+    function handleIssuingDate(value) {
+        setState({
+            ...state,
+            documentIssuingDate: value,
+        })
+    }
+
+    function handleEffectiveDate(value) {
+        setState({
+            ...state,
+            documentEffectiveDate: value,
+        })
+    }
+
+    function handleExpiredDate(value) {
+        setState({
+            ...state,
+            documentExpiredDate: value,
+        })
+    }
+    function handleUploadFile(file) {
+        file = file.map(x => {
+            return {
+                fileName: x.fileName,
+                url: x.urlFile,
+                fileUpload: x.fileUpload
+            }
+        })
+        
+        if (JSON.stringify(state.documentFile) !== JSON.stringify(file)) {
+            setState({
+                ...state,
+                documentFile: file
+            });
         }
     }
 
-    handleName = (e) => {
-        const value = e.target.value;
-        this.validateName(value, true)
-    }
-
-    handleCategory = (value) => {
-        this.validateCategory(value[0], true);
-    }
-
-    handleDomains = value => {
-        this.setState({ documentDomains: value });
-    }
-    handleArchives = value => {
-        this.setState({ documentArchives: value });
-    }
-
-    handleDescription = (e) => {
-        const { value } = e.target;
-        this.setState({ documentDescription: value });
-    }
-
-    handleIssuingBody = (e) => {
-        const value = e.target.value;
-        this.setState(state => {
-            return {
-                ...state,
-                documentIssuingBody: value,
-            }
-        })
-    }
-    handleOfficialNumber = (e) => {
-        const value = e.target.value.trim();
-        this.validateOfficialNumber(value, true);
-    }
-
-    handleSigner = (e) => {
-        const value = e.target.value;
-        this.setState(state => {
-            return {
-                ...state,
-                documentSigner: value,
-            }
-        })
-    }
-    handleRelationshipDescription = (e) => {
-        const { value } = e.target;
-        this.setState({ documentRelationshipDescription: value });
-    }
-    handleChangeVersionName = (e) => {
-        const value = e.target.value;
-        this.validateVersionName(value, true)
-    }
-    handleRelationshipDocuments = value => {
-        this.setState({ relatedDocuments: value });
-    }
-
-    handleRoles = (value) => {
-        this.setState({ documentRoles: value });
-    }
-    handleUserCanView = (value) => {
-        this.setState({ documentUserCanView: value });
-    }
-
-
-    handleArchivedRecordPlaceOrganizationalUnit = (value) => {
-        this.setState(state => {
-            return {
-                ...state,
-                documentArchivedRecordPlaceOrganizationalUnit: value[0]
-            }
-        });
-    }
-
-    handleVersionName = (e) => {
-        const value = e.target.value;
-        this.setState(state => {
-            return {
-                ...state,
-                documentVersionName: value,
-            }
-        })
-    }
-    handleArchivedRecordPlaceManager = (e) => {
-        const { value } = e.target;
-        this.setState(state => {
-            return {
-                ...state,
-                documentArchivedRecordPlace: {
-                    ...state.documentArchivedRecordPlace,
-                    manager: value
-                }
-            }
-        });
-    }
-
-    handleVersionName = (e) => {
-        const value = e.target.value;
-        this.setState(state => {
-            return {
-                ...state,
-                documentVersionName: value,
-            }
-        })
-    }
-
-    handleIssuingDate = (value) => {
-        this.setState(state => {
-            return {
-                ...state,
-                documentIssuingDate: value,
-            }
-        })
-    }
-
-    handleEffectiveDate = (value) => {
-        this.setState(state => {
-            return {
-                ...state,
-                documentEffectiveDate: value,
-            }
-        })
-    }
-
-    handleExpiredDate = (value) => {
-        this.setState(state => {
-            return {
-                ...state,
-                documentExpiredDate: value,
-            }
-        })
-    }
-    handleUploadFile = (file) => {
+    const handleUploadFileScan = (file) => {
         file = file.map(x => {
             return {
                 fileName: x.fileName,
@@ -157,115 +175,88 @@ class EditForm extends Component {
                 fileUpload: x.fileUpload
             }
         })
-        this.setState(state => {
-            return {
-                ...state,
-                documentFile: file
-            }
-        });
-    }
-
-    handleUploadFileScan = (file) => {
-        file = file.map(x => {
-            return {
-                fileName: x.fileName,
-                url: x.urlFile,
-                fileUpload: x.fileUpload
-            }
-        })
-        this.setState(state => {
-            return {
+        if (JSON.stringify(state.documentFileScan) !== JSON.stringify(file)) {
+            setState({
                 ...state,
                 documentFileScan: file
-            }
-        });
+            });
+        }
     }
 
 
-    validateName = (value, willUpdateState) => {
+    const validateName = (value, willUpdateState) => {
         let msg = undefined;
-        const { translate } = this.props;
-        if (!value.trim()) {
+        const { translate } = props;
+        if (!value) {
             msg = translate('document.no_blank_name');
         }
         if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    documentName: value,
-                    errorName: msg,
-                }
+            setState({
+                ...state,
+                documentName: value,
+                errorName: msg,
             })
         }
         return msg === undefined;
     }
 
 
-    validateCategory = (value, willUpdateState) => {
+    const validateCategory=(value, willUpdateState)=>{
         let msg = undefined;
-        const { translate } = this.props;
         if (!value) {
             msg = translate('document.doc_version.no_blank_category');
         }
         if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    documentCategory: value,
-                    errorCategory: msg,
-                }
+            setState({
+                ...state,
+                documentCategory: value,
+                errorCategory: msg,
             })
         }
         return msg === undefined;
     }
-    validateVersionName = (value, willUpdateState) => {
+    const validateVersionName = (value, willUpdateState) => {
         let msg = undefined;
-        const { translate } = this.props;
         let val = value.trim();
         if (!val) {
             msg = translate('document.doc_version.no_blank_version_name');
         }
         if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    documentVersionName: value,
-                    errorVersionName: msg,
-                }
+            setState({
+                ...state,
+                documentVersionName: value,
+                errorVersionName: msg,
             })
         }
         return msg === undefined;
     }
-    validateOfficialNumber = (value, willUpdateState) => {
+    const validateOfficialNumber = (value, willUpdateState) => {
         let msg = undefined;
-        const { translate } = this.props;
         if (!value) {
             msg = translate('document.doc_version.no_blank_official_number');
         }
 
         if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    documentOfficialNumber: value,
-                    errorOfficialNumber: msg,
-                }
+            setState({
+                ...state,
+                documentOfficialNumber: value,
+                errorOfficialNumber: msg,
             })
         }
         return msg === undefined;
     }
 
 
-    isValidateForm = () => {
-        return this.validateName(this.state.documentName, false)
-            && this.validateCategory(this.state.documentCategory, false)
-            && this.validateOfficialNumber(this.state.documentOfficialNumber, false)
+    const isValidateForm = () => {
+        return validateName(documentName, false)
+            && validateCategory(documentCategory, false)
+            && validateOfficialNumber(documentOfficialNumber, false)
 
     }
-    isValidateFormAddVersion = () => {
-        return this.validateVersionName(this.state.documentVersionName, false);
+    const isValidateFormAddVersion = () => {
+        return validateVersionName(state.documentVersionName, false);
     }
-    compareArray = (array1, array2) => {
+    const compareArray = (array1, array2) => {
         if (array1 && array2) {
             if (array1.length !== array2.length) {
                 return false;
@@ -281,7 +272,7 @@ class EditForm extends Component {
         }
     }
 
-    save = () => {
+    function save(){
         const {
             documentId,
             documentName,
@@ -297,8 +288,8 @@ class EditForm extends Component {
             documentRoles,
             documentUserCanView,
             documentArchivedRecordPlaceOrganizationalUnit,
-        } = this.state;
-        const { role, documents, department, user } = this.props;
+        } = state;
+        const { role, documents, department, user } = props;
         const categories = documents.administration.categories.list.map(category => { return { value: category._id, text: category.name } });
         const { list } = documents.administration.domains;
         const roleList = role.list.map(role => { return { value: role._id, text: role.name } });
@@ -309,13 +300,13 @@ class EditForm extends Component {
         let description = "";
         const formData = new FormData();
         formData.append('name', documentName);
-        if (documentName !== this.props.documentName) {
+        if (documentName !== props.documentName) {
             if (!title.includes("Chỉnh sửa thông tin văn bản.")) {
                 title = (title + " Chỉnh sửa thông tin văn bản ");
             }
             description += "Thay đổi tên: " + documentName + ". ";
         }
-        if (!this.compareArray(documentCategory, this.props.documentCategory)) {
+        if (!compareArray(documentCategory, props.documentCategory)) {
             if (!title.includes("Chỉnh sửa thông tin văn bản.")) {
                 title = (title + "Chỉnh sửa thông tin văn bản.");
             }
@@ -324,7 +315,7 @@ class EditForm extends Component {
             description += "Thay đổi loại tài liệu: " + nameCategory[0].text + ". ";
             formData.append('category', documentCategory);
         }
-        if (!this.compareArray(documentDomains, this.props.documentDomains)) {
+        if (!compareArray(documentDomains, props.documentDomains)) {
             if (!title.includes("Chỉnh sửa thông tin văn bản.")) {
                 title = (title + " Chỉnh sửa thông tin văn bản");
             }
@@ -339,7 +330,7 @@ class EditForm extends Component {
             }
             description += newDomain.join(" ") + ". ";
         }
-        if (!this.compareArray(documentArchives, this.props.documentArchives)) {
+        if (!compareArray(documentArchives, props.documentArchives)) {
 
             if (!title.includes("Chỉnh sửa thông tin văn bản.")) {
                 title = (title + " Chỉnh sửa thông tin văn bản");
@@ -353,28 +344,28 @@ class EditForm extends Component {
             }
             description += newArchives.join(" ") + ". ";
         }
-        if (documentDescription !== this.props.documentDescription) {
+        if (documentDescription !== props.documentDescription) {
             if (!title.includes("Chỉnh sửa thông tin văn bản.")) {
                 title = (title + "Chỉnh sửa thông tin văn bản.");
             }
             description += "Mô tả mới: " + documentDescription + ". ";
             formData.append('description', documentDescription);
         }
-        if (documentIssuingBody !== this.props.documentIssuingBody) {
+        if (documentIssuingBody !== props.documentIssuingBody) {
             if (!title.includes("Chỉnh sửa thông tin văn bản.")) {
                 title = (title + "Chỉnh sửa thông tin văn bản.");
             }
             description += "Cơ quan ban hành mới: " + documentIssuingBody + ". ";
             formData.append('issuingBody', documentIssuingBody);
         }
-        if (documentOfficialNumber !== this.props.documentOfficialNumber) {
+        if (documentOfficialNumber !== props.documentOfficialNumber) {
             if (!title.includes("Chỉnh sửa thông tin văn bản.")) {
                 title = (title + "Chỉnh sửa thông tin văn bản.");
             }
             description += "Số hiệu mới: " + documentOfficialNumber + ". ";
             formData.append('officialNumber', documentOfficialNumber);
         }
-        if (documentSigner !== this.props.documentSigner) {
+        if (documentSigner !== props.documentSigner) {
             if (!title.includes("Chỉnh sửa thông tin văn bản.")) {
                 title = (title + "Chỉnh sửa thông tin văn bản.");
             }
@@ -382,14 +373,14 @@ class EditForm extends Component {
             formData.append('signer', documentSigner);
         }
 
-        if (documentRelationshipDescription !== this.props.documentRelationshipDescription) {
+        if (documentRelationshipDescription !== props.documentRelationshipDescription) {
             if (!title.includes("Chỉnh sửa tài liệu liên kết")) {
                 title += "Chỉnh sửa tài liệu liên kết."
             }
             description += "Mô tả liên kết tài liệu mới: ";
             formData.append('relationshipDescription', documentRelationshipDescription);
         }
-        if (!this.compareArray(relatedDocuments, this.props.documentRelationshipDocuments)) {
+        if (!compareArray(relatedDocuments, props.documentRelationshipDocuments)) {
             if (!title.includes("Chỉnh sửa mô tả liên kết.")) {
                 title += "Chỉnh sửa mô tả liên kết."
             }
@@ -403,7 +394,7 @@ class EditForm extends Component {
             }
             description += newArray.join(" - ") + ".";
         }
-        if (documentRoles !== this.props.documentRoles) {
+        if (documentRoles !== props.documentRoles) {
             if (!title.includes("Chỉnh sửa phân quyền")) {
                 title += "Chỉnh sửa phân quyền. "
             }
@@ -414,19 +405,18 @@ class EditForm extends Component {
                 description += nameRole[0].text + " ";
             }
         }
-        if (documentUserCanView !== this.props.documentUserCanView) {
+        if (documentUserCanView !== props.documentUserCanView) {
             if (!title.includes("Chỉnh sửa phân quyền người xem")) {
-                title += "Chỉnh sửa phân quyền người xem. ";
-
+                title += "Chỉnh sửa phân quyền người xem. "
             }
             description += "Các phân quyền người xem mới: "
             for (let i = 0; i < documentUserCanView.length; i++) {
-                formData.append('userCanView[]', documentUserCanView[i]);
+                formData.append('roles[]', documentUserCanView[i]);
                 let nameRole = userList.filter(item => item.value === documentUserCanView[i])
                 description += nameRole[0].text + " ";
             }
         }
-        if (documentArchivedRecordPlaceOrganizationalUnit !== this.props.documentArchivedRecordPlaceOrganizationalUnit) {
+        if (documentArchivedRecordPlaceOrganizationalUnit !== props.documentArchivedRecordPlaceOrganizationalUnit) {
             if (!title.includes("Chỉnh sửa đơn vị quản lí")) {
                 title += "Chỉnh sửa đơn vị quản lí"
             }
@@ -444,17 +434,18 @@ class EditForm extends Component {
             formData.append('descriptions', description)
         }
         if (title) {
-            this.props.editDocument(documentId, formData);
+            props.editDocument(documentId, formData);
         }
     }
-    toggleEditVersion = async (data) => {
-        await this.setState({
+    const toggleEditVersion = async (data) => {
+        await setState({
+            ...state,
             currentVersion: data
         });
         window.$('#modal-edit-document-version').modal('show');
     }
 
-    addNewVersion = id => {
+    const addNewVersion = id => {
         const {
             documentVersionName,
             documentIssuingDate,
@@ -462,7 +453,7 @@ class EditForm extends Component {
             documentExpiredDate,
             documentFile,
             documentFileScan
-        } = this.state;
+        } = state;
         let title, descriptions;
         title = "Thêm phiên bản mới";
         const formData = new FormData();
@@ -498,58 +489,56 @@ class EditForm extends Component {
         formData.append('title', title);
         formData.append('creator', getStorage("userId"))
         formData.append('descriptions', descriptions)
-        this.props.editDocument(id, formData, 'ADD_VERSION');
+        props.editDocument(id, formData, 'ADD_VERSION');
 
     }
-
-    static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.documentId !== prevState.documentId) {
-            return {
-                ...prevState,
-                documentId: nextProps.documentId,
-                documentName: nextProps.documentName,
-                documentDescription: nextProps.documentDescription,
-                documentCategory: nextProps.documentCategory,
-                documentDomains: nextProps.documentDomains,
-                documentArchives: nextProps.documentArchives,
-                documentIssuingBody: nextProps.documentIssuingBody,
-                documentOfficialNumber: nextProps.documentOfficialNumber,
-                documentSigner: nextProps.documentSigner,
-
-                documentVersions: nextProps.documentVersions,
-
-                documentRelationshipDescription: nextProps.documentRelationshipDescription,
-                relatedDocuments: nextProps.documentRelationshipDocuments.map(item => item.id),
-
-                documentRoles: nextProps.documentRoles,
-                documentUserCanView: nextProps.documentUserCanView,
-
-                documentArchivedRecordPlaceInfo: nextProps.documentArchivedRecordPlaceInfo,
-                documentArchivedRecordPlaceOrganizationalUnit: nextProps.documentArchivedRecordPlaceOrganizationalUnit,
-                documentArchivedRecordPlaceManager: nextProps.documentArchivedRecordPlaceManager,
-
+    useEffect(() => {
+        if (props.documentId!==state.documentId){
+            setState({
+                ...state,
+                documentId: props.documentId,
+                documentName: props.documentName,
+                documentDescription: props.documentDescription,
+                documentCategory: props.documentCategory,
+                documentDomains: props.documentDomains,
+                documentArchives: props.documentArchives,
+                documentIssuingBody: props.documentIssuingBody,
+                documentOfficialNumber: props.documentOfficialNumber,
+                documentSigner: props.documentSigner,
+    
+                documentVersions: props.documentVersions,
+    
+                documentRelationshipDescription: props.documentRelationshipDescription,
+                relatedDocuments: props.documentRelationshipDocuments.map(item => item.id),
+    
+                documentRoles: props.documentRoles,
+                documentUserCanView: props.documentUserCanView,
+    
+                documentArchivedRecordPlaceInfo: props.documentArchivedRecordPlaceInfo,
+                documentArchivedRecordPlaceOrganizationalUnit: props.documentArchivedRecordPlaceOrganizationalUnit,
+                documentArchivedRecordPlaceManager: props.documentArchivedRecordPlaceManager,
+    
                 errorName: undefined,
-
-            }
-        } else if (nextProps.documentVersions.length !== prevState.documentVersions.length) {
-            return {
-                ...prevState,
-                documentId: nextProps.documentId,
-                documentVersions: nextProps.documentVersions,
-            }
+            })
         } else {
-            return null;
+            if (props.documentVersions.length!==state.documentVersions.length){
+                setState({
+                    ...state,
+                    documentVersions: props.documentVersions
+                })
+            }
         }
+    }, [props.documentId,props.documentVersions.length])
+    
+
+    function requestDownloadDocumentFile(id, fileName, numberVersion) {
+        props.downloadDocumentFile(id, fileName, numberVersion);
     }
 
-    requestDownloadDocumentFile = (id, fileName, numberVersion) => {
-        this.props.downloadDocumentFile(id, fileName, numberVersion);
+    function requestDownloadDocumentFileScan(id, fileName, numberVersion) {
+        props.downloadDocumentFileScan(id, fileName, numberVersion);
     }
-
-    requestDownloadDocumentFileScan = (id, fileName, numberVersion) => {
-        this.props.downloadDocumentFileScan(id, fileName, numberVersion);
-    }
-    findPath = (archives, select) => {
+    const findPath = (archives, select) => {
         let paths = select.map(s => {
             let archive = archives.filter(arch => arch._id === s);
             return archive[0] ? archive[0].path : "";
@@ -557,8 +546,8 @@ class EditForm extends Component {
         return paths;
 
     }
-    deleteDocumentVersion = (documentId, versionId, info) => {
-        const { translate } = this.props;
+    const deleteDocumentVersion = (documentId, versionId, info) => {
+        const { translate } = props;
         Swal.fire({
             html: `<h4 style="color: red"><div>${translate('document.delete')}</div> <div>"${info}" ?</div></h4>`,
             icon: 'warning',
@@ -571,7 +560,7 @@ class EditForm extends Component {
             if (result.value) {
                 let title = "Xóa phiên bản ";
                 let descriptions = "Xoá phiên bản " + info;
-                this.props.editDocument(documentId, {
+                props.editDocument(documentId, {
                     title: title,
                     descriptions: descriptions,
                     versionId: versionId,
@@ -580,27 +569,24 @@ class EditForm extends Component {
             }
         })
     }
-    onSearch = async (name) => {
-
-        await this.props.getAllDocuments({ page: this.state.page, limit: this.state.limit, name: name, calledId: "relationshipDocs" });
-        this.setState(state => {
-            return {
-                ...state,
-            }
-        });
+    const onSearch = async (name) => {
+        await props.getAllDocuments({ page: state.page, limit: state.limit, name: name, calledId: "relationshipDocs" });
     }
 
-    updateDocumentVersions = async (version) => {
-        let { documentVersions } = this.state;
+    const updateDocumentVersions = async (version) => {
+        let { documentVersions } = state;
         for (let i in documentVersions) {
             if (documentVersions[i]._id === version._id) {
                 documentVersions[i] = version
             }
         }
 
-        this.setState({ documentVersions: documentVersions });
+        setState({
+            ...state,
+            documentVersions: documentVersions
+        });
     }
-    formatDate(date, monthYear = false) {
+    const formatDate = (date, monthYear = false) => {
         if (date) {
             let d = new Date(date),
                 month = '' + (d.getMonth() + 1),
@@ -617,297 +603,301 @@ class EditForm extends Component {
             return date
         }
     }
+    const [state, setState] = useState({
+        documentVersionName: "",
+        page: 1,
+        limit: 5,
+        documentCategory:""
+    })
+    const {
+        documentId, documentName, documentDescription, documentCategory, documentDomains,
+        documentIssuingBody, documentOfficialNumber, documentSigner, documentVersions,
+        documentRelationshipDescription, relatedDocuments,
+        documentRoles, documentArchives, documentUserCanView,
+        documentArchivedRecordPlaceOrganizationalUnit, currentVersion, errorOfficialNumber
+    } = state;
+    const version= useSelector(state=>state)
+    const { errorName } = state;
+    const { translate, role, documents, department, documentRelationshipDocuments, user } = props;
+    const categories = documents.administration.categories.list.map(category => { return { value: category._id, text: category.name } });
+    const { list } = documents.administration.domains;
+    const roleList = role.list.map(role => { return { value: role._id, text: role.name } });
 
-    render() {
-        const {
-            documentId, documentName, documentDescription, documentCategory, documentDomains,
-            documentIssuingBody, documentOfficialNumber, documentSigner, documentVersions,
-            documentRelationshipDescription, relatedDocuments,
-            documentRoles, documentArchives, documentUserCanView,
-            documentArchivedRecordPlaceOrganizationalUnit, currentVersion, errorOfficialNumber
-        } = this.state;
-        const { errorName } = this.state;
-        const { translate, role, documents, department, documentRelationshipDocuments, user } = this.props;
-        const categories = documents.administration.categories.list.map(category => { return { value: category._id, text: category.name } });
-        const { list } = documents.administration.domains;
-        const roleList = role.list.map(role => { return { value: role._id, text: role.name } });
+    let tmpMap = {};
+    let relationshipDocs = documents.administration.relationshipDocs.paginate.map(
+        doc => {
+            tmpMap[doc._id] = true;
+            return { value: doc._id, text: doc.name }
+        }
+    );
+    documentRelationshipDocuments.forEach(doc => {
+        if (!tmpMap[doc._id]) {
+            relationshipDocs.push({ value: doc._id, text: doc.name })
+        }
+    });
+    const archives = documents.administration.archives.list;
+    let path = documentArchives ? findPath(archives, documentArchives) : "";
+    return (
+        <React.Fragment>
+            <DialogModal
+                size="100"
+                modalID="modal-edit-document"
+                formID="form-edit-document"
+                title={translate('document.edit')}
+                func={save}
+                disableSubmit={!isValidateForm()}
+            >
+                {
+                    currentVersion &&
+                    <EditVersion
+                        documentId={documentId}
+                        versionId={currentVersion._id}
+                        versionName={currentVersion.versionName}
+                        issuingDate={currentVersion.issuingDate}
+                        effectiveDate={currentVersion.effectiveDate}
+                        expiredDate={currentVersion.expiredDate}
+                        documentFile={currentVersion.documentFile}
+                        documentFileScan={currentVersion.documentFileScan}
 
-        let tmpMap = {};
-        let relationshipDocs = documents.administration.relationshipDocs.paginate.map(
-            doc => {
-                tmpMap[doc._id] = true;
-                return { value: doc._id, text: doc.name }
-            }
-        );
-        documentRelationshipDocuments.forEach(doc => {
-            if (!tmpMap[doc._id]) {
-                relationshipDocs.push({ value: doc._id, text: doc.name })
-            }
-        });
-        const archives = documents.administration.archives.list;
-        let path = documentArchives ? this.findPath(archives, documentArchives) : "";
-        return (
-            <React.Fragment>
-                <DialogModal
-                    size="100"
-                    modalID="modal-edit-document"
-                    formID="form-edit-document"
-                    title={translate('document.edit')}
-                    func={this.save}
-                    disableSubmit={!this.isValidateForm()}
-                >
-                    {
-                        currentVersion &&
-                        <EditVersion
-                            documentId={documentId}
-                            versionId={currentVersion._id}
-                            versionName={currentVersion.versionName}
-                            issuingDate={currentVersion.issuingDate}
-                            effectiveDate={currentVersion.effectiveDate}
-                            expiredDate={currentVersion.expiredDate}
-                            documentFile={currentVersion.documentFile}
-                            documentFileScan={currentVersion.documentFileScan}
-
-                            updateDocumentVersions={this.updateDocumentVersions}
-                        />
-                    }
-                    <form id="form-edit-document">
-                        <div className="nav-tabs-custom">
-                            <ul className="nav nav-tabs">
-                                <li className="active"><a href="#doc-edit-info" data-toggle="tab">{translate('document.infomation_docs')}</a></li>
-                                <li><a href="#doc-edit-sub-info" data-toggle="tab">{translate('document.relationship_role_store')}</a></li>
-                            </ul>
-                            <div className="tab-content">
-                                <div className="tab-pane active" id="doc-edit-info">
-                                    <div className="row">
-                                        <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                            <div className={`form-group ${!errorName ? "" : "has-error"}`}>
-                                                <label>{translate('document.name')}<span className="text-red">*</span></label>
-                                                <input type="text" className="form-control" onChange={this.handleName} value={documentName} />
-                                                <ErrorLabel content={errorName} />
-                                            </div>
-                                            <div className={`form-group ${!errorOfficialNumber ? "" : "has-error"}`}>
-                                                <label>{translate('document.doc_version.official_number')}<span className="text-red">*</span></label>
-                                                <input type="text" className="form-control" onChange={this.handleOfficialNumber} value={documentOfficialNumber} />
-                                                <ErrorLabel content={errorOfficialNumber} />
-                                            </div>
-                                            <div className="form-group">
-                                                <label>{translate('document.doc_version.issuing_body')}</label>
-                                                <input type="text" className="form-control" onChange={this.handleIssuingBody} value={documentIssuingBody} />
-                                            </div>
-                                            <div className="form-group">
-                                                <label>{translate('document.doc_version.signer')}</label>
-                                                <input type="text" className="form-control" onChange={this.handleSigner} value={documentSigner} />
-                                            </div>
+                        updateDocumentVersions={updateDocumentVersions}
+                    />
+                }
+                <form id="form-edit-document">
+                    <div className="nav-tabs-custom">
+                        <ul className="nav nav-tabs">
+                            <li className="active"><a href="#doc-edit-info" data-toggle="tab">{translate('document.infomation_docs')}</a></li>
+                            <li><a href="#doc-edit-sub-info" data-toggle="tab">{translate('document.relationship_role_store')}</a></li>
+                        </ul>
+                        <div className="tab-content">
+                            <div className="tab-pane active" id="doc-edit-info">
+                                <div className="row">
+                                    <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                        <div className={`form-group ${!errorName ? "" : "has-error"}`}>
+                                            <label>{translate('document.name')}<span className="text-red">*</span></label>
+                                            <input type="text" className="form-control" onChange={handleName} value={documentName} />
+                                            <ErrorLabel content={errorName} />
                                         </div>
-                                        <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                            <div className="form-group">
-                                                <label>{translate('document.category')}<span className="text-red">*</span></label>
-                                                <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
-                                                    id={`select-box-edit-document-category-${documentId}`}
-                                                    className="form-control select2"
-                                                    style={{ width: "100%" }}
-                                                    items={categories}
-                                                    value={documentCategory}
-                                                    onChange={this.handleCategory}
-                                                    multiple={false}
-                                                    options={{ placeholder: translate('document.administration.categories.select') }}
-                                                />
-                                            </div>
-                                            <div className="form-group">
-                                                <label>{translate('document.domain')}</label>
-                                                <TreeSelect
-                                                    data={list}
-                                                    value={documentDomains}
-                                                    handleChange={this.handleDomains}
-                                                    mode="hierarchical"
-                                                />
-                                            </div>
-                                            <div className="form-group">
-                                                <label>{translate('document.description')}</label>
-                                                <textarea type="text" className="form-control" onChange={this.handleDescription} value={documentDescription ? documentDescription : ""} />
-                                            </div>
-
-
+                                        <div className={`form-group ${!errorOfficialNumber ? "" : "has-error"}`}>
+                                            <label>{translate('document.doc_version.official_number')}<span className="text-red">*</span></label>
+                                            <input type="text" className="form-control" onChange={handleOfficialNumber} value={documentOfficialNumber} />
+                                            <ErrorLabel content={errorOfficialNumber} />
+                                        </div>
+                                        <div className="form-group">
+                                            <label>{translate('document.doc_version.issuing_body')}</label>
+                                            <input type="text" className="form-control" onChange={handleIssuingBody} value={documentIssuingBody} />
+                                        </div>
+                                        <div className="form-group">
+                                            <label>{translate('document.doc_version.signer')}</label>
+                                            <input type="text" className="form-control" onChange={handleSigner} value={documentSigner} />
                                         </div>
                                     </div>
-                                    <div className="row">
-                                        <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                            <ButtonModal modalID="add-document-new-version" button_name={translate('general.add')} title={translate('document.add')} />
-                                            <DialogModal
-                                                modalID="add-document-new-version"
-                                                formID="add-document-new-version"
-                                                title={translate('document.add_version')}
-                                                func={() => this.addNewVersion(documentId)}
-                                                disableSubmit={!this.isValidateFormAddVersion()}
-                                            >
-                                                <React.Fragment>
-                                                    <div className={`form-group `}>
-                                                        <label>{translate('document.doc_version.name')}<span className="text-red">*</span></label>
-                                                        <input type="text" onChange={this.handleChangeVersionName} className="form-control" />
-                                                    </div>
-                                                    <div className="form-group">
-                                                        <label>{translate('document.upload_file')}</label>
-                                                        <UploadFile multiple={true} onChange={this.handleUploadFile} />
-                                                    </div>
-                                                    <div className="form-group">
-                                                        <label>{translate('document.upload_file_scan')}</label>
-                                                        <UploadFile multiple={true} onChange={this.handleUploadFileScan} />
-                                                    </div>
-                                                    <div className="form-group">
-                                                        <label>{translate('document.doc_version.issuing_date')}</label>
-                                                        <DatePicker
-                                                            id={`document-edit-version-issuing-date-${documentId}`}
-                                                            onChange={this.handleIssuingDate}
-                                                        />
-                                                    </div>
-                                                    <div className="form-group">
-                                                        <label>{translate('document.doc_version.effective_date')}</label>
-                                                        <DatePicker
-                                                            id={`document-edit-version-effective-date-${documentId}`}
-                                                            onChange={this.handleEffectiveDate}
-                                                        />
-                                                    </div>
-                                                    <div className="form-group">
-                                                        <label>{translate('document.doc_version.expired_date')}</label>
-                                                        <DatePicker
-                                                            id={`document-edit-version-expired-date-${documentId}`}
-                                                            onChange={this.handleExpiredDate}
-                                                        />
-                                                    </div>
-                                                </React.Fragment>
-                                            </DialogModal>
-                                            <table className="table table-hover table-striped table-bordered" id="table-document-version">
-                                                <thead>
-                                                    <tr>
-                                                        <th>{translate('document.version')}</th>
-                                                        <th>{translate('document.issuing_date')}</th>
-                                                        <th>{translate('document.effective_date')}</th>
-                                                        <th>{translate('document.expired_date')}</th>
-                                                        <th>{translate('document.doc_version.file')}</th>
-                                                        <th>{translate('document.doc_version.scanned_file_of_signed_document')}</th>
-                                                        <th style={{ width: '80px', textAlign: 'center' }}>
-                                                            {translate('general.action')}
-                                                        </th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    {
-                                                        documentVersions !== undefined && documentVersions.length > 0 ?
-                                                            documentVersions.map((version, i) => {
-                                                                return <tr key={i}>
-                                                                    <td>{version.versionName}</td>
-                                                                    <td>{this.formatDate(version.issuingDate)}</td>
-                                                                    <td>{this.formatDate(version.effectiveDate)}</td>
-                                                                    <td>{this.formatDate(version.expiredDate)}</td>
-                                                                    <td>
-                                                                        <a href="#" onClick={() => this.requestDownloadDocumentFile(documentId, documentName, i)}>
-                                                                            <u>{version.file ? translate('document.download') : ""}</u>
-                                                                        </a>
-                                                                    </td>
-                                                                    <td>
-                                                                        <a href="#" onClick={() => this.requestDownloadDocumentFileScan(documentId, "SCAN_" + documentName, i)}>
-                                                                            <u>{version.scannedFileOfSignedDocument ? translate('document.download') : ""}</u>
-                                                                        </a>
-                                                                    </td>
-                                                                    <td>
-                                                                        <a className="text-yellow" title={translate('document.edit')} onClick={() => this.toggleEditVersion(version)}>
-                                                                            <i className="material-icons">edit</i>
-                                                                        </a>
-                                                                        <a className="text-red" title={translate('document.delete')} onClick={() => this.deleteDocumentVersion(documentId, version._id, version.versionName)}>
-                                                                            <i className="material-icons">delete</i>
-                                                                        </a>
-                                                                    </td>
-                                                                </tr>
-                                                            }) : <tr><td colSpan={7}>{translate('document.no_version')}</td></tr>
-                                                    }
-                                                </tbody>
-                                            </table>
+                                    <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                        <div className="form-group">
+                                            <label>{translate('document.category')}<span className="text-red">*</span></label>
+                                            <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
+                                                id={`select-box-edit-document-category-${documentId}`}
+                                                className="form-control select2"
+                                                style={{ width: "100%" }}
+                                                items={categories}
+                                                value={documentCategory}
+                                                onChange={handleCategory}
+                                                multiple={false}
+                                                options={{ placeholder: translate('document.administration.categories.select') }}
+                                            />
                                         </div>
+                                        <div className="form-group">
+                                            <label>{translate('document.domain')}</label>
+                                            <TreeSelect
+                                                data={list}
+                                                value={documentDomains}
+                                                handleChange={handleDomains}
+                                                mode="hierarchical"
+                                            />
+                                        </div>
+                                        <div className="form-group">
+                                            <label>{translate('document.description')}</label>
+                                            <textarea type="text" className="form-control" onChange={handleDescription} value={documentDescription ? documentDescription : ""} />
+                                        </div>
+
+
                                     </div>
                                 </div>
-                                <div className="tab-pane" id="doc-edit-sub-info">
-                                    <div className="row">
-                                        <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                            <div className="form-group">
-                                                <label>{translate('document.relationship.description')}</label>
-                                                <textarea type="text" style={{ height: 107 }} className="form-control" onChange={this.handleRelationshipDescription} value={documentRelationshipDescription} />
-                                            </div>
-                                            <div className="form-group">
-                                                <label>{translate('document.relationship.list')}</label>
-                                                <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
-                                                    id="select-edit-documents-relationship-to-document"
-                                                    className="form-control select2"
-                                                    style={{ width: "100%" }}
-                                                    items={relationshipDocs}
-                                                    onChange={this.handleRelationshipDocuments}
-                                                    value={relatedDocuments}
-                                                    multiple={true}
-                                                    onSearch={this.onSearch}
-                                                />
-                                            </div>
+                                <div className="row">
+                                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                        <ButtonModal modalID="add-document-new-version" button_name={translate('general.add')} title={translate('document.add')} />
+                                        <DialogModal
+                                            modalID="add-document-new-version"
+                                            formID="add-document-new-version"
+                                            title={translate('document.add_version')}
+                                            func={() => addNewVersion(documentId)}
+                                            disableSubmit={!isValidateFormAddVersion()}
+                                        >
+                                            <React.Fragment>
+                                                <div className={`form-group `}>
+                                                    <label>{translate('document.doc_version.name')}<span className="text-red">*</span></label>
+                                                    <input type="text" onChange={handleChangeVersionName} className="form-control" />
+                                                </div>
+                                                <div className="form-group">
+                                                    <label>{translate('document.upload_file')}</label>
+                                                    <UploadFile multiple={true} onChange={handleUploadFile} />
+                                                </div>
+                                                <div className="form-group">
+                                                    <label>{translate('document.upload_file_scan')}</label>
+                                                    <UploadFile multiple={true} onChange={handleUploadFileScan} />
+                                                </div>
+                                                <div className="form-group">
+                                                    <label>{translate('document.doc_version.issuing_date')}</label>
+                                                    <DatePicker
+                                                        id={`document-edit-version-issuing-date-${documentId}`}
+                                                        onChange={handleIssuingDate}
+                                                    />
+                                                </div>
+                                                <div className="form-group">
+                                                    <label>{translate('document.doc_version.effective_date')}</label>
+                                                    <DatePicker
+                                                        id={`document-edit-version-effective-date-${documentId}`}
+                                                        onChange={handleEffectiveDate}
+                                                    />
+                                                </div>
+                                                <div className="form-group">
+                                                    <label>{translate('document.doc_version.expired_date')}</label>
+                                                    <DatePicker
+                                                        id={`document-edit-version-expired-date-${documentId}`}
+                                                        onChange={handleExpiredDate}
+                                                    />
+                                                </div>
+                                            </React.Fragment>
+                                        </DialogModal>
+                                        <table className="table table-hover table-striped table-bordered" id="table-document-version">
+                                            <thead>
+                                                <tr>
+                                                    <th>{translate('document.version')}</th>
+                                                    <th>{translate('document.issuing_date')}</th>
+                                                    <th>{translate('document.effective_date')}</th>
+                                                    <th>{translate('document.expired_date')}</th>
+                                                    <th>{translate('document.doc_version.file')}</th>
+                                                    <th>{translate('document.doc_version.scanned_file_of_signed_document')}</th>
+                                                    <th style={{ width: '80px', textAlign: 'center' }}>
+                                                        {translate('general.action')}
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {
+                                                    documentVersions !== undefined && documentVersions.length > 0 ?
+                                                        documentVersions.map((version, i) => {
+                                                            return <tr key={i}>
+                                                                <td>{version.versionName}</td>
+                                                                <td>{formatDate(version.issuingDate)}</td>
+                                                                <td>{formatDate(version.effectiveDate)}</td>
+                                                                <td>{formatDate(version.expiredDate)}</td>
+                                                                <td>
+                                                                    <a href="#" onClick={() => requestDownloadDocumentFile(documentId, documentName, i)}>
+                                                                        <u>{version.file ? translate('document.download') : ""}</u>
+                                                                    </a>
+                                                                </td>
+                                                                <td>
+                                                                    <a href="#" onClick={() => requestDownloadDocumentFileScan(documentId, "SCAN_" + documentName, i)}>
+                                                                        <u>{version.scannedFileOfSignedDocument ? translate('document.download') : ""}</u>
+                                                                    </a>
+                                                                </td>
+                                                                <td>
+                                                                    <a className="text-yellow" title={translate('document.edit')} onClick={() => toggleEditVersion(version)}>
+                                                                        <i className="material-icons">edit</i>
+                                                                    </a>
+                                                                    <a className="text-red" title={translate('document.delete')} onClick={() => deleteDocumentVersion(documentId, version._id, version.versionName)}>
+                                                                        <i className="material-icons">delete</i>
+                                                                    </a>
+                                                                </td>
+                                                            </tr>
+                                                        }) : <tr><td colSpan={7}>{translate('document.no_version')}</td></tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="tab-pane" id="doc-edit-sub-info">
+                                <div className="row">
+                                    <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                        <div className="form-group">
+                                            <label>{translate('document.relationship.description')}</label>
+                                            <textarea type="text" style={{ height: 107 }} className="form-control" onChange={handleRelationshipDescription} value={documentRelationshipDescription} />
                                         </div>
-                                        <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                            <div className="form-group">
-                                                <label>{translate('document.store.organizational_unit_manage')}</label>
-                                                <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
-                                                    id={`select-edit-documents-organizational-unit-manage${documentId}`}
-                                                    className="form-control select2"
-                                                    style={{ width: "100%" }}
-                                                    items={department.list.map(organ => { return { value: organ._id, text: organ.name } })}
-                                                    onChange={this.handleArchivedRecordPlaceOrganizationalUnit}
-                                                    value={documentArchivedRecordPlaceOrganizationalUnit}
-                                                    multiple={false}
-                                                />
-                                            </div>
-                                            <div className="form-group">
-                                                <label>{translate('document.roles')}</label>
-                                                <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
-                                                    id={`select-edit-document-users-see-permission-${documentId}`}
-                                                    className="form-control select2"
-                                                    style={{ width: "100%" }}
-                                                    items={roleList}
-                                                    value={documentRoles}
-                                                    onChange={this.handleRoles}
-                                                    multiple={true}
-                                                />
-                                            </div>
-                                            <div className="form-group">
-                                                <label>{translate('document.users')}</label>
-                                                <SelectBox
-                                                    id={`select-edit-document-user-can-view`}
-                                                    className="form-control select2"
-                                                    style={{ width: "100%" }}
-                                                    items={
-                                                        user.list.map(user => { return { value: user ? user._id : null, text: user ? `${user.name} - ${user.email}` : "" } })
-                                                    }
-                                                    onChange={this.handleUserCanView}
-                                                    value={documentUserCanView}
-                                                    multiple={true}
-                                                />
-                                            </div>
-                                            <div className="form-group">
-                                                <label>{translate('document.store.information')}</label>
-                                                <TreeSelect
-                                                    data={archives}
-                                                    value={documentArchives}
-                                                    handleChange={this.handleArchives}
-                                                    mode="hierarchical"
-                                                />
-                                                {path && path.length ? path.map((y, index) =>
-                                                    <div key={index}>{y}</div>
-                                                ) : null}
-                                            </div>
+                                        <div className="form-group">
+                                            <label>{translate('document.relationship.list')}</label>
+                                            <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
+                                                id="select-edit-documents-relationship-to-document"
+                                                className="form-control select2"
+                                                style={{ width: "100%" }}
+                                                items={relationshipDocs}
+                                                onChange={handleRelationshipDocuments}
+                                                value={relatedDocuments}
+                                                multiple={true}
+                                                onSearch={onSearch}
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                        <div className="form-group">
+                                            <label>{translate('document.store.organizational_unit_manage')}</label>
+                                            <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
+                                                id={`select-edit-documents-organizational-unit-manage${documentId}`}
+                                                className="form-control select2"
+                                                style={{ width: "100%" }}
+                                                items={department.list.map(organ => { return { value: organ._id, text: organ.name } })}
+                                                onChange={handleArchivedRecordPlaceOrganizationalUnit}
+                                                value={documentArchivedRecordPlaceOrganizationalUnit}
+                                                multiple={false}
+                                            />
+                                        </div>
+                                        <div className="form-group">
+                                            <label>{translate('document.roles')}</label>
+                                            <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
+                                                id={`select-edit-document-users-see-permission-${documentId}`}
+                                                className="form-control select2"
+                                                style={{ width: "100%" }}
+                                                items={roleList}
+                                                value={documentRoles}
+                                                onChange={handleRoles}
+                                                multiple={true}
+                                            />
+                                        </div>
+                                        <div className="form-group">
+                                            <label>{translate('document.users')}</label>
+                                            <SelectBox
+                                                id={`select-edit-document-user-can-view`}
+                                                className="form-control select2"
+                                                style={{ width: "100%" }}
+                                                items={
+                                                    user.list.map(user => { return { value: user ? user._id : null, text: user ? `${user.name} - ${user.email}` : "" } })
+                                                }
+                                                onChange={handleUserCanView}
+                                                value={documentUserCanView}
+                                                multiple={true}
+                                            />
+                                        </div>
+                                        <div className="form-group">
+                                            <label>{translate('document.store.information')}</label>
+                                            <TreeSelect
+                                                data={archives}
+                                                value={documentArchives}
+                                                handleChange={handleArchives}
+                                                mode="hierarchical"
+                                            />
+                                            {path && path.length ? path.map((y, index) =>
+                                                <div key={index}>{y}</div>
+                                            ) : null}
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </form>
-                </DialogModal>
-            </React.Fragment>
-        );
-    }
+                    </div>
+                </form>
+            </DialogModal>
+        </React.Fragment>
+    );
 }
 
 const mapStateToProps = state => state;
@@ -919,4 +909,4 @@ const mapDispatchToProps = {
     downloadDocumentFileScan: DocumentActions.downloadDocumentFileScan
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(EditForm));
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(React.memo(EditForm,areEqual)));

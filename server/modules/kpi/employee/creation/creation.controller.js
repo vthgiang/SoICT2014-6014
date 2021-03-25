@@ -263,29 +263,29 @@ exports.createComment = async (req, res) => {
  * Tạo comment trong comment trong trang create KPI employee (tạo replied comment)
  */
 exports.createChildComment = async (req, res) => {
-    // try {
-    let files = [];
-    if (req.files !== undefined) {
-        req.files.forEach((elem, index) => {
-            let path = elem.destination + '/' + elem.filename;
-            files.push({ name: elem.originalname, url: path })
+    try {
+        let files = [];
+        if (req.files !== undefined) {
+            req.files.forEach((elem, index) => {
+                let path = elem.destination + '/' + elem.filename;
+                files.push({ name: elem.originalname, url: path })
+            })
+        }
+        let comments = await EmployeeKpiSetService.createChildComment(req.portal, req.params, req.body, files);
+        await Logger.info(req.user.email, ` create comment newsfeed `, req.portal)
+        res.status(200).json({
+            success: true,
+            messages: ['create_child_comment_success'],
+            content: comments
         })
+    } catch (error) {
+        await Logger.error(req.user.email, ` create child comment kpi `, req.portal)
+        res.status(400).json({
+            success: false,
+            messages: ['create_child_comment_fail'],
+            content: error
+        });
     }
-    let comments = await EmployeeKpiSetService.createChildComment(req.portal, req.params, req.body, files);
-    await Logger.info(req.user.email, ` create comment `, req.portal)
-    res.status(200).json({
-        success: true,
-        messages: ['create_child_comment_success'],
-        content: comments
-    })
-    // } catch (error) {
-    //     await Logger.error(req.user.email, ` create child comment kpi `, req.portal)
-    //     res.status(400).json({
-    //         success: false,
-    //         messages: ['create_child_comment_fail'],
-    //         content: error
-    //     });
-    // }
 }
 
 /**

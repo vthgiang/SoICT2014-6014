@@ -331,12 +331,27 @@ exports.getActiveTimesheetLog = async (portal, query) => {
 /**
  * Bắt đầu bấm giờ: Lưu thời gian bắt đầu
  */
-exports.startTimesheetLog = async (portal, params, body) => {
+exports.startTimesheetLog = async (portal, params, body, user) => {
     const now = new Date();
     let timerUpdate = {
         startedAt: now,
         creator: body.creator,
     };
+
+    // Check xem người dùng có đang bấm giờ công việc khác hay không
+    const timerStatus = await Task(connect(DB_CONNECTION, portal)).findOne(
+        {
+            timesheetLogs: {
+                $elemMatch: {
+                    creator: user._id,
+                    stoppedAt: null,
+                },
+            },
+        },
+    );
+
+    if(timerStatus)
+        throw["timer_exist_another_task"]
 
     /* check và tìm công việc đang được hẹn tắt bấm giờ:
     * Nếu công tìm được công việc có thời gian kết thúc bấm giờ lớn hơn thời gian hiện tại

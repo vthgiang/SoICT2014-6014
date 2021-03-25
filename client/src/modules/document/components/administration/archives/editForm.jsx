@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
@@ -6,43 +6,44 @@ import { ErrorLabel, TreeSelect } from '../../../../../common-components';
 import { DocumentActions } from '../../../redux/actions';
 import ValidationHelper from '../../../../../helpers/validationHelper';
 
-class EditForm extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {}
-    }
-
-    handleName = (e) => {
+function EditForm(props) {
+    const [state, setState] = useState({})
+    const handleName = (e) => {
         const { value } = e.target;
-        const { translate } = this.props;
+        const { translate } = props;
         const { message } = ValidationHelper.validateName(translate, value, 1, 255);
-        this.setState({
+        setState({
+            ...state,
             name: value,
             nameError: message
         });
     }
 
-    handleDescription = (e) => {
+    const handleDescription = (e) => {
         const { value } = e.target;
-        this.setState({
+        setState({
+            ...state,
             description: value
         });
     }
 
-    handleParent = (value) => {
-        this.setState({ archiveParent: value[0] });
+    const handleParent = (value) => {
+        setState({
+            ...state,
+            archiveParent: value[0]
+        });
     };
 
-    isValidateForm = () => {
-        let { name, description } = this.state;
-        let { translate } = this.props;
+    const isValidateForm = () => {
+        let { name, description } = state;
+        let { translate } = props;
         if (
             !ValidationHelper.validateName(translate, name, 1, 255).status
         ) return false;
         return true;
     }
 
-    findNode = (element, id) => {
+    const findNode = (element, id) => {
         if (element.id === id) {
             return element
         }
@@ -50,14 +51,14 @@ class EditForm extends Component {
             let i;
             let result = "";
             for (i = 0; i < element.children.length; i++) {
-                result = this.findNode(element.children[i], id);
+                result = findNode(element.children[i], id);
             }
             return result;
         }
         return null;
     }
     // tìm các node con cháu
-    findChildrenNode = (list, node) => {
+    const findChildrenNode = (list, node) => {
         let array = [];
         let queue_children = [node];
         while (queue_children.length > 0) {
@@ -69,9 +70,9 @@ class EditForm extends Component {
         return array;
     }
 
-    save = () => {
-        const { documents } = this.props;
-        const { archiveId, name, description, archiveParent } = this.state;
+    const save = () => {
+        const { documents } = props;
+        const { archiveId, name, description, archiveParent } = state;
         const { list } = documents.administration.archives;
 
         let node = "";
@@ -80,73 +81,65 @@ class EditForm extends Component {
         // find node child 
         let array = [];
         if (node) {
-            array = this.findChildrenNode(list, node);
+            array = findChildrenNode(list, node);
         }
 
-        this.props.editDocumentArchive(archiveId, {
+        props.editDocumentArchive(archiveId, {
             name,
             description,
             parent: archiveParent,
             array: array,
         });
     }
-
-    static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.archiveId !== prevState.archiveId) {
-            return {
-                ...prevState,
-                archiveId: nextProps.archiveId,
-                name: nextProps.archiveName,
-                description: nextProps.archiveDescription,
-                archiveParent: nextProps.archiveParent,
-                path: nextProps.archivePath,
-                nameError: undefined,
-                descriptionError: undefined
-            }
-        } else {
-            return null;
+    useEffect(() => {
+        setState({
+            ...state,
+            archiveId: props.archiveId,
+            name: props.archiveName,
+            description: props.archiveDescription,
+            archiveParent: props.archiveParent,
+            path: props.archivePath,
+            nameError: undefined,
+            descriptionError: undefined
+        })
+    }, [props.archiveId])
+    const { translate, documents, unChooseNode } = props;
+    const { list } = documents.administration.archives;
+    const { name, description, archiveParent, path, nameError } = state;
+    let listArchive = [];
+    for (let i in list) {
+        if (!unChooseNode.includes(list[i].id)) {
+            listArchive.push(list[i]);
         }
     }
-
-    render() {
-        const { translate, documents, unChooseNode } = this.props;
-        const { list } = documents.administration.archives;
-        const { name, description, archiveParent, path, nameError } = this.state;
-        let listArchive = [];
-        for (let i in list) {
-            if (!unChooseNode.includes(list[i].id)) {
-                listArchive.push(list[i]);
-            }
-        }
-        const disabled = !this.isValidateForm();
-        return (
-            <div id="edit-document-archive">
-                <div className={`form-group ${nameError === undefined ? "" : "has-error"}`}>
-                    <label>{translate('document.administration.archives.name')}<span className="text-red">*</span></label>
-                    <input type="text" className="form-control" onChange={this.handleName} value={name} />
-                    <ErrorLabel content={nameError} />
-                </div>
-                <div className="form-group">
-                    <label>{translate('document.administration.archives.parent')}</label>
-                    <TreeSelect data={listArchive} value={[archiveParent]} handleChange={this.handleParent} mode="radioSelect" />
-                </div>
-                <div className="form-group">
-                    <strong>{translate('document.administration.archives.path_detail')}&emsp; </strong>
-                    {path}
-                </div>
-                <div className="form-group">
-                    <label>{translate('document.administration.domains.description')}</label>
-                    <textarea style={{ minHeight: '120px' }} type="text" className="form-control" onChange={this.handleDescription} value={description} />
-                </div>
-                <div className="form-group">
-                    <button className="btn btn-success pull-right" style={{ marginLeft: '5px' }} disabled={disabled} onClick={this.save}>{translate('form.save')}</button>
-                    <button className="btn btn-danger" onClick={() => {
-                        window.$(`#edit-document-archive`).slideUp()
-                    }}>{translate('form.close')}</button>
-                </div>
+    const disabled = !isValidateForm();
+    return (
+        <div id="edit-document-archive">
+            <div className={`form-group ${nameError === undefined ? "" : "has-error"}`}>
+                <label>{translate('document.administration.archives.name')}<span className="text-red">*</span></label>
+                <input type="text" className="form-control" onChange={handleName} value={name || false} />
+                <ErrorLabel content={nameError} />
             </div>
-        )
-    }
+            <div className="form-group">
+                <label>{translate('document.administration.archives.parent')}</label>
+                <TreeSelect data={listArchive} value={[archiveParent]} handleChange={handleParent} mode="radioSelect" />
+            </div>
+            <div className="form-group">
+                <strong>{translate('document.administration.archives.path_detail')}&emsp; </strong>
+                {path}
+            </div>
+            <div className="form-group">
+                <label>{translate('document.administration.domains.description')}</label>
+                <textarea style={{ minHeight: '120px' }} type="text" className="form-control" onChange={handleDescription} value={description} />
+            </div>
+            <div className="form-group">
+                <button className="btn btn-success pull-right" style={{ marginLeft: '5px' }} disabled={disabled} onClick={save}>{translate('form.save')}</button>
+                <button className="btn btn-danger" onClick={() => {
+                    window.$(`#edit-document-archive`).slideUp()
+                }}>{translate('form.close')}</button>
+            </div>
+        </div>
+    )
 }
 
 

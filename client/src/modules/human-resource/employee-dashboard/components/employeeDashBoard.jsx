@@ -256,7 +256,7 @@ class DashBoardEmployees extends Component {
                         <ul className="nav nav-tabs">
                             <li className="active"><a href="#human-resourse" data-toggle="tab" onClick={() => this.handleNavTabs(true)}>Tổng quan nhân sự</a></li>
                             <li><a href="#annualLeave" data-toggle="tab" onClick={() => this.handleNavTabs()}>Nghỉ phép-Tăng ca</a></li>
-                            <li><a href="#salary" data-toggle="tab" onClick={() => this.handleNavTabs(true)}>Lương thưởng nhân viên</a></li>
+                            <li><a href="#salary" data-toggle="tab" onClick={() => this.handleNavTabs(true)}>Thu nhập nhân viên</a></li>
                             <li><a href="#integrated-statistics" data-toggle="tab">Thống kê tổng hợp</a></li>
                         </ul>
                         <div className="tab-content ">

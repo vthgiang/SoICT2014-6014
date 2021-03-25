@@ -354,7 +354,7 @@ class EvaluateByResponsibleEmployee extends Component {
             let taskInfo = {
                 task: task,
                 progress: progress,
-                date: date,
+                date: endDate,
                 time: endTime,
                 info: info,
             };

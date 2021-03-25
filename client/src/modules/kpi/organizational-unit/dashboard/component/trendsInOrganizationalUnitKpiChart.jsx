@@ -4,6 +4,7 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import { dashboardOrganizationalUnitKpiActions } from '../redux/actions';
 import { createUnitKpiActions } from '../../creation/redux/actions';
+import { customAxisC3js } from '../../../../../helpers/customAxisC3js';
 
 import c3 from 'c3';
 import 'c3/c3.css';
@@ -458,14 +459,9 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
                 x: {
                     type: 'category',
                     tick: {
-                        format: function (x) {
-                            if (titleX && titleX.length > 1) {
-                                if (titleX[x + 1].length > 30) {
-                                    return titleX[x + 1].slice(0, 30) + "...";
-                                } else {
-                                    return titleX[x + 1]
-                                }
-                            }
+                        format: function (index) {
+                            let result = customAxisC3js('trendsInUnitChart', titleX.filter((item, index) => index > 0), index);
+                            return result;
                         }
                     }
                 },
@@ -501,7 +497,7 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
         return (
             <React.Fragment>
                 {currentKpi ?
-                    <div ref="chart"></div>
+                    <div id="trendsInUnitChart" ref="chart"></div>
                     : organizationalUnitKpiLoading && <section>{translate('kpi.organizational_unit.dashboard.no_data')}</section>
                 }
             </React.Fragment>

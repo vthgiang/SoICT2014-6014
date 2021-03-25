@@ -173,14 +173,6 @@ class SideBar extends Component {
                                 }}
                             />
 
-                            {/* Mãu công việc */}
-                            <Item
-                                item={{
-                                    name: "menu.task_template",
-                                    icon: "fa fa-flash",
-                                    path: "/task-template",
-                                }}
-                            />
 
                             {/* Công việc đơn vị */}
                             <GroupItem
@@ -199,6 +191,46 @@ class SideBar extends Component {
                                             path: "/task-management-unit",
                                         },
                                     ]
+                                }}
+                            />
+
+                            {/* Công việc cá nhân */}
+                            <GroupItem
+                                groupItem={{
+                                    name: "menu.tasks",
+                                    icon: "fa fa-tasks",
+                                    list: [
+                                        {
+                                            name: "menu.task_management_dashboard",
+                                            icon: "fa fa-circle-o",
+                                            path: "/task-management-dashboard",
+                                        },
+                                        {
+                                            name: "menu.task_management",
+                                            icon: "fa fa-circle-o",
+                                            path: "/task-management",
+                                        },
+                                        {
+                                            name: "menu.task_template",
+                                            icon: "fa fa-flash",
+                                            path: "/task-template",
+                                        },
+                                        {
+                                            name: "menu.task_process_template",
+                                            icon: "fa fa-circle-o",
+                                            path: "/task-process-template",
+                                        },
+                                        {
+                                            name: "menu.task_management_process",
+                                            icon: "fa fa-circle-o",
+                                            path: "/task-process-management",
+                                        },
+                                        {
+                                            name: "menu.all_time_sheet_log",
+                                            icon: "fa fa-circle-o",
+                                            path: "/time-sheet-log/all",
+                                        },
+                                    ],
                                 }}
                             />
 
@@ -242,62 +274,6 @@ class SideBar extends Component {
                                 }}
                             />
 
-                            {/* Nhân sự đơn vị */}
-                            <GroupItem
-                                groupItem={{
-                                    name: "menu.employee_unit",
-                                    icon: "fa fa-users",
-                                    list: [
-                                        {
-                                            name: "menu.leave_application",
-                                            icon: "fa fa-envelope",
-                                            path: "/hr-manage-leave-application",
-                                        },
-                                        {
-                                            name: "menu.employee_infomation",
-                                            icon: "fa fa-users",
-                                            path: "/employees-infomation",
-                                        },
-                                    ]
-
-                                }}
-                            />
-
-                            {/* Công việc cá nhân */}
-                            <GroupItem
-                                groupItem={{
-                                    name: "menu.tasks",
-                                    icon: "fa fa-tasks",
-                                    list: [
-                                        {
-                                            name: "menu.task_management_dashboard",
-                                            icon: "fa fa-circle-o",
-                                            path: "/task-management-dashboard",
-                                        },
-                                        {
-                                            name: "menu.task_management",
-                                            icon: "fa fa-circle-o",
-                                            path: "/task-management",
-                                        },
-                                        {
-                                            name: "menu.task_process_template",
-                                            icon: "fa fa-circle-o",
-                                            path: "/task-process-template",
-                                        },
-                                        {
-                                            name: "menu.task_management_process",
-                                            icon: "fa fa-circle-o",
-                                            path: "/task-process-management",
-                                        },
-                                        {
-                                            name: "menu.all_time_sheet_log",
-                                            icon: "fa fa-circle-o",
-                                            path: "/time-sheet-log/all",
-                                        },
-                                    ],
-                                }}
-                            />
-
                             {/* KPI cá nhân */}
                             <GroupItem
                                 groupItem={{
@@ -322,6 +298,28 @@ class SideBar extends Component {
                                     ],
                                 }}
                             />
+
+                            {/* Nhân sự đơn vị */}
+                            <GroupItem
+                                groupItem={{
+                                    name: "menu.employee_unit",
+                                    icon: "fa fa-users",
+                                    list: [
+                                        {
+                                            name: "menu.leave_application",
+                                            icon: "fa fa-envelope",
+                                            path: "/hr-manage-leave-application",
+                                        },
+                                        {
+                                            name: "menu.employee_infomation",
+                                            icon: "fa fa-users",
+                                            path: "/employees-infomation",
+                                        },
+                                    ]
+
+                                }}
+                            />
+
 
                             {/* Quản lý dự án */}
                             <Item

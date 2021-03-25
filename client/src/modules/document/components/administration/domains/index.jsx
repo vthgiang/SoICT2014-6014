@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 
 import { DocumentActions } from '../../../redux/actions';
@@ -11,42 +11,42 @@ import { DomainImportForm } from './domainImportForm';
 import { withTranslate } from 'react-redux-multilingual';
 import Swal from 'sweetalert2';
 import './domains.css'
-class AdministrationDocumentDomains extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            domainParent: [],
-            deleteNode: [],
-        }
-    }
+function AdministrationDocumentDomains(props) {
+    const [state, setState] = useState({
+        domainParent: [],
+        deleteNode: [],
+    })
+    // useEffect(() => {
+    //     props.getDepartment();
+    // }, [])
 
-    componentDidMount() {
-        this.props.getDepartment();
-    }
-
-    onChanged = (e, data) => {
-        this.setState({ currentDomain: data.node }, () => {
-            window.$(`#edit-document-domain`).slideDown();
+    const onChanged = (e, data) => {
+        setState({
+            ...state,
+            currentDomain: data.node
         });
+        window.$(`#edit-document-domain`).slideDown();
     }
 
-    checkNode = (e, data) => { //chọn xóa một node và tất cả các node con của nó
-        this.setState({
+    const checkNode = (e, data) => { //chọn xóa một node và tất cả các node con của nó
+        setState({
+            ...state,
             domainParent: [...data.selected],
             deleteNode: [...data.selected, ...data.node.children_d]
         })
     }
 
-    unCheckNode = (e, data) => {
-        this.setState({
+    const unCheckNode = (e, data) => {
+        setState({
+            ...state,
             domainParent: [...data.selected],
             deleteNode: [...data.selected]
         })
     }
 
-    deleteDomains = () => {
-        const { translate } = this.props;
-        const { deleteNode } = this.state;
+    const deleteDomains = () => {
+        const { translate } = props;
+        const { deleteNode } = state;
         Swal.fire({
             html: `<h4 style="color: red"><div>${translate('document.administration.domains.delete')}</div>?</h4>`,
             icon: 'warning',
@@ -57,24 +57,25 @@ class AdministrationDocumentDomains extends Component {
             confirmButtonText: translate('general.yes'),
         }).then((result) => {
             if (result.value && deleteNode.length > 0) {
-                this.props.deleteDocumentDomain(deleteNode, "many");
-                this.setState({
+                props.deleteDocumentDomain(deleteNode, "many");
+                setState({
+                    ...state,
                     deleteNode: []
                 });
             }
         })
     }
     /**Mở modal import file excel */
-    handImportFile = (event) => {
+    const handImportFile = (event) => {
         event.preventDefault();
         window.$('#modal_import_file-domain').modal('show');
     }
-    handleAddDomain = (event) => {
+    const handleAddDomain = (event) => {
         event.preventDefault();
         window.$('#modal-create-document-domain').modal('show');
     }
-    convertDataToExportData = (data) => {
-        let department = this.props.department.list;
+    const convertDataToExportData = (data) => {
+        let department = props.department.list;
         data = data ? data.map((x, index) => {
             return {
                 STT: index + 1,
@@ -89,7 +90,6 @@ class AdministrationDocumentDomains extends Component {
                 description: x.description,
             }
         }) : "";
-        console.log('dataaaa', data, department)
         let exportData = {
             fileName: "Bảng thống kê lĩnh vực",
             dataSheets: [
@@ -100,7 +100,7 @@ class AdministrationDocumentDomains extends Component {
                             tableName: "Bảng thống kê lĩnh vực",
                             rowHeader: 1,
                             columns: [
-                                { key: "STT", value: "STT", vertical: 'middle', horizontal: 'center'},
+                                { key: "STT", value: "STT", vertical: 'middle', horizontal: 'center' },
                                 { key: "name", value: "Tên lĩnh vực", width: 40 },
                                 { key: "description", value: "Mô tả lĩnh vực", width: 60 },
                             ],
@@ -154,7 +154,7 @@ class AdministrationDocumentDomains extends Component {
         return exportData;
     }
     // tìm các node con cháu
-    findChildrenNode = (list, node) => {
+    const findChildrenNode = (list, node) => {
         let array = [];
         let queue_children = [];
         queue_children = [node];
@@ -168,72 +168,70 @@ class AdministrationDocumentDomains extends Component {
         array.unshift(node.id);
         return array;
     }
-    render() {
-        const { deleteNode, currentDomain } = this.state;
-        const { translate } = this.props;
-        const { list } = this.props.documents.administration.domains;
-        const { documents } = this.props;
-        const dataTree = list ? list.map(node => {
-            return {
-                ...node,
-                text: node.name,
-                state: { "opened": true },
-                parent: node.parent ? node.parent.toString() : "#"
-            }
-        }) : null
-        let dataExport = [];
-        if (documents.isLoading === false) {
-            dataExport = list;
+    const { deleteNode, currentDomain } = state;
+    const { translate } = props;
+    const { list } = props.documents.administration.domains;
+    const { documents } = props;
+    const dataTree = list ? list.map(node => {
+        return {
+            ...node,
+            text: node.name,
+            state: { "opened": true },
+            parent: node.parent ? node.parent.toString() : "#"
         }
-        let exportData = this.convertDataToExportData(dataExport);
-        let unChooseNode = currentDomain ? this.findChildrenNode(list, currentDomain) : [];
-
-        return (
-            <React.Fragment>
-                <div className="form-inline">
-                    <div className="dropdown pull-right" style={{ marginBottom: 15 }}>
-                        <button type="button" className="btn btn-success dropdown-toggler pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('document.administration.domains.add')}>{translate('general.add')}</button>
-                        <ul className="dropdown-menu pull-right">
-                            <li><a href="#form-create-document-domain" title="ImportForm" onClick={(event) => { this.handleAddDomain(event) }}>{translate('task_template.add')}</a></li>
-                            <li><a href="#modal_import_file-domain" title="ImportForm" onClick={(event) => { this.handImportFile(event) }}>{translate('document.import')}</a></li>
-                        </ul>
-                    </div>
-                </div>
-                {
-                    deleteNode.length > 0 && <button className="btn btn-danger" style={{ marginLeft: '5px' }} onClick={this.deleteDomains}>{translate('general.delete')}</button>
-                }
-                <ExportExcel id="export-document-domain" exportData={exportData} style={{ marginRight: 5 }} buttonName={translate('document.export')} />
-                <CreateForm />
-                <DomainImportForm />
-                <div className="row">
-                    <div className="col-xs-12 col-sm-12 col-md-7 col-lg-7">
-                        <div className="domain-tree" id="domain-tree">
-                            <Tree
-                                id="tree-qlcv-document"
-                                onChanged={this.onChanged}
-                                checkNode={this.checkNode}
-                                unCheckNode={this.unCheckNode}
-                                data={dataTree}
-                            />
-                        </div>
-                        <SlimScroll outerComponentId="domain-tree" innerComponentId="tree-qlcv-document" innerComponentWidth={"100%"} activate={true} />
-                    </div>
-                    <div className="col-xs-12 col-sm-12 col-md-5 col-lg-5">
-                        {
-                            this.state.currentDomain &&
-                            <EditForm
-                                domainId={this.state.currentDomain.id}
-                                domainName={this.state.currentDomain.text}
-                                domainDescription={this.state.currentDomain.original.description ? this.state.currentDomain.original.description : ""}
-                                domainParent={this.state.currentDomain.parent}
-                                unChooseNode={unChooseNode}
-                            />
-                        }
-                    </div>
-                </div>
-            </React.Fragment>
-        );
+    }) : null
+    let dataExport = [];
+    if (documents.isLoading === false) {
+        dataExport = list;
     }
+    let exportData = convertDataToExportData(dataExport);
+    let unChooseNode = currentDomain ? findChildrenNode(list, currentDomain) : [];
+
+    return (
+        <React.Fragment>
+            <div className="form-inline">
+                <div className="dropdown pull-right" style={{ marginBottom: 15 }}>
+                    <button type="button" className="btn btn-success dropdown-toggler pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('document.administration.domains.add')}>{translate('general.add')}</button>
+                    <ul className="dropdown-menu pull-right">
+                        <li><a href="#form-create-document-domain" title="ImportForm" onClick={(event) => { handleAddDomain(event) }}>{translate('task_template.add')}</a></li>
+                        <li><a href="#modal_import_file-domain" title="ImportForm" onClick={(event) => { handImportFile(event) }}>{translate('document.import')}</a></li>
+                    </ul>
+                </div>
+            </div>
+            {
+                deleteNode.length > 0 && <button className="btn btn-danger" style={{ marginLeft: '5px' }} onClick={deleteDomains}>{translate('general.delete')}</button>
+            }
+            <ExportExcel id="export-document-domain" exportData={exportData} style={{ marginRight: 5 }} buttonName={translate('document.export')} />
+            <CreateForm />
+            <DomainImportForm />
+            <div className="row">
+                <div className="col-xs-12 col-sm-12 col-md-7 col-lg-7">
+                    <div className="domain-tree" id="domain-tree">
+                        <Tree
+                            id="tree-qlcv-document"
+                            onChanged={onChanged}
+                            checkNode={checkNode}
+                            unCheckNode={unCheckNode}
+                            data={dataTree}
+                        />
+                    </div>
+                    <SlimScroll outerComponentId="domain-tree" innerComponentId="tree-qlcv-document" innerComponentWidth={"100%"} activate={true} />
+                </div>
+                <div className="col-xs-12 col-sm-12 col-md-5 col-lg-5">
+                    {
+                        state.currentDomain &&
+                        <EditForm
+                            domainId={state.currentDomain.id}
+                            domainName={state.currentDomain.text}
+                            domainDescription={state.currentDomain.original.description ? state.currentDomain.original.description : ""}
+                            domainParent={state.currentDomain.parent}
+                            unChooseNode={unChooseNode}
+                        />
+                    }
+                </div>
+            </div>
+        </React.Fragment>
+    );
 }
 
 const mapStateToProps = state => state;

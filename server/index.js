@@ -154,11 +154,6 @@ router.use(
 );
 
 router.use(
-    "/task",
-    require("./modules/task/task-project/taskProject.route")
-);
-
-router.use(
     "/process",
     require("./modules/task/tasks-process/taskProcess.route")
 );

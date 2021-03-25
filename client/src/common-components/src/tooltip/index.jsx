@@ -73,8 +73,7 @@ class ToolTip extends Component {
                 <span className="tooltip2text">
                     {convertData.map((content, i) => {
                         return <div key={i} className="text-left" style={{
-                            borderLeft: '5px solid #d0cdcd',
-                            borderTop: '5px solid #d0cdcd',
+                            border: '1px solid rgb(208, 205, 205)',
                             borderRadius: '10px',
                             padding: '0px 15px'
                         }}>{content}</div>

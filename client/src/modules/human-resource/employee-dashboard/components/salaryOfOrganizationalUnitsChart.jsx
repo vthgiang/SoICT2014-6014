@@ -132,7 +132,7 @@ class SalaryOfOrganizationalUnitsChart extends Component {
             <React.Fragment>
                 <div className="box box-solid" style={{ paddingBottom: 20 }}>
                     <div className="box-header with-border">
-                        <h3 className="box-title">{`Biểu đồ lương thưởng các đơn vị trong công ty tháng ${monthShow} `}</h3>
+                        <h3 className="box-title">{`Biểu đồ thu nhập của các đơn vị trong công ty tháng ${monthShow} `}</h3>
                     </div>
                     <div className="box-body">
                         <div className="box-tools pull-right" >

@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal } from '../../../../common-components';
 import { getStorage } from '../../../../config';
-import ModalAddTaskProject from '../../task-project/component/modalAddTaskProject';
 import { taskManagementActions } from '../redux/actions';
 import { AddTaskForm } from './addTaskForm';
 class TaskAddModal extends Component {
@@ -82,7 +81,6 @@ class TaskAddModal extends Component {
                         parentTask={parentTask}
                         currentTasks={currentTasks}
                     />
-                    <ModalAddTaskProject />
                 </DialogModal>
             </React.Fragment>
         );

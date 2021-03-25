@@ -179,7 +179,7 @@ export default {
 
             tasks: "Công việc cá nhân",
             task: "Chi tiết công việc",
-            task_management: "Danh sách công việc",
+            task_management: "Danh sách công việc cá nhân",
             task_management_of_unit: "Danh sách công việc đơn vị",
             task_management_dashboard: "Dashboard công việc",
             task_organization_management_dashboard:
@@ -265,6 +265,10 @@ export default {
             user_guide_detail: "Chi tiết hướng dẫn sử dụng",
         },
 
+        news_feed: {
+            news_feed: 'Tin tức'
+        },
+        
         intro: {
             title: "Giải pháp không gian làm việc số cho doanh nghiệp",
             contents: [
@@ -1274,6 +1278,7 @@ export default {
             info: "Thông tin về đơn vị",
             name: "Tên đơn vị",
             description: "Mô tả về đơn vị",
+            total_employee: "Số lượng nhân viên",
             parent: "Đơn vị cha",
             select_parent: "Chọn đơn vị cha",
             no_parent: "Không có đơn vị cha",
@@ -3414,6 +3419,7 @@ export default {
                 get_timer_status_fail:
                     "Lấy trạng thái bấm giờ hiện tại thất bại",
                 start_timer_fail: "Bắt đầu bấm giờ thất bại",
+                timer_exist_another_task: "Bạn đã bấm giờ cho công việc khác",
                 pause_timer_fail: "Tạm dừng bấm giờ thất bại",
                 continue_timer_fail: "Tiếp tục bấm giờ thất bại",
                 stop_timer_fail: "Kết thúc bấm giờ thất bại",

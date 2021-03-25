@@ -514,13 +514,21 @@ export function documents(state = initState, action) {
         case DocumentConstants.GET_DOCUMENT_DOMAINS_SUCCESS:
         case DocumentConstants.CREATE_DOCUMENT_DOMAIN_SUCCESS:
         case DocumentConstants.IMPORT_DOCUMENT_DOMAIN_SUCCESS:
-        case DocumentConstants.IMPORT_DOCUMENT_ARCHIVE_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
                 administration: {
                     ...state.administration,
                     domains: action.payload
+                }
+            };
+        case DocumentConstants.IMPORT_DOCUMENT_ARCHIVE_SUCCESS:
+            return {
+                ...state,
+                isLoading: false,
+                administration: {
+                    ...state.administration,
+                    archives: action.payload
                 }
             };
         case DocumentConstants.GET_DOCUMENT_ARCHIVE_SUCCESS:

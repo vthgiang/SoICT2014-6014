@@ -22,8 +22,24 @@ exports.getOrganizationalUnits = async (portal, id) => {
                     }]
                 }]
             },
-            { path: 'deputyManagers' },
-            { path: 'employees' }
+            {
+                path: 'deputyManagers',
+                populate: [{
+                    path: "users",
+                    populate: [{
+                        path: "userId"
+                    }]
+                }]
+            },
+            {
+                path: 'employees',
+                populate: [{
+                    path: "users",
+                    populate: [{
+                        path: "userId"
+                    }]
+                }]
+            }
         ]);
 }
 

@@ -49,7 +49,7 @@ class DatePicker extends Component {
             this.setState({
                 value: value
             })
-            onChange(value); // Thông báo lại cho parent component về giá trị mới (để parent component lưu vào state của nó)
+            this.props.onChange(value); // Thông báo lại cho parent component về giá trị mới (để parent component lưu vào state của nó)
         });
     }
 
