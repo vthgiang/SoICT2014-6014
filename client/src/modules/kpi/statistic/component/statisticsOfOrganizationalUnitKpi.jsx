@@ -526,7 +526,7 @@ class StatisticsOfOrganizationalUnitKpi extends Component {
                                         <h4 className="box-title">
                                             <span>Biểu đồ phân tích KPI đơn vị dựa trên KPI nhân viên tháng {month.slice(5, 7) + "-" + month.slice(0, 4)}</span>
                                             <a className="text-red" title={translate('task.task_management.explain')} onClick={() => this.showDistributionOfEmployeeKpiDoc()}>
-                                                <i className="fa fa-exclamation-circle" style={{ color: '#06c', marginLeft: '5px' }} />
+                                                <i className="fa fa-question-circle" style={{ color: '#dd4b39', marginLeft: '5px' }} />
                                             </a>
                                         </h4>
 
@@ -543,7 +543,7 @@ class StatisticsOfOrganizationalUnitKpi extends Component {
                                         <h4 className="box-title">
                                             <span>Biểu đồ phân tích KPI đơn vị dựa trên KPI đơn vị con tháng {month.slice(5, 7) + "-" + month.slice(0, 4)}</span>
                                             <a className="text-red" title={translate('task.task_management.explain')} onClick={() => this.showDistributionOfOrganizationalUnitKpiDoc()}>
-                                                <i className="fa fa-exclamation-circle" style={{ color: '#06c', marginLeft: '5px' }} />
+                                                <i className="fa fa-question-circle" style={{ color: '#dd4b39', marginLeft: '5px' }} />
                                             </a>
                                         </h4>
                                         

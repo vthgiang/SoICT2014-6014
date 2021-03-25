@@ -265,6 +265,10 @@ export default {
             user_guide_detail: "Chi tiết hướng dẫn sử dụng",
         },
 
+        news_feed: {
+            news_feed: 'Tin tức'
+        },
+        
         intro: {
             title: "Giải pháp không gian làm việc số cho doanh nghiệp",
             contents: [

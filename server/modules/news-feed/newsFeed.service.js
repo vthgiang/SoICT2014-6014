@@ -30,6 +30,9 @@ exports.getNewsFeed = async (portal, data) => {
             { path: 'comments.creator', select: 'name email avatar' }
         ])
 
+    newsFeeds.map(item => {
+        item.content = item?.content?.reverse();
+    })
     return newsFeeds
 }
 
@@ -47,7 +50,7 @@ exports.createNewsFeed = async (portal, data) => {
     })
 
     if (newsFeed) {
-        newsFeed = await NewsFeed(connect(DB_CONNECTION, portal)).update(
+        let newContent = await NewsFeed(connect(DB_CONNECTION, portal)).updateOne(
             { _id: newsFeed?._id },
             { $push: { content: content } },
             { new: true } 
@@ -66,11 +69,13 @@ exports.createNewsFeed = async (portal, data) => {
             })
     }
 
-    newsFeed = newsFeed && await newsFeed.populate([
-        {path: "content.creator", select:"_id name email avatar"},
-        { path: 'comments.creator', select: 'name email avatar' }
-    ])
-    .execPopulate();
+    newsFeed = await NewsFeed(connect(DB_CONNECTION, portal))
+        .findById(newsFeed?._id)
+        .populate([
+            { path: "content.creator", select:"name email avatar" },
+            { path: 'comments.creator', select: 'name email avatar' }
+        ])
+    newsFeed?.content?.reverse();
 
     if (relatedUsers?.length > 0) {
         relatedUsers.map(user => {
