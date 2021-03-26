@@ -410,7 +410,7 @@ exports.sendMailAboutCreatedAccount = async (email, password, portal) => {
         service: "Gmail",
         auth: {
             user: "vnist.qlcv@gmail.com",
-            pass: "qlcv123@",
+            pass: "VnistQLCV123@",
         },
     });
 
