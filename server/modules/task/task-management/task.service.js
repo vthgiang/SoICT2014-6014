@@ -1866,7 +1866,7 @@ exports.sendEmailForCreateTask = async (portal, task) => {
 
     var transporter = nodemailer.createTransport({
         service: 'Gmail',
-        auth: { user: 'vnist.qlcv@gmail.com', pass: 'qlcv123@' }
+        auth: { user: 'vnist.qlcv@gmail.com', pass: 'VnistQLCV123@' }
     });
 
     var email, userId, user, users, userIds
