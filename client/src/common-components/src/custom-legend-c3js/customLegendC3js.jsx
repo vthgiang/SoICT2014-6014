@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 
 import { SlimScroll } from '../../index';
 
+import './customLegendC3js.css';
 import * as d3 from "d3";
 
 function CustomLegendC3js(props) {
@@ -18,10 +19,11 @@ function CustomLegendC3js(props) {
         if (chart && chartId && legendId && dataChartLegend && dataChartLegend.length > 0) {
             d3.select(`#${chartId}`).insert('div', '.tooltip2')
                 .attr('id', legendId)
-                .attr('class', 'legend')
+                .attr('class', 'legend-c3js')
                 .selectAll('span')
                 .data(dataChartLegend)
                 .enter().append('div')
+                .attr('id', function (id, index) { return index })
                 .attr('data-id', function (id) { return id; })
                 .attr('title', function (id) { return id; })
                 .html(function (id, index) { return (index + 1) + '. ' + id; })
@@ -29,14 +31,24 @@ function CustomLegendC3js(props) {
                     d3.select(this).style('border-left', `8px solid ${chart.color(id)}`);
                     d3.select(this).style('padding-left', `5px`);
                 })
-                .on('mouseover',(id) => {
+                .on('mouseover',(id, index) => {
                     chart.focus(id);
+
+                    window.$(`#${index}`).addClass('not-opacity');
+                    window.$(`#${legendId} > div`).addClass('opacity');
                 })
-                .on('mouseout', (id) => {
+                .on('mouseout', (id, index) => {
                     chart.revert();
+
+                    window.$(`#${index}`).removeClass('not-opacity');
+                    window.$(`#${legendId} > div`).removeClass('opacity');
                 })
-                .on('click', function (id) {
+                .on('click', function (id, index) {
                     chart.toggle(id);
+
+                    window.$(`#${index}`).removeClass('not-opacity');
+                    window.$(`#${legendId} > div`).removeClass('opacity');
+                    window.$(`#${index}`).toggleClass('opacity-click');
                 });
             
             SlimScroll.addVerticalScrollStyleCSS(legendId, maxHeight, activate);
