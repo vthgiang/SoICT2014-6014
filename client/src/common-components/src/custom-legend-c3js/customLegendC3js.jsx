@@ -34,21 +34,21 @@ function CustomLegendC3js(props) {
                 .on('mouseover',(id, index) => {
                     chart.focus(id);
 
-                    window.$(`#${index}`).addClass('not-opacity');
+                    window.$(`#${legendId} > #${index}`).addClass('not-opacity');
                     window.$(`#${legendId} > div`).addClass('opacity');
                 })
                 .on('mouseout', (id, index) => {
                     chart.revert();
 
-                    window.$(`#${index}`).removeClass('not-opacity');
+                    window.$(`#${legendId} > #${index}`).removeClass('not-opacity');
                     window.$(`#${legendId} > div`).removeClass('opacity');
                 })
                 .on('click', function (id, index) {
                     chart.toggle(id);
 
-                    window.$(`#${index}`).removeClass('not-opacity');
+                    window.$(`#${legendId} > #${index}`).removeClass('not-opacity');
                     window.$(`#${legendId} > div`).removeClass('opacity');
-                    window.$(`#${index}`).toggleClass('opacity-click');
+                    window.$(`#${legendId} > #${index}`).toggleClass('opacity-click');
                 });
             
             SlimScroll.addVerticalScrollStyleCSS(legendId, maxHeight, activate);
