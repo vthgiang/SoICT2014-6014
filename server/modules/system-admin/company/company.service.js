@@ -218,7 +218,7 @@ exports.createCompanySuperAdminAccount = async (
 
     let transporter = await nodemailer.createTransport({
         service: "Gmail",
-        auth: { user: "vnist.qlcv@gmail.com", pass: "qlcv123@" },
+        auth: { user: "vnist.qlcv@gmail.com", pass: "VnistQLCV123@" },
     });
 
     let mainOptions = {

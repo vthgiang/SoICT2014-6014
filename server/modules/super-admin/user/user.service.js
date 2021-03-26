@@ -512,7 +512,7 @@ exports.sendMailAboutChangeEmailOfUserAccount = async (oldEmail, newEmail) => {
         service: "Gmail",
         auth: {
             user: "vnist.qlcv@gmail.com",
-            pass: "qlcv123@",
+            pass: "VnistQLCV123@",
         },
     });
 
@@ -905,7 +905,7 @@ exports.sendEmailResetPasswordUser = async(portal, email) => {
     await user.save();
     var transporter = await nodemailer.createTransport({
         service: "Gmail",
-        auth: { user: "vnist.qlcv@gmail.com", pass: "qlcv123@" },
+        auth: { user: "vnist.qlcv@gmail.com", pass: "VnistQLCV123@" },
     });
     var mainOptions = {
         from: "vnist.qlcv@gmail.com",
