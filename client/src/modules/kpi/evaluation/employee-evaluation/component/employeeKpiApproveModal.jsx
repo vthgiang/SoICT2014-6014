@@ -33,7 +33,6 @@ class EmployeeKpiApproveModal extends Component {
             edit: "",
             compare: false,
             checkInput: false,
-            checkWeight: false,
             tableId,
         };
         this.newWeight = [];
@@ -104,8 +103,6 @@ class EmployeeKpiApproveModal extends Component {
                 return {
                     ...state,
                     edit: "",
-                    checkWeight: false,
-                    checkEditting: false,
                     editing: true
                 }
             })
@@ -189,68 +186,60 @@ class EmployeeKpiApproveModal extends Component {
 
     handleEditStatusTarget = (event, kpi, status, listTarget) => {
         event.preventDefault();
-        if (kpi?.approvedPoint !== null &&  kpi?.approvedPoint >= 0) {
+        const { edit } = this.state;
+
+        if (kpi?.approvedPoint !== null && kpi?.approvedPoint >= 0) {
             Swal.fire({
                 title: translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.edit_target.evaluated'),
                 type: 'warning',
                 confirmButtonColor: '#3085d6',
                 confirmButtonText: translate('kpi.evaluation.employee_evaluation.confirm')
             })
-        }
-
-        const { edit } = this.state;
-
-        if (edit === "") {
-            let totalWeight;
-            if (listTarget) {
-                totalWeight = listTarget.filter(item => item.status === 1 || item._id === kpi?.id).map(item => parseInt(item.weight)).reduce((sum, number) => sum + number, 0);
-            }
-
-            if (totalWeight > 100 && listTarget) {
-                this.setState(state => {
-                    return {
-                        ...state,
-                        checkWeight: true
-                    }
-                })
-            } else {
-                if (kpi?.id) {
-                    this.props.editStatusKpi(kpi?.id, status);
-                    this.setState(state => {
-                        return {
-                            ...state,
-                            checkWeight: false
-                        }
-                    })
-                }
-            }
         } else {
-            this.setState(state => {
-                return {
-                    ...state,
-                    checkEditting: true
+            if (edit === "") {
+                if (listTarget) {
+                    let totalWeight;
+                    if (listTarget) {
+                        totalWeight = listTarget.filter(item => item.status === 1 || item._id === kpi?._id).map(item => parseInt(item.weight)).reduce((sum, number) => sum + number, 0);
+                    }
+        
+                    if (totalWeight !== 100 && listTarget) {
+                        Swal.fire({
+                            title: translate('kpi.organizational_unit.create_organizational_unit_kpi_set.confirm_not_enough_weight'),
+                            type: 'warning',
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: translate('kpi.organizational_unit.create_organizational_unit_kpi_set.confirm'),
+                        })
+                    } else {
+                        if (kpi?._id) {
+                            this.props.editStatusKpi(kpi?._id, status);
+                        }
+                    }
+                } else {
+                    this.props.editStatusKpi(kpi?._id, status);
                 }
-            })
+            } else {
+                Swal.fire({
+                    title: translate('kpi.evaluation.employee_evaluation.unsuitable_approval'),
+                    type: 'warning',
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: translate('kpi.evaluation.employee_evaluation.confirm')
+                })
+            }
         }
     }
 
     handleApproveKPI = async (id, listTarget) => {
         let totalWeight = listTarget.map(item => parseInt(item.weight)).reduce((sum, number) => sum + number, 0);
         if (totalWeight !== 100) {
-            await this.setState(state => {
-                return {
-                    ...state,
-                    checkWeight: true
-                }
+            Swal.fire({
+                title: translate('kpi.organizational_unit.create_organizational_unit_kpi_set.confirm_not_enough_weight'),
+                type: 'warning',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: translate('kpi.organizational_unit.create_organizational_unit_kpi_set.confirm'),
             })
         } else {
             this.props.approveAllKpis(id);
-            await this.setState(state => {
-                return {
-                    ...state,
-                    checkWeight: false
-                }
-            })
         }
     }
 
@@ -270,7 +259,7 @@ class EmployeeKpiApproveModal extends Component {
     render() {
         const { kpimembers } = this.props;
         const { translate } = this.props;
-        const { errorOnDate, date, compare, edit, checkWeight, perPage, checkEditting, tableId } = this.state;
+        const { errorOnDate, date, compare, edit, perPage, tableId } = this.state;
         let kpimember, kpimembercmp, month, totalWeight;
 
         if (kpimembers.currentKPI) {
@@ -359,8 +348,6 @@ class EmployeeKpiApproveModal extends Component {
 
                         {/* Label cảnh báo */}
                         <label>{`${translate('kpi.evaluation.employee_evaluation.kpi_this_month')} ${kpimember && month[1]}/${kpimember && month[0]}`} ({totalWeight}/100)</label>
-                        {checkWeight && <p className="text-danger" style={{ fontWeight: 900 }}>{translate('kpi.evaluation.employee_evaluation.unsuitable_weight')}</p>}
-                        {checkEditting && <p className="text-danger" style={{ fontWeight: 900 }}>{translate('kpi.evaluation.employee_evaluation.unsuitable_approval')}</p>}
 
                         {/* Danh sách KPI */}
                         <table id={tableId} className="table table-bordered table-striped table-hover">
