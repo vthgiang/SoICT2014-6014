@@ -189,7 +189,7 @@ class EmployeeKpiApproveModal extends Component {
 
     handleEditStatusTarget = (event, kpi, status, listTarget) => {
         event.preventDefault();
-        if (kpi?.approvedPoint >= 0) {
+        if (kpi?.approvedPoint !== null &&  kpi?.approvedPoint >= 0) {
             Swal.fire({
                 title: translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.edit_target.evaluated'),
                 type: 'warning',
