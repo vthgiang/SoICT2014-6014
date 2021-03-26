@@ -7,6 +7,8 @@ import { AnnualLeaveActions } from '../../annual-leave/redux/actions';
 import { TimesheetsActions } from '../../timesheets/redux/actions';
 import { SelectMulti, DatePicker } from '../../../../common-components';
 
+import { showListInSwal } from '../../../../helpers/showListInSwal';
+
 import c3 from 'c3';
 import 'c3/c3.css';
 
@@ -247,7 +249,6 @@ class AnnualLeaveTrendsChart extends Component {
             organizationalUnitsName = department.list.filter(x => organizationalUnitsSearch.includes(x._id));
             organizationalUnitsName = organizationalUnitsName.map(x => x.name);
         }
-        console.log(timesheets.listHoursOffOfUnitsByStartDateAndEndDate)
 
         if (annualLeave.arrMonth.length !== 0) {
             let ratioX = ['x', ...annualLeave.arrMonth];
@@ -279,7 +280,23 @@ class AnnualLeaveTrendsChart extends Component {
             <React.Fragment>
                 <div className="box box-solid">
                     <div className="box-header with-border">
-                        <h3 className="box-title">{`${nameChart} của công ty ${startDateShow}`}<i className="fa fa-fw fa-caret-right"></i>{endDateShow}</h3>
+                        <div className="box-title">
+                            {`${nameChart} của `}
+                            {
+                                organizationalUnitsName && organizationalUnitsName.length < 2 ?
+                                    <>
+                                        <span>{` ${translate('task.task_dashboard.of_unit')}`}</span>
+                                        <span style={{ fontWeight: "bold" }}>{` ${organizationalUnitsName?.[0]}`}</span>
+                                    </>
+                                    :
+                                    <span onClick={() => showListInSwal(organizationalUnitsName, translate('general.list_unit'))} style={{ cursor: 'pointer' }}>
+                                        <span>{` ${translate('task.task_dashboard.of')}`}</span>
+                                        <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {organizationalUnitsName?.length}</a>
+                                        <span>{` ${translate('task.task_dashboard.unit_lowercase')}`}</span>
+                                    </span>
+                            } 
+                            {` ${startDateShow}`}<i className="fa fa-fw fa-caret-right"></i>{endDateShow}
+                        </div>
                     </div>
                     <div className="box-body">
                         <div className="qlcv" style={{ marginBottom: 15 }}>

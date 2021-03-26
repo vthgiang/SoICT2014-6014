@@ -459,7 +459,7 @@ class OrganizationalUnitKpiDashboard extends Component {
                                                         ? <span onClick={() => showListInSwal(organizationalUnitOfChartAllKpis, translate('general.list_unit'))} style={{ cursor: 'pointer' }}>
                                                             <a style={{ fontWeight: 'bold' }}> {organizationalUnitOfChartAllKpis.length} </a>{translate('kpi.organizational_unit.dashboard.organizational_unit_low_case')}
                                                         </span>
-                                                        : ` ${organizationalUnitOfChartAllKpis?.[0]}`
+                                                        : organizationalUnitOfChartAllKpis?.[0] && ` ${organizationalUnitOfChartAllKpis?.[0]}`
                                                     }
                                                 </div>
                                                 {resultsOfAllOrganizationalUnitsKpiChartData && <ExportExcel type="link" id="export-all-organizational-unit-kpi-results-chart" exportData={resultsOfAllOrganizationalUnitsKpiChartData} style={{ marginLeft: 10 }} />}

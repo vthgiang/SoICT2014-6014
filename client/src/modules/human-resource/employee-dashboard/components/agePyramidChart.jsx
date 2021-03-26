@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { EmployeeManagerActions } from '../../profile/employee-management/redux/actions';
+import { showListInSwal } from '../../../../helpers/showListInSwal';
 
 import c3 from 'c3';
 import 'c3/c3.css';
@@ -156,11 +156,11 @@ class AgePyramidChart extends Component {
     }
 
     render() {
-        const { employeesManager, department } = this.props;
+        const { employeesManager, department, translate } = this.props;
         const { organizationalUnits } = this.state;
 
         let organizationalUnitsName;
-        if (organizationalUnits) {
+        if (organizationalUnits && department?.list) {
             organizationalUnitsName = department.list.filter(x => organizationalUnits.includes(x._id));
             organizationalUnitsName = organizationalUnitsName.map(x => x.name);
         }
@@ -205,9 +205,22 @@ class AgePyramidChart extends Component {
                 <div className="box box-solid">
                     <div className="box-header with-border">
                         <i className="fa fa-bar-chart-o" />
-                        <h3 className="box-title">
-                            {`Tháp tuổi cán bộ công nhân viên trong công ty`}
-                        </h3>
+                        <div className="box-title">
+                            {`Tháp tuổi cán bộ công nhân viên của`}
+                            {
+                                organizationalUnitsName && organizationalUnitsName.length < 2 ?
+                                    <>
+                                        <span>{` ${translate('task.task_dashboard.of_unit')}`}</span>
+                                        <span style={{ fontWeight: "bold" }}>{` ${organizationalUnitsName?.[0]}`}</span>
+                                    </>
+                                    :
+                                    <span onClick={() => showListInSwal(organizationalUnitsName, translate('general.list_unit'))} style={{ cursor: 'pointer' }}>
+                                        <span>{` ${translate('task.task_dashboard.of')}`}</span>
+                                        <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {organizationalUnitsName?.length}</a>
+                                        <span>{` ${translate('task.task_dashboard.unit_lowercase')}`}</span>
+                                    </span>
+                            }
+                        </div>
                     </div>
                     <div className="box-body dashboard_box_body">
                         <div className="form-inline">
