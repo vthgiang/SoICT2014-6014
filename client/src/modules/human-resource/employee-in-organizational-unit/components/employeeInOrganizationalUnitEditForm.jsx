@@ -173,6 +173,8 @@ class EmployeeInOrganizationalUnitEditForm extends Component {
         const { _id, roleEmployees, roleManagers, roleDeputyManagers, textSearch } = this.state;
         let userlist = user.list;
 
+        // Lấy các role chức danh
+        const getRolePosition = this.props.role.filter(obj => obj.type?.name === "Position");
 
         return (
             <React.Fragment>
@@ -194,6 +196,17 @@ class EmployeeInOrganizationalUnitEditForm extends Component {
                                         for (let n in users) {
                                             infoManager = userlist.filter(y => y._id === users[n]).concat(infoManager)
                                         }
+
+                                        // lấy thông tin các role nhân viên có.
+                                        infoManager.forEach(uId => {
+                                            let roleName = [];
+                                            getRolePosition.forEach(rl => {
+                                                if (rl.users.some(check => check.userId._id === uId._id)) {
+                                                    roleName = [...roleName, rl.name];
+                                                }
+                                            })
+                                            uId.allRolePosition = roleName;
+                                        })
                                         return (
                                             <fieldset key={index} className="scheduler-border" style={{ marginBottom: 10, paddingBottom: 10 }}>
                                                 <legend className="scheduler-border" style={{ marginBottom: 0 }} ><h4 className="box-title">{obj.name}</h4></legend>
@@ -215,6 +228,7 @@ class EmployeeInOrganizationalUnitEditForm extends Component {
                                                         <tr>
                                                             <th>{translate('table.employee_name')}</th>
                                                             <th>{translate('human_resource.manage_department.email_employee')}</th>
+                                                            <th>{translate('manage_department.total_roles')}</th>
                                                             <th style={{ width: '120px', textAlign: 'center' }}>{translate('general.action')}</th>
                                                         </tr>
                                                     </thead>
@@ -225,6 +239,7 @@ class EmployeeInOrganizationalUnitEditForm extends Component {
                                                                 <tr key={index}>
                                                                     <td style={{ textAlign: "left" }}>{user.name}</td>
                                                                     <td style={{ textAlign: "left" }}>{user.email}</td>
+                                                                    <td style={{ textAlign: 'left' }}>{user.allRolePosition ? user.allRolePosition.map(o => o).join(", ") : null}</td>
                                                                     <td>
                                                                         <a className="delete" title="Delete" onClick={() => this.handleDeleteEmployeesManager(user._id, obj.id)}><i className="material-icons"></i></a>
                                                                     </td>
@@ -255,6 +270,16 @@ class EmployeeInOrganizationalUnitEditForm extends Component {
                                             infoDeputyManagers = userlist.filter(y => y._id === users[n]).concat(infoDeputyManagers)
                                         }
 
+                                        // lấy thông tin các role nhân viên có.
+                                        infoDeputyManagers.forEach(uId => {
+                                            let roleName = [];
+                                            getRolePosition.forEach(rl => {
+                                                if (rl.users.some(check => check.userId._id === uId._id)) {
+                                                    roleName = [...roleName, rl.name];
+                                                }
+                                            })
+                                            uId.allRolePosition = roleName;
+                                        })
                                         return (
                                             <fieldset key={index} className="scheduler-border" style={{ marginBottom: 10, paddingBottom: 10 }}>
                                                 <legend className="scheduler-border" style={{ marginBottom: 0 }} ><h4 className="box-title">{obj.name}</h4></legend>
@@ -276,6 +301,7 @@ class EmployeeInOrganizationalUnitEditForm extends Component {
                                                         <tr>
                                                             <th>{translate('table.employee_name')}</th>
                                                             <th>{translate('human_resource.manage_department.email_employee')}</th>
+                                                            <th>{translate('manage_department.total_roles')}</th>
                                                             <th style={{ width: '120px', textAlign: 'center' }}>{translate('general.action')}</th>
                                                         </tr>
                                                     </thead>
@@ -286,6 +312,7 @@ class EmployeeInOrganizationalUnitEditForm extends Component {
                                                                 <tr key={index}>
                                                                     <td style={{ textAlign: "left" }}>{user.name}</td>
                                                                     <td style={{ textAlign: "left" }}>{user.email}</td>
+                                                                    <td style={{ textAlign: 'left' }}>{user.allRolePosition ? user.allRolePosition.map(o => o).join(", ") : null}</td>
                                                                     <td>
                                                                         <a className="delete" title="Delete" onClick={() => this.handleDeleteEmployeesDeputyManager(user._id, obj.id)}><i className="material-icons"></i></a>
                                                                     </td>
@@ -314,6 +341,17 @@ class EmployeeInOrganizationalUnitEditForm extends Component {
                                     for (let n in users) {
                                         infoEmployee = userlist.filter(y => y._id === users[n]).concat(infoEmployee)
                                     }
+
+                                    // lấy thông tin các role nhân viên có.
+                                    infoEmployee.forEach(uId => {
+                                        let roleName = [];
+                                        getRolePosition.forEach(rl => {
+                                            if (rl.users.some(check => check.userId._id === uId._id)) {
+                                                roleName = [...roleName, rl.name];
+                                            }
+                                        })
+                                        uId.allRolePosition = roleName;
+                                    })
                                     return (
                                         <fieldset key={index} className="scheduler-border" style={{ marginBottom: 10, paddingBottom: 10 }}>
                                             <legend className="scheduler-border" style={{ marginBottom: 0 }} ><h4 className="box-title">{x.name}</h4></legend>
@@ -335,6 +373,7 @@ class EmployeeInOrganizationalUnitEditForm extends Component {
                                                     <tr>
                                                         <th>{translate('table.employee_name')}</th>
                                                         <th>{translate('human_resource.manage_department.email_employee')}</th>
+                                                        <th>{translate('manage_department.total_roles')}</th>
                                                         <th style={{ width: '120px', textAlign: 'center' }}>{translate('general.action')}</th>
                                                     </tr>
                                                 </thead>
@@ -345,6 +384,7 @@ class EmployeeInOrganizationalUnitEditForm extends Component {
                                                             <tr key={index}>
                                                                 <td style={{ textAlign: "left" }}>{user.name}</td>
                                                                 <td style={{ textAlign: "left" }}>{user.email}</td>
+                                                                <td style={{ textAlign: 'left' }}>{user.allRolePosition ? user.allRolePosition.map(o => o).join(", ") : null}</td>
                                                                 <td>
                                                                     <a className="delete" title="Delete" onClick={() => this.handleDeleteEmployees(user._id, x.id)}><i className="material-icons"></i></a>
                                                                 </td>
