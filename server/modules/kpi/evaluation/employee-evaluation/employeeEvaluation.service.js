@@ -504,7 +504,7 @@ exports.getTasksByListKpis = async (portal, data) => {
         infosearch.push([]);
         let kpis = listkpis[i].kpis;
         for (let j = 0; j < kpis.length; j++) {
-            infosearch[infosearch.length - 1].push({ id: kpis[j]._id, employeeId: listkpis[i].creator._id, date: listkpis[i].date, kpiType: kpis[j].type })
+        infosearch[infosearch.length - 1].push({ id: kpis[j]._id, employeeId: listkpis[i].creator._id, date: listkpis[i].date, kpiType: kpis[j].type })
         }
     }
 
@@ -537,9 +537,9 @@ async function getResultTaskByMonth(portal, data) {
     let yearkpi = parseInt(date.getFullYear());
     let kpiType;
 
-    if (data.kpiType === "1") {
+    if (data.kpiType === 1) {
         kpiType = "accountable";
-    } else if (data.kpiType === "2") {
+    } else if (data.kpiType === 2) {
         kpiType = "consulted";
     } else {
         kpiType = "responsible";
@@ -547,7 +547,7 @@ async function getResultTaskByMonth(portal, data) {
 
     let conditions = [
         {
-            $match: { "evaluations.results.kpis": mongoose.Types.ObjectId(data.id) }
+            $match: { "evaluations.results.kpis": { $elemMatch: { $eq: mongoose.Types.ObjectId(data?.id) } } }
         },
         {
             $unwind: "$evaluations"
@@ -565,13 +565,14 @@ async function getResultTaskByMonth(portal, data) {
         },
         { $addFields: { "month": { $month: '$evaluatingMonth' }, "year": { $year: '$evaluatingMonth' } } },
         { $unwind: "$results" },
+        {
+            $match: { "results.kpis": { $elemMatch: { $eq: mongoose.Types.ObjectId(data?.id) } } }
+        },
         { $match: { "results.role": kpiType } },
         { $match: { 'results.employee': mongoose.Types.ObjectId(data.employeeId) } },
         { $match: { "month": monthkpi } },
         { $match: { "year": yearkpi } },
     ]
-
-
 
     let task = await Task(connect(DB_CONNECTION, portal)).aggregate(conditions);
     return task;
@@ -587,7 +588,6 @@ async function getResultTaskByMonth(portal, data) {
  */
 
 exports.setPointAllKpi = async (portal, idEmployee, idKpiSet, data) => {
-    console.log(data);
     let kpis = data.kpis;
     let date = data.date;
 
@@ -693,7 +693,6 @@ exports.setPointAllKpi = async (portal, idEmployee, idKpiSet, data) => {
 
 
     }
-    console.log('aaaaaaaaaaa', approvedPointSet / totalWeight, totalWeight);
 
     let updateKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
         .findByIdAndUpdate(idKpiSet,

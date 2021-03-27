@@ -293,6 +293,7 @@ class EmployeeKpiEvaluateModal extends Component {
             exportData = this.convertDataToExportData(myTask, contentName, employeeKpiSet.creator.name);
         }
         currentKpi = list && list.length ? list.filter(item => item._id == content)[0] : "";
+
         return (
             <DialogModal
                 modalID={"employee-kpi-evaluation-modal"}
@@ -325,8 +326,8 @@ class EmployeeKpiEvaluateModal extends Component {
                                     <li key={index} className={content === item._id ? "active" : undefined}>
                                         <a style={{ cursor: 'pointer' }} onClick={() => this.handleChangeContent(item._id, employeeKpiSet.creator._id, item.type, item.name)}>
                                             {item.name}
-                                        &nbsp;
-                                    </a>
+                                            <span className="label label-primary pull-right">{item?.arrtarget?.length}</span>
+                                        </a>
                                     </li>
                                 )}
                             </ul>
@@ -375,9 +376,13 @@ class EmployeeKpiEvaluateModal extends Component {
                                 }
                             </div>
                             <br /><br />
-                            <h4>{translate('kpi.evaluation.employee_evaluation.task_list')}</h4>
+                            <h4 style={{ marginBottom: '-15px' }}>{translate('kpi.evaluation.employee_evaluation.task_list')} ({kpimembers?.tasks?.length})</h4>
                             <div class="table-wrapper-scroll-y my-custom-scrollbar" style={{ height: "calc(80vh - 160px)", overflow: "auto" }}>
-                                <DataTableSetting className="pull-right" tableId={tableId} tableContainerId="tree-table-container" tableWidth="1300px"
+                                <DataTableSetting 
+                                    className="pull-right" 
+                                    tableId={tableId} 
+                                    tableContainerId="tree-table-container" 
+                                    tableWidth="1300px"
                                     columnArr={[
                                         'STT',
                                         'Tên công việc',
@@ -387,7 +392,8 @@ class EmployeeKpiEvaluateModal extends Component {
                                         'Đóng góp (%)',
                                         'Điểm',
                                         'Độ quan trọng']}
-                                    setLimit={this.setLimit} />
+                                    setLimit={this.setLimit} 
+                                />
                                 <table id={tableId} className="table table-hover table-bordered  table-striped mb-0" >
                                     <thead>
                                         <tr>
