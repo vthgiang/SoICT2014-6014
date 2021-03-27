@@ -571,7 +571,7 @@ class MainDashboardUnit extends Component {
                                                     <span style={{ fontWeight: "bold" }}>{` ${this.getUnitName(listUnitSelect, arrayUnitForUrgentChart).map(o => o).join(", ")}`}</span>
                                                 </>
                                                 :
-                                                <span onClick={() => this.showUnitGeneraTask(listUnitSelect, arrayUnitForUrgentChart)} style={{ cursor: 'pointer' }}>
+                                                <span onClick={() => this.showUnitTask(listUnitSelect, arrayUnitForUrgentChart)} style={{ cursor: 'pointer' }}>
                                                     <span>{` ${translate('task.task_dashboard.of')}`}</span>
                                                     <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {arrayUnitForUrgentChart?.length}</a>
                                                     <span>{` ${translate('task.task_dashboard.unit_lowercase')}`}</span>
@@ -671,7 +671,7 @@ class MainDashboardUnit extends Component {
                                 <CurrentTaskTimesheetLogInOrganizationalUnit
                                     listUnitSelect={listUnitSelect}
                                     getUnitName={this.getUnitName}
-                                    showUnitGeneraTask={this.showUnitGeneraTask}
+                                    showUnitTask={this.showUnitTask}
                                 />
                             </div>
                         </div>
@@ -790,7 +790,7 @@ class MainDashboardUnit extends Component {
 
                             {/* Tab thống kê tổng hợp*/}
                             <div className="tab-pane" id="integrated-statistics">
-                                <TabIntegratedStatistics listAllEmployees={listAllEmployees} month={monthShow} employeeTasks={employeeTasks} listEmployee={listEmployee} />
+                                <TabIntegratedStatistics listAllEmployees={listAllEmployees} month={monthShow} employeeTasks={employeeTasks} listEmployee={listEmployee} organizationalUnits={organizationalUnits}/>
                             </div>
                         </div>
                     </div>

@@ -5,6 +5,7 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import { FieldsActions } from '../../field/redux/actions';
 
+import { showListInSwal } from '../../../../helpers/showListInSwal';
 import { CustomLegendC3js } from '../../../../common-components/index';
 
 import c3 from 'c3';
@@ -185,9 +186,22 @@ class QualificationChart extends Component {
             <React.Fragment>
                 <div className="box box-solid">
                     <div className="box-header with-border">
-                        <h3 className="box-title">
-                            {`Trình độ chuyên môn của nhân sự trong công ty`}
-                        </h3>
+                        <div className="box-title">
+                            {`Trình độ chuyên môn của nhân sự `}
+                            {
+                                organizationalUnitsName && organizationalUnitsName.length < 2 ?
+                                    <>
+                                        <span>{` ${translate('task.task_dashboard.of_unit')}`}</span>
+                                        <span style={{ fontWeight: "bold" }}>{` ${organizationalUnitsName?.[0]}`}</span>
+                                    </>
+                                    :
+                                    <span onClick={() => showListInSwal(organizationalUnitsName, translate('general.list_unit'))} style={{ cursor: 'pointer' }}>
+                                        <span>{` ${translate('task.task_dashboard.of')}`}</span>
+                                        <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {organizationalUnitsName?.length}</a>
+                                        <span>{` ${translate('task.task_dashboard.unit_lowercase')}`}</span>
+                                    </span>
+                            }
+                        </div>
                     </div>
                     <div className="box-body">
                         <div className="box-tools pull-left" >

@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { SelectMulti, DatePicker } from '../../../../common-components';
+import { showListInSwal } from '../../../../helpers/showListInSwal';
 
 import { EmployeeManagerActions } from '../../profile/employee-management/redux/actions';
 
@@ -287,7 +288,24 @@ class HumanResourceIncreaseAndDecreaseChart extends Component {
         return (
             <div className="box box-solid" >
                 <div className="box-header with-border" >
-                    <h3 className="box-title" > {`${nameChart} của công ty ${startDateShow}`}<i className="fa fa-fw fa-caret-right"></i>{endDateShow}</h3> </div>
+                    <div className="box-title" >
+                        {`${nameChart} `}
+                        {
+                            organizationalUnitsName && organizationalUnitsName.length < 2 ?
+                                <>
+                                    <span>{` ${translate('task.task_dashboard.of_unit')}`}</span>
+                                    <span style={{ fontWeight: "bold" }}>{` ${organizationalUnitsName?.[0]}`}</span>
+                                </>
+                                :
+                                <span onClick={() => showListInSwal(organizationalUnitsName, translate('general.list_unit'))} style={{ cursor: 'pointer' }}>
+                                    <span>{` ${translate('task.task_dashboard.of')}`}</span>
+                                    <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {organizationalUnitsName?.length}</a>
+                                    <span>{` ${translate('task.task_dashboard.unit_lowercase')}`}</span>
+                                </span>
+                        }
+                        {` ${startDateShow}`}<i className="fa fa-fw fa-caret-right"></i>{`${endDateShow}`}
+                    </div> 
+                </div>
                 <div className="box-body" >
                     <div className="qlcv" style={{ marginBottom: 15 }} >
                         <div className="form-inline" >

@@ -4,6 +4,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import moment from 'moment';
 
 import { SelectMulti } from '../../../common-components';
+import { showListInSwal } from '../../../helpers/showListInSwal';
 
 import { performTaskAction } from './../../task/task-perform/redux/actions';
 
@@ -64,7 +65,7 @@ function CurrentTaskTimesheetLogInOrganizationalUnit(props) {
                                 <span style={{ fontWeight: "bold" }}>{` ${props.getUnitName(listUnitSelect, organizationalUnitId).map(o => o).join(", ")}`}</span>
                             </>
                             :
-                            <span onClick={() => props.showUnitGeneraTask(listUnitSelect, organizationalUnitId)} style={{ cursor: 'pointer' }}>
+                            <span onClick={() => props.showUnitTask(listUnitSelect, organizationalUnitId)} style={{ cursor: 'pointer' }}>
                                 <span>{` ${translate('task.task_dashboard.of')}`}</span>
                                 <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {organizationalUnitId?.length}</a>
                                 <span>{` ${translate('task.task_dashboard.unit_lowercase')}`}</span>

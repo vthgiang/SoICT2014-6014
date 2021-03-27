@@ -3,6 +3,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
+import { showListInSwal } from '../../../../helpers/showListInSwal';
+
 import c3 from 'c3';
 import 'c3/c3.css';
 
@@ -132,7 +134,23 @@ class SalaryOfOrganizationalUnitsChart extends Component {
             <React.Fragment>
                 <div className="box box-solid" style={{ paddingBottom: 20 }}>
                     <div className="box-header with-border">
-                        <h3 className="box-title">{`Biểu đồ thu nhập của các đơn vị trong công ty tháng ${monthShow} `}</h3>
+                        <div className="box-title">
+                            {`Biểu đồ thu nhập `}
+                            {
+                                organizationalUnitsName && organizationalUnitsName.length < 2 ?
+                                    <>
+                                        <span>{` ${translate('task.task_dashboard.of_unit')}`}</span>
+                                        <span style={{ fontWeight: "bold" }}>{` ${organizationalUnitsName?.[0]?.name}`}</span>
+                                    </>
+                                    :
+                                    <span onClick={() => showListInSwal(organizationalUnitsName.map(item => item?.name), translate('general.list_unit'))} style={{ cursor: 'pointer' }}>
+                                        <span>{` ${translate('task.task_dashboard.of')}`}</span>
+                                        <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {organizationalUnitsName?.length}</a>
+                                        <span>{` ${translate('task.task_dashboard.unit_lowercase')}`}</span>
+                                    </span>
+                            }
+                            {` tháng ${monthShow}`}
+                        </div>
                     </div>
                     <div className="box-body">
                         <div className="box-tools pull-right" >

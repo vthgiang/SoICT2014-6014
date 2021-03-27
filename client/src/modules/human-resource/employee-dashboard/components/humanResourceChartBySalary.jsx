@@ -3,6 +3,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
+import { showListInSwal } from '../../../../helpers/showListInSwal';
+
 import c3 from 'c3';
 import 'c3/c3.css';
 
@@ -171,7 +173,7 @@ class HumanResourceChartBySalary extends Component {
             !HumanResourceChartBySalary.isEqual(nextProps.salary.listSalaryByMonthAndOrganizationalUnits, this.state.listSalaryByMonthAndOrganizationalUnits)) {
             return true;
         };
-        return false;
+        return true;
     }
 
     render() {
@@ -181,7 +183,7 @@ class HumanResourceChartBySalary extends Component {
 
         let data = salary.listSalaryByMonthAndOrganizationalUnits;
         let organizationalUnitsName;
-        if (organizationalUnits) {
+        if (organizationalUnits && department?.list?.length > 0) {
             organizationalUnitsName = department.list.filter(x => organizationalUnits.includes(x._id));
             organizationalUnitsName = organizationalUnitsName.map(x => x.name);
         }
@@ -220,7 +222,23 @@ class HumanResourceChartBySalary extends Component {
             <React.Fragment>
                 <div className="box box-solid">
                     <div className="box-header with-border">
-                        <h3 className="box-title">{`Biểu đồ nhân sự của công ty phân theo dải lương tháng ${monthShow}`}</h3>
+                        <div className="box-title">
+                            {`Biểu đồ nhân sự `}
+                            {
+                                organizationalUnitsName && organizationalUnitsName.length < 2 ?
+                                    <>
+                                        <span>{` ${translate('task.task_dashboard.of_unit')}`}</span>
+                                        <span style={{ fontWeight: "bold" }}>{` ${organizationalUnitsName?.[0]}`}</span>
+                                    </>
+                                    :
+                                    <span onClick={() => showListInSwal(organizationalUnitsName, translate('general.list_unit'))} style={{ cursor: 'pointer' }}>
+                                        <span>{` ${translate('task.task_dashboard.of')}`}</span>
+                                        <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {organizationalUnitsName?.length}</a>
+                                        <span>{` ${translate('task.task_dashboard.unit_lowercase')}`}</span>
+                                    </span>
+                            }
+                            {` phân theo dải lương tháng ${monthShow}`}
+                        </div>
                     </div>
                     <div className="box-body">
                         <div className="dashboard_box_body">
