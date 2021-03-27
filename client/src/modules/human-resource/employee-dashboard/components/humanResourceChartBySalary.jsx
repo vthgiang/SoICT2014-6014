@@ -223,7 +223,7 @@ class HumanResourceChartBySalary extends Component {
                 <div className="box box-solid">
                     <div className="box-header with-border">
                         <div className="box-title">
-                            {`Biểu đồ nhân sự của `}
+                            {`Biểu đồ nhân sự `}
                             {
                                 organizationalUnitsName && organizationalUnitsName.length < 2 ?
                                     <>

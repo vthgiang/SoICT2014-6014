@@ -281,7 +281,7 @@ class AnnualLeaveTrendsChart extends Component {
                 <div className="box box-solid">
                     <div className="box-header with-border">
                         <div className="box-title">
-                            {`${nameChart} của `}
+                            {`${nameChart} `}
                             {
                                 organizationalUnitsName && organizationalUnitsName.length < 2 ?
                                     <>

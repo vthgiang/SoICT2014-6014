@@ -206,7 +206,7 @@ class AgePyramidChart extends Component {
                     <div className="box-header with-border">
                         <i className="fa fa-bar-chart-o" />
                         <div className="box-title">
-                            {`Tháp tuổi cán bộ công nhân viên của`}
+                            {`Tháp tuổi cán bộ công nhân viên `}
                             {
                                 organizationalUnitsName && organizationalUnitsName.length < 2 ?
                                     <>

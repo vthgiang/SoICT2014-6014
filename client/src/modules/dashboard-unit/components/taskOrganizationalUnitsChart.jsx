@@ -344,7 +344,7 @@ class TaskOrganizationalUnitsChart extends Component {
             <div className="box box-solid" >
                 <div className="box-header with-border" >
                     <div className="box-title" >
-                        Tình hình làm việc các đơn vị
+                        Tình hình làm việc 
                         {
                             childOrganizationalUnit && childOrganizationalUnit.length < 2 ?
                                 <>

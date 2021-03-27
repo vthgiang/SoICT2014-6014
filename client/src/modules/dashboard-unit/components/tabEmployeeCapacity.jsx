@@ -161,7 +161,7 @@ class TabEmployeeCapacity extends Component {
                     <div className="box box-solid">
                         <div className="box-header with-border">
                             <div className="box-title">
-                                {`Top ${numberOfExcellentEmployees} ${translate('kpi.evaluation.dashboard.best_employee')} của `}
+                                {`Top ${numberOfExcellentEmployees} ${translate('kpi.evaluation.dashboard.best_employee')} `}
                                 {
                                     organizationalUnitsName && organizationalUnitsName.length < 2 ?
                                         <>
@@ -222,7 +222,7 @@ class TabEmployeeCapacity extends Component {
                     <div className="box box-solid">
                         <div className="box-header with-border">
                             <div className="box-title">
-                                {`${translate('kpi.evaluation.dashboard.result_kpi_titile')} của `}
+                                {`${translate('kpi.evaluation.dashboard.result_kpi_titile')} `}
                                 {
                                     organizationalUnitsName && organizationalUnitsName.length < 2 ?
                                         <>

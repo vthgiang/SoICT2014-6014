@@ -790,7 +790,7 @@ class MainDashboardUnit extends Component {
 
                             {/* Tab thống kê tổng hợp*/}
                             <div className="tab-pane" id="integrated-statistics">
-                                <TabIntegratedStatistics listAllEmployees={listAllEmployees} month={monthShow} employeeTasks={employeeTasks} listEmployee={listEmployee} />
+                                <TabIntegratedStatistics listAllEmployees={listAllEmployees} month={monthShow} employeeTasks={employeeTasks} listEmployee={listEmployee} organizationalUnits={organizationalUnits}/>
                             </div>
                         </div>
                     </div>
