@@ -656,17 +656,17 @@ function deleteDocumentArchive(data, type = "single") {
 
 function importDocumentArchive(data) {
     return (dispatch) => {
-        dispatch({ type: DocumentConstants.IMPORT_DOCUMENT_DOMAIN_REQUEST });
+        dispatch({ type: DocumentConstants.IMPORT_DOCUMENT_ARCHIVE_REQUEST });
         DocumentServices.importDocumentArchive(data)
             .then((res) => {
                 dispatch({
-                    type: DocumentConstants.IMPORT_DOCUMENT_DOMAIN_SUCCESS,
+                    type: DocumentConstants.IMPORT_DOCUMENT_ARCHIVE_SUCCESS,
                     payload: res.data.content,
                 });
             })
             .catch((err) => {
                 dispatch({
-                    type: DocumentConstants.IMPORT_DOCUMENT_DOMAIN_FAILE,
+                    type: DocumentConstants.IMPORT_DOCUMENT_ARCHIVE_FAILE,
                 });
             });
     };

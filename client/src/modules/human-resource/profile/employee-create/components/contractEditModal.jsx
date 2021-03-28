@@ -4,7 +4,7 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import { DialogModal, ErrorLabel, DatePicker, UploadFile } from '../../../../../common-components';
 
-import { EmployeeCreateValidator } from './combinedContent';
+import ValidationHelper from '../../../../../helpers/validationHelper';
 
 class ContractEditModal extends Component {
     constructor(props) {
@@ -37,17 +37,18 @@ class ContractEditModal extends Component {
     }
     validateNameContract = (value, willUpdateState = true) => {
         const { translate } = this.props;
-        let msg = EmployeeCreateValidator.validateNameContract(value, translate)
+        let { message } = ValidationHelper.validateEmpty(translate, value);
+
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnNameContract: msg,
+                    errorOnNameContract: message,
                     name: value,
                 }
             });
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
     /** Bắt sự kiện thay đổi tên hợp đồng lao động */
@@ -57,17 +58,18 @@ class ContractEditModal extends Component {
     }
     validateTypeContract = (value, willUpdateState = true) => {
         const { translate } = this.props;
-        let msg = EmployeeCreateValidator.validateTypeContract(value, translate)
+        let { message } = ValidationHelper.validateEmpty(translate, value);
+
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnTypeContract: msg,
+                    errorOnTypeContract: message,
                     contractType: value,
                 }
             });
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
 

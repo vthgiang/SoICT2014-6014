@@ -2,6 +2,7 @@ const Models = require(`../../../../models`);
 const { OrganizationalUnitKpiSet, OrganizationalUnitKpi, EmployeeKpiSet, EmployeeKpi } = Models;
 const { connect } = require(`../../../../helpers/dbHelper`);
 const EmployeeKpiService = require(`../../employee/management/management.service`);
+const mongoose = require("mongoose");
 
 
 /**
@@ -17,7 +18,7 @@ exports.copyKPI = async (portal, kpiId, data) => {
     newDate = new Date(data.datenew);
     nextNewDate = new Date(data.datenew);
     nextNewDate.setMonth(nextNewDate.getMonth() + 1);
-    
+
     checkOrganizationalUnitKpiSet = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
         .findOne({
             organizationalUnit: data.idunit,
@@ -37,32 +38,49 @@ exports.copyKPI = async (portal, kpiId, data) => {
                 kpis: []
             })
 
-        organizationalUnitOldKPISet = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
-            .findById(kpiId)
-            .populate("organizationalUnit creator")
-            .populate({ path: "kpis", populate: { path: 'parent' } });
-    
-        
-        for (let i in organizationalUnitOldKPISet.kpis) {
-            let target = await OrganizationalUnitKpi(connect(DB_CONNECTION, portal))
-                .create({
-                    name: organizationalUnitOldKPISet.kpis[i].name,
-                    parent: data.type !== 'default' ? organizationalUnitOldKPISet.kpis[i]._id : null,
-                    weight: organizationalUnitOldKPISet.kpis[i].weight,
-                    criteria: organizationalUnitOldKPISet.kpis[i].criteria,
-                    type: organizationalUnitOldKPISet.kpis[i].type
+        if (data.type === 'default') {
+            organizationalUnitOldKPISet = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
+                .findById(kpiId)
+                .populate("organizationalUnit")
+                .populate({ path: "creator", select: "_id name email avatar" })
+                .populate({ path: "kpis", populate: { path: 'parent' } });
+        } else {
+            organizationalUnitOldKPISet = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
+                .findOne({
+                    organizationalUnit: mongoose.Types.ObjectId(data?.organizationalUnitIdCopy),
+                    date: { $gte: newDate, $lt: nextNewDate }
                 })
-            organizationalUnitKpiSet = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
-                .findByIdAndUpdate(
-                    organizationalUnitNewKpi, { $push: { kpis: target._id } }, { new: true }
-                );
+                .populate("organizationalUnit")
+                .populate({ path: "creator", select: "_id name email avatar" })
+                .populate({ path: "kpis" });
+        }
+
+
+
+        for (let i in organizationalUnitOldKPISet?.kpis) {
+            if (data?.listKpiUnit?.includes(organizationalUnitOldKPISet.kpis?.[i]?._id.toString())) {
+                let target = await OrganizationalUnitKpi(connect(DB_CONNECTION, portal))
+                    .create({
+                        name: organizationalUnitOldKPISet.kpis[i]?.name,
+                        parent: data.type !== 'default' ? (JSON.parse(data?.matchParent?.toLowerCase()) ? organizationalUnitOldKPISet.kpis[i]?._id : organizationalUnitOldKPISet.kpis[i]?.parent) : null,
+                        weight: organizationalUnitOldKPISet.kpis[i]?.weight,
+                        criteria: organizationalUnitOldKPISet.kpis[i]?.criteria,
+                        type: organizationalUnitOldKPISet.kpis[i]?.type
+                    })
+
+                organizationalUnitKpiSet = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
+                    .findByIdAndUpdate(
+                        organizationalUnitNewKpi, { $push: { kpis: target._id } }, { new: true }
+                    );
+            }
         }
 
         organizationalUnitKpiSet = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
-            .findById(organizationalUnitNewKpi._id)
-            .populate("organizationalUnit creator")
+            .findById(organizationalUnitNewKpi?._id)
+            .populate("organizationalUnit")
+            .populate({ path: "creator", select: "_id name email avatar" })
             .populate({ path: "kpis", populate: { path: 'parent' } });
-        
+
         return organizationalUnitKpiSet;
     }
 }
@@ -82,7 +100,7 @@ exports.copyParentKPIUnitToChildrenKPIEmployee = async (portal, kpiId, data) => 
     newDate = new Date(data.datenew);
     nextNewDate = new Date(data.datenew);
     nextNewDate.setMonth(nextNewDate.getMonth() + 1);
-    
+
     checkEmployeeKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
         .findOne({
             organizationalUnit: data.idunit,
@@ -107,24 +125,27 @@ exports.copyParentKPIUnitToChildrenKPIEmployee = async (portal, kpiId, data) => 
 
         organizationalUnitOldKPISet = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
             .findById(kpiId)
-            .populate("organizationalUnit creator")
+            .populate("organizationalUnit")
+            .populate({ path: "creator", select: "_id name email avatar" })
             .populate({ path: "kpis", populate: { path: 'parent' } });
-    
-        
+
+
         for (let i in organizationalUnitOldKPISet.kpis) {
-            let target = await EmployeeKpi(connect(DB_CONNECTION, portal))
-                .create({
-                    name: organizationalUnitOldKPISet.kpis[i].name,
-                    parent: organizationalUnitOldKPISet.kpis[i]._id,
-                    weight: organizationalUnitOldKPISet.kpis[i].weight,
-                    criteria: organizationalUnitOldKPISet.kpis[i].criteria,
-                    type: organizationalUnitOldKPISet.kpis[i].type
-                })
-            
-            employeeKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
-                .findByIdAndUpdate(
-                    employeeNewKpiSet._id, { $push: { kpis: target._id } }, { new: true }
-                );
+            if (data?.listKpiUnit?.includes(organizationalUnitOldKPISet.kpis?.[i]?._id.toString())) {
+                let target = await EmployeeKpi(connect(DB_CONNECTION, portal))
+                    .create({
+                        name: organizationalUnitOldKPISet.kpis[i].name,
+                        parent: organizationalUnitOldKPISet.kpis[i]._id,
+                        weight: organizationalUnitOldKPISet.kpis[i].weight,
+                        criteria: organizationalUnitOldKPISet.kpis[i].criteria,
+                        type: organizationalUnitOldKPISet.kpis[i].type
+                    })
+
+                employeeKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
+                    .findByIdAndUpdate(
+                        employeeNewKpiSet._id, { $push: { kpis: target._id } }, { new: true }
+                    );
+            }
         }
 
         employeeKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
@@ -134,29 +155,34 @@ exports.copyParentKPIUnitToChildrenKPIEmployee = async (portal, kpiId, data) => 
                 status: { $ne: 3 },
                 date: { $gte: newDate, $lt: nextNewDate }
             })
-            .populate("organizationalUnit creator approver")
+            .populate("organizationalUnit")
+            .populate({ path: "creator", select: "_id name email avatar" })
+            .populate({ path: "approver", select: "_id name email avatar" })
             .populate({ path: "kpis", populate: { path: 'parent' } })
             .populate([
                 { path: 'comments.creator', select: 'name email avatar ' },
                 { path: 'comments.comments.creator', select: 'name email avatar' }
             ])
-        
+
         return employeeKpiSet;
     }
 }
 
 
 exports.calculateKpiUnit = async (portal, data) => {
-    //const month = data.date.getMoth() + 1;
+
     let kpiUnitSet = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal)).findOne({ _id: data.idKpiUnitSet })
-        .populate("organizationalUnit creator")
+        .populate("organizationalUnit")
+        .populate({ path: "creator", select: "_id name email avatar" })
         .populate({ path: "kpis", populate: { path: 'parent' } });
 
     let organizationUnitKpiAutomaticPoint = 0;
     let organizationUnitKpiEmployeePoint = 0;
     let organizationUnitKpiApprovePoint = 0;
+    let totalWeight = 0;
     for (i in kpiUnitSet.kpis) {
         let organizationUnitKpi = await OrganizationalUnitKpi(connect(DB_CONNECTION, portal)).findOne({ _id: kpiUnitSet.kpis[i] });
+        let weight = organizationUnitKpi.weight / 100;
         let autoPoint = 0;
         let employeePoint = 0;
         let approvedPoint = 0;
@@ -171,6 +197,10 @@ exports.calculateKpiUnit = async (portal, data) => {
             autoPoint = autoPoint / kpiEmployee.length;
             employeePoint = employeePoint / kpiEmployee.length;
             approvedPoint = approvedPoint / kpiEmployee.length;
+            totalWeight += weight;
+            newWeight = weight;
+        } else {
+            organizationUnitKpi.weight = 0;
         }
 
         // update point for each kpiUnit in kpiUnitSet
@@ -181,16 +211,16 @@ exports.calculateKpiUnit = async (portal, data) => {
         await organizationUnitKpi.save();
 
         // increase kpiUnitSet's point
-        let weight = organizationUnitKpi.weight / 100;
         organizationUnitKpiAutomaticPoint += autoPoint * weight;
         organizationUnitKpiEmployeePoint += employeePoint * weight;
         organizationUnitKpiApprovePoint += approvedPoint * weight;
 
+
     }
     // update kpiUnitSet
-    kpiUnitSet.automaticPoint = Math.round(organizationUnitKpiApprovePoint);
-    kpiUnitSet.employeePoint = Math.round(organizationUnitKpiEmployeePoint);
-    kpiUnitSet.approvedPoint = Math.round(organizationUnitKpiApprovePoint);
+    kpiUnitSet.automaticPoint = Math.round(organizationUnitKpiAutomaticPoint / totalWeight ? organizationUnitKpiAutomaticPoint / totalWeight : 0);
+    kpiUnitSet.employeePoint = Math.round(organizationUnitKpiEmployeePoint / totalWeight ? organizationUnitKpiEmployeePoint / totalWeight : 0);
+    kpiUnitSet.approvedPoint = Math.round(organizationUnitKpiApprovePoint / totalWeight ? organizationUnitKpiApprovePoint / totalWeight : 0);
     await kpiUnitSet.save();
     let childrenKpi = await EmployeeKpiService.getChildTargetByParentId(portal, { organizationalUnitKpiSetId: data.idKpiUnitSet })
     return { kpiUnitSet, childrenKpi };

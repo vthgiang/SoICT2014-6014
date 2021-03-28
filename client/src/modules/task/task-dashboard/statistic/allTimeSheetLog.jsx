@@ -43,7 +43,7 @@ class AllTimeSheetLogs extends Component {
 
     render() {
         const { tasks, translate } = this.props;
-        const { month } = this.state;
+        const { time } = this.state;
         const timesheetlogs = tasks?.allTimeSheetLogs;
 
         return (
@@ -56,7 +56,7 @@ class AllTimeSheetLogs extends Component {
                                 <DatePicker
                                     id="time-sheet-log"
                                     dateFormat="month-year"
-                                    value={month}
+                                    value={time}
                                     onChange={this.changeTime}
                                     disabled={false}
                                 />
@@ -101,4 +101,4 @@ const actionCreators = {
 
 };
 
-export default connect(mapState, actionCreators)(withTranslate(AllTimeSheetLogs)); 
+export default connect(mapState, actionCreators)(withTranslate(AllTimeSheetLogs));

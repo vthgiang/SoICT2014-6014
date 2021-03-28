@@ -31,9 +31,21 @@ class SalaryManagement extends Component {
         }
     }
 
+    static getDerivedStateFromProps(props, state) {
+        if (!state.organizationalUnits && props && props.department && props.department.list.length > 0) {
+            const childOrganizationalUnit = props.department.list.map(x => x._id);
+            return {
+                ...state,
+                organizationalUnits: childOrganizationalUnit
+            }
+        } else {
+            return null;
+        }
+    }
+
     componentDidMount() {
-        this.props.searchSalary(this.state);
         this.props.getDepartment();
+        this.props.searchSalary(this.state);
     }
 
     /**
@@ -112,9 +124,6 @@ class SalaryManagement extends Component {
      * @param {*} value : Array id đơn vị
      */
     handleUnitChange = (value) => {
-        if (value.length === 0) {
-            value = null
-        };
         this.setState({
             ...this.state,
             organizationalUnits: value
@@ -265,7 +274,7 @@ class SalaryManagement extends Component {
     render() {
         const { translate, salary, department } = this.props;
 
-        const { limit, page, importSalary, currentRow, currentRowView, tableId } = this.state;
+        const { limit, page, importSalary, currentRow, currentRowView, tableId, organizationalUnits } = this.state;
 
         let formater = new Intl.NumberFormat();
         let { list } = department;
@@ -305,7 +314,9 @@ class SalaryManagement extends Component {
                             <label className="form-control-static">{translate('human_resource.unit')}</label>
                             <SelectMulti id={`multiSelectUnit`} multiple="multiple"
                                 options={{ nonSelectedText: translate('human_resource.non_unit'), allSelectedText: translate('human_resource.all_unit') }}
-                                items={list.map((u, i) => { return { value: u._id, text: u.name } })} onChange={this.handleUnitChange}>
+                                items={list.map((u, i) => { return { value: u._id, text: u.name } })}
+                                onChange={this.handleUnitChange}
+                                value={organizationalUnits ? organizationalUnits : []}>
                             </SelectMulti>
                         </div>
                         {/* Tháng */}

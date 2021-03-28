@@ -55,7 +55,8 @@ exports.getOrganizationalUnitKpiSet = async (portal, query) => {
                 organizationalUnit: department._id,
                 status: { $ne: 2 }, date: { $lt: nextMonth, $gte: month }
             })
-            .populate("organizationalUnit creator")
+            .populate("organizationalUnit")
+            .populate({path: "creator", select :"_id name email avatar"})
             .populate({ path: "kpis", populate: { path: 'parent' } })
             .populate([
                 { path: "comments.creator", select: 'name email avatar' },
@@ -116,7 +117,8 @@ exports.getParentOrganizationalUnitKpiSet = async (portal, data) => {
                 organizationalUnit: department.parent,
                 date: { $gte: monthIso, $lt: nextMonth }
             })
-            .populate("organizationalUnit creator")
+            .populate("organizationalUnit")
+            .populate({path: "creator", select :"_id name email avatar"})
             .populate({ path: "kpis", populate: { path: 'parent' } })
             .populate({ path: 'employeeImportances', populate: { path: 'employee', select: ' _id name email' } })
             .populate({ path: 'organizationalUnitImportances', populate: { path: 'organizationalUnit' } })
@@ -175,11 +177,11 @@ exports.getAllOrganizationalUnitKpiSetByTime = async (portal, roleId, organizati
  * @query {*} startDate
  * @query {*} endDate
  */
-exports.getAllOrganizationalUnitKpiSetByTimeOfChildUnit = async (portal, companyId, query) => {
+exports.getAllOrganizationalUnitKpiSetByTimeOfChildUnit = async (portal, query) => {
 
     let childOrganizationalUnitKpiSets = [], childrenOrganizationalUnits;
 
-    childrenOrganizationalUnits = await overviewService.getAllChildrenOrganizational(portal, companyId, query.roleId);
+    childrenOrganizationalUnits = await overviewService.getAllChildrenOrganizational(portal, query.roleId);
 
     for (let i = 0; i < childrenOrganizationalUnits.length; i++) {
         childOrganizationalUnitKpiSets.push(await this.getAllOrganizationalUnitKpiSetByTime(portal, null, childrenOrganizationalUnits[i].id, query.startDate, query.endDate));
@@ -273,7 +275,8 @@ exports.getAllOrganizationalUnitKpiSet = async (portal, data) => {
         .find(keySearch)
         .skip(perPage * (page - 1))
         .limit(perPage)
-        .populate("organizationalUnit creator")
+        .populate("organizationalUnit ")
+        .populate({path: "creator", select :"_id name email avatar"})
         .populate({ path: "kpis", populate: { path: 'parent' } })
         .populate([
             { path: "comments.creator", select: 'name email avatar' },
@@ -312,7 +315,8 @@ exports.editImportancesInUnitKpi = async (portal, id, data, type) => {
         .findByIdAndUpdate(id, { $set: keySet }, { new: true })
 
     organizationalUnitKpiSet = organizationalUnitKpiSet && await organizationalUnitKpiSet
-        .populate("organizationalUnit creator")
+        .populate("organizationalUnit")
+        .populate({path: "creator", select :"_id name email avatar"})
         .populate({ path: "kpis", populate: { path: 'parent' } })
         .populate([
             { path: "comments.creator", select: 'name email avatar' },
@@ -426,11 +430,13 @@ exports.createOrganizationalUnitKpiSet = async (portal, data) => {
     }
 
     // Thêm độ quan trọng nhân viên
-    let users = await UserService.getAllEmployeeOfUnitByIds(portal, [organizationalUnitId]);
+    let users = await UserService.getAllEmployeeOfUnitByIds(portal, {
+        ids: [organizationalUnitId]
+    });
     let employeeImportances = [];
 
     if (users && users.length !== 0) {
-        employeeImportances = users.map(item => {
+        employeeImportances = users?.employees?.map(item => {
             return {
                 employee: item?.userId?._id,
                 importance: 100
@@ -449,7 +455,8 @@ exports.createOrganizationalUnitKpiSet = async (portal, data) => {
 
     organizationalUnitKpi = organizationalUnitKpi && await organizationalUnitKpi
         .populate([
-            { path: "organizationalUnit creator" },
+            { path: "organizationalUnit" },
+            {path: "creator", select :"_id name email avatar"},
             { path: "kpis", populate: { path: 'parent' } },
             { path: 'comments.creator', select: 'name email avatar ' },
             { path: 'comments.comments.creator', select: 'name email avatar' },
@@ -505,7 +512,8 @@ exports.createOrganizationalUnitKpi = async (portal, data) => {
             );
 
         organizationalUnitKpiSet = organizationalUnitKpiSet && await organizationalUnitKpiSet
-            .populate("organizationalUnit creator")
+            .populate("organizationalUnit")
+            .populate({path: "creator", select :"_id name email avatar"})
             .populate({ path: "kpis", populate: { path: 'parent' } })
             .populate([
                 { path: "comments.creator", select: 'name email avatar' },
@@ -578,7 +586,8 @@ exports.deleteOrganizationalUnitKpi = async (portal, id, organizationalUnitKpiSe
         .findByIdAndUpdate(organizationalUnitKpiSetId, { $pull: { kpis: id } }, { new: true });
 
     organizationalUnitKpiSet = organizationalUnitKpiSet && await organizationalUnitKpiSet
-        .populate("organizationalUnit creator")
+        .populate("organizationalUnit")
+        .populate({path: "creator", select :"_id name email avatar"})
         .populate({ path: "kpis", populate: { path: 'parent' } })
         .populate([
             { path: "comments.creator", select: 'name email avatar' },
@@ -601,7 +610,8 @@ exports.editOrganizationalUnitKpiSetStatus = async (portal, id, data) => {
         .findByIdAndUpdate(id, { $set: { status: data.status } }, { new: true });
 
     kpiunit = kpiunit && await kpiunit
-        .populate("organizationalUnit creator")
+        .populate("organizationalUnit")
+        .populate({path: "creator", select :"_id name email avatar"})
         .populate({ path: "kpis", populate: { path: 'parent' } })
         .populate({ path: 'employeeImportances', populate: { path: 'employee', select: ' _id name email' } })
         .populate({ path: 'organizationalUnitImportances', populate: { path: 'organizationalUnit' } })

@@ -79,7 +79,11 @@ class SlimScroll extends Component {
     /** Bỏ css của slimscroll */
     static removeVerticalScrollStyleCSS = (classNameContainer) => {
         let tabPaneScroll = window.$(`.${classNameContainer}.StyleScrollDiv.StyleScrollDiv-y`);
+        if (tabPaneScroll?.length <= 0) {
+            tabPaneScroll = window.$(`#${classNameContainer}.StyleScrollDiv.StyleScrollDiv-y`);
+        }
 
+        console.log(tabPaneScroll)
         if (tabPaneScroll) {
             tabPaneScroll.removeClass("StyleScrollDiv StyleScrollDiv-y");
             tabPaneScroll.css("maxHeight", "");

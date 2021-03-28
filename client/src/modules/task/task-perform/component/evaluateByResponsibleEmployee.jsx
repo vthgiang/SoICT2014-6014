@@ -8,7 +8,9 @@ import { TaskInformationForm } from './taskInformationForm';
 import { AutomaticTaskPointCalculator } from './automaticTaskPointCalculator';
 import { ModalShowAutoPointInfo } from './modalShowAutoPointInfo';
 import { getStorage } from '../../../../config';
-import moment from 'moment'
+import moment from 'moment';
+import dayjs from 'dayjs';
+import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
 import "./scrollBar.css";
 
 var currentTask;
@@ -59,8 +61,9 @@ class EvaluateByResponsibleEmployee extends Component {
         let { idUser, unit } = this.state;
         let { date } = this.props;
         let defaultDepartment = unit;
-
-        this.props.getAllKpiSetsOrganizationalUnitByMonth(idUser, defaultDepartment, date);
+        if (date) {
+            this.props.getAllKpiSetsOrganizationalUnitByMonth(idUser, defaultDepartment, date);
+        }
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -89,7 +92,9 @@ class EvaluateByResponsibleEmployee extends Component {
             let department = unit;
             let date = nextProps.date;
             let data = this.getData(date);
-            this.props.getAllKpiSetsOrganizationalUnitByMonth(idUser, department, date);
+            if (date) {
+                this.props.getAllKpiSetsOrganizationalUnitByMonth(idUser, department, date);
+            }
 
             this.setState(state => {
                 return {
@@ -120,15 +125,6 @@ class EvaluateByResponsibleEmployee extends Component {
             return false;
         }
 
-        // if(dataStatus === this.DATA_STATUS.QUERYING){
-        //     this.setState(state=>{
-        //         return {
-        //             ...state,
-        //             dataStatus: this.DATA_STATUS.FINISHED,
-        //         }
-        //     });
-        //     return true;
-        // }
         return true;
     }
 
@@ -155,7 +151,7 @@ class EvaluateByResponsibleEmployee extends Component {
 
     checkIsNewEval = (id) => {
         let splitter = id.split("-");
-        if(splitter[0].trim() === "new"){
+        if (splitter[0].trim() === "new") {
             return true;
         }
         else return false;
@@ -172,14 +168,14 @@ class EvaluateByResponsibleEmployee extends Component {
         let sortedEvaluations = this.handleSortMonthEval(evaluations);
 
         let evalMonth = moment(date, 'DD-MM-YYYY').endOf("month").toDate();
-        for(let i in sortedEvaluations){
+        for (let i in sortedEvaluations) {
             let eva = sortedEvaluations[i];
-            if(new Date(eva?.evaluatingMonth) <= evalMonth) {
+            if (new Date(eva?.evaluatingMonth) <= evalMonth) {
                 return eva;
             }
         }
         return null;
-    } 
+    }
 
     /**
      * Hàm xử lý dữ liệu khởi tạo
@@ -190,233 +186,216 @@ class EvaluateByResponsibleEmployee extends Component {
         const { user, performtasks } = this.props;
         let { task, id } = this.props;
         let idUser = getStorage("userId");
-        let checkSave = false;
-        let date = dateParam;
-        let endDate = dateParam;
-        let startDateTask = task.startDate;
-        let prevDate = this.formatDate(startDateTask);
-
-        let startTime = this.formatTime(new Date(startDateTask));
-        let endTime = this.formatTime(new Date());
-
-        let dentaDate = 0;
-        let evaluation, prevEval;
-
-        let splitter = dateParam.split("-");
-        if (evaluatingMonthParam) {
-            splitter = evaluatingMonthParam.split("-");
-        }
-
-        let evaluatingMonth="", storedEvaluatingMonth="";
-        let today = this.formatDate(new Date());
-        let checkHasEvalOfMonth = this.checkHasEval(today, performtasks);
-        // if (!(checkHasEvalOfMonth && this.checkIsNewEval(id))) {
-            evaluatingMonth = `${splitter[1]}-${splitter[2]}`;
-            storedEvaluatingMonth = moment(evaluatingMonth, 'MM-YYYY').endOf("month").format('DD-MM-YYYY');
-        // }
-
-        let dateOfEval = new Date(splitter[2], splitter[1] - 1, splitter[0]);
-        let dateOfPrevEval = new Date(splitter[2], splitter[1] - 1, splitter[0]);
-        var newMonth = dateOfPrevEval.getMonth() - 1;
-        if (newMonth < 0) {
-            newMonth += 12;
-            dateOfPrevEval.setYear(dateOfPrevEval.getFullYear() - 1);
-        }
-
-        dateOfPrevEval.setDate(15);
-        dateOfPrevEval.setMonth(newMonth);
-
-        let monthOfEval = dateOfEval.getMonth();
-        let monthOfPrevEval = dateOfPrevEval.getMonth();
-        let yearOfEval = dateOfEval.getFullYear();
-        let yearOfPrevEval = dateOfPrevEval.getFullYear();
-
-        evaluation = task.evaluations.find(e => (monthOfEval === new Date(e.evaluatingMonth).getMonth() && yearOfEval === new Date(e.evaluatingMonth).getFullYear()));
-
-        prevEval = this.getPreviousEvaluation(task, dateParam);
-        // prevEval = task.evaluations.find(e => ((monthOfPrevEval) === new Date(e.evaluatingMonth).getMonth() && yearOfPrevEval === new Date(e.evaluatingMonth).getFullYear()));
-        
-        if (prevEval) {
-            prevDate = this.formatDate(prevEval.endDate);
-            startTime = this.formatTime(prevEval.endDate);
-        } 
-        // else {
-        //     let strPrevMonth = `${monthOfPrevEval + 1}-${yearOfPrevEval}`
-        //     // trong TH k có đánh giá tháng trước, so sánh tháng trước với tháng start date
-        //     if (!((yearOfPrevEval === new Date(startDateTask).getFullYear() && monthOfPrevEval < new Date(startDateTask).getMonth()) // bắt đầu tháng bất kì khác tháng 1
-        //         || (yearOfPrevEval < new Date(startDateTask).getFullYear()) // TH bắt đầu là tháng 1 - chọn đánh giá tháng 1
-        //     )) {
-        //         prevDate = moment(strPrevMonth, 'MM-YYYY').endOf("month").format('DD-MM-YYYY');
-        //         startTime = "12:00 AM";
-        //     }
-        // }
-        let automaticPoint = (evaluation && evaluation.results.length !== 0) ? evaluation.results[0].automaticPoint : undefined;
-
         let unit;
         if (user.organizationalUnitsOfUser && user.organizationalUnitsOfUser.length > 0) {
             unit = user.organizationalUnitsOfUser[0]._id;
         }
+        if (dateParam) {
+            let checkSave = false;
+            let date = dateParam;
+            let endDate = dateParam;
+            let startDateTask = task.startDate;
+            let prevDate = this.formatDate(startDateTask);
 
-        let point = undefined;
-        let info = {};
-        let cloneKpi = [];
+            let startTime = this.formatTime(new Date(startDateTask));
+            let endTime = this.formatTime(new Date());
 
-        let infoTask = task.taskInformations;
-        for (let i in infoTask) {
-            if (infoTask[i].type === "date") {
-                if (!infoTask[i].filledByAccountableEmployeesOnly) {
-                    info[`${infoTask[i].code}`] = {
-                        // value: this.formatDate(Date.now()),
-                        code: infoTask[i].code,
-                        type: infoTask[i].type
+            let dentaDate = 0;
+            let evaluation, prevEval;
+
+            let splitter = dateParam.split("-");
+            if (evaluatingMonthParam) {
+                splitter = evaluatingMonthParam.split("-");
+                console.log('splitter', splitter);
+            }
+
+            let evaluatingMonth = "", storedEvaluatingMonth = "";
+            let today = this.formatDate(new Date());
+            let checkHasEvalOfMonth = this.checkHasEval(today, performtasks);
+            evaluatingMonth = `${splitter[1]}-${splitter[2]}`;
+            storedEvaluatingMonth = moment(evaluatingMonth, 'MM-YYYY').endOf("month").format('DD-MM-YYYY');
+
+            let dateOfEval = new Date(splitter[2], splitter[1] - 1, splitter[0]);
+            let dateOfPrevEval = new Date(splitter[2], splitter[1] - 1, splitter[0]);
+            var newMonth = dateOfPrevEval.getMonth() - 1;
+            if (newMonth < 0) {
+                newMonth += 12;
+                dateOfPrevEval.setYear(dateOfPrevEval.getFullYear() - 1);
+            }
+
+            dateOfPrevEval.setDate(15);
+            dateOfPrevEval.setMonth(newMonth);
+
+            let monthOfEval = dateOfEval.getMonth();
+            let monthOfPrevEval = dateOfPrevEval.getMonth();
+            let yearOfEval = dateOfEval.getFullYear();
+            let yearOfPrevEval = dateOfPrevEval.getFullYear();
+
+            evaluation = task.evaluations.find(e => (monthOfEval === new Date(e.evaluatingMonth).getMonth() && yearOfEval === new Date(e.evaluatingMonth).getFullYear()));
+
+            prevEval = this.getPreviousEvaluation(task, dateParam);
+
+            if (prevEval) {
+                prevDate = this.formatDate(prevEval.endDate);
+                startTime = this.formatTime(prevEval.endDate);
+            }
+            let automaticPoint = (evaluation && evaluation.results.length !== 0) ? evaluation.results[0].automaticPoint : undefined;
+
+
+            let point = undefined;
+            let info = {};
+            let cloneKpi = [];
+
+            let infoTask = task.taskInformations;
+            for (let i in infoTask) {
+                if (infoTask[i].type === "date") {
+                    if (!infoTask[i].filledByAccountableEmployeesOnly) {
+                        info[`${infoTask[i].code}`] = {
+                            code: infoTask[i].code,
+                            type: infoTask[i].type
+                        }
+                    }
+                }
+                else if (infoTask[i].type === "set_of_values") {
+                    let splitSetOfValues = infoTask[i].extra.split('\n');
+                    if (!infoTask[i].filledByAccountableEmployeesOnly) {
+                        info[`${infoTask[i].code}`] = {
+                            value: [splitSetOfValues[0]],
+                            code: infoTask[i].code,
+                            type: infoTask[i].type
+                        }
                     }
                 }
             }
-            else if (infoTask[i].type === "set_of_values") {
-                let splitSetOfValues = infoTask[i].extra.split('\n');
-                if (!infoTask[i].filledByAccountableEmployeesOnly) {
-                    info[`${infoTask[i].code}`] = {
-                        value: [splitSetOfValues[0]],
-                        code: infoTask[i].code,
-                        type: infoTask[i].type
+
+            let progress = 0;
+            if (evaluation) {
+                progress = evaluation.progress;
+                if (evaluation.results.length !== 0) {
+                    let tmp = evaluation.results.find(e => (String(e.employee._id) === String(idUser) && String(e.role) === "responsible"));
+                    if (tmp) {
+                        if (tmp.organizationalUnit) {
+                            unit = tmp.organizationalUnit._id;
+                        };
+                        let kpi = tmp.kpis;
+
+                        for (let i in kpi) {
+                            cloneKpi.push(kpi[i]._id);
+                        }
+
+                        point = tmp.employeePoint ? tmp.employeePoint : undefined;
                     }
                 }
-            }
-        }
-
-        let progress = 0;
-        if (evaluation) {
-            progress = evaluation.progress;
-            if (evaluation.results.length !== 0) {
-                let tmp = evaluation.results.find(e => (String(e.employee._id) === String(idUser) && String(e.role) === "responsible"));
-                if (tmp) {
-                    if (tmp.organizationalUnit) {
-                        unit = tmp.organizationalUnit._id;
-                    };
-                    let kpi = tmp.kpis;
-
-                    for (let i in kpi) {
-                        cloneKpi.push(kpi[i]._id);
-                    }
-
-                    point = tmp.employeePoint ? tmp.employeePoint : undefined;
-                }
-            }
-            let infoEval = evaluation.taskInformations;
-            let chkHasInfo = false;
-            for (let i in infoEval) {
-                if (infoEval[i].value !== undefined) {
-                    chkHasInfo = true;
-                    break;
-                }
-            }
-
-            if (chkHasInfo) {
+                let infoEval = evaluation.taskInformations;
+                let chkHasInfo = false;
                 for (let i in infoEval) {
+                    if (infoEval[i].value !== undefined) {
+                        chkHasInfo = true;
+                        break;
+                    }
+                }
 
-                    if (infoEval[i].type === "date") {
-                        if (infoEval[i].value) {
-                            info[`${infoEval[i].code}`] = {
-                                value: this.formatDate(infoEval[i].value),
-                                code: infoEval[i].code,
-                                type: infoEval[i].type
+                if (chkHasInfo) {
+                    for (let i in infoEval) {
+
+                        if (infoEval[i].type === "date") {
+                            if (infoEval[i].value) {
+                                info[`${infoEval[i].code}`] = {
+                                    value: this.formatDate(infoEval[i].value),
+                                    code: infoEval[i].code,
+                                    type: infoEval[i].type
+                                }
+                            }
+                            else if (!infoEval[i].filledByAccountableEmployeesOnly) {
+                                info[`${infoEval[i].code}`] = {
+                                    code: infoEval[i].code,
+                                    type: infoEval[i].type
+                                }
                             }
                         }
-                        else if (!infoEval[i].filledByAccountableEmployeesOnly) {
-                            info[`${infoEval[i].code}`] = {
-                                // value: this.formatDate(Date.now()),
-                                code: infoEval[i].code,
-                                type: infoEval[i].type
+                        else if (infoEval[i].type === "set_of_values") {
+                            let splitSetOfValues = infoEval[i].extra.split('\n');
+                            if (infoEval[i].value) {
+                                info[`${infoEval[i].code}`] = {
+                                    value: [infoEval[i].value],
+                                    code: infoEval[i].code,
+                                    type: infoEval[i].type
+                                }
+                            }
+                            else if (!infoEval[i].filledByAccountableEmployeesOnly) {
+                                info[`${infoEval[i].code}`] = {
+                                    value: [splitSetOfValues[0]],
+                                    code: infoEval[i].code,
+                                    type: infoEval[i].type
+                                }
                             }
                         }
-                    }
-                    else if (infoEval[i].type === "set_of_values") {
-                        let splitSetOfValues = infoEval[i].extra.split('\n');
-                        if (infoEval[i].value) {
-                            info[`${infoEval[i].code}`] = {
-                                value: [infoEval[i].value],
-                                code: infoEval[i].code,
-                                type: infoEval[i].type
-                            }
-                        }
-                        else if (!infoEval[i].filledByAccountableEmployeesOnly) {
-                            info[`${infoEval[i].code}`] = {
-                                value: [splitSetOfValues[0]],
-                                code: infoEval[i].code,
-                                type: infoEval[i].type
-                            }
-                        }
-                    }
-                    else {
-                        if (infoEval[i].value) {
-                            info[`${infoEval[i].code}`] = {
-                                value: infoEval[i].value,
-                                code: infoEval[i].code,
-                                type: infoEval[i].type
+                        else {
+                            if (infoEval[i].value) {
+                                info[`${infoEval[i].code}`] = {
+                                    value: infoEval[i].value,
+                                    code: infoEval[i].code,
+                                    type: infoEval[i].type
+                                }
                             }
                         }
                     }
                 }
             }
 
-            // if (this.props.perform === "stop") {
-            //     if (chkHasInfo) {
-            //         date = this.formatDate(evaluation.date);
-            //     }
-            //     else date = this.formatDate(new Date());
-            // }
-            // else if (this.props.perform === "evaluate") {
+            let startDate = prevDate;
+            if (evaluation) {
+                endDate = this.formatDate(evaluation.endDate);
+                startDate = this.formatDate(evaluation.startDate);
+                startTime = this.formatTime(evaluation.startDate);
+                endTime = this.formatTime(evaluation.endDate);
+            }
 
-            //     date = this.formatDate(evaluation.date);
+            let taskInfo = {
+                task: task,
+                progress: progress,
+                date: endDate,
+                time: endTime,
+                info: info,
+            };
 
-            // }
+            let calcAuto = AutomaticTaskPointCalculator.calcAutoPoint(taskInfo);
+            if (isNaN(calcAuto)) calcAuto = undefined
+            if (calcAuto < 0) calcAuto = 0;
 
-        }
-
-        let startDate = prevDate;
-        if (evaluation) {
-            endDate = this.formatDate(evaluation.endDate);
-            startDate = this.formatDate(evaluation.startDate);
-            startTime = this.formatTime(evaluation.startDate);
-            endTime = this.formatTime(evaluation.endDate);
-        }
-
-        let taskInfo = {
-            task: task,
-            progress: progress,
-            date: date,
-            time: endTime,
-            info: info,
-        };
-
-        let calcAuto = AutomaticTaskPointCalculator.calcAutoPoint(taskInfo);
-        if (isNaN(calcAuto)) calcAuto = undefined
-        if (calcAuto < 0) calcAuto = 0;
-
-        dentaDate = Math.round(((new Date()).getTime() - dateOfEval.getTime()) / (1000 * 3600 * 24));
+            dentaDate = Math.round(((new Date()).getTime() - dateOfEval.getTime()) / (1000 * 3600 * 24));
 
 
-        return {
-            task: task,
-            unit: unit,
-            idUser: idUser,
-            kpi: cloneKpi,
-            info: info,
-            autoPoint: automaticPoint,
-            point: point,
-            date: date,
-            startDate: startDate,
-            endDate: endDate,
-            startTime: startTime,
-            endTime: endTime,
-            evaluatingMonth: evaluatingMonth,
-            storedEvaluatingMonth: storedEvaluatingMonth,
-            progress: progress,
-            calcAuto: calcAuto,
-            checkSave: checkSave,
-            prevDate: prevDate,
-            dentaDate: dentaDate,
-            evaluation: evaluation,
+            return {
+                task: task,
+                unit: unit,
+                idUser: idUser,
+                kpi: cloneKpi,
+                info: info,
+                autoPoint: automaticPoint,
+                point: point,
+                date: date,
+                startDate: startDate,
+                endDate: endDate,
+                startTime: startTime,
+                endTime: endTime,
+                evaluatingMonth: evaluatingMonth,
+                storedEvaluatingMonth: storedEvaluatingMonth,
+                progress: progress,
+                calcAuto: calcAuto,
+                checkSave: checkSave,
+                prevDate: prevDate,
+                dentaDate: dentaDate,
+                evaluation: evaluation,
+            }
+        } else {
+            return {
+                task: task,
+                unit: unit,
+                idUser: idUser,
+                info: {},
+                kpi: [],
+            }
         }
     }
 
@@ -426,83 +405,90 @@ class EvaluateByResponsibleEmployee extends Component {
         let checkSave = false;
 
         let date = dateParam;
-        let evaluation;
-        let task = this.props.task;
-        let splitter = dateParam.split("-");
-        let dateOfEval = new Date(splitter[2], splitter[1] - 1, splitter[0]);
-        let monthOfEval = dateOfEval.getMonth();
-        let yearOfEval = dateOfEval.getFullYear();
+        if (date) {
+            let evaluation;
+            let task = this.props.task;
+            let splitter = dateParam.split("-");
+            let dateOfEval = new Date(splitter[2], splitter[1] - 1, splitter[0]);
+            let monthOfEval = dateOfEval.getMonth();
+            let yearOfEval = dateOfEval.getFullYear();
 
-        evaluation = task.evaluations.find(e => (monthOfEval === new Date(e.evaluatingMonth).getMonth() && yearOfEval === new Date(e.evaluatingMonth).getFullYear()));
-        let automaticPoint = (evaluation && evaluation.results.length !== 0) ? evaluation.results[0].automaticPoint : undefined;
-        let infoTask = task.taskInformations;
+            evaluation = task.evaluations.find(e => (monthOfEval === new Date(e.evaluatingMonth).getMonth() && yearOfEval === new Date(e.evaluatingMonth).getFullYear()));
+            let automaticPoint = (evaluation && evaluation.results.length !== 0) ? evaluation.results[0].automaticPoint : undefined;
+            let infoTask = task.taskInformations;
 
-        for (let i in infoTask) {
-            if (infoTask[i].type === "date") {
-                if (infoTask[i].value) {
-                    info[`${infoTask[i].code}`] = {
-                        value: this.formatDate(infoTask[i].value),
-                        code: infoTask[i].code,
-                        type: infoTask[i].type
+            for (let i in infoTask) {
+                if (infoTask[i].type === "date") {
+                    if (infoTask[i].value) {
+                        info[`${infoTask[i].code}`] = {
+                            value: this.formatDate(infoTask[i].value),
+                            code: infoTask[i].code,
+                            type: infoTask[i].type
+                        }
+                    }
+                    else if (!infoTask[i].filledByAccountableEmployeesOnly) {
+                        info[`${infoTask[i].code}`] = {
+                            value: this.formatDate(Date.now()),
+                            code: infoTask[i].code,
+                            type: infoTask[i].type
+                        }
                     }
                 }
-                else if (!infoTask[i].filledByAccountableEmployeesOnly) {
-                    info[`${infoTask[i].code}`] = {
-                        value: this.formatDate(Date.now()),
-                        code: infoTask[i].code,
-                        type: infoTask[i].type
+                else if (infoTask[i].type === "set_of_values") {
+                    let splitSetOfValues = infoTask[i].extra.split('\n');
+                    if (infoTask[i].value) {
+                        info[`${infoTask[i].code}`] = {
+                            value: [infoTask[i].value],
+                            code: infoTask[i].code,
+                            type: infoTask[i].type
+                        }
+                    }
+                    else if (!infoTask[i].filledByAccountableEmployeesOnly) {
+                        info[`${infoTask[i].code}`] = {
+                            value: [splitSetOfValues[0]],
+                            code: infoTask[i].code,
+                            type: infoTask[i].type
+                        }
+                    }
+                }
+                else {
+                    if (infoTask[i].value) {
+                        info[`${infoTask[i].code}`] = {
+                            value: infoTask[i].value,
+                            code: infoTask[i].code,
+                            type: infoTask[i].type
+                        }
                     }
                 }
             }
-            else if (infoTask[i].type === "set_of_values") {
-                let splitSetOfValues = infoTask[i].extra.split('\n');
-                if (infoTask[i].value) {
-                    info[`${infoTask[i].code}`] = {
-                        value: [infoTask[i].value],
-                        code: infoTask[i].code,
-                        type: infoTask[i].type
-                    }
-                }
-                else if (!infoTask[i].filledByAccountableEmployeesOnly) {
-                    info[`${infoTask[i].code}`] = {
-                        value: [splitSetOfValues[0]],
-                        code: infoTask[i].code,
-                        type: infoTask[i].type
-                    }
-                }
+
+            let progress = task.progress;
+
+            let taskInfo = {
+                task: task,
+                progress: progress,
+                date: this.state.endDate,
+                time: this.state.endTime,
+                info: info,
+            };
+
+            let calcAuto = AutomaticTaskPointCalculator.calcAutoPoint(taskInfo);
+            if (isNaN(calcAuto)) calcAuto = undefined
+            if (calcAuto < 0) calcAuto = 0;
+
+            return {
+                info: info,
+                autoPoint: automaticPoint,
+                progress: progress,
+                calcAuto: calcAuto,
+                checkSave: checkSave,
             }
-            else {
-                if (infoTask[i].value) {
-                    info[`${infoTask[i].code}`] = {
-                        value: infoTask[i].value,
-                        code: infoTask[i].code,
-                        type: infoTask[i].type
-                    }
-                }
-            }
-        }
-
-        let progress = task.progress;
-
-        let taskInfo = {
-            task: task,
-            progress: progress,
-            date: this.state.endDate,
-            time: this.state.endTime,
-            info: info,
-        };
-
-        let calcAuto = AutomaticTaskPointCalculator.calcAutoPoint(taskInfo);
-        if (isNaN(calcAuto)) calcAuto = undefined
-        if (calcAuto < 0) calcAuto = 0;
-
-        return {
-            info: info,
-            autoPoint: automaticPoint,
-            progress: progress,
-            calcAuto: calcAuto,
+        } else return {
+            info: {},
             checkSave: checkSave,
         }
+
+
     }
 
     // hàm cập nhật thông tin 
@@ -666,9 +652,6 @@ class EvaluateByResponsibleEmployee extends Component {
 
         let err = this.validateDateTime(evaluatingMonth, startDate, startTime, value, endTime, "end");
 
-        // let data = this.getData(this.state.storedEvaluatingMonth, this.state.storedEvaluatingMonth);
-        // this.props.getAllKpiSetsOrganizationalUnitByMonth(idUser, this.state.unit, value);
-
         let automaticPoint = this.state.autoPoint;
         let taskInfo = {
             task: this.state.task,
@@ -716,8 +699,6 @@ class EvaluateByResponsibleEmployee extends Component {
 
         let err = this.validateDateTime(evaluatingMonth, startDate, startTime, endDate, value, "end");
 
-        // let data = this.getData(this.state.storedEvaluatingMonth, this.state.storedEvaluatingMonth);
-
         let automaticPoint = this.state.autoPoint;
         let taskInfo = {
             task: this.state.task,
@@ -750,61 +731,101 @@ class EvaluateByResponsibleEmployee extends Component {
 
     // hàm cập nhật tháng đánh giá
     handleMonthOfEvaluationChange = (value) => {
-        // indexReRender = indexReRender + 1;
-        let { translate } = this.props;
-        let { evaluatingMonth, task, idUser, endDate, startDate, endTime, startTime } = this.state;
-        let evalDate = moment(value, 'MM-YYYY').endOf('month').format('DD-MM-YYYY');
-        let err = this.validateDateTime(value, startDate, startTime, evalDate, endDate, "end");
+        dayjs.extend(isSameOrAfter)
+        let { task, idUser } = this.state;
+        let splitValue, result, startDateTask, errMonth;
 
-        let startDateTask = new Date(task.startDate);
-        let endDateTask = new Date(task.endDate);
-
-        let splitter = evalDate.split('-');
-        let dateValue = new Date(splitter[2], splitter[1] - 1, splitter[0]);
-
-        // validate tháng đánh giá
-        let errMonth;
-        if(value.trim() === "") {
+        // validate tháng đánh giá đã tồn tại
+        if (value.trim() === "") {
             errMonth = "Hãy chọn tháng đánh giá";
+        } else {
+            splitValue = value.split("-");
+            const newValue = `${splitValue[1]}-${splitValue[0]}`;
+
+            const evalDate = moment(newValue).endOf('month').format('DD-MM-YYYY');
+
+            const monthOfEval = dayjs(newValue).format("M") - 1;
+            const yearOfEval = parseInt(dayjs(newValue).format("YYYY"));
+
+            const tmp = task.evaluations.find(e => (monthOfEval === new Date(e.evaluatingMonth).getMonth() && yearOfEval === new Date(e.evaluatingMonth).getFullYear()));
+            if (tmp) {
+                errMonth = "Tháng này đã có đánh giá";
+            }
+
+            startDateTask = dayjs(task.startDate).format("YYYY-MM"); // Lấy năm tháng của ngày bắt đầu công việc vd: 2021-02
+            result = dayjs(newValue).isSameOrAfter(dayjs(startDateTask)); // check xem thangs danh gia co lớn hơn hoặc bằng tháng bắt đầu công việc hay không
+
+            if (!result) {
+                errMonth = "Tháng đánh giá phải lớn hơn hoặc bằng tháng bắt đầu công việc";
+            }
+
+            let data = this.getData(evalDate, evalDate);
+            this.props.getAllKpiSetsOrganizationalUnitByMonth(idUser, this.state.unit, evalDate);
+
+            let automaticPoint = data.autoPoint;
+            let taskInfo = {
+                task: data.task,
+                progress: data.progress,
+                date: evalDate,
+                time: data.endTime,
+                info: data.info,
+            };
+
+            automaticPoint = AutomaticTaskPointCalculator.calcAutoPoint(taskInfo);
+            if (isNaN(automaticPoint)) automaticPoint = undefined
+            if (automaticPoint < 0) automaticPoint = 0;
+
+            this.setState(state => {
+                return {
+                    ...state,
+                    kpi: [],
+                    evaluatingMonth: value,
+                    storedEvaluatingMonth: evalDate,
+                    endDate: evalDate,
+                    startDate: data.startDate,
+                    startTime: data.startTime,
+                    endTime: data.endTime,
+                    autoPoint: automaticPoint,
+                    oldAutoPoint: data.autoPoint,
+                    errorOnMonth: errMonth,
+                    indexReRender: state.indexReRender + 1,
+
+                    info: data.info,
+                    point: data.point,
+                    date: data.date,
+                    progress: data.progress,
+                    calcAuto: data.calcAuto,
+                    checkSave: data.checkSave,
+                    prevDate: data.prevDate,
+                    dentaDate: data.dentaDate,
+                    evaluation: data.evaluation,
+                }
+            });
+            if (!errMonth) {
+                this.props.handleChangeMonthEval({ evaluatingMonth: value, date: evalDate, id: this.state.id });
+            }
         }
+    }
 
-        let monthOfEval = dateValue.getMonth();
-        let yearOfEval = dateValue.getFullYear();
+    getEndTask = async () => {
+        let { translate } = this.props;
+        let { task } = this.state;
+        let end = task?.endDate;
+        let endDate = this.formatDate(new Date(end));
+        let endTime = this.formatTime(new Date(end));
 
-        let tmp = task.evaluations.find(e => (monthOfEval === new Date(e.evaluatingMonth).getMonth() && yearOfEval === new Date(e.evaluatingMonth).getFullYear()));
+        let { evaluatingMonth, startDate, startTime, idUser } = this.state;
 
-        if (tmp) {
-            errMonth = "Tháng này đã có đánh giá";
-        }
+        let err = this.validateDateTime(evaluatingMonth, startDate, startTime, endDate, endTime, "end");
 
-        // validate tháng đánh giá phải trong thời gian làm việc.
-        // đưa về cùng ngày - giờ để so sánh tháng năm
-        dateValue.setDate(15);
-        startDateTask.setDate(15);
-        endDateTask.setDate(15);
-        dateValue.setHours(0);
-        startDateTask.setHours(0);
-        endDateTask.setHours(0);
+        let data = this.getData(endDate, this.state.storedEvaluatingMonth);
 
-        // tính hiệu giữa ngày đánh giá so với ngày bắt đầu và ngày kết thúc của công việc
-        let dst2 = (dateValue.getTime() - startDateTask.getTime()); // < 0 -> err // denta start task
-        let det2 = (endDateTask.getTime() - dateValue.getTime()); // < 0 -> err // denta end task
-
-        if (dst2 < 0) {
-            errMonth = "Tháng đánh giá phải lớn hơn hoặc bằng tháng bắt đầu";
-        } else if (det2 < 0) {
-            // errMonth = "Tháng đánh giá phải nhỏ hơn hoặc bằng tháng kết thúc";
-        }
-
-        let data = this.getData(evalDate, evalDate);
-        this.props.getAllKpiSetsOrganizationalUnitByMonth(idUser, this.state.unit, evalDate);
-
-        let automaticPoint = data.autoPoint;
+        let automaticPoint = data.automaticPoint;
         let taskInfo = {
             task: data.task,
             progress: this.state.progress,
-            date: evalDate,
-            time: this.state.endTime,
+            date: endDate,
+            time: endTime,
             info: this.state.info,
         };
 
@@ -815,30 +836,14 @@ class EvaluateByResponsibleEmployee extends Component {
         this.setState(state => {
             return {
                 ...state,
-                kpi: [],
-                evaluatingMonth: value,
-                storedEvaluatingMonth: evalDate,
-                endDate: evalDate,
-                startDate: data.startDate,
-                startTime: data.startTime,
+                errorOnEndDate: err,
+                endDate: endDate,
+                endTime: endTime,
                 autoPoint: automaticPoint,
                 oldAutoPoint: data.autoPoint,
-                errorOnEndDate: err,
-                errorOnMonth: errMonth,
                 indexReRender: state.indexReRender + 1,
             }
         });
-        if (!errMonth) {
-            this.props.handleChangeMonthEval({ evaluatingMonth: value, date: evalDate, id: this.state.id });
-        }
-    }
-
-    getEndTask = async () => {
-        let { task } = this.state;
-        let end = task?.endDate;
-        let endDate = this.formatDate(new Date(end));
-        let endTime = this.formatTime(new Date(end));
-        this.setState({ endDate: endDate, endTime:endTime });
     }
 
     // hàm cập nhật điểm tự đánh giá
@@ -1013,7 +1018,8 @@ class EvaluateByResponsibleEmployee extends Component {
                 break;
             }
         }
-        return (evaluatingMonth.trim() !== "" && errorOnMonth === undefined && errorOnStartDate === undefined && errorOnEndDate === undefined && errorOnDate === undefined && errorOnPoint === undefined && errorOnProgress === undefined
+
+        return (evaluatingMonth && evaluatingMonth.trim() !== "" && errorOnMonth === undefined && errorOnStartDate === undefined && errorOnEndDate === undefined && errorOnDate === undefined && errorOnPoint === undefined && errorOnProgress === undefined
             && errorOnInfoDate === undefined && errorOnTextInfo === undefined && errorOnNumberInfo === undefined) ? true : false;
     }
 
@@ -1100,6 +1106,7 @@ class EvaluateByResponsibleEmployee extends Component {
             checkSave: this.state.checkSave,
         }
 
+        console.log('data', data);
         await this.props.evaluateTaskByResponsibleEmployees(data, taskId);
         this.setState(state => {
             return {
@@ -1108,6 +1115,7 @@ class EvaluateByResponsibleEmployee extends Component {
             }
         });
         this.props.handleChangeShowEval(this.state.id);
+        this.props.handleChangeEnableAddItem(this.state.id);
     }
 
     //  kiểm tra có phải đánh giá này là của tháng hiện tại hay ko
@@ -1149,13 +1157,17 @@ class EvaluateByResponsibleEmployee extends Component {
         }
 
         let taskActions = task.taskActions;
-        let splitter = date.split('-');
-        let evaluationsDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
-        let actionsNotRating = taskActions.filter(item => (
-            item.rating === -1 &&
-            new Date(item.createdAt).getMonth() === evaluationsDate.getMonth()
-            && new Date(item.createdAt).getFullYear() === evaluationsDate.getFullYear()
-        ))
+        let actionsNotRating;
+        if (date) {
+            let splitter = date.split('-');
+            let evaluationsDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
+            actionsNotRating = taskActions.filter(item => (
+                item.rating === -1 &&
+                new Date(item.createdAt).getMonth() === evaluationsDate.getMonth()
+                && new Date(item.createdAt).getFullYear() === evaluationsDate.getFullYear()
+            ))
+        }
+
 
         let checkNoteMonth;
         // checkNoteMonth = this.checkNote();
@@ -1229,7 +1241,7 @@ class EvaluateByResponsibleEmployee extends Component {
                                         <div className={`form-group ${errorOnEndDate === undefined ? "" : "has-error"}`}>
                                             <label>
                                                 {translate('task.task_management.eval_to')}<span className="text-red">*</span>
-                                                <span className="pull-right" style={{ fontWeight: "normal" , marginLeft: 10 }}>
+                                                <span className="pull-right" style={{ fontWeight: "normal", marginLeft: 10 }}>
                                                     <a style={{ cursor: "pointer" }} onClick={() => this.getEndTask()}>Lấy thời điểm kết thúc công việc</a>
                                                 </span>
                                             </label>
@@ -1349,8 +1361,8 @@ class EvaluateByResponsibleEmployee extends Component {
                                     <div>
                                         <strong>{translate('task.task_management.action_not_rating')}:&nbsp;&nbsp;</strong>
                                         {
-                                            actionsNotRating.length === 0 ? translate('task.task_management.no_action') :
-                                                actionsNotRating.map((item, index) => (
+                                            actionsNotRating?.length === 0 ? translate('task.task_management.no_action') :
+                                                actionsNotRating?.map((item, index) => (
                                                     <div>
                                                         <span key={index}>
                                                             ({index + 1})&nbsp;&nbsp;

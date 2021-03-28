@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DatePicker, DialogModal, ErrorLabel, SelectBox } from '../../../../../common-components';
 import { ManageIncidentActions } from '../../../admin/incident/redux/actions';
-import { AssetCreateValidator } from '../../../base/create-tab/components/assetCreateValidator';
 import ValidationHelper from '../../../../../helpers/validationHelper';
 class IncidentEditForm extends Component {
     constructor(props) {

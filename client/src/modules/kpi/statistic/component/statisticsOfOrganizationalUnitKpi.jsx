@@ -60,7 +60,9 @@ class StatisticsOfOrganizationalUnitKpi extends Component {
     }
 
     shouldComponentUpdate = async (nextProps, nextState) => {
-        if (nextState.details !== this.state.details) {
+        const { details } = this.state;
+
+        if (nextState.details !== details) {
             return false;
         }
 
@@ -393,6 +395,34 @@ class StatisticsOfOrganizationalUnitKpi extends Component {
         }
     }
 
+    showDistributionOfEmployeeKpiDoc = () => {
+        Swal.fire({
+            icon: "question",
+
+            html: `<h3 style="color: red"><div>Cách tính trọng số KPI đơn vị theo KPI thiết lập của nhân viên  ?</div> </h3>
+            <ul>
+             <li style="font-size: 15px; margin-top: 25px; text-align: left;">Lấy tất cả các KPI của nhân viên theo từng KPI đơn vị</li>
+             <li style="font-size: 15px; margin-top: 25px; text-align: left;">Tính tổng của các tích (Trọng số KPI nhân viên x Độ quan trọng của nhân viên)</li>
+             <li style="font-size: 15px; margin-top: 25px; text-align: left;">Trọng số KPI đơn vị theo phân tích = (tổng trên) / (tổng Độ quan trọng nhân viên)</li>
+             </ul>`,
+            width: "50%",
+        })
+    }
+
+    showDistributionOfOrganizationalUnitKpiDoc = () => {
+        Swal.fire({
+            icon: "question",
+
+            html: `<h3 style="color: red"><div>Cách tính trọng số KPI đơn vị theo KPI thiết lập của nhân viên  ?</div> </h3>
+            <ul>
+             <li style="font-size: 15px; margin-top: 25px; text-align: left;">Lấy tất cả các KPI của đơn vị con theo từng KPI đơn vị cha</li>
+             <li style="font-size: 15px; margin-top: 25px; text-align: left;">Tính tổng của các tích (Trọng số KPI con x Độ quan trọng của đơn vị)</li>
+             <li style="font-size: 15px; margin-top: 25px; text-align: left;">Trọng số KPI đơn vị theo phân tích = (tổng trên) / (tổng Độ quan trọng đơn vị)</li>
+             </ul>`,
+            width: "50%",
+        })
+    }
+
     render() {
         const { translate, dashboardEvaluationEmployeeKpiSet, createKpiUnit, dashboardOrganizationalUnitKpi } = this.props;
         const { details, month } = this.state;
@@ -423,6 +453,10 @@ class StatisticsOfOrganizationalUnitKpi extends Component {
         if (day.length < 2)
             day = '0' + day;
         let defaultDate = [monthDate, year].join('-');
+
+        if (!details) {
+            window.$(`#${dataTree?.[0]?.id}_anchor`).addClass('jstree-clicked')
+        }
 
         return (
             <React.Fragment>
@@ -469,7 +503,7 @@ class StatisticsOfOrganizationalUnitKpi extends Component {
                                         {currentKPI
                                             ? <React.Fragment>
                                                 <h4 className="box-title">Cây KPI đơn vị tháng {month.slice(5, 7) + "-" + month.slice(0, 4)}</h4>
-                                                <div className="details-tree" id="details-tree">
+                                                <div className="details-tree" id="details-tree" style={{ maxHeight: "500px" }}>
                                                     <Tree
                                                         id="tree-qlcv-document"
                                                         onChanged={this.onChanged}
@@ -486,19 +520,21 @@ class StatisticsOfOrganizationalUnitKpi extends Component {
                                 </div>
 
                                 <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6" style={{ padding: 10 }}>
-                                    {
-                                        details &&
-                                        <DetailsOfOrganizationalUnitKpiForm
-                                            details={details}
-                                        />
-                                    }
+                                    <DetailsOfOrganizationalUnitKpiForm
+                                        details={details ? details : dataTree?.[0]}
+                                    />
                                 </div>
                             </div>
 
                             <div className="row">
                                 <div className="col-xs-12" style={{ padding: 10 }}>
                                     <div className="description-box" style={{ height: "100%" }}>
-                                        <h4 className="box-title">Biểu đồ phân tích KPI đơn vị dựa trên KPI nhân viên tháng {month.slice(5, 7) + "-" + month.slice(0, 4)}</h4>
+                                        <h4 className="box-title">
+                                            <span>Biểu đồ phân tích KPI đơn vị dựa trên KPI nhân viên tháng {month.slice(5, 7) + "-" + month.slice(0, 4)}</span>
+                                            <a className="text-red" title={translate('task.task_management.explain')} onClick={() => this.showDistributionOfEmployeeKpiDoc()}>
+                                                <i className="fa fa-question-circle" style={{ color: '#dd4b39', marginLeft: '5px' }} />
+                                            </a>
+                                        </h4>
 
                                         <DistributionOfEmployeeKpiChart
                                             organizationalUnitKPI={dataTree.filter(item => item.parent === '#')}
@@ -510,8 +546,13 @@ class StatisticsOfOrganizationalUnitKpi extends Component {
                             <div className="row">
                                 <div className="col-xs-12" style={{ padding: 10 }}>
                                     <div className="description-box" style={{ height: "100%" }}>
-                                        <h4 className="box-title">Biểu đồ phân tích KPI đơn vị dựa trên KPI đơn vị con tháng {month.slice(5, 7) + "-" + month.slice(0, 4)}</h4>
-
+                                        <h4 className="box-title">
+                                            <span>Biểu đồ phân tích KPI đơn vị dựa trên KPI đơn vị con tháng {month.slice(5, 7) + "-" + month.slice(0, 4)}</span>
+                                            <a className="text-red" title={translate('task.task_management.explain')} onClick={() => this.showDistributionOfOrganizationalUnitKpiDoc()}>
+                                                <i className="fa fa-question-circle" style={{ color: '#dd4b39', marginLeft: '5px' }} />
+                                            </a>
+                                        </h4>
+                                        
                                         <DistributionOfOrganizationalUnitKpiChart
                                             organizationalUnitKPI={dataTree.filter(item => item.parent === '#')}
                                             dataTreeUnitKpi={dataTree}

@@ -6,7 +6,6 @@ import { DialogModal, SelectBox, ErrorLabel, DatePicker } from "../../../../../c
 import { TaskProcessActions } from "../../redux/actions";
 import { DepartmentActions } from "../../../../super-admin/organizational-unit/redux/actions";
 import { UserActions } from "../../../../super-admin/user/redux/actions";
-import { TaskProcessValidator } from '../process-template/taskProcessValidator';
 import { TaskFormValidator } from "../../../task-management/component/taskFormValidator";
 import { is } from 'bpmn-js/lib/util/ModelUtil';
 import { isAny } from 'bpmn-js/lib/features/modeling/util/ModelingUtil'
@@ -24,6 +23,8 @@ import '../process-template/processDiagram.css'
 import getEmployeeSelectBoxItems from "../../../organizationalUnitHelper";
 import { TaskAddModal } from "../../../task-management/component/taskAddModal";
 import { AddTaskForm } from "../../../task-management/component/addTaskForm";
+import ValidationHelper from '../../../../../helpers/validationHelper';
+
 // custom element
 ElementFactory.prototype._getDefaultSize = function (semantic) {
 
@@ -164,12 +165,13 @@ class ModalCreateTaskByProcess extends Component {
     // Hàm đổi tên Quy trình
     handleChangeBpmnName = async (e) => {
         let { value } = e.target;
-        let msg = TaskProcessValidator.validateProcessName(value, this.props.translate);
+        let { message } = ValidationHelper.validateName(this.props.translate, value);
+
         await this.setState(state => {
             return {
                 ...state,
                 processName: value,
-                errorOnProcessName: msg,
+                errorOnProcessName: message,
             }
         });
     }
@@ -177,35 +179,41 @@ class ModalCreateTaskByProcess extends Component {
     // Hàm cập nhật mô tả quy trình
     handleChangeBpmnDescription = async (e) => {
         let { value } = e.target;
+        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
+
         await this.setState(state => {
             return {
                 ...state,
                 processDescription: value,
-                errorOnProcessDescription: TaskProcessValidator.validateProcessDescription(value, this.props.translate),
+                errorOnProcessDescription: message,
             }
         });
     }
 
     // Hàm cập nhật người được xem quy trình
     handleChangeViewer = async (value) => {
+        let { message } = ValidationHelper.validateArrayLength(this.props.translate, value);
+
         await this.setState(state => {
 
             return {
                 ...state,
                 viewer: value,
-                errorOnViewer: TaskProcessValidator.validateViewer(value, this.props.translate),
+                errorOnViewer: message,
             }
         })
     }
 
     // Hàm cập nhật người quản lý quy trình
     handleChangeManager = async (value) => {
+        let { message } = ValidationHelper.validateArrayLength(this.props.translate, value);
+     
         await this.setState(state => {
 
             return {
                 ...state,
                 manager: value,
-                errorOnManager: TaskProcessValidator.validateManager(value, this.props.translate),
+                errorOnManager: message,
             }
         })
     }
@@ -591,24 +599,28 @@ class ModalCreateTaskByProcess extends Component {
 
     // Hàm cập nhật người được xem quy trình
     handleChangeViewer = async (value) => {
+        let { message } = ValidationHelper.validateArrayLength(this.props.translate, value);
+
         await this.setState(state => {
 
             return {
                 ...state,
                 viewer: value,
-                errorOnViewer: TaskProcessValidator.validateViewer(value, this.props.translate),
+                errorOnViewer: message,
             }
         })
     }
 
     // Hàm cập nhật người quản lý quy trình
     handleChangeManager = async (value) => {
+        let { message } = ValidationHelper.validateArrayLength(this.props.translate, value);
+
         await this.setState(state => {
 
             return {
                 ...state,
                 manager: value,
-                errorOnManager: TaskProcessValidator.validateManager(value, this.props.translate),
+                errorOnManager: message,
             }
         })
     }

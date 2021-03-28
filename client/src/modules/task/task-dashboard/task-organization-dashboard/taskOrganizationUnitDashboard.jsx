@@ -8,18 +8,19 @@ import { UserActions } from '../../../super-admin/user/redux/actions';
 import { DistributionOfEmployee } from './distributionOfEmployee';
 import { DomainOfTaskResultsChart } from '../task-personal-dashboard/domainOfTaskResultsChart';
 import { TaskStatusChart } from '../task-personal-dashboard/taskStatusChart';
-import { CalendarOrganizationUnit } from './calendarOrganizationUnit';
 import { LoadTaskOrganizationChart } from './loadTaskOrganizationChart';
 import { AverageResultsOfTaskInOrganizationalUnit } from './averageResultsOfTaskInOrganizationalUnit';
 import { AllTimeSheetLogsByUnit } from './allTimeSheetLogByUnit'
 
 import { withTranslate } from 'react-redux-multilingual';
-import { SelectMulti, DatePicker, ToolTip } from '../../../../common-components/index';
+import { SelectMulti, DatePicker, LazyLoadComponent, DataTableSetting, ExportExcel } from '../../../../common-components/index';
 import Swal from 'sweetalert2';
 import { InprocessOfUnitTask } from './processOfUnitTasks';
-import ValidationHelper from '../../../../helpers/validationHelper';
 import { GanttCalendar } from '../task-personal-dashboard/ganttCalendar';
 import GeneralTaskChart from './generalTaskChart';
+import { getTableConfiguration } from '../../../../helpers/tableConfiguration'
+import isEqual from 'lodash/isEqual';
+import { showListInSwal } from '../../../../helpers/showListInSwal';
 
 class TaskOrganizationUnitDashboard extends Component {
     constructor(props) {
@@ -47,7 +48,7 @@ class TaskOrganizationUnitDashboard extends Component {
             endMonth = month;
         }
         this.INFO_SEARCH = {
-            idsUnit: [],
+            idsUnit: null,
             checkUnit: 0,
             startMonth: [startYear, startMonth].join('-'),
             endMonth: [year, endMonth].join('-'),
@@ -55,6 +56,12 @@ class TaskOrganizationUnitDashboard extends Component {
             startMonthTitle: [startMonth, startYear].join('-'),
             endMonthTitle: [endMonth, year].join('-'),
         }
+
+        const defaultConfig = { limit: 10 }
+        this.allTimeSheetLogsByUnitId = "all-time-sheet-logs"
+        const allTimeSheetLogsByUnitIdPerPage = getTableConfiguration(this.allTimeSheetLogsByUnitId, defaultConfig).limit;
+        this.distributionOfEmployeeChartId = "distribution-of-employee-chart";
+        const distributionOfEmployeeChartPerPage = getTableConfiguration(this.distributionOfEmployeeChartId, defaultConfig).limit;
 
         this.state = {
             userID: "",
@@ -66,18 +73,19 @@ class TaskOrganizationUnitDashboard extends Component {
 
             checkUnit: this.INFO_SEARCH.checkUnit,
             startMonth: this.INFO_SEARCH.startMonth,
-            endMonth: this.INFO_SEARCH.endMonth
+            endMonth: this.INFO_SEARCH.endMonth,
+
+            allTimeSheetLogsByUnitIdPerPage: allTimeSheetLogsByUnitIdPerPage,
+            distributionOfEmployeeChartPerPage: distributionOfEmployeeChartPerPage
         };
-
-
     }
 
     componentDidMount = async () => {
         await this.props.getDepartment();
         await this.props.getChildrenOfOrganizationalUnitsAsTree(localStorage.getItem("currentRole"));
         await this.props.getAllUserSameDepartment(localStorage.getItem("currentRole"));
-        await this.props.getTaskInOrganizationUnitByMonth(this.state.idsUnit, new Date(this.state.startMonth), new Date(this.state.endMonth));
-
+        await this.props.getTaskInOrganizationUnitByMonth([], new Date(this.state.startMonth), new Date(this.state.endMonth));
+        await this.props.getAllUserInAllUnitsOfCompany();
         await this.setState(state => {
             return {
                 ...state,
@@ -88,19 +96,24 @@ class TaskOrganizationUnitDashboard extends Component {
     }
 
     shouldComponentUpdate = async (nextProps, nextState) => {
-        const { dashboardEvaluationEmployeeKpiSet } = this.props;
-        let { idsUnit, checkUnit, startMonth, endMonth } = this.state;
+        const { dashboardEvaluationEmployeeKpiSet, user } = this.props;
+        let { idsUnit, distributionOfEmployeeChart, allTimeSheetLogsByUnit } = this.state;
         let data, organizationUnit = "organizationUnit";
 
-        if (idsUnit !== nextState.idsUnit) {
-            return false;
+
+        // Trưởng hợp đổi 2 role cùng là trưởng đơn vị, cập nhật lại select box chọn đơn vị
+        if (idsUnit && dashboardEvaluationEmployeeKpiSet && !dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    idsUnit: null
+                }
+            })
+
+            return true;
         }
 
-        if (!idsUnit.length && dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit
-            || (nextState.checkUnit !== checkUnit
-                || nextState.startMonth !== startMonth
-                || nextState.endMonth !== endMonth)
-        ) {
+        if (!idsUnit && dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit) {
             let childrenOrganizationalUnit = [], queue = [], currentOrganizationalUnit;
 
             if (dashboardEvaluationEmployeeKpiSet) {
@@ -121,35 +134,26 @@ class TaskOrganizationUnitDashboard extends Component {
                 }
             }
 
-            let units = childrenOrganizationalUnit.map(item => item.id);
-
             this.setState((state) => {
                 return {
                     ...state,
                     startMonth: nextState.startMonth,
                     endMonth: nextState.endMonth,
                     checkUnit: nextState.checkUnit,
-                    idsUnit: !idsUnit.length ? units : nextState.idsUnit,
+                    idsUnit: !idsUnit?.length ? [childrenOrganizationalUnit?.[0]?.id] : nextState.idsUnit,
                     selectBoxUnit: childrenOrganizationalUnit
                 }
             });
-            await this.props.getAllEmployeeOfUnitByIds(units);
             data = {
-                organizationUnitId: units,
+                organizationUnitId: [childrenOrganizationalUnit?.[0]?.id],
                 type: organizationUnit,
             }
 
-            if (units.length) {
-                await this.props.getTaskInOrganizationUnitByMonth(units, this.state.startMonth, this.state.endMonth);
-            }
-
+            await this.props.getTaskInOrganizationUnitByMonth([childrenOrganizationalUnit?.[0]?.id], this.state.startMonth, this.state.endMonth);
             await this.props.getTaskByUser(data);
 
+            return true;
         } else if (nextState.dataStatus === this.DATA_STATUS.QUERYING) {
-            if (!nextProps.tasks.organizationUnitTasks) {
-                return false;
-            }
-
             this.setState(state => {
                 return {
                     ...state,
@@ -157,6 +161,7 @@ class TaskOrganizationUnitDashboard extends Component {
                     callAction: true
                 }
             });
+            return true;
         } else if (nextState.dataStatus === this.DATA_STATUS.AVAILABLE && nextState.willUpdate) {
             this.setState(state => {
                 return {
@@ -168,19 +173,41 @@ class TaskOrganizationUnitDashboard extends Component {
 
             return true;
         }
-        return false;
+
+        if ((!distributionOfEmployeeChart?.employees || !allTimeSheetLogsByUnit?.employees) && nextProps.user?.employees) {
+            let employeesDistributionOfEmployeeChart = this.filterArraySkipAndLimit(nextProps.user?.employees, distributionOfEmployeeChart?.page, distributionOfEmployeeChart?.perPage);
+            let employeesAllTimeSheetLogsByUnit = this.filterArraySkipAndLimit(nextProps.user?.employees, allTimeSheetLogsByUnit?.page, allTimeSheetLogsByUnit?.perPage);
+            this.setState(state => {
+                return {
+                    ...state,
+                    distributionOfEmployeeChart: {
+                        ...state.distributionOfEmployeeChart,
+                        employees: employeesDistributionOfEmployeeChart
+                    },
+                    allTimeSheetLogsByUnit: {
+                        ...state.allTimeSheetLogsByUnit,
+                        employees: employeesAllTimeSheetLogsByUnit
+                    }
+                }
+            })
+            return true;
+        }
+
+        return true;
+    }
+
+    formatDate = (date) => {
+        if (date) {
+            let data = date.split("-");
+            data = data[1] + "-" + data[0]
+            return data;
+        }
     }
 
     handleChangeOrganizationUnit = async (value) => {
         let checkUnit = this.state.checkUnit + 1;
         this.INFO_SEARCH.checkUnit = checkUnit;
-
-        this.setState(state => {
-            return {
-                ...state,
-                idsUnit: value
-            }
-        })
+        this.INFO_SEARCH.idsUnit = value;
     }
 
     handleSelectMonthStart = async (value) => {
@@ -200,6 +227,7 @@ class TaskOrganizationUnitDashboard extends Component {
     }
 
     handleSearchData = async () => {
+        const { allTimeSheetLogsByUnitIdPerPage, distributionOfEmployeeChartPerPage } = this.state;
         let startMonth = new Date(this.INFO_SEARCH.startMonth);
         let endMonth = new Date(this.INFO_SEARCH.endMonth);
 
@@ -218,15 +246,30 @@ class TaskOrganizationUnitDashboard extends Component {
                     startMonth: this.INFO_SEARCH.startMonth,
                     endMonth: this.INFO_SEARCH.endMonth,
                     checkUnit: this.INFO_SEARCH.checkUnit,
+                    idsUnit: this.INFO_SEARCH.idsUnit
                 }
             })
 
-            await this.props.getTaskInOrganizationUnitByMonth(this.state.idsUnit, this.state.startMonth, this.state.endMonth);
+            let data = {
+                organizationalUnitIds: this.INFO_SEARCH.idsUnit,
+                page: 1
+            }
+
+            await this.props.getAllEmployeeOfUnitByIds({
+                ...data,
+                type: "forDistributionChart",
+                perPage: distributionOfEmployeeChartPerPage
+            });
+            await this.props.getAllEmployeeOfUnitByIds({
+                ...data,
+                type: "forAllTimeSheetLogs",
+                perPage: allTimeSheetLogsByUnitIdPerPage
+            });
+            await this.props.getTaskInOrganizationUnitByMonth(this.INFO_SEARCH.idsUnit, this.state.startMonth, this.state.endMonth);
         }
     }
 
     showLoadTaskDoc = () => {
-        const { translate } = this.props;
         Swal.fire({
             icon: "question",
 
@@ -240,9 +283,54 @@ class TaskOrganizationUnitDashboard extends Component {
         })
     }
 
+    filterArraySkipAndLimit = (arrays, page, limit) => {
+        let employees;
+        if (arrays?.length > 0) {
+            employees = arrays.filter((item, index) => {
+                if (index >= (page - 1) * limit && index < page * limit) {
+                    return true;
+                }
+                else return false;
+            })
+        }
+        return employees;
+    }
+
+    getUnitName = (arrayUnit, arrUnitId) => {
+        let data = [];
+        arrayUnit && arrayUnit.forEach(x => {
+            arrUnitId && arrUnitId.length > 0 && arrUnitId.forEach(y => {
+                if (x.id === y)
+                    data.push(x.name)
+            })
+        })
+        return data;
+    }
+
+    showUnitGeneraTask = (selectBoxUnit, idsUnit) => {
+        const { translate } = this.props
+        if (idsUnit && idsUnit.length > 0) {
+            const listUnit = this.getUnitName(selectBoxUnit, idsUnit);
+            showListInSwal(listUnit, translate('general.list_unit'))
+        }
+    }
+
+    handleDataExport = (data) => {
+        let { dataExport } = this.state;
+        if (!isEqual(dataExport, data)) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    dataExport: data,
+                }
+            })
+        }
+    }
+
+
     render() {
         const { tasks, translate, user, dashboardEvaluationEmployeeKpiSet } = this.props;
-        let { idsUnit, startMonth, endMonth, selectBoxUnit } = this.state;
+        let { idsUnit, startMonth, endMonth, selectBoxUnit, distributionOfEmployeeChart, allTimeSheetLogsByUnit, dataExport } = this.state;
         let { startMonthTitle, endMonthTitle } = this.INFO_SEARCH;
         let childrenOrganizationalUnit = [];
         let currentOrganizationalUnit, currentOrganizationalUnitLoading;
@@ -251,6 +339,7 @@ class TaskOrganizationUnitDashboard extends Component {
             currentOrganizationalUnit = dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit;
             currentOrganizationalUnitLoading = dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnitLoading;
         }
+
 
         return (
             <React.Fragment>
@@ -303,18 +392,38 @@ class TaskOrganizationUnitDashboard extends Component {
                             <div className="col-xs-12">
                                 <div className="box box-primary">
                                     <div className="box-header with-border">
-                                        <div className="box-title">{translate('task.task_dashboard.general_unit_task')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
-                                    </div>
-                                    <div className="box-body qlcv">
-                                        {/* {this.state.callAction && tasks && tasks.organizationUnitTasks && */}
+                                        <div className="box-title">
+                                            {
+                                                idsUnit && idsUnit.length < 2 ?
+                                                    <>
+                                                        <span>{`${translate('task.task_dashboard.general_unit_task')} ${translate('task.task_management.lower_from')} ${startMonthTitle} ${translate('task.task_management.lower_to')} ${endMonthTitle} ${translate('task.task_dashboard.of_unit')}`}</span>
+                                                        <span style={{ fontWeight: "bold" }}>{` ${this.getUnitName(selectBoxUnit, idsUnit).map(o => o).join(", ")}`}</span>
+                                                    </>
+                                                    :
+                                                    <span onClick={() => this.showUnitGeneraTask(selectBoxUnit, idsUnit)} style={{ cursor: 'pointer' }}>
+                                                        <span>{`${translate('task.task_dashboard.general_unit_task')} ${translate('task.task_management.lower_from')} ${startMonthTitle} ${translate('task.task_management.lower_to')} ${endMonthTitle} ${translate('task.task_dashboard.of')} `} </span>
+                                                        <a style={{ cursor: 'pointer', fontWeight: 'bold' }}>{idsUnit && idsUnit.length}</a>
+                                                        <span>{` ${translate('task.task_dashboard.unit_lowercase')}`}</span>
+                                                    </span>
+                                            }
 
-                                        {/* } */}
-                                        {this.state.callAction && tasks && tasks.organizationUnitTasks &&
+                                        </div>
+                                        {
+                                            dataExport && <ExportExcel id="export-general-task" buttonName={translate('human_resource.name_button_export')} exportData={dataExport} style={{ marginTop: 0 }} />
+                                        }
+                                    </div>
+
+                                    <div className="box-body qlcv">
+                                        {this.state.callAction && tasks && tasks.organizationUnitTasks?.tasks?.length > 0 &&
                                             <GeneralTaskChart
                                                 tasks={tasks.organizationUnitTasks}
                                                 units={selectBoxUnit}
-                                                employees={user.employees}
+                                                employees={user.usersInUnitsOfCompany}
                                                 unitSelected={idsUnit}
+                                                startMonthTitle={startMonthTitle}
+                                                endMonthTitle={endMonthTitle}
+                                                unitNameSelected={idsUnit && this.getUnitName(selectBoxUnit, idsUnit)}
+                                                handleDataExport={this.handleDataExport}
                                             />
                                         }
                                     </div>
@@ -325,205 +434,260 @@ class TaskOrganizationUnitDashboard extends Component {
                             <div className="col-xs-12">
                                 <div className="box box-primary">
                                     <div className="box-header with-border">
-                                        <div className="box-title">{translate('task.task_management.tasks_calendar')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
+                                        <div className="box-title">
+                                            {translate('task.task_management.tasks_calendar')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}
+                                            {
+                                                idsUnit && idsUnit.length < 2 ?
+                                                    <>
+                                                        <span>{` ${translate('task.task_dashboard.of_unit')}`}</span>
+                                                        <span style={{ fontWeight: "bold" }}>{` ${this.getUnitName(selectBoxUnit, idsUnit).map(o => o).join(", ")}`}</span>
+                                                    </>
+                                                    :
+                                                    <span onClick={() => this.showUnitGeneraTask(selectBoxUnit, idsUnit)} style={{ cursor: 'pointer' }}>
+                                                        <span>{` ${translate('task.task_dashboard.of')}`}</span>
+                                                        <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {idsUnit && idsUnit.length}</a>
+                                                        <span>{` ${translate('task.task_dashboard.unit_lowercase')}`}</span>
+                                                    </span>
+                                            }
+                                        </div>
                                     </div>
-                                    <GanttCalendar
-                                        tasks={tasks}
-                                        unit={true}
-                                    />
-                                </div>
-
-                            </div>
-                        </div>
-                        <div className="row">
-                            <div className="col-xs-12">
-                                <div className="box box-primary">
-                                    <div className="box-header with-border">
-                                        <div className="box-title">{translate('task.task_management.distribution_Of_Employee')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
-                                    </div>
-                                    <div className="box-body qlcv">
-                                        {this.state.callAction && tasks && tasks.organizationUnitTasks &&
-                                            <DistributionOfEmployee
-                                                tasks={tasks.organizationUnitTasks}
-                                                listEmployee={user && user.employees}
-                                                units={idsUnit}
-                                            />
-                                        }
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="row">
-                            <div className="col-xs-12">
-                                <div className="box box-primary">
-                                    <div className="box-header with-border">
-                                        <div className="box-title">{translate('task.task_management.calc_progress')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
-                                    </div>
-                                    <div className="box-body qlcv">
-                                        {this.state.callAction && tasks && tasks.organizationUnitTasks &&
-                                            <InprocessOfUnitTask
-                                                tasks={tasks.organizationUnitTasks}
-                                                listEmployee={user && user.employees}
-                                                units={selectBoxUnit}
-                                                unitSelected={idsUnit}
-                                            />
-                                        }
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="row">
-                            <div className="col-xs-6">
-                                <div className="box box-primary">
-                                    <div className="box-header with-border">
-                                        <div className="box-title">{translate('task.task_management.dashboard_area_result')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
-                                    </div>
-                                    <div className="box-body qlcv">
-                                        {this.state.callAction &&
-                                            <DomainOfTaskResultsChart
-                                                callAction={!this.state.willUpdate}
-                                                TaskOrganizationUnitDashboard={true}
-                                                units={idsUnit}
-                                                startMonth={startMonth}
-                                                endMonth={endMonth}
-                                            />
-                                        }
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="col-xs-6">
-                                <div className="box box-primary">
-                                    <div className="box-header with-border">
-                                        <div className="box-title">{translate('task.task_management.detail_status')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
-                                    </div>
-                                    <div className="box-body qlcv" style={{ height: '384px' }}>
-                                        {this.state.callAction &&
-                                            <TaskStatusChart
-                                                callAction={!this.state.willUpdate}
-                                                TaskOrganizationUnitDashboard={true}
-                                                startMonth={startMonth}
-                                                endMonth={endMonth}
-                                                units={idsUnit}
-                                            />
-                                        }
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="row">
-                            <div className="col-xs-12">
-                                <div className="box box-primary">
-                                    <div className="box-header with-border">
-                                        <div className="box-title">Kết quả trung bình công việc các đơn vị {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
-                                    </div>
-                                    <div className="box-body qlcv">
-                                        <AverageResultsOfTaskInOrganizationalUnit
-                                            units={idsUnit}
-                                            startMonth={startMonth}
-                                            endMonth={endMonth}
+                                    <LazyLoadComponent once={true}>
+                                        <GanttCalendar
+                                            tasks={tasks}
+                                            unit={true}
+                                            unitSelected={idsUnit}
                                         />
+                                    </LazyLoadComponent>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        {/* Đóng góp công việc */}
+                        <div className="row">
+                            <div className="col-xs-12">
+                                <div className="box box-primary">
+                                    {tasks && tasks.organizationUnitTasks &&
+                                        <LazyLoadComponent once={true}>
+                                            <DistributionOfEmployee
+                                                unitIds={idsUnit}
+                                                tasks={tasks.organizationUnitTasks}
+                                                listEmployee={distributionOfEmployeeChart?.employees}
+                                                startMonthTitle={startMonthTitle}
+                                                endMonthTitle={endMonthTitle}
+                                                selectBoxUnit={selectBoxUnit}
+                                                getUnitName={this.getUnitName}
+                                                showUnitGeneraTask={this.showUnitGeneraTask}
+                                            />
+                                        </LazyLoadComponent>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="row">
+                            <div className="col-xs-12">
+                                <div className="box box-primary">
+                                    <div className="box-header with-border">
+                                        <div className="box-title">
+                                            {translate('task.task_management.calc_progress')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}
+                                            {
+                                                idsUnit && idsUnit.length < 2 ?
+                                                    <>
+                                                        <span>{` ${translate('task.task_dashboard.of_unit')}`}</span>
+                                                        <span style={{ fontWeight: "bold" }}>{` ${this.getUnitName(selectBoxUnit, idsUnit).map(o => o).join(", ")}`}</span>
+                                                    </>
+                                                    :
+                                                    <span onClick={() => this.showUnitGeneraTask(selectBoxUnit, idsUnit)} style={{ cursor: 'pointer' }}>
+                                                        <span>{` ${translate('task.task_dashboard.of')}`}</span>
+                                                        <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {idsUnit && idsUnit.length}</a>
+                                                        <span>{` ${translate('task.task_dashboard.unit_lowercase')}`}</span>
+                                                    </span>
+                                            }
+                                        </div>
+                                    </div>
+                                    <div className="box-body qlcv">
+                                        {this.state.callAction && tasks && tasks.organizationUnitTasks &&
+                                            <LazyLoadComponent once={true}>
+                                                <InprocessOfUnitTask
+                                                    tasks={tasks.organizationUnitTasks}
+                                                    listEmployee={user && user.employees}
+                                                    unitSelected={idsUnit}
+                                                    unitNameSelected={idsUnit && this.getUnitName(selectBoxUnit, idsUnit)}
+                                                />
+                                            </LazyLoadComponent>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="row">
+                            <div className="col-xs-6">
+                                <div className="box box-primary">
+                                    <div className="box-header with-border">
+                                        <div className="box-title">
+                                            {translate('task.task_management.dashboard_area_result')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}
+                                            {
+                                                idsUnit && idsUnit.length < 2 ?
+                                                    <>
+                                                        <spn>{` ${translate('task.task_dashboard.of_unit')}`}</spn>
+                                                        <span style={{ fontWeight: "bold" }}>{` ${this.getUnitName(selectBoxUnit, idsUnit).map(o => o).join(", ")}`}</span>
+                                                    </>
+                                                    :
+                                                    <span onClick={() => this.showUnitGeneraTask(selectBoxUnit, idsUnit)} style={{ cursor: 'pointer' }}>
+                                                        <span>{` ${translate('task.task_dashboard.of')}`}</span>
+                                                        <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {idsUnit && idsUnit.length}</a>
+                                                        <span>{` ${translate('task.task_dashboard.unit_lowercase')}`}</span>
+                                                    </span>
+                                            }
+                                        </div>
+                                    </div>
+                                    <div className="box-body qlcv">
+                                        {this.state.callAction &&
+                                            <LazyLoadComponent once={true}>
+                                                <DomainOfTaskResultsChart
+                                                    callAction={!this.state.willUpdate}
+                                                    TaskOrganizationUnitDashboard={true}
+                                                    units={idsUnit}
+                                                    startMonth={startMonth}
+                                                    endMonth={endMonth}
+                                                />
+                                            </LazyLoadComponent>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="col-xs-6">
+                                <div className="box box-primary">
+                                    <div className="box-header with-border">
+                                        <div className="box-title">
+                                            {translate('task.task_management.detail_status')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}
+                                            {
+                                                idsUnit && idsUnit.length < 2 ?
+                                                    <>
+                                                        <spn>{` ${translate('task.task_dashboard.of_unit')}`}</spn>
+                                                        <span style={{ fontWeight: "bold" }}>{` ${this.getUnitName(selectBoxUnit, idsUnit).map(o => o).join(", ")}`}</span>
+                                                    </>
+                                                    :
+                                                    <span onClick={() => this.showUnitGeneraTask(selectBoxUnit, idsUnit)} style={{ cursor: 'pointer' }}>
+                                                        <span>{` ${translate('task.task_dashboard.of')}`}</span>
+                                                        <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {idsUnit && idsUnit.length}</a>
+                                                        <span>{` ${translate('task.task_dashboard.unit_lowercase')}`}</span>
+                                                    </span>
+                                            }
+                                        </div>
+                                    </div>
+                                    <div className="box-body qlcv" style={{ maxHeight: '384px' }}>
+                                        {this.state.callAction &&
+                                            <LazyLoadComponent once={true}>
+                                                <TaskStatusChart
+                                                    callAction={!this.state.willUpdate}
+                                                    TaskOrganizationUnitDashboard={true}
+                                                    startMonth={startMonth}
+                                                    endMonth={endMonth}
+                                                    units={idsUnit}
+                                                />
+                                            </LazyLoadComponent>
+                                        }
                                     </div>
                                 </div>
                             </div>
                         </div>
 
                         <div className="row">
-                            <div className="col-xs-6">
+                            <div className="col-xs-12">
                                 <div className="box box-primary">
                                     <div className="box-header with-border">
-                                        <div className="box-title">{translate('task.task_management.dashboard_overdue')}</div>
+                                        <div className="box-title">
+                                            Kết quả trung bình công việc {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}
+                                            {
+                                                idsUnit && idsUnit.length < 2 ?
+                                                    <>
+                                                        <spn>{` ${translate('task.task_dashboard.of_unit')}`}</spn>
+                                                        <span style={{ fontWeight: "bold" }}>{` ${this.getUnitName(selectBoxUnit, idsUnit).map(o => o).join(", ")}`}</span>
+                                                    </>
+                                                    :
+                                                    <span onClick={() => this.showUnitGeneraTask(selectBoxUnit, idsUnit)} style={{ cursor: 'pointer' }}>
+                                                        <span>{` ${translate('task.task_dashboard.of')}`}</span>
+                                                        <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {idsUnit && idsUnit.length}</a>
+                                                        <span>{` ${translate('task.task_dashboard.unit_lowercase')}`}</span>
+                                                    </span>
+                                            }
+                                        </div>
                                     </div>
-
-                                    <div className="box-body" style={{ height: "380px", overflow: "auto" }}>
-                                        {
-                                            (tasks && tasks.tasksbyuser) ?
-                                                <ul className="todo-list">
-                                                    {
-                                                        (tasks.tasksbyuser.expire.length !== 0) ?
-                                                            tasks.tasksbyuser.expire.map((item, key) =>
-                                                                <li key={key}>
-                                                                    <span className="handle">
-                                                                        <i className="fa fa-ellipsis-v" />
-                                                                        <i className="fa fa-ellipsis-v" />
-                                                                    </span>
-                                                                    <span className="text"><a href={`/task?taskId=${item.task._id}`} target="_blank">{item.task.name}</a></span>
-                                                                    <small className="label label-danger"><i className="fa fa-clock-o" /> &nbsp;{item.totalDays} {translate('task.task_management.calc_days')}</small>
-                                                                </li>
-                                                            ) : "Không có công việc quá hạn"
-                                                    }
-                                                </ul> : "Đang tải dữ liệu"
-                                        }
+                                    <div className="box-body qlcv">
+                                        <LazyLoadComponent once={true}>
+                                            <AverageResultsOfTaskInOrganizationalUnit
+                                                units={idsUnit}
+                                                startMonth={startMonth}
+                                                endMonth={endMonth}
+                                            />
+                                        </LazyLoadComponent>
                                     </div>
                                 </div>
                             </div>
-                            <div className="col-xs-6">
-                                <div className="box box-primary">
-                                    <div className="box-header with-border">
-                                        <div className="box-title">{translate('task.task_management.dashboard_about_to_overdue')}</div>
-                                    </div>
-                                    <div className="box-body" style={{ height: "380px", overflow: "auto" }}>
-                                        {
-                                            (tasks && tasks.tasksbyuser) ?
-                                                <ul className="todo-list">
-                                                    {
-                                                        (tasks.tasksbyuser.deadlineincoming.length !== 0) ?
-                                                            tasks.tasksbyuser.deadlineincoming.map((item, key) =>
-                                                                <li key={key}>
-                                                                    <span className="handle">
-                                                                        <i className="fa fa-ellipsis-v" />
-                                                                        <i className="fa fa-ellipsis-v" />
-                                                                    </span>
-                                                                    <span className="text"><a href={`/task?taskId=${item.task._id}`} target="_blank" >{item.task.name}</a></span>
-                                                                    <small className="label label-warning"><i className="fa fa-clock-o" /> &nbsp;{item.totalDays} {translate('task.task_management.calc_days')}</small>
-                                                                </li>
-                                                            ) : "Không có công việc nào sắp hết hạn"
-                                                    }
-                                                </ul> : "Đang tải dữ liệu"
-                                        }
-                                    </div>
-
-                                </div>
-                            </div>
-
                         </div>
+
                         {/*Dashboard tải công việc */}
                         <div className="row">
                             <div className="col-xs-12">
                                 <div className="box box-primary">
                                     <div className="box-header with-border">
-                                        <div className="box-title">{translate('task.task_management.load_task_chart_unit')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
-                                        {/* <ToolTip
-                                            type={"icon_tooltip"} materialIcon={"help"}
-                                            dataTooltip={['Tải công việc tính theo công thức tổng các tỉ số: số ngày thực hiện công việc trong tháng/(số người thực hiện + số người phê duyệt + số người hỗ trợ)']}
-                                        /> */}
+                                        <div className="box-title">
+                                            {translate('task.task_management.load_task_chart_unit')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}
+                                            {
+                                                idsUnit && idsUnit.length < 2 ?
+                                                    <>
+                                                        <spn>{` ${translate('task.task_dashboard.of_unit')}`}</spn>
+                                                        <span style={{ fontWeight: "bold" }}>{` ${this.getUnitName(selectBoxUnit, idsUnit).map(o => o).join(", ")}`}</span>
+                                                    </>
+                                                    :
+                                                    <span onClick={() => this.showUnitGeneraTask(selectBoxUnit, idsUnit)} style={{ cursor: 'pointer' }}>
+                                                        <span>{` ${translate('task.task_dashboard.of')}`}</span>
+                                                        <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {idsUnit && idsUnit.length}</a>
+                                                        <span>{` ${translate('task.task_dashboard.unit_lowercase')}`}</span>
+                                                    </span>
+                                            }
+                                        </div>
                                         <a className="text-red" title={translate('task.task_management.explain')} onClick={() => this.showLoadTaskDoc()}>
-                                            <i className="material-icons" style={{ marginLeft: "10px" }}>help</i>
+                                            <i className="fa fa-question-circle" style={{ color: '#dd4b39', marginLeft: '5px' }} />
                                         </a>
                                     </div>
-                                    <div className="box-body qlcv">
-                                        {this.state.callAction && tasks && tasks.organizationUnitTasks &&
-                                            <LoadTaskOrganizationChart
-                                                tasks={tasks.organizationUnitTasks}
-                                                listEmployee={user && user.employees}
-                                                units={selectBoxUnit}
-                                                startMonth={startMonth}
-                                                endMonth={endMonth}
-                                                idsUnit={this.state.idsUnit}
-                                            />
+                                    <div className="box-body">
+                                        {tasks && tasks.organizationUnitTasks &&
+                                            <LazyLoadComponent once={true}>
+                                                <LoadTaskOrganizationChart
+                                                    tasks={tasks?.organizationUnitTasks}
+                                                    listEmployee={user && user.employees}
+                                                    units={selectBoxUnit}
+                                                    startMonth={startMonth}
+                                                    endMonth={endMonth}
+                                                    idsUnit={idsUnit}
+                                                    employeeLoading={user?.employeeLoading}
+                                                />
+                                            </LazyLoadComponent>
                                         }
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div>
-                            <AllTimeSheetLogsByUnit
-                                userDepartment={user.employees}
-                                organizationUnitTasks={tasks.organizationUnitTasks}
-                                startMonth={startMonth}
-                                endMonth={endMonth}
-                            />
+
+                        {/* Thống kê bấm giờ */}
+                        <div className="row">
+                            <div className="col-xs-12 col-md-12">
+                                <div className="box box-primary">
+                                    <AllTimeSheetLogsByUnit
+                                        unitIds={idsUnit}
+                                        userDepartment={allTimeSheetLogsByUnit?.employees}
+                                        organizationUnitTasks={tasks.organizationUnitTasks}
+                                        startMonthTitle={startMonthTitle}
+                                        endMonthTitle={endMonthTitle}
+                                        selectBoxUnit={selectBoxUnit}
+                                        getUnitName={this.getUnitName}
+                                        showUnitGeneraTask={this.showUnitGeneraTask}
+                                    />
+                                </div>
+                            </div>
                         </div>
                     </React.Fragment>
                     : currentOrganizationalUnitLoading
@@ -549,7 +713,7 @@ const actionCreators = {
     getAllUserSameDepartment: UserActions.getAllUserSameDepartment,
     getChildrenOfOrganizationalUnitsAsTree: DashboardEvaluationEmployeeKpiSetAction.getChildrenOfOrganizationalUnitsAsTree,
     getAllEmployeeOfUnitByIds: UserActions.getAllEmployeeOfUnitByIds,
-
+    getAllUserInAllUnitsOfCompany: UserActions.getAllUserInAllUnitsOfCompany,
 };
 
 const connectedTaskDashboardUnit = connect(mapState, actionCreators)(withTranslate(TaskOrganizationUnitDashboard));

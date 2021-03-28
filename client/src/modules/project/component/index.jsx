@@ -19,7 +19,7 @@ function ManagementTableProject(props) {
             </ul>
             <div className="tab-content">
 
-                {/** Danh sách tài liệu văn bản */}
+                {/** Danh sách dự án */}
                 <div className="tab-pane active" id="administration-project-list-data">
                     <LazyLoadComponent
                         key="ListProject"
@@ -28,7 +28,7 @@ function ManagementTableProject(props) {
                     </LazyLoadComponent>
                 </div>
 
-                {/** Loại văn bản */}
+                {/** Hạng mục dự án */}
                 <div className="tab-pane" id="category-project-list-data">
                     <LazyLoadComponent
                         key="CategoryProject"

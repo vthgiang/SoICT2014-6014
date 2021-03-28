@@ -1,31 +1,27 @@
-import React, { Component } from 'react';
+import React, { Component, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { Tree } from '../../../../../../common-components';
 import c3 from 'c3';
 import 'c3/c3.css';
 
-class BarChartArchive extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
+function BarChartArchive(props){
+    useEffect(()=>{
+        barChartDocumentInArchive();
 
-        }
-    }
-    componentDidMount() {
-        this.barChartDocumentInArchive();
-    }
-    removePreviousArchiveChart() {
-        const chart = this.refs.a;
+    },[])
+    const refArchives = React.createRef()
+    function removePreviousArchiveChart() {
+        const chart = refArchives.current;
         if (chart) {
             while (chart.hasChildNodes()) {
                 chart.removeChild(chart.lastChild);
             }
         }
     }
-    barChartDocumentInArchive = () => {
-        this.removePreviousArchiveChart();
-        let dataChart = this.setDataArchiveBarchart();
+    const barChartDocumentInArchive = () => {
+        removePreviousArchiveChart();
+        let dataChart = setDataArchiveBarchart();
         let count = dataChart.count;
         let heightCalc
         if (dataChart.type) {
@@ -33,7 +29,7 @@ class BarChartArchive extends Component {
         }
         let height = heightCalc < 320 ? 320 : heightCalc;
         let chart = c3.generate({
-            bindto: this.refs.archives,
+            bindto: refArchives.current,
 
             data: {
                 columns: [count],
@@ -84,9 +80,9 @@ class BarChartArchive extends Component {
             }
         });
     }
-    setDataArchiveBarchart = () => {
-        const archives = this.props.archives;
-        const docs = this.props.docs;
+    const setDataArchiveBarchart = () => {
+        const archives = props.archives;
+        const docs = props.docs;
         let typeName = [], shortName = [], countArchive = [], idArchive = [];
         for (let i in archives) {
             countArchive[i] = 0;
@@ -118,16 +114,14 @@ class BarChartArchive extends Component {
         return data;
     }
 
-    render() {
-        const archives = this.props.archives;
-        const docs = this.props.documents;
-        this.barChartDocumentInArchive();
+        const archives = props.archives;
+        const docs = props.documents;
+        // barChartDocumentInArchive();
         return (
             <React.Fragment>
-                <div ref="archives"></div>
+                <div ref={refArchives}></div>
             </React.Fragment>
         )
-    }
 
 }
 

@@ -39,7 +39,7 @@ const calculateExpression = (expression) => {
         // console.log( "m-exp", mexp.eval("2+5/ 0 ", [token1]));
         // console.log( "m-exp", mexp.eval(expression, [token1]));
         let point = mexp.eval(expression, [token1]);
-        console.log('point', point);
+        console.log('point-calculateExpression', point);
 
         return point;
     }catch(err){
@@ -48,9 +48,14 @@ const calculateExpression = (expression) => {
 }
 
 const convertDateTime = (date, time) => {
-    let splitter = date.split("-");
-    let strDateTime = `${splitter[2]}-${splitter[1]}-${splitter[0]} ${time}`;
-    return new Date(strDateTime);
+    if(date) {
+        let splitter = date.split("-");
+        let strDateTime = `${splitter[2]}-${splitter[1]}-${splitter[0]} ${time}`;
+        return new Date(strDateTime);
+    } else {
+        return new Date();
+    }
+    
 }
 
 function calcAutoPoint(data) {

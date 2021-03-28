@@ -1,18 +1,10 @@
 import React, { Component } from 'react';
 import Table from './table';
 
-class AdministrationListData extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            
-        }
-    }
-    render() { 
+function AdministrationListData () {
+    
         return ( 
             <Table/>
          );
-    }
 }
- 
 export default AdministrationListData;

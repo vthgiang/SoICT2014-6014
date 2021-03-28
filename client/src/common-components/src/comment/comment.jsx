@@ -352,7 +352,7 @@ class Comment extends Component {
     render() {
         const { editComment, editChildComment, showChildComment, currentUser, newCommentEdited, newChildCommentEdited, childComment, showfile } = this.state
         const { auth, translate } = this.props
-        const { data, comments } = this.props;
+        const { data, comments, commentId, childrenComments = true } = this.props;
 
         return (
             <React.Fragment>
@@ -360,16 +360,16 @@ class Comment extends Component {
                     //Hiển thị bình luận của công việc
                     comments.map(item => {
                         return (
-                            <div key={item._id}>
+                            <div key={item._id + "comment"}>
                                 <img className="user-img-level1" src={(process.env.REACT_APP_SERVER + item.creator?.avatar)} alt="User Image" />
                                 {editComment !== item._id && // Khi đang edit thì ẩn đi
                                     <React.Fragment>
                                         <div className="content-level1">
                                             <a style={{ cursor: "pointer" }}>{item.creator?.name} </a>
-                                            {item.description.split('\n').map((item, idx) => {
+                                            {item.description.split('\n').map((x, idx) => {
                                                 return (
-                                                    <span key={item._id}>
-                                                        {parse(item)}
+                                                    <span key={item._id + idx}>
+                                                        {parse(x)}
                                                     </span>
                                                 );
                                             })
@@ -388,8 +388,8 @@ class Comment extends Component {
                                         <ul className="list-inline tool-level1">
                                             <li><span className="text-sm">{moment(item.createdAt).fromNow()}</span></li>
 
-                                            <li><a style={{ cursor: "pointer" }} className="link-black text-sm" onClick={() => this.handleShowChildComment(item._id)}><i className="fa fa-comments-o margin-r-5"></i> {translate('task.task_perform.comment')} ({item.comments.length}) &nbsp;</a></li>
-                                            {item.files.length > 0 &&
+                                            {childrenComments && <li><a style={{ cursor: "pointer" }} className="link-black text-sm" onClick={() => this.handleShowChildComment(item._id)}><i className="fa fa-comments-o margin-r-5"></i> {translate('task.task_perform.comment')} ({item?.comments?.length}) &nbsp;</a></li>}
+                                            {item?.files?.length > 0 &&
                                                 <React.Fragment>
                                                     <li style={{ display: "inline-table" }}>
                                                         <div><a style={{ cursor: "pointer" }} className="link-black text-sm" onClick={() => this.handleShowFile(item._id)}><b><i className="fa fa-paperclip" aria-hidden="true">{translate('task.task_perform.attach_file')}({item.files && item.files.length})</i></b></a> </div></li>
@@ -441,7 +441,7 @@ class Comment extends Component {
                                             />
                                             {item.files.length > 0 &&
                                                 <div className="tool-level1" style={{ marginTop: -15 }}>
-                                                    {item.files.map(file => {
+                                                    {item?.files?.length > 0 && item.files.map(file => {
                                                         return <div>
                                                             <a style={{ cursor: "pointer" }}>{file.name} &nbsp;</a><a style={{ cursor: "pointer" }} className="link-black text-sm btn-box-tool" onClick={() => { this.handleDeleteFile(file._id, file.name, "", item._id, data._id, "comment") }}><i className="fa fa-times"></i></a>
                                                         </div>
@@ -453,7 +453,7 @@ class Comment extends Component {
                                 {/* Hiển thị bình luận cho bình luận */}
                                 {showChildComment.some(obj => obj === item._id) &&
                                     <div className="comment-content-child">
-                                        {item.comments.map(child => {
+                                        {item?.comments?.length > 0 && item.comments.map(child => {
                                             return <div key={child._id}>
                                                 <img className="user-img-level2" src={(process.env.REACT_APP_SERVER + item.creator?.avatar)} alt="User Image" />
 
@@ -585,7 +585,7 @@ class Comment extends Component {
                 }
                 <img className="user-img-level1" src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="User Image" />
                 <ContentMaker
-                    idQuill={`add-comment`}
+                    idQuill={`add-comment-${commentId}`}
                     inputCssClass="text-input-level1" controlCssClass="tool-level1"
                     onFilesChange={this.onFilesChange}
                     onFilesError={this.onFilesError}

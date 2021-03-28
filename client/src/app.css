@@ -133,6 +133,9 @@ a:hover, a:active, a:focus {
 text.c3-axis-x-label, text.c3-axis-y-label {
     font-weight: bold;
     font-size: 120%
+} 
+.c3-axis-x {
+    margin-bottom: 5px;
 }
 
 .c3-chart-container > .legend {

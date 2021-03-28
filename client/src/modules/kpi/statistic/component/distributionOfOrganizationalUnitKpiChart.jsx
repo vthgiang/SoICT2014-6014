@@ -2,9 +2,10 @@ import React, { useRef, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
+import { customAxisC3js } from '../../../../helpers/customAxisC3js';
+
 import c3 from 'c3';
 import 'c3/c3.css';
-import { Children } from 'react';
 
 function DistributionOfOrganizationalUnitKpiChart(props) {
     const { translate, createKpiUnit, dataTreeUnitKpi, organizationalUnitKPI, maxDeg } = props;
@@ -167,21 +168,15 @@ function DistributionOfOrganizationalUnitKpiChart(props) {
 
             data: {
                 columns: dataChart,
-                type: 'spline',
             },
 
             axis: {
                 x: {
                     type: 'category',
                     tick: {
-                        format: function (x) {
-                            if (xs && xs.length > 1) {
-                                if (xs[x + 1].length > 30) {
-                                    return xs[x + 1].slice(0, 30) + "...";
-                                } else {
-                                    return xs[x + 1]
-                                }
-                            }
+                        format: function (index) {
+                            let result = customAxisC3js('chartOrganizationalUnitKpiRef', xs.filter((item, index) => index > 0), index);
+                            return result;
                         }
                     }
                 },
@@ -217,7 +212,7 @@ function DistributionOfOrganizationalUnitKpiChart(props) {
     return (
         <React.Fragment>
             {currentKpi ?
-                <div ref={chartOrganizationalUnitKpiRef}></div>
+                <div id="chartOrganizationalUnitKpiRef" ref={chartOrganizationalUnitKpiRef}></div>
                 : organizationalUnitKpiLoading && <section>{translate('kpi.organizational_unit.dashboard.no_data')}</section>
             }
         </React.Fragment>

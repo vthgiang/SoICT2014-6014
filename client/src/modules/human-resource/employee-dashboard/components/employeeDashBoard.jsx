@@ -25,13 +25,27 @@ class DashBoardEmployees extends Component {
         }
     };
 
+    static getDerivedStateFromProps(props, state) {
+        if (!state.arrayUnitShow && props && props.childOrganizationalUnit) {
+            return {
+                ...state,
+                arrayUnitShow: props.childOrganizationalUnit.map(x => x.id)
+            }
+        } else {
+            return null;
+        }
+
+    }
+
     componentDidMount() {
         const { organizationalUnits, month } = this.state;
         const { childOrganizationalUnit } = this.props
         let partMonth = month.split('-');
         let newMonth = [partMonth[1], partMonth[0]].join('-');
 
-        this.props.getAllEmployeeOfUnitByIds(organizationalUnits && organizationalUnits.length !== 0 ? organizationalUnits : childOrganizationalUnit.map(x => x.id));
+        this.props.getAllEmployeeOfUnitByIds({
+            organizationalUnitIds: organizationalUnits && organizationalUnits.length !== 0 ? organizationalUnits : childOrganizationalUnit.map(x => x.id)
+        });
         /* Lấy danh sách nhân viên  */
         this.props.getAllEmployee({ organizationalUnits: organizationalUnits, status: ["active", 'maternity_leave', 'unpaid_leave', 'probationary', 'sick_leave'] });
 
@@ -113,7 +127,9 @@ class DashBoardEmployees extends Component {
             arrayUnitShow = null;
         };
 
-        this.props.getAllEmployeeOfUnitByIds(arrayUnitShow && arrayUnitShow.length !== 0 ? arrayUnitShow : childOrganizationalUnit.map(x => x.id));
+        this.props.getAllEmployeeOfUnitByIds({
+            organizationalUnitIds: arrayUnitShow && arrayUnitShow.length !== 0 ? arrayUnitShow : childOrganizationalUnit.map(x => x.id)
+        });
         /* Lấy danh sách nhân viên  */
         this.props.getAllEmployee({ organizationalUnits: arrayUnitShow, status: ["active", 'maternity_leave', 'unpaid_leave', 'probationary', 'sick_leave'] });
 
@@ -194,7 +210,7 @@ class DashBoardEmployees extends Component {
                                 <span className="info-box-icon bg-aqua"><i className="fa fa-users"></i></span>
                                 <div className="info-box-content">
                                     <span className="info-box-text">Số nhân viên</span>
-                                    <span className="info-box-number">
+                                    <span className="info-box-number" style={{ fontSize: '20px' }}>
                                         {listAllEmployees.length}
                                     </span>
                                 </div>
@@ -203,10 +219,10 @@ class DashBoardEmployees extends Component {
 
                         <div className="col-lg-3 col-md-3 col-sm-6 col-xs-6">
                             <div className="info-box with-border">
-                                <span className="info-box-icon bg-yellow"><i className="fa fa-tasks"></i></span>
+                                <span className="info-box-icon bg-yellow"><i className="fa fa-clock-o" aria-hidden="true"></i></span>
                                 <div className="info-box-content">
                                     <span className="info-box-text">Số giờ nghỉ phép</span>
-                                    <span className="info-box-number">
+                                    <span className="info-box-number" style={{ fontSize: '20px' }}>
                                         {totalHourAnnualLeave}
                                     </span>
                                 </div>
@@ -218,7 +234,7 @@ class DashBoardEmployees extends Component {
                                 <span className="info-box-icon bg-green"><i className="fa fa-gift"></i></span>
                                 <div className="info-box-content">
                                     <span className="info-box-text">Số khen thưởng</span>
-                                    <span className="info-box-number">
+                                    <span className="info-box-number" style={{ fontSize: '20px' }}>
                                         {discipline.totalListCommendation ? discipline.totalListCommendation.length : 0}
                                     </span>
                                 </div>
@@ -229,7 +245,7 @@ class DashBoardEmployees extends Component {
                                 <span className="info-box-icon bg-red"><i className="fa fa-balance-scale"></i></span>
                                 <div className="info-box-content">
                                     <span className="info-box-text">Số kỷ luật</span>
-                                    <span className="info-box-number">
+                                    <span className="info-box-number" style={{ fontSize: '20px' }}>
                                         {discipline.totalListDiscipline ? discipline.totalListDiscipline.length : 0}
                                     </span>
                                 </div>
@@ -240,7 +256,7 @@ class DashBoardEmployees extends Component {
                         <ul className="nav nav-tabs">
                             <li className="active"><a href="#human-resourse" data-toggle="tab" onClick={() => this.handleNavTabs(true)}>Tổng quan nhân sự</a></li>
                             <li><a href="#annualLeave" data-toggle="tab" onClick={() => this.handleNavTabs()}>Nghỉ phép-Tăng ca</a></li>
-                            <li><a href="#salary" data-toggle="tab" onClick={() => this.handleNavTabs(true)}>Lương thưởng nhân viên</a></li>
+                            <li><a href="#salary" data-toggle="tab" onClick={() => this.handleNavTabs(true)}>Thu nhập nhân viên</a></li>
                             <li><a href="#integrated-statistics" data-toggle="tab">Thống kê tổng hợp</a></li>
                         </ul>
                         <div className="tab-content ">

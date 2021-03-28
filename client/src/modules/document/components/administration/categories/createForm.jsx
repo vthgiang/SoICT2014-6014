@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal, ErrorLabel } from '../../../../../common-components';
@@ -6,99 +6,99 @@ import { DocumentActions } from '../../../redux/actions';
 import { CategoryImportForm } from './categoryImportForm';
 import ValidationHelper from '../../../../../helpers/validationHelper';
 
-class CreateForm extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {}
-    }
+function CreateForm(props) {
 
-    handleSelect = (value) => {
-        this.setState({ value });
+    const [state, setState] = useState({})
+    const handleSelect = (value) => {
+        setState({
+            ...state,
+            value
+        });
     };
 
 
-    handleName = (e) => {
+    const handleName = (e) => {
         const value = e.target.value;
-        const {translate} = this.props;
-        const {message} = ValidationHelper.validateName(translate, value, 1, 255);
-        this.setState({
+        const { translate } = props;
+        const { message } = ValidationHelper.validateName(translate, value, 1, 255);
+        setState({
+            ...state,
             name: value,
             nameError: message
         })
     }
 
-    handleDescription = (e) => {
+    const handleDescription = (e) => {
         const value = e.target.value;
-        this.setState({
+        setState({
+            ...state,
             description: value
         })
     }
 
-    isFormValidated = () => {
-        const {name} = this.state;
-        const {translate} = this.props;
-        if(!ValidationHelper.validateName(translate, name, 1, 255).status) return false;
+    const isFormValidated = () => {
+        const { name } = state;
+        const { translate } = props;
+        if (!ValidationHelper.validateName(translate, name, 1, 255).status) return false;
         return true;
     }
-    
-    handleAddCategory = () => {
+
+    const handleAddCategory = () => {
         window.$('#modal-create-document-type').modal('show');
     }
 
-    handImportFile = () => {
+    const handImportFile = () => {
         window.$('#modal-import-file-category').modal('show');
     }
 
-    save = () => {
-        if(this.isFormValidated()){
-            const { name, description } = this.state;
-            this.props.createDocumentCategory({
+    const save = () => {
+        if (isFormValidated()) {
+            const { name, description } = state;
+            props.createDocumentCategory({
                 name,
                 description
             });
         }
     }
 
-    render() {
-        const { translate } = this.props;
-        const { nameError } = this.state;
-        return (
-            <React.Fragment>
-                <CategoryImportForm />
-                <div className="form-inline">
-                    <div className="dropdown pull-right" style={{ marginBottom: 15 }}>
-                        <button type="button" className="btn btn-success dropdown-toggler pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('document.add')}
-                        >{translate('general.add')}</button>
-                        <ul className="dropdown-menu pull-right">
-                            <li><a href="#modal-create-document-type" title="ImportForm" onClick={(event) => { this.handleAddCategory(event) }}>{translate('document.add')}</a></li>
-                            <li><a href="#modal_import_file_category" title="ImportForm" onClick={(event) => { this.handImportFile(event) }}>{translate('document.import')}</a></li>
-                        </ul>
-                    </div>
+    const { translate } = props;
+    const { nameError } = state;
+    return (
+        <React.Fragment>
+            <CategoryImportForm />
+            <div className="form-inline">
+                <div className="dropdown pull-right" style={{ marginBottom: 15 }}>
+                    <button type="button" className="btn btn-success dropdown-toggler pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('document.add')}
+                    >{translate('general.add')}</button>
+                    <ul className="dropdown-menu pull-right">
+                        <li><a href="#modal-create-document-type" title="ImportForm" onClick={(event) => { handleAddCategory(event) }}>{translate('document.add')}</a></li>
+                        <li><a href="#modal_import_file_category" title="ImportForm" onClick={(event) => { handImportFile(event) }}>{translate('document.import')}</a></li>
+                    </ul>
                 </div>
+            </div>
 
-                <DialogModal
-                    modalID="modal-create-document-type"
-                    formID="form-create-document-type"
-                    title={translate('document.administration.categories.add')}
-                    func={this.save}
-                    disableSubmit={!this.isFormValidated()}
-                >
-                    <form id="form-create-document-type">
-                        <div className={`form-group ${nameError === undefined ? "" : "has-error"}`}>
-                            <label>{translate('document.administration.categories.name')}<span className="text-red">*</span></label>
-                            <input type="text" className="form-control"
-                                onChange={this.handleName} placeholder={translate('document.category_example')}/>
-                            <ErrorLabel content={nameError} />
-                        </div>
-                        <div className="form-group">
-                            <label>{translate('document.administration.categories.description')}</label>
-                            <textarea type="text" className="form-control" onChange={this.handleDescription} />
-                        </div>
-                    </form>
-                </DialogModal>
-            </React.Fragment>
-        );
-    }
+            <DialogModal
+                modalID="modal-create-document-type"
+                formID="form-create-document-type"
+                title={translate('document.administration.categories.add')}
+                func={save}
+                disableSubmit={!isFormValidated()}
+            >
+                <form id="form-create-document-type">
+                    <div className={`form-group ${nameError === undefined ? "" : "has-error"}`}>
+                        <label>{translate('document.administration.categories.name')}<span className="text-red">*</span></label>
+                        <input type="text" className="form-control"
+                            onChange={handleName} placeholder={translate('document.category_example')} />
+                        <ErrorLabel content={nameError} />
+                    </div>
+                    <div className="form-group">
+                        <label>{translate('document.administration.categories.description')}</label>
+                        <textarea type="text" className="form-control" onChange={handleDescription} />
+                    </div>
+                </form>
+            </DialogModal>
+        </React.Fragment>
+    );
 }
 
 const mapStateToProps = state => state;

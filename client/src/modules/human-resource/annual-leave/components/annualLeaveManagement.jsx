@@ -52,6 +52,18 @@ class AnnualLeaveManagement extends Component {
         }
     }
 
+    static getDerivedStateFromProps(props, state) {
+        if (!state.organizationalUnits && props && props.department && props.department.list.length > 0) {
+            const childOrganizationalUnit = props.department.list.map(x => x._id);
+            return {
+                ...state,
+                organizationalUnits: childOrganizationalUnit
+            }
+        } else {
+            return null;
+        }
+    }
+
     componentDidMount() {
         this.props.searchAnnualLeaves(this.state);
         this.props.getDepartment();
@@ -151,9 +163,6 @@ class AnnualLeaveManagement extends Component {
      * @param {*} value : array id đơn vị
      */
     handleUnitChange = (value) => {
-        if (value.length === 0) {
-            value = null
-        };
         this.setState({
             ...this.state,
             organizationalUnits: value

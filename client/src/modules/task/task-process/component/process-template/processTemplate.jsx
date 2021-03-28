@@ -15,6 +15,7 @@ import { DepartmentActions } from '../../../../super-admin/organizational-unit/r
 import { FormImportProcessTemplate } from './formImportProcessTemplate';
 import Swal from 'sweetalert2';
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration'
+import { getStorage } from '../../../../../config';
 
 class ProcessTemplate extends Component {
     constructor(props) {
@@ -22,12 +23,14 @@ class ProcessTemplate extends Component {
         const tableId = "table-process-template";
         const defaultConfig = { limit: 5 }
         const limit = getTableConfiguration(tableId, defaultConfig).limit;
+        let currentRole = getStorage("currentRole");
 
         this.state = {
             currentRow: {},
             pageNumber: 1,
             noResultsPerPage: limit,
             tableId,
+            currentRole: currentRole,
         };
 
     }
@@ -356,6 +359,23 @@ class ProcessTemplate extends Component {
         return res;
     }
 
+    /**
+     * Hàm kiểm tra phân quyền quản lý quy trình
+     * @param {Object} itemProcess quy trình cần xét
+     * @returns kết quả kiểm tra có phải là người quản lý hay k
+     */
+    isManager = (itemProcess) => {
+        let { currentRole } = this.state;
+        let check = false;
+        let manager = itemProcess.manager;
+        for (let x in manager) {
+            if (String(manager[x].id) === String(currentRole)) {
+                check = true;
+            }
+        }
+        return check;
+    }
+
     render() {
         const { translate, taskProcess, department } = this.props
         const { showModalCreateProcess, currentRow, showModalImportProcess, tableId } = this.state
@@ -379,7 +399,7 @@ class ProcessTemplate extends Component {
                     {
                         this.state.currentRow !== undefined &&
                         <ModalViewTaskProcess
-                            title={translate("task.task_process.add_modal")}
+                            title={translate("task.task_process.view_process_template_modal")}
                             listOrganizationalUnit={listOrganizationalUnit}
                             data={currentRow}
                             idProcess={currentRow._id}
@@ -497,20 +517,22 @@ class ProcessTemplate extends Component {
                                             <a onClick={() => { this.viewProcess(item) }} title={translate('task.task_template.view_task_process_template')}>
                                                 <i className="material-icons">view_list</i>
                                             </a>
-                                            <a className="edit" onClick={() => { this.showEditProcess(item) }} title={translate('task_template.edit_this_task_template')}>
-                                                <i className="material-icons">edit</i>
-                                            </a>
-                                            {/* <a className="delete" onClick={() => { this.deleteDiagram(item._id) }} title={translate('task_template.delete_this_task_template')}>
-                                                <i className="material-icons"></i>
-                                            </a> */}
-                                            <ConfirmNotification
-                                                icon="warning"
-                                                title={translate('task_template.delete_this_task_template')}
-                                                content={`<h3>${translate('task_template.delete_this_task_template')} "${item.processName}"</h3>`}
-                                                name="delete_outline"
-                                                className="text-red"
-                                                func={() => this.deleteDiagram(item._id)}
-                                            />
+                                            {
+                                                this.isManager(item) &&
+                                                <React.Fragment>
+                                                    <a className="edit" onClick={() => { this.showEditProcess(item) }} title={translate('task_template.edit_this_task_template')}>
+                                                        <i className="material-icons">edit</i>
+                                                    </a>
+                                                    <ConfirmNotification
+                                                        icon="warning"
+                                                        title={translate('task_template.delete_this_task_template')}
+                                                        content={`<h3>${translate('task_template.delete_this_task_template')} "${item.processName}"</h3>`}
+                                                        name="delete_outline"
+                                                        className="text-red"
+                                                        func={() => this.deleteDiagram(item._id)}
+                                                    />
+                                                </React.Fragment>
+                                            }
                                             <a className="" style={{ color: "#28A745" }} onClick={() => { this.showModalCreateTask(item) }} title={translate('task_template.create_task_by_process')}>
                                                 <i className="material-icons">add_box</i>
                                             </a>

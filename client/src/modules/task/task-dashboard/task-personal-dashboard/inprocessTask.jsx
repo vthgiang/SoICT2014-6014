@@ -88,11 +88,11 @@ const InprocessTask = (props) => {
                 ],
                 type: 'pie',
             },
-
-            pie: {
-                label: {
-                    format: function (value, ratio, id) {
+            tooltip: {
+                format: {
+                    value: function (value) {
                         return value;
+
                     }
                 }
             },
@@ -116,31 +116,28 @@ const InprocessTask = (props) => {
 
     return (
         <React.Fragment>
-            <section className="form-inline" style={{ textAlign: "right" }}>
-                {/* Chọn trạng thái công việc */}
-                <div className="form-group">
-                    <label style={{ minWidth: "150px" }}>{translate('task.task_management.role')}</label>
-
-                    <SelectMulti id="multiSelectStatusInprocessTask"
-                        items={[
-                            { value: "res", text: translate('task.task_management.responsible') },
-                            { value: "acc", text: translate('task.task_management.accountable') },
-                            { value: "con", text: translate('task.task_management.consulted') },
-                            { value: "inf", text: translate('task.task_management.informed') },
-                        ]}
-                        onChange={handleSelectStatus}
-                        options={{ nonSelectedText: translate('task.task_management.select_all_role'), allSelectedText: translate('task.task_management.select_all_role') }}
-                        value={role}
-                    >
-                    </SelectMulti>
-
-                </div>
-                <div className="form-group">
+            <div className="qlcv">
+                <div className="form-inline" >
+                    <div className="form-group">
+                        <label style={{ width: 'auto' }}>{translate('task.task_management.role')}</label>
+                        <SelectMulti id="multiSelectStatusInprocessTask"
+                            items={[
+                                { value: "res", text: translate('task.task_management.responsible') },
+                                { value: "acc", text: translate('task.task_management.accountable') },
+                                { value: "con", text: translate('task.task_management.consulted') },
+                                { value: "inf", text: translate('task.task_management.informed') },
+                            ]}
+                            onChange={handleSelectStatus}
+                            options={{ nonSelectedText: translate('task.task_management.select_all_role'), allSelectedText: translate('task.task_management.select_all_role') }}
+                            value={role}
+                        >
+                        </SelectMulti>
+                    </div>
                     <button className="btn btn-success"
                         onClick={handleSearchData}
                     >{translate('task.task_management.filter')}</button>
                 </div>
-            </section>
+            </div>
 
             <section id="inprocess"></section>
         </React.Fragment>

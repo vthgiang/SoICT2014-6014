@@ -9,10 +9,10 @@ import { taskTemplateActions } from '../../../task-template/redux/actions';
 
 import { SelectBox, ErrorLabel, DatePicker } from '../../../../../common-components';
 
-import { TaskTemplateFormValidator } from '../../../task-template/component/taskTemplateFormValidator';
 import getEmployeeSelectBoxItems from '../../../organizationalUnitHelper';
 import './../../../task-template/component/tasktemplate.css';
 import { TaskFormValidator } from '../../../task-management/component/taskFormValidator';
+import ValidationHelper from '../../../../../helpers/validationHelper';
 
 class FormCreateTask extends Component {
 
@@ -174,11 +174,11 @@ class FormCreateTask extends Component {
         this.validateTaskTemplateName(value, true);
     }
     validateTaskTemplateName = (value, willUpdateState = true) => {
-        let msg = TaskTemplateFormValidator.validateTaskTemplateName(value);
+        let { message } = ValidationHelper.validateName(this.props.translate, value);
 
         if (willUpdateState) {
             this.state.taskItem.name = value;
-            this.state.taskItem.errorOnName = msg;
+            this.state.taskItem.errorOnName = message;
             this.setState(state => {
                 return {
                     ...state,
@@ -187,7 +187,7 @@ class FormCreateTask extends Component {
         }
         this.props.handleChangeName(value);
         this.props.onChangeTemplateData(this.state.taskItem);
-        return msg == undefined;
+        return message == undefined;
     }
 
     handleTaskTemplateDesc = (event) => {
@@ -195,11 +195,11 @@ class FormCreateTask extends Component {
         this.validateTaskTemplateDesc(value, true);
     }
     validateTaskTemplateDesc = (value, willUpdateState = true) => {
-        let msg = TaskTemplateFormValidator.validateTaskTemplateDescription(value);
+        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
 
         if (willUpdateState) {
             this.state.taskItem.description = value;
-            this.state.taskItem.errorOnDescription = msg;
+            this.state.taskItem.errorOnDescription = message;
             this.setState(state => {
                 return {
                     ...state,
@@ -207,7 +207,7 @@ class FormCreateTask extends Component {
             });
         }
         this.props.onChangeTemplateData(this.state.taskItem);
-        return msg == undefined;
+        return message == undefined;
     }
 
     handleChangeTaskPriority = (event) => {
@@ -236,7 +236,7 @@ class FormCreateTask extends Component {
     }
 
     validateTaskTemplateUnit = (value, willUpdateState = true) => {
-        let msg = TaskTemplateFormValidator.validateTaskTemplateUnit(value);
+        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
 
         if (willUpdateState) {
             this.setState(state => {
@@ -245,7 +245,7 @@ class FormCreateTask extends Component {
                     taskItem: { // update lại unit, và reset các selection phía sau
                         ...this.state.taskItem,
                         organizationalUnit: value,
-                        errorOnUnit: msg,
+                        errorOnUnit: message,
                         readByEmployees: [],
                         responsibleEmployees: [],
                         accountableEmployees: [],
@@ -256,7 +256,7 @@ class FormCreateTask extends Component {
             });
         }
         this.props.onChangeTemplateData(this.state.taskItem);
-        return msg == undefined;
+        return message == undefined;
     }
 
     handleChangeCollaboratedWithOrganizationalUnits = (value) => {
@@ -346,11 +346,11 @@ class FormCreateTask extends Component {
     }
 
     validateTaskTemplateNumberOfDaysTaken = (value, willUpdateState = true) => {
-        let msg = TaskTemplateFormValidator.validateTaskTemplateNumberOfDaysTaken(value);
+        let { message } = ValidationHelper.validateNumberInputMin(this.props.translate, value, 0);
 
         if (willUpdateState) {
             this.state.taskItem.numberOfDaysTaken = value;
-            this.state.taskItem.errorOnNumberOfDaysTaken = msg;
+            this.state.taskItem.errorOnNumberOfDaysTaken = message;
             this.setState(state => {
                 return {
                     ...state,
@@ -358,7 +358,7 @@ class FormCreateTask extends Component {
             });
         }
         this.props.onChangeTemplateData(this.state.taskItem);
-        return msg === undefined;
+        return message === undefined;
     }
 
     handleChangeTaskStartDate = (value) => {

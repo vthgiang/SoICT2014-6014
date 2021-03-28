@@ -6,6 +6,7 @@ import { taskManagementActions } from '../../task/task-management/redux/actions'
 import { UserActions } from '../../super-admin/user/redux/actions';
 
 import { DatePicker, CustomLegendC3js } from '../../../common-components';
+import { showListInSwal } from '../../../helpers/showListInSwal';
 import Swal from 'sweetalert2';
 
 import c3 from 'c3';
@@ -66,7 +67,10 @@ class TaskOrganizationalUnitsChart extends Component {
         const { startDate, endDate } = this.state;
         let { childOrganizationalUnit } = this.props;
         childOrganizationalUnit = childOrganizationalUnit.map(x => x.id);
-        this.props.getAllEmployeeOfUnitByIds(childOrganizationalUnit, "employeesOfUnistsUserIsManager");
+        this.props.getAllEmployeeOfUnitByIds({
+            organizationalUnitIds: childOrganizationalUnit,
+            callApi: "employeesOfUnistsUserIsManager"
+        });
         this.props.getTaskInOrganizationUnitByMonth(childOrganizationalUnit, this.formatString(startDate), this.formatString(endDate));
     }
 
@@ -300,17 +304,17 @@ class TaskOrganizationalUnitsChart extends Component {
         let employeesOfUnitsUserIsManager = user.employeesOfUnitsUserIsManager;
         let employeeOfUnits = [];
         if (totalTask) {
-            childOrganizationalUnit.forEach(x => {
-                let count = employeesOfUnitsUserIsManager.filter(e => e.idUnit.toString() === x.id.toString())
+            childOrganizationalUnit && childOrganizationalUnit.forEach(x => {
+                let count = employeesOfUnitsUserIsManager && employeesOfUnitsUserIsManager.filter(e => e?.idUnit?.toString() === x?.id?.toString())
                 employeeOfUnits = [...employeeOfUnits, count.length ? count.length : 1]
             })
         }
 
         let data = [["x", ...arrMonth]];
-        childOrganizationalUnit.forEach((x, index) => {
+        childOrganizationalUnit && childOrganizationalUnit.forEach((x, index) => {
             let taskOfUnist = [];
             if (listTask.length !== 0) {
-                taskOfUnist = listTask.filter(t => t.organizationalUnit._id === x.id);
+                taskOfUnist = listTask.filter(t => t.organizationalUnit?._id === x.id);
             }
             let row = [...arrMonth];
             row = row.map(r => {
@@ -339,7 +343,22 @@ class TaskOrganizationalUnitsChart extends Component {
         return (
             <div className="box box-solid" >
                 <div className="box-header with-border" >
-                    <h3 className="box-title" > Tình hình làm việc các đơn vị</h3>
+                    <div className="box-title" >
+                        Tình hình làm việc 
+                        {
+                            childOrganizationalUnit && childOrganizationalUnit.length < 2 ?
+                                <>
+                                    <span>{` ${translate('task.task_dashboard.of_unit')}`}</span>
+                                    <span style={{ fontWeight: "bold" }}>{` ${childOrganizationalUnit?.[0]?.name}`}</span>
+                                </>
+                                :
+                                <span onClick={() => showListInSwal(childOrganizationalUnit.map(item => item?.name), translate('general.list_unit'))} style={{ cursor: 'pointer' }}>
+                                    <span>{` ${translate('task.task_dashboard.of')}`}</span>
+                                    <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {childOrganizationalUnit?.length}</a>
+                                    <span>{` ${translate('task.task_dashboard.unit_lowercase')}`}</span>
+                                </span>
+                        }
+                    </div>
                 </div>
                 <div className="box-body" >
                     <div className="qlcv" style={{ marginBottom: 15 }} >

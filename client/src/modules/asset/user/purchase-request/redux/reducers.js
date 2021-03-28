@@ -13,11 +13,12 @@ export function recommendProcure(state = initState, action) {
         case RecommendProcureConstants.CREATE_RECOMMEND_PROCURE_REQUEST:
         case RecommendProcureConstants.UPDATE_RECOMMEND_PROCURE_REQUEST:
         case RecommendProcureConstants.DELETE_RECOMMEND_PROCURE_REQUEST:
+        case RecommendProcureConstants.GET_USER_APPROVER_REQUEST:
             return {
                 ...state,
                 isLoading: true,
             };
-        
+
         case RecommendProcureConstants.GET_RECOMMEND_PROCURE_SUCCESS:
             return {
                 ...state,
@@ -31,14 +32,14 @@ export function recommendProcure(state = initState, action) {
                 isLoading: false,
                 listRecommendProcures: [...state.listRecommendProcures, action.payload],
             };
-        
+
         case RecommendProcureConstants.UPDATE_RECOMMEND_PROCURE_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
                 listRecommendProcures: state.listRecommendProcures.map(recommendProcure => recommendProcure._id === action.payload._id ? action.payload : recommendProcure),
             };
-        
+
         case RecommendProcureConstants.DELETE_RECOMMEND_PROCURE_SUCCESS:
 
             return {
@@ -46,17 +47,24 @@ export function recommendProcure(state = initState, action) {
                 isLoading: false,
                 listRecommendProcures: state.listRecommendProcures.filter(recommendProcure => (recommendProcure._id !== action.payload._id)),
             };
-        
+
+        case RecommendProcureConstants.GET_USER_APPROVER_SUCCESS:
+            return {
+                ...state,
+                isLoading: false,
+                listuser: action.payload
+            };
         case RecommendProcureConstants.GET_RECOMMEND_PROCURE_FAILURE:
         case RecommendProcureConstants.CREATE_RECOMMEND_PROCURE_FAILURE:
         case RecommendProcureConstants.UPDATE_RECOMMEND_PROCURE_FAILURE:
         case RecommendProcureConstants.DELETE_RECOMMEND_PROCURE_FAILURE:
+        case RecommendProcureConstants.GET_USER_APPROVER_FAILURE:
             return {
                 ...state,
                 isLoading: false,
                 error: action.error.message
             };
-        
+
         default:
             return state
     }

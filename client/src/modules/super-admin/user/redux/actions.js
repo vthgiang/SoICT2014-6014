@@ -92,18 +92,20 @@ function getAllEmployeeOfUnitByRole(role) {
  * Lấy tất cả nhân viên của đơn vị theo mảng id đơn vị
  * @param {*} ids 
  */
-function getAllEmployeeOfUnitByIds(ids, callApi=null) {
+function getAllEmployeeOfUnitByIds(data) {
     return dispatch => {
         dispatch({
             type: UserConstants.GET_ALL_EMPLOYEE_OF_UNIT_BY_ID_REQUEST,
-            callApi: callApi
+            callApi: data?.callApi,
+            typeState: data?.type
         });
 
-        UserServices.getAllEmployeeOfUnitByIds(ids)
+        UserServices.getAllEmployeeOfUnitByIds(data)
             .then(res => {
                 dispatch({
                     type: UserConstants.GET_ALL_EMPLOYEE_OF_UNIT_BY_ID_SUCCESS,
-                    callApi: callApi,
+                    typeState: data?.type,
+                    callApi: data?.callApi,
                     payload: res.data.content
                 })
             })

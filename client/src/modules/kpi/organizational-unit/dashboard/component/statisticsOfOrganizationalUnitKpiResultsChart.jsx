@@ -351,7 +351,7 @@ class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
 
     render() {
         const { dashboardOrganizationalUnitKpi, translate, month } = this.props;
-        let { exportData } =this.state;
+        let { exportData, kindOfPoint } =this.state;
         let listEmployeeKpiSet, employeeKpiSetsLoading;
 
         if (dashboardOrganizationalUnitKpi.employeeKpiSets) {
@@ -364,9 +364,9 @@ class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
                 {listEmployeeKpiSet && (listEmployeeKpiSet.length !== 0) ?
                     <section className="box-body" style={{ textAlign: "right" }}> 
                         <section className="btn-group">
-                            <button type="button" className={`btn btn-xs ${this.state.kindOfPoint === this.KIND_OF_POINT.AUTOMATIC ? 'btn-danger' : null}`} onClick={() => this.handleSelectKindOfPoint(this.KIND_OF_POINT.AUTOMATIC)}>Automatic Point</button>
-                            <button type="button" className={`btn btn-xs ${this.state.kindOfPoint === this.KIND_OF_POINT.EMPLOYEE ? 'btn-danger' : null}`} onClick={() => this.handleSelectKindOfPoint(this.KIND_OF_POINT.EMPLOYEE)}>Employee Point</button>
-                            <button type="button" className={`btn btn-xs ${this.state.kindOfPoint === this.KIND_OF_POINT.APPROVED ? 'btn-danger' : null}`} onClick={() => this.handleSelectKindOfPoint(this.KIND_OF_POINT.APPROVED)}>Approved Point</button>
+                            <button type="button" className={`btn btn-xs ${kindOfPoint === this.KIND_OF_POINT.AUTOMATIC ? 'btn-danger' : null}`} onClick={() => this.handleSelectKindOfPoint(this.KIND_OF_POINT.AUTOMATIC)}>Automatic Point</button>
+                            <button type="button" className={`btn btn-xs ${kindOfPoint === this.KIND_OF_POINT.EMPLOYEE ? 'btn-danger' : null}`} onClick={() => this.handleSelectKindOfPoint(this.KIND_OF_POINT.EMPLOYEE)}>Employee Point</button>
+                            <button type="button" className={`btn btn-xs ${kindOfPoint === this.KIND_OF_POINT.APPROVED ? 'btn-danger' : null}`} onClick={() => this.handleSelectKindOfPoint(this.KIND_OF_POINT.APPROVED)}>Approved Point</button>
                         </section>
                                         
                         <section ref="chart"></section>

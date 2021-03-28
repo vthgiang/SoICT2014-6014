@@ -4,12 +4,10 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import { dashboardOrganizationalUnitKpiActions } from '../redux/actions';
 import { createUnitKpiActions } from '../../creation/redux/actions';
-
-import { CustomLegendC3js } from '../../../../../common-components';
+import { customAxisC3js } from '../../../../../helpers/customAxisC3js';
 
 import c3 from 'c3';
 import 'c3/c3.css';
-import * as d3 from "d3";
 
 class TrendsInChildrenOrganizationalUnitKpiChart extends Component {
 
@@ -18,7 +16,6 @@ class TrendsInChildrenOrganizationalUnitKpiChart extends Component {
         
         this.DATA_STATUS = {NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3};
         this.chart = null;
-        this.dataChart = null;
         
         this.state = {
             currentRole: null,
@@ -272,7 +269,7 @@ class TrendsInChildrenOrganizationalUnitKpiChart extends Component {
         let currentDate = now.getDate();
         let currentTime = new Date(currentYear, currentMonth, currentDate);
 
-        if (createKpiUnit.currentKPI && createKpiUnit.currentKPI.kpis) {
+        if (createKpiUnit?.currentKPI?.kpis) {
             listOrganizationalUnitKpi = createKpiUnit.currentKPI.kpis;
         }
 
@@ -280,24 +277,25 @@ class TrendsInChildrenOrganizationalUnitKpiChart extends Component {
 
         if (listOrganizationalUnitKpi && arrayListTaskSameOrganizationUnitKpi) {
             listOrganizationalUnitKpi.map(parent => {
-                let key = listOrganizationalUnitKpi.indexOf(parent);
+                let key = listOrganizationalUnitKpi?.indexOf(parent);
                 let temporary = {};
                 let executionTime = 0;
 
                 arrayListTaskSameOrganizationUnitKpi[key].map(x => {
-                    let date1 = new Date(x.evaluations.date);
-                    let date2 = new Date(x.startDate);
+                    let date1 = new Date(x?.evaluations?.date);
+                    let date2 = new Date(x?.startDate);
                     if(x.evaluations.date) {
-                        executionTime = executionTime + (date1.getTime() - date2.getTime())/(3600*24*1000)
+                        executionTime = executionTime + (date1?.getTime() - date2?.getTime())/(3600*24*1000)
                     } else {
-                        executionTime = executionTime + (currentTime.getTime() - date2.getTime())/(3600*24*1000)
+                        executionTime = executionTime + (currentTime?.getTime() - date2?.getTime())/(3600*24*1000)
                     }
                 })
 
-                if (arrayListTaskSameOrganizationUnitKpi.length !== 0 && listOrganizationalUnitKpi) {
-                    executionTime = executionTime/arrayListTaskSameOrganizationUnitKpi.length;
+                if (arrayListTaskSameOrganizationUnitKpi?.length > 0 && listOrganizationalUnitKpi) {
+                    executionTime = executionTime/arrayListTaskSameOrganizationUnitKpi?.length;
                 }
-                temporary[parent.name] = executionTime;
+                temporary[parent?.name] = Math.round(Number(executionTime) * 1000) / 1000;
+
                 executionTimes = Object.assign(executionTimes, temporary);
             })
         }
@@ -504,13 +502,13 @@ class TrendsInChildrenOrganizationalUnitKpiChart extends Component {
     } 
 
     barChart = () => {
+        const { translate } = this.props;
         this.removePreviousBarChart();
         
         const { createKpiUnit } = this.props;
+        let numberOfParticipants, numberOfEmployeeKpis, executionTimes, numberOfTasks, weight, listOrganizationalUnitKpi, titleX = ['x'];
+        let numberOfParticipantsArray = [], numberOfEmployeeKpisArray = [], executionTimesArray = [], numberOfTasksArray = [], weightArray = [];
 
-        let numberOfParticipants, numberOfEmployeeKpis, executionTimes, numberOfTasks, weight, listOrganizationalUnitKpi;
-        let data, titleX;
-           
         if(createKpiUnit.currentKPI) {
             listOrganizationalUnitKpi = createKpiUnit.currentKPI.kpis;
         }
@@ -521,35 +519,31 @@ class TrendsInChildrenOrganizationalUnitKpiChart extends Component {
         numberOfTasks = this.setNumberOfTaskData();
         weight = this.setWeightData();
         
-        data = [               
-            executionTimes,
-            numberOfParticipants,
-            numberOfTasks,
-            numberOfEmployeeKpis,
-            weight
-        ]
-
-        if(data) {
-            titleX = data.map(x => x.name);
-            titleX = ['x'].concat(titleX);
-        }
-
+        executionTimesArray.push(executionTimes?.name ? executionTimes.name : null);
+        numberOfEmployeeKpisArray.push(numberOfEmployeeKpis?.name ? numberOfEmployeeKpis.name : null);
+        numberOfParticipantsArray.push(numberOfParticipants?.name ? numberOfParticipants.name : null);
+        numberOfTasksArray.push(numberOfTasks?.name ? numberOfTasks.name : null);
+        weightArray.push(weight?.name ? weight.name : null);
+        
         if(listOrganizationalUnitKpi) {
-            this. dataChart = listOrganizationalUnitKpi.map(kpis => {
-                let temporary;
-                temporary = data.map(x => {
-                    return x[kpis.name] ? x[kpis.name] : 0;
-                })
-                
-                temporary = [kpis.name].concat(temporary);
-
-                return temporary;
+            listOrganizationalUnitKpi.map(kpis => {
+                titleX.push(kpis?.name);
+                executionTimesArray.push(executionTimes?.[kpis?.name] ? executionTimes[kpis.name] : 0);
+                numberOfEmployeeKpisArray.push(numberOfEmployeeKpis?.[kpis?.name] ? numberOfEmployeeKpis[kpis.name] : 0);
+                numberOfParticipantsArray.push(numberOfParticipants?.[kpis?.name] ? numberOfParticipants[kpis.name] : 0);
+                numberOfTasksArray.push(numberOfTasks?.[kpis?.name] ? numberOfTasks[kpis.name] : 0);
+                weightArray.push(weight?.[kpis?.name] ? weight[kpis.name] : 0);
             })
         }
 
-        if (this.dataChart) {
-            this.dataChart.unshift(titleX);
-        }
+        let dataChart = [
+            titleX,
+            numberOfTasksArray,
+            executionTimesArray,
+            numberOfParticipantsArray,
+            numberOfEmployeeKpisArray,
+            weightArray
+        ]
 
         this.chart = c3.generate({
             bindto: this.refs.chart,                
@@ -558,61 +552,43 @@ class TrendsInChildrenOrganizationalUnitKpiChart extends Component {
                 height: 350                     
             },
 
-            padding: {                          
+            padding: {
                 top: 20,
-                left: 100,
-                right: 20,
-                bottom: 20
+                bottom: 50,
+                right: 20
             },
 
             data: {                             
                 x: 'x',
-                columns: this.dataChart,
-                type: 'bar',
-                groups: [
-                    listOrganizationalUnitKpi.map(x => x.name)
-                ],
-                stack: {
-                    normalize: true
-                }
-            },
-
-            bar: {                              
-                width: {
-                    ratio: 0.8
-                }
+                columns: dataChart
             },
 
             axis: {                            
-                rotated: true,
                 x: {
                     type: 'category',
                     tick: {
-                        outer: true
+                        format: function (index) {
+                            let result = customAxisC3js('trendsInChildrenUnitChart', titleX.filter((item, index) => index > 0), index);
+                            return result;
+                        }
+                    }
+                },
+
+                y: {
+                    label: {
+                        text: translate('general.value'),
+                        position: 'outer-right'
                     }
                 }
             },
-
-            tooltip: {
-                position: function () {
-                    let position = c3.chart.internal.fn.tooltipPosition.apply(this, arguments);
-                    return position;
-                },
-                contents: function (data) {
-                    let value = '<div style="overflow-y: scroll; max-height: 300px; pointer-events: auto;">';
-                    value = value + '<table class=\'c3-tooltip\'>';
-                    data.forEach((val) => {
-                        value = value + '<tr><td class=\'name\'>' + val.name + '</td>'
-                                    +'<td class=\'value\'>' + (Math.round(Number(val.value) * 1000) / 1000) + '</td></tr>';
-                    });
-                    value = value + '</table>';
-                    value = value + '</div>';
-                    return value;
-                }
-            },
             
-            legend: {
-                show: false
+            tooltip: {
+                format: {
+                    title: function (d) {
+                        if (titleX?.length > 1)
+                            return titleX[d + 1];
+                    }
+                }
             }
         });
     }
@@ -629,16 +605,7 @@ class TrendsInChildrenOrganizationalUnitKpiChart extends Component {
         return (
             <React.Fragment>
                 {currentKpi ?
-                    <section id={"trendsInChildrenUnit"} className="c3-chart-container enable-pointer">
-                        <div ref="chart"></div>
-                        <CustomLegendC3js
-                            chart={this.chart}
-                            chartId={"trendsInChildrenUnit"}
-                            legendId={"trendsInChildrenUnitLegend"}
-                            title={`${translate('kpi.evaluation.employee_evaluation.KPI_list')} (${currentKpi.kpis && currentKpi.kpis.length})`}
-                            dataChartLegend={this.dataChart && this.dataChart.filter((item, index) => index > 0).map(item => item[0])}
-                        />
-                    </section>
+                    <div id="trendsInChildrenUnitChart" ref="chart"></div>
                     : organizationalUnitKpiLoading && <section>{translate('kpi.organizational_unit.dashboard.no_data')}</section>
                 }
             </React.Fragment>

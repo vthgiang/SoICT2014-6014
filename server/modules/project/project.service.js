@@ -13,7 +13,6 @@ const { dateParse } = require(`../../helpers/functionHelper`);
 
 
 exports.get = async (portal, query) => {
-    console.log('aaaaaaaaa', query);
     let page = query.page;
     let limit = query.limit;
     let options = {};
@@ -35,43 +34,56 @@ exports.get = async (portal, query) => {
     if (query.calledId === "paginate") {
         project = await Project(
             connect(DB_CONNECTION, portal)
-        ).paginate(options, { page, limit });
+        ).paginate(options, {
+            page, limit,
+            populate: [{ path: "projectManager", select: "_id name" }]
+        });
     }
     else
-        project = await Project(connect(DB_CONNECTION, portal)).find(options);
-    console.log('proooooooooo', project);
+        project = await Project(connect(DB_CONNECTION, portal)).find(options)
+            .populate({ path: "projectManager", select: "_id name" })
+            .populate({ path: "parent"});
     return project;
 }
 
 exports.show = async (portal, id) => {
-    let tp = await Project(connect(DB_CONNECTION, portal)).findById(id);
+    let tp = await Project(connect(DB_CONNECTION, portal)).findById(id).populate({path: "projectManager", select:"_id name"});
 
     return tp;
 }
 
 exports.create = async (portal, data) => {
+    let newData = {};
+    if (data) {
+        for (let i in data) {
+            if (data[i] && data[i].length > 0) {
+                newData = {...newData, [i]: data[i]}
+            }
+        }
+    }
 
-    // console.log("create task project sss", data)
-    let project = await Project(connect(DB_CONNECTION, portal)).create(data);
-
+    let project = await Project(connect(DB_CONNECTION, portal)).create(newData);
     return project;
 }
 
 exports.edit = async (portal, id, data) => {
-    console.log('ddđ', id, data)
-    let tp = await Project(connect(DB_CONNECTION, portal)).findById(id);
-    if (!tp) throw ['task_project_notfound'];
-
-    tp.name = data.name;
-    tp.parent = data.parent;
-    await tp.save();
-
-    return tp;
+    console.log('data', data);
+    const a = await Project(connect(DB_CONNECTION, portal)).findByIdAndUpdate(id, {
+        $set: {
+            code: data.code,
+            name: data.name,
+            parent: data.parent,
+            startDate: data.startDate,
+            endDate: data.startDate,
+            description: data.description,
+            projectManager: data.projectManager,
+        }
+    }, { new: true });
+    return await Project(connect(DB_CONNECTION, portal)).findOne({ _id: id }).populate({ path: "projectManager", select: "_id name" });
 }
 
 exports.delete = async (portal, id) => {
-    let tp = await Project(connect(DB_CONNECTION, portal)).deleteOne({ _id: id });
-    // console.log('tpppp', tp)
+    await Project(connect(DB_CONNECTION, portal)).deleteOne({ _id: id });
     return id;
 }
 

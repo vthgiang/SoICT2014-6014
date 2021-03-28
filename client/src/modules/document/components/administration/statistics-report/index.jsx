@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useCallback, useEffect, useMemo, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DocumentActions } from '../../../redux/actions';
@@ -10,54 +10,27 @@ import 'c3/c3.css';
 
 
 
-class AdministrationStatisticsReport extends Component {
-    constructor(props) {
-        super(props);
-        this.DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
+function AdministrationStatisticsReport(props) {
+    const DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
+    const [state, setState] = useState({
+        dataStatus: DATA_STATUS.QUERYING
+    })
+    const refDomain = React.createRef()
+    const refCategory = React.createRef()
+    const refDocument_view_down = React.createRef()
+    const refArchives = React.createRef()
+    useEffect(() => {
+        props.getDocumentCategories();
+        props.getDocumentDomains();
+        pieChart();
+        barChart();
+        // barChartDocumentInDomain();
+    }, [])
 
-        this.state = {
-            dataStatus: this.DATA_STATUS.QUERYING
-        }
-    }
 
-    componentDidMount() {
-        this.props.getDocumentCategories();
-        this.props.getDocumentDomains();
-    }
 
-    shouldComponentUpdate(nextProps, nextState) {
-        if (nextState.dataStatus === this.DATA_STATUS.QUERYING) {
-            if (nextProps.documents.administration.categories.list.length && nextProps.documents.administration.data.list.length &&
-                nextProps.documents.administration.domains.list.length && nextProps.documents.administration.archives.list.length) {
-                this.setState(state => {
-                    return {
-                        ...state,
-                        dataStatus: this.DATA_STATUS.AVAILABLE
-                    }
-                })
-            }
-            return false;
-        }
-        else if (nextState.dataStatus === this.DATA_STATUS.AVAILABLE) {
-            this.pieChart();
-            this.barChart();
-            this.barChartDocumentInDomain();
-            this.barChartDocumentInArchive();
-            window.$(`#list-document`).slideDown();
-
-            this.setState(state => {
-                return {
-                    ...state,
-                    dataStatus: this.DATA_STATUS.FINISHED
-                }
-            })
-
-        }
-        return false;
-    }
-
-    getDataDocumentAnalys = () => {
-        const { documents } = this.props;
+    const getDataDocumentAnalys = () => {
+        const { documents } = props;
         const categoryList = documents.administration.categories.list;
         const docList = documents.administration.data.list;
         const data = categoryList.map(category => {
@@ -71,11 +44,11 @@ class AdministrationStatisticsReport extends Component {
         return res;
     }
 
-    pieChart = () => {
-        this.removePreviousPieChart();
-        let dataChart = this.getDataDocumentAnalys();
-        this.chart = c3.generate({
-            bindto: this.refs.piechart,
+    const pieChart = () => {
+        removePreviousPieChart();
+        let dataChart = getDataDocumentAnalys();
+        let chart = c3.generate({
+            bindto: refCategory.current,
 
             // Căn lề biểu đồ
             padding: {
@@ -93,8 +66,8 @@ class AdministrationStatisticsReport extends Component {
         })
     }
 
-    getDataViewDownloadBarChart = () => {
-        const { documents } = this.props;
+    const getDataViewDownloadBarChart = () => {
+        const { documents } = props;
         const categoryList = documents.administration.categories.list;
         const docList = documents.administration.data.list;
 
@@ -117,14 +90,13 @@ class AdministrationStatisticsReport extends Component {
         return res;
     }
 
-    barChart = () => {
-        const { translate } = this.props;
-        this.removePreviousBarChart();
-        let dataChart = this.getDataViewDownloadBarChart();
+    const barChart = () => {
+        const { translate } = props;
+        removePreviousBarChart();
+        let dataChart = getDataViewDownloadBarChart();
         let x = [translate('document.views'), translate('document.downloads')];
-        console.log('aaaaaaaaaaaaa', dataChart, dataChart.length)
-        this.chart = c3.generate({
-            bindto: this.refs.barchart,
+        let chart = c3.generate({
+            bindto: refDocument_view_down.current,
 
 
             // Căn lề biểu đồ
@@ -152,8 +124,18 @@ class AdministrationStatisticsReport extends Component {
         })
     }
 
-    removePreviousPieChart() {
-        const chart = this.refs.piechart;
+    function removePreviousPieChart() {
+        const chart = refCategory.current;
+        if (chart) {
+            // console.log(chart,chart.hasChildNodes());
+            while (chart.hasChildNodes()) {
+                chart.removeChild(chart.lastChild);
+            }
+        }
+    }
+
+    function removePreviousBarChart() {
+        const chart = refDocument_view_down.current;
         if (chart) {
             while (chart.hasChildNodes()) {
                 chart.removeChild(chart.lastChild);
@@ -161,8 +143,8 @@ class AdministrationStatisticsReport extends Component {
         }
     }
 
-    removePreviousBarChart() {
-        const chart = this.refs.barchart;
+    function removePreviousDomainChart() {
+        const chart = refDomain.current;
         if (chart) {
             while (chart.hasChildNodes()) {
                 chart.removeChild(chart.lastChild);
@@ -170,25 +152,16 @@ class AdministrationStatisticsReport extends Component {
         }
     }
 
-    removePreviousDomainChart() {
-        const chart = this.refs.a;
-        if (chart) {
-            while (chart.hasChildNodes()) {
-                chart.removeChild(chart.lastChild);
-            }
-        }
-    }
+    // function removePreviousArchiveChart() {
+    //     const chart = refArchives.current;
+    //     if (chart) {
+    //         while (chart.hasChildNodes()) {
+    //             chart.removeChild(chart.lastChild);
+    //         }
+    //     }
+    // }
 
-    removePreviousArchiveChart() {
-        const chart = this.refs.archives;
-        if (chart) {
-            while (chart.hasChildNodes()) {
-                chart.removeChild(chart.lastChild);
-            }
-        }
-    }
-
-    convertDataToExportData = (data, data2) => {
+    const convertDataToExportData = (data, data2) => {
         let dataCategory = [];
         let dataDownload = [];
         let dataView = [];
@@ -261,15 +234,16 @@ class AdministrationStatisticsReport extends Component {
         return exportData;
     }
 
-    onChanged = async (e, data) => {
-        await this.setState({
+    const onChanged = async (e, data) => {
+        setState({
+            ...state,
             currentDomain: data.node,
-            dataStatus: this.DATA_STATUS.AVAILABLE,
+            dataStatus: DATA_STATUS.AVAILABLE,
         })
         window.$(`#list-document`).slideDown();
     }
 
-    checkIn = (array, element) => {
+    const checkIn = (array, element) => {
         for (let i = 0; i < array.length; i++) {
             if (array[i].id === element.id)
                 return true;
@@ -277,7 +251,7 @@ class AdministrationStatisticsReport extends Component {
         return false;
     }
 
-    removeDuplicateInArrayObject = (array) => {
+    const removeDuplicateInArrayObject = (array) => {
         let idArray = [];
         let newArray = [];
         for (let i = 0; i < array.length; i++) {
@@ -294,10 +268,10 @@ class AdministrationStatisticsReport extends Component {
      * @param {*} domains : mảng danh mục
      * @param {*} documents : mảng document
      */
-    countDocumentInDomainnn = (domains, documents) => {
+    const countDocumentInDomainnn = (domains, documents) => {
 
         for (let i = 0; i < domains.length; i++) {
-            let arrDocument = documents.filter(document => this.checkIn(document.domains, domains[i]));
+            let arrDocument = documents.filter(document => checkIn(document.domains, domains[i]));
             domains[i].documents = arrDocument;
             domains[i].title = domains[i].name + " - " + arrDocument.length;
             let inDomain = [];
@@ -317,7 +291,7 @@ class AdministrationStatisticsReport extends Component {
                 domains[i].documents = domains[i].documents.concat(children[j].documents);
             }
             //loại bỏ các tài liệu trùng nhau
-            domains[i].documents = this.removeDuplicateInArrayObject(domains[i].documents);
+            domains[i].documents = removeDuplicateInArrayObject(domains[i].documents);
 
         }
 
@@ -328,9 +302,9 @@ class AdministrationStatisticsReport extends Component {
      * @param {*} archives : mảng lưu trữ
      * @param {*} documents : mảng document
      */
-    countDocumentInArchiveee = (archives, documents) => {
+    const countDocumentInArchiveee = (archives, documents) => {
         for (let i = 0; i < archives.length; i++) {
-            let arrDocument = documents.filter(document => this.checkIn(document.archives, archives[i]));
+            let arrDocument = documents.filter(document => checkIn(document.archives, archives[i]));
             archives[i].documents = arrDocument;
             archives[i].title = archives[i].name + " - " + arrDocument.length;
             let inDomain = [];
@@ -350,14 +324,14 @@ class AdministrationStatisticsReport extends Component {
                 archives[i].documents = archives[i].documents.concat(children[j].documents);
             }
             //loại bỏ các tài liệu trùng nhau
-            archives[i].documents = this.removeDuplicateInArrayObject(archives[i].documents);
+            archives[i].documents = removeDuplicateInArrayObject(archives[i].documents);
 
         }
     }
 
-    barChartDocumentInDomain = () => {
-        this.removePreviousDomainChart();
-        let dataChart = this.setDataDomainBarchart();
+    const barChartDocumentInDomain = () => {
+        removePreviousDomainChart();
+        let dataChart = setDataDomainBarchart();
 
         let count = dataChart.count;
         let heightCalc
@@ -366,7 +340,7 @@ class AdministrationStatisticsReport extends Component {
         }
         let height = heightCalc < 320 ? 320 : heightCalc;
         let chart = c3.generate({
-            bindto: this.refs.a,
+            bindto: refDomain.current,
 
             data: {
                 columns: [count],
@@ -418,71 +392,71 @@ class AdministrationStatisticsReport extends Component {
         });
     }
 
-    barChartDocumentInArchive = () => {
-        this.removePreviousArchiveChart();
-        let dataChart = this.setDataArchiveBarchart();
-        let count = dataChart.count;
-        let heightCalc
-        if (dataChart.type) {
-            heightCalc = dataChart.type.length * 24.8;
-        }
-        let height = heightCalc < 320 ? 320 : heightCalc;
-        let chart = c3.generate({
-            bindto: this.refs.archives,
+    // const barChartDocumentInArchive = () => {
+    //     removePreviousArchiveChart();
+    //     let dataChart = setDataArchiveBarchart();
+    //     let count = dataChart.count;
+    //     let heightCalc
+    //     if (dataChart.type) {
+    //         heightCalc = dataChart.type.length * 24.8;
+    //     }
+    //     let height = heightCalc < 320 ? 320 : heightCalc;
+    //     let chart = c3.generate({
+    //         bindto: refArchives.current,
 
-            data: {
-                columns: [count],
-                type: 'bar',
-            },
+    //         data: {
+    //             columns: [count],
+    //             type: 'bar',
+    //         },
 
-            padding: {
-                top: 10,
-                bottom: 20,
-                right: 0,
-                left: 100
-            },
+    //         padding: {
+    //             top: 10,
+    //             bottom: 20,
+    //             right: 0,
+    //             left: 100
+    //         },
 
-            axis: {
-                x: {
-                    type: 'category',
-                    categories: dataChart.shortName,
-                    tick: {
-                        multiline: false
-                    }
-                },
-                y: {
-                    label: {
-                        text: 'Số lượng',
-                        position: 'outer-right'
-                    }
-                },
-                rotated: true
-            },
+    //         axis: {
+    //             x: {
+    //                 type: 'category',
+    //                 categories: dataChart.shortName,
+    //                 tick: {
+    //                     multiline: false
+    //                 }
+    //             },
+    //             y: {
+    //                 label: {
+    //                     text: 'Số lượng',
+    //                     position: 'outer-right'
+    //                 }
+    //             },
+    //             rotated: true
+    //         },
 
-            size: {
-                height: height
-            },
+    //         size: {
+    //             height: height
+    //         },
 
-            color: {
-                pattern: ['#1f77b4']
-            },
+    //         color: {
+    //             pattern: ['#1f77b4']
+    //         },
 
-            legend: {
-                show: false
-            },
+    //         legend: {
+    //             show: false
+    //         },
 
-            tooltip: {
-                format: {
-                    title: function (index) { return dataChart.type[index] },
+    //         tooltip: {
+    //             format: {
+    //                 title: function (index) { return dataChart.type[index] },
 
-                }
-            }
-        });
-    }
+    //             }
+    //         }
+    //     });
+    // }
 
-    setDataDomainBarchart = () => {
-        const domains = this.props.documents.administration.domains.list;
-        const docs = this.props.documents.administration.data.list;
+    const setDataDomainBarchart = () => {
+        const domains = props.documents.administration.domains.list;
+        const docs = props.documents.administration.data.list;
         let typeName = [], shortName = [], countDomain = [], idDomain = [];
         for (let i in domains) {
             countDomain[i] = 0;
@@ -513,137 +487,164 @@ class AdministrationStatisticsReport extends Component {
         return data;
     }
 
-    setDataArchiveBarchart = () => {
-        const archives = this.props.documents.administration.archives.list;
-        const docs = this.props.documents.administration.data.list;
-        let typeName = [], shortName = [], countArchive = [], idArchive = [];
-        for (let i in archives) {
-            countArchive[i] = 0;
-            idArchive.push(archives[i].id)
-        }
+    // const setDataArchiveBarchart = () => {
+    //     const archives = props.documents.administration.archives.list;
+    //     const docs = props.documents.administration.data.list;
+    //     let typeName = [], shortName = [], countArchive = [], idArchive = [];
+    //     for (let i in archives) {
+    //         countArchive[i] = 0;
+    //         idArchive.push(archives[i].id)
+    //     }
 
-        if (docs) {
-            docs.map(doc => {
-                doc.archives.map(archive => {
-                    let idx = idArchive.indexOf(archive);
-                    countArchive[idx]++;
+    //     if (docs) {
+    //         docs.map(doc => {
+    //             doc.archives.map(archive => {
+    //                 let idx = idArchive.indexOf(archive);
+    //                 countArchive[idx]++;
+    //             })
+    //         })
+    //         for (let i in archives) {
+    //             let length = archives[i].path.length;
+    //             let longName = "..." + archives[i].path.slice(length - 16, length - 1);
+    //             let name = archives[i].path.length > 15 ? longName : archives[i].path;
+    //             shortName.push(name);
+    //             typeName.push(archives[i].path);
+    //         }
+    //     }
+    //     let data = {
+    //         count: countArchive,
+    //         type: typeName,
+    //         shortName: shortName
+    //     }
+
+    //     return data;
+    // }
+    useCallback(() => {
+        if (state.dataStatus === DATA_STATUS.QUERYING) {
+            if (props.documents.administration.categories.list.length && props.documents.administration.data.list.length &&
+                props.documents.administration.domains.list.length && props.documents.administration.archives.list.length) {
+                setState({
+                    ...state,
+                    dataStatus: DATA_STATUS.AVAILABLE
                 })
-            })
-            for (let i in archives) {
-                let length = archives[i].path.length;
-                let longName = "..." + archives[i].path.slice(length - 16, length - 1);
-                let name = archives[i].path.length > 15 ? longName : archives[i].path;
-                shortName.push(name);
-                typeName.push(archives[i].path);
             }
+            return false;
         }
-        let data = {
-            count: countArchive,
-            type: typeName,
-            shortName: shortName
-        }
+        else if (state.dataStatus === DATA_STATUS.AVAILABLE) {
+            pieChart();
+            barChart();
+            barChartDocumentInDomain();
+            // barChartDocumentInArchive();
+            window.$(`#list-document`).slideDown();
 
-        return data;
+            setState({
+                ...state,
+                dataStatus: DATA_STATUS.FINISHED
+            })
+
+        }
+        return false;
+
+    }, [state.dataStatus])
+
+    const { documents, translate } = props;
+    const categoryList = documents.administration.categories.list;
+    const docList = documents.administration.data.list;
+    const listDomains  = props.documents.administration.domains.list;
+    const listArchives = props.documents.administration.archives.list;
+    const docs = props.documents.administration.data.list;
+    let dataExport = [];
+    let data2 = [];
+    if (documents.isLoading === false) {
+        dataExport = categoryList.map(category => {
+            let docs = docList.filter(doc => doc.category !== undefined && doc.category === category.id);
+            let totalDownload = 0;
+            let totalView = 0;
+            for (let index = 0; index < docs.length; index++) {
+                const element = docs[index];
+                totalDownload = totalDownload + element.numberOfDownload;
+                totalView = totalView + element.numberOfView;
+            }
+            return [
+                category.name,
+                totalView,
+                totalDownload
+            ]
+        });
+        data2 = categoryList.map(category => {
+            let docs = docList.filter(doc => doc.category !== undefined && doc.category === category.id).length;
+            return [
+                category.name,
+                docs
+            ]
+        });
     }
+    let exportData = convertDataToExportData(dataExport, data2);
+    return <React.Fragment>
+        <ExportExcel id="export-document-archive" exportData={exportData} style={{ marginRight: 5 }} buttonName={translate('document.export')} />
 
-    render() {
-        const { documents, translate } = this.props;
-        const categoryList = documents.administration.categories.list;
-        const docList = documents.administration.data.list;
-        const { list } = this.props.documents.administration.domains;
-        const listArchives = this.props.documents.administration.archives.list;
-        const docs = this.props.documents.administration.data.list;
-        let dataExport = [];
-        let data2 = [];
-        if (documents.isLoading === false) {
-            dataExport = categoryList.map(category => {
-                let docs = docList.filter(doc => doc.category !== undefined && doc.category === category.id);
-                let totalDownload = 0;
-                let totalView = 0;
-                for (let index = 0; index < docs.length; index++) {
-                    const element = docs[index];
-                    totalDownload = totalDownload + element.numberOfDownload;
-                    totalView = totalView + element.numberOfView;
-                }
-                return [
-                    category.name,
-                    totalView,
-                    totalDownload
-                ]
-            });
-            data2 = categoryList.map(category => {
-                let docs = docList.filter(doc => doc.category !== undefined && doc.category === category.id).length;
-                return [
-                    category.name,
-                    docs
-                ]
-            });
-        }
-        let exportData = this.convertDataToExportData(dataExport, data2);
-
-        return <React.Fragment>
-            <ExportExcel id="export-document-archive" exportData={exportData} style={{ marginRight: 5 }} buttonName={translate('document.export')} />
-
-            {/* Thống kê số lượng tài liệu theo lĩnh vực, Thống kê số lượng tài liệu theo vị trí lưu trữ */}
-            <div className="row">
-                <div className="col-xs-12" >
-                    <div className="box box-solid">
-                        <div className="box-header">
-                            <div className="box-title">{translate('document.statistical_document_by_archive')}</div>
-                        </div>
-                        <div className="box-body qlcv" style={{ minHeight: "400px" }}>
-                            <TreeArchive
-                                archives={listArchives}
-                                documents={docs}
-                            />
-                        </div>
+        {/* Thống kê số lượng tài liệu theo lĩnh vực, Thống kê số lượng tài liệu theo vị trí lưu trữ */}
+        <div className="row">
+            <div className="col-xs-12" >
+                <div className="box box-solid">
+                    <div className="box-header">
+                        <div className="box-title">{translate('document.statistical_document_by_archive')}</div>
+                    </div>
+                    <div className="box-body qlcv" style={{ minHeight: "400px" }}>
+                        <TreeArchive
+                            archives={listArchives}
+                            documents={docs}
+                        />
                     </div>
                 </div>
             </div>
-            {/* Thống kê các loại tài liệu */}
-            <div className="row">
-                <div className="col-xs-12" >
-                    <div className="box box-solid">
-                        <div className="box-header">
-                            <div className="box-title">{translate('document.statistical_view_down')}</div>
-                        </div>
-                        <div className="box-body qlcv" style={{ minHeight: "400px" }}>
-                            <div ref="barchart"></div>
-                        </div>
+        </div>
+        {/* Thống kê các loại tài liệu */}
+        <div className="row">
+            <div className="col-xs-12" >
+                <div className="box box-solid">
+                    <div className="box-header">
+                        <div className="box-title">{translate('document.statistical_view_down')}</div>
+                    </div>
+                    <div className="box-body qlcv" style={{ minHeight: "400px" }}>
+                        <div ref={refDocument_view_down}></div>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <div className="row">
-                <div className="col-xs-12" >
-                    <div className="box box-solid">
-                        <div className="box-header">
-                            <div className="box-title">{translate('document.statistical_document')}</div>
-                        </div>
-                        <div className="box-body qlcv" style={{ minHeight: "400px" }}>
-                            <div ref="piechart"></div>
-                        </div>
+        <div className="row">
+            <div className="col-xs-12" >
+                <div className="box box-solid">
+                    <div className="box-header">
+                        <div className="box-title">{translate('document.statistical_document_by_domain')}</div>
+                    </div>
+                    <div className="box-body qlcv" style={{ minHeight: "400px" }}>
+                        <TreeDomain
+                            domains={listDomains}
+                            documents={docs}
+                        />
                     </div>
                 </div>
             </div>
-            <div className="row">
-                <div className="col-xs-12" >
-                    <div className="box box-solid">
-                        <div className="box-header">
-                            <div className="box-title">{translate('document.statistical_document')}</div>
-                        </div>
-                        <div className="box-body qlcv" style={{ minHeight: "400px" }}>
-                            <div ref="piechart"></div>
-                        </div>
+        </div>
+        <div className="row">
+            <div className="col-xs-12" >
+                <div className="box box-solid">
+                    <div className="box-header">
+                        <div className="box-title">{translate('document.statistical_document')}</div>
+                    </div>
+                    <div className="box-body qlcv" style={{ minHeight: "400px" }}>
+                        <div ref={refCategory}></div>
                     </div>
                 </div>
             </div>
+        </div>
 
 
 
-        </React.Fragment>;
+    </React.Fragment>;
 
-    }
 }
 
 const mapStateToProps = state => state;

@@ -1,26 +1,25 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { SelectMulti } from '../../../../common-components';
-import { taskManagementActions } from '../../task-management/redux/actions';
+
+import { CustomLegendC3js } from '../../../../common-components';
+
 import c3 from 'c3';
 import 'c3/c3.css';
 
-const CHART_INFO = {
-    currentRoles: []
-}
-
 const LoadTaskOrganizationChart = (props) => {
-    const [unit, setUnit] = useState();
-    const { translate, units, idsUnit } = props;
+    const { translate, units, idsUnit, tasks } = props;
     let { startMonth, endMonth } = props;
+    const [dataChart, setDataChart] = useState();
+    const ref = useRef({
+        chart: null,
+        dataChart: null
+    });
+
     useEffect(() => {
-        let { tasks } = props;
         let taskList = tasks?.organizationUnitTasks?.tasks;
-        // let data = [];
-        if (taskList.length) {
+        if (taskList?.length > 0) {
             let selectedUnit = idsUnit;
-            if (selectedUnit.length == 0) selectedUnit = units.map(item => { return item.id });
 
             // Lấy tất cả các công việc thay vì mỗi các công việc đang thực hiện
             // let improcessTask = taskList?.filter(x => x.status === "inprocess");
@@ -82,7 +81,7 @@ const LoadTaskOrganizationChart = (props) => {
                                     improcessDay = 0;
                                 }
                                 array[j] += Math.round(improcessDay /
-                                    (improcessTask[k].accountableEmployees.length + improcessTask[k].consultedEmployees.length + improcessTask[k].responsibleEmployees.length))
+                                    (improcessTask[k] && improcessTask[k].accountableEmployees && improcessTask[k].accountableEmployees.length + improcessTask[k] && improcessTask[k].consultedEmployees && improcessTask[k] && improcessTask[k].consultedEmployees.length + improcessTask[k] && improcessTask[k].responsibleEmployees && improcessTask[k].responsibleEmployees.length))
                             }
 
                         }
@@ -91,22 +90,40 @@ const LoadTaskOrganizationChart = (props) => {
                 }
                 data[i] = [...data[i], ...array];
             }
+
+            if (data?.length > 0) {
+                data = data.map(item => {
+                    item = item.map(x => {
+                        if (!x || x === NaN || x === Infinity) {
+                            return 0
+                        } else {
+                            return x
+                        }
+                    });
+                    return item;
+                })
+            }
+            let check = false;
+            if (data?.length !== ref.current.dataChart?.length) {
+                check = true;
+            } else if (data?.length > 0) {
+                data.map(item => item[0]).map(item => {
+                    if (!ref.current.dataChart?.map(item => item[0])?.includes(item)) {
+                        check = true;
+                    }
+                })
+            }
+            if (check) {
+                ref.current.dataChart = data;
+                setDataChart(data)
+            }
             barChart(data, category);
         }
+    })
 
-
-    }, [props])
-
-    const handleSelectUnit = (value) => {
-        CHART_INFO.currentUnits = value;
-    }
-
-    const handleSearchData = () => {
-        let { currentUnits } = CHART_INFO;
-        setUnit(currentUnits);
-    }
     const barChart = (data, category) => {
-        const pie = c3.generate({
+        console.log(data)
+        ref.current.chart = c3.generate({
             bindto: document.getElementById("weightTaskOrganization"),
 
             data: {
@@ -135,30 +152,24 @@ const LoadTaskOrganizationChart = (props) => {
 
             },
 
-
+            legend: {
+                show: false
+            }
         });
     }
 
-
-
     return (
         <React.Fragment>
-            <section className="form-inline" style={{ textAlign: "right" }}>
-                {/* Chọn đơn vị */}
-                {/* <div className="form-group">
-                    <label style={{ minWidth: "150px" }}>{translate('kpi.evaluation.dashboard.organizational_unit')}</label>
-                    <SelectMulti id="multiSelectUnitInUnitWeightTask"
-                        items={units.map(item => { return { value: item.id, text: item.name } })}
-                        onChange={handleSelectUnit}
-                        options={{ nonSelectedText: translate('task_template.select_all_units'), allSelectedText: translate('kpi.evaluation.dashboard.all_unit') }}>
-                    </SelectMulti>
-                </div>
-                <div className="form-group">
-                    <button className="btn btn-success" onClick={handleSearchData}>{translate('task.task_management.filter')}</button>
-                </div> */}
+            <section id={"weightTaskOrganizationChart"} className="c3-chart-container enable-pointer">
+                <div id="weightTaskOrganization"></div>
+                <CustomLegendC3js
+                    chart={ref.current.chart}
+                    chartId={"weightTaskOrganizationChart"}
+                    legendId={"weightTaskOrganizationChartLegend"}
+                    title={`${translate('general.list_unit')} (${dataChart?.length > 0 ? dataChart?.length : 0})`}
+                    dataChartLegend={dataChart && dataChart.map(item => item[0])}
+                />
             </section>
-
-            <section id="weightTaskOrganization"></section>
         </React.Fragment>
     )
 }

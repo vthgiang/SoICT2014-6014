@@ -15,7 +15,6 @@ exports.searchPurchaseRequests = async (req, res) => {
             content: listRecommendProcures
         });
     } catch (error) {
-        console.log(error);
         await Logger.error(req.user.email, 'GET_PURCHASE_REQUEST', req.portal);
         res.status(400).json({
             success: false,
@@ -27,6 +26,27 @@ exports.searchPurchaseRequests = async (req, res) => {
     }
 }
 
+
+exports.searchUserApprover = async (req, res) => {
+    try {
+        var listRecommendProcures = await RecommendProcureService.searchUserApprover(req.portal, req.user.company._id);
+        await Logger.info(req.user.email, 'GET_USER_APPROVER_REQUEST', req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ["get_user_approver_request_success"],
+            content: listRecommendProcures
+        });
+    } catch (error) {
+        await Logger.error(req.user.email, 'GET_USER_APPROVER_REQUEST', req.portal);
+        res.status(400).json({
+            success: false,
+            messages: ["get_user_approver_request_success"],
+            content: {
+                error: error
+            }
+        });
+    }
+}
 /**
  * Tạo mới thông tin phiếu đề nghị mua sắm thiết bị
  */

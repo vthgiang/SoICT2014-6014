@@ -9,7 +9,10 @@ const ViewAllTaskNeedToDo = (props) => {
     let taskNeedTodo = props.data;
 
     taskNeedTodo = taskNeedTodo.reduce((groups, item) => {
-        groups[item.organizationalUnit.name] = [...groups[item.organizationalUnit.name] || [], item];
+        if (item?.organizationalUnit?.name) {
+            groups[item.organizationalUnit.name] = [...groups[item.organizationalUnit.name] || [], item];
+        }
+
         return groups;
     }, []);
 
@@ -38,11 +41,11 @@ const ViewAllTaskNeedToDo = (props) => {
                         </thead>
                         <tbody>
                             {
-                                taskNeedTodoUnit.length > 0 && taskNeedTodoUnit.map((obj, index) => (
+                                taskNeedTodoUnit?.length > 0 && taskNeedTodoUnit.map((obj, index) => (
                                     <tr key={index}>
                                         <td>{index + 1}</td>
                                         <td>{obj.name}</td>
-                                        <td><a href={`${process.env.REACT_APP_WEBSITE}/task?taskId=${obj._id}`} target="_blank">Xem chi tiết</a></td>
+                                        <td><a href={`/task?taskId=${obj._id}`} target="_blank">Xem chi tiết</a></td>
                                     </tr>
                                 ))
                             }

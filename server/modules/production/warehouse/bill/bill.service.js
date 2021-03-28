@@ -148,7 +148,7 @@ exports.getBillsByType = async (query, userId, portal) => {
                 page,
                 limit,
                 populate: [
-                    { path: 'creator' },
+                    { path: 'creator', select:"_id name email avatar" },
                     { path: 'approvers.approver' },
                     { path: 'qualityControlStaffs.staff' },
                     { path: 'responsibles' },
@@ -162,7 +162,7 @@ exports.getBillsByType = async (query, userId, portal) => {
                     { path: 'bill' },
                     { path: 'goods.lots.lot' },
                     { path: 'goods.good' },
-                    { path: 'logs.creator' }
+                    { path: 'logs.creator',select:"_id name email avatar" }
                 ],
                 sort: { 'updatedAt': 'desc' }
             })
@@ -226,7 +226,7 @@ exports.getBillByGood = async (query, portal) => {
 exports.getDetailBill = async (id, portal) => {
     return await Bill(connect(DB_CONNECTION, portal)).findById(id)
         .populate([
-            { path: 'creator' },
+            { path: 'creator',select:"_id name email avatar" },
             { path: 'approvers.approver' },
             { path: 'qualityControlStaffs.staff' },
             { path: 'responsibles' },
@@ -240,7 +240,7 @@ exports.getDetailBill = async (id, portal) => {
             { path: 'bill' },
             { path: 'goods.lots.lot' },
             { path: 'goods.good' },
-            { path: 'logs.creator' }
+            { path: 'logs.creator', select:"_id name email avatar" }
         ])
 }
 
@@ -249,8 +249,8 @@ exports.getBillsByStatus = async (query, portal) => {
     const { group, status, fromStock } = query;
     return await Bill(connect(DB_CONNECTION, portal)).find({ group, status, fromStock })
         .populate([
-            { path: 'creator' },
-            { path: 'approvers.approver' },
+            { path: 'creator',select:"_id name email avatar" },
+            { path: 'approvers.approver',select:"_id name email avatar" },
             { path: 'manufacturingMill' },
             { path: 'manufacturingCommand' },
             { path: 'fromStock' },
@@ -260,7 +260,7 @@ exports.getBillsByStatus = async (query, portal) => {
             { path: 'bill' },
             { path: 'goods.lots.lot' },
             { path: 'goods.good' },
-            { path: 'logs.creator' }
+            { path: 'logs.creator',select:"_id name email avatar" }
         ])
 }
 
@@ -355,8 +355,8 @@ exports.createBill = async (userId, data, portal) => {
     return await Bill(connect(DB_CONNECTION, portal))
         .findById(bill._id)
         .populate([
-            { path: 'creator' },
-            { path: 'approvers.approver' },
+            { path: 'creator' ,select:"_id name email avatar"},
+            { path: 'approvers.approver', select:"_id name email avatar" },
             { path: 'qualityControlStaffs.staff' },
             { path: 'responsibles' },
             { path: 'accountables' },
@@ -369,7 +369,7 @@ exports.createBill = async (userId, data, portal) => {
             { path: 'bill' },
             { path: 'goods.lots.lot' },
             { path: 'goods.good' },
-            { path: 'logs.creator' }
+            { path: 'logs.creator',select:"_id name email avatar" }
         ])
 }
 
@@ -890,8 +890,8 @@ exports.editBill = async (id, userId, data, portal, companyId) => {
     return await Bill(connect(DB_CONNECTION, portal))
         .findById(bill._id)
         .populate([
-            { path: 'creator' },
-            { path: 'approvers.approver' },
+            { path: 'creator',select:"_id name email avatar" },
+            { path: 'approvers.approver',select:"_id name email avatar" },
             { path: 'qualityControlStaffs.staff' },
             { path: 'responsibles' },
             { path: 'accountables' },
@@ -904,7 +904,7 @@ exports.editBill = async (id, userId, data, portal, companyId) => {
             { path: 'bill' },
             { path: 'goods.lots.lot' },
             { path: 'goods.good' },
-            { path: 'logs.creator' }
+            { path: 'logs.creator',select:"_id name email avatar" }
         ])
 
 }
@@ -917,8 +917,8 @@ exports.getBillsByCommand = async (query, portal) => {
             type: "3"
         })
         .populate([
-            { path: 'creator' },
-            { path: 'approvers.approver' },
+            { path: 'creator',select:"_id name email avatar" },
+            { path: 'approvers.approver',select:"_id name email avatar" },
             { path: 'qualityControlStaffs.staff' },
             { path: 'responsibles' },
             { path: 'accountables' },
@@ -929,7 +929,7 @@ exports.getBillsByCommand = async (query, portal) => {
             { path: 'bill' },
             { path: 'goods.lots.lot' },
             { path: 'goods.good' },
-            { path: 'logs.creator' }
+            { path: 'logs.creator',select:"_id name email avatar" }
         ])
 }
 

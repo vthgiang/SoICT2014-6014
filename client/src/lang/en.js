@@ -34,6 +34,8 @@ export default {
             success: "Successfully",
             error: "Error",
             new_notification: "You have new notification!",
+            month: "in",
+            value: "Value",
             auth_alert: {
                 title: "Current Session invalid. Please log in again",
                 reason: "Reasons maybe:",
@@ -60,7 +62,9 @@ export default {
                 empty_error: "Value cannot be empty",
                 not_existing_error: "Value not existing",
                 existing_error: "Value existing",
-                number_input_error: "Value must be between {min} to {max}"
+                number_input_error: "Value must be between {min} to {max}",
+                number_input_error_min: "Value must be greater than {min}",
+                number_input_error_max: "Value must be less than {max}"
             },
             not_org_unit: "Not have organizational unit",
             not_select_unit: "Select units",
@@ -69,6 +73,13 @@ export default {
             detail: "Detail",
             select_all: "Select all",
             add_import: "Add data from file",
+        },
+        
+        dashboard_unit: {
+            urgent_need_to_do_chart: "The chart shows the number of urgent / To-do tasks",
+            urgent_task_amount: "The number of urgent tasks",
+            need_to_do_task_amount: "The number of tasks to do",
+            list_employe_timing: "List of employees who are timing"
         },
 
         menu: {
@@ -132,13 +143,14 @@ export default {
             manage_warehouse: "Manage warehouses",
             dashboard_material: "Dashboad manage materials",
 
-            manage_kpi: "Manage KPI",
+            manage_kpi_unit: "Organizational unit KPI",
+            manage_kpi_personal: "Personal KPI",
             kpi_unit_create: "Create unit KPI",
             kpi_unit_evaluate: "Evaluate unit KPI",
             kpi_unit_overview: "Overview unit KPI",
             kpi_unit_dashboard: "Dashboard unit KPI",
             kpi_unit_statistic: "Statistic unit KPI",
-            kpi_unit_manager: "Manage unit KPI",
+            kpi_unit_manager: "Manage organizational unit KPI",
             kpi_member_manager: "Evaluate Employee KPI",
             kpi_member_dashboard: "DashBoard KPI Member",
             kpi_personal_create: "Create personal KPI",
@@ -151,7 +163,7 @@ export default {
 
             tasks: "Task management",
             task: "Detailed Task",
-            task_management: "Task list",
+            task_management: "Personal task list",
             task_management_of_unit: "Unit task list",
             task_management_dashboard: "Task dashboard",
             task_organization_management_dashboard: "Unit task dashboard",
@@ -237,6 +249,10 @@ export default {
 
             user_guide: "User guide",
             user_guide_detail: "User guide detail",
+        },
+
+        news_feed: {
+            news_feed: 'News feed'
         },
 
         intro: {
@@ -748,6 +764,7 @@ export default {
             upload_file_scan: "Upload file scan",
             choose_file: "Choose file",
             download: "Download",
+            preview: "Preview",
             no_version: "Not have different version",
             no_blank_description: "Description should'n empty",
             no_blank_name: "Name shouldn't empty",
@@ -2678,12 +2695,14 @@ export default {
                 coefficient: "Coefficient",
 
                 special: "Special",
+                creator_time: "Creator time",
                 select_all_special: "Selected all",
                 select_special: "Select special",
                 select_all_role: "Selected all",
                 select_role: "Select role",
                 stored: "Stored",
                 current_month: "Current month",
+                current_week: "Current week",
 
                 assigned_collaborate: "Task assignment status",
                 not_assigned: "Unassigned task",
@@ -2763,6 +2782,7 @@ export default {
                 detail_link: "Task link",
                 detail_priority: "Priority",
                 detail_status: "Status",
+                average_task_result: "Average task results",
                 detail_time: "Working duration",
                 detail_average_results: "Average results of task",
 
@@ -3290,7 +3310,11 @@ export default {
             task_dashboard: {
                 general_unit_task: "General unit task dashboard",
                 unit: "Organizational unit",
+                unit_lowercase : "organizational unit",
                 all_tasks: "All tasks",
+                 of: "of",
+                all_tasks_inprocess: "All tasks inprocess",
+                all_tasks_finished: "All tasks finished",
                 confirmed_task: "Confirmed tasks",
                 none_update_recently: "None updated recently tasks",
                 intime_task: "Intime tasks",
@@ -3410,6 +3434,8 @@ export default {
                                 "KPI is being approved, you can not edit!",
                             activated:
                                 "KPI is being activated, you can not edit!",
+                            evaluated: 
+                                "KPI is being evaluated, you can not edit!"
                         },
                         request_approval_kpi: {
                             approve:
@@ -3842,18 +3868,20 @@ export default {
                 },
                 // Dashboard KPI Unit
                 dashboard: {
-                    organizational_unit: "Department",
+                    organizational_unit: "Organizational unit",
+                    organizational_unit_low_case: "organizational unit",
                     month: "Month",
                     trend: "Implement target trend of employee",
-                    distributive: "Distributive KPI unit in ",
-                    statiscial: "Statistical result of KPI unit in",
-                    result_kpi_unit: "Result of KPI unit",
-                    result_kpi_units: "Result of KPI units",
+                    distributive: "Distributive KPI unit of",
+                    statiscial: "Statistical result of KPI unit of",
+                    result_kpi_unit: "Result of KPI of",
                     start_date: "Start date",
                     end_date: "End date",
                     search: "Search",
                     point: "Point",
                     no_data: "No data",
+                    line_chart: "Line chart",
+                    pie_chart: "Pie chart",
                     trend_chart: {
                         execution_time: "Execution time (Days)",
                         participants: "Amount of participants",
@@ -3891,7 +3919,7 @@ export default {
                                 "Remember to change the link to the parent target to get the new KPI!",
                         },
                         create: "Employee KPI set information on",
-                        organizational_unit: "Department",
+                        organizational_unit: "Copy from department",
                         month: "Month",
                         list_target: "List target",
                         setting: "Constitute",
@@ -4120,5 +4148,16 @@ export default {
         manage_transport: {
             add_requirements: "Add a new requirement",
         },
+        // Quản lý dự án
+        project: {
+            code: "Project code",
+            name: "Project name",
+            startDate: "Start date",
+            endDate: "End date",
+            parent: "Dự án cha",
+            manager: "Manager",
+            description: "Description",
+            add_title: "Add new project"
+        }
     },
 };

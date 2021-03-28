@@ -14,11 +14,11 @@ import 'bpmn-js/dist/assets/bpmn-font/css/bpmn.css';
 import 'bpmn-js/dist/assets/diagram-js.css';
 import './../process-template/processDiagram.css';
 import { TaskFormValidator } from "../../../task-management/component/taskFormValidator";
-import { TaskProcessValidator } from "../process-template/taskProcessValidator";
 import { TaskProcessActions } from "../../redux/actions";
 import getEmployeeSelectBoxItems from "../../../organizationalUnitHelper";
 import { AddTaskForm } from "../../../task-management/component/addTaskForm";
 import { DepartmentActions } from "../../../../super-admin/organizational-unit/redux/actions";
+import ValidationHelper from '../../../../../helpers/validationHelper';
 
 
 //Xóa element khỏi pallette theo data-action
@@ -140,45 +140,44 @@ class ModalEditProcess extends Component {
             let modeling = this.modeling;
             let state = this.state;
             this.modeler.importXML(nextProps.data.xmlDiagram, function (err) {
-                                // chỉnh màu sắc task
-                                let infoTask = nextProps.data.tasks
-                                let info = state.info;
-                
-                                if (infoTask) {
-                                    for (let i in infoTask) {
-                                        if (infoTask[i].status === "finished") {
-                                            let element1 = (Object.keys(modeler.get('elementRegistry')).length > 0) && modeler.get('elementRegistry').get(infoTask[i].codeInProcess);
-                
-                                            element1 && modeling.setColor(element1, {
-                                                fill: '#f9f9f9', // 9695AD
-                                                stroke: '#c4c4c7'
-                                            });
-                
-                                            var outgoing = element1.outgoing;
-                                            outgoing.forEach(x => {
-                                                if (info[x.businessObject.targetRef.id].status === "inprocess") {
-                                                    var outgoingEdge = modeler.get('elementRegistry').get(x.id);
-                
-                                                    modeling.setColor(outgoingEdge, {
-                                                        stroke: '#c4c4c7',
-                                                        width: '5px'
-                                                    })
-                                                }
-                                            })
-                                        }
-                
-                                        if (infoTask[i].status === "inprocess") {
-                                            let element1 = (Object.keys(modeler.get('elementRegistry')).length > 0) && modeler.get('elementRegistry').get(infoTask[i].codeInProcess);
-                
-                                            element1 && modeling.setColor(element1, {
-                                                fill: '#84ffb8',
-                                                stroke: '#14984c', //E02001
-                                                width: '5px'
-                                            });
-                                        }
-                                    }
+                // chỉnh màu sắc task
+                let infoTask = nextProps.data.tasks
+                let info = nextState.info;
+
+                if (infoTask) {
+                    for (let i in infoTask) {
+                        if (infoTask[i].status === "finished") {
+                            let element1 = (Object.keys(modeler.get('elementRegistry')).length > 0) && modeler.get('elementRegistry').get(infoTask[i].codeInProcess);
+                            element1 && modeling.setColor(element1, {
+                                fill: '#f9f9f9', // 9695AD
+                                stroke: '#c4c4c7'
+                            });
+                            var outgoing = element1.outgoing;
+                            outgoing.forEach(x => {
+                                console.log(x.businessObject.targetRef.id)
+                                if (info[x.businessObject.targetRef.id].status === "inprocess") {
+                                    var outgoingEdge = modeler.get('elementRegistry').get(x.id);
+
+                                    modeling.setColor(outgoingEdge, {
+                                        stroke: '#c4c4c7',
+                                        width: '5px'
+                                    })
                                 }
-             });
+                            })
+                        }
+
+                        if (infoTask[i].status === "inprocess") {
+                            let element1 = (Object.keys(modeler.get('elementRegistry')).length > 0) && modeler.get('elementRegistry').get(infoTask[i].codeInProcess);
+
+                            element1 && modeling.setColor(element1, {
+                                fill: '#84ffb8',
+                                stroke: '#14984c', //E02001
+                                width: '5px'
+                            });
+                        }
+                    }
+                }
+            });
             this.setState(state => {
                 return {
                     ...state,
@@ -436,12 +435,13 @@ class ModalEditProcess extends Component {
     // hàm cập nhật Tên Quy trình
     handleChangeBpmnName = async (e) => {
         let { value } = e.target;
-        let msg = TaskProcessValidator.validateProcessName(value, this.props.translate);
+        let { message } = ValidationHelper.validateName(this.props.translate, value);
+
         await this.setState(state => {
             return {
                 ...state,
                 processName: value,
-                errorOnProcessName: msg,
+                errorOnProcessName: message,
             }
         });
     }
@@ -449,12 +449,13 @@ class ModalEditProcess extends Component {
     // hàm cập nhật mô tả quy trình
     handleChangeBpmnDescription = async (e) => {
         let { value } = e.target;
-        let msg = TaskProcessValidator.validateProcessDescription(value, this.props.translate);
+        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
+
         await this.setState(state => {
             return {
                 ...state,
                 processDescription: value,
-                errorOnProcessDescription: msg,
+                errorOnProcessDescription: message,
             }
         });
     }
@@ -520,12 +521,14 @@ class ModalEditProcess extends Component {
 
     // Hàm cập nhật người được xem quy trình
     handleChangeViewer = async (value) => {
+        let { message } = ValidationHelper.validateArrayLength(this.props.translate, value);
+
         await this.setState(state => {
 
             return {
                 ...state,
                 viewer: value,
-                errorOnViewer: TaskProcessValidator.validateViewer(value, this.props.translate),
+                errorOnViewer: message,
             }
         })
     }

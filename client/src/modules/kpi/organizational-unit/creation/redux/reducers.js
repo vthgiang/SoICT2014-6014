@@ -6,22 +6,27 @@ export function createKpiUnit(state = {}, action) {
         case createUnitKpiConstants.GETCURRENT_KPIUNIT_REQUEST:
             return {
                 ...state,
-                organizationalUnitKpiLoading: false,
-                loading: true,
-                isLoading: true,
-                currentKPI: null
+                organizationalUnitKpiLoading: action.typeState === 'default' ? false : state.organizationalUnitKpiLoading,
+                copyKPILoading: action.typeState === 'copy' ? true : state.copyKPILoading,
+                loading: action.typeState === 'default' ? true : state.loading,
+                isLoading: action.typeState === 'default' ? true : state.isLoading,
+                currentKPI: action.typeState === 'default' ? null : state.currentKPI,
+                copyKPI: action.typeState === 'copy' ? null : state.copyKPI
             };
         case createUnitKpiConstants.GETCURRENT_KPIUNIT_SUCCESS:
             return {
                 ...state,
-                organizationalUnitKpiLoading: true,
-                loading: false,
-                currentKPI: action.payload,
-                isLoading: false
+                organizationalUnitKpiLoading: action.typeState === 'default' ? true : state.organizationalUnitKpiLoading,
+                copyKPILoading: action.typeState === 'copy' ? false : state.copyKPILoading,
+                loading: action.typeState === 'default' ? false : state.loading,
+                currentKPI: action.typeState === 'default' ? action.payload : state.currentKPI,
+                copyKPI: action.typeState === 'copy' ? action.payload : state.copyKPI,
+                isLoading: action.typeState === 'default' ? false : state.idLoading
             };
         case createUnitKpiConstants.GETCURRENT_KPIUNIT_FAILURE:
           return {
             ...state,
+            copyKPILoading: action.typeState === 'copy' ? false : state.copyKPILoading,
             organizationUnitKpiLoading: true,
             error: action.payload,
             isLoading: false
@@ -254,7 +259,6 @@ export function createKpiUnit(state = {}, action) {
                 adding: true
             }
         case createUnitKpiConstants.CREATE_COMMENT_SUCCESS:
-            console.log(action.payload)
             return {
                 ...state,
                 currentKPI: {

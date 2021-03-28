@@ -113,7 +113,9 @@ exports.getEmployeeKPISets = async (portal, data) => {
         .find(keySearch)
         .skip(perPage * (page - 1))
         .limit(perPage)
-        .populate("organizationalUnit creator approver")
+        .populate("organizationalUnit")
+        .populate({ path: "creator", select: "_id name email avatar" })
+        .populate({ path: "approver", select: "_id name email avatar" })
         .populate({ path: "kpis", populate: { path: 'parent' } })
         .populate([
             { path: 'comments.creator', select: 'name email avatar ' },
@@ -141,7 +143,9 @@ exports.getKpisByMonth = async (portal, data) => {
     let month = new Date(date[1], date[0], 0);
     let employeeKpiSets = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
         .findOne({ creator: data.userId, date: month })
-        .populate("organizationalUnit creator approver")
+        .populate("organizationalUnit")
+        .populate({ path: "creator", select: "_id name email avatar" })
+        .populate({ path: "approver", select: "_id name email avatar" })
         .populate({ path: "kpis", populate: { path: 'parent' } })
         .populate([
             { path: 'comments.creator', select: 'name email avatar ' },
@@ -168,7 +172,9 @@ exports.approveAllKpis = async (portal, id, companyId) => {
         }))
     }
     employee_kpi_set = employee_kpi_set && await employee_kpi_set
-        .populate("organizationalUnit creator approver")
+        .populate("organizationalUnit")
+        .populate({ path: "creator", select: "_id name email avatar" })
+        .populate({ path: "approver", select: "_id name email avatar" })
         .populate({ path: "kpis", populate: { path: 'parent' } })
         .populate([
             { path: 'comments.creator', select: 'name email avatar ' },
@@ -226,7 +232,9 @@ exports.editStatusKpi = async (portal, data, query, companyId) => {
         .findByIdAndUpdate(employee_kpi_set._id, { $set: { status: checkFullApprove } }, { new: true })
 
     employee_kpi_set = employee_kpi_set && await employee_kpi_set
-        .populate("organizationalUnit creator approver")
+        .populate("organizationalUnit")
+        .populate({ path: "creator", select: "_id name email avatar" })
+        .populate({ path: "approver", select: "_id name email avatar" })
         .populate({ path: "kpis", populate: { path: 'parent' } })
         .populate([
             { path: 'comments.creator', select: 'name email avatar ' },
@@ -293,7 +301,9 @@ exports.editKpi = async (portal, id, data) => {
 exports.getKpisByKpiSetId = async (portal, id) => {
     let employee_kpi_set = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
         .findById(id)
-        .populate("organizationalUnit creator approver")
+        .populate("organizationalUnit")
+        .populate({ path: "creator", select: "_id name email avatar" })
+        .populate({ path: "approver", select: "_id name email avatar" })
         .populate({ path: "kpis", populate: { path: 'parent' } })
         .populate([
             { path: 'comments.creator', select: 'name email avatar ' },
@@ -358,7 +368,7 @@ exports.setTaskImportanceLevel = async (portal, id, kpiType, data) => {
     let approvePoint = 0;
     let employPoint = 0;
     let sumTaskImportance = 0;
-
+    let totalWeight = 0;
     if (task.length) {
         for (element of task) {
             autoPoint += element.results.automaticPoint * element.results.taskImportanceLevel;
@@ -389,9 +399,9 @@ exports.setTaskImportanceLevel = async (portal, id, kpiType, data) => {
 
     }
     else {
-        autoPoint = 100;
-        employPoint = 100;
-        approvePoint = 100;
+        autoPoint = 0;
+        employPoint = 0;
+        approvePoint = 0;
         sumTaskImportance = 1;
     }
 
@@ -413,7 +423,6 @@ exports.setTaskImportanceLevel = async (portal, id, kpiType, data) => {
     let kpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal)).findOne({ kpis: result._id });
     for (let i = 0; i < kpiSet.kpis.length; i++) {
         let kpi = await EmployeeKpi(connect(DB_CONNECTION, portal)).findById(kpiSet.kpis[i]);
-
         let weight = kpi.weight / 100;
         autoPointSet += kpi.automaticPoint ? kpi.automaticPoint * weight : 0;
         employeePointSet += kpi.employeePoint ? kpi.employeePoint * weight : 0;
@@ -486,7 +495,7 @@ exports.getTasksByListKpis = async (portal, data) => {
 
         let employee_kpi_set = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
             .findById(data[i])
-            .populate("creator")
+            .populate({ path: "creator", select: "_id name email avatar" })
             .populate({ path: "kpis" })
         listkpis.push(employee_kpi_set);
     }
@@ -495,7 +504,7 @@ exports.getTasksByListKpis = async (portal, data) => {
         infosearch.push([]);
         let kpis = listkpis[i].kpis;
         for (let j = 0; j < kpis.length; j++) {
-            infosearch[infosearch.length - 1].push({ id: kpis[j]._id, employeeId: listkpis[i].creator._id, date: listkpis[i].date, kpiType: kpis[j].type })
+        infosearch[infosearch.length - 1].push({ id: kpis[j]._id, employeeId: listkpis[i].creator._id, date: listkpis[i].date, kpiType: kpis[j].type })
         }
     }
 
@@ -518,19 +527,19 @@ exports.getTasksByListKpis = async (portal, data) => {
  * @param {*} portal 
  * @param {*} data: Trong data có
  *  id của kpi (employeeKpi),
- *  date: tháng muốn lấy kết quả,
+ *  date: tháng muốn lấy kết quả,1
  *  employeeId: Id của nhân viên,
  *  kpiType: loại Kpi
  */
 async function getResultTaskByMonth(portal, data) {
-
     let date = new Date(data.date);
     let monthkpi = parseInt(date.getMonth() + 1);
     let yearkpi = parseInt(date.getFullYear());
     let kpiType;
-    if (data.kpiType === "1") {
+
+    if (data.kpiType === 1) {
         kpiType = "accountable";
-    } else if (data.kpiType === "2") {
+    } else if (data.kpiType === 2) {
         kpiType = "consulted";
     } else {
         kpiType = "responsible";
@@ -538,7 +547,7 @@ async function getResultTaskByMonth(portal, data) {
 
     let conditions = [
         {
-            $match: { "evaluations.results.kpis": mongoose.Types.ObjectId(data.id) }
+            $match: { "evaluations.results.kpis": { $elemMatch: { $eq: mongoose.Types.ObjectId(data?.id) } } }
         },
         {
             $unwind: "$evaluations"
@@ -556,16 +565,16 @@ async function getResultTaskByMonth(portal, data) {
         },
         { $addFields: { "month": { $month: '$evaluatingMonth' }, "year": { $year: '$evaluatingMonth' } } },
         { $unwind: "$results" },
+        {
+            $match: { "results.kpis": { $elemMatch: { $eq: mongoose.Types.ObjectId(data?.id) } } }
+        },
         { $match: { "results.role": kpiType } },
         { $match: { 'results.employee': mongoose.Types.ObjectId(data.employeeId) } },
         { $match: { "month": monthkpi } },
         { $match: { "year": yearkpi } },
     ]
 
-
-
     let task = await Task(connect(DB_CONNECTION, portal)).aggregate(conditions);
-
     return task;
 }
 /**
@@ -579,28 +588,31 @@ async function getResultTaskByMonth(portal, data) {
  */
 
 exports.setPointAllKpi = async (portal, idEmployee, idKpiSet, data) => {
-
     let kpis = data.kpis;
     let date = data.date;
 
     let autoPointSet = 0;
     let employeePointSet = 0;
     let approvedPointSet = 0;
-    let listKpi = [];
+    let totalWeight = 0;
     for (let i in kpis) {
         let obj = {
-            id: kpis[i],
+            id: kpis[i].id,
             date: date,
             employeeId: idEmployee,
+            kpiType: kpis[i].type.toString(),
 
         }
-        let kpiCurrent = await EmployeeKpi(connect(DB_CONNECTION, portal)).findById(kpis[i]);
+        let kpiCurrent = await EmployeeKpi(connect(DB_CONNECTION, portal)).findById(kpis[i].id);
+
         let task = await getResultTaskByMonth(portal, obj);
         let automaticPoint = 0;
         let approvedPoint = 0;
         let employeePoint = 0;
         let sumTaskImportance = 0;
+        let newWeight; //cập nhật weight của kpi = 0 nếu kpi không có công việc
         if (task.length) {
+            newWeight = kpiCurrent.weight;
             for (let j in task) {
                 let date1 = task[j].startDate;
                 let date2 = task[j].endDate;
@@ -651,27 +663,30 @@ exports.setPointAllKpi = async (portal, idEmployee, idKpiSet, data) => {
             }
         }
         else {
-            automaticPoint = 100;
-            approvedPoint = 100;
-            employeePoint = 100;
+            automaticPoint = 0;
+            approvedPoint = 0;
+            employeePoint = 0;
             sumTaskImportance = 1;
+            newWeight = 0;
         }
 
 
         let kpi = await EmployeeKpi(connect(DB_CONNECTION, portal))
             .findByIdAndUpdate(
-                kpis[i],
+                kpis[i].id,
                 {
                     $set: {
                         "automaticPoint": Math.round(automaticPoint / sumTaskImportance),
                         "employeePoint": Math.round(employeePoint / sumTaskImportance),
                         "approvedPoint": Math.round(approvedPoint / sumTaskImportance),
+                        "weight": newWeight,
                     },
                 },
                 { new: true }
             );
 
         let weight = kpi.weight / 100;
+        totalWeight += weight;
         autoPointSet += kpi.automaticPoint ? kpi.automaticPoint * weight : 0;
         employeePointSet += kpi.employeePoint ? kpi.employeePoint * weight : 0;
         approvedPointSet += kpi.approvedPoint ? kpi.approvedPoint * weight : 0;
@@ -683,13 +698,15 @@ exports.setPointAllKpi = async (portal, idEmployee, idKpiSet, data) => {
         .findByIdAndUpdate(idKpiSet,
             {
                 $set: {
-                    "automaticPoint": Math.round(autoPointSet),
-                    "employeePoint": Math.round(employeePointSet),
-                    "approvedPoint": Math.round(approvedPointSet),
+                    "automaticPoint": Math.round(autoPointSet / totalWeight ? autoPointSet / totalWeight : 0),
+                    "employeePoint": Math.round(employeePointSet / totalWeight ? employeePointSet / totalWeight : 0),
+                    "approvedPoint": Math.round(approvedPointSet / totalWeight ? approvedPointSet / totalWeight : 0),
                 },
             },
             { new: true }
-        ).populate("organizationalUnit creator approver")
+        ).populate("organizationalUnit")
+        .populate({ path: "creator", select: "_id name email avatar" })
+        .populate({ path: "approver", select: "_id name email avatar" })
         .populate({ path: "kpis", populate: { path: 'parent' } })
         .populate([
             { path: 'comments.creator', select: 'name email avatar ' },
@@ -701,3 +718,5 @@ exports.setPointAllKpi = async (portal, idEmployee, idKpiSet, data) => {
 
 
 }
+
+

@@ -1,5 +1,6 @@
 const TaskManagementService = require('./task.service');
 const NotificationServices = require(`../../notification/notification.service`);
+const NewsFeed = require('../../news-feed/newsFeed.service');
 const { sendEmail } = require(`../../../helpers/emailHelper`);
 const Logger = require(`../../../logs`);
 // Điều hướng đến dịch vụ cơ sở dữ liệu của module quản lý công việc
@@ -321,6 +322,8 @@ getPaginatedTasks = async (req, res) => {
             responsibleEmployees: req.query.responsibleEmployees,
             accountableEmployees: req.query.accountableEmployees,
             creatorEmployees: req.query.creatorEmployees,
+            creatorTime: req.query.creatorTime,
+            projectSearch: req.query.projectSearch,
         };
 
         let tasks = await TaskManagementService.getPaginatedTasks(req.portal, task);
@@ -463,6 +466,28 @@ exports.createTask = async (req, res) => {
         await sendEmail(email, "Bạn có công việc mới", '', html);
         collaboratedEmail && collaboratedEmail.length !== 0
             && await sendEmail(collaboratedEmail, "Đơn vị bạn được phối hợp thực hiện công việc mới", '', collaboratedHtml);
+        await NewsFeed.createNewsFeed(req.portal, {
+            title: data?.title,
+            description: data?.content,
+            creator: req.user._id,
+            associatedDataObject: { 
+                dataType: 1,
+                value: task?._id,
+                description: task?.name
+            },
+            relatedUsers: data?.users
+        });
+        await NewsFeed.createNewsFeed(req.portal, {
+            title: collaboratedData?.title,
+            description: collaboratedData?.content,
+            creator: req.user._id,
+            associatedDataObject: { 
+                dataType: 1,
+                value: task?._id,
+                description: task?.name
+            },
+            relatedUsers: collaboratedData?.users
+        });
 
         await Logger.info(req.user.email, 'create_task', req.portal)
         res.status(200).json({
@@ -716,7 +741,7 @@ getAllTaskOfOrganizationalUnit = async (req, res) => {
 /** Lấy tất cả task của các đơn vị con của đơn vị hiện tại */
 getAllTaskOfChildrenOrganizationalUnit = async (req, res) => {
     try {
-        let tasksOfChildrenOrganizationalUnit = await TaskManagementService.getAllTaskOfChildrenOrganizationalUnit(req.portal, req.user.company._id, req.query.roleId, req.query.month, req.query.organizationalUnitId); // req.portal === req.user.company._id
+        let tasksOfChildrenOrganizationalUnit = await TaskManagementService.getAllTaskOfChildrenOrganizationalUnit(req.portal, req.query.roleId, req.query.month, req.query.organizationalUnitId); // req.portal === req.user.company._id
 
         Logger.info(req.user.email, 'get_all_task_of_children_organizational_unit', req.portal);
         res.status(200).json({

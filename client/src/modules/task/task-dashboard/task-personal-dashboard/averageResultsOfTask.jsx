@@ -74,7 +74,7 @@ function AverageResultsOfTask(props) {
             criteria: criteria,
             role: role
         }
-    }) 
+    })
 
     if (props.startMonth !== startMonth || props.endMonth !== endMonth) {
         setState({
@@ -201,7 +201,7 @@ function AverageResultsOfTask(props) {
                                 let lastDayInMonth = new Date(dateEvaluation.getFullYear(), dateEvaluation.getMonth() + 1, 0);
                                 totalDay = Math.round((lastDayInMonth.getTime() - firstDayInMonth.getTime()) / 1000 / 60 / 60 / 24);
                             }
-                            
+
 
                             if (result.automaticPoint && result.taskImportanceLevel) {
                                 sumAutomaticPointCoefficient = sumAutomaticPointCoefficient + result.automaticPoint * result.taskImportanceLevel * totalDay;
@@ -340,38 +340,37 @@ function AverageResultsOfTask(props) {
 
     return (
         <React.Fragment>
-            <section className="form-inline">
-                <div className="form-group">
-                    <label>{translate('task.task_management.role')}</label>
-                    <SelectMulti
-                        key="multiSelectAverageRole"
-                        id="multiSelectAverageRole"
-                        items={ROLE_SELECTBOX}
-                        onChange={handleSelectRole}
-                        options={{ allSelectedText: translate('task.task_management.select_all_status') }}
-                        value={role}
-                    />
-
+            <div className="qlcv">
+                <div className="form-inline" >
+                    <div className="form-group">
+                        <label style={{ width: '48px', textAlign: 'left' }}>{translate('task.task_management.role')}</label>
+                        <SelectMulti
+                            key="multiSelectAverageRole"
+                            id="multiSelectAverageRole"
+                            items={ROLE_SELECTBOX}
+                            onChange={handleSelectRole}
+                            options={{ allSelectedText: translate('task.task_management.select_all_status') }}
+                            value={role}
+                        />
+                    </div>
                 </div>
-            </section>
-            <section className="form-inline">
-                <div className="form-group">
-                    <label>Tiêu chí</label>
-                    <SelectBox
-                        key="criteriaOfAverageSelectBox"
-                        id={`criteriaOfAverageSelectBox`}
-                        className="form-control select2"
-                        style={{ width: "100%" }}
-                        items={CRITERIA_SELECTBOX}
-                        multiple={false}
-                        onChange={handleSelectCriteria}
-                        value={criteria}
-                    />
+                <div className="form-inline" >
+                    <div className="form-group">
+                        <label style={{ width: 'auto' }}>Tiêu chí</label>
+                        <SelectBox
+                            key="criteriaOfAverageSelectBox"
+                            id={`criteriaOfAverageSelectBox`}
+                            className="form-control select2"
+                            style={{ width: "100%" }}
+                            items={CRITERIA_SELECTBOX}
+                            multiple={false}
+                            onChange={handleSelectCriteria}
+                            value={criteria}
+                        />
+                    </div>
+                    <button type="button" className="btn btn-success" onClick={handleSearchData}>{translate('kpi.evaluation.employee_evaluation.search')}</button>
                 </div>
-
-                <button type="button" className="btn btn-success" onClick={handleSearchData}>{translate('kpi.evaluation.employee_evaluation.search')}</button>
-            </section>
-
+            </div>
             <div id="average-chart"></div>
         </React.Fragment>
     )

@@ -27,7 +27,6 @@ export const performTaskService = {
     editCommentOfTaskComment,
     deleteCommentOfTaskComment,
     
-    addTaskLog,
     getTaskLog,
 
     deleteFileAction,
@@ -132,7 +131,7 @@ function startTimerTask(taskId, newTimer) {
         url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}/timesheet-logs/start-timer`,
         method: 'POST',
         data: newTimer,
-    }, false, false, 'task.task_perform');
+    }, false, true, 'task.task_perform');
 }
 
 /**
@@ -475,16 +474,7 @@ function deleteFileChildTaskComment(fileId, commentId, taskId, type) {
     }, false, true, 'task.task_perform');
 }
 
-/**
- *  Thêm nhật kí cho cộng việc
- */
-function addTaskLog(log, taskId) {
-    return sendRequest({
-        url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}/logs`,
-        method: 'POST',
-        data: log
-    }, false, false, 'task.task_perform');
-};
+
 
 // Hàm thêm nhật ký cho một công việc
 function getTaskLog(taskId) {

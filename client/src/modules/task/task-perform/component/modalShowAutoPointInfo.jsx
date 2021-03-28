@@ -29,9 +29,13 @@ class ModalShowAutoPointInfo extends Component {
     }
 
     convertDateTime = (date, time) => {
-        let splitter = date.split("-");
-        let strDateTime = `${splitter[2]}-${splitter[1]}-${splitter[0]} ${time}`;
-        return new Date(strDateTime);
+        if(date) {
+            let splitter = date.split("-");
+            let strDateTime = `${splitter[2]}-${splitter[1]}-${splitter[0]} ${time}`;
+            return new Date(strDateTime);
+        } else  {
+            return new Date();
+        }
     }
 
     // convert ISODate to String hh:mm AM/PM

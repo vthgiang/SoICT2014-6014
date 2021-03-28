@@ -1,16 +1,17 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { withTranslate } from 'react-redux-multilingual';
+import Swal from 'sweetalert2';
 
 import { taskManagementActions } from '../../task/task-management/redux/actions';
 
-import { CalendarEmployee } from '../../task/task-dashboard/task-personal-dashboard/calendarEmployee';
-
-import { withTranslate } from 'react-redux-multilingual';
-import { DatePicker, SlimScroll } from '../../../common-components';
-import Swal from 'sweetalert2';
+import { DatePicker, SlimScroll, LazyLoadComponent } from '../../../common-components';
 import { GanttCalendar } from '../../task/task-dashboard/task-personal-dashboard/ganttCalendar';
-
-
+import GeneralTaskPersonalChart from '../../task/task-dashboard/task-personal-dashboard/generalTaskPersonalChart';
+import { NewsFeed } from './newsFeed';
+import './alarmTask.css';
+import ViewAllTasks from '../components/viewAllTask';
+import moment from 'moment'
 class SuperHome extends Component {
     constructor(props) {
         super(props);
@@ -56,6 +57,195 @@ class SuperHome extends Component {
             willUpdate: false,       // Khi true sẽ cập nhật dữ liệu vào props từ redux
             callAction: false
         };
+    }
+
+    static getDerivedStateFromProps(props, state) {
+        const { tasks } = props;
+        const { userId } = state;
+
+        if (tasks && (tasks.tasks || tasks.accountableTasks || tasks.responsibleTasks || tasks.consultedTasks)) {
+            let currentMonth = new Date().getMonth() + 1;
+            let currentYear = new Date().getFullYear();
+
+            let notLinkedTasks = [], taskList = [], unconfirmedTask = [], noneUpdateTask = [],
+                taskHasActionsResponsible = [], taskHasActionsAccountable = [], taskHasNotEvaluationResultIncurrentMonth = [];
+            const taskOfUser = tasks?.tasks;
+
+            // xu ly du lieu
+            if (taskOfUser && taskOfUser.length) {
+                for (let i in taskOfUser) {
+                    let created = moment(taskOfUser[i].createdAt);
+                    let start = moment(taskOfUser[i].startDate);
+                    let end = moment(taskOfUser[i].endDate);
+                    let lastUpdate = moment(taskOfUser[i].updatedAt);
+                    let now = moment(new Date());
+                    let updatedToNow = now.diff(lastUpdate, 'days');
+                    let createdToNow = now.diff(created, 'days');
+
+                    if (taskOfUser[i].status === 'inprocess') {
+                        // viec 7 ngay chua update
+                        if (updatedToNow >= 7) {
+                            let add = {
+                                ...taskOfUser[i],
+                                updatedToNow
+                            }
+                            noneUpdateTask.push(add);
+                        }
+                    }
+                    // cac cong viec chua xac nhan
+                    if (!taskOfUser[i].confirmedByEmployees.length) {
+                        let add = {
+                            ...taskOfUser[i],
+                            createdToNow
+                        }
+                        unconfirmedTask.push(add)
+                    }
+                }
+            }
+
+            if (tasks) {
+                let accTasks = tasks.accountableTasks;
+                let resTasks = tasks.responsibleTasks;
+                let conTasks = tasks.consultedTasks;
+
+                if (accTasks && accTasks.length > 0)
+                    accTasks = accTasks.filter(task => task.status === "inprocess");
+                if (resTasks && resTasks.length > 0)
+                    resTasks = resTasks.filter(task => task.status === "inprocess");
+                if (conTasks && conTasks.length > 0)
+                    conTasks = conTasks.filter(task => task.status === "inprocess");
+
+                // tính toán lấy số công việc chưa được đánh giá kpi
+                if (accTasks && resTasks && conTasks) {
+                    taskList = [...accTasks, ...resTasks, ...conTasks];
+
+                    if (taskList && taskList.length > 0) {
+                        let distinctTasks = [];
+                        for (let i in taskList) {
+                            let check = false;
+                            for (let j in distinctTasks) {
+
+                                if (taskList[i]._id === distinctTasks[j]._id) {
+                                    check = true
+                                    break;
+                                }
+                            }
+                            if (!check) distinctTasks.push(taskList[i])
+                        }
+
+                        distinctTasks.length && distinctTasks.map(x => {
+                            let evaluations;
+                            let currentEvaluate = [];
+
+                            evaluations = x.evaluations.length && x.evaluations;
+                            for (let i in evaluations) {
+                                let month = evaluations[i] && evaluations[i].evaluatingMonth && evaluations[i].evaluatingMonth.slice(5, 7);
+                                let year = evaluations[i] && evaluations[i].evaluatingMonth && evaluations[i].evaluatingMonth.slice(0, 4);
+                                if (month == currentMonth && year == currentYear) {
+                                    currentEvaluate.push(evaluations[i]);
+                                }
+                            }
+                            if (currentEvaluate.length === 0) notLinkedTasks.push(x);
+
+                            else {
+                                let break1 = false;
+                                let add = true;
+                                if (currentEvaluate.length !== 0)
+                                    for (let i in currentEvaluate) {
+                                        if (currentEvaluate[i].results.length !== 0) {
+                                            for (let j in currentEvaluate[i].results) {
+                                                let res = currentEvaluate[i].results[j];
+
+                                                if (res.employee === userId) {
+                                                    add = false;
+                                                    if (res.kpis.length === 0) {
+                                                        notLinkedTasks.push(x);
+                                                        break1 = true
+                                                    }
+                                                };
+                                                if (break1) break;
+                                            }
+                                            if (break1) break;
+                                            if (add) notLinkedTasks.push(x);
+                                        }
+                                    }
+                            }
+                        })
+
+                        // Lấy các công việc chưa có kết quả đánh giá ở tháng hiện tại
+                        distinctTasks.length && distinctTasks.forEach((o, index) => {
+                            if (o.evaluations && o.evaluations.length > 0) {
+                                let lengthEvaluations = o.evaluations.length;
+                                let add = true;
+                                for (let i = 0; i <= lengthEvaluations; i++) {
+                                    let currentEvaluationsMonth = o.evaluations[i] && o.evaluations[i].evaluatingMonth && o.evaluations[i].evaluatingMonth.slice(5, 7);
+                                    let currentEvaluationsYear = o.evaluations[i] && o.evaluations[i].evaluatingMonth && o.evaluations[i].evaluatingMonth.slice(0, 4);
+
+                                    if (parseInt(currentEvaluationsMonth) === currentMonth && parseInt(currentEvaluationsYear) === currentYear) {
+                                        add = false;
+                                    }
+                                }
+                                if (add)
+                                    taskHasNotEvaluationResultIncurrentMonth.push(o);
+                            } else {
+                                taskHasNotEvaluationResultIncurrentMonth.push(o);
+                            }
+                        })
+                    }
+                }
+
+                // Tính toán lấy số công việc chưa được đánh gia
+                if (resTasks?.length > 0) {
+                    resTasks.forEach(x => {
+                        let taskActions;
+
+                        taskActions = x.taskActions.length && x.taskActions;
+                        for (let i in taskActions) {
+                            let month = taskActions[i].createdAt.slice(5, 7);
+                            let year = taskActions[i].createdAt.slice(0, 4)
+                            if (month == currentMonth && year == currentYear) {
+                                if (taskActions[i].rating == -1) {
+                                    taskHasActionsResponsible.push(x);
+                                    break;
+                                }
+                            }
+                        }
+                    })
+                }
+
+                // Tính toán lấy số công việc cần đánh giá
+                if (accTasks?.length > 0) {
+                    accTasks.forEach(x => {
+                        let taskActions;
+
+                        taskActions = x.taskActions.length && x.taskActions;
+                        for (let i in taskActions) {
+                            let month = taskActions[i].createdAt.slice(5, 7);
+                            let year = taskActions[i].createdAt.slice(0, 4)
+                            if (month == currentMonth && year == currentYear) {
+                                if (taskActions[i].rating == -1) {
+                                    taskHasActionsAccountable.push(x);
+                                    break;
+                                }
+                            }
+                        }
+                    })
+                }
+            }
+
+            return {
+                listAlarmTask: {
+                    notLinkedTasks,
+                    unconfirmedTask,
+                    noneUpdateTask,
+                    taskHasActionsAccountable,
+                    taskHasActionsResponsible,
+                    taskHasNotEvaluationResultIncurrentMonth
+                }
+            }
+        } else {
+            return null;
+        }
     }
 
     componentDidMount = async () => {
@@ -154,9 +344,14 @@ class SuperHome extends Component {
         }
     }
 
+    viewAllTask = () => {
+        window.$('#modal-view-all-task').modal('show')
+    }
+
     render() {
         const { tasks, translate } = this.props;
-        const { startMonth, endMonth } = this.state;
+        const { listAlarmTask } = this.state;
+        console.log('this.state', this.state)
 
         // Config ngày mặc định cho datePiker
         let d = new Date(),
@@ -186,6 +381,10 @@ class SuperHome extends Component {
 
         return (
             <React.Fragment>
+                {
+                    listAlarmTask &&
+                    <ViewAllTasks listAlarmTask={listAlarmTask} />
+                }
                 <div className="qlcv" style={{ marginBottom: 10 }}>
                     {/**Chọn ngày bắt đầu */}
                     <div className="form-inline">
@@ -218,76 +417,26 @@ class SuperHome extends Component {
                         </div>
                     </div>
                 </div>
-
-                <div className="row row-equal-height" style={{ marginBottom: '20px' }}>
-                    <div className="col-xs-12 col-sm-6 col-md-6">
-                        <div className="box box-primary" style={{ height: "100%" }}>
+                {/* Tổng quan công việc cá nhân */}
+                <div className="row">
+                    <div className="col-md-12">
+                        <div className="box box-primary">
                             <div className="box-header with-border">
-                                <div className="box-title">{translate('task.task_management.dashboard_overdue')}</div>
+                                <div className="box-title">{`Tổng quan công việc (${tasks && tasks.tasks ? tasks.tasks.length : 0})`}</div>
                             </div>
+                            {
+                                tasks && (tasks.tasks || tasks.accountableTasks || tasks.responsibleTasks || tasks.consultedTasks) &&
+                                <LazyLoadComponent once={true}>
+                                    <GeneralTaskPersonalChart
+                                        tasks={tasks}
+                                    />
+                                </LazyLoadComponent>
+                            }
+                        </div>
 
-                            <div id="dashboard-overdue" className="box-body dashboard-overdue">
-                                {
-                                    (tasks && tasks.tasksbyuser) ?
-                                        <ul className="todo-list">
-                                            {
-                                                (tasks.tasksbyuser.expire.length !== 0) ?
-                                                    tasks.tasksbyuser.expire.map((item, key) =>
-                                                        <li key={key}>
-                                                            <span className="handle">
-                                                                <i className="fa fa-ellipsis-v" />
-                                                                <i className="fa fa-ellipsis-v" />
-                                                            </span>
-                                                            <span className="text"><a href={`/task?taskId=${item.task._id}`} target="_blank">{item.task.name}</a></span>
-                                                            <small className="label label-danger"><i className="fa fa-clock-o" /> &nbsp;{item.totalDays} {translate('task.task_management.calc_days')}</small>
-                                                        </li>
-                                                    ) : "Không có công việc quá hạn"
-                                            }
-                                        </ul> : "Đang tải dữ liệu"
-                                }
-                            </div>
-                            <SlimScroll
-                                outerComponentId={"dashboard-overdue"}
-                                maxHeight={300}
-                                verticalScroll={true}
-                                activate={true}
-                            />
-                        </div>
-                    </div>
-                    <div className="col-xs-12 col-sm-6 col-md-6">
-                        <div className="box box-primary" style={{ height: "100%" }}>
-                            <div className="box-header with-border">
-                                <div className="box-title">{translate('task.task_management.dashboard_about_to_overdue')}</div>
-                            </div>
-                            <div id="dashboard-about-to-overdue" className="box-body dashboard-about-to-overdue">
-                                {
-                                    (tasks && tasks.tasksbyuser) ?
-                                        <ul className="todo-list">
-                                            {
-                                                (tasks.tasksbyuser.deadlineincoming.length !== 0) ?
-                                                    tasks.tasksbyuser.deadlineincoming.map((item, key) =>
-                                                        <li key={key}>
-                                                            <span className="handle">
-                                                                <i className="fa fa-ellipsis-v" />
-                                                                <i className="fa fa-ellipsis-v" />
-                                                            </span>
-                                                            <span className="text"><a href={`/task?taskId=${item.task._id}`} target="_blank">{item.task.name}</a></span>
-                                                            <small className="label label-warning"><i className="fa fa-clock-o" /> &nbsp;{item.totalDays} {translate('task.task_management.calc_days')}</small>
-                                                        </li>
-                                                    ) : "Không có công việc nào sắp hết hạn"
-                                            }
-                                        </ul> : "Đang tải dữ liệu"
-                                }
-                            </div>
-                            <SlimScroll
-                                outerComponentId={"dashboard-about-to-overdue"}
-                                maxHeight={300}
-                                verticalScroll={true}
-                                activate={true}
-                            />
-                        </div>
                     </div>
                 </div>
+
 
                 {/* Lịch công việc chi tiết */}
                 <div className="row">
@@ -296,18 +445,51 @@ class SuperHome extends Component {
                             <div className="box-header with-border">
                                 <div className="box-title">{translate('task.task_management.tasks_calendar')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
                             </div>
-                            {/* <CalendarEmployee
-                                startMonth={startMonth}
-                                endMonth={endMonth}
-                                home={true}
-                            /> */}
-                            <GanttCalendar
-                                tasks={tasks}
-                                unitOrganization={false}
-                            />
+                            <LazyLoadComponent once={true}>
+                                <GanttCalendar
+                                    tasks={tasks}
+                                    unitOrganization={false}
+                                />
+                            </LazyLoadComponent>
                         </div>
                     </div>
                 </div>
+
+                {/* News feed */}
+                <div className="row">
+                    <div className="col-xs-12">
+                        <LazyLoadComponent once={true}>
+                            <NewsFeed />
+                        </LazyLoadComponent>
+                    </div>
+                </div>
+
+                {/* <input className="alarmTask" type="checkbox" id="toggle-1"></input> */}
+                <label className="alarm-task-arrow animated alram-task-bounce" htmlFor="toggle-1" onClick={this.viewAllTask}>
+                    <span className="material-icons" >
+                        alarm
+                    </span>
+                </label>
+                {/* <div className="alarm-task-popup">
+                    <div className="alarm-task-popup-header">
+                        <label htmlFor="toggle-1"><i className="fa fa-times close-icon-popup" aria-hidden="true"></i></label>
+                        <h5 className="alarm-task-popup-title" >
+                            <span className="material-icons" style={{ marginRight: '5px', color: "#fb6b6b" }}>
+                                alarm
+                                </span>
+                                Nhắc việc
+                            </h5>
+                    </div>
+                    <div className="alarm-task-popup-content">
+                        <ul style={{ paddingLeft: '10px', listStyle: "none" }}>
+                            <li className="list-todo-alarm"><a href="#" onClick={() => this.viewAllTask(noneUpdateTask, translate('task.task_dashboard.none_update_recently'))}>{`Chưa cập nhật trong 7 ngày gần nhất (${noneUpdateTask ? noneUpdateTask.length : 0})`}</a></li>
+                            <li className="list-todo-alarm"><a href="#" onClick={() => this.viewAllTask(unconfirmedTask, translate('task.task_dashboard.unconfirmed_task'))}>{`Chưa xác nhận thực hiện (${unconfirmedTask ? unconfirmedTask.length : 0})`}</a></li>
+                            <li className="list-todo-alarm"><a href="#" onClick={() => this.viewAllTask(notLinkedTasks, translate('task.task_management.task_is_not_linked_up_with_monthly_kpi'))}>{`Chưa liên kết KPI (${notLinkedTasks ? notLinkedTasks.length : 0})`}</a></li>
+                            <li className="list-todo-alarm"><a href="#" onClick={() => this.viewAllTask(taskHasActionsResponsible, 'Chưa được đánh giá hoạt động')}>{`Chưa được đánh giá hoạt động (${taskHasActionsResponsible ? taskHasActionsResponsible.length : 0})`}</a></li>
+                            <li className="list-todo-alarm"><a href="#" onClick={() => this.viewAllTask(taskHasActionsAccountable, 'Chưa đánh giá công việc')}>{`Chưa đánh giá công việc (${taskHasActionsAccountable ? taskHasActionsAccountable.length : 0})`}</a></li>
+                        </ul>
+                    </div>
+                </div> */}
             </React.Fragment>
         );
     }

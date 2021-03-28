@@ -26,7 +26,7 @@ exports.getTaskById = async (portal, id, userId) => {
             { path: "requestToCloseTask.requestedBy", select: "name email _id active" },
             {
                 path:
-                    "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator",
+                    "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator inactiveEmployees",
                 select: "name email _id active avatar",
             },
             {
@@ -297,7 +297,7 @@ _checkManagers = async (v, id) => {
 exports.getTaskTimesheetLogs = async (portal, params) => {
     let timesheetLogs = await Task(connect(DB_CONNECTION, portal))
         .findById(params.taskId)
-        .populate("timesheetLogs.creator");
+        .populate({path: "timesheetLogs.creator", select: "_id name email avatar"});
     return timesheetLogs.timesheetLogs;
 };
 
@@ -331,15 +331,30 @@ exports.getActiveTimesheetLog = async (portal, query) => {
 /**
  * Bắt đầu bấm giờ: Lưu thời gian bắt đầu
  */
-exports.startTimesheetLog = async (portal, params, body) => {
+exports.startTimesheetLog = async (portal, params, body, user) => {
     const now = new Date();
     let timerUpdate = {
         startedAt: now,
         creator: body.creator,
     };
 
+    // Check xem người dùng có đang bấm giờ công việc khác hay không
+    const timerStatus = await Task(connect(DB_CONNECTION, portal)).findOne(
+        {
+            timesheetLogs: {
+                $elemMatch: {
+                    creator: user._id,
+                    stoppedAt: null,
+                },
+            },
+        },
+    );
+
+    if(timerStatus)
+        throw["timer_exist_another_task"]
+
     /* check và tìm công việc đang được hẹn tắt bấm giờ:
-    * Nếu công tìm được công việc có thời gian kết thúc bấm giờ lớn hơn thời gin hiện tại
+    * Nếu công tìm được công việc có thời gian kết thúc bấm giờ lớn hơn thời gian hiện tại
     * => Thì chứng tỏ công việc đấy đang được hẹn tắt giờ
     */
     let checkAutoTSLog = await Task(connect(DB_CONNECTION, portal)).findOne({
@@ -347,8 +362,8 @@ exports.startTimesheetLog = async (portal, params, body) => {
         "timesheetLogs.acceptLog": true,
         "timesheetLogs.stoppedAt": { $exists: true },
         "timesheetLogs.stoppedAt": { $gt: timerUpdate.startedAt }
-    }, {'timesheetLogs.$': 1, '_id': 1, 'name': 1});
-    
+    }, { 'timesheetLogs.$': 1, '_id': 1, 'name': 1 });
+
     // Kiểm tra thời điểm bắt đầu bấm giờ có nằm trong khoảng thời gian hẹn tắt bấm giờ tự động không?
     if (body.overrideTSLog === 'yes') {
         // Nếu người dùng ấn xác nhận bấm giờ công việc mới thì sẽ lưu lại khoảng thời gian mà người dùng bám được cho tới hiện tại
@@ -380,20 +395,20 @@ exports.startTimesheetLog = async (portal, params, body) => {
 
         // Cộng tổng thời gian đóng góp trong công việc thoe duration mới
         let newTotalHoursSpent = sumBy(result.timesheetLogs, function (o) { return o.duration })
-        
+
         //cần cập nhật lại thời gian đóng góp của từng người trong hoursSpentOnTask.contributions
         let contributions = [];
-        result.timesheetLogs.reduce(function(res, value) {
-        if (!res[value.creator]) {
-            res[value.creator] = { employee: value.creator, hoursSpent: 0 };
-            contributions.push(res[value.creator])
+        result.timesheetLogs.reduce(function (res, value) {
+            if (!res[value.creator]) {
+                res[value.creator] = { employee: value.creator, hoursSpent: 0 };
+                contributions.push(res[value.creator])
             }
             if (value.duration)
                 res[value.creator].hoursSpent += value.duration;
             return res;
         }, {});
 
-        
+
         await Task(connect(DB_CONNECTION, portal)).findOneAndUpdate(
             { _id: checkAutoTSLog._id },
             {
@@ -402,10 +417,10 @@ exports.startTimesheetLog = async (portal, params, body) => {
                     "hoursSpentOnTask.contributions": contributions,
                 },
             },
-            {new: true}
+            { new: true }
         );
     } else {
-        if(checkAutoTSLog) throw ['time_overlapping', checkAutoTSLog.name]
+        if (checkAutoTSLog) throw ['time_overlapping', checkAutoTSLog.name]
     }
 
     let timer = await Task(connect(DB_CONNECTION, portal)).findByIdAndUpdate(
@@ -424,16 +439,16 @@ exports.startTimesheetLog = async (portal, params, body) => {
 /**
  * Chỉnh sửa lịch sử bấm giờ
  */
-exports.editTimeSheetLog = async(portal, taskId, timesheetlogId, data) => {
+exports.editTimeSheetLog = async (portal, taskId, timesheetlogId, data) => {
     await Task(connect(DB_CONNECTION, portal))
         .updateOne({
             "_id": taskId,
             "timesheetLogs._id": timesheetlogId
-        },{
+        }, {
             $set: {
                 "timesheetLogs.$[i].acceptLog": data.acceptLog
             },
-        },{
+        }, {
             arrayFilters: [
                 {
                     "i._id": timesheetlogId
@@ -450,7 +465,7 @@ exports.editTimeSheetLog = async(portal, taskId, timesheetlogId, data) => {
         { path: "collaboratedWithOrganizationalUnits.organizationalUnit" },
         {
             path:
-                "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator",
+                "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator inactiveEmployees",
             select: "name email _id active avatar",
         },
         {
@@ -566,15 +581,15 @@ exports.editTimeSheetLog = async(portal, taskId, timesheetlogId, data) => {
 /**
  * Dừng bấm giờ: Lưu thời gian kết thúc và số giờ chạy (endTime và time)
  */
-exports.stopTimesheetLog = async (portal, params, body) => {
-    const now = new Date();
+exports.stopTimesheetLog = async (portal, params, body, user) => {
     let stoppedAt;
     let timer, duration;
+    
     // Add log timer
     if (body.addlogStartedAt && body.addlogStoppedAt) {
         let getAddlogStartedAt = new Date(body.addlogStartedAt);
         let getAddlogStoppedAt = new Date(body.addlogStoppedAt);
-        
+
         // Lưu vào timeSheetLog
         duration = new Date(getAddlogStoppedAt).getTime() - new Date(getAddlogStartedAt).getTime();
         const addLogTime = {
@@ -583,20 +598,19 @@ exports.stopTimesheetLog = async (portal, params, body) => {
             duration,
             autoStopped: body.autoStopped,
             description: body.addlogDescription,
+            creator: user._id,
         }
         timer = await Task(connect(DB_CONNECTION, portal)).findByIdAndUpdate(
             params.taskId,
             { $push: { timesheetLogs: addLogTime } },
-            { new: true}
+            { new: true }
         ).populate({ path: "timesheetLogs.creator", select: "name" });
 
     } else {
-        // tắt như bình thường hoặc hẹn giờ tắt bấm giờ
-        if (body.stoppedAt) {
-            let getStoppedTime = new Date(body.stoppedAt);
-            stoppedAt = getStoppedTime;
+        if (body.autoStopped === 1) {
+            stoppedAt = new Date();
         } else {
-            stoppedAt = now;
+            stoppedAt = new Date(body.stoppedAt);
         }
 
         // Lưu vào timeSheetLog
@@ -664,7 +678,7 @@ exports.stopTimesheetLog = async (portal, params, body) => {
             { path: "collaboratedWithOrganizationalUnits.organizationalUnit" },
             {
                 path:
-                    "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator",
+                    "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator inactiveEmployees",
                 select: "name email _id active avatar",
             },
             {
@@ -777,6 +791,24 @@ exports.stopTimesheetLog = async (portal, params, body) => {
         ]);
     newTask.evaluations.reverse();
 
+    // tự động tắt bấm giờ 1 công việc khi mở nhiều tab, trình duyệt,
+    const userIdReceive = user._id;
+    let socketIdOfUserReceive = [];
+    CONNECTED_CLIENTS.forEach(o => {
+        if (o.userId === userIdReceive) {
+            socketIdOfUserReceive = [...socketIdOfUserReceive, o.socketId];
+        }
+    })
+
+    if (socketIdOfUserReceive.length > 0) {
+        socketIdOfUserReceive.forEach(obj => {
+            SOCKET_IO.to(obj).emit("stop timers", {
+                taskId: params.taskId,
+                stopTimerAllDevices: true
+            });
+        })
+    }
+    
     return newTask;
 };
 
@@ -784,9 +816,11 @@ exports.stopTimesheetLog = async (portal, params, body) => {
 exports.getCurrentTaskTimesheetLogOfEmployeeInOrganizationalUnit = async (portal, data) => {
     const { organizationalUnitId } = data;
     let employees;
-    let users = await UserService.getAllEmployeeOfUnitByIds(portal, organizationalUnitId);
+    let users = await UserService.getAllEmployeeOfUnitByIds(portal, {
+        ids: organizationalUnitId
+    });
     if (users && users.length !== 0) {
-        employees = users.map(item => item?.userId?._id)
+        employees = users?.employees?.map(item => item?.userId?._id)
     }
 
     const now = new Date();
@@ -823,7 +857,7 @@ exports.getCurrentTaskTimesheetLogOfEmployeeInOrganizationalUnit = async (portal
     ])
 
     await User(connect(DB_CONNECTION, portal)).populate(timesheetLog, { path: 'creator', select: '_id name email' });
-    
+
     return timesheetLog;
 }
 
@@ -843,15 +877,125 @@ exports.createCommentOfTaskAction = async (portal, params, body, files, user) =>
             },
         }, { new: true }
     ).populate([
-        { path: "taskActions.creator", select: "name email avatar" },
-        {
-            path: "taskActions.comments.creator",
-            select: "name email avatar",
-        },
-        {
-            path: "taskActions.evaluations.creator",
-            select: "name email avatar",
-        }])
+            { path: "parent", select: "name" },
+            { path: "taskTemplate", select: "formula" },
+            { path: "organizationalUnit" },
+            { path: "collaboratedWithOrganizationalUnits.organizationalUnit" },
+            { path: "requestToCloseTask.requestedBy", select: "name email _id active" },
+            {
+                path:
+                    "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator inactiveEmployees",
+                select: "name email _id active avatar",
+            },
+            {
+                path: "evaluations.results.employee",
+                select: "name email _id active",
+            },
+            {
+                path: "evaluations.results.organizationalUnit",
+                select: "name _id",
+            },
+            { path: "evaluations.results.kpis" },
+            { path: "taskActions.creator", select: "name email avatar" },
+            {
+                path: "taskActions.comments.creator",
+                select: "name email avatar",
+            },
+            { path: "commentsInProcess.creator", select: "name email avatar" },
+            {
+                path: "commentsInProcess.comments.creator",
+                select: "name email avatar",
+            },
+            {
+                path: "taskActions.evaluations.creator",
+                select: "name email avatar ",
+            },
+            { path: "taskComments.creator", select: "name email avatar" },
+            {
+                path: "taskComments.comments.creator",
+                select: "name email avatar",
+            },
+            { path: "documents.creator", select: "name email avatar" },
+            { path: "followingTasks.task" },
+            {
+                path: "preceedingTasks.task",
+                populate: [
+                    {
+                        path: "commentsInProcess.creator",
+                        select: "name email avatar",
+                    },
+                    {
+                        path: "commentsInProcess.comments.creator",
+                        select: "name email avatar",
+                    },
+                ],
+            },
+            { path: "timesheetLogs.creator", select: "name avatar _id email" },
+            { path: "hoursSpentOnTask.contributions.employee", select: "name" },
+            {
+                path: "process",
+                populate: {
+                    path: "tasks",
+                    populate: [
+                        { path: "parent", select: "name" },
+                        { path: "taskTemplate", select: "formula" },
+                        { path: "organizationalUnit" },
+                        {
+                            path:
+                                "collaboratedWithOrganizationalUnits.organizationalUnit",
+                        },
+                        {
+                            path:
+                                "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator",
+                            select: "name email _id active avatar",
+                        },
+                        {
+                            path: "evaluations.results.employee",
+                            select: "name email _id active",
+                        },
+                        {
+                            path: "evaluations.results.organizationalUnit",
+                            select: "name _id",
+                        },
+                        { path: "evaluations.results.kpis" },
+                        {
+                            path: "taskActions.creator",
+                            select: "name email avatar",
+                        },
+                        {
+                            path: "taskActions.comments.creator",
+                            select: "name email avatar",
+                        },
+                        {
+                            path: "taskActions.evaluations.creator",
+                            select: "name email avatar ",
+                        },
+                        {
+                            path: "taskComments.creator",
+                            select: "name email avatar",
+                        },
+                        {
+                            path: "taskComments.comments.creator",
+                            select: "name email avatar",
+                        },
+                        {
+                            path: "documents.creator",
+                            select: "name email avatar",
+                        },
+                        { path: "process" },
+                        {
+                            path: "commentsInProcess.creator",
+                            select: "name email avatar",
+                        },
+                        {
+                            path: "commentsInProcess.comments.creator",
+                            select: "name email avatar",
+                        },
+                    ],
+                },
+            },
+    ]);
+    
     const { taskActions } = commentOfTaskAction;
 
     // Lấy ra hoạt động cha
@@ -878,12 +1022,12 @@ exports.createCommentOfTaskAction = async (portal, params, body, files, user) =>
     userReceive = userReceive.filter(obj => obj.toString() !== user._id.toString())
 
     const associatedData = {
-        dataType: "createCommentOfTaskactions",
-        value: taskActions.filter(obj => obj._id.toString() === params.actionId.toString())
+        dataType: "realtime_tasks",
+        value: commentOfTaskAction,
     }
 
     const data = {
-        organizationalUnits: commentOfTaskAction.organizationalUnit._id,
+        organizationalUnits: commentOfTaskAction.organizationalUnit && commentOfTaskAction.organizationalUnit._id,
         title: "Cập nhật thông tin công việc ",
         level: "general",
         content: `<p><strong>${user.name}</strong> đã bình luận về hoạt động trong công việc: <a href="${process.env.WEBSITE}/task?taskId=${params.taskId}">${process.env.WEBSITE}/task?taskId=${params.taskId}</a></p>`,
@@ -1031,21 +1175,136 @@ exports.createTaskAction = async (portal, params, body, files) => {
                 },
             }, { new: true })
         .populate([
-            { path: "taskActions.creator", select: 'name email avatar company' },
-            { path: "taskActions.comments.creator", select: 'name email avatar' },
-            { path: "taskActions.evaluations.creator", select: 'name email avatar ' }])
+            { path: "parent", select: "name" },
+            { path: "taskTemplate", select: "formula" },
+            { path: "organizationalUnit" },
+            { path: "collaboratedWithOrganizationalUnits.organizationalUnit" },
+            { path: "requestToCloseTask.requestedBy", select: "name email _id active" },
+            {
+                path:
+                    "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator inactiveEmployees",
+                select: "name email _id active avatar",
+            },
+            {
+                path: "evaluations.results.employee",
+                select: "name email _id active",
+            },
+            {
+                path: "evaluations.results.organizationalUnit",
+                select: "name _id",
+            },
+            { path: "evaluations.results.kpis" },
+            { path: "taskActions.creator", select: "name email avatar" },
+            {
+                path: "taskActions.comments.creator",
+                select: "name email avatar",
+            },
+            { path: "commentsInProcess.creator", select: "name email avatar" },
+            {
+                path: "commentsInProcess.comments.creator",
+                select: "name email avatar",
+            },
+            {
+                path: "taskActions.evaluations.creator",
+                select: "name email avatar ",
+            },
+            { path: "taskComments.creator", select: "name email avatar" },
+            {
+                path: "taskComments.comments.creator",
+                select: "name email avatar",
+            },
+            { path: "documents.creator", select: "name email avatar" },
+            { path: "followingTasks.task" },
+            {
+                path: "preceedingTasks.task",
+                populate: [
+                    {
+                        path: "commentsInProcess.creator",
+                        select: "name email avatar",
+                    },
+                    {
+                        path: "commentsInProcess.comments.creator",
+                        select: "name email avatar",
+                    },
+                ],
+            },
+            { path: "timesheetLogs.creator", select: "name avatar _id email" },
+            { path: "hoursSpentOnTask.contributions.employee", select: "name" },
+            {
+                path: "process",
+                populate: {
+                    path: "tasks",
+                    populate: [
+                        { path: "parent", select: "name" },
+                        { path: "taskTemplate", select: "formula" },
+                        { path: "organizationalUnit" },
+                        {
+                            path:
+                                "collaboratedWithOrganizationalUnits.organizationalUnit",
+                        },
+                        {
+                            path:
+                                "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator",
+                            select: "name email _id active avatar",
+                        },
+                        {
+                            path: "evaluations.results.employee",
+                            select: "name email _id active",
+                        },
+                        {
+                            path: "evaluations.results.organizationalUnit",
+                            select: "name _id",
+                        },
+                        { path: "evaluations.results.kpis" },
+                        {
+                            path: "taskActions.creator",
+                            select: "name email avatar",
+                        },
+                        {
+                            path: "taskActions.comments.creator",
+                            select: "name email avatar",
+                        },
+                        {
+                            path: "taskActions.evaluations.creator",
+                            select: "name email avatar ",
+                        },
+                        {
+                            path: "taskComments.creator",
+                            select: "name email avatar",
+                        },
+                        {
+                            path: "taskComments.comments.creator",
+                            select: "name email avatar",
+                        },
+                        {
+                            path: "documents.creator",
+                            select: "name email avatar",
+                        },
+                        { path: "process" },
+                        {
+                            path: "commentsInProcess.creator",
+                            select: "name email avatar",
+                        },
+                        {
+                            path: "commentsInProcess.comments.creator",
+                            select: "name email avatar",
+                        },
+                    ],
+                },
+            },
+        ]);
 
     // let user = await User(connect(DB_CONNECTION, portal)).findOne({ _id: body.creator }); // Thừa 
-    let getUser;
+    let getUser, accEmployees;
     if (task) {
         const length = task.taskActions.length;
         getUser = task.taskActions[length - 1].creator;
+
+        accEmployees = task.accountableEmployees.map(o => o._id);
     }
 
-    // let tasks = await Task(connect(DB_CONNECTION, portal)).findOne({ _id: params.taskId }); Thừa .. giá trị trả về giống trên
-
     // Danh sách người phê duyệt được gửi mail
-    let userEmail = await User(connect(DB_CONNECTION, portal)).find({ _id: { $in: task.accountableEmployees } });
+    let userEmail = await User(connect(DB_CONNECTION, portal)).find({ _id: { $in: accEmployees } });
     let email = userEmail.map(item => item.email);
     return { taskActions: task.taskActions, tasks: task, userCreator: getUser, email: email };
 }
@@ -1146,29 +1405,136 @@ exports.createTaskComment = async (portal, params, body, files, user) => {
             },
         }, { new: true })
         .populate([
+            { path: "parent", select: "name" },
+            { path: "taskTemplate", select: "formula" },
+            { path: "organizationalUnit" },
+            { path: "collaboratedWithOrganizationalUnits.organizationalUnit" },
+            { path: "requestToCloseTask.requestedBy", select: "name email _id active" },
+            {
+                path:
+                    "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator inactiveEmployees",
+                select: "name email _id active avatar",
+            },
+            {
+                path: "evaluations.results.employee",
+                select: "name email _id active",
+            },
+            {
+                path: "evaluations.results.organizationalUnit",
+                select: "name _id",
+            },
+            { path: "evaluations.results.kpis" },
+            { path: "taskActions.creator", select: "name email avatar" },
+            {
+                path: "taskActions.comments.creator",
+                select: "name email avatar",
+            },
+            { path: "commentsInProcess.creator", select: "name email avatar" },
+            {
+                path: "commentsInProcess.comments.creator",
+                select: "name email avatar",
+            },
+            {
+                path: "taskActions.evaluations.creator",
+                select: "name email avatar ",
+            },
             { path: "taskComments.creator", select: "name email avatar" },
             {
                 path: "taskComments.comments.creator",
                 select: "name email avatar",
             },
+            { path: "documents.creator", select: "name email avatar" },
+            { path: "followingTasks.task" },
             {
-                path: "taskActions.evaluations.creator",
-                select: "name email avatar",
+                path: "preceedingTasks.task",
+                populate: [
+                    {
+                        path: "commentsInProcess.creator",
+                        select: "name email avatar",
+                    },
+                    {
+                        path: "commentsInProcess.comments.creator",
+                        select: "name email avatar",
+                    },
+                ],
             },
+            { path: "timesheetLogs.creator", select: "name avatar _id email" },
+            { path: "hoursSpentOnTask.contributions.employee", select: "name" },
             {
-                path: "organizationalUnit"
-            }
+                path: "process",
+                populate: {
+                    path: "tasks",
+                    populate: [
+                        { path: "parent", select: "name" },
+                        { path: "taskTemplate", select: "formula" },
+                        { path: "organizationalUnit" },
+                        {
+                            path:
+                                "collaboratedWithOrganizationalUnits.organizationalUnit",
+                        },
+                        {
+                            path:
+                                "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator",
+                            select: "name email _id active avatar",
+                        },
+                        {
+                            path: "evaluations.results.employee",
+                            select: "name email _id active",
+                        },
+                        {
+                            path: "evaluations.results.organizationalUnit",
+                            select: "name _id",
+                        },
+                        { path: "evaluations.results.kpis" },
+                        {
+                            path: "taskActions.creator",
+                            select: "name email avatar",
+                        },
+                        {
+                            path: "taskActions.comments.creator",
+                            select: "name email avatar",
+                        },
+                        {
+                            path: "taskActions.evaluations.creator",
+                            select: "name email avatar ",
+                        },
+                        {
+                            path: "taskComments.creator",
+                            select: "name email avatar",
+                        },
+                        {
+                            path: "taskComments.comments.creator",
+                            select: "name email avatar",
+                        },
+                        {
+                            path: "documents.creator",
+                            select: "name email avatar",
+                        },
+                        { path: "process" },
+                        {
+                            path: "commentsInProcess.creator",
+                            select: "name email avatar",
+                        },
+                        {
+                            path: "commentsInProcess.comments.creator",
+                            select: "name email avatar",
+                        },
+                    ],
+                },
+            },
         ]);
 
-    const userReceive = [...taskComment.responsibleEmployees, ...taskComment.accountableEmployees].filter(obj => JSON.stringify(obj) !== JSON.stringify(user._id))
-
+    const resEmployees = taskComment.responsibleEmployees && taskComment.responsibleEmployees.map(o => o._id);
+    const accEmployees = taskComment.accountableEmployees && taskComment.accountableEmployees.map(o => o._id);
+    
+    const userReceive = [...resEmployees, ...accEmployees].filter(obj => JSON.stringify(obj) !== JSON.stringify(user._id))
     const associatedData = {
-        dataType: "createTaskComment",
-        value: [taskComment.taskComments[taskComment.taskComments.length - 1]]
+        dataType: "realtime_tasks",
+        value: taskComment
     }
 
     const data = {
-        organizationalUnits: taskComment.organizationalUnit._id,
+        organizationalUnits: taskComment.organizationalUnit && taskComment.organizationalUnit._id,
         title: "Cập nhật thông tin công việc ",
         level: "general",
         content: `<p><strong>${user.name}</strong> đã thêm một bình luận trong công việc: <a href="${process.env.WEBSITE}/task?taskId=${params.taskId}">${process.env.WEBSITE}/task?taskId=${params.taskId}</a></p>`,
@@ -1277,16 +1643,124 @@ exports.createCommentOfTaskComment = async (portal, params, body, files, user) =
             },
         }, { new: true })
         .populate([
-            { path: "taskComments.creator", select: "name email avatar" },
+            { path: "parent", select: "name" },
+            { path: "taskTemplate", select: "formula" },
+            { path: "organizationalUnit" },
+            { path: "collaboratedWithOrganizationalUnits.organizationalUnit" },
+            { path: "requestToCloseTask.requestedBy", select: "name email _id active" },
             {
-                path: "taskComments.comments.creator",
+                path:
+                    "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator inactiveEmployees",
+                select: "name email _id active avatar",
+            },
+            {
+                path: "evaluations.results.employee",
+                select: "name email _id active",
+            },
+            {
+                path: "evaluations.results.organizationalUnit",
+                select: "name _id",
+            },
+            { path: "evaluations.results.kpis" },
+            { path: "taskActions.creator", select: "name email avatar" },
+            {
+                path: "taskActions.comments.creator",
+                select: "name email avatar",
+            },
+            { path: "commentsInProcess.creator", select: "name email avatar" },
+            {
+                path: "commentsInProcess.comments.creator",
                 select: "name email avatar",
             },
             {
                 path: "taskActions.evaluations.creator",
                 select: "name email avatar ",
             },
-        ])
+            { path: "taskComments.creator", select: "name email avatar" },
+            {
+                path: "taskComments.comments.creator",
+                select: "name email avatar",
+            },
+            { path: "documents.creator", select: "name email avatar" },
+            { path: "followingTasks.task" },
+            {
+                path: "preceedingTasks.task",
+                populate: [
+                    {
+                        path: "commentsInProcess.creator",
+                        select: "name email avatar",
+                    },
+                    {
+                        path: "commentsInProcess.comments.creator",
+                        select: "name email avatar",
+                    },
+                ],
+            },
+            { path: "timesheetLogs.creator", select: "name avatar _id email" },
+            { path: "hoursSpentOnTask.contributions.employee", select: "name" },
+            {
+                path: "process",
+                populate: {
+                    path: "tasks",
+                    populate: [
+                        { path: "parent", select: "name" },
+                        { path: "taskTemplate", select: "formula" },
+                        { path: "organizationalUnit" },
+                        {
+                            path:
+                                "collaboratedWithOrganizationalUnits.organizationalUnit",
+                        },
+                        {
+                            path:
+                                "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator",
+                            select: "name email _id active avatar",
+                        },
+                        {
+                            path: "evaluations.results.employee",
+                            select: "name email _id active",
+                        },
+                        {
+                            path: "evaluations.results.organizationalUnit",
+                            select: "name _id",
+                        },
+                        { path: "evaluations.results.kpis" },
+                        {
+                            path: "taskActions.creator",
+                            select: "name email avatar",
+                        },
+                        {
+                            path: "taskActions.comments.creator",
+                            select: "name email avatar",
+                        },
+                        {
+                            path: "taskActions.evaluations.creator",
+                            select: "name email avatar ",
+                        },
+                        {
+                            path: "taskComments.creator",
+                            select: "name email avatar",
+                        },
+                        {
+                            path: "taskComments.comments.creator",
+                            select: "name email avatar",
+                        },
+                        {
+                            path: "documents.creator",
+                            select: "name email avatar",
+                        },
+                        { path: "process" },
+                        {
+                            path: "commentsInProcess.creator",
+                            select: "name email avatar",
+                        },
+                        {
+                            path: "commentsInProcess.comments.creator",
+                            select: "name email avatar",
+                        },
+                    ],
+                },
+            },
+        ]);
 
     const { taskComments } = taskcomment;
     // Lấy ra bình luận cha
@@ -1301,7 +1775,8 @@ exports.createCommentOfTaskComment = async (portal, params, body, files, user) =
 
     // Lấy danh sách user dự tính gửi thông báo
     let userReceive = [getTaskComment[0].creator._id];
-    // Lấy người liên quan đến trong subcomment 
+
+    // Lấy người liên quan đến trong subcomment
     const subCommentLength = getTaskComment[0].comments.length;
 
     for (let index = 0; index < subCommentLength; index++) {
@@ -1312,11 +1787,11 @@ exports.createCommentOfTaskComment = async (portal, params, body, files, user) =
     userReceive = userReceive.filter(obj => obj.toString() !== user._id.toString())
 
     const associatedData = {
-        dataType: "createTaskSubComment",
-        value: taskComments.filter(obj => obj._id.toString() === params.commentId.toString())
+        dataType: "realtime_tasks",
+        value: taskcomment
     }
     const data = {
-        organizationalUnits: taskcomment.organizationalUnit._id,
+        organizationalUnits: taskcomment.organizationalUnit && taskcomment.organizationalUnit._id,
         title: "Cập nhật thông tin công việc ",
         level: "general",
         content: `<p><strong>${user.name}</strong> đã trả lời bình luận của bạn trong công việc: <a href="${process.env.WEBSITE}/task?taskId=${params.taskId}">${process.env.WEBSITE}/task?taskId=${params.taskId}</a></p>`,
@@ -1460,7 +1935,7 @@ exports.evaluationAction = async (portal, params, body) => {
         }
     ]);
 
-    if(danhgia.length === 0){
+    if (danhgia.length === 0) {
         await Task(connect(DB_CONNECTION, portal)).updateOne(
             { _id: params.taskId, "taskActions._id": params.actionId },
             {
@@ -1476,20 +1951,20 @@ exports.evaluationAction = async (portal, params, body) => {
     } else {
         await Task(connect(DB_CONNECTION, portal)).updateOne(
             {
-                _id: params.taskId, 
+                _id: params.taskId,
                 "taskActions._id": params.actionId,
                 "taskActions.evaluations.creator": body.creator,
                 "taskActions.evaluations.role": body.role
-            },{
-                $set: { 
-                    "taskActions.$[item].evaluations.$[elem].rating": body.rating
-                }
-            },{
-                arrayFilters: [
-                    { "elem.creator": body.creator, "elem.role": body.role },
-                    { "item._id": params.actionId }
-                ]
+            }, {
+            $set: {
+                "taskActions.$[item].evaluations.$[elem].rating": body.rating
             }
+        }, {
+            arrayFilters: [
+                { "elem.creator": body.creator, "elem.role": body.role },
+                { "item._id": params.actionId }
+            ]
+        }
         )
     }
 
@@ -1502,12 +1977,12 @@ exports.evaluationAction = async (portal, params, body) => {
         { $unwind: "$evaluations" },
         { $replaceRoot: { newRoot: "$evaluations" } },
     ]);
-    
+
     //Lấy điểm đánh giá của người phê duyệt trong danh sách các danh sách các đánh giá của hoạt động
     let rating = [];
-    for(let i=0; i<evaluations.length; i++){
+    for (let i = 0; i < evaluations.length; i++) {
         let evaluation = evaluations[i];
-        if(evaluation.role === 'accountable') rating.push(evaluation.rating);
+        if (evaluation.role === 'accountable') rating.push(evaluation.rating);
     }
 
     //tính điểm trung bình
@@ -1567,7 +2042,7 @@ exports.evaluationAllAction = async (portal, params, body, userId) => {
             }
         ]);
 
-        if(danhgia.length === 0){
+        if (danhgia.length === 0) {
             await Task(connect(DB_CONNECTION, portal)).updateOne(
                 { _id: taskId, "taskActions._id": body[i].actionId },
                 {
@@ -1583,20 +2058,20 @@ exports.evaluationAllAction = async (portal, params, body, userId) => {
         } else {
             await Task(connect(DB_CONNECTION, portal)).updateOne(
                 {
-                    _id: taskId, 
+                    _id: taskId,
                     "taskActions._id": body[i].actionId,
                     "taskActions.evaluations.creator": userId,
                     "taskActions.evaluations.role": body[i].role
-                },{
-                    $set: { 
-                        "taskActions.$[item].evaluations.$[elem].rating": body[i].rating
-                    }
-                },{
-                    arrayFilters: [
-                        { "elem.creator": userId, "elem.role": body[i].role },
-                        { "item._id": body[i].actionId }
-                    ]
+                }, {
+                $set: {
+                    "taskActions.$[item].evaluations.$[elem].rating": body[i].rating
                 }
+            }, {
+                arrayFilters: [
+                    { "elem.creator": userId, "elem.role": body[i].role },
+                    { "item._id": body[i].actionId }
+                ]
+            }
             )
         }
 
@@ -1612,9 +2087,9 @@ exports.evaluationAllAction = async (portal, params, body, userId) => {
 
         //Lấy điểm đánh giá của người phê duyệt trong danh sách các danh sách các đánh giá của hoạt động
         let rating = [];
-        for(let i = 0; i < evaluations.length; i++){
+        for (let i = 0; i < evaluations.length; i++) {
             let evaluation = evaluations[i];
-            if(evaluation.role === 'accountable') rating.push(evaluation.rating);
+            if (evaluation.role === 'accountable') rating.push(evaluation.rating);
         }
 
         //tính điểm trung bình
@@ -1624,7 +2099,7 @@ exports.evaluationAllAction = async (portal, params, body, userId) => {
                 rating.reduce((accumulator, currentValue) => {
                     return accumulator + currentValue;
                 }, 0) / rating.length;
-        } 
+        }
 
         // Cập nhật điểm đánh giá trung bình của người phê duyệt của hành động
         await Task(connect(DB_CONNECTION, portal)).updateOne(
@@ -1633,12 +2108,12 @@ exports.evaluationAllAction = async (portal, params, body, userId) => {
                 $set: {
                     "taskActions.$.rating": accountableRating,
                 },
-            },{ $new: true }
+            }, { $new: true }
         );
     }
 
     let task = await Task(connect(DB_CONNECTION, portal))
-        .findOne({ _id: taskId})
+        .findOne({ _id: taskId })
         .populate([
             { path: "taskActions.creator", select: "name email avatar" },
             {
@@ -1728,8 +2203,8 @@ exports.addTaskLog = async (portal, taskId, body) => {
             { $push: { logs: log } },
             { new: true }
         )
-        .populate("logs.creator");
-    
+        .populate({ path: "logs.creator", select: "_id name emmail avatar"});
+
     let taskLog = await this.getTaskLog(portal, taskId);
 
     return taskLog;
@@ -1741,38 +2216,48 @@ formatTime = (date) => {
     return time;
 }
 
-/** Tiện ích tạo mô tả lịch sử thay đổi khi đánh giá công việc */
-exports.evaluateTaskLogs = async (portal, userId, newTask, oldTask) => {
-    let description = '';
-    const { startDate, endDate, progress, status, results, kpi, unit, evaluatingMonth, role, employeePoint } = newTask;
+/** Tiện ích tạo mô tả lịch sử thay đổi công việc */
+exports.createDescriptionEvaluationTaskLogs = async (portal, userId, newTask, oldTask) => {
+    const { startDate, endDate, progress, status, 
+        results, kpi, unit, evaluatingMonth, role, employeePoint
+    } = newTask;
+    let descriptionLog = '';
     let evaluatingMonthTemp = evaluatingMonth && new Date(evaluatingMonth.slice(6) + "-" + evaluatingMonth.slice(3, 5));
     const evaluateTask = oldTask?.evaluations?.filter(item => {
         let evaluatingMonthEva = new Date(item?.evaluatingMonth);
         return evaluatingMonthEva.getMonth() === evaluatingMonthTemp.getMonth();
-    })[0]
+    })[0];
 
     if (unit && unit !== oldTask?.organizationalUnit?._id.toString()) {
-        description = description + 'Đơn vị mới: ' + oldTask?.organizationalUnit?.name + ".\n";
+        descriptionLog = descriptionLog + '<span>Đơn vị mới: ' + oldTask?.organizationalUnit?.name + ".</span></br>";
     }
     if (status && status?.[0] !== oldTask?.status) {
-        description = description + 'Trạng thái công việc mới: ' + status + ".\n";
+        descriptionLog = descriptionLog + '<span>Trạng thái công việc mới: ' + status + ".</span></br>";
     }
     if (progress && progress !== evaluateTask?.progress) {
-        description = description + 'Mức độ hoàn thành công việc mới: ' + progress + "%" + ".\n";
+        descriptionLog = descriptionLog + '<span>Mức độ hoàn thành công việc mới: ' + progress + "%" + ".</span></br>";
     }
     if (startDate && (new Date(startDate)).getTime() !== evaluateTask?.startDate.getTime()) {
-        description = description + 'Ngày bắt đầu mới: ' + formatTime(startDate) + ".\n";
+        descriptionLog = descriptionLog + '<span>Ngày bắt đầu mới: ' + formatTime(startDate) + ".</span></br>";
     }
     if (endDate && (new Date(endDate)).getTime() !== evaluateTask?.endDate.getTime()) {
-        description = description + 'Ngày kết thúc mới: ' + formatTime(endDate) + ".\n";
+        descriptionLog = descriptionLog + '<span>Ngày kết thúc mới: ' + formatTime(endDate) + ".</span></br>";
     }
 
     let resultEvaluation = evaluateTask?.results?.filter(item => item?.employee?._id.toString() === userId && item?.role === role.toString())?.[0];
     if (employeePoint && employeePoint !== resultEvaluation?.employeePoint) {
-        description = description + 'Điểm tự đánh giá mới: ' + employeePoint + ".\n";
+        descriptionLog = descriptionLog + '<span>Điểm tự đánh giá mới: ' + employeePoint + ".</span></br>";
     }
-   
-    if (kpi?.length !== resultEvaluation?.kpis?.length) {
+
+    let checkKpi = false;
+    if (kpi?.length === resultEvaluation?.kpis?.length && resultEvaluation?.kpis?.length > 0) {
+        resultEvaluation.kpis.map(item => {
+            if (!kpi.includes(item?._id?.toString())) {
+                checkKpi = true;
+            }
+        })
+    }
+    if (kpi?.length !== resultEvaluation?.kpis?.length || checkKpi) {
         if (kpi?.length > 0) {
             let dataKpi = await EmployeeKpi(connect(DB_CONNECTION, portal)).find({
                 '_id': { $in: kpi.map(item => mongoose.Types.ObjectId(item)) }
@@ -1782,32 +2267,35 @@ exports.evaluateTaskLogs = async (portal, userId, newTask, oldTask) => {
                 dataKpi?.map((item, index) => {
                     nameKpi = nameKpi + item?.name + (index < kpi?.length - 1 ? ", " : "");
                 })
-                description = description + 'Tập KPI liên kết công việc mới: ' + nameKpi + ".\n";
+                descriptionLog = descriptionLog + '<span>Tập KPI liên kết công việc mới: ' + nameKpi + ".</span></br>";
             }
-        } else {
-            description = description + 'Các KPI liên kết công việc đã bị xóa' + ".\n";
+        } else if (resultEvaluation?.kpis) {
+            descriptionLog = descriptionLog + '<span>Các KPI liên kết công việc đã bị xóa' + ".</span></br>";
         }
     }
 
-    let result = Object.values(results)
-    if (evaluateTask?.results?.length > 0) {
-        evaluateTask.results.map(eva => {
-            let temp = result?.filter(item => item?.role === eva?.role);
-            if (temp?.length > 0) {
-                temp.map(item => {
-                    if (item?.target === "Point" && item?.value !== eva?.approvedPoint) {
-                        description = description + 'Điểm phê duyệt mới của ' + eva?.employee?.name 
-                                + " với vai trò " + eva?.role + " là: " + item?.value + ".\n";
-                    } 
-                    else if (item?.target === "Contribution" && item?.value !== eva?.contribution) {
-                        description = description + 'Phần trăm đóng góp mới của ' + eva?.employee?.name 
-                                + " với vai trò " + eva?.role + " là: " + item?.value + ".\n";
-                    }
-                })
-            }
-        })
+    if (results) {
+        let result = Object.values(results)
+        if (evaluateTask?.results?.length > 0) {
+            evaluateTask.results.map(eva => {
+                let temp = result?.filter(item => item?.role === eva?.role);
+                if (temp?.length > 0) {
+                    temp.map(item => {
+                        if (item?.value && item?.target === "Point" && item?.value !== eva?.approvedPoint) {
+                            descriptionLog = descriptionLog + '<span>Điểm phê duyệt mới của ' + eva?.employee?.name 
+                                    + " với vai trò " + eva?.role + " là: " + item?.value + ".</span></br>";
+                        } 
+                        else if (item?.value && item?.target === "Contribution" && item?.value !== eva?.contribution) {
+                            descriptionLog = descriptionLog + '<span>Phần trăm đóng góp mới của ' + eva?.employee?.name 
+                                    + " với vai trò " + eva?.role + " là: " + item?.value + ".</span></br>";
+                        }
+                    })
+                }
+            })
+        }
     }
-    return description;
+
+    return descriptionLog;
 }
 
 /**
@@ -1976,8 +2464,8 @@ exports.getIdEvaluationOfThisMonth = async (portal, taskId) => {
     } else {
         let chk = initTask.evaluations.find(
             (e) =>
-                monthOfParams === e.evaluatingMonth.getMonth() &&
-                yearOfParams === e.evaluatingMonth.getFullYear()
+                monthOfParams === e.evaluatingMonth && e.evaluatingMonth.getMonth() &&
+                yearOfParams === e.evaluatingMonth && e.evaluatingMonth.getFullYear()
         );
         if (!chk) {
             // có evaluate nhưng k có tháng này
@@ -2006,7 +2494,7 @@ exports.getIdEvaluationOfThisMonth = async (portal, taskId) => {
  * edit task by responsible employee
  */
 exports.editTaskByResponsibleEmployees = async (portal, data, taskId) => {
-    let { name, description, kpi, user, progress, info, date, listInfo , taskProject} = data;
+    let { name, description, kpi, user, progress, info, date, listInfo, taskProject } = data;
     let evaluateId;
 
     let listInfoTask = [];
@@ -2066,18 +2554,18 @@ exports.editTaskByResponsibleEmployees = async (portal, data, taskId) => {
                     type: task.taskInformations[i].type,
                     extra: task.taskInformations[i].extra,
                     value: info[item].value,
-                    isOutput: taskInformations[i].isOutput
+                    isOutput: task?.taskInformations?.[i]?.isOutput
                 };
 
                 await Task(connect(DB_CONNECTION, portal)).updateOne(
                     {
                         _id: taskId,
-                        "taskInformations._id": task.taskInformations[i]._id,
+                        "taskInformations._id": task?.taskInformations?.[i]?._id,
                     },
                     {
                         $set: {
                             "taskInformations.$.value":
-                                task.taskInformations[i].value,
+                                task?.taskInformations?.[i]?.value,
                         },
                     },
                     {
@@ -2098,7 +2586,7 @@ exports.editTaskByResponsibleEmployees = async (portal, data, taskId) => {
             { path: "collaboratedWithOrganizationalUnits.organizationalUnit" },
             {
                 path:
-                    "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator",
+                    "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator inactiveEmployees",
                 select: "name email _id active avatar",
             },
             {
@@ -2160,7 +2648,7 @@ exports.editTaskByResponsibleEmployees = async (portal, data, taskId) => {
                         },
                         {
                             path:
-                                "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator",
+                                "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator inactiveEmployees",
                             select: "name email _id active avatar",
                         },
                         {
@@ -2338,28 +2826,28 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
     let evaluateId;
     let listChangeTypeInfo = [];
 
-    
+
     evaluateId = await this.getIdEvaluationOfThisMonth(portal, taskId);
 
     // tìm ra info ở thông tin chung bị xóa
-    let deletedInfoItems = task.taskInformations.filter(x => 
+    let deletedInfoItems = task.taskInformations.filter(x =>
         listInfoTask.find(e => String(e._id) === String(x._id)) === undefined // không tìm được phần tử nào có id giống với x._id, tức là x là deleted info 
     ).map(el => el._id);
 
     let evaluation = task.evaluations.find(e => String(e._id) === String(evaluateId));
 
 
-    if(listInfoTask && listInfoTask.length > 0) {
+    if (listInfoTask && listInfoTask.length > 0) {
         // xóa info ở thông tin chung
-        for(let i in deletedInfoItems) {
+        for (let i in deletedInfoItems) {
             await Task(connect(DB_CONNECTION, portal)).updateOne(
                 {
                     _id: taskId,
-                    "taskInformations._id": deletedInfoItems[i] 
+                    "taskInformations._id": deletedInfoItems[i]
                 },
                 {
                     $pull: {
-                        "taskInformations": {_id: deletedInfoItems[i] },
+                        "taskInformations": { _id: deletedInfoItems[i] },
                     },
                 },
                 { safe: true }
@@ -2367,7 +2855,7 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
         }
 
         // Xóa info ở đánh giá tháng hiện tại
-        for(let i in deletedInfoItems) {
+        for (let i in deletedInfoItems) {
             await Task(connect(DB_CONNECTION, portal)).updateOne(
                 {
                     _id: taskId,
@@ -2376,7 +2864,7 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
                 },
                 {
                     $pull: {
-                        "evaluations.$.taskInformations": {_id: deletedInfoItems[i] },
+                        "evaluations.$.taskInformations": { _id: deletedInfoItems[i] },
                     },
                 },
                 { safe: true }
@@ -2518,7 +3006,7 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
                                 }
                             );
                         }
-    
+
                     }
                 }
             }
@@ -2526,7 +3014,7 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
                 let updatedItem = await Task(connect(DB_CONNECTION, portal)).findById(taskId);
                 let codeOfNewItem = "p" + parseInt(Number(i) + 1);
                 let newInfoItem = updatedItem.taskInformations.find(e => e.code === codeOfNewItem);
-                if(newInfoItem){
+                if (newInfoItem) {
                     await Task(connect(DB_CONNECTION, portal)).updateOne(
                         {
                             _id: taskId,
@@ -2540,7 +3028,7 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
                     );
                 }
             }
-        }    
+        }
     }
 
     task = await Task(connect(DB_CONNECTION, portal)).findById(taskId);
@@ -2702,7 +3190,7 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
             { path: "collaboratedWithOrganizationalUnits.organizationalUnit" },
             {
                 path:
-                    "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator",
+                    "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator inactiveEmployees",
                 select: "name email _id active avatar",
             },
             {
@@ -2764,7 +3252,7 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
                         },
                         {
                             path:
-                                "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator",
+                                "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator inactiveEmployees",
                             select: "name email _id active avatar",
                         },
                         {
@@ -2833,9 +3321,8 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
         additionalCollabEmail: additionalCollabEmail, additionalCollabHtml: additionalCollabHtml,
         managersOfAdditionalCollab: managersOfAdditionalCollab.map(item => item.userId && item.userId._id),
     };
-
 }
-
+ 
 /** Chỉnh sửa nhân viên tham gia công việc mà đơn vị được phối hợp */
 exports.editEmployeeCollaboratedWithOrganizationalUnits = async (portal, taskId, data) => {
     let {
@@ -2957,7 +3444,7 @@ exports.editEmployeeCollaboratedWithOrganizationalUnits = async (portal, taskId,
             { path: "collaboratedWithOrganizationalUnits.organizationalUnit" },
             {
                 path:
-                    "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator",
+                    "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator inactiveEmployees",
                 select: "name email _id active",
             },
             {
@@ -3019,7 +3506,7 @@ exports.editEmployeeCollaboratedWithOrganizationalUnits = async (portal, taskId,
                         },
                         {
                             path:
-                                "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator",
+                                "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator inactiveEmployees",
                             select: "name email _id active",
                         },
                         {
@@ -3204,7 +3691,7 @@ exports.evaluateTaskByConsultedEmployees = async (portal, data, taskId) => {
             }
         );
     }
-    
+
     //cập nhật lại tất cả điểm tự động
     await Task(connect(DB_CONNECTION, portal)).updateOne(
         {
@@ -3245,7 +3732,7 @@ exports.evaluateTaskByConsultedEmployees = async (portal, data, taskId) => {
             { path: "collaboratedWithOrganizationalUnits.organizationalUnit" },
             {
                 path:
-                    "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator",
+                    "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator inactiveEmployees",
                 select: "name email _id active",
             },
             {
@@ -3307,7 +3794,7 @@ exports.evaluateTaskByConsultedEmployees = async (portal, data, taskId) => {
                         },
                         {
                             path:
-                                "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator",
+                                "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator inactiveEmployees",
                             select: "name email _id active",
                         },
                         {
@@ -3596,7 +4083,7 @@ exports.evaluateTaskByResponsibleEmployees = async (portal, data, taskId) => {
             { path: "collaboratedWithOrganizationalUnits.organizationalUnit" },
             {
                 path:
-                    "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator",
+                    "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator inactiveEmployees",
                 select: "name email _id active avatar",
             },
             {
@@ -3658,7 +4145,7 @@ exports.evaluateTaskByResponsibleEmployees = async (portal, data, taskId) => {
                         },
                         {
                             path:
-                                "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator",
+                                "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator inactiveEmployees",
                             select: "name email _id active avatar",
                         },
                         {
@@ -3737,7 +4224,7 @@ exports.evaluateTaskByAccountableEmployees = async (portal, data, taskId) => {
     let splitter = evaluatingMonth.split("-");
     let evaluateDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
     let dateFormat = evaluateDate;
-  
+
     let startEval = new Date(startDate);
 
     let endEval = new Date(endDate);
@@ -3935,7 +4422,7 @@ exports.evaluateTaskByAccountableEmployees = async (portal, data, taskId) => {
         await Task(connect(DB_CONNECTION, portal)).updateOne(
             {
                 _id: taskId,
-                "evaluations._id": evalua, teId,
+                "evaluations._id": evaluateId,
             },
             {
                 $push: {
@@ -4101,7 +4588,7 @@ exports.evaluateTaskByAccountableEmployees = async (portal, data, taskId) => {
             { path: "collaboratedWithOrganizationalUnits.organizationalUnit" },
             {
                 path:
-                    "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator",
+                    "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creatorinactiveEmployees",
                 select: "name email _id active avatar",
             },
             {
@@ -4163,7 +4650,7 @@ exports.evaluateTaskByAccountableEmployees = async (portal, data, taskId) => {
                         },
                         {
                             path:
-                                "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator",
+                                "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator inactiveEmployees",
                             select: "name email _id active avatar",
                         },
                         {
@@ -4244,7 +4731,7 @@ exports.editHoursSpentInEvaluate = async (portal, data, taskId) => {
 
         if (results) {
             for (let j = 0; j < results.length; j++) {
-                
+
                 if (
                     results[j].employee &&
                     results[j].employee.toString() === employee.toString()
@@ -4285,7 +4772,7 @@ exports.editHoursSpentInEvaluate = async (portal, data, taskId) => {
             { path: "collaboratedWithOrganizationalUnits.organizationalUnit" },
             {
                 path:
-                    "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator",
+                    "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator inactiveEmployees",
                 select: "name email _id active avatar",
             },
             {
@@ -4347,7 +4834,7 @@ exports.editHoursSpentInEvaluate = async (portal, data, taskId) => {
                         },
                         {
                             path:
-                                "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator",
+                                "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator inactiveEmployees",
                             select: "name email _id active avatar",
                         },
                         {
@@ -4422,7 +4909,7 @@ exports.deleteEvaluation = async (portal, params) => {
             { path: "collaboratedWithOrganizationalUnits.organizationalUnit" },
             {
                 path:
-                    "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator",
+                    "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator inactiveEmployees",
                 select: "name email _id active avatar",
             },
             {
@@ -4484,7 +4971,7 @@ exports.deleteEvaluation = async (portal, params) => {
                         },
                         {
                             path:
-                                "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator",
+                                "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator inactiveEmployees",
                             select: "name email _id active avatar",
                         },
                         {
@@ -4848,7 +5335,7 @@ exports.editActivateOfTask = async (portal, taskID, body) => {
             { path: "collaboratedWithOrganizationalUnits.organizationalUnit" },
             {
                 path:
-                    "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator",
+                    "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator inactiveEmployees",
                 select: "name email _id active",
             },
             {
@@ -4910,7 +5397,7 @@ exports.editActivateOfTask = async (portal, taskID, body) => {
                         },
                         {
                             path:
-                                "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator",
+                                "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator inactiveEmployees",
                             select: "name email _id active avatar",
                         },
                         {
@@ -4987,9 +5474,10 @@ exports.requestAndApprovalCloseTask = async (portal, taskId, data) => {
                 "taskStatus": taskStatus,
                 "description": description,
                 "requestStatus": 1
-            }
+            },
+            "status": 'wait_for_approval'
         }
-    } 
+    }
     else if (type === 'cancel_request') {
         keyUpdate = {
             "requestToCloseTask": {
@@ -4997,7 +5485,8 @@ exports.requestAndApprovalCloseTask = async (portal, taskId, data) => {
                 "taskStatus": taskStatus,
                 "description": description,
                 "requestStatus": 0
-            }
+            },
+            "status": 'inprocess'
         }
     }
     else if (type === 'approval') {
@@ -5018,7 +5507,8 @@ exports.requestAndApprovalCloseTask = async (portal, taskId, data) => {
                 "taskStatus": taskStatus,
                 "description": description,
                 "requestStatus": 2
-            }
+            },
+            "status": 'inprocess'
         }
     }
 
@@ -5035,7 +5525,7 @@ exports.openTaskAgain = async (portal, taskId, data) => {
 
     let taskUpdate = await Task(connect(DB_CONNECTION, portal))
         .findByIdAndUpdate(
-            taskId, 
+            taskId,
             {
                 status: 'inprocess',
                 requestToCloseTask: {
@@ -5046,8 +5536,176 @@ exports.openTaskAgain = async (portal, taskId, data) => {
         );
 
     let task = await this.getTaskById(portal, taskId, userId);
-    
+
     return task;
+}
+
+/** Funtion lọc các phần tử khác nhau trong mảng trước và sau khi thay đổi */
+filterArrayBeforeAndAfter = async (newArrays, oldArrays) => {
+    let newElement = [], oldElement = [];
+    newArrays.map(item => {
+        if (!oldArrays.includes(item)) {
+            newElement.push(item);
+        };
+    })
+    oldArrays?.map(item => {
+        if (!newArrays.includes(item)) {
+            oldElement.push(item);
+        };
+    });
+
+    return { 
+        newElement: newElement,
+        oldElement: oldElement
+    }
+}
+
+/** Function lọc nhân viên tham gia trước và sau */
+filterEmployeeBeforeAndAfter = async (newEmloyees, oldEmployees) => {
+    let data = await filterArrayBeforeAndAfter(newEmloyees.map(item => item?._id), oldEmployees.map(item => item?._id))
+    let newEmployee = '', oldEmployee = '';
+
+    data?.newElement?.map(element => {
+        let employee = newEmloyees.filter(item => item?._id === element);
+        newEmployee = newEmployee + employee?.[0]?.name + ', ';
+    })
+    data?.oldElement?.map(element => {
+        let employee = oldEmployees?.filter(item => item?._id === element);
+        oldEmployee = oldEmployee + employee?.[0]?.name + ', ';
+    });
+    
+    return { 
+        newEmployee: newEmployee,
+        oldEmployee: oldEmployee
+    }
+}
+
+formatPriority = (data) => {
+    if (data === 1) return 'Thấp';
+    if (data === 2) return 'Trung bình';
+    if (data === 3) return 'Tiêu chuẩn';
+    if (data === 4) return 'Cao';
+    if (data === 5) return 'Khẩn cấp';
+}
+
+formatStatus = (data) => {
+    if (data === "inprocess") return 'Đang thực hiện';
+    else if (data === "wait_for_approval") return 'Chờ phê duyệt';
+    else if (data === "finished") return 'Đã kết thúc';
+    else if (data === "delayed") return 'Tạm hoãn';
+    else if (data === "canceled") return 'Bị hủy';
+}
+
+/** Function tạo mô tả lịch sử thay đổi công việc khi chỉnh sửa công việc */
+exports.createDescriptionEditTaskLogs = async (portal, userId, newTask, oldTask) => {
+    const { name, description, formula, parent, priority, collaboratedWithOrganizationalUnits,
+        accountableEmployees, consultedEmployees, responsibleEmployees, informedEmployees,
+        inactiveEmployees, taskProject, status, progress, startDate, endDate
+    } = newTask;
+    let descriptionLog = '';
+
+    if (name && name !== oldTask?.name)  {
+        descriptionLog = descriptionLog + '<span>Tên công việc mới: ' + name + '.</span></br>'; 
+    }
+    if (description && description !== oldTask?.description) {
+        descriptionLog = descriptionLog + '<span>Mô tả công việc mới: ' + description + '</span>'; 
+    }
+    if (status && status !== oldTask?.status) {
+        descriptionLog = descriptionLog + '<span>Trạng thái công việc mới: ' + formatStatus(status) + ".</span></br>";
+    }
+    if (priority && priority !== oldTask?.priority) {
+        descriptionLog = descriptionLog + '<span>Độ ưu tiên công việc mới: ' + formatPriority(priority) + ".</span></br>";
+    } 
+    if (progress && progress !== oldTask?.progress) {
+        descriptionLog = descriptionLog + '<span>Mức độ hoàn thành công việc mới: ' + progress + "%" + ".</span></br>";
+    }
+    if (startDate && (new Date(startDate)).getTime() !== oldTask?.startDate.getTime()) {
+        descriptionLog = descriptionLog + '<span>Ngày bắt đầu mới: ' + formatTime(startDate) + ".</span></br>";
+    }
+    if (endDate && (new Date(endDate)).getTime() !== oldTask?.endDate.getTime()) {
+        descriptionLog = descriptionLog + '<span>Ngày kết thúc mới: ' + formatTime(endDate) + ".</span></br>";
+    }
+    if (formula && formula !== oldTask?.formula) {
+        descriptionLog = descriptionLog + '<span>Công thức tính điểm tự động mới: ' + formula + ".</span></br>";
+    }
+
+    if (parent?._id && parent?._id !== oldTask?.parent?._id) {
+        descriptionLog = descriptionLog + '<span>Công việc cha mới: ' + parent?.name + ".</span></br>";
+    } else {
+        if (oldTask?.parent?._id) {
+            descriptionLog = descriptionLog + '<span>Xóa công việc cha' + ".</span></br>";
+        }
+    }
+
+    if (collaboratedWithOrganizationalUnits) {
+        let newcollaborated = collaboratedWithOrganizationalUnits.map(item => item?.organizationalUnit?._id);
+        let oldcollaborated = oldTask?.collaboratedWithOrganizationalUnits?.map(item => item?.organizationalUnit?._id);
+        let newUnit = '', oldUnit = '';
+        let data = await filterArrayBeforeAndAfter(newcollaborated, oldcollaborated);
+
+        data?.newElement?.map(element => {
+            let unit = collaboratedWithOrganizationalUnits.filter(item => item?.organizationalUnit?._id === element);
+            newUnit = newUnit + unit?.[0]?.organizationalUnit?.name + ', ';
+        })
+        data?.oldElement?.map(element => {
+            let unit = oldTask?.collaboratedWithOrganizationalUnits?.filter(item => item?.organizationalUnit?._id === element);
+            oldUnit = oldUnit + unit?.[0]?.organizationalUnit?.name + ', ';
+        });
+        if (newUnit !== '') {
+            descriptionLog = descriptionLog + '<span>Đơn vị phối hợp được thêm mới: ' + newUnit?.slice(0, newUnit.length - 2) + ".</span></br>";
+        }
+        if (oldUnit !== '') {
+            descriptionLog = descriptionLog + '<span>Đơn vị phối hợp đã xóa bỏ: ' + oldUnit?.slice(0, oldUnit.length - 2) + ".</span></br>";
+        }
+    }
+
+    if (accountableEmployees) {
+        let data = await filterEmployeeBeforeAndAfter(accountableEmployees, oldTask?.accountableEmployees);
+        if (data?.newEmployee && data?.newEmployee !== '') {
+            descriptionLog = descriptionLog + '<span>Nhân viên có vai trò người phê duyệt mới: ' + data?.newEmployee?.slice(0, data?.newEmployee?.length - 2) + ".</span></br>";
+        }
+        if (data?.oldEmployee && data?.oldEmployee !== '') {
+            descriptionLog = descriptionLog + '<span>Nhân viên có vai trò người phê duyệt đã xóa bỏ: ' + data?.oldEmployee?.slice(0, data?.oldEmployee?.length - 2) + ".</span></br>";
+        }
+    }
+    if (responsibleEmployees) {
+        let data = await filterEmployeeBeforeAndAfter(responsibleEmployees, oldTask?.responsibleEmployees);
+        if (data?.newEmployee && data?.newEmployee !== '') {
+            descriptionLog = descriptionLog + '<span>Nhân viên có vai trò người thực hiện mới: ' + data?.newEmployee?.slice(0, data?.newEmployee?.length - 2) + ".</span></br>";
+        }
+        if (data?.oldEmployee && data?.oldEmployee !== '') {
+            descriptionLog = descriptionLog + '<span>Nhân viên có vai trò người thực hiện đã xóa bỏ: ' + data?.oldEmployee?.slice(0, data?.oldEmployee?.length - 2) + ".</span></br>";
+        }
+    }
+    if (consultedEmployees) {
+        let data = await filterEmployeeBeforeAndAfter(consultedEmployees, oldTask?.consultedEmployees);
+        if (data?.newEmployee && data?.newEmployee !== '') {
+            descriptionLog = descriptionLog + '<span>Nhân viên có vai trò người tư vấn mới: ' + data?.newEmployee?.slice(0, data?.newEmployee?.length - 2) + ".</span></br>";
+        }
+        if (data?.oldEmployee && data?.oldEmployee !== '') {
+            descriptionLog = descriptionLog + '<span>Nhân viên có vai trò người tư vấn đã xóa bỏ: ' + data?.oldEmployee?.slice(0, data?.oldEmployee?.length - 2) + ".</span></br>";
+        }
+    }
+    if (informedEmployees) {
+        let data = await filterEmployeeBeforeAndAfter(informedEmployees, oldTask?.informedEmployees);
+        if (data?.newEmployee && data?.newEmployee !== '') {
+            descriptionLog = descriptionLog + '<span>Nhân viên có vai trò người quan sát mới: ' + data?.newEmployee?.slice(0, data?.newEmployee?.length - 2) + ".</span></br>";
+        }
+        if (data?.oldEmployee && data?.oldEmployee !== '') {
+            descriptionLog = descriptionLog + '<span>Nhân viên có vai trò người quan sát đã xóa bỏ: ' + data?.oldEmployee?.slice(0, data?.oldEmployee?.length - 2) + ".</span></br>";
+        }
+    }
+    if (inactiveEmployees) {
+        let data = await filterEmployeeBeforeAndAfter(inactiveEmployees, oldTask?.inactiveEmployees);
+        if (data?.newEmployee && data?.newEmployee !== '') {
+            descriptionLog = descriptionLog + '<span>Thêm nhân viên không còn tham gia công việc: ' + data?.newEmployee?.slice(0, data?.newEmployee?.length - 2) + ".</span></br>";
+        }
+        if (data?.oldEmployee && data?.oldEmployee !== '') {
+            descriptionLog = descriptionLog + '<span>Nhân viên không còn tham gia công việc đã tham gia lại: ' + data?.oldEmployee?.slice(0, data?.oldEmployee?.length - 2) + ".</span></br>";
+        }
+    }
+
+    return descriptionLog;
 }
 
 /** Chỉnh sửa taskInformation của task */
@@ -5235,7 +5893,7 @@ exports.createComment = async (portal, params, body, files) => {
             { path: "collaboratedWithOrganizationalUnits.organizationalUnit" },
             {
                 path:
-                    "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator",
+                    "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator inactiveEmployees",
                 select: "name email _id active avatar",
             },
             {
@@ -5297,7 +5955,7 @@ exports.createComment = async (portal, params, body, files) => {
                         },
                         {
                             path:
-                                "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator",
+                                "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator inactiveEmployees",
                             select: "name email _id active avatar",
                         },
                         {
@@ -5377,7 +6035,7 @@ exports.editComment = async (portal, params, body, files) => {
             { path: "collaboratedWithOrganizationalUnits.organizationalUnit" },
             {
                 path:
-                    "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator",
+                    "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator inactiveEmployees",
                 select: "name email _id active avatar",
             },
             {
@@ -5439,7 +6097,7 @@ exports.editComment = async (portal, params, body, files) => {
                         },
                         {
                             path:
-                                "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator",
+                                "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator inactiveEmployees",
                             select: "name email _id active avatar",
                         },
                         {
@@ -5561,7 +6219,7 @@ exports.createChildComment = async (portal, params, body, files) => {
             { path: "collaboratedWithOrganizationalUnits.organizationalUnit" },
             {
                 path:
-                    "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator",
+                    "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator inactiveEmployees",
                 select: "name email _id active avatar",
             },
             {
@@ -5623,7 +6281,7 @@ exports.createChildComment = async (portal, params, body, files) => {
                         },
                         {
                             path:
-                                "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator",
+                                "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator inactiveEmployees",
                             select: "name email _id active avatar",
                         },
                         {
@@ -5729,7 +6387,7 @@ exports.editChildComment = async (portal, params, body, files) => {
             { path: "collaboratedWithOrganizationalUnits.organizationalUnit" },
             {
                 path:
-                    "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator",
+                    "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator inactiveEmployees",
                 select: "name email _id active avatar",
             },
             {
@@ -5791,7 +6449,7 @@ exports.editChildComment = async (portal, params, body, files) => {
                         },
                         {
                             path:
-                                "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator",
+                                "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator inactiveEmployees",
                             select: "name email _id active avatar",
                         },
                         {

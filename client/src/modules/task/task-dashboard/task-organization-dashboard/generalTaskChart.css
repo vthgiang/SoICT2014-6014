@@ -1,0 +1,6 @@
+.general_task_unit #general-list-task thead th {
+    position: sticky;
+    top: -1px;
+    background: #fff;
+    z-index: 1;
+}

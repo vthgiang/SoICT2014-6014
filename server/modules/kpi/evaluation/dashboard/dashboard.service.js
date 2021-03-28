@@ -16,7 +16,9 @@ exports.getAllEmployeeKpiSetOfUnitByIds = async (portal, ids) => {
                 organizationalUnit: ids[i]
             })
             .skip(0).limit(50)
-            .populate("organizationalUnit creator approver")
+            .populate("organizationalUnit")
+            .populate({path: "creator", select :"_id name email avatar"})
+            .populate({path: "approver", select :"_id name email avatar"})
             .populate({ path: "kpis", populate: { path: 'parent' } });
         data = data.concat(employeekpis);
 

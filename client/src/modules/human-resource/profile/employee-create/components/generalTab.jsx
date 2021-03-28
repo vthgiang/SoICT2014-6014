@@ -4,9 +4,7 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import { DatePicker, ErrorLabel, SelectBox, ApiImage } from '../../../../../common-components';
 
-import { EmployeeCreateValidator } from './employeeCreateValidator';
-
-// import { AuthActions } from '../../../../auth/redux/actions';
+import ValidationHelper from '../../../../../helpers/validationHelper';
 
 import "./addEmployee.css";
 
@@ -102,15 +100,16 @@ class GeneralTab extends Component {
     }
     validateEmployeeNumber = (value, willUpdateState = true) => {
         const { translate } = this.props;
-        let msg = EmployeeCreateValidator.validateEmployeeNumber(value, translate)
+        let { message } = ValidationHelper.validateCode(translate, value);
+
         if (willUpdateState) {
             this.setState({
-                errorOnEmployeeNumber: msg,
+                errorOnEmployeeNumber: message,
                 employeeNumber: value,
             });
             this.props.handleChange("employeeNumber", value);
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
     /** Function bắt sự kiện thay đổi mã chấm công */
@@ -120,19 +119,20 @@ class GeneralTab extends Component {
     }
     validateMSCC = (value, willUpdateState = true) => {
         const { translate } = this.props;
-        let msg = EmployeeCreateValidator.validateMSCC(value, translate)
+        let { message } = ValidationHelper.validateEmpty(translate, value);
+
         if (willUpdateState) {
 
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnMSCC: msg,
+                    errorOnMSCC: message,
                     employeeTimesheetId: value,
                 }
             });
             this.props.handleChange("employeeTimesheetId", value);
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
     /** Function bắt sự kiện thay đổi Họ và tên */
@@ -142,19 +142,20 @@ class GeneralTab extends Component {
     }
     validateFullName = (value, willUpdateState = true) => {
         const { translate } = this.props;
-        let msg = EmployeeCreateValidator.validateFullName(value, translate)
+        let { message } = ValidationHelper.validateEmpty(translate, value);
+
         if (willUpdateState) {
 
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnFullName: msg,
+                    errorOnFullName: message,
                     fullName: value,
                 }
             });
             this.props.handleChange("fullName", value);
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
     /** Function bắt sự kiện thay đổi Email công ty */
@@ -164,19 +165,19 @@ class GeneralTab extends Component {
     }
     validateEmailCompany = (value, willUpdateState = true) => {
         const { translate } = this.props;
-        let msg = EmployeeCreateValidator.validateEmailCompany(value, translate)
+        let { message } = ValidationHelper.validateEmail(translate, value);
         if (willUpdateState) {
 
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnEmailCompany: msg,
+                    errorOnEmailCompany: message,
                     emailInCompany: value,
                 }
             });
             this.props.handleChange("emailInCompany", value);
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
     /** Function bắt sự kiện thay đổi số CMND */
@@ -186,19 +187,20 @@ class GeneralTab extends Component {
     }
     validateCMND = (value, willUpdateState = true) => {
         const { translate } = this.props;
-        let msg = EmployeeCreateValidator.validateCMND(value, translate)
+        let { message } = ValidationHelper.validateEmpty(translate, value);
+
         if (willUpdateState) {
 
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnCMND: msg,
+                    errorOnCMND: message,
                     identityCardNumber: value,
                 }
             });
             this.props.handleChange("identityCardNumber", value);
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
     /** Function bắt sự kiện thay đổi nơi cấp */
@@ -208,19 +210,20 @@ class GeneralTab extends Component {
     }
     validateAddressCMND = (value, willUpdateState = true) => {
         const { translate } = this.props;
-        let msg = EmployeeCreateValidator.validateAddressCMND(value, translate)
+        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
+
         if (willUpdateState) {
 
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnAddressCMND: msg,
+                    errorOnAddressCMND: message,
                     identityCardAddress: value,
                 }
             });
             this.props.handleChange("identityCardAddress", value);
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
     /**
@@ -232,19 +235,20 @@ class GeneralTab extends Component {
     }
     validateBrithday = (value, willUpdateState = true) => {
         const { translate } = this.props;
-        let msg = EmployeeCreateValidator.validateBrithday(value, translate)
+        let { message } = ValidationHelper.validateEmpty(translate, value);
+
         if (willUpdateState) {
 
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnBrithdate: msg,
+                    errorOnBrithdate: message,
                     birthdate: value,
                 }
             });
             this.props.handleChange("birthdate", value);
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
     /**
@@ -337,19 +341,20 @@ class GeneralTab extends Component {
     }
     validateCMNDDate = (value, willUpdateState = true) => {
         const { translate } = this.props;
-        let msg = EmployeeCreateValidator.validateCMNDDate(value, translate)
+        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
+
         if (willUpdateState) {
 
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnDateCMND: msg,
+                    errorOnDateCMND: message,
                     identityCardDate: value,
                 }
             });
             this.props.handleChange("identityCardDate", value);
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {

@@ -245,7 +245,6 @@ exports.createDocument = async (portal, data, company) => {
     let versions = [];
     if (data.versionName) {
         if (!Array.isArray(data.versionName)) {
-            console.log('rrrrr', data.files, data.scannedFileOfSignedDocument)
             versions = [
                 {
                     versionName: data.versionName,
@@ -764,7 +763,6 @@ exports.getDocumentsThatRoleCanView = async (portal, query, id, company) => {
                 { userCanView: id }
             ]
         };
-
         if (query.category) {
             option.category = query.category;
         }
@@ -878,6 +876,12 @@ exports.getDocumentsUserStatistical = async (userId, query, portal) => {
         userRole.push(roles[i].roleId._id);
         userRole = userRole.concat(roles[i].roleId.parents);
     }
+    condition = {
+        $or: [
+            { roles: { $in: userRole } },
+            { userCanView: userId }
+        ]
+    };
     if (query.category) {
         condition.category = query.category;
     }

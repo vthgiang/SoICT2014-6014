@@ -5,13 +5,12 @@ import { taskManagementActions } from '../../task-management/redux/actions';
 
 import { TaskStatusChart } from './taskStatusChart';
 import { DomainOfTaskResultsChart } from './domainOfTaskResultsChart';
-import { CalendarEmployee } from './calendarEmployee';
 import { GanttCalendar } from './ganttCalendar';
 import { AverageResultsOfTask } from './averageResultsOfTask';
 
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DatePicker, ToolTip } from '../../../../common-components';
+import { DatePicker, LazyLoadComponent } from '../../../../common-components';
 import Swal from 'sweetalert2';
 import { TasksIsNotLinked } from './tasksIsNotLinked';
 import { TaskHasActionNotEvaluated } from './taskHasActionNotEvaluated';
@@ -19,8 +18,6 @@ import { InprocessTask } from './inprocessTask';
 import { LoadTaskChart } from './loadTaskChart';
 import { convertTime } from '../../../../helpers/stringMethod';
 import { getStorage } from '../../../../config';
-import LoadTaskInformation from './loadTaskInformation'
-import ProcessOfTask from './processOfTask'
 import moment from 'moment';
 import GeneralTaskPersonalChart from './generalTaskPersonalChart';
 class TaskDashboard extends Component {
@@ -154,11 +151,11 @@ class TaskDashboard extends Component {
     convertType = (value) => {
         // 1: Tắt bấm giờ bằng tay, 2: Tắt bấm giờ tự động với thời gian hẹn trc, 3: add log timer
         if (value == 1) {
-            return "Bấm giờ tự chọn"
+            return "Bấm giờ bù giờ"
         } else if (value == 2) {
-            return "Bấm giờ tự động"
+            return "Bấm hẹn giờ"
         } else {
-            return "Bấm giờ tự tắt"
+            return "Bấm giờ"
         }
     }
 
@@ -403,14 +400,17 @@ class TaskDashboard extends Component {
 
                 {/* Tổng quan công việc cá nhân */}
                 <div className="row">
-                    <div className="col-xs-12">
+                    <div className="col-md-12">
                         <div className="box box-primary">
                             <div className="box-header with-border">
-                                <div className="box-title">Tổng quan công việc</div>
+                                <div className="box-title">{`Tổng quan công việc (${tasks && tasks.tasks ? tasks.tasks.length : 0} công việc)`}</div>
                             </div>
-                            <GeneralTaskPersonalChart
-                                tasks={tasks}
-                            />
+                            <LazyLoadComponent once={true}>
+                                {
+                                    tasks && (tasks.tasks || tasks.accountableTasks || tasks.responsibleTasks || tasks.consultedTasks) &&
+                                    <GeneralTaskPersonalChart tasks={tasks} />
+                                }
+                            </LazyLoadComponent>
                         </div>
 
                     </div>
@@ -422,14 +422,14 @@ class TaskDashboard extends Component {
                         <div className="box box-primary">
                             <div className="box-header with-border">
                                 <div className="box-title">{translate('task.task_management.tasks_calendar')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
+
                             </div>
-                            {/* <CalendarEmployee
-                                tasks={tasks}
-                            /> */}
-                            <GanttCalendar
-                                tasks={tasks}
-                                unit={false}
-                            />
+                            <LazyLoadComponent once={true}>
+                                <GanttCalendar
+                                    tasks={tasks}
+                                    unit={false}
+                                />
+                            </LazyLoadComponent>
                         </div>
 
                     </div>
@@ -444,11 +444,13 @@ class TaskDashboard extends Component {
                             </div>
                             <div className="box-body qlcv">
                                 {callAction &&
-                                    <DomainOfTaskResultsChart
-                                        callAction={!willUpdate}
-                                        startMonth={startMonth}
-                                        endMonth={endMonth}
-                                    />
+                                    <LazyLoadComponent once={true}>
+                                        <DomainOfTaskResultsChart
+                                            callAction={!willUpdate}
+                                            startMonth={startMonth}
+                                            endMonth={endMonth}
+                                        />
+                                    </LazyLoadComponent>
                                 }
                             </div>
                         </div>
@@ -460,11 +462,13 @@ class TaskDashboard extends Component {
                             <div className="box-header with-border">
                                 <div className="box-title">{translate('task.task_management.detail_average_results')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
                             </div>
-                            <div className="box-body qlcv">
-                                <AverageResultsOfTask
-                                    startMonth={startMonth}
-                                    endMonth={endMonth}
-                                />
+                            <div className="box-body">
+                                <LazyLoadComponent once={true}>
+                                    <AverageResultsOfTask
+                                        startMonth={startMonth}
+                                        endMonth={endMonth}
+                                    />
+                                </LazyLoadComponent>
                             </div>
                         </div>
                     </div>
@@ -476,10 +480,12 @@ class TaskDashboard extends Component {
                                 <div className="box-title">{translate('task.task_management.detail_status')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
                             </div>
                             <div className="box-body qlcv">
-                                <TaskStatusChart
-                                    startMonth={startMonth}
-                                    endMonth={endMonth}
-                                />
+                                <LazyLoadComponent once={true}>
+                                    <TaskStatusChart
+                                        startMonth={startMonth}
+                                        endMonth={endMonth}
+                                    />
+                                </LazyLoadComponent>
                             </div>
                         </div>
                     </div>
@@ -489,112 +495,43 @@ class TaskDashboard extends Component {
                                 <div className="box-title">{translate('task.task_management.calc_progress')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
                             </div>
                             <div className="box-body qlcv">
-                                <InprocessTask
-                                    startMonth={startMonth}
-                                    endMonth={endMonth}
-                                    tasks={tasks.tasks}
-                                />
+                                <LazyLoadComponent once={true}>
+                                    <InprocessTask
+                                        startMonth={startMonth}
+                                        endMonth={endMonth}
+                                        tasks={tasks.tasks}
+                                    />
+                                </LazyLoadComponent>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <div className="row">
-                    <div className="col-xs-12 col-sm-12 col-md-6">
-                        <div className="box box-primary">
-                            <div className="box-header with-border">
-                                <div className="box-title">{translate('task.task_management.dashboard_overdue')}</div>
-                            </div>
-
-                            <div className="box-body" style={{ height: "300px", overflow: "auto" }}>
-                                {
-                                    (tasks && tasks.tasksbyuser) ?
-                                        <ul className="todo-list">
-                                            {
-                                                (tasks.tasksbyuser.expire.length !== 0) ?
-                                                    tasks.tasksbyuser.expire.map((item, key) =>
-                                                        <li key={key}>
-                                                            <span className="handle">
-                                                                <i className="fa fa-ellipsis-v" />
-                                                                <i className="fa fa-ellipsis-v" />
-                                                            </span>
-                                                            <span className="text"><a href={`/task?taskId=${item.task._id}`} target="_blank">{item.task.name}</a></span>
-                                                            <small className="label label-danger"><i className="fa fa-clock-o" /> &nbsp;{item.totalDays} {translate('task.task_management.calc_days')}</small>
-                                                        </li>
-                                                    ) : "Không có công việc quá hạn"
-                                            }
-                                        </ul> : "Đang tải dữ liệu"
-                                }
-                            </div>
-                        </div>
-                    </div>
-                    <div className="col-xs-12 col-sm-12 col-md-6">
-                        <div className="box box-primary">
-                            <div className="box-header with-border">
-                                <div className="box-title">{translate('task.task_management.dashboard_about_to_overdue')}</div>
-                            </div>
-                            <div className="box-body" style={{ height: "300px", overflow: "auto" }}>
-                                {
-                                    (tasks && tasks.tasksbyuser) ?
-                                        <ul className="todo-list">
-                                            {
-                                                (tasks.tasksbyuser.deadlineincoming.length !== 0) ?
-                                                    tasks.tasksbyuser.deadlineincoming.map((item, key) =>
-                                                        <li key={key}>
-                                                            <span className="handle">
-                                                                <i className="fa fa-ellipsis-v" />
-                                                                <i className="fa fa-ellipsis-v" />
-                                                            </span>
-                                                            <span className="text"><a href={`/task?taskId=${item.task._id}`} target="_blank">{item.task.name}</a></span>
-                                                            <small className="label label-warning"><i className="fa fa-clock-o" /> &nbsp;{item.totalDays} {translate('task.task_management.calc_days')}</small>
-                                                        </li>
-                                                    ) : "Không có công việc nào sắp hết hạn"
-                                            }
-                                        </ul> : "Đang tải dữ liệu"
-                                }
-                            </div>
-
-                        </div>
-                    </div>
+                    <TasksIsNotLinked />
+                    <TaskHasActionNotEvaluated />
                 </div>
-                {/* <div className="row">
-
-                    <div className="col-xs-12 col-sm-12 col-md-6">
-                        <div className="box box-primary">
-                            <div className="box-header with-border">
-                                <div className="box-title">{translate('task.task_management.dashboard_about_to_overdue')}</div>
-                            </div>
-                            <ProcessOfTask
-                                tasks={tasks}
-                            />
-
-                        </div>
-                    </div>
-                </div> */}
-
-                <TasksIsNotLinked />
-                <TaskHasActionNotEvaluated />
 
                 {/*Biểu đồ dashboard tải công việc */}
-                <div className="col-xs-12">
-                    <div className="box box-primary">
-                        <div className="box-header with-border inline">
-                            <div className="box-title">{translate('task.task_management.load_task_chart')}</div>
-                            <a className="text-red" title={translate('task.task_management.explain')} onClick={() => this.showLoadTaskDoc()}>
-                                <i className="material-icons" style={{ marginLeft: "10px" }}>help</i>
-                            </a>
+                <div className="row">
+                    <div className="col-xs-12">
+                        <div className="box box-primary">
+                            <div className="box-header with-border">
+                                <div className="box-title">{translate('task.task_management.load_task_chart')}</div>
+                                <a className="text-red" title={translate('task.task_management.explain')} onClick={() => this.showLoadTaskDoc()}>
+                                    <i className="fa fa-question-circle" style={{ color: '#dd4b39', marginLeft: '5px' }} />
+                                </a>
+                            </div>
 
-                        </div>
-
-
-                        <div className="box-body qlcv">
-                            {callAction &&
-                                <LoadTaskChart
-                                    callAction={!willUpdate}
-                                    startMonth={startMonth}
-                                    endMonth={endMonth}
-                                />
-                            }
+                            <div className="box-body qlcv">
+                                {callAction &&
+                                    <LoadTaskChart
+                                        callAction={!willUpdate}
+                                        startMonth={startMonth}
+                                        endMonth={endMonth}
+                                    />
+                                }
+                            </div>
                         </div>
                     </div>
                 </div>

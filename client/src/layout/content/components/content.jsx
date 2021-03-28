@@ -2,7 +2,7 @@ import { DayTableSlicer } from '@fullcalendar/daygrid';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-
+import Swal from 'sweetalert2';
 import { Loading } from '../../../common-components';
 import moment from 'moment'
 
@@ -125,7 +125,8 @@ class Content extends Component {
     }
 
 
-    handleDataTable = (index) => {
+
+    handleDataTable = async (index) => {
         let tables = window.$("table:not(.not-sort)");
 
         for (let i = 0; i < tables.length; ++i) {
@@ -186,26 +187,29 @@ class Content extends Component {
 
                     let sort = (ascOrder) => {
                         let rows = table.find("tbody>tr");
-
                         for (let k = 0; k < tableHeadings.length; ++k) {
                             if (k !== j) {
                                 let thNotChoice = window.$(tableHeadings[k]);
                                 let listdiv = thNotChoice.find("div.sort")
-                                window.$(listdiv[0]).find("i.fa.fa-caret-up")[0].style.color = "rgb(226 222 222)"
-                                window.$(listdiv[0]).find("i.fa.fa-caret-down")[0].style.color = "rgb(226 222 222)"
-                            } else {
-                                let thNotChoice = window.$(tableHeadings[k]);
+                                window.$(listdiv[0]).find("i.fa.fa-sort-amount-asc")[0].style.display = "none"
+                                window.$(listdiv[0]).find("i.fa.fa-sort-amount-desc")[0].style.display = "none"
+                                window.$(listdiv[0]).find("i.fa.fa-sort")[0].style.display = "block"
+                            }
+                            else {
+                                let thNotChoice = window.$(tableHeadings[j]);
                                 let listdiv = thNotChoice.find("div.sort")
-                                if (ascOrder) {
-                                    window.$(listdiv[0]).find("i.fa.fa-caret-up")[0].style.color = "black"
-                                    window.$(listdiv[0]).find("i.fa.fa-caret-down")[0].style.color = "rgb(226 222 222)"
+                                if (ascOrder == true) {
+                                    window.$(listdiv[0]).find("i.fa.fa-sort-amount-asc")[0].style.display = "block"
+                                    window.$(listdiv[0]).find("i.fa.fa-sort")[0].style.display = "none"
+                                } else if (ascOrder == false) {
+                                    window.$(listdiv[0]).find("i.fa.fa-sort-amount-desc")[0].style.display = "block"
+                                    window.$(listdiv[0]).find("i.fa.fa-sort-amount-asc")[0].style.display = "none"
                                 } else {
-                                    window.$(listdiv[0]).find("i.fa.fa-caret-up")[0].style.color = "rgb(226 222 222)"
-                                    window.$(listdiv[0]).find("i.fa.fa-caret-down")[0].style.color = "black"
+                                    window.$(listdiv[0]).find("i.fa.fa-sort-amount-desc")[0].style.display = "none"
+                                    window.$(listdiv[0]).find("i.fa.fa-sort")[0].style.display = "block"
                                 }
                             }
                         }
-
                         if (th[0].className == "col-sort-number") {
                             rows.sort((a, b) => {
                                 let keyA = parseInt(window.$(window.$(a).find("td")[j]).text());
@@ -216,8 +220,15 @@ class Content extends Component {
                             });
                         } else {
                             rows.sort((a, b) => {
-                                let keyA = nonAccentVietnamese(window.$(window.$(a).find("td")[j]).text());
-                                let keyB = nonAccentVietnamese(window.$(window.$(b).find("td")[j]).text());
+                                let keyA, keyB;
+                                if (ascOrder == "return") {
+                                    keyA = nonAccentVietnamese(window.$(window.$(a).find("td")[0]).text());
+                                    keyB = nonAccentVietnamese(window.$(window.$(b).find("td")[0]).text());
+                                } else {
+                                    keyA = nonAccentVietnamese(window.$(window.$(a).find("td")[j]).text());
+                                    keyB = nonAccentVietnamese(window.$(window.$(b).find("td")[j]).text());
+                                }
+
                                 keyA = convertDate(keyA);
                                 keyB = convertDate(keyB);
                                 if (keyA < keyB) return ascOrder ? -1 : 1;
@@ -231,19 +242,79 @@ class Content extends Component {
                         });
                     }
 
-                    let up = window.$("<i>", { style: 'width: 100%; float: left; cursor: pointer; color: rgb(226 222 222) ', class: 'fa fa-caret-up' });
-                    let down = window.$("<i>", { style: 'width: 100%; float: left; cursor: pointer; margin-top: -5px; color: rgb(226 222 222)', class: 'fa fa-caret-down' });
+                    let filter = (data) => {
+                        let rows = table.find("tbody>tr");
+                        for (let k = 0; k < tableHeadings.length; ++k) {
+                            if (k !== j) {
+                                let thNotChoice = window.$(tableHeadings[k]);
+                                let listdiv = thNotChoice.find("div.filter")
+                                window.$(listdiv[0]).find("i.fa.fa-filter")[0].style.color = "rgb(226 222 222)"
+                            } else {
+                                let thNotChoice = window.$(tableHeadings[j]);
+                                let listdiv = thNotChoice.find("div.filter")
+                                if (data == "") {
+                                    window.$(listdiv[0]).find("i.fa.fa-filter")[0].style.color = "rgb(226 222 222)"
+
+                                } else {
+                                    window.$(listdiv[0]).find("i.fa.fa-filter")[0].style.color = "black"
+                                }
+                            }
+                        }
+
+                        if (data == "") {
+                            rows.map((a) => {
+                                rows[a].style = ""
+                            })
+                        } else {
+                            rows.map((a) => {
+                                let keyData = window.$(window.$(rows[a]).find("td")[j]).text();
+                                if (keyData.indexOf(data) == -1) {
+                                    rows[a].style = "display: none"
+                                } else {
+                                    rows[a].style = ""
+                                }
+                            })
+                        }
+
+                        window.$.each(rows, function (index, row) {
+                            table.children('tbody').append(row);
+                        });
+                    }
+                    let up = window.$("<i>", { style: 'width: 100%; float: left; cursor: pointer; color: rgb(226 222 222) ', class: 'fa fa-sort' });
+                    let down = window.$("<i>", { style: 'width: 100%; float: left; cursor: pointer; color: black; display: none ', class: 'fa fa-sort-amount-asc' });
+                    let requestReturn = window.$("<i>", { style: 'width: 100%; float: left; cursor: pointer; color: black; display: none ', class: 'fa fa-sort-amount-desc' });
+                    let filterData = window.$("<i>", { style: 'width: 100%; float: left; cursor: pointer; color: rgb(226 222 222) ', class: 'fa fa-filter' });
                     up.click(() => {
                         sort(true);
                     })
+
                     down.click(() => {
                         sort(false);
                     })
 
+                    requestReturn.click(() => {
+                        sort("return")
+                    })
 
-                    let div = window.$("<div>", { style: 'float: left; margin-top: -2px', class: 'sort' });
-                    div.append(up, down);
-                    th.prepend(div);
+
+                    filterData.click(async () => {
+                        const { value: text } = await Swal.fire({
+                            input: 'text',
+                            inputLabel: 'Message',
+                            inputPlaceholder: 'Nhập thông tin tìm kiếm',
+                            inputAttributes: {
+                                'aria-label': 'Type your message here'
+                            },
+                            showCancelButton: true
+                        })
+
+                        filter(text);
+                    })
+                    let div = window.$("<div>", { style: 'float: left; margin-top: 3px; margin-right: 4px', class: 'sort' });
+                    let divFilter = window.$("<div>", { style: 'float: left; margin-top: 3px; margin-right: 2px', class: 'filter' });
+                    div.append(up, down, requestReturn, filterData);
+                    divFilter.append(filterData)
+                    th.prepend(div, divFilter);
                 }
             }
         }

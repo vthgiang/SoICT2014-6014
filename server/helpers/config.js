@@ -521,6 +521,16 @@ const LINKS = [{
     ],
     components: getComponentsInLink('/hr-time-keeping')
 },
+{
+    url: '/employees-infomation',
+    description: 'Thông tin nhân viên',
+    category: LINK_CATEGORY.HUMAN_RESOURCE.name,
+    roles: [
+        ROOT_ROLES.ADMIN.name,
+        ROOT_ROLES.MANAGER.name,
+    ],
+    components: getComponentsInLink('/employees-infomation')
+},
 
 
 
@@ -870,17 +880,6 @@ const LINKS = [{
         ROOT_ROLES.EMPLOYEE.name,
     ],
     components: getComponentsInLink('/employee-manage-info-asset')
-},
-{
-    url: '/employee-manage-incident-asset',
-    description: 'Quản lý thông tin sự cố tài sản',
-    category: LINK_CATEGORY.ASSET.name,
-    roles: [
-        ROOT_ROLES.MANAGER.name,
-        ROOT_ROLES.DEPUTY_MANAGER.name,
-        ROOT_ROLES.EMPLOYEE.name,
-    ],
-    components: getComponentsInLink('/employee-manage-incident-asset')
 },
 {
     url: '/employee-manage-asset-use-request',

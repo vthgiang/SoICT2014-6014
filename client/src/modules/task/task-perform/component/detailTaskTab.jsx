@@ -25,8 +25,9 @@ import { TaskAddModal } from '../../task-management/component/taskAddModal';
 import { ModalAddTaskTemplate } from '../../task-template/component/addTaskTemplateModal';
 import { RequestToCloseTaskModal } from './requestToCloseTaskModal';
 
-import TaskProjectAction from '../../task-project/redux/action';
+import { ProjectActions } from "../../../project/redux/actions";
 import { ROOT_ROLE } from '../../../../helpers/constants';
+import dayjs from 'dayjs';
 class DetailTaskTab extends Component {
 
     constructor(props) {
@@ -106,17 +107,17 @@ class DetailTaskTab extends Component {
                         roles.push(this.ROLE.RESPONSIBLE);
                     }
 
-                    tmp = task.accountableEmployees.find(item => item._id === userId);
+                    tmp = task.accountableEmployees && task.accountableEmployees.find(item => item._id === userId);
                     if (tmp) {
                         roles.push(this.ROLE.ACCOUNTABLE);
                     }
 
-                    tmp = task.consultedEmployees.find(item => item._id === userId);
+                    tmp = task.consultedEmployees && task.consultedEmployees.find(item => item._id === userId);
                     if (tmp) {
                         roles.push(this.ROLE.CONSULTED);
                     }
 
-                    tmp = task.informedEmployees.find(item => item._id === userId);
+                    tmp = task.informedEmployees && task.informedEmployees.find(item => item._id === userId);
                     if (tmp) {
                         roles.push(this.ROLE.INFORMED);
                     }
@@ -151,7 +152,7 @@ class DetailTaskTab extends Component {
 
     componentDidMount() {
         const { currentRole } = this.state;
-        this.props.getAllTaskProject();
+        this.props.getProjects({ calledId: "" });
         this.props.showInfoRole(currentRole);
     }
 
@@ -699,13 +700,7 @@ class DetailTaskTab extends Component {
 
     // convert ISODate to String hh:mm AM/PM
     formatTime(date) {
-        var d = new Date(date);
-        let time = moment(d).format("DD-MM-YYYY hh:mm A");
-        // let suffix = " AM";
-        // if(d.getHours() >= 12 && d.getHours() <= 23) {
-        //     suffix = " PM";
-        // }
-        return time;
+        return dayjs(date).format("DD-MM-YYYY hh:mm A")
     }
 
     render() {
@@ -908,7 +903,7 @@ class DetailTaskTab extends Component {
                                 <i className="fa fa-external-link-square" style={{ fontSize: "16px" }}></i>{currentRole === "responsible" ? translate('task.task_perform.request_close_task') : translate('task.task_perform.approval_close_task')}
                             </a>
                         }
-                        {task && statusTask !== "inprocess" && checkInactive
+                        {task && statusTask !== "inprocess" && statusTask !== "wait_for_approval" && checkInactive
                             && <a className="btn btn-app" onClick={() => this.handleOpenTaskAgain(id)} title={translate('task.task_perform.open_task_again')}>
                                 <i className="fa fa-rocket" style={{ fontSize: "16px" }}></i>{translate('task.task_perform.open_task_again')}
                             </a>
@@ -1419,7 +1414,7 @@ const actionGetState = { //dispatchActionToProps
     editHoursSpentInEvaluate: performTaskAction.editHoursSpentInEvaluate,
     confirmTask: performTaskAction.confirmTask,
     getAllUserInAllUnitsOfCompany: UserActions.getAllUserInAllUnitsOfCompany,
-    getAllTaskProject: TaskProjectAction.get,
+    getProjects: ProjectActions.getProjects,
     openTaskAgain: performTaskAction.openTaskAgain,
 
     showInfoRole: RoleActions.show,

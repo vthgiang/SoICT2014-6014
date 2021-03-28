@@ -9,7 +9,8 @@ import { UserActions } from '../../../../super-admin/user/redux/actions';
 import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
 import { RecommendProcureActions } from '../redux/actions';
 
-import { PurchaseRequestFromValidator } from './PurchaseRequestFromValidator';
+import ValidationHelper from '../../../../../helpers/validationHelper';
+
 class PurchaseRequestCreateForm extends Component {
     constructor(props) {
         super(props);
@@ -68,14 +69,15 @@ class PurchaseRequestCreateForm extends Component {
         this.validateDateCreate(value, true);
     }
     validateDateCreate = (value, willUpdateState = true) => {
-        let msg = PurchaseRequestFromValidator.validateDateCreate(value, this.props.translate)
+        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
+
         if (willUpdateState) {
             this.setState({
-                errorOnDateCreate: msg,
+                errorOnDateCreate: message,
                 dateCreate: value
             });
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
     /**
@@ -93,17 +95,18 @@ class PurchaseRequestCreateForm extends Component {
         this.validateEquipment(value, true);
     }
     validateEquipment = (value, willUpdateState = true) => {
-        let msg = PurchaseRequestFromValidator.validateEquipment(value, this.props.translate)
+        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
+
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnEquipment: msg,
+                    errorOnEquipment: message,
                     equipmentName: value,
                 }
             });
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
     // Bắt sự kiện thay đổi "Mô tảThiết bị đề nghị mua"
@@ -112,17 +115,18 @@ class PurchaseRequestCreateForm extends Component {
         this.validateEquipmentDescription(value, true);
     }
     validateEquipmentDescription = (value, willUpdateState = true) => {
-        let msg = PurchaseRequestFromValidator.validateEquipmentDescription(value, this.props.translate)
+        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
+
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnEquipmentDescription: msg,
+                    errorOnEquipmentDescription: message,
                     equipmentDescription: value,
                 }
             });
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
     // Bắt sự kiện thay đổi "Nhà cung cấp"
@@ -140,17 +144,18 @@ class PurchaseRequestCreateForm extends Component {
         this.validateTotal(value, true);
     }
     validateTotal = (value, willUpdateState = true) => {
-        let msg = PurchaseRequestFromValidator.validateTotal(value, this.props.translate)
+        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
+
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnTotal: msg,
+                    errorOnTotal: message,
                     total: value,
                 }
             });
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
     // Bắt sự kiện thay đổi "Đơn vị tính"
@@ -159,17 +164,18 @@ class PurchaseRequestCreateForm extends Component {
         this.validateUnit(value, true);
     }
     validateUnit = (value, willUpdateState = true) => {
-        let msg = PurchaseRequestFromValidator.validateUnit(value, this.props.translate)
+        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
+
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnUnit: msg,
+                    errorOnUnit: message,
                     unit: value,
                 }
             });
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
     handleApproverChange = (value) => {
@@ -177,17 +183,18 @@ class PurchaseRequestCreateForm extends Component {
     }
 
     validateApprover = (value, willUpdateState = true) => {
-        let msg = PurchaseRequestFromValidator.validateApprover(value, this.props.translate)
+        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
+
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnApprover: msg,
+                    errorOnApprover: message,
                     approver: value,
                 }
             });
         }
-        return msg === undefined;
+        return message === undefined;
     }
     // Bắt sự kiện thay đổi "Giá trị dự tính"
     handleEstimatePriceChange = (e) => {
@@ -211,7 +218,7 @@ class PurchaseRequestCreateForm extends Component {
     componentDidMount = () => {
         this.props.getAllDepartments();
         this.props.getRoleSameDepartment(localStorage.getItem("currentRole"));
-
+        this.props.getUserApprover();
         // Mỗi khi modal mở, cần sinh lại code
         window.$('#modal-create-recommendprocure').on('shown.bs.modal', this.regenerateCode)
     }
@@ -281,8 +288,7 @@ class PurchaseRequestCreateForm extends Component {
             recommendNumber, dateCreate, equipmentName, equipmentDescription, supplier, total, unit, estimatePrice, recommendUnits, approver,
             errorOnEquipment, errorOnEquipmentDescription, errorOnTotal, errorOnUnit, errorOnApprover
         } = this.state;
-
-        var userlist = user.list;
+        var userlist = recommendProcure && recommendProcure.listuser ? recommendProcure.listuser : [];
         const departmentlist = department.list && department.list.map(obj => ({ value: obj._id, text: obj.name }));
         return (
             <React.Fragment>
@@ -441,6 +447,7 @@ function mapState(state) {
 const actionCreators = {
     getUser: UserActions.get,
     createRecommendProcure: RecommendProcureActions.createRecommendProcure,
+    getUserApprover: RecommendProcureActions.getUserApprover,
     getAllDepartments: DepartmentActions.get,
     getRoleSameDepartment: UserActions.getRoleSameDepartment,
 };

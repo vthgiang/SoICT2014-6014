@@ -114,6 +114,27 @@ exports.searchPurchaseRequests = async (portal, company, query) => {
     return { totalList, listRecommendProcures };
 };
 
+exports.searchUserApprover = async (portal, company) => {
+    let manager, roleIds = [], userRolesIds = [];
+    let link = await Link(connect(DB_CONNECTION, portal)).find({ url: "/manage-asset-purchase-request" });
+    if (link.length) {
+        privilege = await Privilege(connect(DB_CONNECTION, portal)).find({ resourceId: link[0]._id });
+        if (privilege.length) {
+            for (let i in privilege) {
+                roleIds.push(privilege[i].roleId);
+            }
+            userRoles = await UserRole(connect(DB_CONNECTION, portal)).find({ roleId: { $in: roleIds } })
+            if (userRoles.length) {
+                for (let i in userRoles) {
+                    userRolesIds.push(userRoles[i].userId)
+                }
+                manager = await User(connect(DB_CONNECTION, portal)).find({ _id: { $in: userRolesIds } }).select("name email");
+            }
+        }
+    }
+
+    return manager;
+};
 /**
  * Gửi email khi đăng ký sử dụng tài sản
  * @param {*} portal id công ty

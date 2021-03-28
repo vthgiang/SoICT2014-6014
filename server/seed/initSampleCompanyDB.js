@@ -3435,7 +3435,7 @@ const initSampleCompanyDB = async () => {
     -----------------------------------------------------------------------------------------------
     ----------------------------------------------------------------------------------------------- */
     console.log("Khởi tạo dữ liệu danh mục hàng hóa cha");
-    var listCategoryParent = await Category(vnistDB).insertMany([
+    var listCategory = await Category(vnistDB).insertMany([
         {
             name: "Sản phẩm",
             code: "CT001",
@@ -3443,7 +3443,7 @@ const initSampleCompanyDB = async () => {
             description: "Những mặt hàng được sản xuất xong",
         },
         {
-            name: "Bán thành phẩm",
+            name: "Công cụ dụng cụ",
             code: "CT002",
             parent: null,
             description:
@@ -3454,14 +3454,7 @@ const initSampleCompanyDB = async () => {
             code: "CT003",
             parent: null,
             description: "Những mặt hàng phục vụ cho sản xuất tạo sản phẩm",
-        },
-        {
-            name: "Công cụ dụng cụ",
-            code: "CT004",
-            parent: null,
-            description:
-                "Tư liệu sản xuất lao động tham gia vào nhiều chu trình sản xuất",
-        },
+        }
     ]);
 
     console.log("Khởi tạo dữ liệu danh mục hàng hóa cha");
@@ -3469,61 +3462,28 @@ const initSampleCompanyDB = async () => {
         {
             name: "Dạng bột",
             code: "CTP001",
-            parent: listCategoryParent[0]._id,
+            parent: listCategory[0]._id,
             description: "Thuốc dạng bột",
         },
         {
             name: "Dạng viên",
             code: "CTP002",
-            parent: listCategoryParent[0]._id,
+            parent: listCategory[0]._id,
             description: "Thuốc dạng viên",
         },
         {
             name: "Dạng nước",
             code: "CTP003",
-            parent: listCategoryParent[0]._id,
+            parent: listCategory[0]._id,
             description: "Thuốc dạng nước",
         },
         {
             name: "Dạng cốm",
             code: "CTP004",
-            parent: listCategoryParent[0]._id,
+            parent: listCategory[0]._id,
             description: "Thuốc dạng cốm",
         },
     ]);
-
-    console.log("Khởi tạo dữ liệu danh mục hàng hóa");
-    var listCategory = await Category(vnistDB).insertMany([
-        {
-            name: "Dạng bột",
-            code: "CT001",
-            parent: null,
-            type: "product",
-            description: "Dạng bột",
-        },
-        {
-            name: "Dạng viên",
-            code: "CT002",
-            parent: null,
-            type: "product",
-            description: "Dạng viên viên",
-        },
-        {
-            name: "NVL",
-            code: "MT002",
-            parent: null,
-            type: "material",
-            description: "NVL",
-        },
-        {
-            name: "Dùng cho đóng gói",
-            code: "EQ002",
-            parent: null,
-            type: "equipment",
-            description: "NVL",
-        }
-    ]);
-    console.log("Khởi tạo xong danh sách danh mục hàng hóa");
 
     /*---------------------------------------------------------------------------------------------
     -----------------------------------------------------------------------------------------------
@@ -3556,7 +3516,7 @@ const initSampleCompanyDB = async () => {
         },
         {
             company: vnist._id,
-            category: listCategory[3]._id,
+            category: listCategory[2]._id,
             name: "Bình ắc quy",
             code: "EQ001",
             type: "material",
@@ -3567,7 +3527,7 @@ const initSampleCompanyDB = async () => {
         },
         {
             company: vnist._id,
-            category: listCategory[3]._id,
+            category: listCategory[2]._id,
             name: "Máy nén",
             code: "EQ002",
             type: "material",
@@ -3787,17 +3747,17 @@ const initSampleCompanyDB = async () => {
             enableGoods: [
                 {
                     good: listGood[0]._id,
-                    contained: 50,
+                    contained: 0,
                     capacity: 200,
                 },
                 {
                     good: listGood[1]._id,
-                    contained: 200,
+                    contained: 0,
                     capacity: 300,
                 },
                 {
                     good: listProduct[1]._id,
-                    contained: 50,
+                    contained: 0,
                     capacity: 100,
                 },
             ],
@@ -3817,17 +3777,17 @@ const initSampleCompanyDB = async () => {
             enableGoods: [
                 {
                     good: listGood[0]._id,
-                    contained: 50,
+                    contained: 0,
                     capacity: 200,
                 },
                 {
                     good: listGood[1]._id,
-                    contained: 200,
+                    contained: 0,
                     capacity: 300,
                 },
                 {
                     good: listProduct[1]._id,
-                    contained: 50,
+                    contained: 0,
                     capacity: 100,
                 },
             ],
@@ -3847,17 +3807,17 @@ const initSampleCompanyDB = async () => {
             enableGoods: [
                 {
                     good: listGood[0]._id,
-                    contained: 50,
+                    contained: 0,
                     capacity: 300,
                 },
                 {
                     good: listGood[1]._id,
-                    contained: 200,
+                    contained: 0,
                     capacity: 300,
                 },
                 {
                     good: listProduct[1]._id,
-                    contained: 50,
+                    contained: 0,
                     capacity: 100,
                 },
             ],
@@ -3874,23 +3834,23 @@ const initSampleCompanyDB = async () => {
             parent: listBinLocations[0]._id,
             path: "ST002-T1-P101",
             unit: "mét khối",
-            capacity: "",
-            contained: "",
+            capacity: 200,
+            contained: 10,
             child: [],
             enableGoods: [
                 {
                     good: listGood[0]._id,
-                    contained: 50,
+                    contained: 0,
                     capacity: 200,
                 },
                 {
                     good: listGood[1]._id,
-                    contained: 200,
+                    contained: 0,
                     capacity: 300,
                 },
                 {
-                    good: listProduct[1]._id,
-                    contained: 50,
+                    good: listProduct[0]._id,
+                    contained: 80,
                     capacity: 100,
                 },
             ],
@@ -3904,24 +3864,24 @@ const initSampleCompanyDB = async () => {
             parent: listBinLocations[0]._id,
             path: "ST002-T1-P102",
             unit: "mét khối",
-            capacity: "",
-            contained: "",
+            capacity: 200,
+            contained: 20,
             child: [],
             enableGoods: [
                 {
                     good: listGood[0]._id,
-                    contained: 50,
+                    contained: 0,
                     capacity: 200,
                 },
                 {
                     good: listGood[1]._id,
-                    contained: 200,
+                    contained: 0,
                     capacity: 300,
                 },
                 {
-                    good: listProduct[1]._id,
-                    contained: 50,
-                    capacity: 100,
+                    good: listProduct[0]._id,
+                    contained: 120,
+                    capacity: 200,
                 },
             ],
         },
@@ -3934,23 +3894,23 @@ const initSampleCompanyDB = async () => {
             parent: listBinLocations[0]._id,
             path: "ST002-T1-P103",
             unit: "mét khối",
-            capacity: "",
-            contained: "",
+            capacity: 200,
+            contained: 0,
             child: [],
             enableGoods: [
                 {
                     good: listGood[0]._id,
-                    contained: 50,
+                    contained: 0,
                     capacity: 300,
                 },
                 {
                     good: listGood[1]._id,
-                    contained: 200,
+                    contained: 0,
                     capacity: 300,
                 },
                 {
                     good: listProduct[1]._id,
-                    contained: 50,
+                    contained: 0,
                     capacity: 100,
                 },
             ],
@@ -3964,23 +3924,23 @@ const initSampleCompanyDB = async () => {
             parent: null,
             path: "ST001-T1",
             unit: "khối",
-            capacity: "",
-            contained: "",
+            capacity: 200,
+            contained: 0,
             child: [],
             enableGoods: [
                 {
                     good: listGood[0]._id,
-                    contained: 50,
+                    contained: 0,
                     capacity: 200,
                 },
                 {
                     good: listGood[1]._id,
-                    contained: 200,
+                    contained: 0,
                     capacity: 300,
                 },
                 {
                     good: listProduct[1]._id,
-                    contained: 50,
+                    contained: 0,
                     capacity: 100,
                 },
             ],
@@ -3994,23 +3954,23 @@ const initSampleCompanyDB = async () => {
             parent: null,
             path: "ST001-T2",
             unit: "mét khối",
-            capacity: "",
-            contained: "",
+            capacity: 200,
+            contained: 0,
             child: [],
             enableGoods: [
                 {
                     good: listGood[0]._id,
-                    contained: 50,
+                    contained: 0,
                     capacity: 200,
                 },
                 {
                     good: listGood[1]._id,
-                    contained: 200,
+                    contained: 0,
                     capacity: 300,
                 },
                 {
                     good: listProduct[1]._id,
-                    contained: 50,
+                    contained: 0,
                     capacity: 100,
                 },
             ],
@@ -4029,8 +3989,8 @@ const initSampleCompanyDB = async () => {
         parent: null,
         path: "ST002-T1",
         unit: "mét khối",
-        capacity: "",
-        contained: "",
+        capacity: 200,
+        contained: 10,
         child: [
             listBinLocationChilds[0]._id,
             listBinLocationChilds[1]._id,
@@ -4039,17 +3999,17 @@ const initSampleCompanyDB = async () => {
         enableGoods: [
             {
                 good: listGood[0]._id,
-                contained: 50,
+                contained: 0,
                 capacity: 200,
             },
             {
                 good: listGood[1]._id,
-                contained: 200,
+                contained: 0,
                 capacity: 300,
             },
             {
-                good: listProduct[1]._id,
-                contained: 50,
+                good: listProduct[0]._id,
+                contained: 80,
                 capacity: 100,
             },
         ],
@@ -4650,386 +4610,386 @@ const initSampleCompanyDB = async () => {
                 },
             ],
         },
-        {
-            code: "LOT002",
-            lotType: 2,
-            good: listProduct[1]._id,
-            type: "product",
-            stocks: [
-                {
-                    stock: listStock[0]._id,
-                    quantity: 200,
-                    binLocations: [
-                        {
-                            binLocation: listBinLocationChilds[3]._id,
-                            quantity: 99,
-                        },
-                        {
-                            binLocation: listBinLocationChilds[4]._id,
-                            quantity: 101,
-                        },
-                    ],
-                },
-                {
-                    stock: listStock[1]._id,
-                    quantity: 250,
-                    binLocations: [
-                        {
-                            binLocation: listBinLocationChilds[2]._id,
-                            quantity: 100,
-                        },
-                        {
-                            binLocation: listBinLocationChilds[1]._id,
-                            quantity: 150,
-                        },
-                    ],
-                },
-            ],
-            originalQuantity: 450,
-            quantity: 450,
-            expirationDate: new Date("02-06-2021"),
-            description: "Lô hàng nhập từ xưởng sản xuất",
-            lotLogs: [
-                {
-                    quantity: 200,
-                    description: "Nhập hàng",
-                    type: "2",
-                    createdAt: new Date("11-12-2019"),
-                    stock: listStock[0]._id,
-                    binLocations: [
-                        {
-                            binLocation: listBinLocationChilds[3]._id,
-                            quantity: 99,
-                        },
-                        {
-                            binLocation: listBinLocationChilds[4]._id,
-                            quantity: 101,
-                        },
-                    ],
-                },
-                {
-                    quantity: 250,
-                    description: "Nhập hàng",
-                    type: "2",
-                    createdAt: new Date("07-10-2020"),
-                    stock: listStock[1]._id,
-                    binLocations: [
-                        {
-                            binLocation: listBinLocationChilds[2]._id,
-                            quantity: 100,
-                        },
-                        {
-                            binLocation: listBinLocationChilds[1]._id,
-                            quantity: 150,
-                        },
-                    ],
-                },
-            ],
-        },
-        {
-            code: "LOT003",
-            lotType: 2,
-            good: listProduct[0]._id,
-            type: "product",
-            stocks: [
-                {
-                    stock: listStock[0]._id,
-                    quantity: 120,
-                    binLocations: [
-                        {
-                            binLocation: listBinLocationChilds[3]._id,
-                            quantity: 100,
-                        },
-                        {
-                            binLocation: listBinLocationChilds[4]._id,
-                            quantity: 20,
-                        },
-                    ],
-                },
-                {
-                    stock: listStock[1]._id,
-                    quantity: 200,
-                    binLocations: [
-                        {
-                            binLocation: listBinLocationChilds[0]._id,
-                            quantity: 80,
-                        },
-                        {
-                            binLocation: listBinLocationChilds[1]._id,
-                            quantity: 120,
-                        },
-                    ],
-                },
-            ],
-            originalQuantity: 320,
-            quantity: 320,
-            expirationDate: new Date("12-11-2021"),
-            description: "Lô hàng tự tạo",
-            lotLogs: [
-                {
-                    quantity: 200,
-                    description: "Nhập hàng lần đầu",
-                    type: "2",
-                    createdAt: new Date("09-11-2020"),
-                    stock: listStock[1]._id,
-                    binLocations: [
-                        {
-                            binLocation: listBinLocationChilds[0]._id,
-                            quantity: 80,
-                        },
-                        {
-                            binLocation: listBinLocationChilds[1]._id,
-                            quantity: 120,
-                        },
-                    ],
-                },
-                {
-                    quantity: 120,
-                    description: "Nhập hàng lần đầu",
-                    type: "2",
-                    createdAt: new Date("05-06-2020"),
-                    stock: listStock[0]._id,
-                    binLocations: [
-                        {
-                            binLocation: listBinLocationChilds[3]._id,
-                            quantity: 100,
-                        },
-                        {
-                            binLocation: listBinLocationChilds[4]._id,
-                            quantity: 20,
-                        },
-                    ],
-                },
-            ],
-        },
-        {
-            code: "LOT004",
-            lotType: 2,
-            good: listGood[0]._id,
-            type: "material",
-            stocks: [
-                {
-                    stock: listStock[0]._id,
-                    quantity: 100,
-                    binLocations: [
-                        {
-                            binLocation: listBinLocationChilds[3]._id,
-                            quantity: 40,
-                        },
-                        {
-                            binLocation: listBinLocationChilds[4]._id,
-                            quantity: 60,
-                        },
-                    ],
-                },
-                {
-                    stock: listStock[1]._id,
-                    quantity: 200,
-                    binLocations: [
-                        {
-                            binLocation: listBinLocationChilds[0]._id,
-                            quantity: 80,
-                        },
-                        {
-                            binLocation: listBinLocationChilds[1]._id,
-                            quantity: 120,
-                        },
-                    ],
-                },
-            ],
-            originalQuantity: 300,
-            quantity: 300,
-            expirationDate: new Date("12-12-2021"),
-            description: "Lô hàng tự tạo",
-            lotLogs: [
-                {
-                    quantity: 100,
-                    description: "Nhập hàng lần đầu",
-                    type: "2",
-                    createdAt: new Date("07-09-2020"),
-                    stock: listStock[0]._id,
-                    binLocations: [
-                        {
-                            binLocation: listBinLocationChilds[3]._id,
-                            quantity: 40,
-                        },
-                        {
-                            binLocation: listBinLocationChilds[4]._id,
-                            quantity: 60,
-                        },
-                    ],
-                },
-                {
-                    quantity: 200,
-                    description: "Nhập hàng lần đầu",
-                    type: "2",
-                    createdAt: new Date("08-10-2020"),
-                    stock: listStock[1]._id,
-                    binLocations: [
-                        {
-                            binLocation: listBinLocationChilds[0]._id,
-                            quantity: 80,
-                        },
-                        {
-                            binLocation: listBinLocationChilds[1]._id,
-                            quantity: 120,
-                        },
-                    ],
-                },
-            ],
-        },
-        {
-            code: "LOT005",
-            lotType: 2,
-            good: listGood[0]._id,
-            type: "material",
-            stocks: [
-                {
-                    stock: listStock[0]._id,
-                    quantity: 100,
-                    binLocations: [
-                        {
-                            binLocation: listBinLocationChilds[3]._id,
-                            quantity: 40,
-                        },
-                        {
-                            binLocation: listBinLocationChilds[4]._id,
-                            quantity: 60,
-                        },
-                    ],
-                },
-                {
-                    stock: listStock[1]._id,
-                    quantity: 200,
-                    binLocations: [
-                        {
-                            binLocation: listBinLocationChilds[0]._id,
-                            quantity: 80,
-                        },
-                        {
-                            binLocation: listBinLocationChilds[1]._id,
-                            quantity: 120,
-                        },
-                    ],
-                },
-            ],
-            originalQuantity: 300,
-            quantity: 300,
-            expirationDate: new Date("12-10-2021"),
-            description: "Lô hàng tự tạo",
-            lotLogs: [
-                {
-                    quantity: 100,
-                    description: "Nhập hàng lần đầu",
-                    type: "2",
-                    createdAt: new Date("08-10-2020"),
-                    stock: listStock[0]._id,
-                    binLocations: [
-                        {
-                            binLocation: listBinLocationChilds[3]._id,
-                            quantity: 40,
-                        },
-                        {
-                            binLocation: listBinLocationChilds[4]._id,
-                            quantity: 60,
-                        },
-                    ],
-                },
-                {
-                    quantity: 200,
-                    description: "Nhập hàng lần đầu",
-                    type: "2",
-                    createdAt: new Date("09-10-2020"),
-                    stock: listStock[1]._id,
-                    binLocations: [
-                        {
-                            binLocation: listBinLocationChilds[0]._id,
-                            quantity: 80,
-                        },
-                        {
-                            binLocation: listBinLocationChilds[1]._id,
-                            quantity: 120,
-                        },
-                    ],
-                },
-            ],
-        },
-        {
-            code: "LOT006",
-            lotType: 2,
-            good: listGood[0]._id,
-            type: "material",
-            stocks: [
-                {
-                    stock: listStock[0]._id,
-                    quantity: 100,
-                    binLocations: [
-                        {
-                            binLocation: listBinLocationChilds[3]._id,
-                            quantity: 40,
-                        },
-                        {
-                            binLocation: listBinLocationChilds[4]._id,
-                            quantity: 60,
-                        },
-                    ],
-                },
-                {
-                    stock: listStock[1]._id,
-                    quantity: 200,
-                    binLocations: [
-                        {
-                            binLocation: listBinLocationChilds[0]._id,
-                            quantity: 80,
-                        },
-                        {
-                            binLocation: listBinLocationChilds[1]._id,
-                            quantity: 120,
-                        },
-                    ],
-                },
-            ],
-            originalQuantity: 300,
-            quantity: 300,
-            expirationDate: new Date("12-12-2021"),
-            description: "Lô hàng tự tạo",
-            lotLogs: [
-                {
-                    quantity: 200,
-                    description: "Nhập hàng lần đầu",
-                    type: "2",
-                    createdAt: new Date("10-10-2020"),
-                    stock: listStock[1]._id,
-                    binLocations: [
-                        {
-                            binLocation: listBinLocationChilds[0]._id,
-                            quantity: 80,
-                        },
-                        {
-                            binLocation: listBinLocationChilds[1]._id,
-                            quantity: 120,
-                        },
-                    ],
-                },
-                {
-                    quantity: 100,
-                    description: "Nhập hàng lần đầu",
-                    type: "2",
-                    createdAt: new Date("11-10-2020"),
-                    stock: listStock[0]._id,
-                    binLocations: [
-                        {
-                            binLocation: listBinLocationChilds[3]._id,
-                            quantity: 40,
-                        },
-                        {
-                            binLocation: listBinLocationChilds[4]._id,
-                            quantity: 60,
-                        },
-                    ],
-                },
-            ],
-        },
+        // {
+        //     code: "LOT002",
+        //     lotType: 2,
+        //     good: listProduct[1]._id,
+        //     type: "product",
+        //     stocks: [
+        //         {
+        //             stock: listStock[0]._id,
+        //             quantity: 200,
+        //             binLocations: [
+        //                 {
+        //                     binLocation: listBinLocationChilds[3]._id,
+        //                     quantity: 99,
+        //                 },
+        //                 {
+        //                     binLocation: listBinLocationChilds[4]._id,
+        //                     quantity: 101,
+        //                 },
+        //             ],
+        //         },
+        //         {
+        //             stock: listStock[1]._id,
+        //             quantity: 250,
+        //             binLocations: [
+        //                 {
+        //                     binLocation: listBinLocationChilds[2]._id,
+        //                     quantity: 100,
+        //                 },
+        //                 {
+        //                     binLocation: listBinLocationChilds[1]._id,
+        //                     quantity: 150,
+        //                 },
+        //             ],
+        //         },
+        //     ],
+        //     originalQuantity: 450,
+        //     quantity: 450,
+        //     expirationDate: new Date("02-06-2021"),
+        //     description: "Lô hàng nhập từ xưởng sản xuất",
+        //     lotLogs: [
+        //         {
+        //             quantity: 200,
+        //             description: "Nhập hàng",
+        //             type: "2",
+        //             createdAt: new Date("11-12-2019"),
+        //             stock: listStock[0]._id,
+        //             binLocations: [
+        //                 {
+        //                     binLocation: listBinLocationChilds[3]._id,
+        //                     quantity: 99,
+        //                 },
+        //                 {
+        //                     binLocation: listBinLocationChilds[4]._id,
+        //                     quantity: 101,
+        //                 },
+        //             ],
+        //         },
+        //         {
+        //             quantity: 250,
+        //             description: "Nhập hàng",
+        //             type: "2",
+        //             createdAt: new Date("07-10-2020"),
+        //             stock: listStock[1]._id,
+        //             binLocations: [
+        //                 {
+        //                     binLocation: listBinLocationChilds[2]._id,
+        //                     quantity: 100,
+        //                 },
+        //                 {
+        //                     binLocation: listBinLocationChilds[1]._id,
+        //                     quantity: 150,
+        //                 },
+        //             ],
+        //         },
+        //     ],
+        // },
+        // {
+        //     code: "LOT003",
+        //     lotType: 2,
+        //     good: listProduct[0]._id,
+        //     type: "product",
+        //     stocks: [
+        //         {
+        //             stock: listStock[0]._id,
+        //             quantity: 120,
+        //             binLocations: [
+        //                 {
+        //                     binLocation: listBinLocationChilds[3]._id,
+        //                     quantity: 100,
+        //                 },
+        //                 {
+        //                     binLocation: listBinLocationChilds[4]._id,
+        //                     quantity: 20,
+        //                 },
+        //             ],
+        //         },
+        //         {
+        //             stock: listStock[1]._id,
+        //             quantity: 200,
+        //             binLocations: [
+        //                 {
+        //                     binLocation: listBinLocationChilds[0]._id,
+        //                     quantity: 80,
+        //                 },
+        //                 {
+        //                     binLocation: listBinLocationChilds[1]._id,
+        //                     quantity: 120,
+        //                 },
+        //             ],
+        //         },
+        //     ],
+        //     originalQuantity: 320,
+        //     quantity: 320,
+        //     expirationDate: new Date("12-11-2021"),
+        //     description: "Lô hàng tự tạo",
+        //     lotLogs: [
+        //         {
+        //             quantity: 200,
+        //             description: "Nhập hàng lần đầu",
+        //             type: "2",
+        //             createdAt: new Date("09-11-2020"),
+        //             stock: listStock[1]._id,
+        //             binLocations: [
+        //                 {
+        //                     binLocation: listBinLocationChilds[0]._id,
+        //                     quantity: 80,
+        //                 },
+        //                 {
+        //                     binLocation: listBinLocationChilds[1]._id,
+        //                     quantity: 120,
+        //                 },
+        //             ],
+        //         },
+        //         {
+        //             quantity: 120,
+        //             description: "Nhập hàng lần đầu",
+        //             type: "2",
+        //             createdAt: new Date("05-06-2020"),
+        //             stock: listStock[0]._id,
+        //             binLocations: [
+        //                 {
+        //                     binLocation: listBinLocationChilds[3]._id,
+        //                     quantity: 100,
+        //                 },
+        //                 {
+        //                     binLocation: listBinLocationChilds[4]._id,
+        //                     quantity: 20,
+        //                 },
+        //             ],
+        //         },
+        //     ],
+        // },
+        // {
+        //     code: "LOT004",
+        //     lotType: 2,
+        //     good: listGood[0]._id,
+        //     type: "material",
+        //     stocks: [
+        //         {
+        //             stock: listStock[0]._id,
+        //             quantity: 100,
+        //             binLocations: [
+        //                 {
+        //                     binLocation: listBinLocationChilds[3]._id,
+        //                     quantity: 40,
+        //                 },
+        //                 {
+        //                     binLocation: listBinLocationChilds[4]._id,
+        //                     quantity: 60,
+        //                 },
+        //             ],
+        //         },
+        //         {
+        //             stock: listStock[1]._id,
+        //             quantity: 200,
+        //             binLocations: [
+        //                 {
+        //                     binLocation: listBinLocationChilds[0]._id,
+        //                     quantity: 80,
+        //                 },
+        //                 {
+        //                     binLocation: listBinLocationChilds[1]._id,
+        //                     quantity: 120,
+        //                 },
+        //             ],
+        //         },
+        //     ],
+        //     originalQuantity: 300,
+        //     quantity: 300,
+        //     expirationDate: new Date("12-12-2021"),
+        //     description: "Lô hàng tự tạo",
+        //     lotLogs: [
+        //         {
+        //             quantity: 100,
+        //             description: "Nhập hàng lần đầu",
+        //             type: "2",
+        //             createdAt: new Date("07-09-2020"),
+        //             stock: listStock[0]._id,
+        //             binLocations: [
+        //                 {
+        //                     binLocation: listBinLocationChilds[3]._id,
+        //                     quantity: 40,
+        //                 },
+        //                 {
+        //                     binLocation: listBinLocationChilds[4]._id,
+        //                     quantity: 60,
+        //                 },
+        //             ],
+        //         },
+        //         {
+        //             quantity: 200,
+        //             description: "Nhập hàng lần đầu",
+        //             type: "2",
+        //             createdAt: new Date("08-10-2020"),
+        //             stock: listStock[1]._id,
+        //             binLocations: [
+        //                 {
+        //                     binLocation: listBinLocationChilds[0]._id,
+        //                     quantity: 80,
+        //                 },
+        //                 {
+        //                     binLocation: listBinLocationChilds[1]._id,
+        //                     quantity: 120,
+        //                 },
+        //             ],
+        //         },
+        //     ],
+        // },
+        // {
+        //     code: "LOT005",
+        //     lotType: 2,
+        //     good: listGood[0]._id,
+        //     type: "material",
+        //     stocks: [
+        //         {
+        //             stock: listStock[0]._id,
+        //             quantity: 100,
+        //             binLocations: [
+        //                 {
+        //                     binLocation: listBinLocationChilds[3]._id,
+        //                     quantity: 40,
+        //                 },
+        //                 {
+        //                     binLocation: listBinLocationChilds[4]._id,
+        //                     quantity: 60,
+        //                 },
+        //             ],
+        //         },
+        //         {
+        //             stock: listStock[1]._id,
+        //             quantity: 200,
+        //             binLocations: [
+        //                 {
+        //                     binLocation: listBinLocationChilds[0]._id,
+        //                     quantity: 80,
+        //                 },
+        //                 {
+        //                     binLocation: listBinLocationChilds[1]._id,
+        //                     quantity: 120,
+        //                 },
+        //             ],
+        //         },
+        //     ],
+        //     originalQuantity: 300,
+        //     quantity: 300,
+        //     expirationDate: new Date("12-10-2021"),
+        //     description: "Lô hàng tự tạo",
+        //     lotLogs: [
+        //         {
+        //             quantity: 100,
+        //             description: "Nhập hàng lần đầu",
+        //             type: "2",
+        //             createdAt: new Date("08-10-2020"),
+        //             stock: listStock[0]._id,
+        //             binLocations: [
+        //                 {
+        //                     binLocation: listBinLocationChilds[3]._id,
+        //                     quantity: 40,
+        //                 },
+        //                 {
+        //                     binLocation: listBinLocationChilds[4]._id,
+        //                     quantity: 60,
+        //                 },
+        //             ],
+        //         },
+        //         {
+        //             quantity: 200,
+        //             description: "Nhập hàng lần đầu",
+        //             type: "2",
+        //             createdAt: new Date("09-10-2020"),
+        //             stock: listStock[1]._id,
+        //             binLocations: [
+        //                 {
+        //                     binLocation: listBinLocationChilds[0]._id,
+        //                     quantity: 80,
+        //                 },
+        //                 {
+        //                     binLocation: listBinLocationChilds[1]._id,
+        //                     quantity: 120,
+        //                 },
+        //             ],
+        //         },
+        //     ],
+        // },
+        // {
+        //     code: "LOT006",
+        //     lotType: 2,
+        //     good: listGood[0]._id,
+        //     type: "material",
+        //     stocks: [
+        //         {
+        //             stock: listStock[0]._id,
+        //             quantity: 100,
+        //             binLocations: [
+        //                 {
+        //                     binLocation: listBinLocationChilds[3]._id,
+        //                     quantity: 40,
+        //                 },
+        //                 {
+        //                     binLocation: listBinLocationChilds[4]._id,
+        //                     quantity: 60,
+        //                 },
+        //             ],
+        //         },
+        //         {
+        //             stock: listStock[1]._id,
+        //             quantity: 200,
+        //             binLocations: [
+        //                 {
+        //                     binLocation: listBinLocationChilds[0]._id,
+        //                     quantity: 80,
+        //                 },
+        //                 {
+        //                     binLocation: listBinLocationChilds[1]._id,
+        //                     quantity: 120,
+        //                 },
+        //             ],
+        //         },
+        //     ],
+        //     originalQuantity: 300,
+        //     quantity: 300,
+        //     expirationDate: new Date("12-12-2021"),
+        //     description: "Lô hàng tự tạo",
+        //     lotLogs: [
+        //         {
+        //             quantity: 200,
+        //             description: "Nhập hàng lần đầu",
+        //             type: "2",
+        //             createdAt: new Date("10-10-2020"),
+        //             stock: listStock[1]._id,
+        //             binLocations: [
+        //                 {
+        //                     binLocation: listBinLocationChilds[0]._id,
+        //                     quantity: 80,
+        //                 },
+        //                 {
+        //                     binLocation: listBinLocationChilds[1]._id,
+        //                     quantity: 120,
+        //                 },
+        //             ],
+        //         },
+        //         {
+        //             quantity: 100,
+        //             description: "Nhập hàng lần đầu",
+        //             type: "2",
+        //             createdAt: new Date("11-10-2020"),
+        //             stock: listStock[0]._id,
+        //             binLocations: [
+        //                 {
+        //                     binLocation: listBinLocationChilds[3]._id,
+        //                     quantity: 40,
+        //                 },
+        //                 {
+        //                     binLocation: listBinLocationChilds[4]._id,
+        //                     quantity: 60,
+        //                 },
+        //             ],
+        //         },
+        //     ],
+        // },
         {
             code: "LTP0001",
             lotType: 1,
@@ -5094,7 +5054,7 @@ const initSampleCompanyDB = async () => {
     var listBill = await Bill(vnistDB).insertMany([
         {
             code: "BI001",
-            type: "1",
+            type: "2",
             group: "1",
             fromStock: listStock[0]._id,
             users: [],
@@ -5110,7 +5070,7 @@ const initSampleCompanyDB = async () => {
                 email: "thangbao2698@gmail.com",
                 address: "Thuần Thiện - Can Lộc - Hà Tĩnh",
             },
-            status: "3",
+            status: "2",
             timestamp: "02-06-2020",
             description: "Nhập kho thành phẩm",
             goods: [
@@ -5120,188 +5080,173 @@ const initSampleCompanyDB = async () => {
                     lots: [
                         {
                             lot: listLot[0]._id,
-                            quantity: 80,
-                        },
-                        {
-                            lot: listLot[2]._id,
-                            quantity: 120,
-                        },
+                            quantity: 200,
+                        }
                     ],
                     description: "Nhập hàng",
-                },
-                {
-                    good: listProduct[1]._id,
-                    quantity: 250,
-                    lots: [
-                        {
-                            lot: listLot[1]._id,
-                            quantity: 250,
-                        },
-                    ],
-                    description: "Nhập thành phẩm",
-                },
+                }
             ],
         },
-        {
-            code: "BI002",
-            type: "3",
-            group: "2",
-            fromStock: listStock[0]._id,
-            users: [],
-            creator: users[5]._id,
-            partner: {
-                customer: null,
-                supplier: null,
-            },
-            approver: users[2]._id,
-            receiver: {
-                name: "Nguyễn Văn Thắng",
-                phone: 0344213030,
-                email: "thangbao2698@gmail.com",
-                address: "Thuần Thiện - Can Lộc - Hà Tĩnh",
-            },
-            status: "2",
-            timestamp: "10-12-2020",
-            description: "Xuất kho thành phẩm",
-            goods: [
-                {
-                    good: listProduct[0]._id,
-                    quantity: 275,
-                    lots: [
-                        {
-                            lot: listLot[0]._id,
-                            quantity: 135,
-                        },
-                        {
-                            lot: listLot[2]._id,
-                            quantity: 140,
-                        },
-                    ],
-                    description: "Xuất hàng",
-                },
-                {
-                    good: listProduct[1]._id,
-                    quantity: 345,
-                    lots: [
-                        {
-                            lot: listLot[1]._id,
-                            quantity: 345,
-                        },
-                    ],
-                    description: "Xuất thành phẩm",
-                },
-            ],
-        },
-        {
-            code: "BI003",
-            type: "4",
-            group: "2",
-            fromStock: listStock[0]._id,
-            users: [],
-            creator: users[0]._id,
-            partner: {
-                customer: null,
-                supplier: null,
-            },
-            approvers: [{
-                approver: users[2]._id,
-                approvedTime: null
-            }],
-            receiver: {
-                name: "Nguyễn Văn Thắng",
-                phone: 0344213030,
-                email: "thangbao2698@gmail.com",
-                address: "Thuần Thiện - Can Lộc - Hà Tĩnh",
-            },
-            status: "1",
-            timestamp: "10-12-2020",
-            description: "Xuất kho nguyên vật liệu",
-            goods: [
-                {
-                    good: listGood[0]._id,
-                    quantity: 275,
-                    lots: [
-                        {
-                            lot: listLot[0]._id,
-                            quantity: 135,
-                        },
-                        {
-                            lot: listLot[2]._id,
-                            quantity: 140,
-                        },
-                    ],
-                    description: "Xuất xuất nguyên vật liệu",
-                },
-                {
-                    good: listGood[1]._id,
-                    quantity: 345,
-                    lots: [
-                        {
-                            lot: listLot[1]._id,
-                            quantity: 345,
-                        },
-                    ],
-                    description: "Xuất nguyên vật liệu theo đúng tiêu chuẩn",
-                },
-            ],
-            manufacturingCommand: manufacturingCommands[0]._id,
-            manufacturingMill: manufacturingMills[0]._id
-        },
-        {
-            code: "BI004",
-            type: "4",
-            group: "2",
-            fromStock: listStock[1]._id,
-            users: [],
-            creator: users[0]._id,
-            partner: {
-                customer: null,
-                supplier: null,
-            },
-            approvers: [{
-                approver: users[2]._id,
-                approvedTime: null
-            }],
-            receiver: {
-                name: "Nguyễn Văn Thắng",
-                phone: 0344213030,
-                email: "thangbao2698@gmail.com",
-                address: "Thuần Thiện - Can Lộc - Hà Tĩnh",
-            },
-            status: "1",
-            timestamp: "10-12-2020",
-            description: "Xuất kho nguyên vật liệu",
-            goods: [
-                {
-                    good: listGood[0]._id,
-                    quantity: 275,
-                    lots: [
-                        {
-                            lot: listLot[0]._id,
-                            quantity: 135,
-                        },
-                        {
-                            lot: listLot[2]._id,
-                            quantity: 140,
-                        },
-                    ],
-                    description: "Xuất xuất nguyên vật liệu",
-                },
-                {
-                    good: listGood[1]._id,
-                    quantity: 345,
-                    lots: [
-                        {
-                            lot: listLot[1]._id,
-                            quantity: 345,
-                        },
-                    ],
-                    description: "Xuất nguyên vật liệu theo đúng tiêu chuẩn",
-                },
-            ],
-            manufacturingCommand: manufacturingCommands[0]._id,
-            manufacturingMill: manufacturingMills[0]._id
-        },
+        // {
+        //     code: "BI002",
+        //     type: "3",
+        //     group: "2",
+        //     fromStock: listStock[0]._id,
+        //     users: [],
+        //     creator: users[5]._id,
+        //     partner: {
+        //         customer: null,
+        //         supplier: null,
+        //     },
+        //     approver: users[2]._id,
+        //     receiver: {
+        //         name: "Nguyễn Văn Thắng",
+        //         phone: 0344213030,
+        //         email: "thangbao2698@gmail.com",
+        //         address: "Thuần Thiện - Can Lộc - Hà Tĩnh",
+        //     },
+        //     status: "2",
+        //     timestamp: "10-12-2020",
+        //     description: "Xuất kho thành phẩm",
+        //     goods: [
+        //         {
+        //             good: listProduct[0]._id,
+        //             quantity: 275,
+        //             lots: [
+        //                 {
+        //                     lot: listLot[0]._id,
+        //                     quantity: 135,
+        //                 },
+        //                 {
+        //                     lot: listLot[2]._id,
+        //                     quantity: 140,
+        //                 },
+        //             ],
+        //             description: "Xuất hàng",
+        //         },
+        //         {
+        //             good: listProduct[1]._id,
+        //             quantity: 345,
+        //             lots: [
+        //                 {
+        //                     lot: listLot[1]._id,
+        //                     quantity: 345,
+        //                 },
+        //             ],
+        //             description: "Xuất thành phẩm",
+        //         },
+        //     ],
+        // },
+        // {
+        //     code: "BI003",
+        //     type: "4",
+        //     group: "2",
+        //     fromStock: listStock[0]._id,
+        //     users: [],
+        //     creator: users[0]._id,
+        //     partner: {
+        //         customer: null,
+        //         supplier: null,
+        //     },
+        //     approvers: [{
+        //         approver: users[2]._id,
+        //         approvedTime: null
+        //     }],
+        //     receiver: {
+        //         name: "Nguyễn Văn Thắng",
+        //         phone: 0344213030,
+        //         email: "thangbao2698@gmail.com",
+        //         address: "Thuần Thiện - Can Lộc - Hà Tĩnh",
+        //     },
+        //     status: "1",
+        //     timestamp: "10-12-2020",
+        //     description: "Xuất kho nguyên vật liệu",
+        //     goods: [
+        //         {
+        //             good: listGood[0]._id,
+        //             quantity: 275,
+        //             lots: [
+        //                 {
+        //                     lot: listLot[0]._id,
+        //                     quantity: 135,
+        //                 },
+        //                 {
+        //                     lot: listLot[2]._id,
+        //                     quantity: 140,
+        //                 },
+        //             ],
+        //             description: "Xuất xuất nguyên vật liệu",
+        //         },
+        //         {
+        //             good: listGood[1]._id,
+        //             quantity: 345,
+        //             lots: [
+        //                 {
+        //                     lot: listLot[1]._id,
+        //                     quantity: 345,
+        //                 },
+        //             ],
+        //             description: "Xuất nguyên vật liệu theo đúng tiêu chuẩn",
+        //         },
+        //     ],
+        //     manufacturingCommand: manufacturingCommands[0]._id,
+        //     manufacturingMill: manufacturingMills[0]._id
+        // },
+        // {
+        //     code: "BI004",
+        //     type: "4",
+        //     group: "2",
+        //     fromStock: listStock[1]._id,
+        //     users: [],
+        //     creator: users[0]._id,
+        //     partner: {
+        //         customer: null,
+        //         supplier: null,
+        //     },
+        //     approvers: [{
+        //         approver: users[2]._id,
+        //         approvedTime: null
+        //     }],
+        //     receiver: {
+        //         name: "Nguyễn Văn Thắng",
+        //         phone: 0344213030,
+        //         email: "thangbao2698@gmail.com",
+        //         address: "Thuần Thiện - Can Lộc - Hà Tĩnh",
+        //     },
+        //     status: "1",
+        //     timestamp: "10-12-2020",
+        //     description: "Xuất kho nguyên vật liệu",
+        //     goods: [
+        //         {
+        //             good: listGood[0]._id,
+        //             quantity: 275,
+        //             lots: [
+        //                 {
+        //                     lot: listLot[0]._id,
+        //                     quantity: 135,
+        //                 },
+        //                 {
+        //                     lot: listLot[2]._id,
+        //                     quantity: 140,
+        //                 },
+        //             ],
+        //             description: "Xuất xuất nguyên vật liệu",
+        //         },
+        //         {
+        //             good: listGood[1]._id,
+        //             quantity: 345,
+        //             lots: [
+        //                 {
+        //                     lot: listLot[1]._id,
+        //                     quantity: 345,
+        //                 },
+        //             ],
+        //             description: "Xuất nguyên vật liệu theo đúng tiêu chuẩn",
+        //         },
+        //     ],
+        //     manufacturingCommand: manufacturingCommands[0]._id,
+        //     manufacturingMill: manufacturingMills[0]._id
+        // },
     ]);
     console.log("Tạo xong dữ liệu mẫu các loại phiếu");
 
@@ -5312,20 +5257,6 @@ const initSampleCompanyDB = async () => {
         good: listProduct[0]._id,
         type: "product",
         stocks: [
-            {
-                stock: listStock[0]._id,
-                quantity: 100,
-                binLocations: [
-                    {
-                        binLocation: listBinLocationChilds[3]._id,
-                        quantity: 40,
-                    },
-                    {
-                        binLocation: listBinLocationChilds[4]._id,
-                        quantity: 60,
-                    },
-                ],
-            },
             {
                 stock: listStock[1]._id,
                 quantity: 200,
@@ -5341,8 +5272,8 @@ const initSampleCompanyDB = async () => {
                 ],
             },
         ],
-        originalQuantity: 300,
-        quantity: 300,
+        originalQuantity: 200,
+        quantity: 200,
         expirationDate: new Date("12-12-2021"),
         description: "Lô hàng tự tạo",
         lotLogs: [
@@ -5363,25 +5294,7 @@ const initSampleCompanyDB = async () => {
                         quantity: 120,
                     },
                 ],
-            },
-            {
-                bill: listBill[1]._id,
-                quantity: 100,
-                description: "Nhập hàng lần hai",
-                type: "Nhập kho thành phẩm",
-                createdAt: new Date("05-10-2020"),
-                stock: listStock[0]._id,
-                binLocations: [
-                    {
-                        binLocation: listBinLocationChilds[3]._id,
-                        quantity: 40,
-                    },
-                    {
-                        binLocation: listBinLocationChilds[4]._id,
-                        quantity: 60,
-                    },
-                ],
-            },
+            }
         ],
     });
 

@@ -33,7 +33,10 @@ export default {
             no_data: "Không có dữ liệu",
             success: "Thành công",
             error: "Lỗi",
+            stt: 'STT',
             new_notification: "Bạn có thông báo mới!",
+            month: "tháng",
+            value: "Giá trị",
             auth_alert: {
                 title:
                     "Hệ thống xác nhận có lỗi xảy ra trong phiên làm việc của bạn!",
@@ -61,7 +64,9 @@ export default {
                 empty_error: "Giá trị không được để trống",
                 not_existing_error: "Giá trị không tồn tại",
                 existing_error: "Giá trị đã tồn tại",
-                number_input_error: "Giá trị phải từ {min} đến {max}"
+                number_input_error: "Giá trị phải từ {min} đến {max}",
+                number_input_error_min: "Giá trị phải lớn hơn {min}",
+                number_input_error_max: "Giá trị phải nhỏ hơn {max}"
             },
             not_org_unit: "Bạn chưa có đơn vị",
             not_select_unit: "Chọn đơn vị",
@@ -70,6 +75,13 @@ export default {
             detail: "Chi tiết",
             select_all: "Chọn tất cả",
             add_import: "Thêm dữ liệu từ file",
+        },
+
+        dashboard_unit: {
+            urgent_need_to_do_chart: "Biểu đồ thể hiện số công việc khẩn cấp/Cần làm",
+            urgent_task_amount: "Số công việc khẩn cấp",
+            need_to_do_task_amount: "Số công việc cần làm",
+            list_employe_timing: "Danh sách nhân viên đang bấm giờ"
         },
 
         menu: {
@@ -102,6 +114,7 @@ export default {
 
             task_template: "Mẫu Công Việc",
             taskmanagement: "Quản Lý Công Việc",
+            task_management_unit: "Công việc đơn vị",
             manageDocument: "Quản lý văn bản",
             manageDocumentType: "Quản lý loại văn bản",
 
@@ -131,6 +144,9 @@ export default {
             list_career_position: "Danh sách vị trí công việc",
             list_search_for_package: "Tìm kiếm nhân sự gói thầu",
 
+            employee_unit: "Nhân sự đơn vị",
+            employee_infomation: "Thông tin nhân viên",
+
             manage_warehouse: "Quản lý kho",
             dashboard_bill: "Bảng tin quản lý các phiếu",
             dashboard_inventory: "Bảng tin quản lý hàng tồn",
@@ -143,7 +159,8 @@ export default {
             bill_management: "Quản lý thông tin phiếu",
             inventory_management: "Quản lý hàng tồn kho",
 
-            manage_kpi: "Quản lý KPI",
+            manage_kpi_unit: "KPI đơn vị",
+            manage_kpi_personal: "KPI cá nhân",
             kpi_unit_create: "Khởi tạo KPI đơn vị",
             kpi_unit_evaluate: "Dữ liệu KPI đơn vị",
             kpi_unit_overview: "Tổng quan KPI đơn vị",
@@ -160,9 +177,9 @@ export default {
 
             notifications: "Thông báo",
 
-            tasks: "Quản lý công việc",
+            tasks: "Công việc cá nhân",
             task: "Chi tiết công việc",
-            task_management: "Danh sách công việc",
+            task_management: "Danh sách công việc cá nhân",
             task_management_of_unit: "Danh sách công việc đơn vị",
             task_management_dashboard: "Dashboard công việc",
             task_organization_management_dashboard:
@@ -252,6 +269,10 @@ export default {
             user_guide_detail: "Chi tiết hướng dẫn sử dụng",
         },
 
+        news_feed: {
+            news_feed: 'Tin tức'
+        },
+        
         intro: {
             title: "Giải pháp không gian làm việc số cho doanh nghiệp",
             contents: [
@@ -782,6 +803,7 @@ export default {
             upload_file_scan: "File scan tài liệu",
             choose_file: "Chọn file",
             download: "Tải xuống",
+            preview: "Xem trước",
             no_version: "Không có phiên bản nào khác",
             no_blank_description: "Mô tả không được để trống",
             no_blank_name: "Tên không được để trống",
@@ -1260,6 +1282,8 @@ export default {
             info: "Thông tin về đơn vị",
             name: "Tên đơn vị",
             description: "Mô tả về đơn vị",
+            total_employee: "Số lượng nhân viên",
+            total_roles: "Các vai trò hiện tại",
             parent: "Đơn vị cha",
             select_parent: "Chọn đơn vị cha",
             no_parent: "Không có đơn vị cha",
@@ -2943,12 +2967,14 @@ export default {
                 coefficient: "Hệ số",
 
                 special: "Đặc tính",
+                creator_time: "Thời gian tạo",
                 select_all_special: "Chọn tất cả các đặc tính",
                 select_special: "Chọn đặc tính",
                 select_all_role: "Chọn tất cả các vai trò",
                 select_role: "Chọn vai trò",
                 stored: "Lưu trong kho",
                 current_month: "Tháng hiện tại",
+                current_week: "Tuần hiện tại",
 
                 assigned_collaborate: "Sắp xếp nhân viên cho công việc liên đơn vị",
                 not_assigned: "Chưa xác nhận sắp xếp nhân viên",
@@ -2974,6 +3000,7 @@ export default {
 
                 col_name: "Tên công việc",
                 col_organization: "Đơn vị",
+                col_project:"Dự án",
                 col_priority: "Độ ưu tiên",
                 col_start_date: "Ngày bắt đầu",
                 col_end_date: "Ngày kết thúc",
@@ -3028,6 +3055,7 @@ export default {
                 detail_link: "Link công việc",
                 detail_priority: "Độ ưu tiên công việc",
                 detail_status: "Trạng thái công việc",
+                average_task_result: "Kết quả trung bình công việc",
                 detail_time: "Thời gian thực hiện công việc",
                 detail_average_results: "Kết quả trung bình công việc",
 
@@ -3396,6 +3424,7 @@ export default {
                 get_timer_status_fail:
                     "Lấy trạng thái bấm giờ hiện tại thất bại",
                 start_timer_fail: "Bắt đầu bấm giờ thất bại",
+                timer_exist_another_task: "Bạn đã bấm giờ cho công việc khác",
                 pause_timer_fail: "Tạm dừng bấm giờ thất bại",
                 continue_timer_fail: "Tiếp tục bấm giờ thất bại",
                 stop_timer_fail: "Kết thúc bấm giờ thất bại",
@@ -3588,14 +3617,21 @@ export default {
                 task_template_name_exist: "Tên mẫu công việc đã tồn tại",
             },
             task_dashboard: {
-                general_unit_task: "Tổng quan công việc đơn vị",
+                general_unit_task: "Tổng quan công việc",
+                general_unit_task_title_file_export: "Tổng quan công việc đơn vị",
                 unit: "Đơn vị",
-                all_tasks: "Tổng số công việc",
-                confirmed_task: "Công việc đã xác nhận thực hiện",
-                none_update_recently: "Công việc chưa cập nhật gần đây",
-                intime_task: "Công việc đúng tiến độ",
-                delay_task: "Công việc trễ tiến độ",
-                overdue_task: "Công việc quá hạn",
+                unit_lowercase : "đơn vị",
+                of_unit: "của đơn vị",
+                of: "của",
+                all_tasks: "Tổng số công việc",
+                all_tasks_inprocess: "Đang thực hiện",
+                all_tasks_finished: "Đã hoàn thành",
+                confirmed_task: "Đã xác nhận thực hiện",
+                none_update_recently: "Chưa cập nhật trong 7 ngày qua",
+                intime_task: "Đúng tiến độ",
+                incoming_task: "Công việc sắp hết hạn",
+                delay_task: "Trễ tiến độ",
+                overdue_task: "Quá hạn",
                 no_task: "Không có công việc nào",
                 unconfirmed_task: "Công việc chưa xác nhận thực hiện",
                 urgent_task: "Công việc khẩn cấp",
@@ -3716,6 +3752,8 @@ export default {
                                 "KPI đang được phê duyệt, Bạn không thể chỉnh sửa!",
                             activated:
                                 "KPI đã được kích hoạt, Bạn không thể chỉnh sửa!",
+                            evaluated: 
+                                "KPI đã được đánh giá, Bạn không thể chỉnh sửa!",
                         },
                         delete_kpi: {
                             kpi: "Bạn chắc chắn muốn xóa KPI này?",
@@ -3850,9 +3888,9 @@ export default {
                     statistics_chart_title:
                         "Thống kê kết quả KPI của nhân viên",
                     result_kpi_titile: "Kết quả KPI tất cả nhân viên",
-                    auto_eva: "Hệ thống đánh giá",
-                    employee_eva: "Cá nhân tự đánh giá",
-                    approver_eva: "Người phê duyệt đánh giá",
+                    auto_eva: "Điểm hệ thống",
+                    employee_eva: "Điểm tự đánh giá",
+                    approver_eva: "Điểm phê duyệt",
                     result_kpi_personal: "Kết quả KPI cá nhân",
                     distribution_kpi_personal: "Đóng góp KPI cá nhân",
                 },
@@ -3870,10 +3908,10 @@ export default {
                     kpi_this_month: "KPI tháng",
                     search: "Tìm kiếm",
                     index: "STT",
-                    number_of_targets: "Số lượng mục tiêu",
-                    system_evaluate: "Hệ thống đánh giá",
-                    result_self_evaluate: "Kết quả tự đánh giá",
-                    evaluation_management: "Quản lí đánh giá",
+                    number_of_targets: "Số mục tiêu",
+                    system_evaluate: "Điểm tự động",
+                    result_self_evaluate: "Điểm tự đánh giá",
+                    evaluation_management: "Điểm người phê duyệt",
                     not_evaluated_yet: "Chưa đánh giá",
                     target: "mục tiêu",
                     view_detail: "Xem chi tiết",
@@ -4146,22 +4184,24 @@ export default {
                 // Dashboard KPI Unit
                 dashboard: {
                     organizational_unit: "Đơn vị",
+                    organizational_unit_low_case: "đơn vị",
                     month: "Tháng",
                     trend: "Xu hướng thực hiện mục tiêu của nhân viên",
-                    distributive: "Phân phối KPI đơn vị tháng ",
-                    statiscial: "Thống kê kết quả KPI đơn vị tháng ",
-                    result_kpi_unit: "Kết quả KPI đơn vị",
-                    result_kpi_units: "Kết quả KPI các đơn vị",
+                    distributive: "Phân phối KPI",
+                    statiscial: "Thống kê kết quả KPI",
+                    result_kpi_unit: "Kết quả KPI",
                     start_date: "Từ tháng",
                     end_date: "Đến tháng",
                     search: "Tìm kiếm",
                     point: "Điểm",
                     no_data: "Không có dữ liệu",
+                    line_chart: "Biểu đồ đường",
+                    pie_chart: "Biểu đồ quạt",
                     trend_chart: {
                         execution_time: "Thời gian thực hiện (Ngày)",
                         participants: "Số người tham gia",
-                        amount_tasks: "Số lượng công việc",
-                        amount_employee_kpi: "Số lượng KPI nhân viên",
+                        amount_tasks: "Số công việc",
+                        amount_employee_kpi: "Số KPI nhân viên",
                         weight: "Trọng số",
                     },
                     result_kpi_unit_chart: {
@@ -4190,7 +4230,7 @@ export default {
                                 "Hãy nhớ thay đổi liên kết đến mục tiêu cha để được tính KPI mới!",
                         },
                         create: "Thông tin tập KPI cá nhân tháng",
-                        organizational_unit: "Đơn vị",
+                        organizational_unit: "Đơn vị sao chép",
                         month: "Tháng",
                         list_target: "Danh sách mục tiêu",
                         setting: "Thiết lập",
@@ -5637,6 +5677,18 @@ export default {
         },
         manage_transport: {
             add_requirements: "Thêm yêu cầu vận chuyển",
+
+        project: {
+            code: "Mã dự án",
+            name: "Tên dự án",
+            startDate: "Ngày bắt đầu dự án",
+            endDate: "Ngày kết thúc dự án",
+            parent: "Dự án cha",
+            manager: "Người quản trị",
+            description: "Mô tả dự án",
+            add_title: "Thêm mới dự án",
+            detail_title: "Chi tiết dự án",
+            edit_title: "Chỉnh sửa dự án"
         }
     },
 };

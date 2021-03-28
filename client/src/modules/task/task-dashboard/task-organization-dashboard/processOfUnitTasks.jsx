@@ -1,19 +1,14 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React from 'react'
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { SelectMulti } from '../../../../common-components';
 import c3 from 'c3';
 import 'c3/c3.css';
-
-const CHART_INFO = {
-    currentUnits: []
-}
+import useDeepCompareEffect from 'use-deep-compare-effect'
 
 const InprocessOfUnitTask = (props) => {
-    const [unit, setUnit] = useState([]);
-    const { translate, units, unitSelected } = props;
+    const { translate, unitSelected, unitNameSelected } = props;
 
-    useEffect(() => {
+    useDeepCompareEffect(() => {
         let { tasks } = props;
         let taskList = tasks?.organizationUnitTasks?.tasks;
         let delayed = [translate('task.task_management.delayed_time')];
@@ -21,8 +16,7 @@ const InprocessOfUnitTask = (props) => {
         let notAchived = [translate('task.task_management.not_achieved')];
 
         if (taskList && taskList.length !== 0) {
-            let selectedUnit = unit;
-            if (selectedUnit.length == 0) selectedUnit = unitSelected;
+            let selectedUnit = unitSelected;
 
             for (let i in selectedUnit) {
                 let delayedCnt = 0, intimeCnt = 0, notAchivedCnt = 0;
@@ -57,21 +51,11 @@ const InprocessOfUnitTask = (props) => {
         }
         barChart(delayed, intime, notAchived);
 
-    }, [props, unit])
-
-    const handleSelectUnit = (value) => {
-        CHART_INFO.currentUnits = value;
-    }
-
-    const handleSearchData = () => {
-        let { currentUnits } = CHART_INFO;
-        setUnit(currentUnits);
-    }
+    }, [props.tasks])
 
     const barChart = (delayed, intime, notAchived) => {
-        let height = unit.length * 60;
-        let heightOfChart = height > 320 ? height : 320;
-
+        let height = unitNameSelected.length * 60;
+        let heightOfChart = height > 500 ? height : 500;
         const pie = c3.generate({
             bindto: document.getElementById("inprocessOfUnitTask"),
 
@@ -100,31 +84,15 @@ const InprocessOfUnitTask = (props) => {
             axis: {
                 x: {
                     type: 'category',
-                    categories: units.map(item => { return item.name })
+                    categories: unitNameSelected
                 },
                 rotated: true
             }
-
-
         });
     }
 
     return (
         <React.Fragment>
-            {/* <section className="form-inline" style={{ textAlign: "right" }}>
-                <div className="form-group">
-                    <label style={{ minWidth: "150px" }}>{translate('kpi.evaluation.dashboard.organizational_unit')}</label>
-                    <SelectMulti id="multiSelectUnitInUnitTask"
-                        items={units?.map(item => { return { value: item.id, text: item.name } })}
-                        onChange={handleSelectUnit}
-                        options={{ nonSelectedText: translate('task_template.select_all_units'), allSelectedText: translate('kpi.evaluation.dashboard.all_unit') }}>
-                    </SelectMulti>
-                </div>
-                <div className="form-group">
-                    <button className="btn btn-success" onClick={handleSearchData}>{translate('task.task_management.filter')}</button>
-                </div>
-            </section> */}
-
             <section id="inprocessOfUnitTask"></section>
         </React.Fragment>
     )
@@ -134,9 +102,6 @@ function mapState(state) {
     const { tasks } = state;
     return { tasks }
 }
-const actions = {
 
-}
-
-const connectedInprocessOfUnitTask = connect(mapState, actions)(withTranslate(InprocessOfUnitTask));
+const connectedInprocessOfUnitTask = connect(mapState, null)(withTranslate(InprocessOfUnitTask));
 export { connectedInprocessOfUnitTask as InprocessOfUnitTask };

@@ -4,7 +4,7 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import { DialogModal, ButtonModal, ErrorLabel, UploadFile } from '../../../../../common-components';
 
-import { EmployeeCreateValidator } from './combinedContent';
+import ValidationHelper from '../../../../../helpers/validationHelper';
 
 class FileAddModal extends Component {
     constructor(props) {
@@ -53,17 +53,18 @@ class FileAddModal extends Component {
     }
     validateNameFile = (value, willUpdateState = true) => {
         const { translate } = this.props;
-        let msg = EmployeeCreateValidator.validateNameFile(value, translate);
+        let { message } = ValidationHelper.validateEmpty(translate, value);
+
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnNameFile: msg,
+                    errorOnNameFile: message,
                     name: value,
                 }
             });
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
     /** Bắt sự kiên thay đổi mô tả */
@@ -73,17 +74,18 @@ class FileAddModal extends Component {
     }
     validateDiscFile = (value, willUpdateState = true) => {
         const { translate } = this.props;
-        let msg = EmployeeCreateValidator.validateDiscFile(value, translate)
+        let { message } = ValidationHelper.validateEmpty(translate, value);
+
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnDiscFile: msg,
+                    errorOnDiscFile: message,
                     description: value,
                 }
             });
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
     /** Bắt sự kiên thay đổi mô tả */
@@ -93,17 +95,18 @@ class FileAddModal extends Component {
     }
     validateNumberFile = (value, willUpdateState = true) => {
         const { translate } = this.props;
-        let msg = EmployeeCreateValidator.validateNumberFile(value, translate)
+        let { message } = ValidationHelper.validateEmpty(translate, value);
+
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnNumberFile: msg,
+                    errorOnNumberFile: message,
                     number: value,
                 }
             });
         }
-        return msg === undefined;
+        return message === undefined;
     }
 
     /** Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form */

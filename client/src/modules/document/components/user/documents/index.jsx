@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DataTableSetting, DateTimeConverter, PaginateBar, TreeSelect, SelectBox, ExportExcel } from '../../../../../common-components';
@@ -21,72 +21,84 @@ const getIndex = (array, id) => {
     }
     return index;
 }
-class UserDocumentsData extends Component {
-    constructor(props) {
-        super(props);
-        const tableId = "table-user-documents-data";
-        const defaultConfig = { limit: 5 }
-        const limit = getTableConfiguration(tableId, defaultConfig).limit;
-
-        this.state = {
-            tableId,
+function UserDocumentsData(props) {
+    const TableId = "table-user-documents-data";
+    const defaultConfig = { limit: 5 }
+    const Limit = getTableConfiguration(TableId, defaultConfig).limit;
+    const [state, setState] = useState({
+        tableId: TableId,
+        category: "",
+        domain: "",
+        archive: "",
+        name: "",
+        option: {
             category: "",
             domain: "",
             archive: "",
-            name: "",
-            option: {
-                category: "",
-                domain: "",
-                archive: "",
-            },
-            limit: limit,
-            page: 1
-        }
-    }
+        },
+        limit: Limit,
+        page: 1
+    })
 
-    componentDidMount() {
-        this.props.getAllRoles();
-        this.props.getAllDepartments();
-        this.props.getAllDocuments(getStorage('currentRole'));
-        this.props.getAllDocuments(getStorage('currentRole'), { page: this.state.page, limit: this.state.limit });
-        this.props.getDocumentDomains();
-        this.props.getDocumentArchive();
-        this.props.getDocumentCategories();
-    }
 
-    toggleDocumentInformation = async (data) => {
-        await this.setState({
+    useEffect(() => {
+        props.getAllRoles();
+        props.getAllDepartments();
+        props.getAllDocuments(getStorage('currentRole'));
+        props.getAllDocuments(getStorage('currentRole'), { page: state.page, limit: state.limit });
+        props.getDocumentDomains();
+        props.getDocumentArchive();
+        props.getDocumentCategories();
+    }, [])
+
+    const toggleDocumentInformation = async (data) => {
+        await setState({
             currentRow: data
         });
         window.$('#modal-information-user-document').modal('show');
-        this.props.increaseNumberView(data._id)
+        props.increaseNumberView(data._id)
     }
 
-    requestDownloadDocumentFile = (id, fileName, numberVersion) => {
-        this.props.downloadDocumentFile(id, fileName, numberVersion);
+    function requestDownloadDocumentFile(id, fileName, numberVersion) {
+        props.downloadDocumentFile(id, fileName, numberVersion);
     }
 
-    requestDownloadDocumentFileScan = (id, fileName, numberVersion) => {
-        this.props.downloadDocumentFileScan(id, fileName, numberVersion);
+    function requestDownloadDocumentFileScan(id, fileName, numberVersion) {
+        props.downloadDocumentFileScan(id, fileName, numberVersion);
     }
 
-    static getDerivedStateFromProps(nextProps, prevState) {
-        const { data } = nextProps.documents.user;
-        if (prevState.currentRow) {
-            const index = getIndex(data.paginate, prevState.currentRow._id);
-            if (data.paginate[index].versions.length !== prevState.currentRow.versions.length) {
-                return {
-                    ...prevState,
-                    currentRow: data.paginate[index]
-                }
-            }
-            else return null;
-        } else {
-            return null;
-        }
-    }
+    // useEffect(() => {
+    //     const { data } = props.documents.user;
+    //     if (currentRow) {
+    //         const index = getIndex(data.paginate, currentRow._id);
+    //         if (data.paginate[index].versions.length !== currentRow.versions.length) {
+    //             return {
+    //                 ...state,
+    //                 currentRow: data.paginate[index]
+    //             }
+    //         }
+    //         else return null;
+    //     } else {
+    //         return null;
+    //     }
+    // }, [props.documents.user])
+    //     static getDerivedStateFromProps(nextProps, prevState) {
+    //     const { data } = nextProps.documents.user;
+    //     if (prevState.currentRow) {
+    //         const index = getIndex(data.paginate, prevState.currentRow._id);
+    //         if (data.paginate[index].versions.length !== prevState.currentRow.versions.length) {
+    //             return {
+    //                 ...prevState,
+    //                 currentRow: data.paginate[index]
+    //             }
+    //         }
+    //         else return null;
+    //     } else {
+    //         return null;
+    //     }
+    // }
 
-    formatDate(date, monthYear = false) {
+    const formatDate = (date, monthYear = false) => {
         if (date) {
             let d = new Date(date),
                 month = '' + (d.getMonth() + 1),
@@ -105,14 +117,14 @@ class UserDocumentsData extends Component {
     }
 
 
-    findRole = (id) => {
-        const listRole = this.props.role.list;
+    const findRole = (id) => {
+        const listRole = props.role.list;
         let role = listRole.filter((role) => role._id === id);
         if (role && role.length)
             return role[0].name;
         else return "";
     }
-    convertDataToExportData = (data) => {
+    const convertDataToExportData = (data) => {
 
         let newData = [];
         for (let i = 0; i < data.length; i++) {
@@ -136,7 +148,7 @@ class UserDocumentsData extends Component {
                 length_archives = 0;
             }
             if (x.roles && x.roles.length) {
-                element.roles = this.findRole(x.roles[0]);
+                element.roles = findRole(x.roles[0]);
                 length_roles = x.roles.length;
             } else {
                 element.roles = 0;
@@ -151,9 +163,9 @@ class UserDocumentsData extends Component {
             }
             if (x.versions && x.versions.length) {
                 element.versionName = x.versions[0].versionName;
-                element.issuingDate = this.formatDate(x.versions[0].issuingDate);
-                element.effectiveDate = this.formatDate(x.versions[0].effectiveDate);
-                element.expiredDate = this.formatDate(x.versions[0].expiredDate);
+                element.issuingDate = formatDate(x.versions[0].issuingDate);
+                element.effectiveDate = formatDate(x.versions[0].effectiveDate);
+                element.expiredDate = formatDate(x.versions[0].expiredDate);
                 length_versions = x.versions.length;
             } else {
                 element.versionName = "";
@@ -164,7 +176,7 @@ class UserDocumentsData extends Component {
             }
             if (x.views && x.views.length) {
                 element.viewer = x.views[0].viewer.name;
-                element.timeView = this.formatDate(x.views[0].time);
+                element.timeView = formatDate(x.views[0].time);
                 length_views = x.views.length;
             } else {
                 element.viewer = "";
@@ -173,7 +185,7 @@ class UserDocumentsData extends Component {
             }
             if (x.downloads && x.downloads.length) {
                 element.downloader = x.downloads[0].downloader.name;
-                element.timeDownload = this.formatDate(x.downloads[0].time);
+                element.timeDownload = formatDate(x.downloads[0].time);
                 length_downloads = x.downloads.length;
             } else {
                 element.downloader = "";
@@ -213,16 +225,16 @@ class UserDocumentsData extends Component {
                         officialNumber: "",
                         domains: i < length_domains ? x.domains[i].name : "",
                         archives: i < length_archives ? x.archives[i].path : "",
-                        roles: i < length_roles ? this.findRole(x.roles[i]) : "",
+                        roles: i < length_roles ? findRole(x.roles[i]) : "",
                         relationshipDocuments: i < length_relationship ? x.relationshipDocuments[i].name : "",
                         versionName: i < length_versions ? x.versions[i].versionName : "",
-                        issuingDate: i < length_versions ? this.formatDate(x.versions[i].issuingDate) : "",
-                        effectiveDate: i < length_versions ? this.formatDate(x.versions[i].effectiveDate) : "",
-                        expiredDate: i < length_versions ? this.formatDate(x.versions[i].expiredDate) : "",
+                        issuingDate: i < length_versions ? formatDate(x.versions[i].issuingDate) : "",
+                        effectiveDate: i < length_versions ? formatDate(x.versions[i].effectiveDate) : "",
+                        expiredDate: i < length_versions ? formatDate(x.versions[i].expiredDate) : "",
                         viewer: i < length_views ? x.views[i].viewer.name : "",
-                        timeView: i < length_views ? this.formatDate(x.views[i].time) : "",
+                        timeView: i < length_views ? formatDate(x.views[i].time) : "",
                         downloader: i < length_downloads ? x.downloads[i].downloader.name : "",
-                        timeDownload: i < length_downloads ? this.formatDate(x.downloads[i].time) : "",
+                        timeDownload: i < length_downloads ? formatDate(x.downloads[i].time) : "",
                         title: i < length_logs ? x.logs[i].title : "",
                         descriptionLogs: i < length_logs ? x.logs[i].description : "",
 
@@ -297,7 +309,7 @@ class UserDocumentsData extends Component {
 
         return exportData
     }
-    convertData = (data) => {
+    const convertData = (data) => {
         let array = data.map(item => {
             return {
                 value: item.id,
@@ -307,31 +319,37 @@ class UserDocumentsData extends Component {
         array.unshift({ value: "", text: "Tất cả các loại" });
         return array;
     }
-    handleCategoryChange = (value) => {
-        this.setState(state => {
+    function handleCategoryChange(value) {
+        setState(state => {
             return {
                 ...state,
                 category: value,
             }
         })
     }
-    handleDomainChange = (value) => {
-        this.setState({ domain: value });
+    function handleDomainChange(value) {
+        setState({
+            ...state,
+            domain: value
+        });
     }
-    handleDomains = value => {
-        this.setState({ documentDomains: value });
+    function handleDomains(value) {
+        setState({
+            ...state,
+            documentDomains: value
+        });
     }
-    handleNameChange = (e) => {
+    function handleNameChange(e) {
         const value = e.target.value;
-        this.setState(state => {
+        setState(state => {
             return {
                 ...state,
                 name: value.trim(),
             }
         })
     }
-    handleArchiveChange = (value) => {
-        this.setState(state => {
+    function handleArchiveChange(value) {
+        setState(state => {
             return {
                 ...state,
                 archive: value,
@@ -339,42 +357,47 @@ class UserDocumentsData extends Component {
         })
     }
 
-    handleIssuingBodyChange = (e) => {
+    function handleIssuingBodyChange(e) {
         const { value } = e.target;
-        this.setState({
+        setState({
+            ...state,
             issuingBody: value,
         })
     }
 
-    setPage = async (page) => {
-        this.setState({ page });
-        let path = this.state.archive ? this.findPath(this.state.archive) : "";
+    const setPage = async (page) => {
+        setState({ page });
+        let path = state.archive ? findPath(state.archive) : "";
         const data = {
-            limit: this.state.limit,
+            limit: state.limit,
             page: page,
-            name: this.state.name,
-            category: this.state.category ? this.state.category[0] : "",
-            domains: this.state.domain ? this.state.domain : "",
+            name: state.name,
+            category: state.category ? state.category[0] : "",
+            domains: state.domain ? state.domain : "",
             archives: path && path.length ? path[0] : "",
         };
-        await this.props.getAllDocuments(getStorage('currentRole'), data);
+        await props.getAllDocuments(getStorage('currentRole'), data);
     }
 
-    setLimit = (number) => {
-        if (this.state.limit !== number) {
-            this.setState({ limit: number });
-            const data = { limit: number, page: this.state.page };
-            this.props.getAllDocuments(getStorage('currentRole'), data);
+    function setLimit(number) {
+        if (state.limit !== number) {
+            setState({
+                ...state,
+                limit: number
+            });
+            const data = { limit: number, page: state.page };
+            props.getAllDocuments(getStorage('currentRole'), data);
         }
     }
 
-    setOption = (title, option) => {
-        this.setState({
+    function setOption(title, option) {
+        setState({
+            ...state,
             [title]: option
         });
     }
-    findPath = (select) => {
-        const archives = this.props.documents.administration.archives.list;
+    function findPath(select) {
+        const archives = props.documents.administration.archives.list;
         let paths = select.map(s => {
             let archive = archives.filter(arch => arch._id === s);
             return archive[0] ? archive[0].path : "";
@@ -382,17 +405,17 @@ class UserDocumentsData extends Component {
         return paths;
 
     }
-    handleIssuingBodyChange = (e) => {
+    function handleIssuingBodyChange(e) {
         const value = e.target.value;
-        this.setState(state => {
+        setState(state => {
             return {
                 ...state,
                 issuingBody: value.trim(),
             }
         })
     }
-    handleArchivedRecordPlaceOrganizationalUnit = (value) => {
-        this.setState(state => {
+    function handleArchivedRecordPlaceOrganizationalUnit(value) {
+        setState(state => {
             return {
                 ...state,
                 organizationUnit: value,
@@ -400,223 +423,219 @@ class UserDocumentsData extends Component {
         })
     }
 
-    searchWithOption = async () => {
-        let path = this.state.archive ? this.findPath(this.state.archive) : "";
+    const searchWithOption = async () => {
+        let path = state.archive ? findPath(state.archive) : "";
         const data = {
-            limit: this.state.limit,
+            limit: state.limit,
             page: 1,
-            name: this.state.name,
-            category: this.state.category ? this.state.category[0] : "",
-            domains: this.state.domain ? this.state.domain : "",
+            name: state.name,
+            category: state.category ? state.category[0] : "",
+            domains: state.domain ? state.domain : "",
             archives: path && path.length ? path : "",
-            issuingBody: this.state.issuingBody ? this.state.issuingBody : "",
-            organizationUnit: this.state.organizationUnit ? this.state.organizationUnit : "",
+            issuingBody: state.issuingBody ? state.issuingBody : "",
+            organizationUnit: state.organizationUnit ? state.organizationUnit : "",
         };
-        await this.props.getAllDocuments(getStorage('currentRole'), data);
+        await props.getAllDocuments(getStorage('currentRole'), data);
     }
 
-    render() {
-        const { translate, department } = this.props;
-        const { domains, categories, archives } = this.props.documents.administration;
-        const docs = this.props.documents.user.data;
-        const { paginate } = docs;
-        const { isLoading } = this.props.documents;
-        const { currentRow, archive, category, domain, tableId } = this.state;
-        const listDomain = domains.list
-        const listCategory = this.convertData(categories.list)
-        const listArchive = archives.list;
-        let list = [];
-        if (isLoading === false) {
-            list = docs.paginate;
-        }
-
-        let exportData = this.convertDataToExportData(list);
-        return (
-            <div className="qlcv">
-                <React.Fragment>
-                    {
-                        currentRow &&
-                        <ListView
-                            docs={currentRow}
-                        />
-                    }
-                    {
-                        currentRow &&
-                        <ListDownload
-                            docs={currentRow}
-                        />
-                    }
-                    {
-                        currentRow !== undefined &&
-                        <DocumentInformation
-                            documentId={currentRow._id}
-                            documentName={currentRow.name}
-                            documentDescription={currentRow.description}
-                            documentCategory={currentRow.category ? currentRow.category.name : ""}
-                            documentDomains={currentRow.domains ? currentRow.domains.map(domain => domain.name) : []}
-                            documentArchives={currentRow.archives ? currentRow.archives.map(archive => archive.path) : []}
-                            documentIssuingBody={currentRow.issuingBody}
-                            documentOfficialNumber={currentRow.officialNumber}
-                            documentSigner={currentRow.signer}
-                            documentVersions={currentRow.versions}
-
-                            documentRelationshipDescription={currentRow.relationshipDescription}
-                            documentRelationshipDocuments={currentRow.relationshipDocuments ? currentRow.relationshipDocuments.map(document => document.name) : []}
-
-                            documentRoles={currentRow.roles}
-
-                            documentArchivedRecordPlaceInfo={currentRow.archivedRecordPlaceInfo}
-                            documentArchivedRecordPlaceOrganizationalUnit={currentRow.archivedRecordPlaceOrganizationalUnit}
-                            documentArchivedRecordPlaceManager={currentRow.archivedRecordPlaceManager}
-                            documentLogs={currentRow.logs}
-                        />
-                    }
-                    {<ExportExcel id="export-document" exportData={exportData} style={{ marginLeft: 5 }} />}
-                    <div className="form-inline">
-                        <div className="form-group">
-                            <label>{translate('document.category')}</label>
-                            <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
-                                id={`stattus-category`}
-                                style={{ width: "100%" }}
-                                items={listCategory}
-                                onChange={this.handleCategoryChange}
-                                value={category}
-                            />
-                        </div>
-                        <div className="form-group" >
-                            <label>{translate('document.store.information')}</label>
-                            <TreeSelect
-                                id="tree-select-search-archive"
-                                data={listArchive}
-                                className="form-control"
-                                handleChange={this.handleArchiveChange}
-                                value={archive}
-                                mode="hierarchical"
-                                style={{ width: " 100%" }}
-                            />
-                        </div>
-
-                    </div>
-                    <div className="form-inline">
-                        <div className="form-group">
-                            <label>{translate('document.domain')}</label>
-                            <TreeSelect
-                                id="tree-select-search-domain"
-                                data={listDomain}
-                                className="form-control"
-                                handleChange={this.handleDomainChange}
-                                value={domain}
-                                mode="hierarchical"
-                                style={{ width: "100%" }}
-                            />
-                        </div>
-                        <div className="form-group">
-                            <label>{translate('document.name')}</label>
-                            <input type="text" className="form-control" onChange={this.handleNameChange} />
-                        </div>
-
-                    </div>
-                    <div className="form-inline">
-                        <div className="form-group">
-                            <label>{translate('document.store.organizational_unit_manage')}</label>
-                            <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
-                                id="select-documents-organizational-unit-manage-table"
-                                className="form-control select2"
-                                style={{ width: "100%" }}
-                                items={department.list.map(organ => { return { value: organ._id, text: organ.name } })}
-                                onChange={this.handleArchivedRecordPlaceOrganizationalUnit}
-                                options={{ placeholder: translate('document.store.select_organizational') }}
-                                multiple={false}
-                            />
-                        </div>
-                        <div className="form-group">
-                            <label>{translate('document.doc_version.issuing_body')}</label>
-                            <input type="text" className="form-control" onChange={this.handleIssuingBodyChange} />
-                        </div>
-                        <div className="form-group" style={{ marginLeft: 0 }}>
-                            <label></label>
-                            <button type="button" className="btn btn-success" onClick={() => this.searchWithOption()}>{
-                                translate('kpi.organizational_unit.management.over_view.search')}</button>
-                        </div>
-
-                    </div>
-
-                    <table className="table table-hover table-striped table-bordered" id={tableId}>
-                        <thead>
-                            <tr>
-                                <th>{translate('document.doc_version.issuing_body')}</th>
-                                <th>{translate('document.name')}</th>
-                                <th>{translate('document.description')}</th>
-                                <th>{translate('document.issuing_date')}</th>
-                                <th>{translate('document.effective_date')}</th>
-                                <th>{translate('document.expired_date')}</th>
-                                <th>{translate('document.upload_file')}</th>
-                                <th>{translate('document.upload_file_scan')}</th>
-
-                                <th style={{ width: '120px', textAlign: 'center' }}>
-                                    {translate('general.action')}
-                                    <DataTableSetting
-                                        columnArr={[
-                                            translate('document.name'),
-                                            translate('document.description'),
-                                            translate('document.issuing_date'),
-                                            translate('document.effective_date'),
-                                            translate('document.expired_date'),
-                                            translate('document.upload_file'),
-                                            translate('document.upload_file_scan'),
-
-                                        ]}
-                                        setLimit={this.setLimit}
-                                        tableId={tableId}
-                                    />
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {
-                                paginate.length > 0 ?
-                                    paginate.map(doc =>
-                                        <tr key={doc._id}>
-                                            <td>{doc.issuingBody}</td>
-                                            <td>{doc.name}</td>
-                                            <td>{doc.description ? doc.description : ""}</td>
-                                            <td>{doc.versions.length ? this.formatDate(doc.versions[doc.versions.length - 1].issuingDate) : null}</td>
-                                            <td>{doc.versions.length ? this.formatDate(doc.versions[doc.versions.length - 1].effectiveDate) : null}</td>
-                                            <td>{doc.versions.length ? this.formatDate(doc.versions[doc.versions.length - 1].expiredDate) : null}</td>
-                                            <td>
-                                                <a href="#" onClick={() => this.requestDownloadDocumentFile(doc._id, doc.name, doc.versions.length - 1, false)}>
-                                                    <u>{doc.versions.length && doc.versions[doc.versions.length - 1].file ? translate('document.download') : ""}</u>
-                                                </a>
-                                            </td>
-                                            <td>
-                                                <a href="#" onClick={() => this.requestDownloadDocumentFileScan(doc._id, "SCAN_" + doc.name, doc.versions.length - 1)}>
-                                                    <u>{doc.versions.length && doc.versions[doc.versions.length - 1].scannedFileOfSignedDocument ? translate('document.download') : ""}</u>
-                                                </a>
-                                            </td>
-
-                                            <td>
-                                                <a className="text-green" title={translate('document.view')} onClick={() => this.toggleDocumentInformation(doc)}>
-                                                    <i className="material-icons">visibility</i>
-                                                </a>
-                                            </td>
-                                        </tr>) : null
-                            }
-
-                        </tbody>
-                    </table>
-                    {
-                        isLoading ?
-                            <div className="table-info-panel">{translate('confirm.loading')}</div> :
-                            paginate.length === 0 && <div className="table-info-panel">{translate('confirm.no_data')}</div>
-                    }
-
-                    <PaginateBar pageTotal={docs.totalPages} currentPage={docs.page} func={this.setPage} />
-                </React.Fragment>
-            </div >
-        );
+    const { translate, department } = props;
+    const { domains, categories, archives } = props.documents.administration;
+    const docs = props.documents.user.data;
+    const { paginate } = docs;
+    const { isLoading } = props.documents;
+    const { currentRow, archive, category, domain, tableId } = state;
+    const listDomain = domains.list
+    const listCategory = convertData(categories.list)
+    const listArchive = archives.list;
+    let list = [];
+    if (isLoading === false) {
+        list = docs.paginate;
     }
 
+    let exportData = convertDataToExportData(list);
+    return (
+        <div className="qlcv">
+            <React.Fragment>
+                {
+                    currentRow &&
+                    <ListView
+                        docs={currentRow}
+                    />
+                }
+                {
+                    currentRow &&
+                    <ListDownload
+                        docs={currentRow}
+                    />
+                }
+                {
+                    currentRow !== undefined &&
+                    <DocumentInformation
+                        documentId={currentRow._id}
+                        documentName={currentRow.name}
+                        documentDescription={currentRow.description}
+                        documentCategory={currentRow.category ? currentRow.category.name : ""}
+                        documentDomains={currentRow.domains ? currentRow.domains.map(domain => domain.name) : []}
+                        documentArchives={currentRow.archives ? currentRow.archives.map(archive => archive.path) : []}
+                        documentIssuingBody={currentRow.issuingBody}
+                        documentOfficialNumber={currentRow.officialNumber}
+                        documentSigner={currentRow.signer}
+                        documentVersions={currentRow.versions}
 
+                        documentRelationshipDescription={currentRow.relationshipDescription}
+                        documentRelationshipDocuments={currentRow.relationshipDocuments ? currentRow.relationshipDocuments.map(document => document.name) : []}
+
+                        documentRoles={currentRow.roles}
+
+                        documentArchivedRecordPlaceInfo={currentRow.archivedRecordPlaceInfo}
+                        documentArchivedRecordPlaceOrganizationalUnit={currentRow.archivedRecordPlaceOrganizationalUnit}
+                        documentArchivedRecordPlaceManager={currentRow.archivedRecordPlaceManager}
+                        documentLogs={currentRow.logs}
+                    />
+                }
+                {<ExportExcel id="export-document" exportData={exportData} style={{ marginLeft: 5 }} />}
+                <div className="form-inline">
+                    <div className="form-group">
+                        <label>{translate('document.category')}</label>
+                        <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
+                            id={`stattus-category`}
+                            style={{ width: "100%" }}
+                            items={listCategory}
+                            onChange={handleCategoryChange}
+                            value={category}
+                        />
+                    </div>
+                    <div className="form-group" >
+                        <label>{translate('document.store.information')}</label>
+                        <TreeSelect
+                            id="tree-select-search-archive"
+                            data={listArchive}
+                            className="form-control"
+                            handleChange={handleArchiveChange}
+                            value={archive}
+                            mode="hierarchical"
+                            style={{ width: " 100%" }}
+                        />
+                    </div>
+
+                </div>
+                <div className="form-inline">
+                    <div className="form-group">
+                        <label>{translate('document.domain')}</label>
+                        <TreeSelect
+                            id="tree-select-search-domain"
+                            data={listDomain}
+                            className="form-control"
+                            handleChange={handleDomainChange}
+                            value={domain}
+                            mode="hierarchical"
+                            style={{ width: "100%" }}
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label>{translate('document.name')}</label>
+                        <input type="text" className="form-control" onChange={handleNameChange} />
+                    </div>
+
+                </div>
+                <div className="form-inline">
+                    <div className="form-group">
+                        <label>{translate('document.store.organizational_unit_manage')}</label>
+                        <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
+                            id="select-documents-organizational-unit-manage-table"
+                            className="form-control select2"
+                            style={{ width: "100%" }}
+                            items={department.list.map(organ => { return { value: organ._id, text: organ.name } })}
+                            onChange={handleArchivedRecordPlaceOrganizationalUnit}
+                            options={{ placeholder: translate('document.store.select_organizational') }}
+                            multiple={false}
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label>{translate('document.doc_version.issuing_body')}</label>
+                        <input type="text" className="form-control" onChange={handleIssuingBodyChange} />
+                    </div>
+                    <div className="form-group" style={{ marginLeft: 0 }}>
+                        <label></label>
+                        <button type="button" className="btn btn-success" onClick={() => searchWithOption()}>{
+                            translate('kpi.organizational_unit.management.over_view.search')}</button>
+                    </div>
+
+                </div>
+
+                <table className="table table-hover table-striped table-bordered" id={tableId}>
+                    <thead>
+                        <tr>
+                            <th>{translate('document.doc_version.issuing_body')}</th>
+                            <th>{translate('document.name')}</th>
+                            <th>{translate('document.description')}</th>
+                            <th>{translate('document.issuing_date')}</th>
+                            <th>{translate('document.effective_date')}</th>
+                            <th>{translate('document.expired_date')}</th>
+                            <th>{translate('document.upload_file')}</th>
+                            <th>{translate('document.upload_file_scan')}</th>
+
+                            <th style={{ width: '120px', textAlign: 'center' }}>
+                                {translate('general.action')}
+                                <DataTableSetting
+                                    columnArr={[
+                                        translate('document.name'),
+                                        translate('document.description'),
+                                        translate('document.issuing_date'),
+                                        translate('document.effective_date'),
+                                        translate('document.expired_date'),
+                                        translate('document.upload_file'),
+                                        translate('document.upload_file_scan'),
+
+                                    ]}
+                                    setLimit={setLimit}
+                                    tableId={tableId}
+                                />
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {
+                            paginate.length > 0 ?
+                                paginate.map(doc =>
+                                    <tr key={doc._id}>
+                                        <td>{doc.issuingBody}</td>
+                                        <td>{doc.name}</td>
+                                        <td>{doc.description ? doc.description : ""}</td>
+                                        <td>{doc.versions.length ? formatDate(doc.versions[doc.versions.length - 1].issuingDate) : null}</td>
+                                        <td>{doc.versions.length ? formatDate(doc.versions[doc.versions.length - 1].effectiveDate) : null}</td>
+                                        <td>{doc.versions.length ? formatDate(doc.versions[doc.versions.length - 1].expiredDate) : null}</td>
+                                        <td>
+                                            <a href="#" onClick={() => requestDownloadDocumentFile(doc._id, doc.name, doc.versions.length - 1, false)}>
+                                                <u>{doc.versions.length && doc.versions[doc.versions.length - 1].file ? translate('document.download') : ""}</u>
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a href="#" onClick={() => requestDownloadDocumentFileScan(doc._id, "SCAN_" + doc.name, doc.versions.length - 1)}>
+                                                <u>{doc.versions.length && doc.versions[doc.versions.length - 1].scannedFileOfSignedDocument ? translate('document.download') : ""}</u>
+                                            </a>
+                                        </td>
+
+                                        <td>
+                                            <a className="text-green" title={translate('document.view')} onClick={() => toggleDocumentInformation(doc)}>
+                                                <i className="material-icons">visibility</i>
+                                            </a>
+                                        </td>
+                                    </tr>) : null
+                        }
+
+                    </tbody>
+                </table>
+                {
+                    isLoading ?
+                        <div className="table-info-panel">{translate('confirm.loading')}</div> :
+                        paginate.length === 0 && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                }
+
+                <PaginateBar pageTotal={docs.totalPages} currentPage={docs.page} func={setPage} />
+            </React.Fragment>
+        </div >
+    );
 }
 
 const mapStateToProps = state => state;

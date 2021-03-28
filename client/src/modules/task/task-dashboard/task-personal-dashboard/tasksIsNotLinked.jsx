@@ -21,11 +21,10 @@ class TasksIsNotLinked extends Component {
         let accTasks = tasks && tasks.accountableTasks;
         let resTasks = tasks && tasks.responsibleTasks;
         let conTasks = tasks && tasks.consultedTasks;
-        let infTasks = tasks && tasks.informedTasks;
         let allTasks = [], notLinkedTasks = [], taskList;
 
-        if (accTasks && resTasks && infTasks && conTasks) {
-            taskList = allTasks.concat(accTasks, resTasks, conTasks, infTasks);
+        if (accTasks && resTasks && conTasks) {
+            taskList = allTasks.concat(accTasks, resTasks, conTasks);
         }
 
         if (taskList) {

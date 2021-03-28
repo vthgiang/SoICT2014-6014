@@ -54,7 +54,6 @@ module.exports = {
     TimesheetLog: require('./task/timesheetLog.model'),
     TaskProcess: require("./task/taskProcess.model"),
     ProcessTemplate: require("./task/processTemplate.model"),
-    TaskProject: require('./task/taskProject.model'),
 
     Course: require('./training/course.model'),
     EducationProgram: require('./training/educationProgram.model'),
@@ -121,5 +120,6 @@ module.exports = {
 
     Project: require('./project/project.model'),
 
-
+    // news feed
+    NewsFeed: require('./news-feed/newsFeed.model')
 }

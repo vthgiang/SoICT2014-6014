@@ -51,7 +51,6 @@ import { tasks } from "../modules/task/task-management/redux/reducers";
 import { rootRoles } from "../modules/system-admin/root-role/redux/reducers";
 import { systemComponents } from "../modules/system-admin/system-component/redux/reducers";
 import { taskProcess } from "../modules/task/task-process/redux/reducers"
-import taskProject from '../modules/task/task-project/redux/reducer';
 
 //asset
 import { recommendProcure } from "../modules/asset/user/purchase-request/redux/reducers";
@@ -112,7 +111,7 @@ import { manufacturingCommand } from "../modules/production/manufacturing/manufa
 import { transportRequirements } from '../modules/production/transport/transport-requirements/redux/reducers'
 
 import { project } from "../modules/project/redux/reducers";
-
+import { newsFeeds } from "../modules/home/redux/reducers";
 
 const appReducer = combineReducers({
     socket,
@@ -173,7 +172,6 @@ const appReducer = combineReducers({
     tasks,
     performtasks,
     taskProcess,
-    taskProject,
 
     // kpi members
     kpimembers,
@@ -239,10 +237,9 @@ const appReducer = combineReducers({
 
     // project
     project,
-    Intl
+    Intl,
 
-
-
+    newsFeeds
 });
 
 const rootReducer = (state, action) => {

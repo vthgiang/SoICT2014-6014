@@ -384,59 +384,6 @@ class ModalEditTaskByResponsibleEmployee extends Component {
             && this.validateTaskDescription(this.state.taskDescription, false) && (this.state.errorOnProgress === undefined && check)
     }
 
-    handleAddTaskLog = () => {
-        let currentTask = this.state.task;
-
-        let title = '';
-        let description = '';
-
-        if (this.state.taskName !== currentTask.name || this.state.taskDescription !== currentTask.description) {
-            title = title + 'Chỉnh sửa thông tin cơ bản';
-
-            if (this.state.taskName !== currentTask.name) {
-                description = description + 'Tên công việc mới: ' + this.state.taskName;
-            }
-
-            if (this.state.taskDescription !== currentTask.description) {
-                description = description === '' ? description + 'Mô tả công việc mới: ' + this.state.taskDescription : description + '. ' + 'Mô tả công việc mới: ' + this.state.taskDescription;
-            }
-        }
-
-        let date = this.formatDate(new Date());
-        let info = this.getData(date);
-        let kpi = info.kpi;
-
-        let listKpi;
-        const { KPIPersonalManager } = this.props
-        if (KPIPersonalManager && KPIPersonalManager.kpiSets) listKpi = KPIPersonalManager.kpiSets.kpis;
-
-        if (JSON.stringify(kpi) !== JSON.stringify(this.state.kpi)) {
-            title = title === '' ? title + 'Chỉnh sửa liên kết KPI' : title + '. ' + 'Chỉnh sửa liên kết KPI';
-
-            let newKpi = [];
-            for (const element of this.state.kpi) {
-                let a = listKpi.filter(item => item._id === element);
-                newKpi.push(a[0].name);
-            }
-            description = description === '' ? description + 'Liên kết tới các KPI mới: ' + JSON.stringify(newKpi) : description + '. ' + 'Liên kết tới các KPI mới: ' + JSON.stringify(newKpi);
-        }
-
-        if (currentTask.progress !== this.state.progress) {
-            title = title === '' ? title + 'Chỉnh sửa thông tin công việc' : title + '. ' + 'Chỉnh sửa thông tin công việc';
-            description = description === '' ? description + 'Mức độ hoàn thành mới: ' + this.state.progress + "%" : description + '. ' + 'Mức độ hoàn thành mới: ' + this.state.progress + "%";
-        }
-
-        if (title !== '' || description !== '') {
-            this.props.addTaskLog({
-                createdAt: Date.now(),
-
-                creator: getStorage("userId"),
-                title: title,
-                description: description,
-            }, currentTask._id)
-        }
-    }
-
     save = () => {
         let taskId;
         taskId = this.props.id;
@@ -455,8 +402,6 @@ class ModalEditTaskByResponsibleEmployee extends Component {
         }
 
         this.props.editTaskByResponsibleEmployees(data, taskId);
-
-        this.handleAddTaskLog(taskId);
     }
 
     checkNullUndefined = (x) => {
@@ -467,7 +412,7 @@ class ModalEditTaskByResponsibleEmployee extends Component {
     }
 
     render() {
-        const { KPIPersonalManager, translate, taskProject } = this.props
+        const { KPIPersonalManager, translate, project } = this.props
         const { task, taskName, taskDescription, kpi, taskProjectName } = this.state;
         const { errorTaskName, errorTaskDescription, taskDescriptionDefault } = this.state;
         const { title, id, role, perform } = this.props;
@@ -524,7 +469,7 @@ class ModalEditTaskByResponsibleEmployee extends Component {
                                         <TreeSelect
                                             id={`select-task-project-task-edit-by-responsible-${id}`}
                                             mode='radioSelect'
-                                            data={taskProject.list}
+                                            data={project.data?.list}
                                             handleChange={this.handleTaskProject}
                                             value={[taskProjectName]}
                                         />
@@ -562,7 +507,6 @@ class ModalEditTaskByResponsibleEmployee extends Component {
                                 role={role}
                                 perform={perform}
                                 value={this.state}
-
                             />
                         </form>
                     </DialogModal>
@@ -573,14 +517,13 @@ class ModalEditTaskByResponsibleEmployee extends Component {
 }
 
 function mapStateToProps(state) {
-    const { tasks, KPIPersonalManager, taskProject } = state;
-    return { tasks, KPIPersonalManager, taskProject };
+    const { tasks, KPIPersonalManager, project } = state;
+    return { tasks, KPIPersonalManager, project };
 }
 
 const actionGetState = { //dispatchActionToProps
     getAllKpiSetsOrganizationalUnitByMonth: managerKpiActions.getAllKpiSetsOrganizationalUnitByMonth,
     editTaskByResponsibleEmployees: performTaskAction.editTaskByResponsibleEmployees,
-    addTaskLog: performTaskAction.addTaskLog,
 }
 
 const modalEditTaskByResponsibleEmployee = connect(mapStateToProps, actionGetState)(withTranslate(ModalEditTaskByResponsibleEmployee));

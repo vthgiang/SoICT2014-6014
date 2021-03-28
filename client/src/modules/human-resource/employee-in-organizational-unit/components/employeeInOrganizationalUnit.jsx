@@ -8,7 +8,7 @@ import { EmployeeInOrganizationalUnitEditForm } from './employeeInOrganizational
 
 import { RoleActions } from '../../../super-admin/role/redux/actions';
 import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
-
+import _cloneDeep from 'lodash/cloneDeep';
 class DepartmentManage extends Component {
     constructor(props) {
         super(props);
@@ -38,17 +38,89 @@ class DepartmentManage extends Component {
         window.$('#employee-tree-table td').css({ "border": "1px solid #9E9E9E" });
     }
 
+    getRoleNameOfDepartment = (data) => {
+        if (data && data.length > 0) {
+            let result = [];
+            data.forEach(obj => {
+                result = [...result, obj.name]
+            })
+            return result.join(", ")
+        } else {
+            return data;
+        }
+    }
+
+    getTotalEmployeeInUnit = (data) => {
+        if (data) {
+            let result = [];
+            if (data.managers && data.managers.length > 0) {
+                data.managers.forEach(mng => {
+                    if (mng.users && mng.users.length > 0) {
+                        mng.users.forEach(mngUser => {
+                            result = [...result, mngUser.userId]
+                        })
+                    }
+                })
+            }
+
+            if (data.deputyManagers && data.deputyManagers.length > 0) {
+                data.deputyManagers.forEach(dmg => {
+                    if (dmg.users && dmg.users.length > 0) {
+                        dmg.users.forEach(dmgUser => {
+                            result = [...result, dmgUser.userId]
+                        })
+                    }
+                })
+            }
+
+            if (data.employees && data.employees.length > 0) {
+                data.employees.forEach(emy => {
+                    if (emy.users && emy.users.length > 0) {
+                        emy.users.forEach(emyUser => {
+                            result = [...result, emyUser.userId]
+                        })
+                    }
+                })
+            }
+
+            const seen = new Set();
+            const filteredArr = result.filter((el) => {
+                const duplicate = seen.has(el._id);
+                seen.add(el._id);
+                return !duplicate;
+            });
+            return filteredArr.length;
+        } else {
+            return 0;
+        }
+
+    }
+
     render() {
         const { translate, department } = this.props;
 
         let data = [];
         if (department.list.length !== 0) {
-            data = department.list;
+            data = _cloneDeep(department.list); // Sao chép ra mảng mới để không làm ảnh hưởng tới state department.list trong redux
             for (let n in data) {
-                data[n] = { ...data[n], action: ["edit"] }
+                data[n] = {
+                    ...data[n],
+                    name: data[n].name,
+                    manager: this.getRoleNameOfDepartment(data[n].managers),
+                    deputyManager: this.getRoleNameOfDepartment(data[n].deputyManagers),
+                    employees: this.getRoleNameOfDepartment(data[n].employees),
+                    totalEmployee: this.getTotalEmployeeInUnit(data[n]),
+                    action: ["edit"]
+                }
             }
         }
-        let column = [{ name: translate('manage_department.name'), key: "name" }, { name: translate('manage_department.description'), key: "description" }];
+        let column = [
+            { name: translate('manage_department.name'), key: "name" },
+            { name: translate('manage_department.manager_name'), key: "manager" },
+            { name: translate('manage_department.deputy_manager_name'), key: "deputyManager" },
+            { name: translate('manage_department.employee_name'), key: "employees" },
+            { name: translate('manage_department.total_employee'), key: "totalEmployee" },
+        ];
 
         return (
             <div>

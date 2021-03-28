@@ -22,7 +22,7 @@ class DomainOfTaskResultsChart extends Component {
 
         this.DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
 
-        this.ROLE = { RESPONSIBLE: 0, ACCOUNTABLE: 1, CONSULTED: 2, INFORMED: 3, CREATOR: 4 };
+        this.ROLE = { RESPONSIBLE: 0, ACCOUNTABLE: 1, CONSULTED: 2 };
         this.ROLE_SELECTBOX = [
             {
                 text: translate('task.task_management.responsible'),
@@ -35,14 +35,6 @@ class DomainOfTaskResultsChart extends Component {
             {
                 text: translate('task.task_management.consulted'),
                 value: this.ROLE.CONSULTED
-            },
-            {
-                text: translate('task.task_management.informed'),
-                value: this.ROLE.INFORMED
-            },
-            {
-                text: translate('task.task_management.creator'),
-                value: this.ROLE.CREATOR
             }
         ];
 
@@ -139,8 +131,6 @@ class DomainOfTaskResultsChart extends Component {
             else if (!nextProps.tasks.responsibleTasks
                 || !nextProps.tasks.accountableTasks
                 || !nextProps.tasks.consultedTasks
-                || !nextProps.tasks.informedTasks
-                || !nextProps.tasks.creatorTasks
             ) {
                 return false;           // Đang lấy dữ liệu, ko cần render lại
             };
@@ -200,7 +190,7 @@ class DomainOfTaskResultsChart extends Component {
             }
         })
     }
-    
+
     // Lọc công việc trùng lặp
     filterDuplicateTask = (listTask) => {
         let idArray = listTask.map(item => item && item._id);
@@ -229,12 +219,10 @@ class DomainOfTaskResultsChart extends Component {
         if (TaskOrganizationUnitDashboard) {
             listTask = tasks.organizationUnitTasks;
         }
-        else if (tasks.responsibleTasks && tasks.accountableTasks && tasks.consultedTasks && tasks.informedTasks && tasks.creatorTasks) {
+        else if (tasks.responsibleTasks && tasks.accountableTasks && tasks.consultedTasks) {
             listTaskByRole[this.ROLE.RESPONSIBLE] = tasks.responsibleTasks;
             listTaskByRole[this.ROLE.ACCOUNTABLE] = tasks.accountableTasks;
             listTaskByRole[this.ROLE.CONSULTED] = tasks.consultedTasks;
-            listTaskByRole[this.ROLE.INFORMED] = tasks.informedTasks;
-            listTaskByRole[this.ROLE.CREATOR] = tasks.creatorTasks;
 
             if (role.length !== 0) {
                 role.map(role => {
@@ -388,37 +376,38 @@ class DomainOfTaskResultsChart extends Component {
 
         return (
             <React.Fragment>
-                {!TaskOrganizationUnitDashboard
-                    && <section className="form-inline">
+                <div className="qlcv">
+                    {!TaskOrganizationUnitDashboard
+                        &&
+                        <div className="form-inline" >
+                            <div className="form-group">
+                                <label style={{ width: "auto" }}>{translate('task.task_management.role')}</label>
+                                <SelectMulti
+                                    id="multiSelectDomainOfTaskResults"
+                                    items={this.ROLE_SELECTBOX}
+                                    onChange={this.handleSelectRole}
+                                    options={{ allSelectedText: translate('task.task_management.select_all_status') }}
+                                    value={this.DATA_SEARCH.role}
+                                />
+                            </div>
+                        </div>
+                    }
+                    <div className="form-inline" >
                         <div className="form-group">
-                            <label>{translate('task.task_management.role')}</label>
-                            <SelectMulti
-                                id="multiSelectDomainOfTaskResults"
-                                items={this.ROLE_SELECTBOX}
-                                onChange={this.handleSelectRole}
-                                options={{ allSelectedText: translate('task.task_management.select_all_status') }}
-                                value={this.DATA_SEARCH.role}
+                            <label style={{ width: "auto" }}>{translate('kpi.organizational_unit.dashboard.organizational_unit')}</label>
+                            <SelectBox
+                                id={`typePointOfResultsTaskSelectBox`}
+                                className="form-control select2"
+                                style={{ width: "100%" }}
+                                items={this.TYPEPOINT_SELECTBOX}
+                                multiple={false}
+                                onChange={this.handleSelectTypePoint}
+                                value={this.DATA_SEARCH.typePoint}
                             />
                         </div>
-                    </section>
-                }
-                <section className="form-inline">
-                    <div className="form-group">
-                        <label>Loại điểm</label>
-                        <SelectBox
-                            id={`typePointOfResultsTaskSelectBox`}
-                            className="form-control select2"
-                            style={{ width: "100%" }}
-                            items={this.TYPEPOINT_SELECTBOX}
-                            multiple={false}
-                            onChange={this.handleSelectTypePoint}
-                            value={this.DATA_SEARCH.typePoint}
-                        />
+                        <button type="button" className="btn btn-success" onClick={this.handleSearchData}>{translate('kpi.evaluation.employee_evaluation.search')}</button>
                     </div>
-
-                    <button type="button" className="btn btn-success" onClick={this.handleSearchData}>{translate('kpi.evaluation.employee_evaluation.search')}</button>
-                </section>
-
+                </div>
                 <div ref="chart"></div>
             </React.Fragment>
         )
