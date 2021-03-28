@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { Tree, SlimScroll, ExportExcel } from '../../../../../common-components';
@@ -8,53 +8,53 @@ import EditForm from './editForm';
 import CreateForm from './createForm';
 import "./careerAction.css";
 
-class CareerAction extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            careerParent: [],
-            deleteNode: [],
-        }
-    }
+function CareerAction(props) {
+    const [state, setState] = useState({
+        careerParent: [],
+        deleteNode: [],
+    })
 
-    componentDidMount() {
-        this.props.getListCareerAction({ name: '', page: 1, limit: 1000 });
-        this.props.getListCareerPosition({ name: '', page: 1, limit: 1000 });
-    }
-    onChanged = async (e, data) => {
-        await this.setState({
+    useEffect(() => {
+        props.getListCareerAction({ name: '', page: 1, limit: 1000 });
+        props.getListCareerPosition({ name: '', page: 1, limit: 1000 });
+    }, [])
+    const onChanged = async (e, data) => {
+        await setState({
+            ...state,
             currentNode: data.node,
         })
         window.$(`#edit-career-action`).slideDown();
     }
 
-    checkNode = (e, data) => {
-        this.setState({
+    const checkNode = (e, data) => {
+        setState({
+            ...state,
             careerParent: [...data.selected],
             // deleteNode: [...data.selected, ...data.node.children_d],
             deleteNode: [...data.selected],
         })
     }
 
-    unCheckNode = (e, data) => {
-        this.setState({
+    const unCheckNode = (e, data) => {
+        setState({
+            ...state,
             careerParent: [...data.selected],
             deleteNode: [...data.selected],
         })
-        console.log('statode', this.state);
+        console.log('statode', state);
     }
-    handleAddCareerAction = (event) => {
+    const handleAddCareerAction = (event) => {
         event.preventDefault();
         window.$('#modal-create-career-action').modal('show');
     }
     /**Mở modal import file excel */
-    handImportFile = (event) => {
+    const handImportFile = (event) => {
         event.preventDefault();
         window.$('#modal_import_file_career_action').modal('show');
     }
-    deleteCareer = () => {
-        const { translate } = this.props;
-        const { deleteNode, careerParent } = this.state;
+    const deleteCareer = () => {
+        const { translate } = props;
+        const { deleteNode, careerParent } = state;
         Swal.fire({
             html: `<h4 style="color: red"><div>Xóa hoạt động nghề nghiệp</div>?</h4>`,
             icon: 'warning',
@@ -66,15 +66,16 @@ class CareerAction extends Component {
         }).then(result => {
             if (result.value) {
                 console.log('Confirm delete');
-                this.props.deleteCareerAction(deleteNode)
-                this.setState({
+                props.deleteCareerAction(deleteNode)
+                setState({
+                    ...state,
                     deleteNode: []
                 });
             }
         })
     }
 
-    findChildrenNode = (list, node) => {
+    const findChildrenNode = (list, node) => {
         let array = [];
         let queue_children = [];
         queue_children = [node];
@@ -89,83 +90,81 @@ class CareerAction extends Component {
         return array;
     }
 
-    render() {
-        const { careerParent, currentNode } = this.state;
-        const { translate } = this.props;
-        const { career } = this.props;
-        const list = career.listAction.filter(e => e.isLabel !== 1);
+    const { careerParent, currentNode } = state;
+    const { translate } = props;
+    const { career } = props;
+    const list = career.listAction.filter(e => e.isLabel !== 1);
 
-        let dataTree = list.map(elm => {
+    let dataTree = list.map(elm => {
+        return {
+            ...elm,
+            id: elm._id,
+            text: elm.name,
+            // state: { "opened": true },
+            parent: "#",
+        }
+    });
+    for (let i in list) {
+        let detail = list[i].label.map(elm => {
             return {
                 ...elm,
-                id: elm._id,
+                id: `${elm._id}-${list[i]._id}`,
                 text: elm.name,
                 // state: { "opened": true },
-                parent: "#",
+                parent: list[i]._id.toString(),
             }
         });
-        for (let i in list) {
-            let detail = list[i].label.map(elm => {
-                return {
-                    ...elm,
-                    id: `${elm._id}-${list[i]._id}`,
-                    text: elm.name,
-                    // state: { "opened": true },
-                    parent: list[i]._id.toString(),
+        dataTree = [...dataTree, ...detail];
+    }
+    let unChooseNode = currentNode ? findChildrenNode(list, currentNode) : [];
+
+    return (
+        <React.Fragment>
+            <div className="box box-body">
+
+                <div className="form-inline">
+                    <a className="btn btn-success pull-right" href="#modal-create-career-action" title="Add Career action" onClick={(event) => { handleAddCareerAction(event) }}>Thêm</a>
+                </div>
+
+                {
+                    careerParent.length > 0 && <button className="btn btn-danger" style={{ marginLeft: '5px' }} onClick={deleteCareer}>{translate('general.delete')}</button>
                 }
-            });
-            dataTree = [...dataTree, ...detail];
-        }
-        let unChooseNode = currentNode ? this.findChildrenNode(list, currentNode) : [];
-
-        return (
-            <React.Fragment>
-                <div className="box box-body">
-
-                    <div className="form-inline">
-                        <a className="btn btn-success pull-right" href="#modal-create-career-action" title="Add Career action" onClick={(event) => { this.handleAddCareerAction(event) }}>Thêm</a>
+                <CreateForm list={list} />
+                <div className="row"
+                >
+                    <div className="col-xs-12 col-sm-12 col-md-7 col-lg-7">
+                        <div className="career-action-tree" id="career-action-tree">
+                            <Tree
+                                id="tree-qlcv-career-action"
+                                onChanged={onChanged}
+                                checkNode={checkNode}
+                                unCheckNode={unCheckNode}
+                                data={dataTree}
+                            />
+                        </div>
+                        <SlimScroll outerComponentId="career-action-tree" innerComponentId="tree-qlcv-career-action" innerComponentWidth={"100%"} activate={true} />
                     </div>
+                    <div className="col-xs-12 col-sm-12 col-md-5 col-lg-5">
+                        {
+                            currentNode &&
+                            <EditForm
+                                careerId={currentNode.original._id}
+                                careerName={currentNode.text}
+                                careerCode={currentNode.original.code}
+                                careerParent={(currentNode.parent !== "#") ? currentNode.parent : undefined}
+                                careerPackage={currentNode.original.package ? currentNode.original.package : ""}
+                                actionLabel={currentNode.original.label.map(e => e._id)}
+                                isLabel={currentNode.original.isLabel}
 
-                    {
-                        careerParent.length > 0 && <button className="btn btn-danger" style={{ marginLeft: '5px' }} onClick={this.deleteCareer}>{translate('general.delete')}</button>
-                    }
-                    <CreateForm list={list} />
-                    <div className="row"
-                    >
-                        <div className="col-xs-12 col-sm-12 col-md-7 col-lg-7">
-                            <div className="career-action-tree" id="career-action-tree">
-                                <Tree
-                                    id="tree-qlcv-career-action"
-                                    onChanged={this.onChanged}
-                                    checkNode={this.checkNode}
-                                    unCheckNode={this.unCheckNode}
-                                    data={dataTree}
-                                />
-                            </div>
-                            <SlimScroll outerComponentId="career-action-tree" innerComponentId="tree-qlcv-career-action" innerComponentWidth={"100%"} activate={true} />
-                        </div>
-                        <div className="col-xs-12 col-sm-12 col-md-5 col-lg-5">
-                            {
-                                currentNode &&
-                                <EditForm
-                                    careerId={currentNode.original._id}
-                                    careerName={currentNode.text}
-                                    careerCode={currentNode.original.code}
-                                    careerParent={(currentNode.parent !== "#") ? currentNode.parent : undefined}
-                                    careerPackage={currentNode.original.package ? currentNode.original.package : ""}
-                                    actionLabel={currentNode.original.label.map(e=>e._id)}
-                                    isLabel={currentNode.original.isLabel}
-
-                                    listData={list}
-                                    unChooseNode={unChooseNode}
-                                />
-                            }
-                        </div>
+                                listData={list}
+                                unChooseNode={unChooseNode}
+                            />
+                        }
                     </div>
                 </div>
-            </React.Fragment>
-        )
-    }
+            </div>
+        </React.Fragment>
+    )
 }
 
 const mapStateToProps = state => state;
