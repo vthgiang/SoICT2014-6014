@@ -28,7 +28,6 @@ function TransportRequirementsCreateForm(props) {
     const { translate, example, page, perPage } = props;
     const { exampleName, description, exampleNameError } = state;
 
-
     /**
      * Hàm dùng để kiểm tra xem form đã được validate hay chưa
      */
@@ -77,9 +76,9 @@ function TransportRequirementsCreateForm(props) {
             step: step,
         });
     }
-    useEffect(() => {
-        console.log(state, '- Has changed')
-    },[state])
+    // useEffect(() => {
+    //     console.log(state, '- Has changed')
+    // },[state])
 
     return (
         <React.Fragment>
