@@ -345,7 +345,7 @@ class TaskOrganizationUnitDashboard extends Component {
             <React.Fragment>
                 {currentOrganizationalUnit
                     ? <React.Fragment>
-                        <div className="qlcv" style={{ textAlign: "right" }}>
+                        <div className="qlcv" style={{ marginBottom: '5px' }}>
                             <div className="form-inline">
                                 <div className="form-group">
                                     <label style={{ width: "auto" }} className="form-control-static">{translate('kpi.evaluation.dashboard.organizational_unit')}</label>
