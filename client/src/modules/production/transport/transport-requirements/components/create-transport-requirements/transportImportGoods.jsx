@@ -6,6 +6,12 @@ import { withTranslate } from 'react-redux-multilingual';
 import ValidationHelper from '../../../../../../helpers/validationHelper';
 
 function TransportImportGoods(props) {
+
+    let addressStock= props.addressStock;
+    let nameStock = props.nameStock;
+
+    useEffect(() => {})
+
     return (
         <React.Fragment>
             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -75,7 +81,9 @@ function TransportImportGoods(props) {
                                             Kho
                                             <span className="attention"> * </span>
                                         </label>
-                                        <input type="text" className="form-control" disabled={false} />
+                                        <input type="text" className="form-control" disabled={false}
+                                                value={nameStock}
+                                        />
                                     </div>
                                 </div>
                                 <div className="col-xs-12 col-sm-8 col-md-8 col-lg-8">
@@ -93,7 +101,9 @@ function TransportImportGoods(props) {
                                         Địa chỉ kho hàng
                                         <span className="attention"> * </span>
                                     </label>
-                                    <textarea type="text" className="form-control" disabled={false}/>
+                                    <textarea type="text" className="form-control" disabled={false}
+                                        value={addressStock}
+                                    />
                                 </div>
                             </div>
 

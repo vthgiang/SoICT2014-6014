@@ -10,6 +10,7 @@ import { TransportReturn } from './transportReturn';
 import { TransportImportGoods } from './transportImportGoods';
 import { TransportMaterial } from './transportMaterial';
 import { TransportNewOne} from './transportNewOne';
+import { TransportGoods } from './transportGoods';
 
 import { exampleActions } from '../../redux/actions';
 import { BillActions } from '../../../../warehouse/bill-management/redux/actions'
@@ -52,9 +53,16 @@ function TransportGeneralInfo(props) {
         billGroup: "2",
         billType: "3"
     })
-    const [billId, setBillId] = useState();
+    const [billId, setBillId] = useState({
+        id: "",
+    });
 
     const [billDetail, setBillDetail] = useState({})
+
+    const [importGoodsDetails, setImportGoodsDetails] = useState({
+        addressStock: "",
+        nameStock: ""
+    })
     // const { translate, example, page, perPage } = props;
 
     const { exampleName, description, exampleNameError } = state;
@@ -85,22 +93,42 @@ function TransportGeneralInfo(props) {
 
     const handleTypeBillChange = (value) => {
         console.log(value[0]);
-        if (value[0] !== "0") {
-            // let curBill = props.bills.filter(bill => bill._id === value[0]);
-            setBillId(value[0]);
-            console.log(billId);
-        }
+        // if (value[0] !== "0") {
+        //     setBillId({
+        //         ...billId,
+        //         id: value[0],
+        //     });
+        // }
     }
 
-    // useEffect(() => {
-    //     if (props.bills.length >=1){
-    //         let curBill = props.bills.filter(bill => bill._id === billInfo.value);
-    //         setBillDetail({
-    //             ...billDetail,
-    //             curBill: curBill[0]
-    //         })
-    //     }
-    // }, billInfo)
+    useEffect(() => {
+        let currentBill = props.bills.filter(r => r._id === billId.id);
+        setBillDetail({
+            ...billDetail,
+            currentBill: currentBill[0]
+        })
+    }, [billId])
+
+    useEffect(() => {
+        if (state.value==="3" && billId.id !==""){
+            if (billDetail.currentBill) {
+                if (billDetail.currentBill.fromStock){
+                    setImportGoodsDetails({
+                        ...importGoodsDetails,
+                        nameStock: billDetail.currentBill.fromStock.name,
+                        addressStock: billDetail.currentBill.fromStock.address,
+                    })
+                }
+            }
+        }
+        else {
+            setImportGoodsDetails({
+                ...importGoodsDetails,
+                addressStock: "",
+                nameStock: "",
+            })
+        }
+    }, [billDetail]);
 
     return (
         <React.Fragment>
@@ -173,6 +201,9 @@ function TransportGeneralInfo(props) {
             {
                 state.value === "3" && (
                     < TransportImportGoods
+                        nameStock = {importGoodsDetails.nameStock}
+                        addressStock ={importGoodsDetails.addressStock}
+                        
                     />
                 )
             }
@@ -188,6 +219,7 @@ function TransportGeneralInfo(props) {
                     />
                 )
             }
+            < TransportGoods />
         </React.Fragment>
     );
 }

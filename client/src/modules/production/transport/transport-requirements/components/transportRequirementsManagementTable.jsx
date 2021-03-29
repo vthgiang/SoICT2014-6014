@@ -196,8 +196,11 @@ function TransportRequirementsManagementTable(props) {
                     <thead>
                         <tr>
                             <th className="col-fixed" style={{ width: 60 }}>{translate('manage_example.index')}</th>
-                            <th>{translate('manage_example.exampleName')}</th>
-                            <th>{translate('manage_example.description')}</th>
+                            <th>{"Loại yêu cầu"}</th>
+                            <th>{"Địa chỉ bắt đầu"}</th>
+                            <th>{"Địa chỉ kết thúc"}</th>
+                            <th>{"Người tạo"}</th>
+                            <th>{"Trạng thái"}</th>
                             <th style={{ width: "120px", textAlign: "center" }}>{translate('table.action')}
                                 <DataTableSetting
                                     tableId={tableId}
@@ -212,6 +215,26 @@ function TransportRequirementsManagementTable(props) {
                         </tr>
                     </thead>
                     <tbody>
+                        <tr key={"1"}>
+                            <td>{1}</td>
+                            <td>{"Giao hàng"}</td>
+                            <td>{"Thái Hà"}</td>
+                            <td>{"Bách Khoa"}</td>
+                            <td>{"Nguyễn Văn Danh"}</td>
+                            <td>{"Chờ phê duyệt"}</td>
+                            <td style={{ textAlign: "center" }}>
+                                <a className="edit text-green" style={{ width: '5px' }} title={translate('manage_example.detail_info_example')} onClick={() => handleShowDetailInfo(example)}><i className="material-icons">visibility</i></a>
+                                <a className="edit text-yellow" style={{ width: '5px' }} title={translate('manage_example.edit')} onClick={() => handleEdit(example)}><i className="material-icons">edit</i></a>
+                                <DeleteNotification
+                                    content={translate('manage_example.delete')}
+                                    data={{
+                                        id: example._id,
+                                        info: example.exampleName
+                                    }}
+                                    func={handleDelete}
+                                />
+                            </td>
+                        </tr>
                         {(lists && lists.length !== 0) &&
                             lists.map((example, index) => (
                                 <tr key={index}>

@@ -1405,7 +1405,42 @@ const LINKS = [{
         ROOT_ROLES.ADMIN.name
     ]
 },
-
+{
+    url: "/manage-transport-schedule",
+    description: "Xếp lịch vận chuyển",
+    category: LINK_CATEGORY.TRANSPORT.name,
+    roles: [
+        ROOT_ROLES.SUPER_ADMIN.name,
+        ROOT_ROLES.ADMIN.name
+    ]
+},
+{
+    url: "/manage-transport-vehical",
+    description: "Phương tiện vận chuyển",
+    category: LINK_CATEGORY.TRANSPORT.name,
+    roles: [
+        ROOT_ROLES.SUPER_ADMIN.name,
+        ROOT_ROLES.ADMIN.name
+    ]
+},
+{
+    url: "/manage-transport-human",
+    description: "Nhân viên vận chuyển",
+    category: LINK_CATEGORY.TRANSPORT.name,
+    roles: [
+        ROOT_ROLES.SUPER_ADMIN.name,
+        ROOT_ROLES.ADMIN.name
+    ]
+},
+{
+    url: "/manage-transport-route",
+    description: "Lộ trình vận chuyển",
+    category: LINK_CATEGORY.TRANSPORT.name,
+    roles: [
+        ROOT_ROLES.SUPER_ADMIN.name,
+        ROOT_ROLES.ADMIN.name
+    ]
+},
 // Quan li du an
 {
     url: '/projects-management',
