@@ -1,290 +1,94 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+import { DataTableSetting, SelectBox } from '../../../../common-components';
+import OrderInfoForm from './orderInfoForm';
 
 class PurchaseHistoriesInfoForm extends Component {
     constructor(props) {
         super(props);
         this.state = {}
     }
-
+handleOrderInfo =()=>{
+    window.$('#modal-crm-order-info').modal('show');
+}
     render() {
+
         const { translate } = this.props;
         const { id } = this.props;
         return (
             <div className="tab-pane purchaseHistories" id={id}>
-                <div className="row">
-                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                        <div className="nav-tabs-custom">
-                            <ul className="nav nav-tabs">
-                                <li className="active"><a href="#purchaseHistoriesAll" data-toggle="tab">{translate('crm.customer.purchaseHistories.all')}(5)</a></li>
-                                <li><a href="#waitingForApproval" data-toggle="tab">{translate('crm.customer.purchaseHistories.waitingForApproval')}</a></li>
-                                <li><a href="#approved" data-toggle="tab">{translate('crm.customer.purchaseHistories.approved')}</a></li>
-                                <li><a href="#waitingForTheGoods" data-toggle="tab">{translate('crm.customer.purchaseHistories.waitingForTheGoods')}</a></li>
-                                <li><a href="#delivering" data-toggle="tab">{translate('crm.customer.purchaseHistories.delivering')}</a></li>
-                                <li><a href="#finished" data-toggle="tab">{translate('crm.customer.purchaseHistories.finished')}</a></li>
-                                <li><a href="#cancelled" data-toggle="tab">{translate('crm.customer.purchaseHistories.cancelled')}</a></li>
-                            </ul>
-                            <div className="tab-content">
-                                <div className="tab-pane active" id="purchaseHistoriesAll">
-                                    <table className="table table-hover table-striped table-bordered" >
-                                        <thead>
-                                            <tr>
-                                                <th>Mã đơn hàng</th>
-                                                <th>Ngày đặt đơn</th>
-                                                <th>Số lượng mặt hàng</th>
-                                                <th>Giá trị đơn hàng</th>
-                                                <th>Hình thức thanh toán</th>
-                                                <th>Trạng thái thanh toán</th>
-                                                <th>Trạng thái</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td><a href="" title={'Xem chi tiết đơn hàng'} className="codeOrder">SALES_12040</a> </td>
-                                                <td>22-10-2020 lúc 9:47:24 pm</td>
-                                                <td className="align-center">10</td>
-                                                <td>10,000,940 đ</td>
-                                                <td>Chuyển khoản</td>
-                                                <td>Đã thanh toán</td>
-                                                <td style={{ color: `rgb(0, 166, 90)` }}>Đã hoàn thành</td>
-                                            </tr>
-                                            <tr>
-                                                <td> <a href="" title={'Xem chi tiết đơn hàng'} className="codeOrder">SALES_12045</a></td>
-                                                <td>22-10-2019 lúc 9:47:24 pm</td>
-                                                <td>10</td>
-                                                <td>400,000,940 đ</td>
-                                                <td>Tiền mặt</td>
-                                                <td>Chưa thanh toán</td>
-                                                <td>Chờ lấy hàng</td>
-                                            </tr>
-                                            <tr>
-                                                <td> <a href="" title={'Xem chi tiết đơn hàng'} className="codeOrder">SALES_23640</a></td>
-                                                <td>11-10-2018 lúc 10:47:24 am</td>
-                                                <td>5</td>
-                                                <td>50,000,940 đ</td>
-                                                <td>Chuyển khoản</td>
-                                                <td >Đã thanh toán</td>
-                                                <td>Đang giao hàng</td>
-                                            </tr>
-                                            <tr>
-                                                <td> <a href="" title={'Xem chi tiết đơn hàng'} className="codeOrder">SALES_20459</a></td>
-                                                <td>30-10-2020 lúc 8:46:24 PM</td>
-                                                <td>109</td>
-                                                <td>4,000,000,940 đ</td>
-                                                <td>Tiền mặt</td>
-                                                <td>Đã thanh toán</td>
-                                                <td style={{ color: `rgb(0, 166, 90)` }}>Đã hoàn thành</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <div className="tab-pane" id="waitingForApproval">
-                                    <table className="table table-hover table-striped table-bordered" >
-                                        <thead>
-                                            <tr>
-                                                <th>Mã đơn hàng</th>
-                                                <th>Ngày đặt đơn</th>
-                                                <th>Số lượng mặt hàng</th>
-                                                <th>Giá trị đơn hàng</th>
-                                                <th>Hình thức thanh toán</th>
-                                                <th>Trạng thái thanh toán</th>
-                                                <th>Trạng thái</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td> <a href="" title={'Xem chi tiết đơn hàng'} className="codeOrder">SALES_12045</a></td>
-                                                <td>22-10-2019 lúc 9:47:24 pm</td>
-                                                <td>10</td>
-                                                <td>400,000,940 đ</td>
-                                                <td>Tiền mặt</td>
-                                                <td>Chưa thanh toán</td>
-                                                <td>Chờ phê duyệt</td>
-                                            </tr>
-                                            <tr>
-                                                <td> <a href="" title={'Xem chi tiết đơn hàng'} className="codeOrder">SALES_12045</a></td>
-                                                <td>22-10-2019 lúc 9:47:24 pm</td>
-                                                <td>10</td>
-                                                <td>400,000,940 đ</td>
-                                                <td>Tiền mặt</td>
-                                                <td>Chưa thanh toán</td>
-                                                <td>Chờ phê duyệt</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <div className="tab-pane" id="approved">
-                                    <table className="table table-hover table-striped table-bordered" >
-                                        <thead>
-                                            <tr>
-                                                <th>Mã đơn hàng</th>
-                                                <th>Ngày đặt đơn</th>
-                                                <th>Số lượng mặt hàng</th>
-                                                <th>Giá trị đơn hàng</th>
-                                                <th>Hình thức thanh toán</th>
-                                                <th>Trạng thái thanh toán</th>
-                                                <th>Trạng thái</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td> <a href="" title={'Xem chi tiết đơn hàng'} className="codeOrder">SALES_12045</a></td>
-                                                <td>22-10-2019 lúc 9:47:24 pm</td>
-                                                <td>10</td>
-                                                <td>400,000,940 đ</td>
-                                                <td>Tiền mặt</td>
-                                                <td>Chưa thanh toán</td>
-                                                <td>Đã phê duyệt</td>
-                                            </tr>
+                <div className="box">
+                    <div className="box-body qlcv">
+                        <OrderInfoForm/>
+                        {/* search form */}
+                        <div className="form-inline" style={{ marginBottom: '2px' }}>
+                            <div className="form-group unitSearch">
+                                <label>{'Trạng thái đơn hàng'}</label>
+                                {
 
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <div className="tab-pane" id="waitingForTheGoods">
-                                    <table className="table table-hover table-striped table-bordered" >
-                                        <thead>
-                                            <tr>
-                                                <th>Mã đơn hàng</th>
-                                                <th>Ngày đặt đơn</th>
-                                                <th>Số lượng mặt hàng</th>
-                                                <th>Giá trị đơn hàng</th>
-                                                <th>Hình thức thanh toán</th>
-                                                <th>Trạng thái thanh toán</th>
-                                                <th>Trạng thái</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td> <a href="" title={'Xem chi tiết đơn hàng'} className="codeOrder">SALES_12045</a></td>
-                                                <td>22-10-2019 lúc 9:47:24 pm</td>
-                                                <td>10</td>
-                                                <td>400,000,940 đ</td>
-                                                <td>Tiền mặt</td>
-                                                <td>Chưa thanh toán</td>
-                                                <td>Chờ lấy hàng</td>
-                                            </tr>
-                                            <tr>
-                                                <td> <a href="" title={'Xem chi tiết đơn hàng'} className="codeOrder">SALES_12045</a></td>
-                                                <td>22-10-2019 lúc 9:47:24 pm</td>
-                                                <td>10</td>
-                                                <td>400,000,940 đ</td>
-                                                <td>Tiền mặt</td>
-                                                <td>Chưa thanh toán</td>
-                                                <td>Chờ lấy hàng</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-
-                                <div className="tab-pane" id="delivering">
-                                    <table className="table table-hover table-striped table-bordered" >
-                                        <thead>
-                                            <tr>
-                                                <th>Mã đơn hàng</th>
-                                                <th>Ngày đặt đơn</th>
-                                                <th>Số lượng mặt hàng</th>
-                                                <th>Giá trị đơn hàng</th>
-                                                <th>Hình thức thanh toán</th>
-                                                <th>Trạng thái thanh toán</th>
-                                                <th>Trạng thái</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td><a href="" title={'Xem chi tiết đơn hàng'} className="codeOrder">SALES_12040</a> </td>
-                                                <td>22-10-2020 lúc 9:47:24 pm</td>
-                                                <td>10</td>
-                                                <td>10,000,940 đ</td>
-                                                <td>Chuyển khoản</td>
-                                                <td>Đã thanh toán</td>
-                                                <td>Đang giao hàng</td>
-                                            </tr>
-                                            <tr>
-                                                <td> <a href="" title={'Xem chi tiết đơn hàng'} className="codeOrder">SALES_20459</a></td>
-                                                <td>30-10-2020 lúc 8:46:24 PM</td>
-                                                <td>109</td>
-                                                <td>4,000,000,940 đ</td>
-                                                <td>Tiền mặt</td>
-                                                <td>Đã thanh toán</td>
-                                                <td>Đang giao hàng</td>
-                                            </tr>
-                                            <tr>
-                                                <td> <a href="" title={'Xem chi tiết đơn hàng'} className="codeOrder">SALES_20459</a></td>
-                                                <td>30-10-2020 lúc 8:46:24 PM</td>
-                                                <td>109</td>
-                                                <td>4,000,000,940 đ</td>
-                                                <td>Tiền mặt</td>
-                                                <td>Đã thanh toán</td>
-                                                <td>Đang giao hàng</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-
-                                <div className="tab-pane" id="finished">
-                                    <table className="table table-hover table-striped table-bordered" >
-                                        <thead>
-                                            <tr>
-                                                <th>Mã đơn hàng</th>
-                                                <th>Ngày đặt đơn</th>
-                                                <th>Số lượng mặt hàng</th>
-                                                <th>Giá trị đơn hàng</th>
-                                                <th>Hình thức thanh toán</th>
-                                                <th>Trạng thái thanh toán</th>
-                                                <th>Trạng thái</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td><a href="" title={'Xem chi tiết đơn hàng'} className="codeOrder">SALES_12040</a> </td>
-                                                <td>22-10-2020 lúc 9:47:24 pm</td>
-                                                <td>10</td>
-                                                <td>10,000,940 đ</td>
-                                                <td>Chuyển khoản</td>
-                                                <td>Đã thanh toán</td>
-                                                <td style={{ color: `rgb(0, 166, 90)` }}>Đã hoàn thành</td>
-                                            </tr>
-                                            <tr>
-                                                <td> <a href="" title={'Xem chi tiết đơn hàng'} className="codeOrder">SALES_20459</a></td>
-                                                <td>30-10-2020 lúc 8:46:24 PM</td>
-                                                <td>109</td>
-                                                <td>4,000,000,940 đ</td>
-                                                <td>Tiền mặt</td>
-                                                <td>Đã thanh toán</td>
-                                                <td style={{ color: `rgb(0, 166, 90)` }}>Đã hoàn thành</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <div className="tab-pane" id="cancelled">
-                                    <table className="table table-hover table-striped table-bordered" >
-                                        <thead>
-                                            <tr>
-                                                <th>Mã đơn hàng</th>
-                                                <th>Ngày đặt đơn</th>
-                                                <th>Số lượng mặt hàng</th>
-                                                <th>Giá trị đơn hàng</th>
-                                                <th>Hình thức thanh toán</th>
-                                                <th>Trạng thái thanh toán</th>
-                                                <th>Trạng thái</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td><a href="" title={'Xem chi tiết đơn hàng'} className="codeOrder">SALES_12040</a> </td>
-                                                <td>22-10-2020 lúc 9:47:24 pm</td>
-                                                <td>10</td>
-                                                <td>10,000,940 đ</td>
-                                                <td>Chuyển khoản</td>
-                                                <td>Đã thanh toán</td>
-                                                <td style={{ color: 'rgb(222 40 40)' }}>Đã hủy đơn</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
+                                    <SelectBox
+                                        id={`customer-group-edit-form`}
+                                        className="form-control select2"
+                                        style={{ width: "100%" }}
+                                        items={
+                                            ['']
+                                        }
+                                        value={[""]}
+                                        //  onChange={this.handleChangeCustomerGroup}
+                                        multiple={false}
+                                    />
+                                }
+                            </div>
+                            <div className="form-group">
+                                <label className="form-control-static">Mã đơn hàng</label>
+                                <input className="form-control" type="text" name="customerCode" oplaceholder={`Mã đơn hàng`} />
                             </div>
                         </div>
+                        <div className="form-inline">
+                            <div className="form-group" >
+                                <label>Tìm kiếm</label>
+                                <button type="button" className="btn btn-success"
+                                //onClick={this.search} 
+                                >{'Tìm kiếm'}</button>
+                            </div>
+                        </div>
+                        <table className="table table-hover table-striped table-bordered" id={1} style={{ marginTop: '10px' }}>
+                            <thead>
+                                <tr>
+
+                                    <th>{'Mã đơn hàng'}</th>
+                                    <th>{'Ngày đặt đơn'}</th>
+                                    <th>{'Giá trị đơn hàng'}</th>
+                                    <th>{'Trạng thái'}</th>
+                                    <th style={{ width: "120px" }}>
+                                        {translate('table.action')}
+                                        <DataTableSetting
+                                            columnArr={[
+                                                "Mã đơn hàng",
+                                                "Ngày đặt đơn",
+                                                "Giá trị đơn hàng",
+                                                "Trạng thái",
+                                            ]}
+                                        // setLimit={this.setLimit}
+                                        // tableId={tableId}
+                                        />
+                                    </th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                <td>DH 001</td>
+                                <td>1/1/2021</td>
+                                <td>100.000 VND</td>
+                                <td>Đang giao hàng</td>
+                                <td style={{ textAlign: 'center' }}>
+                                    <a className="text-green" onClick={this.handleOrderInfo}><i className="material-icons">visibility</i></a>
+                                </td>
+
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>

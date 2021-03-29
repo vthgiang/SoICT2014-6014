@@ -262,7 +262,7 @@ class EmployeeInOrganizationalUnitEditForm extends Component {
                         {/* Phó đơn vị */}
                         {roleDeputyManagers && roleDeputyManagers.length !== 0 &&
                             <React.Fragment>
-                                <h4 style={{ marginBottom: 0 }}>{translate('human_resource.manage_department.manager_unit')}</h4>
+                                <h4 style={{ marginBottom: 0 }}>{translate('human_resource.manage_department.deputy_manager_unit')}</h4>
                                 {
                                     roleDeputyManagers.map((obj, index) => {
                                         let infoDeputyManagers = [], users = obj.users;

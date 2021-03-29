@@ -161,12 +161,6 @@ class EditGroupForm extends Component {
                             <label>{translate('crm.group.description')}</label>
                             <textarea type="text" value={editingGroup.description ? editingGroup.description : ''} className="form-control" onChange={this.handleChangeGroupDescription} />
                         </div>
-
-                        {/* Ưu đãi kèm theo nhóm khách hàng */}
-                        <div className="form-group">
-                            <label>{translate('crm.group.promotion')}</label>
-                            <input type="text" className="form-control" value="" value={editingGroup.promotion ? editingGroup.promotion : ''} onChange={this.handleChangeGroupPromotion} />
-                        </div>
                     </form>
                 </DialogModal>
             </React.Fragment>

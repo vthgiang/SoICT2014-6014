@@ -874,9 +874,13 @@ exports.links = [
         url: '/crm/customer',
         apis: ['@all']
     }, {
-        url: '/crm/lead',
+        url: '/crm/loyal-customer',
         apis: ['@all']
-    }, {
+    },{
+        url: '/crm/evaluation',
+        apis: ['@all']
+    },
+     {
         url: '/crm/group',
         apis: ['@all']
     }, {

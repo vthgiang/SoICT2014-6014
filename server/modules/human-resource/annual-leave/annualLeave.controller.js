@@ -58,7 +58,23 @@ exports.createAnnualLeave = async (req, res) => {
         if (req.body.createApplication) {
             let users = await UserService.getUserIsManagerOfOrganizationalUnit(req.portal, req.body.organizationalUnit);
             let employee = await EmployeeService.getEmployeeInforByEmailInCompany(req.portal, req.user.email, req.user.company._id);
-            if(!employee) throw ['employee_invalid']; // Thông báo lỗi không tìm thấy dữ liệu về nhân viên tương ứng
+            if (!employee) throw ['employee_invalid']; // Thông báo lỗi không tìm thấy dữ liệu về nhân viên tương ứng
+            
+            let data = {
+                employee: employee._id,
+                organizationalUnit: req.body.organizationalUnit,
+                startDate: req.body.startDate,
+                endDate: req.body.endDate,
+                reason: req.body.reason,
+                type: req.body.type,
+                startTime: req.body.startTime,
+                endTime: req.body.endTime,
+                totalHours: req.body.totalHours,
+                status: 'waiting_for_approval',
+            }
+            let annualLeave = await AnnualLeaveService.createAnnualLeave(req.portal, data, req.user.company._id);
+            const dataAnnualLeave = annualLeave.result;
+
             let html = `
                 <h3><strong>Thông báo từ hệ thống ${process.env.WEB_NAME}.</strong></h3>
                 <p>Nhân viên: ${employee.fullName} - ${employee.employeeNumber}. </p>
@@ -89,6 +105,8 @@ exports.createAnnualLeave = async (req, res) => {
                 <p>To approve leave application. Please click here <a target="_blank" href="${process.env.WEBSITE}/hr-manage-leave-application">Approved</a><p>
             `
             users = users.map(x => x._id);
+            users = [...users, ...annualLeave.userReceiveds];
+
             let notification = {
                 users: users,
                 organizationalUnits: [],
@@ -99,24 +117,11 @@ exports.createAnnualLeave = async (req, res) => {
             }
             await NotificationServices.createNotification(req.portal, req.user.company._id, notification, undefined)
 
-            let data = {
-                employee: employee._id,
-                organizationalUnit: req.body.organizationalUnit,
-                startDate: req.body.startDate,
-                endDate: req.body.endDate,
-                reason: req.body.reason,
-                type: req.body.type,
-                startTime: req.body.startTime,
-                endTime: req.body.endTime,
-                totalHours: req.body.totalHours,
-                status: 'waiting_for_approval',
-            }
-            let annualLeave = await AnnualLeaveService.createAnnualLeave(req.portal, data, req.user.company._id);
             await Log.info(req.user.email, 'CREATE_ANNUALLEAVE', req.portal);
             res.status(200).json({
                 success: true,
                 messages: ["aplication_annual_leave_success"],
-                content: annualLeave
+                content: dataAnnualLeave
             });
         } else {
             if (req.body.startDate.trim() === "") {

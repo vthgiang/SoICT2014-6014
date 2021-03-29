@@ -65,20 +65,20 @@ class EmployeeKpiApproveModal extends Component {
     }
 
     handleEdit = (target) => {
-        if (target && target.status !== 1) {
+        if (target?.approvedPoint !== null && target?.approvedPoint >= 0) {
+            Swal.fire({
+                title: translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.edit_target.evaluated'),
+                type: 'warning',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: translate('kpi.evaluation.employee_evaluation.confirm')
+            })
+        } else if (target) {
             this.setState(state => {
                 return {
                     ...state,
                     editing: true,
                     edit: target && state.edit === target._id ? "" : target._id,
                 }
-            })
-        } else {
-            Swal.fire({
-                title: translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.edit_target.activated'),
-                type: 'warning',
-                confirmButtonColor: '#3085d6',
-                confirmButtonText: translate('kpi.evaluation.employee_evaluation.confirm')
             })
         }
     }
@@ -95,9 +95,9 @@ class EmployeeKpiApproveModal extends Component {
             }
         })
 
-        if (this.newWeight[target._id].value !== "") {
-            console.log("target._id, newTarget", target._id, newTarget)
-            this.props.editTarget(target._id, newTarget);
+        if (this.newWeight?.[target?._id]?.value !== "") {
+            this.props.editTarget(target?._id, newTarget);
+            this.props.editStatusKpi(target?._id, 0);
 
             this.setState(state => {
                 return {
@@ -392,7 +392,7 @@ class EmployeeKpiApproveModal extends Component {
                                             /> : item.weight}
                                         </td>
                                         <td>{this.handleCheckEmployeeKpiStatus(item.status)}</td>
-                                        <td>{item ? item.approvedPoint : ""}</td>
+                                        <td>{item?.approvedPoint !== null && item?.approvedPoint >= 0 ? item.approvedPoint : translate('kpi.evaluation.employee_evaluation.not_evaluated_yet')}</td>
                                         <td>
                                             {edit === item._id ? <a style={{ cursor: 'pointer' }} className="approve" title={translate('kpi.evaluation.employee_evaluation.save_result')} onClick={() => this.handleSaveEdit(item)}><i className="material-icons">save</i></a>
                                                 : <a style={{ cursor: 'pointer' }} className="edit" title={translate('kpi.evaluation.employee_evaluation.edit_target')} onClick={() => this.handleEdit(item)}><i className="material-icons">edit</i></a>}
