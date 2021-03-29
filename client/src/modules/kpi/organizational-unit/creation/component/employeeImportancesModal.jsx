@@ -26,16 +26,16 @@ function EmployeeImportancesModal(props) {
         // Khởi tạo dữ liệu table độ quan trọng nhân viên
         if (!employeeImportancesState && createKpiUnit?.currentKPI) {
             let currentKpiUnit, employees = [];
-        
+
             currentKpiUnit = createKpiUnit.currentKPI;
             if (currentKpiUnit) {
                 employees = currentKpiUnit?.employeeImportances?.map(item => {
-                    return { 
-                        value: item?.employee?._id, 
-                        text: item?.employee?.name, 
+                    return {
+                        value: item?.employee?._id,
+                        text: item?.employee?.name,
                         importance: item?.importance,
                         status: true
-                     }
+                    }
                 })
             }
             setEmployeeImportancesState(employees)
@@ -54,7 +54,7 @@ function EmployeeImportancesModal(props) {
                     unitMembers = userdepartments.map(item => item?.userId)
                 }
             }
-            
+
             // Lấy danh sách nhân viên có độ quan trọng lưu trong DB
             if (createKpiUnit) {
                 currentKPI = createKpiUnit.currentKPI;
@@ -67,13 +67,13 @@ function EmployeeImportancesModal(props) {
             if (unitMembers?.length > 0) {
                 unitMembers.map(item => {
                     if (!listEmployeeImportances || (listEmployeeImportances.indexOf(item?._id) === -1 && employee.indexOf(item?._id) === -1)) {
-                        employeeImportances.push({ 
-                            value: item?._id, 
-                            text: item?.name, 
+                        employeeImportances.push({
+                            value: item?._id,
+                            text: item?.name,
                             importance: 100,
                             status: true
                         })
-                    }   
+                    }
                 })
 
                 // Reset state trước khi lưu state mới
@@ -85,8 +85,8 @@ function EmployeeImportancesModal(props) {
             }
         }
     })
-    
-    
+
+
     const formatDate = (date) => {
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
@@ -103,7 +103,7 @@ function EmployeeImportancesModal(props) {
 
         return [month, year].join('-');
     }
-    
+
 
     const handleChangeImportance = (e, employee) => {
         let value = e.target.value;
@@ -132,7 +132,7 @@ function EmployeeImportancesModal(props) {
             updateEmployee: true
         })
         props.getAllEmployeeOfUnitByIds({
-            organizationalUnitIds: [props.organizationalUnitId], 
+            organizationalUnitIds: [props.organizationalUnitId],
             callApi: true
         });
     }
@@ -182,32 +182,32 @@ function EmployeeImportancesModal(props) {
 
                     <table className="table table-hover table-bordered">
                         <thead>
-                            <tr>
-                                <th title={translate('kpi.organizational_unit.create_organizational_unit_kpi_set.no_')}>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.no_')}</th>
-                                <th title={translate('kpi.evaluation.employee_evaluation.name')}>{translate('kpi.evaluation.employee_evaluation.name')}</th>
-                                <th title={translate('kpi.organizational_unit.create_organizational_unit_kpi_set.employee_importance')}>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.employee_importance')}</th>
-                            </tr>
+                        <tr>
+                            <th title={translate('kpi.organizational_unit.create_organizational_unit_kpi_set.no_')}>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.no_')}</th>
+                            <th title={translate('kpi.evaluation.employee_evaluation.name')}>{translate('kpi.evaluation.employee_evaluation.name')}</th>
+                            <th title={translate('kpi.organizational_unit.create_organizational_unit_kpi_set.employee_importance')}>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.employee_importance')}</th>
+                        </tr>
                         </thead>
                         <tbody>
-                            { employeeImportancesState && employeeImportancesState.length !== 0
-                                && employeeImportancesState.map((item, index) =>
-                                    <tr key={item.value + organizationalUnitId + index}>
-                                        <td style={{ width: '40px' }}>{index + 1}</td>
-                                        <td>{item.text}</td>
-                                        <td className={`form-group ${!item?.errorOnImportance? "": "has-error"}`}>
-                                            <input
-                                                type="number"
-                                                min="0" max="100"
-                                                onChange={(e) => handleChangeImportance(e, item?.value)}
-                                                defaultValue={item.importance}
-                                                style={{ width: "60px", textAlign: 'center' }}
-                                            /> 
-                                            <ErrorLabel content={item?.errorOnImportance} />
-                                        </td>
-                                    </tr>
-                                )
+                        { employeeImportancesState && employeeImportancesState.length !== 0
+                        && employeeImportancesState.map((item, index) =>
+                            <tr key={item.value + organizationalUnitId + index}>
+                                <td style={{ width: '40px' }}>{index + 1}</td>
+                                <td>{item.text}</td>
+                                <td className={`form-group ${!item?.errorOnImportance? "": "has-error"}`}>
+                                    <input
+                                        type="number"
+                                        min="0" max="100"
+                                        onChange={(e) => handleChangeImportance(e, item?.value)}
+                                        defaultValue={item.importance}
+                                        style={{ width: "60px", textAlign: 'center' }}
+                                    />
+                                    <ErrorLabel content={item?.errorOnImportance} />
+                                </td>
+                            </tr>
+                        )
 
-                            }
+                        }
                         </tbody>
                     </table>
                 </form>
