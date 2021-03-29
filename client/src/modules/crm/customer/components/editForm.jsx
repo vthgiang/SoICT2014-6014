@@ -12,6 +12,7 @@ import GeneralTabEditForm from './generalTabEditForm';
 import FileTabEditForm from './fileTabEditForm';
 import { convertJsonObjectToFormData } from '../../../../helpers/jsonObjectToFormDataObjectConverter';
 import './customer.css';
+import EditCustomerStatusForm from './editCustomerStatusForm';
 
 class CrmCustomerEdit extends Component {
     constructor(props) {
@@ -190,35 +191,46 @@ class CrmCustomerEdit extends Component {
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
                 >
-                    {/* Form chỉnh sửa khách hàng mới */}
+                    {/* Form chỉnh sửa khách hàng  */}
                     <div className="nav-tabs-custom">
                         <ul className="nav nav-tabs">
-                            <li className="active"><a href="#customer-general-edit-form" data-toggle="tab" >Thông tin chung</a></li>
+                            <li className="active"><a href="#customer-general-edit-form" data-toggle="tab" >Chỉnh sửa thông tin khách hàng </a></li>
                             <li><a href="#customer-fileAttachment" data-toggle="tab">Tài liệu liên quan</a></li>
                         </ul>
                         <div className="tab-content">
                             {/* Tab thông tin chung */}
                             {
                                 editingCustomer && dataStatus === 3 &&
-                                <GeneralTabEditForm
-                                    id={"customer-general-edit-form"}
-                                    callBackFromParentEditForm={this.myCallBack}
-                                    editingCustomer={editingCustomer}
-                                    customerIdEdit={customerIdEdit}
-                                />
+                                
+                                    
+                                    <GeneralTabEditForm
+                                        id={"customer-general-edit-form"}
+                                        callBackFromParentEditForm={this.myCallBack}
+                                        editingCustomer={editingCustomer}
+                                        customerIdEdit={customerIdEdit}
+                                    />
+                                
                             }
-
+                            {/* Tab chỉnh sửa trạng thái */}
+                            {/* {
+                                editingCustomer && dataStatus === 3 &&
+                                <div>
+                                   <EditCustomerStatusForm/>
+                                </div>
+                            } */}
+                        
                             {/* Tab file liên quan đến khách hàng */}
                             {
                                 editingCustomer && dataStatus === 3 &&
-                                <FileTabEditForm
-                                    id={`customer-fileAttachment`}
-                                    files={editingCustomer.files}
-                                    customerIdEdit={customerIdEdit}
-                                    callBackFromParentEditForm={this.myCallBack}
-                                />
+                              
+                                    <FileTabEditForm id ='customer-fileAttachment'
+                                        files={editingCustomer.files}
+                                        customerIdEdit={customerIdEdit}
+                                        callBackFromParentEditForm={this.myCallBack}
+                                    />
+                               
                             }
-                        </div>
+                        </div>      
                     </div>
                 </DialogModal>
             </React.Fragment>

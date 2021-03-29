@@ -117,6 +117,8 @@ import CrmDashBoard from "../modules/crm/dashboard/components";
 import CrmCustomer from "../modules/crm/customer/components";
 import CrmGroup from "../modules/crm/group/components";
 import CrmCare from "../modules/crm/care/components";
+import CrmLoyalCustomer from '../modules/crm/loyalCustomer/components'
+import CrmEvaluation from '../modules/crm/evaluation/components'
 import GeneralConfiguration from "../modules/crm/generalConfiguration/components";
 
 //orders
@@ -1837,6 +1839,24 @@ class Routes extends Component {
                         layout={Layout}
                         component={CrmCustomer}
                     />
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"crm_loyal_customer"}
+                        arrPage={[
+                            {
+                                link: "/crm/loyal-customer",
+                                name: "crm_list.lead",
+                                icon: "fa fa-users",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/crm/loyal-customer"}
+                        path={"/crm/loyal-customer"}
+                        pageName={"crm_list.lead"}
+                        layout={Layout}
+                        component={CrmLoyalCustomer}
+                    />
 
                     <PrivateRoute
                         isLoading={false}
@@ -1856,7 +1876,24 @@ class Routes extends Component {
                         layout={Layout}
                         component={CrmGroup}
                     />
-
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"crm_evaluation"}
+                        arrPage={[
+                            {
+                                link: "/crm/evaluation",
+                                name: "crm_list.evaluation",
+                                icon: "fa fa-users",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/crm/evaluation"}
+                        path={"/crm/evaluation"}
+                        pageName={"crm_list.evaluation"}
+                        layout={Layout}
+                        component={CrmEvaluation}
+                    />
                     <PrivateRoute
                         isLoading={false}
                         key={"customer-care"}

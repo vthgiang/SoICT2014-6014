@@ -490,20 +490,26 @@ class SideBar extends Component {
                                             icon: "fa fa-circle-o",
                                             path: "/crm/customer",
                                         },
-                                        {
-                                            name: "menu.crm_list.lead",
-                                            icon: "fa fa-circle-o",
-                                            path: "/crm/lead",
-                                        },
+                                        
                                         {
                                             name: "menu.crm_list.care",
                                             icon: "fa fa-circle-o",
                                             path: "/crm/care",
                                         },
                                         {
+                                            name: "menu.crm_list.lead",
+                                            icon: "fa fa-circle-o",
+                                            path: "/crm/loyal-customer",
+                                        },
+                                        {
                                             name: "menu.crm_list.group",
                                             icon: "fa fa-circle-o",
                                             path: "/crm/group",
+                                        },
+                                        {
+                                            name: "menu.crm_list.evaluation",
+                                            icon: "fa fa-circle-o",
+                                            path: "/crm/evaluation",
                                         },
                                         {
                                             name: "menu.crm_list.statistic",

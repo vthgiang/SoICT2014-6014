@@ -103,6 +103,7 @@ export default {
                 group: "Nhóm khách hàng",
                 statistic: "Thống kê",
                 generalConfiguration: "Cấu hình chung",
+                evaluation:"Đánh giá hoạt động CSKH"
             },
 
             task_template: "Mẫu Công Việc",
@@ -1011,7 +1012,6 @@ export default {
                 by_customer: "Theo khách hàng",
                 payment: "Hình thức thanh toán",
                 creator: "Người tạo",
-
                 personal: "Cá nhân",
                 organization: "Tổ chức",
                 northern: "Miền Bắc",
@@ -1050,6 +1050,7 @@ export default {
                 cannot_be_empty: "không được để trống",
                 value_duplicate: "bị trùng lặp",
             },
+
             group: {
                 name: "Tên nhóm khách hàng",
                 code: "Mã nhóm khách hàng",
@@ -1060,22 +1061,23 @@ export default {
                 edit: "Chỉnh sửa thông tin nhóm khách hàng",
                 delete: "Xóa thông tin nhóm khách hàng",
             },
+
             lead: {},
             care: {
-                name: "Tên công việc",
+                name: "Tên hoạt động",
                 caregiver: "Nhân viên phụ trách",
-                customer: "Khách hàng được chăm sóc",
-                description: "Mô tả công việc chăm sóc",
+                customer: "Tên khách hàng",
+                description: "Mô tả ",
                 careType: "Loại hình chăm sóc",
                 status: "Trạng thái",
                 startDate: "Ngày bắt đầu",
                 endDate: "Ngày kết thúc",
                 notes: "Ghi chú",
                 action: "Hành động",
-
-                add: "Thêm mới chăm sóc khách hàng",
-                info: "Xem công việc chăm sóc khách hàng",
+                add: "Thêm mới hoạt động chăm sóc khách hàng",
+                info: "Xem chi tiết hoạt động chăm sóc khách hàng",
                 edit: "Chỉnh sửa công việc chăm sóc khách hàng",
+                priority: 'Độ ưu tiên',
             },
             status: {
                 add: "Thêm mới trạng thái",

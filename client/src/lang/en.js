@@ -99,6 +99,7 @@ export default {
                 group: "Groups",
                 statistic: "Statistics",
                 generalConfiguration: "generalConfiguration",
+                evaluation:"Evaluation"
             },
 
             task_template: "Task Template",
@@ -927,6 +928,15 @@ export default {
                 gender: "Gender",
                 liability: "Liability",
                 document: "Document",
+                note: "Note",
+                carier: "Carier",
+                discount: "discount",
+                by_group: "Group by",
+                by_customer: "Group by customer",
+                organization: "organization",
+                northern: "northern",
+                central: "central",
+                southern: "southern",
             },
             group: {},
             lead: {},

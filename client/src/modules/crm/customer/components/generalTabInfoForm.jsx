@@ -109,111 +109,87 @@ class GeneralTabInfoForm extends Component {
                             </div>
                         </div>
                     </div>
+                    {customerInfomation.customerType == 1 ? (
+                        <div className="row">
+                            {/* Giới tính */}
+                            <div className="col-md-6">
+                                <div className="form-horizontal">
+                                    <div className="form-group">
+                                        <strong className="col-sm-4">{translate('crm.customer.gender')}</strong>
+                                        <div className="col-sm-8">
+                                            <span>{customerInfomation.gender ? formatFunction.formatCustomerGender(customerInfomation.gender, translate) : ''}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
-                    <div className="row">
-                        {/* Công ty */}
-                        <div className="col-md-6">
-                            <div className="form-horizontal">
-                                <div className="form-group">
-                                    <strong className="col-sm-4">{translate('crm.customer.company')}</strong>
-                                    <div className="col-sm-8">
-                                        <span>{customerInfomation.company ? customerInfomation.company : ''}</span>
+                            {/* Ngày sinh */}
+                            <div className="col-md-6">
+                                <div className="form-horizontal">
+                                    <div className="form-group">
+                                        <strong className="col-sm-4">{translate('crm.customer.birth')}</strong>
+                                        <div className="col-sm-8">
+                                            <span>{customerInfomation.birthDate ? formatFunction.formatDate(customerInfomation.birthDate) : ''}</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-
-                        {/* Người dại diện */}
-                        <div className="col-md-6">
-                            <div className="form-horizontal">
-                                <div className="form-group">
-                                    <strong className="col-sm-4">{translate('crm.customer.represent')}</strong>
-                                    <div className="col-sm-8">
-                                        <span>{customerInfomation.represent ? customerInfomation.represent : ''}</span>
+                    ) : (
+                        <> <div className="row">
+                            {/* Công ty */}
+                            <div className="col-md-6">
+                                <div className="form-horizontal">
+                                    <div className="form-group">
+                                        <strong className="col-sm-4">{translate('crm.customer.company')}</strong>
+                                        <div className="col-sm-8">
+                                            <span>{customerInfomation.company ? customerInfomation.company : ''}</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
 
-                    <div className="row">
-                        {/* Giới tính */}
-                        <div className="col-md-6">
-                            <div className="form-horizontal">
-                                <div className="form-group">
-                                    <strong className="col-sm-4">{translate('crm.customer.gender')}</strong>
-                                    <div className="col-sm-8">
-                                        <span>{customerInfomation.gender ? formatFunction.formatCustomerGender(customerInfomation.gender, translate) : ''}</span>
+                            {/* Người dại diện */}
+                            <div className="col-md-6">
+                                <div className="form-horizontal">
+                                    <div className="form-group">
+                                        <strong className="col-sm-4">{translate('crm.customer.represent')}</strong>
+                                        <div className="col-sm-8">
+                                            <span>{customerInfomation.represent ? customerInfomation.represent : ''}</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-
-                        {/* Ngày sinh */}
-                        <div className="col-md-6">
-                            <div className="form-horizontal">
-                                <div className="form-group">
-                                    <strong className="col-sm-4">{translate('crm.customer.birth')}</strong>
-                                    <div className="col-sm-8">
-                                        <span>{customerInfomation.birthDate ? formatFunction.formatDate(customerInfomation.birthDate) : ''}</span>
+                        </div>  <div className="row">
+                                {/* Ngày thành lập công ty */}
+                                <div className="col-md-6">
+                                    <div className="form-horizontal">
+                                        <div className="form-group">
+                                            <strong className="col-sm-4">{translate('crm.customer.companyEstablishmentDate')}</strong>
+                                            <div className="col-sm-8">
+                                                <span>{customerInfomation.companyEstablishmentDate ? formatFunction.formatDate(customerInfomation.companyEstablishmentDate) : ''}</span>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
 
-                    <div className="row">
-                        {/* Ngày thành lập công ty */}
-                        <div className="col-md-6">
-                            <div className="form-horizontal">
-                                <div className="form-group">
-                                    <strong className="col-sm-4">{translate('crm.customer.companyEstablishmentDate')}</strong>
-                                    <div className="col-sm-8">
-                                        <span>{customerInfomation.companyEstablishmentDate ? formatFunction.formatDate(customerInfomation.companyEstablishmentDate) : ''}</span>
+                                {/* Mã số thuế */}
+                                <div className="col-md-6">
+                                    <div className="form-horizontal">
+                                        <div className="form-group">
+                                            <strong className="col-sm-4">{translate('crm.customer.taxNumber')}</strong>
+                                            <div className="col-sm-8">
+                                                <span>{customerInfomation.taxNumber ? customerInfomation.taxNumber : ''}</span>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
+                            </div></>)}
 
-                        {/* Mã số thuế */}
-                        <div className="col-md-6">
-                            <div className="form-horizontal">
-                                <div className="form-group">
-                                    <strong className="col-sm-4">{translate('crm.customer.taxNumber')}</strong>
-                                    <div className="col-sm-8">
-                                        <span>{customerInfomation.taxNumber ? customerInfomation.taxNumber : ''}</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+
+
 
                     <div className="collapse" data-toggle="collapse " id="showinfo1">
-                        <div className="row">
-                            {/* Địa chỉ  */}
-                            <div className="col-md-6">
-                                <div className="form-horizontal">
-                                    <div className="form-group">
-                                        <strong className="col-sm-4">{translate('crm.customer.address2')}</strong>
-                                        <div className="col-sm-8">
-                                            <span>{customerInfomation.address2 ? customerInfomation.address2 : ''}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Email tạm thời  */}
-                            <div className="col-md-6">
-                                <div className="form-horizontal">
-                                    <div className="form-group">
-                                        <strong className="col-sm-4">{translate('crm.customer.secondaryEmail')}</strong>
-                                        <div className="col-sm-8">
-                                            <span>{customerInfomation.email2 ? customerInfomation.email2 : ''}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
 
                         <div className="row">
                             {/* Khu vực */}
@@ -256,17 +232,7 @@ class GeneralTabInfoForm extends Component {
                                 </div>
                             </div>
 
-                            {/* LinkedIn */}
-                            <div className="col-md-6">
-                                <div className="form-horizontal">
-                                    <div className="form-group">
-                                        <strong className="col-sm-4">{translate('crm.customer.linkedIn')}</strong>
-                                        <div className="col-sm-8">
-                                            <span>{customerInfomation.linkedIn ? customerInfomation.linkedIn : ''}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+
                         </div>
 
                         <div className="row">
@@ -299,6 +265,30 @@ class GeneralTabInfoForm extends Component {
 
                         <div className="row">
 
+
+                            {/* chỉnh sửa lần cuối*/}
+                            <div className="col-md-6">
+                                <div className="form-horizontal">
+                                    <div className="form-group">
+                                        <strong className="col-sm-4">{"Chỉnh sửa lần cuối "}</strong>
+                                        <div className="col-sm-8">
+                                            <span>{'9:00 am 24/03/2021 '}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Người chỉnh sửa  */}
+                            <div className="col-md-6">
+                                <div className="form-horizontal">
+                                    <div className="form-group">
+                                        <strong className="col-sm-4">Người chỉnh sửa</strong>
+                                        <div className="col-sm-8">
+                                            <span>{"Nguyễn Văn Danh"}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     {/* button showMore */}

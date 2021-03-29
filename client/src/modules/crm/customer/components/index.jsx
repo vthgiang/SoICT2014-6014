@@ -5,13 +5,14 @@ import { CrmCustomerActions } from '../redux/actions';
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import { CrmGroupActions } from '../../group/redux/actions';
 import { CrmStatusActions } from '../../status/redux/actions';
-import { DataTableSetting, PaginateBar, ConfirmNotification, SelectMulti, ExportExcel } from '../../../../common-components';
+import { DataTableSetting, PaginateBar, ConfirmNotification, SelectMulti, ExportExcel, SelectBox } from '../../../../common-components';
 import CreateForm from './createForm';
 import InfoForm from './infoForm';
 import EditForm from './editForm';
 import CrmCustomerImportFile from './importFileForm';
 import { formatFunction } from '../../common/index';
 import { getTableConfiguration } from '../../../../helpers/tableConfiguration'
+import CreateCareCommonForm from '../../common/createCareCommonForm';
 class CrmCustomer extends Component {
     constructor(props) {
         super(props);
@@ -63,6 +64,10 @@ class CrmCustomer extends Component {
         this.setState({
             customerIdEdit: id,
         }, () => window.$('#modal-crm-customer-edit').modal('show'));
+    }
+    // ham xử lý thêm hoạt động chăm sóc khách hàng
+    handleCreateCareAction = () => {
+        window.$('#modal-crm-care-common-create').modal('show');
     }
 
     // Cac ham thiet lap va tim kiem gia tri
@@ -187,6 +192,7 @@ class CrmCustomer extends Component {
 
     render() {
         const { translate, crm, user } = this.props;
+        { console.log(crm) }
         const { customers } = crm;
         const { importCustomer, createCustomer, limit, page, customerIdEdit, customerId, tableId } = this.state;
 
@@ -217,7 +223,7 @@ class CrmCustomer extends Component {
         if (customers && customers.list && customers.list.length > 0) {
             exportData = this.convertDataToExportData(customers.list);
         }
-
+        const owners = [{ _id: 1, name: 'Tôi' }, { _id: 2, name: 'Tất cả' }];
         return (
             <div className="box">
                 <div className="box-body qlcv">
@@ -226,7 +232,6 @@ class CrmCustomer extends Component {
                     <div className="form-inline">
                         {/* export excel danh sách khách hàng */}
                         <ExportExcel id="export-customer" buttonName={translate('human_resource.name_button_export')} exportData={exportData} style={{ marginTop: 0 }} />
-
                         {/* Button dropdown thêm mới khách hàng */}
                         <div className="dropdown pull-right" style={{ marginBottom: 15 }}>
                             <button type="button" className="btn btn-success dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="true" title={'Thêm khách hàng'} >Thêm khách hàng</button>
@@ -238,7 +243,6 @@ class CrmCustomer extends Component {
                             </ul>
                         </div>
                     </div>
-
                     {/* form import khách hàng */}
                     {importCustomer && <CrmCustomerImportFile listStatus={listStatus} listGroups={listGroups} />}
 
@@ -250,23 +254,31 @@ class CrmCustomer extends Component {
 
                     {/* form edit khách hàng */}
                     {customerIdEdit && <EditForm customerIdEdit={customerIdEdit} />}
+                    {/* form thêm mới hoạt động cskh */}
+                   <CreateCareCommonForm type ={1}></CreateCareCommonForm>
 
                     {/* search form */}
                     <div className="form-inline" style={{ marginBottom: '2px' }}>
                         <div className="form-group unitSearch">
-                            <label>{translate('task.task_management.department')}</label>
-                            {units &&
-                                <SelectMulti id="multiSelectUnit1"
-                                    defaultValue={units.map(item => { return item._id })}
-                                    items={units.map(item => { return { value: item._id, text: item.name } })}
-                                    onChange={this.handleSelectOrganizationalUnit}
-                                    options={{ nonSelectedText: units.length !== 0 ? translate('task.task_management.select_department') : "Bạn chưa có đơn vị", allSelectedText: translate(`task.task_management.select_all_department`) }}>
-                                </SelectMulti>
+                            <label>{translate('crm.customer.owner')}</label>
+                            {
+
+                                <SelectBox
+                                    id={`customer-group-edit-form`}
+                                    className="form-control select2"
+                                    style={{ width: "100%" }}
+                                    items={
+                                        owners
+                                    }
+                                    value={owners}
+                                    //  onChange={this.handleChangeCustomerGroup}
+                                    multiple={false}
+                                />
                             }
                         </div>
                         <div className="form-group">
                             <label className="form-control-static">Mã khách hàng</label>
-                            <input className="form-control" type="text" onKeyUp={this.handleEnterLimitSetting} name="customerCode" onChange={this.handleChangeCreator} placeholder={`Mã nhân viên`} />
+                            <input className="form-control" type="text" onKeyUp={this.handleEnterLimitSetting} name="customerCode" onChange={this.handleChangeCreator} placeholder={`Mã khách hàng`} />
                         </div>
                     </div>
 
@@ -278,7 +290,7 @@ class CrmCustomer extends Component {
                                 <SelectMulti id="multiSelectUnit12"
                                     items={listStatus}
                                     onChange={this.handleSelectOrganizationalUnit}
-                                    options={{ nonSelectedText: listStatus.length !== 0 ? translate('task.task_management.select_department') : "Chưa có trạng thái khách hàng", allSelectedText: translate(`task.task_management.select_all_department`) }}
+                                    options={{ nonSelectedText: listStatus.length !== 0 ? translate('crm.customer.status') : "Chưa có trạng thái khách hàng", allSelectedText: translate(`task.task_management.select_all_department`) }}
                                 >
                                 </SelectMulti>
                             }
@@ -308,22 +320,22 @@ class CrmCustomer extends Component {
                             <tr>
                                 <th>{translate('crm.customer.code')}</th>
                                 <th>{translate('crm.customer.name')}</th>
-                                <th>{translate('crm.customer.group')}</th>
                                 <th>{translate('crm.customer.status')}</th>
-                                <th>{translate('crm.customer.owner')}</th>
+                                <th>{translate('crm.customer.customerType')}</th>
+                                <th>{translate('crm.customer.email')}</th>
                                 <th>{translate('crm.customer.mobilephoneNumber')}</th>
-                                <th>{translate('crm.customer.address')}</th>
+                                <th>{translate('crm.customer.owner')}</th>
                                 <th style={{ width: "120px" }}>
                                     {translate('table.action')}
                                     <DataTableSetting
                                         columnArr={[
                                             translate('crm.customer.code'),
                                             translate('crm.customer.name'),
-                                            translate('crm.customer.group'),
                                             translate('crm.customer.status'),
-                                            translate('crm.customer.owner'),
+                                            translate('crm.customer.customerType'),
+                                            translate('crm.customer.email'),
                                             translate('crm.customer.mobilephoneNumber'),
-                                            translate('crm.customer.address')
+                                            translate('crm.customer.owner')
                                         ]}
                                         setLimit={this.setLimit}
                                         tableId={tableId}
@@ -338,14 +350,15 @@ class CrmCustomer extends Component {
                                         <tr key={cus._id}>
                                             <td>{cus.code}</td>
                                             <td>{cus.name}</td>
-                                            <td>{cus.group && cus.group.name ? cus.group.name : null}</td>
                                             <td>{cus.status && cus.status.length > 0 ? cus.status[cus.status.length - 1].name : null}</td>
-                                            <td>{cus.owner && cus.owner.length > 0 ? cus.owner.map(o => o.name).join(', ') : null}</td>
+                                            <td>{cus.customerType === 1 ? 'Cá nhân ' : 'Công ty'}</td>
+                                            <td>{cus.email}</td>
                                             <td>{cus.mobilephoneNumber}</td>
-                                            <td>{cus.address}</td>
+                                            <td>{cus.owner && cus.owner.length > 0 ? cus.owner.map(o => o.name).join(', ') : null}</td>
                                             <td style={{ textAlign: 'center' }}>
                                                 <a className="text-green" onClick={() => this.handleInfo(cus._id)}><i className="material-icons">visibility</i></a>
                                                 <a className="text-yellow" onClick={() => this.handleEdit(cus._id)}><i className="material-icons">edit</i></a>
+                                                <a className="text-green" onClick ={this.handleCreateCareAction}><i className="material-icons">add_comment</i> </a>
                                                 <ConfirmNotification
                                                     icon="question"
                                                     title="Xóa thông tin về khách hàng"

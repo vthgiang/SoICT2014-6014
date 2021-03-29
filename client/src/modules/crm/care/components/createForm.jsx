@@ -266,9 +266,9 @@ class CreateCareForm extends Component {
                                 />
                             }
                         </div>
-                        {/* Trạng thái công việc */}
+                        {/* Độ ưu tiên */}
                         <div className="form-group">
-                            <label>{translate('crm.care.status')}</label>
+                            <label>{'Độ ưu tiên: '}</label>
                             <SelectBox
                                 id={`status-care`}
                                 className="form-control select2"
@@ -276,10 +276,9 @@ class CreateCareForm extends Component {
                                 items={
                                     [
                                         { value: '', text: '---Chọn---' },
-                                        { value: 1, text: 'Chưa thưc hiện' },
-                                        { value: 2, text: 'Đang thực hiện' },
-                                        { value: 3, text: 'Đang trì hoãn' },
-                                        { value: 4, text: 'Đã hoàn thành' },
+                                        { value: 1, text: 'Ưu tiên thấp' },
+                                        { value: 2, text: 'Ưu tiên tiêu chuẩn' },
+                                        { value: 3, text: 'Ưu tiên cao' },
                                     ]
                                 }
                                 value={newCare.status ? newCare.status : ''}
