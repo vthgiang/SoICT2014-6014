@@ -98,12 +98,12 @@ class TaskInformationForm extends Component {
                             </div>
                         }
                         {
-                            (listInfo?.length !== 0) &&
+                            (listInfo?.length > 0) &&
                             listInfo.map((info, index) => {
-                                if (info.type === 'text') {
+                                if (info?.type === 'text') {
                                     return <div className={`form-group ${value.errorInfo && value.errorInfo[info.code] === undefined ? "" : "has-error"}`} key={index}>
                                         {/* style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", marginBottom: "-5px" }} */}
-                                        <label>{info.name}</label>
+                                        <label>{info?.name} ({info?.code})</label>
                                         <textarea
                                             className="form-control"
                                             row={3}
