@@ -3961,7 +3961,7 @@ export default {
                     new_value: "Giá trị mới",
                     old_value: "Giá trị cũ",
                     auto_value: "Giá trị tự động",
-                    cal_all_kpis: '(*)Tính điểm toàn bộ KPI',
+                    cal_all_kpis: 'Tính điểm toàn bộ KPI',
                     update_task_importance: `(*)Cập nhật độ quan trọng công việc và Tính điểm KPI `,
 
                     /**

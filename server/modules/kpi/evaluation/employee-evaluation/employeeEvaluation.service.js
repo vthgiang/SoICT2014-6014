@@ -299,7 +299,7 @@ exports.editKpi = async (portal, id, data) => {
  */
 
 exports.getKpisByKpiSetId = async (portal, id) => {
-    let employee_kpi_set = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
+    let employeeKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
         .findById(id)
         .populate("organizationalUnit")
         .populate({ path: "creator", select: "_id name email avatar" })
@@ -309,8 +309,19 @@ exports.getKpisByKpiSetId = async (portal, id) => {
             { path: 'comments.creator', select: 'name email avatar ' },
             { path: 'comments.comments.creator', select: 'name email avatar' }
         ]);
+    for (let i = 0; i < employeeKpiSet?.kpis?.length; i++) {
+        let data = {
+            id: employeeKpiSet?.kpis?.[i]?._id,
+            employeeId: employeeKpiSet?.creator?._id,
+            date: employeeKpiSet?.date,
+            kpiType: employeeKpiSet?.kpis?.[i]?.type
+        }
+        let task = await getResultTaskByMonth(portal, data);
 
-    return employee_kpi_set;
+        employeeKpiSet.kpis[i] = employeeKpiSet.kpis[i].toObject();
+        employeeKpiSet.kpis[i].amountTask = task?.length;
+    }
+    return employeeKpiSet;
 }
 
 /**
