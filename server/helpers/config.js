@@ -517,6 +517,16 @@ const LINKS = [{
     ],
     components: getComponentsInLink('/hr-time-keeping')
 },
+{
+    url: '/employees-infomation',
+    description: 'Thông tin nhân viên',
+    category: LINK_CATEGORY.HUMAN_RESOURCE.name,
+    roles: [
+        ROOT_ROLES.ADMIN.name,
+        ROOT_ROLES.MANAGER.name,
+    ],
+    components: getComponentsInLink('/employees-infomation')
+},
 
 
 

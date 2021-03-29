@@ -1,0 +1,9 @@
+.legend-c3js > .opacity:not(.not-opacity) {
+    opacity: 0.5;
+}
+.legend-c3js > .opacity-click {
+    opacity: 0.5;
+}
+.legend-c3js > div:hover {
+    cursor: pointer
+}

@@ -17,6 +17,7 @@ function UserGuide(props) {
 
     const [documentForUser, setDocumentForUser] = useState(false);
     const [documentForManager, setDocumentForManager] = useState(false);
+    const [documentForAdmin, setDocumentForAdmin] = useState(false);
 
     const [kpiForUser, setKpiForUser] = useState(false);
     const [kpiForManager, setKpiForManager] = useState(false);
@@ -49,6 +50,9 @@ function UserGuide(props) {
     }
     const showUserGuideDocumentForManager = () => {
         setDocumentForManager(!documentForManager);
+    }
+    const showUserGuideDocumentForAdmin = () => {
+        setDocumentForAdmin(!documentForAdmin);
     }
 
     const showUserGuideKpiForUser = () => {
@@ -100,10 +104,10 @@ function UserGuide(props) {
 
 
     let rolesUser = [], roles = role.list;
-    rolesUser = auth.user.roles;
-    let currentRoleInfo = rolesUser.filter(elem => elem.roleId.id === currentRole).map(elem => { return elem.roleId })[0];
+    rolesUser = auth?.user?.roles;
+    let currentRoleInfo = rolesUser?.filter(elem => elem.roleId.id === currentRole).map(elem => { return elem.roleId })[0];
 
-    let TaskGuide = { user: [], manager: [] }, DocumentGuide = { user: [], manager: [] },
+    let TaskGuide = { user: [], manager: [] }, DocumentGuide = { user: [], manager: [], Administrator: [] },
         HrGuide = { user: [], manager: [] }, kpiGuide = { user: [], manager: [] }, AssetGuide = { user: [], manager: [] }, SystemGuide = [];
     let roleAdmin = roles.find(x => x.name === "Admin");
     let roleSuperAdmin = roles.find(x => x.name === "Super Admin");
@@ -123,7 +127,10 @@ function UserGuide(props) {
         }
         else if (currentRoleInfo.id === roleManager.id || currentRoleInfo.parents.includes(roleManager.id)) {
             TaskGuide = UserGuideTask;
-            DocumentGuide = UserGuideDocument;
+            DocumentGuide = {
+                manager: [...UserGuideDocument.manager],
+                user: [...UserGuideDocument.user]
+            };
             HrGuide = UserGuideHr;
             kpiGuide = UserGuideKpi;
             AssetGuide = UserGuideAsset;
@@ -167,7 +174,7 @@ function UserGuide(props) {
                                     <div className="box">
                                         <div className="box-header with-border">
                                             <h3 className="box-title" style={{ fontWeight: 600 }}>
-                                                Module công việc
+                                                Quản lý công việc
                                                 </h3>
                                         </div>
                                         <div className="box-body">
@@ -234,7 +241,7 @@ function UserGuide(props) {
                                 <div className="box">
                                     <div className="box-header with-border">
                                         <h3 className="box-title" style={{ fontWeight: 600 }}>
-                                            Module KPI
+                                            Quản lý KPI
                                     </h3>
                                     </div>
                                     <div className="box-body">
@@ -298,15 +305,45 @@ function UserGuide(props) {
                     <div className="row">
                         {/* Module tài liệu */}
                         {
-                            DocumentGuide.manager.length || DocumentGuide.user.length ?
+                            DocumentGuide?.Administrator?.length || DocumentGuide.manager.length || DocumentGuide.user.length ?
                                 <section className="col-lg-6 col-md-6">
                                     <div className="box">
                                         <div className="box-header with-border">
                                             <h3 className="box-title" style={{ fontWeight: 600 }}>
-                                                Module tài liệu
+                                                Quản lý tài liệu
                                     </h3>
                                         </div>
                                         <div className="box-body">
+                                            {/* Administrator */}
+                                            {
+                                                DocumentGuide?.Administrator?.length ?
+                                                    <div>
+                                                        <p data-toggle="collapse" data-target="#show-asset-guide-document-for-admin" aria-expanded="false" style={{ display: "flex", alignItems: "center", fontWeight: "bold", cursor: "pointer" }} onClick={() => showUserGuideDocumentForAdmin()}>
+                                                            <span className="material-icons" style={{ fontWeight: "bold", marginRight: '10px' }}>
+                                                                {documentForAdmin ? `keyboard_arrow_up` : `keyboard_arrow_down`}
+
+                                                            </span>{`Administrator (${DocumentGuide?.Administrator?.length})`}</p>
+                                                        <div className="collapse" data-toggle="collapse " id="show-asset-guide-document-for-admin">
+                                                            <ul className="todo-list" data-widget="todo-list">
+                                                                {
+                                                                    DocumentGuide?.Administrator?.length > 0 && DocumentGuide?.Administrator?.map((obj, index) => (
+                                                                        <li style={{ borderLeft: 'none', cursor: "pointer" }} key={index}>
+                                                                            <div className="icheck-primary" style={{ display: "flex" }}>
+                                                                                <span className="material-icons" style={{ marginRight: '10px' }}>
+                                                                                    link
+                                                                     </span>
+                                                                                {/* <a href={`${process.env.REACT_APP_WEBSITE + obj.detailPage}?name=document&type=user&id=${obj.id}&fileName=${obj.fileName}`} title="Xem chi tiet" target="_blank">{obj.pageName}</a> */}
+                                                                                <a href="#show-detail" title="Xem chi tiet" onClick={() => showFilePreview(obj)}>{obj.pageName}</a>
+                                                                            </div>
+                                                                        </li>
+                                                                    ))
+                                                                }
+                                                            </ul>
+                                                        </div>
+                                                    </div> : <> </>
+
+                                            }
+
                                             {/* Quanr lys */}
                                             {DocumentGuide.manager.length ?
                                                 <div>
@@ -336,15 +373,15 @@ function UserGuide(props) {
                                             }
 
                                             {/* Nguoiwf dung */}
-                                            <p data-toggle="collapse" data-target="#show-asset-guide-document-for-user" aria-expanded="false" style={{ display: "flex", alignItems: "center", fontWeight: "bold", cursor: "pointer" }} onClick={() => showUserGuideDocumentForUser()}>
+                                            <p data-toggle="collapse" data-target="#show-document-guide-for-user" aria-expanded="false" style={{ display: "flex", alignItems: "center", fontWeight: "bold", cursor: "pointer" }} onClick={() => showUserGuideDocumentForUser()}>
                                                 <span className="material-icons" style={{ fontWeight: "bold", marginRight: '10px' }}>
                                                     {documentForUser ? `keyboard_arrow_up` : `keyboard_arrow_down`}
 
                                                 </span>{`User (${DocumentGuide.user.length})`}</p>
-                                            <div className="collapse" data-toggle="collapse " id="show-asset-guide-document-for-user">
+                                            <div className="collapse" data-toggle="collapse " id="show-document-guide-for-user">
                                                 <ul className="todo-list" data-widget="todo-list">
                                                     {
-                                                        DocumentGuide.manager.length > 0 && DocumentGuide.manager.map((obj, index) => (
+                                                        DocumentGuide.user.length > 0 && DocumentGuide.user.map((obj, index) => (
                                                             <li style={{ borderLeft: 'none', cursor: "pointer" }} key={index}>
                                                                 <div className="icheck-primary" style={{ display: "flex" }}>
                                                                     <span className="material-icons" style={{ marginRight: '10px' }}>
@@ -370,8 +407,8 @@ function UserGuide(props) {
                                     <div className="box">
                                         <div className="box-header with-border">
                                             <h3 className="box-title" style={{ fontWeight: 600 }}>
-                                                Module tài sản
-                                    </h3>
+                                                Quản lý tài sản
+                                            </h3>
                                         </div>
                                         <div className="box-body">
                                             {
@@ -408,6 +445,7 @@ function UserGuide(props) {
                                                     {assetForUser ? `keyboard_arrow_up` : `keyboard_arrow_down`}
 
                                                 </span>{`User (${AssetGuide.user.length})`}</p>
+
                                             <div className="collapse" data-toggle="collapse " id="show-asset-guide-asset-for-user">
                                                 <ul className="todo-list" data-widget="todo-list">
                                                     {
@@ -439,7 +477,7 @@ function UserGuide(props) {
                                     <div className="box">
                                         <div className="box-header with-border">
                                             <h3 className="box-title" style={{ fontWeight: 600 }}>
-                                                Module nhân sự
+                                                Quản lý nhân sự
                                     </h3>
                                         </div>
                                         <div className="box-body">
@@ -475,17 +513,21 @@ function UserGuide(props) {
                                                 <span className="material-icons" style={{ fontWeight: "bold", marginRight: '10px' }}>
                                                     {humanResourceForUser ? `keyboard_arrow_up` : `keyboard_arrow_down`}
 
-                                                </span>User</p>
+                                                </span>{`User (${HrGuide.manager.length})`}</p>
                                             <div className="collapse" data-toggle="collapse " id="show-asset-guide-hr-for-user">
                                                 <ul className="todo-list" data-widget="todo-list">
-                                                    <li style={{ borderLeft: 'none', cursor: "pointer" }}>
-                                                        <div className="icheck-primary" style={{ display: "flex" }}>
-                                                            <span className="material-icons" style={{ marginRight: '10px' }}>
-                                                                link
-                                                    </span>
-                                                            <a href="#" title="Xem chi tiet" target="_blank">Chưa có dữ liệu</a>
-                                                        </div>
-                                                    </li>
+                                                    {
+                                                        HrGuide.user.length > 0 && HrGuide.user.map((obj, index) => (
+                                                            <li style={{ borderLeft: 'none', cursor: "pointer" }} key={index}>
+                                                                <div className="icheck-primary" style={{ display: "flex" }}>
+                                                                    <span className="material-icons" style={{ marginRight: '10px' }}>
+                                                                        link
+                                                                    </span>
+                                                                    <a href="#show-detail" title="Xem chi tiet" onClick={() => showFilePreview(obj)}>{obj.pageName}</a>
+                                                                </div>
+                                                            </li>
+                                                        ))
+                                                    }
                                                 </ul>
                                             </div>
                                         </div>
@@ -499,7 +541,7 @@ function UserGuide(props) {
                                 <div className="box">
                                     <div className="box-header with-border">
                                         <h3 className="box-title" style={{ fontWeight: 600 }}>
-                                            Module quản trị hệ thống
+                                            Quản trị hệ thống
                                     </h3>
                                     </div>
                                     <div className="box-body">
@@ -507,7 +549,7 @@ function UserGuide(props) {
                                             <span className="material-icons" style={{ fontWeight: "bold", marginRight: '10px' }}>
                                                 {managerSystem ? `keyboard_arrow_up` : `keyboard_arrow_down`}
 
-                                            </span>{`Super admin (${SystemGuide.length})`} </p>
+                                            </span>{`Administrator (${SystemGuide.length})`} </p>
                                         <div className="collapse" data-toggle="collapse " id="show-asset-guide-system-for-user">
                                             <ul className="todo-list" data-widget="todo-list">
                                                 {

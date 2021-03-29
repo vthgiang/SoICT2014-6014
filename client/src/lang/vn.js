@@ -77,6 +77,13 @@ export default {
             add_import: "Thêm dữ liệu từ file",
         },
 
+        dashboard_unit: {
+            urgent_need_to_do_chart: "Biểu đồ thể hiện số công việc khẩn cấp/Cần làm",
+            urgent_task_amount: "Số công việc khẩn cấp",
+            need_to_do_task_amount: "Số công việc cần làm",
+            list_employe_timing: "Danh sách nhân viên đang bấm giờ"
+        },
+
         menu: {
             home: "Trang chủ",
             system_administration: "Quản trị hệ thống",
@@ -108,6 +115,7 @@ export default {
 
             task_template: "Mẫu Công Việc",
             taskmanagement: "Quản Lý Công Việc",
+            task_management_unit: "Công việc đơn vị",
             manageDocument: "Quản lý văn bản",
             manageDocumentType: "Quản lý loại văn bản",
 
@@ -137,6 +145,9 @@ export default {
             list_career_position: "Danh sách vị trí công việc",
             list_search_for_package: "Tìm kiếm nhân sự gói thầu",
 
+            employee_unit: "Nhân sự đơn vị",
+            employee_infomation: "Thông tin nhân viên",
+
             manage_warehouse: "Quản lý kho",
             dashboard_bill: "Bảng tin quản lý các phiếu",
             dashboard_inventory: "Bảng tin quản lý hàng tồn",
@@ -149,7 +160,8 @@ export default {
             bill_management: "Quản lý thông tin phiếu",
             inventory_management: "Quản lý hàng tồn kho",
 
-            manage_kpi: "Quản lý KPI",
+            manage_kpi_unit: "KPI đơn vị",
+            manage_kpi_personal: "KPI cá nhân",
             kpi_unit_create: "Khởi tạo KPI đơn vị",
             kpi_unit_evaluate: "Dữ liệu KPI đơn vị",
             kpi_unit_overview: "Tổng quan KPI đơn vị",
@@ -166,9 +178,9 @@ export default {
 
             notifications: "Thông báo",
 
-            tasks: "Quản lý công việc",
+            tasks: "Công việc cá nhân",
             task: "Chi tiết công việc",
-            task_management: "Danh sách công việc",
+            task_management: "Danh sách công việc cá nhân",
             task_management_of_unit: "Danh sách công việc đơn vị",
             task_management_dashboard: "Dashboard công việc",
             task_organization_management_dashboard:
@@ -254,6 +266,10 @@ export default {
             user_guide_detail: "Chi tiết hướng dẫn sử dụng",
         },
 
+        news_feed: {
+            news_feed: 'Tin tức'
+        },
+        
         intro: {
             title: "Giải pháp không gian làm việc số cho doanh nghiệp",
             contents: [
@@ -784,6 +800,7 @@ export default {
             upload_file_scan: "File scan tài liệu",
             choose_file: "Chọn file",
             download: "Tải xuống",
+            preview: "Xem trước",
             no_version: "Không có phiên bản nào khác",
             no_blank_description: "Mô tả không được để trống",
             no_blank_name: "Tên không được để trống",
@@ -1263,6 +1280,8 @@ export default {
             info: "Thông tin về đơn vị",
             name: "Tên đơn vị",
             description: "Mô tả về đơn vị",
+            total_employee: "Số lượng nhân viên",
+            total_roles: "Các vai trò hiện tại",
             parent: "Đơn vị cha",
             select_parent: "Chọn đơn vị cha",
             no_parent: "Không có đơn vị cha",
@@ -3403,6 +3422,7 @@ export default {
                 get_timer_status_fail:
                     "Lấy trạng thái bấm giờ hiện tại thất bại",
                 start_timer_fail: "Bắt đầu bấm giờ thất bại",
+                timer_exist_another_task: "Bạn đã bấm giờ cho công việc khác",
                 pause_timer_fail: "Tạm dừng bấm giờ thất bại",
                 continue_timer_fail: "Tiếp tục bấm giờ thất bại",
                 stop_timer_fail: "Kết thúc bấm giờ thất bại",
@@ -3730,6 +3750,8 @@ export default {
                                 "KPI đang được phê duyệt, Bạn không thể chỉnh sửa!",
                             activated:
                                 "KPI đã được kích hoạt, Bạn không thể chỉnh sửa!",
+                            evaluated: 
+                                "KPI đã được đánh giá, Bạn không thể chỉnh sửa!",
                         },
                         delete_kpi: {
                             kpi: "Bạn chắc chắn muốn xóa KPI này?",

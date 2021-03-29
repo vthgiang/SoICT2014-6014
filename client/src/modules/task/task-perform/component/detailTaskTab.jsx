@@ -27,6 +27,7 @@ import { RequestToCloseTaskModal } from './requestToCloseTaskModal';
 
 import { ProjectActions } from "../../../project/redux/actions";
 import { ROOT_ROLE } from '../../../../helpers/constants';
+import dayjs from 'dayjs';
 class DetailTaskTab extends Component {
 
     constructor(props) {
@@ -699,13 +700,7 @@ class DetailTaskTab extends Component {
 
     // convert ISODate to String hh:mm AM/PM
     formatTime(date) {
-        var d = new Date(date);
-        let time = moment(d).format("DD-MM-YYYY hh:mm A");
-        // let suffix = " AM";
-        // if(d.getHours() >= 12 && d.getHours() <= 23) {
-        //     suffix = " PM";
-        // }
-        return time;
+        return dayjs(date).format("DD-MM-YYYY hh:mm A")
     }
 
     render() {
@@ -908,7 +903,7 @@ class DetailTaskTab extends Component {
                                 <i className="fa fa-external-link-square" style={{ fontSize: "16px" }}></i>{currentRole === "responsible" ? translate('task.task_perform.request_close_task') : translate('task.task_perform.approval_close_task')}
                             </a>
                         }
-                        {task && statusTask !== "inprocess" && checkInactive
+                        {task && statusTask !== "inprocess" && statusTask !== "wait_for_approval" && checkInactive
                             && <a className="btn btn-app" onClick={() => this.handleOpenTaskAgain(id)} title={translate('task.task_perform.open_task_again')}>
                                 <i className="fa fa-rocket" style={{ fontSize: "16px" }}></i>{translate('task.task_perform.open_task_again')}
                             </a>

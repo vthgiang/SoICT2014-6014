@@ -412,7 +412,7 @@ class ModalEditTaskByResponsibleEmployee extends Component {
     }
 
     render() {
-        const { KPIPersonalManager, translate, taskProject } = this.props
+        const { KPIPersonalManager, translate, project } = this.props
         const { task, taskName, taskDescription, kpi, taskProjectName } = this.state;
         const { errorTaskName, errorTaskDescription, taskDescriptionDefault } = this.state;
         const { title, id, role, perform } = this.props;
@@ -469,7 +469,7 @@ class ModalEditTaskByResponsibleEmployee extends Component {
                                         <TreeSelect
                                             id={`select-task-project-task-edit-by-responsible-${id}`}
                                             mode='radioSelect'
-                                            data={taskProject.list}
+                                            data={project.data?.list}
                                             handleChange={this.handleTaskProject}
                                             value={[taskProjectName]}
                                         />
@@ -517,8 +517,8 @@ class ModalEditTaskByResponsibleEmployee extends Component {
 }
 
 function mapStateToProps(state) {
-    const { tasks, KPIPersonalManager, taskProject } = state;
-    return { tasks, KPIPersonalManager, taskProject };
+    const { tasks, KPIPersonalManager, project } = state;
+    return { tasks, KPIPersonalManager, project };
 }
 
 const actionGetState = { //dispatchActionToProps

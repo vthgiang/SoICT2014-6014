@@ -1,31 +1,27 @@
-import React, { Component } from 'react';
+import React, { Component, useEffect, useMemo } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { Tree } from '../../../../../../common-components';
 import c3 from 'c3';
 import 'c3/c3.css';
 
-class BarChartDomain extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-
-        }
-    }
-    componentDidMount() {
-        this.barChartDocumentInDomain();
-    }
-    removePreviousDomainChart() {
-        const chart = this.refs.a;
+function BarChartDomain(props) {
+    useEffect(() => {
+        barChartDocumentInDomain();
+    }, [])
+    const refDomain = React.createRef()
+    function removePreviousDomainChart() {
+        const chart = refDomain.current;
         if (chart) {
             while (chart.hasChildNodes()) {
                 chart.removeChild(chart.lastChild);
             }
         }
     }
-    barChartDocumentInDomain = () => {
-        this.removePreviousDomainChart();
-        let dataChart = this.setDataDomainBarchart();
+    const barChartDocumentInDomain = () => {
+        console.log("object");
+        removePreviousDomainChart();
+        let dataChart = setDataDomainBarchart();
         let count = dataChart.count;
         let heightCalc
         if (dataChart.type) {
@@ -33,8 +29,7 @@ class BarChartDomain extends Component {
         }
         let height = heightCalc < 320 ? 320 : heightCalc;
         let chart = c3.generate({
-            bindto: this.refs.domains,
-
+            bindto: refDomain.current,
             data: {
                 columns: [count],
                 type: 'bar',
@@ -84,9 +79,9 @@ class BarChartDomain extends Component {
             }
         });
     }
-    setDataDomainBarchart = () => {
-        const domains = this.props.domains;
-        const docs = this.props.docs;
+    const setDataDomainBarchart = () => {
+        const domains = props.domains;
+        const docs = props.docs;
         let typeName = [], shortName = [], countDomain = [], idDomain = [];
         for (let i in domains) {
             countDomain[i] = 0;
@@ -117,17 +112,17 @@ class BarChartDomain extends Component {
         return data;
     }
 
-    render() {
-        const domains = this.props.domains;
-        const docs = this.props.documents;
-        this.barChartDocumentInDomain();
-        return (
-            <React.Fragment>
-                <div ref="domains"></div>
-            </React.Fragment>
-        )
-    }
-
+    const domains = props.domains;
+    const docs = props.documents;
+    useMemo(() => {
+        barChartDocumentInDomain();
+    }, [props.domains, props.documents])
+    // barChartDocumentInDomain();
+    return (
+        <React.Fragment>
+            <div ref={refDomain}></div>
+        </React.Fragment>
+    )
 }
 
 

@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef, useLayoutEffect } from 'react'
 import moment from 'moment'
-import { TreeTable, DataTableSetting } from '../../../../common-components';
+import { SlimScroll, DataTableSetting } from '../../../../common-components';
 import { withTranslate } from 'react-redux-multilingual';
 import './generalTaskChart.css';
 import ViewAllGeneralTask from './viewAllGeneralTask';
@@ -303,7 +303,7 @@ const GeneralTaskChart = (props) => {
                             taskFinished: unit?.[key]?.taskFinished ? unit[key].taskFinished : [],
                             taskInprocess: unit?.[key]?.taskInprocess ? unit[key].taskInprocess : [],
                             organization: false,
-                            show: true,
+                            show: false,
                         });
                     }
                 }
@@ -322,14 +322,14 @@ const GeneralTaskChart = (props) => {
         newData = newData.map((o, index) => ({
             STT: index + 1,
             unit: o.name ? o.name : "",
-            allTask: o.totalTask ? o.totalTask : 0,
-            allTaskInprocess: o.taskInprocess ? o.taskInprocess : 0,
-            allTaskFinished: o.taskFinished ? o.taskFinished : 0,
-            confirmedTask: o.confirmedTask ? o.confirmedTask : 0,
-            noneUpdate: o.noneUpdateTask ? o.noneUpdateTask : 0,
-            intimeTask: o.intimeTask ? o.intimeTask : 0,
-            delayTask: o.delayTask ? o.delayTask : 0,
-            overdueTask: o.overdueTask ? o.overdueTask : 0,
+            allTask: o.totalTask ? o.totalTask.length : 0,
+            allTaskInprocess: o.taskInprocess ? o.taskInprocess.length : 0,
+            allTaskFinished: o.taskFinished ? o.taskFinished.length : 0,
+            confirmedTask: o.confirmedTask ? o.confirmedTask.length : 0,
+            noneUpdate: o.noneUpdateTask ? o.noneUpdateTask.length : 0,
+            intimeTask: o.intimeTask ? o.intimeTask.length : 0,
+            delayTask: o.delayTask ? o.delayTask.length : 0,
+            overdueTask: o.overdueTask ? o.overdueTask.length : 0,
         }))
         const listUnitSelect = unitNameSelected && unitNameSelected.length > 0 ?
             unitNameSelected.map((o, index) => (
@@ -420,7 +420,7 @@ const GeneralTaskChart = (props) => {
     }
 
     return (
-        <div className="general_task_unit">
+        <React.Fragment>
             <ViewAllGeneralTask showDetailTask={showDetailTask} />
             <DataTableSetting className="pull-right" tableId='generalTaskUnit' tableContainerId="tree-table-container" tableWidth="1300px"
                 columnArr={[
@@ -435,51 +435,51 @@ const GeneralTaskChart = (props) => {
                     translate('task.task_dashboard.overdue_task')
                 ]}
             />
-
-            <table id='general-list-task' className="table table-striped table-bordered table-hover">
-                <thead>
-                    <tr>
-                        <th title={translate('task.task_dashboard.unit')} style={{ width: '135px' }}>{translate('task.task_dashboard.unit')}</th>
-                        <th title={translate('task.task_dashboard.all_tasks')}>{translate('task.task_dashboard.all_tasks')}</th>
-                        <th title={translate('task.task_dashboard.all_tasks_inprocess')}>{translate('task.task_dashboard.all_tasks_inprocess')}</th>
-                        <th title={translate('task.task_dashboard.all_tasks_finished')}>{translate('task.task_dashboard.all_tasks_finished')}</th>
-                        <th title={translate('task.task_dashboard.confirmed_task')}>{translate('task.task_dashboard.confirmed_task')}</th>
-                        <th title={translate('task.task_dashboard.none_update_recently')}>{translate('task.task_dashboard.none_update_recently')}</th>
-                        <th title={translate('task.task_dashboard.intime_task')}>{translate('task.task_dashboard.intime_task')}</th>
-                        <th title={translate('task.task_dashboard.delay_task')}>{translate('task.task_dashboard.delay_task')}</th>
-                        <th title={translate('task.task_dashboard.overdue_task')}>{translate('task.task_dashboard.overdue_task')}</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {
-                        state.map((x, index) => {
-                            return (
-                                <tr key={index} style={{ fontWeight: x.organization ? 600 : 500, display: x.show ? "table-row" : "none" }} >
-                                    <td style={{ display: x.parent === true ? 'flex' : 'table-cell', cursor: 'pointer' }} onClick={() => toggleCollapse(x?._id, x.parent)}>
-                                        {
-                                            x.parent === true && <span className="material-icons" style={{ fontWeight: "bold", marginRight: '5px' }}>
-                                                {collapse && collapse[`collapse${x?._id}`] === false ? `keyboard_arrow_up` : `keyboard_arrow_down`}
-                                            </span>
-                                        }
-                                        <span>{x.name}</span>
-                                    </td>
-                                    <td><a onClick={() => handleShowGeneralTask(x.totalTask, x.name, index, 'totalTask')}>{x.totalTask.length}</a></td>
-                                    <td><a onClick={() => handleShowGeneralTask(x.taskInprocess, x.name, index, 'taskInprocess')}>{x.taskInprocess.length}</a></td>
-                                    <td><a onClick={() => handleShowGeneralTask(x.taskFinished, x.name, index, 'taskFinished')}>{x.taskFinished.length}</a></td>
-                                    <td><a onClick={() => handleShowGeneralTask(x.confirmedTask, x.name, index, 'confirmedTask')}>{x.confirmedTask.length}</a></td>
-                                    <td><a onClick={() => handleShowGeneralTask(x.noneUpdateTask, x.name, index, 'noneUpdateTask')}>{x.noneUpdateTask.length}</a></td>
-                                    <td><a onClick={() => handleShowGeneralTask(x.intimeTask, x.name, index, 'intimeTask')}>{x.intimeTask.length}</a></td>
-                                    <td><a onClick={() => handleShowGeneralTask(x.delayTask, x.name, index, 'delayTask')}>{x.delayTask.length}</a></td>
-                                    <td><a onClick={() => handleShowGeneralTask(x.overdueTask, x.name, index, 'overdueTask')}>{x.overdueTask.length}</a></td>
-                                </tr>
-                            )
-                        })
-                    }
-                </tbody>
-            </table>
-
-        </div>
-
+            <div className="general_task_unit" id="general-list-task-wrapper">
+                <table id='general-list-task' className="table table-striped table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th title={translate('task.task_dashboard.unit')} style={{ width: '155px' }}>{translate('task.task_dashboard.unit')}</th>
+                            <th title={translate('task.task_dashboard.all_tasks')}>{translate('task.task_dashboard.all_tasks')}</th>
+                            <th title={translate('task.task_dashboard.all_tasks_inprocess')}>{translate('task.task_dashboard.all_tasks_inprocess')}</th>
+                            <th title={translate('task.task_dashboard.all_tasks_finished')}>{translate('task.task_dashboard.all_tasks_finished')}</th>
+                            <th title={translate('task.task_dashboard.confirmed_task')}>{translate('task.task_dashboard.confirmed_task')}</th>
+                            <th title={translate('task.task_dashboard.none_update_recently')}>{translate('task.task_dashboard.none_update_recently')}</th>
+                            <th title={translate('task.task_dashboard.intime_task')}>{translate('task.task_dashboard.intime_task')}</th>
+                            <th title={translate('task.task_dashboard.delay_task')}>{translate('task.task_dashboard.delay_task')}</th>
+                            <th title={translate('task.task_dashboard.overdue_task')}>{translate('task.task_dashboard.overdue_task')}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {
+                            state.map((x, index) => {
+                                return (
+                                    <tr key={index} style={{ fontWeight: x.organization ? 600 : 500, display: x.show ? "table-row" : "none", }} >
+                                        <td style={{ display: x.parent === true ? 'flex' : 'table-cell', cursor: 'pointer', paddingLeft: x.parent === true ? '8px' : '30px' }} onClick={() => toggleCollapse(x?._id, x.parent)}>
+                                            {
+                                                x.parent === true && <span className="material-icons" style={{ fontWeight: "bold", marginRight: '5px' }}>
+                                                    {collapse && collapse[`collapse${x?._id}`] === false ? `keyboard_arrow_up` : `keyboard_arrow_down`}
+                                                </span>
+                                            }
+                                            <span>{x.name}</span>
+                                        </td>
+                                        <td><a onClick={() => handleShowGeneralTask(x.totalTask, x.name, index, 'totalTask')} className="text-muted">{x.totalTask.length}</a></td>
+                                        <td><a onClick={() => handleShowGeneralTask(x.taskInprocess, x.name, index, 'taskInprocess')}>{x.taskInprocess.length}</a></td>
+                                        <td><a onClick={() => handleShowGeneralTask(x.taskFinished, x.name, index, 'taskFinished')} className="text-green">{x.taskFinished.length}</a></td>
+                                        <td><a onClick={() => handleShowGeneralTask(x.confirmedTask, x.name, index, 'confirmedTask')}>{x.confirmedTask.length}</a></td>
+                                        <td><a onClick={() => handleShowGeneralTask(x.noneUpdateTask, x.name, index, 'noneUpdateTask')}>{x.noneUpdateTask.length}</a></td>
+                                        <td><a onClick={() => handleShowGeneralTask(x.intimeTask, x.name, index, 'intimeTask')} className="text-success">{x.intimeTask.length}</a></td>
+                                        <td><a onClick={() => handleShowGeneralTask(x.delayTask, x.name, index, 'delayTask')} className="text-yellow">{x.delayTask.length}</a></td>
+                                        <td><a onClick={() => handleShowGeneralTask(x.overdueTask, x.name, index, 'overdueTask')} className="text-red">{x.overdueTask.length}</a></td>
+                                    </tr>
+                                )
+                            })
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <SlimScroll verticalScroll={true} outerComponentId={"general-list-task-wrapper"} maxHeight={500} activate={true} />
+        </React.Fragment>
     )
 }
 

@@ -5,6 +5,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import { createUnitKpiActions } from '../../creation/redux/actions';
 
 import { CustomLegendC3js } from '../../../../../common-components';
+import { customAxisC3js } from '../../../../../helpers/customAxisC3js';
 
 import c3 from 'c3';
 import 'c3/c3.css';
@@ -154,6 +155,7 @@ class DistributionOfOrganizationalUnitKpiChart extends Component {
             [translate('kpi.organizational_unit.dashboard.trend_chart.weight')]
         ];
         let dataPieChart = this.setDataPieChart();
+        let data, tooltip;
 
         if (kindOfChart === this.KIND_OF_CHART.LINE) {
             if (dataPieChart?.length > 0) {
@@ -168,17 +170,20 @@ class DistributionOfOrganizationalUnitKpiChart extends Component {
             window.$('#distributionOfUnitLegend').show();
         }
 
-        let data = kindOfChart === this.KIND_OF_CHART.LINE 
-            ? {
+        if (kindOfChart === this.KIND_OF_CHART.LINE) {
+            data = {
                 x: 'x',
                 columns: dataLineChart,
-                type: 'spline',
             }
-            : {
+            tooltip = dataLineChart?.[0]?.filter((item, index) => index > 0)
+        } else if (kindOfChart === this.KIND_OF_CHART.PIE) {
+            data = {
                 x: null,
                 columns: dataPieChart,
-                type: 'pie',
-            };
+                type: 'pie'
+            }
+            tooltip = dataPieChart?.map(item => item?.[0])
+        }
 
         this.chart = c3.generate({
             bindto: this.refs.chart,
@@ -193,8 +198,9 @@ class DistributionOfOrganizationalUnitKpiChart extends Component {
 
             tooltip: {
                 format: {
-                    value: function (value) {
-                        return value;
+                    title: function (d) {
+                        if (tooltip?.length > 0)
+                            return tooltip?.[d];
                     }
                 }
             },
@@ -203,14 +209,9 @@ class DistributionOfOrganizationalUnitKpiChart extends Component {
                 x: {
                     type: 'category',
                     tick: {
-                        format: function (x) {
-                            if (dataLineChart?.[0]?.length > 1) {
-                                if (dataLineChart?.[0]?.[x + 1]?.length > 30) {
-                                    return dataLineChart?.[0]?.[x + 1]?.slice(0, 30) + "...";
-                                } else {
-                                    return dataLineChart?.[0]?.[x + 1]
-                                }
-                            }
+                        format: function (index) {
+                            let result = customAxisC3js('distributionOfUnit', tooltip, index);
+                            return result;
                         }
                     }
                 },

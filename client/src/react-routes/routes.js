@@ -49,6 +49,7 @@ import FieldManager from "../modules/human-resource/field/components";
 import TimesheetsManager from "../modules/human-resource/timesheets/components";
 import { AnnualLeave } from "../modules/human-resource/annual-leave/components/combinedContent";
 import { ManageLeaveApplication } from "../modules/human-resource/annual-leave/components/combinedContent";
+import EmployeesInfomation from "../modules/human-resource/employee-infomation/components/";
 import { DashboardPersonal } from "../modules/dashboard-personal/components";
 import { DashboardUnit } from "../modules/dashboard-unit/components";
 
@@ -609,6 +610,27 @@ class Routes extends Component {
                         layout={Layout}
                         component={ManageLeaveApplication}
                     />
+
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"employee_infomation"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/employees-infomation",
+                                name: "employee_infomation",
+                                icon: "fa fa-envelope",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/employees-infomation"}
+                        path={"/employees-infomation"}
+                        pageName={"employee_infomation"}
+                        layout={Layout}
+                        component={EmployeesInfomation}
+                    />
+
                     <PrivateRoute
                         isLoading={this.props.employeesManager.isLoading}
                         key={"add_employee"}
@@ -1234,6 +1256,7 @@ class Routes extends Component {
                         layout={Layout}
                         component={TaskManagement}
                     />
+
                     {/* Quản lý công việc đơn vị */}
                     <PrivateRoute
                         isLoading={this.props.tasks.isLoading}

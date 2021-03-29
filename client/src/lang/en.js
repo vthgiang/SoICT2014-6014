@@ -74,6 +74,13 @@ export default {
             select_all: "Select all",
             add_import: "Add data from file",
         },
+        
+        dashboard_unit: {
+            urgent_need_to_do_chart: "The chart shows the number of urgent / To-do tasks",
+            urgent_task_amount: "The number of urgent tasks",
+            need_to_do_task_amount: "The number of tasks to do",
+            list_employe_timing: "List of employees who are timing"
+        },
 
         menu: {
             home: "Home Page",
@@ -137,13 +144,14 @@ export default {
             manage_warehouse: "Manage warehouses",
             dashboard_material: "Dashboad manage materials",
 
-            manage_kpi: "Manage KPI",
+            manage_kpi_unit: "Organizational unit KPI",
+            manage_kpi_personal: "Personal KPI",
             kpi_unit_create: "Create unit KPI",
             kpi_unit_evaluate: "Evaluate unit KPI",
             kpi_unit_overview: "Overview unit KPI",
             kpi_unit_dashboard: "Dashboard unit KPI",
             kpi_unit_statistic: "Statistic unit KPI",
-            kpi_unit_manager: "Manage unit KPI",
+            kpi_unit_manager: "Manage organizational unit KPI",
             kpi_member_manager: "Evaluate Employee KPI",
             kpi_member_dashboard: "DashBoard KPI Member",
             kpi_personal_create: "Create personal KPI",
@@ -156,7 +164,7 @@ export default {
 
             tasks: "Task management",
             task: "Detailed Task",
-            task_management: "Task list",
+            task_management: "Personal task list",
             task_management_of_unit: "Unit task list",
             task_management_dashboard: "Task dashboard",
             task_organization_management_dashboard: "Unit task dashboard",
@@ -239,6 +247,10 @@ export default {
 
             user_guide: "User guide",
             user_guide_detail: "User guide detail",
+        },
+
+        news_feed: {
+            news_feed: 'News feed'
         },
 
         intro: {
@@ -750,6 +762,7 @@ export default {
             upload_file_scan: "Upload file scan",
             choose_file: "Choose file",
             download: "Download",
+            preview: "Preview",
             no_version: "Not have different version",
             no_blank_description: "Description should'n empty",
             no_blank_name: "Name shouldn't empty",
@@ -3428,6 +3441,8 @@ export default {
                                 "KPI is being approved, you can not edit!",
                             activated:
                                 "KPI is being activated, you can not edit!",
+                            evaluated: 
+                                "KPI is being evaluated, you can not edit!"
                         },
                         request_approval_kpi: {
                             approve:

@@ -3,6 +3,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
+import { showListInSwal } from '../../../../helpers/showListInSwal';
+
 import { ApiImage } from '../../../../common-components';
 import { ViewAllSalary } from '../../../dashboard-personal/components/combinedContent';
 
@@ -59,7 +61,23 @@ class HighestSalaryChart extends Component {
                     <React.Fragment>
                         <div className="box box-solid">
                             <div className="box-header with-border">
-                                <h3 className="box-title">{`Top 5 lương thưởng cao nhất của công ty tháng ${monthShow} `}</h3>
+                                <div className="box-title">
+                                    {`Top 5 thu nhập cao nhất `}
+                                    {
+                                        organizationalUnitsName && organizationalUnitsName.length < 2 ?
+                                            <>
+                                                <span>{` ${translate('task.task_dashboard.of_unit')}`}</span>
+                                                <span style={{ fontWeight: "bold" }}>{` ${organizationalUnitsName?.[0]}`}</span>
+                                            </>
+                                            :
+                                            <span onClick={() => showListInSwal(organizationalUnitsName, translate('general.list_unit'))} style={{ cursor: 'pointer' }}>
+                                                <span>{` ${translate('task.task_dashboard.of')}`}</span>
+                                                <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {organizationalUnitsName?.length}</a>
+                                                <span>{` ${translate('task.task_dashboard.unit_lowercase')}`}</span>
+                                            </span>
+                                    }
+                                    {` tháng ${monthShow}`}
+                                </div>
                             </div>
                             <div className="box-body no-parding">
                                 <ul className="users-list clearfix">

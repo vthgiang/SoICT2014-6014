@@ -4,20 +4,26 @@ import { withTranslate } from 'react-redux-multilingual';
 import parse from 'html-react-parser';
 import moment from 'moment';
 import 'moment/locale/en-nz';
+import 'moment/locale/vi';
 
-import { ToolTip, SlimScroll } from '../../../common-components';
+import { ToolTip, SlimScroll, Comment } from '../../../common-components';
+import { getStorage } from '../../../config';
 
 import { homeActions } from '../redux/actions';
+import { AuthActions } from '../../auth/redux/actions';
 
 import './newsFeed.css';
 
 function NewsFeed(props) {
     const { translate, newsFeeds } = props;
+    const [lang, setLang] = useState(getStorage('lang'))
+    const [time, setTime] = useState(new Date());
     const [state, setState] = useState({
         loadMore: false,
-        showDescription: {}
+        showDescription: {},
+        showComments: {}
     })
-    const { loadMore, showDescription, showDescriptionOld } = state;
+    const { loadMore, showDescription, showComments } = state;
 
     const activeSlimScroll = () => {
         window.$('#newsfeed-body').ready(function () {
@@ -27,6 +33,8 @@ function NewsFeed(props) {
     }
 
     useEffect(() => {
+        setLang(getStorage('lang'));
+
         const list = document.getElementById('newsfeed-body')
 
         // list has fixed height
@@ -44,35 +52,16 @@ function NewsFeed(props) {
             props.receiveNewsFeed(data);
         });
 
+        const timer = setInterval(() => setTime(new Date()), 120000);
+        
         return () => {
             props.socket.io.off('news feed');
+            clearInterval(timer);
         }
     }, []);
 
     useEffect(() => {
         activeSlimScroll();
-
-        // if (newsFeeds?.newsFeedLoading && showDescription) {
-        //     setState({
-        //         ...state,
-        //         showDescription: null
-        //     })
-        // }
-
-        // if (!newsFeeds?.newsFeedLoading && !showDescription) {
-        //     if (newsFeeds?.newsFeed.length > 0) {
-        //         let showDescriptionNew = {};
-        //         newsFeeds.newsFeed.map(item => {
-        //             showDescriptionNew[item?._id] = showDescriptionOld[item?._id];
-        //         })
-
-        //         setState({
-        //             ...state,
-        //             showDescription: showDescriptionNew,
-        //             showDescriptionOld: showDescriptionNew
-        //         })
-        //     }
-        // }
     })
 
     useEffect(() => {
@@ -93,12 +82,7 @@ function NewsFeed(props) {
     //   }
     // }, [props.state]);
 
-    const handleShowComment = () => {
-
-    }
-
     const handleShowDetail = (id) => {
-        console.log(showDescription[id])
         let showDescriptionTemp = showDescription;
         showDescriptionTemp[id] = !showDescription[id]
 
@@ -107,33 +91,65 @@ function NewsFeed(props) {
             showDescription: showDescriptionTemp
         })
     }
-    console.log("5555", newsFeeds?.newsFeed)
+
+    const handleShowComments = (id) => {
+        let showCommentsTemp = showComments;
+        showCommentsTemp[id] = !showComments[id]
+
+        setState({
+            ...state,
+            showComments: showCommentsTemp
+        })
+    }
 
     return (
         <React.Fragment>
             <div className="box" id="newsfeed">
                 <div className="box-header with-border">
-                    <div className="box-title">Newsfeed</div>
+                    <div className="box-title">{translate('news_feed.news_feed')}</div>
                 </div>
-                <div id="newsfeed-body">
+                <div id="newsfeed-body" className="newsfeed-body">
                     { newsFeeds?.newsFeed?.length > 0 
-                        && newsFeeds?.newsFeed?.map((item, index) =>
-                            <div className="description-box" key={item?._id + index} style={{ borderRadius: '10px', margin: '10px 10%' }}>
-                                <img className="user-img-level1" src={(process.env.REACT_APP_SERVER + item.creator?.avatar)} alt="User Image" />
+                        && newsFeeds?.newsFeed?.map((newsfeed, index) =>
+                            <div className="description-box newsfeed-box" key={newsfeed?._id + index}>
+                                <img className="user-img-level1" src={(process.env.REACT_APP_SERVER + newsfeed?.content?.[0]?.creator?.avatar)} alt="User Image" />
                                 <div className="newsfeed-content-level1">
-                                    <a style={{ cursor: "pointer" }}>{item.creator?.name} </a>
-                                    <div style={{ fontSize: '13px' }}>{moment(item?.createdAt).locale('en-nz').fromNow()}</div>
+                                    <a style={{ cursor: "pointer" }}>{newsfeed?.content?.[0]?.creator?.name} </a>
+                                    <div style={{ fontSize: '13px' }}>{moment(newsfeed?.createdAt).locale(lang === 'en' ? 'en-nz' : 'vi').fromNow()}</div>
                                 </div>
+
+                                {/* Nội dung */}
                                 <div>
-                                    <div><strong>{item?.title && parse(item?.title)}</strong></div>
-                                    {showDescription[item?._id] 
-                                        && <ToolTip dataTooltip={[item?.description && parse(item?.description)]} type={'latest_history'} title={false}/>
+                                    <div><strong>{newsfeed?.content?.[0]?.title && parse(newsfeed?.content?.[0]?.title)}</strong></div>
+                                    { newsfeed?.associatedDataObject?.dataType === 1 && <div><strong>{translate('task.task_management.detail_link')}:</strong> <a href={`/task?taskId=${newsfeed?.associatedDataObject?.value}`} target="_blank">{newsfeed?.associatedDataObject?.description}</a></div>}
+                                    {showDescription[newsfeed?._id] 
+                                        && <ToolTip dataTooltip={[newsfeed?.content?.[0]?.description && parse(newsfeed?.content?.[0]?.description)]} type={'latest_history'} title={false}/>
                                     }
                                 </div>
+
+                                {/* Hành động */}
                                 <ul className="list-inline tool-level1">
-                                    <li><a style={{ cursor: "pointer" }} className="link-black text-sm" onClick={() => handleShowComment()}><i className="fa fa-comments-o margin-r-5"></i> {translate('task.task_perform.comment')}</a></li>
-                                    <li><a style={{ cursor: "pointer" }} className="link-black text-sm" onClick={() => handleShowDetail(item?._id)}>{showDescription[item?._id] ? 'Ẩn chi tiết' : 'Chi tiết'}</a></li>
+                                    <li><a style={{ cursor: "pointer" }} className="link-black text-sm" onClick={() => handleShowComments(newsfeed?._id)}><i className="fa fa-comments-o margin-r-5"></i> {!showComments[newsfeed?._id] ? translate('task.task_perform.comment') : 'Ẩn bình luận'}</a></li>
+                                    <li><a style={{ cursor: "pointer" }} className="link-black text-sm" onClick={() => handleShowDetail(newsfeed?._id)}>{showDescription[newsfeed?._id] ? 'Ẩn chi tiết' : 'Chi tiết'}</a></li>
                                 </ul>
+
+                                {showComments[newsfeed?._id] 
+                                    && <div className="row newsfeed-comments">
+                                        <div className="col-xs-12">
+                                            <Comment
+                                                commentId={newsfeed?._id}
+                                                data={newsfeed}
+                                                comments={newsfeed.comments}
+                                                childrenComments={false}
+                                                createComment={(dataId, data) => props.createComment(dataId, data)}
+                                                editComment={(dataId, commentId, data) => props.editComment(dataId, commentId, data)}
+                                                deleteComment={(dataId, commentId) => props.deleteComment(dataId, commentId)}
+                                                deleteFileComment={(fileId, commentId, dataId) => props.deleteFileComment(fileId, commentId, dataId)}
+                                                downloadFile={(path, fileName) => props.downloadFile(path, fileName)}
+                                            />
+                                        </div>
+                                    </div>
+                                }
                             </div>
                         )
                     }
@@ -150,7 +166,14 @@ function mapState(state) {
 }
 const actions = {
     getNewsfeed: homeActions.getNewsfeed,
-    receiveNewsFeed: homeActions.receiveNewsFeed
+    receiveNewsFeed: homeActions.receiveNewsFeed,
+
+    createComment: homeActions.createComment,
+    editComment: homeActions.editComment,
+    deleteComment: homeActions.deleteComment,
+    deleteFileComment: homeActions.deleteFileComment,
+
+    downloadFile: AuthActions.downloadFile
 }
 
 const connectedNewsFeed = connect(mapState, actions)(withTranslate(NewsFeed));

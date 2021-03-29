@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import parse from 'html-react-parser';
+import moment from 'moment';
 
 import { DialogModal, QuillEditor, SelectBox } from '../../../../common-components';
 import { performTaskAction } from '../redux/actions';
@@ -119,6 +120,13 @@ function RequestToCloseTaskModal(props) {
                             ? <span>{parse(requestToCloseTask.description)}</span> : <span>{translate('task.task_perform.none_description')}</span>
                     }
                 </div>
+
+                {role === 'accountable' && requestToCloseTask
+                    && <div className="form-group">
+                        <label style={{ marginRight: '5px' }}>Ngày gửi yêu cầu</label>
+                        <span>{moment(requestToCloseTask?.createdAt).format("HH:mm:ss DD/MM/YYYY")}</span>
+                    </div>
+                }
             </DialogModal>
         </React.Fragment>
     )

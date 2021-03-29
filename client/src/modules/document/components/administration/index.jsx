@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
@@ -10,17 +10,8 @@ import AdministrationDocumentArchives from './archives';
 
 import { LazyLoadComponent, forceCheckOrVisible } from '../../../../common-components/index';
 
-class ManageDocument extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-
-        }
-    }
-
-    render() {
-        const { translate } = this.props;
-
+function ManageDocument(props)  {
+        const { translate } = props;
         return (
             <div className="nav-tabs-custom">
                 <ul className="nav nav-tabs">
@@ -80,7 +71,6 @@ class ManageDocument extends Component {
             </div>
         );
     }
-}
 
 
 const mapStateToProps = state => state;

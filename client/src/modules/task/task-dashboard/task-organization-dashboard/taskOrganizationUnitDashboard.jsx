@@ -20,6 +20,7 @@ import { GanttCalendar } from '../task-personal-dashboard/ganttCalendar';
 import GeneralTaskChart from './generalTaskChart';
 import { getTableConfiguration } from '../../../../helpers/tableConfiguration'
 import isEqual from 'lodash/isEqual';
+import { showListInSwal } from '../../../../helpers/showListInSwal';
 
 class TaskOrganizationUnitDashboard extends Component {
     constructor(props) {
@@ -133,27 +134,22 @@ class TaskOrganizationUnitDashboard extends Component {
                 }
             }
 
-            let units = childrenOrganizationalUnit.map(item => item.id);
-
             this.setState((state) => {
                 return {
                     ...state,
                     startMonth: nextState.startMonth,
                     endMonth: nextState.endMonth,
                     checkUnit: nextState.checkUnit,
-                    idsUnit: !idsUnit?.length ? units : nextState.idsUnit,
+                    idsUnit: !idsUnit?.length ? [childrenOrganizationalUnit?.[0]?.id] : nextState.idsUnit,
                     selectBoxUnit: childrenOrganizationalUnit
                 }
             });
             data = {
-                organizationUnitId: units,
+                organizationUnitId: [childrenOrganizationalUnit?.[0]?.id],
                 type: organizationUnit,
             }
 
-            if (units.length) {
-                await this.props.getTaskInOrganizationUnitByMonth(units, this.state.startMonth, this.state.endMonth);
-            }
-
+            await this.props.getTaskInOrganizationUnitByMonth([childrenOrganizationalUnit?.[0]?.id], this.state.startMonth, this.state.endMonth);
             await this.props.getTaskByUser(data);
 
             return true;
@@ -312,20 +308,10 @@ class TaskOrganizationUnitDashboard extends Component {
     }
 
     showUnitGeneraTask = (selectBoxUnit, idsUnit) => {
+        const { translate } = this.props
         if (idsUnit && idsUnit.length > 0) {
             const listUnit = this.getUnitName(selectBoxUnit, idsUnit);
-            Swal.fire({
-                html: `<h3 style="color: red"><div>Danh sách các đơn vị </div> </h3>
-                    <ul style="text-align:left;font-size: 16px;">
-                        ${listUnit && listUnit.length > 0 &&
-                    listUnit.map(o => (
-                        `<li style="padding: 7px">${o}</li>`
-                    )).join('')
-                    }
-                    </ul>
-                `,
-                width: "40%"
-            })
+            showListInSwal(listUnit, translate('general.list_unit'))
         }
     }
 
@@ -453,7 +439,7 @@ class TaskOrganizationUnitDashboard extends Component {
                                             {
                                                 idsUnit && idsUnit.length < 2 ?
                                                     <>
-                                                        <spn>{` ${translate('task.task_dashboard.of_unit')}`}</spn>
+                                                        <span>{` ${translate('task.task_dashboard.of_unit')}`}</span>
                                                         <span style={{ fontWeight: "bold" }}>{` ${this.getUnitName(selectBoxUnit, idsUnit).map(o => o).join(", ")}`}</span>
                                                     </>
                                                     :
@@ -508,7 +494,7 @@ class TaskOrganizationUnitDashboard extends Component {
                                             {
                                                 idsUnit && idsUnit.length < 2 ?
                                                     <>
-                                                        <spn>{` ${translate('task.task_dashboard.of_unit')}`}</spn>
+                                                        <span>{` ${translate('task.task_dashboard.of_unit')}`}</span>
                                                         <span style={{ fontWeight: "bold" }}>{` ${this.getUnitName(selectBoxUnit, idsUnit).map(o => o).join(", ")}`}</span>
                                                     </>
                                                     :
@@ -664,7 +650,7 @@ class TaskOrganizationUnitDashboard extends Component {
                                             }
                                         </div>
                                         <a className="text-red" title={translate('task.task_management.explain')} onClick={() => this.showLoadTaskDoc()}>
-                                            <i className="fa fa-exclamation-circle" style={{ color: '#06c', marginLeft: '5px' }} />
+                                            <i className="fa fa-question-circle" style={{ color: '#dd4b39', marginLeft: '5px' }} />
                                         </a>
                                     </div>
                                     <div className="box-body">

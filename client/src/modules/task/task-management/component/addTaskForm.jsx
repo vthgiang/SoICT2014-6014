@@ -619,7 +619,7 @@ class AddTaskForm extends Component {
         const checkCurrentRoleIsManager = role && role.item &&
             role.item.parents.length > 0 && role.item.parents.filter(o => o.name === ROOT_ROLE.MANAGER)
 
-        console.log('stateeeee', this.state.newTask)
+
         return (
             <React.Fragment>
 

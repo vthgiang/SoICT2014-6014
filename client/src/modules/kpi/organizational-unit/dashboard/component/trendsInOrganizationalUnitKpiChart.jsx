@@ -4,6 +4,7 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import { dashboardOrganizationalUnitKpiActions } from '../redux/actions';
 import { createUnitKpiActions } from '../../creation/redux/actions';
+import { customAxisC3js } from '../../../../../helpers/customAxisC3js';
 
 import c3 from 'c3';
 import 'c3/c3.css';
@@ -419,11 +420,11 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
         if(listOrganizationalUnitKpi) {
             listOrganizationalUnitKpi.map(kpis => {
                 titleX.push(kpis?.name);
-                executionTimesArray.push(executionTimes?.[kpis?.name] ? executionTimes[kpis.name] : null);
-                numberOfEmployeeKpisArray.push(numberOfEmployeeKpis?.[kpis?.name] ? numberOfEmployeeKpis[kpis.name] : null);
-                numberOfParticipantsArray.push(numberOfParticipants?.[kpis?.name] ? numberOfParticipants[kpis.name] : null);
-                numberOfTasksArray.push(numberOfTasks?.[kpis?.name] ? numberOfTasks[kpis.name] : null);
-                weightArray.push(weight?.[kpis?.name] ? weight[kpis.name] : null);
+                executionTimesArray.push(executionTimes?.[kpis?.name] ? executionTimes[kpis.name] : 0);
+                numberOfEmployeeKpisArray.push(numberOfEmployeeKpis?.[kpis?.name] ? numberOfEmployeeKpis[kpis.name] : 0);
+                numberOfParticipantsArray.push(numberOfParticipants?.[kpis?.name] ? numberOfParticipants[kpis.name] : 0);
+                numberOfTasksArray.push(numberOfTasks?.[kpis?.name] ? numberOfTasks[kpis.name] : 0);
+                weightArray.push(weight?.[kpis?.name] ? weight[kpis.name] : 0);
             })
         }
 
@@ -458,14 +459,9 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
                 x: {
                     type: 'category',
                     tick: {
-                        format: function (x) {
-                            if (titleX && titleX.length > 1) {
-                                if (titleX[x + 1].length > 30) {
-                                    return titleX[x + 1].slice(0, 30) + "...";
-                                } else {
-                                    return titleX[x + 1]
-                                }
-                            }
+                        format: function (index) {
+                            let result = customAxisC3js('trendsInUnitChart', titleX.filter((item, i) => i > 0), index);
+                            return result;
                         }
                     }
                 },
@@ -501,7 +497,7 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
         return (
             <React.Fragment>
                 {currentKpi ?
-                    <div ref="chart"></div>
+                    <div id="trendsInUnitChart" ref="chart"></div>
                     : organizationalUnitKpiLoading && <section>{translate('kpi.organizational_unit.dashboard.no_data')}</section>
                 }
             </React.Fragment>

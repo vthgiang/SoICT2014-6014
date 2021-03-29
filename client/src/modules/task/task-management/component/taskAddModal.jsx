@@ -3,10 +3,8 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal } from '../../../../common-components';
 import { getStorage } from '../../../../config';
-import ModalAddTaskProject from '../../task-project/component/modalAddTaskProject';
 import { taskManagementActions } from '../redux/actions';
 import { AddTaskForm } from './addTaskForm';
-import dayjs from "dayjs";
 class TaskAddModal extends Component {
 
     constructor(props) {
@@ -29,6 +27,8 @@ class TaskAddModal extends Component {
                 taskTemplate: "",
                 taskProject: "",
             },
+            startTime: "08:00 AM",
+            endTime: "05:30 PM",
             currentRole: getStorage('currentRole'),
         };
     }
@@ -46,14 +46,13 @@ class TaskAddModal extends Component {
     convertDateTime = (date, time) => {
         let splitter = date.split("-");
         let strDateTime = `${splitter[2]}/${splitter[1]}/${splitter[0]} ${time}`;
-        return dayjs(strDateTime).format('YYYY/MM/DD HH:mm:ss');
+        return new Date(strDateTime);
     }
 
     handleSubmit = () => {
         const { newTask, startTime, endTime } = this.state;
         let startDateTask = this.convertDateTime(newTask.startDate, startTime);
         let endDateTask = this.convertDateTime(newTask.endDate, endTime);
-
         this.props.addTask({
             ...newTask,
             startDate: startDateTask,
@@ -82,7 +81,6 @@ class TaskAddModal extends Component {
                         parentTask={parentTask}
                         currentTasks={currentTasks}
                     />
-                    <ModalAddTaskProject />
                 </DialogModal>
             </React.Fragment>
         );

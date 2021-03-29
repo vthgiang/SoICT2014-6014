@@ -8,6 +8,7 @@ import { ResultsOfAllOrganizationalUnitKpiChart } from '../../kpi/organizational
 import { ResultsOfAllEmployeeKpiSetChart } from '../../kpi/evaluation/dashboard/component/resultsOfAllEmployeeKpiSetChart';
 import { DashboardEvaluationEmployeeKpiSetAction } from '../../kpi/evaluation/dashboard/redux/actions';
 
+import { showListInSwal } from '../../../helpers/showListInSwal';
 
 class TabEmployeeCapacity extends Component {
     constructor(props) {
@@ -117,8 +118,11 @@ class TabEmployeeCapacity extends Component {
             lastMonthEmployeeKpiSets = lastMonthEmployeeKpiSets && lastMonthEmployeeKpiSets.filter(x => x.approvedPoint)
             lastMonthEmployeeKpiSets = lastMonthEmployeeKpiSets && lastMonthEmployeeKpiSets.slice(0, numberOfExcellentEmployees);
         }
-        // let organizationalUnitIds;
 
+        let unitForResultsOfAllOrganizationalUnitKpiChart;
+        if (department?.list?.length > 0) {
+            unitForResultsOfAllOrganizationalUnitKpiChart = department.list.filter(item => allOrganizationalUnits.includes(item?._id)).map(item => item?.name)
+        }
         return (
             <div className="row qlcv">
                 {/* Kết quả KPI các đơn vị */}
@@ -126,7 +130,22 @@ class TabEmployeeCapacity extends Component {
                     <div className="col-md-12">
                         <div className="box box-solid">
                             <div className="box-header with-border">
-                                <div className="box-title">{translate('kpi.organizational_unit.dashboard.result_kpi_units')}</div>
+                                <div className="box-title">
+                                    {translate('kpi.organizational_unit.dashboard.result_kpi_unit')}
+                                    {
+                                        unitForResultsOfAllOrganizationalUnitKpiChart && unitForResultsOfAllOrganizationalUnitKpiChart.length < 2 ?
+                                            <>
+                                                <span>{` ${translate('task.task_dashboard.of_unit')}`}</span>
+                                                <span style={{ fontWeight: "bold" }}>{` ${unitForResultsOfAllOrganizationalUnitKpiChart?.[0]}`}</span>
+                                            </>
+                                            :
+                                            <span onClick={() => showListInSwal(unitForResultsOfAllOrganizationalUnitKpiChart, translate('general.list_unit'))} style={{ cursor: 'pointer' }}>
+                                                <span>{` ${translate('task.task_dashboard.of')}`}</span>
+                                                <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {unitForResultsOfAllOrganizationalUnitKpiChart?.length}</a>
+                                                <span>{` ${translate('task.task_dashboard.unit_lowercase')}`}</span>
+                                            </span>
+                                    }
+                                </div>
                                 {resultsOfAllOrganizationalUnitsKpiChartData && <ExportExcel type="link" id="export-all-organizational-unit-kpi-results-chart" exportData={resultsOfAllOrganizationalUnitsKpiChartData} style={{ marginLeft: 10 }} />}
                             </div>
                             <div className="box-body qlcv">
@@ -141,7 +160,23 @@ class TabEmployeeCapacity extends Component {
                 <div className="col-md-12">
                     <div className="box box-solid">
                         <div className="box-header with-border">
-                            <h3 className="box-title">{`Top ${numberOfExcellentEmployees} ${translate('kpi.evaluation.dashboard.best_employee')} của công ty ${month}`}</h3>
+                            <div className="box-title">
+                                {`Top ${numberOfExcellentEmployees} ${translate('kpi.evaluation.dashboard.best_employee')} `}
+                                {
+                                    organizationalUnitsName && organizationalUnitsName.length < 2 ?
+                                        <>
+                                            <span>{` ${translate('task.task_dashboard.of_unit')}`}</span>
+                                            <span style={{ fontWeight: "bold" }}>{` ${organizationalUnitsName?.[0]}`}</span>
+                                        </>
+                                        :
+                                        <span onClick={() => showListInSwal(organizationalUnitsName, translate('general.list_unit'))} style={{ cursor: 'pointer' }}>
+                                            <span>{` ${translate('task.task_dashboard.of')}`}</span>
+                                            <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {organizationalUnitsName?.length}</a>
+                                            <span>{` ${translate('task.task_dashboard.unit_lowercase')}`}</span>
+                                        </span>
+                                }
+                                {` ${month}`}
+                            </div>
                             <div className="box-tools pull-right">
                                 <button type="button" data-toggle="collapse" data-target="#setting-excellent" className="pull-right" style={{ border: "none", background: "none", padding: "0px" }}>
                                     <i className="fa fa-gear" style={{ fontSize: "19px" }}></i>
@@ -186,7 +221,22 @@ class TabEmployeeCapacity extends Component {
                 <div className="col-md-12">
                     <div className="box box-solid">
                         <div className="box-header with-border">
-                            <h3 className="box-title">{`${translate('kpi.evaluation.dashboard.result_kpi_titile')} của công ty`}</h3>
+                            <div className="box-title">
+                                {`${translate('kpi.evaluation.dashboard.result_kpi_titile')} `}
+                                {
+                                    organizationalUnitsName && organizationalUnitsName.length < 2 ?
+                                        <>
+                                            <span>{` ${translate('task.task_dashboard.of_unit')}`}</span>
+                                            <span style={{ fontWeight: "bold" }}>{` ${organizationalUnitsName?.[0]}`}</span>
+                                        </>
+                                        :
+                                        <span onClick={() => showListInSwal(organizationalUnitsName, translate('general.list_unit'))} style={{ cursor: 'pointer' }}>
+                                            <span>{` ${translate('task.task_dashboard.of')}`}</span>
+                                            <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {organizationalUnitsName?.length}</a>
+                                            <span>{` ${translate('task.task_dashboard.unit_lowercase')}`}</span>
+                                        </span>
+                                }
+                            </div>
                             {resultsOfAllEmployeeKpiSetChartData && <ExportExcel type="link" id="export-all-employee-kpi-evaluate-result-dashboard" exportData={resultsOfAllEmployeeKpiSetChartData} style={{ marginTop: 5 }} />}
                         </div>
                         {/* /.box-header */}
