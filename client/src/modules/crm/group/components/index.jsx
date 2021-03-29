@@ -6,6 +6,8 @@ import { SearchBar, PaginateBar, DataTableSetting, ConfirmNotification } from '.
 import CreateGroupForm from './createForm';
 import EditGroupForm from './editForm';
 import { getTableConfiguration } from '../../../../helpers/tableConfiguration'
+import CreateCareCommonForm from '../../common/createCareCommonForm';
+import GroupInfoForm from './groupInfoForm';
 class CrmGroup extends Component {
     constructor(props) {
         super(props);
@@ -25,7 +27,7 @@ class CrmGroup extends Component {
     render() {
         const { crm, translate } = this.props;
         const { list } = crm.groups;
-        const { option, limit, page, groupIdEdit, tableId } = this.state;
+        const { option, limit, page, groupIdEdit, tableId, groupIdCreateCareACtion } = this.state;
 
         let pageTotal = (crm.groups.totalDocs % limit === 0) ?
             parseInt(crm.groups.totalDocs / limit) :
@@ -36,31 +38,26 @@ class CrmGroup extends Component {
             <div className="box">
                 <div className="box-body">
                     <CreateGroupForm />
+                    <GroupInfoForm/>
+                    {groupIdCreateCareACtion && <CreateCareCommonForm type={2} />}
                     {groupIdEdit && <EditGroupForm groupIdEdit={groupIdEdit} />}
 
-                    <SearchBar
-                        columns={[
-                            { title: translate('crm.group.name'), value: 'name' },
-                            { title: translate('crm.group.code'), value: 'code' },
-                            { title: translate('crm.group.description'), value: 'description' },
-                        ]}
-                        option={option}
-                        setOption={this.setOption}
-                        search={this.searchWithOption}
-                    />
+
                     <table className="table table-hover table-striped table-bordered" id={tableId} style={{ marginTop: '10px' }}>
                         <thead>
                             <tr>
-                                <th>{translate('crm.group.name')}</th>
                                 <th>{translate('crm.group.code')}</th>
+                                <th>{translate('crm.group.name')}</th>
                                 <th>{translate('crm.group.description')}</th>
+                                <th>Số lượng khách hàng </th>
                                 <th style={{ width: "120px" }}>
                                     {translate('table.action')}
                                     <DataTableSetting
                                         columnArr={[
-                                            translate('crm.group.name'),
                                             translate('crm.group.code'),
+                                            translate('crm.group.name'),
                                             translate('crm.group.description'),
+                                            'Số lượng khách hàng'
                                         ]}
                                         setLimit={this.setLimit}
                                         tableId={tableId}
@@ -73,12 +70,16 @@ class CrmGroup extends Component {
                                 list && list.length > 0 ?
                                     list.map(gr =>
                                         <tr key={gr._id}>
-                                            <td>{gr.name}</td>
                                             <td>{gr.code}</td>
+                                            <td>{gr.name}</td>
                                             <td>{gr.description}</td>
+                                            <td>30</td>
                                             <td style={{ textAlign: 'center' }}>
-                                                <a className="text-green" onClick={() => this.handleInfo(gr._id)}><i className="material-icons">visibility</i></a>
+                                                <a className="text-green" onClick={this.handleInfoGroup}><i className="material-icons">visibility</i></a>
                                                 <a className="text-yellow" onClick={() => this.handleEditGroup(gr._id)}><i className="material-icons">edit</i></a>
+                                                <a className="text-green"
+                                                    onClick={() => this.handleCreateCareAction(gr._id)}
+                                                ><i className="material-icons">add_comment</i></a>
                                                 <ConfirmNotification
                                                     icon="question"
                                                     title="Xóa thông tin về khách hàng"
@@ -155,6 +156,15 @@ class CrmGroup extends Component {
             ...this.state,
             groupIdEdit: id,
         }, () => window.$('#modal-edit-group').modal('show'));
+    }
+    handleCreateCareAction = (id) => {
+        this.setState({
+            ...this.state,
+            groupIdCreateCareACtion: id,
+        }, () => window.$('#modal-crm-care-common-create').modal('show'));
+    }
+    handleInfoGroup = ()=>{
+        window.$('#modal-info-group').modal('show');
     }
 }
 

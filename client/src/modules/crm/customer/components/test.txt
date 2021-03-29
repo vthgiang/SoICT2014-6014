@@ -1,0 +1,95 @@
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { withTranslate } from 'react-redux-multilingual';
+import { DataTableSetting, SelectBox } from '../../../../common-components';
+import { UserActions } from '../../../super-admin/user/redux/actions';
+import { CrmGroupActions } from '../../group/redux/actions';
+import { CrmStatusActions } from '../../status/redux/actions';
+import { CrmCustomerActions } from '../redux/actions';
+class PurchaseHistoriesInfoForm extends Component {
+    constructor(props) {
+        super(props);
+
+    }
+
+
+    render() {
+        return (
+            <div className="box">
+                <div className="box-body qlcv">
+                    {/* search form */}
+                    <div className="form-inline" style={{ marginBottom: '2px' }}>
+                        <div className="form-group unitSearch">
+                            <label>{'Label'}</label>
+                            {
+
+                                <SelectBox
+                                    id={`customer-group-edit-form`}
+                                    className="form-control select2"
+                                    style={{ width: "100%" }}
+                                    items={
+                                       ['']
+                                    }
+                                    value={[""]}
+                                    //  onChange={this.handleChangeCustomerGroup}
+                                    multiple={false}
+                                />
+                            }
+                        </div>
+                        <div className="form-group">
+                            <label className="form-control-static">Mã khách hàng</label>
+                            <input className="form-control" type="text" name="customerCode" oplaceholder={`Mã khách hàng`} />
+                        </div>
+                    </div>
+
+                    <div className="form-inline">
+                        <div className="form-group" >
+                            <label>Label</label>
+                            <button type="button" className="btn btn-success" 
+                            //onClick={this.search} 
+                            title={'Title'}>{'Title'}</button>
+                        </div>
+                    </div>
+                    <table className="table table-hover table-striped table-bordered" id={1} style={{ marginTop: '10px' }}>
+                        <thead>
+                            <tr>
+                                <th>{'Du lieu'}</th>
+                                <th>{'Du lieu'}</th>
+                                <th>{'Du lieu'}</th>
+                                <th>{'Du lieu'}</th>
+                                <th>{'Du lieu'}</th>
+                                <th style={{ width: "120px" }}>
+                                    {'title'}
+                                    <DataTableSetting
+                                        columnArr={[
+                                            'Du lieu',
+                                            'Du lieu',
+                                            'Du lieu',
+                                            'Du lieu',
+                                            'Du lieu',
+                                        ]}
+                                        //  setLimit={this.setLimit}
+                                        tableId={1}
+                                    />
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            <td>body</td>
+                            <td>body</td>
+                            <td>body</td>
+                            <td>body</td>
+                            <td>body</td>
+                            <td>body</td>
+                            <td>body</td>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        );
+    }
+
+}
+export default connect(null, null)(withTranslate(PurchaseHistoriesInfoForm));

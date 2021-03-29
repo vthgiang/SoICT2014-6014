@@ -77,8 +77,8 @@ class FileTabEditForm extends Component {
     }
 
     render() {
-        const { translate } = this.props;
-        const { id, files, data, itemEdit } = this.state;
+        const { translate,id } = this.props;
+        const { files, data, itemEdit } = this.state;
         return (
             <React.Fragment>
                 <div id={id} className="tab-pane">
@@ -98,8 +98,10 @@ class FileTabEditForm extends Component {
                                 <thead>
                                     <tr>
                                         <th>{translate('crm.customer.file.name')}</th>
+                                        <th>Loại tài liệu</th>
                                         <th>{translate('crm.customer.file.description')}</th>
-                                        <th>{translate('crm.customer.file.attachment')}</th>
+                                        <th>Người đăng tải</th>
+                                        <th>{translate('crm.customer.file.fileName')}</th>
                                         <th style={{ width: '120px' }}>{translate('general.action')}</th>
                                     </tr>
                                 </thead>
@@ -108,7 +110,9 @@ class FileTabEditForm extends Component {
                                         files && files.length > 0 ? files.map((o, index) => (
                                             <tr className={`item-${index}`} key={index}>
                                                 <td>{o.name}</td>
+                                                <td></td>
                                                 <td>{o.description}</td>
+                                                <td></td>
                                                 <td><a href={`${o.url}`} target="_blank" rel="noopener noreferrer">{o.fileName}</a></td>
                                                 <td style={{ textAlign: 'center' }}>
                                                     <a className="text-yellow" style={{ cursor: "pointer" }} onClick={() => this.handleEdit(o, index)}><i className="material-icons">edit</i></a>

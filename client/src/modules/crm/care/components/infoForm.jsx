@@ -73,6 +73,10 @@ class InfoCareForm extends Component {
                 >
                     {/* Form xem công việc chăm sóc khách hàng */}
                     <div className="description-box" style={{ lineHeight: 1.5 }}>
+
+                        {/* <h4>Thông tin hoạt động</h4> */}
+                        <fieldset className="scheduler-border">
+                        <legend className="scheduler-border">{"Thông tin hoạt động"} </legend>
                         <div className="row">
                             <div className="col-md-6">
                                 <div className="form-horizontal">
@@ -133,6 +137,18 @@ class InfoCareForm extends Component {
                             <div className="col-md-6">
                                 <div className="form-horizontal">
                                     <div className="form-group">
+                                        <strong className="col-sm-4">{'Độ ưu tiên'}</strong>
+                                        <div className="col-sm-8">
+                                            <span>Ưu tiên cao</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="row">
+                        <div className="col-md-6">
+                                <div className="form-horizontal">
+                                    <div className="form-group">
                                         <strong className="col-sm-4">{translate('crm.care.status')}</strong>
                                         <div className="col-sm-8">
                                             <span>{careInfomation.status ? this.formatCareStatus(careInfomation.status) : ''}</span>
@@ -140,8 +156,18 @@ class InfoCareForm extends Component {
                                     </div>
                                 </div>
                             </div>
+                           
+                            <div className="col-md-6">
+                                <div className="form-horizontal">
+                                    <div className="form-group">
+                                        <strong className="col-sm-4">{'Người tạo hoạt động'}</strong>
+                                        <div className="col-sm-8">
+                                            <span>Nguyễn Văn Thái</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-
                         <div className="row">
                             <div className="col-md-6">
                                 <div className="form-horizontal">
@@ -164,6 +190,86 @@ class InfoCareForm extends Component {
                                 </div>
                             </div>
                         </div>
+                        <div className="row">
+                            <div className="col-md-6">
+                                <div className="form-horizontal">
+                                    <div className="form-group">
+                                        <strong className="col-sm-4">{"Chỉnh sửa lần cuối "}</strong>
+                                        <div className="col-sm-8">
+                                            <span>{"9:00 AM 24/03/2021"}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="col-md-6">
+                                <div className="form-horizontal">
+                                    <div className="form-group">
+                                        <strong className="col-sm-4">{"Người chỉnh sửa"}</strong>
+                                        <div className="col-sm-8">
+                                            <span>{"Nguyễn Văn Danh"}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        </fieldset>
+                    </div>
+                    
+                    <div className="description-box" style={{ lineHeight: 1.5 }}>
+
+                        {/* <h4>Đánh giá hoạt động</h4> */}
+                        <fieldset className="scheduler-border">
+                        <legend className="scheduler-border">{"Đánh giá hoạt động"} </legend>
+                    <div className="row">
+                            <div className="col-md-6">
+                                <div className="form-horizontal">
+                                    <div className="form-group">
+                                        <strong className="col-sm-4">{"Ngày hoàn thành"}</strong>
+                                        <div className="col-sm-8">
+                                            <span>9:00 AM 23/03/2021</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </div>
+                        <div className="row">
+                            <div className="col-md-6">
+                                <div className="form-horizontal">
+                                    <div className="form-group">
+                                        <strong className="col-sm-4">{"Kết quả hoạt động"}</strong>
+                                        <div className="col-sm-8">
+                                            <span>Thành công </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="col-md-6">
+                                <div className="form-horizontal">
+                                    <div className="form-group">
+                                        <strong className="col-sm-4">{"Điểm tự đánh giá"}</strong>
+                                        <div className="col-sm-8">
+                                            <span> 80 /100</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </div>
+                        <div className="row">
+                            <div className="col-md-6">
+                                <div className="form-horizontal">
+                                    <div className="form-group">
+                                        <strong className="col-sm-4">{"Nội dung đánh giá "}</strong>
+                                        <div className="col-sm-8">
+                                            <span>Khách hài lòng về sản phẩm, yêu cầu được báo giá </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </div>
+                        </fieldset>
                     </div>
                 </DialogModal>
             </React.Fragment>

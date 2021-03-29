@@ -1,18 +1,19 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import { formatFunction } from '../../common/index';
 
-class HistoryOfStateTransitionsTabInfoForm extends Component {
-    constructor(props) {
-        super(props);
+function HistoryOfStateTransitionsTabInfoForm  (props) {
+    
 
-    }
-
-    render() {
-        const { statusHistories } = this.props.customerInfomation;
-        const { id } = this.props;
-
+        const { id, customerInfomation } = props;
+        const { statusHistories } = customerInfomation;
+        const[detailStatus, setDetailStatus] = useState(new Array(statusHistories.length).fill(false));
+        function handleSeeDetail (index){
+               const newDetailStatus = [...detailStatus];
+               newDetailStatus[index] = !newDetailStatus[index];
+               setDetailStatus(newDetailStatus);
+        }
         return (
             <div className="tab-pane" id={id}>
                 <div className="description-box" >
@@ -29,7 +30,14 @@ class HistoryOfStateTransitionsTabInfoForm extends Component {
                                                 : `${o.createdBy.name} đã chuyển trạng thái khách hàng từ ${o.oldValue.name} thành ${o.newValue.name}`
                                             }
                                         </p>
-                                        <a href="http://vnima.vnist.vn/">See detail</a>
+                                        {detailStatus[index] && (
+                                        <div >
+                                            <label>Nội dung thay đổi :</label>
+                                            <p>Khách hài long với tư vấn và xác định muốn xem báo giá</p>
+                                        </div>
+                                        )}
+                                        <p className='pointer' onClick ={()=>handleSeeDetail(index)}>{detailStatus[index]==false ? '>> xem chi tiết': '<< đóng'}</p>
+                                       
                                         <span className="circle" />
                                     </div>
                                 </div>
@@ -40,7 +48,7 @@ class HistoryOfStateTransitionsTabInfoForm extends Component {
                 </div>
             </div>
         );
-    }
+    
 }
 
 export default connect(null, null)(withTranslate(HistoryOfStateTransitionsTabInfoForm));
