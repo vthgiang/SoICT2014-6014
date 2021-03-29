@@ -18,7 +18,7 @@ import { TaskAddModal } from './taskAddModal';
 import { ModalPerform } from '../../task-perform/component/modalPerform';
 import { getTableConfiguration } from '../../../../helpers/tableConfiguration'
 import { convertDataToExportData, getTotalTimeSheetLogs, formatPriority, formatStatus } from './functionHelpers';
-
+import TaskListView from './taskListView';
 class TaskManagement extends Component {
     constructor(props) {
         let userId = getStorage("userId");
@@ -385,10 +385,17 @@ class TaskManagement extends Component {
             case 'table':
                 window.$('#tree-table-container').show();
                 window.$('#tasks-list-tree').hide();
+                window.$('#tasks-list').hide();
+                break;
+            case 'list':
+                window.$('#tasks-list').show();
+                window.$('#tree-table-container').hide();
+                window.$('#tasks-list-tree').hide();
                 break;
             default:
                 window.$('#tree-table-container').hide();
                 window.$('#tasks-list-tree').show();
+                window.$('#tasks-list').hide();
                 break;
         }
     }
@@ -613,14 +620,14 @@ class TaskManagement extends Component {
         }
 
         let exportData = convertDataToExportData(translate, currentTasks, translate("menu.task_management"));
-
         return (
             <React.Fragment>
                 <div className="box">
                     <div className="box-body qlcv">
                         <div style={{ height: "40px" }}>
-                            <button className="btn btn-primary" type="button" style={{ borderRadius: 0, marginLeft: 10, backgroundColor: 'transparent', borderRadius: '4px', color: '#367fa9' }} title="Dạng bảng" onClick={() => this.handleDisplayType('table')}><i className="fa fa-list"></i> Dạng bảng</button>
+                            <button className="btn btn-primary" type="button" style={{ borderRadius: 0, marginLeft: 10, backgroundColor: 'transparent', borderRadius: '4px', color: '#367fa9' }} title="Dạng bảng" onClick={() => this.handleDisplayType('table')}><i className="fa fa-table"></i> Dạng bảng</button>
                             <button className="btn btn-primary" type="button" style={{ borderRadius: 0, marginLeft: 10, backgroundColor: 'transparent', borderRadius: '4px', color: '#367fa9' }} title="Dạng cây" onClick={() => this.handleDisplayType('tree')}><i className="fa fa-sitemap"></i> Dạng cây</button>
+                            <button className="btn btn-primary" type="button" style={{ borderRadius: 0, marginLeft: 10, backgroundColor: 'transparent', borderRadius: '4px', color: '#367fa9' }} title="Dạng danh sách" onClick={() => this.handleDisplayType('list')}><i className="fa fa-list"></i> Dạng danh sách</button>
                             <button className="btn btn-primary" type="button" style={{ borderRadius: 0, marginLeft: 10, backgroundColor: 'transparent', borderRadius: '4px', color: '#367fa9' }} onClick={() => { window.$('#tasks-filter').slideToggle() }}><i className="fa fa-filter"></i> Lọc</button>
 
                             {exportData && <ExportExcel id="list-task-employee" buttonName="Báo cáo" exportData={exportData} style={{ marginLeft: '10px' }} />}
@@ -850,6 +857,21 @@ class TaskManagement extends Component {
                                 onChanged={this.handleShowTask}
                                 data={dataTree}
                             />
+                        </div>
+
+                        <div id="tasks-list" style={{ display: 'none', marginTop: '30px' }}>
+                            {
+                                currentTasks &&
+                                <TaskListView
+                                    data={currentTasks}
+                                    project={project}
+                                    funcEdit={this.handleShowModal}
+                                    funcAdd={this.handleAddTask}
+                                    funcStartTimer={this.startTimer}
+                                    funcStore={this.handleStore}
+                                    funcDelete={this.handleDelete}
+                                />
+                            }
                         </div>
 
                         <PaginateBar
