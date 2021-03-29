@@ -11,7 +11,8 @@ import GeneralTaskPersonalChart from '../../task/task-dashboard/task-personal-da
 import { NewsFeed } from './newsFeed';
 import './alarmTask.css';
 import ViewAllTasks from '../components/viewAllTask';
-import moment from 'moment'
+import moment from 'moment';
+import { filterDifference } from '../../../helpers/taskModuleHelpers';
 class SuperHome extends Component {
     constructor(props) {
         super(props);
@@ -379,6 +380,27 @@ class SuperHome extends Component {
 
         let { startMonthTitle, endMonthTitle } = this.INFO_SEARCH;
 
+        let listTasksGeneral = [], responsibleTasks = [], accountableTasks = [], consultedTasks = [];
+        if (tasks) {
+            if (tasks.responsibleTasks && tasks.responsibleTasks.length > 0) {
+                responsibleTasks = tasks.responsibleTasks.filter(o => o.status === "inprocess")
+            }
+
+            if (tasks.accountableTasks && tasks.accountableTasks.length > 0) {
+                accountableTasks = tasks.accountableTasks.filter(o => o.status === "inprocess")
+            }
+
+            if (tasks.consultedTasks && tasks.consultedTasks.length > 0) {
+                consultedTasks = tasks.consultedTasks.filter(o => o.status === "inprocess")
+            }
+
+            listTasksGeneral = [...listTasksGeneral, ...responsibleTasks, ...accountableTasks, ...consultedTasks];
+
+            listTasksGeneral = filterDifference(listTasksGeneral);
+        }
+
+        console.log('listTasksGeneral', listTasksGeneral);
+
         return (
             <React.Fragment>
                 {
@@ -422,13 +444,14 @@ class SuperHome extends Component {
                     <div className="col-md-12">
                         <div className="box box-primary">
                             <div className="box-header with-border">
-                                <div className="box-title">{`Tổng quan công việc (${tasks && tasks.tasks ? tasks.tasks.length : 0})`}</div>
+                                <div className="box-title">{`Tổng quan công việc (${listTasksGeneral ? listTasksGeneral.length : 0})`}</div>
                             </div>
                             {
-                                tasks && (tasks.tasks || tasks.accountableTasks || tasks.responsibleTasks || tasks.consultedTasks) &&
+                                listTasksGeneral && listTasksGeneral.length > 0 &&
                                 <LazyLoadComponent once={true}>
                                     <GeneralTaskPersonalChart
-                                        tasks={tasks}
+                                        tasks={listTasksGeneral}
+                                        tasksbyuser={tasks && tasks.tasksbyuser}
                                     />
                                 </LazyLoadComponent>
                             }

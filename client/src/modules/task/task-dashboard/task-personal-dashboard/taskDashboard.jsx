@@ -17,6 +17,7 @@ import { TaskHasActionNotEvaluated } from './taskHasActionNotEvaluated';
 import { InprocessTask } from './inprocessTask';
 import { LoadTaskChart } from './loadTaskChart';
 import { convertTime } from '../../../../helpers/stringMethod';
+import { filterDifference } from '../../../../helpers/taskModuleHelpers';
 import { getStorage } from '../../../../config';
 import moment from 'moment';
 import GeneralTaskPersonalChart from './generalTaskPersonalChart';
@@ -86,8 +87,8 @@ class TaskDashboard extends Component {
         await this.props.getResponsibleTaskByUser([], 1, 1000, [], [], [], null, startMonth, endMonth, null, null, true);
         await this.props.getAccountableTaskByUser([], 1, 1000, [], [], [], null, startMonth, endMonth, null, null, true);
         await this.props.getConsultedTaskByUser([], 1, 1000, [], [], [], null, startMonth, endMonth, null, null, true);
-        await this.props.getInformedTaskByUser([], 1, 1000, [], [], [], null, startMonth, endMonth, null, null, true);
         await this.props.getCreatorTaskByUser([], 1, 1000, [], [], [], null, startMonth, endMonth, null, null, true);
+        await this.props.getInformedTaskByUser([], 1, 1000, [], [], [], null, startMonth, endMonth, null, null, true);
 
         let data = {
             type: "user"
@@ -249,6 +250,7 @@ class TaskDashboard extends Component {
         })
     }
 
+
     render() {
         const { tasks, translate } = this.props;
         const { startMonth, endMonth, willUpdate, callAction, taskAnalys, monthTimeSheetLog } = this.state;
@@ -301,24 +303,33 @@ class TaskDashboard extends Component {
         }
 
         // Tinh tong so luong cong viec co trang thai Inprogess
+        let responsibleTasks = [], creatorTasks = [], accountableTasks = [], consultedTasks = [];
+
+        let newNumTask = [], listTasksGeneral = [];
         if (tasks) {
-            let tempObj = {};
-            if (tasks.responsibleTasks)
-                numTask = numTask.concat(tasks.responsibleTasks);
-            if (tasks.creatorTasks)
-                numTask = numTask.concat(tasks.creatorTasks);
-            if (tasks.accountableTasks)
-                numTask = numTask.concat(tasks.accountableTasks);
-            if (tasks.consultedTasks)
-                numTask = numTask.concat(tasks.consultedTasks);
-            let i;
-            for (i in numTask) {
-                if (numTask[i].status === "inprocess")
-                    tempObj[numTask[i]._id] = numTask[i].name;
+            if (tasks.responsibleTasks && tasks.responsibleTasks.length > 0) {
+                responsibleTasks = tasks.responsibleTasks.filter(o => o.status === "inprocess")
             }
 
-            totalTasks = Object.keys(tempObj).length;
+            if (tasks.creatorTasks && tasks.creatorTasks.length > 0) {
+                creatorTasks = tasks.creatorTasks.filter(o => o.status === "inprocess")
+            }
 
+            if (tasks.accountableTasks && tasks.accountableTasks.length > 0) {
+                accountableTasks = tasks.accountableTasks.filter(o => o.status === "inprocess")
+            }
+
+            if (tasks.consultedTasks && tasks.consultedTasks.length > 0) {
+                consultedTasks = tasks.consultedTasks.filter(o => o.status === "inprocess")
+            }
+
+            newNumTask = [...newNumTask, ...responsibleTasks, ...creatorTasks, ...consultedTasks, ...accountableTasks];
+            listTasksGeneral = [...listTasksGeneral, ...responsibleTasks, ...accountableTasks, ...consultedTasks];
+
+            newNumTask = filterDifference(newNumTask);
+            listTasksGeneral = filterDifference(listTasksGeneral);
+
+            totalTasks = newNumTask.length;
         }
 
 
@@ -403,12 +414,12 @@ class TaskDashboard extends Component {
                     <div className="col-md-12">
                         <div className="box box-primary">
                             <div className="box-header with-border">
-                                <div className="box-title">{`Tổng quan công việc (${tasks && tasks.tasks ? tasks.tasks.length : 0} công việc)`}</div>
+                                <div className="box-title">{`Tổng quan công việc (${listTasksGeneral ? listTasksGeneral.length : 0} công việc)`}</div>
                             </div>
                             <LazyLoadComponent once={true}>
                                 {
-                                    tasks && (tasks.tasks || tasks.accountableTasks || tasks.responsibleTasks || tasks.consultedTasks) &&
-                                    <GeneralTaskPersonalChart tasks={tasks} />
+                                    listTasksGeneral && listTasksGeneral.length > 0 &&
+                                    <GeneralTaskPersonalChart tasks={listTasksGeneral} tasksbyuser={tasks && tasks.tasksbyuser} />
                                 }
                             </LazyLoadComponent>
                         </div>
