@@ -3690,7 +3690,7 @@ export default {
                     priority: "Priority",
                     formula: "Formula",
                     explain_automatic_point: "Explain automatic value",
-                    cal_all_kpis: '(*)Calculator all kpi',
+                    cal_all_kpis: 'Calculator all kpi',
                     update_task_importance: `(*)Update task importance level and Calculator KPI point`,
 
                 },

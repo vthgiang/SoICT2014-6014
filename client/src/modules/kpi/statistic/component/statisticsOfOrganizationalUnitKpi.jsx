@@ -498,28 +498,26 @@ class StatisticsOfOrganizationalUnitKpi extends Component {
 
 
                             <div className="row row-equal-height">
-                                <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6" style={{ padding: 10 }}>
-                                    <div className="description-box" style={{ height: "100%" }}>
+                                <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6" style={{ padding: 10, maxHeight: "400px" }}>
+                                    <div id="details-tree" className="description-box" style={{ height: "100%" }}>
                                         {currentKPI
                                             ? <React.Fragment>
                                                 <h4 className="box-title">Cây KPI đơn vị tháng {month.slice(5, 7) + "-" + month.slice(0, 4)}</h4>
-                                                <div className="details-tree" id="details-tree" style={{ maxHeight: "500px" }}>
-                                                    <Tree
-                                                        id="tree-qlcv-document"
-                                                        onChanged={this.onChanged}
-                                                        data={dataTree}
-                                                        plugins={false}
-                                                    />
-                                                </div>
-                                                <SlimScroll outerComponentId="details-tree" innerComponentId="tree-qlcv-document" innerComponentWidth={"100%"} activate={true} />
+                                                <Tree
+                                                    id="tree-qlcv-document"
+                                                    onChanged={this.onChanged}
+                                                    data={dataTree}
+                                                    plugins={false}
+                                                />
                                             </React.Fragment>
                                             : organizationalUnitKpiLoading
                                             && <h4> Đơn vị chưa khởi tạo KPI tháng {month.slice(5, 7) + "-" + month.slice(0, 4)}</h4>
                                         }
+                                        <SlimScroll outerComponentId="details-tree" innerComponentId="tree-qlcv-document" innerComponentWidth={"100%"} activate={true} />
                                     </div>
                                 </div>
 
-                                <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6" style={{ padding: 10 }}>
+                                <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6" style={{ padding: 10, maxHeight: "400px" }}>
                                     <DetailsOfOrganizationalUnitKpiForm
                                         details={details ? details : dataTree?.[0]}
                                     />
