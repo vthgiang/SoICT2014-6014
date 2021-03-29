@@ -568,7 +568,7 @@ class TrendsInChildrenOrganizationalUnitKpiChart extends Component {
                     type: 'category',
                     tick: {
                         format: function (index) {
-                            let result = customAxisC3js('trendsInChildrenUnitChart', titleX.filter((item, index) => index > 0), index);
+                            let result = customAxisC3js('trendsInChildrenUnitChart', titleX.filter((item, i) => i > 0), index);
                             return result;
                         }
                     }

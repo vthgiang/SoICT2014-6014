@@ -175,7 +175,7 @@ function DistributionOfOrganizationalUnitKpiChart(props) {
                     type: 'category',
                     tick: {
                         format: function (index) {
-                            let result = customAxisC3js('chartOrganizationalUnitKpiRef', xs.filter((item, index) => index > 0), index);
+                            let result = customAxisC3js('chartOrganizationalUnitKpiRef', xs.filter((item, i) => i > 0), index);
                             return result;
                         }
                     }

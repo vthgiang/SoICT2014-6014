@@ -1,3 +1,5 @@
+import { withTranslate } from "react-redux-multilingual";
+
 export const customAxisC3js = (chartId, data, index) => {
     if (data?.length > 0) {
         let numberOfCharacters = 50, width, elementWidth;
@@ -6,10 +8,14 @@ export const customAxisC3js = (chartId, data, index) => {
         width = width && parseInt(width);
         elementWidth = width / data?.length;
 
-        if (elementWidth < 40) {
+        console.log(width, elementWidth)
+
+        if (elementWidth < 45) {
             numberOfCharacters = 5;
-        } else if (elementWidth < 55) {
-            numberOfCharacters = 15;
+        } else if (elementWidth < 70) {
+            numberOfCharacters = 18;
+        } else if (elementWidth < 100) {
+            numberOfCharacters = 35;
         }
 
         if (data?.[index]?.length > numberOfCharacters) {
