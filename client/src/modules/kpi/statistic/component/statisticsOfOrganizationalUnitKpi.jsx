@@ -60,7 +60,9 @@ class StatisticsOfOrganizationalUnitKpi extends Component {
     }
 
     shouldComponentUpdate = async (nextProps, nextState) => {
-        if (nextState.details !== this.state.details) {
+        const { details } = this.state;
+
+        if (nextState.details !== details) {
             return false;
         }
 
@@ -451,6 +453,10 @@ class StatisticsOfOrganizationalUnitKpi extends Component {
         if (day.length < 2)
             day = '0' + day;
         let defaultDate = [monthDate, year].join('-');
+
+        if (!details) {
+            window.$(`#${dataTree?.[0]?.id}_anchor`).addClass('jstree-clicked')
+        }
 
         return (
             <React.Fragment>

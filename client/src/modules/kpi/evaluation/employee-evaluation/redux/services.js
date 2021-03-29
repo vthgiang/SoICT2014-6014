@@ -16,7 +16,6 @@ export const kpiMemberServices = {
  *  Lấy tất cả kpi cá nhân của các cá nhân trong đơn vị
 */
 function getEmployeeKPISets(infosearch) {
-    console.log(infosearch);
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/kpi/evaluation/employee-evaluation/employee-kpi-sets`,
         method: 'GET',

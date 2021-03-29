@@ -170,6 +170,7 @@ exports.getTasksByKpiId = async (req, res) => {
 getTasksByListKpiSet = async (req, res) => {
     try {
         const kpimembers = await KPIMemberService.getTasksByListKpis(req.portal, req.query.listkpis);
+        
         await Logger.info(req.user.email, `Get task by kpi set`, req.portal);
         res.status(200).json({
             success: true,
