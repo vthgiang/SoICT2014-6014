@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import { connect } from 'react-redux';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import { ButtonModal, DatePicker, DialogModal, SelectBox, QuillEditor } from '../../../../common-components';
@@ -7,88 +7,75 @@ import { CrmCareTypeActions } from '../../careType/redux/action';
 import { CrmCareActions } from '../redux/action';
 
 
-class CreateCareForm extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            newCare: {},
-            role: localStorage.getItem('currentRole'),
-        }
-    }
+function CreateCareForm  (props) {
+    const [newCare, setNewCare] = useState ({});
+    const [role, setRole]= useState (localStorage.getItem('currentRole'))
+    
 
     /**
      * Hàm xử lý khi người chăm sóc khách hàng thay đổi
      * @param {*} value 
      */
-    handleChangeCaregiver = (value) => {
-        const { newCare } = this.state;
-
-        this.setState({
-            newCare: {
+    const handleChangeCaregiver = (value) => {
+           const  newCareInput =  {
                 ...newCare,
                 caregiver: value,
             }
-        })
-    }
+            setNewCare (newCareInput)
+        }
+    
 
     /**
      * Hàm xử lý khi khách hàng được chăm sóc thay đổi
      * @param {*} value 
      */
-    handleChangeCustomer = (value) => {
-        const { newCare } = this.state;
-
-        this.setState({
-            newCare: {
-                ...newCare,
-                customer: value,
-            }
-        })
+    const handleChangeCustomer = (value) => {
+        const  newCareInput =  {
+            ...newCare,
+            customer: value,
+        }
+        setNewCare (newCareInput)
+       
     }
 
     /**
      * Hàm xử lý khi tên công việc chăm sóc khách hàng thay đổi
      * @param {*} e 
      */
-    handleChangeName = (e) => {
-        const { newCare } = this.state;
+    const handleChangeName = (e) => {
         const { value } = e.target;
-
-        this.setState({
-            newCare: {
-                ...newCare,
-                name: value,
-            }
-        })
+        const  newCareInput =  {
+            ...newCare,
+            name: value,
+        }
+        setNewCare (newCareInput)
+       
     }
 
     /**
      * Hàm xử lý khi mô tả công việc chăm sóc khách  hàng thay đổi
      * @param {*} data
      */
-    handleChangeDescription = (data, imgs) => {
-        const { newCare } = this.state;
-        this.setState({
-            newCare: {
-                ...newCare,
-                description: data,
-            }
-        })
+    const handleChangeDescription = (data, imgs) => {
+        const  newCareInput =  {
+            ...newCare,
+            description: data,
+        }
+        setNewCare (newCareInput)
+       
     }
 
     /**
      * Hàm xử lý khi hình thức chăm sóc thay đổi
      * @param {*} value 
      */
-    handleChangeCareType = (value) => {
-        const { newCare } = this.state;
-
-        this.setState({
-            newCare: {
-                ...newCare,
-                careType: value,
-            }
-        })
+    const handleChangeCareType = (value) => {
+        const  newCareInput =  {
+            ...newCare,
+            careType: value,
+        }
+        setNewCare (newCareInput)
+       
     }
 
 
@@ -96,30 +83,27 @@ class CreateCareForm extends Component {
      * Hàm xử lý khi trạng thái công việc chăm sóc thay đổi
      * @param {*} value 
      */
-    handleChangeStatus = value => {
-        const { newCare } = this.state;
-
-        this.setState({
-            newCare: {
-                ...newCare,
-                status: value[0],
-            }
-        })
+    const handleChangeStatus = value => {
+        const  newCareInput =  {
+            ...newCare,
+            status: value[0],
+        }
+        setNewCare (newCareInput)
+       
+        
     }
 
     /**
      * Hàm xử lý khi ngày bắt đầu thực hiện công việc thay đổi
      * @param {*} value 
      */
-    handleChangeStartDate = value => {
-        const { newCare } = this.state;
-
-        this.setState({
-            newCare: {
-                ...newCare,
-                startDate: value,
-            }
-        })
+    const handleChangeStartDate = value => {
+        const  newCareInput =  {
+            ...newCare,
+            startDate: value,
+        }
+        setNewCare (newCareInput)
+       
     }
 
 
@@ -127,32 +111,26 @@ class CreateCareForm extends Component {
      * Hàm xử lý khi ngày kết thúc công việc thay đổi
      * @param {*} value 
      */
-    handleChangeEndDate = value => {
-        const { newCare } = this.state;
-
-        this.setState({
-            newCare: {
-                ...newCare,
-                endDate: value,
-            }
-        })
+    const handleChangeEndDate = value => {
+        const  newCareInput =  {
+            ...newCare,
+            endDate: value,
+        }
+        setNewCare (newCareInput)
+       
     }
 
-    componentDidMount() {
-        const { role } = this.state;
-        this.props.getAllEmployeeOfUnitByRole(role);
-        this.props.getCareTypes();
+    
+
+    const save = () => {
+      
+    props.createCare(newCare);
     }
 
-    save = () => {
-        const { newCare } = this.state;
-        this.props.createCare(newCare);
-    }
-
-    render() {
-        const { translate, user, crm } = this.props;
+    
+        const { translate, user, crm } = props;
         const { careTypes, customers } = crm;
-        let { newCare } = this.state;
+      
 
         // Lấy nhân viên trong đơn vị hiện tại
         let employees;
@@ -183,9 +161,9 @@ class CreateCareForm extends Component {
                     modalID="modal-crm-care-create"
                     formID="form-crm-care-create"
                     title={translate('crm.care.add')}
-                    func={this.save}
+                    func={save}
                     size={75}
-                // disableSubmit={!this.isFormValidated()}
+                 //disableSubmit={!isFormValidated()}
                 >
                     <form id="form-crm-care-create">
                         {/* Nhân viên phụ trách */}
@@ -201,7 +179,7 @@ class CreateCareForm extends Component {
                                         employees
                                     }
                                     value={newCare.caregiver ? newCare.caregiver : []}
-                                    onChange={this.handleChangeCaregiver}
+                                    onChange={handleChangeCaregiver}
                                     multiple={true}
                                     options={{ placeholder: translate('crm.care.caregiver') }}
                                 />
@@ -222,7 +200,7 @@ class CreateCareForm extends Component {
                                         listCustomers
                                     }
                                     value={newCare.customer ? newCare.customer : []}
-                                    onChange={this.handleChangeCustomer}
+                                    onChange={handleChangeCustomer}
                                     multiple={true}
                                     options={{ placeholder: translate('crm.care.customer') }}
                                 />
@@ -233,7 +211,7 @@ class CreateCareForm extends Component {
                         {/* Tên công việc */}
                         <div className={`form-group`}>
                             <label>{translate('crm.care.name')}</label>
-                            <input type="text" className="form-control" onChange={this.handleChangeName} />
+                            <input type="text" className="form-control" onChange={handleChangeName} />
                             {/* <ErrorLabel content={groupNameError} /> */}
                         </div>
 
@@ -242,7 +220,7 @@ class CreateCareForm extends Component {
                             <label>{translate('crm.care.description')}</label>
                             <QuillEditor
                                 id={'createCare'}
-                                getTextData={this.handleChangeDescription}
+                                getTextData={handleChangeDescription}
                                 table={false}
                             />
                         </div>
@@ -260,7 +238,7 @@ class CreateCareForm extends Component {
                                         listCareTypes
                                     }
                                     value={newCare.careType ? newCare.careType : []}
-                                    onChange={this.handleChangeCareType}
+                                    onChange={handleChangeCareType}
                                     multiple={true}
                                     options={{ placeholder: translate('crm.care.careType') }}
                                 />
@@ -282,7 +260,7 @@ class CreateCareForm extends Component {
                                     ]
                                 }
                                 value={newCare.status ? newCare.status : ''}
-                                onChange={this.handleChangeStatus}
+                                onChange={handleChangeStatus}
                                 multiple={false}
                             />
                         </div>
@@ -293,7 +271,7 @@ class CreateCareForm extends Component {
                             <DatePicker
                                 id="startDate-form-care"
                                 value={newCare.startDate ? newCare.startDate : ''}
-                                onChange={this.handleChangeStartDate}
+                                onChange={handleChangeStartDate}
                                 disabled={false}
                             />
                         </div>
@@ -304,7 +282,7 @@ class CreateCareForm extends Component {
                             <DatePicker
                                 id="endDate-form-care"
                                 value={newCare.endDate ? newCare.endDate : ''}
-                                onChange={this.handleChangeEndDate}
+                                onChange={handleChangeEndDate}
                                 disabled={false}
                             />
                         </div>
@@ -313,7 +291,7 @@ class CreateCareForm extends Component {
             </React.Fragment>
         );
     }
-}
+
 
 function mapStateToProps(state) {
     const { crm, user } = state;
