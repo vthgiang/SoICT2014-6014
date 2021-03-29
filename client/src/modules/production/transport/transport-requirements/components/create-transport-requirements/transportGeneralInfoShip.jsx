@@ -7,25 +7,24 @@ import ValidationHelper from '../../../../../../helpers/validationHelper';
 
 function TransportGeneralInfoShip(props) {
 
-    const [transportInfo, setTransportInfo] = useState({
-        billId: props.billId,
-        fromAddress: "",
-    })
-
+    // const [transportInfo, setTransportInfo] = useState({
+    //     // billId: props.billId,
+    //     curBill: props.curBill,
+    // })
+    // const [address, setAddress] = useState("");
     // useEffect(() => {
-    //     const bill = props.billList.filter(r => r._id === props.billId)[0];
-    //     console.log(bill);
-    //     // if (bill.fromStock){
-    //     //     setTransportInfo({
-    //     //         ...transportInfo,
-    //     //         fromAddress: bill.fromStock.address
-    //     //     });
-    //     // }
+    //     if (props.curBill){
+    //         if (props.curBill.receiver){
+    //             if (props.curBill.receiver.address){
+    //                 setAddress(props.curBill.receiver.address)
+    //             }
+    //         }
+    //     }
     // }, [transportInfo])
 
-    useEffect(() => {
-        console.log(props);
-    })
+    // useEffect(() => {
+    //     console.log(props);
+    // })
 
     return (
         <React.Fragment>
@@ -58,7 +57,7 @@ function TransportGeneralInfoShip(props) {
                                         Địa chỉ kho hàng
                                         <span className="attention"> * </span>
                                     </label>
-                                    <textarea type="text" className="form-control" disabled={false} value={transportInfo.fromAddress}/>
+                                    <textarea type="text" className="form-control" disabled={false}/>
                                 </div>
                             </div>
 
@@ -77,7 +76,9 @@ function TransportGeneralInfoShip(props) {
                                             Khách hàng
                                             <span className="attention"> * </span>
                                         </label>
-                                        <input type="text" className="form-control" disabled={false} />
+                                        <input type="text" className="form-control" disabled={false} 
+                                                // value={address}
+                                        />
                                     </div>
                                 </div>
                                 <div className="col-xs-12 col-sm-8 col-md-8 col-lg-8">

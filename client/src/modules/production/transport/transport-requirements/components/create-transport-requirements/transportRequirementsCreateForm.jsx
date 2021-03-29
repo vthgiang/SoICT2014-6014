@@ -6,6 +6,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import ValidationHelper from '../../../../../../helpers/validationHelper';
 
 import { TransportGeneralInfo } from '../create-transport-requirements/transportGeneralInfo';
+import { TransportGoodsAndTime} from '../create-transport-requirements/transportGoodsAndTime'
 
 import { exampleActions } from '../../redux/actions';
 
@@ -124,7 +125,7 @@ function TransportRequirementsCreateForm(props) {
                                 onClick={(e) => setCurrentStep(e, 1)}
                                 style={{ cursor: "pointer" }}
                             >
-                                <span>Chọn thời gian</span>
+                                <span>Thông tin hàng hóa và thời gian</span>
                             </a>
                         </li>
                         <li key="3">
@@ -138,9 +139,16 @@ function TransportRequirementsCreateForm(props) {
                         </li>
                     </ul>
                 
-                    {state.step === 0 && (
-                        <TransportGeneralInfo />
-                    )}
+                    {
+                        state.step === 0 && (
+                            <TransportGeneralInfo />
+                        )
+                    }
+                    {
+                        state.step === 1 && (
+                            <TransportGoodsAndTime />
+                        )
+                    }
                 </form>
             </DialogModal>
         </React.Fragment>

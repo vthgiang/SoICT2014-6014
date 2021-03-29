@@ -6,6 +6,10 @@ import { withTranslate } from 'react-redux-multilingual';
 import ValidationHelper from '../../../../../../helpers/validationHelper';
 
 import { TransportGeneralInfoShip } from './transportGeneralInfoShip';
+import { TransportReturn } from './transportReturn';
+import { TransportImportGoods } from './transportImportGoods';
+import { TransportMaterial } from './transportMaterial';
+import { TransportNewOne} from './transportNewOne';
 
 import { exampleActions } from '../../redux/actions';
 import { BillActions } from '../../../../warehouse/bill-management/redux/actions'
@@ -48,9 +52,9 @@ function TransportGeneralInfo(props) {
         billGroup: "2",
         billType: "3"
     })
-    const [billInfo, setBillInfo] = useState({
-        value: '',
-    });
+    const [billId, setBillId] = useState();
+
+    const [billDetail, setBillDetail] = useState({})
     // const { translate, example, page, perPage } = props;
 
     const { exampleName, description, exampleNameError } = state;
@@ -80,17 +84,23 @@ function TransportGeneralInfo(props) {
     },[state])
 
     const handleTypeBillChange = (value) => {
-        // console.log(value[0]);
-        // if (value[0] !== "0") {
-        //     setBillInfo({
-        //         ...billInfo,
-        //         value: value[0],
-        //     });
-        // }
+        console.log(value[0]);
+        if (value[0] !== "0") {
+            // let curBill = props.bills.filter(bill => bill._id === value[0]);
+            setBillId(value[0]);
+            console.log(billId);
+        }
     }
+
     // useEffect(() => {
-    //     console.log(props.bills)
-    // })
+    //     if (props.bills.length >=1){
+    //         let curBill = props.bills.filter(bill => bill._id === billInfo.value);
+    //         setBillDetail({
+    //             ...billDetail,
+    //             curBill: curBill[0]
+    //         })
+    //     }
+    // }, billInfo)
 
     return (
         <React.Fragment>
@@ -146,12 +156,38 @@ function TransportGeneralInfo(props) {
             </fieldset>
 
             </div>
-            {state.value === "1" && ( 
-                <TransportGeneralInfoShip 
-                    billId = {billInfo.value}
-                    billList = {props.bills}    
-                />
-            )}
+            {
+                state.value === "1" && ( 
+                    <TransportGeneralInfoShip 
+                        // billId = {billInfo.value}
+                        // curBill = {billDetail.curBill}   
+                    />
+                )
+            }
+            {
+                state.value === "2" && (
+                    < TransportReturn
+                    />
+                )
+            }
+            {
+                state.value === "3" && (
+                    < TransportImportGoods
+                    />
+                )
+            }
+            {
+                state.value === "4" && (
+                    < TransportMaterial
+                    />
+                )
+            }
+            {
+                state.value === "5" && (
+                    < TransportNewOne
+                    />
+                )
+            }
         </React.Fragment>
     );
 }
