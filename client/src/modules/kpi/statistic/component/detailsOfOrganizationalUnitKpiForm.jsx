@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { withTranslate } from 'react-redux-multilingual';
 
 import { DetailOfTaskDialogModal } from './detailOfTaskDialogModal';
 import { DetailOfEmployeeKpiDialogModal } from './detailOfEmployeeKpiDialogModal';
 import { DetailOfParticipantDialogModal } from './detailOfParticipantDialogModal';
 
-import { withTranslate } from 'react-redux-multilingual';
+import { SlimScroll } from '../../../../common-components';
 
 class DetailsOfOrganizationalUnitKpiForm extends Component {
 
@@ -88,6 +89,8 @@ class DetailsOfOrganizationalUnitKpiForm extends Component {
                         window.$(`#details-of-organizational-unit-kpi-form`).slideUp()
                     }}>{ translate('form.close') }</button>
                 </div>
+
+                <SlimScroll outerComponentId="details-of-organizational-unit-kpi-form" innerComponentWidth={"100%"} activate={true} />
             </div>
         )
     }
