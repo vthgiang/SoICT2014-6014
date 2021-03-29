@@ -30,7 +30,7 @@ class ModalCreateEmployeeKpiSet extends Component {
     }
 
     static getDerivedStateFromProps = (nextProps, prevState) => {
-        if (nextProps.managers?.length > 0 && nextProps.organizationalUnit?._id && nextProps.month && (nextProps.organizationalUnit?._id !== prevState.organizationalUnit?._id || nextProps.month !== prevState.month)) {
+        if (nextProps.managers?.length > 0 && nextProps.organizationalUnit?._id && nextProps.month && (nextProps.organizationalUnit?._id !== prevState.organizationalUnit?._id || nextProps.month !== prevState.month || nextProps.managers?.length !== prevState.managers?.length)) {
             return {
                 ...prevState,
                 employeeKpiSet: {
