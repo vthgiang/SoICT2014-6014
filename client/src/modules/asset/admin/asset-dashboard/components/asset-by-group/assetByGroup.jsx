@@ -9,8 +9,8 @@ import ValuePieChart from './valuePieChart';
 import DepreciationPieChart from './depreciationPieChart';
 
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
-
-
+import _isEqual from 'lodash/isEqual';
+import StatisticalAssetByGroup from './statisticalAssetByGroup';
 
 class AssetByGroup extends Component {
 
@@ -25,6 +25,9 @@ class AssetByGroup extends Component {
 
         this.state = {
             listAssets: [],
+            amountOfAsset: [],
+            depreciationOfAsset: [],
+            valueOfAsset: []
         }
     }
 
@@ -53,28 +56,70 @@ class AssetByGroup extends Component {
         });
     }
 
-    setAmountOfAsset = (amountOfAsset) => {
-        this.EXPORT_DATA.amountOfAsset = amountOfAsset;
+    setAmountOfAsset = (value) => {
+        let { amountOfAsset } = this.state;
+        this.EXPORT_DATA.amountOfAsset = value;
         this.props.setAssetByGroupExportData(this.EXPORT_DATA.amountOfAsset, this.EXPORT_DATA.depreciationOfAsset, this.EXPORT_DATA.valueOfAsset)
+
+        if (!_isEqual(amountOfAsset, value)) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    amountOfAsset: value,
+                }
+            })
+        }
     }
 
-    setDepreciationOfAsset = (depreciationOfAsset) => {
-        this.EXPORT_DATA.depreciationOfAsset = depreciationOfAsset;
+    setDepreciationOfAsset = (value) => {
+        let { depreciationOfAsset } = this.state;
+        this.EXPORT_DATA.depreciationOfAsset = value;
         this.props.setAssetByGroupExportData(this.EXPORT_DATA.amountOfAsset, this.EXPORT_DATA.depreciationOfAsset, this.EXPORT_DATA.valueOfAsset)
+
+        if (!_isEqual(depreciationOfAsset, value)) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    depreciationOfAsset: value,
+                }
+            })
+        }
     }
 
-    setValueOfAsset = (valueOfAsset) => {
-        this.EXPORT_DATA.valueOfAsset = valueOfAsset;
+    setValueOfAsset = (value) => {
+        let { valueOfAsset } = this.state;
+        this.EXPORT_DATA.valueOfAsset = value;
         this.props.setAssetByGroupExportData(this.EXPORT_DATA.amountOfAsset, this.EXPORT_DATA.depreciationOfAsset, this.EXPORT_DATA.valueOfAsset)
+
+        if (!_isEqual(valueOfAsset, value)) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    valueOfAsset: value,
+                }
+            })
+        }
     }
 
     render() {
         const { translate } = this.props;
-        const { listAssets, assetType, amountOfAsset, depreciationOfAsset, valueOfAsset } = this.state;
+        const { listAssets, assetType, amountOfAsset, valueOfAsset, depreciationOfAsset } = this.state;
 
         return (
             <React.Fragment>
                 <div className="qlcv">
+                    <div className="row">
+                        <div className="col-md-12">
+                            {
+                                (amountOfAsset.length > 0 || valueOfAsset.length > 0 || depreciationOfAsset.length > 0) &&
+                                <StatisticalAssetByGroup
+                                    amountOfAsset={amountOfAsset}
+                                    valueOfAsset={valueOfAsset}
+                                    depreciationOfAsset={depreciationOfAsset}
+                                />
+                            }
+                        </div>
+                    </div>
                     <div className="row">
                         {/* Biểu đồ số lượng tài sản */}
                         <div className="col-xs-6">

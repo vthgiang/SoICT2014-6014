@@ -2533,6 +2533,7 @@ export default {
                 value: "Giá trị",
                 maintainance_cost: "Chi phí bảo trì-sửa chữa",
                 lost_value: "Giá trị hao mòn (Triệu)",
+                lost: "Hao mòn",
                 sum_value: "Tổng giá trị (Triệu)",
                 building: "Mặt bằng",
                 machine: "Máy móc",
