@@ -11,6 +11,7 @@ import ValueTree from './value-of-asset/valueTree';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import { TreeSelect } from '../../../../../../common-components';
 import isEqual from 'lodash/isEqual';
+import StatisticalAssetByType from './statisticalAssetByType';
 class AssetByType extends Component {
 
     constructor(props) {
@@ -30,6 +31,9 @@ class AssetByType extends Component {
             displayBy: this.INFO_SEARCH.displayBy,
             typeOfChart: this.INFO_SEARCH.typeOfChart,
             depreciationOfAsset: [],
+            amountOfAsset: [],
+            valueOfAsset: [],
+            depreciation: [],
         }
     }
 
@@ -71,19 +75,49 @@ class AssetByType extends Component {
         })
     }
 
-    setAmountOfAsset = (amountOfAsset) => {
-        this.EXPORT_DATA.amountOfAsset = amountOfAsset;
+    setAmountOfAsset = (value) => {
+        let { amountOfAsset } = this.state;
+        this.EXPORT_DATA.amountOfAsset = value;
         this.props.setAssetByTypeExportData(this.EXPORT_DATA.amountOfAsset, this.EXPORT_DATA.depreciationOfAsset, this.EXPORT_DATA.valueOfAsset)
+
+        if (!isEqual(amountOfAsset, value)) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    amountOfAsset: value,
+                }
+            })
+        }
     }
 
-    setDepreciationOfAsset = (depreciationOfAsset) => {
-        this.EXPORT_DATA.depreciationOfAsset = depreciationOfAsset;
+    setDepreciationOfAsset = (value) => {
+        let { depreciation } = this.state;
+        this.EXPORT_DATA.depreciationOfAsset = value;
         this.props.setAssetByTypeExportData(this.EXPORT_DATA.amountOfAsset, this.EXPORT_DATA.depreciationOfAsset, this.EXPORT_DATA.valueOfAsset)
+
+        if (!isEqual(depreciation, value)) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    depreciation: value,
+                }
+            })
+        }
     }
 
-    setValueOfAsset = (valueOfAsset) => {
-        this.EXPORT_DATA.valueOfAsset = valueOfAsset;
+    setValueOfAsset = (value) => {
+        let { valueOfAsset } = this.state;
+        this.EXPORT_DATA.valueOfAsset = value;
         this.props.setAssetByTypeExportData(this.EXPORT_DATA.amountOfAsset, this.EXPORT_DATA.depreciationOfAsset, this.EXPORT_DATA.valueOfAsset)
+
+        if (!isEqual(valueOfAsset, value)) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    valueOfAsset: value,
+                }
+            })
+        }
     }
 
     getDepreciationOfAsset = (value) => {
@@ -122,7 +156,7 @@ class AssetByType extends Component {
 
     render() {
         const { translate } = this.props;
-        let { listAssets, assetType, type, depreciationOfAsset } = this.state;
+        let { listAssets, assetType, type, depreciationOfAsset, amountOfAsset, valueOfAsset, depreciation } = this.state;
         const listAssetType = assetType && assetType.length > 0 ?
             this.getAssetTypes(assetType) : [];
         let assetTypes;
@@ -150,6 +184,26 @@ class AssetByType extends Component {
                             </div>
                         </div>
                     </div>
+
+                    <div className="row">
+                        <div className="col-md-12">
+                            <div className="box-header">
+                                <div className="box-title">Biểu đồ thống kê tài sản theo loại</div>
+                            </div>
+                            <div className="box-body qlcv">
+                                {
+                                    (amountOfAsset || depreciation || valueOfAsset) &&
+                                    <StatisticalAssetByType
+                                        amountOfAsset={amountOfAsset}
+                                        depreciationOfAsset={depreciation}
+                                        valueOfAsset={valueOfAsset}
+                                    />
+                                }
+
+                            </div>
+                        </div>
+                    </div>
+
                     <div className="row">
                         <div className="col-xs-6">
                             <div className="box box-solid">
