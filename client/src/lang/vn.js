@@ -5677,7 +5677,8 @@ export default {
         },
         manage_transport: {
             add_requirements: "Thêm yêu cầu vận chuyển",
-
+        },
+        
         project: {
             code: "Mã dự án",
             name: "Tên dự án",
