@@ -1,4 +1,4 @@
-import React, {Component, useEffect, useState} from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { withTranslate } from 'react-redux-multilingual';
@@ -9,58 +9,64 @@ import { createKpiSetActions } from "../redux/actions";
 import { DialogModal, ErrorLabel, SelectBox, QuillEditor } from '../../../../../common-components';
 import ValidationHelper from '../../../../../helpers/validationHelper';
 
-function ModalEditEmployeeKpi(props) {
-    const [state, setState] = useState({
-        _id: null,
-        name: "",
-        parent: undefined,
-        weight: "",
-        criteria: "",
-        employeeKpiSet: "",
 
-        errorOnName: undefined,
-        errorOnCriteria: undefined,
-        errorOnWeight: undefined,
+class ModalEditEmployeeKpi extends Component {
 
-        editing: false,
-        submitted: false
-    });
+    constructor(props) {
+        super(props);
 
-    let currentOrganizationalUnitKPI, items;
-    const { createKpiUnit, translate } = props;
-    const { _id, name, weight, criteria, errorOnName, errorOnCriteria, errorOnWeight, editing, parent, quillValueDefault } = state;
+        this.state = {
+            _id: null,
+            name: "",
+            parent: undefined,
+            weight: "",
+            criteria: "",
+            employeeKpiSet: "",
 
-    useEffect(()=>{
-        if (props.id !== state._id && props.employeeKpi) {
-            setState({
-                ...state,
-                _id: props.id,
-                name: props.employeeKpi.name,
-                parent: props.employeeKpi.parent ? props.employeeKpi.parent._id : null,
-                weight: props.employeeKpi.weight,
-                criteria: props.employeeKpi.criteria,
-                quillValueDefault: props.employeeKpi.criteria,
+            errorOnName: undefined,
+            errorOnCriteria: undefined,
+            errorOnWeight: undefined,
+
+            editing: false,
+            submitted: false
+        };
+    }
+    
+    static getDerivedStateFromProps(nextProps, prevState){
+        
+        if (nextProps.id !== prevState._id && nextProps.employeeKpi) {
+            return {
+                ...prevState,
+                _id: nextProps.id,
+                name: nextProps.employeeKpi.name,
+                parent: nextProps.employeeKpi.parent ? nextProps.employeeKpi.parent._id : null,
+                weight: nextProps.employeeKpi.weight,
+                criteria: nextProps.employeeKpi.criteria,
+                quillValueDefault: nextProps.employeeKpi.criteria,
 
                 errorOnName: undefined, // Khi nhận thuộc tính mới, cần lưu ý reset lại các gợi ý nhắc lỗi, nếu không các lỗi cũ sẽ hiển thị lại
                 errorOnCriteria: undefined,
                 errorOnWeight: undefined,
-            })
+            } 
+        } else {
+            return null;
         }
-    },[props.id])
+    }
 
+    
     /**Gửi request chỉnh sửa mục tiêu này */
-    const handleEditTargetEmployeeKpi = async () => {
-        const { _id, name, parent, weight, criteria } = state;
+    handleEditTargetEmployeeKpi = async () => {
+        const { _id, name, parent, weight, criteria } = this.state;
 
         let newTarget = {
             name: name,
             parent: parent,
             weight: weight,
             criteria: criteria,
-        }
-
-        if (isFormValidated()) {
-            let res = await props.editEmployeeKpi(_id, newTarget);
+        } 
+        
+        if (this.isFormValidated()) {
+            let res = await this.props.editEmployeeKpi(_id, newTarget);
 
             window.$(`#editEmployeeKpi${_id}`).modal("hide");
             window.$(".modal-backdrop").remove();
@@ -71,152 +77,165 @@ function ModalEditEmployeeKpi(props) {
         }
     }
 
-   const handleNameChange = (e) => {
+    handleNameChange = (e) => {
         let value = e.target.value;
-        let validation = ValidationHelper.validateName(props.translate, value);
-
-        setState( {
-            ...state,
-            errorOnName: validation.message,
-            name: value,
+        let validation = ValidationHelper.validateName(this.props.translate, value);
+        
+        this.setState(state => {
+            return {
+                ...state,
+                errorOnName: validation.message,
+                name: value,
+            }
         });
-    };
+    }
 
-   const handleParentChange = (value) => {
-        setState( {
-            ...state,
-            parent: value,
+    handleParentChange = (value) => {
+        this.setState(state => {
+            return {
+                ...state,
+                parent: value,
+            }
         });
-    };
+    }
 
-   const handleCriteriaChange = (value) => {
-        let validation = ValidationHelper.validateDescription(props.translate, value);
-        setState( {
-            ...state,
-            errorOnCriteria: validation.message,
-            criteria: value,
+    handleCriteriaChange = (value) => {
+        let validation = ValidationHelper.validateDescription(this.props.translate, value);
+
+        this.setState(state => {
+            return {
+                ...state,
+                errorOnCriteria: validation.message,
+                criteria: value,
+            }
         });
-    };
+    }
 
-   const handleWeightChange = (e) => {
+    handleWeightChange = (e) => {
         let value = e.target.value;
-        let validation = validateWeight(props.translate, value);
+        let validation = this.validateWeight(this.props.translate, value);
 
-        setState( {
-            ...state,
-            errorOnWeight: validation.message,
-            weight: value,
+        this.setState(state => {
+            return {
+                ...state,
+                errorOnWeight: validation.message,
+                weight: value,
+            }
         });
-    };
+    }
 
-   const validateWeight = (translate, value) => {
+    validateWeight = (translate, value) => {
         let validation = ValidationHelper.validateEmpty(translate, value);
 
         if (!validation.status) {
             return validation;
         }
-
+        
         if (value < 0) {
             return {
                 status: false,
-                message: props.translate('kpi.employee.employee_kpi_set.create_employee_kpi_modal.validate_weight.less_than_0')
+                message: this.props.translate('kpi.employee.employee_kpi_set.create_employee_kpi_modal.validate_weight.less_than_0')
             };
         } else if(value > 100){
             return {
                 status: false,
-                message: props.translate('kpi.employee.employee_kpi_set.create_employee_kpi_modal.validate_weight.greater_than_100')
+                message: this.props.translate('kpi.employee.employee_kpi_set.create_employee_kpi_modal.validate_weight.greater_than_100')
             };
         } else {
             return {
                 status: true
             };
         }
-    };
-
-    const isFormValidated = () => {
-        const { translate } = props;
-        const { name, criteria, weight } = state;
-
-        let validatateName, validateCriteria, result;
-
-        validatateName = ValidationHelper.validateName(translate, name);
-        validateCriteria = ValidationHelper.validateDescription(translate, criteria);
-        let validation = validateWeight(translate, weight)
-
-        result = validatateName.status && validateCriteria.status && validation.status;
-        return result;
-    };
-
-
-    if (createKpiUnit.currentKPI) currentOrganizationalUnitKPI = createKpiUnit.currentKPI;
-
-    if (!currentOrganizationalUnitKPI) {
-        items = [];
-    } else {
-        items = currentOrganizationalUnitKPI.kpis.map(x => {//type !==0 thì đc. cái này để loại những mục tiêu mặc định?
-            return {value: x._id, text: x.name} });
     }
 
-    return (
-        <React.Fragment>
-            <DialogModal
-                modalID={`editEmployeeKpi${_id}`} isLoading={editing}
-                formID="formeditEmployeeKpi"
-                title={translate('kpi.employee.employee_kpi_set.edit_employee_kpi_modal.edit_employee_kpi')}
-                msg_success={translate('kpi.employee.employee_kpi_set.edit_employee_kpi_modal.success')}
-                msg_faile={translate('kpi.employee.employee_kpi_set.edit_employee_kpi_modal.failure')}
-                func={handleEditTargetEmployeeKpi}
-                disableSubmit={!isFormValidated()}
-            >
-                <form id="formEditTargetEmployeeKpi" onSubmit={() => handleEditTargetEmployeeKpi(translate('kpi.employee.employee_kpi_set.edit_employee_kpi_modal.success'))}>
+    isFormValidated = () => {
+        const { translate } = this.props;
+        const { name, criteria, weight } = this.state;
+        
+        let validatateName, validateCriteria, validateWeight, result;
+        
+        validatateName = ValidationHelper.validateName(translate, name);
+        validateCriteria = ValidationHelper.validateDescription(translate, criteria);
+        validateWeight = this.validateWeight(translate, weight)
+        
+        result = validatateName.status && validateCriteria.status && validateWeight.status;
+        return result;
+    }
 
-                    {/**Tên của mục tiêu */}
-                    <div className={`form-group ${errorOnName === undefined ? "" : "has-error"}`}>
-                        <label>{translate('kpi.employee.employee_kpi_set.edit_employee_kpi_modal.name')}<span className="text-red">*</span></label>
-                        <input type="text" className="form-control" value={name} onChange = {handleNameChange}/>
-                        <ErrorLabel content={errorOnName}/>
-                    </div>
+    render() {
+        let currentOrganizationalUnitKPI, items;
+        const { createKpiUnit, translate } = this.props;
+        const { _id, name, weight, criteria, errorOnName, errorOnCriteria, errorOnWeight, editing, parent, quillValueDefault } = this.state;
 
-                    {/**Mục tiêu cha */}
-                    {(createKpiUnit.currentKPI !== null) &&
-                    (items.length !== 0) &&
-                    <div className="form-group">
-                        <label>{translate('kpi.employee.employee_kpi_set.edit_employee_kpi_modal.parents')}<span className="text-red">*</span></label>
-                        <SelectBox
-                            id={`parent-target-edit${_id}`}
-                            className="form-control select2"
-                            style={{ width: "100%" }}
-                            items={items}
-                            onChange={handleParentChange}
-                            multiple={false}
-                            value={parent ? parent : ""}
-                        />
-                    </div>
-                    }
-
-                    {/**Tiêu chí đánh giá */}
-                    <div className={`form-group ${errorOnCriteria === undefined ? "" : "has-error"}`}>
-                        <label>{translate('kpi.employee.employee_kpi_set.edit_employee_kpi_modal.evaluation_criteria')}<span className="text-red">*</span></label>
-                        <QuillEditor
-                            id={'edit-employee-kpi'}
-                            getTextData={handleCriteriaChange}
-                            quillValueDefault={quillValueDefault}
-                            toolbar={false}
-                        />
-                        <ErrorLabel content={errorOnCriteria} />
-                    </div>
-
-                    {/**Trọng số của mục tiêu */}
-                    <div className={`form-group ${errorOnWeight === undefined ? "" : "has-error"}`}>
-                        <label>{translate('kpi.employee.employee_kpi_set.edit_employee_kpi_modal.weight')}<span className="text-red">*</span></label>
-                        <input type="number" className="form-control" value={weight} onChange = {handleWeightChange}/>
-                        <ErrorLabel content={errorOnWeight}/>
-                    </div>
-                </form>
-            </DialogModal>
-        </React.Fragment>
-    );
-
+        if (createKpiUnit.currentKPI) currentOrganizationalUnitKPI = createKpiUnit.currentKPI;
+        
+        if (!currentOrganizationalUnitKPI) {
+            items = [];
+        } else {    
+            items = currentOrganizationalUnitKPI.kpis.map(x => {//type !==0 thì đc. cái này để loại những mục tiêu mặc định?
+            return {value: x._id, text: x.name} });
+        }
+        
+        return (
+            <React.Fragment>
+                <DialogModal
+                    modalID={`editEmployeeKpi${_id}`} isLoading={editing}
+                    formID="formeditEmployeeKpi"
+                    title={translate('kpi.employee.employee_kpi_set.edit_employee_kpi_modal.edit_employee_kpi')}
+                    msg_success={translate('kpi.employee.employee_kpi_set.edit_employee_kpi_modal.success')}
+                    msg_faile={translate('kpi.employee.employee_kpi_set.edit_employee_kpi_modal.failure')}
+                    func={this.handleEditTargetEmployeeKpi}
+                    disableSubmit={!this.isFormValidated()}
+                >
+                    <form id="formEditTargetEmployeeKpi" onSubmit={() => this.handleEditTargetEmployeeKpi(translate('kpi.employee.employee_kpi_set.edit_employee_kpi_modal.success'))}>
+                        
+                            {/**Tên của mục tiêu */}
+                            <div className={`form-group ${errorOnName === undefined ? "" : "has-error"}`}>
+                                <label>{translate('kpi.employee.employee_kpi_set.edit_employee_kpi_modal.name')}<span className="text-red">*</span></label>
+                                <input type="text" className="form-control" value={name} onChange = {this.handleNameChange}/>
+                                <ErrorLabel content={errorOnName}/>
+                            </div>
+                            
+                            {/**Mục tiêu cha */}
+                            {(createKpiUnit.currentKPI !== null) &&
+                                (items.length !== 0) && 
+                                    <div className="form-group">
+                                        <label>{translate('kpi.employee.employee_kpi_set.edit_employee_kpi_modal.parents')}<span className="text-red">*</span></label>
+                                        <SelectBox
+                                            id={`parent-target-edit${_id}`}
+                                            className="form-control select2"
+                                            style={{ width: "100%" }}
+                                            items={items}
+                                            onChange={this.handleParentChange}
+                                            multiple={false}
+                                            value={parent ? parent : ""}
+                                        />
+                                    </div>
+                            }
+                            
+                            {/**Tiêu chí đánh giá */}
+                            <div className={`form-group ${errorOnCriteria === undefined ? "" : "has-error"}`}>
+                                <label>{translate('kpi.employee.employee_kpi_set.edit_employee_kpi_modal.evaluation_criteria')}<span className="text-red">*</span></label>
+                                <QuillEditor
+                                    id={'edit-employee-kpi'}
+                                    getTextData={this.handleCriteriaChange}
+                                    quillValueDefault={quillValueDefault}
+                                    toolbar={false}
+                                />
+                                <ErrorLabel content={errorOnCriteria} />
+                            </div>
+                            
+                            {/**Trọng số của mục tiêu */}
+                            <div className={`form-group ${errorOnWeight === undefined ? "" : "has-error"}`}>
+                            <label>{translate('kpi.employee.employee_kpi_set.edit_employee_kpi_modal.weight')}<span className="text-red">*</span></label>
+                                <input type="number" className="form-control" value={weight} onChange = {this.handleWeightChange}/>
+                                <ErrorLabel content={errorOnWeight}/>
+                            </div>    
+                    </form>
+                </DialogModal>
+            </React.Fragment>
+        );
+    }
 }
 
 function mapState(state) {

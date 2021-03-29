@@ -1,4 +1,4 @@
-import React, {Component, useCallback, useEffect, useState} from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import Swal from 'sweetalert2';
@@ -13,103 +13,113 @@ import { ModalCopyKPIUnit } from './organizationalUnitKpiCopyModal';
 import { DataTableSetting, ErrorLabel, DatePicker, SelectBox, ExportExcel, SelectMulti, PaginateBar } from '../../../../../common-components';
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
 
-function KPIUnitManager(props) {
-    let d = new Date(),
-        month = d.getMonth() + 1,
-        year = d.getFullYear();
-    let startMonth, endMonth, startYear;
+class KPIUnitManager extends Component {
+    constructor(props) {
+        super(props);
 
-    if (month > 1) {
-        startMonth = month - 1;
-        startYear = year;
-    } else {
-        startMonth = month - 1 + 12;
-        startYear = year - 1;
-    }
-    if (startMonth < 10)
-        startMonth = '0' + startMonth;
-    if (month < 10) {
-        endMonth = '0' + month;
-    } else {
-        endMonth = month;
-    }
+        let d = new Date(),
+            month = d.getMonth() + 1,
+            year = d.getFullYear();
+        let startMonth, endMonth, startYear;
 
-    var tableId = "table-org-kpi-management";
-    const defaultConfig = { limit: 20 }
-    const limit = getTableConfiguration(tableId, defaultConfig).limit;
+        if (month > 1) {
+            startMonth = month - 1;
+            startYear = year;
+        } else {
+            startMonth = month - 1 + 12;
+            startYear = year - 1;
+        }
+        if (startMonth < 10)
+            startMonth = '0' + startMonth;
+        if (month < 10) {
+            endMonth = '0' + month;
+        } else {
+            endMonth = month;
+        }
 
-    const [state, setState] = useState({
-        tableId,
-        showModalCopy: "",
-        currentRole: localStorage.getItem("currentRole"),
-        status: -1,
-        organizationalUnit: [],
-        startDate: new Date([startYear, startMonth].join('-')),
-        endDate: new Date([year, endMonth].join('-')),
-        infosearch: {
-            role: localStorage.getItem("currentRole"),
+        const tableId = "table-org-kpi-management";
+        const defaultConfig = { limit: 20 }
+        const limit = getTableConfiguration(tableId, defaultConfig).limit;
+
+        this.state = {
+            tableId,
+            showModalCopy: "",
+            currentRole: localStorage.getItem("currentRole"),
             status: -1,
+            organizationalUnit: [],
             startDate: new Date([startYear, startMonth].join('-')),
             endDate: new Date([year, endMonth].join('-')),
-            organizationalUnit: [],
-            perPage: limit,
-            page: 1
-        },
-        defaultStartDate: [startMonth, startYear].join('-'),
-        defaultEndDate: [endMonth, year].join('-'),
-    });
+            infosearch: {
+                role: localStorage.getItem("currentRole"),
+                status: -1,
+                startDate: new Date([startYear, startMonth].join('-')),
+                endDate: new Date([year, endMonth].join('-')),
+                organizationalUnit: [],
+                perPage: limit,
+                page: 1
+            },
+            defaultStartDate: [startMonth, startYear].join('-'),
+            defaultEndDate: [endMonth, year].join('-'),
+        };
+    }
 
-    useEffect(()=>{
-        props.getDepartment();
-        props.getAllKPIUnit(state.infosearch);
-        props.getAllUserSameDepartment(localStorage.getItem("currentRole"));
-        props.getChildrenOfOrganizationalUnitsAsTree(localStorage.getItem("currentRole"));
-    },[])
+    componentDidMount() {
+        this.props.getDepartment();
+        this.props.getAllKPIUnit(this.state.infosearch);
+        this.props.getAllUserSameDepartment(localStorage.getItem("currentRole"));
+        this.props.getChildrenOfOrganizationalUnitsAsTree(localStorage.getItem("currentRole"));
+    }
 
-    useEffect(()=>{
+
+    static getDerivedStateFromProps(props, state) {
         const { user } = props;
         let { organizationalUnit } = state;
         if (organizationalUnit && organizationalUnit.length === 0 && user && user.userdepartments) {
             const unit = [user.userdepartments._id];
-            setState ({
+            return {
                 ...state,
                 organizationalUnit: unit,
-            })
+            }
+        } else {
+            return null;
         }
-    },[state.organizationalUnit, props.user, props.user.userdepartments])
 
-    useCallback(()=>{
-        const { currentRole, infosearch, startDate, endDate, status, organizationalUnit } = state;
+
+    }
+    shouldComponentUpdate = (nextProps, nextState) => {
+        const { currentRole, infosearch, startDate, endDate, status, organizationalUnit } = this.state;
 
         if (currentRole !== localStorage.getItem('currentRole')) {
-            props.getAllKPIUnit({
+            this.props.getAllKPIUnit({
                 ...infosearch,
                 role: localStorage.getItem("currentRole"),
                 organizationalUnit: []
             });
-            props.getChildrenOfOrganizationalUnitsAsTree(localStorage.getItem('currentRole'));
+            this.props.getChildrenOfOrganizationalUnitsAsTree(localStorage.getItem('currentRole'));
 
-                setState ({
+            this.setState(state => {
+                return {
                     ...state,
                     currentRole: localStorage.getItem('currentRole')
-            });
+                }
+            })
 
             return true;
         }
 
         // Không re-render khi lựa chọn tháng ở DatePiker
-        if (state.startDate !== startDate
-            || state.endDate !== endDate
-            || state.status !== status
-            || state.organizationalUnit !== organizationalUnit
+        if (nextState.startDate !== startDate
+            || nextState.endDate !== endDate
+            || nextState.status !== status
+            || nextState.organizationalUnit !== organizationalUnit
         ) {
             return false;
         }
 
         return true;
-    },[state.currentRole])
+    }
 
-    const handleStartDateChange = (value) => {
+    handleStartDateChange = (value) => {
         let month;
         if (value === '') {
             month = null;
@@ -117,14 +127,16 @@ function KPIUnitManager(props) {
             month = value.slice(3, 7) + '-' + value.slice(0, 2);
         }
 
-        setState( {
-            ...state,
-            startDate: month
+        this.setState(state => {
+            return {
+                ...state,
+                startDate: month
+            }
         });
     }
 
-    const checkStatusKPI = (status) => {
-        const { translate } = props
+    checkStatusKPI = (status) => {
+        const { translate } = this.props
         if (status === 0) {
             return translate('kpi.organizational_unit.management.over_view.setting_up');
         } else if (status === 1) {
@@ -132,7 +144,7 @@ function KPIUnitManager(props) {
         }
     }
 
-    const handleEndDateChange = (value) => {
+    handleEndDateChange = (value) => {
         let month;
         if (value === '') {
             month = null;
@@ -140,28 +152,33 @@ function KPIUnitManager(props) {
             month = value.slice(3, 7) + '-' + value.slice(0, 2);
         }
 
-        setState ({
-            ...state,
-            endDate: month
+        this.setState(state => {
+            return {
+                ...state,
+                endDate: month
+            }
         });
     }
 
-    const handleUser = (value) => {
-        setState( {
-            ...state,
-            userkpi: value,
+    handleUser = (value) => {
+        this.setState(state => {
+            return {
+                ...state,
+                userkpi: value,
+            }
         })
     }
 
-    const handleStatus = async (value) => {
-        await setState( {
-            ...state,
-            status: value
-
+    handleStatus = async (value) => {
+        await this.setState(state => {
+            return {
+                ...state,
+                status: value
+            }
         })
     }
 
-    function formatDate(date) {
+    formatDate(date) {
         let d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
@@ -175,44 +192,43 @@ function KPIUnitManager(props) {
         return [month, year].join('-');
     }
 
-    const handleShowEdit = async (id, idkpiunit, date) => {
-        await setState( {
-            ...state,
-            id: id,
-            idkpiunit: idkpiunit,
-            date: date
+    handleShowEdit = async (id, idkpiunit, date) => {
+        await this.setState(state => {
+            return {
+                ...state,
+                id: id,
+                idkpiunit: idkpiunit,
+                date: date
+            }
         });
         window.$(`#dataResultTask`).modal('show');
     }
 
-    const handleSelectOrganizationalUnit = (value) => {
-        setState( {
-            ...state,
-            organizationalUnit: value
+    handleSelectOrganizationalUnit = (value) => {
+        this.setState(state => {
+            return {
+                ...state,
+                organizationalUnit: value
+            }
         })
     }
 
 
-    const handleSearchData = async () => {
-        await setState({
-            ...state,
-            infosearch: {
-                ...state.infosearch,
-                status: state.status,
-                startDate: state.startDate,
-                endDate: state.endDate,
-                organizationalUnit: state.organizationalUnit
+    handleSearchData = async () => {
+        await this.setState(state => {
+            return {
+                ...state,
+                infosearch: {
+                    ...state.infosearch,
+                    status: this.state.status,
+                    startDate: this.state.startDate,
+                    endDate: this.state.endDate,
+                    organizationalUnit: this.state.organizationalUnit
+                }
             }
         })
-        const infosearch= {
-            ...state.infosearch,
-            status: state.status,
-            startDate: state.startDate,
-            endDate: state.endDate,
-            organizationalUnit: state.organizationalUnit
-        }
-        const { startDate, endDate } = state;
-        const { translate } = props;
+        const { infosearch, startDate, endDate } = this.state;
+        const { translate } = this.props;
 
         let startDateIso, endDateIso;
 
@@ -229,31 +245,30 @@ function KPIUnitManager(props) {
                 confirmButtonText: translate('kpi.organizational_unit.management.over_view.alert_search.confirm')
             })
         } else {
-            props.getAllKPIUnit(infosearch);
+            this.props.getAllKPIUnit(infosearch);
         }
     };
 
-    const setLimit = async (limit) => {
-        if (Number(limit) !== state?.infosearch?.limit) {
-            await setState( {
+    setLimit = async (limit) => {
+        if (Number(limit) !== this.state?.infosearch?.limit) {
+            await this.setState(state => {
+                return {
                     ...state,
                     infosearch: {
                         ...state.infosearch,
                         perPage: Number(limit)
                     }
+                }
             })
-            const infosearch =  {
-                ...state.infosearch,
-                perPage: Number(limit)
-            }
 
-            props.getAllKPIUnit(infosearch);
+            let { infosearch } = this.state;
+            this.props.getAllKPIUnit(infosearch);
         }
     }
 
 
-    const handleGetDataPagination = async (index) => {
-        await setState(state => {
+    handleGetDataPagination = async (index) => {
+        await this.setState(state => {
             return {
                 ...state,
                 infosearch: {
@@ -262,16 +277,13 @@ function KPIUnitManager(props) {
                 }
             }
         })
-        const infosearch =  {
-            ...state.infosearch,
-            page: index
-        }
 
-        props.getAllKPIUnit(infosearch);
+        let { infosearch } = this.state;
+        this.props.getAllKPIUnit(infosearch);
     }
 
-    const showModalCopy = async (id) => {
-        await setState(state => {
+    showModalCopy = async (id) => {
+        await this.setState(state => {
             return {
                 ...state,
                 showModalCopy: id
@@ -280,13 +292,13 @@ function KPIUnitManager(props) {
         window.$(`#copy-old-kpi-to-new-time-${id}`).modal("show")
     }
 
-    const checkPermisson = (managerCurrentUnit) => {
+    checkPermisson = (managerCurrentUnit) => {
         let currentRole = localStorage.getItem("currentRole");
         return (managerCurrentUnit && managerCurrentUnit.includes(currentRole));
     }
 
     /*Chuyển đổi dữ liệu KPI nhân viên thành dữ liệu export to file excel */
-   const  convertDataToExportData = (data, unitName) => {
+    convertDataToExportData = (data, unitName) => {
         let fileName = "Bảng quản lý KPI đơn vị " + (unitName ? unitName : "");
         if (data) {
             data = data.map((x, index) => {
@@ -297,7 +309,7 @@ function KPIUnitManager(props) {
                 let employeePoint = (x.employeePoint === null) ? "Chưa đánh giá" : parseInt(x.employeePoint);
                 let approverPoint = (x.approvedPoint === null) ? "Chưa đánh giá" : parseInt(x.approvedPoint);
                 let date = new Date(x.date);
-                let status = checkStatusKPI(x.status);
+                let status = this.checkStatusKPI(x.status);
                 let numberTarget = parseInt(x.kpis.length);
 
                 return {
@@ -340,241 +352,245 @@ function KPIUnitManager(props) {
             ]
         }
         return exportData;
+
     }
 
-    const { user, managerKpiUnit, dashboardEvaluationEmployeeKpiSet, translate } = props;
-    const { startDate, endDate, status, errorOnDate, infosearch, organizationalUnit, defaultStartDate, defaultEndDate } = state;
+    render() {
+        const { user, managerKpiUnit, dashboardEvaluationEmployeeKpiSet, translate } = this.props;
+        const { startDate, endDate, status, errorOnDate, infosearch, organizationalUnit, defaultStartDate, defaultEndDate, tableId } = this.state;
 
-    let listkpi, currentKPI, kpiApproved, datachat1, targetA, targetC, targetOther, misspoint, organizationalUnitsOfUserLoading;
-    let unitList, currentUnit, userdepartments, exportData;
-    let childrenOrganizationalUnit = [], queue = [], currentOrganizationalUnit;
+        let listkpi, currentKPI, kpiApproved, datachat1, targetA, targetC, targetOther, misspoint, organizationalUnitsOfUserLoading;
+        let unitList, currentUnit, userdepartments, exportData;
+        let childrenOrganizationalUnit = [], queue = [], currentOrganizationalUnit;
 
-    if (user) userdepartments = user.userdepartments;
-    if (user) {
-        unitList = user.organizationalUnitsOfUser;
-        organizationalUnitsOfUserLoading = user.organizationalUnitsOfUserLoading;
+        if (user) userdepartments = user.userdepartments;
+        if (user) {
+            unitList = user.organizationalUnitsOfUser;
+            organizationalUnitsOfUserLoading = user.organizationalUnitsOfUserLoading;
 
-        currentUnit = unitList && unitList.filter(item =>
-            item.managers.includes(state.currentRole)
-            || item.deputyManagers.includes(state.currentRole)
-            || item.employees.includes(state.currentRole));
-    }
+            currentUnit = unitList && unitList.filter(item =>
+                item.managers.includes(this.state.currentRole)
+                || item.deputyManagers.includes(this.state.currentRole)
+                || item.employees.includes(this.state.currentRole));
+        }
 
-    if (managerKpiUnit) {
-        listkpi = managerKpiUnit.kpis;
-        if (listkpi && listkpi.length !== 0) {
-            kpiApproved = listkpi.filter(item => item.status === 2);
-            currentKPI = listkpi.filter(item => item.status !== 2);
-            datachat1 = kpiApproved.map(item => {
-                return { label: formatDate(item.date), y: item.result }
-            }).reverse();
-            targetA = kpiApproved.map(item => {
+        if (managerKpiUnit) {
+            listkpi = managerKpiUnit.kpis;
+            if (listkpi && listkpi.length !== 0) {
+                kpiApproved = listkpi.filter(item => item.status === 2);
+                currentKPI = listkpi.filter(item => item.status !== 2);
+                datachat1 = kpiApproved.map(item => {
+                    return { label: this.formatDate(item.date), y: item.result }
+                }).reverse();
+                targetA = kpiApproved.map(item => {
 
-                return { label: formatDate(item.date), y: item.kpis[0].result }
-            }).reverse();
-            targetC = kpiApproved.map(item => {
-                return { label: formatDate(item.date), y: item.kpis[1].result }
-            }).reverse();
-            targetOther = kpiApproved.map(item => {
-                return { label: formatDate(item.date), y: (item.result - item.kpis[0].result - item.kpis[1].result) }
-            }).reverse();
-            misspoint = kpiApproved.map(item => {
-                return { label: formatDate(item.date), y: (100 - item.result) }
-            }).reverse();
-        };
-    }
+                    return { label: this.formatDate(item.date), y: item.kpis[0].result }
+                }).reverse();
+                targetC = kpiApproved.map(item => {
+                    return { label: this.formatDate(item.date), y: item.kpis[1].result }
+                }).reverse();
+                targetOther = kpiApproved.map(item => {
+                    return { label: this.formatDate(item.date), y: (item.result - item.kpis[0].result - item.kpis[1].result) }
+                }).reverse();
+                misspoint = kpiApproved.map(item => {
+                    return { label: this.formatDate(item.date), y: (100 - item.result) }
+                }).reverse();
+            };
+        }
 
-    if (userdepartments && listkpi) {
-        exportData = convertDataToExportData(listkpi, userdepartments.department);
-    }
+        if (userdepartments && listkpi) {
+            exportData = this.convertDataToExportData(listkpi, userdepartments.department);
+        }
 
 
-    // Khởi tạo selectbox đơn vị
-    if (dashboardEvaluationEmployeeKpiSet) {
-        currentOrganizationalUnit = dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit;
-    }
-    if (currentOrganizationalUnit) {
-        childrenOrganizationalUnit.push(currentOrganizationalUnit);
-        queue.push(currentOrganizationalUnit);
-        while (queue.length > 0) {
-            let v = queue.shift();
-            if (v.children) {
-                for (let i = 0; i < v.children.length; i++) {
-                    let u = v.children[i];
-                    queue.push(u);
-                    childrenOrganizationalUnit.push(u);
+        // Khởi tạo selectbox đơn vị
+        if (dashboardEvaluationEmployeeKpiSet) {
+            currentOrganizationalUnit = dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit;
+        }
+        if (currentOrganizationalUnit) {
+            childrenOrganizationalUnit.push(currentOrganizationalUnit);
+            queue.push(currentOrganizationalUnit);
+            while (queue.length > 0) {
+                let v = queue.shift();
+                if (v.children) {
+                    for (let i = 0; i < v.children.length; i++) {
+                        let u = v.children[i];
+                        queue.push(u);
+                        childrenOrganizationalUnit.push(u);
+                    }
                 }
             }
         }
+
+        return (
+            <React.Fragment>
+                <div className="box">
+                    {unitList && unitList.length !== 0
+                        ? <div className="box-body qlcv">
+                            <ModalDetailKPI
+                                date={this.state.date}
+                                id={this.state.id}
+                                idkpiunit={this.state.idkpiunit}
+                            />
+
+                            {/* TÌm kiếm theo đơn vị, trạng thái */}
+                            <div className="form-inline">
+                                <div className="form-group">
+                                    <label>{translate('task.task_management.department')}</label>
+                                    {childrenOrganizationalUnit && childrenOrganizationalUnit.length !== 0
+                                        && <SelectMulti
+                                            key="multiSelectUnit1"
+                                            id="multiSelectUnit1"
+                                            items={childrenOrganizationalUnit.map(item => { return { value: item.id, text: item.name } })}
+                                            onChange={this.handleSelectOrganizationalUnit}
+                                            options={{
+                                                nonSelectedText: translate('task.task_management.select_department'),
+                                                allSelectedText: translate(`task.task_management.select_all_department`),
+                                            }}
+                                            value={organizationalUnit}
+                                        >
+                                        </SelectMulti>
+                                    }
+                                </div>
+                                <div className="form-group">
+                                    <label>{translate('kpi.organizational_unit.management.over_view.status')}</label>
+                                    {
+                                        <SelectBox
+                                            id={`select-status-kpi`}
+                                            className="form-control select2"
+                                            items={[{ value: -1, text: translate('kpi.organizational_unit.management.over_view.all_status') }, { value: 0, text: translate('kpi.organizational_unit.management.over_view.setting_up') }, { value: 1, text: translate('kpi.organizational_unit.management.over_view.activated') },]}
+                                            onChange={this.handleStatus}
+                                            style={{ width: "100%" }}
+                                            value={status}
+                                        />
+                                    }
+                                </div>
+                            </div>
+
+                            {/* TÌm kiếm theo tháng */}
+                            <div className="form-inline">
+                                <div className={`form-group ${!errorOnDate ? "" : "has-error"}`}>
+                                    <label>{translate('kpi.organizational_unit.management.over_view.start_date')}</label>
+                                    <DatePicker
+                                        id="start_date"
+                                        value={defaultStartDate}
+                                        onChange={this.handleStartDateChange}
+                                        dateFormat="month-year"
+                                    />
+                                    <ErrorLabel content={errorOnDate} />
+                                </div>
+                                <div className="form-group">
+                                    <label>{translate('kpi.organizational_unit.management.over_view.end_date')}</label>
+                                    <DatePicker
+                                        id="end_date"
+                                        value={defaultEndDate}
+                                        onChange={this.handleEndDateChange}
+                                        dateFormat="month-year"
+                                    />
+                                    <ErrorLabel content={errorOnDate} />
+                                </div>
+
+                                <div className="form-group">
+                                    <button type="button" className="btn btn-success" onClick={() => this.handleSearchData()}>{translate('kpi.organizational_unit.management.over_view.search')}</button>
+                                </div>
+
+                                {exportData && <ExportExcel id="export-unit-kpi-management-overview" exportData={exportData} style={{ margin: 0 }} buttonName={"Xuất"} />}
+                            </div>
+
+                            {/* Danh sách các KPI của đơn vị */}
+                            <table id={tableId} className="table table-hover table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th title={translate('kpi.organizational_unit.management.over_view.time')}>{translate('kpi.organizational_unit.management.over_view.time')}</th>
+                                        <th title={translate('task.task_management.col_organization')}>{translate('task.task_management.col_organization')}</th>
+                                        <th title={translate('kpi.organizational_unit.management.over_view.status')}>{translate('kpi.organizational_unit.management.over_view.status')}</th>
+                                        <th title={translate('kpi.organizational_unit.management.over_view.number_target')}>{translate('kpi.organizational_unit.management.over_view.number_target')}</th>
+                                        <th title={translate('kpi.organizational_unit.management.over_view.creator')}>{translate('kpi.organizational_unit.management.over_view.creator')}</th>
+                                        <th title={translate('kpi.evaluation.employee_evaluation.system_evaluate')}>{translate('kpi.evaluation.employee_evaluation.system_evaluate')}</th>
+                                        <th title={translate('kpi.evaluation.employee_evaluation.result_self_evaluate')}>{translate('kpi.evaluation.employee_evaluation.result_self_evaluate')}</th>
+                                        <th title={translate('kpi.evaluation.employee_evaluation.evaluation_management')}>{translate('kpi.evaluation.employee_evaluation.evaluation_management')}</th>
+                                        <th title={translate('kpi.organizational_unit.management.over_view.action')}>{translate('kpi.organizational_unit.management.over_view.action')}
+                                            <DataTableSetting
+                                                className="pull-right"
+                                                tableId={tableId}
+                                                tableContainerId="kpiTableContainer"
+                                                tableWidth="1300px"
+                                                columnArr={[
+                                                    'Người tạo',
+                                                    'Thời gian',
+                                                    'Trạng thái',
+                                                    'Số lượng mục tiêu',
+                                                    'Kết quả đánh giá',
+                                                    'Xem chi tiết',
+                                                    'Tạo KPI tháng mới',
+                                                    'Cập nhật'
+                                                ]}
+                                                setLimit={this.setLimit}
+                                                hideColumnOption={true}
+                                            />
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {
+                                        (listkpi && listkpi.length !== 0)
+                                            ? listkpi.map((item, index) => {
+                                                if (item) {
+                                                    return <tr key={index + 1}>
+                                                        <td>{this.formatDate(item.date)}</td>
+                                                        <td>{item.organizationalUnit && item.organizationalUnit.name}</td>
+                                                        <td>{this.checkStatusKPI(item.status)}</td>
+                                                        <td>{item.kpis.length}</td>
+                                                        <td>{item.creator && item.creator.name}</td>
+                                                        <td>{item.automaticPoint === null ? translate('kpi.evaluation.employee_evaluation.not_evaluated_yet') : item.automaticPoint}</td>
+                                                        <td>{item.employeePoint === null ? translate('kpi.evaluation.employee_evaluation.not_evaluated_yet') : item.employeePoint}</td>
+                                                        <td>{item.approvedPoint === null ? translate('kpi.evaluation.employee_evaluation.not_evaluated_yet') : item.approvedPoint}</td>
+                                                        <td>
+                                                            <a href={`#dataResultTask`}
+                                                                data-toggle="modal"
+                                                                data-backdrop="static"
+                                                                data-keyboard="false"
+                                                                title="Xem chi tiết KPI tháng này">
+                                                                <i className="material-icons" onClick={() => this.handleShowEdit(item._id, item.organizationalUnit._id, item.date)}>view_list</i>
+                                                            </a>
+
+                                                            {this.checkPermisson(currentUnit && currentUnit[0] && currentUnit[0].managers)
+                                                                && <a href="#abc" onClick={() => this.showModalCopy(item._id)} className="copy" data-toggle="modal" data-backdrop="static" data-keyboard="false" title="Thiết lập kpi tháng mới từ kpi tháng này">
+                                                                    <i className="material-icons">content_copy</i>
+                                                                </a>
+                                                            }
+                                                            {this.state.showModalCopy === item._id
+                                                                ? <ModalCopyKPIUnit kpiId={item._id} idunit={item.organizationalUnit._id} kpiunit={item} />
+                                                                : null
+                                                            }
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            }) : null
+                                    }
+                                </tbody>
+                            </table>
+                            {(listkpi && listkpi.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>}
+
+                            <PaginateBar
+                                display={managerKpiUnit?.kpis?.length}
+                                total={managerKpiUnit?.totalCountUnitKpiSet}
+                                pageTotal={managerKpiUnit?.totalPageUnitKpiSet}
+                                currentPage={infosearch?.page}
+                                func={this.handleGetDataPagination}
+                            />
+                        </div>
+                        : organizationalUnitsOfUserLoading
+                        && <div className="box-body">
+                            <h4>Bạn chưa có đơn vị</h4>
+                        </div>
+                    }
+                </div>
+            </React.Fragment>
+        );
     }
-
-    return (
-        <React.Fragment>
-            <div className="box">
-                {unitList && unitList.length !== 0
-                    ? <div className="box-body qlcv">
-                        <ModalDetailKPI
-                            date={state.date}
-                            id={state.id}
-                            idkpiunit={state.idkpiunit}
-                        />
-
-                        {/* TÌm kiếm theo đơn vị, trạng thái */}
-                        <div className="form-inline">
-                            <div className="form-group">
-                                <label>{translate('task.task_management.department')}</label>
-                                {childrenOrganizationalUnit && childrenOrganizationalUnit.length !== 0
-                                && <SelectMulti
-                                    key="multiSelectUnit1"
-                                    id="multiSelectUnit1"
-                                    items={childrenOrganizationalUnit.map(item => { return { value: item.id, text: item.name } })}
-                                    onChange={handleSelectOrganizationalUnit}
-                                    options={{
-                                        nonSelectedText: translate('task.task_management.select_department'),
-                                        allSelectedText: translate(`task.task_management.select_all_department`),
-                                    }}
-                                    value={organizationalUnit}
-                                >
-                                </SelectMulti>
-                                }
-                            </div>
-                            <div className="form-group">
-                                <label>{translate('kpi.organizational_unit.management.over_view.status')}</label>
-                                {
-                                    <SelectBox
-                                        id={`select-status-kpi`}
-                                        className="form-control select2"
-                                        items={[{ value: -1, text: translate('kpi.organizational_unit.management.over_view.all_status') }, { value: 0, text: translate('kpi.organizational_unit.management.over_view.setting_up') }, { value: 1, text: translate('kpi.organizational_unit.management.over_view.activated') },]}
-                                        onChange={handleStatus}
-                                        style={{ width: "100%" }}
-                                        value={status}
-                                    />
-                                }
-                            </div>
-                        </div>
-
-                        {/* TÌm kiếm theo tháng */}
-                        <div className="form-inline">
-                            <div className={`form-group ${!errorOnDate ? "" : "has-error"}`}>
-                                <label>{translate('kpi.organizational_unit.management.over_view.start_date')}</label>
-                                <DatePicker
-                                    id="start_date"
-                                    value={defaultStartDate}
-                                    onChange={handleStartDateChange}
-                                    dateFormat="month-year"
-                                />
-                                <ErrorLabel content={errorOnDate} />
-                            </div>
-                            <div className="form-group">
-                                <label>{translate('kpi.organizational_unit.management.over_view.end_date')}</label>
-                                <DatePicker
-                                    id="end_date"
-                                    value={defaultEndDate}
-                                    onChange={handleEndDateChange}
-                                    dateFormat="month-year"
-                                />
-                                <ErrorLabel content={errorOnDate} />
-                            </div>
-
-                            <div className="form-group">
-                                <button type="button" className="btn btn-success" onClick={() => handleSearchData()}>{translate('kpi.organizational_unit.management.over_view.search')}</button>
-                            </div>
-
-                            {exportData && <ExportExcel id="export-unit-kpi-management-overview" exportData={exportData} style={{ margin: 0 }} buttonName={"Xuất"} />}
-                        </div>
-
-                        {/* Danh sách các KPI của đơn vị */}
-                        <table id={tableId} className="table table-hover table-bordered">
-                            <thead>
-                            <tr>
-                                <th title={translate('kpi.organizational_unit.management.over_view.time')}>{translate('kpi.organizational_unit.management.over_view.time')}</th>
-                                <th title={translate('task.task_management.col_organization')}>{translate('task.task_management.col_organization')}</th>
-                                <th title={translate('kpi.organizational_unit.management.over_view.status')}>{translate('kpi.organizational_unit.management.over_view.status')}</th>
-                                <th title={translate('kpi.organizational_unit.management.over_view.number_target')}>{translate('kpi.organizational_unit.management.over_view.number_target')}</th>
-                                <th title={translate('kpi.organizational_unit.management.over_view.creator')}>{translate('kpi.organizational_unit.management.over_view.creator')}</th>
-                                <th title={translate('kpi.evaluation.employee_evaluation.system_evaluate')}>{translate('kpi.evaluation.employee_evaluation.system_evaluate')}</th>
-                                <th title={translate('kpi.evaluation.employee_evaluation.result_self_evaluate')}>{translate('kpi.evaluation.employee_evaluation.result_self_evaluate')}</th>
-                                <th title={translate('kpi.evaluation.employee_evaluation.evaluation_management')}>{translate('kpi.evaluation.employee_evaluation.evaluation_management')}</th>
-                                <th title={translate('kpi.organizational_unit.management.over_view.action')}>{translate('kpi.organizational_unit.management.over_view.action')}
-                                    <DataTableSetting
-                                        className="pull-right"
-                                        tableId={tableId}
-                                        tableContainerId="kpiTableContainer"
-                                        tableWidth="1300px"
-                                        columnArr={[
-                                            'Người tạo',
-                                            'Thời gian',
-                                            'Trạng thái',
-                                            'Số lượng mục tiêu',
-                                            'Kết quả đánh giá',
-                                            'Xem chi tiết',
-                                            'Tạo KPI tháng mới',
-                                            'Cập nhật'
-                                        ]}
-                                        setLimit={setLimit}
-                                        hideColumnOption={true}
-                                    />
-                                </th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {
-                                (listkpi && listkpi.length !== 0)
-                                    ? listkpi.map((item, index) => {
-                                        if (item) {
-                                            return <tr key={index + 1}>
-                                                <td>{formatDate(item.date)}</td>
-                                                <td>{item.organizationalUnit && item.organizationalUnit.name}</td>
-                                                <td>{checkStatusKPI(item.status)}</td>
-                                                <td>{item.kpis.length}</td>
-                                                <td>{item.creator && item.creator.name}</td>
-                                                <td>{item.automaticPoint === null ? translate('kpi.evaluation.employee_evaluation.not_evaluated_yet') : item.automaticPoint}</td>
-                                                <td>{item.employeePoint === null ? translate('kpi.evaluation.employee_evaluation.not_evaluated_yet') : item.employeePoint}</td>
-                                                <td>{item.approvedPoint === null ? translate('kpi.evaluation.employee_evaluation.not_evaluated_yet') : item.approvedPoint}</td>
-                                                <td>
-                                                    <a href={`#dataResultTask`}
-                                                       data-toggle="modal"
-                                                       data-backdrop="static"
-                                                       data-keyboard="false"
-                                                       title="Xem chi tiết KPI tháng này">
-                                                        <i className="material-icons" onClick={() => handleShowEdit(item._id, item.organizationalUnit._id, item.date)}>view_list</i>
-                                                    </a>
-
-                                                    {checkPermisson(currentUnit && currentUnit[0] && currentUnit[0].managers)
-                                                    && <a href="#abc" onClick={() => showModalCopy(item._id)} className="copy" data-toggle="modal" data-backdrop="static" data-keyboard="false" title="Thiết lập kpi tháng mới từ kpi tháng này">
-                                                        <i className="material-icons">content_copy</i>
-                                                    </a>
-                                                    }
-                                                    {state.showModalCopy === item._id
-                                                        ? <ModalCopyKPIUnit kpiId={item._id} idunit={item.organizationalUnit._id} kpiunit={item} />
-                                                        : null
-                                                    }
-                                                </td>
-                                            </tr>
-                                        }
-                                    }) : null
-                            }
-                            </tbody>
-                        </table>
-                        {(listkpi && listkpi.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>}
-
-                        <PaginateBar
-                            display={managerKpiUnit?.kpis?.length}
-                            total={managerKpiUnit?.totalCountUnitKpiSet}
-                            pageTotal={managerKpiUnit?.totalPageUnitKpiSet}
-                            currentPage={infosearch?.page}
-                            func={handleGetDataPagination}
-                        />
-                    </div>
-                    : organizationalUnitsOfUserLoading
-                    && <div className="box-body">
-                        <h4>Bạn chưa có đơn vị</h4>
-                    </div>
-                }
-            </div>
-        </React.Fragment>
-    );
 }
+
 function mapState(state) {
     const { user, managerKpiUnit, dashboardEvaluationEmployeeKpiSet } = state;
     return { user, managerKpiUnit, dashboardEvaluationEmployeeKpiSet };
