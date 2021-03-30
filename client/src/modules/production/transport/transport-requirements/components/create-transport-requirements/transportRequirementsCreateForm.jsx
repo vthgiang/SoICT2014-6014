@@ -137,6 +137,8 @@ function TransportRequirementsCreateForm(props) {
         nameStock: ""
     })
 
+    const [goodsTransport, setGoodsTransport] = useState([])
+
     const [goodDetails, setGoodDetails] = useState({
         good: [],
     })
@@ -197,32 +199,42 @@ function TransportRequirementsCreateForm(props) {
     }, [billId])
 
     useEffect(() => {
+        let nameStock = "", 
+            addressStock = "", 
+            goods=[];
         if (state.value==="3" && billId.id !==""){
             if (billDetail.currentBill) {
                 if (billDetail.currentBill.fromStock){
-                    let goods = billDetail.currentBill.fromStock.goods;
-                    console.log(goods, " goods")
-                    let goodArray = [];
-                    for (let good in goods ){
-                        let g = props.goods.find( r => r._id === good._id);
-                        if (g) {
-                            goodArray.append([good, g]);
-                        }
-                    }
-                    setImportGoodsDetails({
-                        ...importGoodsDetails,
-                        nameStock: billDetail.currentBill.fromStock.name,
-                        addressStock: billDetail.currentBill.fromStock.address,
-                    })
+                    nameStock = billDetail.currentBill.fromStock.name;
+                    addressStock = billDetail.currentBill.fromStock.address;
+                }
+                if (billDetail.currentBill.goods){
+                    goods = billDetail.currentBill.goods;
+                    // let goodArray = [];
+                    // let i;
+                    // for (i in goods ){
+                    //     if (goods[i].good){
+                    //         let g = props.goods.find( r => r._id === goods[i].good._id);
+                    //         if (g) {
+                    //             console.log(goods[i], " goods i");
+                    //             console.log(g, " g");
+                                
+                    //             let goodOnBill = {
+                    //                 good: goods[i].good
+                    //             }
+
+                    //         }
+                    //     }
+                    // }
+                    // console.log(goodArray," array");
                 }
             }
-        }
-        else {
             setImportGoodsDetails({
                 ...importGoodsDetails,
-                addressStock: "",
-                nameStock: "",
+                nameStock: nameStock,
+                addressStock: addressStock,
             })
+            setGoodsTransport(goods)
         }
 
     }, [billDetail]);
@@ -378,7 +390,9 @@ function TransportRequirementsCreateForm(props) {
                             />
                         )
                     }
-                    < TransportGoods />
+                    < TransportGoods 
+                        goods = {goodsTransport}
+                    />
                 </form>
             </DialogModal>
         </React.Fragment>
