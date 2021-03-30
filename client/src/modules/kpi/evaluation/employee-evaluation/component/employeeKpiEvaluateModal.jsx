@@ -384,7 +384,7 @@ function EmployeeKpiEvaluateModal(props) {
                                                 'Đóng góp (%)',
                                                 'Điểm',
                                                 'Độ quan trọng']}
-                                            setLimit={setLimit}
+                                            // setLimit={setLimit}
                                         />
                                         <table id={tableId} className="table table-hover table-bordered  table-striped mb-0" >
                                             <thead>
