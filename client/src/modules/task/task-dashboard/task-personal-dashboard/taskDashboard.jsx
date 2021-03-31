@@ -518,11 +518,6 @@ class TaskDashboard extends Component {
                     </div>
                 </div>
 
-                <div className="row">
-                    <TasksIsNotLinked />
-                    <TaskHasActionNotEvaluated />
-                </div>
-
                 {/*Biểu đồ dashboard tải công việc */}
                 <div className="row">
                     <div className="col-xs-12">
