@@ -1,22 +1,21 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { ShowImportData, ConFigImportFile } from '../../../../../common-components';
 
-class AssetImportTab extends Component {
-    constructor(props) {
-        super(props);
+function AssetImportTab(props) {
+    const [state, setState] = useState({
+        limit: 100,
+        page: 0
+    })
 
-        this.state = {
-            limit: 100,
-            page: 0
-        };
-    }
+    const { id, className = "tab-pane", configuration, scrollTable = false, importData, rowError, checkFileImport } = props;
+    const { limit, page, configData } = state;
 
     // Function Thay đổi cấu hình file import
-    handleChangeConfig = (value) => {
-        this.setState(state => {
+    const handleChangeConfig = (value) => {
+        setState(state => {
             return {
                 ...state,
                 configData: value,
@@ -24,39 +23,35 @@ class AssetImportTab extends Component {
         })
     }
 
-    render() {
-        const { id, className = "tab-pane", configuration, scrollTable = false, importData, rowError, checkFileImport } = this.props;
-        const { limit, page, configData } = this.state;
     
-        return (
-            <React.Fragment>
-                <div id={id} className={className}>
-                    <div className="box-body row">
-                        <div className="form-group col-md-12 col-xs-12" style={{ marginBottom: 5, paddingRight: 10 }}>
-                            <ConFigImportFile
-                                id={`import_asset_config${id}`}
-                                scrollTable={scrollTable}
-                                configData={configData ? configData : configuration}
-                                handleChangeConfig={this.handleChangeConfig}
-                            />
-                        </div>
-                        <div className="col-md-12 col-xs-12">
-                            <ShowImportData
-                                id={`import_asset_show_data${id}`}
-                                configData={configData ? configData : configuration}
-                                importData={importData}
-                                rowError={rowError}
-                                checkFileImport={checkFileImport}
-                                scrollTable={scrollTable}
-                                limit={limit}
-                                page={page}
-                            />
-                        </div>
+    return (
+        <React.Fragment>
+            <div id={id} className={className}>
+                <div className="box-body row">
+                    <div className="form-group col-md-12 col-xs-12" style={{ marginBottom: 5, paddingRight: 10 }}>
+                        <ConFigImportFile
+                            id={`import_asset_config${id}`}
+                            scrollTable={scrollTable}
+                            configData={configData ? configData : configuration}
+                            handleChangeConfig={handleChangeConfig}
+                        />
+                    </div>
+                    <div className="col-md-12 col-xs-12">
+                        <ShowImportData
+                            id={`import_asset_show_data${id}`}
+                            configData={configData ? configData : configuration}
+                            importData={importData}
+                            rowError={rowError}
+                            checkFileImport={checkFileImport}
+                            scrollTable={scrollTable}
+                            limit={limit}
+                            page={page}
+                        />
                     </div>
                 </div>
-            </React.Fragment>
-        )
-    }
+            </div>
+        </React.Fragment>
+    )
 }
 
 const actions = {

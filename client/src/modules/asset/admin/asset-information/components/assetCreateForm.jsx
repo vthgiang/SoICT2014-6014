@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
@@ -13,49 +13,49 @@ import { UserActions } from '../../../../super-admin/user/redux/actions';
 import { AssetTypeActions } from "../../asset-type/redux/actions";
 import { AssetManagerActions } from '../redux/actions';
 
-class AssetCreateForm extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            img: '',
-            avatar: "",
-            asset: {
-                avatar: '',
-                code: "",
-                assetName: "",
-                serial: "",
-                purchaseDate: null,
-                warrantyExpirationDate: null,
-                assignedToUser: null,
-                assignedToOrganizationalUnit: null,
-                handoverFromDate: null,
-                handoverToDate: null,
-                status: "",
-                typeRegisterForUse: "",
-                assetType: "",
-                description: "",
-                detailInfo: [],
-                residualValue: null,
-                startDepreciation: null,
-                disposalDate: null,
-                disposalType: "",
-                disposalCost: null,
-                disposalDesc: "",
-                archivedRecordNumber: ""
-            },
-            maintainanceLogs: [],
-            usageLogs: [],
-            incidentLogs: [],
-            files: [],
-        };
-    }
+function AssetCreateForm(props) {
+    const [state, setState] = useState({
+        mg: '',
+        avatar: "",
+        asset: {
+            avatar: '',
+            code: "",
+            assetName: "",
+            serial: "",
+            purchaseDate: null,
+            warrantyExpirationDate: null,
+            assignedToUser: null,
+            assignedToOrganizationalUnit: null,
+            handoverFromDate: null,
+            handoverToDate: null,
+            status: "",
+            typeRegisterForUse: "",
+            assetType: "",
+            description: "",
+            detailInfo: [],
+            residualValue: null,
+            startDepreciation: null,
+            disposalDate: null,
+            disposalType: "",
+            disposalCost: null,
+            disposalDesc: "",
+            archivedRecordNumber: ""
+        },
+        maintainanceLogs: [],
+        usageLogs: [],
+        incidentLogs: [],
+        files: [],
+    })
+    
+    const { translate, assetsManager } = props;
+    const { img, asset, maintainanceLogs, usageLogs, incidentLogs, files, avatar } = state;
 
-    componentDidMount() {
-        this.props.getAllUsers();
-    }
+    useEffect(() => {
+        props.getAllUsers();
+    },[])
 
     // Function format dữ liệu Date thành string
-    formatDate2(date, monthYear = false) {
+    const formatDate2 = (date, monthYear = false) => {
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
@@ -77,16 +77,17 @@ class AssetCreateForm extends Component {
     }
 
     // Function upload avatar 
-    handleUpload = (img, avatar) => {
-        this.setState({
+    const handleUpload = (img, avatar) => {
+        setState({
+            ...state,
             img: img,
             avatar: avatar
         })
     }
 
     // Function lưu các trường thông tin vào state
-    handleChange = (name, value) => {
-        const { asset } = this.state;
+    const handleChange = (name, value) => {
+        const { asset } = state;
 
         if (name === 'purchaseDate' || name === 'warrantyExpirationDate' || name === 'handoverFromDate' ||
             name === 'handoverToDate' || name === 'startDepreciation' || name === 'disposalDate') {
@@ -98,7 +99,8 @@ class AssetCreateForm extends Component {
             }
         }
 
-        this.setState({
+        setState({
+            ...state,
             asset: {
                 ...asset,
                 [name]: value
@@ -107,17 +109,19 @@ class AssetCreateForm extends Component {
     }
 
     // Function thêm, chỉnh sửa thông tin bảo trì
-    handleChangeMaintainanceLog = (data, addData) => {
-        this.setState({
+    const handleChangeMaintainanceLog = (data, addData) => {
+        setState({
+            ...state,
             maintainanceLogs: data
         })
     }
 
     // Function thêm, chỉnh sửa thông tin cấp phát, điều chuyển, thu hồi
-    handleChangeUsageLog = (data, addData) => {
-        const { asset } = this.state;
+    const handleChangeUsageLog = (data, addData) => {
+        const { asset } = state;
         let status = addData ? addData.status : asset.status;
-        this.setState({
+        setState({
+            ...state,
             usageLogs: data,
             asset: {
                 ...asset,
@@ -128,9 +132,10 @@ class AssetCreateForm extends Component {
         })
     }
 
-    handleRecallAsset = (data) => {
-        const { asset } = this.state;
-        this.setState({
+    const handleRecallAsset = (data) => {
+        const { asset } = state;
+        setState({
+            ...state,
             asset: {
                 ...asset,
                 assignedToUser: data.assignedToUser,
@@ -140,23 +145,26 @@ class AssetCreateForm extends Component {
         })
     }
     // Function thêm, chỉnh sửa thông tin sự cố thiết bị
-    handleChangeIncidentLog = (data, addData) => {
-        this.setState({
+    const handleChangeIncidentLog = (data, addData) => {
+        setState({
+            ...state,
             incidentLogs: data
         })
     }
 
     // Function thêm thông tin tài liệu đính kèm
-    handleChangeFile = (data, addData) => {
-        this.setState({
+    const handleChangeFile = (data, addData) => {
+        setState({
+            ...state,
             files: data
         })
     }
 
     // TODO: function
-    handleChangeCourse = (data) => {
-        const { assetNew } = this.state;
-        this.setState({
+    const handleChangeCourse = (data) => {
+        const { assetNew } = state;
+        setState({
+            ...state,
             assetNew: {
                 ...assetNew,
                 ...data
@@ -165,7 +173,7 @@ class AssetCreateForm extends Component {
     }
 
     // function kiểm tra các trường bắt buộc phải nhập
-    validatorInput = (value) => {
+    const validatorInput = (value) => {
         if (value && value.length > 0) {
             return true;
         } else {
@@ -174,22 +182,22 @@ class AssetCreateForm extends Component {
     }
 
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
-    isFormValidated = () => {
-        let { asset } = this.state;
+    const isFormValidated = () => {
+        let { asset } = state;
 
         let result =
-            this.validatorInput(asset.code) &&
-            this.validatorInput(asset.assetName) &&
-            this.validatorInput(asset.assetType) &&
-            this.validatorInput(asset.status) &&
-            this.validatorInput(asset.typeRegisterForUse)
+            validatorInput(asset.code) &&
+            validatorInput(asset.assetName) &&
+            validatorInput(asset.assetType) &&
+            validatorInput(asset.status) &&
+            validatorInput(asset.typeRegisterForUse)
 
         return result;
     }
 
     // Function thêm mới thông tin tài sản
-    save = () => {
-        let { asset, maintainanceLogs, usageLogs, incidentLogs, files, avatar } = this.state;
+    const save = () => {
+        let { asset, maintainanceLogs, usageLogs, incidentLogs, files, avatar } = state;
         let assetUpdate = {
             ...asset,
             maintainanceLogs,
@@ -198,19 +206,19 @@ class AssetCreateForm extends Component {
             files
         }
 
-        this.setState({ asset: assetUpdate })
+        setState({ 
+            ...state,
+            asset: assetUpdate 
+        })
 
         let formData = convertJsonObjectToFormData(assetUpdate);
         files.forEach(x => {
             formData.append("file", x.fileUpload);
         })
         formData.append("fileAvatar", avatar);
-        this.props.addNewAsset(formData);
+        props.addNewAsset(formData);
     }
 
-    render() {
-        const { translate, assetsManager } = this.props;
-        const { img, asset, maintainanceLogs, usageLogs, incidentLogs, files, avatar } = this.state;
 
         return (
             <React.Fragment>
@@ -219,8 +227,8 @@ class AssetCreateForm extends Component {
                     size='75' modalID="modal-add-asset" isLoading={assetsManager.isLoading}
                     formID="form-add-asset"
                     title={translate('menu.add_asset')}
-                    func={this.save}
-                    disableSubmit={!this.isFormValidated()}
+                    func={save}
+                    disableSubmit={!isFormValidated()}
                 >
                     <div className="nav-tabs-custom" style={{ marginTop: '-15px' }}>
                         {/* Nav-tabs */}
@@ -240,8 +248,8 @@ class AssetCreateForm extends Component {
                                 id={`create_general`}
                                 img={img}
                                 avatar={avatar}
-                                handleChange={this.handleChange}
-                                handleUpload={this.handleUpload}
+                                handleChange={handleChange}
+                                handleUpload={handleUpload}
                                 assignedToUser={asset.assignedToUser}
                                 assignedToOrganizationalUnit={asset.assignedToOrganizationalUnit}
                                 usageLogs={usageLogs}
@@ -254,16 +262,16 @@ class AssetCreateForm extends Component {
                             <DepreciationTab
                                 id="depreciation"
                                 asset={asset}
-                                handleChange={this.handleChange}
+                                handleChange={handleChange}
                             />
 
                             {/* Thông tin bảo trì */}
                             <MaintainanceLogTab
                                 id="maintainance"
                                 maintainanceLogs={maintainanceLogs}
-                                handleAddMaintainance={this.handleChangeMaintainanceLog}
-                                handleEditMaintainance={this.handleChangeMaintainanceLog}
-                                handleDeleteMaintainance={this.handleChangeMaintainanceLog}
+                                handleAddMaintainance={handleChangeMaintainanceLog}
+                                handleEditMaintainance={handleChangeMaintainanceLog}
+                                handleDeleteMaintainance={handleChangeMaintainanceLog}
                             />
 
                             {/* Thông tin sử dụng */}
@@ -272,26 +280,26 @@ class AssetCreateForm extends Component {
                                 usageLogs={usageLogs}
                                 typeRegisterForUse={asset.typeRegisterForUse}
                                 managedBy={asset.managedBy}
-                                handleAddUsage={this.handleChangeUsageLog}
-                                handleEditUsage={this.handleChangeUsageLog}
-                                handleDeleteUsage={this.handleChangeUsageLog}
-                                handleRecallAsset={this.handleRecallAsset}
+                                handleAddUsage={handleChangeUsageLog}
+                                handleEditUsage={handleChangeUsageLog}
+                                handleDeleteUsage={handleChangeUsageLog}
+                                handleRecallAsset={handleRecallAsset}
                             />
 
                             {/* Thông tin sự cố */}
                             <IncidentLogTab
                                 id="incident"
                                 incidentLogs={incidentLogs}
-                                handleAddIncident={this.handleChangeIncidentLog}
-                                handleEditIncident={this.handleChangeIncidentLog}
-                                handleDeleteIncident={this.handleChangeIncidentLog}
+                                handleAddIncident={handleChangeIncidentLog}
+                                handleEditIncident={handleChangeIncidentLog}
+                                handleDeleteIncident={handleChangeIncidentLog}
                             />
 
                             {/* Thông tin thanh lý */}
                             <DisposalTab
                                 id="disposal"
                                 asset={asset}
-                                handleChange={this.handleChange}
+                                handleChange={handleChange}
                             />
 
                             {/* Tài liệu đính kèm */}
@@ -299,17 +307,16 @@ class AssetCreateForm extends Component {
                                 id="attachments"
                                 files={files}
                                 asset={asset}
-                                handleChange={this.handleChange}
-                                handleAddFile={this.handleChangeFile}
-                                handleEditFile={this.handleChangeFile}
-                                handleDeleteFile={this.handleChangeFile}
+                                handleChange={handleChange}
+                                handleAddFile={handleChangeFile}
+                                handleEditFile={handleChangeFile}
+                                handleDeleteFile={handleChangeFile}
                             />
                         </div>
                     </div>
                 </DialogModal>
             </React.Fragment>
         );
-    }
 };
 
 function mapState(state) {
