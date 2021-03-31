@@ -166,18 +166,46 @@ function TransportRequirementsCreateForm(props) {
         }
     }
 
-    useEffect(() => {
-        const getGoods = async () => {
-            props.getAllGoods();
+    const getBills = () => {
+        let listBills = [
+            {
+                value: "0",
+                text: "Chọn phiếu",
+            },
+        ];
+        const listAllBills = props.bills;        
+        if (listAllBills) {
+            listAllBills.map((item) => {
+                listBills.push({
+                    value: item._id,
+                    text: item.code,
+                });
+            });
         }
-        getGoods();
-        console.log(props.goods);
-    }, [state, billId])
+        return listBills;
+    }
+    // useEffect(() => {
+    //     const getAllGoods = async () => {
+    //         props.getAllGoods();
+    //         if (props.listAllGoods){
+    //             setListAllGoods(props.listAllGoods);
+    //         }
+    //         setGoodsTransport([]);
+    //     }
+    //     getAllGoods();
+    // },[state])
 
     useEffect(() => {
         props.getCustomers();
         props.getBillsByType({ page:1, limit:30, group: parseInt(state.billGroup), managementLocation: localStorage.getItem("currentRole") });
     },[state])
+
+    // useEffect(() => {
+    //     const getGoods = async () => {
+    //         props.getAllGoods();
+    //     }
+    //     getGoods();
+    // }, [state, billId])
 
     const handleTypeBillChange = (value) => {
         console.log(value[0]);
@@ -210,23 +238,6 @@ function TransportRequirementsCreateForm(props) {
                 }
                 if (billDetail.currentBill.goods){
                     goods = billDetail.currentBill.goods;
-                    // let goodArray = [];
-                    // let i;
-                    // for (i in goods ){
-                    //     if (goods[i].good){
-                    //         let g = props.goods.find( r => r._id === goods[i].good._id);
-                    //         if (g) {
-                    //             console.log(goods[i], " goods i");
-                    //             console.log(g, " g");
-                                
-                    //             let goodOnBill = {
-                    //                 good: goods[i].good
-                    //             }
-
-                    //         }
-                    //     }
-                    // }
-                    // console.log(goodArray," array");
                 }
             }
             setImportGoodsDetails({
@@ -238,6 +249,7 @@ function TransportRequirementsCreateForm(props) {
         }
 
     }, [billDetail]);
+
 
     return (
         <React.Fragment>
@@ -336,17 +348,7 @@ function TransportRequirementsCreateForm(props) {
                                         className="form-control select2"
                                         style={{ width: "100%" }}
                                         value={"0"}
-                                        items={
-                                            [{value: "0", text: "Chọn phiếu"}].concat(
-                                            props.bills
-                                            ? props.bills
-                                                .map((bill) => {
-                                                    return {
-                                                        value: bill._id,
-                                                        text: bill.code,
-                                                    };
-                                                })
-                                            : [])}
+                                        items={getBills()}
                                         onChange={handleTypeBillChange}
                                         multiple={false}
                                     />
@@ -404,14 +406,14 @@ function mapState(state) {
     // return { example }
     
     const bills = state.bills.listPaginate;
-    const goods = state.goods.listALLGoods;
-    return { bills, goods }
+    // const listAllGoods = state.goods.listALLGoods;
+    return { bills }
 }
 
 const actions = {
     getBillsByType: BillActions.getBillsByType,
     getCustomers: CrmCustomerActions.getCustomers,
-    getAllGoods: GoodActions.getAllGoods,
+    // getAllGoods: GoodActions.getAllGoods,
 }
 
 const connectedTransportRequirementsCreateForm = connect(mapState, actions)(withTranslate(TransportRequirementsCreateForm));
