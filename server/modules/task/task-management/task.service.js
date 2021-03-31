@@ -1,7 +1,5 @@
 const mongoose = require("mongoose");
 const moment = require("moment");
-const nodemailer = require("nodemailer");
-
 const { Task, TaskTemplate, OrganizationalUnit, User, Company, UserRole } = require('../../../models');
 const OrganizationalUnitService = require(`../../super-admin/organizational-unit/organizationalUnit.service`);
 const overviewService = require(`../../kpi/employee/management/management.service`);
@@ -1863,11 +1861,6 @@ exports.sendEmailForCreateTask = async (portal, task) => {
     task = await task.populate("organizationalUnit parent")
         .populate({path: "creator", select :"_id name email avatar"})
         .execPopulate();
-
-    var transporter = nodemailer.createTransport({
-        service: 'Gmail',
-        auth: { user: 'vnist.qlcv@gmail.com', pass: 'VnistQLCV123@' }
-    });
 
     var email, userId, user, users, userIds
     var managersOfOrganizationalUnitThatHasCollaboratedId = [], managersOfOrganizationalUnitThatHasCollaborated, collaboratedHtml, collaboratedEmail;
