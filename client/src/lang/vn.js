@@ -183,7 +183,7 @@ export default {
             task: "Chi tiết công việc",
             task_management: "Danh sách công việc cá nhân",
             task_management_of_unit: "Danh sách công việc đơn vị",
-            task_management_dashboard: "Dashboard công việc",
+            task_management_dashboard: "Dashboard công việc cá nhân",
             task_organization_management_dashboard:
                 "Dashboard công việc đơn vị",
             task_management_process: "Danh sách quy trình",
@@ -1222,7 +1222,7 @@ export default {
             all_position: "Chọn tất cả các chức vụ",
             non_position: "Chọn chức vụ",
             all_status: "Chọn tất cả các trạng thái",
-            non_status: "Chọn trạng thái",
+            non_status: "Chọn trạng thái"
         },
 
         common_component: {
@@ -2944,6 +2944,11 @@ export default {
                 select_department: "Chọn đơn vị",
                 select_all_department: "Tất cả các đơn vị",
                 role: "Vai trò",
+
+                role_unit: "Vai trò đơn vị",
+                select_role_organizational: "Chọn vai trò đơn vị",
+                organizational_unit_management: "Đơn vị quản lý",
+                organizational_unit_collaborate: "Đơn vị phối hợp",
 
                 status: "Trạng thái",
                 select_status: "Chọn trạng thái",
