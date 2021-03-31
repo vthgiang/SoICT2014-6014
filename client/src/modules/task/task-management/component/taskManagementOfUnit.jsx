@@ -462,8 +462,8 @@ class TaskManagementOfUnit extends Component {
                                 <button className="btn btn-primary" type="button" style={{ borderRadius: 0, marginLeft: 10, backgroundColor: 'transparent', borderRadius: '4px', color: '#367fa9' }} title="Dạng bảng" onClick={() => this.handleDisplayType('table')}><i className="fa fa-list"></i> Dạng bảng</button>
                                 {/* <button className="btn btn-primary" type="button" style={{ borderRadius: 0, marginLeft: 10, backgroundColor: 'transparent', borderRadius: '4px', color: '#367fa9' }} title="Dạng cây" onClick={() => this.handleDisplayType('tree')}><i className="fa fa-sitemap"></i> Dạng cây</button> */}
                                 <button className="btn btn-primary" type="button" style={{ borderRadius: 0, marginLeft: 10, backgroundColor: 'transparent', borderRadius: '4px', color: '#367fa9' }} onClick={() => { window.$('#tasks-filter').slideToggle() }}><i className="fa fa-filter"></i> Lọc</button>
-                                
-                                {exportData && <ExportExcel id="list-task-employee" buttonName="Báo cáo" exportData={exportData} style={{ marginLeft: '10px' }}/>}
+
+                                {exportData && <ExportExcel id="list-task-employee" buttonName="Báo cáo" exportData={exportData} style={{ marginLeft: '10px' }} />}
                             </div>
 
                             <div id="tasks-filter" className="form-inline" style={{ display: 'none' }}>
@@ -485,7 +485,7 @@ class TaskManagementOfUnit extends Component {
                                         </SelectMulti>
                                     }
                                 </div>
-                                
+
                                 {/* Trạng thái công việc */}
                                 <div className="form-group">
                                     <label>{translate('task.task_management.status')}</label>
@@ -496,7 +496,8 @@ class TaskManagementOfUnit extends Component {
                                             { value: "wait_for_approval", text: translate('task.task_management.wait_for_approval') },
                                             { value: "finished", text: translate('task.task_management.finished') },
                                             { value: "delayed", text: translate('task.task_management.delayed') },
-                                            { value: "canceled", text: translate('task.task_management.canceled') }
+                                            { value: "canceled", text: translate('task.task_management.canceled') },
+                                            { value: "requested_to_close", text: translate('task.task_management.requested_to_close') }
                                         ]}
                                         onChange={this.handleSelectStatus}
                                         options={{ nonSelectedText: translate('task.task_management.select_status'), allSelectedText: translate('task.task_management.select_all_status') }}>

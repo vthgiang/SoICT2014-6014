@@ -142,6 +142,8 @@ class EmployeeKpiManagement extends Component {
                 return translate('task.task_management.finished');
             case "delayed":
                 return translate('task.task_management.delayed');
+            case "requested_to_close":
+                return translate('task.task_management.requested_to_close');
             default: //cancel
                 return translate('task.task_management.canceled');
         }

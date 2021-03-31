@@ -5475,7 +5475,8 @@ exports.requestAndApprovalCloseTask = async (portal, taskId, data) => {
                 "description": description,
                 "requestStatus": 1
             },
-            "status": 'wait_for_approval'
+            // "status": 'wait_for_approval'
+            "status": 'requested_to_close'
         }
     }
     else if (type === 'cancel_request') {

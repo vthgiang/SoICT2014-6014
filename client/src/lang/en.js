@@ -2689,6 +2689,7 @@ export default {
                 finished: "Finished",
                 delayed: "Delayed",
                 canceled: "Canceled",
+                requested_to_close: "Requested to close",
                 task_status: "Task status",
                 filter: "Filter",
 

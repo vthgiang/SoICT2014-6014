@@ -93,7 +93,6 @@ class ModalDetailKPIPersonal extends Component {
     }
 
     formatTaskStatus = (translate, status) => {
-        console.log(status)
         switch (status) {
             case "inprocess":
                 return translate('task.task_management.inprocess');
@@ -105,6 +104,8 @@ class ModalDetailKPIPersonal extends Component {
                 return translate('task.task_management.delayed');
             case "canceled":
                 return translate('task.task_management.canceled');
+            case "requested_to_close":
+                return translate('task.task_management.requested_to_close');
         }
     }
 
@@ -279,7 +280,7 @@ class ModalDetailKPIPersonal extends Component {
                         <div className="tab-content">
                             {/* Tổng quan KPI */}
                             <div className={"active tab-pane"} id="overview">
-                                <EmployeeKpiOverviewModal/>
+                                <EmployeeKpiOverviewModal />
                             </div>
 
                             {/* Chi tiết KPI */}

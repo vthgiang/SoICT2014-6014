@@ -2953,6 +2953,7 @@ export default {
                 finished: "Đã hoàn thành",
                 delayed: "Tạm hoãn",
                 canceled: "Bị hủy",
+                requested_to_close: "Chờ kết thúc",
                 task_status: "Trạng thái công việc",
                 filter: "Lọc",
 
