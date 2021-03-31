@@ -4,6 +4,8 @@ import { withTranslate } from "react-redux-multilingual";
 
 import { DataTableSetting, DeleteNotification, PaginateBar } from "../../../../../common-components";
 
+import { Chart } from './chart'
+
 // import { transportRequirementsActions } from "../redux/actions";
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
 
@@ -46,7 +48,8 @@ function TransportArrangeSchedule(props) {
                         </div>
                         
                         <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-
+                            
+                            <Chart />
                         </div>
                     </div>
                 </div>

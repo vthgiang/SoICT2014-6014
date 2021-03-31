@@ -5,7 +5,6 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import { TransportScheduleManagementTable } from './transportScheduleManagementTable';
 import { TransportArrangeSchedule } from './transportArrangeSchedule';
-import { Chart } from './chart'
 
 class TransportSchedule extends Component {
     constructor(props) {
@@ -30,7 +29,6 @@ class TransportSchedule extends Component {
                         <LazyLoadComponent
                         >
                             <TransportArrangeSchedule />
-                            <Chart />
                         </LazyLoadComponent>
                     </div>
                 </div>
