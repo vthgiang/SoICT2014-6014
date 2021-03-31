@@ -3672,6 +3672,8 @@ export default {
                             delete: "Xóa KPI này",
                             cancel: "Hủy",
                         },
+                        overview: "Tổng quan",
+                        evaluation: "Đánh giá",
                         time: "Thời gian",
                         approver: "Người phê duyệt",
                         weight_total: "Tổng trọng số",

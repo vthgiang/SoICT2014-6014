@@ -305,13 +305,13 @@ class EmployeeKpiEvaluateModal extends Component {
             >
                 <div className="nav-tabs-custom" style={{ boxShadow: "none", MozBoxShadow: "none", WebkitBoxShadow: "none" }}>
                     <ul className="nav nav-tabs">
-                        <li className="active"><a href="#overview" data-toggle="tab">{translate('menu.kpi_personal_overview')}</a></li>
-                        <li><a href="#evaluate" data-toggle="tab">{translate('menu.kpi_member_manager')}</a></li>
+                        <li className="active"><a href="#overview" data-toggle="tab">{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.overview')}</a></li>
+                        <li><a href="#evaluate" data-toggle="tab">{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.evaluation')}</a></li>
                     </ul>
                     <div className="tab-content">
                         {/* Tổng quan KPI */}
                         <div className={"active tab-pane"} id="overview">
-                            <EmployeeKpiOverviewModal/>
+                            <EmployeeKpiOverviewModal />
                         </div>
 
                         {/* Đánh giá KPI */}
@@ -384,22 +384,6 @@ class EmployeeKpiEvaluateModal extends Component {
                                         <br /><br />
                                         <h4 style={{ marginBottom: '-15px' }}>{translate('kpi.evaluation.employee_evaluation.task_list')} ({kpimembers?.tasks?.length})</h4>
                                         <div class="table-wrapper-scroll-y my-custom-scrollbar" style={{ height: "calc(80vh - 160px)", overflow: "auto" }}>
-                                            <DataTableSetting 
-                                                className="pull-right" 
-                                                tableId={tableId} 
-                                                tableContainerId="tree-table-container" 
-                                                tableWidth="1300px"
-                                                columnArr={[
-                                                    'STT',
-                                                    'Tên công việc',
-                                                    'Thời gian thực hiện',
-                                                    'Thời gian đánh giá',
-                                                    'Trạng thái',
-                                                    'Đóng góp (%)',
-                                                    'Điểm',
-                                                    'Độ quan trọng']}
-                                                setLimit={this.setLimit} 
-                                            />
                                             <table id={tableId} className="table table-hover table-bordered  table-striped mb-0" >
                                                 <thead>
                                                     <tr>
@@ -410,7 +394,24 @@ class EmployeeKpiEvaluateModal extends Component {
                                                         <th title="Trạng thái">{translate('kpi.evaluation.employee_evaluation.status')}</th>
                                                         <th title="Đóng góp (%)">{translate('kpi.evaluation.employee_evaluation.contribution')} (%)</th>
                                                         <th title="Điểm">{translate('kpi.evaluation.employee_evaluation.point')}</th>
-                                                        <th title="Độ quan trọng">{translate('kpi.evaluation.employee_evaluation.importance_level')}</th>
+                                                        <th title="Độ quan trọng">{translate('kpi.evaluation.employee_evaluation.importance_level')}
+                                                            <DataTableSetting
+                                                                className="pull-right"
+                                                                tableId={tableId}
+                                                                tableContainerId="tree-table-container"
+                                                                tableWidth="1300px"
+                                                                columnArr={[
+                                                                    'STT',
+                                                                    'Tên công việc',
+                                                                    'Thời gian thực hiện',
+                                                                    'Thời gian đánh giá',
+                                                                    'Trạng thái',
+                                                                    'Đóng góp (%)',
+                                                                    'Điểm',
+                                                                    'Độ quan trọng']}
+                                                                linePerPageOption={false}
+                                                            />
+                                                        </th>
                                                     </tr>
                                                 </thead>
                                                 <tbody >
@@ -466,11 +467,11 @@ class EmployeeKpiEvaluateModal extends Component {
                                     </React.Fragment>;
                                     return true;
                                 })}
-                            </div>  
+                            </div>
                         </div>
                     </div>
                 </div>
-                
+
             </DialogModal>
         );
     }

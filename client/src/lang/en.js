@@ -3365,6 +3365,8 @@ export default {
                             delete: "Delete this KPI",
                             cancel: "Cancel",
                         },
+                        overview: "Overview",
+                        evaluation: "Evaluation",
                         time: "Time",
                         approver: "Approver",
                         weight: {

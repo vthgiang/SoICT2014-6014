@@ -71,7 +71,7 @@ import { KPIPersonalManager } from "../modules/kpi/employee/management/component
 import { DashBoardEmployeeKpiSet } from "../modules/kpi/employee/dashboard/component/employeeKpiDashboard";
 import { KPIPersonalEvaluate } from "../modules/kpi/employee/management/component/employeeKpiData";
 
-import { EmployeeKpiManagement } from "../modules/kpi/evaluation/employee-evaluation/component/employeeKpiManagement";
+import { EmployeeKpiManagement } from "../modules/kpi/evaluation/employee-evaluation/component-class/employeeKpiManagement";
 import { EmployeeKpiEvaluationDashboard } from "../modules/kpi/evaluation/dashboard/component/employeeKpiEvaluationDashboard";
 
 import { TaskManagement } from "../modules/task/task-management/component/taskManagement";
