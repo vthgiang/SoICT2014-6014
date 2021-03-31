@@ -55,7 +55,6 @@ function EmployeeKpiEvaluateModal(props) {
 
         if (dataStatus === DATA_STATUS.QUERYING) {
             if (!props.kpimembers.tasks) {
-                return false;
             } else {
                 let tasks = props.kpimembers.tasks;
                 let importanceLevels = {};
@@ -371,7 +370,7 @@ function EmployeeKpiEvaluateModal(props) {
                                     </div>
                                     <br /><br />
                                     <h4 style={{ marginBottom: '-15px' }}>{translate('kpi.evaluation.employee_evaluation.task_list')} ({kpimembers?.tasks?.length})</h4>
-                                    <div class="table-wrapper-scroll-y my-custom-scrollbar" style={{ height: "calc(80vh - 160px)", overflow: "auto" }}>
+                                    <div className="table-wrapper-scroll-y my-custom-scrollbar" style={{ height: "calc(80vh - 160px)", overflow: "auto" }}>
                                         <table id={tableId} className="table table-hover table-bordered  table-striped mb-0" >
                                             <thead>
                                                 <tr>
