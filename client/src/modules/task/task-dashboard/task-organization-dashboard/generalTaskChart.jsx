@@ -419,6 +419,12 @@ const GeneralTaskChart = (props) => {
         }
     }
 
+    const removeTaskStatusFinished = (data) => {
+        if (data && data.length > 0) {
+            return data.filter(o => o.status !== "finished");
+        } else return data;
+    }
+
     return (
         <React.Fragment>
             <ViewAllGeneralTask showDetailTask={showDetailTask} />
@@ -468,7 +474,7 @@ const GeneralTaskChart = (props) => {
                                         <td><a onClick={() => handleShowGeneralTask(x.taskInprocess, x.name, index, 'taskInprocess')}>{x.taskInprocess.length}</a></td>
                                         <td><a onClick={() => handleShowGeneralTask(x.taskFinished, x.name, index, 'taskFinished')} className="text-green">{x.taskFinished.length}</a></td>
                                         <td><a onClick={() => handleShowGeneralTask(x.confirmedTask, x.name, index, 'confirmedTask')}>{x.confirmedTask.length}</a></td>
-                                        <td><a onClick={() => handleShowGeneralTask(x.noneUpdateTask, x.name, index, 'noneUpdateTask')}>{x.noneUpdateTask.length}</a></td>
+                                        <td><a onClick={() => handleShowGeneralTask(removeTaskStatusFinished(x.noneUpdateTask), x.name, index, 'noneUpdateTask')}>{removeTaskStatusFinished(x.noneUpdateTask).length}</a></td>
                                         <td><a onClick={() => handleShowGeneralTask(x.intimeTask, x.name, index, 'intimeTask')} className="text-success">{x.intimeTask.length}</a></td>
                                         <td><a onClick={() => handleShowGeneralTask(x.delayTask, x.name, index, 'delayTask')} className="text-yellow">{x.delayTask.length}</a></td>
                                         <td><a onClick={() => handleShowGeneralTask(x.overdueTask, x.name, index, 'overdueTask')} className="text-red">{x.overdueTask.length}</a></td>
