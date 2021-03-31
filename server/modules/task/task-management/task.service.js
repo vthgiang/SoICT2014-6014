@@ -2118,7 +2118,6 @@ exports.getTasksByUser = async (portal, data) => {
                 { responsibleEmployees: data.userId },
                 { accountableEmployees: data.userId },
                 { consultedEmployees: data.userId },
-                { informedEmployees: data.userId }
             ],
             status: "inprocess"
         })
@@ -2126,8 +2125,8 @@ exports.getTasksByUser = async (portal, data) => {
 
     if (data.data == "organizationUnit") {
         for (let i in data.organizationUnitId) {
-            var organizationalUnit = await OrganizationalUnit(connect(DB_CONNECTION, portal)).findOne({ _id: data.organizationUnitId[i] })
-            var test = await Task(connect(DB_CONNECTION, portal)).find(
+            let organizationalUnit = await OrganizationalUnit(connect(DB_CONNECTION, portal)).findOne({ _id: data.organizationUnitId[i] })
+            let test = await Task(connect(DB_CONNECTION, portal)).find(
                 { organizationalUnit: organizationalUnit._id, status: "inprocess" },
             )
 
@@ -2139,24 +2138,24 @@ exports.getTasksByUser = async (portal, data) => {
 
 
 
-    var nowdate = new Date();
-    var tasksexpire = [], deadlineincoming = [], test;
+    let nowdate = new Date();
+    let tasksexpire = [], deadlineincoming = [], test;
     for (let i in tasks) {
-        var olddate = new Date(tasks[i].endDate);
+        const olddate = new Date(tasks[i].endDate);
         test = nowdate - olddate;
         if (test < 0) {
-            test = olddate - nowdate;
-            var totalDays = Math.round(test / 1000 / 60 / 60 / 24);
+            let test2 = olddate - nowdate;
+            let totalDays = Math.round(test2 / 1000 / 60 / 60 / 24);
             if (totalDays <= 7) {
-                var tasktest = {
+                let tasktest = {
                     task: tasks[i],
                     totalDays: totalDays
                 }
                 deadlineincoming.push(tasktest);
             }
         } else {
-            var totalDays = Math.round(test / 1000 / 60 / 60 / 24);
-            var tasktest = {
+            let totalDays = Math.round(test / 1000 / 60 / 60 / 24);
+            let tasktest = {
                 task: tasks[i],
                 totalDays: totalDays
             }

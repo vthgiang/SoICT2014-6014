@@ -21,7 +21,6 @@ const GeneralTaskPersonalChart = (props) => {
         console.count()
         const { tasks } = props;
         let overdueTask = [], delayTask = [], intimeTask = [], urgentTask = [], todoTask = [], deadlineNow = [];
-        console.log('tasks', tasks)
         // xu ly du lieu
         if (tasks && tasks.length) {
             for (let i in tasks) {
@@ -82,11 +81,12 @@ const GeneralTaskPersonalChart = (props) => {
                 }
 
                 // Láy công việc hạn hôm nay
-                const startDate = dayjs(tasks[i].startDate).format();
+                const endDate = dayjs(tasks[i].endDate).format();
                 const currentDate = dayjs().format();
 
-                if (dayjs(startDate).isSame(currentDate, 'day')) {
-                    const secondDiff = dayjs(startDate).diff(currentDate, 'millisecond')
+                if (dayjs(endDate).isSame(currentDate, 'day')) {
+                    let secondDiff = dayjs(endDate).diff(currentDate, 'millisecond')
+                    secondDiff = convertToDays(secondDiff);
                     deadlineNow = [...deadlineNow, { ...tasks[i], diff: secondDiff }];
                 }
             }
@@ -102,6 +102,12 @@ const GeneralTaskPersonalChart = (props) => {
         })
     }, [props.tasks])
 
+    const convertToDays = (milliSeconds) => {
+        let hours = Math.floor(milliSeconds / (60 * 60 * 1000));
+        milliSeconds -= hours * (60 * 60 * 1000);
+        let minutes = Math.floor(milliSeconds / (60 * 1000));
+        return { hours, minutes };
+    }
 
     // chú thích quá hạn
     const showTaskOverDueDescription = () => {
@@ -139,7 +145,7 @@ const GeneralTaskPersonalChart = (props) => {
 
     const { tasksbyuser } = props;
     const deadlineincoming = tasksbyuser && tasksbyuser.deadlineincoming;
-
+    console.log('deadlineincoming', deadlineincoming);
     return (
         <div className="qlcv box-body">
             <div className="nav-tabs-custom" >
@@ -328,7 +334,7 @@ const GeneralTaskPersonalChart = (props) => {
                                                             <><i className="fa fa-angle-right angle-right-custom" aria-hidden="true"></i>
                                                                 <a className="task-project-name" title="dự án">{getProjectName(obj.taskProject, project && project.data && project.data.list)}</a></>
                                                         }
-                                                        <small className="label" style={{ fontSize: '9px', marginLeft: '5px', borderRadius: '.5em', backgroundColor: "#db8b0b" }}>{obj.progress}% - {translate('task.task_dashboard.rest')} {obj.nowToEnd} {translate('task.task_dashboard.day')}</small>
+                                                        <small className="label" style={{ fontSize: '9px', marginLeft: '5px', borderRadius: '.5em', backgroundColor: "#db8b0b" }}>{obj.progress}% - {translate('task.task_dashboard.rest')} {obj.nowToEnd} {translate('task.task_dashboard.day')} tới hạn</small>
                                                     </a>
                                                     <div id={`collapse-delay${index}`} className="panel-collapse collapse" role="tabpanel">
                                                         <div className="panel-body">
@@ -383,6 +389,7 @@ const GeneralTaskPersonalChart = (props) => {
                                                             <><i className="fa fa-angle-right angle-right-custom" aria-hidden="true"></i>
                                                                 <a className="task-project-name" title="dự án">{getProjectName(obj.taskProject, project && project.data && project.data.list)}</a></>
                                                         }
+                                                        <small className="label" style={{ fontSize: '9px', marginLeft: '5px', borderRadius: '.5em', backgroundColor: "rgb(117 152 224)" }}>{obj?.diff?.hours >= 0 ? `còn ${obj.diff.hours}h:${obj.diff.minutes}p hết hạn` : `hết hạn ${-obj.diff.hours}h:${obj.diff.minutes}p trước`}</small>
                                                     </a>
                                                     <div id={`collapse-deadlinenow${index}`} className="panel-collapse collapse" role="tabpanel">
                                                         <div className="panel-body">
@@ -436,12 +443,12 @@ const GeneralTaskPersonalChart = (props) => {
                                                             <><i className="fa fa-angle-right angle-right-custom" aria-hidden="true"></i>
                                                                 <a className="task-project-name" title="dự án">{getProjectName(obj.task.taskProject, project && project.data && project.data.list)}</a></>
                                                         }
-                                                        <small className="label" style={{ fontSize: '9px', marginLeft: '5px', borderRadius: '.5em', backgroundColor: "#db8b0b" }}>{obj.task && obj.task.progress}% - {translate('task.task_dashboard.rest')} {obj.nowToEnd} {translate('task.task_dashboard.day')}</small>
+                                                        <small className="label" style={{ fontSize: '9px', marginLeft: '5px', borderRadius: '.5em', backgroundColor: "#db8b0b" }}>{obj.task && obj.task.progress}% - {translate('task.task_dashboard.rest')} {obj.totalDays} {translate('task.task_dashboard.day')}</small>
                                                     </a>
                                                     <div id={`collapse-deadlineincoming${index}`} className="panel-collapse collapse" role="tabpanel">
                                                         <div className="panel-body">
                                                             <div className="time-todo-range">
-                                                                <span style={{ marginRight: '10px' }}>Thời gian thực hiện công việc: </span> <span style={{ marginRight: '5px' }}><i className="fa fa-clock-o" style={{ marginRight: '1px', color: "rgb(191 71 71)" }}> </i> {formatTime(obj.startDate)}</span> <span style={{ marginRight: '5px' }}>-</span> <span> <i className="fa fa-clock-o" style={{ marginRight: '4px', color: "rgb(191 71 71)" }}> </i>{formatTime(obj.endDate)}</span>
+                                                                <span style={{ marginRight: '10px' }}>Thời gian thực hiện công việc: </span> <span style={{ marginRight: '5px' }}><i className="fa fa-clock-o" style={{ marginRight: '1px', color: "rgb(191 71 71)" }}> </i> {formatTime(obj.task.startDate)}</span> <span style={{ marginRight: '5px' }}>-</span> <span> <i className="fa fa-clock-o" style={{ marginRight: '4px', color: "rgb(191 71 71)" }}> </i>{formatTime(obj.task.endDate)}</span>
                                                             </div>
 
                                                             <div className="priority-task-wraper">
