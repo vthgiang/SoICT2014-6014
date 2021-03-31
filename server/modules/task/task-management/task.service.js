@@ -252,7 +252,7 @@ exports.getTaskEvaluations = async (portal, data) => {
  */
 exports.getPaginatedTasks = async (portal, task) => {
     let { perPage, number, role, user, organizationalUnit, status, priority, special, name,
-        startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime,responsibleEmployees,
+        startDate, endDate, startDateAfter, endDateBefore,responsibleEmployees,
         accountableEmployees, creatorEmployees, creatorTime, projectSearch } = task;
     let taskList;
     perPage = Number(perPage);
@@ -281,7 +281,7 @@ exports.getPaginatedTasks = async (portal, task) => {
         $or: roleArr,
         isArchived: false
     };
-    let keySearchSpecial = {}, keySearchPeriod = {}, keySeachDateTime = {};
+    let keySearchSpecial = {}, keySeachDateTime = {};
 
     if (organizationalUnit) {
         keySearch = {
@@ -543,8 +543,7 @@ exports.getPaginatedTasks = async (portal, task) => {
         $and: [
             keySearch,
             keySeachDateTime,
-            keySearchSpecial,
-            keySearchPeriod
+            keySearchSpecial
         ]
     }
 
@@ -572,7 +571,7 @@ exports.getPaginatedTasks = async (portal, task) => {
  * @task dữ liệu trong params
  */
 exports.getPaginatedTasksThatUserHasResponsibleRole = async (portal, task) => {
-    var { perPage, number, user, organizationalUnit, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime } = task;
+    var { perPage, number, user, organizationalUnit, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore } = task;
 
     var responsibleTasks;
     var perPage = Number(perPage);
@@ -584,7 +583,7 @@ exports.getPaginatedTasksThatUserHasResponsibleRole = async (portal, task) => {
         },
         isArchived: false
     };
-    let keySearchSpecial = {}, keySearchPeriod = {};
+    let keySearchSpecial = {}, keySeachDateTime = {};
 
     if (organizationalUnit) {
         keySearch = {
@@ -654,8 +653,8 @@ exports.getPaginatedTasksThatUserHasResponsibleRole = async (portal, task) => {
         endDate = new Date(endDate);
         endDate.setMonth(endDate.getMonth() + 1);
         
-        keySearch = {
-            ...keySearch,
+        keySeachDateTime = {
+            ...keySeachDateTime,
             $or: [
                 { 'endDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
                 { 'startDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
@@ -666,8 +665,8 @@ exports.getPaginatedTasksThatUserHasResponsibleRole = async (portal, task) => {
     else if (startDate) {
         startDate = new Date(startDate);
 
-        keySearch = {
-            ...keySearch,
+        keySeachDateTime = {
+            ...keySeachDateTime,
             "$and": [
                 {
                     "$expr": { 
@@ -685,8 +684,8 @@ exports.getPaginatedTasksThatUserHasResponsibleRole = async (portal, task) => {
     else if (endDate) {
         endDate = new Date(endDate);
 
-        keySearch = {
-            ...keySearch,
+        keySeachDateTime = {
+            ...keySeachDateTime,
             "$and": [
                 {
                     "$expr": { 
@@ -707,7 +706,7 @@ exports.getPaginatedTasksThatUserHasResponsibleRole = async (portal, task) => {
         $and: [
             keySearch,
             keySearchSpecial,
-            keySearchPeriod
+            keySeachDateTime
         ]
     }).sort({ 'createdAt': -1 })
         .skip(perPage * (page - 1)).limit(perPage)
@@ -720,7 +719,7 @@ exports.getPaginatedTasksThatUserHasResponsibleRole = async (portal, task) => {
         $and: [
             keySearch,
             keySearchSpecial,
-            keySearchPeriod
+            keySeachDateTime
         ]
     });
     var totalPages = Math.ceil(totalCount / perPage);
@@ -737,7 +736,7 @@ exports.getPaginatedTasksThatUserHasResponsibleRole = async (portal, task) => {
  * @task dữ liệu từ params
  */
 exports.getPaginatedTasksThatUserHasAccountableRole = async (portal, task) => {
-    var { perPage, number, user, organizationalUnit, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime } = task;
+    var { perPage, number, user, organizationalUnit, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore } = task;
 
     var accountableTasks;
     var perPage = Number(perPage);
@@ -749,7 +748,7 @@ exports.getPaginatedTasksThatUserHasAccountableRole = async (portal, task) => {
         },
         isArchived: false
     };
-    let keySearchSpecial = {}, keySearchPeriod = {};
+    let keySearchSpecial = {}, keySeachDateTime = {};
 
     if (organizationalUnit) {
         keySearch = {
@@ -819,8 +818,8 @@ exports.getPaginatedTasksThatUserHasAccountableRole = async (portal, task) => {
         endDate = new Date(endDate);
         endDate.setMonth(endDate.getMonth() + 1);
         
-        keySearch = {
-            ...keySearch,
+        keySeachDateTime = {
+            ...keySeachDateTime,
             $or: [
                 { 'endDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
                 { 'startDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
@@ -831,8 +830,8 @@ exports.getPaginatedTasksThatUserHasAccountableRole = async (portal, task) => {
     else if (startDate) {
         startDate = new Date(startDate);
 
-        keySearch = {
-            ...keySearch,
+        keySeachDateTime = {
+            ...keySeachDateTime,
             "$and": [
                 {
                     "$expr": { 
@@ -850,8 +849,8 @@ exports.getPaginatedTasksThatUserHasAccountableRole = async (portal, task) => {
     else if (endDate) {
         endDate = new Date(endDate);
 
-        keySearch = {
-            ...keySearch,
+        keySeachDateTime = {
+            ...keySeachDateTime,
             "$and": [
                 {
                     "$expr": { 
@@ -871,7 +870,7 @@ exports.getPaginatedTasksThatUserHasAccountableRole = async (portal, task) => {
         $and: [
             keySearch,
             keySearchSpecial,
-            keySearchPeriod
+            keySeachDateTime
         ]
     }).sort({ 'createdAt': -1 })
         .skip(perPage * (page - 1)).limit(perPage)
@@ -882,7 +881,7 @@ exports.getPaginatedTasksThatUserHasAccountableRole = async (portal, task) => {
         $and: [
             keySearch,
             keySearchSpecial,
-            keySearchPeriod
+            keySeachDateTime
         ]
     });
     var totalPages = Math.ceil(totalCount / perPage);
@@ -897,7 +896,7 @@ exports.getPaginatedTasksThatUserHasAccountableRole = async (portal, task) => {
  * Lấy công việc tư vấn theo id người dùng
  */
 exports.getPaginatedTasksThatUserHasConsultedRole = async (portal, task) => {
-    var { perPage, number, user, organizationalUnit, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime } = task;
+    var { perPage, number, user, organizationalUnit, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore } = task;
 
     var consultedTasks;
     var perPage = Number(perPage);
@@ -909,7 +908,7 @@ exports.getPaginatedTasksThatUserHasConsultedRole = async (portal, task) => {
         },
         isArchived: false
     };
-    let keySearchSpecial = {}, keySearchPeriod = {};
+    let keySearchSpecial = {}, keySeachDateTime = {};
 
     if (organizationalUnit) {
         keySearch = {
@@ -979,8 +978,8 @@ exports.getPaginatedTasksThatUserHasConsultedRole = async (portal, task) => {
         endDate = new Date(endDate);
         endDate.setMonth(endDate.getMonth() + 1);
         
-        keySearch = {
-            ...keySearch,
+        keySeachDateTime = {
+            ...keySeachDateTime,
             $or: [
                 { 'endDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
                 { 'startDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
@@ -991,8 +990,8 @@ exports.getPaginatedTasksThatUserHasConsultedRole = async (portal, task) => {
     else if (startDate) {
         startDate = new Date(startDate);
 
-        keySearch = {
-            ...keySearch,
+        keySeachDateTime = {
+            ...keySeachDateTime,
             "$and": [
                 {
                     "$expr": { 
@@ -1010,8 +1009,8 @@ exports.getPaginatedTasksThatUserHasConsultedRole = async (portal, task) => {
     else if (endDate) {
         endDate = new Date(endDate);
 
-        keySearch = {
-            ...keySearch,
+        keySeachDateTime = {
+            ...keySeachDateTime,
             "$and": [
                 {
                     "$expr": { 
@@ -1031,7 +1030,7 @@ exports.getPaginatedTasksThatUserHasConsultedRole = async (portal, task) => {
         $and: [
             keySearch,
             keySearchSpecial,
-            keySearchPeriod
+            keySeachDateTime
         ]
     }).sort({ 'createdAt': -1 })
         .skip(perPage * (page - 1)).limit(perPage)
@@ -1042,7 +1041,7 @@ exports.getPaginatedTasksThatUserHasConsultedRole = async (portal, task) => {
         $and: [
             keySearch,
             keySearchSpecial,
-            keySearchPeriod
+            keySeachDateTime
         ]
     });
     var totalPages = Math.ceil(totalCount / perPage);
@@ -1057,7 +1056,7 @@ exports.getPaginatedTasksThatUserHasConsultedRole = async (portal, task) => {
  * Lấy công việc thiết lập theo id người dùng
  */
 exports.getPaginatedTasksCreatedByUser = async (portal, task) => {
-    var { perPage, number, user, organizationalUnit, status, priority, special, name, startDate, endDate, aPeriodOfTime } = task;
+    var { perPage, number, user, organizationalUnit, status, priority, special, name, startDate, endDate } = task;
 
     var creatorTasks;
     var perPage = Number(perPage);
@@ -1069,7 +1068,7 @@ exports.getPaginatedTasksCreatedByUser = async (portal, task) => {
         },
         isArchived: false
     };
-    let keySearchSpecial = {}, keySearchPeriod = {};
+    let keySearchSpecial = {}, keySeachDateTime = {};
 
     if (organizationalUnit) {
         keySearch = {
@@ -1139,8 +1138,8 @@ exports.getPaginatedTasksCreatedByUser = async (portal, task) => {
         endDate = new Date(endDate);
         endDate.setMonth(endDate.getMonth() + 1);
         
-        keySearch = {
-            ...keySearch,
+        keySeachDateTime = {
+            ...keySeachDateTime,
             $or: [
                 { 'endDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
                 { 'startDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
@@ -1151,8 +1150,8 @@ exports.getPaginatedTasksCreatedByUser = async (portal, task) => {
     else if (startDate) {
         startDate = new Date(startDate);
 
-        keySearch = {
-            ...keySearch,
+        keySeachDateTime = {
+            ...keySeachDateTime,
             "$and": [
                 {
                     "$expr": { 
@@ -1170,8 +1169,8 @@ exports.getPaginatedTasksCreatedByUser = async (portal, task) => {
     else if (endDate) {
         endDate = new Date(endDate);
 
-        keySearch = {
-            ...keySearch,
+        keySeachDateTime = {
+            ...keySeachDateTime,
             "$and": [
                 {
                     "$expr": { 
@@ -1191,7 +1190,7 @@ exports.getPaginatedTasksCreatedByUser = async (portal, task) => {
         $and: [
             keySearch,
             keySearchSpecial,
-            keySearchPeriod
+            keySeachDateTime
         ]
     }).sort({ 'createdAt': -1 })
         .skip(perPage * (page - 1)).limit(perPage)
@@ -1201,7 +1200,7 @@ exports.getPaginatedTasksCreatedByUser = async (portal, task) => {
         $and: [
             keySearch,
             keySearchSpecial,
-            keySearchPeriod
+            keySeachDateTime
         ]
     });
     var totalPages = Math.ceil(totalCount / perPage);
@@ -1216,7 +1215,7 @@ exports.getPaginatedTasksCreatedByUser = async (portal, task) => {
  * Lấy công việc quan sát theo id người dùng
  */
 exports.getPaginatedTasksThatUserHasInformedRole = async (portal, task) => {
-    var { perPage, number, user, organizationalUnit, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime } = task;
+    var { perPage, number, user, organizationalUnit, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore } = task;
 
     var informedTasks;
     var perPage = Number(perPage);
@@ -1228,7 +1227,7 @@ exports.getPaginatedTasksThatUserHasInformedRole = async (portal, task) => {
         },
         isArchived: false
     };
-    let keySearchSpecial = {}, keySearchPeriod = {};
+    let keySearchSpecial = {}, keySeachDateTime = {};
 
     if (organizationalUnit) {
         keySearch = {
@@ -1298,8 +1297,8 @@ exports.getPaginatedTasksThatUserHasInformedRole = async (portal, task) => {
         endDate = new Date(endDate);
         endDate.setMonth(endDate.getMonth() + 1);
         
-        keySearch = {
-            ...keySearch,
+        keySeachDateTime = {
+            ...keySeachDateTime,
             $or: [
                 { 'endDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
                 { 'startDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
@@ -1310,8 +1309,8 @@ exports.getPaginatedTasksThatUserHasInformedRole = async (portal, task) => {
     else if (startDate) {
         startDate = new Date(startDate);
 
-        keySearch = {
-            ...keySearch,
+        keySeachDateTime = {
+            ...keySeachDateTime,
             "$and": [
                 {
                     "$expr": { 
@@ -1329,8 +1328,8 @@ exports.getPaginatedTasksThatUserHasInformedRole = async (portal, task) => {
     else if (endDate) {
         endDate = new Date(endDate);
 
-        keySearch = {
-            ...keySearch,
+        keySeachDateTime = {
+            ...keySeachDateTime,
             "$and": [
                 {
                     "$expr": { 
@@ -1351,7 +1350,7 @@ exports.getPaginatedTasksThatUserHasInformedRole = async (portal, task) => {
         $and: [
             keySearch,
             keySearchSpecial,
-            keySearchPeriod
+            keySeachDateTime
         ]
     }).sort({ 'createdAt': -1 })
         .skip(perPage * (page - 1)).limit(perPage)
@@ -1363,7 +1362,7 @@ exports.getPaginatedTasksThatUserHasInformedRole = async (portal, task) => {
         $and: [
             keySearch,
             keySearchSpecial,
-            keySearchPeriod
+            keySeachDateTime
         ]
     });
     var totalPages = Math.ceil(totalCount / perPage);
@@ -1379,7 +1378,7 @@ exports.getPaginatedTasksThatUserHasInformedRole = async (portal, task) => {
  */
 exports.getPaginatedTasksByUser = async (portal, task, type = "paginated_task_by_user") => {
     var { perPage, page, user, organizationalUnit, status, priority, special, name, 
-        startDate, endDate, aPeriodOfTime, isAssigned, responsibleEmployees, 
+        startDate, endDate, isAssigned, responsibleEmployees, 
         accountableEmployees, creatorEmployees, organizationalUnitRole
     } = task;
     var tasks;
@@ -1496,7 +1495,7 @@ exports.getPaginatedTasksByUser = async (portal, task, type = "paginated_task_by
     }
 
 
-    let keySearchSpecial = {}, keySearchPeriod = {};
+    let keySearchSpecial = {}, keySeachDateTime = {};
 
     if (organizationalUnit) {
         if (type === "paginated_task_by_unit") {
@@ -1603,8 +1602,8 @@ exports.getPaginatedTasksByUser = async (portal, task, type = "paginated_task_by
         endDate = new Date(endDate);
         endDate.setMonth(endDate.getMonth() + 1);
         
-        keySearch = {
-            ...keySearch,
+        keySeachDateTime = {
+            ...keySeachDateTime,
             $or: [
                 { 'endDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
                 { 'startDate': { $lt: new Date(endDate), $gte: new Date(startDate) } },
@@ -1615,8 +1614,8 @@ exports.getPaginatedTasksByUser = async (portal, task, type = "paginated_task_by
     else if (startDate) {
         startDate = new Date(startDate);
 
-        keySearch = {
-            ...keySearch,
+        keySeachDateTime = {
+            ...keySeachDateTime,
             "$and": [
                 {
                     "$expr": { 
@@ -1634,8 +1633,8 @@ exports.getPaginatedTasksByUser = async (portal, task, type = "paginated_task_by
     else if (endDate) {
         endDate = new Date(endDate);
 
-        keySearch = {
-            ...keySearch,
+        keySeachDateTime = {
+            ...keySeachDateTime,
             "$and": [
                 {
                     "$expr": { 
@@ -1655,7 +1654,7 @@ exports.getPaginatedTasksByUser = async (portal, task, type = "paginated_task_by
         $and: [
             keySearch,
             keySearchSpecial,
-            keySearchPeriod
+            keySeachDateTime
         ]
     }).sort({ 'createdAt': -1 })
         .skip(perPage * (page - 1)).limit(perPage)
@@ -1669,7 +1668,7 @@ exports.getPaginatedTasksByUser = async (portal, task, type = "paginated_task_by
         $and: [
             keySearch,
             keySearchSpecial,
-            keySearchPeriod
+            keySeachDateTime
         ]
     });
 
