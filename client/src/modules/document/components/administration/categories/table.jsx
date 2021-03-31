@@ -1,4 +1,4 @@
-import React, { Component,useState, useEffect } from 'react';
+import React, { Component, useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import Swal from 'sweetalert2';
@@ -190,9 +190,6 @@ function Table(props) {
             <PaginateBar pageTotal={categories.totalPages} currentPage={categories.page} func={setPage} />
         </React.Fragment>
     );
-
-
-
 }
 
 const mapStateToProps = state => state;

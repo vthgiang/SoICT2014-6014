@@ -634,7 +634,7 @@ exports.getDocumentCategories = async (portal, query, company) => {
                 : { company };
         return await DocumentCategory(
             connect(DB_CONNECTION, portal)
-        ).paginate(option, { page, limit });
+        ).paginate(option, { page, limit, sort: { createdAt: -1 } });
     }
 };
 
