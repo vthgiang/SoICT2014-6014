@@ -37,6 +37,7 @@ export default {
             new_notification: "Bạn có thông báo mới!",
             month: "tháng",
             value: "Giá trị",
+            export: "Xuất",
             auth_alert: {
                 title:
                     "Hệ thống xác nhận có lỗi xảy ra trong phiên làm việc của bạn!",

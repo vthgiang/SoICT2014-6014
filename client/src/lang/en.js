@@ -36,6 +36,7 @@ export default {
             new_notification: "You have new notification!",
             month: "in",
             value: "Value",
+            export: 'Export',
             auth_alert: {
                 title: "Current Session invalid. Please log in again",
                 reason: "Reasons maybe:",

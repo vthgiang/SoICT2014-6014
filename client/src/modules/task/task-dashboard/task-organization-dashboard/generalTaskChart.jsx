@@ -434,6 +434,7 @@ const GeneralTaskChart = (props) => {
                     translate('task.task_dashboard.delay_task'),
                     translate('task.task_dashboard.overdue_task')
                 ]}
+                linePerPageOption={false}
             />
             <div className="general_task_unit" id="general-list-task-wrapper">
                 <table id='general-list-task' className="table table-striped table-bordered table-hover">
