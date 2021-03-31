@@ -272,7 +272,7 @@ getPaginatedTasksByUser = async (req, res) => {
     try {
         var task = {
             perPage: req.query.perPage,
-            number: req.query.number,
+            page: req.query.number,
             user: req.query.user,
             organizationalUnit: req.query.unit,
             status: req.query.status,
@@ -350,7 +350,7 @@ getPaginatedTasksByOrganizationalUnit = async (req, res) => {
     try {
         var task = {
             perPage: req.query.perPage,
-            number: req.query.number,
+            page: req.query.page,
             organizationalUnit: req.query.unit,
             status: req.query.status,
             priority: req.query.priority,
@@ -362,6 +362,7 @@ getPaginatedTasksByOrganizationalUnit = async (req, res) => {
             responsibleEmployees: req.query.responsibleEmployees,
             accountableEmployees: req.query.accountableEmployees,
             creatorEmployees: req.query.creatorEmployees,
+            organizationalUnitRole: req.query.organizationalUnitRole
         };
 
         let tasks = await TaskManagementService.getPaginatedTasksByOrganizationalUnit(req.portal, task, req.query.type);

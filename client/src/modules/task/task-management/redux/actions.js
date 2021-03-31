@@ -294,13 +294,13 @@ function getPaginateTasks(role, unit, number, perPage, status, priority, special
  * @param {*} aPeriodOfTime 
  * @param {*} calledId 
  */
-function getPaginatedTasksByOrganizationalUnit(unit, number, perPage, status, priority, special, name, startDate, endDate, isAssigned,responsibleEmployees,accountableEmployees, creatorEmployees) {
+function getPaginatedTasksByOrganizationalUnit(data) {
     return dispatch => {
         dispatch({
             type: taskManagementConstants.GET_PAGINATE_TASK_BY_ORGANIZATIONALUNIT_REQUEST
         });
 
-        taskManagementService.getPaginatedTasksByOrganizationalUnit(unit, number, perPage, status, priority, special, name, startDate, endDate, isAssigned,responsibleEmployees,accountableEmployees, creatorEmployees)
+        taskManagementService.getPaginatedTasksByOrganizationalUnit(data)
             .then(res => {
                 dispatch({
                     type: taskManagementConstants.GET_PAGINATE_TASK_BY_ORGANIZATIONALUNIT_SUCCESS,
@@ -516,7 +516,6 @@ function getTimeSheetOfUser(userId, month, year) {
 }
 
 function getAllUserTimeSheet(month, year) {
-    console.log("thheheheh")
     return dispatch => {
         dispatch({ type: taskManagementConstants.GET_ALL_USER_TIME_SHEET_LOG_REQUEST });
         taskManagementService.getAllUserTimeSheet(month, year)

@@ -1378,11 +1378,15 @@ exports.getPaginatedTasksThatUserHasInformedRole = async (portal, task) => {
  * Lấy công việc quan sát theo id người dùng
  */
 exports.getPaginatedTasksByUser = async (portal, task, type = "paginated_task_by_user") => {
-    var { perPage, number, user, organizationalUnit, status, priority, special, name, startDate, endDate, aPeriodOfTime, isAssigned, responsibleEmployees, accountableEmployees, creatorEmployees } = task;
+    var { perPage, page, user, organizationalUnit, status, priority, special, name, 
+        startDate, endDate, aPeriodOfTime, isAssigned, responsibleEmployees, 
+        accountableEmployees, creatorEmployees, organizationalUnitRole
+    } = task;
     var tasks;
     var perPage = Number(perPage);
-    var page = Number(number);
+    var page = Number(page);
     var keySearch;
+
     if (type === "paginated_task_by_user") {
         keySearch = {
             $or: [
@@ -1496,13 +1500,27 @@ exports.getPaginatedTasksByUser = async (portal, task, type = "paginated_task_by
 
     if (organizationalUnit) {
         if (type === "paginated_task_by_unit") {
-            keySearch = {
-                ...keySearch,
-                $or: [
-                    { organizationalUnit: { $in: organizationalUnit } },
-                    { "collaboratedWithOrganizationalUnits.organizationalUnit": { $in: organizationalUnit } },
-                ],
-            };
+            if (organizationalUnitRole?.length === 1) {
+                if (organizationalUnitRole?.[0] === 'management') {
+                    keySearch = {
+                        ...keySearch,
+                        organizationalUnit: { $in: organizationalUnit },
+                    };
+                } else if (organizationalUnitRole?.[0] === 'collabration') {
+                    keySearch = {
+                        ...keySearch,
+                        "collaboratedWithOrganizationalUnits.organizationalUnit": { $in: organizationalUnit },
+                    };
+                }
+            } else {
+                keySearch = {
+                    ...keySearch,
+                    $or: [
+                        { organizationalUnit: { $in: organizationalUnit } },
+                        { "collaboratedWithOrganizationalUnits.organizationalUnit": { $in: organizationalUnit } },
+                    ],
+                };
+            }
         } else {
             keySearch = {
                 ...keySearch,

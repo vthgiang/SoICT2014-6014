@@ -167,7 +167,7 @@ export default {
             task: "Detailed Task",
             task_management: "Personal task list",
             task_management_of_unit: "Unit task list",
-            task_management_dashboard: "Task dashboard",
+            task_management_dashboard: "Personal task dashboard",
             task_organization_management_dashboard: "Unit task dashboard",
             task_management_process: "Process list",
             task_process_template: "Process template",
@@ -2680,6 +2680,11 @@ export default {
                 select_department: "Select department",
                 select_all_department: "Selected all",
                 role: "Role",
+
+                role_unit: "Role of unit",
+                select_role_organizational: "Select unit role",
+                organizational_unit_management: "Management unit",
+                organizational_unit_collaborate: "Collaborative unit",
 
                 status: "Status",
                 select_status: "Select status",
