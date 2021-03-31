@@ -122,10 +122,17 @@ function TransportRequirementsCreateForm(props) {
     ];
     // Khởi tạo state
     const [state, setState] = useState({
-        value: "1",
+        value: "5",
         billGroup: "2",
         billType: "3"
     })
+
+
+    const [requirementsForm, setRequirementsForm] = useState({
+        goods: [],
+    });
+
+
     const [billId, setBillId] = useState({
         id: "",
     });
@@ -184,16 +191,6 @@ function TransportRequirementsCreateForm(props) {
         }
         return listBills;
     }
-    // useEffect(() => {
-    //     const getAllGoods = async () => {
-    //         props.getAllGoods();
-    //         if (props.listAllGoods){
-    //             setListAllGoods(props.listAllGoods);
-    //         }
-    //         setGoodsTransport([]);
-    //     }
-    //     getAllGoods();
-    // },[state])
 
     useEffect(() => {
         props.getCustomers();
@@ -250,6 +247,23 @@ function TransportRequirementsCreateForm(props) {
 
     }, [billDetail]);
 
+    const callBackState = (value) => {
+        setRequirementsForm({
+            ...requirementsForm,
+            goods: value,
+        })
+    }
+
+    const callBackGeneralInfo = (value) => {
+        setRequirementsForm({
+            ...requirementsForm,
+            info: value,
+        })
+    }
+
+    useEffect(() => {
+        console.log(requirementsForm, "okkkkk")
+    }, [requirementsForm])
 
     return (
         <React.Fragment>
@@ -330,7 +344,7 @@ function TransportRequirementsCreateForm(props) {
                                         id={`select-type-requirement`}
                                         className="form-control select2"
                                         style={{ width: "100%" }}
-                                        value={"0"}
+                                        value={"5"}
                                         items={requirements}
                                         onChange={handleTypeRequirementChange}
                                         multiple={false}
@@ -389,11 +403,13 @@ function TransportRequirementsCreateForm(props) {
                     {
                         state.value === "5" && (
                             < TransportNewOne
+                                callBackGeneralInfo = {callBackGeneralInfo}
                             />
                         )
                     }
                     < TransportGoods 
                         goods = {goodsTransport}
+                        callBackState = {callBackState}
                     />
                 </form>
             </DialogModal>

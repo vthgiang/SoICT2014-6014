@@ -9,14 +9,25 @@ import { exampleActions } from '../../redux/actions';
 import { BillActions } from '../../../../warehouse/bill-management/redux/actions'
 import { CrmCustomerActions } from "../../../../../crm/customer/redux/actions";
 import { GoodActions} from '../../../../common-production/good-management/redux/actions';
+import { validate } from 'uuid';
 
 function TransportGoods(props) {
-    const {goods} = props;
+    const {goods, callBackState} = props;
 
-    const [currentGood, setCurrentGood] = useState([]);
+    const [currentGood, setCurrentGood] = useState({});
+
     const [listAllGoods, setListAllGoods] = useState([]);
+
+    const [listGoodsChosen, setListGoodsChosen] = useState([]);
+
     useEffect(() => {
         props.getAllGoods();
+        setCurrentGood({
+            _id: "0",
+            quantity: 1,
+            currentSelectBoxGoodText: "Chọn hàng hóa",
+            volumn: 1,
+        })
     }, [])
 
     useEffect(() => {
@@ -43,25 +54,71 @@ function TransportGoods(props) {
     }
 
     let handleGoodChange = (value) => {
-        if (value[0] !== "0"){
-            // let filterGood = listAllGoods.filter((r) => r._id === value[0]);
-            // let currentGoodCode="", currentGoodName="";
-            // if (filterGood.length > 0){
-            //    currentGoodCode = filterGood[0].code ? filterGood[0].code : "";
-            //    currentGoodName = filterGood[0].name ? filterGood[0].name : "";
-            // }
-            // setCurrentGood({
-            //     ...currentGood,
-            //     _id: value[0],
-            //     name: currentGoodCode,
-            //     code: currentGoodName,
-            // })
-            // console.log(currentGood, "current good")
+        if (value[0] !== "0" && listAllGoods){
+            let filterGood = listAllGoods.filter((r) => r._id === value[0]);
+            let currentGoodCode="", currentGoodName="";
+            if (filterGood.length > 0){
+               currentGoodCode = filterGood[0].code ? filterGood[0].code : "";
+               currentGoodName = filterGood[0].name ? filterGood[0].name : "";
+            }
+            const currentSelectBoxGoodText = currentGoodCode + " - " + currentGoodName;
+            setCurrentGood({
+                ...currentGood,
+                _id: value[0],
+                name: currentGoodCode,
+                code: currentGoodName,
+                currentSelectBoxGoodText: currentSelectBoxGoodText,
+            })
         }
-        console.log(value);
     }
 
+    const handleQuantityChange = (e) => {
+        let {value} = e.target;
+        validateQuantityChange(value);
+    }
 
+    const validateQuantityChange = (value) => {
+        let v = 1;
+        value = parseInt(value);
+        if (value > 0) {
+            v = parseInt(value);
+        }
+        setCurrentGood({
+            ...currentGood,
+            quantity: v,
+        })
+    }
+    const handleVolumnChange = (e) => {
+        let {value} = e.target;
+        validateVolumnChange(value);
+    }
+
+    const validateVolumnChange = (value) => {
+        let v = 1;
+        value = parseInt(value);
+        if (value > 0) {
+            v = parseInt(value);
+        }
+        setCurrentGood({
+            ...currentGood,
+            volumn: v,
+        })
+    }
+    const handleAddGood = (e) => {
+        e.preventDefault();
+        let good = {
+            code: currentGood.code ? currentGood.code : "",
+            name: currentGood.name ? currentGood.name : "",
+            quantity: currentGood.quantity,
+            volumn: currentGood.volumn,
+        }
+        setListGoodsChosen(listGoodsChosen => [...listGoodsChosen, good]);
+    }
+
+    useEffect(() => {
+        console.log(listGoodsChosen);
+        callBackState(listGoodsChosen);
+    }, [listGoodsChosen])
     return (
         <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
             
@@ -160,7 +217,7 @@ function TransportGoods(props) {
                                         id={`select-good`}
                                         className="form-control select2"
                                         style={{ width: "100%" }}
-                                        value={"0"}
+                                        value={currentGood._id}
                                         items={getAllGoods()}
                                         onChange={handleGoodChange}
                                         multiple={false}
@@ -186,8 +243,8 @@ function TransportGoods(props) {
                                 <div className={`form-group`}>
                                     <label>{"Số lượng"}</label>
                                     <input type="number" 
-                                    // value={good.quantity} 
-                                    // onChange={this.handleQuantityChange} 
+                                    value={currentGood.quantity} 
+                                    onChange={handleQuantityChange} 
                                     className="form-control" />
                                     {/* <ErrorLabel content={errorQuantity} /> */}
                                 </div>
@@ -196,8 +253,8 @@ function TransportGoods(props) {
                                 <div className={`form-group`}>
                                     <label>{"Khối lượng vận chuyển"}</label>
                                     <input type="number" 
-                                    // value={good.quantity} 
-                                    // onChange={this.handleQuantityChange} 
+                                    value={currentGood.volumn} 
+                                    onChange={handleVolumnChange} 
                                     className="form-control" />
                                     {/* <ErrorLabel content={errorQuantity} /> */}
                                 </div>
@@ -206,28 +263,28 @@ function TransportGoods(props) {
                         
                             <div className="pull-right" style={{ marginBottom: "10px" }}>
                                 {/* {this.state.editGood ? ( */}
-                                    <React.Fragment>
+                                    {/* <React.Fragment>
                                         <button className="btn btn-success" 
                                         // onClick={this.handleCancelEditGood} 
                                         style={{ marginLeft: "10px" }}>
                                             {"cancel_editing_good"}
                                         </button>
                                         <button className="btn btn-success" 
-                                        // onClick={this.handleSaveEditGood} 
+                                        onClick={this.handleSaveEditGood} 
                                         style={{ marginLeft: "10px" }}>
                                             {"save_good"}
                                         </button>
-                                    </React.Fragment>
+                                    </React.Fragment> */}
                                 {/* ) : ( */}
-                                        {/* <button
+                                        <button
                                             className="btn btn-success"
                                             style={{ marginLeft: "10px" }}
-                                            disabled={!this.isGoodValidated()}
-                                            onClick={this.handleAddGood}
+                                            // disabled={!this.isGoodValidated()}
+                                            onClick={handleAddGood}
                                         >
-                                            {translate("manufacturing.purchasing_request.add_good")}
+                                            {"Thêm hàng hóa"}
                                         </button>
-                                    )}
+                                    {/* )}
                                 <button className="btn btn-primary" style={{ marginLeft: "10px" }} onClick={this.handleClearGood}>
                                     {translate("manufacturing.purchasing_request.delete_good")}
                                 </button> */}
@@ -249,20 +306,20 @@ function TransportGoods(props) {
                                 </tr>
                             </thead>
                             <tbody>
-                                {/* {listGoods && listGoods.length === 0 ? (
+                                {listGoodsChosen && listGoodsChosen.length === 0 ? (
                                     <tr>
-                                        <td colSpan={7}>{translate("general.no_data")}</td>
+                                        {/* <td colSpan={7}>{translate("general.no_data")}</td> */}
+                                        <td colSpan={5}>{"Không có dữ liệu"}</td>
                                     </tr>
                                 ) : (
-                                        listGoods.map((x, index) => (
+                                    listGoodsChosen.map((x, index) => (
                                             <tr key={index}>
                                                 <td>{index + 1}</td>
-                                                <td>{x.good.code}</td>
-                                                <td>{x.good.name}</td>
-                                                <td>{x.good.baseUnit}</td>
-                                                <td>{x.inventory}</td>
+                                                <td>{x.code}</td>
+                                                <td>{x.name}</td>
                                                 <td>{x.quantity}</td>
-                                                <td>
+                                                <td>{x.volumn}</td>
+                                                {/* <td>
                                                     <a
                                                         href="#abc"
                                                         className="edit"
@@ -279,10 +336,10 @@ function TransportGoods(props) {
                                                     >
                                                         <i className="material-icons"></i>
                                                     </a>
-                                                </td>
+                                                </td> */}
                                             </tr>
                                         ))
-                                    )} */}
+                                    )}
                             </tbody>
                         </table>
                     
