@@ -260,6 +260,7 @@ class TaskDashboard extends Component {
         let amountResponsibleTask = 0, amountTaskCreated = 0, amountAccountableTasks = 0, amountConsultedTasks = 0;
         let numTask = [];
         let totalTasks = 0;
+        
         // Tinh so luong tat ca cac task
         if (tasks && tasks.responsibleTasks) {
             let task = tasks.responsibleTasks;
@@ -592,7 +593,7 @@ class TaskDashboard extends Component {
                                         {
                                             userTimeSheetLogs.map((tsl, index) => {
                                                 return (
-                                                    <tr>
+                                                    tsl?.acceptLog && <tr>
                                                         <td>{index + 1}</td>
                                                         <td>{tsl.name}</td>
                                                         <td>{moment(tsl.startedAt).format("HH:mm:ss DD/MM/YYYY")}</td>
