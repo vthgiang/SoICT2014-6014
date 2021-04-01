@@ -1,161 +1,168 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { DialogModal, ErrorLabel, SelectBox, TreeSelect } from '../../../../../common-components';
 import { CareerReduxAction } from '../../redux/actions';
 import ValidationHelper from '../../../../../helpers/validationHelper';
-class CreateForm extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            action: [],
-        }
-    }
+function CreateForm(props) {
+    const [state, setState] = useState({
+        action: [],
+    });
 
-    handleName = (e) => {
+    const handleName = (e) => {
         const { value } = e.target;
-        const { translate } = this.props;
+        const { translate } = props;
         const { message } = ValidationHelper.validateName(translate, value, 1, 255);
-        this.setState({
+        setState({
+            ...state,
             name: value,
             nameError: message
         });
     }
 
-    handlePackage = (e) => {
+    const handlePackage = (e) => {
         const { value } = e.target;
-        const { translate } = this.props;
+        const { translate } = props;
         const { message } = ValidationHelper.validateName(translate, value, 1, 255);
-        this.setState({
+        setState({
+            ...state,
             package: value,
             // nameError: message
         });
     }
 
-    handleCode = (e) => {
+    const handleCode = (e) => {
         const { value } = e.target;
         let msg;
-        this.setState({
+        setState({
+            ...state,
             code: value,
             codeError: msg,
         });
     }
 
-    handleParent = (value) => {
-        this.setState({ parent: value[0] });
+    const handleParent = (value) => {
+        setState({
+            ...state,
+            parent: value[0]
+        });
+    }
+
+    const handleField = (value) => {
+        setState({
+            ...state,
+            field: value
+        });
+        console.log('field...', state);
     };
 
-    handleField = (value) => {
-        this.setState({ field: value });
-        console.log('field...', this.state);
+    const handleAction = (value) => {
+        setState({
+            ...state,
+            action: value
+        });
+        console.log('action...', state);
     };
 
-    handleAction = (value) => {
-        this.setState({ action: value });
-        console.log('action...', this.state);
-    };
-
-    isValidateForm = () => {
-        let { name } = this.state;
-        let { translate } = this.props;
-        if (!ValidationHelper.validateName(translate, name, 1, 255).status) return false;
+    const isValidateForm = () => {
+        let { name, code, action } = state;
+        let { translate } = props;
+        if (action) return true;
+        if (!ValidationHelper.validateName(translate, name, 1, 255).status || !code) return false;
         return true;
     }
 
-    save = () => {
+    const save = () => {
         const data = {
-            name: this.state.name,
-            code: this.state.code,
-            package: this.state.package,
-            parent: this.state.parent,
-            field: this.state.field,
-            action: this.state.action,
+            name: state.name,
+            code: state.code,
+            package: state.package,
+            parent: state.parent,
+            field: state.field,
+            action: state.action,
         }
         console.log('data', data);
-        this.props.createCareerPosition(data);
+        props.createCareerPosition(data);
     }
 
-    render() {
-        const { translate, career } = this.props;
-        const { list } = this.props;
-        let { parent, field, nameError, codeError, action } = this.state;
-        return (
-            <React.Fragment>
-                <DialogModal
-                    modalID="modal-create-career-position"
-                    formID="form-create-career-position"
-                    title="Thêm vị trí công việc"
-                    // disableSubmit={!this.isValidateForm()}
-                    func={this.save}
-                >
-                    <form id="form-create-career-position">
-                        {/* <div className={`form-group ${!nameError ? "" : "has-error"}`}>
+    const { translate, career } = props;
+    const { list } = props;
+    let { parent, field, nameError, codeError, action } = state;
+    return (
+        <React.Fragment>
+            <DialogModal
+                modalID="modal-create-career-position"
+                formID="form-create-career-position"
+                title="Thêm vị trí công việc"
+                //disableSubmit={!isValidateForm()}
+                func={save}
+            >
+                <form id="form-create-career-position">
+                    {/* <div className={`form-group ${!nameError ? "" : "has-error"}`}>
                             <label>Gói thầu</label>
                             <input type="text" className="form-control" onChange={this.handlePackage} />
                             <ErrorLabel content={nameError} />
                         </div> */}
+                    <div className="form-group">
+                        <label>Chọn thông tin cha</label>
+                        <TreeSelect data={list} value={parent} handleChange={handleParent} mode="radioSelect" />
+                    </div>
+                    {!parent &&
                         <div className="form-group">
-                            <label>Chọn thông tin cha</label>
-                            <TreeSelect data={list} value={parent} handleChange={this.handleParent} mode="radioSelect" />
+                            <label>Lĩnh vực</label>
+                            <SelectBox
+                                id={`field-career-add`}
+                                lassName="form-control select2"
+                                style={{ width: "100%" }}
+                                items={career?.listField.map(x => {
+                                    return { text: x.name, value: x._id }
+                                })}
+                                options={{ placeholder: "Chọn lĩnh vực" }}
+                                onChange={handleField}
+                                value={field}
+                                multiple={true}
+                            />
                         </div>
-                        {!parent &&
-                            <div className="form-group">
-                                <label>Lĩnh vực</label>
-                                <SelectBox
-                                    id={`field-career-add`}
-                                    lassName="form-control select2"
-                                    style={{ width: "100%" }}
-                                    items={career?.listField.map(x => {
-                                        return { text: x.name, value: x._id }
-                                    })}
-                                    options={{ placeholder: "Chọn lĩnh vực" }}
-                                    onChange={this.handleField}
-                                    value={field}
-                                    multiple={true}
-                                />
+                    }
+                    {(!state.name || state.name === "") &&
+                        <div className="form-group">
+                            <label>Chọn hoạt động công việc đang có</label>
+                            <SelectBox
+                                id={`position-career-add-action`}
+                                lassName="form-control select2"
+                                style={{ width: "100%" }}
+                                items={career?.listAction.filter(e => e.isLabel === 0).map(x => {
+                                    return { text: x.name, value: x._id }
+                                }) // TODO: cần lọc ra hoạt động công việc đã có trong đây rồi
+                                }
+                                options={{ placeholder: "Chọn hoạt động công việc đang có" }}
+                                onChange={handleAction}
+                                value={action}
+                                multiple={true}
+                            />
+                        </div>
+                    }
+                    {state.action.length === 0 &&
+                        //${!nameError ? "" : "has-error"} ${!codeError ? "" : "has-error"}
+                        <div>
+                            <div className={`form-group `}>
+                                <label>Tên<span className="text-red">*</span></label>
+                                <input type="text" className="form-control" onChange={handleName} />
+                                <ErrorLabel content={nameError} />
                             </div>
-                        }
-                        {(!this.state.name || this.state.name === "") &&
-                            <div className="form-group">
-                                <label>Chọn hoạt động công việc đang có</label>
-                                <SelectBox
-                                    id={`position-career-add-action`}
-                                    lassName="form-control select2"
-                                    style={{ width: "100%" }}
-                                    items={career?.listAction.filter(e => e.isLabel === 0).map(x => {
-                                        return { text: x.name, value: x._id }
-                                    }) // TODO: cần lọc ra hoạt động công việc đã có trong đây rồi
-                                    }
-                                    options={{ placeholder: "Chọn hoạt động công việc đang có" }}
-                                    onChange={this.handleAction}
-                                    value={action}
-                                    multiple={true}
-                                />
+                            <div className={`form-group `}>
+                                <label>Nhãn<span className="text-red">*</span></label>
+                                <input type="text" className="form-control" onChange={handleCode} />
+                                <ErrorLabel content={nameError} />
                             </div>
-                        }
-                        {this.state.action.length === 0 &&
-                            //${!nameError ? "" : "has-error"} ${!codeError ? "" : "has-error"}
-                            <div>
-                                <div className={`form-group `}>
-                                    <label>Tên<span className="text-red">*</span></label>
-                                    <input type="text" className="form-control" onChange={this.handleName} />
-                                    {/* <ErrorLabel content={nameError} /> */}
-                                </div>
-                                <div className={`form-group `}>
-                                    <label>Nhãn<span className="text-red">*</span></label>
-                                    <input type="text" className="form-control" onChange={this.handleCode} />
-                                    {/* <ErrorLabel content={nameError} /> */}
-                                </div>
-                            </div>
-                        }
-                    </form>
-                </DialogModal>
-            </React.Fragment>
-        );
-    }
+                        </div>
+                    }
+                </form>
+            </DialogModal>
+        </React.Fragment>
+    );
 }
-
 const mapStateToProps = state => state;
 
 const mapDispatchToProps = {

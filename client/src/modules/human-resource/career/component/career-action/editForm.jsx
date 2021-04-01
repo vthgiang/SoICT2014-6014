@@ -8,7 +8,7 @@ import ValidationHelper from '../../../../../helpers/validationHelper';
 
 function EditForm(props) {
     const [state, setState] = useState({
-        name: ' '
+        name: ''
     });
 
     useEffect(() => {
@@ -90,6 +90,7 @@ function EditForm(props) {
             !ValidationHelper.validateName(translate, name, 1, 255).status
         ) return false;
         if (showParent && !parent) return false;
+        if (!showParent && !code) return false;
         return true;
     }
 

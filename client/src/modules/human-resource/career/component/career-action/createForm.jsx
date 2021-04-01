@@ -60,9 +60,11 @@ function CreateForm(props) {
     };
 
     const isValidateForm = () => {
-        let { name } = state;
+        let { name, code } = state;
         let { translate } = props;
-        if (!ValidationHelper.validateName(translate, name, 1, 255).status) return false;
+        if (
+            !ValidationHelper.validateName(translate, name, 1, 255).status || !code
+        ) return false;
         return true;
     }
 
@@ -87,7 +89,7 @@ function CreateForm(props) {
                 modalID="modal-create-career-action"
                 formID="form-create-career-action"
                 title="Thêm hoạt động công việc"
-                disableSubmit={!isValidateForm()}
+                //disableSubmit={!isValidateForm()}
                 func={save}
             >
                 <form id="form-create-career-action">
