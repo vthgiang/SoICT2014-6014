@@ -69,7 +69,7 @@ class SuperHome extends Component {
             let currentYear = new Date().getFullYear();
 
             let notLinkedTasks = [], taskList = [], unconfirmedTask = [], noneUpdateTask = [],
-                taskHasActionsResponsible = [], taskHasActionsAccountable = [], taskHasNotEvaluationResultIncurrentMonth = [];
+                taskHasActionsResponsible = [], taskHasActionsAccountable = [], taskHasNotEvaluationResultIncurrentMonth = [], taskHasNotApproveResquestToClose = [];
             const taskOfUser = tasks?.tasks;
 
             // xu ly du lieu
@@ -108,6 +108,16 @@ class SuperHome extends Component {
                 let accTasks = tasks.accountableTasks;
                 let resTasks = tasks.responsibleTasks;
                 let conTasks = tasks.consultedTasks;
+
+                // Láy công việc chưa phê duyệt yêu cầu kết thúc
+                const taskRequestToClose = accTasks && accTasks.filter(o => o.status === "requested_to_close");
+                if (taskRequestToClose) {
+                    taskRequestToClose.forEach(o => {
+                        if (o.requestToCloseTask && o.requestToCloseTask.requestStatus === 1) {
+                            taskHasNotApproveResquestToClose = [...taskHasNotApproveResquestToClose, o]
+                        }
+                    })
+                }
 
                 if (accTasks && accTasks.length > 0)
                     accTasks = accTasks.filter(task => task.status === "inprocess");
@@ -241,7 +251,8 @@ class SuperHome extends Component {
                     noneUpdateTask,
                     taskHasActionsAccountable,
                     taskHasActionsResponsible,
-                    taskHasNotEvaluationResultIncurrentMonth
+                    taskHasNotEvaluationResultIncurrentMonth,
+                    taskHasNotApproveResquestToClose,
                 }
             }
         } else {
@@ -398,8 +409,6 @@ class SuperHome extends Component {
 
             listTasksGeneral = filterDifference(listTasksGeneral);
         }
-
-        console.log('listTasksGeneral', listTasksGeneral);
 
         return (
             <React.Fragment>

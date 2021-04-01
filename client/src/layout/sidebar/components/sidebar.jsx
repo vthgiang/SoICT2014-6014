@@ -711,6 +711,46 @@ class SideBar extends Component {
                                 }}
                             />
 
+                            {/* Quản lý vận chuyển */}
+                            <GroupItem
+                                groupItem={{
+                                    name: "menu.manage_transport",
+                                    icon: "fa fa-truck",
+                                    list: [
+                                        {
+                                            name: "menu.manufacturing_dashboard",
+                                            icon: "fa fa-dashboard",
+                                            path: "/manufacturing-dashboard",
+                                        },
+                                        {
+                                            name: "menu.manage_transport_requirements",
+                                            icon: "fa fa-calendar-o",
+                                            path: "/manage-transport-requirements",
+                                        },
+                                        {
+                                            name: "menu.manage_transport_schedule",
+                                            icon: "fa fa-calendar-o",
+                                            path: "/manage-transport-schedule",
+                                        },
+                                        {
+                                            name: "menu.manage_transport_vehical",
+                                            icon: "fa fa-calendar-o",
+                                            path: "/manage-transport-vehical",
+                                        },
+                                        {
+                                            name: "menu.manage_transport_human",
+                                            icon: "fa fa-calendar-o",
+                                            path: "/manage-transport-human",
+                                        },
+                                        {
+                                            name: "menu.manage_transport_route",
+                                            icon: "fa fa-calendar-o",
+                                            path: "/manage-transport-route",
+                                        },
+                                    ]
+                                }}
+                            />
+                            
                             {/* CRUD ví dụ theo 2 mô hình lấy dữ liệu */}
                             <GroupItem
                                 groupItem={{
@@ -740,7 +780,6 @@ class SideBar extends Component {
                                     ],
                                 }}
                             />
-
 
                             {/* Hướng dẫn sử dụng */}
                             <Item

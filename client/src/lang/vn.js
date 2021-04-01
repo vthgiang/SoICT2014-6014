@@ -37,6 +37,7 @@ export default {
             new_notification: "Bạn có thông báo mới!",
             month: "tháng",
             value: "Giá trị",
+            export: "Xuất",
             auth_alert: {
                 title:
                     "Hệ thống xác nhận có lỗi xảy ra trong phiên làm việc của bạn!",
@@ -182,7 +183,7 @@ export default {
             task: "Chi tiết công việc",
             task_management: "Danh sách công việc cá nhân",
             task_management_of_unit: "Danh sách công việc đơn vị",
-            task_management_dashboard: "Dashboard công việc",
+            task_management_dashboard: "Dashboard công việc cá nhân",
             task_organization_management_dashboard:
                 "Dashboard công việc đơn vị",
             task_management_process: "Danh sách quy trình",
@@ -261,6 +262,14 @@ export default {
             manage_manufacturing_mill: "Quản lý xưởng sản xuất",
             manage_manufacturing_lot: "Quản lý lô sản xuất",
             manage_project: "Quản lý dự án",
+            
+            // Quản lý vận chuyển
+            manage_transport: "Quản lý vận chuyển",
+            manage_transport_requirements: "Yêu cầu vận chuyển",
+            manage_transport_schedule: "Kế hoạch vận chuyển",
+            manage_transport_vehical: "Phương tiện vận chuyển",
+            manage_transport_human: "Nhân viên vận chuyển",
+            manage_transport_route: "Lộ trình vận chuyển",
 
             user_guide: "Hướng dẫn sử dụng",
             user_guide_detail: "Chi tiết hướng dẫn sử dụng",
@@ -1221,7 +1230,7 @@ export default {
             all_position: "Chọn tất cả các chức vụ",
             non_position: "Chọn chức vụ",
             all_status: "Chọn tất cả các trạng thái",
-            non_status: "Chọn trạng thái",
+            non_status: "Chọn trạng thái"
         },
 
         common_component: {
@@ -2944,6 +2953,11 @@ export default {
                 select_all_department: "Tất cả các đơn vị",
                 role: "Vai trò",
 
+                role_unit: "Vai trò đơn vị",
+                select_role_organizational: "Chọn vai trò đơn vị",
+                organizational_unit_management: "Đơn vị quản lý",
+                organizational_unit_collaborate: "Đơn vị phối hợp",
+
                 status: "Trạng thái",
                 select_status: "Chọn trạng thái",
                 select_all_status: "Chọn tất cả trạng thái",
@@ -2952,6 +2966,7 @@ export default {
                 finished: "Đã hoàn thành",
                 delayed: "Tạm hoãn",
                 canceled: "Bị hủy",
+                requested_to_close: "Chờ kết thúc",
                 task_status: "Trạng thái công việc",
                 filter: "Lọc",
 
@@ -3672,6 +3687,8 @@ export default {
                             delete: "Xóa KPI này",
                             cancel: "Hủy",
                         },
+                        overview: "Tổng quan",
+                        evaluation: "Đánh giá",
                         time: "Thời gian",
                         approver: "Người phê duyệt",
                         weight_total: "Tổng trọng số",
@@ -5674,7 +5691,10 @@ export default {
                 sub_product: "số lượng phế phẩm"
             }
         },
-
+        manage_transport: {
+            add_requirements: "Thêm yêu cầu vận chuyển",
+        },
+        
         project: {
             code: "Mã dự án",
             name: "Tên dự án",

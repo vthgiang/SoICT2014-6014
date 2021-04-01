@@ -2108,59 +2108,65 @@ class ActionTab extends Component {
                                             </div>
                                         </div>
                                     </div>
-                                }
-
+                                }   
                             </div>
-                            {logTimer && logTimer.map((item, index) =>
-                                <React.Fragment key={index}>
-                                    {item.stoppedAt &&
-                                        <div key={item._id} className="item-box">
-                                            <h3 className={`pull-right ${item.acceptLog ? 'text-green' : 'text-red'}`}>{this.convertTime(item.duration)}</h3>
-                                            <a style={{ fontWeight: 700, cursor: "pointer" }}>{item.creator?.name} </a>
-                                            <div>
-                                                <i className="fa fa-clock-o"> </i> {moment(item.startedAt).format("DD/MM/YYYY HH:mm:ss")}{" - "}
-                                                <i className="fa fa-clock-o"> </i> {moment(item.stoppedAt).format("DD/MM/YYYY HH:mm:ss")})
-                                            </div>
-                                            <div>
-                                                <i style={{ marginRight: '5px' }} className={`${item.autoStopped === 1 ? 'text-green fa fa-hand-pointer-o' : (item.autoStopped === 2 ? 'text-red fa fa-clock-o' : 'text-red fa fa-plus')}`}>{item.autoStopped === 1 ? 'Tắt bằng tay' : (item.autoStopped === 2 ? 'Tự động' : 'Add log timer')}</i>
-                                                {
-                                                    role === "accountable" ?
-                                                        (
-                                                            <React.Fragment>
-                                                                <i className={`${item.acceptLog ? 'text-green fa fa-check' : 'text-red fa fa-close'}`}> {item.acceptLog ? 'Được chấp nhận' : 'Không được chấp nhận'}</i>
-                                                                <a
-                                                                    style={{ cursor: 'pointer', marginLeft: 10, fontWeight: 'bold' }}
-                                                                    className={item.acceptLog ? 'text-red' : 'text-green'}
-                                                                    onClick={
-                                                                        item.acceptLog ?
-                                                                            () => {
-                                                                                this.props.editTimeSheetLog(this.state.id, item._id, {
-                                                                                    acceptLog: false
-                                                                                })
-                                                                            } :
-                                                                            () => {
-                                                                                this.props.editTimeSheetLog(this.state.id, item._id, {
-                                                                                    acceptLog: true
-                                                                                })
+                            {logTimer && 
+                                <ShowMoreShowLess
+                                    id={`logTimer${id}`}
+                                    styleShowMoreLess={{ display: "inline-block", marginBottom: 15, marginTop: 15 }}
+                                >
+                                    {logTimer.map((item, index) =>
+                                        <React.Fragment key={index}>
+                                            {item.stoppedAt &&
+                                                <div key={item._id} className={`item-box ${index > 3 ? "hide-component" : ""}`}>
+                                                    <h3 className={`pull-right ${item.acceptLog ? 'text-green' : 'text-red'}`}>{this.convertTime(item.duration)}</h3>
+                                                    <a style={{ fontWeight: 700, cursor: "pointer" }}>{item.creator?.name} </a>
+                                                    <div>
+                                                        <i className="fa fa-clock-o"> </i> {moment(item.startedAt).format("DD/MM/YYYY HH:mm:ss")}{" - "}
+                                                        <i className="fa fa-clock-o"> </i> {moment(item.stoppedAt).format("DD/MM/YYYY HH:mm:ss")})
+                                                    </div>
+                                                    <div>
+                                                        <i style={{ marginRight: '5px' }} className={`${item.autoStopped === 1 ? 'text-green fa fa-hand-pointer-o' : (item.autoStopped === 2 ? 'text-red fa fa-clock-o' : 'text-red fa fa-plus')}`}>{item.autoStopped === 1 ? 'Tắt bằng tay' : (item.autoStopped === 2 ? 'Tự động' : 'Add log timer')}</i>
+                                                        {
+                                                            role === "accountable" ?
+                                                                (
+                                                                    <React.Fragment>
+                                                                        <i className={`${item.acceptLog ? 'text-green fa fa-check' : 'text-red fa fa-close'}`}> {item.acceptLog ? 'Được chấp nhận' : 'Không được chấp nhận'}</i>
+                                                                        <a
+                                                                            style={{ cursor: 'pointer', marginLeft: 10, fontWeight: 'bold' }}
+                                                                            className={item.acceptLog ? 'text-red' : 'text-green'}
+                                                                            onClick={
+                                                                                item.acceptLog ?
+                                                                                    () => {
+                                                                                        this.props.editTimeSheetLog(this.state.id, item._id, {
+                                                                                            acceptLog: false
+                                                                                        })
+                                                                                    } :
+                                                                                    () => {
+                                                                                        this.props.editTimeSheetLog(this.state.id, item._id, {
+                                                                                            acceptLog: true
+                                                                                        })
+                                                                                    }
                                                                             }
-                                                                    }
-                                                                >
-                                                                    [ {item.acceptLog ? 'Hủy' : 'Chấp nhận'} ]
-                                                                </a>
-                                                            </React.Fragment>
-                                                        ) : (
-                                                            <i className={`${item.acceptLog ? 'text-green fa fa-check' : 'text-red fa fa-close'}`}> {item.acceptLog ? 'Được chấp nhận' : 'Không được chấp nhận'}</i>
-                                                        )
-                                                }
-                                            </div>
-                                            <div>
-                                                <i className="fa fa-edit"></i>
-                                                {item.description ? item.description : translate("task.task_perform.none_description")}
-                                            </div>
-                                        </div>
-                                    }
-                                </React.Fragment>
-                            )}
+                                                                        >
+                                                                            [ {item.acceptLog ? 'Hủy' : 'Chấp nhận'} ]
+                                                                        </a>
+                                                                    </React.Fragment>
+                                                                ) : (
+                                                                    <i className={`${item.acceptLog ? 'text-green fa fa-check' : 'text-red fa fa-close'}`}> {item.acceptLog ? 'Được chấp nhận' : 'Không được chấp nhận'}</i>
+                                                                )
+                                                        }
+                                                    </div>
+                                                    <div>
+                                                        <i className="fa fa-edit"></i>
+                                                        {item.description ? item.description : translate("task.task_perform.none_description")}
+                                                    </div>
+                                                </div>
+                                            }
+                                        </React.Fragment>
+                                    )}
+                                </ShowMoreShowLess>
+                            }
                         </div>
 
                         {/* Chuyển qua tab Nhật ký lịch sử */}

@@ -459,14 +459,16 @@ export function documents(state = initState, action) {
                     ...state.administration,
                     categories: {
                         ...state.administration.categories,
-                        list: [
-                            action.payload,
-                            ...state.administration.categories.list
-                        ],
-                        paginate: [
-                            action.payload,
-                            ...state.administration.categories.paginate
-                        ]
+                        paginate: action.payload.docs,
+                        totalDocs: action.payload.totalDocs,
+                        limit: action.payload.limit,
+                        totalPages: action.payload.totalPages,
+                        page: action.payload.page,
+                        pagingCounter: action.payload.pagingCounter,
+                        hasPrevPage: action.payload.hasPrevPage,
+                        hasNextPage: action.payload.hasNextPage,
+                        prevPage: action.payload.prevPage,
+                        nextPage: action.payload.nextPage,
                     }
                 }
             };

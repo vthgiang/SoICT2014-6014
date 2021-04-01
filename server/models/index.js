@@ -116,6 +116,8 @@ module.exports = {
     PurchasingRequest: require('./production/manufacturing/purchasingRequest.model'),
     WorkSchedule: require('./production/manufacturing/workSchedule.model'),
 
+    // transport
+    TransportRequirement: require('./production/transport/transportRequirements.model'),
     // project
 
     Project: require('./project/project.model'),

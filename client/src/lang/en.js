@@ -36,6 +36,7 @@ export default {
             new_notification: "You have new notification!",
             month: "in",
             value: "Value",
+            export: 'Export',
             auth_alert: {
                 title: "Current Session invalid. Please log in again",
                 reason: "Reasons maybe:",
@@ -166,7 +167,7 @@ export default {
             task: "Detailed Task",
             task_management: "Personal task list",
             task_management_of_unit: "Unit task list",
-            task_management_dashboard: "Task dashboard",
+            task_management_dashboard: "Personal task dashboard",
             task_organization_management_dashboard: "Unit task dashboard",
             task_management_process: "Process list",
             task_process_template: "Process template",
@@ -244,6 +245,13 @@ export default {
             manage_manufacturing_mill: "Manage manufacturing mill",
             manage_project: "Manage Project",
 
+            // Quản lý vận chuyển
+            manage_transport: "Manage transport",
+            manage_transport_requirements: "Manage transport requirements",
+            manage_transport_schedule: "Manage transport schedule",
+            manage_transport_vehical: "Manage transport vehical",
+            manage_transport_human: "Manage transport human",
+            manage_transport_route: "Manage transport route",
 
             user_guide: "User guide",
             user_guide_detail: "User guide detail",
@@ -2680,6 +2688,11 @@ export default {
                 select_all_department: "Selected all",
                 role: "Role",
 
+                role_unit: "Role of unit",
+                select_role_organizational: "Select unit role",
+                organizational_unit_management: "Management unit",
+                organizational_unit_collaborate: "Collaborative unit",
+
                 status: "Status",
                 select_status: "Select status",
                 select_all_status: "Selected all",
@@ -2688,6 +2701,7 @@ export default {
                 finished: "Finished",
                 delayed: "Delayed",
                 canceled: "Canceled",
+                requested_to_close: "Requested to close",
                 task_status: "Task status",
                 filter: "Filter",
 
@@ -3365,6 +3379,8 @@ export default {
                             delete: "Delete this KPI",
                             cancel: "Cancel",
                         },
+                        overview: "Overview",
+                        evaluation: "Evaluation",
                         time: "Time",
                         approver: "Approver",
                         weight: {
@@ -4152,6 +4168,9 @@ export default {
             },
         },
 
+        manage_transport: {
+            add_requirements: "Add a new requirement",
+        },
         // Quản lý dự án
         project: {
             code: "Project code",

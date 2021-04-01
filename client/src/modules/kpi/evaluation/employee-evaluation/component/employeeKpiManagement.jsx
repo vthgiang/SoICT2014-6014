@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import Swal from 'sweetalert2';
@@ -14,92 +14,86 @@ import { DashboardEvaluationEmployeeKpiSetAction } from '../../../evaluation/das
 
 import { EmployeeKpiApproveModal } from './employeeKpiApproveModal';
 import { EmployeeKpiEvaluateModal } from './employeeKpiEvaluateModal';
-class EmployeeKpiManagement extends Component {
 
-    constructor(props) {
-        super(props);
+function EmployeeKpiManagement(props) {
+    const DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
 
-        this.DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
+    let d = new Date(),
+        month = d.getMonth() + 1,
+        year = d.getFullYear();
+    let startMonth, endMonth, startYear;
 
-        let d = new Date(),
-            month = d.getMonth() + 1,
-            year = d.getFullYear();
-        let startMonth, endMonth, startYear;
+    if (month > 1) {
+        startMonth = month - 1;
+        startYear = year;
+    } else {
+        startMonth = month - 1 + 12;
+        startYear = year - 1;
+    }
+    if (startMonth < 10)
+        startMonth = '0' + startMonth;
+    if (month < 10) {
+        endMonth = '0' + month;
+    } else {
+        endMonth = month;
+    }
 
-        if (month > 1) {
-            startMonth = month - 1;
-            startYear = year;
-        } else {
-            startMonth = month - 1 + 12;
-            startYear = year - 1;
-        }
-        if (startMonth < 10)
-            startMonth = '0' + startMonth;
-        if (month < 10) {
-            endMonth = '0' + month;
-        } else {
-            endMonth = month;
-        }
+    var tableId = "table-employee-kpi-management";
+    const defaultConfig = { limit: 20 }
+    const limit = getTableConfiguration(tableId, defaultConfig).limit;
 
-        const tableId = "table-employee-kpi-management";
-        const defaultConfig = { limit: 20 }
-        const limit = getTableConfiguration(tableId, defaultConfig).limit;
-
-        this.state = {
-            tableId,
-            commenting: false,
-            userId: '',
+    const [state, setState] = useState({
+        tableId,
+        commenting: false,
+        userId: '',
+        status: -1,
+        startDate: [startYear, startMonth].join('-'),
+        endDate: [year, endMonth].join('-'),
+        infosearch: {
+            role: localStorage.getItem("currentRole"),
+            user: '',
             status: -1,
             startDate: [startYear, startMonth].join('-'),
             endDate: [year, endMonth].join('-'),
-            infosearch: {
-                role: localStorage.getItem("currentRole"),
-                user: '',
-                status: -1,
-                startDate: [startYear, startMonth].join('-'),
-                endDate: [year, endMonth].join('-'),
-                perPage: limit,
-                page: 1
-            },
-            startDateDefault: [startMonth, startYear].join('-'),
-            endDateDefault: [endMonth, year].join('-'),
-            showApproveModal: null,
-            showEvaluateModal: null,
-            dataStatus: this.DATA_STATUS.NOT_AVAILABLE
-        };
-    }
+            perPage: limit,
+            page: 1
+        },
+        startDateDefault: [startMonth, startYear].join('-'),
+        endDateDefault: [endMonth, year].join('-'),
+        showApproveModal: null,
+        showEvaluateModal: null,
+        dataStatus: DATA_STATUS.NOT_AVAILABLE
+    });
 
-    componentDidMount() {
-        const { infosearch } = this.state;
+    const { user, kpimembers, dashboardEvaluationEmployeeKpiSet } = props;
+    const { translate } = props;
+    const { status, kpiId, employeeKpiSet, perPage, userId, startDateDefault, endDateDefault, organizationalUnit, approver, infosearch } = state;
+    let userdepartments, kpimember, unitMembers, exportData, approverSelectBox = [];
+    let childrenOrganizationalUnit = [], queue = [], currentOrganizationalUnit;
 
-        this.props.getAllUserSameDepartment(localStorage.getItem("currentRole"));
-        this.props.getEmployeeKPISets(infosearch);
-        this.props.getChildrenOfOrganizationalUnitsAsTree(localStorage.getItem("currentRole"));
-    }
+    useEffect(() => {
+        const { infosearch } = state;
+        props.getAllUserSameDepartment(localStorage.getItem("currentRole"));
+        props.getEmployeeKPISets(infosearch);
+        props.getChildrenOfOrganizationalUnitsAsTree(localStorage.getItem("currentRole"));
+    }, []);
 
-    shouldComponentUpdate = (nextProps, nextState) => {
-        if (nextState.dataStatus === this.DATA_STATUS.QUERYING) {
-            if (!nextProps.kpimembers?.tasksList || !nextProps.kpimembers?.kpimembers || !nextProps.managerKpiUnit?.kpis) {
-                return false;
+    useEffect(() => {
+        if (state.dataStatus === DATA_STATUS.QUERYING) {
+            if (!props.kpimembers?.tasksList || !props.kpimembers?.kpimembers || !props.managerKpiUnit?.kpis) {
             } else {
-                let exportData = this.convertDataToExportTotalData(nextProps.kpimembers, nextProps.managerKpiUnit);
+                let exportData = convertDataToExportTotalData(props.kpimembers, props.managerKpiUnit);
                 if (exportData) ExportExcel.export(exportData);
 
-                this.setState(state => {
-                    return {
-                        ...state,
-                        dataStatus: this.DATA_STATUS.FINISHED,
-                    }
+                setState({
+                    ...state,
+                    dataStatus: DATA_STATUS.FINISHED,
                 });
-                return true;
             }
         }
+    });
 
-
-        return true;
-    }
-
-    formatDateBack(date) {
+    function formatDateBack(date) {
         let d = new Date(date), month, day, year;
         if (d.getMonth() === 0) {
             month = '' + 12;
@@ -118,7 +112,7 @@ class EmployeeKpiManagement extends Component {
         return [month, year].join('-');
     }
 
-    formatDate(date) {
+    function formatDate(date) {
         let d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
@@ -132,7 +126,7 @@ class EmployeeKpiManagement extends Component {
         return [month, year].join('-');
     }
 
-    formatTaskStatus = (translate, status) => {
+    const formatTaskStatus = (translate, status) => {
         switch (status) {
             case "inprocess":
                 return translate('task.task_management.inprocess');
@@ -142,12 +136,14 @@ class EmployeeKpiManagement extends Component {
                 return translate('task.task_management.finished');
             case "delayed":
                 return translate('task.task_management.delayed');
+            case "requested_to_close":
+                return translate('task.task_management.requested_to_close');
             default: //cancel
                 return translate('task.task_management.canceled');
         }
-    }
+    };
 
-    checkStatusKPI = (status) => {
+    const checkStatusKPI = (status) => {
         if (status === 0) {
             return "Đang thiết lập";
         } else if (status === 1) {
@@ -155,30 +151,26 @@ class EmployeeKpiManagement extends Component {
         } else if (status === 2) {
             return "Đã kích hoạt";
         }
-    }
+    };
 
-    handleSelectOrganizationalUnit = (value) => {
-        this.setState(state => {
-            return {
-                ...state,
-                organizationalUnit: value,
-                approver: [],
-                userId: []
-            }
+    const handleSelectOrganizationalUnit = (value) => {
+        setState({
+            ...state,
+            organizationalUnit: value,
+            approver: [],
+            userId: []
         })
-        this.props.getAllUserOfDepartment(value);
-    }
+        props.getAllUserOfDepartment(value);
+    };
 
-    handleApproverChange = (value) => {
-        this.setState(state => {
-            return {
-                ...state,
-                approver: value
-            }
+    const handleApproverChange = (value) => {
+        setState({
+            ...state,
+            approver: value
         })
-    }
+    };
 
-    handleStartDateChange = (value) => {
+    const handleStartDateChange = (value) => {
         let month;
         if (value === '') {
             month = null;
@@ -186,16 +178,14 @@ class EmployeeKpiManagement extends Component {
             month = value.slice(3, 7) + '-' + value.slice(0, 2);
         }
 
-        this.setState(state => {
-            return {
-                ...state,
-                startDate: month
-            }
+        setState({
+            ...state,
+            startDate: month
         });
 
-    }
+    };
 
-    handleEndDateChange = (value) => {
+    const handleEndDateChange = (value) => {
         let month;
         if (value === '') {
             month = null;
@@ -203,53 +193,45 @@ class EmployeeKpiManagement extends Component {
             month = value.slice(3, 7) + '-' + value.slice(0, 2);
         }
 
-        this.setState(state => {
-            return {
-                ...state,
-                endDate: month,
-            }
+        setState({
+            ...state,
+            endDate: month,
         });
 
-    }
+    };
 
-    handleEmployeeChange = async (value) => {
-        await this.setState(state => {
-            return {
-                ...state,
-                userId: value
-            }
+    const handleEmployeeChange = async (value) => {
+        await setState({
+            ...state,
+            userId: value
         });
-    }
+    };
 
-    handleStatusChange = (value) => {
-        this.setState(state => {
-            return {
-                ...state,
-                status: value[0]
-            }
+    const handleStatusChange = (value) => {
+        setState({
+            ...state,
+            status: value[0]
         });
-    }
+    };
 
-    handleSearchData = async () => {
-        const { translate } = this.props;
-        const { startDate, endDate, userId, status, organizationalUnit, approver } = this.state;
+    const handleSearchData = async () => {
+        const { translate } = props;
+        const { startDate, endDate, userId, status, organizationalUnit, approver } = state;
 
-        await this.setState(state => {
-            return {
-                ...state,
-                infosearch: {
-                    ...state.infosearch,
-                    user: userId && userId[0] !== '0' ? userId : [],
-                    status: status && Number(status[0]),
-                    startDate: startDate !== "" ? startDate : null,
-                    endDate: endDate !== "" ? endDate : null,
-                    organizationalUnit: organizationalUnit,
-                    approver: approver && approver[0] !== '0' ? approver : [],
-                    page: 1
-                },
-                kpiId: null,
-                employeeKpiSet: { _id: null },
-            }
+        await setState({
+            ...state,
+            infosearch: {
+                ...state.infosearch,
+                user: userId && userId[0] !== '0' ? userId : [],
+                status: status && Number(status[0]),
+                startDate: startDate !== "" ? startDate : null,
+                endDate: endDate !== "" ? endDate : null,
+                organizationalUnit: organizationalUnit,
+                approver: approver && approver[0] !== '0' ? approver : [],
+                page: 1
+            },
+            kpiId: null,
+            employeeKpiSet: { _id: null },
         })
 
         let startdate, enddate;
@@ -267,89 +249,79 @@ class EmployeeKpiManagement extends Component {
             })
         }
         else {
-            let { infosearch } = this.state;
-            this.props.getEmployeeKPISets(infosearch);
+            let { infosearch } = state;
+            props.getEmployeeKPISets(infosearch);
         }
-    }
+    };
 
-    handleShowApproveModal = async (id) => {
-        await this.setState(state => {
-            return {
-                ...state,
-                kpiId: id
-            }
+    const handleShowApproveModal = async (id) => {
+        await setState({
+            ...state,
+            kpiId: id
         })
         window.$(`modal-approve-KPI-member`).modal('show');
-    }
+    };
 
-    showEvaluateModal = async (item) => {
-        await this.setState(state => {
-            return {
-                ...state,
-                employeeKpiSet: item
-            }
+    const showEvaluateModal = async (item) => {
+        await setState({
+            ...state,
+            employeeKpiSet: item
         })
         window.$(`employee-kpi-evaluation-modal`).modal('show');
-    }
+    };
 
-    handleExportTotalData = () => {
+    const handleExportTotalData = () => {
         let kpimember;
-        const { kpimembers } = this.props;
+        const { kpimembers } = props;
         if (kpimembers.kpimembers) {
             kpimember = kpimembers.kpimembers
         }
         let data = kpimember && kpimember.map(item => {
             return item._id;
         })
-        this.props.getTaskByListKpis(data);
-        this.props.getAllKPIUnit({
+        props.getTaskByListKpis(data);
+        props.getAllKPIUnit({
             role: localStorage.getItem("currentRole"),
             status: -1,
             startDate: null,
             endDate: null
         })
 
-        this.setState(state => {
-            return {
-                ...state,
-                dataStatus: this.DATA_STATUS.QUERYING,
-            }
+        setState({
+            ...state,
+            dataStatus: DATA_STATUS.QUERYING,
         });
-    }
+    };
 
-    setLimit = async (limit) => {
-        if (Number(limit) !== this.state?.infosearch?.limit) {
-            await this.setState(state => {
-                return {
-                    ...state,
-                    infosearch: {
-                        ...state.infosearch,
-                        perPage: Number(limit)
-                    }
-                }
-            })
-
-            let { infosearch } = this.state;
-            this.props.getEmployeeKPISets(infosearch);
-        }
-    }
-
-    handleGetDataPagination = async (index) => {
-        await this.setState(state => {
-            return {
+    const setLimit = async (limit) => {
+        if (Number(limit) !== state?.infosearch?.limit) {
+            await setState({
                 ...state,
                 infosearch: {
                     ...state.infosearch,
-                    page: index
+                    perPage: Number(limit)
                 }
+            })
+
+            let { infosearch } = state;
+            props.getEmployeeKPISets(infosearch);
+        }
+    }
+
+    const handleGetDataPagination = async (index) => {
+        await setState({
+            ...state,
+            infosearch: {
+                ...state.infosearch,
+                page: index
             }
         })
 
-        let { infosearch } = this.state;
-        this.props.getEmployeeKPISets(infosearch);
-    }
+        let { infosearch } = state;
+        props.getEmployeeKPISets(infosearch);
+    };
 
-    pushDataIntoTable = (dataOfOneSheet) => {
+    const pushDataIntoTable = (dataOfOneSheet) => {
         let tables = [], table = [], names = [], kpiSetApproverPoint = [], kpiSetAutomaticPoint = [], kpiSetEmployeePoint = [], kpiNum = [], numTask = 0, row;
 
         for (let i = 0; i < dataOfOneSheet.data.length; i++) {
@@ -467,8 +439,8 @@ class EmployeeKpiManagement extends Component {
         }
     }
 
-    convertDataToExportTotalData = (kpimembers, managerKpiUnit) => {
-        const { user, translate } = this.props;
+    const convertDataToExportTotalData = (kpimembers, managerKpiUnit) => {
+        const { user, translate } = props;
         let listTasks, listKpis, data = {}, convertedData = [], listKpiUnit = [], unitName;
 
         if (user.userdepartments) {
@@ -503,7 +475,7 @@ class EmployeeKpiManagement extends Component {
                     let automaticPoint = (x.automaticPoint === null) ? "Chưa đánh giá" : parseInt(x.automaticPoint);
                     let employeePoint = (x.employeePoint === null) ? "Chưa đánh giá" : parseInt(x.employeePoint);
                     let approverPoint = (x.approvedPoint === null) ? "Chưa đánh giá" : parseInt(x.approvedPoint);
-                    let status = this.checkStatusKPI(x.status);
+                    let status = checkStatusKPI(x.status);
                     let criteria = x.criteria;
                     let weight = x.weight;
 
@@ -530,7 +502,7 @@ class EmployeeKpiManagement extends Component {
                         let automaticPoint = (x?.results?.automaticPoint < 0) ? "Chưa đánh giá" : parseInt(x.results.automaticPoint);
                         let employeePoint = (x?.results?.employeePoint < 0) ? "Chưa đánh giá" : parseInt(x.results.employeePoint);
                         let approverPoint = (x?.results?.approvedPoint < 0) ? "Chưa đánh giá" : parseInt(x.results.approvedPoint);
-                        let status = this.formatTaskStatus(translate, x.status);
+                        let status = formatTaskStatus(translate, x.status);
                         let contributionPoint = parseInt(x.results.contribution);
                         let importantLevel = parseInt(x.results.taskImportanceLevel);
                         let progress = parseInt(x.progress);
@@ -598,7 +570,7 @@ class EmployeeKpiManagement extends Component {
                 }
             }
             for (let i = 0; i < convertedData.length; i++) {
-                let tablesData = this.pushDataIntoTable(convertedData[i]);
+                let tablesData = pushDataIntoTable(convertedData[i]);
                 let temp = {
                     sheetName: convertedData[i].time,
                     sheetTitle: "Báo cáo tổng hợp " + unitName + " tháng " + convertedData[i].time,
@@ -698,7 +670,7 @@ class EmployeeKpiManagement extends Component {
     }
 
     /** Chuyển đổi dữ liệu KPI nhân viên thành dữ liệu export to file excel */
-    convertDataToExportData = (data, unitName) => {
+    const convertDataToExportData = (data, unitName) => {
         let fileName = "Bảng theo dõi KPI nhân viên " + (unitName ? unitName : "");
         if (data && data.length !== 0) {
             data = data.map((x, index) => {
@@ -709,7 +681,7 @@ class EmployeeKpiManagement extends Component {
                 let employeePoint = (x.employeePoint === null) ? "Chưa đánh giá" : parseInt(x.employeePoint);
                 let approverPoint = (x.approvedPoint === null) ? "Chưa đánh giá" : parseInt(x.approvedPoint);
                 let time = new Date(x.date)
-                let status = this.checkStatusKPI(x.status);
+                let status = checkStatusKPI(x.status);
                 let numberTarget = parseInt(x.kpis.length);
 
                 return {
@@ -755,258 +727,249 @@ class EmployeeKpiManagement extends Component {
         return exportData;
     }
 
+    if (kpimembers.kpimembers) {
+        kpimember = kpimembers.kpimembers;
+    }
 
-    render() {
-        const { user, kpimembers, dashboardEvaluationEmployeeKpiSet } = this.props;
-        const { translate } = this.props;
-        const { status, kpiId, employeeKpiSet, perPage, userId, startDateDefault, endDateDefault, organizationalUnit, approver, tableId, infosearch } = this.state;
-        let userdepartments, kpimember, unitMembers, exportData, approverSelectBox = [];
-        let childrenOrganizationalUnit = [], queue = [], currentOrganizationalUnit;
-
-        if (kpimembers.kpimembers) {
-            kpimember = kpimembers.kpimembers;
+    if (user) {
+        userdepartments = user.userdepartments;
+        if (userdepartments && !Array.isArray(userdepartments)) {
+            userdepartments = [userdepartments];
         }
+    }
 
-        if (user) {
-            userdepartments = user.userdepartments;
-            if (userdepartments && !Array.isArray(userdepartments)) {
-                userdepartments = [userdepartments];
-            }
-        }
+    // Khởi tạo select box chọn nhân viên
+    if (userdepartments) {
+        unitMembers = getEmployeeSelectBoxItems(userdepartments);
+        unitMembers = [{ text: translate('kpi.evaluation.employee_evaluation.choose_employee'), value: 0 }, ...unitMembers[0].value];
+    }
 
-        // Khởi tạo select box chọn nhân viên
-        if (userdepartments) {
-            unitMembers = getEmployeeSelectBoxItems(userdepartments);
-            unitMembers = [{ text: translate('kpi.evaluation.employee_evaluation.choose_employee'), value: 0 }, ...unitMembers[0].value];
-        }
+    // Khởi tạo select box chọn người phê duyệt
+    if (userdepartments) {
+        let managers = userdepartments[0] && userdepartments[0].managers;
+        if (managers) {
+            managers = Object.values(managers);
+            if (managers && managers.length !== 0) {
+                managers = managers[0] && managers[0].members;
 
-        // Khởi tạo select box chọn người phê duyệt
-        if (userdepartments) {
-            let managers = userdepartments[0] && userdepartments[0].managers;
-            if (managers) {
-                managers = Object.values(managers);
                 if (managers && managers.length !== 0) {
-                    managers = managers[0] && managers[0].members;
-
-                    if (managers && managers.length !== 0) {
-                        approverSelectBox = managers.map(item => { return { text: item.name, value: item.id } })
-                    }
-                }
-            }
-            approverSelectBox = [{ text: translate('manage_warehouse.bill_management.choose_approver'), value: 0 }, ...approverSelectBox];
-        }
-
-        if (kpimember && userdepartments) {
-            exportData = this.convertDataToExportData(kpimember, userdepartments.department);
-        }
-
-        // Khởi tạo selectbox đơn vị
-        if (dashboardEvaluationEmployeeKpiSet) {
-            currentOrganizationalUnit = dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit;
-        }
-        if (currentOrganizationalUnit) {
-            childrenOrganizationalUnit.push(currentOrganizationalUnit);
-            queue.push(currentOrganizationalUnit);
-            while (queue.length > 0) {
-                let v = queue.shift();
-                if (v.children) {
-                    for (let i = 0; i < v.children.length; i++) {
-                        let u = v.children[i];
-                        queue.push(u);
-                        childrenOrganizationalUnit.push(u);
-                    }
+                    approverSelectBox = managers.map(item => { return { text: item.name, value: item.id } })
                 }
             }
         }
+        approverSelectBox = [{ text: translate('manage_warehouse.bill_management.choose_approver'), value: 0 }, ...approverSelectBox];
+    }
+
+    if (kpimember && userdepartments) {
+        exportData = convertDataToExportData(kpimember, userdepartments.department);
+    }
+
+    // Khởi tạo selectbox đơn vị
+    if (dashboardEvaluationEmployeeKpiSet) {
+        currentOrganizationalUnit = dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit;
+    }
+    if (currentOrganizationalUnit) {
+        childrenOrganizationalUnit.push(currentOrganizationalUnit);
+        queue.push(currentOrganizationalUnit);
+        while (queue.length > 0) {
+            let v = queue.shift();
+            if (v.children) {
+                for (let i = 0; i < v.children.length; i++) {
+                    let u = v.children[i];
+                    queue.push(u);
+                    childrenOrganizationalUnit.push(u);
+                }
+            }
+        }
+    }
 
 
-        return (
-            <React.Fragment>
-                <div className="box">
-                    <div className="box-body">
-                        <EmployeeKpiApproveModal id={kpiId} />
-                        <EmployeeKpiEvaluateModal employeeKpiSet={employeeKpiSet} />
+    return (
+        <React.Fragment>
+            <div className="box">
+                <div className="box-body">
+                    <EmployeeKpiApproveModal id={kpiId} />
+                    <EmployeeKpiEvaluateModal employeeKpiSet={employeeKpiSet} />
 
-                        <div className="qlcv">
-                            {/* Tìm kiếm theo đơn vị và trạng thái */}
-                            <div className="form-inline hide-component">
-                                <div className="form-group">
-                                    <label>{translate('task.task_management.department')}</label>
-                                    {childrenOrganizationalUnit && childrenOrganizationalUnit.length !== 0
-                                        && <SelectBox
-                                            key="multiSelectUnitEmployeeKpiManagement"
-                                            id="multiSelectUnitEmployeeKpiManagement"
-                                            className="form-control select2"
-                                            style={{ width: "100%" }}
-                                            items={childrenOrganizationalUnit.map(item => { return { value: item.id, text: item.name } })}
-                                            onChange={this.handleSelectOrganizationalUnit}
-                                            value={organizationalUnit}
-                                        >
-                                        </SelectBox>
-                                    }
-                                </div>
-                                <div className="form-group">
-                                    <label>{translate('kpi.organizational_unit.management.over_view.status')}</label>
-                                    <SelectBox
-                                        id={`status-kpi`}
+                    <div className="qlcv">
+                        {/* Tìm kiếm theo đơn vị và trạng thái */}
+                        <div className="form-inline hide-component">
+                            <div className="form-group">
+                                <label>{translate('task.task_management.department')}</label>
+                                {childrenOrganizationalUnit && childrenOrganizationalUnit.length !== 0
+                                    && <SelectBox
+                                        key="multiSelectUnitEmployeeKpiManagement"
+                                        id="multiSelectUnitEmployeeKpiManagement"
                                         className="form-control select2"
                                         style={{ width: "100%" }}
-                                        items={[
-                                            { value: -1, text: translate('kpi.evaluation.employee_evaluation.choose_status') },
-                                            { value: 0, text: translate('kpi.evaluation.employee_evaluation.establishing') },
-                                            { value: 1, text: translate('kpi.evaluation.employee_evaluation.expecting') },
-                                            { value: 2, text: translate('kpi.evaluation.employee_evaluation.activated') }
-                                        ]}
-                                        onChange={this.handleStatusChange}
-                                        value={status}
-                                    />
-                                </div>
+                                        items={childrenOrganizationalUnit.map(item => { return { value: item.id, text: item.name } })}
+                                        onChange={handleSelectOrganizationalUnit}
+                                        value={organizationalUnit}
+                                    >
+                                    </SelectBox>
+                                }
                             </div>
-
-                            {/* Tìm kiếm theo người phê duyệt và nhân viên */}
-                            <div className="form-inline hide-component">
-                                <div className="form-group">
-                                    <label>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set_modal.approver')}</label>
-                                    {approverSelectBox &&
-                                        <SelectBox
-                                            id={`approver-employee-kpi`}
-                                            className="form-control select2"
-                                            style={{ width: "100%" }}
-                                            items={approverSelectBox}
-                                            onChange={this.handleApproverChange}
-                                            value={approver}
-                                        />
-                                    }
-                                </div>
-                                <div className="form-group">
-                                    <label>{translate('kpi.evaluation.employee_evaluation.employee')}</label>
-                                    {unitMembers &&
-                                        <SelectBox
-                                            id={`employee-kpi-manage`}
-                                            className="form-control select2"
-                                            style={{ width: "100%" }}
-                                            items={unitMembers}
-                                            onChange={this.handleEmployeeChange}
-                                            value={userId}
-                                        />
-                                    }
-                                </div>
-                            </div>
-
-                            {/* Tìm kiém theo thời gian */}
-                            <div className="form-inline" style={{ marginBottom: '5px' }}>
-                                <div className="form-group">
-                                    <label>{translate('kpi.evaluation.employee_evaluation.from')}</label>
-                                    <DatePicker
-                                        id='start_date'
-                                        value={startDateDefault}
-                                        onChange={this.handleStartDateChange}
-                                        dateFormat="month-year"
-                                    />
-                                </div>
-                                <div className="form-group">
-                                    <label>{translate('kpi.evaluation.employee_evaluation.to')}</label>
-                                    <DatePicker
-                                        id='end_date'
-                                        value={endDateDefault}
-                                        onChange={this.handleEndDateChange}
-                                        dateFormat="month-year"
-                                    />
-                                </div>
-                                <div className="form-group">
-                                    <button type="button" className="btn btn-success" onClick={() => this.handleSearchData()}>{translate('kpi.evaluation.employee_evaluation.search')}</button>
-                                </div>
-
-                                {/* Button tìm kiếm và export */}
-                                <div className="dropdown pull-right" style={{ marginTop: "5px" }}>
-                                    <button type="button" className="btn btn-primary dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('menu.add_asset_title')} >Báo cáo</button>
-                                    <ul className="dropdown-menu pull-right" style={{ marginTop: 0 }}>
-                                        <li>{exportData && <ExportExcel id="export-employee-kpi-evaluation-management" type='link' buttonName="Báo cáo chung" exportData={exportData} style={{ marginRight: 15, marginTop: 5 }} />}</li>
-                                        <li>{kpimember && <ExportExcel id="export-total-employee-kpi-evaluation-management" type='link' buttonName="Báo cáo tổng hợp" onClick={() => this.handleExportTotalData(kpimember)} />}</li>
-                                    </ul>
-                                </div>
+                            <div className="form-group">
+                                <label>{translate('kpi.organizational_unit.management.over_view.status')}</label>
+                                <SelectBox
+                                    id={`status-kpi`}
+                                    className="form-control select2"
+                                    style={{ width: "100%" }}
+                                    items={[
+                                        { value: -1, text: translate('kpi.evaluation.employee_evaluation.choose_status') },
+                                        { value: 0, text: translate('kpi.evaluation.employee_evaluation.establishing') },
+                                        { value: 1, text: translate('kpi.evaluation.employee_evaluation.expecting') },
+                                        { value: 2, text: translate('kpi.evaluation.employee_evaluation.activated') }
+                                    ]}
+                                    onChange={handleStatusChange}
+                                    value={status}
+                                />
                             </div>
                         </div>
 
-
-                        <div id="tree-table-container" style={{ marginTop: '30px' }}>
-                            <table id={tableId} className="table table-hover table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th title="STT" style={{ width: "40px" }} className="col-fixed not-sort">STT</th>
-                                        <th title="Tên nhân viên">{translate('kpi.evaluation.employee_evaluation.name')}</th>
-                                        <th title={translate('kpi.employee.employee_kpi_set.create_employee_kpi_set_modal.approver')}>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set_modal.approver')}</th>
-                                        <th title="Thời gian">{translate('kpi.evaluation.employee_evaluation.time')}</th>
-                                        <th title="Số lượng mục tiêu">{translate('kpi.evaluation.employee_evaluation.num_of_kpi')}</th>
-                                        <th title="Trạng thái KPI">{translate('kpi.evaluation.employee_evaluation.kpi_status')}</th>
-                                        <th title={translate('kpi.evaluation.employee_evaluation.system_evaluate')}>{translate('kpi.evaluation.employee_evaluation.system_evaluate')}</th>
-                                        <th title={translate('kpi.evaluation.employee_evaluation.result_self_evaluate')}>{translate('kpi.evaluation.employee_evaluation.result_self_evaluate')}</th>
-                                        <th title={translate('kpi.evaluation.employee_evaluation.evaluation_management')}>{translate('kpi.evaluation.employee_evaluation.evaluation_management')}</th>
-                                        <th title="Phê duyệt" style={{ textAlign: "center" }}>{translate('kpi.evaluation.employee_evaluation.approve')}</th>
-                                        <th title="Đánh giá">{translate('kpi.evaluation.employee_evaluation.evaluate')}
-                                            <DataTableSetting
-                                                tableId={tableId}
-                                                tableContainerId="tree-table-container"
-                                                tableWidth="1300px"
-                                                columnArr={[
-                                                    'STT',
-                                                    translate('kpi.evaluation.employee_evaluation.name'),
-                                                    translate('kpi.employee.employee_kpi_set.create_employee_kpi_set_modal.approver'),
-                                                    translate('kpi.evaluation.employee_evaluation.time'),
-                                                    translate('kpi.evaluation.employee_evaluation.num_of_kpi'),
-                                                    translate('kpi.evaluation.employee_evaluation.kpi_status'),
-                                                    translate('kpi.evaluation.employee_evaluation.system_evaluate'),
-                                                    translate('kpi.evaluation.employee_evaluation.result_self_evaluate'),
-                                                    translate('kpi.evaluation.employee_evaluation.evaluation_management'),
-                                                    translate('kpi.evaluation.employee_evaluation.approve'),
-                                                    translate('kpi.evaluation.employee_evaluation.evaluate')
-                                                ]}
-                                                setLimit={this.setLimit}
-                                                hideColumnOption={true}
-                                            />
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody className="task-table">
-                                    {(kpimember && kpimember.length !== 0) ?
-                                        kpimember.map((item, index) =>
-                                            <tr key={index}>
-                                                <td>{index + 1}</td>
-                                                <td>{item.creator ? item.creator.name : ""}</td>
-                                                <td>{item.approver ? item.approver.name : ""}</td>
-                                                <td>{item ? this.formatDate(item.date) : ""}</td>
-                                                <td>{item.kpis ? item.kpis.length : ""}</td>
-                                                <td>{item ? this.checkStatusKPI(item.status) : ""}</td>
-                                                <td>{item.automaticPoint === null ? translate('kpi.evaluation.employee_evaluation.not_evaluated_yet') : item.automaticPoint}</td>
-                                                <td>{item.employeePoint === null ? translate('kpi.evaluation.employee_evaluation.not_evaluated_yet') : item.employeePoint}</td>
-                                                <td>{item.approvedPoint === null ? translate('kpi.evaluation.employee_evaluation.not_evaluated_yet') : item.approvedPoint}</td>
-                                                <td style={{ textAlign: "center" }}>
-                                                    <a data-target={`#modal-approve-KPI-member`} onClick={() => this.handleShowApproveModal(item._id)} data-toggle="modal" className="approve"
-                                                        title={translate('kpi.evaluation.employee_evaluation.approve_this_kpi')}><i className="fa fa-bullseye"></i></a>
-                                                </td>
-                                                <td>
-                                                    <a data-target={`#employee-kpi-evaluation-modal`} onClick={() => this.showEvaluateModal(item)} data-toggle="modal"
-                                                        className="copy" title={translate('kpi.evaluation.employee_evaluation.evaluate_this_kpi')}><i className="fa fa-list"></i></a>
-                                                </td>
-                                            </tr>
-                                        ) : null}
-                                </tbody>
-                            </table>
-                            {(kpimember && kpimember?.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>}
+                        {/* Tìm kiếm theo người phê duyệt và nhân viên */}
+                        <div className="form-inline hide-component">
+                            <div className="form-group">
+                                <label>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set_modal.approver')}</label>
+                                {approverSelectBox &&
+                                    <SelectBox
+                                        id={`approver-employee-kpi`}
+                                        className="form-control select2"
+                                        style={{ width: "100%" }}
+                                        items={approverSelectBox}
+                                        onChange={handleApproverChange}
+                                        value={approver}
+                                    />
+                                }
+                            </div>
+                            <div className="form-group">
+                                <label>{translate('kpi.evaluation.employee_evaluation.employee')}</label>
+                                {unitMembers &&
+                                    <SelectBox
+                                        id={`employee-kpi-manage`}
+                                        className="form-control select2"
+                                        style={{ width: "100%" }}
+                                        items={unitMembers}
+                                        onChange={handleEmployeeChange}
+                                        value={userId}
+                                    />
+                                }
+                            </div>
                         </div>
 
-                        <PaginateBar
-                            display={kpimember?.length}
-                            total={kpimembers?.totalCountEmployeeKpiSet}
-                            pageTotal={kpimembers?.totalPageEmployeeKpiSet}
-                            currentPage={infosearch?.page}
-                            func={this.handleGetDataPagination}
-                        />
+                        {/* Tìm kiém theo thời gian */}
+                        <div className="form-inline" style={{ marginBottom: '5px' }}>
+                            <div className="form-group">
+                                <label>{translate('kpi.evaluation.employee_evaluation.from')}</label>
+                                <DatePicker
+                                    id='start_date'
+                                    value={startDateDefault}
+                                    onChange={handleStartDateChange}
+                                    dateFormat="month-year"
+                                />
+                            </div>
+                            <div className="form-group">
+                                <label>{translate('kpi.evaluation.employee_evaluation.to')}</label>
+                                <DatePicker
+                                    id='end_date'
+                                    value={endDateDefault}
+                                    onChange={handleEndDateChange}
+                                    dateFormat="month-year"
+                                />
+                            </div>
+                            <div className="form-group">
+                                <button type="button" className="btn btn-success" onClick={() => handleSearchData()}>{translate('kpi.evaluation.employee_evaluation.search')}</button>
+                            </div>
+
+                            {/* Button tìm kiếm và export */}
+                            <div className="dropdown pull-right" style={{ marginTop: "5px" }}>
+                                <button type="button" className="btn btn-primary dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('menu.add_asset_title')} >Báo cáo</button>
+                                <ul className="dropdown-menu pull-right" style={{ marginTop: 0 }}>
+                                    <li>{exportData && <ExportExcel id="export-employee-kpi-evaluation-management" type='link' buttonName="Báo cáo chung" exportData={exportData} style={{ marginRight: 15, marginTop: 5 }} />}</li>
+                                    <li>{kpimember && <ExportExcel id="export-total-employee-kpi-evaluation-management" type='link' buttonName="Báo cáo tổng hợp" onClick={() => handleExportTotalData(kpimember)} />}</li>
+                                </ul>
+                            </div>
+                        </div>
                     </div>
+
+
+                    <div id="tree-table-container" style={{ marginTop: '30px' }}>
+                        <table id={tableId} className="table table-hover table-bordered">
+                            <thead>
+                                <tr>
+                                    <th title="STT" style={{ width: "40px" }} className="col-fixed not-sort">STT</th>
+                                    <th title="Tên nhân viên">{translate('kpi.evaluation.employee_evaluation.name')}</th>
+                                    <th title={translate('kpi.employee.employee_kpi_set.create_employee_kpi_set_modal.approver')}>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set_modal.approver')}</th>
+                                    <th title="Thời gian">{translate('kpi.evaluation.employee_evaluation.time')}</th>
+                                    <th title="Số lượng mục tiêu">{translate('kpi.evaluation.employee_evaluation.num_of_kpi')}</th>
+                                    <th title="Trạng thái KPI">{translate('kpi.evaluation.employee_evaluation.kpi_status')}</th>
+                                    <th title={translate('kpi.evaluation.employee_evaluation.system_evaluate')}>{translate('kpi.evaluation.employee_evaluation.system_evaluate')}</th>
+                                    <th title={translate('kpi.evaluation.employee_evaluation.result_self_evaluate')}>{translate('kpi.evaluation.employee_evaluation.result_self_evaluate')}</th>
+                                    <th title={translate('kpi.evaluation.employee_evaluation.evaluation_management')}>{translate('kpi.evaluation.employee_evaluation.evaluation_management')}</th>
+                                    <th title="Phê duyệt" style={{ textAlign: "center" }}>{translate('kpi.evaluation.employee_evaluation.approve')}</th>
+                                    <th title="Đánh giá">{translate('kpi.evaluation.employee_evaluation.evaluate')}
+                                        <DataTableSetting
+                                            tableId={tableId}
+                                            tableContainerId="tree-table-container"
+                                            tableWidth="1300px"
+                                            columnArr={[
+                                                'STT',
+                                                translate('kpi.evaluation.employee_evaluation.name'),
+                                                translate('kpi.employee.employee_kpi_set.create_employee_kpi_set_modal.approver'),
+                                                translate('kpi.evaluation.employee_evaluation.time'),
+                                                translate('kpi.evaluation.employee_evaluation.num_of_kpi'),
+                                                translate('kpi.evaluation.employee_evaluation.kpi_status'),
+                                                translate('kpi.evaluation.employee_evaluation.system_evaluate'),
+                                                translate('kpi.evaluation.employee_evaluation.result_self_evaluate'),
+                                                translate('kpi.evaluation.employee_evaluation.evaluation_management'),
+                                                translate('kpi.evaluation.employee_evaluation.approve'),
+                                                translate('kpi.evaluation.employee_evaluation.evaluate')
+                                            ]}
+                                            setLimit={setLimit}
+                                            hideColumnOption={true}
+                                        />
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody className="task-table">
+                                {(kpimember && kpimember.length !== 0) ?
+                                    kpimember.map((item, index) =>
+                                        <tr key={index}>
+                                            <td>{index + 1}</td>
+                                            <td>{item.creator ? item.creator.name : ""}</td>
+                                            <td>{item.approver ? item.approver.name : ""}</td>
+                                            <td>{item ? formatDate(item.date) : ""}</td>
+                                            <td>{item.kpis ? item.kpis.length : ""}</td>
+                                            <td>{item ? checkStatusKPI(item.status) : ""}</td>
+                                            <td>{item.automaticPoint === null ? translate('kpi.evaluation.employee_evaluation.not_evaluated_yet') : item.automaticPoint}</td>
+                                            <td>{item.employeePoint === null ? translate('kpi.evaluation.employee_evaluation.not_evaluated_yet') : item.employeePoint}</td>
+                                            <td>{item.approvedPoint === null ? translate('kpi.evaluation.employee_evaluation.not_evaluated_yet') : item.approvedPoint}</td>
+                                            <td style={{ textAlign: "center" }}>
+                                                <a data-target={`#modal-approve-KPI-member`} onClick={() => handleShowApproveModal(item._id)} data-toggle="modal" className="approve"
+                                                    title={translate('kpi.evaluation.employee_evaluation.approve_this_kpi')}><i className="fa fa-bullseye"></i></a>
+                                            </td>
+                                            <td>
+                                                <a data-target={`#employee-kpi-evaluation-modal`} onClick={() => showEvaluateModal(item)} data-toggle="modal"
+                                                    className="copy" title={translate('kpi.evaluation.employee_evaluation.evaluate_this_kpi')}><i className="fa fa-list"></i></a>
+                                            </td>
+                                        </tr>
+                                    ) : null}
+                            </tbody>
+                        </table>
+                        {(kpimember && kpimember?.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>}
+                    </div>
+
+                    <PaginateBar
+                        display={kpimember?.length}
+                        total={kpimembers?.totalCountEmployeeKpiSet}
+                        pageTotal={kpimembers?.totalPageEmployeeKpiSet}
+                        currentPage={infosearch?.page}
+                        func={handleGetDataPagination}
+                    />
                 </div>
-            </React.Fragment>
-        );
-    }
+            </div>
+        </React.Fragment>
+    );
 }
 
 function mapState(state) {
