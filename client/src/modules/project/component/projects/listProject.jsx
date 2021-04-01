@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 import { DataTableSetting, DeleteNotification, PaginateBar } from "../../../../common-components";
@@ -135,7 +135,6 @@ function ListProject(props) {
                 projectEdit={currentRow}
                 handleAfterCreateProject={handleAfterCreateProject}
             />
-
             <ProjectCreateForm
                 page={page}
                 limit={limit}
@@ -221,7 +220,9 @@ function ListProject(props) {
                                 )
                             }
                         </tbody>
-                    </table>
+                    </table> */}
+
+                    {renderList()}
 
                     {/* PaginateBar */}
                     {project && project.isLoading ?

@@ -71,6 +71,7 @@ exports.show = async (portal, id) => {
 }
 
 exports.create = async (portal, data) => {
+    console.log(data)
     let newData = {};
     let newResponsibleEmployeesWithUnit = [];
 

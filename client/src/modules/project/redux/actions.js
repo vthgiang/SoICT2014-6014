@@ -49,7 +49,6 @@ function createProjectDispatch(data) {
             });
     };
 };
-
 function editProjectDispatch(id, data) {
     return (dispatch) => {
         dispatch({ type: ProjectConstants.EDIT_PROJECTS_REQUEST });

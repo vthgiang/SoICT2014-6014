@@ -2536,7 +2536,7 @@ class Routes extends Component {
                         component={TransportRoute} // component ứng với trang, tạo ở bước 1
                     />
 
-                    /* Quản lý dự án */
+                    {/* Quản lý dự án */}
                     <PrivateRoute
                         isLoading={false}
                         key={"/project/projects-list"}

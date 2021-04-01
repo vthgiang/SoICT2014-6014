@@ -285,6 +285,7 @@ export default {
             manage_transport_route: "Hành trình vận chuyển",
 
 
+
             user_guide: "Hướng dẫn sử dụng",
             user_guide_detail: "Chi tiết hướng dẫn sử dụng",
         },
