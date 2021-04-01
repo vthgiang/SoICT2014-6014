@@ -21,7 +21,7 @@ function IncidentManagement(props) {
     const limit_constructor = getTableConfiguration(tableId_constructor, defaultConfig).limit;
 
     const [state, setState] = useState({
-        tableId_constructor,
+        tableId:tableId_constructor,
         code: "",
         assetName: "",
         assetType: null,
@@ -189,11 +189,12 @@ function IncidentManagement(props) {
 
     // Bắt sự kiện chuyển trang
     const setPage = async (pageNumber) => {
+        let page = parseInt(pageNumber);
         await setState({
             ...state,
-            page: parseInt(pageNumber),
+            page: page,
         });
-        props.getIncidents(state);
+        props.getIncidents({...state, page: page});
     }
 
     const deleteIncident = (assetId, incidentId) => {

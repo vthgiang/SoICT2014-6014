@@ -18,7 +18,7 @@ function DepreciationManager(props) {
     const limit_constructor = getTableConfiguration(tableId_constructor, defaultConfig).limit;
 
     const [state, setState] = useState({
-        tableId_constructor,
+        tableId:tableId_constructor,
         code: "",
         assetName: "",
         assetType: null,
@@ -170,11 +170,12 @@ function DepreciationManager(props) {
 
     // Bắt sự kiện setting số dòng hiện thị trên một trang
     const setLimit = async (number) => {
+        let limit = parseInt(number)
         await setState({
             ...state,
-            limit: parseInt(number),
+            limit: limit,
         });
-        props.getAllAsset(state);
+        props.getAllAsset({...state, limit: limit});
     }
 
     // Bắt sự kiện chuyển trang
