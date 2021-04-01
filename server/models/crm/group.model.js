@@ -33,10 +33,17 @@ const GroupSchema = new Schema({
             type: String,
         }
     }],
-    company: {
+    createdAt: { // ngày tạo nhóm
+        type: Date,
+    },
+  
+    updatedAt: { // ngày cập nhật
+        type: Date,
+    },
+    updatedBy: {// người cập nhật
         type: Schema.Types.ObjectId,
-        ref: 'Company',
-    }
+        ref: 'User'
+    },
 }, {
     timestamps: true,
 });
