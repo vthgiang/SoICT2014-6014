@@ -4,54 +4,54 @@ const Schema = mongoose.Schema;
 const TransportRequirementsSchema = new Schema({
     status: { // Trạng thái chờ phê duyệt, đã phê duyệt...
         type: Number,
-        required: true
+        // required: true
     },
     type: { // Loại yêu cầu: giao hàng, trả hàng ....
         type: Number,
-        required: true
+        // required: true
     },
     creator: {  // Người tạo yêu cầu
         type: Schema.Types.ObjectId,
         ref: 'User',
-        required: true
+        // required: true
     },
     customer: { // Khách hàng
         type: Schema.Types.ObjectId,
         ref: 'Customer',
-        required: true
+        // required: true
     },
     customerPhone: {
         type: String,
-        required: true
+        // required: true
     },
     customerAddress: {
         type: String,
-        required: true
+        // required: true
     },
     customerEmail: {
         type: String
     },
     fromAddress: { // Địa điểm xuất phát
         type: String,
-        required: true
+        // required: true
     },
     toAddress: { // Địa điểm đích
         type: String,
-        required: true
+        // required: true
     },
     goods: [{   
         good: {
             type: Schema.Types.ObjectId,
             ref: 'Good',
-            required: true
+            // required: true
         },
         quantity: { // số lượng hàng hóa
             type: Number,
-            required: true
+            // required: true
         },
         volumn: { // khối lượng vận tải tương ứng
             type: Number,
-            required: true
+            // required: true
         }
     }],
     timeRequests: [{ // Thoi gian khach hang yeu cau

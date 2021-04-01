@@ -163,8 +163,8 @@ function TransportRequirementsCreateForm(props) {
         let data = {
             status: 1,
             type: 5, 
-            fromAddress: requirementsForm.info.customer1Address,
-            toAddress: requirementsForm.info.customer2Address,
+            fromAddress: requirementsForm.info.customer1AddressTransport ? requirementsForm.info.customer1AddressTransport : "",
+            toAddress: requirementsForm.info.customer2AddressTransport ? requirementsForm.info.customer2AddressTransport : [],
             goods : formatGoodsForSubmit(requirementsForm.goods),
         }
         props.createTransportRequirement(data)

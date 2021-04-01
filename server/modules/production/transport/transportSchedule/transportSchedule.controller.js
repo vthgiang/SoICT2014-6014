@@ -1,12 +1,12 @@
-const TransportRequirementService = require('./transportRequirements.service');
+const TransportScheduleService = require('./transportSchedule.service');
 const Log = require(`../../../../logs`);
 
 // Thêm mới một ví dụ
-exports.createTransportRequirement = async (req, res) => {
+exports.createTransportSchedule = async (req, res) => {
     try {
-        const newTransportRequirement = await TransportRequirementService.createTransportRequirement(req.portal, req.body);
+        const newTransportSchedule = await TransportScheduleService.createTransportSchedule(req.portal, req.body);
 
-        await Log.info(req.user.email, 'CREATED_NEW_TRANSPORT_REQUIREMENT', req.portal);
+        await Log.info(req.user.email, 'CREATED_NEW_TRANSPORT_SCHEDULE', req.portal);
 
         res.status(201).json({
             success: true,
@@ -14,7 +14,7 @@ exports.createTransportRequirement = async (req, res) => {
             content: newTransportRequirement
         });
     } catch (error) {
-        await Log.error(req.user.email, "CREATED_NEW_TRANSPORT_REQUIREMENT", req.portal);
+        await Log.error(req.user.email, "CREATED_NEW_TRANSPORT_SCHEDULE", req.portal);
 
         res.status(400).json({
             success: false,
@@ -128,24 +128,24 @@ exports.createTransportRequirement = async (req, res) => {
 // }
 
 // Lấy ra tên của tất cả các Ví dụ
-exports.getAllTransportRequirements = async (req, res) => {
-    try {
-        let data;
-        data = await TransportRequirementService.getAllTransportRequirements(req.portal, req.query);
+// exports.getAllTransportRequirements = async (req, res) => {
+//     try {
+//         let data;
+//         data = await TransportRequirementService.getAllTransportRequirements(req.portal, req.query);
 
-        await Log.info(req.user.email, "GET_ALL_TRANSPORT_REQUIREMENTS", req.portal);
-        res.status(200).json({
-            success: true,
-            messages: ["success"],
-            content: data
-        });
-    } catch (error) {
-        await Log.error(req.user.email, "GET_ALL_TRANSPORT_REQUIREMENTS", req.portal);
+//         await Log.info(req.user.email, "GET_ALL_TRANSPORT_REQUIREMENTS", req.portal);
+//         res.status(200).json({
+//             success: true,
+//             messages: ["success"],
+//             content: data
+//         });
+//     } catch (error) {
+//         await Log.error(req.user.email, "GET_ALL_TRANSPORT_REQUIREMENTS", req.portal);
 
-        res.status(400).json({
-            success: false,
-            messages: ["fail"],
-            content: error.message
-        });
-    }
-}
+//         res.status(400).json({
+//             success: false,
+//             messages: ["fail"],
+//             content: error.message
+//         });
+//     }
+// }

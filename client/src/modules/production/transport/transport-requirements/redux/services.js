@@ -5,15 +5,16 @@ export const transportRequirementsServices = {
 }
 
 function getAllTransportRequirements(queryData) {
+    console.log(queryData, "sssssssssssssssssss")
     return sendRequest(
         {
-            url: `${process.env.REACT_APP_SERVER}/transport-requirements`,
+            url: `${process.env.REACT_APP_SERVER}/transport-requirement`,
             method: "GET",
             params: {
-                exampleName: queryData !== undefined ?
-                                       queryData.exampleName : "",
-                page: queryData !== undefined ? queryData.page : null,
-                limit: queryData !== undefined ? queryData.limit : null
+                // page: queryData !== undefined ? queryData.page : null,
+                // limit: queryData !== undefined ? queryData.limit : null
+                page: 1,
+                limit: 100
             }
         },
          false, // Nếu có truy vấn thành công thì không hiện thông báo

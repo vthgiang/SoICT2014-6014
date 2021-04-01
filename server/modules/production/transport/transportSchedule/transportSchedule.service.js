@@ -1,31 +1,20 @@
 const {
-    TransportRequirements
+    TransportSchedule
 } = require('../../../../models');
 
 const {
     connect
 } = require(`../../../../helpers/dbHelper`);
 
-// Tạo mới mảng Ví dụ
-exports.createTransportRequirement = async (portal, data) => {
-    let newTransportRequirement;
+exports.createTransportSchedule = async (portal, data) => {
+    let newScheduleRequirement;
     if (data && data.length !== 0) {
-        let listGoods = [];
-        if (data.goods){
-            data.goods.map(item => {
-                listGoods.push({
-                    good: item.good,
-                    quantity: item.quantity,
-                    volumn: item.volumn
-                })
-            })
-        }
-        newTransportRequirement = await TransportRequirements(connect(DB_CONNECTION, portal)).create({
-            status: data.status,
-            type: data.type,
-            fromAddress: data.fromAddress,
-            toAddress: data.toAddress,
-            goods: listGoods,
+        
+        console.log(data, " dl server");
+        newScheduleRequirement = await TransportSchedule(connect(DB_CONNECTION, portal)).create({
+            code: data.code,
+            startTime: data.startDate,
+            endTime: data.endDate,
         });
         
     }
@@ -73,31 +62,31 @@ exports.createTransportRequirement = async (portal, data) => {
 //         }
 //     }
 
-exports.getAllTransportRequirements = async (portal, data) => {
-    console.log("lay du lieu");
-    let keySearch = {};
-    // if (data?.exampleName?.length > 0) {
-    //     keySearch = {
-    //         exampleName: {
-    //             $regex: data.exampleName,
-    //             $options: "i"
-    //         }
-    //     }
-    // }
+// exports.getAllTransportRequirements = async (portal, data) => {
+//     console.log("lay du lieu");
+//     let keySearch = {};
+//     // if (data?.exampleName?.length > 0) {
+//     //     keySearch = {
+//     //         exampleName: {
+//     //             $regex: data.exampleName,
+//     //             $options: "i"
+//     //         }
+//     //     }
+//     // }
 
-    let page, limit;
-    page = data?.page ? Number(data.page) : 1;
-    limit = data?.limit ? Number(data.limit) : 20;
+//     let page, limit;
+//     page = data?.page ? Number(data.page) : 1;
+//     limit = data?.limit ? Number(data.limit) : 20;
 
-    let totalList = await TransportRequirements(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
-    let requirements = await TransportRequirements(connect(DB_CONNECTION, portal)).find(keySearch)
-        .skip((page - 1) * limit)
-        .limit(limit);
-    return { 
-        data: requirements, 
-        totalList 
-    }
-}
+//     let totalList = await TransportRequirements(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
+//     let requirements = await TransportRequirements(connect(DB_CONNECTION, portal)).find(keySearch)
+//         .skip((page - 1) * limit)
+//         .limit(limit);
+//     return { 
+//         data: requirements, 
+//         totalList 
+//     }
+// }
 
 //     let page, perPage;
 //     page = data?.page ? Number(data.page) : 1;
