@@ -31,7 +31,6 @@ function TransportGoods(props) {
     }, [])
 
     useEffect(() => {
-        console.log(props.listAllGoods, "aaaa");
         setListAllGoods(props.listAllGoods);
     }, [props.listAllGoods])
 
@@ -107,6 +106,7 @@ function TransportGoods(props) {
     const handleAddGood = (e) => {
         e.preventDefault();
         let good = {
+            _id: currentGood._id,
             code: currentGood.code ? currentGood.code : "",
             name: currentGood.name ? currentGood.name : "",
             quantity: currentGood.quantity,
@@ -116,7 +116,7 @@ function TransportGoods(props) {
     }
 
     useEffect(() => {
-        console.log(listGoodsChosen);
+        console.log(listGoodsChosen, " danh sach hang hoa chon");
         callBackState(listGoodsChosen);
     }, [listGoodsChosen])
     return (

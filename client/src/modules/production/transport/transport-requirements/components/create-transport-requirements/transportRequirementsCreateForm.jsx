@@ -18,6 +18,7 @@ import { exampleActions } from '../../redux/actions';
 import { BillActions } from '../../../../warehouse/bill-management/redux/actions';
 import { CrmCustomerActions } from "../../../../../crm/customer/redux/actions";
 import { GoodActions} from '../../../../common-production/good-management/redux/actions';
+import { transportRequirementsActions } from '../../redux/actions'
 
 function TransportRequirementsCreateForm(props) {
 
@@ -47,21 +48,6 @@ function TransportRequirementsCreateForm(props) {
     //     }
     //     return true;
     // }
-
-
-    // /**
-    //  * Hàm dùng để lưu thông tin của form và gọi service tạo mới ví dụ
-    //  */
-    const save = () => {
-    //     if (isFormValidated() && exampleName) {
-    //         props.createExample([{ exampleName, description }]);
-    //         props.getExamples({
-    //             exampleName: "",
-    //             page: page,
-    //             perPage: perPage
-    //         });
-    //     }
-    }
 
 
     // /**
@@ -127,7 +113,9 @@ function TransportRequirementsCreateForm(props) {
         billType: "3"
     })
 
-
+    /**
+     * state chứa thông tin submit
+     */
     const [requirementsForm, setRequirementsForm] = useState({
         goods: [],
     });
@@ -160,7 +148,44 @@ function TransportRequirementsCreateForm(props) {
         }
         return true;
     }
-    
+    // /**
+    //  * Hàm dùng để lưu thông tin của form và gọi service tạo mới ví dụ
+    //  */
+    const save = () => {
+        //     if (isFormValidated() && exampleName) {
+        //         props.createExample([{ exampleName, description }]);
+        //         props.getExamples({
+        //             exampleName: "",
+        //             page: page,
+        //             perPage: perPage
+        //         });
+        //     }
+        let data = {
+            status: 1,
+            type: 5, 
+            fromAddress: requirementsForm.info.customer1Address,
+            toAddress: requirementsForm.info.customer2Address,
+            goods : formatGoodsForSubmit(requirementsForm.goods),
+        }
+        props.createTransportRequirement(data)
+    }
+
+
+    /**
+     * chuẩn hóa dữ liệu goods
+     */
+    const formatGoodsForSubmit = (goods) => {
+        console.log(goods);
+        let goodMap = goods.map((item) => {
+            return {
+                good: item._id,
+                quantity: item.quantity,
+                volumn: item.volumn,
+            };
+        });
+        return goodMap;
+    }
+
     const handleTypeRequirementChange = (value) => {        
         const requirement = requirements.filter(r => r.value === value[0]);
         if (value[0] !== "0") {
@@ -247,7 +272,7 @@ function TransportRequirementsCreateForm(props) {
 
     }, [billDetail]);
 
-    const callBackState = (value) => {
+    const callBackGoodsInfo = (value) => {
         setRequirementsForm({
             ...requirementsForm,
             goods: value,
@@ -409,7 +434,7 @@ function TransportRequirementsCreateForm(props) {
                     }
                     < TransportGoods 
                         goods = {goodsTransport}
-                        callBackState = {callBackState}
+                        callBackState = {callBackGoodsInfo}
                     />
                 </form>
             </DialogModal>
@@ -429,7 +454,7 @@ function mapState(state) {
 const actions = {
     getBillsByType: BillActions.getBillsByType,
     getCustomers: CrmCustomerActions.getCustomers,
-    // getAllGoods: GoodActions.getAllGoods,
+    createTransportRequirement: transportRequirementsActions.createTransportRequirement,
 }
 
 const connectedTransportRequirementsCreateForm = connect(mapState, actions)(withTranslate(TransportRequirementsCreateForm));
