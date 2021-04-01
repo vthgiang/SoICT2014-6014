@@ -24,7 +24,7 @@ exports.get = async (req, res) => {
 
 exports.show = async (req, res) => {
     try {
-        let tp = await TaskProjectService.show(req.portal, req.params.id);
+        let tp = await ProjectService.show(req.portal, req.params.id);
 
         await Logger.info(req.user.email, 'show_task_project', req.portal)
         res.status(200).json({
@@ -53,6 +53,7 @@ exports.create = async (req, res) => {
             content: project
         });
     } catch (error) {
+        console.log('error', error)
         await Logger.error(req.user.email, ' create_task_project_faile ', req.portal);
         res.status(400).json({
             success: false,

@@ -62,7 +62,7 @@ class TaskManagement extends Component {
         this.props.getDepartment();
         this.props.getAllDepartment();
         this.props.getPaginateTasks(this.state.currentTab, [], currentPage, perPage, this.state.status, null, null, null, null, null, null, null, null, null, null);
-        this.props.getProjects({ calledId: "" });
+        this.props.getProjectsDispatch({ calledId: "" });
     }
 
     shouldComponentUpdate(nextProps, nextState) {
@@ -913,7 +913,7 @@ const actionCreators = {
     startTimer: performTaskAction.startTimerTask,
     deleteTaskById: taskManagementActions._delete,
     getAllDepartment: DepartmentActions.get,
-    getProjects: ProjectActions.getProjects,
+    getProjectsDispatch: ProjectActions.getProjectsDispatch,
 };
 const translateTaskManagement = connect(mapState, actionCreators)(withTranslate(TaskManagement));
 export { translateTaskManagement as TaskManagement };

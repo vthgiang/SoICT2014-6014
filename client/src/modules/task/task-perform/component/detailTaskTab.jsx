@@ -152,7 +152,7 @@ class DetailTaskTab extends Component {
 
     componentDidMount() {
         const { currentRole } = this.state;
-        this.props.getProjects({ calledId: "" });
+        this.props.getProjectsDispatch({ calledId: "" });
         this.props.showInfoRole(currentRole);
     }
 
@@ -1490,7 +1490,7 @@ const actionGetState = { //dispatchActionToProps
     editHoursSpentInEvaluate: performTaskAction.editHoursSpentInEvaluate,
     confirmTask: performTaskAction.confirmTask,
     getAllUserInAllUnitsOfCompany: UserActions.getAllUserInAllUnitsOfCompany,
-    getProjects: ProjectActions.getProjects,
+    getProjectsDispatch: ProjectActions.getProjectsDispatch,
     openTaskAgain: performTaskAction.openTaskAgain,
 
     showInfoRole: RoleActions.show,

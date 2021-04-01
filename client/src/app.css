@@ -728,3 +728,13 @@ div.notification-title ::after {
     color: rgb(244, 233, 233);
 }
 
+
+/*Project rows*/
+.project-row-cont:hover {
+    background-color: rgb(75, 84, 92);
+}
+.project-row-list-buttons {
+    color: 'white';
+    margin-right: 5px;
+    background-color: rgb(75, 84, 92);
+}

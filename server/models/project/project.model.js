@@ -12,6 +12,9 @@ const ProjectSchema = new Schema(
         name: {
             type: String
         },
+        avatar: {
+            type: String,
+        },
         description: {
             type: String,
         },
@@ -46,14 +49,19 @@ const ProjectSchema = new Schema(
             type: String,
             default: "hour",
             enum: [
-                "hours",
-                "days",
+                "hour",
+                "day",
             ],
         },
         // Đơn vị tiền tệ của project
         unitCost: {
-            type: Schema.Types.ObjectId,
-            ref: "ProjectUnitCost",
+            // có 2 đơn vị chi phÍ: VND, USD
+            type: String,
+            default: "VND",
+            enum: [
+                "VND",
+                "USD",
+            ],
         },
         status: {
             // có 5 trạng thái công việc: Đang thực hiện, Chờ phê duyệt, Đã hoàn thành, Tạm hoãn, Bị hủy
@@ -77,7 +85,6 @@ const ProjectSchema = new Schema(
             type: Schema.Types.ObjectId,
             ref: "User",
         }],
-
     },
     {
         timestamps: true,

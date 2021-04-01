@@ -36,12 +36,16 @@ exports.get = async (portal, query) => {
             connect(DB_CONNECTION, portal)
         ).paginate(options, {
             page, limit,
-            populate: [{ path: "projectManager", select: "_id name" }]
+            populate: [
+                { path: "projectManager", select: "_id name" },
+                { path: "projectMembers", select: "_id name" }
+            ]
         });
     }
     else
         project = await Project(connect(DB_CONNECTION, portal)).find(options)
             .populate({ path: "projectManager", select: "_id name" })
+            .populate({ path: "projectMembers", select: "_id name" })
             .populate({ path: "parent"});
     return project;
 }
@@ -53,6 +57,7 @@ exports.show = async (portal, id) => {
 }
 
 exports.create = async (portal, data) => {
+    console.log(data)
     let newData = {};
     if (data) {
         for (let i in data) {
@@ -87,4 +92,9 @@ exports.delete = async (portal, id) => {
     return id;
 }
 
+exports.getCostTimeUnit = async (portal, id) => {
+    console.log("hihi")
+    // await console.log("hihi")
+    return id;
+}
 

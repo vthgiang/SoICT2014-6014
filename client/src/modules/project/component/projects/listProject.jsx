@@ -1,30 +1,32 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 
-import { DataTableSetting, DeleteNotification, PaginateBar } from "../../../common-components";
+import { DataTableSetting, DeleteNotification, PaginateBar } from "../../../../common-components";
 
 import ProjectCreateForm from "./createProject";
 import ProjectEditForm from "./editProject";
 import ProjectDetailForm from './detailProject';
 
-import { ProjectActions } from "../redux/actions";
-import { UserActions } from '../../super-admin/user/redux/actions';
-import { formatDate } from '../../../helpers/formatDate';
+import { ProjectActions } from "../../redux/actions";
+import { UserActions } from '../../../super-admin/user/redux/actions';
+import { formatDate } from '../../../../helpers/formatDate';
+import ItemRowProject from "./itemRowProject";
+
 function ListProject(props) {
     // Khởi tạo state
     const [state, setState] = useState({
         exampleName: "",
         page: 1,
         limit: 5,
+        currentFocusedProject: {}
     })
-
     const { project, translate, user } = props;
-    const { projectName, page, limit, currentRow } = state;
+    const { projectName, page, limit, currentFocusedProject } = state;
 
     useEffect(() => {
-        props.getProjects({ calledId: "paginate", page, limit });
-        props.getProjects({ calledId: "all" });
+        props.getProjectsDispatch({ calledId: "paginate", page, limit });
+        props.getProjectsDispatch({ calledId: "all" });
         props.getAllUserInAllUnitsOfCompany();
     }, [])
 
@@ -54,7 +56,7 @@ function ListProject(props) {
             page: parseInt(pageNumber)
         });
 
-        props.getProjects({
+        props.getProjectsDispatch({
             callId: "paginate",
             projectName,
             limit,
@@ -76,29 +78,12 @@ function ListProject(props) {
     }
 
     const handleDelete = (id) => {
-        props.deleteProject(id);
-        props.getProjects({
+        props.deleteProjectDispatch(id);
+        props.getProjectsDispatch({
             projectName,
             limit,
             page: project && project.lists && project.lists.length === 1 ? page - 1 : page
         });
-    }
-
-    const handleEdit = (project) => {
-        setState({
-            ...state,
-            currentRow: project
-        });
-        window.$('#modal-edit-project').modal('show');
-    }
-
-    const handleShowDetailInfo = (data) => {
-        setState({
-            ...state,
-            projectDetail: data
-        });
-
-        window.$(`#modal-detail-project`).modal('show');
     }
 
     const handleOpenCreateForm = () => {
@@ -112,45 +97,54 @@ function ListProject(props) {
     }
 
     const totalPage = project && project.data.totalPage;
+
+    const renderList = () => {
+        return project?.data?.list?.map(projectItem => {
+            const { _id, codeName, fullName } = projectItem;
+            return <ItemRowProject
+                key={_id}
+                projectEdit={projectItem}
+                currentId={_id}
+                codeName={codeName}
+                fullName={fullName}
+                handleDelete={(id) => handleDelete(id)}
+            />
+        })
+    }
+
     return (
         <React.Fragment>
-            <ProjectEditForm
-                projectEditId={currentRow && currentRow._id}
-                projectEdit={currentRow}
-            />
-
             <ProjectCreateForm
                 page={page}
                 limit={limit}
             />
 
-            <ProjectDetailForm projectDetail={state.projectDetail} />
             <div className="box">
                 <div className="box-body qlcv">
                     <div className="form-inline">
-                        {/* Button thêm mới */}
-                        <div className="dropdown pull-right" style={{ marginBottom: 15 }}>
-                            <button type="button" className="btn btn-success dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="true" title="Thêm mới" >Thêm mới</button>
-                            <ul className="dropdown-menu pull-right" style={{ marginTop: 0 }}>
-                                <li><a style={{ cursor: 'pointer' }} onClick={() => window.$('#modal-import-file-project-hooks').modal('show')} title={translate('manage_example.add_multi_example')}>
-                                    {translate('human_resource.salary.add_import')}</a></li>
-                                <li><a style={{ cursor: 'pointer' }} onClick={handleOpenCreateForm} title={translate('manage_example.add_one_example')}>
-                                    {translate('manage_example.add_example')}</a></li>
-                            </ul>
-                        </div>
-
                         {/* Tìm kiếm */}
                         <div className="form-group">
-                            <label className="form-control-static">{translate('manage_example.exampleName')}</label>
-                            <input type="text" className="form-control" name="exampleName" onChange={handleChangeProjectName} placeholder={translate('manage_example.exampleName')} autoComplete="off" />
+                            <label className="form-control-static">{translate('project.name')}</label>
+                            <input type="text" className="form-control" name="exampleName" onChange={handleChangeProjectName} placeholder={translate('project.name')} autoComplete="off" />
                         </div>
                         <div className="form-group">
                             <button type="button" className="btn btn-success" title={translate('manage_example.search')} onClick={() => handleSubmitSearch()}>{translate('manage_example.search')}</button>
                         </div>
+
+                        {/* Button thêm mới */}
+                        <div className="dropdown pull-right" style={{ marginBottom: 15 }}>
+                            <button type="button" className="btn btn-success dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('project.add_btn_new')}>{translate('project.add_btn_new')}</button>
+                            <ul className="dropdown-menu pull-right" style={{ marginTop: 0 }}>
+                                <li><a style={{ cursor: 'pointer' }} onClick={handleOpenCreateForm} title={translate('project.add_btn_normal')}>
+                                    {translate('project.add_btn_normal')}</a></li>
+                                <li><a style={{ cursor: 'pointer' }} onClick={() => window.$('#modal-import-file-project-hooks').modal('show')} title={translate('project.add_btn_scheduling')}>
+                                    {translate('project.add_btn_scheduling')}</a></li>
+                            </ul>
+                        </div>
                     </div>
 
                     {/* Danh sách các ví dụ */}
-                    <table id="project-table" className="table table-striped table-bordered table-hover">
+                    {/* <table id="project-table" className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
                                 <th className="col-fixed" style={{ width: 60 }}>{translate('general.stt')}</th>
@@ -205,7 +199,9 @@ function ListProject(props) {
                                 ))
                             }
                         </tbody>
-                    </table>
+                    </table> */}
+
+                    {renderList()}
 
                     {/* PaginateBar */}
                     {project && project.isLoading ?
@@ -227,12 +223,11 @@ function ListProject(props) {
 
 function mapState(state) {
     const { project, user } = state;
-
     return { project, user }
 }
 const actions = {
-    getProjects: ProjectActions.getProjects,
-    deleteProject: ProjectActions.deleteProject,
+    getProjectsDispatch: ProjectActions.getProjectsDispatch,
+    deleteProjectDispatch: ProjectActions.deleteProjectDispatch,
     getAllUserInAllUnitsOfCompany: UserActions.getAllUserInAllUnitsOfCompany,
 }
 

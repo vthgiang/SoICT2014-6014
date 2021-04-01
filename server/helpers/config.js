@@ -1448,8 +1448,8 @@ const LINKS = [{
 },
 // Quan li du an
 {
-    url: '/projects-management',
-    description: 'Dự án',
+    url: '/project/projects-list',
+    description: 'Danh sách dự án',
     category: LINK_CATEGORY.PROJECT.name,
     roles: [
         ROOT_ROLES.SUPER_ADMIN.name,
@@ -1458,8 +1458,61 @@ const LINKS = [{
         ROOT_ROLES.DEPUTY_MANAGER.name,
         ROOT_ROLES.EMPLOYEE.name,
     ],
-    components: getComponentsInLink('/projects-management'),
+    components: getComponentsInLink('/project/projects-list'),
 },
+{
+    url: '/project/project-details',
+    description: 'Chi tiết dự án',
+    category: LINK_CATEGORY.PROJECT.name,
+    roles: [
+        ROOT_ROLES.SUPER_ADMIN.name,
+        ROOT_ROLES.ADMIN.name,
+        ROOT_ROLES.MANAGER.name,
+        ROOT_ROLES.DEPUTY_MANAGER.name,
+        ROOT_ROLES.EMPLOYEE.name,
+    ],
+    components: getComponentsInLink('/project/projects-details'),
+},
+{
+    url: '/project/phases-list',
+    description: 'Danh sách cột mốc dự án',
+    category: LINK_CATEGORY.PROJECT.name,
+    roles: [
+        ROOT_ROLES.SUPER_ADMIN.name,
+        ROOT_ROLES.ADMIN.name,
+        ROOT_ROLES.MANAGER.name,
+        ROOT_ROLES.DEPUTY_MANAGER.name,
+        ROOT_ROLES.EMPLOYEE.name,
+    ],
+    components: getComponentsInLink('/project/phases-list'),
+},
+{
+    url: '/project/tasks-list',
+    description: 'Danh sách công việc dự án',
+    category: LINK_CATEGORY.PROJECT.name,
+    roles: [
+        ROOT_ROLES.SUPER_ADMIN.name,
+        ROOT_ROLES.ADMIN.name,
+        ROOT_ROLES.MANAGER.name,
+        ROOT_ROLES.DEPUTY_MANAGER.name,
+        ROOT_ROLES.EMPLOYEE.name,
+    ],
+    components: getComponentsInLink('/project/tasks-list'),
+},
+{
+    url: '/project/issues-list',
+    description: 'Danh sách vấn đề phát sinh dự án',
+    category: LINK_CATEGORY.PROJECT.name,
+    roles: [
+        ROOT_ROLES.SUPER_ADMIN.name,
+        ROOT_ROLES.ADMIN.name,
+        ROOT_ROLES.MANAGER.name,
+        ROOT_ROLES.DEPUTY_MANAGER.name,
+        ROOT_ROLES.EMPLOYEE.name,
+    ],
+    components: getComponentsInLink('/project/issues-list'),
+},
+
 {
     url: "/user-guide",
     description: "Hướng dẫn sử dụng",

@@ -264,8 +264,15 @@ export default {
             manage_manufacturing_works: "Quản lý nhà máy sản xuất",
             manage_manufacturing_mill: "Quản lý xưởng sản xuất",
             manage_manufacturing_lot: "Quản lý lô sản xuất",
-            manage_project: "Quản lý dự án",
 
+            // Quản lý dự án
+            manage_project: "Quản lý dự án",
+            projects_list: 'Danh sách dự án',
+            project_details: 'Chi tiết dự án',
+            tasks_list: 'Danh sách công việc',
+            phases_list: 'Danh sách giai đoạn',
+            issues_list: 'Danh sách vấn đề',
+            
             // Quản lý vận chuyển
             manage_transport: "Quản lý vận chuyển",
             manage_transport_requirements: "Yêu cầu vận chuyển",
@@ -274,6 +281,7 @@ export default {
             manage_transport_vehicle: "Phương tiện vận chuyển",
             manage_transport_human: "Nhân viên vận chuyển",
             manage_transport_route: "Hành trình vận chuyển",
+
 
             user_guide: "Hướng dẫn sử dụng",
             user_guide_detail: "Chi tiết hướng dẫn sử dụng",
@@ -5736,13 +5744,22 @@ export default {
             code: "Mã dự án",
             name: "Tên dự án",
             startDate: "Ngày bắt đầu dự án",
-            endDate: "Ngày kết thúc dự án",
+            endDate: "Ngày dự kiến kết thúc dự án",
             parent: "Dự án cha",
             manager: "Người quản trị",
+            member: 'Thành viên dự án',
+            estimatedTime: 'Thời gian ước lượng hoàn thành dự án',
+            estimatedCost: 'Chi phí ước lượng cho dự án',
+            unitTime: 'Đơn vị của thời gian',
+            unitCost: 'Đơn vị của chi phí',
             description: "Mô tả dự án",
             add_title: "Thêm mới dự án",
             detail_title: "Chi tiết dự án",
-            edit_title: "Chỉnh sửa dự án"
+            edit_title: "Chỉnh sửa dự án",
+            add_btn_from_excel: "Thêm từ file excel",
+            add_btn_new: "Thêm mới",
+            add_btn_normal: "Thêm bằng tay",
+            add_btn_scheduling: "Thêm bằng lập lịch",
         }
     },
 };

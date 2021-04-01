@@ -2,19 +2,19 @@ import { ProjectServices } from './services';
 import { ProjectConstants } from './constants';
 
 export const ProjectActions = {
-    getProjects,
-    createProject,
-    editProject,
-    deleteProject,
+    getProjectsDispatch,
+    createProjectDispatch,
+    editProjectDispatch,
+    deleteProjectDispatch,
 }
 
-function getProjects(data = undefined) {
+function getProjectsDispatch(data = undefined) {
     return (dispatch) => {
         dispatch({
             type: ProjectConstants.GET_PROJECTS_REQUEST,
             calledId: data.calledId ? data.calledId : "",
         });
-        ProjectServices.getProjects(data)
+        ProjectServices.getProjectsAPI(data)
             .then((res) => {
                 dispatch({
                     type: ProjectConstants.GET_PROJECTS_SUCCESS,
@@ -28,12 +28,12 @@ function getProjects(data = undefined) {
     };
 };
 
-function createProject(data) {
+function createProjectDispatch(data) {
     return (dispatch) => {
         dispatch({
             type: ProjectConstants.CREATE_PROJECTS_REQUEST,
         });
-        ProjectServices.createProject(data)
+        ProjectServices.createProjectAPI(data)
             .then((res) => {
                 dispatch({
                     type: ProjectConstants.CREATE_PROJECTS_SUCCESS,
@@ -45,10 +45,10 @@ function createProject(data) {
             });
     };
 };
-function editProject(id, data) {
+function editProjectDispatch(id, data) {
     return (dispatch) => {
         dispatch({ type: ProjectConstants.EDIT_PROJECTS_REQUEST });
-        ProjectServices.editProject(id, data)
+        ProjectServices.editProjectAPI(id, data)
             .then((res) => {
                 dispatch({
                     type: ProjectConstants.EDIT_PROJECTS_SUCCESS,
@@ -64,10 +64,10 @@ function editProject(id, data) {
 }
 
 
-function deleteProject(id) {
+function deleteProjectDispatch(id) {
     return (dispatch) => {
         dispatch({ type: ProjectConstants.DELETE_PROJECTS_REQUEST });
-        ProjectServices.deleteProject(id)
+        ProjectServices.deleteProjectAPI(id)
             .then((res) => {
                 dispatch({
                     type: ProjectConstants.DELETE_PROJECTS_SUCCESS,

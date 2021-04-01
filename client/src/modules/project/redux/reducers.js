@@ -24,7 +24,6 @@ const initState = {
         prevPage: 0,
         nextPage: 0,
     },
-
 }
 
 export function project(state = initState, action) {
@@ -35,6 +34,7 @@ export function project(state = initState, action) {
         case ProjectConstants.CREATE_PROJECTS_REQUEST:
         case ProjectConstants.DELETE_PROJECTS_REQUEST:
         case ProjectConstants.EDIT_PROJECTS_REQUEST:
+        case ProjectConstants.GET_PROJECT_DETAILS_REQUEST:
             return {
                 ...state,
                 isLoading: true,
@@ -44,6 +44,7 @@ export function project(state = initState, action) {
         case ProjectConstants.CREATE_PROJECTS_FAILE:
         case ProjectConstants.DELETE_PROJECTS_FAILE:
         case ProjectConstants.EDIT_PROJECTS_FAILE:
+            case ProjectConstants.GET_PROJECT_DETAILS_FAILE:
             return {
                 ...state,
                 isLoading: false,
@@ -105,7 +106,7 @@ export function project(state = initState, action) {
                 ...state,
                 isLoading: false
             };
-        
+
         case ProjectConstants.EDIT_PROJECTS_SUCCESS:
             index = findIndex(state.data.list, action.payload._id);
             if (index !== -1) state.data.list[index] = action.payload;

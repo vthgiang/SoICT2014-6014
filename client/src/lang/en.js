@@ -246,7 +246,14 @@ export default {
                 "Analysis manufacturing performance",
             manage_manufacturing_works: "Manage manufacturing works",
             manage_manufacturing_mill: "Manage manufacturing mill",
+
+            // Quản lý dự án
             manage_project: "Manage Project",
+            projects_list: 'Projects list',
+            project_details: 'Projects details',
+            tasks_list: 'Tasks list',
+            phases_list: 'Phases list',
+            issues_list: 'Issues list',
 
             // Quản lý vận chuyển
             manage_transport: "Manage transport",
@@ -4194,10 +4201,21 @@ export default {
             name: "Project name",
             startDate: "Start date",
             endDate: "End date",
-            parent: "Dự án cha",
+            parent: "Parent project",
             manager: "Manager",
+            member: 'Members',
+            estimatedTime: 'Estimated time to finish',
+            estimatedCost: 'Estimated cost for project',
+            unitTime: 'Unit of time',
+            unitCost: 'Unit of cost',
             description: "Description",
-            add_title: "Add new project"
+            add_title: "Add new project",
+            detail_title: "Project details",
+            edit_title: "Project edit",
+            add_btn_from_excel: "Choose from excel file",
+            add_btn_new: "Add new",
+            add_btn_normal: "Add by hand",
+            add_btn_scheduling: "Add by scheduling",
         }
     },
 };

@@ -942,7 +942,32 @@ exports.links = [
     }, {
         url: '/hr-manage-field',
         apis: ['@all']
-    },
+    }, {
+        url: '/answer-auth-questions',
+        apis: ['@all']
+    }, 
+    
+    // Quản lý dự án
+    {
+        url: '/project/projects-list',
+        apis: ['@all']
+    }, 
+    {
+        url: '/project/project-details',
+        apis: ['@all']
+    }, 
+    {
+        url: '/project/tasks-list',
+        apis: ['@all']
+    }, 
+    {
+        url: '/project/phases-list',
+        apis: ['@all']
+    }, 
+    {
+        url: '/project/issues-list',
+        apis: ['@all']
+    }, 
 
     //transport
     {
@@ -973,8 +998,8 @@ exports.links = [
     {
         url: '/projects-management',
         apis: ['@all']
-    }, {
-
+    }, 
+    {
         url: '/user-guide',
         apis: ['@all']
     }, {

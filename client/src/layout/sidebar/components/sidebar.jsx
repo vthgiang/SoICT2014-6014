@@ -327,11 +327,16 @@ class SideBar extends Component {
 
 
                             {/* Quản lý dự án */}
-                            <Item
-                                item={{
+                            <GroupItem
+                                groupItem={{
                                     name: "menu.manage_project",
                                     icon: "fa fa-folder-open",
-                                    path: "/projects-management",
+                                    list: [
+                                        { name: "menu.projects_list", icon: "fa fa-dashboard", path: "/project/projects-list" },
+                                        { name: "menu.tasks_list", icon: "fa fa-sitemap", path: "/project/tasks-list" },
+                                        { name: "menu.phases_list", icon: "fa fa-user-plus", path: "/project/phases-list" },
+                                        { name: "menu.issues_list", icon: "fa fa-user-plus", path: "/project/issues-list" },
+                                    ],
                                 }}
                             />
 
