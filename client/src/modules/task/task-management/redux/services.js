@@ -271,25 +271,26 @@ function getPaginateTasksByUser(unit, number, perPage, status, priority, special
  * @param {*} endDateBefore 
  * @param {*} aPeriodOfTime 
  */
-function getPaginatedTasksByOrganizationalUnit(unit, number, perPage, status, priority, special, name, startDate, endDate, isAssigned,responsibleEmployees,accountableEmployees, creatorEmployees) {
+function getPaginatedTasksByOrganizationalUnit(data) {
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/task/tasks`,
         method: 'GET',
         params: {
             type: 'paginated_task_by_unit',
-            unit: unit,
-            number: number,
-            perPage: perPage,
-            status: status,
-            priority: priority,
-            special: special,
-            name: name,
-            startDate: startDate,
-            endDate: endDate,
-            isAssigned: isAssigned,
-            responsibleEmployees,
-            accountableEmployees,
-            creatorEmployees,
+            unit: data?.unit,
+            number: data?.page,
+            perPage: data?.perPage,
+            status: data?.status,
+            priority: data?.priority,
+            special: data?.special,
+            name: data?.name,
+            startDate: data?.startDate,
+            endDate: data?.endDate,
+            isAssigned: data?.isAssigned,
+            responsibleEmployees: data?.responsibleEmployees,
+            accountableEmployees: data?.accountableEmployees,
+            creatorEmployees: data?.creatorEmployees,
+            organizationalUnitRole: data?.organizationalUnitRole
         }
     }, false, true, 'task.task_management');
 }

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component, useEffect, useState} from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import Swal from 'sweetalert2';
@@ -15,113 +15,98 @@ import { FunctionHelperStatisticKpi } from './functionHelperStatisticKpi';
 import { SelectBox, DatePicker, Tree, SlimScroll } from '../../../../common-components';
 
 
-var translate = '';
-class StatisticsOfOrganizationalUnitKpi extends Component {
+// var translate = '';
 
-    constructor(props) {
-        super(props);
+function StatisticsOfOrganizationalUnitKpi(props) {
 
-        translate = this.props.translate;
+    var translate = props.translate;
 
-        this.DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
-        this.TREE_INDEX = 0;            // Dùng làm id cho những phàn tử trong tree nếu phần tử đó k có kpi con
-        this.today = new Date();
+    const DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
+    var TREE_INDEX = 0;            // Dùng làm id cho những phàn tử trong tree nếu phần tử đó k có kpi con
+    const today = new Date();
 
-        this.INFO_SEARCH = {
-            organizationalUnitId: null,
-            month: this.today.getFullYear() + '-' + (this.today.getMonth() + 1)
-        }
+    const INFO_SEARCH = {
+        organizationalUnitId: null,
+        month: today.getFullYear() + '-' + (today.getMonth() + 1)
+    };
 
-        this.state = {
-            currentRole: localStorage.getItem("currentRole"),
-            dataStatus: this.DATA_STATUS.QUERYING,
+    const [state, setState] = useState({
+        currentRole: localStorage.getItem("currentRole"),
+        dataStatus: DATA_STATUS.QUERYING,
 
-            organizationalUnitId: this.INFO_SEARCH.organizationalUnitId,
-            month: this.INFO_SEARCH.month
-        }
-    }
+        organizationalUnitId: INFO_SEARCH.organizationalUnitId,
+        month: INFO_SEARCH.month
+    });
 
-    componentDidMount() {
-        const { currentRole, month, organizationalUnitId } = this.state;
+    const { dashboardEvaluationEmployeeKpiSet, createKpiUnit, dashboardOrganizationalUnitKpi } = props;
+    const { details, month } = state;
+    let childrenOrganizationalUnit, childrenOrganizationalUnitLoading, currentKPI, organizationalUnitKpiLoading, listChildTarget;
 
-        this.props.getCurrentKPIUnit(currentRole, organizationalUnitId, month);
+    useEffect(()=>{
+        const { currentRole, month, organizationalUnitId } = state;
 
-        this.props.getAllEmployeeKpiInChildrenOrganizationalUnit(currentRole, month, organizationalUnitId);
-        this.props.getAllTaskOfChildrenOrganizationalUnit(currentRole, month, organizationalUnitId);
+        props.getCurrentKPIUnit(currentRole, organizationalUnitId, month);
 
-        this.props.getChildrenOfOrganizationalUnitsAsTree(currentRole);
+        props.getAllEmployeeKpiInChildrenOrganizationalUnit(currentRole, month, organizationalUnitId);
+        props.getAllTaskOfChildrenOrganizationalUnit(currentRole, month, organizationalUnitId);
 
-        this.setState(state => {
-            return {
-                ...state,
-                dataStatus: this.DATA_STATUS.QUERYING
-            }
+        props.getChildrenOfOrganizationalUnitsAsTree(currentRole);
+
+        setState(  {
+            ...state,
+            dataStatus: DATA_STATUS.QUERYING
         })
-    }
+    },[])
 
-    shouldComponentUpdate = async (nextProps, nextState) => {
-        const { details } = this.state;
+    useEffect(()=>{
+        const { details } = state;
 
-        if (nextState.details !== details) {
+        if (state.details !== details) {
             return false;
         }
 
-        if (nextState.organizationalUnitId !== this.state.organizationalUnitId || nextState.month !== this.state.month) {
-            await this.props.getCurrentKPIUnit(this.state.currentRole, nextState.organizationalUnitId, nextState.month);
-            await this.props.getAllEmployeeKpiInChildrenOrganizationalUnit(this.state.currentRole, nextState.month, nextState.organizationalUnitId);
-            await this.props.getAllTaskOfChildrenOrganizationalUnit(this.state.currentRole, nextState.month, nextState.organizationalUnitId)
+        if (state.organizationalUnitId !== state.organizationalUnitId || state.month !== state.month) {
+             props.getCurrentKPIUnit(state.currentRole, state.organizationalUnitId, state.month);
+             props.getAllEmployeeKpiInChildrenOrganizationalUnit(state.currentRole, state.month, state.organizationalUnitId);
+             props.getAllTaskOfChildrenOrganizationalUnit(state.currentRole, state.month, state.organizationalUnitId)
 
-            this.setState(state => {
-                return {
-                    ...state,
-                    dataStatus: this.DATA_STATUS.QUERYING,
-                }
+            setState(  {
+                ...state,
+                dataStatus: DATA_STATUS.QUERYING,
             });
 
-            return false;
         }
 
-        if (nextState.dataStatus === this.DATA_STATUS.QUERYING) {
-            if (!nextProps.createKpiUnit.currentKPI) {
-                return false
+        if (state.dataStatus === DATA_STATUS.QUERYING) {
+            if (!props.createKpiUnit.currentKPI) {
             }
 
-            if (!nextProps.dashboardOrganizationalUnitKpi.employeeKpisOfChildUnit) {
-                return false
+            if (!props.dashboardOrganizationalUnitKpi.employeeKpisOfChildUnit) {
             }
 
-            if (!nextProps.dashboardOrganizationalUnitKpi.tasksOfChildrenOrganizationalUnit) {
-                return false
+            if (!props.dashboardOrganizationalUnitKpi.tasksOfChildrenOrganizationalUnit) {
             }
 
-            this.setState(state => {
-                return {
+            setState( {
                     ...state,
-                    dataStatus: this.DATA_STATUS.AVAILABLE,
-                };
+                    dataStatus: DATA_STATUS.AVAILABLE,
             });
 
-            return false;
-        } else if (nextState.dataStatus === this.DATA_STATUS.AVAILABLE) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    dataStatus: this.DATA_STATUS.FINISHED,
-                };
+        } else if (state.dataStatus === DATA_STATUS.AVAILABLE) {
+            setState( {
+                ...state,
+                dataStatus: DATA_STATUS.FINISHED,
             });
         }
+    })
 
-        return false;
-    }
-
-
-    /** 
+    /**
      * Duyệt các kpi con của cùng 1 kpi, mỗi phần tử trả về object gồm tên, đơn vị, số lượng kpi con,... (config dùng trong Tree)
      * @listChildTargetSameParent mảng nhiều chiều
      * @listChildTarget  mảng gồm các dữ liệu phụ(null vẫn chạy ok)
      * @organizationalUnit xác định gốc trong tree
-    */
-    traversesListChildTargetSameParent = (listChildTargetSameParent, listChildTarget, listTaskSameParent, organizationalUnit) => {
+     */
+    const traversesListChildTargetSameParent = (listChildTargetSameParent, listChildTarget, listTaskSameParent, organizationalUnit) => {
         let treeData = [];
         if (listChildTargetSameParent.length !== 0) {
             listChildTargetSameParent.map(unit => {
@@ -230,7 +215,7 @@ class StatisticsOfOrganizationalUnitKpi extends Component {
 
                             // Phần tử tree
                             treeData.push({
-                                id: kpi?.employeeKpi?.[0]?.parent ? kpi?.employeeKpi?.[0]?.parent : this.TREE_INDEX,
+                                id: kpi?.employeeKpi?.[0]?.parent ? kpi?.employeeKpi?.[0]?.parent : TREE_INDEX,
                                 text: kpi?.organizationalUnit + ' - ' + kpi?._id,
                                 name: kpi?._id,
                                 state: { "opened": true },
@@ -244,7 +229,7 @@ class StatisticsOfOrganizationalUnitKpi extends Component {
                                 organizationalUnitId: kpi?.organizationalUnitId
                             })
 
-                            this.TREE_INDEX++;
+                            TREE_INDEX++;
                         }
                     })
                 }
@@ -253,15 +238,15 @@ class StatisticsOfOrganizationalUnitKpi extends Component {
         }
 
         return treeData;
-    }
+    };
 
-    setTreeData = () => {
-        const { createKpiUnit, dashboardOrganizationalUnitKpi } = this.props;
-        const { organizationalUnitId } = this.state;
+    const setTreeData = () => {
+        const { createKpiUnit, dashboardOrganizationalUnitKpi } = props;
+        const { organizationalUnitId } = state;
 
         let listOrganizationalUnitKpi, listChildTarget, listTask;
         /* Sử dụng JSON để deep copy array and object
-        *   Mục đích: Khi thay đổi giá trị sâu trong array và object, không ảnh hưởng đế giá trị gốc lưu trong redux    
+        *   Mục đích: Khi thay đổi giá trị sâu trong array và object, không ảnh hưởng đế giá trị gốc lưu trong redux
         */
         if (createKpiUnit?.currentKPI?.kpis) {
             listOrganizationalUnitKpi = JSON.parse(JSON.stringify(createKpiUnit.currentKPI.kpis));
@@ -273,7 +258,7 @@ class StatisticsOfOrganizationalUnitKpi extends Component {
             listTask = JSON.parse(JSON.stringify(dashboardOrganizationalUnitKpi.tasksOfChildrenOrganizationalUnit));
         }
 
-        let organizationalUnitSelectBox = this.setSelectBox();
+        let organizationalUnitSelectBox = setSelectBox();
         let arrayListChildTargetSameOrganizationUnitKpi = FunctionHelperStatisticKpi.getArrayListChildTargetOrganizationUnitKpi(listOrganizationalUnitKpi, listChildTarget);
         let arrayListTaskSameOrganizationUnitKpi = FunctionHelperStatisticKpi.getArrayListTaskSameOrganizationUnitKpi(listOrganizationalUnitKpi, listTask, listChildTarget);
         let organizationalUnit, treeDatas = [];
@@ -295,7 +280,7 @@ class StatisticsOfOrganizationalUnitKpi extends Component {
                 if (arrayListChildTargetSameOrganizationUnitKpi[i]) {
                     for (let j = (arrayListChildTargetSameOrganizationUnitKpi[i].length - 1); j >= 0; j--) {
                         treeData[j] = [];
-                        treeData[j] = this.traversesListChildTargetSameParent(arrayListChildTargetSameOrganizationUnitKpi?.[i]?.[j], treeData?.[j + 1], listTaskSameParent, organizationalUnit?.[0]);
+                        treeData[j] = traversesListChildTargetSameParent(arrayListChildTargetSameOrganizationUnitKpi?.[i]?.[j], treeData?.[j + 1], listTaskSameParent, organizationalUnit?.[0]);
                         treeDatas = treeData?.[j]?.concat(treeDatas);
                     }
                 }
@@ -305,8 +290,8 @@ class StatisticsOfOrganizationalUnitKpi extends Component {
         return treeDatas;
     }
 
-    setSelectBox = () => {
-        const { dashboardEvaluationEmployeeKpiSet } = this.props;
+    const setSelectBox = () => {
+        const { dashboardEvaluationEmployeeKpiSet } = props;
 
         let childOrganizationalUnit, childrenOrganizationalUnit, organizationalUnitSelectBox;
 
@@ -353,31 +338,29 @@ class StatisticsOfOrganizationalUnitKpi extends Component {
         }
 
         return organizationalUnitSelectBox;
-    }
+    };
 
-    onChanged = async (e, data) => {
-        this.TREE_INDEX = 0;
+    const onChanged = async (e, data) => {
+        let TREE_INDEX = 0;
 
-        await this.setState(state => {
-            return {
-                ...state,
-                details: data.node && data.node.original,
-            }
+        setState( {
+            ...state,
+            details: data.node && data.node.original,
         })
 
         window.$(`#details-of-organizational-unit-kpi-form`).slideDown();
+    };
+
+    const handleSelectOrganizationalUnitId = (value) => {
+        INFO_SEARCH.organizationalUnitId = value[0];
     }
 
-    handleSelectOrganizationalUnitId = (value) => {
-        this.INFO_SEARCH.organizationalUnitId = value[0];
+    const handleSelectMonth = async (value) => {
+        INFO_SEARCH.month = value.slice(3, 7) + '-' + value.slice(0, 2);
     }
 
-    handleSelectMonth = async (value) => {
-        this.INFO_SEARCH.month = value.slice(3, 7) + '-' + value.slice(0, 2);
-    }
-
-    handleSearchData = () => {
-        if (this.INFO_SEARCH.month === '-') {
+    const handleSearchData = () => {
+        if (INFO_SEARCH.month === '-') {
             Swal.fire({
                 title: translate('task.task_management.date_not_empty'),
                 type: 'warning',
@@ -385,17 +368,15 @@ class StatisticsOfOrganizationalUnitKpi extends Component {
                 confirmButtonText: translate('kpi.evaluation.employee_evaluation.confirm')
             })
         } else {
-            this.setState(state => {
-                return {
-                    ...state,
-                    organizationalUnitId: this.INFO_SEARCH.organizationalUnitId,
-                    month: this.INFO_SEARCH.month
-                }
+            setState( {
+                ...state,
+                organizationalUnitId: INFO_SEARCH.organizationalUnitId,
+                month: INFO_SEARCH.month
             })
         }
     }
 
-    showDistributionOfEmployeeKpiDoc = () => {
+    const showDistributionOfEmployeeKpiDoc = () => {
         Swal.fire({
             icon: "question",
 
@@ -409,7 +390,7 @@ class StatisticsOfOrganizationalUnitKpi extends Component {
         })
     }
 
-    showDistributionOfOrganizationalUnitKpiDoc = () => {
+    const showDistributionOfOrganizationalUnitKpiDoc = () => {
         Swal.fire({
             icon: "question",
 
@@ -423,154 +404,149 @@ class StatisticsOfOrganizationalUnitKpi extends Component {
         })
     }
 
-    render() {
-        const { translate, dashboardEvaluationEmployeeKpiSet, createKpiUnit, dashboardOrganizationalUnitKpi } = this.props;
-        const { details, month } = this.state;
-        let childrenOrganizationalUnit, childrenOrganizationalUnitLoading, currentKPI, organizationalUnitKpiLoading, listChildTarget;
-        let dataTree = this.setTreeData();
-        let organizationalUnitSelectBox = this.setSelectBox();
+    let dataTree = setTreeData();
+    let organizationalUnitSelectBox = setSelectBox();
 
-        if (dashboardEvaluationEmployeeKpiSet) {
-            childrenOrganizationalUnit = dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit;
-            childrenOrganizationalUnitLoading = dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnitLoading;
-        }
-        if (createKpiUnit) {
-            currentKPI = createKpiUnit.currentKPI;
-            organizationalUnitKpiLoading = createKpiUnit.organizationalUnitKpiLoading;
-        }
-        if (dashboardOrganizationalUnitKpi) {
-            listChildTarget = dashboardOrganizationalUnitKpi.employeeKpisOfChildUnit;
-        }
-
-        // Config select time
-        let d = new Date(),
-            monthDate = '' + (d.getMonth() + 1),
-            day = '' + d.getDate(),
-            year = d.getFullYear();
-
-        if (monthDate.length < 2)
-            monthDate = '0' + monthDate;
-        if (day.length < 2)
-            day = '0' + day;
-        let defaultDate = [monthDate, year].join('-');
-
-        if (!details) {
-            window.$(`#${dataTree?.[0]?.id}_anchor`).addClass('jstree-clicked')
-        }
-
-        return (
-            <React.Fragment>
-                <div className="box">
-                    {childrenOrganizationalUnit
-                        ? <div className="box-body qlcv">
-                            {organizationalUnitSelectBox &&
-                                <div className="form-inline">
-                                    <div className="form-group">
-                                        <label>{translate('kpi.organizational_unit.dashboard.organizational_unit')}</label>
-                                        <SelectBox
-                                            id={`organizationalUnitSelectBoxInOrganizationalUnitKpiDashboard`}
-                                            className="form-control select2"
-                                            style={{ width: "100%" }}
-                                            items={organizationalUnitSelectBox}
-                                            multiple={false}
-                                            onChange={this.handleSelectOrganizationalUnitId}
-                                            value={organizationalUnitSelectBox[0].value}
-                                        />
-                                    </div>
-                                </div>
-                            }
-
-                            <div className="form-inline">
-                                <div className="form-group">
-                                    <label>{translate('kpi.organizational_unit.dashboard.month')}</label>
-                                    <DatePicker
-                                        id="monthInOrganizationalUnitKpiDashboard"
-                                        dateFormat="month-year"
-                                        value={defaultDate}
-                                        onChange={this.handleSelectMonth}
-                                        disabled={false}
-                                    />
-                                </div>
-                                <div className="form-group">
-                                    <button type="button" className="btn btn-success" onClick={this.handleSearchData}>{translate('kpi.evaluation.employee_evaluation.search')}</button>
-                                </div>
-                            </div>
-
-
-                            <div className="row row-equal-height">
-                                <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6" style={{ padding: 10 }}>
-                                    <div className="description-box" style={{ height: "100%" }}>
-                                        {currentKPI
-                                            ? <React.Fragment>
-                                                <h4 className="box-title">Cây KPI đơn vị tháng {month.slice(5, 7) + "-" + month.slice(0, 4)}</h4>
-                                                <div className="details-tree" id="details-tree" style={{ maxHeight: "500px" }}>
-                                                    <Tree
-                                                        id="tree-qlcv-document"
-                                                        onChanged={this.onChanged}
-                                                        data={dataTree}
-                                                        plugins={false}
-                                                    />
-                                                </div>
-                                                <SlimScroll outerComponentId="details-tree" innerComponentId="tree-qlcv-document" innerComponentWidth={"100%"} activate={true} />
-                                            </React.Fragment>
-                                            : organizationalUnitKpiLoading
-                                            && <h4> Đơn vị chưa khởi tạo KPI tháng {month.slice(5, 7) + "-" + month.slice(0, 4)}</h4>
-                                        }
-                                    </div>
-                                </div>
-
-                                <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6" style={{ padding: 10 }}>
-                                    <DetailsOfOrganizationalUnitKpiForm
-                                        details={details ? details : dataTree?.[0]}
-                                    />
-                                </div>
-                            </div>
-
-                            <div className="row">
-                                <div className="col-xs-12" style={{ padding: 10 }}>
-                                    <div className="description-box" style={{ height: "100%" }}>
-                                        <h4 className="box-title">
-                                            <span>Biểu đồ phân tích KPI đơn vị dựa trên KPI nhân viên tháng {month.slice(5, 7) + "-" + month.slice(0, 4)}</span>
-                                            <a className="text-red" title={translate('task.task_management.explain')} onClick={() => this.showDistributionOfEmployeeKpiDoc()}>
-                                                <i className="fa fa-question-circle" style={{ color: '#dd4b39', marginLeft: '5px' }} />
-                                            </a>
-                                        </h4>
-
-                                        <DistributionOfEmployeeKpiChart
-                                            organizationalUnitKPI={dataTree.filter(item => item.parent === '#')}
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="row">
-                                <div className="col-xs-12" style={{ padding: 10 }}>
-                                    <div className="description-box" style={{ height: "100%" }}>
-                                        <h4 className="box-title">
-                                            <span>Biểu đồ phân tích KPI đơn vị dựa trên KPI đơn vị con tháng {month.slice(5, 7) + "-" + month.slice(0, 4)}</span>
-                                            <a className="text-red" title={translate('task.task_management.explain')} onClick={() => this.showDistributionOfOrganizationalUnitKpiDoc()}>
-                                                <i className="fa fa-question-circle" style={{ color: '#dd4b39', marginLeft: '5px' }} />
-                                            </a>
-                                        </h4>
-                                        
-                                        <DistributionOfOrganizationalUnitKpiChart
-                                            organizationalUnitKPI={dataTree.filter(item => item.parent === '#')}
-                                            dataTreeUnitKpi={dataTree}
-                                            maxDeg={listChildTarget?.[listChildTarget.length - 1]?.[0]?.deg}
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        : childrenOrganizationalUnitLoading
-                        && <div className="box-body">
-                            <h4>Bạn chưa có đơn vị</h4>
-                        </div>
-                    }
-                </div>
-            </React.Fragment>
-        )
+    if (dashboardEvaluationEmployeeKpiSet) {
+        childrenOrganizationalUnit = dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit;
+        childrenOrganizationalUnitLoading = dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnitLoading;
     }
+    if (createKpiUnit) {
+        currentKPI = createKpiUnit.currentKPI;
+        organizationalUnitKpiLoading = createKpiUnit.organizationalUnitKpiLoading;
+    }
+    if (dashboardOrganizationalUnitKpi) {
+        listChildTarget = dashboardOrganizationalUnitKpi.employeeKpisOfChildUnit;
+    }
+
+    // Config select time
+    let d = new Date(),
+        monthDate = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
+
+    if (monthDate.length < 2)
+        monthDate = '0' + monthDate;
+    if (day.length < 2)
+        day = '0' + day;
+    let defaultDate = [monthDate, year].join('-');
+
+    if (!details) {
+        window.$(`#${dataTree?.[0]?.id}_anchor`).addClass('jstree-clicked')
+    }
+
+    return (
+        <React.Fragment>
+            <div className="box">
+                {childrenOrganizationalUnit
+                    ? <div className="box-body qlcv">
+                        {organizationalUnitSelectBox &&
+                        <div className="form-inline">
+                            <div className="form-group">
+                                <label>{translate('kpi.organizational_unit.dashboard.organizational_unit')}</label>
+                                <SelectBox
+                                    id={`organizationalUnitSelectBoxInOrganizationalUnitKpiDashboard`}
+                                    className="form-control select2"
+                                    style={{ width: "100%" }}
+                                    items={organizationalUnitSelectBox}
+                                    multiple={false}
+                                    onChange={handleSelectOrganizationalUnitId}
+                                    value={organizationalUnitSelectBox[0].value}
+                                />
+                            </div>
+                        </div>
+                        }
+
+                        <div className="form-inline">
+                            <div className="form-group">
+                                <label>{translate('kpi.organizational_unit.dashboard.month')}</label>
+                                <DatePicker
+                                    id="monthInOrganizationalUnitKpiDashboard"
+                                    dateFormat="month-year"
+                                    value={defaultDate}
+                                    onChange={handleSelectMonth}
+                                    disabled={false}
+                                />
+                            </div>
+                            <div className="form-group">
+                                <button type="button" className="btn btn-success" onClick={handleSearchData}>{translate('kpi.evaluation.employee_evaluation.search')}</button>
+                            </div>
+                        </div>
+
+
+                        <div className="row row-equal-height">
+                            <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6" style={{ padding: 10 }}>
+                                <div className="description-box" style={{ height: "100%" }}>
+                                    {currentKPI
+                                        ? <React.Fragment>
+                                            <h4 className="box-title">Cây KPI đơn vị tháng {month.slice(5, 7) + "-" + month.slice(0, 4)}</h4>
+                                            <div className="details-tree" id="details-tree" style={{ maxHeight: "500px" }}>
+                                                <Tree
+                                                    id="tree-qlcv-document"
+                                                    onChanged={onChanged}
+                                                    data={dataTree}
+                                                    plugins={false}
+                                                />
+                                            </div>
+                                            <SlimScroll outerComponentId="details-tree" innerComponentId="tree-qlcv-document" innerComponentWidth={"100%"} activate={true} />
+                                        </React.Fragment>
+                                        : organizationalUnitKpiLoading
+                                        && <h4> Đơn vị chưa khởi tạo KPI tháng {month.slice(5, 7) + "-" + month.slice(0, 4)}</h4>
+                                    }
+                                </div>
+                            </div>
+
+                            <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6" style={{ padding: 10 }}>
+                                <DetailsOfOrganizationalUnitKpiForm
+                                    details={details ? details : dataTree?.[0]}
+                                />
+                            </div>
+                        </div>
+
+                        <div className="row">
+                            <div className="col-xs-12" style={{ padding: 10 }}>
+                                <div className="description-box" style={{ height: "100%" }}>
+                                    <h4 className="box-title">
+                                        <span>Biểu đồ phân tích KPI đơn vị dựa trên KPI nhân viên tháng {month.slice(5, 7) + "-" + month.slice(0, 4)}</span>
+                                        <a className="text-red" title={translate('task.task_management.explain')} onClick={() => showDistributionOfEmployeeKpiDoc()}>
+                                            <i className="fa fa-question-circle" style={{ color: '#dd4b39', marginLeft: '5px' }} />
+                                        </a>
+                                    </h4>
+
+                                    <DistributionOfEmployeeKpiChart
+                                        organizationalUnitKPI={dataTree.filter(item => item.parent === '#')}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="row">
+                            <div className="col-xs-12" style={{ padding: 10 }}>
+                                <div className="description-box" style={{ height: "100%" }}>
+                                    <h4 className="box-title">
+                                        <span>Biểu đồ phân tích KPI đơn vị dựa trên KPI đơn vị con tháng {month.slice(5, 7) + "-" + month.slice(0, 4)}</span>
+                                        <a className="text-red" title={translate('task.task_management.explain')} onClick={() => showDistributionOfOrganizationalUnitKpiDoc()}>
+                                            <i className="fa fa-question-circle" style={{ color: '#dd4b39', marginLeft: '5px' }} />
+                                        </a>
+                                    </h4>
+
+                                    <DistributionOfOrganizationalUnitKpiChart
+                                        organizationalUnitKPI={dataTree.filter(item => item.parent === '#')}
+                                        dataTreeUnitKpi={dataTree}
+                                        maxDeg={listChildTarget?.[listChildTarget.length - 1]?.[0]?.deg}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    : childrenOrganizationalUnitLoading
+                    && <div className="box-body">
+                        <h4>Bạn chưa có đơn vị</h4>
+                    </div>
+                }
+            </div>
+        </React.Fragment>
+    )
 }
 
 function mapState(state) {

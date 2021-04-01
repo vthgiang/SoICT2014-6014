@@ -21,76 +21,73 @@ const GeneralTaskPersonalChart = (props) => {
         console.count()
         const { tasks } = props;
         let overdueTask = [], delayTask = [], intimeTask = [], urgentTask = [], todoTask = [], deadlineNow = [];
-        const taskOfUser = tasks?.tasks;
-
         // xu ly du lieu
-        if (taskOfUser && taskOfUser.length) {
-            for (let i in taskOfUser) {
-                let created = moment(taskOfUser[i].createdAt);
-                let start = moment(taskOfUser[i].startDate);
-                let end = moment(taskOfUser[i].endDate);
+        if (tasks && tasks.length) {
+            for (let i in tasks) {
+                let created = moment(tasks[i].createdAt);
+                let start = moment(tasks[i].startDate);
+                let end = moment(tasks[i].endDate);
                 let now = moment(new Date());
                 let duration = end.diff(start, 'days');
                 let createdToNow = now.diff(created, 'days');
                 let nowToEnd = end.diff(now, 'days');
 
-                if (taskOfUser[i].status === 'inprocess') {
-                    // cac cong viec khan cap
-                    if (taskOfUser[i].priority === 5) {
-                        let add = {
-                            ...taskOfUser[i],
-                            createdToNow
-                        }
-                        urgentTask.push(add)
+                // cac cong viec khan cap
+                if (tasks[i].priority === 5) {
+                    let add = {
+                        ...tasks[i],
+                        createdToNow
                     }
+                    urgentTask.push(add)
+                }
 
-                    if (now <= end) {
-                        //viec can lam
+                if (now <= end) {
+                    //viec can lam
+                    let add = {
+                        ...tasks[i],
+                        nowToEnd
+                    }
+                    todoTask.push(add)
+                }
+
+                if (now > end) {
+                    //viec Quá hạn
+                    let add = {
+                        ...tasks[i],
+                        nowToEnd: -parseInt(nowToEnd)
+                    }
+                    overdueTask.push(add);
+                }
+                else {
+                    let processDay = Math.floor(tasks[i].progress * duration / 100);
+                    let startToNow = now.diff(start, 'days');
+
+                    if (startToNow > processDay) {
+                        //viec chậm tiến độ
                         let add = {
-                            ...taskOfUser[i],
+                            ...tasks[i],
                             nowToEnd
                         }
-                        todoTask.push(add)
+                        delayTask.push(add);
                     }
-
-                    if (now > end) {
-                        //viec Quá hạn
+                    else if (startToNow <= processDay) {
+                        // Đúng tiến độ
                         let add = {
-                            ...taskOfUser[i],
-                            nowToEnd: -parseInt(nowToEnd)
+                            ...tasks[i],
+                            nowToEnd
                         }
-                        overdueTask.push(add);
+                        intimeTask.push(add);
                     }
-                    else {
-                        let processDay = Math.floor(taskOfUser[i].progress * duration / 100);
-                        let startToNow = now.diff(start, 'days');
+                }
 
-                        if (startToNow > processDay) {
-                            //viec chậm tiến độ
-                            let add = {
-                                ...taskOfUser[i],
-                                nowToEnd
-                            }
-                            delayTask.push(add);
-                        }
-                        else if (startToNow <= processDay) {
-                            // Đúng tiến độ
-                            let add = {
-                                ...taskOfUser[i],
-                                nowToEnd
-                            }
-                            intimeTask.push(add);
-                        }
-                    }
+                // Láy công việc hạn hôm nay
+                const endDate = dayjs(tasks[i].endDate).format();
+                const currentDate = dayjs().format();
 
-                    // Láy công việc hạn hôm nay
-                    const startDate = dayjs(taskOfUser[i].startDate).format();
-                    const currentDate = dayjs().format();
-
-                    if (dayjs(startDate).isSame(currentDate, 'day')) {
-                        const secondDiff = dayjs(startDate).diff(currentDate, 'millisecond')
-                        deadlineNow = [...deadlineNow, { ...taskOfUser[i], diff: secondDiff }];
-                    }
+                if (dayjs(endDate).isSame(currentDate, 'day')) {
+                    let secondDiff = dayjs(endDate).diff(currentDate, 'millisecond')
+                    secondDiff = convertToDays(secondDiff);
+                    deadlineNow = [...deadlineNow, { ...tasks[i], diff: secondDiff }];
                 }
             }
         }
@@ -103,8 +100,14 @@ const GeneralTaskPersonalChart = (props) => {
             overdueTask,
             deadlineNow
         })
-    }, [props.tasks.tasks])
+    }, [props.tasks])
 
+    const convertToDays = (milliSeconds) => {
+        let hours = Math.floor(milliSeconds / (60 * 60 * 1000));
+        milliSeconds -= hours * (60 * 60 * 1000);
+        let minutes = Math.floor(milliSeconds / (60 * 1000));
+        return { hours, minutes };
+    }
 
     // chú thích quá hạn
     const showTaskOverDueDescription = () => {
@@ -140,6 +143,9 @@ const GeneralTaskPersonalChart = (props) => {
         return dayjs(date).format("DD-MM-YYYY hh:mm A")
     }
 
+    const { tasksbyuser } = props;
+    const deadlineincoming = tasksbyuser && tasksbyuser.deadlineincoming;
+    console.log('deadlineincoming', deadlineincoming);
     return (
         <div className="qlcv box-body">
             <div className="nav-tabs-custom" >
@@ -149,7 +155,7 @@ const GeneralTaskPersonalChart = (props) => {
                     <li><a className="general-task-type" href="#allGeneralTaskOverdue" data-toggle="tab" >{`${translate('task.task_dashboard.overdue_task')} `}<span>{`(${state.overdueTask ? state.overdueTask.length : 0})`}</span></a></li>
                     <li><a className="general-task-type" href="#allGeneralTaskDelay" data-toggle="tab" >{`${translate('task.task_dashboard.delay_task')} `}<span>{`(${state.delayTask ? state.delayTask.length : 0})`}</span></a></li>
                     <li><a className="general-task-type" href="#allGeneralTaskDeedlineNow" data-toggle="tab" >{`Hạn hôm nay `}<span>{`(${state.deadlineNow ? state.deadlineNow.length : 0})`}</span></a></li>
-                    <li><a className="general-task-type" href="#allGeneralTaskDeedlineIncoming" data-toggle="tab" >{`${translate('task.task_dashboard.incoming_task')} `}<span>{`(${props.tasks && props.tasks.tasksbyuser && props.tasks.tasksbyuser.deadlineincoming ? props.tasks.tasksbyuser.deadlineincoming.length : 0})`}</span></a></li>
+                    <li><a className="general-task-type" href="#allGeneralTaskDeedlineIncoming" data-toggle="tab" >{`${translate('task.task_dashboard.incoming_task')} `}<span>{`(${deadlineincoming ? deadlineincoming.length : 0})`}</span></a></li>
                     <li><a className="general-task-type" href="#allGeneralTaskIntime" data-toggle="tab" >{`${translate('task.task_dashboard.intime_task')} `}<span>{`(${state.intimeTask ? state.intimeTask.length : 0})`}</span></a></li>
                 </ul>
 
@@ -328,7 +334,7 @@ const GeneralTaskPersonalChart = (props) => {
                                                             <><i className="fa fa-angle-right angle-right-custom" aria-hidden="true"></i>
                                                                 <a className="task-project-name" title="dự án">{getProjectName(obj.taskProject, project && project.data && project.data.list)}</a></>
                                                         }
-                                                        <small className="label" style={{ fontSize: '9px', marginLeft: '5px', borderRadius: '.5em', backgroundColor: "#db8b0b" }}>{obj.progress}% - {translate('task.task_dashboard.rest')} {obj.nowToEnd} {translate('task.task_dashboard.day')}</small>
+                                                        <small className="label" style={{ fontSize: '9px', marginLeft: '5px', borderRadius: '.5em', backgroundColor: "#db8b0b" }}>{obj.progress}% - {translate('task.task_dashboard.rest')} {obj.nowToEnd} {translate('task.task_dashboard.day')} tới hạn</small>
                                                     </a>
                                                     <div id={`collapse-delay${index}`} className="panel-collapse collapse" role="tabpanel">
                                                         <div className="panel-body">
@@ -383,6 +389,7 @@ const GeneralTaskPersonalChart = (props) => {
                                                             <><i className="fa fa-angle-right angle-right-custom" aria-hidden="true"></i>
                                                                 <a className="task-project-name" title="dự án">{getProjectName(obj.taskProject, project && project.data && project.data.list)}</a></>
                                                         }
+                                                        <small className="label" style={{ fontSize: '9px', marginLeft: '5px', borderRadius: '.5em', backgroundColor: "rgb(117 152 224)" }}>{obj?.diff?.hours >= 0 ? `còn ${obj.diff.hours}h:${obj.diff.minutes}p hết hạn` : `hết hạn ${-obj.diff.hours}h:${obj.diff.minutes}p trước`}</small>
                                                     </a>
                                                     <div id={`collapse-deadlinenow${index}`} className="panel-collapse collapse" role="tabpanel">
                                                         <div className="panel-body">
@@ -421,12 +428,12 @@ const GeneralTaskPersonalChart = (props) => {
 
                     <div className="tab-pane notifi-tab-pane" id="allGeneralTaskDeedlineIncoming">
                         {
-                            props.tasks && props.tasks.tasksbyuser && props.tasks.tasksbyuser.deadlineincoming &&
+                            deadlineincoming &&
                             <div className="faqs-page block ">
                                 <div className="panel-group" id="accordion-deadlineincoming" role="tablist" aria-multiselectable="true" style={{ marginBottom: 0 }}>
                                     {
-                                        (props.tasks.tasksbyuser.deadlineincoming.length !== 0) ?
-                                            props.tasks.tasksbyuser.deadlineincoming.map((obj, index) => (
+                                        (deadlineincoming.length > 0) ?
+                                            deadlineincoming.map((obj, index) => (
                                                 <div className="panel panel-default" key={index}>
                                                     <a role="button" className="item-question collapsed" data-toggle="collapse" data-parent="#accordion-deadlineincoming" href={`#collapse-deadlineincoming${index}`} aria-expanded="true" aria-controls="collapse1a">
                                                         <span className="index">{index + 1}</span>
@@ -436,12 +443,12 @@ const GeneralTaskPersonalChart = (props) => {
                                                             <><i className="fa fa-angle-right angle-right-custom" aria-hidden="true"></i>
                                                                 <a className="task-project-name" title="dự án">{getProjectName(obj.task.taskProject, project && project.data && project.data.list)}</a></>
                                                         }
-                                                        <small className="label" style={{ fontSize: '9px', marginLeft: '5px', borderRadius: '.5em', backgroundColor: "#db8b0b" }}>{obj.task && obj.task.progress}% - {translate('task.task_dashboard.rest')} {obj.nowToEnd} {translate('task.task_dashboard.day')}</small>
+                                                        <small className="label" style={{ fontSize: '9px', marginLeft: '5px', borderRadius: '.5em', backgroundColor: "#db8b0b" }}>{obj.task && obj.task.progress}% - {translate('task.task_dashboard.rest')} {obj.totalDays} {translate('task.task_dashboard.day')}</small>
                                                     </a>
                                                     <div id={`collapse-deadlineincoming${index}`} className="panel-collapse collapse" role="tabpanel">
                                                         <div className="panel-body">
                                                             <div className="time-todo-range">
-                                                                <span style={{ marginRight: '10px' }}>Thời gian thực hiện công việc: </span> <span style={{ marginRight: '5px' }}><i className="fa fa-clock-o" style={{ marginRight: '1px', color: "rgb(191 71 71)" }}> </i> {formatTime(obj.startDate)}</span> <span style={{ marginRight: '5px' }}>-</span> <span> <i className="fa fa-clock-o" style={{ marginRight: '4px', color: "rgb(191 71 71)" }}> </i>{formatTime(obj.endDate)}</span>
+                                                                <span style={{ marginRight: '10px' }}>Thời gian thực hiện công việc: </span> <span style={{ marginRight: '5px' }}><i className="fa fa-clock-o" style={{ marginRight: '1px', color: "rgb(191 71 71)" }}> </i> {formatTime(obj.task.startDate)}</span> <span style={{ marginRight: '5px' }}>-</span> <span> <i className="fa fa-clock-o" style={{ marginRight: '4px', color: "rgb(191 71 71)" }}> </i>{formatTime(obj.task.endDate)}</span>
                                                             </div>
 
                                                             <div className="priority-task-wraper">

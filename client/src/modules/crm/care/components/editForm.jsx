@@ -282,6 +282,13 @@ class EditCareForm extends Component {
 
         //validate error message
         const { caregiverError, customerError, nameError, descriptionError, careTypeError, statusError, startDateError } = this.state;
+        const items =
+            [
+                'Chưa thưc hiện',
+                'Đang thực hiện',
+                'Đang trì hoãn',
+                'Đã hoàn thành',
+            ]
         return (
             <React.Fragment>
                 <DialogModal
@@ -375,26 +382,11 @@ class EditCareForm extends Component {
 
                         {/* Trạng thái công việc */}
                         <div className={`form-group ${!statusError ? "" : "has-error"}`}>
-                            <label>{translate('crm.care.status')}<span className="text-red">*</span></label>
+                            <label style = {{marginRight : '10px'}}>{translate('crm.care.status') } : </label>
                             {
-                                careEditting.status &&
-                                <SelectBox
-                                    id={`status-care-edit`}
-                                    className="form-control select2"
-                                    style={{ width: "100%" }}
-                                    items={
-                                        [
-                                            { value: '', text: '---Chọn---' },
-                                            { value: 1, text: 'Chưa thưc hiện' },
-                                            { value: 2, text: 'Đang thực hiện' },
-                                            { value: 3, text: 'Đang trì hoãn' },
-                                            { value: 4, text: 'Đã hoàn thành' },
-                                        ]
-                                    }
-                                    value={careEditting.status}
-                                    onChange={this.handleChangeStatus}
-                                    multiple={false}
-                                />
+                               
+                                  items[careEditting.status]
+                                
                             }
                             <ErrorLabel content={statusError} />
                         </div>

@@ -1189,7 +1189,7 @@ const LINKS = [{
     ],
     components: getComponentsInLink('/crm/customer')
 }, {
-    url: '/crm/lead',
+    url: '/crm/loyal-customer',
     description: `Khách hàng thân thiết`,
     category: LINK_CATEGORY.CRM.name,
     roles: [
@@ -1199,7 +1199,19 @@ const LINKS = [{
         ROOT_ROLES.DEPUTY_MANAGER.name,
         ROOT_ROLES.EMPLOYEE.name,
     ],
-    components: getComponentsInLink('/crm/lead')
+    components: getComponentsInLink('/crm/loyal-customer')
+},{
+    url: '/crm/evaluation',
+    description: `Khách hàng thân thiết`,
+    category: LINK_CATEGORY.CRM.name,
+    roles: [
+        ROOT_ROLES.SUPER_ADMIN.name,
+        ROOT_ROLES.ADMIN.name,
+        ROOT_ROLES.MANAGER.name,
+        ROOT_ROLES.DEPUTY_MANAGER.name,
+        ROOT_ROLES.EMPLOYEE.name,
+    ],
+    components: getComponentsInLink('/crm/evaluation')
 },
 {
     url: '/crm/group',

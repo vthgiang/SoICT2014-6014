@@ -36,6 +36,7 @@ export default {
             new_notification: "You have new notification!",
             month: "in",
             value: "Value",
+            export: 'Export',
             auth_alert: {
                 title: "Current Session invalid. Please log in again",
                 reason: "Reasons maybe:",
@@ -106,6 +107,7 @@ export default {
                 group: "Groups",
                 statistic: "Statistics",
                 generalConfiguration: "generalConfiguration",
+                evaluation:"Evaluation"
             },
 
             task_template: "Task Template",
@@ -165,7 +167,7 @@ export default {
             task: "Detailed Task",
             task_management: "Personal task list",
             task_management_of_unit: "Unit task list",
-            task_management_dashboard: "Task dashboard",
+            task_management_dashboard: "Personal task dashboard",
             task_organization_management_dashboard: "Unit task dashboard",
             task_management_process: "Process list",
             task_process_template: "Process template",
@@ -947,6 +949,15 @@ export default {
                 gender: "Gender",
                 liability: "Liability",
                 document: "Document",
+                note: "Note",
+                carier: "Carier",
+                discount: "discount",
+                by_group: "Group by",
+                by_customer: "Group by customer",
+                organization: "organization",
+                northern: "northern",
+                central: "central",
+                southern: "southern",
             },
             group: {},
             lead: {},
@@ -2677,6 +2688,11 @@ export default {
                 select_all_department: "Selected all",
                 role: "Role",
 
+                role_unit: "Role of unit",
+                select_role_organizational: "Select unit role",
+                organizational_unit_management: "Management unit",
+                organizational_unit_collaborate: "Collaborative unit",
+
                 status: "Status",
                 select_status: "Select status",
                 select_all_status: "Selected all",
@@ -2685,6 +2701,7 @@ export default {
                 finished: "Finished",
                 delayed: "Delayed",
                 canceled: "Canceled",
+                requested_to_close: "Requested to close",
                 task_status: "Task status",
                 filter: "Filter",
 
@@ -3362,6 +3379,8 @@ export default {
                             delete: "Delete this KPI",
                             cancel: "Cancel",
                         },
+                        overview: "Overview",
+                        evaluation: "Evaluation",
                         time: "Time",
                         approver: "Approver",
                         weight: {
@@ -3687,7 +3706,7 @@ export default {
                     priority: "Priority",
                     formula: "Formula",
                     explain_automatic_point: "Explain automatic value",
-                    cal_all_kpis: '(*)Calculator all kpi',
+                    cal_all_kpis: 'Calculator all kpi',
                     update_task_importance: `(*)Update task importance level and Calculator KPI point`,
 
                 },

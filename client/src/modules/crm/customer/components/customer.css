@@ -297,4 +297,8 @@
 }
 .generalConfiguration .nav-tabs-custom .nav-tabs-left > li > a{
   color: #444;
+ 
+}
+.pointer{
+  cursor: pointer;
 }
