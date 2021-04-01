@@ -1,4 +1,4 @@
-const { Customer,User } = require('../../../models');
+const { Customer, User } = require('../../../models');
 const { connect } = require(`../../../helpers/dbHelper`);
 
 exports.getUrl = (destination, filename) => {
@@ -15,12 +15,12 @@ exports.getUrl = (destination, filename) => {
  */
 exports.formatDate = (value) => {
     const date = value.split('-');
-    return [date[2],date[1],date[0]].join("-");
+    return [date[2], date[1], date[0]].join("-");
 }
 
 
 exports.createCustomer = async (portal, companyId, data, userId, fileConverts) => {
-    let {companyEstablishmentDate, birthDate, files} = data;
+    let { companyEstablishmentDate, birthDate, files } = data;
     //format birthDate yy-mm-dd
     if (birthDate) {
         birthDate = this.formatDate(birthDate);
@@ -42,18 +42,18 @@ exports.createCustomer = async (portal, companyId, data, userId, fileConverts) =
 
 
     // Thêm file đính kèm với khách hàng nếu có
-    if (files && files.length > 0 && fileConverts && fileConverts.length>0) {
+    if (files && files.length > 0 && fileConverts && fileConverts.length > 0) {
         let result = [];
         files.forEach(x => {
             fileConverts.forEach(y => {
                 if (x.fileName === y.originalname) {
                     result.push({
-                    creator: userId,
-                    name: x.name,
-                    description: x.description,
-                    fileName: x.fileName,
-                    url: this.getUrl(y.destination, y.filename),
-                 })
+                        creator: userId,
+                        name: x.name,
+                        description: x.description,
+                        fileName: x.fileName,
+                        url: this.getUrl(y.destination, y.filename),
+                    })
                 }
             })
         })
@@ -65,7 +65,7 @@ exports.createCustomer = async (portal, companyId, data, userId, fileConverts) =
         .populate({ path: 'group', select: '_id name' })
         .populate({ path: 'status', select: '_id name' })
         .populate({ path: 'owner', select: '_id name email' })
-        .populate({path: 'creator',select: '_id name email'})
+        .populate({ path: 'creator', select: '_id name email' })
     return getNewCustomer;
 }
 
@@ -105,13 +105,13 @@ exports.importCustomers = async (portal, companyId, data, userId) => {
     }
 
     const result = await Customer(connect(DB_CONNECTION, portal)).insertMany(data);
-    
+
     let getResult = [];
     for (let obj of result) {
         const newObj = await Customer(connect(DB_CONNECTION, portal)).findOne({ _id: obj._id })
-        .populate({ path: 'group', select: '_id name' })
-        .populate({ path: 'status', select: '_id name' })
-        .populate({ path: 'owner', select: '_id name email' });
+            .populate({ path: 'group', select: '_id name' })
+            .populate({ path: 'status', select: '_id name' })
+            .populate({ path: 'owner', select: '_id name email' });
         if (newObj) {
             getResult.push(newObj);
         }
@@ -126,8 +126,27 @@ exports.importCustomers = async (portal, companyId, data, userId) => {
  * @param {*} query 
  */
 exports.getCustomers = async (portal, companyId, query) => {
-    const { page, limit } = query;
-    let keySearch = {};
+    const { page, limit, customerCode, customerStatus, customerGroup, customerOwner } = query;
+    let keySearch = {}
+    if (customerCode) {
+        keySearch = { code: { $regex: customerCode, $options: "i" }, }
+    }
+    if (customerStatus)
+        keySearch = {
+            ...keySearch,
+            status: { $in: customerStatus }
+        };
+    if (customerGroup)
+        keySearch = {
+            ...keySearch,
+            group: { $in: customerGroup }
+        }
+    if (customerOwner && customerOwner != 0) {
+        keySearch = {
+            ...keySearch,
+            owner: { $in: customerOwner }
+        }
+    }
     const listDocsTotal = await Customer(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
 
     const customers = await Customer(connect(DB_CONNECTION, portal)).find(keySearch).sort({ 'createdAt': 'desc' })
@@ -135,7 +154,7 @@ exports.getCustomers = async (portal, companyId, query) => {
         .populate({ path: 'group', select: '_id name' })
         .populate({ path: 'status', select: '_id name' })
         .populate({ path: 'owner', select: '_id name email' });
-    
+
     return { listDocsTotal, customers };
 }
 
@@ -150,8 +169,8 @@ exports.getCustomerById = async (portal, companyId, id) => {
         .populate({ path: 'group', select: '_id name' })
         .populate({ path: 'status', select: '_id name' })
         .populate({ path: 'owner', select: '_id name email' })
-        .populate({path: 'creator', select: '_id name email'})
-        .populate({path: 'statusHistories.oldValue statusHistories.newValue statusHistories.createdBy', select: '_id name'})
+        .populate({ path: 'creator', select: '_id name email' })
+        .populate({ path: 'statusHistories.oldValue statusHistories.newValue statusHistories.createdBy', select: '_id name' })
     return getCustomer;
 }
 
@@ -179,8 +198,8 @@ exports.getCustomerPoint = async (portal, companyId, customerId) => {
  * @param {*} data 
  * @param {*} userId 
  */
-exports.editCustomer = async (portal, companyId, id, data, userId,fileInfo) => {
-    let { companyEstablishmentDate, birthDate, group, files} = data;
+exports.editCustomer = async (portal, companyId, id, data, userId, fileInfo) => {
+    let { companyEstablishmentDate, birthDate, group, files } = data;
 
     //format birthDate
     if (birthDate) {
@@ -197,9 +216,9 @@ exports.editCustomer = async (portal, companyId, id, data, userId,fileInfo) => {
     }
 
     if (userId) {
-        data = { ...data, creator: userId }; 
+        data = { ...data, creator: userId };
     }
-    
+
     // check nếu ko có group (group ='') thì gán group = null. vì group ref tới schema group
     if (!group) {
         data = { ...data, group: null };
@@ -207,7 +226,7 @@ exports.editCustomer = async (portal, companyId, id, data, userId,fileInfo) => {
 
     // Cập nhật avatar cho khách hàng
     if (fileInfo.avatar) {
-        data = {...data, avatar: fileInfo.avatar}
+        data = { ...data, avatar: fileInfo.avatar }
     }
 
     // Thêm file đính kèm với khách hàng nếu có
@@ -217,12 +236,12 @@ exports.editCustomer = async (portal, companyId, id, data, userId,fileInfo) => {
             fileInfo.fileAttachment.forEach(y => {
                 if (x.fileName === y.originalname) {
                     result.push({
-                    creator: userId,
-                    name: x.name,
-                    description: x.description,
-                    fileName: x.fileName,
-                    url: this.getUrl(y.destination, y.filename),
-                 })
+                        creator: userId,
+                        name: x.name,
+                        description: x.description,
+                        fileName: x.fileName,
+                        url: this.getUrl(y.destination, y.filename),
+                    })
                 }
             })
         })
@@ -238,7 +257,7 @@ exports.editCustomer = async (portal, companyId, id, data, userId,fileInfo) => {
         .populate({ path: 'status', select: '_id name' })
         .populate({ path: 'owner', select: '_id name email' })
         .populate({ path: 'creator', select: '_id name email' })
-        .populate({path: 'statusHistories.oldValue statusHistories.newValue statusHistories.createdBy', select: '_id name'})
+        .populate({ path: 'statusHistories.oldValue statusHistories.newValue statusHistories.createdBy', select: '_id name' })
 }
 
 exports.editCustomerPoint = async (portal, companyId, id, data, userId) => {
