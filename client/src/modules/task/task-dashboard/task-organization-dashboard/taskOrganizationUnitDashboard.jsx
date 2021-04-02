@@ -396,12 +396,12 @@ class TaskOrganizationUnitDashboard extends Component {
                                             {
                                                 idsUnit && idsUnit.length < 2 ?
                                                     <>
-                                                        <span>{`${translate('task.task_dashboard.general_unit_task')} ${translate('task.task_management.lower_from')} ${startMonthTitle} ${translate('task.task_management.lower_to')} ${endMonthTitle} ${translate('task.task_dashboard.of_unit')}`}</span>
-                                                        <span style={{ fontWeight: "bold" }}>{` ${this.getUnitName(selectBoxUnit, idsUnit).map(o => o).join(", ")}`}</span>
+                                                        <span>{`${translate('task.task_dashboard.general_unit_task')} ${startMonthTitle}`}<i className="fa fa-fw fa-caret-right"></i>{`${endMonthTitle} ${translate('task.task_dashboard.of_unit')}`}</span>
+                                                        <span>{` ${this.getUnitName(selectBoxUnit, idsUnit).map(o => o).join(", ")}`}</span>
                                                     </>
                                                     :
                                                     <span onClick={() => this.showUnitGeneraTask(selectBoxUnit, idsUnit)} style={{ cursor: 'pointer' }}>
-                                                        <span>{`${translate('task.task_dashboard.general_unit_task')} ${translate('task.task_management.lower_from')} ${startMonthTitle} ${translate('task.task_management.lower_to')} ${endMonthTitle} ${translate('task.task_dashboard.of')} `} </span>
+                                                        <span>{`${translate('task.task_dashboard.general_unit_task')} ${startMonthTitle}`}<i className="fa fa-fw fa-caret-right"></i>{`${endMonthTitle} ${translate('task.task_dashboard.of')} `} </span>
                                                         <a style={{ cursor: 'pointer', fontWeight: 'bold' }}>{idsUnit && idsUnit.length}</a>
                                                         <span>{` ${translate('task.task_dashboard.unit_lowercase')}`}</span>
                                                     </span>
@@ -435,7 +435,7 @@ class TaskOrganizationUnitDashboard extends Component {
                                 <div className="box box-primary">
                                     <div className="box-header with-border">
                                         <div className="box-title">
-                                            {translate('task.task_management.tasks_calendar')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}
+                                            {translate('task.task_management.tasks_calendar')} {startMonthTitle}<i className="fa fa-fw fa-caret-right"></i>{endMonthTitle}
                                             {
                                                 idsUnit && idsUnit.length < 2 ?
                                                     <>
@@ -490,7 +490,7 @@ class TaskOrganizationUnitDashboard extends Component {
                                 <div className="box box-primary">
                                     <div className="box-header with-border">
                                         <div className="box-title">
-                                            {translate('task.task_management.calc_progress')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}
+                                            {translate('task.task_management.calc_progress')} {startMonthTitle}<i className="fa fa-fw fa-caret-right"></i>{endMonthTitle}
                                             {
                                                 idsUnit && idsUnit.length < 2 ?
                                                     <>
@@ -526,7 +526,7 @@ class TaskOrganizationUnitDashboard extends Component {
                                 <div className="box box-primary">
                                     <div className="box-header with-border">
                                         <div className="box-title">
-                                            {translate('task.task_management.dashboard_area_result')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}
+                                            {translate('task.task_management.dashboard_area_result')} {startMonthTitle}<i className="fa fa-fw fa-caret-right"></i>{endMonthTitle}
                                             {
                                                 idsUnit && idsUnit.length < 2 ?
                                                     <>
@@ -561,7 +561,7 @@ class TaskOrganizationUnitDashboard extends Component {
                                 <div className="box box-primary">
                                     <div className="box-header with-border">
                                         <div className="box-title">
-                                            {translate('task.task_management.detail_status')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}
+                                            {translate('task.task_management.detail_status')} {startMonthTitle}<i className="fa fa-fw fa-caret-right"></i>{endMonthTitle}
                                             {
                                                 idsUnit && idsUnit.length < 2 ?
                                                     <>
@@ -599,7 +599,7 @@ class TaskOrganizationUnitDashboard extends Component {
                                 <div className="box box-primary">
                                     <div className="box-header with-border">
                                         <div className="box-title">
-                                            Kết quả trung bình công việc {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}
+                                            Kết quả trung bình công việc {startMonthTitle}<i className="fa fa-fw fa-caret-right"></i>{endMonthTitle}
                                             {
                                                 idsUnit && idsUnit.length < 2 ?
                                                     <>
@@ -634,7 +634,7 @@ class TaskOrganizationUnitDashboard extends Component {
                                 <div className="box box-primary">
                                     <div className="box-header with-border">
                                         <div className="box-title">
-                                            {translate('task.task_management.load_task_chart_unit')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}
+                                            {translate('task.task_management.load_task_chart_unit')} {startMonthTitle}<i className="fa fa-fw fa-caret-right"></i>{endMonthTitle}
                                             {
                                                 idsUnit && idsUnit.length < 2 ?
                                                     <>
