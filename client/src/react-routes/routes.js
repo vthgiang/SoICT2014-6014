@@ -64,7 +64,7 @@ import { OrganizationalUnitKpiCreate } from "../modules/kpi/organizational-unit/
 import { OrganizationalUnitKpiDashboard } from "../modules/kpi/organizational-unit/dashboard/component/organizationalUnitKpiDashboard";
 import { KPIUnitManager } from "../modules/kpi/organizational-unit/management/component/organizationalUnitKpiOverview";
 import { KPIUnitEvaluate } from "../modules/kpi/organizational-unit/evaluation/component/organizationalUnitKpiEvaluation";
-import { StatisticsOfOrganizationalUnitKpi } from "../modules/kpi/statistic/component-class/statisticsOfOrganizationalUnitKpi";
+import { StatisticsOfOrganizationalUnitKpi } from "../modules/kpi/statistic/component/statisticsOfOrganizationalUnitKpi";
 
 import { CreateEmployeeKpiSet } from "../modules/kpi/employee/creation/component/employeeKpiCreate";
 import { KPIPersonalManager } from "../modules/kpi/employee/management/component/employeeKpiManagement";
