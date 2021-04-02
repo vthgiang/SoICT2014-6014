@@ -302,7 +302,7 @@ const GeneralTaskPersonalChart = (props) => {
                                                                     <><i className="fa fa-angle-right angle-right-custom" aria-hidden="true"></i>
                                                                         <a className="task-project-name" title="dự án">{getProjectName(obj.taskProject, project && project.data && project.data.list)}</a></> : null
                                                             }
-                                                            <small className="label label-primary" style={{ fontSize: '9px', marginLeft: '5px', borderRadius: '.5em' }}>{obj.progress}% - {translate('task.task_dashboard.rest')} {obj.nowToEnd} {translate('task.task_dashboard.day')}</small>
+                                                            <small className="label label-primary" style={{ fontSize: '9px', marginLeft: '5px', borderRadius: '.5em' }}>{obj.createdToNow} {translate('task.task_dashboard.day')} trước</small>
                                                         </a>
                                                         <div id={`collapse-todo${index}`} className="panel-collapse collapse" role="tabpanel">
                                                             <div className="panel-body">
