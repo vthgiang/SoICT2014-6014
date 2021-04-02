@@ -29,7 +29,7 @@ const TransportVehiclesSchema = new Schema({
 });
 
 module.exports = (db) => {
-    if (!db.models.TransportVehicles)
+    if (!db.models.TransportVehicle)
         return db.model('TransportVehicle', TransportVehiclesSchema);
-    return db.models.TransportVehicles;
+    return db.models.TransportVehicle;
 } 

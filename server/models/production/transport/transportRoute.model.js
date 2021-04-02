@@ -22,7 +22,7 @@ const TransportRouteSchema = new Schema({
     transportVehicles: [{ // Xep nguoi, hang hoa
         transportVehicle: {
             type: Schema.Types.ObjectId,
-            ref: 'TransportRequirements',
+            ref: 'TransportVehicle',
             required: true,
         },
         transporters: [{

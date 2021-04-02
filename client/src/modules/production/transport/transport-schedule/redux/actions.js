@@ -2,31 +2,32 @@ import { transportScheduleConstants } from './constants';
 import { transportScheduleServices } from './services';
 
 export const transportScheduleActions = {
+    getAllTransportSchedules,
     createTransportSchedule,
 }
 
-// function getAllTransportRequirements(queryData) {
-//     return (dispatch) => {
-//         dispatch({
-//             type: transportRequirementsConstants.GET_ALL_TRANSPORT_REQUIREMENTS_REQUEST
-//         });
+function getAllTransportSchedules(queryData) {
+    return (dispatch) => {
+        dispatch({
+            type: transportScheduleConstants.GET_ALL_TRANSPORT_SCHEDULES_REQUEST
+        });
 
-//         transportRequirementsServices
-//             .getAllTransportRequirements(queryData)
-//             .then((res) => {
-//                 dispatch({
-//                     type: transportRequirementsConstants.GET_ALL_TRANSPORT_REQUIREMENTS_SUCCESS,
-//                     payload: res.data.content
-//                 });
-//             })
-//             .catch((error) => {
-//                 dispatch({
-//                     type: transportRequirementsConstants.GET_ALL_TRANSPORT_REQUIREMENTS_FAILURE,
-//                     error
-//                 });
-//             });
-//     }
-// }
+        transportScheduleServices
+            .getAllTransportSchedules(queryData)
+            .then((res) => {
+                dispatch({
+                    type: transportScheduleConstants.GET_ALL_TRANSPORT_SCHEDULES_SUCCESS,
+                    payload: res.data.content
+                });
+            })
+            .catch((error) => {
+                dispatch({
+                    type: transportScheduleConstants.GET_ALL_TRANSPORT_SCHEDULES_FAILURE,
+                    error
+                });
+            });
+    }
+}
 
 function createTransportSchedule(data) {
     return (dispatch) => {

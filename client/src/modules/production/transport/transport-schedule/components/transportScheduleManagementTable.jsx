@@ -5,39 +5,72 @@ import { withTranslate } from "react-redux-multilingual";
 import { DataTableSetting, DeleteNotification, PaginateBar } from "../../../../../common-components";
 
 import { TransportScheduleCreateForm } from "./transportScheduleCreateForm"
+
+import { transportScheduleActions } from "../redux/actions"
 // import { transportRequirementsActions } from "../redux/actions";
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
-
+import { convertJsonObjectToFormData } from '../../../../../helpers/jsonObjectToFormDataObjectConverter'
 function TransportScheduleManagementTable(props) {
+
+    const {allTransportSchedulesState, setAllTransportSchedulesState} = useState({});
+
+    useEffect(() => {
+        props.getAllTransportSchedules({page: 1, limit: 500});
+    }, [])
+
+    useEffect(() => {
+        let { allTransportSchedules } = props;
+        console.log(convertJsonObjectToFormData(allTransportSchedules), " okasodkaosd");
+        setAllTransportSchedulesState({
+            convertJsonObjectToFormData(allTransportSchedules);
+        })
+    }, props.allTransportSchedules)
+
     return (
         <React.Fragment>
             <TransportScheduleCreateForm />
             <div className="box-body qlcv">
                 <div className="form-inline">
-                    {/* Tìm kiếm */}
-                    {/* <div className="form-group">
-                        <label className="form-control-static">{translate('manage_example.exampleName')}</label>
-                        <input type="text" className="form-control" name="exampleName" onChange={handleChangeExampleName} placeholder={translate('manage_example.exampleName')} autoComplete="off" />
-                    </div>
-                    <div className="form-group">
-                        <button type="button" className="btn btn-success" title={translate('manage_example.search')} onClick={() => handleSubmitSearch()}>{translate('manage_example.search')}</button>
-                    </div> */}
                 </div>
 
-                {/* Danh sách các yêu cầu */}
+                {/* Danh sách lịch vận chuyển */}
                 <table id={"tableId"} className="table table-striped table-bordered table-hover">
                     <thead>
                         <tr>
-                            <th className="col-fixed" style={{ width: 60 }}>{"i"}</th>
-                            <th>{"Loại yêu cầu"}</th>
-                            <th>{"Địa chỉ bắt đầu"}</th>
-                            <th>{"Địa chỉ kết thúc"}</th>
-                            <th>{"Người tạo"}</th>
+                            <th className="col-fixed" style={{ width: 60 }}>{"Số thứ tự"}</th>
+                            <th>{"Mã lịch trình"}</th>
                             <th>{"Trạng thái"}</th>
+                            <th>{"Từ ngày"}</th>
+                            <th>{"Đến ngày"}</th>
+                            <th>{"Người phụ trách"}</th>
                         </tr>
                     </thead>
                     <tbody>
-                        
+                    {(allTransportSchedules && allTransportSchedules.length !== 0) &&
+                            allTransportSchedules.map((x, index) => (
+                                x &&
+                                <tr key={index}>
+                                    <td>{index + 1}</td>
+                                    <td>{allTransportSchedulesState.code}</td>
+                                    <td>{""}</td>
+                                    <td>{allTransportSchedulesState.startTime}</td>
+                                    <td>{allTransportSchedulesState.endTime}</td>
+                                    <td>{""}</td>
+                                    {/* <td style={{ textAlign: "center" }}>
+                                        <a className="edit text-green" style={{ width: '5px' }} title={translate('manage_example.detail_info_example')} onClick={() => handleShowDetailInfo(example)}><i className="material-icons">visibility</i></a>
+                                        <a className="edit text-yellow" style={{ width: '5px' }} title={translate('manage_example.edit')} onClick={() => handleEdit(example)}><i className="material-icons">edit</i></a>
+                                        <DeleteNotification
+                                            content={translate('manage_example.delete')}
+                                            data={{
+                                                id: example._id,
+                                                info: example.exampleName
+                                            }}
+                                            func={handleDelete}
+                                        />
+                                    </td> */}
+                                </tr>
+                            ))
+                        }
                     </tbody>
                 </table>
 
@@ -47,12 +80,12 @@ function TransportScheduleManagementTable(props) {
 }
 
 function mapState(state) {
-    // const allTransportRequirements = state.transportRequirements.lists;
-    // return { allTransportRequirements }
+    const allTransportSchedules = state.transportSchedule.lists;
+    return { allTransportSchedules }
 }
 
 const actions = {
-    // getAllTransportRequirements: transportRequirementsActions.getAllTransportRequirements,
+    getAllTransportSchedules: transportScheduleActions.getAllTransportSchedules,
 }
 
 const connectedTransportScheduleManagementTable = connect(mapState, actions)(withTranslate(TransportScheduleManagementTable));

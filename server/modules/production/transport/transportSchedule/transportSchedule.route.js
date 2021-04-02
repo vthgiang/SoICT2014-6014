@@ -7,6 +7,7 @@ const { auth } = require(`../../../../middleware`);
 // router.get('/getOnlyExampleName', auth, ExampleController.getOnlyExampleName);
 // router.get('/:id', auth, ExampleController.getExampleById);
 // router.get('/', auth, TransportRequirementController.getAllTransportRequirements);
+router.get('/', auth, TransportScheduleController.getAllTransportSchedules);
 router.post('/', auth, TransportScheduleController.createTransportSchedule);
 // router.patch('/:id', auth, ExampleController.editExample);
 // router.delete('/:id', auth, ExampleController.deleteExample);

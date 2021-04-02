@@ -32,7 +32,7 @@ const TransportScheduleSchema = new Schema({
     // transportVehicles: [{ // phuong tien van chuyen
     //     transportVehicle: {
     //         type: Schema.Types.ObjectId,
-    //         ref: 'TransportVehicles',
+    //         ref: 'TransportVehicle',
     //         // required: true
     //     },
     //     maxVolumne: { // khoi luong van chuyen cua xe
@@ -48,11 +48,11 @@ const TransportScheduleSchema = new Schema({
     //     }]
     // }],
     startTime: {
-        type: String,
+        type: Date,
         required: true,
     },
     endTime: {
-        type: String,
+        type: Date,
         required: true,
     },
 });

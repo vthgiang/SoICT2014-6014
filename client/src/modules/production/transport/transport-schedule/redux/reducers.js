@@ -5,27 +5,26 @@ const initialState = {
 }
 export function transportSchedule(state = initialState, action) {
 switch (action.type) {
-		// case transportRequirementsConstants.GET_ALL_TRANSPORT_REQUIREMENTS_REQUEST:
+		case transportScheduleConstants.GET_ALL_TRANSPORT_SCHEDULES_REQUEST:
         case transportScheduleConstants.CREATE_TRANSPORT_SCHEDULE_REQUEST:
 		return {
                 ...state,
                 isLoading: true
             }
 		
-		// case transportRequirementsConstants.GET_ALL_TRANSPORT_REQUIREMENTS_FAILURE:
-        case transportScheduleConstants.CREATE_TRANSPORT_SCHEDULE_FAILURE:
-        
+		case transportScheduleConstants.GET_ALL_TRANSPORT_SCHEDULES_FAILURE:
+        case transportScheduleConstants.CREATE_TRANSPORT_SCHEDULE_FAILURE:        
 		return {
                 ...state,
                 isLoading: false,
                 error: action.error
             }
-		// case transportRequirementsConstants.GET_ALL_TRANSPORT_REQUIREMENTS_SUCCESS:
-		// return {
-        //         ...state,
-        //         lists: action.payload.data,
-        //         isLoading: false
-        //     }
+		case transportScheduleConstants.GET_ALL_TRANSPORT_SCHEDULES_SUCCESS:
+		return {
+                ...state,
+                lists: action.payload.data,
+                isLoading: false
+            }
         case transportScheduleConstants.CREATE_TRANSPORT_SCHEDULE_SUCCESS:
             return {
                 ...state,

@@ -9,9 +9,7 @@ const {
 exports.createTransportSchedule = async (portal, data) => {
     let newScheduleRequirement;
     if (data && data.length !== 0) {
-        
-        console.log(data, " dl server");
-        newScheduleRequirement = await TransportSchedule(connect(DB_CONNECTION, portal)).create({
+            newScheduleRequirement = await TransportSchedule(connect(DB_CONNECTION, portal)).create({
             code: data.code,
             startTime: data.startDate,
             endTime: data.endDate,
@@ -62,31 +60,31 @@ exports.createTransportSchedule = async (portal, data) => {
 //         }
 //     }
 
-// exports.getAllTransportRequirements = async (portal, data) => {
-//     console.log("lay du lieu");
-//     let keySearch = {};
-//     // if (data?.exampleName?.length > 0) {
-//     //     keySearch = {
-//     //         exampleName: {
-//     //             $regex: data.exampleName,
-//     //             $options: "i"
-//     //         }
-//     //     }
-//     // }
+exports.getAllTransportSchedules = async (portal, data) => {
+    console.log("lay du lieu schedules trong service");
+    let keySearch = {};
+    // if (data?.exampleName?.length > 0) {
+    //     keySearch = {
+    //         exampleName: {
+    //             $regex: data.exampleName,
+    //             $options: "i"
+    //         }
+    //     }
+    // }
 
-//     let page, limit;
-//     page = data?.page ? Number(data.page) : 1;
-//     limit = data?.limit ? Number(data.limit) : 20;
+    let page, limit;
+    page = data?.page ? Number(data.page) : 1;
+    limit = data?.limit ? Number(data.limit) : 200;
 
-//     let totalList = await TransportRequirements(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
-//     let requirements = await TransportRequirements(connect(DB_CONNECTION, portal)).find(keySearch)
-//         .skip((page - 1) * limit)
-//         .limit(limit);
-//     return { 
-//         data: requirements, 
-//         totalList 
-//     }
-// }
+    let totalList = await TransportSchedule(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
+    let schedules = await TransportSchedule(connect(DB_CONNECTION, portal)).find(keySearch)
+        .skip((page - 1) * limit)
+        .limit(limit);
+    return { 
+        data: schedules, 
+        totalList 
+    }
+}
 
 //     let page, perPage;
 //     page = data?.page ? Number(data.page) : 1;

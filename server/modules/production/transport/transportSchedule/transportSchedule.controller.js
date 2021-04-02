@@ -6,15 +6,15 @@ exports.createTransportSchedule = async (req, res) => {
     try {
         const newTransportSchedule = await TransportScheduleService.createTransportSchedule(req.portal, req.body);
 
-        await Log.info(req.user.email, 'CREATED_NEW_TRANSPORT_SCHEDULE', req.portal);
+        await Log.info(req.user.email, 'CREATED_NEW_SCHEDULE_REQUIREMENT', req.portal);
 
         res.status(201).json({
             success: true,
             messages: ["add_success"],
-            content: newTransportRequirement
+            content: newTransportSchedule
         });
     } catch (error) {
-        await Log.error(req.user.email, "CREATED_NEW_TRANSPORT_SCHEDULE", req.portal);
+        await Log.error(req.user.email, "CREATED_NEW_SCHEDULE_REQUIREMENT", req.portal);
 
         res.status(400).json({
             success: false,
@@ -128,24 +128,24 @@ exports.createTransportSchedule = async (req, res) => {
 // }
 
 // Lấy ra tên của tất cả các Ví dụ
-// exports.getAllTransportRequirements = async (req, res) => {
-//     try {
-//         let data;
-//         data = await TransportRequirementService.getAllTransportRequirements(req.portal, req.query);
+exports.getAllTransportSchedules = async (req, res) => {
+    try {
+        let data;
+        data = await TransportScheduleService.getAllTransportSchedules(req.portal, req.query);
 
-//         await Log.info(req.user.email, "GET_ALL_TRANSPORT_REQUIREMENTS", req.portal);
-//         res.status(200).json({
-//             success: true,
-//             messages: ["success"],
-//             content: data
-//         });
-//     } catch (error) {
-//         await Log.error(req.user.email, "GET_ALL_TRANSPORT_REQUIREMENTS", req.portal);
+        await Log.info(req.user.email, "GET_ALL_TRANSPORT_REQUIREMENTS", req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ["success"],
+            content: data
+        });
+    } catch (error) {
+        await Log.error(req.user.email, "GET_ALL_TRANSPORT_REQUIREMENTS", req.portal);
 
-//         res.status(400).json({
-//             success: false,
-//             messages: ["fail"],
-//             content: error.message
-//         });
-//     }
-// }
+        res.status(400).json({
+            success: false,
+            messages: ["fail"],
+            content: error.message
+        });
+    }
+}

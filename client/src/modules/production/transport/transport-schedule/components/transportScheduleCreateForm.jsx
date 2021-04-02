@@ -30,13 +30,13 @@ function TransportScheduleCreateForm(props) {
     }
 
     const handleEndDateChange = async (value) => {
+        console.log(value, " end date change");
         await setFormSchedule({
             ...formSchedule,
             endDate: value,
         })
     }
     const save = () => {
-        console.log(formSchedule, " da save");
         props.createTransportSchedule(formSchedule);
     }
     return (
