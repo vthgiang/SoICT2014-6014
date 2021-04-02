@@ -1427,7 +1427,7 @@ const LINKS = [{
     ]
 },
 {
-    url: "/manage-transport-vehical",
+    url: "/manage-transport-vehicle",
     description: "Phương tiện vận chuyển",
     category: LINK_CATEGORY.TRANSPORT.name,
     roles: [

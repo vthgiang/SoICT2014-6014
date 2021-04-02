@@ -159,7 +159,7 @@ import ManufacturingLot from "../modules/production/manufacturing/manufacturing-
 // Transport Managements
 import TransportRequirements from '../modules/production/transport/transport-requirements/components';
 import TransportSchedule from '../modules/production/transport/transport-schedule/components';
-import TransportVehical from '../modules/production/transport/transport-vehical/components';
+import TransportVehicle from '../modules/production/transport/transport-vehicle/components';
 import TransportHuman from '../modules/production/transport/transport-human/components';
 import TransportRoute from '../modules/production/transport/transport-route/components';
 
@@ -2491,22 +2491,22 @@ class Routes extends Component {
                     />
                     <PrivateRoute
                         isLoading={false}
-                        key={"manage-transport-vehical"}
+                        key={"manage-transport-vehicle"}
                         arrPage={[
                             { link: "/", name: "home", icon: "fa fa-home" },
                             {
-                                link: "/manage-transport-vehical", // url trang
-                                name: "manage_transport_vehical", // tên trang
+                                link: "/manage-transport-vehicle", // url trang
+                                name: "manage_transport_vehicle", // tên trang
                                 icon: " fa fa-calendar-o ",
                             },
                         ]}
                         auth={auth}
                         exact={true}
-                        link={"/manage-transport-vehical"}
-                        path={"/manage-transport-vehical"}
-                        pageName={"manage_transport_vehical"}
+                        link={"/manage-transport-vehicle"}
+                        path={"/manage-transport-vehicle"}
+                        pageName={"manage_transport_vehicle"}
                         layout={Layout}
-                        component={TransportVehical} // component ứng với trang, tạo ở bước 1
+                        component={TransportVehicle} // component ứng với trang, tạo ở bước 1
                     />
                     <PrivateRoute
                         isLoading={false}

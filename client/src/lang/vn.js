@@ -267,7 +267,7 @@ export default {
             manage_transport: "Quản lý vận chuyển",
             manage_transport_requirements: "Yêu cầu vận chuyển",
             manage_transport_schedule: "Kế hoạch vận chuyển",
-            manage_transport_vehical: "Phương tiện vận chuyển",
+            manage_transport_vehicle: "Phương tiện vận chuyển",
             manage_transport_human: "Nhân viên vận chuyển",
             manage_transport_route: "Lộ trình vận chuyển",
 

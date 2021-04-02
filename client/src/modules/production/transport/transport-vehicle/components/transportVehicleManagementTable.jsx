@@ -7,14 +7,15 @@ import { DataTableSetting, DeleteNotification, PaginateBar, SelectBox } from "..
 // import { transportRequirementsActions } from "../redux/actions";
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
 
-import { TransportVehical } from './transportVehical';
+import { TransportVehicle } from './transportVehicle';
 import { TransportEmployee } from './transportEmployee'; 
 
 
-function TransportVehicalManagementTable(props) {
+function TransportVehicleManagementTable(props) {
     const getTableId = "table-manage-transport-requirements-hooks";
     const defaultConfig = { limit: 5 }
     const getLimit = getTableConfiguration(getTableId, defaultConfig).limit;
+
 
     return (
         <React.Fragment>
@@ -48,7 +49,7 @@ function TransportVehicalManagementTable(props) {
                         
                         <fieldset className="scheduler-border" style={{ height: "100%" }}>
                         <legend className="scheduler-border">Phương tiện</legend>
-                            <TransportVehical />
+                            <TransportVehicle />
                         </fieldset>
                     </div>
                     <div className="col-xs-12 col-sm-12 col-md-12 col-lg-6">
@@ -64,14 +65,12 @@ function TransportVehicalManagementTable(props) {
 }
 
 function mapState(state) {
-//     const example = state.example1;
-//     return { example }
+
 }
 
 const actions = {
-    // getExamples: transportRequirementsActions.getAllTransportRequirements,
-    // deleteExample: exampleActions.deleteExample
 }
 
-const connectedTransportVehicalManagementTable = connect(mapState, actions)(withTranslate(TransportVehicalManagementTable));
-export { connectedTransportVehicalManagementTable as TransportVehicalManagementTable };
+const connectedTransportVehicleManagementTable = connect(mapState, actions)(withTranslate(TransportVehicleManagementTable));
+export { connectedTransportVehicleManagementTable as TransportVehicleManagementTable };
+

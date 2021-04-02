@@ -949,7 +949,7 @@ exports.links = [
         apis: ['@all']
     },
     {
-        url: '/manage-transport-vehical',
+        url: '/manage-transport-vehicle',
         apis: ['@all']
     },
     {
