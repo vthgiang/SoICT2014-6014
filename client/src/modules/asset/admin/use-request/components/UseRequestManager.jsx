@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
@@ -12,31 +12,31 @@ import { AssetManagerActions } from "../../asset-information/redux/actions";
 import { AssetEditForm } from '../../asset-information/components/assetEditForm';
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
 
-class UseRequestManager extends Component {
-    constructor(props) {
-        super(props);
-        const tableId = "table-use-request-manager";
-        const defaultConfig = { limit: 5 }
-        const limit = getTableConfiguration(tableId, defaultConfig).limit;
+function UseRequestManager(props) {
+    
+    const tableId_constructor = "table-use-request-manager";
+    const defaultConfig = { limit: 5 }
+    const limit_constructor = getTableConfiguration(tableId_constructor, defaultConfig).limit;
 
-        this.state = {
-            tableId,
+    const [state, setState] = useState({
+            tableId: tableId_constructor,
             recommendNumber: "",
             month: "",
             status: null,
             page: 0,
-            limit: limit,
-            managedBy: this.props.managedBy ? this.props.managedBy : ''
-        }
-    }
+            limit: limit_constructor,
+            managedBy: props.managedBy ? props.managedBy : ''
+    })
+    const { translate, recommendDistribute, isActive } = props;
+    const { page, limit, currentRow, currentRowEditAsset, managedBy, tableId } = state;
 
-    componentDidMount() {
-        let { managedBy } = this.state;
-        this.props.searchRecommendDistributes(this.state);
-        this.props.getUser();
+    useEffect(() => {
+        let { managedBy } = state;
+        props.searchRecommendDistributes(state);
+        props.getUser();
 
-        if (!this.props.isActive || this.props.isActive === "tab-pane active") {
-            this.props.getAllAsset({
+        if (!props.isActive || props.isActive === "tab-pane active") {
+            props.getAllAsset({
                 code: "",
                 assetName: "",
                 assetType: null,
@@ -46,11 +46,11 @@ class UseRequestManager extends Component {
                 managedBy: managedBy
             });
         }
-    }
+    }, [])
 
     // Bắt sự kiện click chỉnh sửa thông tin phiếu đề nghị
-    handleEdit = async (value) => {
-        await this.setState(state => {
+    const handleEdit = async (value) => {
+        await setState(state => {
             return {
                 ...state,
                 currentRow: value
@@ -60,7 +60,7 @@ class UseRequestManager extends Component {
     }
 
     // Function format dữ liệu Date thành string
-    formatDate2(date, monthYear = false) {
+    const formatDate2 =(date, monthYear = false) => {
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
@@ -81,7 +81,7 @@ class UseRequestManager extends Component {
         }
     }
 
-    formatDateTime(date, typeRegisterForUse) {
+    const formatDateTime = (date, typeRegisterForUse) =>{
         if (!date) return null;
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
@@ -114,7 +114,7 @@ class UseRequestManager extends Component {
         }
     }
     // Function format ngày hiện tại thành dạnh mm-yyyy
-    formatDate(date) {
+    const formatDate = (date) => {
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
@@ -132,95 +132,122 @@ class UseRequestManager extends Component {
     }
 
     // Function lưu giá trị mã phiếu vào state khi thay đổi
-    handleRecommendNumberChange = (event) => {
+    const handleRecommendNumberChange = (event) => {
         const { name, value } = event.target;
-        this.setState({
-            [name]: value
+        setState(state =>{
+            return{
+                ...state,
+                [name]: value
+            }
         });
     }
 
     // Function lưu giá trị mã  vào state khi thay đổi
-    handleCodeChange = (event) => {
+    const handleCodeChange = (event) => {
         const { name, value } = event.target;
-        this.setState({
-            [name]: value
+        setState(state =>{
+            return{
+                ...state,
+                [name]: value
+            }
         });
     }
 
     // Function lưu giá trị tên tài sản vào state khi thay đổi
-    handleAssetNameChange = (event) => {
+    const handleAssetNameChange = (event) => {
         const { name, value } = event.target;
-        this.setState({
-            [name]: value
+        setState(state =>{
+            return{
+                ...state,
+                [name]: value
+            }
         });
     }
 
     // Function lưu giá trị tháng vào state khi thay đổi
-    handleMonthChange = (value) => {
-        this.setState({
-            ...this.state,
-            createReceiptsDate: value
+    const handleMonthChange = (value) => {
+        setState(state =>{
+            return{
+                ...state,
+                createReceiptsDate: value
+            }
         });
     }
 
     // Function lưu giá trị status vào state khi thay đổi
-    handleReqForUsingEmployeeChange = (event) => {
+    const handleReqForUsingEmployeeChange = (event) => {
         const { name, value } = event.target;
-        this.setState({
-            [name]: value
+        setState(state =>{
+            return{
+                ...state,
+                [name]: value
+            }
         });
     }
 
     // Function lưu giá trị status vào state khi thay đổi
-    handleAppoverChange = (event) => {
+    const handleAppoverChange = (event) => {
         const { name, value } = event.target;
-        this.setState({
-            [name]: value
+        setState(state =>{
+            return{
+                ...state,
+                [name]: value
+            }
         });
     }
     // Function lưu giá trị status vào state khi thay đổi
-    handleStatusChange = (value) => {
+    const handleStatusChange = (value) => {
         if (value.length === 0) {
             value = null
         };
 
-        this.setState({
-            ...this.state,
-            reqUseStatus: value
+        setState(state =>{
+            return{
+                ...state,
+                reqUseStatus: value
+            }
         })
     }
 
     // Function bắt sự kiện tìm kiếm
-    handleSubmitSearch = async () => {
-        if (this.state.month === "") {
-            await this.setState({
-                month: this.formatDate(Date.now()),
-                page: 0
+    const handleSubmitSearch = async () => {
+        if (state.month === "") {
+            await setState(state =>{
+                return{
+                    ...state,
+                    month: formatDate(Date.now()),
+                    page: 0
+                }
             })
         }
-        this.props.searchRecommendDistributes(this.state);
+        props.searchRecommendDistributes(state);
     }
 
     // Bắt sự kiện setting số dòng hiện thị trên một trang
-    setLimit = async (number) => {
-        await this.setState({
-            limit: parseInt(number),
+    const setLimit = async (number) => {
+        await setState(state =>{
+            return{
+                ...state,
+                limit: parseInt(number),
+            }
         });
-        this.props.searchRecommendDistributes(this.state);
+        props.searchRecommendDistributes({...state, limit: parseInt(number)});
     }
 
     // Bắt sự kiện chuyển trang
-    setPage = async (pageNumber) => {
-        var page = (pageNumber - 1) * this.state.limit;
-        await this.setState({
-            page: parseInt(page),
-
+    const setPage = async (pageNumber) => {
+        var page = (pageNumber - 1) * state.limit;
+        await setState(state =>{
+            return{
+                ...state,
+                page: parseInt(page),
+            }
         });
-        this.props.searchRecommendDistributes(this.state);
+        props.searchRecommendDistributes({...state, page: parseInt(page)});
     }
 
     /*Chuyển đổi dữ liệu KPI nhân viên thành dữ liệu export to file excel */
-    convertDataToExportData = (data) => {
+    const convertDataToExportData = (data) => {
         let fileName = "Bảng quản lý thông tin đăng kí sử dụng tài sản ";
         if (data) {
             data = data.map((x, index) => {
@@ -229,11 +256,11 @@ class UseRequestManager extends Component {
                 let assetName = (x.asset) ? x.asset.assetName : '';
                 let approver = (x.approver) ? x.approver.email : '';
                 let assigner = (x.proponent) ? x.proponent.email : ''
-                let createDate = this.formatDateTime(x.dateCreate)
-                let dateStartUse = this.formatDateTime(x.dateStartUse);
-                let dateEndUse = this.formatDateTime(x.dateEndUse);
+                let createDate = formatDateTime(x.dateCreate)
+                let dateStartUse = formatDateTime(x.dateStartUse);
+                let dateEndUse = formatDateTime(x.dateEndUse);
                 let assetCode = (x.asset) ? x.asset.code : ''
-                let status = this.formatStatus(x.status);
+                let status = formatStatus(x.status);
 
                 return {
                     index: index + 1,
@@ -282,8 +309,8 @@ class UseRequestManager extends Component {
     }
 
     // Bắt sự kiện click chỉnh sửa thông tin tài sản
-    handleEditAsset = async (value) => {
-        await this.setState(state => {
+    const handleEditAsset = async (value) => {
+        await setState(state => {
             return {
                 ...state,
                 currentRowEditAsset: value
@@ -296,8 +323,8 @@ class UseRequestManager extends Component {
 
     }
 
-    formatStatus(status) {
-        const { translate } = this.props;
+    const formatStatus = (status) => {
+        const { translate } = props;
 
         switch (status) {
             case 'approved': return translate('asset.usage.approved');
@@ -307,14 +334,11 @@ class UseRequestManager extends Component {
         }
     }
 
-    render() {
-        const { translate, recommendDistribute, isActive } = this.props;
-        const { page, limit, currentRow, currentRowEditAsset, managedBy, tableId } = this.state;
 
         var listRecommendDistributes = "", exportData;
         if (recommendDistribute.isLoading === false) {
             listRecommendDistributes = recommendDistribute.listRecommendDistributes;
-            exportData = this.convertDataToExportData(listRecommendDistributes);
+            exportData = convertDataToExportData(listRecommendDistributes);
         }
 
         var pageTotal = ((recommendDistribute.totalList % limit) === 0) ?
@@ -330,13 +354,13 @@ class UseRequestManager extends Component {
                         {/* Mã phiếu */}
                         <div className="form-group">
                             <label className="form-control-static">{translate('asset.general_information.form_code')}</label>
-                            <input type="text" className="form-control" name="receiptsCode" onChange={this.handleRecommendNumberChange} placeholder={translate('asset.general_information.form_code')} autoComplete="off" />
+                            <input type="text" className="form-control" name="receiptsCode" onChange={handleRecommendNumberChange} placeholder={translate('asset.general_information.form_code')} autoComplete="off" />
                         </div>
 
                         {/* Mã tài sản */}
                         <div className="form-group">
                             <label className="form-control-static">{translate('asset.general_information.asset_code')}</label>
-                            <input type="text" className="form-control" name="codeAsset" onChange={this.handleCodeChange} placeholder={translate('asset.general_information.asset_code')} autoComplete="off" />
+                            <input type="text" className="form-control" name="codeAsset" onChange={handleCodeChange} placeholder={translate('asset.general_information.asset_code')} autoComplete="off" />
                         </div>
                     </div>
 
@@ -344,13 +368,13 @@ class UseRequestManager extends Component {
                         {/* Người được đăng ký sử dụng */}
                         <div className="form-group">
                             <label className="form-control-static">Người đăng ký</label>
-                            <input type="text" className="form-control" name="reqUseEmployee" onChange={this.handleReqForUsingEmployeeChange} placeholder="Người đăng ký" autoComplete="off" />
+                            <input type="text" className="form-control" name="reqUseEmployee" onChange={handleReqForUsingEmployeeChange} placeholder="Người đăng ký" autoComplete="off" />
                         </div>
 
                         {/* Người phê duyệt đăng ký sử dụng */}
                         <div className="form-group">
                             <label className="form-control-static">Người phê duyệt</label>
-                            <input type="text" className="form-control" name="approver" onChange={this.handleAppoverChange} placeholder="Người phê duyệt" autoComplete="off" />
+                            <input type="text" className="form-control" name="approver" onChange={handleAppoverChange} placeholder="Người phê duyệt" autoComplete="off" />
                         </div>
                     </div>
 
@@ -360,7 +384,7 @@ class UseRequestManager extends Component {
                             <label className="form-control-static">{translate('page.status')}</label>
                             <SelectMulti id={`multiSelectStatus`} multiple="multiple"
                                 options={{ nonSelectedText: translate('page.non_status'), allSelectedText: translate('page.all_status') }}
-                                onChange={this.handleStatusChange}
+                                onChange={handleStatusChange}
                                 items={[
                                     { value: "approved", text: translate('asset.usage.approved') },
                                     { value: "waiting_for_approval", text: translate('asset.usage.waiting_approval') },
@@ -377,13 +401,13 @@ class UseRequestManager extends Component {
                             <DatePicker
                                 id="month"
                                 dateFormat="month-year"
-                                // value={this.formatDate(Date.now())}
-                                onChange={this.handleMonthChange}
+                                // value={formatDate(Date.now())}
+                                onChange={handleMonthChange}
                             />
                         </div>
                         {/* Button tìm kiếm */}
                         <div className="form-group">
-                            <button type="button" className="btn btn-success" title={translate('page.add_search')} onClick={() => this.handleSubmitSearch()} >{translate('page.add_search')}</button>
+                            <button type="button" className="btn btn-success" title={translate('page.add_search')} onClick={() => handleSubmitSearch()} >{translate('page.add_search')}</button>
                         </div>
                         {exportData && <ExportExcel id="export-asset-recommened-distribute-management" exportData={exportData} style={{ marginRight: 10 }} />}
                     </div>
@@ -415,7 +439,7 @@ class UseRequestManager extends Component {
                                             translate('asset.usage.accountable'),
                                             translate('asset.general_information.status'),
                                         ]}
-                                        setLimit={this.setLimit}
+                                        setLimit={setLimit}
                                     />
                                 </th>
                             </tr>
@@ -424,23 +448,23 @@ class UseRequestManager extends Component {
                             {(listRecommendDistributes && listRecommendDistributes.length !== 0) ?
                                 listRecommendDistributes.map((x, index) => {
                                     return (<tr key={index}>
-                                        <td><a onClick={() => this.handleEditAsset(x.asset)}>{x.asset ? x.asset.code : ''}</a></td>
+                                        <td><a onClick={() => handleEditAsset(x.asset)}>{x.asset ? x.asset.code : ''}</a></td>
                                         <td>{x.recommendNumber}</td>
-                                        <td>{this.formatDateTime(x.dateCreate)}</td>
+                                        <td>{formatDateTime(x.dateCreate)}</td>
                                         <td>{x.proponent ? x.proponent.email : ''}</td>
                                         <td>{x.asset ? x.asset.assetName : ''}</td>
-                                        <td>{this.formatDateTime(x.dateStartUse, x.asset ? x.asset.typeRegisterForUse : undefined)}</td>
-                                        <td>{this.formatDateTime(x.dateEndUse, x.asset ? x.asset.typeRegisterForUse : undefined)}</td>
+                                        <td>{formatDateTime(x.dateStartUse, x.asset ? x.asset.typeRegisterForUse : undefined)}</td>
+                                        <td>{formatDateTime(x.dateEndUse, x.asset ? x.asset.typeRegisterForUse : undefined)}</td>
                                         <td>{x.approver ? x.approver.email : ''}</td>
-                                        <td>{this.formatStatus(x.status)}</td>
+                                        <td>{formatStatus(x.status)}</td>
                                         <td style={{ textAlign: "center" }}>
-                                            <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={translate('asset.asset_info.edit_usage_info')}><i className="material-icons">edit</i></a>
+                                            <a onClick={() => handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={translate('asset.asset_info.edit_usage_info')}><i className="material-icons">edit</i></a>
                                             <DeleteNotification
                                                 content={translate('asset.asset_info.delete_usage_info')}
                                                 data={{
                                                     id: x._id
                                                 }}
-                                                func={this.props.deleteRecommendDistribute}
+                                                func={props.deleteRecommendDistribute}
                                             />
                                         </td>
                                     </tr>)
@@ -454,7 +478,7 @@ class UseRequestManager extends Component {
                     }
 
                     {/* PaginateBar */}
-                    <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={currentPage} func={this.setPage} />
+                    <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={currentPage} func={setPage} />
                 </div>
 
                 {/* Form chỉnh sửa phiếu đăng ký sử dụng */}
@@ -509,7 +533,7 @@ class UseRequestManager extends Component {
                         depreciationType={currentRowEditAsset.depreciationType}
                         estimatedTotalProduction={currentRowEditAsset.estimatedTotalProduction}
                         unitsProducedDuringTheYears={currentRowEditAsset.unitsProducedDuringTheYears && currentRowEditAsset.unitsProducedDuringTheYears.map((x) => ({
-                            month: this.formatDate2(x.month),
+                            month: formatDate2(x.month),
                             unitsProducedDuringTheYear: x.unitsProducedDuringTheYear
                         })
                         )}
@@ -529,7 +553,6 @@ class UseRequestManager extends Component {
 
             </div >
         );
-    }
 };
 
 function mapState(state) {

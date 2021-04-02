@@ -4,7 +4,6 @@ const CustomerService = require('../../../crm/customer/customer.service');
 
 exports.getBillsByType = async (query, userId, portal) => {
     var { page, limit, group, managementLocation } = query;
-
     if (!managementLocation) throw new Error("roles not avaiable");
 
     //lấy id các kho của role hiện tại

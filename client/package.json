@@ -26,6 +26,7 @@
     "fs": "^0.0.1-security",
     "history": "^4.10.1",
     "html-react-parser": "^0.13.0",
+    "html-to-text": "^7.0.0",
     "interactjs": "^1.9.19",
     "js-file-download": "^0.4.12",
     "jsencrypt": "^3.0.0-rc.1",

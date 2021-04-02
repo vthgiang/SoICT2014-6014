@@ -52,6 +52,7 @@ exports.getTaskById = async (portal, id, userId) => {
                 path: "taskActions.evaluations.creator",
                 select: "name email avatar ",
             },
+            { path: "taskActions.timesheetLogs.creator", select: "_id name email" },
             { path: "taskComments.creator", select: "name email avatar" },
             {
                 path: "taskComments.comments.creator",
@@ -315,7 +316,7 @@ exports.getActiveTimesheetLog = async (portal, query) => {
                 },
             },
         },
-        { timesheetLogs: 1, _id: 1, name: 1 }
+        { timesheetLogs: 1, _id: 1, name: 1, taskActions:1 }
     );
     if (timerStatus !== null) {
         timerStatus.timesheetLogs = timerStatus.timesheetLogs.find(
@@ -426,7 +427,7 @@ exports.startTimesheetLog = async (portal, params, body, user) => {
     let timer = await Task(connect(DB_CONNECTION, portal)).findByIdAndUpdate(
         params.taskId,
         { $push: { timesheetLogs: timerUpdate } },
-        { new: true, fields: { timesheetLogs: 1, _id: 1, name: 1 } }
+        { new: true, fields: { timesheetLogs: 1, _id: 1, name: 1, taskActions: 1 } }
     );
 
     timer.timesheetLogs = timer.timesheetLogs.find(
@@ -617,6 +618,27 @@ exports.stopTimesheetLog = async (portal, params, body, user) => {
         duration = new Date(stoppedAt).getTime() - new Date(body.startedAt).getTime();
         let checkDurationValid = duration / (60 * 60 * 1000);
 
+        // Lấy thông tin của timeSheetLog đã start trước đó
+        const getTime = await Task(connect(DB_CONNECTION, portal)).findOne({ _id: params.taskId, "timesheetLogs._id": body.timesheetLog }, { timesheetLogs: 1 })
+        let currentTimeSheet = getTime.timesheetLogs.filter(o => o._id.toString() === body.timesheetLog.toString());
+        
+        // console.log('currentTimeSheet', currentTimeSheet[0]);
+        await Task(connect(DB_CONNECTION,portal)).findOneAndUpdate({ _id: params.taskId, "taskActions._id": body.taskActionStartTimer },
+            {
+                $push: {
+                    "taskActions.$.timesheetLogs":{
+                        startedAt: currentTimeSheet[0].startedAt,
+                        creator: currentTimeSheet[0].creator,
+                        acceptLog: checkDurationValid > 24 ? false : true,
+                        autoStopped: body.autoStopped,
+                        description: body.description,
+                        duration: duration,
+                        stoppedAt: stoppedAt,
+                    }
+                }
+            }
+        )
+
         timer = await Task(connect(DB_CONNECTION, portal))
             .findOneAndUpdate(
                 { _id: params.taskId, "timesheetLogs._id": body.timesheetLog },
@@ -627,7 +649,7 @@ exports.stopTimesheetLog = async (portal, params, body, user) => {
                         "timesheetLogs.$.description": body.description,
                         "timesheetLogs.$.autoStopped": body.autoStopped, // ghi nhận tắt bấm giờ tự động hay không?
                         "timesheetLogs.$.acceptLog": checkDurationValid > 24 ? false : true, // tự động check nếu thời gian quá 24 tiếng thì đánh là không hợp lệ
-                    },
+                    }
                 },
                 { new: true }
             )

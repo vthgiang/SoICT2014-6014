@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useState} from 'react';
 import { connect } from 'react-redux';
 
 import { withTranslate } from 'react-redux-multilingual';
@@ -9,32 +9,31 @@ import { configAssetType, importAssetTypeTemplate } from './fileConfigurationImp
 
 import { DialogModal, ImportFileExcel, ShowImportData, ConFigImportFile, ExportExcel } from '../../../../../common-components';
 
-class ImportAssetTypeModal extends Component {
+function ImportAssetTypeModal(props) {
+    const [state, setState] = useState({
+        configData: configAssetType,
+        limit: 100,
+        page: 0
+    })
 
-    constructor(props) {
-        super(props);
+    const { translate } = props;
+    const { configData, importData, rowError, checkFileImport, limit, page } = state;
 
-        this.state = {
-            configData: configAssetType,
-            limit: 100,
-            page: 0
-        }
+    const save = () => {
+        const { importShowData } = state;
+
+        props.createAssetTypes(importShowData);
     }
 
-    save = () => {
-        const { importShowData } = this.state;
-
-        this.props.createAssetTypes(importShowData);
-    }
-
-    handleChangeConfig = (value) => {
-        this.setState({
+    const handleChangeConfig = (value) => {
+        setState({
+            ...state,
             configData: value,
             importData: [],
         })
     }
 
-    convertDataExport = (dataExport) => {
+    const convertDataExport = (dataExport) => {
         for (let i = 0; i < dataExport.dataSheets.length; i++) {
             for (let j = 0; j < dataExport.dataSheets[i].tables.length; j++) {
                 let datas = [];
@@ -60,7 +59,7 @@ class ImportAssetTypeModal extends Component {
         return dataExport;
     }
 
-    getAssetTypeParentId = (parentName, data) => {
+    const getAssetTypeParentId = (parentName, data) => {
         let indexOfArr = -1,
             AssetTypeParentId;
 
@@ -85,8 +84,8 @@ class ImportAssetTypeModal extends Component {
     }
 
 
-    handleImportExcel = (value, checkFileImport) => {
-        const { list } = this.props.assetType.administration.types;
+    const handleImportExcel = (value, checkFileImport) => {
+        const { list } = props.assetType.administration.types;
         let values = [], valueShow = [], index = -1;
 
         for (let i = 0; i < value.length; i++) {
@@ -104,7 +103,7 @@ class ImportAssetTypeModal extends Component {
                 valueShow = [...valueShow, {
                     "typeNumber": valueTemporary.code,
                     "typeName": valueTemporary.name,
-                    "parent": this.getAssetTypeParentId(valueTemporary.parent, list),
+                    "parent": getAssetTypeParentId(valueTemporary.parent, list),
                     "description": valueTemporary.description,
                     "defaultInformation": [{ nameField: valueTemporary.information }]
                 }];
@@ -137,7 +136,7 @@ class ImportAssetTypeModal extends Component {
             for (let i = 0; i < value.length; i++) {
                 let x = value[i], errorAlert = [];
 
-                if (x.name === null || x.code === null || this.getAssetTypeParentId(x.parent, list) === -1) {
+                if (x.name === null || x.code === null || getAssetTypeParentId(x.parent, list) === -1) {
                     rowError = [...rowError, i + 1];
                     x = { ...x, error: true };
                 }
@@ -147,7 +146,7 @@ class ImportAssetTypeModal extends Component {
                 if (x.name === null) {
                     errorAlert = [...errorAlert, 'Tên loại tài sản không được để trống'];
                 }
-                if (this.getAssetTypeParentId(x.parent, list) === -1) {
+                if (getAssetTypeParentId(x.parent, list) === -1) {
                     errorAlert = [...errorAlert, 'Loại tài sản cha không đúng định dạng'];
                 }
 
@@ -155,72 +154,71 @@ class ImportAssetTypeModal extends Component {
                 value[i] = x;
             };
 
-            this.setState({
+            setState({
+                ...state,
                 importData: value, // show ra :))
                 importShowData: valueShow, // Luuw db
                 rowError: rowError,
                 checkFileImport: checkFileImport,
             })
         } else {
-            this.setState({
+            setState({
+                ...state,
                 checkFileImport: checkFileImport,
             })
         }
     }
 
-    render() {
-        const { translate } = this.props;
-        const { configData, importData, rowError, checkFileImport, limit, page } = this.state;
 
-        let importDataTemplate = this.convertDataExport(importAssetTypeTemplate);
-        return (
-            <React.Fragment>
-                <DialogModal
-                    modalID={`import_asset_type`} isLoading={false}
-                    formID={`form_import_asset_type`}
-                    title="Thêm loại tài sản bằng import file excel"
-                    func={this.save}
-                    disableSubmit={false}
-                    size={75}
-                >
-                    <form className="form-group" id={`form_import_asset_type`}>
-                        <ConFigImportFile
-                            id="import_asset_type_config"
-                            configData={configData}
-                            scrollTable={false}
-                            handleChangeConfig={this.handleChangeConfig}
-                        />
-                        <div className="row">
-                            <div className="form-group col-md-6 col-xs-6">
-                                <label>{translate('human_resource.choose_file')}</label>
-                                <ImportFileExcel
-                                    configData={configData}
-                                    handleImportExcel={this.handleImportExcel}
-                                />
-                            </div>
-                            <div className="form-group col-md-6 col-xs-6">
-                                <label></label>
-                                <ExportExcel id="download_asset_type_file" type='link' exportData={importDataTemplate}
-                                    buttonName='Download file import mẫu' />
-                            </div>
-                            <div className="form-group col-md-12 col-xs-12">
-                                <ShowImportData
-                                    id="import_asset_type_show_data"
-                                    configData={configData}
-                                    importData={importData}
-                                    rowError={rowError}
-                                    scrollTable={true}
-                                    checkFileImport={checkFileImport}
-                                    limit={limit}
-                                    page={page}
-                                />
-                            </div>
+    let importDataTemplate = convertDataExport(importAssetTypeTemplate);
+    return (
+        <React.Fragment>
+            <DialogModal
+                modalID={`import_asset_type`} isLoading={false}
+                formID={`form_import_asset_type`}
+                title="Thêm loại tài sản bằng import file excel"
+                func={save}
+                disableSubmit={false}
+                size={75}
+            >
+                <form className="form-group" id={`form_import_asset_type`}>
+                    <ConFigImportFile
+                        id="import_asset_type_config"
+                        configData={configData}
+                        scrollTable={false}
+                        handleChangeConfig={handleChangeConfig}
+                    />
+                    <div className="row">
+                        <div className="form-group col-md-6 col-xs-6">
+                            <label>{translate('human_resource.choose_file')}</label>
+                            <ImportFileExcel
+                                configData={configData}
+                                handleImportExcel={handleImportExcel}
+                            />
                         </div>
-                    </form>
-                </DialogModal>
-            </React.Fragment>
-        )
-    }
+                        <div className="form-group col-md-6 col-xs-6">
+                            <label></label>
+                            <ExportExcel id="download_asset_type_file" type='link' exportData={importDataTemplate}
+                                buttonName='Download file import mẫu' />
+                        </div>
+                        <div className="form-group col-md-12 col-xs-12">
+                            <ShowImportData
+                                id="import_asset_type_show_data"
+                                configData={configData}
+                                importData={importData}
+                                rowError={rowError}
+                                scrollTable={true}
+                                checkFileImport={checkFileImport}
+                                limit={limit}
+                                page={page}
+                            />
+                        </div>
+                    </div>
+                </form>
+            </DialogModal>
+        </React.Fragment>
+    )
+
 
 }
 

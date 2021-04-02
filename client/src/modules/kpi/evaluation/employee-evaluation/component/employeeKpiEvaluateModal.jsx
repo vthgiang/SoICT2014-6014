@@ -369,7 +369,7 @@ function EmployeeKpiEvaluateModal(props) {
                                         }
                                     </div>
                                     <br /><br />
-                                    <h4 style={{ marginBottom: '-15px' }}>{translate('kpi.evaluation.employee_evaluation.task_list')} ({kpimembers?.tasks?.length})</h4>
+                                    <h4>{translate('kpi.evaluation.employee_evaluation.task_list')} ({kpimembers?.tasks?.length})</h4>
                                     <div className="table-wrapper-scroll-y my-custom-scrollbar" style={{ height: "calc(80vh - 160px)", overflow: "auto" }}>
                                         <table id={tableId} className="table table-hover table-bordered  table-striped mb-0" >
                                             <thead>

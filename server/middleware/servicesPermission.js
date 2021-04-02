@@ -937,7 +937,30 @@ exports.links = [
     }, {
         url: '/answer-auth-questions',
         apis: ['@all']
+    }, 
+
+    //transport
+    {
+        url: '/manage-transport-requirements',
+        apis: ['@all']
     },
+    {
+        url: '/manage-transport-schedule',
+        apis: ['@all']
+    },
+    {
+        url: '/manage-transport-vehical',
+        apis: ['@all']
+    },
+    {
+        url: '/manage-transport-human',
+        apis: ['@all']
+    },
+    {
+        url: '/manage-transport-route',
+        apis: ['@all']
+    },
+
     {
         url: '/projects-management',
         apis: ['@all']

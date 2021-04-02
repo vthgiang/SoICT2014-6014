@@ -77,10 +77,10 @@ const CustomerSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'Group',
     },
-    status: {
+    status: [{
         type: Schema.Types.ObjectId,
         ref: 'Status'
-    },
+    }],
     point: {
         type: Number,
         default: 0
