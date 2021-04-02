@@ -11,13 +11,13 @@ function CreateForm(props) {
     });
 
     const handleName = (e) => {
-        const { value } = e.target;
+        let { value } = e.target;
         const { translate } = props;
-        const { message } = ValidationHelper.validateName(translate, value, 1, 255);
+        let { message } = ValidationHelper.validateName(translate, value, 1, 255);
         setState({
             ...state,
             name: value,
-            nameError: message
+            nameError: !message ? '' : message
         });
     }
 
@@ -33,15 +33,15 @@ function CreateForm(props) {
     }
 
     const handleCode = (e) => {
-        const { value } = e.target;
-        let msg;
+        let { value } = e.target;
+        const { translate } = props;
+        let { message } = ValidationHelper.validateName(translate, value, 1, 255);
         setState({
             ...state,
             code: value,
-            codeError: msg,
+            codeError: !message ? '' : message,
         });
     }
-
     const handleParent = (value) => {
         setState({
             ...state,
@@ -65,11 +65,40 @@ function CreateForm(props) {
         console.log('action...', state);
     };
 
-    const isValidateForm = () => {
-        let { name, code, action } = state;
+    const isHavingAction = (action) => {
+        if (action.length === 0) return false;
+        return true;
+    }
+
+    const isHavingParent = (parent) => {
+        if (!parent || parent === "") return false;
+        return true;
+    }
+
+    const isBelongToAnyFields = (field) => {
+        if (!field || field?.length === 0) return false;
+        return true;
+    }
+
+    const validatePositionName = (name) => {
         let { translate } = props;
-        if (action) return true;
-        if (!ValidationHelper.validateName(translate, name, 1, 255).status || !code) return false;
+        if (
+            !ValidationHelper.validateName(translate, name, 1, 255).status
+        ) return false;
+        return true;
+    }
+
+    const validatePositionCode = (code) => {
+        if (!code) return false;
+        return true;
+    }
+
+    const isValidateForm = () => {
+        let { name, code, action, parent } = state;
+        if (isHavingAction(action) && isHavingParent(parent)) return true;
+        if (
+            !(validatePositionCode(code) && validatePositionName(name))
+        ) return false;
         return true;
     }
 
@@ -95,7 +124,7 @@ function CreateForm(props) {
                 modalID="modal-create-career-position"
                 formID="form-create-career-position"
                 title="Thêm vị trí công việc"
-                //disableSubmit={!isValidateForm()}
+                disableSubmit={!isValidateForm()}
                 func={save}
             >
                 <form id="form-create-career-position">
@@ -104,11 +133,18 @@ function CreateForm(props) {
                             <input type="text" className="form-control" onChange={this.handlePackage} />
                             <ErrorLabel content={nameError} />
                         </div> */}
-                    <div className="form-group">
-                        <label>Chọn thông tin cha</label>
-                        <TreeSelect data={list} value={parent} handleChange={handleParent} mode="radioSelect" />
-                    </div>
-                    {!parent &&
+                    {!isBelongToAnyFields(state.field) &&
+                        < div className="form-group">
+                            <label>Chọn thông tin cha
+                                {isHavingAction(state.action) && <span className="text-red">*</span>}
+                            </label>
+                            <TreeSelect data={list} value={parent} handleChange={handleParent} mode="radioSelect" />
+                            {isHavingAction(state.action) &&
+                                <ErrorLabel content={nameError} />
+                            }
+                        </div>
+                    }
+                    {!(isHavingParent(state.parent) || isHavingAction(state.action)) &&
                         <div className="form-group">
                             <label>Lĩnh vực</label>
                             <SelectBox
@@ -125,7 +161,8 @@ function CreateForm(props) {
                             />
                         </div>
                     }
-                    {(!state.name || state.name === "") &&
+                    {!(validatePositionCode(state.code) || validatePositionName(state.name) ||
+                        isBelongToAnyFields(state.field)) &&
                         <div className="form-group">
                             <label>Chọn hoạt động công việc đang có</label>
                             <SelectBox
@@ -143,7 +180,7 @@ function CreateForm(props) {
                             />
                         </div>
                     }
-                    {state.action.length === 0 &&
+                    {!isHavingAction(state.action) &&
                         //${!nameError ? "" : "has-error"} ${!codeError ? "" : "has-error"}
                         <div>
                             <div className={`form-group `}>
@@ -160,7 +197,7 @@ function CreateForm(props) {
                     }
                 </form>
             </DialogModal>
-        </React.Fragment>
+        </React.Fragment >
     );
 }
 const mapStateToProps = state => state;

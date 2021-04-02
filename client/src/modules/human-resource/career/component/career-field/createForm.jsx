@@ -11,23 +11,24 @@ function CreateForm(props) {
     });
 
     const handleName = (e) => {
-        const { value } = e.target;
+        let { value } = e.target;
         const { translate } = props;
-        const { message } = ValidationHelper.validateName(translate, value, 1, 255);
+        let { message } = ValidationHelper.validateName(translate, value, 1, 255);
         setState({
             ...state,
             name: value,
-            nameError: message
+            nameError: !message ? '' : message
         });
     }
 
     const handleCode = (e) => {
-        const { value } = e.target;
-        let msg;
+        let { value } = e.target;
+        const { translate } = props;
+        let { message } = ValidationHelper.validateName(translate, value, 1, 255);
         setState({
             ...state,
             code: value,
-            codeError: msg,
+            codeError: !message ? '' : message,
         });
     }
 
@@ -38,16 +39,6 @@ function CreateForm(props) {
         });
     }
 
-    const isValidateForm = () => {
-        let { name, code, position } = state;
-        let { translate } = props;
-        if (position?._id) return true;
-        if (
-            !ValidationHelper.validateName(translate, name, 1, 255).status || !code
-        ) return false;
-        return true;
-    }
-
     const handlePosition = (value) => {
         setState({
             ...state,
@@ -55,6 +46,38 @@ function CreateForm(props) {
         });
         console.log('position...', state);
     };
+
+    const isHavingParent = (parent) => {
+        if (!parent || parent === "") return false;
+        return true;
+    }
+
+    const isAvailablePosition = (position) => {
+        if (position.length === 0) return false;
+        return true;
+    }
+
+    const validateFieldName = (name) => {
+        let { translate } = props;
+        if (
+            !ValidationHelper.validateName(translate, name, 1, 255).status
+        ) return false;
+        return true;
+    }
+
+    const validateFieldCode = (code) => {
+        if (!code) return false;
+        return true;
+    }
+
+    const isValidateForm = () => {
+        let { name, code, position, parent } = state;
+        if (isAvailablePosition(position) && isHavingParent(parent)) return true;
+        if (
+            !(validateFieldName(name) && validateFieldCode(code))
+        ) return false;
+        return true;
+    }
 
     const save = () => {
         const data = {
@@ -76,15 +99,21 @@ function CreateForm(props) {
                 modalID="modal-create-career-field"
                 formID="form-create-career-field"
                 title="Thêm lĩnh vực công việc"
-                //disableSubmit={!isValidateForm()}
+                disableSubmit={!isValidateForm()}
                 func={save}
             >
                 <form id="form-create-career-field">
                     <div className="form-group">
-                        <label>Chọn thông tin cha</label>
+                        <label>
+                            Chọn thông tin cha
+                            {
+                                isAvailablePosition(state.position) &&
+                                <span className="text-red">*</span>
+                            }
+                        </label>
                         <TreeSelect data={list} value={parent} handleChange={handleParent} mode="radioSelect" />
                     </div>
-                    {(!state.name || state.name === "") &&
+                    {!(validateFieldName(state.name) || validateFieldCode(state.code)) &&
                         <div className="form-group">
                             <label>Chọn vị trí công việc đang có</label>
                             <SelectBox
@@ -104,7 +133,7 @@ function CreateForm(props) {
                         </div>
                     }
 
-                    {state.position.length === 0 &&
+                    {!isAvailablePosition(state.position) &&
                         //  ${!nameError ? "" : "has-error"} ${!codeError ? "" : "has-error"}
                         <div>
                             <div className={`form-group`}>

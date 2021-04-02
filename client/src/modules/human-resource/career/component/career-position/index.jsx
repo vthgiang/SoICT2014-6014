@@ -168,7 +168,7 @@ function CareerPosition(props) {
                                 careerName={currentNode.text}
                                 careerCode={currentNode.original.code}
                                 careerPackage={currentNode.original.package ? currentNode.original.package : ""}
-                                careerParent={(currentNode.parent !== "#") ? currentNode.parent : undefined}
+                                careerParent={(currentNode.parent !== "#") ? currentNode.parent : []}
 
                                 listData={dataTree}
                                 unChooseNode={unChooseNode}

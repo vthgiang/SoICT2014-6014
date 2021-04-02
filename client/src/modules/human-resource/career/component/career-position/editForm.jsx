@@ -9,6 +9,7 @@ import ValidationHelper from '../../../../../helpers/validationHelper';
 function EditForm(props) {
     const [state, setState] = useState({
         name: '',
+        code: ''
     })
 
     useEffect(() => {
@@ -20,31 +21,32 @@ function EditForm(props) {
                 package: props.careerPackage,
                 code: props.careerCode,
                 parent: props.careerParent,
-                actionLabel: props.actionLabel,
-                isLabel: props.isLabel,
+                actionLabel: !props.actionLabel ? '' : props.actionLabel,
+                isLabel: !props.isLabel ? '' : props.isLabel,
+                nameError: '',
+                codeError: ''
             },
             careerId: props.careerId,
             name: props.careerName,
             package: props.careerPackage,
             code: props.careerCode,
             parent: props.careerParent,
-            showParent: props.careerParent,
-            actionLabel: props.actionLabel,
-            isLabel: props.isLabel,
-
-            nameError: undefined,
-            codeError: undefined
+            showParent: props.careerParent.length === 0 ? false : true,
+            actionLabel: !props.actionLabel ? '' : props.actionLabel,
+            isLabel: !props.isLabel ? '' : props.isLabel,
+            nameError: '',
+            codeError: ''
         })
     }, [props.careerId])
 
     const handleName = (e) => {
-        const { value } = e.target;
+        let { value } = e.target;
         const { translate } = props;
-        const { message } = ValidationHelper.validateName(translate, value, 1, 255);
+        let { message } = ValidationHelper.validateName(translate, value, 1, 255);
         setState({
             ...state,
             name: value,
-            nameError: message
+            nameError: !message ? '' : message
         });
     }
 
@@ -60,12 +62,13 @@ function EditForm(props) {
     }
 
     const handleCode = (e) => {
-        const { value } = e.target;
-        let msg;
+        let { value } = e.target;
+        const { translate } = props;
+        let { message } = ValidationHelper.validateName(translate, value, 1, 255);
         setState({
             ...state,
             code: value,
-            codeError: msg,
+            codeError: !message ? '' : message,
         });
     }
 
@@ -76,11 +79,23 @@ function EditForm(props) {
         });
     };
 
-    const isValidateForm = () => {
-        let { name, description, showParent, parent, code } = state;
+    const validatePositionName = (name) => {
         let { translate } = props;
         if (
-            !ValidationHelper.validateName(translate, name, 1, 255 || !code).status
+            !ValidationHelper.validateName(translate, name, 1, 255).status
+        ) return false;
+        return true;
+    }
+
+    const validatePositionCode = (code) => {
+        if (!code) return false;
+        return true;
+    }
+
+    const isValidateForm = () => {
+        let { name, showParent, parent, code } = state;
+        if (
+            !(validatePositionCode(code) && validatePositionName(name))
         ) return false;
         if (showParent && !parent) return false;
         return true;
@@ -145,12 +160,12 @@ function EditForm(props) {
                         <ErrorLabel content={nameError} />
                     </div>
                 } */}
-            <div className={`form-group ${nameError === undefined ? "" : "has-error"}`}>
+            <div className={`form-group ${nameError === '' ? "" : "has-error"}`}>
                 <label>Tên<span className="text-red">*</span></label>
                 <input type="text" className="form-control" onChange={handleName} value={name} />
                 <ErrorLabel content={nameError} />
             </div>
-            <div className={`form-group ${nameError === undefined ? "" : "has-error"}`}>
+            <div className={`form-group ${codeError === '' ? "" : "has-error"}`}>
                 <label>Nhãn dán<span className="text-red">*</span></label>
                 <input type="text" className="form-control" onChange={handleCode} value={code} />
                 <ErrorLabel content={codeError} />

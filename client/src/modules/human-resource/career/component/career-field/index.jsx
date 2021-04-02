@@ -166,7 +166,7 @@ function CareerField(props) {
                                 careerId={currentNode.id}
                                 careerName={currentNode.text}
                                 careerCode={currentNode.original.code}
-                                careerParent={(currentNode.parent !== "#") ? currentNode.parent : undefined}
+                                careerParent={(currentNode.parent !== "#") ? currentNode.parent : []}
 
                                 listData={list}
                                 unChooseNode={unChooseNode}
