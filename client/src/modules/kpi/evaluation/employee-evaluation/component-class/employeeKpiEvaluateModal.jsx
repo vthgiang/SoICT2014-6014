@@ -5,7 +5,7 @@ import parse from 'html-react-parser';
 
 import { kpiMemberActions } from '../redux/actions';
 
-import { DataTableSetting, ExportExcel, ToolTip, DialogModal } from '../../../../../common-components';
+import { DataTableSetting, ExportExcel, ToolTip, DialogModal, SlimScroll } from '../../../../../common-components';
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
 
 import { ModalDetailTask } from '../../../../task/task-dashboard/task-personal-dashboard/modalDetailTask';
@@ -318,7 +318,7 @@ class EmployeeKpiEvaluateModal extends Component {
 
                         {/* Đánh giá KPI */}
                         <div className={"tab-pane"} id="evaluate">
-                            <div className="col-xs-12 col-sm-4">
+                            <div className="col-xs-12 col-sm-4" id="listKpi" style={{ overflowY: "auto" }}>
                                 <div className="form-group">
                                     <button className="btn btn-success" style={{ width: "100%" }} onClick={() => this.handleSetPointAllKPI()}>
                                         {translate('kpi.evaluation.employee_evaluation.cal_all_kpis')}
@@ -341,7 +341,9 @@ class EmployeeKpiEvaluateModal extends Component {
                                         </ul>
                                     </div>
                                 </div>
+                                {/* <SlimScroll outerComponentId="listKpi" activate={true} verticalScroll={true}/> */}
                             </div>
+
                             <div className="col-xs-12 col-sm-8 qlcv">
                                 <div className="form-inline pull-right">
                                     {
@@ -384,7 +386,26 @@ class EmployeeKpiEvaluateModal extends Component {
                                             }
                                         </div>
                                         <br /><br />
-                                        <h4 style={{ marginBottom: '-15px' }}>{translate('kpi.evaluation.employee_evaluation.task_list')} ({kpimembers?.tasks?.length})</h4>
+                                        <h4 style={{ marginBottom: '10px' }}>
+                                            {translate('kpi.evaluation.employee_evaluation.task_list')} ({kpimembers?.tasks?.length})
+                                            <DataTableSetting
+                                                className="pull-right"
+                                                tableId={tableId}
+                                                tableContainerId="tree-table-container"
+                                                tableWidth="1300px"
+                                                columnArr={[
+                                                    'STT',
+                                                    'Tên công việc',
+                                                    'Thời gian thực hiện',
+                                                    'Thời gian đánh giá',
+                                                    'Trạng thái',
+                                                    'Đóng góp (%)',
+                                                    'Điểm',
+                                                    'Độ quan trọng']}
+                                                linePerPageOption={false}
+                                            />
+                                        </h4>
+                                        
                                         <div class="table-wrapper-scroll-y my-custom-scrollbar" style={{ height: "calc(80vh - 160px)", overflow: "auto" }}>
                                             <table id={tableId} className="table table-hover table-bordered  table-striped mb-0" >
                                                 <thead>
@@ -396,27 +417,10 @@ class EmployeeKpiEvaluateModal extends Component {
                                                         <th title="Trạng thái">{translate('kpi.evaluation.employee_evaluation.status')}</th>
                                                         <th title="Đóng góp (%)">{translate('kpi.evaluation.employee_evaluation.contribution')} (%)</th>
                                                         <th title="Điểm">{translate('kpi.evaluation.employee_evaluation.point')}</th>
-                                                        <th title="Độ quan trọng">{translate('kpi.evaluation.employee_evaluation.importance_level')}
-                                                            <DataTableSetting
-                                                                className="pull-right"
-                                                                tableId={tableId}
-                                                                tableContainerId="tree-table-container"
-                                                                tableWidth="1300px"
-                                                                columnArr={[
-                                                                    'STT',
-                                                                    'Tên công việc',
-                                                                    'Thời gian thực hiện',
-                                                                    'Thời gian đánh giá',
-                                                                    'Trạng thái',
-                                                                    'Đóng góp (%)',
-                                                                    'Điểm',
-                                                                    'Độ quan trọng']}
-                                                                linePerPageOption={false}
-                                                            />
-                                                        </th>
+                                                        <th title="Độ quan trọng">{translate('kpi.evaluation.employee_evaluation.importance_level')}</th>
                                                     </tr>
                                                 </thead>
-                                                <tbody >
+                                                <tbody>
                                                     {
                                                         (kpimembers.tasks && Array.isArray(kpimembers.tasks)) && kpimembers.tasks?.length > 0 ?
                                                             (kpimembers.tasks.map((itemTask, index) =>

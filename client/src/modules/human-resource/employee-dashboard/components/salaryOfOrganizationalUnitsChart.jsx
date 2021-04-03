@@ -140,7 +140,7 @@ class SalaryOfOrganizationalUnitsChart extends Component {
                                 organizationalUnitsName && organizationalUnitsName.length < 2 ?
                                     <>
                                         <span>{` ${translate('task.task_dashboard.of_unit')}`}</span>
-                                        <span style={{ fontWeight: "bold" }}>{` ${organizationalUnitsName?.[0]?.name}`}</span>
+                                        <span>{` ${organizationalUnitsName?.[0]?.name}`}</span>
                                     </>
                                     :
                                     <span onClick={() => showListInSwal(organizationalUnitsName.map(item => item?.name), translate('general.list_unit'))} style={{ cursor: 'pointer' }}>

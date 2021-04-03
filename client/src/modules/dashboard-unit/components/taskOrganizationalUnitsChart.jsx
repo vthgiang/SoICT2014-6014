@@ -349,7 +349,7 @@ class TaskOrganizationalUnitsChart extends Component {
                             childOrganizationalUnit && childOrganizationalUnit.length < 2 ?
                                 <>
                                     <span>{` ${translate('task.task_dashboard.of_unit')}`}</span>
-                                    <span style={{ fontWeight: "bold" }}>{` ${childOrganizationalUnit?.[0]?.name}`}</span>
+                                    <span>{` ${childOrganizationalUnit?.[0]?.name}`}</span>
                                 </>
                                 :
                                 <span onClick={() => showListInSwal(childOrganizationalUnit.map(item => item?.name), translate('general.list_unit'))} style={{ cursor: 'pointer' }}>
