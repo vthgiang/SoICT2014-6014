@@ -693,21 +693,21 @@ function Table(props) {
                                 <td>{doc.versions.length ? formatDate(doc.versions[doc.versions.length - 1].expiredDate) : null}</td>
                                 <td>
                                     <a href="#" onClick={() => requestDownloadDocumentFile(doc._id, doc.name, doc.versions.length - 1)}>
-                                        <u>{doc.versions.length && doc.versions[doc.versions.length - 1].file ? translate('document.download') : ""}</u>
+                                        <u>{doc.versions.length && doc.versions[doc.versions.length - 1].file ? <i className="fa fa-download"></i> : ""}</u>
                                     </a>
 
                                     <a href="#" onClick={() => showFilePreview(doc.versions.length && doc.versions[doc.versions.length - 1].file)}>
                                         <u>{doc.versions.length && doc.versions[doc.versions.length - 1].file && checkTypeFile(doc.versions[doc.versions.length - 1].file) ?
-                                            <i className="material-icons">preview</i> : ""}</u>
+                                            <i className="fa fa-eye"></i> : ""}</u>
                                     </a>
                                 </td>
                                 <td>
                                     <a href="#" onClick={() => requestDownloadDocumentFileScan(doc._id, "SCAN_" + doc.name, doc.versions.length - 1)}>
-                                        <u>{doc.versions.length && doc.versions[doc.versions.length - 1].scannedFileOfSignedDocument ? translate('document.download') : ""}</u>
+                                        <u>{doc.versions.length && doc.versions[doc.versions.length - 1].scannedFileOfSignedDocument ? <i className="fa fa-download"></i> : ""}</u>
                                     </a>
                                     <a href="#" onClick={() => showFilePreview(doc.versions.length && doc.versions[doc.versions.length - 1].scannedFileOfSignedDocument)}>
                                         <u>{doc.versions.length && doc.versions[doc.versions.length - 1].scannedFileOfSignedDocument && checkTypeFile(doc.versions[doc.versions.length - 1].scannedFileOfSignedDocument) ?
-                                            <i className="material-icons">preview</i> : ""}</u>
+                                            <i className="fa fa-eye"></i> : ""}</u>
                                     </a>
                                 </td>
                                 <td>
