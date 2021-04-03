@@ -166,6 +166,8 @@ import TransportRoute from '../modules/production/transport/transport-route/comp
 import AnswerAuthQuestionPage from '../modules/auth/components/answerAuthQuestion';
 
 import { Project } from '../modules/project/component/projects/index';
+import Phase from '../modules/project/component/phases/index';
+import PhaseDetail from '../modules/project/component/phases/detailPhase';
 import ProjectDetailForm from '../modules/project/component/projects/detailProject';
 import { UserGuide } from '../modules/user-guide/components';
 import AllTimeSheetLog from '../modules/task/task-dashboard/statistic/allTimeSheetLog';
@@ -2612,7 +2614,31 @@ class Routes extends Component {
                         path={"/project/phases-list"}
                         pageName={"phases_list"}
                         layout={Layout}
-                        component={Project}
+                        component={Phase}
+                    />
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"/project/phase-details"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/project/phases-list",
+                                name: "phases_list",
+                                icon: "fa fa-folder-open",
+                            },
+                            {
+                                link: "/project/phase-details",
+                                name: "phase_details",
+                                icon: "fa fa-folder-open",
+                            }
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/project/phase-details"}
+                        path={"/project/phase-details"}
+                        pageName={"phase"}
+                        layout={Layout}
+                        component={PhaseDetail}
                     />
                     <PrivateRoute
                         isLoading={false}

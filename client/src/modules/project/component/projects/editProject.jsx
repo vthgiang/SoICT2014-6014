@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { connect } from 'react-redux';
-import { ButtonModal, DialogModal, ErrorLabel, TreeSelect, DatePicker, SelectBox } from '../../../../common-components';
+import { DialogModal, ErrorLabel, DatePicker, SelectBox } from '../../../../common-components';
 import { withTranslate } from 'react-redux-multilingual';
 import ValidationHelper from '../../../../helpers/validationHelper';
 import { ProjectActions } from '../../redux/actions';
@@ -8,7 +8,7 @@ import getEmployeeSelectBoxItems from '../../../task/organizationalUnitHelper';
 import { formatDate } from '../../../../helpers/formatDate';
 
 const ProjectEditForm = (props) => {
-    const { translate, project, user, projectEdit, projectEditId } = props;
+    const { translate, user, projectEdit, projectEditId } = props;
     const listUsers = user && user.usersInUnitsOfCompany ? getEmployeeSelectBoxItems(user.usersInUnitsOfCompany) : []
     const fakeUnitCostList = [
         { text: 'VND', value: 'VND' },
@@ -18,21 +18,45 @@ const ProjectEditForm = (props) => {
         { text: 'hour', value: 'hour' },
         { text: 'day', value: 'day' },
     ]
+    const preprocessUsersList = useCallback((currentObject) => {
+        if (typeof currentObject?.[0] === 'string') {
+            return currentObject;
+        }
+        return currentObject?.map(item => item._id)
+    }, [])
     const [form, setForm] = useState({
+        projectId: '',
         projectNameError: undefined,
-        projectName: projectEdit.fullName || "",
-        description: projectEdit.description || "",
-        code: projectEdit.codeName || "",
-        startDate: projectEdit.startDate ? formatDate(projectEdit.startDate) : '',
-        endDate: projectEdit.estimatedEndDate ? formatDate(projectEdit.estimatedEndDate) : '',
-        projectManager: projectEdit.projectManager ? projectEdit?.projectManager?.map(item => item._id) : [],
-        projectMembers: projectEdit.projectMembers ? projectEdit.projectMembers?.map(item => item._id) : [],
-        unitCost: projectEdit.unitCost || fakeUnitCostList[0].text,
-        unitTime: projectEdit.unitTime || fakeUnitTimeList[0].text,
-        estimatedCost: projectEdit.estimatedCost || '',
+        projectName: projectEdit?.name || "",
+        description: projectEdit?.description || "",
+        code: projectEdit?.code || "",
+        startDate: projectEdit?.startDate ? formatDate(projectEdit?.startDate) : '',
+        endDate: projectEdit?.endDate ? formatDate(projectEdit?.endDate) : '',
+        projectManager: preprocessUsersList(projectEdit?.projectManager),
+        responsibleEmployees: preprocessUsersList(projectEdit?.responsibleEmployees),
+        unitCost: projectEdit?.unitCost || fakeUnitCostList[0].text,
+        unitTime: projectEdit?.unitTime || fakeUnitTimeList[0].text,
+        estimatedCost: projectEdit?.estimatedCost || '',
     })
 
-    const { projectName, projectNameError, description, code, startDate, endDate, projectManager, projectMembers, unitCost, unitTime, estimatedCost } = form;
+    const { projectName, projectNameError, description, code, startDate, endDate, projectManager, responsibleEmployees, unitCost, unitTime, estimatedCost, projectId } = form;
+
+    if (projectEditId !== projectId) {
+        setForm({
+            projectId: projectEditId,
+            projectNameError: undefined,
+            projectName: projectEdit?.name || "",
+            description: projectEdit?.description || "",
+            code: projectEdit?.code || "",
+            startDate: projectEdit?.startDate ? formatDate(projectEdit?.startDate) : '',
+            endDate: projectEdit?.endDate ? formatDate(projectEdit?.endDate) : '',
+            projectManager: preprocessUsersList(projectEdit?.projectManager),
+            responsibleEmployees: preprocessUsersList(projectEdit?.responsibleEmployees),
+            unitCost: projectEdit?.unitCost || fakeUnitCostList[0].text,
+            unitTime: projectEdit?.unitTime || fakeUnitTimeList[0].text,
+            estimatedCost: projectEdit?.estimatedCost || '',
+        })
+    }
 
     const handleChangeForm = (event, currentKey) => {
         if (currentKey === 'projectName') {
@@ -45,7 +69,7 @@ const ProjectEditForm = (props) => {
             })
             return;
         }
-        const justRenderEventArr = ['projectManager', 'projectMembers', 'startDate', 'endDate'];
+        const justRenderEventArr = ['projectManager', 'responsibleEmployees', 'startDate', 'endDate'];
         if (justRenderEventArr.includes(currentKey)) {
             setForm({
                 ...form,
@@ -90,13 +114,13 @@ const ProjectEditForm = (props) => {
             let partEndDate = endDate.split('-');
             let end = new Date([partEndDate[2], partEndDate[1], partEndDate[0]].join('-'));
 
-            props.createProjectDispatch({
+            props.editProjectDispatch(projectEdit?._id, {
                 fullName: projectName,
-                codeName: code,
+                code: code,
                 startDate: start,
-                estimatedEndDate: end,
+                endDate: end,
                 projectManager,
-                projectMembers,
+                responsibleEmployees,
                 description,
                 unitCost,
                 unitTime,
@@ -105,20 +129,18 @@ const ProjectEditForm = (props) => {
         }
     }
 
-    const list = project.data.list;
-
     return (
         <React.Fragment>
             {/* <ButtonModal modalID="modal-create-example" button_name={translate('manage_example.add')} title={translate('manage_example.add_title')} /> */}
             <DialogModal
-                modalID={`modal-edit-project-${projectEdit._id}`} isLoading={false}
-                formID="form-edit-project"
+                modalID={`modal-edit-project-${projectEdit?._id}`} isLoading={false}
+                formID={`form-edit-project-${projectEdit?._id}`}
                 title={translate('project.edit_title')}
                 func={save}
                 disableSubmit={!isFormValidated()}
                 size={75}
             >
-                <form id="form-edit-project">
+                <form id={`form-edit-project-${projectEdit?._id}`}>
                     <div className={`form-group ${!projectNameError ? "" : "has-error"}`}>
                         <label>{translate('project.name')}<span className="text-red">*</span></label>
                         <input type="text" className="form-control" value={projectName} onChange={(e) => handleChangeForm(e, 'projectName')}></input>
@@ -133,7 +155,7 @@ const ProjectEditForm = (props) => {
                     <div className="form-group">
                         <label>{translate('project.startDate')}</label>
                         <DatePicker
-                            id={`edit-project-state-date`}
+                            id={`edit-project-state-date-${projectEdit?._id}`}
                             value={startDate}
                             onChange={(e) => handleChangeForm(e, 'startDate')}
                             disabled={false}
@@ -142,7 +164,7 @@ const ProjectEditForm = (props) => {
                     <div className="form-group">
                         <label>{translate('project.endDate')}</label>
                         <DatePicker
-                            id={`edit-project-end-date`}
+                            id={`edit-project-end-date-${projectEdit?._id}`}
                             value={endDate}
                             onChange={(e) => handleChangeForm(e, 'endDate')}
                             disabled={false}
@@ -156,7 +178,7 @@ const ProjectEditForm = (props) => {
                         <label>{translate('project.manager')}</label>
                         {listUsers &&
                             <SelectBox
-                                id={`edit-project-manager`}
+                                id={`edit-project-manager-${projectEdit?._id}`}
                                 className="form-control select2"
                                 style={{ width: "100%" }}
                                 items={listUsers}
@@ -170,12 +192,12 @@ const ProjectEditForm = (props) => {
                         <label>{translate('project.member')}</label>
                         {listUsers &&
                             <SelectBox
-                                id={`edit-project-members`}
+                                id={`edit-project-members-${projectEdit?._id}`}
                                 className="form-control select2"
                                 style={{ width: "100%" }}
                                 items={listUsers}
-                                onChange={(e) => handleChangeForm(e, 'projectMembers')}
-                                value={projectMembers}
+                                onChange={(e) => handleChangeForm(e, 'responsibleEmployees')}
+                                value={responsibleEmployees}
                                 multiple={true}
                             />
                         }
@@ -183,7 +205,7 @@ const ProjectEditForm = (props) => {
                     <div className="form-group">
                         <label>{translate('project.unitTime')}</label>
                         <SelectBox
-                            id={`edit-project-unit-time`}
+                            id={`edit-project-unit-time-${projectEdit?._id}`}
                             className="form-control select2"
                             style={{ width: "100%" }}
                             items={fakeUnitTimeList}
@@ -195,7 +217,7 @@ const ProjectEditForm = (props) => {
                     <div className="form-group">
                         <label>{translate('project.unitCost')}</label>
                         <SelectBox
-                            id={`edit-project-unit-cost`}
+                            id={`edit-project-unit-cost-${projectEdit?._id}`}
                             className="form-control select2"
                             style={{ width: "100%" }}
                             items={fakeUnitCostList}

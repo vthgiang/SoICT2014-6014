@@ -16,6 +16,7 @@ function getProjectsDispatch(data = undefined) {
         });
         ProjectServices.getProjectsAPI(data)
             .then((res) => {
+                console.log('res.data.content GET',res.data.content)
                 dispatch({
                     type: ProjectConstants.GET_PROJECTS_SUCCESS,
                     payload: res.data.content,
@@ -32,12 +33,15 @@ function createProjectDispatch(data) {
     return (dispatch) => {
         dispatch({
             type: ProjectConstants.CREATE_PROJECTS_REQUEST,
+            calledId: data.calledId ? data.calledId : "",
         });
         ProjectServices.createProjectAPI(data)
             .then((res) => {
+                console.log('res.data.content CREATE',res.data.content)
                 dispatch({
                     type: ProjectConstants.CREATE_PROJECTS_SUCCESS,
                     payload: res.data.content,
+                    calledId: data.calledId,
                 });
             })
             .catch((err) => {
@@ -45,6 +49,7 @@ function createProjectDispatch(data) {
             });
     };
 };
+
 function editProjectDispatch(id, data) {
     return (dispatch) => {
         dispatch({ type: ProjectConstants.EDIT_PROJECTS_REQUEST });
@@ -62,7 +67,6 @@ function editProjectDispatch(id, data) {
             });
     };
 }
-
 
 function deleteProjectDispatch(id) {
     return (dispatch) => {

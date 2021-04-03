@@ -4195,6 +4195,7 @@ export default {
         manage_transport: {
             add_requirements: "Add a new requirement",
         },
+
         // Quản lý dự án
         project: {
             code: "Project code",
@@ -4216,6 +4217,15 @@ export default {
             add_btn_new: "Add new",
             add_btn_normal: "Add by hand",
             add_btn_scheduling: "Add by scheduling",
-        }
+            delete: 'Delete this project',
+        },
+        phase: {
+            projectCodeName: 'Project codename',
+            fullName: 'Phase name',
+            progress: 'Progress',
+            listTasks: 'List of tasks',
+            duration: 'Duration',
+            add_btn_new: "Add new",
+        },
     },
 };

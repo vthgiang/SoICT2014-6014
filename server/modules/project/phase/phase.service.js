@@ -17,54 +17,43 @@ exports.get = async (portal, query) => {
     let limit = query.limit;
     let options = {};
     if (query.limit) {
-        // options = {
-        //     ...options,
-        //     limit: query.limit
-        // }
-        // limit = query.lim
     }
 
     if (query.page) {
-        // options = {
-        //     ...options,
-        //     page: query.page
-        // }
     }
     let project;
     if (query.calledId === "paginate") {
-        console.log('CHIU LUON ROI DO')
         project = await Project(
             connect(DB_CONNECTION, portal)
         ).paginate(options, {
             page, limit,
             populate: [
                 { path: "projectManager", select: "_id name" },
-                { path: "responsibleEmployees", select: "_id name" }
+                { path: "projectMembers", select: "_id name" }
             ]
         });
     }
-    else {
+    else
         project = await Project(connect(DB_CONNECTION, portal)).find(options)
             .populate({ path: "projectManager", select: "_id name" })
-            .populate({ path: "responsibleEmployees", select: "_id name" })
-            .populate({ path: "parent" });
-    }
-    console.log(project)
+            .populate({ path: "projectMembers", select: "_id name" })
+            .populate({ path: "parent"});
     return project;
 }
 
 exports.show = async (portal, id) => {
-    let tp = await Project(connect(DB_CONNECTION, portal)).findById(id).populate({ path: "projectManager", select: "_id name" });
+    let tp = await Project(connect(DB_CONNECTION, portal)).findById(id).populate({path: "projectManager", select:"_id name"});
 
     return tp;
 }
 
 exports.create = async (portal, data) => {
+    console.log(data)
     let newData = {};
     if (data) {
         for (let i in data) {
             if (data[i] && data[i].length > 0) {
-                newData = { ...newData, [i]: data[i] }
+                newData = {...newData, [i]: data[i]}
             }
         }
     }
@@ -74,6 +63,7 @@ exports.create = async (portal, data) => {
 }
 
 exports.edit = async (portal, id, data) => {
+    console.log('data', data);
     const a = await Project(connect(DB_CONNECTION, portal)).findByIdAndUpdate(id, {
         $set: {
             code: data.code,
@@ -90,6 +80,12 @@ exports.edit = async (portal, id, data) => {
 
 exports.delete = async (portal, id) => {
     await Project(connect(DB_CONNECTION, portal)).deleteOne({ _id: id });
+    return id;
+}
+
+exports.getCostTimeUnit = async (portal, id) => {
+    console.log("hihi")
+    // await console.log("hihi")
     return id;
 }
 

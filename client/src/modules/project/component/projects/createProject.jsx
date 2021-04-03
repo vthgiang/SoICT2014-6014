@@ -7,7 +7,7 @@ import { ProjectActions } from '../../redux/actions';
 import getEmployeeSelectBoxItems from '../../../task/organizationalUnitHelper';
 
 const ProjectCreateForm = (props) => {
-    const { translate, project, user } = props;
+    const { translate, project, user, handleCreateProject } = props;
     const listUsers = user && user.usersInUnitsOfCompany ? getEmployeeSelectBoxItems(user.usersInUnitsOfCompany) : []
     const fakeUnitCostList = [
         { text: 'VND', value: 'VND' },
@@ -25,13 +25,13 @@ const ProjectCreateForm = (props) => {
         startDate: '',
         endDate: '',
         projectManager: [],
-        projectMembers: [],
+        responsibleEmployees: [],
         unitCost: fakeUnitCostList[0].text,
         unitTime: fakeUnitTimeList[0].text,
         estimatedCost: '',
     })
 
-    const { projectName, projectNameError, description, code, startDate, endDate, projectManager, projectMembers, unitCost, unitTime, estimatedCost } = form;
+    const { projectName, projectNameError, description, code, startDate, endDate, projectManager, responsibleEmployees, unitCost, unitTime, estimatedCost } = form;
 
     const handleChangeForm = (event, currentKey) => {
         if (currentKey === 'projectName') {
@@ -44,7 +44,7 @@ const ProjectCreateForm = (props) => {
             })
             return;
         }
-        const justRenderEventArr = ['projectManager', 'projectMembers', 'startDate', 'endDate'];
+        const justRenderEventArr = ['projectManager', 'responsibleEmployees', 'startDate', 'endDate'];
         if (justRenderEventArr.includes(currentKey)) {
             setForm({
                 ...form,
@@ -90,21 +90,21 @@ const ProjectCreateForm = (props) => {
             let end = new Date([partEndDate[2], partEndDate[1], partEndDate[0]].join('-'));
 
             props.createProjectDispatch({
-                fullName: projectName,
-                codeName: code,
+                name: projectName,
+                code,
                 startDate: start,
-                estimatedEndDate: end,
+                endDate: end,
                 projectManager,
-                projectMembers,
+                responsibleEmployees,
                 description,
                 unitCost,
                 unitTime,
                 estimatedCost
             });
+            
+            handleCreateProject()
         }
     }
-
-    const list = project.data.list;
 
     return (
         <React.Fragment>
@@ -173,8 +173,8 @@ const ProjectCreateForm = (props) => {
                                 className="form-control select2"
                                 style={{ width: "100%" }}
                                 items={listUsers}
-                                onChange={(e) => handleChangeForm(e, 'projectMembers')}
-                                value={projectMembers}
+                                onChange={(e) => handleChangeForm(e, 'responsibleEmployees')}
+                                value={responsibleEmployees}
                                 multiple={true}
                             />
                         }
@@ -229,6 +229,5 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = {
     createProjectDispatch: ProjectActions.createProjectDispatch,
-    getCostTimeUnitDispatch: ProjectActions.getCostTimeUnitDispatch,
 }
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(ProjectCreateForm));

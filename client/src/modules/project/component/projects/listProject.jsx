@@ -1,17 +1,12 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
-
 import { DataTableSetting, DeleteNotification, PaginateBar } from "../../../../common-components";
-
 import ProjectCreateForm from "./createProject";
-import ProjectEditForm from "./editProject";
+import ProjectEditForm from './editProject';
 import ProjectDetailForm from './detailProject';
-
 import { ProjectActions } from "../../redux/actions";
 import { UserActions } from '../../../super-admin/user/redux/actions';
-import { formatDate } from '../../../../helpers/formatDate';
-import ItemRowProject from "./itemRowProject";
 
 function ListProject(props) {
     // Khởi tạo state
@@ -19,16 +14,22 @@ function ListProject(props) {
         exampleName: "",
         page: 1,
         limit: 5,
-        currentFocusedProject: {}
+        currentRow: null,
+        projectDetail: null,
     })
     const { project, translate, user } = props;
-    const { projectName, page, limit, currentFocusedProject } = state;
+    const { projectName, page, limit, currentRow, projectDetail } = state;
 
     useEffect(() => {
         props.getProjectsDispatch({ calledId: "paginate", page, limit });
         props.getProjectsDispatch({ calledId: "all" });
         props.getAllUserInAllUnitsOfCompany();
     }, [])
+
+    const handleCreateProject = () => {
+        props.getProjectsDispatch({ calledId: "paginate", page, limit });
+        props.getProjectsDispatch({ calledId: "all" });
+    }
 
     const handleChangeProjectName = (e) => {
         const { value } = e.target;
@@ -39,7 +40,7 @@ function ListProject(props) {
     }
 
     const handleSubmitSearch = () => {
-        props.getExamples({
+        props.getProjectsDispatch({
             projectName,
             limit,
             page: 1
@@ -70,11 +71,31 @@ function ListProject(props) {
             limit: parseInt(number),
             page: 1
         });
-        props.getExamples({
+        props.getProjectsDispatch({
             projectName,
             limit: parseInt(number),
             page: 1
         });
+    }
+
+    const handleShowDetailInfo = (projectItem) => {
+        setState({
+            ...state,
+            projectDetail: projectItem
+        });
+        setTimeout(() => {
+            window.$(`#modal-detail-project-${projectItem?._id}`).modal('show');
+        }, 10);
+    }
+
+    const handleEdit = (projectItem) => {
+        setState({
+            ...state,
+            currentRow: projectItem
+        })
+        setTimeout(() => {
+            window.$(`#modal-edit-project-${projectItem?._id}`).modal('show')
+        }, 10);
     }
 
     const handleDelete = (id) => {
@@ -98,25 +119,22 @@ function ListProject(props) {
 
     const totalPage = project && project.data.totalPage;
 
-    const renderList = () => {
-        return project?.data?.list?.map(projectItem => {
-            const { _id, codeName, fullName } = projectItem;
-            return <ItemRowProject
-                key={_id}
-                projectEdit={projectItem}
-                currentId={_id}
-                codeName={codeName}
-                fullName={fullName}
-                handleDelete={(id) => handleDelete(id)}
-            />
-        })
-    }
-
     return (
         <React.Fragment>
+            <ProjectDetailForm
+                projectDetailId={projectDetail && projectDetail._id}
+                projectDetail={projectDetail}
+            />
+
+            <ProjectEditForm
+                projectEditId={currentRow && currentRow._id}
+                projectEdit={currentRow}
+            />
+
             <ProjectCreateForm
                 page={page}
                 limit={limit}
+                handleCreateProject={handleCreateProject}
             />
 
             <div className="box">
@@ -143,19 +161,15 @@ function ListProject(props) {
                         </div>
                     </div>
 
-                    {/* Danh sách các ví dụ */}
-                    {/* <table id="project-table" className="table table-striped table-bordered table-hover">
+                    <table id="project-table" className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
-                                <th className="col-fixed" style={{ width: 60 }}>{translate('general.stt')}</th>
-                                <th>{translate('project.code')}</th>
                                 <th>{translate('project.name')}</th>
-                                <th>{translate('project.description')}</th>
-                                <th>{translate('project.startDate')}</th>
-                                <th>{translate('project.endDate')}</th>
-                                <th>{translate('project.parent')}</th>
+                                <th>{translate('project.code')}</th>
                                 <th>{translate('project.manager')}</th>
-                                <th style={{ width: "120px", textAlign: "center" }}>{translate('table.action')}
+                                <th>{translate('project.member')}</th>
+                                <th style={{ width: "120px", textAlign: "center" }}>
+                                    {translate('table.action')}
                                     <DataTableSetting
                                         tableId="example-table"
                                         columnArr={[
@@ -173,24 +187,20 @@ function ListProject(props) {
                         </thead>
                         <tbody>
                             {(lists && lists.length !== 0) &&
-                                lists.map((project, index) => (
+                                lists.map((projectItem, index) => (
                                     <tr key={index}>
-                                        <td>{index + 1 + (page - 1) * limit}</td>
-                                        <td>{project.code}</td>
-                                        <td>{project.name}</td>
-                                        <td>{project.description}</td>
-                                        <td>{formatDate(project.startDate)}</td>
-                                        <td>{formatDate(project.endDate)}</td>
-                                        <td>{formatDate(project.endDate)}</td>
-                                        <td>{project.projectManager && project.projectManager.map(o => o.name).join(", ")}</td>
+                                        <td>{projectItem?.name}</td>
+                                        <td>{projectItem?.code}</td>
+                                        <td>{projectItem?.projectManager.map(o => o.name).join(", ")}</td>
+                                        <td>{projectItem?.responsibleEmployees.map(o => o.name).join(", ")}</td>
                                         <td style={{ textAlign: "center" }}>
-                                            <a className="edit text-green" style={{ width: '5px' }} title={translate('manage_example.detail_info_example')} onClick={() => handleShowDetailInfo(project)}><i className="material-icons">visibility</i></a>
-                                            <a className="edit text-yellow" style={{ width: '5px' }} title={translate('manage_example.edit')} onClick={() => handleEdit(project)}><i className="material-icons">edit</i></a>
+                                            <a className="edit text-green" style={{ width: '5px' }} onClick={() => handleShowDetailInfo(projectItem)}><i className="material-icons">visibility</i></a>
+                                            <a className="edit text-yellow" style={{ width: '5px' }} onClick={() => handleEdit(projectItem)}><i className="material-icons">edit</i></a>
                                             <DeleteNotification
-                                                content={translate('manage_example.delete')}
+                                                content={translate('project.delete')}
                                                 data={{
-                                                    id: project._id,
-                                                    info: project.name
+                                                    id: projectItem?._id,
+                                                    info: projectItem?.name
                                                 }}
                                                 func={handleDelete}
                                             />
@@ -199,9 +209,7 @@ function ListProject(props) {
                                 ))
                             }
                         </tbody>
-                    </table> */}
-
-                    {renderList()}
+                    </table>
 
                     {/* PaginateBar */}
                     {project && project.isLoading ?
@@ -228,6 +236,7 @@ function mapState(state) {
 const actions = {
     getProjectsDispatch: ProjectActions.getProjectsDispatch,
     deleteProjectDispatch: ProjectActions.deleteProjectDispatch,
+    createProjectDispatch: ProjectActions.createProjectDispatch,
     getAllUserInAllUnitsOfCompany: UserActions.getAllUserInAllUnitsOfCompany,
 }
 

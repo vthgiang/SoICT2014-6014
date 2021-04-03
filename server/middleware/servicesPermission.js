@@ -965,6 +965,10 @@ exports.links = [
         apis: ['@all']
     }, 
     {
+        url: '/project/phase-details',
+        apis: ['@all']
+    }, 
+    {
         url: '/project/issues-list',
         apis: ['@all']
     }, 

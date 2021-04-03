@@ -5739,7 +5739,8 @@ export default {
         manage_transport: {
             add_requirements: "Thêm yêu cầu vận chuyển",
         },
-
+        
+        // Quản lý dự án
         project: {
             code: "Mã dự án",
             name: "Tên dự án",
@@ -5760,6 +5761,15 @@ export default {
             add_btn_new: "Thêm mới",
             add_btn_normal: "Thêm bằng tay",
             add_btn_scheduling: "Thêm bằng lập lịch",
-        }
+            delete: 'Xoá dự án',
+        },
+        phase: {
+            projectCodeName: 'Mã dự án',
+            fullName: 'Tên giai đoạn',
+            progress: 'Tiến độ',
+            listTasks: 'Công việc liên quan',
+            duration: 'Thời lượng',
+            add_btn_new: "Thêm mới",
+        },
     },
 };

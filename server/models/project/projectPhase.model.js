@@ -14,14 +14,6 @@ const ProjectPhaseSchema = new Schema(
         description: {
             type: String,
         },
-        createdAt: {
-            type: Date,
-            default: Date.now,
-        },
-        updatedAt: {
-            type: Date,
-            default: Date.now,
-        },
         startDate: {
             type: Date,
         },
