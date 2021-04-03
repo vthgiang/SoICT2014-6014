@@ -231,14 +231,6 @@ function TransportGoods(props) {
                                     <input type="number" value={good.inventory} disabled={true} className="form-control" />
                                 </div>
                             </div> */}
-                        </div>
-                        <div className="row">
-                            {/* <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                <div className={`form-group`}>
-                                    <label>{translate("manufacturing.plan.base_unit")}</label>
-                                    <input type="text" value={good.baseUnit} disabled={true} className="form-control" />
-                                </div>
-                            </div> */}
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                 <div className={`form-group`}>
                                     <label>{"Số lượng"}</label>
@@ -249,9 +241,27 @@ function TransportGoods(props) {
                                     {/* <ErrorLabel content={errorQuantity} /> */}
                                 </div>
                             </div>
+                        </div>
+                        <div className="row">
+                            {/* <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                <div className={`form-group`}>
+                                    <label>{translate("manufacturing.plan.base_unit")}</label>
+                                    <input type="text" value={good.baseUnit} disabled={true} className="form-control" />
+                                </div>
+                            </div> */}
                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                 <div className={`form-group`}>
-                                    <label>{"Khối lượng vận chuyển"}</label>
+                                    <label>{"Khối lượng"}</label>
+                                    <input type="number" 
+                                    value={currentGood.quantity} 
+                                    onChange={handleQuantityChange} 
+                                    className="form-control" />
+                                    {/* <ErrorLabel content={errorQuantity} /> */}
+                                </div>
+                            </div>
+                            <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                <div className={`form-group`}>
+                                    <label>{"Thể tích CBM"}</label>
                                     <input type="number" 
                                     value={currentGood.volumn} 
                                     onChange={handleVolumnChange} 

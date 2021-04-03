@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { ButtonModal, DialogModal, ErrorLabel, DatePicker, SelectBox } from '../../../../../common-components';
 import { withTranslate } from 'react-redux-multilingual';
 import { generateCode } from "../../../../../helpers/generateCode";
+import { formatToTimeZoneDate } from "../../../../../helpers/formatDate"
 import ValidationHelper from '../../../../../helpers/validationHelper';
 
 import { transportScheduleActions } from '../redux/actions'
@@ -25,7 +26,7 @@ function TransportScheduleCreateForm(props) {
     const handleStartDateChange = async (value) => {
         await setFormSchedule({
             ...formSchedule,
-            startDate: value,
+            startDate: formatToTimeZoneDate(value),
         })
     }
 
@@ -33,7 +34,7 @@ function TransportScheduleCreateForm(props) {
         console.log(value, " end date change");
         await setFormSchedule({
             ...formSchedule,
-            endDate: value,
+            endDate: formatToTimeZoneDate(value),
         })
     }
     const save = () => {

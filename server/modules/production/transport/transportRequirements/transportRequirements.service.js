@@ -20,12 +20,23 @@ exports.createTransportRequirement = async (portal, data) => {
                 })
             })
         }
+        let listTime = [];
+        if (data.timeRequests){
+            data.timeRequests.map(item => {
+                listTime.push({
+                    timeRequest: item.timeRequest,
+                    description: item.description,
+                })
+            })
+        }
+        console.log(data, " day la list time")
         newTransportRequirement = await TransportRequirements(connect(DB_CONNECTION, portal)).create({
             status: data.status,
             type: data.type,
             fromAddress: data.fromAddress,
             toAddress: data.toAddress,
             goods: listGoods,
+            timeRequests: listTime,
         });
         
     }

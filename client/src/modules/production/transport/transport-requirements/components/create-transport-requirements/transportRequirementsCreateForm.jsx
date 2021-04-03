@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { ButtonModal, DialogModal, ErrorLabel, DatePicker, SelectBox } from '../../../../../../common-components';
 import { withTranslate } from 'react-redux-multilingual';
+
+import { formatToTimeZoneDate } from '../../../../../../helpers/formatDate'
 import ValidationHelper from '../../../../../../helpers/validationHelper';
 
 import { TransportGeneralInfo } from '../create-transport-requirements/transportGeneralInfo';
@@ -12,6 +14,7 @@ import { TransportImportGoods } from '../create-transport-requirements/transport
 import { TransportMaterial } from '../create-transport-requirements/transportMaterial';
 import { TransportNewOne} from '../create-transport-requirements/transportNewOne';
 import { TransportGoods } from '../create-transport-requirements/transportGoods';
+import { TransportTime } from '../create-transport-requirements/transportTime';
 
 import { exampleActions } from '../../redux/actions';
 
@@ -118,6 +121,7 @@ function TransportRequirementsCreateForm(props) {
      */
     const [requirementsForm, setRequirementsForm] = useState({
         goods: [],
+        timeRequests: [],
     });
 
 
@@ -166,16 +170,16 @@ function TransportRequirementsCreateForm(props) {
             fromAddress: requirementsForm.info.customer1AddressTransport ? requirementsForm.info.customer1AddressTransport : "",
             toAddress: requirementsForm.info.customer2AddressTransport ? requirementsForm.info.customer2AddressTransport : [],
             goods : formatGoodsForSubmit(requirementsForm.goods),
+            timeRequests: formatTimeForSubmit(requirementsForm.timeRequests),
         }
         props.createTransportRequirement(data)
     }
 
 
     /**
-     * chuẩn hóa dữ liệu goods
+     * chuẩn hóa dữ liệu goods để lưu vào db
      */
     const formatGoodsForSubmit = (goods) => {
-        console.log(goods);
         let goodMap = goods.map((item) => {
             return {
                 good: item._id,
@@ -184,6 +188,18 @@ function TransportRequirementsCreateForm(props) {
             };
         });
         return goodMap;
+    }
+    /**
+     * chuẩn hóa dữ liệu time request để lưu vào db
+     */
+    const formatTimeForSubmit = (time) => {
+        let timeMap = time.map((item) => {
+            return {
+                timeRequest: formatToTimeZoneDate(item.time),
+                description: item.detail,
+            }
+        })
+        return timeMap;
     }
 
     const handleTypeRequirementChange = (value) => {        
@@ -272,6 +288,9 @@ function TransportRequirementsCreateForm(props) {
 
     }, [billDetail]);
 
+    /**
+     * Hàm lấy dữ liệu hàng hóa từ component con
+     */
     const callBackGoodsInfo = (value) => {
         setRequirementsForm({
             ...requirementsForm,
@@ -279,6 +298,9 @@ function TransportRequirementsCreateForm(props) {
         })
     }
 
+    /**
+     * Hàm lấy dữ liệu thông tin khách hàng từ component con
+     */
     const callBackGeneralInfo = (value) => {
         setRequirementsForm({
             ...requirementsForm,
@@ -286,8 +308,17 @@ function TransportRequirementsCreateForm(props) {
         })
     }
 
+    /**
+     * Hàm lấy dữ liệu thông tin thời gian mong muốn của khách hàng từ component con
+     */
+    const callBackTimeInfo = (value) => {
+        setRequirementsForm({
+            ...requirementsForm,
+            timeRequests: value,
+        })
+    }
     useEffect(() => {
-        console.log(requirementsForm, "okkkkk")
+        console.log(requirementsForm, " requirementsForm")
     }, [requirementsForm])
 
     return (
@@ -435,6 +466,9 @@ function TransportRequirementsCreateForm(props) {
                     < TransportGoods 
                         goods = {goodsTransport}
                         callBackState = {callBackGoodsInfo}
+                    />
+                    < TransportTime 
+                        callBackState = {callBackTimeInfo}
                     />
                 </form>
             </DialogModal>

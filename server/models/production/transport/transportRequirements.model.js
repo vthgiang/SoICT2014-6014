@@ -56,7 +56,10 @@ const TransportRequirementsSchema = new Schema({
     }],
     timeRequests: [{ // Thoi gian khach hang yeu cau
         timeRequest: {
-            type: Date,
+            type: String,
+        },
+        description: {
+            type: String,
         }
     }],
     timeTransport: { // Thoi gian van chuyen

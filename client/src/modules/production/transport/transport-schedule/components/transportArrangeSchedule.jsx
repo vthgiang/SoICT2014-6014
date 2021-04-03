@@ -15,45 +15,41 @@ function TransportArrangeSchedule(props) {
     const getLimit = getTableConfiguration(getTableId, defaultConfig).limit;
 
     return (
-        // <React.Fragment>
-            
-                    
-                <div className="box-body qlcv">
-                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                        <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                            <div className="form-inline">
-                                <table id={"123"} className="table table-striped table-bordered table-hover">
-                            <thead>
-                                <tr>
-                                    <th className="col-fixed" style={{ width: 60 }}>{"STT"}</th>
-                                    <th>{"Loại yêu cầu"}</th>
-                                    <th>{"Địa chỉ bắt đầu"}</th>
-                                    <th>{"Địa chỉ kết thúc"}</th>
-                                    <th>{"Người tạo"}</th>
-                                    <th>{"Trạng thái"}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr key={"1"}>
-                                    <td>{1}</td>
-                                    <td>{"Giao hàng"}</td>
-                                    <td>{"Thái Hà"}</td>
-                                    <td>{"Bách Khoa"}</td>
-                                    <td>{"Nguyễn Văn Danh"}</td>
-                                    <td>{"Chờ phê duyệt"}</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                            </div>
-                        </div>
-                        
-                        <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                            
-                            <Chart />
-                        </div>
+        <div className="box-body qlcv">
+            <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <div className="col-xs-12 col-sm-12 col-md-12 col-lg-6">
+                    <div className="form-inline">
+                        <table id={"123"} className="table table-striped table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th className="col-fixed" style={{ width: 60 }}>{"STT"}</th>
+                            <th>{"Loại yêu cầu"}</th>
+                            <th>{"Điểm nhận hàng"}</th>
+                            <th>{"Điểm giao hàng"}</th>
+                            <th>{"Người tạo"}</th>
+                            <th>{"Trạng thái"}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr key={"1"}>
+                            <td>{1}</td>
+                            <td>{"Giao hàng"}</td>
+                            <td>{"Thái Hà"}</td>
+                            <td>{"Bách Khoa"}</td>
+                            <td>{"Nguyễn Văn Danh"}</td>
+                            <td>{"Chờ phê duyệt"}</td>
+                        </tr>
+                    </tbody>
+                </table>
                     </div>
                 </div>
-        // </React.Fragment>
+                
+                <div className="col-xs-12 col-sm-12 col-md-12 col-lg-6">
+                    
+                    <Chart />
+                </div>
+            </div>
+        </div>
     )
 }
 

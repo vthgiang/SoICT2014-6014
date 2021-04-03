@@ -5,7 +5,6 @@ export const transportScheduleServices = {
 }
 
 function getAllTransportSchedules(queryData) {
-    console.log(queryData, "sssssssssssssssssss")
     return sendRequest(
         {
             url: `${process.env.REACT_APP_SERVER}/transport-schedule`,
