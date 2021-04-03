@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 import { DataTableSetting, DeleteNotification, PaginateBar } from "../../../../common-components";
@@ -220,9 +220,7 @@ function ListProject(props) {
                                 )
                             }
                         </tbody>
-                    </table> */}
-
-                    {renderList()}
+                    </table>
 
                     {/* PaginateBar */}
                     {project && project.isLoading ?

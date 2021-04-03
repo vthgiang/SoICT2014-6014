@@ -18,6 +18,7 @@ function getProjectsDispatch(data = undefined) {
         });
         ProjectServices.getProjectsAPI(data)
             .then((res) => {
+                console.log('res.data.content GET',res.data.content)
                 dispatch({
                     type: ProjectConstants.GET_PROJECTS_SUCCESS,
                     payload: res.data.content,
@@ -38,6 +39,7 @@ function createProjectDispatch(data) {
         });
         ProjectServices.createProjectAPI(data)
             .then((res) => {
+                console.log('res.data.content CREATE',res.data.content)
                 dispatch({
                     type: ProjectConstants.CREATE_PROJECTS_SUCCESS,
                     payload: res.data.content,
@@ -49,6 +51,7 @@ function createProjectDispatch(data) {
             });
     };
 };
+
 function editProjectDispatch(id, data) {
     return (dispatch) => {
         dispatch({ type: ProjectConstants.EDIT_PROJECTS_REQUEST });

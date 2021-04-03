@@ -44,6 +44,7 @@ exports.get = async (portal, query) => {
     }
     let project;
     if (query.calledId === "paginate") {
+        console.log('CHIU LUON ROI DO')
         project = await Project(
             connect(DB_CONNECTION, portal)
         ).paginate(options, {
@@ -71,7 +72,6 @@ exports.show = async (portal, id) => {
 }
 
 exports.create = async (portal, data) => {
-    console.log(data)
     let newData = {};
     let newResponsibleEmployeesWithUnit = [];
 
