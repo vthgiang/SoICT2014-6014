@@ -47,11 +47,20 @@ function TransportVehicle(props) {
         if (vehiclesList && vehiclesList.length !==0){
             vehiclesList.map((vehicle, index) => {
                 vehiclesList[index].volumn = "1000";
+                vehiclesList[index].payload = "1000";
+
                 if (vehicle.detailInfo && vehicle.detailInfo.length !== 0) {
                     const volumn = vehicle.detailInfo.filter((r) => r.nameField === "volumn");
                     if (volumn && volumn.length !==0) {
                         if (volumn[0].value){
                             vehiclesList[index].volumn = volumn[0].value;
+                        }
+                    }
+
+                    const payload = vehicle.detailInfo.filter((r) => r.nameField === "payload");
+                    if (payload && payload.length !==0) {
+                        if (payload[0].value){
+                            vehiclesList[index].payload = payload[0].value;
                         }
                     }
                 }
@@ -77,7 +86,8 @@ function TransportVehicle(props) {
                             <th className="col-fixed" style={{ width: 60 }}>{"STT"}</th>
                             <th>{"Mã phương tiện"}</th>
                             <th>{"Tên phương tiện"}</th>
-                            <th>{"Khối lượng vận tải"}</th>
+                            <th>{"Trọng tải"}</th>
+                            <th>{"Thể tích"}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -89,6 +99,7 @@ function TransportVehicle(props) {
                                         <td>{index + 1}</td>
                                         <td>{vehicle.code}</td>
                                         <td>{vehicle.assetName}</td>
+                                        <td>{vehicle.payload}</td>
                                         <td>{vehicle.volumn}</td>
                                     </tr>
                                 )

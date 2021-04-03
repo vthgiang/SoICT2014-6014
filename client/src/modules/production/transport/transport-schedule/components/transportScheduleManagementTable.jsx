@@ -12,25 +12,17 @@ import { getTableConfiguration } from '../../../../../helpers/tableConfiguration
 import { convertJsonObjectToFormData } from '../../../../../helpers/jsonObjectToFormDataObjectConverter'
 function TransportScheduleManagementTable(props) {
 
-    const {allTransportSchedulesState, setAllTransportSchedulesState} = useState({});
+    let { allTransportSchedules } = props;
 
     useEffect(() => {
         props.getAllTransportSchedules({page: 1, limit: 500});
     }, [])
 
-    useEffect(() => {
-        let { allTransportSchedules } = props;
-        console.log(convertJsonObjectToFormData(allTransportSchedules), " okasodkaosd");
-        setAllTransportSchedulesState({
-            convertJsonObjectToFormData(allTransportSchedules);
-        })
-    }, props.allTransportSchedules)
-
-    return (
-        <React.Fragment>
-            <TransportScheduleCreateForm />
+   return (
             <div className="box-body qlcv">
+                <TransportScheduleCreateForm />
                 <div className="form-inline">
+
                 </div>
 
                 {/* Danh sách lịch vận chuyển */}
@@ -46,15 +38,16 @@ function TransportScheduleManagementTable(props) {
                         </tr>
                     </thead>
                     <tbody>
-                    {(allTransportSchedules && allTransportSchedules.length !== 0) &&
+                    {
+                    (allTransportSchedules && allTransportSchedules.length !== 0) &&
                             allTransportSchedules.map((x, index) => (
                                 x &&
                                 <tr key={index}>
                                     <td>{index + 1}</td>
-                                    <td>{allTransportSchedulesState.code}</td>
+                                    <td>{x.code}</td>
                                     <td>{""}</td>
-                                    <td>{allTransportSchedulesState.startTime}</td>
-                                    <td>{allTransportSchedulesState.endTime}</td>
+                                    <td>{x.startTime}</td>
+                                    <td>{x.endTime}</td>
                                     <td>{""}</td>
                                     {/* <td style={{ textAlign: "center" }}>
                                         <a className="edit text-green" style={{ width: '5px' }} title={translate('manage_example.detail_info_example')} onClick={() => handleShowDetailInfo(example)}><i className="material-icons">visibility</i></a>
@@ -73,9 +66,7 @@ function TransportScheduleManagementTable(props) {
                         }
                     </tbody>
                 </table>
-
             </div>
-        </React.Fragment>
     )
 }
 
