@@ -15,17 +15,17 @@ class TransportSchedule extends Component {
         return (
             <div className="nav-tabs-custom">
                 <ul className="nav nav-tabs">
-                    <li className="active"><a href="#list-manufacturing-mill-schedule" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{"Lịch vận chuyển"}</a></li>
-                    <li ><a href="#list-workder-schedule" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{"Xếp lịch vận chuyển"}</a></li>
+                    <li className="active"><a href="#list-transport-schedule" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{"Lịch vận chuyển"}</a></li>
+                    <li ><a href="#list-arrange-schedule" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{"Xếp lịch vận chuyển"}</a></li>
                 </ul>
                 <div className="tab-content">
-                    <div className="tab-pane active" id="list-manufacturing-mill-schedule">
+                    <div className="tab-pane active" id="list-transport-schedule">
                         <LazyLoadComponent
                         >
                             <TransportScheduleManagementTable />
                         </LazyLoadComponent>
                     </div>
-                    <div className="tab-pane" id="list-workder-schedule">
+                    <div className="tab-pane" id="list-arrange-schedule">
                         <LazyLoadComponent
                         >
                             <TransportArrangeSchedule />
