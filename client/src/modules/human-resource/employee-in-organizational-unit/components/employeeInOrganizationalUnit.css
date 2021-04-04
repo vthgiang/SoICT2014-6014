@@ -3,6 +3,12 @@ div.employeeBox {
     width: 100%;
     display: inline-block;
 }
+#employee-tree-table th{
+    position: sticky;
+    top: -0.05em;
+    background-color: #fff;
+    z-index: 1;
+}
 
 @media (min-width: 768px){
     div.employeeBox {

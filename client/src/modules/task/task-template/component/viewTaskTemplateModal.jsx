@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
@@ -6,27 +6,15 @@ import { DialogModal } from '../../../../common-components';
 import { taskTemplateActions } from '../redux/actions';
 import { ViewTaskTemplate } from './viewTaskTemplate';
 
-class ModalViewTaskTemplate extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {};
-    }
+const ModalViewTaskTemplate = (props) => {
+    
+    const [state, setState] = useState()
 
-    static getDerivedStateFromProps(props, state) {
-        if (props.taskTemplateId !== state.taskTemplateId) {
-            props.getTaskTemplate(props.taskTemplateId);
+    useEffect(() => {
+        props.getTaskTemplate(props.taskTemplateId);
+    },[props.taskTemplateId])
 
-            return {
-                ...state,
-                taskTemplateId: props.taskTemplateId
-            }
-        } else {
-            return null;
-        }
-    }
-
-    render() {
-        const { taskTemplate } = this.props.tasktemplates;
+        const { taskTemplate } = props.tasktemplates;
 
         return (
             <React.Fragment>
@@ -43,7 +31,6 @@ class ModalViewTaskTemplate extends Component {
                 </DialogModal>
             </React.Fragment>
         );
-    }
 }
 
 function mapState(state) {

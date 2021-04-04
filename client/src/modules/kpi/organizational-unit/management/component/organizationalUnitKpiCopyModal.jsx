@@ -126,13 +126,14 @@ function ModalCopyKPIUnit(props){
     const handleSubmit = () => {
         const { kpiId, idunit, monthDefault, approverDefault, type = TYPE.DEFAULT, kpiunit } = props;
         const { month, approver, listKpiUnit, organizationalUnitId } = state;
-        let arrayKpiUnit = Object.keys(listKpiUnit);
+        let arrayKpiUnit = listKpiUnit && Object.keys(listKpiUnit);
+
         if (type === TYPE.DEFAULT) {
             let data = {
                 type: TYPE.DEFAULT,
                 idunit: idunit,
                 datenew: month,
-                listKpiUnit: arrayKpiUnit.filter(item => listKpiUnit?.[item])
+                listKpiUnit: arrayKpiUnit?.filter(item => listKpiUnit?.[item])
             }
 
             props.copyKPIUnit(kpiId, data);
@@ -142,7 +143,7 @@ function ModalCopyKPIUnit(props){
                 idunit: idunit,
                 organizationalUnitIdCopy: organizationalUnitId,
                 datenew: monthDefault,
-                listKpiUnit: arrayKpiUnit.filter(item => listKpiUnit?.[item]),
+                listKpiUnit: arrayKpiUnit?.filter(item => listKpiUnit?.[item]),
                 matchParent: kpiunit?.organizationalUnit?._id === organizationalUnitId
             }
 
@@ -153,7 +154,7 @@ function ModalCopyKPIUnit(props){
                 idunit: idunit,
                 datenew: monthDefault,
                 approver: approver ? approver : (approverDefault?.[1]?.value?.[0]?.value ? approverDefault?.[1]?.value?.[0]?.value : approverDefault?.[0]?.value?.[0]?.value),
-                listKpiUnit: arrayKpiUnit.filter(item => listKpiUnit?.[item])
+                listKpiUnit: arrayKpiUnit?.filter(item => listKpiUnit?.[item])
             }
 
             props.copyKPIUnit(kpiId, data);
@@ -197,6 +198,7 @@ function ModalCopyKPIUnit(props){
             title={translate('kpi.organizational_unit.create_organizational_unit_kpi_set.copy_kpi_unit')}
             size={10}
             func={handleSubmit}
+            disableSubmit={!listKpi?.kpis?.length}
         >
             {/* Đơn vị */}
             <div className="form-group" style={{ marginLeft: "10px" }}>

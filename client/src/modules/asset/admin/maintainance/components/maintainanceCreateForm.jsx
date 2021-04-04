@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useState, useEffect} from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { ButtonModal, DatePicker, DialogModal, ErrorLabel, SelectBox } from '../../../../../common-components';
@@ -9,52 +9,9 @@ import { MaintainanceActions } from '../redux/actions';
 import ValidationHelper from '../../../../../helpers/validationHelper';
 import { generateCode } from "../../../../../helpers/generateCode";
 
-class MaintainanceCreateForm extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            newMaintainance: {
-                maintainanceCode: "",
-                createDate: this.formatDate(Date.now()),
-                type: "",
-                asset: "",
-                description: "",
-                startDate: this.formatDate(Date.now()),
-                endDate: this.formatDate(Date.now()),
-                expense: "",
-                status: "",
-            }
-        };
-    }
-
-    regenerateCode = () => {
-        let code = generateCode("MT");
-        const { newMaintainance } = this.state;
-
-        this.setState(state => {
-            return {
-                ...state,
-                newMaintainance: {
-                    ...newMaintainance,
-                    maintainanceCode: code,
-                }
-            }
-        })
-    }
-
-    componentDidMount = () => {
-        // Mỗi khi modal mở, cần sinh lại code
-        window.$('#modal-create-maintainance').on('shown.bs.modal', this.regenerateCode);
-        this.props.getAllAsset({ page: 0, limit: 20 })
-
-    }
-    componentWillUnmount = () => {
-        // Unsuscribe event
-        window.$('#modal-create-maintainance').unbind('shown.bs.modal', this.regenerateCode)
-    }
-
+function MaintainanceCreateForm(props) {
     // Function format dữ liệu Date thành string
-    formatDate(date, monthYear = false) {
+    const formatDate = (date, monthYear = false) =>{
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
@@ -74,13 +31,61 @@ class MaintainanceCreateForm extends Component {
             return [day, month, year].join('-');
         }
     }
+    const [state, setState] = useState({
+        newMaintainance: {
+            maintainanceCode: "",
+            createDate: formatDate(Date.now()),
+            type: "",
+            asset: "",
+            description: "",
+            startDate: formatDate(Date.now()),
+            endDate: formatDate(Date.now()),
+            expense: "",
+            status: "",
+        }
+    })
+    const { id, translate, assetsManager } = props;
+    const { errorOnMaintainanceCode, errorOnCreateDate, errorOnStartDate, assetError } = state;
+    const { maintainanceCode, createDate, type, asset, description, startDate, endDate, expense, status } = state.newMaintainance
+
+    let assetlist = assetsManager.listAssets;
+    if (assetlist) {
+        assetlist = assetlist.map(x => { return { value: x._id, text: x.code + " - " + x.assetName } })
+        assetlist.unshift({ value: '', text: `---${translate('asset.general_information.choose_asset')}---` });
+    }
+
+    const regenerateCode = () => {
+        let code = generateCode("MT");
+        const { newMaintainance } = state;
+
+        setState(state => {
+            return {
+                ...state,
+                newMaintainance: {
+                    ...newMaintainance,
+                    maintainanceCode: code,
+                }
+            }
+        })
+    }
+
+    useEffect(() => {
+        window.$('#modal-create-maintainance').on('shown.bs.modal', regenerateCode);
+        props.getAllAsset({ page: 0, limit: 20 })
+        return () => {
+            window.$('#modal-create-maintainance').unbind('shown.bs.modal', regenerateCode)
+        }
+    }, [])
+
+    
 
     // Bắt sự kiện thay đổi mã phiếu
-    handleMaintainanceCodeChange = (e) => {
-        const { newMaintainance } = this.state;
+    const handleMaintainanceCodeChange = (e) => {
+        const { newMaintainance } = state;
         let { value } = e.target;
 
-        this.setState({
+        setState({
+            ...state,
             newMaintainance: {
                 ...newMaintainance,
                 maintainanceCode: value,
@@ -89,13 +94,14 @@ class MaintainanceCreateForm extends Component {
     }
 
     // Bắt sự kiện thay đổi "Ngày lập"
-    handleCreateDateChange = (value) => {
-        const { newMaintainance } = this.state;
-        const { translate } = this.props;
+    const handleCreateDateChange = (value) => {
+        const { newMaintainance } = state;
+        const { translate } = props;
 
         let { message } = ValidationHelper.validateEmpty(translate, value);
 
-        this.setState({
+        setState({
+            ...state,
             newMaintainance: {
                 ...newMaintainance,
                 createDate: value,
@@ -105,11 +111,12 @@ class MaintainanceCreateForm extends Component {
     }
 
     // Bắt sự kiện thay đổi loại phiếu
-    handleTypeChange = (e) => {
-        const { newMaintainance } = this.state;
+    const handleTypeChange = (e) => {
+        const { newMaintainance } = state;
         let { value } = e.target;
 
-        this.setState({
+        setState({
+            ...state,
             newMaintainance: {
                 ...newMaintainance,
                 type: value,
@@ -120,12 +127,13 @@ class MaintainanceCreateForm extends Component {
     /**
      * Bắt sự kiện thay đổi Mã tài sản
      */
-    handleAssetChange = (value) => {
-        const { newMaintainance } = this.state;
-        const { translate } = this.props;
+    const handleAssetChange = (value) => {
+        const { newMaintainance } = state;
+        const { translate } = props;
         let { message } = ValidationHelper.validateName(translate, value[0], 4, 255);
 
-        this.setState({
+        setState({
+            ...state,
             newMaintainance: {
                 ...newMaintainance,
                 asset: value[0]
@@ -135,11 +143,12 @@ class MaintainanceCreateForm extends Component {
     }
 
     // Bắt sự kiện thay đổi "Nội dung"
-    handleDescriptionChange = (e) => {
-        const { newMaintainance } = this.state;
+    const handleDescriptionChange = (e) => {
+        const { newMaintainance } = state;
         let { value } = e.target;
 
-        this.setState({
+        setState({
+            ...state,
             newMaintainance: {
                 ...newMaintainance,
                 description: value,
@@ -148,12 +157,13 @@ class MaintainanceCreateForm extends Component {
     }
 
     // Bắt sự kiện thay đổi "Ngày thực hiện"
-    handleStartDateChange = (value) => {
-        const { newMaintainance } = this.state;
-        const { translate } = this.props;
+    const handleStartDateChange = (value) => {
+        const { newMaintainance } = state;
+        const { translate } = props;
 
         let { message } = ValidationHelper.validateEmpty(translate, value);
-        this.setState({
+        setState({
+            ...state,
             newMaintainance: {
                 ...newMaintainance,
                 startDate: value,
@@ -163,10 +173,11 @@ class MaintainanceCreateForm extends Component {
     }
 
     // Bắt sự kiện thay đổi "Ngày hoàn thành"
-    handleEndDateChange = (value) => {
-        const { newMaintainance } = this.state;
+    const handleEndDateChange = (value) => {
+        const { newMaintainance } = state;
 
-        this.setState({
+        setState({
+            ...state,
             newMaintainance: {
                 ...newMaintainance,
                 endDate: value,
@@ -175,11 +186,12 @@ class MaintainanceCreateForm extends Component {
     }
 
     // Bắt sự kiện thay đổi "Chi phí"
-    handleExpenseChange = (e) => {
+    const handleExpenseChange = (e) => {
         let { value } = e.target;
-        const { newMaintainance } = this.state;
+        const { newMaintainance } = state;
 
-        this.setState({
+        setState({
+            ...state,
             newMaintainance: {
                 ...newMaintainance,
                 expense: value,
@@ -188,11 +200,12 @@ class MaintainanceCreateForm extends Component {
     }
 
     // Bắt sự kiện thay đổi "Trạng thái phiếu"
-    handleStatusChange = (e) => {
-        const { newMaintainance } = this.state;
+    const handleStatusChange = (e) => {
+        const { newMaintainance } = state;
         let { value } = e.target;
 
-        this.setState({
+        setState({
+            ...state,
             newMaintainance: {
                 ...newMaintainance,
                 status: value
@@ -201,9 +214,9 @@ class MaintainanceCreateForm extends Component {
     }
 
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
-    isFormValidated = () => {
-        const { maintainanceCode, asset, startDate } = this.state.newMaintainance;
-        const { translate } = this.props;
+    const isFormValidated = () => {
+        const { maintainanceCode, asset, startDate } = state.newMaintainance;
+        const { translate } = props;
 
         if (
             // !ValidationHelper.validateName(translate, maintainanceCode).status
@@ -216,8 +229,8 @@ class MaintainanceCreateForm extends Component {
 
 
     // Bắt sự kiện submit form
-    save = () => {
-        let { maintainanceCode, createDate, type, asset, description, startDate, endDate, expense, status } = this.state.newMaintainance
+    const save = () => {
+        let { maintainanceCode, createDate, type, asset, description, startDate, endDate, expense, status } = state.newMaintainance
 
         const partCreate = createDate.split('-');
         const createDateConverted = [partCreate[2], partCreate[1], partCreate[0]].join('-');
@@ -228,7 +241,7 @@ class MaintainanceCreateForm extends Component {
         const partEnd = endDate.split('-');
         const endDateConverted = [partEnd[2], partEnd[1], partEnd[0]].join('-');
 
-        if (this.isFormValidated()) {
+        if (isFormValidated()) {
             let dataToSubit = {
                 maintainanceCode: maintainanceCode,
                 createDate: createDateConverted,
@@ -241,139 +254,126 @@ class MaintainanceCreateForm extends Component {
 
             }
 
-            return this.props.createMaintainance(asset, dataToSubit);
+            return props.createMaintainance(asset, dataToSubit);
         }
     };
 
-    onSearch = (value) => {
-        this.props.getAllAsset({ assetName: value, page: 0, limit: 10 });
+    const onSearch = (value) => {
+        props.getAllAsset({ assetName: value, page: 0, limit: 10 });
     }
 
 
+    return (
+        <React.Fragment>
+            <ButtonModal modalID="modal-create-maintainance" button_name={translate('asset.general_information.add')} title={translate('asset.asset_info.add_maintenance_card')} />
+            <DialogModal
+                size='50' modalID="modal-create-maintainance"
+                formID="form-create-maintainance"
+                title={translate('asset.asset_info.add_maintenance_card')}
+                func={save}
+                disableSubmit={!isFormValidated()}
+            >
+                {/* Form thêm phiếu bảo trì */}
+                <form className="form-group" id="form-create-maintainance">
+                    <div className="col-md-12">
 
-    render() {
-        const { id, translate, assetsManager } = this.props;
-        const { errorOnMaintainanceCode, errorOnCreateDate, errorOnStartDate, assetError } = this.state;
-        const { maintainanceCode, createDate, type, asset, description, startDate, endDate, expense, status } = this.state.newMaintainance
-
-        let assetlist = assetsManager.listAssets;
-        if (assetlist) {
-            assetlist = assetlist.map(x => { return { value: x._id, text: x.code + " - " + x.assetName } })
-            assetlist.unshift({ value: '', text: `---${translate('asset.general_information.choose_asset')}---` });
-        }
-
-        return (
-            <React.Fragment>
-                <ButtonModal modalID="modal-create-maintainance" button_name={translate('asset.general_information.add')} title={translate('asset.asset_info.add_maintenance_card')} />
-                <DialogModal
-                    size='50' modalID="modal-create-maintainance"
-                    formID="form-create-maintainance"
-                    title={translate('asset.asset_info.add_maintenance_card')}
-                    func={this.save}
-                    disableSubmit={!this.isFormValidated()}
-                >
-                    {/* Form thêm phiếu bảo trì */}
-                    <form className="form-group" id="form-create-maintainance">
-                        <div className="col-md-12">
-
-                            <div className="col-sm-6">
-                                {/* Mã phiếu */}
-                                <div className={`form-group ${!errorOnMaintainanceCode ? "" : "has-error"}`}>
-                                    <label>{translate('asset.general_information.form_code')}</label>
-                                    <input type="text" className="form-control" name="maintainanceCode" value={maintainanceCode} onChange={this.handleMaintainanceCodeChange} autoComplete="off" placeholder={translate('asset.general_information.form_code')} />
-                                    <ErrorLabel content={errorOnMaintainanceCode} />
-                                </div>
-
-                                {/* Ngày lập */}
-                                <div className={`form-group ${!errorOnCreateDate ? "" : "has-error"}`}>
-                                    <label>{translate('asset.general_information.create_date')}<span className="text-red">*</span></label>
-                                    <DatePicker
-                                        id={`add-create-date${id}`}
-                                        value={createDate}
-                                        onChange={this.handleCreateDateChange}
-                                    />
-                                    <ErrorLabel content={errorOnCreateDate} />
-                                </div>
-
-                                {/* Phân loại */}
-                                <div className="form-group">
-                                    <label>{translate('asset.general_information.type')}</label>
-                                    <select className="form-control" value={type} name="type" onChange={this.handleTypeChange}>
-                                        <option value="">{`---${translate('asset.general_information.choose_type')}---`}</option>
-                                        <option value="1">{translate('asset.asset_info.repair')}</option>
-                                        <option value="2">{translate('asset.asset_info.replace')}</option>
-                                        <option value="3">{translate('asset.asset_info.upgrade')}</option>
-                                    </select>
-                                </div>
-
-                                {/* Tài sản */}
-                                <div className={`form-group ${!assetError ? "" : "has-error"}`}>
-                                    <label>{translate('asset.general_information.asset')} <span className="text-red">*</span></label>
-                                    <SelectBox
-                                        id={`create-timesheets-employee`}
-                                        className="form-control select2"
-                                        style={{ width: "100%" }}
-                                        items={assetlist}
-                                        onChange={this.handleAssetChange}
-                                        value={asset}
-                                        multiple={false}
-                                        onSearch={this.onSearch}
-                                    />
-                                    <ErrorLabel content={assetError} />
-                                </div>
-
-                                {/* Nội dung */}
-                                <div className={`form-group`}>
-                                    <label>{translate('asset.general_information.content')}</label>
-                                    <textarea className="form-control" rows="3" name="description" value={description} onChange={this.handleDescriptionChange} autoComplete="off" placeholder={translate('asset.general_information.content')}></textarea>
-                                </div>
+                        <div className="col-sm-6">
+                            {/* Mã phiếu */}
+                            <div className={`form-group ${!errorOnMaintainanceCode ? "" : "has-error"}`}>
+                                <label>{translate('asset.general_information.form_code')}</label>
+                                <input type="text" className="form-control" name="maintainanceCode" value={maintainanceCode} onChange={handleMaintainanceCodeChange} autoComplete="off" placeholder={translate('asset.general_information.form_code')} />
+                                <ErrorLabel content={errorOnMaintainanceCode} />
                             </div>
 
-                            <div className="col-sm-6">
-                                {/* Ngày thực hiện */}
-                                <div className={`form-group ${!errorOnStartDate ? "" : "has-error"}`}>
-                                    <label>{translate('asset.general_information.start_date')}</label>
-                                    <DatePicker
-                                        id={`add-start-date${id}`}
-                                        value={startDate}
-                                        onChange={this.handleStartDateChange}
-                                    />
-                                    <ErrorLabel content={errorOnStartDate} />
-                                </div>
+                            {/* Ngày lập */}
+                            <div className={`form-group ${!errorOnCreateDate ? "" : "has-error"}`}>
+                                <label>{translate('asset.general_information.create_date')}<span className="text-red">*</span></label>
+                                <DatePicker
+                                    id={`add-create-date${id}`}
+                                    value={createDate}
+                                    onChange={handleCreateDateChange}
+                                />
+                                <ErrorLabel content={errorOnCreateDate} />
+                            </div>
 
-                                {/* Ngày hoàn thành */}
-                                <div className="form-group">
-                                    <label>{translate('asset.general_information.end_date')}</label>
-                                    <DatePicker
-                                        id={`add-end-date${id}`}
-                                        value={endDate}
-                                        onChange={this.handleEndDateChange}
-                                    />
-                                </div>
+                            {/* Phân loại */}
+                            <div className="form-group">
+                                <label>{translate('asset.general_information.type')}</label>
+                                <select className="form-control" value={type} name="type" onChange={handleTypeChange}>
+                                    <option value="">{`---${translate('asset.general_information.choose_type')}---`}</option>
+                                    <option value="1">{translate('asset.asset_info.repair')}</option>
+                                    <option value="2">{translate('asset.asset_info.replace')}</option>
+                                    <option value="3">{translate('asset.asset_info.upgrade')}</option>
+                                </select>
+                            </div>
 
-                                {/* Chi phí */}
-                                <div className={`form-group`}>
-                                    <label>{translate('asset.general_information.expense')} (VNĐ)</label>
-                                    <input type="number" className="form-control" name="expense" value={expense} onChange={this.handleExpenseChange} autoComplete="off" placeholder={translate('asset.general_information.expense')} />
-                                </div>
+                            {/* Tài sản */}
+                            <div className={`form-group ${!assetError ? "" : "has-error"}`}>
+                                <label>{translate('asset.general_information.asset')} <span className="text-red">*</span></label>
+                                <SelectBox
+                                    id={`create-timesheets-employee`}
+                                    className="form-control select2"
+                                    style={{ width: "100%" }}
+                                    items={assetlist}
+                                    onChange={handleAssetChange}
+                                    value={asset}
+                                    multiple={false}
+                                    onSearch={onSearch}
+                                />
+                                <ErrorLabel content={assetError} />
+                            </div>
 
-                                {/* Trạng thái */}
-                                <div className="form-group">
-                                    <label>{translate('asset.general_information.status')}</label>
-                                    <select className="form-control" value={status} name="status" onChange={this.handleStatusChange}>
-                                        <option value="">{`---${translate('asset.general_information.choose_status')}---`}</option>
-                                        <option value="1">{translate('asset.asset_info.unfulfilled')}</option>
-                                        <option value="2">{translate('asset.asset_info.processing')}</option>
-                                        <option value="3">{translate('asset.asset_info.made')}</option>
-                                    </select>
-                                </div>
+                            {/* Nội dung */}
+                            <div className={`form-group`}>
+                                <label>{translate('asset.general_information.content')}</label>
+                                <textarea className="form-control" rows="3" name="description" value={description} onChange={handleDescriptionChange} autoComplete="off" placeholder={translate('asset.general_information.content')}></textarea>
                             </div>
                         </div>
-                    </form>
-                </DialogModal>
-            </React.Fragment>
-        );
-    }
+
+                        <div className="col-sm-6">
+                            {/* Ngày thực hiện */}
+                            <div className={`form-group ${!errorOnStartDate ? "" : "has-error"}`}>
+                                <label>{translate('asset.general_information.start_date')}</label>
+                                <DatePicker
+                                    id={`add-start-date${id}`}
+                                    value={startDate}
+                                    onChange={handleStartDateChange}
+                                />
+                                <ErrorLabel content={errorOnStartDate} />
+                            </div>
+
+                            {/* Ngày hoàn thành */}
+                            <div className="form-group">
+                                <label>{translate('asset.general_information.end_date')}</label>
+                                <DatePicker
+                                    id={`add-end-date${id}`}
+                                    value={endDate}
+                                    onChange={handleEndDateChange}
+                                />
+                            </div>
+
+                            {/* Chi phí */}
+                            <div className={`form-group`}>
+                                <label>{translate('asset.general_information.expense')} (VNĐ)</label>
+                                <input type="number" className="form-control" name="expense" value={expense} onChange={handleExpenseChange} autoComplete="off" placeholder={translate('asset.general_information.expense')} />
+                            </div>
+
+                            {/* Trạng thái */}
+                            <div className="form-group">
+                                <label>{translate('asset.general_information.status')}</label>
+                                <select className="form-control" value={status} name="status" onChange={handleStatusChange}>
+                                    <option value="">{`---${translate('asset.general_information.choose_status')}---`}</option>
+                                    <option value="1">{translate('asset.asset_info.unfulfilled')}</option>
+                                    <option value="2">{translate('asset.asset_info.processing')}</option>
+                                    <option value="3">{translate('asset.asset_info.made')}</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </DialogModal>
+        </React.Fragment>
+    );
 };
 
 function mapState(state) {

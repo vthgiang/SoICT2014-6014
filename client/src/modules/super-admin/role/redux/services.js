@@ -12,7 +12,7 @@ export const RoleServices = {
 
 function get(params) {
     return sendRequest({
-        url: `${ process.env.REACT_APP_SERVER }/role/roles`,
+        url: `${process.env.REACT_APP_SERVER }/role/roles`,
         method: 'GET',
         params
     }, false, true, 'super_admin.role');

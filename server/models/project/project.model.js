@@ -12,18 +12,48 @@ const ProjectSchema = new Schema(
         name: {
             type: String
         },
+        description: {
+            type: String,
+        },
         parent: {
             type: Schema.Types.ObjectId,
             replies: this
         },
-        description: {
-            type: String,
+        createdAt: {
+            type: Date,
+            default: Date.now,
+        },
+        updatedAt: {
+            type: Date,
+            default: Date.now,
         },
         startDate: {
             type: Date,
         },
         endDate: {
             type: Date,
+        },
+        actualEndDate: {
+            type: Date,
+        },
+        // Chi phí ước lượng cho toàn bộ dự án
+        estimatedCost: {
+            type: Number,
+        },
+        // Đơn vị thời gian của project
+        unitTime: {
+            // có 2 đơn vị thời gian: Giờ, Ngày
+            type: String,
+            default: "hour",
+            enum: [
+                "hours",
+                "days",
+            ],
+        },
+        // Đơn vị tiền tệ của project
+        unitCost: {
+            type: Schema.Types.ObjectId,
+            ref: "ProjectUnitCost",
         },
         status: {
             // có 5 trạng thái công việc: Đang thực hiện, Chờ phê duyệt, Đã hoàn thành, Tạm hoãn, Bị hủy
@@ -37,27 +67,16 @@ const ProjectSchema = new Schema(
                 "canceled",
             ],
         },
-        // Những người quả trị dự án
+        // Những người quản trị dự án
         projectManager: [{
-
             type: Schema.Types.ObjectId,
             ref: "User",
-
         }],
         // Những người tham gia dự án
-        projectMembers: [{
-
+        responsibleEmployees: [{
             type: Schema.Types.ObjectId,
             ref: "User",
         }],
-        responsibleEmployees: [
-            {
-                //người thực hiện
-                type: Schema.Types.ObjectId,
-                ref: "User",
-            },
-        ],
-
 
     },
     {

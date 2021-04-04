@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useState, useEffect} from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
@@ -11,27 +11,114 @@ import { AssetManagerActions } from '../../asset-information/redux/actions';
 
 import ValidationHelper from '../../../../../helpers/validationHelper';
 
-class UseRequestManagerEditForm extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            status: "waiting_approval",
-            managedBy: this.props.employeeId ? this.props.employeeId : ''
-        };
-    }
+function UseRequestManagerEditForm(props) {
+    const [state, setState] =  useState({
+        status: "waiting_approval",
+        managedBy: props.employeeId ? props.employeeId : ''
+    })
+    const [prevProps, setPrevProps] = useState({
+        _id: null
+    })
 
-    shouldComponentUpdate = async (nextProps, nextState) => {
-        if (nextState.status !== this.state.status) {
-            if (nextState.status == "approved") {
-                this.setState(state => {
-                    return {
-                        createUsage: true
-                    }
-                })
+    if (prevProps._id !== props._id) {
+        let startDate, endDate, startTime, stopTime;
+        let partStart = new Date(props.dateStartUse);
+        let partStop = new Date(props.dateEndUse);
+
+        if (props.asset && props.asset.typeRegisterForUse == 2) {
+            let hourStart, hourEnd, minutesStart, minutesEnd;
+            if (partStart.getHours() < 10) {
+                hourStart = "0" + partStart.getHours()
+            } else {
+                hourStart = partStart.getHours()
+            }
+
+            if (partStart.getMinutes() < 10) {
+                minutesStart = "0" + partStart.getMinutes()
+            } else {
+                minutesStart = partStart.getMinutes()
+            }
+
+            if (partStop.getHours() < 10) {
+                hourEnd = "0" + partStop.getHours()
+            } else {
+                hourEnd = partStop.getHours()
+            }
+
+            if (partStop.getMinutes() < 10) {
+                minutesEnd = "0" + partStop.getMinutes()
+            } else {
+                minutesEnd = partStop.getMinutes()
+            }
+
+            startTime = [hourStart, minutesStart].join(':');
+            startDate = [partStart.getDate(), (partStart.getMonth() + 1), partStart.getFullYear()].join('-');
+            stopTime = [hourEnd, minutesEnd].join(':');
+            endDate = [partStop.getDate(), (partStop.getMonth() + 1), partStop.getFullYear()].join('-');
+        } else {
+            if (props.dateStartUse) {
+                startDate = [partStart.getDate(), (partStart.getMonth() + 1), partStart.getFullYear()].join('-');
+            } else {
+                startDate = null;
+            }
+
+            if (props.dateEndUse) {
+                endDate = [partStop.getDate(), (partStop.getMonth() + 1), partStop.getFullYear()].join('-');
+            } else {
+                endDate = null;
             }
         }
+        setState(state =>{
+            return{
+                ...state,
+                _id: props._id,
+                recommendNumber: props.recommendNumber,
+                dateCreate: props.dateCreate,
+                proponent: props.proponent,
+                reqContent: props.reqContent,
+                asset: props.asset,
+                dateStartUse: startDate,
+                dateEndUse: endDate,
+                startTime: props.asset && props.asset.typeRegisterForUse == 2 ? startTime : null,
+                stopTime: props.asset && props.asset.typeRegisterForUse == 2 ? stopTime : null,
+                approver: props.approver,
+                status: props.status,
+                note: props.note,
+                errorOnRecommendNumber: undefined,
+                errorOnDateCreate: undefined,
+                errorOnReqContent: undefined,
+                errorOnDateStartUse: undefined,
+                errorOnDateEndUse: undefined,
+            }
+        })
+        setPrevProps(props)
+            
     }
-    formatDate(date, monthYear = false) {
+    
+
+    useEffect(() => {
+        if(state.status == "approved")
+            setState(state =>{
+                return{
+                    ...state,
+                    createUsage: true
+                }
+            })
+    }, [state.status])
+
+    const { _id } = props;
+    const { translate, recommendDistribute, user, assetsManager, auth } = props;
+    const {
+        recommendNumber, dateCreate, proponent, reqContent, asset, dateStartUse, dateEndUse, approver, status, note, startTime, stopTime,
+        errorOnRecommendNumber, errorOnDateCreate, errorOnReqContent, errorOnDateStartUse, errorOnDateEndUse, typeRegisterForUse
+    } = state;
+
+    var assetlist = assetsManager.listAssets;
+    var userlist = user.list;
+
+
+    
+    const formatDate = (date, monthYear = false) => {
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
@@ -53,15 +140,15 @@ class UseRequestManagerEditForm extends Component {
     }
 
     // Bắt sự kiện thay đổi mã phiếu
-    handleRecommendNumberChange = (e) => {
+    const handleRecommendNumberChange = (e) => {
         let value = e.target.value;
-        this.validateRecommendNumber(value, true);
+        validateRecommendNumber(value, true);
     }
-    validateRecommendNumber = (value, willUpdateState = true) => {
-        let { message } = ValidationHelper.validateCode(this.props.translate, value);
+    const validateRecommendNumber = (value, willUpdateState = true) => {
+        let { message } = ValidationHelper.validateCode(props.translate, value);
 
         if (willUpdateState) {
-            this.setState(state => {
+            setState(state => {
                 return {
                     ...state,
                     errorOnRecommendNumber: message,
@@ -73,20 +160,19 @@ class UseRequestManagerEditForm extends Component {
     }
 
     // Bắt sự kiện thay đổi "Ngày lập"
-    handleDateCreateChange = (value) => {
-        this.validateDateCreate(value, true);
+    const handleDateCreateChange = (value) => {
+        validateDateCreate(value, true);
     }
-    validateDateCreate = (value, willUpdateState = true) => {
-        let { message } = ValidationHelper.validateCode(this.props.translate, value);
-
-        let partCreate = value.split('-');
-        let dateCreate = [partCreate[2], partCreate[1], partCreate[0]].join('-');
+    const validateDateCreate = (value, willUpdateState = true) => {
+        let { message } = ValidationHelper.validateCode(props.translate, value);
+        // let partCreate = value.split('-');
+        // let dateCreate = [partCreate[2], partCreate[1], partCreate[0]].join('-');
         if (willUpdateState) {
-            this.setState(state => {
+            setState(state => {
                 return {
                     ...state,
                     errorOnDateCreate: message,
-                    dateCreate: dateCreate,
+                    dateCreate: value,
                 }
             });
         }
@@ -96,23 +182,25 @@ class UseRequestManagerEditForm extends Component {
     /**
      * Bắt sự kiện thay đổi người đề nghị
      */
-    handleProponentChange = (value) => {
-        this.setState({
-            ...this.state,
-            proponent: value[0]
+    const handleProponentChange = (value) => {
+        setState(state =>{
+            return {
+                ...state,
+                proponent: value[0]
+            }
         });
     }
 
     // Bắt sự kiện thay đổi "Nội dung đề nghị"
-    handleReqContentChange = (e) => {
+    const handleReqContentChange = (e) => {
         let value = e.target.value;
-        this.validateReqContent(value, true);
+        validateReqContent(value, true);
     }
-    validateReqContent = (value, willUpdateState = true) => {
-        let { message } = ValidationHelper.validateCode(this.props.translate, value);
+    const validateReqContent = (value, willUpdateState = true) => {
+        let { message } = ValidationHelper.validateCode(props.translate, value);
 
         if (willUpdateState) {
-            this.setState(state => {
+            setState(state => {
                 return {
                     ...state,
                     errorOnReqContent: message,
@@ -126,21 +214,24 @@ class UseRequestManagerEditForm extends Component {
     /**
      * Bắt sự kiện thay đổi tài sản
      */
-    handleAssetChange = (value) => {
-        this.setState({
-            asset: value[0]
+    const handleAssetChange = (value) => {
+        setState(state =>{
+            return {
+                ...state,
+                asset: value[0]
+            }
         });
     }
 
     // Bắt sự kiện thay đổi "Thời gian đăng ký sử dụng từ ngày"
-    handleDateStartUseChange = (value) => {
-        this.validateDateStartUse(value, true);
+    const handleDateStartUseChange = (value) => {
+        validateDateStartUse(value, true);
     }
-    validateDateStartUse = (value, willUpdateState = true) => {
-        let { message } = ValidationHelper.validateCode(this.props.translate, value);
+    const validateDateStartUse = (value, willUpdateState = true) => {
+        let { message } = ValidationHelper.validateCode(props.translate, value);
 
         if (willUpdateState) {
-            this.setState(state => {
+            setState(state => {
                 return {
                     ...state,
                     errorOnDateStartUse: message,
@@ -152,14 +243,14 @@ class UseRequestManagerEditForm extends Component {
     }
 
     // Bắt sự kiện thay đổi "Thời gian đăng ký sử dụng đến ngày"
-    handleDateEndUseChange = (value) => {
-        this.validateDateEndUse(value, true);
+    const handleDateEndUseChange = (value) => {
+        validateDateEndUse(value, true);
     }
-    validateDateEndUse = (value, willUpdateState = true) => {
-        let { message } = ValidationHelper.validateCode(this.props.translate, value);
+    const validateDateEndUse = (value, willUpdateState = true) => {
+        let { message } = ValidationHelper.validateCode(props.translate, value);
 
         if (willUpdateState) {
-            this.setState(state => {
+            setState(state => {
                 return {
                     ...state,
                     errorOnDateEndUse: message,
@@ -171,31 +262,33 @@ class UseRequestManagerEditForm extends Component {
     }
 
     //Bắt sự kiện thay đổi "Người phê duyệt"
-    handleApproverChange = (value) => {
-        this.setState({
-            ...this.state,
+    const handleApproverChange = (value) => {
+        setState({
+            ...state,
             approver: value[0]
         });
     }
 
     // Bắt sự kiện thay đổi "Trạng thái"
-    handleStatusChange = (value) => {
-        this.setState({
-            ...this.state,
-            status: value[0]
+    const handleStatusChange = (value) => {
+        setState(state =>{
+            return {
+                ...state,
+                status: value[0]
+            }
         })
     }
 
     // Bắt sự kiện thay đổi "Ghi chú"
-    handleNoteChange = (e) => {
+    const handleNoteChange = (e) => {
         let value = e.target.value;
-        this.validateNote(value, true);
+        validateNote(value, true);
     }
-    validateNote = (value, willUpdateState = true) => {
-        let { message } = ValidationHelper.validateCode(this.props.translate, value);
+    const validateNote = (value, willUpdateState = true) => {
+        let { message } = ValidationHelper.validateCode(props.translate, value);
 
         if (willUpdateState) {
-            this.setState(state => {
+            setState(state => {
                 return {
                     ...state,
                     errorOnReason: message,
@@ -206,8 +299,8 @@ class UseRequestManagerEditForm extends Component {
         return message === undefined;
     }
 
-    handleStartTimeChange = (value) => {
-        this.setState(state => {
+    const handleStartTimeChange = (value) => {
+        setState(state => {
             return {
                 ...state,
                 startTime: value
@@ -216,8 +309,8 @@ class UseRequestManagerEditForm extends Component {
     }
 
 
-    handleStopTimeChange = (value) => {
-        this.setState(state => {
+    const handleStopTimeChange = (value) => {
+        setState(state => {
             return {
                 ...state,
                 stopTime: value
@@ -225,19 +318,19 @@ class UseRequestManagerEditForm extends Component {
         });
     }
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
-    isFormValidated = () => {
-        let result = this.validateDateCreate(this.state.dateCreate, false) &&
-            this.validateReqContent(this.state.reqContent, false) &&
-            this.validateDateStartUse(this.state.dateCreate, false)
+    const isFormValidated = () => {
+        let result = validateDateCreate(state.dateCreate, false) &&
+            validateReqContent(state.reqContent, false) &&
+            validateDateStartUse(state.dateCreate, false)
 
         return result;
     }
 
-    save = () => {
-        let { managedBy, createUsage } = this.state
+    const save = () => {
+        let { managedBy, createUsage } = state
 
-        let dataToSubmit = { ...this.state, approver: this.props.auth.user._id };
-        if (this.isFormValidated()) {
+        let dataToSubmit = { ...state, approver: props.auth.user._id };
+        if (isFormValidated()) {
             let data = {
                 status: dataToSubmit.status,
                 recommendNumber: dataToSubmit.recommendNumber,
@@ -255,7 +348,7 @@ class UseRequestManagerEditForm extends Component {
             if (createUsage == true && dataToSubmit.asset) {
                 let checkCreateUsage = false;
                 for (let i in dataToSubmit.asset.usageLogs) {
-                    if (dataToSubmit.asset.usageLogs[i].assetUseRequest && dataToSubmit.asset.usageLogs[i].assetUseRequest == this.state._id) {
+                    if (dataToSubmit.asset.usageLogs[i].assetUseRequest && dataToSubmit.asset.usageLogs[i].assetUseRequest == state._id) {
                         checkCreateUsage = true
                     }
                 }
@@ -284,7 +377,7 @@ class UseRequestManagerEditForm extends Component {
                         usedByOrganizationalUnit: null,
                         startDate: dateStartUse,
                         endDate: dateEndUse,
-                        assetUseRequest: this.state._id,
+                        assetUseRequest: state._id,
                         description: dataToSubmit.note
 
                     }
@@ -297,273 +390,186 @@ class UseRequestManagerEditForm extends Component {
                         assignedToUser: newUsage.usedByUser,
                         assignedToOrganizationalUnit: undefined,
                     }
-                    this.props.createUsage(dataToSubmit.asset._id, createNewUsage)
+                    props.createUsage(dataToSubmit.asset._id, createNewUsage)
                 }
             }
-            return this.props.updateRecommendDistribute(this.state._id, data, managedBy);
+            return props.updateRecommendDistribute(state._id, data, managedBy);
         }
     }
 
-    static getDerivedStateFromProps(nextProps, prevState) {
 
-        if (nextProps._id !== prevState._id) {
-            let startDate, endDate, startTime, stopTime;
-            let partStart = new Date(nextProps.dateStartUse);
-            let partStop = new Date(nextProps.dateEndUse);
+    return (
+        <React.Fragment>
+            <DialogModal
+                size='50' modalID="modal-edit-recommenddistributemanage" isLoading={recommendDistribute.isLoading}
+                formID="form-edit-recommenddistributemanage"
+                title={translate('asset.asset_info.edit_usage_info')}
+                func={save}
+                disableSubmit={!isFormValidated()}
+            >
+                {/* Form cập nhật phiếu đăng ký sử dụng tài sản */}
+                <form className="form-group" id="form-edit-recommenddistribute">
+                    <div className="col-md-12">
 
-            if (nextProps.asset && nextProps.asset.typeRegisterForUse == 2) {
-                let hourStart, hourEnd, minutesStart, minutesEnd;
-                if (partStart.getHours() < 10) {
-                    hourStart = "0" + partStart.getHours()
-                } else {
-                    hourStart = partStart.getHours()
-                }
+                        <div className="col-sm-6">
+                            {/* Mã phiếu */}
+                            <div className={`form-group ${!errorOnRecommendNumber ? "" : "has-error"}`}>
+                                <label>{translate('asset.general_information.form_code')}</label>
+                                <input type="text" className="form-control" name="recommendNumber" value={recommendNumber} onChange={handleRecommendNumberChange} autoComplete="off" placeholder={translate('asset.general_information.form_code')} />
+                                <ErrorLabel content={errorOnRecommendNumber} />
+                            </div>
 
-                if (partStart.getMinutes() < 10) {
-                    minutesStart = "0" + partStart.getMinutes()
-                } else {
-                    minutesStart = partStart.getMinutes()
-                }
+                            {/* Ngày lập */}
+                            <div className={`form-group ${!errorOnDateCreate ? "" : "has-error"}`}>
+                                <label>{translate('asset.general_information.create_date')}<span className="text-red">*</span></label>
+                                <DatePicker
+                                    id={`edit_start_date${_id}`}
+                                    value={formatDate(dateCreate)}
+                                    onChange={handleDateCreateChange}
+                                />
+                                <ErrorLabel content={errorOnDateCreate} />
+                            </div>
 
-                if (partStop.getHours() < 10) {
-                    hourEnd = "0" + partStop.getHours()
-                } else {
-                    hourEnd = partStop.getHours()
-                }
-
-                if (partStop.getMinutes() < 10) {
-                    minutesEnd = "0" + partStop.getMinutes()
-                } else {
-                    minutesEnd = partStop.getMinutes()
-                }
-
-                startTime = [hourStart, minutesStart].join(':');
-                startDate = [partStart.getDate(), (partStart.getMonth() + 1), partStart.getFullYear()].join('-');
-                stopTime = [hourEnd, minutesEnd].join(':');
-                endDate = [partStop.getDate(), (partStop.getMonth() + 1), partStop.getFullYear()].join('-');
-            } else {
-                if (nextProps.dateStartUse) {
-                    startDate = [partStart.getDate(), (partStart.getMonth() + 1), partStart.getFullYear()].join('-');
-                } else {
-                    startDate = null;
-                }
-
-                if (nextProps.dateEndUse) {
-                    endDate = [partStop.getDate(), (partStop.getMonth() + 1), partStop.getFullYear()].join('-');
-                } else {
-                    endDate = null;
-                }
-            }
-            return {
-                ...prevState,
-                _id: nextProps._id,
-                recommendNumber: nextProps.recommendNumber,
-                dateCreate: nextProps.dateCreate,
-                proponent: nextProps.proponent,
-                reqContent: nextProps.reqContent,
-                asset: nextProps.asset,
-                dateStartUse: startDate,
-                dateEndUse: endDate,
-                startTime: nextProps.asset && nextProps.asset.typeRegisterForUse == 2 ? startTime : null,
-                stopTime: nextProps.asset && nextProps.asset.typeRegisterForUse == 2 ? stopTime : null,
-                approver: nextProps.approver,
-                status: nextProps.status,
-                note: nextProps.note,
-                errorOnRecommendNumber: undefined,
-                errorOnDateCreate: undefined,
-                errorOnReqContent: undefined,
-                errorOnDateStartUse: undefined,
-                errorOnDateEndUse: undefined,
-            }
-        } else {
-            return null;
-        }
-    }
-
-    render() {
-        const { _id } = this.props;
-        const { translate, recommendDistribute, user, assetsManager, auth } = this.props;
-        const {
-            recommendNumber, dateCreate, proponent, reqContent, asset, dateStartUse, dateEndUse, approver, status, note, startTime, stopTime,
-            errorOnRecommendNumber, errorOnDateCreate, errorOnReqContent, errorOnDateStartUse, errorOnDateEndUse, typeRegisterForUse
-        } = this.state;
-
-        var assetlist = assetsManager.listAssets;
-        var userlist = user.list;
-
-        return (
-            <React.Fragment>
-                <DialogModal
-                    size='50' modalID="modal-edit-recommenddistributemanage" isLoading={recommendDistribute.isLoading}
-                    formID="form-edit-recommenddistributemanage"
-                    title={translate('asset.asset_info.edit_usage_info')}
-                    func={this.save}
-                    disableSubmit={!this.isFormValidated()}
-                >
-                    {/* Form cập nhật phiếu đăng ký sử dụng tài sản */}
-                    <form className="form-group" id="form-edit-recommenddistribute">
-                        <div className="col-md-12">
-
-                            <div className="col-sm-6">
-                                {/* Mã phiếu */}
-                                <div className={`form-group ${!errorOnRecommendNumber ? "" : "has-error"}`}>
-                                    <label>{translate('asset.general_information.form_code')}</label>
-                                    <input type="text" className="form-control" name="recommendNumber" value={recommendNumber} onChange={this.handleRecommendNumberChange} autoComplete="off" placeholder={translate('asset.general_information.form_code')} />
-                                    <ErrorLabel content={errorOnRecommendNumber} />
-                                </div>
-
-                                {/* Ngày lập */}
-                                <div className={`form-group ${!errorOnDateCreate ? "" : "has-error"}`}>
-                                    <label>{translate('asset.general_information.create_date')}<span className="text-red">*</span></label>
-                                    <DatePicker
-                                        id={`edit_start_date${_id}`}
-                                        value={this.formatDate(dateCreate)}
-                                        onChange={this.handleDateCreateChange}
-                                    />
-                                    <ErrorLabel content={errorOnDateCreate} />
-                                </div>
-
-                                {/* Người đề nghị */}
-                                <div className={`form-group`}>
-                                    <label>{translate('asset.usage.proponent')}</label>
-                                    <div>
-                                        <div id="proponentBox">
-                                            <SelectBox
-                                                id={`proponent${_id}`}
-                                                className="form-control select2"
-                                                style={{ width: "100%" }}
-                                                items={userlist.map(x => {
-                                                    return { value: x._id, text: x.name + " - " + x.email }
-                                                })}
-                                                onChange={this.handleProponentChange}
-                                                value={proponent ? proponent._id : null}
-                                                multiple={false}
-                                                disabled
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Nội dung đề nghị */}
-                                <div className={`form-group ${!errorOnReqContent ? "" : "has-error"}`}>
-                                    <label>{translate('asset.general_information.content')}<span className="text-red">*</span></label>
-                                    <textarea className="form-control" rows="3" name="reqContent" value={reqContent} onChange={this.handleReqContentChange} autoComplete="off" placeholder={translate('asset.general_information.content')} ></textarea>
-                                    <ErrorLabel content={errorOnReqContent} />
-                                </div>
-
-                                {/* Tài sản */}
-                                <div className={`form-group`}>
-                                    <label>{translate('asset.general_information.asset')}</label>
-                                    <div>
-                                        <div id="edit_asset">
-                                            <SelectBox
-                                                id={`edit_asset${_id}`}
-                                                className="form-control select2"
-                                                style={{ width: "100%" }}
-                                                items={assetlist.map(x => {
-                                                    return { value: x._id, text: x.code + " - " + x.assetName }
-                                                })}
-                                                onChange={this.handleAssetChange}
-                                                value={asset ? asset._id : null}
-                                                multiple={false}
-                                                disabled
-                                            />
-                                        </div>
+                            {/* Người đề nghị */}
+                            <div className={`form-group`}>
+                                <label>{translate('asset.usage.proponent')}</label>
+                                <div>
+                                    <div id="proponentBox">
+                                        <SelectBox
+                                            id={`proponent${_id}`}
+                                            className="form-control select2"
+                                            style={{ width: "100%" }}
+                                            items={userlist.map(x => {
+                                                return { value: x._id, text: x.name + " - " + x.email }
+                                            })}
+                                            onChange={handleProponentChange}
+                                            value={proponent ? proponent._id : null}
+                                            multiple={false}
+                                            disabled
+                                        />
                                     </div>
                                 </div>
                             </div>
 
-                            <div className="col-sm-6">
-                                {/* Thời gian đăng ký sử dụng từ ngày */}
-                                <div className={`form-group ${!errorOnDateStartUse ? "" : "has-error"}`}>
-                                    <label>{translate('asset.general_information.handover_from_date')}<span className="text-red">*</span></label>
-                                    <DatePicker
-                                        id={`edit_start_use`}
-                                        value={dateStartUse}
-                                        onChange={this.handleDateStartUseChange}
-                                    />
-                                    {asset && asset.typeRegisterForUse == 2 &&
-                                        < TimePicker
-                                            id={`edit_start_time_use${_id}`}
-                                            ref={`edit_start_time_use${_id}`}
-                                            value={startTime}
-                                            onChange={this.handleStartTimeChange}
+                            {/* Nội dung đề nghị */}
+                            <div className={`form-group ${!errorOnReqContent ? "" : "has-error"}`}>
+                                <label>{translate('asset.general_information.content')}<span className="text-red">*</span></label>
+                                <textarea className="form-control" rows="3" name="reqContent" value={reqContent} onChange={handleReqContentChange} autoComplete="off" placeholder={translate('asset.general_information.content')} ></textarea>
+                                <ErrorLabel content={errorOnReqContent} />
+                            </div>
+
+                            {/* Tài sản */}
+                            <div className={`form-group`}>
+                                <label>{translate('asset.general_information.asset')}</label>
+                                <div>
+                                    <div id="edit_asset">
+                                        <SelectBox
+                                            id={`edit_asset${_id}`}
+                                            className="form-control select2"
+                                            style={{ width: "100%" }}
+                                            items={assetlist.map(x => {
+                                                return { value: x.id, text: x.code + " - " + x.assetName }
+                                            })}
+                                            onChange={handleAssetChange}
+                                            value={asset ? asset.id : null}
+                                            multiple={false}
+                                            disabled
                                         />
-                                    }
-
-                                    <ErrorLabel content={errorOnDateStartUse} />
-                                </div>
-
-                                {/* Thời gian đăng ký sử dụng đến ngày */}
-                                <div className={`form-group ${!errorOnDateEndUse ? "" : "has-error"}`}>
-                                    <label>{translate('asset.general_information.handover_to_date')}</label>
-                                    <DatePicker
-                                        id={`edit_end_use`}
-                                        value={dateEndUse}
-                                        onChange={this.handleDateEndUseChange}
-                                    />
-                                    {
-                                        asset && asset.typeRegisterForUse == 2 &&
-                                        < TimePicker
-                                            id={`edit_stop_time_use${_id}`}
-                                            value={stopTime}
-                                            onChange={this.handleStopTimeChange}
-                                        />
-                                    }
-                                    <ErrorLabel content={errorOnDateEndUse} />
-                                </div>
-
-                                {/* Người phê duyệt */}
-                                <div className={`form-group`}>
-                                    <label>{translate('asset.usage.accountable')}</label>
-                                    <div>
-                                        <div id="approver">
-                                            <SelectBox
-                                                id={`approver${_id}`}
-                                                className="form-control select2"
-                                                style={{ width: "100%" }}
-                                                items={userlist.map(x => {
-                                                    return { value: x._id, text: x.name + " - " + x.email }
-                                                })}
-                                                onChange={this.handleApproverChange}
-                                                value={auth.user._id}
-                                                multiple={false}
-                                                disabled
-                                            />
-                                        </div>
                                     </div>
                                 </div>
-
-                                {/* Trạng thái */}
-                                <div className="form-group">
-                                    <label>{translate('asset.general_information.status')}</label>
-                                    <SelectBox
-                                        id={`status${_id}`}
-                                        className="form-control select2"
-                                        style={{ width: "100%" }}
-                                        value={status}
-                                        items={[
-                                            { value: 'approved', text: translate('asset.usage.approved') },
-                                            { value: 'waiting_for_approval', text: translate('asset.usage.waiting_approval') },
-                                            { value: 'disapproved', text: translate('asset.usage.not_approved') },
-                                        ]}
-                                        onChange={this.handleStatusChange}
-                                    />
-                                </div>
-
-                                {/* Ghi chú */}
-                                <div className="form-group">
-                                    <label>{translate('asset.usage.note')}</label>
-                                    <textarea className="form-control" rows="3" name="note" value={note} onChange={this.handleNoteChange}></textarea>
-                                </div>
-
                             </div>
                         </div>
-                    </form>
-                </DialogModal>
-            </React.Fragment>
-        );
-    }
+
+                        <div className="col-sm-6">
+                            {/* Thời gian đăng ký sử dụng từ ngày */}
+                            <div className={`form-group ${!errorOnDateStartUse ? "" : "has-error"}`}>
+                                <label>{translate('asset.general_information.handover_from_date')}<span className="text-red">*</span></label>
+                                <DatePicker
+                                    id={`edit_start_use`}
+                                    value={dateStartUse}
+                                    onChange={handleDateStartUseChange}
+                                />
+                                {asset && asset.typeRegisterForUse == 2 &&
+                                    < TimePicker
+                                        id={`edit_start_time_use${_id}`}
+                                        ref={`edit_start_time_use${_id}`}
+                                        value={startTime}
+                                        onChange={handleStartTimeChange}
+                                    />
+                                }
+
+                                <ErrorLabel content={errorOnDateStartUse} />
+                            </div>
+
+                            {/* Thời gian đăng ký sử dụng đến ngày */}
+                            <div className={`form-group ${!errorOnDateEndUse ? "" : "has-error"}`}>
+                                <label>{translate('asset.general_information.handover_to_date')}</label>
+                                <DatePicker
+                                    id={`edit_end_use`}
+                                    value={dateEndUse}
+                                    onChange={handleDateEndUseChange}
+                                />
+                                {
+                                    asset && asset.typeRegisterForUse == 2 &&
+                                    < TimePicker
+                                        id={`edit_stop_time_use${_id}`}
+                                        value={stopTime}
+                                        onChange={handleStopTimeChange}
+                                    />
+                                }
+                                <ErrorLabel content={errorOnDateEndUse} />
+                            </div>
+
+                            {/* Người phê duyệt */}
+                            <div className={`form-group`}>
+                                <label>{translate('asset.usage.accountable')}</label>
+                                <div>
+                                    <div id="approver">
+                                        <SelectBox
+                                            id={`approver${_id}`}
+                                            className="form-control select2"
+                                            style={{ width: "100%" }}
+                                            items={userlist.map(x => {
+                                                return { value: x._id, text: x.name + " - " + x.email }
+                                            })}
+                                            onChange={handleApproverChange}
+                                            value={auth.user._id}
+                                            multiple={false}
+                                            disabled
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Trạng thái */}
+                            <div className="form-group">
+                                <label>{translate('asset.general_information.status')}</label>
+                                <SelectBox
+                                    id={`status${_id}`}
+                                    className="form-control select2"
+                                    style={{ width: "100%" }}
+                                    value={status}
+                                    items={[
+                                        { value: 'approved', text: translate('asset.usage.approved') },
+                                        { value: 'waiting_for_approval', text: translate('asset.usage.waiting_approval') },
+                                        { value: 'disapproved', text: translate('asset.usage.not_approved') },
+                                    ]}
+                                    onChange={handleStatusChange}
+                                />
+                            </div>
+
+                            {/* Ghi chú */}
+                            <div className="form-group">
+                                <label>{translate('asset.usage.note')}</label>
+                                <textarea className="form-control" rows="3" name="note" value={note} onChange={handleNoteChange}></textarea>
+                            </div>
+
+                        </div>
+                    </div>
+                </form>
+            </DialogModal>
+        </React.Fragment>
+    );
 };
 
 function mapState(state) {

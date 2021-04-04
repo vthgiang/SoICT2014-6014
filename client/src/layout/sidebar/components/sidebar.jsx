@@ -248,6 +248,11 @@ class SideBar extends Component {
                                         {
                                             name: "menu.kpi_unit_create",
                                             icon: "fa fa-circle-o",
+                                            path: "/kpi-units/create-for-admin",
+                                        },
+                                        {
+                                            name: "menu.kpi_unit_create",
+                                            icon: "fa fa-circle-o",
                                             path: "/kpi-units/create",
                                         },
                                         {
