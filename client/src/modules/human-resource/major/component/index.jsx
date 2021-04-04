@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { Tree, SlimScroll, ExportExcel } from '../../../../common-components';
@@ -8,52 +8,54 @@ import EditForm from './editForm';
 import CreateForm from './createForm';
 import "./major.css";
 
-class Major extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            majorParent: [],
-            deleteNode: [],
-        }
-    }
+function Major(props) {
 
-    componentDidMount() {
-        this.props.getListMajor({ name: '', page: 1, limit: 1000 });
-    }
-    onChanged = async (e, data) => {
-        await this.setState({
+    const [state, setState] = useState({
+        majorParent: [],
+        deleteNode: [],
+    });
+
+    useEffect(() => {
+        props.getListMajor({ name: '', page: 1, limit: 1000 });
+    }, [])
+
+    const onChanged = async (e, data) => {
+        setState({
+            ...state,
             currentNode: data.node,
         })
         window.$(`#edit-major`).slideDown();
     }
 
-    checkNode = (e, data) => {
-        this.setState({
+    const checkNode = (e, data) => {
+        setState({
+            ...state,
             majorParent: [...data.selected],
             // deleteNode: [...data.selected, ...data.node.children_d],
             deleteNode: [...data.selected],
         })
     }
 
-    unCheckNode = (e, data) => {
-        this.setState({
+    const unCheckNode = (e, data) => {
+        setState({
+            ...state,
             majorParent: [...data.selected],
             // deleteNode: [...data.selected, ...data.node.children_d],
             deleteNode: [...data.selected],
         })
     }
-    handleAddMajor = (event) => {
+    const handleAddMajor = (event) => {
         event.preventDefault();
         window.$('#modal-create-major').modal('show');
     }
     /**Mở modal import file excel */
-    handImportFile = (event) => {
+    const handImportFile = (event) => {
         event.preventDefault();
         window.$('#modal_import_file_archive').modal('show');
     }
-    deleteMajor = () => {
-        const { translate } = this.props;
-        const { deleteNode, majorParent } = this.state;
+    const deleteMajor = () => {
+        const { translate } = props;
+        const { deleteNode, majorParent } = state;
         Swal.fire({
             html: `<h4 style="color: red"><div>Xóa lưu trữ</div>?</h4>`,
             icon: 'warning',
@@ -64,12 +66,12 @@ class Major extends Component {
             confirmButtonText: translate('general.yes'),
         }).then(result => {
             console.log('Confirm delete');
-            console.log('state', this.state);
+            console.log('state', state);
             this.props.deleteMajor(deleteNode);
         })
     }
 
-    findChildrenNode = (list, node) => {
+    const findChildrenNode = (list, node) => {
         let array = [];
         let queue_children = [];
         queue_children = [node];
@@ -84,101 +86,99 @@ class Major extends Component {
         return array;
     }
 
-    render() {
-        const { majorParent, currentNode } = this.state;
-        const { translate } = this.props;
-        const { major } = this.props;
-        const list = major.listMajor;
+    const { majorParent, currentNode } = state;
+    const { translate } = props;
+    const { major } = props;
+    const list = major.listMajor;
 
-        let dataTreeSelect = [];
-        let dataTree = list.map(elm => {
+    let dataTreeSelect = [];
+    let dataTree = list.map(elm => {
+        return {
+            ...elm,
+            id: elm._id,
+            text: elm.name,
+            state: { "opened": true },
+            parent: "#",
+        }
+    });
+    dataTreeSelect = dataTree;
+    for (let i in list) {
+        let groupMap = list[i].group;
+        let group = list[i].group.map(elm => {
             return {
                 ...elm,
                 id: elm._id,
                 text: elm.name,
                 state: { "opened": true },
-                parent: "#",
+                parent: list[i]._id.toString(),
             }
         });
-        dataTreeSelect = dataTree;
-        for (let i in list) {
-            let groupMap = list[i].group;
-            let group = list[i].group.map(elm => {
+        dataTree = [...dataTree, ...group];
+        dataTreeSelect = [...dataTreeSelect, ...group];
+
+        for (let x in groupMap) {
+            let specializedMap = groupMap[x].specialized;
+            let specialized = groupMap[x].specialized.map(elm => {
                 return {
                     ...elm,
                     id: elm._id,
                     text: elm.name,
                     state: { "opened": true },
-                    parent: list[i]._id.toString(),
+                    parent: groupMap[x]._id.toString(),
                 }
             });
-            dataTree = [...dataTree, ...group];
-            dataTreeSelect = [...dataTreeSelect, ...group];
-
-            for (let x in groupMap) {
-                let specializedMap = groupMap[x].specialized;
-                let specialized = groupMap[x].specialized.map(elm => {
-                    return {
-                        ...elm,
-                        id: elm._id,
-                        text: elm.name,
-                        state: { "opened": true },
-                        parent: groupMap[x]._id.toString(),
-                    }
-                });
-                dataTree = [...dataTree, ...specialized];
-            }
+            dataTree = [...dataTree, ...specialized];
         }
-        let unChooseNode = currentNode ? this.findChildrenNode(list, currentNode) : [];
-        // console.log('dataTree', dataTree, dataTreeSelect);
-        return (
-            <React.Fragment>
-                <div className="box box-body">
+    }
+    let unChooseNode = currentNode ? findChildrenNode(list, currentNode) : [];
+    // console.log('dataTree', dataTree, dataTreeSelect);
+    return (
+        <React.Fragment>
+            <div className="box box-body">
 
-                    <div className="form-inline">
-                        <a className="btn btn-success pull-right" href="#modal-create-major" title="Add major" onClick={(event) => { this.handleAddMajor(event) }}>Thêm</a>
+                <div className="form-inline">
+                    <a className="btn btn-success pull-right" href="#modal-create-major" title="Add major" onClick={(event) => { handleAddMajor(event) }}>Thêm</a>
+                </div>
+
+                {
+                    majorParent.length > 0 && <button className="btn btn-danger" style={{ marginLeft: '5px' }} onClick={deleteMajor}>{translate('general.delete')}</button>
+                }
+                <CreateForm
+                    list={dataTreeSelect}
+                // majorParent={currentNode.parent}
+                />
+                <div className="row"
+                >
+                    <div className="col-xs-12 col-sm-12 col-md-7 col-lg-7">
+                        <div className="major-tree" id="major-tree">
+                            <Tree
+                                id="tree-qlcv-major"
+                                onChanged={onChanged}
+                                checkNode={checkNode}
+                                unCheckNode={unCheckNode}
+                                data={dataTree}
+                            />
+                        </div>
+                        <SlimScroll outerComponentId="major-tree" innerComponentId="tree-qlcv-major" innerComponentWidth={"100%"} activate={true} />
                     </div>
+                    <div className="col-xs-12 col-sm-12 col-md-5 col-lg-5">
+                        {
+                            currentNode &&
+                            <EditForm
+                                majorId={currentNode.id}
+                                majorName={currentNode.text}
+                                majorCode={currentNode.original.code}
+                                majorParent={currentNode.parent}
 
-                    {
-                        majorParent.length > 0 && <button className="btn btn-danger" style={{ marginLeft: '5px' }} onClick={this.deleteMajor}>{translate('general.delete')}</button>
-                    }
-                    <CreateForm
-                        list={dataTreeSelect}
-                    // majorParent={currentNode.parent}
-                    />
-                    <div className="row"
-                    >
-                        <div className="col-xs-12 col-sm-12 col-md-7 col-lg-7">
-                            <div className="major-tree" id="major-tree">
-                                <Tree
-                                    id="tree-qlcv-major"
-                                    onChanged={this.onChanged}
-                                    checkNode={this.checkNode}
-                                    unCheckNode={this.unCheckNode}
-                                    data={dataTree}
-                                />
-                            </div>
-                            <SlimScroll outerComponentId="major-tree" innerComponentId="tree-qlcv-major" innerComponentWidth={"100%"} activate={true} />
-                        </div>
-                        <div className="col-xs-12 col-sm-12 col-md-5 col-lg-5">
-                            {
-                                currentNode &&
-                                <EditForm
-                                    majorId={currentNode.id}
-                                    majorName={currentNode.text}
-                                    majorCode={currentNode.original.code}
-                                    majorParent={currentNode.parent}
-
-                                    listData={dataTreeSelect}
-                                    unChooseNode={unChooseNode}
-                                />
-                            }
-                        </div>
+                                listData={dataTreeSelect}
+                                unChooseNode={unChooseNode}
+                            />
+                        }
                     </div>
                 </div>
-            </React.Fragment>
-        )
-    }
+            </div>
+        </React.Fragment>
+    )
 }
 
 const mapStateToProps = state => state;

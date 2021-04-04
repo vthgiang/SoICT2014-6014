@@ -5,15 +5,19 @@ const mongoosePaginate = require('mongoose-paginate-v2');
 
 const ProjectSchema = new Schema(
     {
-        codeName: {
+        code: {
             type: String,
             default: generateUniqueCode('PJ', 'v1')
         },
-        fullName: {
+        name: {
             type: String
         },
         description: {
             type: String,
+        },
+        parent: {
+            type: Schema.Types.ObjectId,
+            replies: this
         },
         createdAt: {
             type: Date,
@@ -26,7 +30,7 @@ const ProjectSchema = new Schema(
         startDate: {
             type: Date,
         },
-        estimatedEndDate: {
+        endDate: {
             type: Date,
         },
         actualEndDate: {
@@ -69,7 +73,7 @@ const ProjectSchema = new Schema(
             ref: "User",
         }],
         // Những người tham gia dự án
-        projectMembers: [{
+        responsibleEmployees: [{
             type: Schema.Types.ObjectId,
             ref: "User",
         }],

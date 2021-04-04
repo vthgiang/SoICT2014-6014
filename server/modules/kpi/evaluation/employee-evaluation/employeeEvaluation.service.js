@@ -515,7 +515,7 @@ exports.getTasksByListKpis = async (portal, data) => {
         infosearch.push([]);
         let kpis = listkpis[i].kpis;
         for (let j = 0; j < kpis.length; j++) {
-        infosearch[infosearch.length - 1].push({ id: kpis[j]._id, employeeId: listkpis[i].creator._id, date: listkpis[i].date, kpiType: kpis[j].type })
+            infosearch[infosearch.length - 1].push({ id: kpis[j]._id, employeeId: listkpis[i].creator._id, date: listkpis[i].date, kpiType: kpis[j].type })
         }
     }
 
@@ -664,9 +664,9 @@ exports.setPointAllKpi = async (portal, idEmployee, idKpiSet, data) => {
                     let update = await updateTaskImportanceLevel(portal, task[j].id, idEmployee, task[j].taskImportanceLevelCal, date, role)
 
                 }
-                automaticPoint += task[j].results.automaticPoint ? task[j].results.automaticPoint : 0 * taskImportance;
-                approvedPoint += task[j].results.approvedPoint ? task[j].results.approvedPoint : 0 * taskImportance;
-                employeePoint += task[j].results.employeePoint ? task[j].results.employeePoint : 0 * taskImportance;
+                automaticPoint += task[j].results.automaticPoint ? task[j].results.automaticPoint * taskImportance : 0;
+                approvedPoint += task[j].results.approvedPoint ? task[j].results.approvedPoint * taskImportance : 0;
+                employeePoint += task[j].results.employeePoint ? task[j].results.employeePoint * taskImportance : 0;
                 sumTaskImportance += taskImportance;
 
 
