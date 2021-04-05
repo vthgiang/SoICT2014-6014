@@ -365,7 +365,7 @@ function CreateEmployeeKpiSet(props) {
                     confirmButtonText: translate('kpi.evaluation.employee_evaluation.confirm')
                 })
             } else {
-                window.$(`#editEmployeeKpi${id}`).modal("show");
+                window.$(`#editEmployeeKpi`).modal("show");
             }
         } else if (employeeKpiSetStatus === 1) {
             Swal.fire({
@@ -479,7 +479,6 @@ function CreateEmployeeKpiSet(props) {
         currentKPI = createEmployeeKpiSet.currentKPI;
         currentKPILoading = createEmployeeKpiSet.currentKPILoading;
     }
-    console.log("createEmployeeKpiSet", createEmployeeKpiSet)
     let managers = [];
 
     if (user?.userdepartments) {
@@ -662,7 +661,7 @@ function CreateEmployeeKpiSet(props) {
                                                             <a
                                                                 style={{ color: "#FFC107", fontSize: "16px" }}
                                                                 title={translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.action_title.edit')}
-                                                                data-target={`editEmployeeKpi${item._id}`}
+                                                                data-target={`editEmployeeKpi`}
                                                                 data-toggle="modal"
                                                                 data-backdrop="static"
                                                                 data-keyboard="false"

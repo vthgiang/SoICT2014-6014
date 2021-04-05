@@ -65,6 +65,17 @@ export function kpimembers(state = {}, action) {
         error: action.payload,
         isLoading: false
       };
+    case createKpiSetConstants.EDIT_EMPLOYEE_KPI_SUCCESS:
+      return {
+        ...state,
+        currentKPI: {
+          ...state.currentKPI,
+          kpis: state.currentKPI?.kpis?.map(target =>
+            target?._id === action.payload._id
+              ? action.payload : target)
+        },
+        isLoading: false
+      };
     case kpiMemberConstants.GET_KPIMEMBER_BYMONTH_REQUEST:
       return {
         ...state,

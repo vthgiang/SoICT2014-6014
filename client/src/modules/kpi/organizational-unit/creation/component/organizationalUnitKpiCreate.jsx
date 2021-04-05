@@ -665,7 +665,6 @@ function OrganizationalUnitKpiCreate(props) {
                                                                 className="edit"
                                                                 title={translate('kpi.organizational_unit.create_organizational_unit_kpi_set.edit')}
                                                                 data-toggle="modal"
-                                                                // data-target={`#editTargetKPIUnit${item._id}`}
                                                                 data-backdrop="static"
                                                                 data-keyboard="false"
                                                                 onClick={checkEdittingPermission(currentKPI && currentKPI.organizationalUnit) ? () => handleEditOrganizationalUnitKPi(item._id, item, currentKPI) : () => swalEdittingPermission()}>
@@ -714,11 +713,11 @@ function OrganizationalUnitKpiCreate(props) {
                                         {/* Khởi tạo KPI */}
                                         {checkEdittingPermission(organizationalUnit) ?
                                             <span>
-                                                        <a className="btn btn-app" data-toggle="modal" data-target="#startKPIUnit" data-backdrop="static" data-keyboard="false">
-                                                            <i className="fa fa-calendar-plus-o" style={{ fontSize: "16px" }}></i>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.initialize_kpi_newmonth')} {formatDate(month)}
-                                                        </a>
-                                                        <OrganizationalUnitKpiCreateModal organizationalUnit={organizationalUnit} month={month} />
-                                                    </span>
+                                                <a className="btn btn-app" data-toggle="modal" data-target="#startKPIUnit" data-backdrop="static" data-keyboard="false">
+                                                    <i className="fa fa-calendar-plus-o" style={{ fontSize: "16px" }}></i>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.initialize_kpi_newmonth')} {formatDate(month)}
+                                                </a>
+                                                <OrganizationalUnitKpiCreateModal organizationalUnit={organizationalUnit} month={month} />
+                                            </span>
                                             :
                                             // Cảnh báo đơn vị cha chưa kích hoạt KPI
                                             <a className="btn btn-app" data-toggle="modal" data-backdrop="static" data-keyboard="false" onClick={() => swalEdittingPermission()}>
@@ -729,25 +728,25 @@ function OrganizationalUnitKpiCreate(props) {
                                         {/* Sao chép mục tiêu từ KPI đơn vị cha */}
                                         {checkEdittingPermission(organizationalUnit) && parentKpi ?
                                             <span>
-                                                        <a className="btn btn-app" data-toggle="modal" data-target={`#copy-old-kpi-to-new-time-${parentKpi && parentKpi._id}`} data-backdrop="static" data-keyboard="false">
-                                                            <i className="fa fa-copy" style={{ fontSize: "16px" }}></i>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.copy_kpi_unit')}
-                                                        </a>
-                                                        <ModalCopyKPIUnit
-                                                            kpiId={parentKpi?._id}
-                                                            idunit={organizationalUnit?.id}
-                                                            organizationalUnitSelect={listOrganizationalUnitCopy}
-                                                            kpiunit={parentKpi}
-                                                            editMonth={true}
-                                                            monthDefault={month}
-                                                            type={'copy-parent-kpi-to-unit'}
-                                                        />
-                                                    </span>
+                                                <a className="btn btn-app" data-toggle="modal" data-target={`#copy-old-kpi-to-new-time-${parentKpi && parentKpi._id}`} data-backdrop="static" data-keyboard="false">
+                                                    <i className="fa fa-copy" style={{ fontSize: "16px" }}></i>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.copy_kpi_unit')}
+                                                </a>
+                                                <ModalCopyKPIUnit
+                                                    kpiId={parentKpi?._id}
+                                                    idunit={organizationalUnit?.id}
+                                                    organizationalUnitSelect={listOrganizationalUnitCopy}
+                                                    kpiunit={parentKpi}
+                                                    editMonth={true}
+                                                    monthDefault={month}
+                                                    type={'copy-parent-kpi-to-unit'}
+                                                />
+                                            </span>
                                             : (organizationalUnit?.parent || organizationalUnit?.parent_id)
                                             && <span>
-                                                        <a className="btn btn-app" onClick={() => swalEdittingPermission()}>
-                                                            <i className="fa fa-copy" style={{ fontSize: "16px" }}></i>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.copy_kpi_unit')}
-                                                        </a>
-                                                    </span>
+                                                <a className="btn btn-app" onClick={() => swalEdittingPermission()}>
+                                                    <i className="fa fa-copy" style={{ fontSize: "16px" }}></i>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.copy_kpi_unit')}
+                                                </a>
+                                            </span>
                                         }
                                     </div>
                                 </div>
