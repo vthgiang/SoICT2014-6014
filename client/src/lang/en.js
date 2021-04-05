@@ -148,6 +148,7 @@ export default {
             manage_kpi_unit: "Organizational unit KPI",
             manage_kpi_personal: "Personal KPI",
             kpi_unit_create: "Create unit KPI",
+            kpi_unit_create_for_admin: "Create unit KPI in company",
             kpi_unit_evaluate: "Evaluate unit KPI",
             kpi_unit_overview: "Overview unit KPI",
             kpi_unit_dashboard: "Dashboard unit KPI",
@@ -160,6 +161,7 @@ export default {
             kpi_personal_overview: "Overview personal KPI",
             kpi_personal_dashboard: "DashBoard personal KPI",
             kpi_personal_manager: "Manager personal KPI",
+            kpi_member_detail: "Details of personal KPI",
 
             notifications: "Notifications",
 

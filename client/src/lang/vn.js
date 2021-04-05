@@ -164,6 +164,7 @@ export default {
             manage_kpi_unit: "KPI đơn vị",
             manage_kpi_personal: "KPI cá nhân",
             kpi_unit_create: "Khởi tạo KPI đơn vị",
+            kpi_unit_create_for_admin: "Khởi tạo KPI toàn công ty",
             kpi_unit_evaluate: "Dữ liệu KPI đơn vị",
             kpi_unit_overview: "Tổng quan KPI đơn vị",
             kpi_unit_dashboard: "Dashboard KPI đơn vị",
@@ -176,7 +177,8 @@ export default {
             kpi_personal_overview: "Tổng quan KPI cá nhân",
             kpi_personal_dashboard: "Dashboard KPI cá nhân",
             kpi_personal_manager: "Quản lí KPI cá nhân",
-
+            kpi_member_detail: "Chi tiết KPI cá nhân",
+            
             notifications: "Thông báo",
 
             tasks: "Công việc cá nhân",
