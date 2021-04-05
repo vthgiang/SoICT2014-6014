@@ -23,14 +23,21 @@ exports.createCare = async (portal, companyId, data,userId) => {
     const getNewCare = await Care(connect(DB_CONNECTION, portal)).findById(newCare._id)
         .populate({ path: 'creator', select: '_id name' })
         .populate({ path: 'customer', select: '_id name ' })
-        .populate({ path: 'caregiver', select: '_id name' })
-        .populate({ path: 'careType', select: '_id name' })
+        .populate({ path: 'customerCareStaffs', select: '_id name' })
+        .populate({ path: 'customerCareTypes', select: '_id name' })
     return getNewCare;
 }
 
 exports.getCares = async (portal, companyId, query) => {
-    const { page, limit } = query;
+    const { page, limit,customerId } = query;
     let keySearch = {};
+    if(customerId){
+        keySearch = 
+        {
+            ...keySearch,
+            customer : customerId
+        }
+    }
     const listDocsTotal = await Care(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
 
     const cares = await Care(connect(DB_CONNECTION, portal)).find(keySearch).sort({ 'createdAt': 'desc' })

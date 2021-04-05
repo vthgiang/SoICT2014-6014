@@ -267,8 +267,6 @@ function CustomerHomePage(props) {
     if (user.usersOfChildrenOrganizationalUnit) {
 
         unitMembers = getEmployeeSelectBoxItems(user.usersOfChildrenOrganizationalUnit);
-        console.log(unitMembers)
-
     }
 
     // Lấy danh sách đơn vị
@@ -337,6 +335,7 @@ function CustomerHomePage(props) {
                 {/* search form */}
                 <div className="form-inline" >
                     <div className="form-group unitSearch">
+                        {/* Tìm kiếm khách hàng theo người quản lý */}
                         <label>{translate('crm.customer.owner')}</label>
                         {
                             unitMembers &&
@@ -347,7 +346,6 @@ function CustomerHomePage(props) {
                                 items={
                                     unitMembers
                                 }
-                                value ={0}
                                 onChange={handleSearchByOwner}
                                 multiple={false}
                             />
