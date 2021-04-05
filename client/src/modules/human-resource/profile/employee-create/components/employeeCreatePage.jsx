@@ -8,6 +8,7 @@ import FamilyMemberTab from './familyMemberTab';
 
 import { EmployeeManagerActions } from '../../employee-management/redux/actions';
 import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
+import { generateCode } from "../../../../../helpers/generateCode";
 
 const initMember = {
     name: '',
@@ -434,6 +435,23 @@ class EmployeeCreatePage extends Component {
         })
     }
 
+    regenerateCode = () => {
+        let code = generateCode("NV");
+        let { employeeNumber, employeeTimesheetId } = this.state.employee;
+        if (!employeeNumber && !employeeTimesheetId)
+            this.setState((state) => ({
+                ...state,
+                employee: {
+                    ...state.employee,
+                    employeeNumber: code,
+                    employeeTimesheetId: code,
+                }
+            }));
+    }
+
+    componentDidMount = () => {
+        this.regenerateCode();
+    }
     render() {
         const { translate } = this.props;
 
