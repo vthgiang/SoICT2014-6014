@@ -333,9 +333,8 @@ class SideBar extends Component {
                                     icon: "fa fa-folder-open",
                                     list: [
                                         { name: "menu.projects_list", icon: "fa fa-dashboard", path: "/project/projects-list" },
-                                        { name: "menu.tasks_list", icon: "fa fa-sitemap", path: "/project/tasks-list" },
-                                        { name: "menu.phases_list", icon: "fa fa-user-plus", path: "/project/phases-list" },
-                                        { name: "menu.issues_list", icon: "fa fa-user-plus", path: "/project/issues-list" },
+                                        { name: "menu.project_report", icon: "fa fa-sitemap", path: "/project/project-report" },
+                                        { name: "menu.project_evaluation", icon: "fa fa-user-plus", path: "/project/project-evaluation" },
                                     ],
                                 }}
                             />

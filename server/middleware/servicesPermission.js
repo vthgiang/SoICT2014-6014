@@ -971,6 +971,14 @@ exports.links = [
     {
         url: '/project/issues-list',
         apis: ['@all']
+    },  
+    {
+        url: '/project/project-report',
+        apis: ['@all']
+    },   
+    {
+        url: '/project/project-evaluation',
+        apis: ['@all']
     }, 
 
     //transport

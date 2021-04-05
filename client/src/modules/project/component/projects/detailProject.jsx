@@ -18,8 +18,9 @@ const ProjectDetailForm = (props) => {
             <DialogModal
                 modalID={`modal-detail-project-${projectDetail?._id}`} isLoading={false}
                 formID={`form-detail-project-${projectDetail?._id}`}
-                title={translate('project.detail_title')}
-                size={100}
+                title={projectDetail ? projectDetail?.name : null}
+                size={75}
+                hasSaveButton={false}
             >
                 <div>
                     <div className="description-box" style={{ lineHeight: 1.5 }}>
@@ -27,9 +28,9 @@ const ProjectDetailForm = (props) => {
                             <div className="col-md-6">
                                 <div className="form-horizontal">
                                     <div className="form-group">
-                                        <strong className="col-sm-4">{translate('project.name')}</strong>
+                                        <strong className="col-sm-4">{translate('project.code')}</strong>
                                         <div className="col-sm-8">
-                                            <span>{projectDetail ? projectDetail?.fullName : null}</span>
+                                            <span>{projectDetail ? projectDetail?.code : null}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -37,10 +38,10 @@ const ProjectDetailForm = (props) => {
                             <div className="col-md-6">
                                 <div className="form-horizontal">
                                     <div className="form-group">
-                                        <strong className="col-sm-4">{translate('project.code')}</strong>
-                                        <div className="col-sm-8">
-                                            <span>{projectDetail ? projectDetail?.code : null}</span>
-                                        </div>
+                                        <strong className="col-sm-4">{translate('project.detail_link')}</strong>
+                                        <a className="col-sm-8" href={`/project/project-details?id=${projectDetail?._id}`} target="_blank">
+                                            {projectDetail ? projectDetail?.name : null}
+                                        </a>
                                     </div>
                                 </div>
                             </div>
@@ -126,54 +127,6 @@ const ProjectDetailForm = (props) => {
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-
-                    <div className="nav-tabs-custom">
-                        <ul className="nav nav-tabs">
-                            <li className="active"><a href="#project-tasks-table" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>Bảng</a></li>
-                            <li><a href="#project-tasks-gantt" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>Gantt</a></li>
-                            <li><a href="#project-tasks-kanban" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>Kanban</a></li>
-                            <li><a href="#project-tasks-cpm" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>CPM</a></li>
-                        </ul>
-                        <div className="tab-content">
-
-                            {/** Table công việc */}
-                            <div className="tab-pane active" id="project-tasks-table">
-                                <LazyLoadComponent
-                                    key="TableTasksProject"
-                                >
-                                    <TableTasksProject />
-                                </LazyLoadComponent>
-                            </div>
-
-                            {/** Gantt công việc */}
-                            <div className="tab-pane" id="project-tasks-gantt">
-                                <LazyLoadComponent
-                                    key="GanttTasksProject"
-                                >
-                                    <GanttTasksProject />
-                                </LazyLoadComponent>
-                            </div>
-
-                            {/** Kanban công việc */}
-                            <div className="tab-pane" id="project-tasks-kanban">
-                                <LazyLoadComponent
-                                    key="KanbanTasksProject"
-                                >
-                                    <KanbanTasksProject />
-                                </LazyLoadComponent>
-                            </div>
-
-                            {/** CPM công việc */}
-                            <div className="tab-pane" id="project-tasks-cpm">
-                                <LazyLoadComponent
-                                    key="CPMTasksProject"
-                                >
-                                    <CpmTasksProject />
-                                </LazyLoadComponent>
-                            </div>
-
                         </div>
                     </div>
                 </div>

@@ -2097,6 +2097,128 @@ exports.createTask = async (portal, task) => {
 }
 
 /**
+ * Tạo công việc mới của dự án
+ */
+ exports.createProjectTask = async (portal, task) => {
+    // // Lấy thông tin công việc liên quan
+    // var level = 1;
+    // if (mongoose.Types.ObjectId.isValid(task.parent)) {
+    //     var parent = await Task(connect(DB_CONNECTION, portal)).findById(task.parent);
+    //     if (parent) level = parent.level + 1;
+    // }
+
+    var startDate, endDate;
+    if (Date.parse(task.startDate)) startDate = new Date(task.startDate);
+    else {
+        var splitter = task.startDate.split("-");
+        startDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
+    }
+
+    if (Date.parse(task.endDate)) endDate = new Date(task.endDate);
+    else {
+        var splitter = task.endDate.split("-");
+        endDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
+    }
+
+    let taskTemplate, cloneActions = [];
+    if (task.taskTemplate) {
+        taskTemplate = await TaskTemplate(connect(DB_CONNECTION, portal)).findById(task.taskTemplate);
+        let taskActions = taskTemplate.taskActions;
+
+        for (let i in taskActions) {
+            cloneActions[i] = {
+                mandatory: taskActions[i].mandatory,
+                name: taskActions[i].name,
+                description: taskActions[i].description,
+            }
+        }
+    }
+
+    let formula;
+    if (task.formula) {
+        formula = task.formula;
+    } else {
+        if (taskTemplate) {
+            formula = taskTemplate.formula;
+        } else if (task.formula) {
+            formula = "progress / (daysUsed / totalDays) - (numberOfFailedActions / (numberOfFailedActions + numberOfPassedActions)) * 100"
+        }
+    }
+
+    let getValidObjectId = (value) => {
+        return mongoose.Types.ObjectId.isValid(value) ? value : undefined;
+    }
+    let taskProject = (taskTemplate && taskTemplate.taskProject) ? getValidObjectId(taskTemplate.taskProject) : getValidObjectId(task.taskProject);
+
+    let taskActions = [];
+    if (task.taskActions) {
+        taskActions = task.taskActions.map(e => {
+            return {
+                mandatory: e.mandatory,
+                name: e.name,
+                description: e.description,
+            }
+        });
+    } else {
+        taskActions = taskTemplate ? cloneActions : [];
+    }
+
+    let taskInformations = [];
+    if (task.taskInformations) {
+        taskInformations = task.taskInformations.map(e => {
+            return {
+                filledByAccountableEmployeesOnly: e.filledByAccountableEmployeesOnly,
+                code: e.code,
+                name: e.name,
+                description: e.description,
+                type: e.type,
+                extra: e.extra,
+            }
+        });
+    } else {
+        taskInformations = taskTemplate ? taskTemplate.taskInformations : [];
+    }
+
+    var newTask = await Task(connect(DB_CONNECTION, portal)).create({ //Tạo dữ liệu mẫu công việc
+        // organizationalUnit: task.organizationalUnit,
+        // collaboratedWithOrganizationalUnits: task.collaboratedWithOrganizationalUnits,
+        creator: task.creator, //id của người tạo
+        name: task.name,
+        description: task.description,
+        startDate: startDate,
+        endDate: endDate,
+        priority: task.priority,
+        formula: formula,
+        taskTemplate: taskTemplate ? taskTemplate : null,
+        taskInformations: taskInformations,
+        taskActions: taskActions,
+        // parent: (task.parent === "") ? null : task.parent,
+        // level: level,
+        responsibleEmployees: task.responsibleEmployees,
+        accountableEmployees: task.accountableEmployees,
+        consultedEmployees: task.consultedEmployees,
+        informedEmployees: task.informedEmployees,
+        confirmedByEmployees: task.responsibleEmployees.concat(task.accountableEmployees).concat(task.consultedEmployees).includes(task.creator) ? task.creator : [],
+        taskProject
+    });
+
+    if (newTask.taskTemplate !== null) {
+        await TaskTemplate(connect(DB_CONNECTION, portal)).findByIdAndUpdate(
+            newTask.taskTemplate, { $inc: { 'numberOfUse': 1 } }, { new: true }
+        );
+    }
+
+    let mail = await this.sendEmailForCreateTask(portal, newTask);
+
+    return {
+        task: newTask,
+        user: mail.user, email: mail.email, html: mail.html,
+        // managersOfOrganizationalUnitThatHasCollaborated: mail.managersOfOrganizationalUnitThatHasCollaborated,
+        collaboratedEmail: mail.collaboratedEmail, collaboratedHtml: mail.collaboratedHtml
+    };
+}
+
+/**
  * Xóa công việc
  */
 exports.deleteTask = async (portal, id) => {
@@ -2766,4 +2888,15 @@ exports.getAllUserTimeSheet = async (portal, month, year) => {
     }
 
     return allTS;
+}
+
+exports.getTasksByProject = async (portal, projectId) => {
+    let tasks = await Task(connect(DB_CONNECTION, portal))
+    .find({taskProject: projectId})
+    .populate({ path: "responsibleEmployees", select: "_id name" })
+    .populate({ path: "accountableEmployees", select: "_id name" })
+    .populate({ path: "consultedEmployees", select: "_id name" })
+    .populate({ path: "informedEmployees", select: "_id name" })
+    .populate({ path: "creator", select: "_id name" });
+    return tasks;
 }

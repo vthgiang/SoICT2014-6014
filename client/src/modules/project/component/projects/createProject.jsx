@@ -5,9 +5,11 @@ import { withTranslate } from 'react-redux-multilingual';
 import ValidationHelper from '../../../../helpers/validationHelper';
 import { ProjectActions } from '../../redux/actions';
 import getEmployeeSelectBoxItems from '../../../task/organizationalUnitHelper';
+import { getStorage } from '../../../../config';
 
 const ProjectCreateForm = (props) => {
     const { translate, project, user, handleCreateProject } = props;
+    const userId = getStorage('userId');
     const listUsers = user && user.usersInUnitsOfCompany ? getEmployeeSelectBoxItems(user.usersInUnitsOfCompany) : []
     const fakeUnitCostList = [
         { text: 'VND', value: 'VND' },
@@ -28,7 +30,7 @@ const ProjectCreateForm = (props) => {
         responsibleEmployees: [],
         unitCost: fakeUnitCostList[0].text,
         unitTime: fakeUnitTimeList[0].text,
-        estimatedCost: '',
+        estimatedCost: ''
     })
 
     const { projectName, projectNameError, description, code, startDate, endDate, projectManager, responsibleEmployees, unitCost, unitTime, estimatedCost } = form;
@@ -99,7 +101,8 @@ const ProjectCreateForm = (props) => {
                 description,
                 unitCost,
                 unitTime,
-                estimatedCost
+                estimatedCost,
+                creator: userId,
             });
             
             handleCreateProject()

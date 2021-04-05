@@ -708,6 +708,35 @@ const TaskSchema = new Schema(
             type: Schema.Types.ObjectId,
             ref: 'Project'
         },
+        //tên phase mà task thuộc về
+        taskPhase: { 
+            type: Schema.Types.ObjectId,
+            ref: 'ProjectPhase'
+        },
+        //thời gian ước lượng thông thường của task
+        estimateNormalTime: {
+            type: Number,
+        },
+        //thời gian ước lượng ít nhất để hoàn thành task
+        estimateOptimisticTime: {
+            type: Number,
+        },
+        //thời gian ước lượng nhiều nhất có thể cho phép để hoàn thành task
+        estimatePessimisticTime: {
+            type: Number,
+        },
+        //chi phí ước lượng thông thường của task
+        estimateNormalCost: {
+            type: Number,
+        },
+        //chi phí ước lượng nhiều nhất có thể cho phép của task
+        estimateMaxCost: {
+            type: Number,
+        },
+        //chi phí thực cho task đó
+        actualCost: {
+            type: Number,
+        },
     },
     {
         timestamps: true,

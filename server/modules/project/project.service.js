@@ -13,8 +13,7 @@ const { dateParse } = require(`../../helpers/functionHelper`);
 
 
 exports.get = async (portal, query) => {
-    let page = query.page;
-    let limit = query.limit;
+    let { page, limit, userId } = query;
     let options = {};
     if (query.limit) {
         // options = {
@@ -30,16 +29,24 @@ exports.get = async (portal, query) => {
         //     page: query.page
         // }
     }
+    options = {
+        ...options,
+        $or: [
+            { 'projectManager': userId },
+            { 'responsibleEmployees': userId },
+            { 'creator': userId }
+        ]
+    }
     let project;
     if (query.calledId === "paginate") {
-        console.log('CHIU LUON ROI DO')
         project = await Project(
             connect(DB_CONNECTION, portal)
         ).paginate(options, {
             page, limit,
             populate: [
                 { path: "projectManager", select: "_id name" },
-                { path: "responsibleEmployees", select: "_id name" }
+                { path: "responsibleEmployees", select: "_id name" },
+                { path: "creator", select: "_id name" }
             ]
         });
     }
@@ -47,9 +54,9 @@ exports.get = async (portal, query) => {
         project = await Project(connect(DB_CONNECTION, portal)).find(options)
             .populate({ path: "projectManager", select: "_id name" })
             .populate({ path: "responsibleEmployees", select: "_id name" })
+            .populate({ path: "creator", select: "_id name" })
             .populate({ path: "parent" });
     }
-    console.log(project)
     return project;
 }
 

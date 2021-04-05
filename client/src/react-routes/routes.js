@@ -168,7 +168,9 @@ import AnswerAuthQuestionPage from '../modules/auth/components/answerAuthQuestio
 import { Project } from '../modules/project/component/projects/index';
 import Phase from '../modules/project/component/phases/index';
 import PhaseDetail from '../modules/project/component/phases/detailPhase';
-import ProjectDetailForm from '../modules/project/component/projects/detailProject';
+import ProjectDetailPage from '../modules/project/component/projects/detailProjectPage';
+import ProjectReport from '../modules/project/component/reports/index';
+import ProjectEvaluation from '../modules/project/component/evaluations/index';
 import { UserGuide } from '../modules/user-guide/components';
 import AllTimeSheetLog from '../modules/task/task-dashboard/statistic/allTimeSheetLog';
 
@@ -2576,7 +2578,7 @@ class Routes extends Component {
                         path={"/project/project-details"}
                         pageName={"project_details"}
                         layout={Layout}
-                        component={ProjectDetailForm}
+                        component={ProjectDetailPage}
                     />
                     <PrivateRoute
                         isLoading={false}
@@ -2659,6 +2661,45 @@ class Routes extends Component {
                         layout={Layout}
                         component={Project}
                     />
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"/project/project-report"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/project/project-report",
+                                name: "project_report",
+                                icon: "fa fa-folder-open",
+                            }
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/project/project-report"}
+                        path={"/project/project-report"}
+                        pageName={"project_report"}
+                        layout={Layout}
+                        component={ProjectReport}
+                    />
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"/project/project-evaluation"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/project/project-evaluation",
+                                name: "project_evaluation",
+                                icon: "fa fa-folder-open",
+                            }
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/project/project-evaluation"}
+                        path={"/project/project-evaluation"}
+                        pageName={"project_evaluation"}
+                        layout={Layout}
+                        component={ProjectEvaluation}
+                    />
+
                     <PrivateRoute
                         isLoading={false}
                         key={"user-guide"}

@@ -1,99 +1,85 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { DataTableSetting, DatePicker, PaginateBar, SelectBox, SelectMulti, Tree, TreeTable, ExportExcel } from '../../../../common-components';
+import { DataTableSetting, DatePicker, PaginateBar, SelectBox, SelectMulti, Tree, TreeTable, ExportExcel, DeleteNotification } from '../../../../common-components';
 import { withTranslate } from 'react-redux-multilingual';
 import ValidationHelper from '../../../../helpers/validationHelper';
 import { ProjectActions } from "../../redux/actions";
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import { formatDate } from '../../../../helpers/formatDate';
+import { taskManagementActions } from '../../../task/task-management/redux/actions';
+import { ModalPerform } from '../../../task/task-perform/component/modalPerform';
 
 const TableTasksProject = (props) => {
     const [state, setState] = useState({
-        exampleName: "",
+        taskName: "",
         page: 1,
         limit: 5,
+        currentTaskId: null,
     })
-    const { project, translate, user } = props;
-    const { projectName, page, limit, currentRow } = state;
-
-    // khởi tạo dữ liệu TreeTable
-    let column = [
-        { name: translate('task.task_management.col_name'), key: "name" },
-        { name: translate('task.task_management.detail_description'), key: "description" },
-        { name: translate('task.task_management.col_organization'), key: "organization" },
-        { name: translate('task.task_management.col_project'), key: "project" },
-        { name: translate('task.task_management.col_priority'), key: "priority" },
-        { name: translate('task.task_management.responsible'), key: "responsibleEmployees" },
-        { name: translate('task.task_management.accountable'), key: "accountableEmployees" },
-        { name: translate('task.task_management.creator'), key: "creatorEmployees" },
-        { name: translate('task.task_management.col_start_date'), key: "startDate" },
-        { name: translate('task.task_management.col_end_date'), key: "endDate" },
-        { name: translate('task.task_management.col_status'), key: "status" },
-        { name: translate('task.task_management.col_progress'), key: "progress" },
-        { name: translate('task.task_management.col_logged_time'), key: "totalLoggedTime" }
-    ];
-    let data = [];
+    const currentProjectId = window.location.href.split('?id=')[1];
+    const { translate, currentProjectTasks, user } = props;
+    const { page, limit, taskName, currentTaskId } = state;
+    let units = []
+    if (user) units = user.organizationalUnitsOfUser;
 
     useEffect(() => {
-        props.getProjectsDispatch({ calledId: "paginate", page, limit });
-        props.getProjectsDispatch({ calledId: "all" });
         props.getAllUserInAllUnitsOfCompany();
     }, [])
 
-    const handleChangeProjectName = (e) => {
-        const { value } = e.target;
-        setState({
-            ...state,
-            projectName: value
-        });
-    }
+    // const handleChangeProjectName = (e) => {
+    //     const { value } = e.target;
+    //     setState({
+    //         ...state,
+    //         taskName: value
+    //     });
+    // }
 
-    const handleSubmitSearch = () => {
-        props.getExamples({
-            projectName,
-            limit,
-            page: 1
-        });
-        setState({
-            ...state,
-            page: 1
-        });
-    }
+    // const handleSubmitSearch = () => {
+    //     props.getExamples({
+    //         taskName,
+    //         limit,
+    //         page: 1
+    //     });
+    //     setState({
+    //         ...state,
+    //         page: 1
+    //     });
+    // }
 
-    const setPage = (pageNumber) => {
-        setState({
-            ...state,
-            page: parseInt(pageNumber)
-        });
+    // const setPage = (pageNumber) => {
+    //     setState({
+    //         ...state,
+    //         page: parseInt(pageNumber)
+    //     });
 
-        props.getProjectsDispatch({
-            callId: "paginate",
-            projectName,
-            limit,
-            page: parseInt(pageNumber)
-        });
-    }
+    //     props.getProjectsDispatch({
+    //         callId: "paginate",
+    //         taskName,
+    //         limit,
+    //         page: parseInt(pageNumber)
+    //     });
+    // }
 
-    const setLimit = (number) => {
-        setState({
-            ...state,
-            limit: parseInt(number),
-            page: 1
-        });
-        props.getExamples({
-            projectName,
-            limit: parseInt(number),
-            page: 1
-        });
-    }
+    // const setLimit = (number) => {
+    //     setState({
+    //         ...state,
+    //         limit: parseInt(number),
+    //         page: 1
+    //     });
+    //     props.getTasksByProject({
+    //         taskName,
+    //         limit: parseInt(number),
+    //         page: 1
+    //     });
+    // }
 
     const handleDelete = (id) => {
-        props.deleteProjectDispatch(id);
-        props.getProjectsDispatch({
-            projectName,
-            limit,
-            page: project && project.lists && project.lists.length === 1 ? page - 1 : page
-        });
+        // props.deleteProjectDispatch(id);
+        // props.getProjectsDispatch({
+        //     taskName,
+        //     limit,
+        //     page: project && project.lists && project.lists.length === 1 ? page - 1 : page
+        // });
     }
 
     const handleEdit = (project) => {
@@ -101,65 +87,98 @@ const TableTasksProject = (props) => {
             ...state,
             currentRow: project
         });
-        window.$('#modal-edit-project').modal('show');
+        window.$('#modal-edit-task').modal('show');
     }
 
-    const handleShowDetailInfo = (data) => {
+    const handleShowDetailInfo = (id) => {
+        console.log('show detail id', id)
         setState({
-            ...state,
-            projectDetail: data
-        });
-
-        window.$(`#modal-detail-project`).modal('show');
+            currentTaskId: id
+        })
+        window.$(`#modelPerformTask${id}`).modal('show');
     }
 
-    const handleOpenCreateForm = () => {
-        window.$('#modal-create-project').modal('show')
-    }
+    // let lists = [];
+    // if (project) {
+    //     lists = project.data.paginate
+    // }
 
-
-    let lists = [];
-    if (project) {
-        lists = project.data.paginate
-    }
-
-    const totalPage = project && project.data.totalPage;
+    // const totalPage = project && project.data.totalPage;
 
     return (
         <React.Fragment>
-            <div id="tree-table-container" style={{ marginTop: '20px' }}>
-                <TreeTable
-                    tableId={"tableId"}
-                    behaviour="show-children"
-                    column={column}
-                    data={data}
-                    titleAction={{
-                        edit: translate('task.task_management.action_edit'),
-                        delete: translate('task.task_management.action_delete'),
-                        store: translate('task.task_management.action_store'),
-                        restore: translate('task.task_management.action_restore'),
-                        add: translate('task.task_management.action_add'),
-                        startTimer: translate('task.task_management.action_start_timer'),
-                    }}
-                    funcEdit={() => { }}
-                    funcAdd={() => { }}
-                    funcStartTimer={() => { }}
-                    funcStore={() => { }}
-                    funcDelete={() => { }}
+            {
+                currentTaskId &&
+                <ModalPerform
+                    units={units}
+                    id={currentTaskId}
                 />
-            </div>
+            }
+            <table id="project-table" className="table table-striped table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>{translate('task.task_management.col_name')}</th>
+                        <th>{translate('task.task_management.responsible')}</th>
+                        <th>{translate('task.task_management.accountable')}</th>
+                        <th>{translate('task.task_management.creator')}</th>
+                        <th>{translate('task.task_management.col_status')}</th>
+                        <th>{translate('task.task_management.col_progress')}</th>
+                        <th style={{ width: "120px", textAlign: "center" }}>
+                            {translate('table.action')}
+                            <DataTableSetting
+                                tableId="example-table"
+                                columnArr={[
+                                    translate('manage_example.index'),
+                                    translate('manage_example.exampleName'),
+                                    translate('manage_example.description'),
+                                    "Mã số",
+                                ]}
+                            // limit={limit}
+                            // hideColumnOption={true}
+                            // setLimit={setLimit}
+                            />
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {(currentProjectTasks && currentProjectTasks.length !== 0) &&
+                        currentProjectTasks.map((taskItem, index) => (
+                            <tr key={index}>
+                                <td>{taskItem?.name}</td>
+                                <td>{taskItem?.responsibleEmployees.map(o => o.name).join(", ")}</td>
+                                <td>{taskItem?.accountableEmployees?.map(o => o.name).join(", ")}</td>
+                                <td>{taskItem?.creator?.name}</td>
+                                <td>{taskItem?.status}</td>
+                                <td>{taskItem?.progress}%</td>
+                                <td style={{ textAlign: "center" }}>
+                                    <a className="edit text-green" style={{ width: '5px' }} onClick={() => handleShowDetailInfo(taskItem?._id)}><i className="material-icons">visibility</i></a>
+                                    <a className="edit text-yellow" style={{ width: '5px' }} onClick={() => handleEdit(taskItem)}><i className="material-icons">edit</i></a>
+                                    <DeleteNotification
+                                        content={translate('project.delete')}
+                                        data={{
+                                            id: taskItem?._id,
+                                            info: taskItem?.name
+                                        }}
+                                        func={handleDelete}
+                                    />
+                                </td>
+                            </tr>
+                        ))
+                    }
+                </tbody>
+            </table>
         </React.Fragment>
     );
 }
 
 function mapStateToProps(state) {
-    const project = state.project;
-    return { project }
+    const { project, user, tasks } = state;
+    return { project, user, tasks }
 }
 
 const mapDispatchToProps = {
-    getProjectsDispatch: ProjectActions.getProjectsDispatch,
     deleteProjectDispatch: ProjectActions.deleteProjectDispatch,
     getAllUserInAllUnitsOfCompany: UserActions.getAllUserInAllUnitsOfCompany,
+    getTasksByProject: taskManagementActions.getTasksByProject,
 }
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(TableTasksProject));

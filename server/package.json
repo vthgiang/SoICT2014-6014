@@ -19,7 +19,9 @@
     "init-sample-company": "node seed/initSampleCompanyDB.js",
     "init-sample-organizational-unit-kpi": "node seed/initOrganizationalUnitKPIData.js",
     "init-human-resource-data": "node seed/initHumanResourceData.js",
-    "init": "node seed/initDB.js; node seed/initSampleCompanyDB.js; node seed/initOrganizationalUnitKPIData.js; node seed/initHumanResourceData.js"
+    "init": "node seed/initDB.js; node seed/initSampleCompanyDB.js; node seed/initOrganizationalUnitKPIData.js; node seed/initHumanResourceData.js",
+    "y-init": "yarn init && yarn db && yarn sc",
+    "y-init-full": "yarn init && yarn db && yarn sc && yarn sp && yarn skpi && yarn shr"
   },
   "keywords": [],
   "author": "",

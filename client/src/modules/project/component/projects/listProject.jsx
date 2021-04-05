@@ -7,6 +7,8 @@ import ProjectEditForm from './editProject';
 import ProjectDetailForm from './detailProject';
 import { ProjectActions } from "../../redux/actions";
 import { UserActions } from '../../../super-admin/user/redux/actions';
+import { getStorage } from "../../../../config";
+import { checkIfAbleToCRUDProject } from "./functionHelper";
 
 function ListProject(props) {
     // Khởi tạo state
@@ -18,17 +20,18 @@ function ListProject(props) {
         projectDetail: null,
     })
     const { project, translate, user } = props;
+    const userId = getStorage("userId");
     const { projectName, page, limit, currentRow, projectDetail } = state;
 
     useEffect(() => {
-        props.getProjectsDispatch({ calledId: "paginate", page, limit });
-        props.getProjectsDispatch({ calledId: "all" });
+        props.getProjectsDispatch({ calledId: "paginate", page, limit, userId });
+        props.getProjectsDispatch({ calledId: "all", userId });
         props.getAllUserInAllUnitsOfCompany();
     }, [])
 
     const handleCreateProject = () => {
-        props.getProjectsDispatch({ calledId: "paginate", page, limit });
-        props.getProjectsDispatch({ calledId: "all" });
+        props.getProjectsDispatch({ calledId: "paginate", page, limit, userId });
+        props.getProjectsDispatch({ calledId: "all", userId });
     }
 
     const handleChangeProjectName = (e) => {
@@ -150,15 +153,18 @@ function ListProject(props) {
                         </div>
 
                         {/* Button thêm mới */}
-                        <div className="dropdown pull-right" style={{ marginBottom: 15 }}>
-                            <button type="button" className="btn btn-success dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('project.add_btn_new')}>{translate('project.add_btn_new')}</button>
-                            <ul className="dropdown-menu pull-right" style={{ marginTop: 0 }}>
-                                <li><a style={{ cursor: 'pointer' }} onClick={handleOpenCreateForm} title={translate('project.add_btn_normal')}>
-                                    {translate('project.add_btn_normal')}</a></li>
-                                <li><a style={{ cursor: 'pointer' }} onClick={() => window.$('#modal-import-file-project-hooks').modal('show')} title={translate('project.add_btn_scheduling')}>
-                                    {translate('project.add_btn_scheduling')}</a></li>
-                            </ul>
-                        </div>
+                        {checkIfAbleToCRUDProject({ project, user }) &&
+                            <div className="dropdown pull-right" style={{ marginTop: 5 }}>
+                                <button type="button" className="btn btn-success dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('project.add_btn_new')}>{translate('project.add_btn_new')}</button>
+                                <ul className="dropdown-menu pull-right" style={{ marginTop: 0 }}>
+                                    <li><a style={{ cursor: 'pointer' }} onClick={handleOpenCreateForm} title={translate('project.add_btn_normal')}>
+                                        {translate('project.add_btn_normal')}</a></li>
+                                    <li><a style={{ cursor: 'pointer' }} onClick={() => window.$('#modal-import-file-project-hooks').modal('show')} title={translate('project.add_btn_scheduling')}>
+                                        {translate('project.add_btn_scheduling')}</a></li>
+                                </ul>
+                            </div>
+                        }
+
                     </div>
 
                     <table id="project-table" className="table table-striped table-bordered table-hover">
@@ -166,6 +172,7 @@ function ListProject(props) {
                             <tr>
                                 <th>{translate('project.name')}</th>
                                 <th>{translate('project.code')}</th>
+                                <th>{translate('project.creator')}</th>
                                 <th>{translate('project.manager')}</th>
                                 <th>{translate('project.member')}</th>
                                 <th style={{ width: "120px", textAlign: "center" }}>
@@ -191,19 +198,20 @@ function ListProject(props) {
                                     <tr key={index}>
                                         <td>{projectItem?.name}</td>
                                         <td>{projectItem?.code}</td>
+                                        <td>{projectItem?.creator?.name}</td>
                                         <td>{projectItem?.projectManager.map(o => o.name).join(", ")}</td>
                                         <td>{projectItem?.responsibleEmployees.map(o => o.name).join(", ")}</td>
                                         <td style={{ textAlign: "center" }}>
                                             <a className="edit text-green" style={{ width: '5px' }} onClick={() => handleShowDetailInfo(projectItem)}><i className="material-icons">visibility</i></a>
-                                            <a className="edit text-yellow" style={{ width: '5px' }} onClick={() => handleEdit(projectItem)}><i className="material-icons">edit</i></a>
-                                            <DeleteNotification
+                                            {checkIfAbleToCRUDProject({ project, user, currentProjectId: projectItem._id }) && <a className="edit text-yellow" style={{ width: '5px' }} onClick={() => handleEdit(projectItem)}><i className="material-icons">edit</i></a>}
+                                            {checkIfAbleToCRUDProject({ project, user, currentProjectId: projectItem._id }) && <DeleteNotification
                                                 content={translate('project.delete')}
                                                 data={{
                                                     id: projectItem?._id,
                                                     info: projectItem?.name
                                                 }}
                                                 func={handleDelete}
-                                            />
+                                            />}
                                         </td>
                                     </tr>
                                 ))

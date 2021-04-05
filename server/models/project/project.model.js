@@ -82,6 +82,10 @@ const ProjectSchema = new Schema(
             type: Schema.Types.ObjectId,
             ref: "User",
         }],
+        creator: {
+            type: Schema.Types.ObjectId,
+            ref: "User",
+        },
     },
     {
         timestamps: true,
