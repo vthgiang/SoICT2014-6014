@@ -1,9 +1,9 @@
 const mongoose = require("mongoose");
-const { generateUniqueCode } = require("../../helpers/functionHelper");
 const Schema = mongoose.Schema;
+const mongoosePaginate = require('mongoose-paginate-v2');
+const { generateUniqueCode } = require("../../helpers/functionHelper");
 
-// Model quản lý thông tin của một công việc và liên kết với tài liệu, kết quả thực hiện công việc
-const TaskSchema = new Schema(
+const ProjectTaskSchema = new Schema(
     {
         code: {
             type: String,
@@ -160,7 +160,6 @@ const TaskSchema = new Schema(
                 "finished",
                 "delayed",
                 "canceled",
-                "requested_to_close"
             ],
         },
         taskTemplate: {
@@ -581,39 +580,6 @@ const TaskSchema = new Schema(
                         ],
                     },
                 ],
-                timesheetLogs: [ // Lưu thời gian bấm giờ của một hoạt động
-                {
-                    creator: {
-                        // Người thực hiện nào tiến hành bấm giờ
-                        type: Schema.Types.ObjectId,
-                        ref: "User",
-                    },
-                    startedAt: {
-                        // Lưu dạng miliseconds. Thời gian khi người dùng nhất nút bắt đầu bấm giờ
-                        type: Date,
-                    },
-                    stoppedAt: {
-                        // Lưu dạng miliseconds. Thời gian kết thúc bấm giờ. Khi stoppedAt-startedAt quá 4 tiếng, hỏi lại người dùng stop chính xác vào lúc nào và cập nhật lại stoppedAt.
-                        type: Date,
-                    },
-                    description: {
-                        // Mô tả ngắn gọn việc đã làm khi log
-                        type: String,
-                    },
-                    duration: {
-                        type: Number,
-                    },
-                    autoStopped: { // 1: Tắt bấm giờ bằng tay, 2: Tắt bấm giờ tự động với thời gian hẹn trc, 3: add log timer
-                        type: Number,
-                        default: 1,
-                        enum: [1, 2, 3],
-                    },
-                    acceptLog: {
-                        type: Boolean,
-                        default: true
-                    }
-                },
-            ],
             },
         ],
         taskComments: [
@@ -704,45 +670,46 @@ const TaskSchema = new Schema(
                 },
             },
         ],
-
         taskProject: { //tên dự án công việc thuộc về
             type: Schema.Types.ObjectId,
             ref: 'Project'
+        },
+        //tên phase mà task thuộc về
+        taskPhase: { 
+            type: Schema.Types.ObjectId,
+            ref: 'ProjectPhase'
+        },
+        //thời gian ước lượng thông thường của task
+        estimateNormalTime: {
+            type: Number,
+        },
+        //thời gian ước lượng ít nhất để hoàn thành task
+        estimateOptimisticTime: {
+            type: Number,
+        },
+        //thời gian ước lượng nhiều nhất có thể cho phép để hoàn thành task
+        estimatePessimisticTime: {
+            type: Number,
+        },
+        //chi phí ước lượng thông thường của task
+        estimateNormalCost: {
+            type: Number,
+        },
+        //chi phí ước lượng nhiều nhất có thể cho phép của task
+        estimateMaxCost: {
+            type: Number,
+        },
+        //chi phí thực cho task đó
+        actualCost: {
+            type: Number,
         },
     },
     {
         timestamps: true,
     }
 );
-
+ProjectTaskSchema.plugin(mongoosePaginate);
 module.exports = (db) => {
-    if (!db.models.Task) return db.model("Task", TaskSchema);
-    return db.models.Task;
+    if (!db.models.ProjectTask) return db.model("ProjectTask", ProjectTaskSchema);
+    return db.models.ProjectTask;
 };
-
-/*
-HƯỚNG DẪN:
-1. Phân quyền cho các trường được edit:
-Mô tả công việc: Thực hiện + quản lý
-Phân định trách nhiệm: Quản lý
-Liên kết mục tiêu: Người thực hiện
-Ngày bắt đầu, kết thúc: Quản lý
-Mức độ hoàn thành: Thực hiện + Quản lý
-Thông tin công việc: Thực hiện + Quản lý
-Thời gian quá hạn, thời gian làm việc, và các trường tự động khác: không ai được sửa
-
-1. Thiết kế giao diện: tạo 3 component
-Xem thông tin chung
-Edit cho Quản lý
-Edit cho Người thực hiện
-
-
-3. Đánh giá điểm cho các vài trò
-Điểm công việc được tính tự động (chưa kết thúc => mặc định là -1)
-Có ba loại điểm: automaticPoint, employeePoint, approvedPoint lần lượt cho các đối tượng như sau:
-Điểm cho người thực hiện: điểm công việc tự động + tự nhận + quản lý chấm. Ở đây sẽ suggest cho quản lý chấm điểm là (điểm công việc tự động + điểm thực hiện tự nhận)/2
-Điểm tư vấn: điểm công việc tự động + tự nhận + quản lý chấm. Ở đây sẽ suggest cho quản lý chấm điểm là (điểm công việc tự động + điểm tư vấn tự nhận)/2
-Điểm quản lý: điểm công việc tự động + tự nhận + (điểm công việc + điểm tự nhận)/2. Lưu ý approvedPoint của quản lý là (điểm công việc + điểm quản lý tự nhận)/2
-Điểm quan sát: không có
-Lưu ý: Tất cả các điểm đều được công khai
- */

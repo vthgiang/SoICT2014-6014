@@ -3251,7 +3251,7 @@ export default {
                     "Đơn vị phối hợp thực hiện công việc",
                 not_collaborated_with_organizational_units:
                     "Không có đơn vị phối hợp",
-                task_empty_employee: "Chưa có người tham gia phối hợp",
+                task_empty_employee: "Không có người tham gia",
                 delete_eval: "Xóa đánh giá tháng này",
                 delete_eval_title: "Bạn có chắc chắn muốn xóa đánh giá này?",
                 delete_evaluation_success: "Xóa đánh giá thành công",

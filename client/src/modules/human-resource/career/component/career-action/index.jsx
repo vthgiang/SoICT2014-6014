@@ -151,7 +151,7 @@ function CareerAction(props) {
                                 careerId={currentNode.original._id}
                                 careerName={currentNode.text}
                                 careerCode={currentNode.original.code}
-                                careerParent={(currentNode.parent !== "#") ? currentNode.parent : undefined}
+                                careerParent={(currentNode.parent !== "#") ? currentNode.parent : []}
                                 careerPackage={currentNode.original.package ? currentNode.original.package : ""}
                                 actionLabel={currentNode.original.label.map(e => e._id)}
                                 isLabel={currentNode.original.isLabel}

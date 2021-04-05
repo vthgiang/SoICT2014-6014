@@ -77,7 +77,7 @@ const LoadTaskChart = (props) => {
                                 improcessDay = 0;
                             }
                             data[j] += Math.round(improcessDay /
-                                (improcessTask[i] && improcessTask[i].accountableEmployees && improcessTask[i].accountableEmployees.length + improcessTask[i] && improcessTask[i].consultedEmployees && improcessTask[i].consultedEmployees.length + improcessTask[i] && improcessTask[i].responsibleEmployees && improcessTask[i].responsibleEmployees.length))
+                                (improcessTask[i].accountableEmployees.length + improcessTask[i].consultedEmployees.length + improcessTask[i].responsibleEmployees.length))
                         }
                     }
 

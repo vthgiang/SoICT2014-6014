@@ -21,15 +21,15 @@ class EmployeeInOrganizationalUnitEditForm extends Component {
         if (nextProps._id !== prevState._id) {
             let roleManagers = nextProps.department[0].managers.map(x => {
                 let infoRole = nextProps.role.find(y => y._id === x._id);
-                return { id: x._id, name: x.name, parents: x.parents, users: infoRole.users.map(y => y.userId._id) }
+                return { id: x._id, name: x.name, parents: x.parents, users: infoRole.users.map(y => y?.userId?._id) }
             }),
                 roleDeputyManagers = nextProps.department[0].deputyManagers.map(x => {
                     let infoRole = nextProps.role.find(y => y._id === x._id);
-                    return { id: x._id, name: x.name, parents: x.parents, users: infoRole.users.map(y => y.userId._id) }
+                    return { id: x._id, name: x.name, parents: x.parents, users: infoRole.users.map(y => y?.userId?._id) }
                 }),
                 roleEmployees = nextProps.department[0].employees.map(x => {
                     let infoRole = nextProps.role.find(y => y._id === x._id);
-                    return { id: x._id, name: x.name, parents: x.parents, users: infoRole.users.map(y => y.userId._id) }
+                    return { id: x._id, name: x.name, parents: x.parents, users: infoRole.users.map(y => y?.userId?._id) }
                 });
             return {
                 ...prevState,
@@ -201,7 +201,7 @@ class EmployeeInOrganizationalUnitEditForm extends Component {
                                         infoManager.forEach(uId => {
                                             let roleName = [];
                                             getRolePosition.forEach(rl => {
-                                                if (rl.users.some(check => check.userId._id === uId._id)) {
+                                                if (rl.users.some(check => check?.userId?._id === uId._id)) {
                                                     roleName = [...roleName, rl.name];
                                                 }
                                             })
@@ -274,7 +274,7 @@ class EmployeeInOrganizationalUnitEditForm extends Component {
                                         infoDeputyManagers.forEach(uId => {
                                             let roleName = [];
                                             getRolePosition.forEach(rl => {
-                                                if (rl.users.some(check => check.userId._id === uId._id)) {
+                                                if (rl.users.some(check => check?.userId?._id === uId._id)) {
                                                     roleName = [...roleName, rl.name];
                                                 }
                                             })
@@ -346,7 +346,7 @@ class EmployeeInOrganizationalUnitEditForm extends Component {
                                     infoEmployee.forEach(uId => {
                                         let roleName = [];
                                         getRolePosition.forEach(rl => {
-                                            if (rl.users.some(check => check.userId._id === uId._id)) {
+                                            if (rl.users.some(check => check?.userId?._id === uId._id)) {
                                                 roleName = [...roleName, rl.name];
                                             }
                                         })

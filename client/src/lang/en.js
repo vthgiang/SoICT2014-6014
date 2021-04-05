@@ -2976,8 +2976,7 @@ export default {
                     "Units that have collaborated",
                 not_collaborated_with_organizational_units:
                     "No units that have collaborated",
-                task_empty_employee:
-                    "Your organization unit has no participants",
+                task_empty_employee: "No participants",
                 delete_eval: "Delete evaluation",
                 delete_eval_title: "Are you sure to delete this evaluation?",
 

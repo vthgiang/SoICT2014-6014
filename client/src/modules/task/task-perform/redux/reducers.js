@@ -1,4 +1,5 @@
 import { performTaskConstants } from "./constants";
+import _isEmpty from 'lodash/isEmpty';
 export function performtasks(state = {}, action) {
     switch (action.type) {
         case performTaskConstants.GETTASK_BYID_REQUEST:
@@ -148,9 +149,18 @@ export function performtasks(state = {}, action) {
             };
         case performTaskConstants.CREATE_TASK_ACTION_SUCCESS:
             var taskActions = { ...state.task, taskActions: action.payload.data.content }
+            let timer = {};
+
+            if (state.currentTimer && state.currentTimer._id === taskActions._id) {
+                timer = {
+                    ...state.currentTimer,
+                    taskActions: action.payload.data.content,
+                }
+            }
             return {
                 ...state,
-                task: taskActions
+                task: taskActions,
+                currentTimer: _isEmpty(timer) ? state.currentTimer : timer
             }
         case performTaskConstants.CREATE_TASK_ACTION_FAILURE:
             return {
@@ -180,9 +190,18 @@ export function performtasks(state = {}, action) {
             };
         case performTaskConstants.EDIT_TASK_ACTION_SUCCESS:
             var taskActions = { ...state.task, taskActions: action.payload.data.content }
+            let timerEdit = {};
+
+            if (state.currentTimer && state.currentTimer._id === taskActions._id) {
+                timerEdit = {
+                    ...state.currentTimer,
+                    taskActions: action.payload.data.content,
+                }
+            }
             return {
                 ...state,
-                task: taskActions
+                task: taskActions,
+                currentTimer: _isEmpty(timerEdit) ? state.currentTimer : timerEdit
             }
         case performTaskConstants.EDIT_TASK_ACTION_FAILURE:
             return {
@@ -282,9 +301,18 @@ export function performtasks(state = {}, action) {
             }
         case performTaskConstants.DELETE_TASK_ACTION_SUCCESS:
             var taskActions = { ...state.task, taskActions: action.payload.data.content }
+            let newTimer = {};
+
+            if (state.currentTimer && state.currentTimer._id === taskActions._id) {
+                newTimer = {
+                    ...state.currentTimer,
+                    taskActions: action.payload.data.content,
+                }
+            }
             return {
                 ...state,
-                task: taskActions
+                task: taskActions,
+                currentTimer: _isEmpty(newTimer) ? state.currentTimer : newTimer
             }
         case performTaskConstants.DELETE_TASK_ACTION_FAILURE:
             return {

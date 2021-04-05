@@ -192,7 +192,7 @@ class QualificationChart extends Component {
                                 organizationalUnitsName && organizationalUnitsName.length < 2 ?
                                     <>
                                         <span>{` ${translate('task.task_dashboard.of_unit')}`}</span>
-                                        <span style={{ fontWeight: "bold" }}>{` ${organizationalUnitsName?.[0]}`}</span>
+                                        <span>{` ${organizationalUnitsName?.[0]}`}</span>
                                     </>
                                     :
                                     <span onClick={() => showListInSwal(organizationalUnitsName, translate('general.list_unit'))} style={{ cursor: 'pointer' }}>

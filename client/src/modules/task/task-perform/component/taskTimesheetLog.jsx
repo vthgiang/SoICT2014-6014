@@ -2,15 +2,17 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import moment from 'moment';
-import { DatePicker, TimePicker, ErrorLabel } from '../../../../common-components';
+import { DatePicker, TimePicker, ErrorLabel, SelectBox } from '../../../../common-components';
 import { getStorage } from "../../../../config";
 
 import { CallApiStatus } from '../../../auth/redux/reducers'
 import TextareaAutosize from 'react-textarea-autosize';
 import { performTaskAction } from './../redux/actions';
-
+import ValidationHelper from '../../../../helpers/validationHelper';
 import './taskTimesheetLog.css';
-import Swal from 'sweetalert2'
+import Swal from 'sweetalert2';
+import { htmlToText } from 'html-to-text';
+import _isEqual from 'lodash/isEqual';
 class TaskTimesheetLog extends Component {
     constructor(props) {
         super(props);
@@ -23,6 +25,9 @@ class TaskTimesheetLog extends Component {
             disabled: false,
             endDate: this.formatDate(Date.now()),
             dateStop: this.formatDate(Date.now()),
+            taskActionStartTimer: "",
+            taskActionList: [],
+            errorTaskAction: undefined
         }
         this.sendQuery = false;
     }
@@ -59,8 +64,26 @@ class TaskTimesheetLog extends Component {
         this.callApi(); // Khi logout rồi login vào website (hoặc login mới), chưa gọi API lấy task đang được bấm giờ trong componentDidMount -> Cần gọi lại
 
         if (nextProps.performtasks && nextProps.performtasks.currentTimer) {
+            let { taskActions } = nextProps.performtasks.currentTimer;
+            const { taskActionList } = this.state;
+            let taskActionsSelectBox = [{ value: "", text: "--- Chọn hành động ---" }];
+
+            if (taskActions) {
+                taskActions = taskActions.map(o => ({ value: o._id, text: htmlToText(o.description) }));
+                taskActionsSelectBox = [...taskActionsSelectBox, ...taskActions];
+            }
+            // Cập nhạt lại selectbox bấm giwof cho hoạt động khi hoạt động có sự thay đổi
+            if (!_isEqual(taskActionList, taskActionsSelectBox)) {
+                this.setState({
+                    taskActionList: taskActionsSelectBox,
+                })
+            }
+
             if (!this.timer) {
-                this.setState({ showEndDate: false });
+                this.setState({
+                    showEndDate: false,
+                });
+
                 this.timer = setInterval(() => this.setState(state => {
                     return {
                         ...state,
@@ -117,6 +140,7 @@ class TaskTimesheetLog extends Component {
 
     stopTimer = async () => {
         const { performtasks } = this.props;
+        const { taskActionStartTimer } = this.state;
         let stoppedAt = new Date(); // mặc định lấy thời điểm hiện tại
         let autoStopped = 1;
         let check = true;
@@ -144,14 +168,16 @@ class TaskTimesheetLog extends Component {
             description: this.state.description,
             timesheetLog: performtasks.currentTimer.timesheetLogs[0]._id,
             stoppedAt,
-            autoStopped
+            autoStopped,
+            taskActionStartTimer
         };
         if (check) {
             await this.props.stopTimer(performtasks.currentTimer._id, timer);
             this.setState(state => {
                 return {
                     ...state,
-                    showModal: ""
+                    showModal: "",
+                    taskActionStartTimer: ""
                 }
             });
         }
@@ -263,12 +289,26 @@ class TaskTimesheetLog extends Component {
         }
     }
 
+    handleSelectTaskAction = (value) => {
+        const { translate } = this.props;
+
+        value = value[0];
+        let { message } = ValidationHelper.validateEmpty(translate, value);
+
+        this.setState({
+            ...this.state,
+            taskActionStartTimer: value,
+            errorTaskAction: message
+        })
+    }
+
     render() {
 
         const { translate, performtasks, auth } = this.props;
-        const { showEndDate, disabled, errorOnEndDate, currentUser, time } = this.state
+        const { showEndDate, disabled, errorOnEndDate, currentUser, time, taskActionList, taskActionStartTimer, errorTaskAction } = this.state
         const currentTimer = performtasks.currentTimer;
         const a = this.getDiffTime(this.state.time, currentTimer?.timesheetLogs[0].startedAt);
+
         return (
             <React.Fragment>
                 {
@@ -277,17 +317,18 @@ class TaskTimesheetLog extends Component {
                         <div className="timesheet-box" id={currentUser} >
                             <div className="time">
                                 <span>
-                                    <i className="fa fa-stop-circle-o fa-lg" style={{ color: "red", cursor: "pointer" }} aria-hidden="true" title="Dừng bấm giờ" onClick={this.handleStopTimer}></i>
+                                    <i className="fa fa-cog" aria-hidden="true" style={{ cursor: "pointer" }} title="Dừng bấm giờ" onClick={this.handleStopTimer}></i>
+                                    {/* <i className="fa fa-stop-circle-o fa-lg" style={{ color: "red", cursor: "pointer" }} aria-hidden="true" title="Dừng bấm giờ" onClick={this.handleStopTimer}></i> */}
                                 </span>
-                                <span>&nbsp; {this.showTiming(a)}</span>
+                                <span>&nbsp;&nbsp; {this.showTiming(a)}</span>
                                 <a style={{ position: 'absolute', right: '10px' }} href={`/task?taskId=${currentTimer._id}`}><i className="fa fa-arrow-circle-right"></i></a>
                             </div>
                             {this.state.showModal === auth.user.id &&
                                 <React.Fragment>
-                                    <h4 style={{ marginTop: '10px' }}>{currentTimer.name}</h4>
-                                    <form>
+                                    <h4 className="task-name">{currentTimer.name}</h4>
+                                    <form style={{ marginBottom: '5px' }}>
                                         <input type="checkbox" id="stoppedAt" name="stoppedAt" onChange={this.endDate} />
-                                        <label htmlFor="stoppedAt">&nbsp;Tự chọn ngày giờ kết thúc công việc</label>
+                                        <label htmlFor="stoppedAt">&nbsp;Hẹn giờ kết thúc bấm giờ công việc</label>
                                     </form>
 
                                     {showEndDate &&
@@ -305,10 +346,21 @@ class TaskTimesheetLog extends Component {
                                             />
                                         </div>
                                     }
-                                    <br />
+                                    <div className="form-group task-action">
+                                        <label>Bấm giờ cho hoạt động <span className="text-red">*</span></label>
+                                        <SelectBox
+                                            id={`action-timer-${currentTimer._id}`}
+                                            className="form-control select2"
+                                            style={{ width: "100%" }}
+                                            value={taskActionStartTimer}
+                                            items={taskActionList}
+                                            onChange={this.handleSelectTaskAction}
+                                        />
+                                        <ErrorLabel content={errorTaskAction} />
+                                    </div>
                                     <label>Mô tả công việc đã làm (*)</label>
                                     <TextareaAutosize
-                                        style={{ width: '100%' }}
+                                        style={{ width: '100%', marginBottom: '5px' }}
                                         placeholder={translate("task.task_perform.enter_description")}
                                         minRows={5}
                                         maxRows={20}
@@ -320,8 +372,8 @@ class TaskTimesheetLog extends Component {
                                             })
                                         }}
                                     />
-                                    <button className="btn btn-primary" style={{ marginRight: 5 }} disabled={disabled} onClick={this.stopTimer}>Lưu</button>
-                                    <button className="btn btn-danger" onClick={this.resumeTimer}>Hủy</button>
+                                    <button className="btn btn-primary" style={{ marginRight: 5 }} disabled={disabled || taskActionStartTimer ? false : true} onClick={this.stopTimer}><i className="fa fa-floppy-o" aria-hidden="true" style={{ color: "#fff", marginRight: '5px' }}></i>Lưu bấm giờ</button>
+                                    <button className="btn btn-danger" onClick={this.resumeTimer}><i className="fa fa-caret-right" aria-hidden="true" style={{ color: "#fff", marginRight: '5px', fontSize: '18px' }}></i>Tiếp tục bấm giờ</button>
                                 </React.Fragment>
                             }
                         </div>

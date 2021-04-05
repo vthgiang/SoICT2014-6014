@@ -568,7 +568,7 @@ class MainDashboardUnit extends Component {
                                             arrayUnitForUrgentChart && arrayUnitForUrgentChart.length < 2 ?
                                                 <>
                                                     <span>{` ${translate('task.task_dashboard.of_unit')}`}</span>
-                                                    <span style={{ fontWeight: "bold" }}>{` ${this.getUnitName(listUnitSelect, arrayUnitForUrgentChart).map(o => o).join(", ")}`}</span>
+                                                    <span>{` ${this.getUnitName(listUnitSelect, arrayUnitForUrgentChart).map(o => o).join(", ")}`}</span>
                                                 </>
                                                 :
                                                 <span onClick={() => this.showUnitTask(listUnitSelect, arrayUnitForUrgentChart)} style={{ cursor: 'pointer' }}>
