@@ -16,7 +16,7 @@ function ArrangeVehiclesAndGoods(props) {
                 <table className={"tableTest table-bordered table-hover not-sort"}>
                     <thead>
                         <tr className="word-no-break">
-                            <th colSpan={4} rowSpan={3} className={"first-column"}>{"Yêu cầu vận chuyển"}</th>
+                            <th colSpan={6} rowSpan={3}>{"Yêu cầu vận chuyển"}</th>
                             <th colSpan={2}>{"Xe 1"}</th>
                             <th colSpan={2}>{"Xe 1"}</th>
                             <th colSpan={2}>{"Xe 1"}</th>
@@ -64,11 +64,13 @@ function ArrangeVehiclesAndGoods(props) {
                         </tr>
                     </thead>
                     <tbody className="transport-special-row">
-                    <tr>
+                    <tr className="word-no-break">
                         <th>{"Mã yêu cầu"}</th>
                         <td>{"123"}</td>
                         <th>{"Loại yêu cầu"}</th>
                         <td>{"Giao hàng"}</td>
+                        <th>{"Hành động"}</th>
+                        <td>{"Xem"}</td>
                         <td colSpan={2} rowSpan={3} key={"2"} className="tooltip-checkbox">
                             <span className="icon" title={"alo"} style={{ backgroundColor: "white"}}></span>
                             <span className="tooltiptext">
@@ -78,75 +80,26 @@ function ArrangeVehiclesAndGoods(props) {
                             </span>
                         </td>
                     </tr>
-                    <tr>
+                    <tr className="word-no-break">
                         <th>{"Điểm nhận"}</th>
-                        <td>{"Bách Khoa"}</td>
-                        <th>{"Điểm giao"}</th>
-                        <td>{"Thái Hà"}</td>
-                    </tr>
-                    <tr>
+                        <td colSpan={3}>{"Bách Khoa k k k k k k k k k  k k k k k k k k k "}</td>
                         <th>{"Khối lượng"}</th>
                         <td>{"100"}</td>
-                        <th>{"Thể tích"}</th>
-                        <td>{"1000"}</td>
                     </tr>
-                    
-                    <tr>
-                        <th>{"Mã yêu cầu"}</th>
-                        <td>{"123"}</td>
-                        <th>{"Loại yêu cầu"}</th>
-                        <td>{"Giao hàng"}</td>
-                        <td colSpan={2} rowSpan={3} key={"2"} className="tooltip-checkbox">
-                            <span className="icon" title={"alo"} style={{ backgroundColor: "white"}}></span>
-                            <span className="tooltiptext">
-                                <a style={{ color: "white" }} 
-                                    // onClick={() => this.handleShowDetailManufacturingCommand(command)}
-                                >{"1"}</a>
-                            </span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>{"Điểm nhận"}</th>
-                        <td>{"Bách Khoa"}</td>
+                    <tr className="word-no-break">
                         <th>{"Điểm giao"}</th>
-                        <td>{"Thái Hà"}</td>
-                    </tr>
-                    <tr>
-                        <th>{"Khối lượng"}</th>
-                        <td>{"100"}</td>
+                        <td colSpan={3}>{"Thái Hà"}</td>
                         <th>{"Thể tích"}</th>
                         <td>{"1000"}</td>
                     </tr>
 
-                    <tr>
+                    <tr className="word-no-break">
                         <th>{"Mã yêu cầu"}</th>
                         <td>{"123"}</td>
                         <th>{"Loại yêu cầu"}</th>
                         <td>{"Giao hàng"}</td>
-                        <td colSpan={2} rowSpan={3} key={"2"} className="tooltip-checkbox">
-                            <span className="icon" title={"alo"} style={{ backgroundColor: "white"}}></span>
-                            <span className="tooltiptext">
-                                <a style={{ color: "white" }} 
-                                    // onClick={() => this.handleShowDetailManufacturingCommand(command)}
-                                >{"1"}</a>
-                            </span>
-                        </td>
-                        <td colSpan={2} rowSpan={3} key={"2"} className="tooltip-checkbox">
-                            <span className="icon" title={"alo"} style={{ backgroundColor: "white"}}></span>
-                            <span className="tooltiptext">
-                                <a style={{ color: "white" }} 
-                                    // onClick={() => this.handleShowDetailManufacturingCommand(command)}
-                                >{"1"}</a>
-                            </span>
-                        </td>
-                        <td colSpan={2} rowSpan={3} key={"2"} className="tooltip-checkbox">
-                            <span className="icon" title={"alo"} style={{ backgroundColor: "white"}}></span>
-                            <span className="tooltiptext">
-                                <a style={{ color: "white" }} 
-                                    // onClick={() => this.handleShowDetailManufacturingCommand(command)}
-                                >{"1"}</a>
-                            </span>
-                        </td>
+                        <th>{"Hành động"}</th>
+                        <td>{"Xem"}</td>
                         <td colSpan={2} rowSpan={3} key={"2"} className="tooltip-checkbox">
                             <span className="icon" title={"alo"} style={{ backgroundColor: "white"}}></span>
                             <span className="tooltiptext">
@@ -156,15 +109,44 @@ function ArrangeVehiclesAndGoods(props) {
                             </span>
                         </td>
                     </tr>
-                    <tr>
+                    <tr className="word-no-break">
                         <th>{"Điểm nhận"}</th>
-                        <td>{"Bách Khoa"}</td>
-                        <th>{"Điểm giao"}</th>
-                        <td>{"Thái Hà"}</td>
-                    </tr>
-                    <tr>
+                        <td colSpan={3}>{"Bách Khoa k k k k k k k k k  k k k k k k k k k "}</td>
                         <th>{"Khối lượng"}</th>
                         <td>{"100"}</td>
+                    </tr>
+                    <tr className="word-no-break">
+                        <th>{"Điểm giao"}</th>
+                        <td colSpan={3}>{"Thái Hà"}</td>
+                        <th>{"Thể tích"}</th>
+                        <td>{"1000"}</td>
+                    </tr>
+
+                    <tr className="word-no-break">
+                        <th>{"Mã yêu cầu"}</th>
+                        <td>{"123"}</td>
+                        <th>{"Loại yêu cầu"}</th>
+                        <td>{"Giao hàng"}</td>
+                        <th>{"Hành động"}</th>
+                        <td>{"Xem"}</td>
+                        <td colSpan={2} rowSpan={3} key={"2"} className="tooltip-checkbox">
+                            <span className="icon" title={"alo"} style={{ backgroundColor: "white"}}></span>
+                            <span className="tooltiptext">
+                                <a style={{ color: "white" }} 
+                                    // onClick={() => this.handleShowDetailManufacturingCommand(command)}
+                                >{"1"}</a>
+                            </span>
+                        </td>
+                    </tr>
+                    <tr className="word-no-break">
+                        <th>{"Điểm nhận"}</th>
+                        <td colSpan={3}>{"Bách Khoa k k k k k k k k k  k k k k k k k k k "}</td>
+                        <th>{"Khối lượng"}</th>
+                        <td>{"100"}</td>
+                    </tr>
+                    <tr className="word-no-break">
+                        <th>{"Điểm giao"}</th>
+                        <td colSpan={3}>{"Thái Hà"}</td>
                         <th>{"Thể tích"}</th>
                         <td>{"1000"}</td>
                     </tr>

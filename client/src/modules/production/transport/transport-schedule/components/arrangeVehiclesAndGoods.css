@@ -77,7 +77,7 @@ table.tableTest th, td {
     white-space: nowrap;
   }
 table.tableTest th.first-column {
-    min-width: 400px;
+    min-width: 100px;
 }
 .word-no-break td {
     word-break: keep-all;
@@ -85,7 +85,7 @@ table.tableTest th.first-column {
 .word-no-break th {
     word-break: keep-all;
 }
-.transport-special-row tr:nth-child(3n) {
+.transport-special-row tr:nth-child(3n):not(:last-child) {
     border-bottom: 5px solid red;
 }
 .transport-special-row tr:nth-child(3n+1) {

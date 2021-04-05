@@ -16,7 +16,7 @@ class TransportPlan extends Component {
         return (
             <div className="nav-tabs-custom">
                 <ul className="nav nav-tabs">
-                    <li className="active"><a href="#list-transport-plan" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{"Lịch vận chuyển"}</a></li>
+                    <li className="active"><a href="#list-transport-plan" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{"Kế hoạch vận chuyển"}</a></li>
                     <li><a href="#list-arrange-schedule" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{"Xếp kế hoạch vận chuyển"}</a></li>
                     <li><a href="#list-vehicle-carrier" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{"Phương tiện và nhân viên vận chuyển"}</a></li>
                 </ul>
@@ -24,7 +24,7 @@ class TransportPlan extends Component {
                     <div className="tab-pane active" id="list-transport-plan">
                         <LazyLoadComponent
                         >
-                            {/* <TransportScheduleManagementTable /> */}
+                            <TransportScheduleManagementTable />
                         </LazyLoadComponent>
                     </div>
                     <div className="tab-pane" id="list-arrange-schedule">
