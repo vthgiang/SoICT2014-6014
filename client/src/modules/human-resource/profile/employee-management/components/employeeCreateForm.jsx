@@ -9,6 +9,8 @@ import { GeneralTab, ContactTab, TaxTab, InsurranceTab, DisciplineTab, Experienc
 
 import { EmployeeManagerActions } from '../redux/actions';
 import FamilyMemberTab from '../../employee-create/components/familyMemberTab';
+import { generateCode } from "../../../../../helpers/generateCode";
+
 
 const initMember = {
     name: '',
@@ -463,6 +465,27 @@ class EmployeeCreateForm extends Component {
                 familyMembers
             }
         })
+    }
+
+    regenerateCode = () => {
+        let code = generateCode("NV");
+        this.setState((state) => ({
+            ...state,
+            employee: {
+                ...state.employee,
+                employeeNumber: code,
+                employeeTimesheetId: code,
+            }
+        }));
+    }
+
+    componentDidMount = () => {
+        window.$('#modal-create-employee').on('shown.bs.modal', this.regenerateCode)
+    }
+
+    componentWillUnmount = () => {
+        // Unsuscribe event
+        window.$('#modal-create-employee').unbind('shown.bs.modal', this.regenerateCode)
     }
 
     render() {
