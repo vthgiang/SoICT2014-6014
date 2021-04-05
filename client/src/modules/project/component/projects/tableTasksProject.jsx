@@ -126,7 +126,6 @@ const TableTasksProject = (props) => {
 
     // const totalPage = project && project.data.totalPage;
 
-
     return (
         <React.Fragment>
             {

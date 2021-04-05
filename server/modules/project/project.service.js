@@ -44,7 +44,6 @@ exports.get = async (portal, query) => {
     }
     let project;
     if (query.calledId === "paginate") {
-        console.log('CHIU LUON ROI DO')
         project = await Project(
             connect(DB_CONNECTION, portal)
         ).paginate(options, {
