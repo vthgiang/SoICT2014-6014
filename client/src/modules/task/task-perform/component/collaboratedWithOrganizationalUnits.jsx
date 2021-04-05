@@ -15,11 +15,13 @@ class CollaboratedWithOrganizationalUnits extends Component {
             isAssigned: false,
             responsibleEmployees: undefined,
             consultedEmployees: undefined,
+            accountableEmployees: undefined,
 
             employeeCollaboratedWithUnit: {
                 isAssigned: false,
                 responsibleEmployees: undefined,
-                consultedEmployees: undefined
+                consultedEmployees: undefined,
+                accountableEmployees: undefined
             },
 
             unitId: undefined,
@@ -38,7 +40,7 @@ class CollaboratedWithOrganizationalUnits extends Component {
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.unitId !== prevState.unitId) {
             // Xử lý nhân viên tham gia công việc phối hợp đơn vị
-            let responsibleEmployees = [], consultedEmployees = [], isAssigned = false;
+            let responsibleEmployees = [], consultedEmployees = [], accountableEmployees = [], isAssigned = false;
             let employeeSelectBox = nextProps.employeeSelectBox && nextProps.employeeSelectBox.value;
             let task = nextProps.task;
 
@@ -53,12 +55,21 @@ class CollaboratedWithOrganizationalUnits extends Component {
                                 responsibleEmployees.push(item._id);
                             }
                         })
+
                         task.consultedEmployees.filter(item => {
                             let temp = employeeSelectBox.filter(employee => employee.value === item._id);
                             if (temp && temp.length !== 0) return true;
                         }).map(item => {
                             if (item) {
                                 consultedEmployees.push(item._id);
+                            }
+                        })
+                        task.accountableEmployees.filter(item => {
+                            let temp = employeeSelectBox.filter(employee => employee.value === item._id);
+                            if (temp && temp.length !== 0) return true;
+                        }).map(item => {
+                            if (item) {
+                                accountableEmployees.push(item._id);
                             }
                         })
                     }
@@ -86,11 +97,13 @@ class CollaboratedWithOrganizationalUnits extends Component {
                 isAssigned: isAssigned,
                 responsibleEmployees: responsibleEmployees,
                 consultedEmployees: consultedEmployees,
+                accountableEmployees: accountableEmployees,
 
                 employeeCollaboratedWithUnit: {
                     isAssigned: isAssigned,
                     responsibleEmployees: responsibleEmployees,
-                    consultedEmployees: consultedEmployees
+                    consultedEmployees: consultedEmployees,
+                    accountableEmployees: accountableEmployees
                 }
             }
         } else {
@@ -115,9 +128,10 @@ class CollaboratedWithOrganizationalUnits extends Component {
             return {
                 ...state,
                 editCollaboratedTask: false,
-                responsibleEmployees: employeeCollaboratedWithUnit && employeeCollaboratedWithUnit.responsibleEmployees,
-                consultedEmployees: employeeCollaboratedWithUnit && employeeCollaboratedWithUnit.consultedEmployees,
-                isAssigned: employeeCollaboratedWithUnit && employeeCollaboratedWithUnit.isAssigned
+                responsibleEmployees: employeeCollaboratedWithUnit?.responsibleEmployees,
+                consultedEmployees: employeeCollaboratedWithUnit?.consultedEmployees,
+                accountableEmployees: employeeCollaboratedWithUnit?.accountableEmployees,
+                isAssigned: employeeCollaboratedWithUnit?.isAssigned
             }
         })
     }
@@ -142,17 +156,29 @@ class CollaboratedWithOrganizationalUnits extends Component {
         })
     }
 
+    /** Chọn người phê duyệt cho công việc phối hợp với đơn vị khác */
+    handleChangeAccountableCollaboratedTask = (value) => {
+        this.setState(state => {
+            return {
+                ...state,
+                accountableEmployees: value
+            }
+        })
+    }
+
     /** Lưu thay đổi nhân viên tham gia công việc phối hợp với đơn vị khác */
     saveCollaboratedTask = (taskId) => {
-        const { employeeCollaboratedWithUnit, responsibleEmployees, consultedEmployees, isAssigned, unitId } = this.state;
+        const { employeeCollaboratedWithUnit, responsibleEmployees, consultedEmployees, accountableEmployees, isAssigned, unitId } = this.state;
 
         let newEmployeeCollaboratedWithUnit = {
             unitId: unitId,
             isAssigned: isAssigned,
-            oldResponsibleEmployees: employeeCollaboratedWithUnit.responsibleEmployees,
-            oldConsultedEmployees: employeeCollaboratedWithUnit.consultedEmployees,
+            oldResponsibleEmployees: employeeCollaboratedWithUnit?.responsibleEmployees,
+            oldConsultedEmployees: employeeCollaboratedWithUnit?.consultedEmployees,
+            oldAccountableEmployees: employeeCollaboratedWithUnit?.accountableEmployees,
             responsibleEmployees: responsibleEmployees,
             consultedEmployees: consultedEmployees,
+            accountableEmployees: accountableEmployees
         }
         
         this.props.editEmployeeCollaboratedWithOrganizationalUnits(taskId, newEmployeeCollaboratedWithUnit);
@@ -166,7 +192,7 @@ class CollaboratedWithOrganizationalUnits extends Component {
                     isAssigned: isAssigned,
                     responsibleEmployees: responsibleEmployees,
                     consultedEmployees: consultedEmployees,
-
+                    accountableEmployees: accountableEmployees
                 }
             }
         })
@@ -174,12 +200,14 @@ class CollaboratedWithOrganizationalUnits extends Component {
 
     render() {
         const { task, translate } = this.props;
-        const { editCollaboratedTask, employeeCollaboratedWithUnit, employeeSelectBox, unitId, responsibleEmployees, consultedEmployees, isAssigned } = this.state;
+        const { editCollaboratedTask, employeeCollaboratedWithUnit, employeeSelectBox, unitId, 
+            responsibleEmployees, consultedEmployees, accountableEmployees, isAssigned
+        } = this.state;
 
-        let responsibleEmployeesOfUnit, consultedEmployeesOfUnit;
+        let responsibleEmployeesOfUnit, consultedEmployeesOfUnit, accountableEmployeesOfUnit;
         if (employeeCollaboratedWithUnit) {
-            if (employeeCollaboratedWithUnit.responsibleEmployees && employeeCollaboratedWithUnit.responsibleEmployees.length !== 0
-                && task && task.responsibleEmployees && task.responsibleEmployees.length !== 0) {
+            if (employeeCollaboratedWithUnit?.responsibleEmployees?.length > 0
+                && task?.responsibleEmployees?.length > 0) {
                 responsibleEmployeesOfUnit = task.responsibleEmployees.filter(
                     item => {
                         if (employeeCollaboratedWithUnit.responsibleEmployees.includes(item._id)) {
@@ -188,11 +216,22 @@ class CollaboratedWithOrganizationalUnits extends Component {
                     }
                 )
             }
-            if (employeeCollaboratedWithUnit.consultedEmployees && employeeCollaboratedWithUnit.consultedEmployees.length !== 0
-                && task && task.consultedEmployees && task.consultedEmployees.length !== 0) {
+            if (employeeCollaboratedWithUnit?.consultedEmployees?.length > 0
+                && task?.consultedEmployees?.length > 0) {
                 consultedEmployeesOfUnit = task.consultedEmployees.filter(
                     item => {
                         if (employeeCollaboratedWithUnit.consultedEmployees.includes(item._id)) {
+                            return true;
+                        }
+                    }
+                )
+            }
+
+            if (employeeCollaboratedWithUnit?.accountableEmployees?.length > 0
+                && task?.accountableEmployees?.length > 0) {
+                accountableEmployeesOfUnit = task.accountableEmployees.filter(
+                    item => {
+                        if (employeeCollaboratedWithUnit.accountableEmployees.includes(item._id)) {
                             return true;
                         }
                     }
@@ -226,6 +265,18 @@ class CollaboratedWithOrganizationalUnits extends Component {
                                         items={employeeSelectBox && employeeSelectBox.value}
                                         onChange={this.handleChangeResponsibleCollaboratedTask}
                                         value={responsibleEmployees}
+                                        multiple={true}
+                                    />
+                                </div>
+                                <div className="form-group no-line-height">
+                                    <label>{translate('task.task_management.accountable')}</label>
+                                    <SelectBox
+                                        id={`multiSelectAccountableEmployee${unitId}`}
+                                        className="form-control select2"
+                                        style={{ width: "100%" }}
+                                        items={employeeSelectBox && employeeSelectBox.value}
+                                        onChange={this.handleChangeAccountableCollaboratedTask}
+                                        value={accountableEmployees}
                                         multiple={true}
                                     />
                                 </div>
@@ -270,7 +321,29 @@ class CollaboratedWithOrganizationalUnits extends Component {
                                         : <span>{translate('task.task_management.task_empty_employee')}</span>
                                 }
                                 <br />
-                                {/* Người hỗ trợ */}
+
+                                {/* Người phê duyệt */}
+                                <strong>{translate('task.task_management.accountable')}:</strong>
+                                {
+                                    (employeeCollaboratedWithUnit?.accountableEmployees?.length > 0)
+                                        ? <span>
+                                            {
+                                                accountableEmployeesOfUnit && accountableEmployeesOfUnit.length !== 0
+                                                && accountableEmployeesOfUnit.map((item, index) => {
+                                                    let seperator = index !== 0 ? ", " : "";
+                                                    if (task.inactiveEmployees.indexOf(item._id) !== -1) { // tìm thấy item._id
+                                                        return <span key={index}><strike>{seperator}{item.name}</strike></span>
+                                                    } else {
+                                                        return <span key={index}>{seperator}{item.name}</span>
+                                                    }
+                                                })
+                                            }
+                                        </span>
+                                        : <span>{translate('task.task_management.task_empty_employee')}</span>
+                                }
+                                <br />
+
+                                {/* Người tư vấn */}
                                 <strong>{translate('task.task_management.consulted')}:</strong>
                                 {
                                     (employeeCollaboratedWithUnit && employeeCollaboratedWithUnit.consultedEmployees && employeeCollaboratedWithUnit.consultedEmployees.length !== 0)
