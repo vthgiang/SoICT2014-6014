@@ -789,8 +789,8 @@ exports.getTaskAnalysOfUser = async (req, res) => {
     try {
         let portal = req.portal;
         let { userId } = req.params;
-        let { type } = req.query;
-        let taskAnalys = await TaskManagementService.getTaskAnalysOfUser(portal, userId, type);
+        let { type, date } = req.query;
+        let taskAnalys = await TaskManagementService.getTaskAnalysOfUser(portal, userId, type, date);
 
         await Logger.info(req.user.email, 'get_task_analys_of_user_success', req.portal)
         res.status(200).json({

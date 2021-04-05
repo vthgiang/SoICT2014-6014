@@ -2559,16 +2559,77 @@ exports.sendEmailCheckTaskLastMonth = async () => {
  * @param {*} userId 
  * @param {*} roleId 
  */
-exports.getTaskAnalysOfUser = async (portal, userId, type) => {
+exports.getTaskAnalysOfUser = async (portal, userId, type, date) => {
+    let { firstDay, lastDay } = date;
+    let keySeachDateTime = {}, keySearch = {};
 
-    let tasks = await Task(connect(DB_CONNECTION, portal)).find({
+    keySearch = {
+        ...keySearch,
         $or: [
             { responsibleEmployees: userId }, // người thực hiện
             { accountableEmployees: userId }, // người phê duyệt
             { consultedEmployees: userId }, // người tư vấn
-            { informedEmployees: userId }, // người quan sát
+        ]
+    }
+
+    if (firstDay && lastDay) {
+        lastDay = new Date(lastDay);
+        lastDay.setMonth(lastDay.getMonth() + 1);
+        
+        keySeachDateTime = {
+            ...keySeachDateTime,
+            $or: [
+                { 'endDate': { $lt: new Date(lastDay), $gte: new Date(firstDay) } },
+                { 'startDate': { $lt: new Date(lastDay), $gte: new Date(firstDay) } },
+                { $and: [{ 'endDate': { $gte: new Date(lastDay) } }, { 'startDate': { $lt: new Date(firstDay) } }] }
+            ]
+        }
+    }
+    else if (firstDay) {
+        firstDay = new Date(firstDay);
+
+        keySeachDateTime = {
+            ...keySeachDateTime,
+            "$and": [
+                {
+                    "$expr": { 
+                        "$eq": [ { "$month": "$startDate" }, firstDay.getMonth() + 1 ]
+                    }
+                },
+                {
+                    "$expr": { 
+                        "$eq": [ { "$year": "$startDate" }, firstDay.getFullYear() ]
+                    }
+                }
+            ]
+        }
+    }
+    else if (lastDay) {
+        lastDay = new Date(lastDay);
+
+        keySeachDateTime = {
+            ...keySeachDateTime,
+            "$and": [
+                {
+                    "$expr": { 
+                        "$eq": [ { "$month": "$endDate" }, lastDay.getMonth() + 1 ]
+                    }
+                },
+                {
+                    "$expr": { 
+                        "$eq": [ { "$year": "$endDate" }, lastDay.getFullYear() ]
+                    }
+                }
+            ]
+        }
+    }
+    let tasks = await Task(connect(DB_CONNECTION, portal)).find({
+        $and: [
+            keySearch,
+            keySeachDateTime
         ]
     });
+    
     switch (type) {
         case 'priority':
             let urgent = tasks.filter(task => task.priority === 5); // các cv khẩn cấp
