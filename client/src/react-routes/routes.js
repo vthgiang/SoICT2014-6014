@@ -158,7 +158,8 @@ import ManufacturingLot from "../modules/production/manufacturing/manufacturing-
 
 // Transport Managements
 import TransportRequirements from '../modules/production/transport/transport-requirements/components';
-import TransportSchedule from '../modules/production/transport/transport-schedule/components';
+import TransportPlan from '../modules/production/transport/transport-plan/components';
+import TransportSchedule from '../modules/production/transport/transport-schedule/components'
 import TransportVehicle from '../modules/production/transport/transport-vehicle/components';
 import TransportHuman from '../modules/production/transport/transport-human/components';
 import TransportRoute from '../modules/production/transport/transport-route/components';
@@ -2469,6 +2470,25 @@ class Routes extends Component {
                         pageName={"manage_transport_requirements"}
                         layout={Layout}
                         component={TransportRequirements} // component ứng với trang, tạo ở bước 1
+                    />
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"manage-transport-plan"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/manage-transport-plan", // url trang
+                                name: "manage_transport_plan", // tên trang
+                                icon: " fa fa-calendar-o ",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/manage-transport-plan"}
+                        path={"/manage-transport-plan"}
+                        pageName={"manage_transport_plan"}
+                        layout={Layout}
+                        component={TransportPlan} // component ứng với trang, tạo ở bước 1
                     />
                     <PrivateRoute
                         isLoading={false}

@@ -109,7 +109,7 @@ import { manufacturingCommand } from "../modules/production/manufacturing/manufa
 
 // Transport
 import { transportRequirements } from '../modules/production/transport/transport-requirements/redux/reducers'
-import { transportSchedule } from '../modules/production/transport/transport-schedule/redux/reducers'
+import { transportSchedule } from '../modules/production/transport/transport-plan/redux/reducers'
 
 import { project } from "../modules/project/redux/reducers";
 import { newsFeeds } from "../modules/home/redux/reducers";

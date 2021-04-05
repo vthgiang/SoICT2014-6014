@@ -184,7 +184,7 @@ function TransportRequirementsCreateForm(props) {
             return {
                 good: item._id,
                 quantity: item.quantity,
-                volumn: item.volumn,
+                volume: item.volume,
             };
         });
         return goodMap;

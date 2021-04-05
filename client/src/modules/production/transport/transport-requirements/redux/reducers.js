@@ -1,12 +1,27 @@
 import { transportRequirementsConstants } from './constants';
+
+var findIndex = (array, id) => {
+    var result = -1;
+    array.forEach((value, index) => {
+        if (value._id === id) {
+            result = index;
+        }
+    });
+    return result;
+}
+
 const initialState = {
     lists: [],
     isLoading: true,
+    error: null,
+    totalList: 0,
 }
 export function transportRequirements(state = initialState, action) {
-switch (action.type) {
+    let index = -1;
+    switch (action.type) {
 		case transportRequirementsConstants.GET_ALL_TRANSPORT_REQUIREMENTS_REQUEST:
         case transportRequirementsConstants.CREATE_TRANSPORT_REQUIREMENT_REQUEST:
+        case transportRequirementsConstants.EDIT_TRANSPORT_REQUIREMENT_REQUEST:
 		return {
                 ...state,
                 isLoading: true
@@ -14,7 +29,7 @@ switch (action.type) {
 		
 		case transportRequirementsConstants.GET_ALL_TRANSPORT_REQUIREMENTS_FAILURE:
         case transportRequirementsConstants.CREATE_TRANSPORT_REQUIREMENT_FAILURE:
-        
+        case transportRequirementsConstants.EDIT_TRANSPORT_REQUIREMENT_FAILURE:
 		return {
                 ...state,
                 isLoading: false,
@@ -35,7 +50,16 @@ switch (action.type) {
                 ],
                 isLoading: false
             }
+        case transportRequirementsConstants.EDIT_TRANSPORT_REQUIREMENT_SUCCESS:
+            index = findIndex(state.lists, action.payload._id);
+            if (index !== -1) {
+                state.lists[index] = action.payload
+            }
+            return {
+                ...state,
+                isLoading: false
+            }
 		default:
             		return state
-}
+    }
 }

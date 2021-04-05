@@ -7,7 +7,7 @@ export const transportScheduleServices = {
 function getAllTransportSchedules(queryData) {
     return sendRequest(
         {
-            url: `${process.env.REACT_APP_SERVER}/transport-schedule`,
+            url: `${process.env.REACT_APP_SERVER}/transport-plan`,
             method: "GET",
             params: {
                 // page: queryData !== undefined ? queryData.page : null,
@@ -26,7 +26,7 @@ function createTransportSchedule(data) {
     console.log(data, " schedule");
     return sendRequest(
         {
-            url: `${process.env.REACT_APP_SERVER}/transport-schedule`,
+            url: `${process.env.REACT_APP_SERVER}/transport-plan`,
             method: "POST",
             data: data
         },

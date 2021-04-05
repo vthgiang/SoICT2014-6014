@@ -26,7 +26,8 @@ function TransportGoods(props) {
             _id: "0",
             quantity: 1,
             currentSelectBoxGoodText: "Chọn hàng hóa",
-            volumn: 1,
+            volume: 1,
+            weight: 1
         })
     }, [])
 
@@ -70,7 +71,6 @@ function TransportGoods(props) {
             })
         }
     }
-
     const handleQuantityChange = (e) => {
         let {value} = e.target;
         validateQuantityChange(value);
@@ -87,12 +87,13 @@ function TransportGoods(props) {
             quantity: v,
         })
     }
-    const handleVolumnChange = (e) => {
+
+    const handleWeightChange = (e) => {
         let {value} = e.target;
-        validateVolumnChange(value);
+        validateWeightChange(value);
     }
 
-    const validateVolumnChange = (value) => {
+    const validateWeightChange = (value) => {
         let v = 1;
         value = parseInt(value);
         if (value > 0) {
@@ -100,7 +101,24 @@ function TransportGoods(props) {
         }
         setCurrentGood({
             ...currentGood,
-            volumn: v,
+            weight: v,
+        })
+    }
+
+    const handleVolumeChange = (e) => {
+        let {value} = e.target;
+        validateVolumeChange(value);
+    }
+
+    const validateVolumeChange = (value) => {
+        let v = 1;
+        value = parseInt(value);
+        if (value > 0) {
+            v = parseInt(value);
+        }
+        setCurrentGood({
+            ...currentGood,
+            volume: v,
         })
     }
     const handleAddGood = (e) => {
@@ -110,7 +128,7 @@ function TransportGoods(props) {
             code: currentGood.code ? currentGood.code : "",
             name: currentGood.name ? currentGood.name : "",
             quantity: currentGood.quantity,
-            volumn: currentGood.volumn,
+            volume: currentGood.volume,
         }
         setListGoodsChosen(listGoodsChosen => [...listGoodsChosen, good]);
     }
@@ -253,8 +271,8 @@ function TransportGoods(props) {
                                 <div className={`form-group`}>
                                     <label>{"Khối lượng"}</label>
                                     <input type="number" 
-                                    value={currentGood.quantity} 
-                                    onChange={handleQuantityChange} 
+                                    value={currentGood.weight} 
+                                    onChange={handleWeightChange} 
                                     className="form-control" />
                                     {/* <ErrorLabel content={errorQuantity} /> */}
                                 </div>
@@ -263,8 +281,8 @@ function TransportGoods(props) {
                                 <div className={`form-group`}>
                                     <label>{"Thể tích CBM"}</label>
                                     <input type="number" 
-                                    value={currentGood.volumn} 
-                                    onChange={handleVolumnChange} 
+                                    value={currentGood.volume} 
+                                    onChange={handleVolumeChange} 
                                     className="form-control" />
                                     {/* <ErrorLabel content={errorQuantity} /> */}
                                 </div>
@@ -328,7 +346,7 @@ function TransportGoods(props) {
                                                 <td>{x.code}</td>
                                                 <td>{x.name}</td>
                                                 <td>{x.quantity}</td>
-                                                <td>{x.volumn}</td>
+                                                <td>{x.volume}</td>
                                                 {/* <td>
                                                     <a
                                                         href="#abc"

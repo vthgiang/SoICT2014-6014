@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const TransportRequirementsSchema = new Schema({
+const TransportRequirementSchema = new Schema({
     status: { // Trạng thái chờ phê duyệt, đã phê duyệt...
         type: Number,
         // required: true
@@ -49,9 +49,12 @@ const TransportRequirementsSchema = new Schema({
             type: Number,
             // required: true
         },
-        volumn: { // khối lượng vận tải tương ứng
+        volume: { // thể tích khi vận tải 
             type: Number,
             // required: true
+        },
+        weight: { // khối lượng hàng hóa
+            type: Number
         }
     }],
     timeRequests: [{ // Thoi gian khach hang yeu cau
@@ -80,7 +83,7 @@ const TransportRequirementsSchema = new Schema({
 });
 
 module.exports = (db) => {
-    if (!db.models.TransportRequirements)
-        return db.model('TransportRequirements', TransportRequirementsSchema);
-    return db.models.TransportRequirements;
+    if (!db.models.TransportRequirement)
+        return db.model('TransportRequirement', TransportRequirementSchema);
+    return db.models.TransportRequirement;
 } 

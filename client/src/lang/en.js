@@ -248,6 +248,7 @@ export default {
             // Quản lý vận chuyển
             manage_transport: "Manage transport",
             manage_transport_requirements: "Manage transport requirements",
+            manage_transport_plan: "Manage transport plan",
             manage_transport_schedule: "Manage transport schedule",
             manage_transport_vehicle: "Manage transport vehical",
             manage_transport_human: "Manage transport human",

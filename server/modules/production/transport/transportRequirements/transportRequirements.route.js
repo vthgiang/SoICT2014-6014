@@ -8,7 +8,7 @@ const { auth } = require(`../../../../middleware`);
 // router.get('/:id', auth, ExampleController.getExampleById);
 router.get('/', auth, TransportRequirementController.getAllTransportRequirements);
 router.post('/', auth, TransportRequirementController.createTransportRequirement);
-// router.patch('/:id', auth, ExampleController.editExample);
+router.patch('/:id', auth, TransportRequirementController.editTransportRequirement);
 // router.delete('/:id', auth, ExampleController.deleteExample);
 
 module.exports = router;

@@ -2,10 +2,10 @@ import { sendRequest } from '../../../../../helpers/requestHelper';
 export const transportRequirementsServices = {
     getAllTransportRequirements,
     createTransportRequirement,
+    editTransportRequirement,
 }
 
 function getAllTransportRequirements(queryData) {
-    console.log(queryData, "sssssssssssssssssss")
     return sendRequest(
         {
             url: `${process.env.REACT_APP_SERVER}/transport-requirement`,
@@ -28,6 +28,19 @@ function createTransportRequirement(data) {
         {
             url: `${process.env.REACT_APP_SERVER}/transport-requirement`,
             method: "POST",
+            data: data
+        },
+        true,
+        true,
+        "manage_transport"
+    )
+}
+
+function editTransportRequirement(id, data) {
+    return sendRequest(
+        {
+            url: `${process.env.REACT_APP_SERVER}/transport-requirement/${id}`,
+            method: "PATCH",
             data: data
         },
         true,

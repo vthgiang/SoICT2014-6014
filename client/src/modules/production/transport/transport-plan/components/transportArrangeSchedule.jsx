@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 
 import { DataTableSetting, DeleteNotification, PaginateBar } from "../../../../../common-components";
-
+import { formatToTimeZoneDate } from "../../../../../helpers/formatDate"
 import { Chart } from './chart'
 import { DatePickerId } from './datePickerId'
 
@@ -19,7 +19,11 @@ function TransportArrangeSchedule(props) {
     const [ timeData, setTimeData ] = useState({
         lists: [],
     });
-    const [ listTime, setListTime ] = useState([]);
+
+    const [dataVolumeChart, setDataVolumeChart] = useState({
+        data : [],
+    });
+
     useEffect(() => {
         props.getAllTransportRequirements({page:1, limit: 100});
     }, []);
@@ -28,18 +32,42 @@ function TransportArrangeSchedule(props) {
         console.log(props.transportArrangeRequirements, " require");
     }, [props.transportArrangeRequirements]);
 
+    useEffect(() => {
+        let data = [];
+        // data.push(
+        //     {
+        //         type: "stackedBar",
+        //         name: "Meals",
+        //         // showInLegend: "true",
+        //         xValueFormatString: "DD, MMM",
+        //         yValueFormatString: "$#,##0",
+        //         dataPoints: [
+        //             { x: new Date(2018, 5, 25), y: 56 },
+        //             { x: new Date(2018, 5, 26), y: 45 },
+        //             { x: new Date(2018, 5, 27), y: 71 },
+        //             { x: new Date(2018, 5, 28), y: 41 },
+        //             { x: new Date(2018, 5, 29), y: 60 },
+        //             { x: new Date(2018, 5, 30), y: 75 },
+        //             { x: new Date(2018, 6, 1), y: 98 },
+        //         ]
+        //     }
+        // );
+        // console.log(new Date(2021-04-07), "dada");
+    }, [timeData])
 
     /**
      * Cập nhật state thời gian các đơn hàng trong bảng
-     * lists = { index : số thứ tự trong bảng, value: giá trị ngày}
+     * lists = { id : id của requirement, value: giá trị ngày}
      */
-    const handleTimeChange = async (value, index) => {
+    const handleTimeChange = async (value, id) => {
         let lists = timeData?(timeData.lists?timeData.lists:[]):[];
         let pos;
         if (lists && lists.length !== 0){
             lists.forEach((val, i) => {
-                if (parseInt(val.index) === Number(index)){
+                console.log(val, i, " foreach");
+                if (val.id === id){
                     pos = i;
+                    console.log(pos);
                 }
             });
             if (Number(pos)>=0){
@@ -48,20 +76,39 @@ function TransportArrangeSchedule(props) {
             else {
                 lists.push({
                     value: value,
-                    index: index,
+                    id: id,
                 });
             } 
         }
         else {
             lists.push({
                 value: value,
-                index: index,
+                id: id,
             })
         }
         setTimeData({
             lists: lists
         });
+        
+        console.log(new Date(formatToTimeZoneDate(value)), "dada value");
     }
+
+
+    /**
+     * từ id trả về value trong state timeData.lists
+     * @param {*} index 
+     */
+    const getValueFromTimeData = (id) => {
+        let list = timeData.lists;
+        const filterElement = list.filter(r => r.id === id);
+        if (filterElement && filterElement.length !==0) {
+            return filterElement[0].value;
+        }
+        else{
+            return "";
+        }
+    }
+
     const getRequestsTime = (index) => {
         let times = "";
         if (transportArrangeRequirements){
@@ -73,27 +120,38 @@ function TransportArrangeSchedule(props) {
         }
         return times;
     }
-    useEffect(() => {
-        console.log(timeData, " time data");
-    }, [timeData])
+
+    const handleEdit = (index) => {
+        console.log(index, " day la nut sua");
+        // window.$("#" + index).datepicker({
+        //     disabled : true,
+        // })
+
+    }
+    const handleSaveOne = (id) => {
+        let timeTransport = formatToTimeZoneDate(getValueFromTimeData(id));
+        props.editTransportRequirement(id, { timeTransport: timeTransport,});
+    }
+
     return (
         <div className="box-body qlcv">
             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                 <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                     <div className="form-inline">
                         <table id={getTableId} className="table table-striped table-bordered table-hover">
-                    <thead>
-                        <tr>
-                            <th className="col-fixed" style={{ width: 60 }}>{"STT"}</th>
-                            <th>{"Loại yêu cầu"}</th>
-                            <th>{"Điểm nhận hàng"}</th>
-                            <th>{"Điểm giao hàng"}</th>
-                            <th>{"Thời gian mong muốn"}</th>
-                            <th>{"Trạng thái"}</th>
-                            <th style={{width: 200}}>{"Thời gian vận chuyển"}</th>
-                        </tr>
-                    </thead>
-                    <tbody>                                
+                            <thead>
+                                <tr>
+                                    <th className="col-fixed" style={{ width: 60 }}>{"STT"}</th>
+                                    <th>{"Loại yêu cầu"}</th>
+                                    <th>{"Điểm nhận hàng"}</th>
+                                    <th>{"Điểm giao hàng"}</th>
+                                    <th>{"Thời gian mong muốn"}</th>
+                                    <th>{"Trạng thái"}</th>
+                                    <th style={{width: 200}}>{"Thời gian vận chuyển"}</th>
+                                    <th>{"Hành động"}</th>
+                                </tr>
+                            </thead>
+                            <tbody>                                
                         {
                             (transportArrangeRequirements && transportArrangeRequirements.length !==0) &&
                                 transportArrangeRequirements.map((item, index) => (
@@ -107,23 +165,35 @@ function TransportArrangeSchedule(props) {
                                         <td>{"Xếp lịch"}</td>
                                         <td>
                                             <DatePickerId
-                                                id={`${index}`}
+                                                id={`${item._id}`}
                                                 value={""}
                                                 onChange={handleTimeChange}
                                                 disabled={false}
                                             />
+                                        </td>
+                                        <td style={{ textAlign: "center" }}>
+                                            <a className="edit text-green" style={{ width: '5px' }} title={'manage_example.detail_info_example'} 
+                                            // onClick={() => handleShowDetailInfo(example)}
+                                            >
+                                                <i className="material-icons">visibility</i></a>
+                                            <a className="edit text-yellow" style={{ width: '5px' }} title={'manage_example.edit'} 
+                                                onClick={() => handleEdit(index)}
+                                            >
+                                                <i className="material-icons">edit</i></a>
+                                            <a className="text-green"
+                                            onClick={() => handleSaveOne(item._id)}
+                                            ><i className="material-icons">add_comment</i></a>
                                         </td>
                                     </tr>
                                 )
                             )
                         }
                     </tbody>
-                </table>
+                        </table>
                     </div>
                 </div>
-                
+        
                 <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                    
                     <Chart />
                 </div>
             </div>
@@ -132,13 +202,14 @@ function TransportArrangeSchedule(props) {
 }
 
 function mapState(state) {
-    console.log(state);
+    console.log(state, " day la state");
     const transportArrangeRequirements = state.transportRequirements.lists;
     return { transportArrangeRequirements };
 }
 
 const actions = {
     getAllTransportRequirements: transportRequirementsActions.getAllTransportRequirements,
+    editTransportRequirement: transportRequirementsActions.editTransportRequirement,
 }
 
 const connectedTransportArrangeSchedule = connect(mapState, actions)(withTranslate(TransportArrangeSchedule));

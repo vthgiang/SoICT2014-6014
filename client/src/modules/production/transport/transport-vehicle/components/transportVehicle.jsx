@@ -46,14 +46,14 @@ function TransportVehicle(props) {
          */
         if (vehiclesList && vehiclesList.length !==0){
             vehiclesList.map((vehicle, index) => {
-                vehiclesList[index].volumn = "1000";
+                vehiclesList[index].volume = "1000";
                 vehiclesList[index].payload = "1000";
 
                 if (vehicle.detailInfo && vehicle.detailInfo.length !== 0) {
-                    const volumn = vehicle.detailInfo.filter((r) => r.nameField === "volumn");
-                    if (volumn && volumn.length !==0) {
-                        if (volumn[0].value){
-                            vehiclesList[index].volumn = volumn[0].value;
+                    const volume = vehicle.detailInfo.filter((r) => r.nameField === "volume");
+                    if (volume && volume.length !==0) {
+                        if (volume[0].value){
+                            vehiclesList[index].volume = volume[0].value;
                         }
                     }
 
@@ -100,7 +100,7 @@ function TransportVehicle(props) {
                                         <td>{vehicle.code}</td>
                                         <td>{vehicle.assetName}</td>
                                         <td>{vehicle.payload}</td>
-                                        <td>{vehicle.volumn}</td>
+                                        <td>{vehicle.volume}</td>
                                     </tr>
                                 )
                             )
@@ -152,24 +152,6 @@ function mapState(state) {
 
     const { assetsManager } =state;
 
-    // let vehiclesList = [];
-    // vehiclesList = state.assetsManager? (state.assetsManager.listAssets? state.assetsManager.listAssets: []) : []
-    
-    // if (vehiclesList && vehiclesList.length !==0){
-    //     vehiclesList.map((vehicle, index) => {
-    //         if (vehicle.detailInfo && vehicle.detailInfo.length !== 0) {
-    //             const volumn = vehicle.detailInfo.filter((r) => r.nameField === "volumn");
-    //             if (volumn && volumn.length !==0) {
-    //                 if (volumn[0].value){
-    //                     vehiclesList[0].push({
-    //                         volumn: volumn[0].value,
-    //                     })
-    //                 }
-    //             }
-    //         }
-    //     })
-    // }
-    // console.log(vehiclesList);
     return { assetsManager };
 }
 

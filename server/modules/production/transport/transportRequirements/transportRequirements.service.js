@@ -1,5 +1,5 @@
 const {
-    TransportRequirements
+    TransportRequirement
 } = require('../../../../models');
 
 const {
@@ -16,7 +16,7 @@ exports.createTransportRequirement = async (portal, data) => {
                 listGoods.push({
                     good: item.good,
                     quantity: item.quantity,
-                    volumn: item.volumn
+                    volume: item.volume
                 })
             })
         }
@@ -30,7 +30,7 @@ exports.createTransportRequirement = async (portal, data) => {
             })
         }
         console.log(data, " day la list time")
-        newTransportRequirement = await TransportRequirements(connect(DB_CONNECTION, portal)).create({
+        newTransportRequirement = await TransportRequirement(connect(DB_CONNECTION, portal)).create({
             status: data.status,
             type: data.type,
             fromAddress: data.fromAddress,
@@ -100,8 +100,8 @@ exports.getAllTransportRequirements = async (portal, data) => {
     page = data?.page ? Number(data.page) : 1;
     limit = data?.limit ? Number(data.limit) : 20;
 
-    let totalList = await TransportRequirements(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
-    let requirements = await TransportRequirements(connect(DB_CONNECTION, portal)).find(keySearch)
+    let totalList = await TransportRequirement(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
+    let requirements = await TransportRequirement(connect(DB_CONNECTION, portal)).find(keySearch)
         .skip((page - 1) * limit)
         .limit(limit);
     return { 
@@ -134,19 +134,22 @@ exports.getAllTransportRequirements = async (portal, data) => {
 //     return -1;
 // }
 
-// // Chỉnh sửa một Ví dụ
-// exports.editExample = async (portal, id, data) => {
-//     let oldExample = await Example(connect(DB_CONNECTION, portal)).findById(id);
-//     if (!oldExample) {
-//         return -1;
-//     }
+// Chỉnh sửa một Ví dụ
+exports.editTransportRequirement = async (portal, id, data) => {
 
-//     // Cach 2 de update
-//     await Example(connect(DB_CONNECTION, portal)).update({ _id: id }, { $set: data });
-//     let example = await Example(connect(DB_CONNECTION, portal)).findById({ _id: oldExample._id });
+    console.log(id, " id edit", data, " data edit")
 
-//     return example;
-// }
+    let oldTransportRequirement = await TransportRequirement(connect(DB_CONNECTION, portal)).findById(id);
+    console.log(oldTransportRequirement, " oleas");
+    if (!oldTransportRequirement) {
+        return -1;
+    }
+
+    // Cach 2 de update
+    await TransportRequirement(connect(DB_CONNECTION, portal)).update({ _id: id }, { $set: data });
+    let transportRequirement = await TransportRequirement(connect(DB_CONNECTION, portal)).findById({ _id: oldTransportRequirement._id });
+    return transportRequirement;
+}
 
 // // Xóa một Ví dụ
 // exports.deleteExample = async (portal, id) => {

@@ -24,7 +24,7 @@ const TransportScheduleSchema = new Schema({
     //         type: String,
     //         // required: true,
     //     },
-    //     totalVolumn: { // Tong khoi luong van chuyen cua yeu cau
+    //     totalVolume: { // Tong khoi luong van chuyen cua yeu cau
     //         type: Number,
     //         // required: true
     //     }
@@ -35,12 +35,12 @@ const TransportScheduleSchema = new Schema({
     //         ref: 'TransportVehicle',
     //         // required: true
     //     },
-    //     maxVolumne: { // khoi luong van chuyen cua xe
+    //     maxVolume: { // khoi luong van chuyen cua xe
     //         type: Number,
     //         // required: true,
     //     },
-    //     transporters: [{ // nguoi su dung xe nay
-    //         transporter: {
+    //     carriers: [{ // nguoi su dung xe nay
+    //         carrier: {
     //             type: Schema.Types.ObjectId,
     //             ref: 'User',
     //             // required: true

@@ -74,33 +74,33 @@ exports.createTransportRequirement = async (req, res) => {
 //     }
 // }
 
-// // Sửa Ví dụ
-// exports.editExample = async (req, res) => {
-//     try {
-//         let { id } = req.params;
-//         let data = req.body;
-//         let updatedExample = await ExampleService.editExample(req.portal, id, data);
-//         if (updatedExample !== -1) {
-//             await Log.info(req.user.email, "UPDATED_EXAMPLE", req.portal);
-//             res.status(200).json({
-//                 success: true,
-//                 messages: ["edit_example_success"],
-//                 content: updatedExample
-//             });
-//         } else {
-//             throw Error("Example is invalid");
-//         }
+// Sửa Ví dụ
+exports.editTransportRequirement = async (req, res) => {
+    try {
+        let { id } = req.params;
+        let data = req.body;
+        let updatedTransportRequirement = await TransportRequirementService.editTransportRequirement(req.portal, id, data);
+        if (updatedTransportRequirement !== -1) {
+            await Log.info(req.user.email, "UPDATED_TRANSPORT_REQUIREMENT", req.portal);
+            res.status(200).json({
+                success: true,
+                messages: ["edit_transport_requirement_success"],
+                content: updatedTransportRequirement
+            });
+        } else {
+            throw Error("TransportRequirement is invalid");
+        }
 
-//     } catch (error) {
-//         await Log.error(req.user.email, "UPDATED_EXAMPLE", req.portal);
+    } catch (error) {
+        await Log.error(req.user.email, "UPDATED_TRANSPORT_REQUIREMENT", req.portal);
 
-//         res.status(400).json({
-//             success: false,
-//             messages: ["edit_example_fail"],
-//             content: error.message
-//         });
-//     }
-// }
+        res.status(400).json({
+            success: false,
+            messages: ["edit_transport_requirement_fail"],
+            content: error.message
+        });
+    }
+}
 
 // // Xóa Ví dụ
 // exports.deleteExample = async (req, res) => {

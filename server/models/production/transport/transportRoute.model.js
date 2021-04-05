@@ -25,10 +25,10 @@ const TransportRouteSchema = new Schema({
             ref: 'TransportVehicle',
             required: true,
         },
-        transporters: [{
-            transporter: {
+        carriers: [{
+            carrier: {
                 type: Schema.Types.ObjectId,
-                ref: 'Transporter',
+                ref: 'Carrier',
                 required: true, 
             },
             pos: { // Vi tri: lai xe, di cung...
@@ -46,7 +46,7 @@ const TransportRouteSchema = new Schema({
                 type: Number,
                 required: true
             },
-            volumn: { // khối lượng vận tải tương ứng
+            volume: { // Thể tích khi vận tải
                 type: Number,
                 required: true
             }

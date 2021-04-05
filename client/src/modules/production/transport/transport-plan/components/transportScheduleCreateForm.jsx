@@ -44,12 +44,12 @@ function TransportScheduleCreateForm(props) {
         <React.Fragment>
             <ButtonModal
                     onButtonCallBack={handleClickCreateCode}
-                    modalID={"modal-create-transport-schedule"}
+                    modalID={"modal-create-transport-plan"}
                     button_name={"Thêm lịch vận chuyển"}
                     title={"Thêm lịch vận chuyển"}
             />
             <DialogModal
-                modalID="modal-create-transport-schedule" 
+                modalID="modal-create-transport-plan" 
                 isLoading={false}
                 formID="form-create-transport-requirements"
                 title={"Thêm lịch vận chuyển"}

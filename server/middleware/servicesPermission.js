@@ -945,6 +945,10 @@ exports.links = [
         apis: ['@all']
     },
     {
+        url: '/manage-transport-plan',
+        apis: ['@all']
+    },
+    {
         url: '/manage-transport-schedule',
         apis: ['@all']
     },
