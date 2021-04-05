@@ -160,18 +160,21 @@ export function kpimembers(state = {}, action) {
       return {
         ...state,
         loading: true,
+        taskLoading: true,
         tasks: null
       };
     case kpiMemberConstants.GET_TASK_BYID_SUCCESS:
       return {
         ...state,
         loading: false,
+        taskLoading: false,
         tasks: action.payload,
       };
     case kpiMemberConstants.GET_TASK_BY_LIST_KPI_FAILURE:
       return {
         ...state,
-        error: action.payload
+        error: action.payload,
+        taskLoading: false
       };
     case kpiMemberConstants.GET_TASK_BY_LIST_KPI_REQUEST:
       return {

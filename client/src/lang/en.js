@@ -148,6 +148,7 @@ export default {
             manage_kpi_unit: "Organizational unit KPI",
             manage_kpi_personal: "Personal KPI",
             kpi_unit_create: "Create unit KPI",
+            kpi_unit_create_for_admin: "Create unit KPI in company",
             kpi_unit_evaluate: "Evaluate unit KPI",
             kpi_unit_overview: "Overview unit KPI",
             kpi_unit_dashboard: "Dashboard unit KPI",
@@ -160,6 +161,7 @@ export default {
             kpi_personal_overview: "Overview personal KPI",
             kpi_personal_dashboard: "DashBoard personal KPI",
             kpi_personal_manager: "Manager personal KPI",
+            kpi_member_detail: "Details of personal KPI",
 
             notifications: "Notifications",
 
@@ -2976,8 +2978,7 @@ export default {
                     "Units that have collaborated",
                 not_collaborated_with_organizational_units:
                     "No units that have collaborated",
-                task_empty_employee:
-                    "Your organization unit has no participants",
+                task_empty_employee: "No participants",
                 delete_eval: "Delete evaluation",
                 delete_eval_title: "Are you sure to delete this evaluation?",
 

@@ -622,7 +622,6 @@ exports.stopTimesheetLog = async (portal, params, body, user) => {
         const getTime = await Task(connect(DB_CONNECTION, portal)).findOne({ _id: params.taskId, "timesheetLogs._id": body.timesheetLog }, { timesheetLogs: 1 })
         let currentTimeSheet = getTime.timesheetLogs.filter(o => o._id.toString() === body.timesheetLog.toString());
         
-        // console.log('currentTimeSheet', currentTimeSheet[0]);
         await Task(connect(DB_CONNECTION,portal)).findOneAndUpdate({ _id: params.taskId, "taskActions._id": body.taskActionStartTimer },
             {
                 $push: {
@@ -3349,8 +3348,10 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
 exports.editEmployeeCollaboratedWithOrganizationalUnits = async (portal, taskId, data) => {
     let {
         responsibleEmployees,
+        accountableEmployees,
         consultedEmployees,
         oldResponsibleEmployees,
+        oldAccountableEmployees,
         oldConsultedEmployees,
         unitId,
         isAssigned,
@@ -3383,6 +3384,13 @@ exports.editEmployeeCollaboratedWithOrganizationalUnits = async (portal, taskId,
             }
         });
     }
+    if (accountableEmployees && accountableEmployees.length !== 0) {
+        accountableEmployees.map((item) => {
+            if (!task.accountableEmployees.includes(item)) {
+                newEmployees.push(item);
+            }
+        });
+    }
     if (consultedEmployees && consultedEmployees.length !== 0) {
         consultedEmployees.map((item) => {
             if (!task.consultedEmployees.includes(item)) {
@@ -3393,11 +3401,7 @@ exports.editEmployeeCollaboratedWithOrganizationalUnits = async (portal, taskId,
     newEmployees = Array.from(new Set(newEmployees));
 
     // Xóa người thực hiện cũ của đơn vị hiện tại
-    if (
-        oldResponsibleEmployees &&
-        oldResponsibleEmployees.length !== 0 &&
-        task.responsibleEmployees
-    ) {
+    if (oldResponsibleEmployees.length > 0 && task?.responsibleEmployees) {
         for (let i = task.responsibleEmployees.length - 1; i >= 0; i--) {
             if (
                 oldResponsibleEmployees.includes(
@@ -3408,12 +3412,20 @@ exports.editEmployeeCollaboratedWithOrganizationalUnits = async (portal, taskId,
             }
         }
     }
+    // Xóa người phê duyệt của đơn vị hiện tại
+    if (oldAccountableEmployees?.length > 0 && task?.accountableEmployees) {
+        for (let i = task.accountableEmployees.length - 1; i >= 0; i--) {
+            if (
+                oldAccountableEmployees.includes(
+                    task.accountableEmployees[i].toString()
+                )
+            ) {
+                task.accountableEmployees.splice(i, 1);
+            }
+        }
+    }
     // Xóa người hỗ trợ của đơn vị hiện tại
-    if (
-        oldConsultedEmployees &&
-        oldConsultedEmployees.length !== 0 &&
-        task.consultedEmployees
-    ) {
+    if (oldConsultedEmployees?.length > 0 && task.consultedEmployees) {
         for (let i = task.consultedEmployees.length - 1; i >= 0; i--) {
             if (
                 oldConsultedEmployees.includes(
@@ -3425,9 +3437,12 @@ exports.editEmployeeCollaboratedWithOrganizationalUnits = async (portal, taskId,
         }
     }
 
-    // Thêm mới người thực hiẹn và người hỗ trợ
+    // Thêm mới người thực hiẹn, người tư vấn, người phê duyệt
     task.responsibleEmployees = task.responsibleEmployees.concat(
         responsibleEmployees
+    );
+    task.accountableEmployees = task.accountableEmployees.concat(
+        accountableEmployees
     );
     task.consultedEmployees = task.consultedEmployees.concat(
         consultedEmployees
@@ -3438,6 +3453,7 @@ exports.editEmployeeCollaboratedWithOrganizationalUnits = async (portal, taskId,
         {
             $set: {
                 responsibleEmployees: task.responsibleEmployees,
+                accountableEmployees: task.accountableEmployees,
                 consultedEmployees: task.consultedEmployees,
             },
         },
