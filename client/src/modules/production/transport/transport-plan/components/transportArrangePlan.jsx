@@ -2,12 +2,15 @@ import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 
-import { DataTableSetting, DeleteNotification, PaginateBar } from "../../../../../common-components";
+import { DataTableSetting, DeleteNotification, PaginateBar, SelectBox } from "../../../../../common-components";
 import { formatToTimeZoneDate } from "../../../../../helpers/formatDate"
 import { Chart } from './chart'
 import { DatePickerId } from './datePickerId'
 
+import { TransportPlanChosenEdit } from './transportPlanChosenEdit'
+
 import { transportRequirementsActions } from "../../transport-requirements/redux/actions";
+import { transportPlanActions } from "../redux/actions"
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
 
 function TransportArrangePlan(props) {
@@ -15,17 +18,15 @@ function TransportArrangePlan(props) {
     const defaultConfig = { limit: 5 }
     const getLimit = getTableConfiguration(getTableId, defaultConfig).limit;
     
-    const { transportArrangeRequirements } = props;
+    const { transportArrangeRequirements, allTransportPlans } = props;
     const [ timeData, setTimeData ] = useState({
         lists: [],
     });
 
-    const [dataVolumeChart, setDataVolumeChart] = useState({
-        data : [],
-    });
 
     useEffect(() => {
         props.getAllTransportRequirements({page:1, limit: 100});
+        props.getAllTransportPlans({page:1, limit: 100});
     }, []);
 
     useEffect(() => {
@@ -132,8 +133,15 @@ function TransportArrangePlan(props) {
         let timeTransport = formatToTimeZoneDate(getValueFromTimeData(id));
         props.editTransportRequirement(id, { timeTransport: timeTransport,});
     }
-
+    const handleTransportPlanChosenEdit = () => {
+        window.$('#modal-edit-example-hooks').modal('show');
+    }
     return (
+        
+        <React.Fragment>
+        <TransportPlanChosenEdit
+            allTransportPlans={allTransportPlans}
+        />
         <div className="box-body qlcv">
             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                 <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -146,8 +154,8 @@ function TransportArrangePlan(props) {
                                     <th>{"Điểm nhận hàng"}</th>
                                     <th>{"Điểm giao hàng"}</th>
                                     <th>{"Thời gian mong muốn"}</th>
-                                    <th>{"Trạng thái"}</th>
                                     <th style={{width: 200}}>{"Thời gian vận chuyển"}</th>
+                                    <th>{"Kế hoạch vận chuyển"}</th>
                                     <th>{"Hành động"}</th>
                                 </tr>
                             </thead>
@@ -162,7 +170,6 @@ function TransportArrangePlan(props) {
                                         <td>{item.fromAddress}</td>
                                         <td>{item.toAddress}</td>
                                         <td>{getRequestsTime(index)}</td>
-                                        <td>{"Xếp lịch"}</td>
                                         <td>
                                             <DatePickerId
                                                 id={`${item._id}`}
@@ -170,6 +177,13 @@ function TransportArrangePlan(props) {
                                                 onChange={handleTimeChange}
                                                 disabled={false}
                                             />
+                                        </td>
+                                        <td>
+                                            {"KHVC.020293294823984239 "}
+                                            <a className="edit text-yellow" style={{ width: '5px' }} title={'manage_example.edit'} 
+                                                onClick={() => handleTransportPlanChosenEdit(index)}
+                                            >
+                                                <i className="material-icons">edit</i></a>
                                         </td>
                                         <td style={{ textAlign: "center" }}>
                                             <a className="edit text-green" style={{ width: '5px' }} title={'manage_example.detail_info_example'} 
@@ -198,18 +212,21 @@ function TransportArrangePlan(props) {
                 </div>
             </div>
         </div>
+        </React.Fragment>
     )
 }
 
 function mapState(state) {
     console.log(state, " day la state");
     const transportArrangeRequirements = state.transportRequirements.lists;
-    return { transportArrangeRequirements };
+    const allTransportPlans = state.transportPlan.lists
+    return { transportArrangeRequirements, allTransportPlans };
 }
 
 const actions = {
     getAllTransportRequirements: transportRequirementsActions.getAllTransportRequirements,
     editTransportRequirement: transportRequirementsActions.editTransportRequirement,
+    getAllTransportPlans: transportPlanActions.getAllTransportPlans,
 }
 
 const connectedTransportArrangePlan = connect(mapState, actions)(withTranslate(TransportArrangePlan));

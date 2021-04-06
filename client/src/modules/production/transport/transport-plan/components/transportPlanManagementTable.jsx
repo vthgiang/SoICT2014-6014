@@ -4,12 +4,16 @@ import { withTranslate } from "react-redux-multilingual";
 
 import { DataTableSetting, DeleteNotification, PaginateBar } from "../../../../../common-components";
 
+import { formatDate } from "../../../../../helpers/formatDate"
 import { TransportPlanCreateForm } from "./transportPlanCreateForm"
 
 import { transportPlanActions } from "../redux/actions"
 // import { transportRequirementsActions } from "../redux/actions";
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
 import { convertJsonObjectToFormData } from '../../../../../helpers/jsonObjectToFormDataObjectConverter'
+
+
+
 function TransportPlanManagementTable(props) {
 
     let { allTransportPlans } = props;
@@ -46,8 +50,8 @@ function TransportPlanManagementTable(props) {
                                     <td>{index + 1}</td>
                                     <td>{x.code}</td>
                                     <td>{""}</td>
-                                    <td>{x.startTime}</td>
-                                    <td>{x.endTime}</td>
+                                    <td>{formatDate(x.startTime)}</td>
+                                    <td>{formatDate(x.endTime)}</td>
                                     <td>{""}</td>
                                     {/* <td style={{ textAlign: "center" }}>
                                         <a className="edit text-green" style={{ width: '5px' }} title={translate('manage_example.detail_info_example')} onClick={() => handleShowDetailInfo(example)}><i className="material-icons">visibility</i></a>

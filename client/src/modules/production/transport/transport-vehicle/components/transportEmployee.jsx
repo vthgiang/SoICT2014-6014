@@ -30,10 +30,10 @@ function TransportEmployee(props) {
                     <tbody>
                         <tr key={"1"}>
                             <td>{1}</td>
-                            <td>{"Giao hàng"}</td>
-                            <td>{"Thái Hà"}</td>
-                            <td>{"Bách Khoa"}</td>
-                            <td>{"Nguyễn Văn Danh"}</td>
+                            <td>{"123"}</td>
+                            <td>{"123"}</td>
+                            <td>{"123"}</td>
+                            <td>{"123"}</td>
                             <td>{"Chờ phê duyệt"}</td>
                             {/* <td style={{ textAlign: "center" }}>
                                 <a className="edit text-green" style={{ width: '5px' }} title={translate('manage_example.detail_info_example')} onClick={() => handleShowDetailInfo(example)}><i className="material-icons">visibility</i></a>

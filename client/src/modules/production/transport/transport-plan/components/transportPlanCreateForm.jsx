@@ -19,7 +19,7 @@ function TransportPlanCreateForm(props) {
     const handleClickCreateCode = () => {
         setFormSchedule({
             ...formSchedule,
-            code: generateCode("LVC"),
+            code: generateCode("KHVC"),
         })
     }
 
