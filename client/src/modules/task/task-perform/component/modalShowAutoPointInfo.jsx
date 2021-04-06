@@ -114,6 +114,7 @@ class ModalShowAutoPointInfo extends Component {
         if (!task.taskTemplate && !task.process) { // Công việc không theo mẫu
             // automaticPoint = a ? autoHasActionInfo : autoDependOnDay;
             formula = task.formula;
+            let taskInformations = info;
 
             if (formula.includes("daysOverdue")) checkFormulaHasDaysOverdue = true;
             if (formula.includes("totalDays")) checkFormulaHasTotalDays = true;
@@ -132,6 +133,20 @@ class ModalShowAutoPointInfo extends Component {
             formula = formula.replace(/progress/g, `(${progressTask})`);
 
             // automaticPoint = eval(formula);
+            // thay mã code bằng giá trị(chỉ dùng cho kiểu số)
+            for (let i in taskInformations) {
+                if (taskInformations[i].type === 'number') {
+                    let stringToGoIntoTheRegex = `${taskInformations[i].code}`;
+                    let regex = new RegExp(stringToGoIntoTheRegex, "g");
+                    formula = formula.replace(regex, `${taskInformations[i].value}`);
+                }
+            }
+            // thay tất cả các biến có dạng p0, p1, p2,... còn lại thành undefined, để nếu không có giá trị thì sẽ trả về NaN, tránh được lỗi undefined
+            for (let i = 0; i < 100; i++) {
+                let stringToGoIntoTheRegex = 'p' + i;
+                let regex = new RegExp(stringToGoIntoTheRegex, "g");
+                formula = formula.replace(regex, undefined);
+            }
         }
         else {
             formula = task.formula;
@@ -241,6 +256,13 @@ class ModalShowAutoPointInfo extends Component {
                                 {checkFormulaHasTotalDays && <li>totalDays - {translate('task.task_management.calc_total_day')}: {totalDays} ({translate('task.task_management.calc_days')})</li>}
                                 {checkFormulaHasDaysUsed && <li>daysUsed - {translate('task.task_management.calc_day_used')}: {daysUsed} ({translate('task.task_management.calc_days')})</li>}
                                 {checkFormulaHasDaysOverdue && <li>daysOverdue - {translate('task.task_management.calc_overdue_date')}: {daysOverdue} ({translate('task.task_management.calc_days')})</li>}
+                                {
+                                    taskInformations && taskInformations.map((e, index) => {
+                                        if (e.type === 'number') {
+                                            return <li key={index}>{e.code} - {e.name}: {(info[`${e.code}`] && info[`${e.code}`].value) ? info[`${e.code}`].value : translate('task.task_management.calc_no_value')}</li>
+                                        }
+                                    })
+                                }
                             </ul>
                             <p><strong>{translate('task.task_management.calc_new_formula')}: </strong> {formula} = {result}</p>
                             {/* {progressTask}/({daysUsed}/{totalDays}) - {0.5}*({10}-{averageActionRating})*{10} */}

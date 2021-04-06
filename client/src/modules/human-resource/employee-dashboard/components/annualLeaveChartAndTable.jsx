@@ -6,6 +6,8 @@ import { withTranslate } from 'react-redux-multilingual';
 import { AnnualLeaveActions } from '../../annual-leave/redux/actions';
 import { SelectMulti, SlimScroll } from '../../../../common-components';
 
+import { showListInSwal } from '../../../../helpers/showListInSwal';
+
 import c3 from 'c3';
 import 'c3/c3.css';
 import * as d3 from 'd3';
@@ -190,7 +192,7 @@ class AnnualLeaveChartAndTable extends Component {
     handleSunmitSearch = async () => { }
 
     render() {
-        const { annualLeave, translate, childOrganizationalUnit } = this.props;
+        const { annualLeave, translate, childOrganizationalUnit, department } = this.props;
         const { organizationalUnits, organizationalUnitsShow } = this.state;
         const listAnnual = organizationalUnitsShow.map(x => {
             const unit = childOrganizationalUnit.find(y => y.id.toString() === x.toString())
@@ -204,7 +206,6 @@ class AnnualLeaveChartAndTable extends Component {
         })
 
         if (annualLeave.beforAndAfterOneWeeks.length) {
-            console.log(new Date())
             listAnnual.map(x => {
                 annualLeave.beforAndAfterOneWeeks.forEach(y => {
                     if (x.id.toString() === y.organizationalUnit.toString() && y.status === 'approved') {
@@ -250,11 +251,31 @@ class AnnualLeaveChartAndTable extends Component {
         }
         this.renderChart({ ratioX: arrdays, nameData1: "Số đơn xin nghỉ", data1, nameData2: "Số đơn được duyệt", data2 });
 
+        let organizationalUnitsName = [];
+        if (organizationalUnits) {
+            organizationalUnitsName = department.list.filter(x => organizationalUnits.includes(x._id));
+            organizationalUnitsName = organizationalUnitsName.map(x => x.name);
+        }
         return (
             <React.Fragment>
                 <div className="box box-solid">
                     <div className="box-header with-border">
-                        <h3 className="box-title">Xu hướng nghỉ phép của nhân viên trong tuần trước và tuần tới</h3>
+                        <div className="box-title">
+                            Xu hướng nghỉ phép của nhân viên trong tuần trước và tuần tới
+                            {
+                                organizationalUnitsName && organizationalUnitsName.length < 2 ?
+                                    <>
+                                        <span>{` ${translate('task.task_dashboard.of_unit')}`}</span>
+                                        <span>{` ${organizationalUnitsName?.[0]}`}</span>
+                                    </>
+                                    :
+                                    <span onClick={() => showListInSwal(organizationalUnitsName, translate('general.list_unit'))} style={{ cursor: 'pointer' }}>
+                                        <span>{` ${translate('task.task_dashboard.of')}`}</span>
+                                        <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {organizationalUnitsName?.length}</a>
+                                        <span>{` ${translate('task.task_dashboard.unit_lowercase')}`}</span>
+                                    </span>
+                            }
+                        </div>
                     </div>
                     <div className="box-body" >
                         <div className="qlcv" style={{ marginBottom: 15 }}>

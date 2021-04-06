@@ -60,6 +60,7 @@ import { SearchEmployeeForPackage } from "../modules/human-resource/profile/empl
 import CareerManagement from "../modules/human-resource/career/component";
 import Major from "../modules/human-resource/major/component";
 
+import { OrganizationalUnitKpiCreateForAdmin } from "../modules/kpi/organizational-unit/creation/component/organizationalUnitKpiCreateForAdmin";
 import { OrganizationalUnitKpiCreate } from "../modules/kpi/organizational-unit/creation/component/organizationalUnitKpiCreate";
 import { OrganizationalUnitKpiDashboard } from "../modules/kpi/organizational-unit/dashboard/component/organizationalUnitKpiDashboard";
 import { KPIUnitManager } from "../modules/kpi/organizational-unit/management/component/organizationalUnitKpiOverview";
@@ -118,6 +119,8 @@ import CrmDashBoard from "../modules/crm/dashboard/components";
 import CrmCustomer from "../modules/crm/customer/components";
 import CrmGroup from "../modules/crm/group/components";
 import CrmCare from "../modules/crm/care/components";
+import CrmLoyalCustomer from '../modules/crm/loyalCustomer/components'
+import CrmEvaluation from '../modules/crm/evaluation/components'
 import GeneralConfiguration from "../modules/crm/generalConfiguration/components";
 
 //orders
@@ -153,6 +156,13 @@ import ManufacturingWorks from "../modules/production/manufacturing/manufacturin
 import PurchasingRequest from "../modules/production/manufacturing/purchasing-request/components";
 import ManufacturingDashboard from "../modules/production/manufacturing/manufacturing-dashboard/components";
 import ManufacturingLot from "../modules/production/manufacturing/manufacturing-lot/components";
+
+// Transport Managements
+import TransportRequirements from '../modules/production/transport/transport-requirements/components';
+import TransportSchedule from '../modules/production/transport/transport-schedule/components';
+import TransportVehical from '../modules/production/transport/transport-vehical/components';
+import TransportHuman from '../modules/production/transport/transport-human/components';
+import TransportRoute from '../modules/production/transport/transport-route/components';
 
 import AnswerAuthQuestionPage from '../modules/auth/components/answerAuthQuestion';
 
@@ -981,6 +991,25 @@ class Routes extends Component {
                     />
 
                     {/* kpi - routes */}
+                    <PrivateRoute
+                        isLoading={this.props.createKpiUnit.isLoading}
+                        key={"kpi-unit-create"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/kpi-units/create-for-admin",
+                                name: "kpi_unit_create_for_admin",
+                                icon: "",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/kpi-units/create-for-admin"}
+                        path={"/kpi-units/create-for-admin"}
+                        pageName={"kpi_unit_create_for_admin"}
+                        layout={Layout}
+                        component={OrganizationalUnitKpiCreateForAdmin}
+                    />
                     <PrivateRoute
                         isLoading={this.props.createKpiUnit.isLoading}
                         key={"kpi-unit-create"}
@@ -1860,6 +1889,24 @@ class Routes extends Component {
                         layout={Layout}
                         component={CrmCustomer}
                     />
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"crm_loyal_customer"}
+                        arrPage={[
+                            {
+                                link: "/crm/loyal-customer",
+                                name: "crm_list.lead",
+                                icon: "fa fa-users",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/crm/loyal-customer"}
+                        path={"/crm/loyal-customer"}
+                        pageName={"crm_list.lead"}
+                        layout={Layout}
+                        component={CrmLoyalCustomer}
+                    />
 
                     <PrivateRoute
                         isLoading={false}
@@ -1879,7 +1926,24 @@ class Routes extends Component {
                         layout={Layout}
                         component={CrmGroup}
                     />
-
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"crm_evaluation"}
+                        arrPage={[
+                            {
+                                link: "/crm/evaluation",
+                                name: "crm_list.evaluation",
+                                icon: "fa fa-users",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/crm/evaluation"}
+                        path={"/crm/evaluation"}
+                        pageName={"crm_list.evaluation"}
+                        layout={Layout}
+                        component={CrmEvaluation}
+                    />
                     <PrivateRoute
                         isLoading={false}
                         key={"customer-care"}
@@ -1979,7 +2043,7 @@ class Routes extends Component {
                         layout={Layout}
                         component={Quote}
                     />
-
+                  
                     <PrivateRoute
                         isLoading={false}
                         key={"/manage-sales-order-dashboard"}
@@ -2405,6 +2469,104 @@ class Routes extends Component {
                         component={ManufacturingLot}
                     />
 
+                    {/* Transport Management */}
+
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"manage-transport-requirements"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/manage-transport-requirements", // url trang
+                                name: "manage_transport_requirements", // tên trang
+                                icon: " fa fa-calendar-o ",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/manage-transport-requirements"}
+                        path={"/manage-transport-requirements"}
+                        pageName={"manage_transport_requirements"}
+                        layout={Layout}
+                        component={TransportRequirements} // component ứng với trang, tạo ở bước 1
+                    />
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"manage-transport-schedule"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/manage-transport-schedule", // url trang
+                                name: "manage_transport_schedule", // tên trang
+                                icon: " fa fa-calendar-o ",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/manage-transport-schedule"}
+                        path={"/manage-transport-schedule"}
+                        pageName={"manage_transport_schedule"}
+                        layout={Layout}
+                        component={TransportSchedule} // component ứng với trang, tạo ở bước 1
+                    />
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"manage-transport-vehical"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/manage-transport-vehical", // url trang
+                                name: "manage_transport_vehical", // tên trang
+                                icon: " fa fa-calendar-o ",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/manage-transport-vehical"}
+                        path={"/manage-transport-vehical"}
+                        pageName={"manage_transport_vehical"}
+                        layout={Layout}
+                        component={TransportVehical} // component ứng với trang, tạo ở bước 1
+                    />
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"manage-transport-human"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/manage-transport-human", // url trang
+                                name: "manage_transport_human", // tên trang
+                                icon: " fa fa-calendar-o ",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/manage-transport-human"}
+                        path={"/manage-transport-human"}
+                        pageName={"manage_transport_human"}
+                        layout={Layout}
+                        component={TransportHuman} // component ứng với trang, tạo ở bước 1
+                    />
+                    <PrivateRoute
+                        isLoading={false}
+                        key={"manage-transport-route"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/manage-transport-route", // url trang
+                                name: "manage_transport_route", // tên trang
+                                icon: " fa fa-calendar-o ",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/manage-transport-route"}
+                        path={"/manage-transport-route"}
+                        pageName={"manage_transport_route"}
+                        layout={Layout}
+                        component={TransportRoute} // component ứng với trang, tạo ở bước 1
+                    />                    
+
 
                     <PrivateRoute
                         isLoading={false}
@@ -2464,6 +2626,8 @@ class Routes extends Component {
                         layout={Layout}
                         component={AllTimeSheetLog}
                     />
+
+
 
                     {/* NOT FOUND */}
                     <Route component={NotFound}></Route>

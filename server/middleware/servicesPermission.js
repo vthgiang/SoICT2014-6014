@@ -711,9 +711,12 @@ exports.links = [
         url: '/hr-search-for-package',
         apis: ['@all']
     }, {
-        url: '/kpi-units/create',
+        url: '/kpi-units/create-for-admin',
         apis: ['@all']
     }, {
+        url: '/kpi-units/create',
+        apis: ['@all']
+    },{
         url: '/kpi-units/dashboard',
         apis: ['@all']
     }, {
@@ -874,9 +877,13 @@ exports.links = [
         url: '/crm/customer',
         apis: ['@all']
     }, {
-        url: '/crm/lead',
+        url: '/crm/loyal-customer',
         apis: ['@all']
-    }, {
+    },{
+        url: '/crm/evaluation',
+        apis: ['@all']
+    },
+     {
         url: '/crm/group',
         apis: ['@all']
     }, {
@@ -933,7 +940,30 @@ exports.links = [
     }, {
         url: '/answer-auth-questions',
         apis: ['@all']
+    }, 
+
+    //transport
+    {
+        url: '/manage-transport-requirements',
+        apis: ['@all']
     },
+    {
+        url: '/manage-transport-schedule',
+        apis: ['@all']
+    },
+    {
+        url: '/manage-transport-vehical',
+        apis: ['@all']
+    },
+    {
+        url: '/manage-transport-human',
+        apis: ['@all']
+    },
+    {
+        url: '/manage-transport-route',
+        apis: ['@all']
+    },
+
     {
         url: '/projects-management',
         apis: ['@all']

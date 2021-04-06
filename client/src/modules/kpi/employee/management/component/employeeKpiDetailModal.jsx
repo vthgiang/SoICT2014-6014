@@ -1,69 +1,70 @@
-import React, { Component } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { DialogModal } from '../../../../../common-components/index';
 import { DataTableSetting, ExportExcel } from '../../../../../common-components';
 
+import { kpiMemberActions } from '../../../evaluation/employee-evaluation/redux/actions';
+
 import { TaskDialog } from '../../../evaluation/employee-evaluation/component/taskImpotanceDialog';
 import { ModalDetailTask } from '../../../../task/task-dashboard/task-personal-dashboard/modalDetailTask';
-import { kpiMemberActions } from '../../../evaluation/employee-evaluation/redux/actions';
+import { EmployeeKpiOverviewModal } from './employeeKpiOverviewModal';
 import parse from 'html-react-parser';
 
-class ModalDetailKPIPersonal extends Component {
-    constructor(props) {
-        super(props);
-        this.DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
-        this.state = {
-            organizationalUnit: "",
-            content: "",
-            name: "",
-            description: "",
-            point: 0,
-            status: 0,
-            value: 0,
-            valueNow: 0,
-            dataStatus: this.DATA_STATUS.NOT_AVAILABLE
-        };
-    }
-    static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.employeeKpiSet && nextProps.employeeKpiSet._id !== prevState.id) {
-            return {
-                ...prevState,
-                id: nextProps.employeeKpiSet._id,
-            }
-        } else {
-            return null;
-        }
-    }
+function ModalDetailKPIPersonal(props) {
 
-    shouldComponentUpdate = (nextProps, nextState) => {
-        if (nextProps.employeeKpiSet && nextProps.employeeKpiSet._id !== this.state.id) {
-            if (nextProps.employeeKpiSet._id) {
-                this.props.getKpisByKpiSetId(nextProps.employeeKpiSet._id);
+    const DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
+
+    const [state, setState] = useState({
+        organizationalUnit: "",
+        content: "",
+        name: "",
+        description: "",
+        point: 0,
+        status: 0,
+        value: 0,
+        valueNow: 0,
+        dataStatus: DATA_STATUS.NOT_AVAILABLE
+    });
+
+    var kpimember;
+    var list, myTask = [];
+    let exportData, content = state.content;
+    const { kpimembers, translate } = props;
+    let { employeeKpiSet } = props;
+    const { taskId, taskImportanceDetail } = state;
+
+    useEffect(() => {
+        if (props.employeeKpiSet && props.employeeKpiSet._id !== state.id) {
+            setState({
+                ...state,
+                id: props.employeeKpiSet._id,
+            })
+        }
+    }, [props.employeeKpiSet])
+
+    useEffect(() => {
+        if (props.employeeKpiSet && props.employeeKpiSet._id !== state.id) {
+            if (props.employeeKpiSet._id) {
+                props.getKpisByKpiSetId(props.employeeKpiSet._id);
             }
-            return false;
         }
 
-        if (this.state.dataStatus === this.DATA_STATUS.QUERYING) {
-            if (!nextProps.kpimembers.tasks) {
-                return false;
+        if (state.dataStatus === DATA_STATUS.QUERYING) {
+            if (!props.kpimembers.tasks) {
             } else { // Dữ liệu đã về
-                let tasks = nextProps.kpimembers.tasks;
-                this.setState(state => {
-                    return {
-                        ...state,
-                        tasks: tasks,
-                        dataStatus: this.DATA_STATUS.FINISHED,
-                    }
+                let tasks = props.kpimembers.tasks;
+                setState({
+                    ...state,
+                    tasks: tasks,
+                    dataStatus: DATA_STATUS.FINISHED,
                 });
-                return false;
             }
         }
-        return true;
-    }
+    }, [props.employeeKpiSet, state.dataStatus]);
 
-    formatDate(date) {
+    function formatDate(date) {
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
@@ -77,7 +78,7 @@ class ModalDetailKPIPersonal extends Component {
         return [day, month, year].join('-');
     }
 
-    formatMonth(date) {
+    function formatMonth(date) {
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
@@ -91,8 +92,7 @@ class ModalDetailKPIPersonal extends Component {
         return [month, year].join('-');
     }
 
-    formatTaskStatus = (translate, status) => {
-        console.log(status)
+    const formatTaskStatus = (translate, status) => {
         switch (status) {
             case "inprocess":
                 return translate('task.task_management.inprocess');
@@ -104,24 +104,24 @@ class ModalDetailKPIPersonal extends Component {
                 return translate('task.task_management.delayed');
             case "canceled":
                 return translate('task.task_management.canceled');
+            case "requested_to_close":
+                return translate('task.task_management.requested_to_close');
         }
-    }
+    };
 
     /**Hiển thị nội dung 1 mục tiêu KPI mới khi click vào tên mục tiêu đó */
-    handleChangeContent = (id, employeeId, kpiType) => {
-        let date = this.props.employeeKpiSet.date;
-        this.props.getTaskById(id, employeeId, date, kpiType);
-        this.setState(state => {
-            return {
-                ...state,
-                content: id,
-                dataStatus: this.DATA_STATUS.QUERYING,
-            }
+    const handleChangeContent = (id, employeeId, kpiType) => {
+        let date = props.employeeKpiSet.date;
+        props.getTaskById(id, employeeId, date, kpiType);
+        setState({
+            ...state,
+            content: id,
+            dataStatus: DATA_STATUS.QUERYING,
         });
-    }
+    };
 
     /*Chuyển đổi dữ liệu KPI nhân viên thành dữ liệu export to file excel */
-    convertDataToExportData = (dataKpi, dataDetailKpi) => {
+    const convertDataToExportData = (dataKpi, dataDetailKpi) => {
 
         let fileName = "Thông tin chi tiết KPI cá nhân ";
         let kpiData = [], detailData;
@@ -216,191 +216,206 @@ class ModalDetailKPIPersonal extends Component {
         }
         return exportData;
 
-    }
-    handleClickTaskName = async (id) => {
-        this.setState(state => {
-            return {
-                ...state,
-                taskId: id,
-            }
+    };
+
+    const handleClickTaskName = async (id) => {
+        setState({
+            ...state,
+            taskId: id,
         });
         window.$(`#modal-detail-task-kpi-detail`).modal('show');
-    }
-    showDetailTaskImportanceCal = async (item) => {
-        await this.setState(state => {
-            return {
-                ...state,
-                taskImportanceDetail: item
-            }
+    };
+
+    const showDetailTaskImportanceCal = async (item) => {
+        await setState({
+            ...state,
+            taskImportanceDetail: item
         })
 
         window.$(`#modal-taskimportance-auto`).modal('show')
+    };
+
+    if (kpimembers.tasks !== 'undefined' && kpimembers.tasks !== null) myTask = kpimembers.tasks;
+    kpimember = kpimembers && kpimembers.kpimembers;
+
+    if (kpimembers.currentKPI) {
+        list = kpimembers.currentKPI.kpis;
     }
-    render() {
-        var kpimember;
-        var list, myTask = [];
-        let exportData, content = this.state.content;
-        const { kpimembers, translate } = this.props;
-        let { employeeKpiSet } = this.props;
-        const { taskId, taskImportanceDetail } = this.state;
-        if (kpimembers.tasks !== 'undefined' && kpimembers.tasks !== null) myTask = kpimembers.tasks;
-        kpimember = kpimembers && kpimembers.kpimembers;
 
-        if (kpimembers.currentKPI) {
-            list = kpimembers.currentKPI.kpis;
-        }
-
-        if (myTask) {
-            let dataKpi;
-            if (list) {
-                for (let i = 0; i < list.length; i++) {
-                    if (list[i]._id === content) {
-                        dataKpi = list[i];
-                    }
+    if (myTask) {
+        let dataKpi;
+        if (list) {
+            for (let i = 0; i < list.length; i++) {
+                if (list[i]._id === content) {
+                    dataKpi = list[i];
                 }
             }
-            exportData = this.convertDataToExportData(dataKpi, myTask);
         }
+        exportData = convertDataToExportData(dataKpi, myTask);
+    }
 
-        return (
-            <React.Fragment>
-                <DialogModal
-                    modalID={`modal-detail-KPI-personal`}
-                    title={employeeKpiSet && employeeKpiSet.creator && `KPI ${employeeKpiSet.creator.name}, ${translate('general.month')} ${this.formatMonth(employeeKpiSet.date)}`}
-                    hasSaveButton={false}
-                    size={100}>
-                    <div className="col-xs-12 col-sm-4">
-                        <div className="box box-solid" style={{ border: "1px solid #ecf0f6", borderBottom: "none" }}>
-                            {/**Danh sách các mục tiêu của tập KPI đang xem */}
-                            <div className="box-header with-border">
-                                <h3 className="box-title" style={{ fontWeight: 800 }}>{translate('kpi.evaluation.employee_evaluation.KPI_list')}</h3>
+    return (
+        <React.Fragment>
+            <DialogModal
+                modalID={`modal-detail-KPI-personal`}
+                title={employeeKpiSet && employeeKpiSet.creator && `KPI ${employeeKpiSet.creator.name}, ${translate('general.month')} ${formatMonth(employeeKpiSet.date)}`}
+                hasSaveButton={false}
+                size={100}
+            >
+                <div className="nav-tabs-custom" style={{ boxShadow: "none", MozBoxShadow: "none", WebkitBoxShadow: "none" }}>
+                    <ul className="nav nav-tabs">
+                        <li className="active"><a href="#overview" data-toggle="tab">{translate('menu.kpi_personal_overview')}</a></li>
+                        <li><a href="#detail" data-toggle="tab">{translate('menu.kpi_member_detail')}</a></li>
+                    </ul>
+                    <div className="tab-content">
+                        {/* Tổng quan KPI */}
+                        <div className={"active tab-pane"} id="overview">
+                            <EmployeeKpiOverviewModal />
+                        </div>
+
+                        {/* Chi tiết KPI */}
+                        <div className={"tab-pane"} id="detail">
+                            <div className="col-xs-12 col-sm-4">
+                                <div className="box box-solid" style={{ border: "1px solid #ecf0f6", borderBottom: "none" }}>
+                                    {/**Danh sách các mục tiêu của tập KPI đang xem */}
+                                    <div className="box-header with-border">
+                                        <h3 className="box-title" style={{ fontWeight: 800 }}>{translate('kpi.evaluation.employee_evaluation.KPI_list')}</h3>
+                                    </div>
+
+                                    {/**Xử lí khi người dùng muốn xem chi tiết mục tiêu */}
+                                    <div className="box-body no-padding" style={{ height: "calc(60vh - 110px)", overflow: "auto" }}>
+                                        <ul className="nav nav-pills nav-stacked">
+                                            {list && list.map((item, index) =>
+                                                <li key={index} className={state.content === item._id ? "active" : ""}>
+                                                    <a style={{ cursor: "pointer" }} onClick={() => handleChangeContent(item._id, employeeKpiSet.creator._id, item.type)}>
+                                                        {item.name}&nbsp;
+                                                    </a>
+                                                </li>
+                                            )}
+                                        </ul>
+                                    </div>
+                                </div>
                             </div>
 
-                            {/**Xử lí khi người dùng muốn xem chi tiết mục tiêu */}
-                            <div className="box-body no-padding" style={{ height: "calc(60vh - 110px)", overflow: "auto" }}>
-                                <ul className="nav nav-pills nav-stacked">
-                                    {list && list.map((item, index) =>
-                                        <li key={index} className={this.state.content === item._id ? "active" : ""}>
-                                            <a style={{ cursor: "pointer" }} onClick={() => this.handleChangeContent(item._id, employeeKpiSet.creator._id, item.type)}>
-                                                {item.name}&nbsp;
-                                        </a>
-                                        </li>
-                                    )}
-                                </ul>
+                            {/**Nội dung chi tiết của 1 mục tiêu */}
+                            <div className="col-xs-12 col-sm-8 qlcv">
+                                {list && list.map(item => {
+                                    if (item._id === state.content) return (
+                                        <React.Fragment key={item._id}>
+                                            <h4>{translate('kpi.evaluation.employee_evaluation.KPI_info') + " " + item.name}</h4>
+                                            {exportData && <ExportExcel id="export-employee-kpi-management-detail-kpi" exportData={exportData} style={{ marginTop: 5 }} />}
+                                            <div style={{ lineHeight: 2 }}>
+                                                <div>
+                                                    <label>{translate('kpi.evaluation.employee_evaluation.criteria')}:</label>
+                                                    <span> {parse(item.criteria)}</span>
+                                                </div>
+
+                                                <div>
+                                                    <label>{translate('kpi.evaluation.employee_evaluation.weight')}:</label>
+                                                    <span> {item.weight}/100</span>
+                                                </div>
+
+                                                <div>
+                                                    <label>{translate('kpi.evaluation.employee_evaluation.point_field')}:</label>
+                                                    <span> {item.automaticPoint ? item.automaticPoint : translate('kpi.evaluation.employee_evaluation.no_point')}</span>
+                                                    <span> - {item.employeePoint ? item.employeePoint : translate('kpi.evaluation.employee_evaluation.no_point')}</span>
+                                                    <span> - {item.approvedPoint ? item.approvedPoint : translate('kpi.evaluation.employee_evaluation.no_point')}</span>
+                                                </div>
+
+                                                {item.updatedAt &&
+                                                    <div>
+                                                        <label>{translate('kpi.evaluation.employee_evaluation.lastest_evaluation')}: </label>
+                                                        <span> {formatDate(item.updatedAt)}</span>
+                                                    </div>
+                                                }
+                                            </div>
+                                            <br />
+                                            <br />
+
+
+                                            <h4>
+                                                {translate('kpi.evaluation.employee_evaluation.task_list')}
+                                                <DataTableSetting className="pull-right" tableId="employeeKpiEvaluate" tableContainerId="tree-table-container" tableWidth="1300px"
+                                                    columnArr={[
+                                                        translate('kpi.evaluation.employee_evaluation.index'),
+                                                        translate('task.task_management.name'),
+                                                        translate('kpi.evaluation.employee_evaluation.work_duration_time'),
+                                                        translate('kpi.evaluation.employee_evaluation.evaluate_time'),
+                                                        translate('kpi.evaluation.employee_evaluation.status'),
+                                                        translate('kpi.evaluation.employee_evaluation.contribution'),
+                                                        translate('kpi.evaluation.employee_evaluation.point'),
+                                                        translate('kpi.evaluation.employee_evaluation.importance_level')]}
+                                                    limit={state.perPage}
+                                                    hideColumnOption={true}
+                                                />
+                                            </h4>
+                                            <div className="table-wrapper-scroll-y my-custom-scrollbar" style={{ height: "calc(80vh - 160px)", overflow: "auto" }}>
+                                                {/**Table danh sách công việc của mục tiêu */}
+                                                <table id="employeeKpiEvaluate" className="table table-striped table-hover table-bordered" style={{ marginBottom: 0 }}>
+                                                    <thead>
+                                                        <tr>
+                                                            <th title={translate('kpi.evaluation.employee_evaluation.index')} style={{ width: "40px" }} className="col-fixed">{translate('kpi.evaluation.employee_evaluation.index')}</th>
+                                                            <th title={translate('task.task_management.name')}>{translate('task.task_management.name')}</th>
+                                                            <th title={translate('kpi.evaluation.employee_evaluation.work_duration_time')}>{translate('kpi.evaluation.employee_evaluation.work_duration_time')}</th>
+                                                            <th title={translate('kpi.evaluation.employee_evaluation.evaluate_time')}>{translate('kpi.evaluation.employee_evaluation.evaluate_time')}</th>
+                                                            <th title={translate('kpi.evaluation.employee_evaluation.status')}>{translate('kpi.evaluation.employee_evaluation.status')}</th>
+                                                            <th title={translate('kpi.evaluation.employee_evaluation.contribution')}>{translate('kpi.evaluation.employee_evaluation.contribution')} (%)</th>
+                                                            <th title={translate('kpi.evaluation.employee_evaluation.point')}>{translate('kpi.evaluation.employee_evaluation.point')}</th>
+                                                            <th title={translate('kpi.evaluation.employee_evaluation.importance_level')}>{translate('kpi.evaluation.employee_evaluation.importance_level')}</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {
+                                                            (kpimembers?.tasks?.length > 0 && Array.isArray(kpimembers.tasks)) 
+                                                                && (kpimembers.tasks.map((itemTask, index) =>
+                                                                    <tr key={index}>
+                                                                        <td>{index + 1}</td>
+                                                                        <td><a style={{ cursor: 'pointer' }} onClick={() => handleClickTaskName(itemTask.taskId)}>{itemTask.name}</a></td>
+                                                                        <td>{formatDate(itemTask.startDateTask)}<br /> <i className="fa fa-angle-double-down"></i><br /> {formatDate(itemTask.endDateTask)}</td>
+                                                                        <td>{itemTask.startDate ? formatDate(itemTask.startDate) : ""}<br /> <i className="fa fa-angle-double-down"></i><br /> {itemTask.endDate ? formatDate(itemTask.endDate) : ""}</td>
+                                                                        <td>{formatTaskStatus(translate, itemTask.status)}</td>
+                                                                        <td>{itemTask.results.contribution ? itemTask.results.contribution : 0}%</td>
+                                                                        <td>{itemTask.results.automaticPoint + '-' + itemTask.results.employeePoint + '-' + itemTask.results.approvedPoint}</td>
+                                                                        <td>
+                                                                            <div>
+                                                                                {translate('kpi.evaluation.employee_evaluation.evaluated_value')}: {itemTask.results.taskImportanceLevel}
+                                                                            </div>
+                                                                            <div>
+                                                                                <a href="#modal-taskimportance-auto" onClick={() => showDetailTaskImportanceCal(itemTask)}>
+                                                                                    {translate('kpi.evaluation.employee_evaluation.auto_value')}: {itemTask.taskImportanceLevelCal}
+                                                                                </a>
+                                                                            </div>
+                                                                        </td>
+                                                                    </tr>)
+                                                                )
+                                                        }
+                                                    </tbody>
+                                                </table>
+                                                {!kpimembers?.tasks?.length && kpimembers?.taskLoading
+                                                    && <div className="table-info-panel">{translate('general.loading')}</div>
+                                                }
+                                                {!kpimembers?.tasks?.length && !kpimembers?.taskLoading
+                                                    && <div className="table-info-panel">{translate('general.no_data')}</div>
+                                                }
+                                            </div>
+                                            {
+                                                taskImportanceDetail &&
+                                                <TaskDialog
+                                                    task={taskImportanceDetail}
+                                                />
+
+                                            }
+                                        </React.Fragment>);
+                                    return true;
+                                })}
                             </div>
                         </div>
                     </div>
-
-                    {/**Nội dung chi tiết của 1 mục tiêu */}
-                    <div className="col-xs-12 col-sm-8 qlcv">
-                        {list && list.map(item => {
-                            if (item._id === this.state.content) return (
-                                <React.Fragment key={item._id}>
-                                    <h4>{translate('kpi.evaluation.employee_evaluation.KPI_info') + " " + item.name}</h4>
-                                    {exportData && <ExportExcel id="export-employee-kpi-management-detail-kpi" exportData={exportData} style={{ marginTop: 5 }} />}
-                                    <div style={{ lineHeight: 2 }}>
-                                        <div>
-                                            <label>{translate('kpi.evaluation.employee_evaluation.criteria')}:</label>
-                                            <span> {parse(item.criteria)}</span>
-                                        </div>
-
-                                        <div>
-                                            <label>{translate('kpi.evaluation.employee_evaluation.weight')}:</label>
-                                            <span> {item.weight}/100</span>
-                                        </div>
-
-                                        <div>
-                                            <label>{translate('kpi.evaluation.employee_evaluation.point_field')}:</label>
-                                            <span> {item.automaticPoint ? item.automaticPoint : translate('kpi.evaluation.employee_evaluation.no_point')}</span>
-                                            <span> - {item.employeePoint ? item.employeePoint : translate('kpi.evaluation.employee_evaluation.no_point')}</span>
-                                            <span> - {item.approvedPoint ? item.approvedPoint : translate('kpi.evaluation.employee_evaluation.no_point')}</span>
-                                        </div>
-
-                                        {item.updatedAt &&
-                                            <div>
-                                                <label>{translate('kpi.evaluation.employee_evaluation.lastest_evaluation')}: </label>
-                                                <span> {this.formatDate(item.updatedAt)}</span>
-                                            </div>
-                                        }
-                                    </div>
-                                    <br />
-                                    <br />
-
-
-                                    <h4>{translate('kpi.evaluation.employee_evaluation.task_list')}</h4>
-                                    <div class="table-wrapper-scroll-y my-custom-scrollbar" style={{ height: "calc(80vh - 160px)", overflow: "auto" }}>
-                                        <DataTableSetting className="pull-right" tableId="employeeKpiEvaluate" tableContainerId="tree-table-container" tableWidth="1300px"
-                                            columnArr={[
-                                                translate('kpi.evaluation.employee_evaluation.index'),
-                                                translate('task.task_management.name'),
-                                                translate('kpi.evaluation.employee_evaluation.work_duration_time'),
-                                                translate('kpi.evaluation.employee_evaluation.evaluate_time'),
-                                                translate('kpi.evaluation.employee_evaluation.status'),
-                                                translate('kpi.evaluation.employee_evaluation.contribution'),
-                                                translate('kpi.evaluation.employee_evaluation.point'),
-                                                translate('kpi.evaluation.employee_evaluation.importance_level')]}
-                                            limit={this.state.perPage}
-                                            setLimit={this.setLimit}
-                                            hideColumnOption={true} />
-
-                                        {/**Table danh sách công việc của mục tiêu */}
-                                        <table id="employeeKpiEvaluate" className="table table-hover table-bordered">
-                                            <thead>
-                                                <tr>
-                                                    <th title={translate('kpi.evaluation.employee_evaluation.index')} style={{ width: "40px" }} className="col-fixed"></th>
-                                                    <th title={translate('task.task_management.name')}>{translate('task.task_management.name')}</th>
-                                                    <th title={translate('kpi.evaluation.employee_evaluation.work_duration_time')}>{translate('kpi.evaluation.employee_evaluation.work_duration_time')}</th>
-                                                    <th title={translate('kpi.evaluation.employee_evaluation.evaluate_time')}>{translate('kpi.evaluation.employee_evaluation.evaluate_time')}</th>
-                                                    <th title={translate('kpi.evaluation.employee_evaluation.status')}>{translate('kpi.evaluation.employee_evaluation.status')}</th>
-                                                    <th title={translate('kpi.evaluation.employee_evaluation.contribution')}>{translate('kpi.evaluation.employee_evaluation.contribution')} (%)</th>
-                                                    <th title={translate('kpi.evaluation.employee_evaluation.point')}>{translate('kpi.evaluation.employee_evaluation.point')}</th>
-                                                    <th title={translate('kpi.evaluation.employee_evaluation.importance_level')}>{translate('kpi.evaluation.employee_evaluation.importance_level')}</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {
-                                                    (kpimembers.tasks !== undefined && Array.isArray(kpimembers.tasks)) ?
-                                                        (kpimembers.tasks.map((itemTask, index) =>
-
-                                                            <tr key={index}>
-                                                                <td>{index + 1}</td>
-                                                                <td><a style={{ cursor: 'pointer' }} onClick={() => this.handleClickTaskName(itemTask.taskId)}>{itemTask.name}</a></td>
-                                                                <td>{this.formatDate(itemTask.startDateTask)}<br /> <i className="fa fa-angle-double-down"></i><br /> {this.formatDate(itemTask.endDateTask)}</td>
-                                                                <td>{itemTask.startDate ? this.formatDate(itemTask.startDate) : ""}<br /> <i className="fa fa-angle-double-down"></i><br /> {itemTask.endDate ? this.formatDate(itemTask.endDate) : ""}</td>
-                                                                <td>{this.formatTaskStatus(translate, itemTask.status)}</td>
-                                                                <td>{itemTask.results.contribution ? itemTask.results.contribution : 0}%</td>
-                                                                <td>{itemTask.results.automaticPoint + '-' + itemTask.results.employeePoint + '-' + itemTask.results.approvedPoint}</td>
-                                                                <td>
-                                                                    <div>
-                                                                        {translate('kpi.evaluation.employee_evaluation.evaluated_value')}: {itemTask.results.taskImportanceLevel}
-                                                                    </div>
-                                                                    <div>
-                                                                        <a href="#modal-taskimportance-auto" onClick={() => this.showDetailTaskImportanceCal(itemTask)}>
-                                                                            {translate('kpi.evaluation.employee_evaluation.auto_value')}: {itemTask.taskImportanceLevelCal}
-                                                                        </a>
-                                                                    </div>
-                                                                </td>
-                                                            </tr>)) : <tr><td colSpan={8}>{translate('general.no_data')}</td></tr>
-                                                }
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    {
-                                        taskImportanceDetail &&
-                                        <TaskDialog
-                                            task={taskImportanceDetail}
-                                        />
-
-                                    }
-                                </React.Fragment>);
-                            return true;
-                        })}
-                    </div>
-                </DialogModal>
-                {<ModalDetailTask action={'kpi-detail'} id={taskId} />}
-            </React.Fragment>
-        );
-    }
+                </div>
+            </DialogModal>
+            {<ModalDetailTask action={'kpi-detail'} id={taskId} />}
+        </React.Fragment>
+    );
 }
 
 function mapState(state) {

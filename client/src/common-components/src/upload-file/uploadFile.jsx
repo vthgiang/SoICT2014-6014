@@ -56,7 +56,7 @@ class UploadFile extends Component {
             this.setState({
                 files: files
             }, () => {
-                if (sendDataAfterDelete)
+                if (sendDataAfterDelete && this.props.onChange)
                     this.props.onChange(files)
             })
         }

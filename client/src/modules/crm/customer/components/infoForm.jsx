@@ -8,6 +8,7 @@ import HistoryOfStateTransitionsTabInfoForm from './historyOfStateTransitionsTab
 import FileTabInfoForm from './fileTabInfoForm';
 import PurchaseHistoriesInfoForm from './purchaseHistoriesInfoForm';
 import './customer.css'
+import CareHistoriesInfoForm from './careHistoriesInfoForm';
 
 class CrmCustomerInformation extends Component {
     constructor(props) {
@@ -161,10 +162,10 @@ class CrmCustomerInformation extends Component {
                                     <ul className="nav nav-tabs">
                                         <li className="active"><a href={`#generalInfo-${customerId}`} data-toggle="tab">Thông tin chi tiết</a></li>
                                         <li ><a href={`#purchaseHistories-${customerId}`} data-toggle="tab">Lịch sử mua hàng</a></li>
-                                        <li><a href="#sale" data-toggle="tab">Công nợ</a></li>
-                                        <li><a href="#note" data-toggle="tab">Ghi chú</a></li>
-                                        <li><a href={`#fileAttachment-${customerId}`} data-toggle="tab">File đính kèm</a></li>
+                                        <li ><a href={`#careHistories-${customerId}`} data-toggle="tab">Lịch sử chăm sóc khách hàng</a></li>
                                         <li><a href={`#historyOfStateTransitions-${customerId}`} data-toggle="tab">Lịch sử thay đổi trạng thái</a></li>
+                                        <li><a href={`#fileAttachment-${customerId}`} data-toggle="tab">File đính kèm</a></li>
+                                      
                                     </ul>
                                     <div className="tab-content">
                                         {/* Tab thông tin chi tiết */}
@@ -183,27 +184,19 @@ class CrmCustomerInformation extends Component {
                                             id={`purchaseHistories-${customerId}`}
                                         />
 
-                                        <div className="tab-pane" id="sale">
-                                            Công nợ
-                                             {/* id={`table-customer-liabilities-${customer._id}`} */}
-                                            <table className="table table-hover table-striped table-bordered" >
-                                                <thead>
-                                                    <tr>
-                                                        <th>Mã phiếu</th>
-                                                        <th>Người tạo</th>
-                                                        <th>Ngày tạo</th>
-                                                        <th>Tổng công nợ</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-
-                                                </tbody>
-                                            </table>
-                                        </div>
-
-                                        <div className="tab-pane" id="note">
-                                            Ghi chú
-                                        </div>
+                                        {/* Tab lịch sử chăm sóc khách hàng */}
+                                        <CareHistoriesInfoForm 
+                                        id={`careHistories-${customerId}`}
+                                        
+                                        />
+                                       {/* Tab lịch sử thay đổi trạng thái */}
+                                       {
+                                            customerInfomation && dataStatus === 3 &&
+                                            <HistoryOfStateTransitionsTabInfoForm
+                                                id={`historyOfStateTransitions-${customerId}`}
+                                                customerInfomation={customerInfomation}
+                                            />
+                                        }
 
                                         {/* Tab file đính kèm của khách hàng */}
                                         {
@@ -215,13 +208,7 @@ class CrmCustomerInformation extends Component {
                                             />
                                         }
 
-                                        {
-                                            customerInfomation && dataStatus === 3 &&
-                                            <HistoryOfStateTransitionsTabInfoForm
-                                                id={`historyOfStateTransitions-${customerId}`}
-                                                customerInfomation={customerInfomation}
-                                            />
-                                        }
+                                        
                                     </div>
                                 </div>
                             </div>

@@ -177,8 +177,8 @@ export function createEmployeeKpiSet(state = {}, action) {
                 ...state,
                 currentKPI: {
                     ...state.currentKPI,
-                    kpis: state.currentKPI.kpis.map(target =>
-                        target._id === action.payload
+                    kpis: state.currentKPI?.kpis?.map(target =>
+                        target?._id === action.payload
                             ? { ...target, editing: true }
                             : target)
                 },
@@ -189,8 +189,8 @@ export function createEmployeeKpiSet(state = {}, action) {
                 ...state,
                 currentKPI: {
                     ...state.currentKPI,
-                    kpis: state.currentKPI.kpis.map(target =>
-                        target._id === action.payload._id
+                    kpis: state.currentKPI?.kpis?.map(target =>
+                        target?._id === action.payload._id
                             ? action.payload : target)
                 },
                 isLoading: false

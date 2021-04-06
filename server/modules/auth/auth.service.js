@@ -1,12 +1,11 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const generator = require("generate-password");
-const nodemailer = require("nodemailer");
 const Models = require('../../models');
 const { Privilege, Role, User, Company } = Models;
 const fs = require("fs");
 const { connect, initModels } = require(`../../helpers/dbHelper`);
-
+const { sendEmail } = require("../../helpers/emailHelper");
 /**
  * Phương thức đăng nhập
  */
@@ -140,15 +139,9 @@ exports.forgetPassword = async (portal, email, password2) => {
     var code = await generator.generate({ length: 6, numbers: true });
     user.resetPasswordToken = code;
     await user.save();
-    var transporter = await nodemailer.createTransport({
-        service: "Gmail",
-        auth: { user: "vnist.qlcv@gmail.com", pass: "qlcv123@" },
-    });
-    var mainOptions = {
-        from: "vnist.qlcv@gmail.com",
-        to: email,
-        subject: `${process.env.WEB_NAME} : Thay đổi mật khẩu - Change password`,
-        html: `
+    
+    let subject = `${process.env.WEB_NAME} : Thay đổi mật khẩu - Change password`;
+    let html = `
         <div style="
             background-color:azure;
             padding: 100px;
@@ -175,10 +168,8 @@ exports.forgetPassword = async (portal, email, password2) => {
                 </a>
             </button>
         </div>
-        `,
-    };
-    await transporter.sendMail(mainOptions);
-
+        `
+    await sendEmail(email, subject,'',html )
     return {
         email,
         portal,

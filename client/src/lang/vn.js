@@ -37,6 +37,7 @@ export default {
             new_notification: "Bạn có thông báo mới!",
             month: "tháng",
             value: "Giá trị",
+            export: "Xuất",
             auth_alert: {
                 title:
                     "Hệ thống xác nhận có lỗi xảy ra trong phiên làm việc của bạn!",
@@ -110,6 +111,7 @@ export default {
                 group: "Nhóm khách hàng",
                 statistic: "Thống kê",
                 generalConfiguration: "Cấu hình chung",
+                evaluation:"Đánh giá hoạt động CSKH"
             },
 
             task_template: "Mẫu Công Việc",
@@ -162,6 +164,7 @@ export default {
             manage_kpi_unit: "KPI đơn vị",
             manage_kpi_personal: "KPI cá nhân",
             kpi_unit_create: "Khởi tạo KPI đơn vị",
+            kpi_unit_create_for_admin: "Khởi tạo KPI toàn công ty",
             kpi_unit_evaluate: "Dữ liệu KPI đơn vị",
             kpi_unit_overview: "Tổng quan KPI đơn vị",
             kpi_unit_dashboard: "Dashboard KPI đơn vị",
@@ -174,14 +177,15 @@ export default {
             kpi_personal_overview: "Tổng quan KPI cá nhân",
             kpi_personal_dashboard: "Dashboard KPI cá nhân",
             kpi_personal_manager: "Quản lí KPI cá nhân",
-
+            kpi_member_detail: "Chi tiết KPI cá nhân",
+            
             notifications: "Thông báo",
 
             tasks: "Công việc cá nhân",
             task: "Chi tiết công việc",
-            task_management: "Danh sách công việc",
+            task_management: "Danh sách công việc cá nhân",
             task_management_of_unit: "Danh sách công việc đơn vị",
-            task_management_dashboard: "Dashboard công việc",
+            task_management_dashboard: "Dashboard công việc cá nhân",
             task_organization_management_dashboard:
                 "Dashboard công việc đơn vị",
             task_management_process: "Danh sách quy trình",
@@ -260,11 +264,23 @@ export default {
             manage_manufacturing_mill: "Quản lý xưởng sản xuất",
             manage_manufacturing_lot: "Quản lý lô sản xuất",
             manage_project: "Quản lý dự án",
+            
+            // Quản lý vận chuyển
+            manage_transport: "Quản lý vận chuyển",
+            manage_transport_requirements: "Yêu cầu vận chuyển",
+            manage_transport_schedule: "Kế hoạch vận chuyển",
+            manage_transport_vehical: "Phương tiện vận chuyển",
+            manage_transport_human: "Nhân viên vận chuyển",
+            manage_transport_route: "Lộ trình vận chuyển",
 
             user_guide: "Hướng dẫn sử dụng",
             user_guide_detail: "Chi tiết hướng dẫn sử dụng",
         },
 
+        news_feed: {
+            news_feed: 'Tin tức'
+        },
+        
         intro: {
             title: "Giải pháp không gian làm việc số cho doanh nghiệp",
             contents: [
@@ -1024,7 +1040,6 @@ export default {
                 by_customer: "Theo khách hàng",
                 payment: "Hình thức thanh toán",
                 creator: "Người tạo",
-
                 personal: "Cá nhân",
                 organization: "Tổ chức",
                 northern: "Miền Bắc",
@@ -1063,6 +1078,7 @@ export default {
                 cannot_be_empty: "không được để trống",
                 value_duplicate: "bị trùng lặp",
             },
+
             group: {
                 name: "Tên nhóm khách hàng",
                 code: "Mã nhóm khách hàng",
@@ -1073,22 +1089,23 @@ export default {
                 edit: "Chỉnh sửa thông tin nhóm khách hàng",
                 delete: "Xóa thông tin nhóm khách hàng",
             },
+
             lead: {},
             care: {
-                name: "Tên công việc",
+                name: "Tên hoạt động",
                 caregiver: "Nhân viên phụ trách",
-                customer: "Khách hàng được chăm sóc",
-                description: "Mô tả công việc chăm sóc",
+                customer: "Tên khách hàng",
+                description: "Mô tả ",
                 careType: "Loại hình chăm sóc",
                 status: "Trạng thái",
                 startDate: "Ngày bắt đầu",
                 endDate: "Ngày kết thúc",
                 notes: "Ghi chú",
                 action: "Hành động",
-
-                add: "Thêm mới chăm sóc khách hàng",
-                info: "Xem công việc chăm sóc khách hàng",
+                add: "Thêm mới hoạt động chăm sóc khách hàng",
+                info: "Xem chi tiết hoạt động chăm sóc khách hàng",
                 edit: "Chỉnh sửa công việc chăm sóc khách hàng",
+                priority: 'Độ ưu tiên',
             },
             status: {
                 add: "Thêm mới trạng thái",
@@ -1215,7 +1232,7 @@ export default {
             all_position: "Chọn tất cả các chức vụ",
             non_position: "Chọn chức vụ",
             all_status: "Chọn tất cả các trạng thái",
-            non_status: "Chọn trạng thái",
+            non_status: "Chọn trạng thái"
         },
 
         common_component: {
@@ -1274,6 +1291,8 @@ export default {
             info: "Thông tin về đơn vị",
             name: "Tên đơn vị",
             description: "Mô tả về đơn vị",
+            total_employee: "Số lượng nhân viên",
+            total_roles: "Các vai trò hiện tại",
             parent: "Đơn vị cha",
             select_parent: "Chọn đơn vị cha",
             no_parent: "Không có đơn vị cha",
@@ -2525,6 +2544,7 @@ export default {
                 value: "Giá trị",
                 maintainance_cost: "Chi phí bảo trì-sửa chữa",
                 lost_value: "Giá trị hao mòn (Triệu)",
+                lost: "Hao mòn",
                 sum_value: "Tổng giá trị (Triệu)",
                 building: "Mặt bằng",
                 machine: "Máy móc",
@@ -2935,6 +2955,11 @@ export default {
                 select_all_department: "Tất cả các đơn vị",
                 role: "Vai trò",
 
+                role_unit: "Vai trò đơn vị",
+                select_role_organizational: "Chọn vai trò đơn vị",
+                organizational_unit_management: "Đơn vị quản lý",
+                organizational_unit_collaborate: "Đơn vị phối hợp",
+
                 status: "Trạng thái",
                 select_status: "Chọn trạng thái",
                 select_all_status: "Chọn tất cả trạng thái",
@@ -2943,6 +2968,7 @@ export default {
                 finished: "Đã hoàn thành",
                 delayed: "Tạm hoãn",
                 canceled: "Bị hủy",
+                requested_to_close: "Chờ kết thúc",
                 task_status: "Trạng thái công việc",
                 filter: "Lọc",
 
@@ -3227,7 +3253,7 @@ export default {
                     "Đơn vị phối hợp thực hiện công việc",
                 not_collaborated_with_organizational_units:
                     "Không có đơn vị phối hợp",
-                task_empty_employee: "Chưa có người tham gia phối hợp",
+                task_empty_employee: "Không có người tham gia",
                 delete_eval: "Xóa đánh giá tháng này",
                 delete_eval_title: "Bạn có chắc chắn muốn xóa đánh giá này?",
                 delete_evaluation_success: "Xóa đánh giá thành công",
@@ -3414,6 +3440,7 @@ export default {
                 get_timer_status_fail:
                     "Lấy trạng thái bấm giờ hiện tại thất bại",
                 start_timer_fail: "Bắt đầu bấm giờ thất bại",
+                timer_exist_another_task: "Bạn đã bấm giờ cho công việc khác",
                 pause_timer_fail: "Tạm dừng bấm giờ thất bại",
                 continue_timer_fail: "Tiếp tục bấm giờ thất bại",
                 stop_timer_fail: "Kết thúc bấm giờ thất bại",
@@ -3618,13 +3645,13 @@ export default {
                 confirmed_task: "Đã xác nhận thực hiện",
                 none_update_recently: "Chưa cập nhật trong 7 ngày qua",
                 intime_task: "Đúng tiến độ",
-                incoming_task: "Công việc sắp hết hạn",
+                incoming_task: "Sắp hết hạn",
                 delay_task: "Trễ tiến độ",
                 overdue_task: "Quá hạn",
                 no_task: "Không có công việc nào",
-                unconfirmed_task: "Công việc chưa xác nhận thực hiện",
-                urgent_task: "Công việc khẩn cấp",
-                to_do_task: "Công việc cần làm",
+                unconfirmed_task: "Chưa xác nhận thực hiện",
+                urgent_task: "Khẩn cấp",
+                to_do_task: "Cần làm",
                 day_ago: "ngày trước",
                 rest: "Còn",
                 updated: "Cập nhật",
@@ -3662,6 +3689,8 @@ export default {
                             delete: "Xóa KPI này",
                             cancel: "Hủy",
                         },
+                        overview: "Tổng quan",
+                        evaluation: "Đánh giá",
                         time: "Thời gian",
                         approver: "Người phê duyệt",
                         weight_total: "Tổng trọng số",
@@ -3951,7 +3980,7 @@ export default {
                     new_value: "Giá trị mới",
                     old_value: "Giá trị cũ",
                     auto_value: "Giá trị tự động",
-                    cal_all_kpis: '(*)Tính điểm toàn bộ KPI',
+                    cal_all_kpis: 'Tính điểm toàn bộ KPI',
                     update_task_importance: `(*)Cập nhật độ quan trọng công việc và Tính điểm KPI `,
 
                     /**
@@ -5664,7 +5693,10 @@ export default {
                 sub_product: "số lượng phế phẩm"
             }
         },
-
+        manage_transport: {
+            add_requirements: "Thêm yêu cầu vận chuyển",
+        },
+        
         project: {
             code: "Mã dự án",
             name: "Tên dự án",

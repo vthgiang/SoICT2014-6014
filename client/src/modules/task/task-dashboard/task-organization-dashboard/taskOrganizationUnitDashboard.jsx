@@ -134,27 +134,22 @@ class TaskOrganizationUnitDashboard extends Component {
                 }
             }
 
-            let units = childrenOrganizationalUnit.map(item => item.id);
-
             this.setState((state) => {
                 return {
                     ...state,
                     startMonth: nextState.startMonth,
                     endMonth: nextState.endMonth,
                     checkUnit: nextState.checkUnit,
-                    idsUnit: !idsUnit?.length ? [units?.[0]] : nextState.idsUnit,
+                    idsUnit: !idsUnit?.length ? [childrenOrganizationalUnit?.[0]?.id] : nextState.idsUnit,
                     selectBoxUnit: childrenOrganizationalUnit
                 }
             });
             data = {
-                organizationUnitId: [units?.[0]],
+                organizationUnitId: [childrenOrganizationalUnit?.[0]?.id],
                 type: organizationUnit,
             }
 
-            if (units?.length) {
-                await this.props.getTaskInOrganizationUnitByMonth(units, this.state.startMonth, this.state.endMonth);
-            }
-
+            await this.props.getTaskInOrganizationUnitByMonth([childrenOrganizationalUnit?.[0]?.id], this.state.startMonth, this.state.endMonth);
             await this.props.getTaskByUser(data);
 
             return true;
@@ -350,7 +345,7 @@ class TaskOrganizationUnitDashboard extends Component {
             <React.Fragment>
                 {currentOrganizationalUnit
                     ? <React.Fragment>
-                        <div className="qlcv" style={{ textAlign: "right" }}>
+                        <div className="qlcv" style={{ marginBottom: '5px' }}>
                             <div className="form-inline">
                                 <div className="form-group">
                                     <label style={{ width: "auto" }} className="form-control-static">{translate('kpi.evaluation.dashboard.organizational_unit')}</label>
@@ -401,12 +396,12 @@ class TaskOrganizationUnitDashboard extends Component {
                                             {
                                                 idsUnit && idsUnit.length < 2 ?
                                                     <>
-                                                        <span>{`${translate('task.task_dashboard.general_unit_task')} ${translate('task.task_management.lower_from')} ${startMonthTitle} ${translate('task.task_management.lower_to')} ${endMonthTitle} ${translate('task.task_dashboard.of_unit')}`}</span>
-                                                        <span style={{ fontWeight: "bold" }}>{` ${this.getUnitName(selectBoxUnit, idsUnit).map(o => o).join(", ")}`}</span>
+                                                        <span>{`${translate('task.task_dashboard.general_unit_task')} ${startMonthTitle}`}<i className="fa fa-fw fa-caret-right"></i>{`${endMonthTitle} ${translate('task.task_dashboard.of')}`}</span>
+                                                        <span>{` ${this.getUnitName(selectBoxUnit, idsUnit).map(o => o).join(", ")}`}</span>
                                                     </>
                                                     :
                                                     <span onClick={() => this.showUnitGeneraTask(selectBoxUnit, idsUnit)} style={{ cursor: 'pointer' }}>
-                                                        <span>{`${translate('task.task_dashboard.general_unit_task')} ${translate('task.task_management.lower_from')} ${startMonthTitle} ${translate('task.task_management.lower_to')} ${endMonthTitle} ${translate('task.task_dashboard.of')} `} </span>
+                                                        <span>{`${translate('task.task_dashboard.general_unit_task')} ${startMonthTitle}`}<i className="fa fa-fw fa-caret-right"></i>{`${endMonthTitle} ${translate('task.task_dashboard.of')} `} </span>
                                                         <a style={{ cursor: 'pointer', fontWeight: 'bold' }}>{idsUnit && idsUnit.length}</a>
                                                         <span>{` ${translate('task.task_dashboard.unit_lowercase')}`}</span>
                                                     </span>
@@ -414,7 +409,7 @@ class TaskOrganizationUnitDashboard extends Component {
 
                                         </div>
                                         {
-                                            dataExport && <ExportExcel id="export-general-task" buttonName={translate('human_resource.name_button_export')} exportData={dataExport} style={{ marginTop: 0 }} />
+                                            dataExport && <ExportExcel id="export-general-task" buttonName={translate('general.export')} exportData={dataExport} style={{ marginTop: 0 }} />
                                         }
                                     </div>
 
@@ -440,12 +435,12 @@ class TaskOrganizationUnitDashboard extends Component {
                                 <div className="box box-primary">
                                     <div className="box-header with-border">
                                         <div className="box-title">
-                                            {translate('task.task_management.tasks_calendar')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}
+                                            {translate('task.task_management.tasks_calendar')} {startMonthTitle}<i className="fa fa-fw fa-caret-right"></i>{endMonthTitle}
                                             {
                                                 idsUnit && idsUnit.length < 2 ?
                                                     <>
-                                                        <span>{` ${translate('task.task_dashboard.of_unit')}`}</span>
-                                                        <span style={{ fontWeight: "bold" }}>{` ${this.getUnitName(selectBoxUnit, idsUnit).map(o => o).join(", ")}`}</span>
+                                                        <span>{` ${translate('task.task_dashboard.of')}`}</span>
+                                                        <span>{` ${this.getUnitName(selectBoxUnit, idsUnit).map(o => o).join(", ")}`}</span>
                                                     </>
                                                     :
                                                     <span onClick={() => this.showUnitGeneraTask(selectBoxUnit, idsUnit)} style={{ cursor: 'pointer' }}>
@@ -495,12 +490,12 @@ class TaskOrganizationUnitDashboard extends Component {
                                 <div className="box box-primary">
                                     <div className="box-header with-border">
                                         <div className="box-title">
-                                            {translate('task.task_management.calc_progress')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}
+                                            {translate('task.task_management.calc_progress')} {startMonthTitle}<i className="fa fa-fw fa-caret-right"></i>{endMonthTitle}
                                             {
                                                 idsUnit && idsUnit.length < 2 ?
                                                     <>
-                                                        <span>{` ${translate('task.task_dashboard.of_unit')}`}</span>
-                                                        <span style={{ fontWeight: "bold" }}>{` ${this.getUnitName(selectBoxUnit, idsUnit).map(o => o).join(", ")}`}</span>
+                                                        <span>{` ${translate('task.task_dashboard.of')}`}</span>
+                                                        <span>{` ${this.getUnitName(selectBoxUnit, idsUnit).map(o => o).join(", ")}`}</span>
                                                     </>
                                                     :
                                                     <span onClick={() => this.showUnitGeneraTask(selectBoxUnit, idsUnit)} style={{ cursor: 'pointer' }}>
@@ -531,12 +526,12 @@ class TaskOrganizationUnitDashboard extends Component {
                                 <div className="box box-primary">
                                     <div className="box-header with-border">
                                         <div className="box-title">
-                                            {translate('task.task_management.dashboard_area_result')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}
+                                            {translate('task.task_management.dashboard_area_result')} {startMonthTitle}<i className="fa fa-fw fa-caret-right"></i>{endMonthTitle}
                                             {
                                                 idsUnit && idsUnit.length < 2 ?
                                                     <>
-                                                        <spn>{` ${translate('task.task_dashboard.of_unit')}`}</spn>
-                                                        <span style={{ fontWeight: "bold" }}>{` ${this.getUnitName(selectBoxUnit, idsUnit).map(o => o).join(", ")}`}</span>
+                                                        <spn>{` ${translate('task.task_dashboard.of')}`}</spn>
+                                                        <span>{` ${this.getUnitName(selectBoxUnit, idsUnit).map(o => o).join(", ")}`}</span>
                                                     </>
                                                     :
                                                     <span onClick={() => this.showUnitGeneraTask(selectBoxUnit, idsUnit)} style={{ cursor: 'pointer' }}>
@@ -566,12 +561,12 @@ class TaskOrganizationUnitDashboard extends Component {
                                 <div className="box box-primary">
                                     <div className="box-header with-border">
                                         <div className="box-title">
-                                            {translate('task.task_management.detail_status')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}
+                                            {translate('task.task_management.detail_status')} {startMonthTitle}<i className="fa fa-fw fa-caret-right"></i>{endMonthTitle}
                                             {
                                                 idsUnit && idsUnit.length < 2 ?
                                                     <>
-                                                        <spn>{` ${translate('task.task_dashboard.of_unit')}`}</spn>
-                                                        <span style={{ fontWeight: "bold" }}>{` ${this.getUnitName(selectBoxUnit, idsUnit).map(o => o).join(", ")}`}</span>
+                                                        <spn>{` ${translate('task.task_dashboard.of')}`}</spn>
+                                                        <span>{` ${this.getUnitName(selectBoxUnit, idsUnit).map(o => o).join(", ")}`}</span>
                                                     </>
                                                     :
                                                     <span onClick={() => this.showUnitGeneraTask(selectBoxUnit, idsUnit)} style={{ cursor: 'pointer' }}>
@@ -604,12 +599,12 @@ class TaskOrganizationUnitDashboard extends Component {
                                 <div className="box box-primary">
                                     <div className="box-header with-border">
                                         <div className="box-title">
-                                            Kết quả trung bình công việc {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}
+                                            Kết quả trung bình công việc {startMonthTitle}<i className="fa fa-fw fa-caret-right"></i>{endMonthTitle}
                                             {
                                                 idsUnit && idsUnit.length < 2 ?
                                                     <>
-                                                        <spn>{` ${translate('task.task_dashboard.of_unit')}`}</spn>
-                                                        <span style={{ fontWeight: "bold" }}>{` ${this.getUnitName(selectBoxUnit, idsUnit).map(o => o).join(", ")}`}</span>
+                                                        <spn>{` ${translate('task.task_dashboard.of')}`}</spn>
+                                                        <span>{` ${this.getUnitName(selectBoxUnit, idsUnit).map(o => o).join(", ")}`}</span>
                                                     </>
                                                     :
                                                     <span onClick={() => this.showUnitGeneraTask(selectBoxUnit, idsUnit)} style={{ cursor: 'pointer' }}>
@@ -639,12 +634,12 @@ class TaskOrganizationUnitDashboard extends Component {
                                 <div className="box box-primary">
                                     <div className="box-header with-border">
                                         <div className="box-title">
-                                            {translate('task.task_management.load_task_chart_unit')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}
+                                            {translate('task.task_management.load_task_chart_unit')} {startMonthTitle}<i className="fa fa-fw fa-caret-right"></i>{endMonthTitle}
                                             {
                                                 idsUnit && idsUnit.length < 2 ?
                                                     <>
-                                                        <spn>{` ${translate('task.task_dashboard.of_unit')}`}</spn>
-                                                        <span style={{ fontWeight: "bold" }}>{` ${this.getUnitName(selectBoxUnit, idsUnit).map(o => o).join(", ")}`}</span>
+                                                        <spn>{` ${translate('task.task_dashboard.of')}`}</spn>
+                                                        <span>{` ${this.getUnitName(selectBoxUnit, idsUnit).map(o => o).join(", ")}`}</span>
                                                     </>
                                                     :
                                                     <span onClick={() => this.showUnitGeneraTask(selectBoxUnit, idsUnit)} style={{ cursor: 'pointer' }}>
@@ -655,7 +650,7 @@ class TaskOrganizationUnitDashboard extends Component {
                                             }
                                         </div>
                                         <a className="text-red" title={translate('task.task_management.explain')} onClick={() => this.showLoadTaskDoc()}>
-                                            <i className="fa fa-exclamation-circle" style={{ color: '#06c', marginLeft: '5px' }} />
+                                            <i className="fa fa-question-circle" style={{ color: '#dd4b39', marginLeft: '5px' }} />
                                         </a>
                                     </div>
                                     <div className="box-body">

@@ -50,6 +50,52 @@ class DepartmentManage extends Component {
         }
     }
 
+    getTotalEmployeeInUnit = (data) => {
+        if (data) {
+            let result = [];
+            if (data.managers && data.managers.length > 0) {
+                data.managers.forEach(mng => {
+                    if (mng.users && mng.users.length > 0) {
+                        mng.users.forEach(mngUser => {
+                            result = [...result, mngUser.userId]
+                        })
+                    }
+                })
+            }
+
+            if (data.deputyManagers && data.deputyManagers.length > 0) {
+                data.deputyManagers.forEach(dmg => {
+                    if (dmg.users && dmg.users.length > 0) {
+                        dmg.users.forEach(dmgUser => {
+                            result = [...result, dmgUser.userId]
+                        })
+                    }
+                })
+            }
+
+            if (data.employees && data.employees.length > 0) {
+                data.employees.forEach(emy => {
+                    if (emy.users && emy.users.length > 0) {
+                        emy.users.forEach(emyUser => {
+                            result = [...result, emyUser.userId]
+                        })
+                    }
+                })
+            }
+
+            const seen = new Set();
+            const filteredArr = result.filter((el) => {
+                const duplicate = seen.has(el?._id);
+                seen.add(el?._id);
+                return !duplicate;
+            });
+            return filteredArr.length;
+        } else {
+            return 0;
+        }
+
+    }
+
     render() {
         const { translate, department } = this.props;
 
@@ -63,6 +109,7 @@ class DepartmentManage extends Component {
                     manager: this.getRoleNameOfDepartment(data[n].managers),
                     deputyManager: this.getRoleNameOfDepartment(data[n].deputyManagers),
                     employees: this.getRoleNameOfDepartment(data[n].employees),
+                    totalEmployee: this.getTotalEmployeeInUnit(data[n]),
                     action: ["edit"]
                 }
             }
@@ -71,12 +118,13 @@ class DepartmentManage extends Component {
             { name: translate('manage_department.name'), key: "name" },
             { name: translate('manage_department.manager_name'), key: "manager" },
             { name: translate('manage_department.deputy_manager_name'), key: "deputyManager" },
-            { name: translate('manage_department.employee_name'), key: "employees" }
+            { name: translate('manage_department.employee_name'), key: "employees" },
+            { name: translate('manage_department.total_employee'), key: "totalEmployee" },
         ];
 
         return (
             <div>
-                <div className="qlcv">
+                <div className="qlcv StyleScrollDiv StyleScrollDiv-y" style={{ maxHeight: '600px' }} >
                     <TreeTable
                         behaviour="show-children"
                         tableId='employee-tree-table'

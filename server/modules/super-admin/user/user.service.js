@@ -7,10 +7,10 @@ const {
     Company,
 } = require(`../../../models`);
 const bcrypt = require("bcryptjs");
-const nodemailer = require("nodemailer");
 const generator = require("generate-password");
 const OrganizationalUnitService = require(`../../super-admin/organizational-unit/organizationalUnit.service`);
 const { connect } = require(`../../../helpers/dbHelper`);
+const { sendEmail } = require("../../../helpers/emailHelper");
 /**
  * Lấy danh sách tất cả user trong 1 công ty
  * @company id của công ty
@@ -406,22 +406,9 @@ exports.createUser = async (portal, data, company) => {
  * @password của tài khoản đó
  */
 exports.sendMailAboutCreatedAccount = async (email, password, portal) => {
-    var transporter = nodemailer.createTransport({
-        service: "Gmail",
-        auth: {
-            user: "vnist.qlcv@gmail.com",
-            pass: "qlcv123@",
-        },
-    });
-
-    var mainOptions = {
-        from: "vnist.qlcv@gmail.com",
-        to: email,
-        subject: "Xác thực tạo tài khoản trên hệ thống quản lý công việc",
-        text:
-            "Yêu cầu xác thực tài khoản đã đăng kí trên hệ thống với email là : " +
-            email,
-        html: `<html>
+    let subject = "Xác thực tạo tài khoản trên hệ thống quản lý công việc";
+    let text = "Yêu cầu xác thực tài khoản đã đăng kí trên hệ thống với email là : " + email;
+    let html = `<html>
                 <head>
                     <style>
                         .wrapper {
@@ -496,10 +483,8 @@ exports.sendMailAboutCreatedAccount = async (email, password, portal) => {
                         </div>
                     </div>
                 </body>
-        </html>`,
-    };
-
-    return await transporter.sendMail(mainOptions);
+        </html>`;
+    return await sendEmail(email, subject, text, html);
 };
 
 /**
@@ -508,41 +493,28 @@ exports.sendMailAboutCreatedAccount = async (email, password, portal) => {
  * @newEmail email mới
  */
 exports.sendMailAboutChangeEmailOfUserAccount = async (oldEmail, newEmail) => {
-    var transporter = nodemailer.createTransport({
-        service: "Gmail",
-        auth: {
-            user: "vnist.qlcv@gmail.com",
-            pass: "qlcv123@",
-        },
-    });
-
-    var mainOptions = {
-        from: "vnist.qlcv@gmail.com",
-        to: newEmail,
-        subject: "Xác thực thay đổi email",
-        text: `Chuyển đổi email từ [${oldEmail}] => [${newEmail}] `,
-        html:
-            "<p>Tài khoản dùng để đăng nhập của bạn là : </p>" +
-            "<ul>" +
-            "<li>Email cũ :" +
-            oldEmail +
-            "</li>" +
-            "<li>Email mới :" +
-            newEmail +
-            "</li>" +
-            "</ul>" +
-            "<p>Your account use to login in system : </p>" +
-            "<ul>" +
-            "<li>Old email :" +
-            oldEmail +
-            "</li>" +
-            "<li>New email :" +
-            newEmail +
-            "</li>" +
-            "</ul>",
-    };
-
-    return await transporter.sendMail(mainOptions);
+    let subject = "Xác thực thay đổi email";
+    let text = `Chuyển đổi email từ [${oldEmail}] => [${newEmail}] `;
+    let html = "<p>Tài khoản dùng để đăng nhập của bạn là : </p>" +
+        "<ul>" +
+        "<li>Email cũ :" +
+        oldEmail +
+        "</li>" +
+        "<li>Email mới :" +
+        newEmail +
+        "</li>" +
+        "</ul>" +
+        "<p>Your account use to login in system : </p>" +
+        "<ul>" +
+        "<li>Old email :" +
+        oldEmail +
+        "</li>" +
+        "<li>New email :" +
+        newEmail +
+        "</li>" +
+        "</ul>";
+    
+    return await sendEmail(newEmail, subject, text, html);
 };
 
 /**
@@ -903,15 +875,9 @@ exports.sendEmailResetPasswordUser = async(portal, email) => {
     let code = await generator.generate({ length: 6, numbers: true });
     user.resetPasswordToken = code;
     await user.save();
-    var transporter = await nodemailer.createTransport({
-        service: "Gmail",
-        auth: { user: "vnist.qlcv@gmail.com", pass: "qlcv123@" },
-    });
-    var mainOptions = {
-        from: "vnist.qlcv@gmail.com",
-        to: email,
-        subject: `${process.env.WEB_NAME} : Thay đổi mật khẩu - Change password`,
-        html: `
+    
+    let subject = `${process.env.WEB_NAME} : Thay đổi mật khẩu - Change password`;
+    let html = `
         <div style="
             background-color:azure;
             padding: 100px;
@@ -938,9 +904,8 @@ exports.sendEmailResetPasswordUser = async(portal, email) => {
                 </a>
             </button>
         </div>
-        `,
-    };
-    await transporter.sendMail(mainOptions);
+        `
+    await sendEmail(email, subject, '', html);
 
     return {
         portal, email

@@ -6,6 +6,8 @@ import { withTranslate } from 'react-redux-multilingual';
 import { SelectMulti, DatePicker } from '../../../../common-components';
 import { TimesheetsActions } from '../../timesheets/redux/actions';
 
+import { showListInSwal } from '../../../../helpers/showListInSwal';
+
 import c3 from 'c3';
 import 'c3/c3.css';
 
@@ -253,7 +255,23 @@ class TrendOfOvertime extends Component {
             <React.Fragment>
                 <div className="box box-solid">
                     <div className="box-header with-border">
-                        <h3 className="box-title">{`${nameChart} công ty ${startDateShow}`}<i className="fa fa-fw fa-caret-right"></i>{endDateShow}</h3>
+                        <div className="box-title">
+                            {`${nameChart} `}
+                            {
+                                organizationalUnitsName && organizationalUnitsName.length < 2 ?
+                                    <>
+                                        <span>{` ${translate('task.task_dashboard.of_unit')}`}</span>
+                                        <span>{` ${organizationalUnitsName?.[0]}`}</span>
+                                    </>
+                                    :
+                                    <span onClick={() => showListInSwal(organizationalUnitsName, translate('general.list_unit'))} style={{ cursor: 'pointer' }}>
+                                        <span>{` ${translate('task.task_dashboard.of')}`}</span>
+                                        <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {organizationalUnitsName?.length}</a>
+                                        <span>{` ${translate('task.task_dashboard.unit_lowercase')}`}</span>
+                                    </span>
+                            }
+                            {` ${startDateShow}`}<i className="fa fa-fw fa-caret-right"></i>{endDateShow}
+                        </div>
                     </div>
                     <div className="box-body">
                         <div className="qlcv" style={{ marginBottom: 15 }}>

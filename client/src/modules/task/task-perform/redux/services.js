@@ -131,7 +131,7 @@ function startTimerTask(taskId, newTimer) {
         url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}/timesheet-logs/start-timer`,
         method: 'POST',
         data: newTimer,
-    }, false, false, 'task.task_perform');
+    }, false, true, 'task.task_perform');
 }
 
 /**

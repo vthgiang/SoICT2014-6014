@@ -18,10 +18,17 @@ const StatusSchema = new Schema({
         type:Boolean,
         default: false,  
     },
-    company: {
+    
+    createdAt: {
+        type: Date,
+    },
+    updatedAt: {
+        type: Date,
+    },
+    updatedBy: {
         type: Schema.Types.ObjectId,
-        ref: 'Company',
-    }
+        ref: 'User'
+    },
 }, {
     timestamps: true,
 });

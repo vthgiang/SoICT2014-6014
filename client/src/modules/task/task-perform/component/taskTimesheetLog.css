@@ -28,6 +28,13 @@
     font-weight: bold;
 }
 
+.timesheet-box .task-name{
+    margin-top: 5px;
+    text-align: center;
+    margin-bottom: 15px;
+    font-size: 16px;
+}
+
 .addlog-box{
     position: absolute;
     top: 6.9em;
@@ -43,4 +50,8 @@
     font-weight: 700;
     text-align: center;
     margin-top: 0;
+}
+
+.select2-container--open .select2-dropdown{
+    z-index: 100002 !important
 }

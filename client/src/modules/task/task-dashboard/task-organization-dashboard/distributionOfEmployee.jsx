@@ -13,13 +13,13 @@ class DistributionOfEmployee extends Component {
     constructor(props) {
         super(props);
         this.infoSearch = {
-            status: ["inprocess", "wait_for_approval", "finished", "delayed", "canceled"],
+            status: ["inprocess", "wait_for_approval", "finished", "delayed", "canceled", "requested_to_close"],
         }
 
         const defaultConfig = { limit: 10 }
         this.distributionOfEmployeeChartId = "distribution-of-employee-chart";
         const distributionOfEmployeeChartPerPage = getTableConfiguration(this.distributionOfEmployeeChartId, defaultConfig).limit;
-        
+
         this.state = {
             listNameEmployee: [],
             status: this.infoSearch.status,
@@ -75,7 +75,7 @@ class DistributionOfEmployee extends Component {
 
     handleSelectStatus = async (value) => {
         if (value.length === 0) {
-            value = ["inprocess", "wait_for_approval", "finished", "delayed", "canceled"];
+            value = ["inprocess", "wait_for_approval", "finished", "delayed", "canceled", "requested_to_close"];
         }
         this.infoSearch.status = value;
 
@@ -143,7 +143,7 @@ class DistributionOfEmployee extends Component {
                 informedEmployees = 0;
             }
         }
-        
+
         for (let i in taskListEmployee) {
             numOfAccountableTask.push(taskListEmployee?.[i]?.accountableEmployees)
             numOfConsultedTask.push(taskListEmployee?.[i]?.consultedEmployees)
@@ -167,7 +167,7 @@ class DistributionOfEmployee extends Component {
             while (chart.hasChildNodes()) {
                 chart.removeChild(chart.lastChild);
             }
-        } 
+        }
     }
 
     pieChart = async () => {
@@ -250,7 +250,7 @@ class DistributionOfEmployee extends Component {
             page: page,
             perPage: perPage
         }
-        
+
         this.props.getAllEmployeeOfUnitByIds(data);
     }
 
@@ -288,8 +288,8 @@ class DistributionOfEmployee extends Component {
                         {
                             unitIds && unitIds.length < 2 ?
                                 <>
-                                    <spn>{` ${translate('task.task_dashboard.of_unit')}`}</spn>
-                                    <span style={{ fontWeight: "bold" }}>{` ${this.props.getUnitName(selectBoxUnit, unitIds).map(o => o).join(", ")}`}</span>
+                                    <spn>{` ${translate('task.task_dashboard.of')}`}</spn>
+                                    <span>{` ${this.props.getUnitName(selectBoxUnit, unitIds).map(o => o).join(", ")}`}</span>
                                 </>
                                 :
                                 <span onClick={() => this.props.showUnitGeneraTask(selectBoxUnit, unitIds)} style={{ cursor: 'pointer' }}>
@@ -315,7 +315,8 @@ class DistributionOfEmployee extends Component {
                                     { value: "wait_for_approval", text: translate('task.task_management.wait_for_approval') },
                                     { value: "finished", text: translate('task.task_management.finished') },
                                     { value: "delayed", text: translate('task.task_management.delayed') },
-                                    { value: "canceled", text: translate('task.task_management.canceled') }
+                                    { value: "canceled", text: translate('task.task_management.canceled') },
+                                    { value: "requested_to_close", text: translate('task.task_management.requested_to_close') }
                                 ]}
                                 onChange={this.handleSelectStatus}
                                 options={{ nonSelectedText: translate('task.task_management.select_all_status'), allSelectedText: translate('task.task_management.select_all_status') }}>

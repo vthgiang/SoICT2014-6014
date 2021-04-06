@@ -3,13 +3,25 @@
     margin-bottom: 1px;
     box-shadow: 0 4px 2px -2px #e8e7e7 !important;
 }
+
+.general-task-type{
+    display: flex !important;
+    justify-content: center !important;
+}
+
 .general-tabs li{
     text-align: center;
     border-radius: 5px;
+    border-top: 2px solid transparent !important;
 }
 .general-tabs li a{
     background-color: #fdfdfd;
 }
+
+.general-tabs li:nth-child(2){
+    margin-bottom: 1px;
+}
+
 .general-tabs li:nth-child(1) span{
     color: red !important;
 }
@@ -32,28 +44,56 @@
     color:rgb(49, 179, 55) !important;
 }
 
-.general-tabs li.active{
-    border-top-color: #c0d2dc !important;
+.general-tabs li:nth-child(1).active{
+    border-top-color: #ec4040 !important; 
+    border-bottom: 1px solid #efecec;
 }
+
+.general-tabs li:nth-child(2).active{
+    border-top-color: #86acc1 !important;
+    border-bottom: 1px solid #efecec;
+}
+
+.general-tabs li:nth-child(3).active, .general-tabs li:nth-child(4).active, .general-tabs li:nth-child(5).active, .general-tabs li:nth-child(6).active, .general-tabs li:nth-child(7).active{
+    border-top: 1px solid #e2e2e2 !important;
+}
+
 .general-tabs li.active a{
     font-weight: bold;
 }
-.general-tabs li{
+/* .general-tabs li{
     width: calc((100% - 35px)/7);
-}
-/* .general-tabs li:nth-child(1), .general-tabs li:nth-child(2), .general-tabs li:nth-child(3){
-    width: calc((100% - 15px)/3);
+} */
+.general-tabs li:nth-child(1), .general-tabs li:nth-child(2){
+    width: calc((100% - 15px)/2);
 } 
-.general-tabs li:nth-child(4), .general-tabs li:nth-child(5), .general-tabs li:nth-child(6),.general-tabs li:nth-child(7){
-    width: calc((100% - 20px)/4);
-}  */
+.general-tabs li:nth-child(3), .general-tabs li:nth-child(4), .general-tabs li:nth-child(5), .general-tabs li:nth-child(6),.general-tabs li:nth-child(7){
+    width: calc((100% - 30px)/5);
+} 
+
+.angle-right-custom{
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+.task-name{
+    color: "#171717";
+    margin-right: 10px;
+}
+.task-name:hover, .task-project-name:hover{
+    opacity: .7;
+}
+
+.task-project-name{
+    color: #676767;
+}
 
 
 /* COLLAPSE */
 
  .faqs-page .panel {
-	 border: 0;
-	 box-shadow: none;
+	border: 0;
+	box-shadow: none;
 }
 
 .faqs-page .item-question {
@@ -64,7 +104,12 @@
     font-size: 15px;
     position: relative;
     color: rgb(25 25 25);
+    font-weight: 600;
 }
+.faqs-page .item-question.collapsed{
+    font-weight: normal;
+}
+
 .faqs-page .item-question:after {
 	 content: "\f106";
 	 font-family: FontAwesome;
@@ -83,6 +128,7 @@
 .faqs-page .item-question span.index {
 	width: 25px;
     height: 25px;
+    font-size: 13px !important;
     line-height: 23px;
     text-align: center;
     border-radius: 100%;
@@ -95,10 +141,9 @@
 }
  .faqs-page .panel-body {
 	padding: 5px 0px 8px 68px;
-    font-size: 14px;
+    font-size: 13px;
     line-height: 25px;
     color: #505050;
-
 }
  
 .progress-task-wraper{
@@ -122,10 +167,12 @@
     right: 10px;
     font-size: 11px;
 }
+.role-in-task{
+    margin-top: 5px;
+}
 
 .progress-task .fillmult{
     height: 100%;
-    /* background-color: rgba(0, 0, 0, 0.5); */
     border-radius: 4px;
 }
 

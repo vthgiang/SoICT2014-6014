@@ -272,7 +272,7 @@ getPaginatedTasksByUser = async (req, res) => {
     try {
         var task = {
             perPage: req.query.perPage,
-            number: req.query.number,
+            page: req.query.number,
             user: req.query.user,
             organizationalUnit: req.query.unit,
             status: req.query.status,
@@ -350,7 +350,7 @@ getPaginatedTasksByOrganizationalUnit = async (req, res) => {
     try {
         var task = {
             perPage: req.query.perPage,
-            number: req.query.number,
+            page: req.query.page,
             organizationalUnit: req.query.unit,
             status: req.query.status,
             priority: req.query.priority,
@@ -362,6 +362,7 @@ getPaginatedTasksByOrganizationalUnit = async (req, res) => {
             responsibleEmployees: req.query.responsibleEmployees,
             accountableEmployees: req.query.accountableEmployees,
             creatorEmployees: req.query.creatorEmployees,
+            organizationalUnitRole: req.query.organizationalUnitRole
         };
 
         let tasks = await TaskManagementService.getPaginatedTasksByOrganizationalUnit(req.portal, task, req.query.type);
@@ -473,7 +474,7 @@ exports.createTask = async (req, res) => {
             associatedDataObject: { 
                 dataType: 1,
                 value: task?._id,
-                description: task?.description
+                description: task?.name
             },
             relatedUsers: data?.users
         });
@@ -484,7 +485,7 @@ exports.createTask = async (req, res) => {
             associatedDataObject: { 
                 dataType: 1,
                 value: task?._id,
-                description: task?.description
+                description: task?.name
             },
             relatedUsers: collaboratedData?.users
         });
@@ -788,8 +789,8 @@ exports.getTaskAnalysOfUser = async (req, res) => {
     try {
         let portal = req.portal;
         let { userId } = req.params;
-        let { type } = req.query;
-        let taskAnalys = await TaskManagementService.getTaskAnalysOfUser(portal, userId, type);
+        let { type, date } = req.query;
+        let taskAnalys = await TaskManagementService.getTaskAnalysOfUser(portal, userId, type, date);
 
         await Logger.info(req.user.email, 'get_task_analys_of_user_success', req.portal)
         res.status(200).json({

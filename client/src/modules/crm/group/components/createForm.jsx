@@ -106,7 +106,7 @@ class CreateGroupForm extends Component {
 
         return (
             <React.Fragment>
-                <ButtonModal modalID="modal-crm-group-create" button_name={translate('general.add')} title={translate('crm.group.add')} />
+                <ButtonModal modalID="modal-crm-group-create" button_name={"Thêm mói nhóm khách hàng"} title={translate('crm.group.add')} />
                 <DialogModal
                     modalID="modal-crm-group-create" isLoading={groups.isLoading}
                     formID="form-crm-group-create"
@@ -136,11 +136,6 @@ class CreateGroupForm extends Component {
                             <textarea type="text" className="form-control" onChange={this.handleChangeGroupDescription} />
                         </div>
 
-                        {/* Ưu đãi kèm theo nhóm khách hàng */}
-                        <div className="form-group">
-                            <label>{translate('crm.group.promotion')}</label>
-                            <input type="text" className="form-control" onChange={this.handleChangeGroupPromotion} />
-                        </div>
                     </form>
                 </DialogModal>
             </React.Fragment>

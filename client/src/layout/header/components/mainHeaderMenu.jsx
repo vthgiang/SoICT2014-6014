@@ -35,7 +35,6 @@ class MainHeaderMenu extends Component {
             <React.Fragment>
                 <div className="navbar-custom-menu">
                     <ul className="nav navbar-nav">
-                        <Roles />
                         <li>
                             <Link to="/user-guide">
                                 <i style={{ fontSize: '22px', color: 'rgb(76, 76, 76)' }} className="material-icons" >
@@ -43,11 +42,13 @@ class MainHeaderMenu extends Component {
                                 </i>
                             </Link>
                         </li>
+                        <Language />
                         {
                             this.checkURL('/notifications', auth.links) &&
                             <Notifications />
                         }
-                        <Language />
+
+                        <Roles />
                         <Profile />
                     </ul>
                 </div>

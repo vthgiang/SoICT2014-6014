@@ -64,7 +64,7 @@ function CurrentTaskTimesheetLogInOrganizationalUnit(props) {
                                 <span style={{ fontWeight: "bold" }}>{` ${props.getUnitName(listUnitSelect, organizationalUnitId).map(o => o).join(", ")}`}</span>
                             </>
                             :
-                            <span onClick={() => props.showUnitGeneraTask(listUnitSelect, organizationalUnitId)} style={{ cursor: 'pointer' }}>
+                            <span onClick={() => props.showUnitTask(listUnitSelect, organizationalUnitId)} style={{ cursor: 'pointer' }}>
                                 <span>{` ${translate('task.task_dashboard.of')}`}</span>
                                 <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {organizationalUnitId?.length}</a>
                                 <span>{` ${translate('task.task_dashboard.unit_lowercase')}`}</span>

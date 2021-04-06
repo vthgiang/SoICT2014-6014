@@ -4,6 +4,7 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import { ViewAllTasks, ViewAllOverTime, } from '../../dashboard-personal/components/combinedContent';
 import { ViewAllEmployee, ViewAllCommendation, ViewAllDiscipline } from './combinedContent';
+import { showListInSwal } from '../../../helpers/showListInSwal';
 
 class TabIntegratedStatistics extends Component {
     constructor(props) {
@@ -48,10 +49,11 @@ class TabIntegratedStatistics extends Component {
     }
 
     render() {
-        const { translate, timesheets, discipline } = this.props;
-
-        const { month, employeeTasks, listEmployee, listAllEmployees } = this.props;
+        const { translate, timesheets, discipline, department } = this.props;
+        const { month, employeeTasks, listEmployee, listAllEmployees, organizationalUnits } = this.props;
+        const { viewOverTime, viewHoursOff } = this.state;
         let maxTask = 1;
+
         if (employeeTasks && employeeTasks.length !== 0) {
             employeeTasks.forEach(x => {
                 if (x.totalTask > maxTask) {
@@ -60,7 +62,6 @@ class TabIntegratedStatistics extends Component {
             })
         }
 
-        const { viewOverTime, viewHoursOff } = this.state;
 
         let employeeOvertime = [], employeeHoursOff = [];
         /* Lấy dữ liệu tăng ca và nghỉ phép của mỗi nhân viên trong đơn vị */
@@ -85,6 +86,12 @@ class TabIntegratedStatistics extends Component {
             employeeHoursOff = employeeHoursOff.sort((a, b) => b.totalHours - a.totalHours);
         };
 
+        let organizationalUnitsName;
+        if (organizationalUnits) {
+            organizationalUnitsName = department.list.filter(x => organizationalUnits.includes(x._id));
+            organizationalUnitsName = organizationalUnitsName.map(x => x.name);
+        };
+
         return (
             <div className="qlcv">
                 <div className='row'>
@@ -93,7 +100,9 @@ class TabIntegratedStatistics extends Component {
                         <div className="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                             <div className="box box-solid">
                                 <div className="box-header with-border">
-                                    <h3 className="box-title">Tổng hợp nhân viên</h3>
+                                    <div className="box-title">
+                                        Tổng hợp nhân viên
+                                    </div>
                                 </div>
                                 <div className="box-body">
                                     <table className="table table-striped table-bordered table-hover">
@@ -130,7 +139,23 @@ class TabIntegratedStatistics extends Component {
                         <div className="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                             <div className="box box-solid">
                                 <div className="box-header with-border">
-                                    <h3 className="box-title">Tổng hợp công việc tháng {month}</h3>
+                                    <div className="box-title">
+                                        {`Tổng hợp công việc `}
+                                        {
+                                            organizationalUnitsName && organizationalUnitsName.length < 2 ?
+                                                <>
+                                                    <span>{` ${translate('task.task_dashboard.of_unit')}`}</span>
+                                                    <span>{` ${organizationalUnitsName?.[0]}`}</span>
+                                                </>
+                                                :
+                                                <span onClick={() => showListInSwal(organizationalUnitsName, translate('general.list_unit'))} style={{ cursor: 'pointer' }}>
+                                                    <span>{` ${translate('task.task_dashboard.of')}`}</span>
+                                                    <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {organizationalUnitsName?.length}</a>
+                                                    <span>{` ${translate('task.task_dashboard.unit_lowercase')}`}</span>
+                                                </span>
+                                        }
+                                        {` tháng ${month}`}
+                                    </div>
                                 </div>
                                 <div className="box-body">
                                     <table className="table table-striped table-bordered table-hover">
@@ -176,7 +201,23 @@ class TabIntegratedStatistics extends Component {
                         <div className="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                             <div className="box box-solid">
                                 <div className="box-header with-border">
-                                    <h3 className="box-title">Tổng hợp khen thưởng tháng {month}</h3>
+                                    <div className="box-title">
+                                        {`Tổng hợp khen thưởng `}
+                                        {
+                                            organizationalUnitsName && organizationalUnitsName.length < 2 ?
+                                                <>
+                                                    <span>{` ${translate('task.task_dashboard.of_unit')}`}</span>
+                                                    <span>{` ${organizationalUnitsName?.[0]}`}</span>
+                                                </>
+                                                :
+                                                <span onClick={() => showListInSwal(organizationalUnitsName, translate('general.list_unit'))} style={{ cursor: 'pointer' }}>
+                                                    <span>{` ${translate('task.task_dashboard.of')}`}</span>
+                                                    <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {organizationalUnitsName?.length}</a>
+                                                    <span>{` ${translate('task.task_dashboard.unit_lowercase')}`}</span>
+                                                </span>
+                                        }
+                                        {` tháng ${month}`}
+                                    </div>
                                 </div>
                                 <div className="box-body">
                                     <table className="table table-striped table-bordered table-hover">
@@ -212,7 +253,23 @@ class TabIntegratedStatistics extends Component {
                         <div className="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                             <div className="box box-solid">
                                 <div className="box-header with-border">
-                                    <h3 className="box-title">Tổng hợp kỷ luật tháng {month}</h3>
+                                    <div className="box-title">
+                                        {`Tổng hợp kỷ luật `}
+                                        {
+                                            organizationalUnitsName && organizationalUnitsName.length < 2 ?
+                                                <>
+                                                    <span>{` ${translate('task.task_dashboard.of_unit')}`}</span>
+                                                    <span>{` ${organizationalUnitsName?.[0]}`}</span>
+                                                </>
+                                                :
+                                                <span onClick={() => showListInSwal(organizationalUnitsName, translate('general.list_unit'))} style={{ cursor: 'pointer' }}>
+                                                    <span>{` ${translate('task.task_dashboard.of')}`}</span>
+                                                    <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {organizationalUnitsName?.length}</a>
+                                                    <span>{` ${translate('task.task_dashboard.unit_lowercase')}`}</span>
+                                                </span>
+                                        }
+                                        {` tháng ${month}`}
+                                    </div>
                                 </div>
                                 <div className="box-body">
                                     <table className="table table-striped table-bordered table-hover">
@@ -252,7 +309,23 @@ class TabIntegratedStatistics extends Component {
                         <div className="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                             <div className="box box-solid">
                                 <div className="box-header with-border">
-                                    <h3 className="box-title">Tổng hợp tình hình nghỉ phép tháng {month}</h3>
+                                    <div className="box-title">
+                                        {`Tổng hợp tình hình nghỉ phép `}
+                                        {
+                                            organizationalUnitsName && organizationalUnitsName.length < 2 ?
+                                                <>
+                                                    <span>{` ${translate('task.task_dashboard.of_unit')}`}</span>
+                                                    <span>{` ${organizationalUnitsName?.[0]}`}</span>
+                                                </>
+                                                :
+                                                <span onClick={() => showListInSwal(organizationalUnitsName, translate('general.list_unit'))} style={{ cursor: 'pointer' }}>
+                                                    <span>{` ${translate('task.task_dashboard.of')}`}</span>
+                                                    <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {organizationalUnitsName?.length}</a>
+                                                    <span>{` ${translate('task.task_dashboard.unit_lowercase')}`}</span>
+                                                </span>
+                                        }
+                                        {` tháng ${month}`}
+                                    </div>
                                 </div>
                                 <div className="box-body">
                                     <table className="table table-striped table-bordered table-hover">
@@ -288,7 +361,23 @@ class TabIntegratedStatistics extends Component {
                         <div className="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                             <div className="box box-solid">
                                 <div className="box-header with-border">
-                                    <h3 className="box-title">Tổng hợp tình hình tăng ca tháng {month}</h3>
+                                    <div className="box-title">
+                                        {`Tổng hợp tình hình tăng ca `} 
+                                        {
+                                            organizationalUnitsName && organizationalUnitsName.length < 2 ?
+                                                <>
+                                                    <span>{` ${translate('task.task_dashboard.of_unit')}`}</span>
+                                                    <span>{` ${organizationalUnitsName?.[0]}`}</span>
+                                                </>
+                                                :
+                                                <span onClick={() => showListInSwal(organizationalUnitsName, translate('general.list_unit'))} style={{ cursor: 'pointer' }}>
+                                                    <span>{` ${translate('task.task_dashboard.of')}`}</span>
+                                                    <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {organizationalUnitsName?.length}</a>
+                                                    <span>{` ${translate('task.task_dashboard.unit_lowercase')}`}</span>
+                                                </span>
+                                        }
+                                        {` tháng ${month}`}
+                                    </div>
                                 </div>
                                 <div className="box-body">
                                     <table className="table table-striped table-bordered table-hover">
@@ -340,8 +429,8 @@ class TabIntegratedStatistics extends Component {
 }
 
 function mapState(state) {
-    const { timesheets, discipline } = state;
-    return { timesheets, discipline };
+    const { timesheets, discipline, department } = state;
+    return { timesheets, discipline, department };
 }
 
 const tabIntegratedStatistics = connect(mapState, null)(withTranslate(TabIntegratedStatistics));

@@ -23,7 +23,8 @@ import { OutgoingDataTab } from './outgoingDataTab';
 import TextareaAutosize from 'react-textarea-autosize';
 import ValidationHelper from '../../../../helpers/validationHelper';
 import { formatDate } from '../../../../helpers/formatDate';
-
+import { convertTime } from '../../../../helpers/stringMethod';
+import { htmlToText } from 'html-to-text';
 class ActionTab extends Component {
     constructor(props) {
         let idUser = getStorage("userId");
@@ -1177,6 +1178,43 @@ class ActionTab extends Component {
         });
     }
 
+    handleShowTime = (timeSheetLog) => {
+        if (timeSheetLog && timeSheetLog.length > 0) {
+            timeSheetLog = timeSheetLog.filter(x => x.acceptLog === true);
+            const totalDuration = timeSheetLog.reduce((accumulator, currentValue) => {
+                return accumulator + currentValue.duration;
+            }, 0);
+            return convertTime(totalDuration);
+        } else {
+            return;
+        }
+    }
+
+    showDetailTimer = (nameAction, timeSheetLogs) => {
+        nameAction = htmlToText(nameAction);
+        let result = [];
+        timeSheetLogs.reduce((res, value) => {
+            if (!res[value?.creator?._id]) {
+                res[value.creator._id] = { id: value.creator._id, duration: 0, creatorName: value.creator.name };
+                result.push(res[value.creator._id]);
+            }
+            res[value.creator._id].duration += value.duration;
+            return res;
+        }, {});
+
+        Swal.fire({
+            html: `<div style="max-width: 100%; max-height: 100%" > 
+                <h4 style="margin-bottom: 15px">Thời gian bấm giờ cho hoạt động "<strong>${nameAction}</strong>"</h4>` +
+                `<ul>${result.map(o => (
+                    `<li>${o.creatorName}: ${convertTime(o.duration)}</li>`
+                )).join(" ")} </ul>`
+                +
+                `<div>`,
+
+            confirmButtonText: `Đồng ý`,
+        })
+    }
+
     render() {
         let task, informations, statusTask, documents, actionComments, taskComments, logTimer, logs;
         let idUser = getStorage("userId");
@@ -1342,6 +1380,9 @@ class ActionTab extends Component {
                                                                         <li><a style={{ cursor: "pointer" }} className="link-black text-sm" onClick={() => this.handleShowChildComment(item._id)}><i className="fa fa-comments-o margin-r-5"></i> {translate("task.task_perform.comment")} ({item.comments.length}) &nbsp;</a></li>
                                                                     </React.Fragment>
                                                                 }
+
+                                                                {/* Thời gian thực hiện hoạt động */}
+                                                                <li className="pull-right" style={{ cursor: 'pointer' }} onClick={() => this.showDetailTimer(item.description, item.timesheetLogs)}>{this.handleShowTime(item.timesheetLogs)}</li>
                                                             </ul>}
                                                             <div className="tool-level1" style={{ paddingLeft: 5 }}>
                                                                 {/* Các kết quả đánh giá của action */}
@@ -2109,58 +2150,64 @@ class ActionTab extends Component {
                                         </div>
                                     </div>
                                 }
-
                             </div>
-                            {logTimer && logTimer.map((item, index) =>
-                                <React.Fragment key={index}>
-                                    {item.stoppedAt &&
-                                        <div key={item._id} className="item-box">
-                                            <h3 className={`pull-right ${item.acceptLog ? 'text-green' : 'text-red'}`}>{this.convertTime(item.duration)}</h3>
-                                            <a style={{ fontWeight: 700, cursor: "pointer" }}>{item.creator?.name} </a>
-                                            <div>
-                                                <i className="fa fa-clock-o"> </i> {moment(item.startedAt).format("DD/MM/YYYY HH:mm:ss")}{" - "}
-                                                <i className="fa fa-clock-o"> </i> {moment(item.stoppedAt).format("DD/MM/YYYY HH:mm:ss")})
-                                            </div>
-                                            <div>
-                                                <i style={{ marginRight: '5px' }} className={`${item.autoStopped === 1 ? 'text-green fa fa-hand-pointer-o' : (item.autoStopped === 2 ? 'text-red fa fa-clock-o' : 'text-red fa fa-plus')}`}>{item.autoStopped === 1 ? 'Tắt bằng tay' : (item.autoStopped === 2 ? 'Tự động' : 'Add log timer')}</i>
-                                                {
-                                                    role === "accountable" ?
-                                                        (
-                                                            <React.Fragment>
-                                                                <i className={`${item.acceptLog ? 'text-green fa fa-check' : 'text-red fa fa-close'}`}> {item.acceptLog ? 'Được chấp nhận' : 'Không được chấp nhận'}</i>
-                                                                <a
-                                                                    style={{ cursor: 'pointer', marginLeft: 10, fontWeight: 'bold' }}
-                                                                    className={item.acceptLog ? 'text-red' : 'text-green'}
-                                                                    onClick={
-                                                                        item.acceptLog ?
-                                                                            () => {
-                                                                                this.props.editTimeSheetLog(this.state.id, item._id, {
-                                                                                    acceptLog: false
-                                                                                })
-                                                                            } :
-                                                                            () => {
-                                                                                this.props.editTimeSheetLog(this.state.id, item._id, {
-                                                                                    acceptLog: true
-                                                                                })
+                            {logTimer &&
+                                <ShowMoreShowLess
+                                    id={`logTimer${id}`}
+                                    styleShowMoreLess={{ display: "inline-block", marginBottom: 15, marginTop: 15 }}
+                                >
+                                    {logTimer.map((item, index) =>
+                                        <React.Fragment key={index}>
+                                            {item.stoppedAt &&
+                                                <div key={item._id} className={`item-box ${index > 3 ? "hide-component" : ""}`}>
+                                                    <h3 className={`pull-right ${item.acceptLog ? 'text-green' : 'text-red'}`}>{this.convertTime(item.duration)}</h3>
+                                                    <a style={{ fontWeight: 700, cursor: "pointer" }}>{item.creator?.name} </a>
+                                                    <div>
+                                                        <i className="fa fa-clock-o"> </i> {moment(item.startedAt).format("DD/MM/YYYY HH:mm:ss")}{" - "}
+                                                        <i className="fa fa-clock-o"> </i> {moment(item.stoppedAt).format("DD/MM/YYYY HH:mm:ss")})
+                                                    </div>
+                                                    <div>
+                                                        <i style={{ marginRight: '5px' }} className={`${item.autoStopped === 1 ? 'text-green fa fa-hand-pointer-o' : (item.autoStopped === 2 ? 'text-red fa fa-clock-o' : 'text-red fa fa-plus')}`}>{item.autoStopped === 1 ? 'Tắt bằng tay' : (item.autoStopped === 2 ? 'Tự động' : 'Add log timer')}</i>
+                                                        {
+                                                            role === "accountable" ?
+                                                                (
+                                                                    <React.Fragment>
+                                                                        <i className={`${item.acceptLog ? 'text-green fa fa-check' : 'text-red fa fa-close'}`}> {item.acceptLog ? 'Được chấp nhận' : 'Không được chấp nhận'}</i>
+                                                                        <a
+                                                                            style={{ cursor: 'pointer', marginLeft: 10, fontWeight: 'bold' }}
+                                                                            className={item.acceptLog ? 'text-red' : 'text-green'}
+                                                                            onClick={
+                                                                                item.acceptLog ?
+                                                                                    () => {
+                                                                                        this.props.editTimeSheetLog(this.state.id, item._id, {
+                                                                                            acceptLog: false
+                                                                                        })
+                                                                                    } :
+                                                                                    () => {
+                                                                                        this.props.editTimeSheetLog(this.state.id, item._id, {
+                                                                                            acceptLog: true
+                                                                                        })
+                                                                                    }
                                                                             }
-                                                                    }
-                                                                >
-                                                                    [ {item.acceptLog ? 'Hủy' : 'Chấp nhận'} ]
-                                                                </a>
-                                                            </React.Fragment>
-                                                        ) : (
-                                                            <i className={`${item.acceptLog ? 'text-green fa fa-check' : 'text-red fa fa-close'}`}> {item.acceptLog ? 'Được chấp nhận' : 'Không được chấp nhận'}</i>
-                                                        )
-                                                }
-                                            </div>
-                                            <div>
-                                                <i className="fa fa-edit"></i>
-                                                {item.description ? item.description : translate("task.task_perform.none_description")}
-                                            </div>
-                                        </div>
-                                    }
-                                </React.Fragment>
-                            )}
+                                                                        >
+                                                                            [ {item.acceptLog ? 'Hủy' : 'Chấp nhận'} ]
+                                                                        </a>
+                                                                    </React.Fragment>
+                                                                ) : (
+                                                                    <i className={`${item.acceptLog ? 'text-green fa fa-check' : 'text-red fa fa-close'}`}> {item.acceptLog ? 'Được chấp nhận' : 'Không được chấp nhận'}</i>
+                                                                )
+                                                        }
+                                                    </div>
+                                                    <div>
+                                                        <i className="fa fa-edit"></i>
+                                                        {item.description ? item.description : translate("task.task_perform.none_description")}
+                                                    </div>
+                                                </div>
+                                            }
+                                        </React.Fragment>
+                                    )}
+                                </ShowMoreShowLess>
+                            }
                         </div>
 
                         {/* Chuyển qua tab Nhật ký lịch sử */}

@@ -52,6 +52,7 @@ exports.getTaskById = async (portal, id, userId) => {
                 path: "taskActions.evaluations.creator",
                 select: "name email avatar ",
             },
+            { path: "taskActions.timesheetLogs.creator", select: "_id name email" },
             { path: "taskComments.creator", select: "name email avatar" },
             {
                 path: "taskComments.comments.creator",
@@ -315,7 +316,7 @@ exports.getActiveTimesheetLog = async (portal, query) => {
                 },
             },
         },
-        { timesheetLogs: 1, _id: 1, name: 1 }
+        { timesheetLogs: 1, _id: 1, name: 1, taskActions:1 }
     );
     if (timerStatus !== null) {
         timerStatus.timesheetLogs = timerStatus.timesheetLogs.find(
@@ -331,12 +332,27 @@ exports.getActiveTimesheetLog = async (portal, query) => {
 /**
  * Bắt đầu bấm giờ: Lưu thời gian bắt đầu
  */
-exports.startTimesheetLog = async (portal, params, body) => {
+exports.startTimesheetLog = async (portal, params, body, user) => {
     const now = new Date();
     let timerUpdate = {
         startedAt: now,
         creator: body.creator,
     };
+
+    // Check xem người dùng có đang bấm giờ công việc khác hay không
+    const timerStatus = await Task(connect(DB_CONNECTION, portal)).findOne(
+        {
+            timesheetLogs: {
+                $elemMatch: {
+                    creator: user._id,
+                    stoppedAt: null,
+                },
+            },
+        },
+    );
+
+    if(timerStatus)
+        throw["timer_exist_another_task"]
 
     /* check và tìm công việc đang được hẹn tắt bấm giờ:
     * Nếu công tìm được công việc có thời gian kết thúc bấm giờ lớn hơn thời gian hiện tại
@@ -411,7 +427,7 @@ exports.startTimesheetLog = async (portal, params, body) => {
     let timer = await Task(connect(DB_CONNECTION, portal)).findByIdAndUpdate(
         params.taskId,
         { $push: { timesheetLogs: timerUpdate } },
-        { new: true, fields: { timesheetLogs: 1, _id: 1, name: 1 } }
+        { new: true, fields: { timesheetLogs: 1, _id: 1, name: 1, taskActions: 1 } }
     );
 
     timer.timesheetLogs = timer.timesheetLogs.find(
@@ -602,6 +618,26 @@ exports.stopTimesheetLog = async (portal, params, body, user) => {
         duration = new Date(stoppedAt).getTime() - new Date(body.startedAt).getTime();
         let checkDurationValid = duration / (60 * 60 * 1000);
 
+        // Lấy thông tin của timeSheetLog đã start trước đó
+        const getTime = await Task(connect(DB_CONNECTION, portal)).findOne({ _id: params.taskId, "timesheetLogs._id": body.timesheetLog }, { timesheetLogs: 1 })
+        let currentTimeSheet = getTime.timesheetLogs.filter(o => o._id.toString() === body.timesheetLog.toString());
+        
+        await Task(connect(DB_CONNECTION,portal)).findOneAndUpdate({ _id: params.taskId, "taskActions._id": body.taskActionStartTimer },
+            {
+                $push: {
+                    "taskActions.$.timesheetLogs":{
+                        startedAt: currentTimeSheet[0].startedAt,
+                        creator: currentTimeSheet[0].creator,
+                        acceptLog: checkDurationValid > 24 ? false : true,
+                        autoStopped: body.autoStopped,
+                        description: body.description,
+                        duration: duration,
+                        stoppedAt: stoppedAt,
+                    }
+                }
+            }
+        )
+
         timer = await Task(connect(DB_CONNECTION, portal))
             .findOneAndUpdate(
                 { _id: params.taskId, "timesheetLogs._id": body.timesheetLog },
@@ -612,7 +648,7 @@ exports.stopTimesheetLog = async (portal, params, body, user) => {
                         "timesheetLogs.$.description": body.description,
                         "timesheetLogs.$.autoStopped": body.autoStopped, // ghi nhận tắt bấm giờ tự động hay không?
                         "timesheetLogs.$.acceptLog": checkDurationValid > 24 ? false : true, // tự động check nếu thời gian quá 24 tiếng thì đánh là không hợp lệ
-                    },
+                    }
                 },
                 { new: true }
             )
@@ -3312,8 +3348,10 @@ exports.editTaskByAccountableEmployees = async (portal, data, taskId) => {
 exports.editEmployeeCollaboratedWithOrganizationalUnits = async (portal, taskId, data) => {
     let {
         responsibleEmployees,
+        accountableEmployees,
         consultedEmployees,
         oldResponsibleEmployees,
+        oldAccountableEmployees,
         oldConsultedEmployees,
         unitId,
         isAssigned,
@@ -3346,6 +3384,13 @@ exports.editEmployeeCollaboratedWithOrganizationalUnits = async (portal, taskId,
             }
         });
     }
+    if (accountableEmployees && accountableEmployees.length !== 0) {
+        accountableEmployees.map((item) => {
+            if (!task.accountableEmployees.includes(item)) {
+                newEmployees.push(item);
+            }
+        });
+    }
     if (consultedEmployees && consultedEmployees.length !== 0) {
         consultedEmployees.map((item) => {
             if (!task.consultedEmployees.includes(item)) {
@@ -3356,11 +3401,7 @@ exports.editEmployeeCollaboratedWithOrganizationalUnits = async (portal, taskId,
     newEmployees = Array.from(new Set(newEmployees));
 
     // Xóa người thực hiện cũ của đơn vị hiện tại
-    if (
-        oldResponsibleEmployees &&
-        oldResponsibleEmployees.length !== 0 &&
-        task.responsibleEmployees
-    ) {
+    if (oldResponsibleEmployees.length > 0 && task?.responsibleEmployees) {
         for (let i = task.responsibleEmployees.length - 1; i >= 0; i--) {
             if (
                 oldResponsibleEmployees.includes(
@@ -3371,12 +3412,20 @@ exports.editEmployeeCollaboratedWithOrganizationalUnits = async (portal, taskId,
             }
         }
     }
+    // Xóa người phê duyệt của đơn vị hiện tại
+    if (oldAccountableEmployees?.length > 0 && task?.accountableEmployees) {
+        for (let i = task.accountableEmployees.length - 1; i >= 0; i--) {
+            if (
+                oldAccountableEmployees.includes(
+                    task.accountableEmployees[i].toString()
+                )
+            ) {
+                task.accountableEmployees.splice(i, 1);
+            }
+        }
+    }
     // Xóa người hỗ trợ của đơn vị hiện tại
-    if (
-        oldConsultedEmployees &&
-        oldConsultedEmployees.length !== 0 &&
-        task.consultedEmployees
-    ) {
+    if (oldConsultedEmployees?.length > 0 && task.consultedEmployees) {
         for (let i = task.consultedEmployees.length - 1; i >= 0; i--) {
             if (
                 oldConsultedEmployees.includes(
@@ -3388,9 +3437,12 @@ exports.editEmployeeCollaboratedWithOrganizationalUnits = async (portal, taskId,
         }
     }
 
-    // Thêm mới người thực hiẹn và người hỗ trợ
+    // Thêm mới người thực hiẹn, người tư vấn, người phê duyệt
     task.responsibleEmployees = task.responsibleEmployees.concat(
         responsibleEmployees
+    );
+    task.accountableEmployees = task.accountableEmployees.concat(
+        accountableEmployees
     );
     task.consultedEmployees = task.consultedEmployees.concat(
         consultedEmployees
@@ -3401,6 +3453,7 @@ exports.editEmployeeCollaboratedWithOrganizationalUnits = async (portal, taskId,
         {
             $set: {
                 responsibleEmployees: task.responsibleEmployees,
+                accountableEmployees: task.accountableEmployees,
                 consultedEmployees: task.consultedEmployees,
             },
         },
@@ -5460,7 +5513,8 @@ exports.requestAndApprovalCloseTask = async (portal, taskId, data) => {
                 "description": description,
                 "requestStatus": 1
             },
-            "status": 'wait_for_approval'
+            // "status": 'wait_for_approval'
+            "status": 'requested_to_close'
         }
     }
     else if (type === 'cancel_request') {

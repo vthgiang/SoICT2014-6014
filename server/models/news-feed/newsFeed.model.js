@@ -3,32 +3,34 @@ const Schema = mongoose.Schema;
 
 const NewsFeedSchema = new Schema(
     {
-        title: { // Tên Ví dụ
-            type: String,
-            required: true
-        },
-        description: { // Mô tả Ví dụ
-            type: String
-        },
-        creator: {
-            type: Schema.Types.ObjectId,
-            ref: "User",
-        },
-        relatedUsers: [{
-            type: Schema.Types.ObjectId,
-            ref: "User",
-        }],
         associatedDataObject: { 
             dataType: { // Task: 1, Asset: 2, KPI: 3
                 type: Number
             },
-            value: { // ID của object
-                type: String
+            value: { // ID của objects
+                type: String,
             },
             description: {
                 type: String
             },
         },
+        content:[{
+            title: { // Tên Ví dụ
+                type: String,
+                required: true
+            },
+            description: { // Mô tả Ví dụ
+                type: String
+            },
+            creator: {
+                type: Schema.Types.ObjectId,
+                ref: "User",
+            },
+        }],
+        relatedUsers: [{
+            type: Schema.Types.ObjectId,
+            ref: "User",
+        }],
         comments: [{
             creator: {
                 type: Schema.Types.ObjectId,

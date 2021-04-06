@@ -1,0 +1,103 @@
+.breadcrumbs {
+    overflow: hidden;
+    width: 100%;
+    display: flex;
+    list-style-type: none;
+    padding-bottom: 5px;
+    padding-left: 20px !important;
+}
+
+.breadcrumbs > li {
+    float: left;
+    margin: 0 0.5em 0 1em;
+}
+
+.quote-defaul-tab {
+    background: #ddd;
+    padding: 0.7em 1em;
+    float: left;
+    text-decoration: none;
+    color: #444;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+    position: relative;
+}
+
+.quote-defaul-tab::before {
+    content: "";
+    position: absolute;
+    top: 47%;
+    margin-top: -1.5em;
+    border-width: 1.5em 0 1.5em 1em;
+    border-style: solid;
+    border-color: #ddd #ddd #ddd transparent;
+    left: -1em;
+}
+
+.quote-defaul-tab::after {
+    content: "";
+    position: absolute;
+    top: 47%;
+    margin-top: -1.5em;
+    border-top: 1.5em solid transparent;
+    border-bottom: 1.5em solid transparent;
+    border-left: 1em solid #ddd;
+    right: -1em;
+}
+
+.quote-defaul-tab:hover {
+    background: #eaeaea;
+    color: black;
+}
+
+.quote-defaul-tab:hover::before {
+    border-color: #eaeaea #eaeaea #eaeaea transparent;
+}
+
+.quote-defaul-tab:hover::after {
+    border-left: 1em solid #eaeaea;
+}
+
+.quote-active-tab {
+    background: #99db76;
+    padding: 0.7em 1em;
+    float: left;
+    text-decoration: none;
+    color: #444;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+    position: relative;
+}
+
+.quote-active-tab::before {
+    content: "";
+    position: absolute;
+    top: 47%;
+    margin-top: -1.5em;
+    border-width: 1.5em 0 1.5em 1em;
+    border-style: solid;
+    border-color: #99db76 #99db76 #99db76 transparent;
+    left: -1em;
+}
+
+.quote-active-tab::after {
+    content: "";
+    position: absolute;
+    top: 47%;
+    margin-top: -1.5em;
+    border-top: 1.5em solid transparent;
+    border-bottom: 1.5em solid transparent;
+    border-left: 1em solid #99db76;
+    right: -1em;
+}
+
+.quote-active-tab:hover {
+    background: #acd895;
+    color: black;
+}
+
+.quote-active-tab:hover::before {
+    border-color: #acd895 #acd895 #acd895 transparent;
+}
+
+.quote-active-tab:hover::after {
+    border-left: 1em solid #acd895;
+}

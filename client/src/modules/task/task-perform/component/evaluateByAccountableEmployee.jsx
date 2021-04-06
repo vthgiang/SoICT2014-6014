@@ -248,7 +248,6 @@ class EvaluateByAccountableEmployee extends Component {
 
             let infoEval = task.taskInformations;
             for (let i in infoEval) {
-
                 if (infoEval[i].type === "set_of_values") {
                     let splitSetOfValues = infoEval[i].extra.split('\n');
                     info[`${infoEval[i].code}`] = {
@@ -257,14 +256,54 @@ class EvaluateByAccountableEmployee extends Component {
                         type: infoEval[i].type
                     }
                 }
-
             }
 
-            let empPoint = {}, results = {};
+            let empPoint = {}, results = {}, endDateEval, timesheetLogs, duration = 0;
             let inactiveEmp = task.inactiveEmployees.map(e => e._id);
+
+            if (dateParam.toString().includes("-")) {
+                endDateEval = this.convertDateTime(dateParam, this.state?.endTime);
+            } else {
+                endDateEval = this.convertDateTime(this.state?.endDate, dateParam)
+            }
+
+            if (task?.timesheetLogs?.length > 0) {
+                timesheetLogs = task.timesheetLogs.filter(item => {
+                    let startDateEval = evaluations?.startDate ? new Date(evaluations.startDate) : this.convertDateTime(prevDate, startTime)
+                    let startedAt = item?.startedAt && new Date(item?.startedAt)
+                    let stoppedAt = item?.stoppedAt && new Date(item?.stoppedAt)
+
+                    if (item?.acceptLog 
+                        && (
+                            (startedAt?.getTime() >= startDateEval?.getTime() && startedAt?.getTime() <= endDateEval?.getTime())
+                            || (stoppedAt?.getTime() >= startDateEval?.getTime() && stoppedAt?.getTime() <= endDateEval?.getTime())
+                        )
+                    ) {
+                        return true;
+                    } else {
+                        return false
+                    }
+                }).map(item => {
+                    duration += item?.duration
+                    return item
+                })
+            }
 
             for (let i in task.responsibleEmployees) {
                 if (inactiveEmp.indexOf(task.responsibleEmployees[i]._id) === -1) {
+                    let durationResponsible = 0
+                    timesheetLogs.filter(item => {
+                        if (item?.acceptLog 
+                            && item?.creator?._id === task.responsibleEmployees[i]._id
+                        ) {
+                            return true
+                        } else {
+                            return false
+                        }
+                    }).map(item => {
+                        durationResponsible += item?.duration
+                    })
+
                     results[`approvedPointResponsible${task.responsibleEmployees[i]._id}`] = {
                         value: undefined,
                         employee: task.responsibleEmployees[i]._id,
@@ -272,45 +311,80 @@ class EvaluateByAccountableEmployee extends Component {
                         target: "Point"
                     }
                     results[`contributeResponsible${task.responsibleEmployees[i]._id}`] = {
-                        value: undefined,
+                        value: duration ? Number((durationResponsible/duration*100).toFixed(0)) : 0,
                         employee: task.responsibleEmployees[i]._id,
                         role: "responsible",
                         target: "Contribution"
                     }
                 }
             }
-            for (let i in task.consultedEmployees) {
-                if (inactiveEmp.indexOf(task.consultedEmployees[i]._id) === -1) {
-                    results[`approvedPointConsulted${task.consultedEmployees[i]._id}`] = {
-                        value: undefined,
-                        employee: task.consultedEmployees[i]._id,
-                        role: "consulted",
-                        target: "Point"
-                    }
-                    results[`contributeConsulted${task.consultedEmployees[i]._id}`] = {
-                        value: undefined,
-                        employee: task.consultedEmployees[i]._id,
-                        role: "consulted",
-                        target: "Contribution"
-                    }
-                }
-            }
             for (let i in task.accountableEmployees) {
                 if (inactiveEmp.indexOf(task.accountableEmployees[i]._id) === -1) {
+                    let durationAccountable = 0
+                    timesheetLogs.filter(item => {
+                        if (item?.acceptLog 
+                            && item?.creator?._id === task.accountableEmployees[i]._id
+                        ) {
+                            return true
+                        } else {
+                            return false
+                        }
+                    }).map(item => {
+                        durationAccountable += item?.duration
+                    })
+
                     results[`approvedPoint${task.accountableEmployees[i]._id}`] = {
                         value: undefined,
                         employee: task.accountableEmployees[i]._id,
                         role: "accountable",
                         target: "Point"
                     }
+
+                    let valueContribute = results[`contributeResponsible${task.accountableEmployees[i]._id}`]
+                        ? 0 
+                        : (duration ? Number((durationAccountable/duration*100).toFixed(0)) : 0)
                     results[`contributeAccountable${task.accountableEmployees[i]._id}`] = {
-                        value: undefined,
+                        value: valueContribute,
                         employee: task.accountableEmployees[i]._id,
                         role: "accountable",
                         target: "Contribution"
                     }
                 }
             }
+            for (let i in task.consultedEmployees) {
+                if (inactiveEmp.indexOf(task.consultedEmployees[i]._id) === -1) {
+                    let durationConsulted = 0
+                    timesheetLogs.filter(item => {
+                        if (item?.acceptLog 
+                            && item?.creator?._id === task.consultedEmployees[i]._id
+                        ) {
+                            return true
+                        } else {
+                            return false
+                        }
+                    }).map(item => {
+                        durationConsulted += item?.duration
+                    })
+
+                    results[`approvedPointConsulted${task.consultedEmployees[i]._id}`] = {
+                        value: undefined,
+                        employee: task.consultedEmployees[i]._id,
+                        role: "consulted",
+                        target: "Point"
+                    }
+
+                    let valueContribute = results[`contributeResponsible${task.consultedEmployees[i]._id}`] || results[`contributeAccountable${task.consultedEmployees[i]._id}`]
+                        ? 0 
+                        : (duration ? Number((durationConsulted/duration*100).toFixed(0)) : 0)
+                    results[`contributeConsulted${task.consultedEmployees[i]._id}`] = {
+                        value: valueContribute,
+                        employee: task.consultedEmployees[i]._id,
+                        role: "consulted",
+                        target: "Contribution"
+                    }
+                }
+            }
+            
 
             if (evaluations) {
                 if (evaluations.results.length !== 0) {
@@ -454,7 +528,7 @@ class EvaluateByAccountableEmployee extends Component {
             let taskInfo = {
                 task: task,
                 progress: progress,
-                date: date,
+                date: endDate,
                 time: endTime,
                 info: info,
             };
@@ -1614,7 +1688,8 @@ class EvaluateByAccountableEmployee extends Component {
             { value: "wait_for_approval", text: translate('task.task_management.wait_for_approval') },
             { value: "finished", text: translate('task.task_management.finished') },
             { value: "delayed", text: translate('task.task_management.delayed') },
-            { value: "canceled", text: translate('task.task_management.canceled') }
+            { value: "canceled", text: translate('task.task_management.canceled') },
+            { value: "requested_to_close", text: translate('task.task_management.requested_to_close') },
         ];
 
         let checkNoteMonth;
@@ -1848,7 +1923,7 @@ class EvaluateByAccountableEmployee extends Component {
                                 {/* Phần chấm điểm phê duyệt */}
                                 <fieldset className="scheduler-border">
                                     <legend className="scheduler-border">{translate('task.task_management.evaluate_member')}</legend>
-
+                                    
                                     {
                                         <table className="table table-striped table-hover">
                                             <tr style={{ verticalAlign: "top" }}>
@@ -1864,7 +1939,7 @@ class EvaluateByAccountableEmployee extends Component {
                                                 <th><div className="form-group"><label>{translate('task.task_management.acc_evaluate')} (0 - 100)</label></div></th>
                                             </tr>
 
-                                            { // Chấm điểm phê duyệt cho người thực hiện
+                                            {//Chấm điểm phê duyệt cho người thực hiện
                                                 task && task.responsibleEmployees.map((item, index) =>
                                                 (task.inactiveEmployees.indexOf(item._id) === -1 &&
                                                     <tr key={index} style={{ verticalAlign: "top" }}>
@@ -1899,7 +1974,8 @@ class EvaluateByAccountableEmployee extends Component {
 
                                                 )
                                             }
-                                            { // Chấm điểm phê duyệt cho người tư vấn
+
+                                            {// Chấm điểm phê duyệt cho người tư vấn
                                                 task && task.consultedEmployees && task.consultedEmployees.map((item, index) =>
                                                 (task.inactiveEmployees.indexOf(item._id) === -1 &&
                                                     <tr key={index} style={{ verticalAlign: "top" }}>
@@ -1935,7 +2011,8 @@ class EvaluateByAccountableEmployee extends Component {
 
                                                 )
                                             }
-                                            { // Chấm điểm phê duyệt cho người phê duyệt
+
+                                            {// Chấm điểm phê duyệt cho người phê duyệt
                                                 task && task.accountableEmployees.map((item, index) =>
                                                 (task.inactiveEmployees.indexOf(item._id) === -1 &&
                                                     <tr key={index} style={{ verticalAlign: "top" }}>
@@ -1955,9 +2032,12 @@ class EvaluateByAccountableEmployee extends Component {
                                                         </td>
                                                         <td style={{ padding: 5 }}>
                                                             <div className={errorApprovedPoint[`accountable${item._id}`] === undefined ? "form-group" : "form-group has-error"}>
-                                                                <input className="form-control" type="number"
+                                                                <input 
+                                                                    className="form-control" 
+                                                                    type="number"
                                                                     value={this.checkNullUndefined(results[`approvedPoint${item._id}`]?.value) ? results[`approvedPoint${item._id}`].value : ''}
-                                                                    name={`approvedPoint${item._id}`} placeholder={translate('task.task_management.detail_acc_point')}
+                                                                    name={`approvedPoint${item._id}`} 
+                                                                    placeholder={translate('task.task_management.detail_acc_point')}
                                                                     onChange={(e) => this.handleChangeAccountablePoint(e, item._id)}
                                                                     disabled={disabled}
                                                                 />
