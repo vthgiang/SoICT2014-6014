@@ -252,7 +252,7 @@ exports.getTaskEvaluations = async (portal, data) => {
  */
 exports.getPaginatedTasks = async (portal, task) => {
     let { perPage, number, role, user, organizationalUnit, status, priority, special, name,
-        startDate, endDate, startDateAfter, endDateBefore,responsibleEmployees,
+        startDate, endDate, startDateAfter, endDateBefore, responsibleEmployees,
         accountableEmployees, creatorEmployees, creatorTime, projectSearch } = task;
     let taskList;
     perPage = Number(perPage);
@@ -337,7 +337,7 @@ exports.getPaginatedTasks = async (portal, task) => {
                 let month = new Date(currentYear + '-' + (currentMonth + 1));
                 let nextMonth = new Date(currentYear + '-' + (currentMonth + 1));
                 nextMonth.setMonth(nextMonth.getMonth() + 1);
-                
+
                 keySearchSpecial = {
                     $or: [
                         { 'endDate': { $lt: nextMonth, $gte: month } },
@@ -446,7 +446,7 @@ exports.getPaginatedTasks = async (portal, task) => {
     if (startDate && endDate) {
         endDate = new Date(endDate);
         endDate.setMonth(endDate.getMonth() + 1);
-        
+
         keySeachDateTime = {
             ...keySeachDateTime,
             $or: [
@@ -463,13 +463,13 @@ exports.getPaginatedTasks = async (portal, task) => {
             ...keySearch,
             "$and": [
                 {
-                    "$expr": { 
-                        "$eq": [ { "$month": "$startDate" }, startDate.getMonth() + 1 ]
+                    "$expr": {
+                        "$eq": [{ "$month": "$startDate" }, startDate.getMonth() + 1]
                     }
                 },
                 {
-                    "$expr": { 
-                        "$eq": [ { "$year": "$startDate" }, startDate.getFullYear() ]
+                    "$expr": {
+                        "$eq": [{ "$year": "$startDate" }, startDate.getFullYear()]
                     }
                 }
             ]
@@ -482,13 +482,13 @@ exports.getPaginatedTasks = async (portal, task) => {
             ...keySearch,
             "$and": [
                 {
-                    "$expr": { 
-                        "$eq": [ { "$month": "$endDate" }, endDate.getMonth() + 1 ]
+                    "$expr": {
+                        "$eq": [{ "$month": "$endDate" }, endDate.getMonth() + 1]
                     }
                 },
                 {
-                    "$expr": { 
-                        "$eq": [ { "$year": "$endDate" }, endDate.getFullYear() ]
+                    "$expr": {
+                        "$eq": [{ "$year": "$endDate" }, endDate.getFullYear()]
                     }
                 }
             ]
@@ -511,7 +511,7 @@ exports.getPaginatedTasks = async (portal, task) => {
         let week = []
 
         for (let i = 1; i <= 7; i++) {
-            let first = curr.getDate() - curr.getDay() + i 
+            let first = curr.getDate() - curr.getDay() + i
             let day = new Date(curr.setDate(first)).toISOString().slice(0, 10)
             week.push(day)
         }
@@ -543,8 +543,8 @@ exports.getPaginatedTasks = async (portal, task) => {
             }
         }
     }
-    
-    
+
+
     let optionQuery = {
         $and: [
             keySearch,
@@ -557,8 +557,8 @@ exports.getPaginatedTasks = async (portal, task) => {
         .skip(perPage * (page - 1)).limit(perPage).populate([
             { path: "organizationalUnit parent" },
             { path: 'creator', select: "_id name email avatar" },
-            { path: 'responsibleEmployees', select : "_id name email avatar" },
-            { path: 'accountableEmployees', select : "_id name email avatar" },
+            { path: 'responsibleEmployees', select: "_id name email avatar" },
+            { path: 'accountableEmployees', select: "_id name email avatar" },
             { path: "timesheetLogs.creator", select: "name" },
         ]);
 
@@ -633,7 +633,7 @@ exports.getPaginatedTasksThatUserHasResponsibleRole = async (portal, task) => {
                 let month = new Date(currentYear + '-' + (currentMonth + 1));
                 let nextMonth = new Date(currentYear + '-' + (currentMonth + 1));
                 nextMonth.setMonth(nextMonth.getMonth() + 1);
-                
+
                 keySearchSpecial = {
                     $or: [
                         { 'endDate': { $lt: nextMonth, $gte: month } },
@@ -658,7 +658,7 @@ exports.getPaginatedTasksThatUserHasResponsibleRole = async (portal, task) => {
     if (startDate && endDate) {
         endDate = new Date(endDate);
         endDate.setMonth(endDate.getMonth() + 1);
-        
+
         keySeachDateTime = {
             ...keySeachDateTime,
             $or: [
@@ -675,13 +675,13 @@ exports.getPaginatedTasksThatUserHasResponsibleRole = async (portal, task) => {
             ...keySeachDateTime,
             "$and": [
                 {
-                    "$expr": { 
-                        "$eq": [ { "$month": "$startDate" }, startDate.getMonth() + 1 ]
+                    "$expr": {
+                        "$eq": [{ "$month": "$startDate" }, startDate.getMonth() + 1]
                     }
                 },
                 {
-                    "$expr": { 
-                        "$eq": [ { "$year": "$startDate" }, startDate.getFullYear() ]
+                    "$expr": {
+                        "$eq": [{ "$year": "$startDate" }, startDate.getFullYear()]
                     }
                 }
             ]
@@ -694,13 +694,13 @@ exports.getPaginatedTasksThatUserHasResponsibleRole = async (portal, task) => {
             ...keySeachDateTime,
             "$and": [
                 {
-                    "$expr": { 
-                        "$eq": [ { "$month": "$endDate" }, endDate.getMonth() + 1 ]
+                    "$expr": {
+                        "$eq": [{ "$month": "$endDate" }, endDate.getMonth() + 1]
                     }
                 },
                 {
-                    "$expr": { 
-                        "$eq": [ { "$year": "$endDate" }, endDate.getFullYear() ]
+                    "$expr": {
+                        "$eq": [{ "$year": "$endDate" }, endDate.getFullYear()]
                     }
                 }
             ]
@@ -717,9 +717,9 @@ exports.getPaginatedTasksThatUserHasResponsibleRole = async (portal, task) => {
     }).sort({ 'createdAt': -1 })
         .skip(perPage * (page - 1)).limit(perPage)
         .populate({ path: "organizationalUnit parent" })
-        .populate({path: "creator", select :"_id name email avatar"})
+        .populate({ path: "creator", select: "_id name email avatar" })
         .populate({ path: "responsibleEmployees", select: "_id name email avatar" })
-    
+
 
     var totalCount = await Task(connect(DB_CONNECTION, portal)).countDocuments({
         $and: [
@@ -798,7 +798,7 @@ exports.getPaginatedTasksThatUserHasAccountableRole = async (portal, task) => {
                 let month = new Date(currentYear + '-' + (currentMonth + 1));
                 let nextMonth = new Date(currentYear + '-' + (currentMonth + 1));
                 nextMonth.setMonth(nextMonth.getMonth() + 1);
-                
+
                 keySearchSpecial = {
                     $or: [
                         { 'endDate': { $lt: nextMonth, $gte: month } },
@@ -823,7 +823,7 @@ exports.getPaginatedTasksThatUserHasAccountableRole = async (portal, task) => {
     if (startDate && endDate) {
         endDate = new Date(endDate);
         endDate.setMonth(endDate.getMonth() + 1);
-        
+
         keySeachDateTime = {
             ...keySeachDateTime,
             $or: [
@@ -840,13 +840,13 @@ exports.getPaginatedTasksThatUserHasAccountableRole = async (portal, task) => {
             ...keySeachDateTime,
             "$and": [
                 {
-                    "$expr": { 
-                        "$eq": [ { "$month": "$startDate" }, startDate.getMonth() + 1 ]
+                    "$expr": {
+                        "$eq": [{ "$month": "$startDate" }, startDate.getMonth() + 1]
                     }
                 },
                 {
-                    "$expr": { 
-                        "$eq": [ { "$year": "$startDate" }, startDate.getFullYear() ]
+                    "$expr": {
+                        "$eq": [{ "$year": "$startDate" }, startDate.getFullYear()]
                     }
                 }
             ]
@@ -859,19 +859,19 @@ exports.getPaginatedTasksThatUserHasAccountableRole = async (portal, task) => {
             ...keySeachDateTime,
             "$and": [
                 {
-                    "$expr": { 
-                        "$eq": [ { "$month": "$endDate" }, endDate.getMonth() + 1 ]
+                    "$expr": {
+                        "$eq": [{ "$month": "$endDate" }, endDate.getMonth() + 1]
                     }
                 },
                 {
-                    "$expr": { 
-                        "$eq": [ { "$year": "$endDate" }, endDate.getFullYear() ]
+                    "$expr": {
+                        "$eq": [{ "$year": "$endDate" }, endDate.getFullYear()]
                     }
                 }
             ]
         }
     }
-    
+
     accountableTasks = await Task(connect(DB_CONNECTION, portal)).find({
         $and: [
             keySearch,
@@ -881,8 +881,8 @@ exports.getPaginatedTasksThatUserHasAccountableRole = async (portal, task) => {
     }).sort({ 'createdAt': -1 })
         .skip(perPage * (page - 1)).limit(perPage)
         .populate({ path: "organizationalUnit parent" })
-        .populate({ path: 'creator', select: "_id name  email avatar"})
-    
+        .populate({ path: 'creator', select: "_id name  email avatar" })
+
     var totalCount = await Task(connect(DB_CONNECTION, portal)).countDocuments({
         $and: [
             keySearch,
@@ -958,7 +958,7 @@ exports.getPaginatedTasksThatUserHasConsultedRole = async (portal, task) => {
                 let month = new Date(currentYear + '-' + (currentMonth + 1));
                 let nextMonth = new Date(currentYear + '-' + (currentMonth + 1));
                 nextMonth.setMonth(nextMonth.getMonth() + 1);
-                
+
                 keySearchSpecial = {
                     $or: [
                         { 'endDate': { $lt: nextMonth, $gte: month } },
@@ -983,7 +983,7 @@ exports.getPaginatedTasksThatUserHasConsultedRole = async (portal, task) => {
     if (startDate && endDate) {
         endDate = new Date(endDate);
         endDate.setMonth(endDate.getMonth() + 1);
-        
+
         keySeachDateTime = {
             ...keySeachDateTime,
             $or: [
@@ -1000,13 +1000,13 @@ exports.getPaginatedTasksThatUserHasConsultedRole = async (portal, task) => {
             ...keySeachDateTime,
             "$and": [
                 {
-                    "$expr": { 
-                        "$eq": [ { "$month": "$startDate" }, startDate.getMonth() + 1 ]
+                    "$expr": {
+                        "$eq": [{ "$month": "$startDate" }, startDate.getMonth() + 1]
                     }
                 },
                 {
-                    "$expr": { 
-                        "$eq": [ { "$year": "$startDate" }, startDate.getFullYear() ]
+                    "$expr": {
+                        "$eq": [{ "$year": "$startDate" }, startDate.getFullYear()]
                     }
                 }
             ]
@@ -1019,19 +1019,19 @@ exports.getPaginatedTasksThatUserHasConsultedRole = async (portal, task) => {
             ...keySeachDateTime,
             "$and": [
                 {
-                    "$expr": { 
-                        "$eq": [ { "$month": "$endDate" }, endDate.getMonth() + 1 ]
+                    "$expr": {
+                        "$eq": [{ "$month": "$endDate" }, endDate.getMonth() + 1]
                     }
                 },
                 {
-                    "$expr": { 
-                        "$eq": [ { "$year": "$endDate" }, endDate.getFullYear() ]
+                    "$expr": {
+                        "$eq": [{ "$year": "$endDate" }, endDate.getFullYear()]
                     }
                 }
             ]
         }
     }
-   
+
     consultedTasks = await Task(connect(DB_CONNECTION, portal)).find({
         $and: [
             keySearch,
@@ -1118,7 +1118,7 @@ exports.getPaginatedTasksCreatedByUser = async (portal, task) => {
                 let month = new Date(currentYear + '-' + (currentMonth + 1));
                 let nextMonth = new Date(currentYear + '-' + (currentMonth + 1));
                 nextMonth.setMonth(nextMonth.getMonth() + 1);
-                
+
                 keySearchSpecial = {
                     $or: [
                         { 'endDate': { $lt: nextMonth, $gte: month } },
@@ -1143,7 +1143,7 @@ exports.getPaginatedTasksCreatedByUser = async (portal, task) => {
     if (startDate && endDate) {
         endDate = new Date(endDate);
         endDate.setMonth(endDate.getMonth() + 1);
-        
+
         keySeachDateTime = {
             ...keySeachDateTime,
             $or: [
@@ -1160,13 +1160,13 @@ exports.getPaginatedTasksCreatedByUser = async (portal, task) => {
             ...keySeachDateTime,
             "$and": [
                 {
-                    "$expr": { 
-                        "$eq": [ { "$month": "$startDate" }, startDate.getMonth() + 1 ]
+                    "$expr": {
+                        "$eq": [{ "$month": "$startDate" }, startDate.getMonth() + 1]
                     }
                 },
                 {
-                    "$expr": { 
-                        "$eq": [ { "$year": "$startDate" }, startDate.getFullYear() ]
+                    "$expr": {
+                        "$eq": [{ "$year": "$startDate" }, startDate.getFullYear()]
                     }
                 }
             ]
@@ -1179,13 +1179,13 @@ exports.getPaginatedTasksCreatedByUser = async (portal, task) => {
             ...keySeachDateTime,
             "$and": [
                 {
-                    "$expr": { 
-                        "$eq": [ { "$month": "$endDate" }, endDate.getMonth() + 1 ]
+                    "$expr": {
+                        "$eq": [{ "$month": "$endDate" }, endDate.getMonth() + 1]
                     }
                 },
                 {
-                    "$expr": { 
-                        "$eq": [ { "$year": "$endDate" }, endDate.getFullYear() ]
+                    "$expr": {
+                        "$eq": [{ "$year": "$endDate" }, endDate.getFullYear()]
                     }
                 }
             ]
@@ -1201,7 +1201,7 @@ exports.getPaginatedTasksCreatedByUser = async (portal, task) => {
     }).sort({ 'createdAt': -1 })
         .skip(perPage * (page - 1)).limit(perPage)
         .populate({ path: "organizationalUnit parent" })
-        .populate({path: "creator", select :"_id name email avatar"})
+        .populate({ path: "creator", select: "_id name email avatar" })
     var totalCount = await Task(connect(DB_CONNECTION, portal)).countDocuments({
         $and: [
             keySearch,
@@ -1277,7 +1277,7 @@ exports.getPaginatedTasksThatUserHasInformedRole = async (portal, task) => {
                 let month = new Date(currentYear + '-' + (currentMonth + 1));
                 let nextMonth = new Date(currentYear + '-' + (currentMonth + 1));
                 nextMonth.setMonth(nextMonth.getMonth() + 1);
-                
+
                 keySearchSpecial = {
                     $or: [
                         { 'endDate': { $lt: nextMonth, $gte: month } },
@@ -1302,7 +1302,7 @@ exports.getPaginatedTasksThatUserHasInformedRole = async (portal, task) => {
     if (startDate && endDate) {
         endDate = new Date(endDate);
         endDate.setMonth(endDate.getMonth() + 1);
-        
+
         keySeachDateTime = {
             ...keySeachDateTime,
             $or: [
@@ -1319,13 +1319,13 @@ exports.getPaginatedTasksThatUserHasInformedRole = async (portal, task) => {
             ...keySeachDateTime,
             "$and": [
                 {
-                    "$expr": { 
-                        "$eq": [ { "$month": "$startDate" }, startDate.getMonth() + 1 ]
+                    "$expr": {
+                        "$eq": [{ "$month": "$startDate" }, startDate.getMonth() + 1]
                     }
                 },
                 {
-                    "$expr": { 
-                        "$eq": [ { "$year": "$startDate" }, startDate.getFullYear() ]
+                    "$expr": {
+                        "$eq": [{ "$year": "$startDate" }, startDate.getFullYear()]
                     }
                 }
             ]
@@ -1338,13 +1338,13 @@ exports.getPaginatedTasksThatUserHasInformedRole = async (portal, task) => {
             ...keySeachDateTime,
             "$and": [
                 {
-                    "$expr": { 
-                        "$eq": [ { "$month": "$endDate" }, endDate.getMonth() + 1 ]
+                    "$expr": {
+                        "$eq": [{ "$month": "$endDate" }, endDate.getMonth() + 1]
                     }
                 },
                 {
-                    "$expr": { 
-                        "$eq": [ { "$year": "$endDate" }, endDate.getFullYear() ]
+                    "$expr": {
+                        "$eq": [{ "$year": "$endDate" }, endDate.getFullYear()]
                     }
                 }
             ]
@@ -1563,7 +1563,7 @@ exports.getPaginatedTasksByUser = async (portal, task, type = "paginated_task_by
                 let month = new Date(currentYear + '-' + (currentMonth + 1));
                 let nextMonth = new Date(currentYear + '-' + (currentMonth + 1));
                 nextMonth.setMonth(nextMonth.getMonth() + 1);
-                
+
                 keySearchSpecial = {
                     $or: [
                         { 'endDate': { $lt: nextMonth, $gte: month } },
@@ -1605,11 +1605,11 @@ exports.getPaginatedTasksByUser = async (portal, task, type = "paginated_task_by
         }
     };
 
-    
+
     if (startDate && endDate) {
         endDate = new Date(endDate);
         endDate.setMonth(endDate.getMonth() + 1);
-        
+
         keySeachDateTime = {
             ...keySeachDateTime,
             $or: [
@@ -1626,13 +1626,13 @@ exports.getPaginatedTasksByUser = async (portal, task, type = "paginated_task_by
             ...keySeachDateTime,
             "$and": [
                 {
-                    "$expr": { 
-                        "$eq": [ { "$month": "$startDate" }, startDate.getMonth() + 1 ]
+                    "$expr": {
+                        "$eq": [{ "$month": "$startDate" }, startDate.getMonth() + 1]
                     }
                 },
                 {
-                    "$expr": { 
-                        "$eq": [ { "$year": "$startDate" }, startDate.getFullYear() ]
+                    "$expr": {
+                        "$eq": [{ "$year": "$startDate" }, startDate.getFullYear()]
                     }
                 }
             ]
@@ -1645,13 +1645,13 @@ exports.getPaginatedTasksByUser = async (portal, task, type = "paginated_task_by
             ...keySeachDateTime,
             "$and": [
                 {
-                    "$expr": { 
-                        "$eq": [ { "$month": "$endDate" }, endDate.getMonth() + 1 ]
+                    "$expr": {
+                        "$eq": [{ "$month": "$endDate" }, endDate.getMonth() + 1]
                     }
                 },
                 {
-                    "$expr": { 
-                        "$eq": [ { "$year": "$endDate" }, endDate.getFullYear() ]
+                    "$expr": {
+                        "$eq": [{ "$year": "$endDate" }, endDate.getFullYear()]
                     }
                 }
             ]
@@ -1667,10 +1667,10 @@ exports.getPaginatedTasksByUser = async (portal, task, type = "paginated_task_by
     }).sort({ 'createdAt': -1 })
         .skip(perPage * (page - 1)).limit(perPage)
         .populate({ path: "organizationalUnit parent " })
-        .populate({path: "creator", select :"_id name email avatar"})
-        .populate({path: "responsibleEmployees", select :"_id name email avatar"})
-        .populate({path: "accountableEmployees", select :"_id name email avatar"})
-    
+        .populate({ path: "creator", select: "_id name email avatar" })
+        .populate({ path: "responsibleEmployees", select: "_id name email avatar" })
+        .populate({ path: "accountableEmployees", select: "_id name email avatar" })
+
 
     let totalCount = await Task(connect(DB_CONNECTION, portal)).countDocuments({
         $and: [
@@ -1728,8 +1728,8 @@ exports.getAllTaskOfOrganizationalUnitByMonth = async (portal, task) => {
 
     organizationUnitTasks = await Task(connect(DB_CONNECTION, portal)).find(keySearch).sort({ 'createdAt': -1 })
         .populate({ path: "organizationalUnit parent" })
-        .populate({path: "creator", select :"_id name email avatar"})
-        .populate({path: "responsibleEmployees", select :"_id name email avatar"})
+        .populate({ path: "creator", select: "_id name email avatar" })
+        .populate({ path: "responsibleEmployees", select: "_id name email avatar" })
     return {
         "tasks": organizationUnitTasks
     };
@@ -1778,8 +1778,8 @@ exports.getAllTaskByPriorityOfOrganizationalUnit = async (portal, task) => {
     }
     const data = await Task(connect(DB_CONNECTION, portal)).find({ ...keySearch, endDate: { $gte: new Date(date) } }) // lấy những việc còn thời hạn
         .populate({ path: "organizationalUnit parent" })
-        .populate({path: "creator", select :"_id name email avatar"})
-        .populate({path: "responsibleEmployees", select :"_id name email avatar"})
+        .populate({ path: "creator", select: "_id name email avatar" })
+        .populate({ path: "responsibleEmployees", select: "_id name email avatar" })
         .lean();
 
     let taskUrgent = [], taskNeedToDo = [];
@@ -1838,8 +1838,8 @@ exports.getAllTaskByPriorityOfOrganizationalUnit = async (portal, task) => {
     // lấy việc quá hạn
     const tasksExpire = await Task(connect(DB_CONNECTION, portal)).find(keySearch)
         .populate({ path: "organizationalUnit parent" })
-        .populate({path: "creator", select :"_id name email avatar"})
-        .populate({path: "responsibleEmployees", select :"_id name email avatar"})
+        .populate({ path: "creator", select: "_id name email avatar" })
+        .populate({ path: "responsibleEmployees", select: "_id name email avatar" })
         .lean();
     let tasksExpireUrgent = [];
 
@@ -1884,7 +1884,7 @@ exports.getAllTaskByPriorityOfOrganizationalUnit = async (portal, task) => {
  */
 exports.sendEmailForCreateTask = async (portal, task) => {
     task = await task.populate("organizationalUnit parent")
-        .populate({path: "creator", select :"_id name email avatar"})
+        .populate({ path: "creator", select: "_id name email avatar" })
         .execPopulate();
 
     var email, userId, user, users, userIds
@@ -2099,7 +2099,7 @@ exports.createTask = async (portal, task) => {
 /**
  * Tạo công việc mới của dự án
  */
- exports.createProjectTask = async (portal, task) => {
+exports.createProjectTask = async (portal, task) => {
     // // Lấy thông tin công việc liên quan
     // var level = 1;
     // if (mongoose.Types.ObjectId.isValid(task.parent)) {
@@ -2180,8 +2180,8 @@ exports.createTask = async (portal, task) => {
     }
 
     var newTask = await Task(connect(DB_CONNECTION, portal)).create({ //Tạo dữ liệu mẫu công việc
-        // organizationalUnit: task.organizationalUnit,
-        // collaboratedWithOrganizationalUnits: task.collaboratedWithOrganizationalUnits,
+        organizationalUnit: task.organizationalUnit,
+        collaboratedWithOrganizationalUnits: task.collaboratedWithOrganizationalUnits,
         creator: task.creator, //id của người tạo
         name: task.name,
         description: task.description,
@@ -2199,7 +2199,13 @@ exports.createTask = async (portal, task) => {
         consultedEmployees: task.consultedEmployees,
         informedEmployees: task.informedEmployees,
         confirmedByEmployees: task.responsibleEmployees.concat(task.accountableEmployees).concat(task.consultedEmployees).includes(task.creator) ? task.creator : [],
-        taskProject
+        taskProject,
+        estimateNormalTime: task.estimateNormalTime,
+        estimateOptimisticTime: task.estimateOptimisticTime,
+        estimatePessimisticTime: task.estimatePessimisticTime,
+        estimateNormalCost: task.estimateNormalCost,
+        estimateMaxCost: task.estimateMaxCost,
+        preceedingTasks: task.preceedingTasks,
     });
 
     if (newTask.taskTemplate !== null) {
@@ -2213,7 +2219,7 @@ exports.createTask = async (portal, task) => {
     return {
         task: newTask,
         user: mail.user, email: mail.email, html: mail.html,
-        // managersOfOrganizationalUnitThatHasCollaborated: mail.managersOfOrganizationalUnitThatHasCollaborated,
+        managersOfOrganizationalUnitThatHasCollaborated: mail.managersOfOrganizationalUnitThatHasCollaborated,
         collaboratedEmail: mail.collaboratedEmail, collaboratedHtml: mail.collaboratedHtml
     };
 }
@@ -2892,11 +2898,12 @@ exports.getAllUserTimeSheet = async (portal, month, year) => {
 
 exports.getTasksByProject = async (portal, projectId) => {
     let tasks = await Task(connect(DB_CONNECTION, portal))
-    .find({taskProject: projectId})
-    .populate({ path: "responsibleEmployees", select: "_id name" })
-    .populate({ path: "accountableEmployees", select: "_id name" })
-    .populate({ path: "consultedEmployees", select: "_id name" })
-    .populate({ path: "informedEmployees", select: "_id name" })
-    .populate({ path: "creator", select: "_id name" });
+        .find({ taskProject: projectId })
+        .populate({ path: "responsibleEmployees", select: "_id name" })
+        .populate({ path: "accountableEmployees", select: "_id name" })
+        .populate({ path: "consultedEmployees", select: "_id name" })
+        .populate({ path: "informedEmployees", select: "_id name" })
+        .populate({ path: "creator", select: "_id name" })
+        .populate({ path: "preceedingTasks", select: "_id name" });
     return tasks;
 }

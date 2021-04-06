@@ -155,13 +155,11 @@ function ListProject(props) {
                         {/* Button thêm mới */}
                         {checkIfAbleToCRUDProject({ project, user }) &&
                             <div className="dropdown pull-right" style={{ marginTop: 5 }}>
-                                <button type="button" className="btn btn-success dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('project.add_btn_new')}>{translate('project.add_btn_new')}</button>
-                                <ul className="dropdown-menu pull-right" style={{ marginTop: 0 }}>
-                                    <li><a style={{ cursor: 'pointer' }} onClick={handleOpenCreateForm} title={translate('project.add_btn_normal')}>
-                                        {translate('project.add_btn_normal')}</a></li>
-                                    <li><a style={{ cursor: 'pointer' }} onClick={() => window.$('#modal-import-file-project-hooks').modal('show')} title={translate('project.add_btn_scheduling')}>
-                                        {translate('project.add_btn_scheduling')}</a></li>
-                                </ul>
+                                <button type="button" className="btn btn-success dropdown-toggle pull-right"
+                                    onClick={handleOpenCreateForm}
+                                    data-toggle="dropdown" aria-expanded="true" title={translate('project.add_btn_new')}>
+                                    {translate('project.add_btn_new')}
+                                </button>
                             </div>
                         }
 

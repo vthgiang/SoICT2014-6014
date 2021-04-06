@@ -7,7 +7,9 @@ import { ProjectActions } from "../../redux/actions";
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import { formatDate } from '../../../../helpers/formatDate';
 import { taskManagementActions } from '../../../task/task-management/redux/actions';
-import { ModalPerform } from '../../../task/task-perform/component/modalPerform';
+import { ModalPerformProject } from '../../../task/task-perform/component/modalPerformProject';
+import { getStorage } from '../../../../config';
+import { getCurrentProjectDetails } from './functionHelper';
 
 const TableTasksProject = (props) => {
     const [state, setState] = useState({
@@ -17,7 +19,7 @@ const TableTasksProject = (props) => {
         currentTaskId: null,
     })
     const currentProjectId = window.location.href.split('?id=')[1];
-    const { translate, currentProjectTasks, user } = props;
+    const { translate, currentProjectTasks, user, project } = props;
     const { page, limit, taskName, currentTaskId } = state;
     let units = []
     if (user) units = user.organizationalUnitsOfUser;
@@ -25,6 +27,23 @@ const TableTasksProject = (props) => {
     useEffect(() => {
         props.getAllUserInAllUnitsOfCompany();
     }, [])
+
+    const formatTaskStatus = (translate, status) => {
+        switch (status) {
+            case "inprocess":
+                return translate('task.task_management.inprocess');
+            case "wait_for_approval":
+                return translate('task.task_management.wait_for_approval');
+            case "finished":
+                return translate('task.task_management.finished');
+            case "delayed":
+                return translate('task.task_management.delayed');
+            case "canceled":
+                return translate('task.task_management.canceled');
+            case "requested_to_close":
+                return translate('task.task_management.requested_to_close');
+        }
+    }
 
     // const handleChangeProjectName = (e) => {
     //     const { value } = e.target;
@@ -73,31 +92,33 @@ const TableTasksProject = (props) => {
     //     });
     // }
 
-    const handleDelete = (id) => {
+    const handleDelete = async (id) => {
         // props.deleteProjectDispatch(id);
         // props.getProjectsDispatch({
         //     taskName,
         //     limit,
         //     page: project && project.lists && project.lists.length === 1 ? page - 1 : page
         // });
-    }
-
-    const handleEdit = (project) => {
-        setState({
-            ...state,
-            currentRow: project
-        });
-        window.$('#modal-edit-task').modal('show');
+        await props.deleteTaskById(id);
+        await props.getTasksByProject(currentProjectId);
     }
 
     const handleShowDetailInfo = (id) => {
-        console.log('show detail id', id)
         setState({
             currentTaskId: id
         })
-        window.$(`#modelPerformTask${id}`).modal('show');
+        setTimeout(() => {
+            window.$(`#modelPerformProjectTask${id}`).modal('show');
+        }, 10);
     }
 
+    const processPreceedingTasks = (preceedingTasks) => {
+        if (preceedingTasks.length === 0) return '';
+        const resultArr = preceedingTasks.map(preceedingTaskItem => {
+            return currentProjectTasks.find(item => item._id === preceedingTaskItem.task)?.name;
+        })
+        return resultArr.join(", ");
+    }
     // let lists = [];
     // if (project) {
     //     lists = project.data.paginate
@@ -105,19 +126,21 @@ const TableTasksProject = (props) => {
 
     // const totalPage = project && project.data.totalPage;
 
+
     return (
         <React.Fragment>
             {
-                currentTaskId &&
-                <ModalPerform
+                currentTaskId ? <ModalPerformProject
                     units={units}
                     id={currentTaskId}
-                />
+                /> : null
             }
+
             <table id="project-table" className="table table-striped table-bordered table-hover">
                 <thead>
                     <tr>
                         <th>{translate('task.task_management.col_name')}</th>
+                        <th>{translate('project.task_management.preceedingTask')}</th>
                         <th>{translate('task.task_management.responsible')}</th>
                         <th>{translate('task.task_management.accountable')}</th>
                         <th>{translate('task.task_management.creator')}</th>
@@ -145,16 +168,16 @@ const TableTasksProject = (props) => {
                         currentProjectTasks.map((taskItem, index) => (
                             <tr key={index}>
                                 <td>{taskItem?.name}</td>
+                                <td>{processPreceedingTasks(taskItem?.preceedingTasks)}</td>
                                 <td>{taskItem?.responsibleEmployees.map(o => o.name).join(", ")}</td>
                                 <td>{taskItem?.accountableEmployees?.map(o => o.name).join(", ")}</td>
                                 <td>{taskItem?.creator?.name}</td>
-                                <td>{taskItem?.status}</td>
+                                <td>{formatTaskStatus(translate, taskItem?.status)}</td>
                                 <td>{taskItem?.progress}%</td>
                                 <td style={{ textAlign: "center" }}>
-                                    <a className="edit text-green" style={{ width: '5px' }} onClick={() => handleShowDetailInfo(taskItem?._id)}><i className="material-icons">visibility</i></a>
-                                    <a className="edit text-yellow" style={{ width: '5px' }} onClick={() => handleEdit(taskItem)}><i className="material-icons">edit</i></a>
+                                    <a className="edit text-yellow" style={{ width: '5px' }} onClick={() => handleShowDetailInfo(taskItem?._id)}><i className="material-icons">edit</i></a>
                                     <DeleteNotification
-                                        content={translate('project.delete')}
+                                        content={translate('task.task_management.action_delete')}
                                         data={{
                                             id: taskItem?._id,
                                             info: taskItem?.name
@@ -180,5 +203,6 @@ const mapDispatchToProps = {
     deleteProjectDispatch: ProjectActions.deleteProjectDispatch,
     getAllUserInAllUnitsOfCompany: UserActions.getAllUserInAllUnitsOfCompany,
     getTasksByProject: taskManagementActions.getTasksByProject,
+    deleteTaskById: taskManagementActions._delete,
 }
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(TableTasksProject));

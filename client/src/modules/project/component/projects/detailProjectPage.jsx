@@ -13,6 +13,8 @@ import { getStorage } from '../../../../config';
 import { TaskAddModal } from '../../../task/task-management/component/taskAddModal';
 import { checkIfAbleToCRUDProject, getCurrentProjectDetails } from './functionHelper';
 import { taskManagementActions } from '../../../task/task-management/redux/actions';
+import { TaskProjectAddModal } from '../../../task/task-management/component/taskProjectAddModal';
+import ModalAddTaskSchedule from '../scheduling-projects/modalAddTaskSchedule';
 
 const ProjectDetailPage = (props) => {
     const { translate, project, user, tasks } = props;
@@ -33,9 +35,16 @@ const ProjectDetailPage = (props) => {
     const currentProjectTasks = tasks?.tasksbyproject;
     const parentTask = [];
 
+    const onHandleReRender = async () => {
+        await props.getTasksByProject(currentProjectId);
+    }
+
+    const onHandleOpenScheduleModal = () => {
+        window.$('#modal-add-task-schedule').modal('show')
+    }
+
     return (
         <div>
-            <TaskAddModal isProjectForm={true} currentProjectTasks={currentProjectTasks} parentTask={parentTask} />
             <div className="description-box" style={{ lineHeight: 1.5 }}>
                 <div className="row">
                     <div className="col-md-6">
@@ -122,7 +131,7 @@ const ProjectDetailPage = (props) => {
                             <div className="form-group">
                                 <strong className="col-sm-4">{translate('project.unitTime')}</strong>
                                 <div className="col-sm-8">
-                                    <span>{projectDetail && projectDetail?.unitTime ? projectDetail?.unitTime : null}</span>
+                                    <span>{projectDetail && projectDetail?.unitTime ? translate(`project.unit.${projectDetail?.unitTime}`) : null}</span>
                                 </div>
                             </div>
                         </div>
@@ -150,10 +159,18 @@ const ProjectDetailPage = (props) => {
                     {/* Button thêm mới */}
                     {checkIfAbleToCRUDProject({ project, user, currentProjectId }) &&
                         <div className="dropdown pull-right" style={{ marginTop: 15, marginRight: 10 }}>
+                            <TaskProjectAddModal onHandleReRender={onHandleReRender} currentProjectTasks={currentProjectTasks} parentTask={parentTask} />
+                            <ModalAddTaskSchedule />
                             <button type="button" className="btn btn-success dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="true"
-                                onClick={handleOpenCreateTask} title={translate('project.add_btn_task')}>
+                                title={translate('project.add_btn_task')}>
                                 {translate('project.add_btn_task')}
                             </button>
+                            <ul className="dropdown-menu pull-right" style={{ marginTop: 0 }}>
+                                <li><a style={{ cursor: 'pointer' }} onClick={handleOpenCreateTask} title={translate('project.add_btn_normal')}>
+                                    {translate('project.add_btn_normal')}</a></li>
+                                <li><a style={{ cursor: 'pointer' }} onClick={onHandleOpenScheduleModal} title={translate('project.add_btn_scheduling')}>
+                                    {translate('project.add_btn_scheduling')}</a></li>
+                            </ul>
                         </div>}
                 </div>
                 <ul className="nav nav-tabs">

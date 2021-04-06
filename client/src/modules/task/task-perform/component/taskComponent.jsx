@@ -10,6 +10,8 @@ import { performTaskAction } from '../redux/actions';
 
 import qs from 'qs';
 import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
+import { ProjectActions } from '../../../project/redux/actions';
+import { getStorage } from '../../../../config';
 
 class TaskComponent extends Component {
     constructor(props) {
@@ -26,6 +28,7 @@ class TaskComponent extends Component {
 
         this.props.getAllUserOfCompany();
         this.props.getAllDepartment();
+        this.props.getProjectsDispatch({ calledId: "all", userId: getStorage('userId') });
     }
 
     shouldComponentUpdate = (nextProps, nextState) => {
@@ -118,6 +121,7 @@ const actionCreators = {
     getAllDepartment: DepartmentActions.get,
     getDepartment: UserActions.getDepartmentOfUser,
     getAllUserOfCompany: UserActions.getAllUserOfCompany,
+    getProjectsDispatch: ProjectActions.getProjectsDispatch,
 };
 
 const taskComponent = connect(mapState, actionCreators)(withTranslate(TaskComponent));

@@ -521,19 +521,19 @@ exports.createTask = async (req, res) => {
         // // Gửi mail cho nhân viện tham gia công việc
         var email = tasks.email;
         var html = tasks.html;
-        // var data = {
-        //     organizationalUnits: task.organizationalUnit._id,
-        //     title: "Tạo mới công việc",
-        //     level: "general",
-        //     content: html,
-        //     sender: task.organizationalUnit.name,
-        //     users: user,
-        //     associatedDataObject: {
-        //         dataType: 1,
-        //         value: task.priority,
-        //         description: `<p>${req.user.name} đã tạo mới công việc: <strong>${task.name}</strong> có sự tham gia của bạn.</p>`
-        //     },
-        // };
+        var data = {
+            organizationalUnits: task.organizationalUnit._id,
+            title: "Tạo mới công việc",
+            level: "general",
+            content: html,
+            sender: task.organizationalUnit.name,
+            users: user,
+            associatedDataObject: {
+                dataType: 1,
+                value: task.priority,
+                description: `<p>${req.user.name} đã tạo mới công việc: <strong>${task.name}</strong> có sự tham gia của bạn.</p>`
+            },
+        };
 
         // // Gửi mail cho trưởng đơn vị phối hợp thực hiện công việc
         // let collaboratedEmail = tasks.collaboratedEmail;
@@ -551,22 +551,22 @@ exports.createTask = async (req, res) => {
         //     },
         // };
 
-        // await NotificationServices.createNotification(req.portal, req.user.company._id, data);
+        await NotificationServices.createNotification(req.portal, req.user.company._id, data);
         // await NotificationServices.createNotification(req.portal, req.user.company._id, collaboratedData);
         await sendEmail(email, "Bạn có công việc mới", '', html);
         // collaboratedEmail && collaboratedEmail.length !== 0
         //     && await sendEmail(collaboratedEmail, "Đơn vị bạn được phối hợp thực hiện công việc mới", '', collaboratedHtml);
-        // await NewsFeed.createNewsFeed(req.portal, {
-        //     title: data?.title,
-        //     description: data?.content,
-        //     creator: req.user._id,
-        //     associatedDataObject: { 
-        //         dataType: 1,
-        //         value: task?._id,
-        //         description: task?.name
-        //     },
-        //     relatedUsers: data?.users
-        // });
+        await NewsFeed.createNewsFeed(req.portal, {
+            title: data?.title,
+            description: data?.content,
+            creator: req.user._id,
+            associatedDataObject: { 
+                dataType: 1,
+                value: task?._id,
+                description: task?.name
+            },
+            relatedUsers: data?.users
+        });
         // await NewsFeed.createNewsFeed(req.portal, {
         //     title: collaboratedData?.title,
         //     description: collaboratedData?.content,

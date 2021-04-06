@@ -16,6 +16,7 @@ import { RoleActions } from '../../../super-admin/role/redux/actions';
 import { ROOT_ROLE } from '../../../../helpers/constants';
 import dayjs from "dayjs";
 import { getCurrentProjectDetails } from '../../../project/component/projects/functionHelper';
+import moment from 'moment';
 
 class AddProjectTaskForm extends Component {
     constructor(props) {
@@ -36,13 +37,14 @@ class AddProjectTaskForm extends Component {
                 organizationalUnit: "",
                 collaboratedWithOrganizationalUnits: [],
                 taskTemplate: "",
-                preceedingTask: "",
+                preceedingTasks: [],
                 taskProject: "",
                 estimateNormalTime: '',
                 estimateOptimisticTime: '',
                 estimatePessimisticTime: '',
                 estimateNormalCost: '',
                 estimateMaxCost: '',
+                parent: '',
             },
             startTime: "08:00 AM",
             endTime: "05:30 PM",
@@ -59,6 +61,7 @@ class AddProjectTaskForm extends Component {
         this.props.getAllUserInAllUnitsOfCompany();
         this.props.getPaginateTasksByUser([], "1", "5", [], [], [], null, null, null, null, null, false, "listSearch");
     }
+
 
     convertDateTime = (date, time) => {
         let splitter = date.split("-");
@@ -151,10 +154,11 @@ class AddProjectTaskForm extends Component {
         let startDate = this.convertDateTime(value, this.state.startTime);
         let endDate = this.convertDateTime(this.state.newTask.endDate, this.state.endTime);
         if (startDate > endDate) {
-            msg = translate('project.task_management.add_err_end_date');
+            msg = translate('task.task_management.add_err_end_date');
         }
         if (willUpdateState) {
             newTask.startDate = value;
+            newTask.estimateNormalTime = moment(endDate).diff(moment(startDate), 'days').toString()
             newTask.errorOnStartDate = msg;
             if (!msg && newTask.endDate) newTask.errorOnEndDate = msg;
             this.setState(state => {
@@ -175,10 +179,10 @@ class AddProjectTaskForm extends Component {
         let err, resetErr;
 
         if (value.trim() === "") {
-            err = translate('project.task_management.add_err_empty_end_date');
+            err = translate('task.task_management.add_err_empty_end_date');
         }
         else if (startDate > endDate) {
-            err = translate('project.task_management.add_err_end_date');
+            err = translate('task.task_management.add_err_end_date');
             resetErr = undefined;
         }
         this.setState(state => {
@@ -204,10 +208,10 @@ class AddProjectTaskForm extends Component {
         let err, resetErr;
 
         if (value.trim() === "") {
-            err = translate('project.task_management.add_err_empty_end_date');
+            err = translate('task.task_management.add_err_empty_end_date');
         }
         else if (startDate > endDate) {
-            err = translate('project.task_management.add_err_end_date');
+            err = translate('task.task_management.add_err_end_date');
             resetErr = undefined;
         }
 
@@ -239,6 +243,7 @@ class AddProjectTaskForm extends Component {
         if (willUpdateState) {
             newTask.endDate = value;
             newTask.errorOnEndDate = msg;
+            newTask.estimateNormalTime = moment(newTask.endDate).diff(moment(newTask.startDate), 'days').toString()
             if (!msg && newTask.startDate) newTask.errorOnStartDate = msg;
             this.setState(state => {
                 return {
@@ -455,12 +460,12 @@ class AddProjectTaskForm extends Component {
 
     handleChangePreceedingTask = (selected) => {
         console.log(selected)
-        // this.setState({
-        //     newTask: {
-        //         ...this.state.newTask,
-        //         preceedingTask: selected
-        //     }
-        // }, () => this.props.handleChangeTaskData(this.state.newTask))
+        this.setState({
+            newTask: {
+                ...this.state.newTask,
+                preceedingTasks: selected
+            }
+        }, () => this.props.handleChangeTaskData(this.state.newTask))
     }
 
     handleChangeEstTimeTask = (value, timeType) => {
@@ -668,8 +673,12 @@ class AddProjectTaskForm extends Component {
             text: projectDetail?.creator?.name,
             value: projectDetail?.creator?._id
         })
-        console.log('projectParticipants', projectParticipants)
         return projectParticipants;
+    }
+
+    calculateDuration = () => {
+        console.log(this.state.newTask.startDate, this.state.newTask.endDate);
+        return moment(this.state.newTask.endDate).diff(moment(this.state.newTask.startDate), 'days');
     }
 
     render() {
@@ -696,7 +705,7 @@ class AddProjectTaskForm extends Component {
 
         let allUnitsMember = getEmployeeSelectBoxItems(usersInUnitsOfCompany);
 
-        // let listPreceedTasks = [{ value: "", text: `--${translate('project.task_management.add_parent_task')}--` }];
+        // let listPreceedTasks = [{ value: "", text: `--${translate('task.task_management.add_parent_task')}--` }];
         // if (newTask.parent && this.props.currentTasks) {
         //     let taskItem = this.props.currentTasks.find(e => e._id === this.props.parentTask);
         //     taskItem && listPreceedTasks.push({ value: taskItem._id, text: taskItem.name })
@@ -727,7 +736,7 @@ class AddProjectTaskForm extends Component {
 
                         {/* Thông tin công việc */}
                         <fieldset className="scheduler-border">
-                            <legend className="scheduler-border">{translate('project.task_management.detail_info')}</legend>
+                            <legend className="scheduler-border">{translate('task.task_management.detail_info')}</legend>
 
                             <div className={'row'}>
                                 {/* Tên dự án */}
@@ -738,21 +747,21 @@ class AddProjectTaskForm extends Component {
 
                                 {/* Độ ưu tiên công việc */}
                                 <div className="col-lg-6 col-md-6 col-ms-12 col-xs-12 form-group">
-                                    <label className="control-label">{translate('project.task_management.detail_priority')}<span className="text-red">*</span></label>
+                                    <label className="control-label">{translate('task.task_management.detail_priority')}<span className="text-red">*</span></label>
                                     <select className="form-control" value={newTask.priority} onChange={this.handleChangeTaskPriority}>
-                                        <option value={5}>{translate('project.task_management.urgent')}</option>
-                                        <option value={4}>{translate('project.task_management.high')}</option>
-                                        <option value={3}>{translate('project.task_management.standard')}</option>
-                                        <option value={2}>{translate('project.task_management.average')}</option>
-                                        <option value={1}>{translate('project.task_management.low')}</option>
+                                        <option value={5}>{translate('task.task_management.urgent')}</option>
+                                        <option value={4}>{translate('task.task_management.high')}</option>
+                                        <option value={3}>{translate('task.task_management.standard')}</option>
+                                        <option value={2}>{translate('task.task_management.average')}</option>
+                                        <option value={1}>{translate('task.task_management.low')}</option>
                                     </select>
                                 </div>
                             </div>
 
                             {/* Tên công việc */}
                             <div className={`form-group ${newTask.errorOnName === undefined ? "" : "has-error"}`}>
-                                <label>{translate('project.task_management.name')}<span className="text-red">*</span></label>
-                                <input type="Name" className="form-control" placeholder={translate('project.task_management.name')} value={(newTask.name)} onChange={this.handleChangeTaskName} />
+                                <label>{translate('task.task_management.name')}<span className="text-red">*</span></label>
+                                <input type="Name" className="form-control" placeholder={translate('task.task_management.name')} value={(newTask.name)} onChange={this.handleChangeTaskName} />
                                 <ErrorLabel content={newTask.errorOnName} />
                             </div>
 
@@ -764,14 +773,15 @@ class AddProjectTaskForm extends Component {
                                     className="form-control select2"
                                     style={{ width: "100%" }}
                                     items={listPreceedTasks}
-                                    value={newTask.parent}
+                                    value={newTask.preceedingTasks}
                                     multiple={true}
+                                    onChange={this.handleChangePreceedingTask}
                                 />
                             </div>}
 
                             {/* Mô tả công việc */}
                             <div className={`form-group ${newTask.errorOnDescription === undefined ? "" : "has-error"}`}>
-                                <label className="control-label">{translate('project.task_management.detail_description')}<span className="text-red">*</span></label>
+                                <label className="control-label">{translate('task.task_management.detail_description')}<span className="text-red">*</span></label>
                                 <QuillEditor
                                     id={`task-add-modal-${this.props.id}-${this.props.quillId}`}
                                     table={false}
@@ -779,15 +789,15 @@ class AddProjectTaskForm extends Component {
                                     getTextData={this.handleChangeTaskDescription}
                                     height={150}
                                     quillValueDefault={newTask.quillDescriptionDefault}
-                                    placeholder={translate('project.task_management.detail_description')}
+                                    placeholder={translate('task.task_management.detail_description')}
                                 />
                                 <ErrorLabel content={newTask.errorOnDescription} />
                             </div>
 
-                            {/* Ngày bắt đầu, kết thúc công việc */}
+                            {/* Ngày bắt đầu, dự kiến kết thúc công việc */}
                             <div className="row form-group">
                                 <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 ${newTask.errorOnStartDate === undefined ? "" : "has-error"}`}>
-                                    <label className="control-label">{translate('project.task_management.start_date')}<span className="text-red">*</span></label>
+                                    <label className="control-label">{translate('task.task_management.start_date')}<span className="text-red">*</span></label>
                                     <DatePicker
                                         id={`datepicker1-${id}-${this.props.id}`}
                                         dateFormat="day-month-year"
@@ -825,44 +835,11 @@ class AddProjectTaskForm extends Component {
                     <div className={`${isProcess ? "col-lg-12" : "col-sm-6"}`} >
                         {/* Thời gian và chi phí */}
                         <fieldset className="scheduler-border">
-                            <legend className="scheduler-border">{translate('project.task_management.timeAndCost')}</legend>
+                            <legend className="scheduler-border">{translate('project.task_management.estimate')}</legend>
 
-                            <strong style={{ marginBottom: 10 }}>{translate('project.task_management.estimatedTime')} (ngày)</strong>
-                            <ErrorLabel content={newTask.errorOnTimeEst} />
-                            <div className={'row'}>
-                                {/* Thời gian ước lượng thông thường */}
-                                <div className={`col-lg-4 col-md-4 col-ms-6 col-xs-6 form-group ${newTask.errorOnTimeEst === undefined ? "" : 'has-error'}`}>
-                                    <label className="control-label">{translate('project.task_management.estimatedTimeNormal')}<span className="text-red">*</span></label>
-                                    <input
-                                        type="number"
-                                        className="form-control"
-                                        value={estimateNormalTime}
-                                        onChange={(e) => this.handleChangeEstTimeTask(e?.target?.value, 'estimateNormalTime')}
-                                    />
-                                </div>
-                                {/* Thời gian ước lượng lạc quan */}
-                                <div className={`col-lg-4 col-md-4 col-ms-6 col-xs-6 form-group ${newTask.errorOnTimeEst === undefined ? "" : 'has-error'}`}>
-                                    <label className="control-label">{translate('project.task_management.estimatedTimeOptimistic')}<span className="text-red">*</span></label>
-                                    <input
-                                        type="number"
-                                        className="form-control"
-                                        value={estimateOptimisticTime}
-                                        onChange={(e) => this.handleChangeEstTimeTask(e?.target?.value, 'estimateOptimisticTime')}
-                                    />
-                                </div>
-                                {/* Thời gian ước lượng bi quan */}
-                                <div className={`col-lg-4 col-md-4 col-ms-6 col-xs-6 form-group ${newTask.errorOnTimeEst === undefined ? "" : 'has-error'}`}>
-                                    <label className="control-label">{translate('project.task_management.estimatedTimePessimistic')}<span className="text-red">*</span></label>
-                                    <input
-                                        type="number"
-                                        className="form-control"
-                                        value={estimatePessimisticTime}
-                                        onChange={(e) => this.handleChangeEstTimeTask(e?.target?.value, 'estimatePessimisticTime')}
-                                    />
-                                </div>
-                            </div>
-
-                            <strong style={{ marginBottom: 10 }}>{translate('project.task_management.estimatedCost')} (USD)</strong>
+                            <strong style={{ marginBottom: 10 }}>
+                                {translate('project.task_management.estimatedCost')} ({getCurrentProjectDetails(project)?.unitCost})
+                            </strong>
                             <ErrorLabel content={newTask.errorOnCostEst} />
                             <div className={'row'}>
                                 {/* Chi phí ước lượng thông thường */}
@@ -892,11 +869,11 @@ class AddProjectTaskForm extends Component {
 
                         {/* Phân định trách nhiệm công việc */}
                         <fieldset className="scheduler-border">
-                            <legend className="scheduler-border">{translate('project.task_management.add_raci')} (RACI)</legend>
+                            <legend className="scheduler-border">{translate('task.task_management.add_raci')} (RACI)</legend>
 
                             {/* Những người thực hiện công việc */}
                             <div className={`form-group ${newTask.errorOnResponsibleEmployees === undefined ? "" : "has-error"}`}>
-                                <label className="control-label">{translate('project.task_management.responsible')}<span className="text-red">*</span></label>
+                                <label className="control-label">{translate('task.task_management.responsible')}<span className="text-red">*</span></label>
                                 {this.getProjectParticipants() &&
                                     <SelectBox
                                         id={`responsible-select-box${newTask.taskTemplate}-${id}`}
@@ -906,7 +883,7 @@ class AddProjectTaskForm extends Component {
                                         onChange={this.handleChangeTaskResponsibleEmployees}
                                         value={newTask.responsibleEmployees}
                                         multiple={true}
-                                        options={{ placeholder: translate('project.task_management.add_resp') }}
+                                        options={{ placeholder: translate('task.task_management.add_resp') }}
                                     />
                                 }
                                 <ErrorLabel content={newTask.errorOnResponsibleEmployees} />
@@ -914,7 +891,7 @@ class AddProjectTaskForm extends Component {
 
                             {/* Những người quản lý/phê duyệt công việc */}
                             <div className={`form-group ${newTask.errorOnAccountableEmployees === undefined ? "" : "has-error"}`}>
-                                <label className="control-label">{translate('project.task_management.accountable')}<span className="text-red">*</span></label>
+                                <label className="control-label">{translate('task.task_management.accountable')}<span className="text-red">*</span></label>
                                 {this.getProjectParticipants() &&
                                     <SelectBox
                                         id={`accounatable-select-box${newTask.taskTemplate}-${id}`}
@@ -924,7 +901,7 @@ class AddProjectTaskForm extends Component {
                                         onChange={this.handleChangeTaskAccountableEmployees}
                                         value={newTask.accountableEmployees}
                                         multiple={true}
-                                        options={{ placeholder: translate('project.task_management.add_acc') }}
+                                        options={{ placeholder: translate('task.task_management.add_acc') }}
                                     />
                                 }
                                 <ErrorLabel content={newTask.errorOnAccountableEmployees} />
@@ -932,7 +909,7 @@ class AddProjectTaskForm extends Component {
 
                             {/* Những người tư vấn công việc */}
                             <div className='form-group'>
-                                <label className="control-label">{translate('project.task_management.consulted')}</label>
+                                <label className="control-label">{translate('task.task_management.consulted')}</label>
                                 {this.getProjectParticipants() &&
                                     <SelectBox
                                         id={`consulted-select-box${newTask.taskTemplate}-${id}`}
@@ -942,14 +919,14 @@ class AddProjectTaskForm extends Component {
                                         onChange={this.handleChangeTaskConsultedEmployees}
                                         value={newTask.consultedEmployees}
                                         multiple={true}
-                                        options={{ placeholder: translate('project.task_management.add_cons') }}
+                                        options={{ placeholder: translate('task.task_management.add_cons') }}
                                     />
                                 }
                             </div>
 
                             {/* Những người quan sát công việc */}
                             <div className='form-group'>
-                                <label className="control-label">{translate('project.task_management.informed')}</label>
+                                <label className="control-label">{translate('task.task_management.informed')}</label>
                                 {this.getProjectParticipants() &&
                                     <SelectBox
                                         id={`informed-select-box${newTask.taskTemplate}-${id}`}
@@ -959,7 +936,7 @@ class AddProjectTaskForm extends Component {
                                         onChange={this.handleChangeTaskInformedEmployees}
                                         value={newTask.informedEmployees}
                                         multiple={true}
-                                        options={{ placeholder: translate('project.task_management.add_inform') }}
+                                        options={{ placeholder: translate('task.task_management.add_inform') }}
                                     />
                                 }
                             </div>

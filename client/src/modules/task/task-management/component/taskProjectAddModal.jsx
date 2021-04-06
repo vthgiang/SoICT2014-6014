@@ -1,16 +1,17 @@
-import React, { Component } from 'react';
+import moment from 'moment';
+import React, { Component, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal } from '../../../../common-components';
 import { getStorage } from '../../../../config';
 import { getCurrentProjectDetails } from '../../../project/component/projects/functionHelper';
 import { ProjectActions } from '../../../project/redux/actions';
+import { RoleActions } from '../../../super-admin/role/redux/actions';
+import { UserActions } from '../../../super-admin/user/redux/actions';
 import { taskManagementActions } from '../redux/actions';
 import { AddProjectTaskForm } from './addProjectTaskForm';
-import { AddTaskForm } from './addTaskForm';
-import ValidationHelper from '../../../../helpers/validationHelper';
 
-class TaskAddModal extends Component {
+class TaskProjectAddModal extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -30,6 +31,12 @@ class TaskAddModal extends Component {
                 collaboratedWithOrganizationalUnits: [],
                 taskTemplate: "",
                 taskProject: "",
+                estimateNormalTime: '',
+                estimateOptimisticTime: '',
+                estimatePessimisticTime: '',
+                estimateNormalCost: '',
+                estimateMaxCost: '',
+                preceedingTasks: [],
             },
             startTime: "08:00 AM",
             endTime: "05:30 PM",
@@ -53,47 +60,57 @@ class TaskAddModal extends Component {
         return new Date(strDateTime);
     }
 
-    handleSubmit = () => {
+    handleSubmit = async () => {
+        const { user, project } = this.props;
+        const projectDetail = getCurrentProjectDetails(project);
         const { newTask, startTime, endTime } = this.state;
         let startDateTask = this.convertDateTime(newTask.startDate, startTime);
         let endDateTask = this.convertDateTime(newTask.endDate, endTime);
-        this.props.addTask({
+
+        let estimateNormalTime = moment(endDateTask).diff(moment(startDateTask), `${projectDetail?.unitTime}s`) || null;
+        let estimateOptimisticTime = typeof estimateNormalTime === 'number' ? estimateNormalTime - 2 : null;
+        let estimatePessimisticTime = typeof estimateNormalTime === 'number' ? estimateNormalTime + 2 : null;
+        let preceedingTasks = newTask.preceedingTasks?.map(item => ({
+            task: item,
+            link: ''
+        }))
+        const newTaskFormatted = {
             ...newTask,
+            taskProject: getCurrentProjectDetails(this.props.project)._id,
+            organizationalUnit: user?.roledepartments?._id,
+            estimateNormalTime,
+            estimateOptimisticTime,
+            estimatePessimisticTime,
+            estimateNormalCost: Number(newTask.estimateNormalCost),
+            estimateMaxCost: Number(newTask.estimateMaxCost),
+            preceedingTasks,
+        }
+        await this.props.addProjectTask({
+            ...newTaskFormatted,
             startDate: startDateTask,
             endDate: endDateTask,
         });
+        await this.props.onHandleReRender();
     }
 
     componentDidMount() {
         const userId = getStorage("userId");
+        const currentRole = getStorage("currentRole");
         this.props.getProjectsDispatch({ calledId: "all", userId });
-    }
-
-    isFormValidated = () => {
-        const { name, startDate, endDate, responsibleEmployees, accountableEmployees } = this.state.newTask;
-        const { translate } = this.props;
-
-        if (!ValidationHelper.validateEmpty(translate, name).status
-            || !ValidationHelper.validateEmpty(translate, startDate).status
-            || !ValidationHelper.validateEmpty(translate, endDate).status
-            || !ValidationHelper.validateArrayLength(translate, responsibleEmployees).status
-            || !ValidationHelper.validateArrayLength(translate, accountableEmployees).status)
-            return false;
-        return true;
+        this.props.getRoleSameDepartment(currentRole);
     }
 
     render() {
-        const { translate, task, id, parentTask, currentTasks, currentProjectTasks, isProjectForm = false } = this.props;
+        const { translate, task, id, parentTask, currentTasks, currentProjectTasks } = this.props;
         return (
             <React.Fragment>
                 <DialogModal
-                    size='100' modalID={`addNewTask-${id}`} isLoading={false}
-                    formID={`form-add-new-task-${id}`}
+                    size='100' modalID={`addNewProjectTask-${id}`} isLoading={false}
+                    formID={`form-add-new-project-task-${id}`}
                     func={this.handleSubmit}
                     title={translate('task.task_management.add_new_task')}
-                    disableSubmit={!this.isFormValidated()}
                 >
-                    <AddTaskForm
+                    <AddProjectTaskForm
                         quillId={this.props.id}
                         handleChangeTaskData={this.onChangeTaskData}
                         handleChangeStartTime={this.onChangeStartTime}
@@ -101,7 +118,7 @@ class TaskAddModal extends Component {
                         id={id}
                         task={task}
                         parentTask={parentTask}
-                        currentTasks={currentTasks}
+                        currentProjectTasks={currentProjectTasks}
                     />
                 </DialogModal>
             </React.Fragment>
@@ -110,8 +127,8 @@ class TaskAddModal extends Component {
 }
 
 function mapStateToProps(state) {
-    const { project } = state;
-    return { project }
+    const { project, department, role, user } = state;
+    return { project, department, role, user }
 }
 
 const actionCreators = {
@@ -119,7 +136,10 @@ const actionCreators = {
     addProjectTask: taskManagementActions.addProjectTask,
     getProjectsDispatch: ProjectActions.getProjectsDispatch,
     getTasksByProject: taskManagementActions.getTasksByProject,
+
+    showInfoRole: RoleActions.show,
+    getRoleSameDepartment: UserActions.getRoleSameDepartment,
 };
 
-const connectedModalAddTask = connect(mapStateToProps, actionCreators)(withTranslate(TaskAddModal));
-export { connectedModalAddTask as TaskAddModal };
+const connectedModalAddTask = connect(mapStateToProps, actionCreators)(withTranslate(TaskProjectAddModal));
+export { connectedModalAddTask as TaskProjectAddModal };
