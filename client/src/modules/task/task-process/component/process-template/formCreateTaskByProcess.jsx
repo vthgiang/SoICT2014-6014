@@ -252,7 +252,7 @@ function FormCreateTaskByProcess(props) {
     }
 
     const handleChangeCollaboratedWithOrganizationalUnits = (value) => {
-        console.log(state);
+        // console.log(state);
         setState(state => {
             return {
                 ...state,
@@ -414,7 +414,7 @@ function FormCreateTaskByProcess(props) {
 
     const { department, user, translate } = props;
     const { isProcess } = props;
-    console.log(state);
+    // console.log(state);
     var units, taskActions, taskInformations, listRole, departmentsThatUserIsManager, listRoles, usercompanys, userdepartments = [];
     var { taskItem, id, showMore } = state;
     // console.log(taskItem)

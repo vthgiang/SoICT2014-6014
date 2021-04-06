@@ -73,7 +73,7 @@ function ModalEditProcess(props) {
 
         //Vo hieu hoa double click edit label
         eventBus.on('element.dblclick', 10000, function (event) {
-            var element =    event.element;
+            var element = event.element;
 
             if (isAny(element, ['bpmn:Task'])) {
                 return false; // will cancel event
@@ -126,7 +126,7 @@ function ModalEditProcess(props) {
                         });
                         var outgoing = element1.outgoing;
                         outgoing.forEach(x => {
-                            console.log(x.businessObject.targetRef.id)
+                            // console.log(x.businessObject.targetRef.id)
                             if (infos[x.businessObject.targetRef.id].status === "inprocess") {
                                 var outgoingEdge = modeler.get('elementRegistry').get(x.id);
 
@@ -163,7 +163,7 @@ function ModalEditProcess(props) {
             viewer: props.data.viewer ? props.data.viewer : '',
             xmlDiagram: props.data.xmlDiagram,
         })
-        
+
     }, [props.idProcess])
 
 
@@ -351,15 +351,15 @@ function ModalEditProcess(props) {
             code: state.id
         }
         let infos = state.info
-        let id=infos[`${state.id}`]._id
-        console.log(id,infos[`${state.id}`]);
-        infos[`${state.id}`] = {...info,_id:id} ;
+        let id = infos[`${state.id}`]._id
+        // console.log(id,infos[`${state.id}`]);
+        infos[`${state.id}`] = { ...info, _id: id };
         // state.info[`${state.id}`] = info
-        console.log(infos[`${state.id}`]);
+        // console.log(infos[`${state.id}`]);
         setState({
-                ...state,
-                info: infos
-            })
+            ...state,
+            info: infos
+        })
     }
     // hàm cập nhật tên công việc trong quy trình
     const handleChangeName = async (value) => {
@@ -374,7 +374,7 @@ function ModalEditProcess(props) {
     }
     // hàm cập nhật người thực hiện công việc
     const handleChangeResponsible = async (value) => {
-        console.log(value)
+        // console.log(value)
         const modeling = modeler.get('modeling');
         let element1 = modeler.get('elementRegistry').get(state.id);
         let { user } = props
@@ -515,13 +515,13 @@ function ModalEditProcess(props) {
 
     // hàm lưu
     const save = () => {
-        console.log("object");
-        let { processName, processDescription, status, startDate, endDate, viewer,info } = state;
-console.log(state);
-let xmlStr;
-modeler.saveXML({ format: true }, function (err, xml) {
-    xmlStr = xml;
-});
+        // console.log("object");
+        let { processName, processDescription, status, startDate, endDate, viewer, info } = state;
+        // console.log(state);
+        let xmlStr;
+        modeler.saveXML({ format: true }, function (err, xml) {
+            xmlStr = xml;
+        });
         let { idProcess } = props;
         let data = {
             processName: processName,
@@ -529,12 +529,12 @@ modeler.saveXML({ format: true }, function (err, xml) {
             status: status,
             startDate: startDate,
             endDate: endDate,
-            info:info,
+            info: info,
             viewer: viewer,
-            xmlDiagram:xmlStr,
-            id:idProcess
+            xmlDiagram: xmlStr,
+            id: idProcess
         }
-        console.log(data)
+        // console.log(data)
 
         props.editProcessInfo(idProcess, data);
 

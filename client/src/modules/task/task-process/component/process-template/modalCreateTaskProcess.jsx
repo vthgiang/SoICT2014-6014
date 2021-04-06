@@ -136,7 +136,7 @@ function ModalCreateTaskProcess(props) {
 			modeler.get('directEditing').cancel()
 			// }
 		});
-		console.log(props);
+		// console.log(props);
 		modeler.on('element.click', 1, (e) => interactPopup(e));
 
 		modeler.on('shape.remove', 1000, (e) => deleteElements(e));
@@ -278,7 +278,7 @@ function ModalCreateTaskProcess(props) {
 	// Các hàm sự kiện của BPMN element
 	const interactPopup = async (event) => {
 		let element = event.element;
-		console.log(props);
+		// console.log(props);
 		let nameStr = element.type.split(':');
 
 		await setState(state => {
@@ -288,7 +288,7 @@ function ModalCreateTaskProcess(props) {
 						...state.info[`${element.businessObject.id}`],
 						organizationalUnit: props.listOrganizationalUnit[0]?._id,
 					}
-					console.log('props.listOrganizationalUnit[0]?._id', props.listOrganizationalUnit[0]?._id);
+					// console.log('props.listOrganizationalUnit[0]?._id', props.listOrganizationalUnit[0]?._id);
 				}
 				return {
 					...state,
@@ -307,7 +307,7 @@ function ModalCreateTaskProcess(props) {
 
 	const deleteElements = (event) => {
 		var element = event.element;
-		console.log(element);
+		// console.log(element);
 		setState(state => {
 			delete state.info[`${state.id}`];
 			return {
@@ -315,7 +315,7 @@ function ModalCreateTaskProcess(props) {
 				showInfo: false,
 			}
 		})
-		console.log(state);
+		// console.log(state);
 	}
 
 	const handleUndoDeleteElement = (event) => {
@@ -589,7 +589,7 @@ function ModalCreateTaskProcess(props) {
 			}
 		})
 
-		console.log('infooo', state.info);
+		// console.log('infooo', state.info);
 
 		let data = {
 			info: info,
@@ -600,7 +600,7 @@ function ModalCreateTaskProcess(props) {
 			viewer: state.viewer,
 			creator: getStorage("userId")
 		}
-		console.log(data)
+		// console.log(data)
 		await props.createXmlDiagram(data)
 
 		// RESET FORM CREATE

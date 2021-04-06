@@ -616,7 +616,7 @@ function ModalCreateTaskByProcess(props) {
     // Hàm lưu thông tin 
     const save = async () => {
         let { info, startDate, endDate, userId, processName, processDescription, xmlDiagram, viewer, manager } = state;
-        console.log("info", info)
+        // console.log("info", info)
         let xmlStr;
         modeler.saveXML({ format: true }, function (err, xml) {
             xmlStr = xml;

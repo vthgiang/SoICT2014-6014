@@ -54,7 +54,7 @@ function ModalViewTaskProcess(props) {
         let nameStr = element.type.split(':');
         setState(state => {
             if (element.type !== 'bpmn:Collaboration' && element.type !== 'bpmn:Process' && element.type !== 'bpmn:StartEvent' && element.type !== 'bpmn:EndEvent' && element.type !== 'bpmn:SequenceFlow') {
-                console.log("object");
+                // console.log("object");
                 return { ...state, showInfo: true, type: element.type, name: nameStr[1], taskName: element.businessObject.name, id: `${element.businessObject.id}`, }
             }
             else {

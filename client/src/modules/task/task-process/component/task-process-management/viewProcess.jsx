@@ -161,7 +161,7 @@ function ViewProcess(props) {
     const interactPopup = (event) => {
         var element = event.element;
         let nameStr = element.type.split(':');
-        console.log(element.businessObject.id);
+        // console.log(element.businessObject.id);
         setState(state => {
             if (element.type === 'bpmn:Task' || element.type === 'bpmn:ExclusiveGateway') {
                 if (!state.info[`${element.businessObject.id}`] || (state.info[`${element.businessObject.id}`] && !state.info[`${element.businessObject.id}`].organizationalUnit)) {
@@ -349,7 +349,7 @@ function ViewProcess(props) {
     const { translate, role, user } = props;
     const { id, info, startDate, endDate, status,
         processDescription, processName } = state;
-        console.log(info);
+        // console.log(info);
     const { isTabPane } = props
     // if (id){
     //     console.log(info[`${id}`]);

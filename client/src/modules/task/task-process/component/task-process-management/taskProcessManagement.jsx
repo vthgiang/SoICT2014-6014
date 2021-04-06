@@ -36,7 +36,7 @@ function TaskProcessManagement(props) {
 		props.getAllTaskProcess(state.pageNumber, state.noResultsPerPage, "");
 	}, [])
 	const showEditProcess = async (item) => {
-		console.log(currentRow);
+		// console.log(currentRow);
 		setState(state => {
 			return {
 				...state,
@@ -52,7 +52,7 @@ function TaskProcessManagement(props) {
 	}
 
 	const viewProcess = async (item) => {
-		console.log(item)
+		// console.log(item)
 		setState(state => {
 			return {
 				...state,
@@ -85,7 +85,7 @@ function TaskProcessManagement(props) {
 	}
 
 	const setLimit = (pageTotal) => {
-		console.log(pageTotal,state.noResultsPerPage );
+		// console.log(pageTotal,state.noResultsPerPage );
 		if (pageTotal !== state.noResultsPerPage) {
 			setState(state => {
 				return {
