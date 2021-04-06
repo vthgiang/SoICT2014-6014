@@ -9,7 +9,7 @@ export const TaskProcessActions = {
     createTaskByProcess,
     getAllTaskProcess,
     updateDiagram,
-
+    deleteTaskProcess,
     editProcessInfo,
     importProcessTemplate,
 
@@ -135,6 +135,19 @@ function deleteXmlDiagram(diagramId, pageNumber, noResultsPerPage, name = "") {
             );
     };
 }
+function deleteTaskProcess(taslProcessId, pageNumber, noResultsPerPage, name = "") {
+    return dispatch => {
+        dispatch({ type: TaskProcessConstants.DELETE_TASK_PROCESS_REQUEST });
+        TaskProcessService.deleteTaskProcess(taslProcessId, pageNumber, noResultsPerPage, name)
+            .then(
+                res => {dispatch({ type: TaskProcessConstants.DELETE_TASK_PROCESS_SUCCESS, payload: res.data })
+                console.log("object",res.data);
+            
+            },
+                error => dispatch({ type: TaskProcessConstants.DELETE_TASK_PROCESS_FAIL })
+            );
+    };
+}
 
 /**
  * Tạo chuỗi công việc theo quy trình
@@ -197,7 +210,9 @@ function editProcessInfo(processId, data) {
         dispatch({ type: TaskProcessConstants.EDIT_PROCESS_INFO_REQUEST });
         TaskProcessService.editProcessInfo(processId, data)
             .then(
-                res => dispatch({ type: TaskProcessConstants.EDIT_PROCESS_INFO_SUCCESS, payload: res.data, processId: processId }),
+                res => {dispatch({ type: TaskProcessConstants.EDIT_PROCESS_INFO_SUCCESS, payload: res.data, processId: processId })
+                console.log("object");
+            },
                 error => dispatch({ type: TaskProcessConstants.UPDATE_DIAGRAM_FAIL })
             );
     };

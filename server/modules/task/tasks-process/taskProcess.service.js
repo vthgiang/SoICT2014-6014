@@ -197,7 +197,7 @@ exports.createXmlDiagram = async (portal, body) => {
  * @param {*} body dữ liệu gửi vào body từ client
  */
 exports.editXmlDiagram = async (portal, params, body) => {
-    console.log(body);
+    // console.log(body);
     let info = [];
     for (let x in body.info) {
         if (Object.keys(body.info[x]).length > 4) {
@@ -269,13 +269,13 @@ exports.deleteXmlDiagram = async (portal, diagramId, query) => {
     return data;
 }
 exports.deleteTaskProcess = async (portal, taskProcessId, query) => {
-    console.log(taskProcessId);
+    // console.log(taskProcessId);
     
     // await Privilege(connect(DB_CONNECTION, portal)).findOneAndDelete({ resourceId: diagramId, resourceType: "ProcessTemplate" })
     await TaskProcess(connect(DB_CONNECTION, portal)).findById(taskProcessId,(error,data1)=>{
-        console.log(data1);
+        // console.log(data1);
         data1.tasks.forEach(value=>{
-            console.log(value);
+            // console.log(value);
             Task(connect(DB_CONNECTION, portal)).findByIdAndRemove(value,(error,data2)=>{
                 // console.log(data2);
             })
@@ -321,7 +321,7 @@ exports.createTaskByProcess = async (portal, processId, body) => {
     let startDateProcess = new Date(splitter[2], splitter[1] - 1, splitter[0]);
     splitter = body.endDate.split("-");
     let endDateProcess = new Date(splitter[2], splitter[1] - 1, splitter[0]);
-    console.log(body);
+    // console.log(body);
     let newTaskProcess = await TaskProcess(connect(DB_CONNECTION, portal)).create({
         // processTemplate: processId ? processId : null,
         xmlDiagram: body.xmlDiagram,
@@ -616,6 +616,7 @@ exports.updateDiagram = async (portal, params, body) => {
  */
 exports.editProcessInfo = async (portal, params, body) => {
     // console.log(body);
+    // if (body)
     const array = Object.values(body.info);
     // console.log(array);
     TaskProcess(connect(DB_CONNECTION, portal)).findByIdAndUpdate( body.id ,{
@@ -627,7 +628,7 @@ exports.editProcessInfo = async (portal, params, body) => {
         // if (data) console.log(data);
     })
     array.forEach(data=>{
-        console.log(data);
+        // console.log(data);
         let splitter = data.startDate.split("-");
         let startDateProcess = new Date(splitter[2], splitter[1] - 1, splitter[0]);
         splitter = data.endDate.split("-");
@@ -654,8 +655,8 @@ exports.editProcessInfo = async (portal, params, body) => {
 
             }
         },(error,data)=>{
-            if (error) console.log(error) ;
-            if (data) console.log(data);
+            // if (error) console.log(error) ;
+            // if (data) console.log(data);
         })
     })
     let { processName, processDescription, status, startDate, endDate, viewer } = body;

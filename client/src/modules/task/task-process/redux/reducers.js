@@ -113,6 +113,26 @@ export function taskProcess(state = {}, action) {
                 error: action.error,
                 isLoading: false
             };
+            case TaskProcessConstants.DELETE_TASK_PROCESS_REQUEST:
+            return {
+                ...state,
+                isLoading: true
+            };
+        case TaskProcessConstants.DELETE_TASK_PROCESS_SUCCESS:
+            // return {
+            //   ...state,
+            //   xmlDiagram: action.payload.content
+            // };
+            return {
+                ...state,
+                listTaskProcess: action.payload.content.data,
+                totalPage: action.payload.content.pageTotal
+            };
+        case TaskProcessConstants.DELETE_TASK_PROCESS_FAIL:
+            return {
+                error: action.error,
+                isLoading: false
+            };
         case TaskProcessConstants.CREATE_TASK_BY_PROCESS_REQUEST:
             return {
                 ...state,
@@ -185,7 +205,11 @@ export function taskProcess(state = {}, action) {
         case TaskProcessConstants.EDIT_PROCESS_INFO_SUCCESS:
             return {
                 ...state,
-                listTaskProcess: state.listTaskProcess.map(elem => elem._id === action.processId ? action.payload.content : elem),
+                listTaskProcess: state.listTaskProcess.map(elem => {
+                    if (elem._id === action.processId)  {
+                        return action.payload.content 
+                    } else return elem
+                }),
             };
         case TaskProcessConstants.EDIT_PROCESS_INFO_FAIL:
             return {
