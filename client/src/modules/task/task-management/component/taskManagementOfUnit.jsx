@@ -35,9 +35,7 @@ class TaskManagementOfUnit extends Component {
             name: "",
             startDate: "",
             endDate: "",
-            organizationalUnitRole: ['management', 'collabration'],
-
-            isAssigned: -1
+            organizationalUnitRole: ['management', 'collabration']
         };
     }
 
@@ -50,7 +48,7 @@ class TaskManagementOfUnit extends Component {
     shouldComponentUpdate = async (nextProps, nextState) => {
         const { dashboardEvaluationEmployeeKpiSet } = this.props;
         let { currentTab, organizationalUnit, status, priority, special, name,
-            startDate, endDate, isAssigned, responsibleEmployees,
+            startDate, endDate, responsibleEmployees,
             accountableEmployees, creatorEmployees, perPage, currentPage, organizationalUnitRole
         } = this.state;
 
@@ -61,8 +59,7 @@ class TaskManagementOfUnit extends Component {
             special !== nextState.special ||
             name !== nextState.name ||
             startDate !== nextState.startDate ||
-            endDate !== nextState.endDate ||
-            isAssigned !== nextState.isAssigned
+            endDate !== nextState.endDate
         ) {
             return false;
         }
@@ -117,7 +114,6 @@ class TaskManagementOfUnit extends Component {
                 name: null,
                 startDate: null,
                 endDate: null,
-                isAssigned: isAssigned,
                 responsibleEmployees: responsibleEmployees,
                 accountableEmployees: accountableEmployees,
                 creatorEmployees: creatorEmployees,
@@ -180,7 +176,7 @@ class TaskManagementOfUnit extends Component {
 
     handleGetDataPagination = async (index) => {
         let { organizationalUnit, status, priority, special, name,
-            startDate, endDate, isAssigned, responsibleEmployees,
+            startDate, endDate, responsibleEmployees,
             accountableEmployees, creatorEmployees, organizationalUnitRole
         } = this.state;
 
@@ -205,7 +201,6 @@ class TaskManagementOfUnit extends Component {
                 name: name,
                 startDate: startDate,
                 endDate: endDate,
-                isAssigned: isAssigned,
                 responsibleEmployees: responsibleEmployees,
                 accountableEmployees: accountableEmployees,
                 creatorEmployees: creatorEmployees,
@@ -216,7 +211,7 @@ class TaskManagementOfUnit extends Component {
 
     nextPage = async (pageTotal) => {
         let { organizationalUnit, status, priority, special, name,
-            startDate, endDate, isAssigned, responsibleEmployees,
+            startDate, endDate, responsibleEmployees,
             accountableEmployees, creatorEmployees, perPage, organizationalUnitRole
         } = this.state;
 
@@ -239,7 +234,6 @@ class TaskManagementOfUnit extends Component {
                 name: name,
                 startDate: startDate,
                 endDate: endDate,
-                isAssigned: isAssigned,
                 responsibleEmployees: responsibleEmployees,
                 accountableEmployees: accountableEmployees,
                 creatorEmployees: creatorEmployees,
@@ -250,7 +244,7 @@ class TaskManagementOfUnit extends Component {
 
     backPage = async () => {
         let { organizationalUnit, status, priority, special, name,
-            startDate, endDate, isAssigned, responsibleEmployees,
+            startDate, endDate, responsibleEmployees,
             accountableEmployees, creatorEmployees, perPage, organizationalUnitRole
         } = this.state;
 
@@ -273,7 +267,6 @@ class TaskManagementOfUnit extends Component {
                 name: name,
                 startDate: startDate,
                 endDate: endDate,
-                isAssigned: isAssigned,
                 responsibleEmployees: responsibleEmployees,
                 accountableEmployees: accountableEmployees,
                 creatorEmployees: creatorEmployees,
@@ -300,7 +293,7 @@ class TaskManagementOfUnit extends Component {
 
     handleGetDataPerPage = (perPage) => {
         let { organizationalUnit, status, priority, special, name,
-            startDate, endDate, isAssigned, responsibleEmployees,
+            startDate, endDate, responsibleEmployees,
             accountableEmployees, creatorEmployees, organizationalUnitRole
         } = this.state;
 
@@ -314,7 +307,6 @@ class TaskManagementOfUnit extends Component {
             name: name,
             startDate: startDate,
             endDate: endDate,
-            isAssigned: isAssigned,
             responsibleEmployees: responsibleEmployees,
             accountableEmployees: accountableEmployees,
             creatorEmployees: creatorEmployees,
@@ -332,7 +324,7 @@ class TaskManagementOfUnit extends Component {
     handleUpdateData = () => {
         const { translate } = this.props;
         let { organizationalUnit, status, priority, special,
-            name, startDate, endDate, perPage, isAssigned, organizationalUnitRole,
+            name, startDate, endDate, perPage, organizationalUnitRole,
             responsibleEmployees, accountableEmployees, creatorEmployees
         } = this.state;
 
@@ -362,7 +354,6 @@ class TaskManagementOfUnit extends Component {
                 name: name,
                 startDate: startDate,
                 endDate: endDate,
-                isAssigned: isAssigned,
                 responsibleEmployees: responsibleEmployees,
                 accountableEmployees: accountableEmployees,
                 creatorEmployees: creatorEmployees,
@@ -386,15 +377,6 @@ class TaskManagementOfUnit extends Component {
             }
         })
         window.$(`#modelPerformTask${id}`).modal('show');
-    }
-
-    handleChangeIsAssigned = (value) => {
-        this.setState(state => {
-            return {
-                ...state,
-                isAssigned: value[0]
-            }
-        });
     }
 
     handleSelectOrganizationalUnit = (value) => {
@@ -512,7 +494,7 @@ class TaskManagementOfUnit extends Component {
     render() {
         const { tasks, user, translate, dashboardEvaluationEmployeeKpiSet } = this.props;
         const { selectBoxUnit, currentTaskId, currentPage, startDate,
-            endDate, perPage, status, isAssigned,
+            endDate, perPage, status,
             organizationalUnit, tableId, organizationalUnitRole
         } = this.state;
         let currentTasks, units = [];
@@ -677,7 +659,9 @@ class TaskManagementOfUnit extends Component {
                                         ]}
                                         items={[
                                             { value: "stored", text: translate('task.task_management.stored') },
-                                            { value: "currentMonth", text: translate('task.task_management.current_month') }
+                                            { value: "currentMonth", text: translate('task.task_management.current_month') },
+                                            { value: "assigned", text: translate('task.task_management.assigned') },
+                                            { value: "not_assigned", text: translate('task.task_management.not_assigned') }
                                         ]}
                                         onChange={this.handleSelectSpecial}
                                         options={{ nonSelectedText: translate('task.task_management.select_special'), allSelectedText: translate('task.task_management.select_all_special') }}>
@@ -688,27 +672,6 @@ class TaskManagementOfUnit extends Component {
                                 <div className="form-group">
                                     <label>{translate('task.task_management.name')}</label>
                                     <input className="form-control" type="text" placeholder={translate('task.task_management.search_by_name')} name="name" onChange={(e) => this.handleChangeName(e)} />
-                                </div>
-
-                                {/* Công việc chưa phân công nhân viên */}
-                                <div className="form-group">
-                                    <label>{translate('task.task_management.assigned_collaborate')}</label>
-                                    <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
-                                        id={`select-task-employee`}
-                                        className="form-control select2"
-                                        style={{ width: "100%" }}
-                                        items={
-                                            [
-                                                { value: -1, text: translate('task.task_management.none_select_assigned') },
-                                                { value: 1, text: translate('task.task_management.assigned') },
-                                                { value: 0, text: translate('task.task_management.not_assigned') }
-
-                                            ]
-                                        }
-                                        onChange={this.handleChangeIsAssigned}
-                                        value={isAssigned}
-                                        multiple={false}
-                                    />
                                 </div>
 
                                 {/* Người thực hiện */}

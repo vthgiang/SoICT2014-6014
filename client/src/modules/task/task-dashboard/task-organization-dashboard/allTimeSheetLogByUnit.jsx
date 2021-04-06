@@ -200,8 +200,8 @@ class AllTimeSheetLogsByUnit extends Component {
                         {
                             unitIds && unitIds.length < 2 ?
                                 <>
-                                    <spn>{` ${translate('task.task_dashboard.of_unit')}`}</spn>
-                                    <span style={{ fontWeight: "bold" }}>{` ${this.props.getUnitName(selectBoxUnit, unitIds).map(o => o).join(", ")}`}</span>
+                                    <spn>{` ${translate('task.task_dashboard.of')}`}</spn>
+                                    <span>{` ${this.props.getUnitName(selectBoxUnit, unitIds).map(o => o).join(", ")}`}</span>
                                 </>
                                 :
                                 <span onClick={() => this.props.showUnitGeneraTask(selectBoxUnit, unitIds)} style={{ cursor: 'pointer' }}>
