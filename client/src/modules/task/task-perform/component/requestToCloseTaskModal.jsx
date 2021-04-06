@@ -88,7 +88,7 @@ function RequestToCloseTaskModal(props) {
                         <button className="btn btn-danger" onClick={() => declineRequestCloseTask()} style={{ marginLeft: '5px' }}>{translate('task.task_perform.decline_request_close_task')}</button>
                     </div>
                 }
-                {/* <div className="form-group">
+                <div className="form-group">
                     <label style={{ marginRight: '5px' }}>{translate('task.task_perform.status_task_close')}</label>
                     <SelectBox id="multiSelectStatusRequestClose"
                         style={{ width: "100%" }}
@@ -102,7 +102,7 @@ function RequestToCloseTaskModal(props) {
                         onChange={handleSelectStatus}
                         disabled={requestToCloseTask?.requestStatus === 1 && role === 'responsible'}
                     />
-                </div> */}
+                </div>
 
                 <div className="form-group">
                     <label style={{ marginRight: '5px' }}>{translate('task.task_management.detail_description')}</label>
