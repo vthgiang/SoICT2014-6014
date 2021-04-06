@@ -125,6 +125,25 @@ exports.deleteXmlDiagram = async (req, res) => {
 		});
 	}
 }
+exports.deleteTaskProcess = async (req, res) => {
+	try {
+		var data = await TaskProcessService.deleteTaskProcess(req.portal, req.params.taskProcessId, req.query);
+		// console.log(data);
+		await Logger.info(req.user.email, `delete taskProcess `, req.portal);
+		res.status(200).json({
+			success: true,
+			messages: ['delete_success'],
+			content: data
+		});
+	} catch (error) {
+		await Logger.error(req.user.email, `edit xml diagram `, req.portal);
+		res.status(400).json({
+			success: false,
+			messages: ['delete_fail'],
+			content: error
+		});
+	}
+}
 
 /**
  * Tạo công việc theo quy trình
@@ -251,6 +270,7 @@ exports.editProcessInfo = async (req, res) => {
 	// try {
 		var data = await TaskProcessService.editProcessInfo(req.portal, req.params, req.body);
 		await Logger.info(req.user.email, `update info process`, req.portal);
+		// console.log(data);
 		res.status(200).json({
 			success: true,
 			messages: ['edit_info_process_success'],
