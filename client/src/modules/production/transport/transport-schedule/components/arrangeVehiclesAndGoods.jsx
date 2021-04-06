@@ -6,10 +6,18 @@ import { DataTableSetting, DeleteNotification, PaginateBar, SlimScroll } from ".
 import { formatToTimeZoneDate } from "../../../../../helpers/formatDate";
 import "./arrangeVehiclesAndGoods.css";
 import { transportRequirementsActions } from "../../transport-requirements/redux/actions";
+import { transportVehicleActions } from "../../transport-vehicle/redux/actions"
+
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
 
 function ArrangeVehiclesAndGoods(props) {
-  
+
+    let { allTransportVehicle } = props;
+
+    useEffect(() => {
+        props.getAllTransportVehicles({page: 1, limit : 100});
+    }, []);
+
     return (
         <React.Fragment>
             <div className={"divTest"}>
@@ -17,50 +25,39 @@ function ArrangeVehiclesAndGoods(props) {
                     <thead>
                         <tr className="word-no-break">
                             <th colSpan={6} rowSpan={3}>{"Yêu cầu vận chuyển"}</th>
+                            {
+                                (allTransportVehicle && allTransportVehicle.length !== 0) &&
+                                allTransportVehicle.map((item, index) => (
+                                    item &&
+                                    <th key={index}>{item.name}</th>
+                                ))
+                            }
+                            {/* <th colSpan={2}>{"Xe 1"}</th>
                             <th colSpan={2}>{"Xe 1"}</th>
-                            <th colSpan={2}>{"Xe 1"}</th>
-                            <th colSpan={2}>{"Xe 1"}</th>
-                            <th colSpan={2}>{"Xe 1"}</th>
-                            <th colSpan={2}>{"Xe 1"}</th>
-                            <th colSpan={2}>{"Xe 1"}</th>
-                            <th colSpan={2}>{"Xe 1"}</th>
-                            <th colSpan={2}>{"Xe 1"}</th>
-                            <th colSpan={2}>{"Xe 1"}</th>
-                            <th colSpan={2}>{"Xe 1"}</th>
-                            <th colSpan={2}>{"Xe 1"}</th>
-                            <th colSpan={2}>{"Xe 1"}</th>
+                            <th colSpan={2}>{"Xe 1"}</th> */}
                         </tr>
                         <tr className="word-no-break">
-                            <td>{"Trọng tải"}</td>
+                            {
+                                (allTransportVehicle && allTransportVehicle.length !== 0) &&
+                                allTransportVehicle.map((item, index) => (
+                                    item &&
+                                    <td>{"Payload: " + item.payload}</td>
+                                ))
+                            }
+                            {/* <td>{"Trọng tải"}</td>
                             <td>{"Thể tích"}</td>
                             <td>{"Trọng tải"}</td>
-                            <td>{"Thể tích"}</td>
-                            <td>{"Trọng tải"}</td>
-                            <td>{"Thể tích"}</td>
-                            <td>{"Trọng tải"}</td>
-                            <td>{"Thể tích"}</td>
-                            <td>{"Trọng tải"}</td>
-                            <td>{"Thể tích"}</td>
-                            <td>{"Trọng tải"}</td>
-                            <td>{"Thể tích"}</td>
-                            <td>{"Trọng tải"}</td>
-                            <td>{"Thể tích"}</td>
+                            <td>{"Thể tích"}</td> */}
                         </tr>
                         <tr className="word-no-break">
-                            <td>{"1000"}</td>
-                            <td>{"1000"}</td>
-                            <td>{"1000"}</td>
-                            <td>{"1000"}</td>
-                            <td>{"1000"}</td>
-                            <td>{"1000"}</td>
-                            <td>{"1000"}</td>
-                            <td>{"1000"}</td>
-                            <td>{"1000"}</td>
-                            <td>{"1000"}</td>
-                            <td>{"1000"}</td>
-                            <td>{"1000"}</td>
-                            <td>{"1000"}</td>
-                            <td>{"1000"}</td>
+                            {
+                                (allTransportVehicle && allTransportVehicle.length !== 0) &&
+                                allTransportVehicle.map((item, index) => (
+                                    item &&
+                                    <td>{"Volume: " + item.volume}</td>
+                                ))
+                            }
+                            {/* <td>{"1000"}</td> */}
                         </tr>
                     </thead>
                     <tbody className="transport-special-row">
@@ -71,14 +68,20 @@ function ArrangeVehiclesAndGoods(props) {
                         <td>{"Giao hàng"}</td>
                         <th>{"Hành động"}</th>
                         <td>{"Xem"}</td>
-                        <td colSpan={2} rowSpan={3} key={"2"} className="tooltip-checkbox">
-                            <span className="icon" title={"alo"} style={{ backgroundColor: "white"}}></span>
-                            <span className="tooltiptext">
-                                <a style={{ color: "white" }} 
-                                    // onClick={() => this.handleShowDetailManufacturingCommand(command)}
-                                >{"1"}</a>
-                            </span>
-                        </td>
+                        {
+                            (allTransportVehicle && allTransportVehicle.length !== 0) &&
+                            allTransportVehicle.map((item, index) => (
+                                item &&
+                                <td rowSpan={3} key={index} className="tooltip-checkbox">
+                                    <span className="icon" title={"alo"} style={{ backgroundColor: "white"}}></span>
+                                    <span className="tooltiptext">
+                                        <a style={{ color: "white" }} 
+                                            // onClick={() => this.handleShowDetailManufacturingCommand(command)}
+                                        >{"1"}</a>
+                                    </span>
+                                </td>
+                            ))
+                        }
                     </tr>
                     <tr className="word-no-break">
                         <th>{"Điểm nhận"}</th>
@@ -324,12 +327,14 @@ function ArrangeVehiclesAndGoods(props) {
 function mapState(state) {
     console.log(state, " day la state");
     const transportArrangeRequirements = state.transportRequirements.lists;
-    return { transportArrangeRequirements };
+    const allTransportVehicle = state.transportVehicle.lists;
+    return { transportArrangeRequirements, allTransportVehicle };
 }
 
 const actions = {
     getAllTransportRequirements: transportRequirementsActions.getAllTransportRequirements,
     editTransportRequirement: transportRequirementsActions.editTransportRequirement,
+    getAllTransportVehicles: transportVehicleActions.getAllTransportVehicles,
 }
 
 const connectedArrangeVehiclesAndGoods = connect(mapState, actions)(withTranslate(ArrangeVehiclesAndGoods));

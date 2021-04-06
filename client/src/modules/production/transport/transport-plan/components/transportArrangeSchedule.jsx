@@ -96,7 +96,7 @@ function TransportArrangeSchedule(props) {
 
     /**
      * từ id trả về value trong state timeData.lists
-     * @param {*} index 
+     * @param {*} id 
      */
     const getValueFromTimeData = (id) => {
         let list = timeData.lists;

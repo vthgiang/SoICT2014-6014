@@ -5,7 +5,8 @@ import { withTranslate } from "react-redux-multilingual";
 import { DataTableSetting, DeleteNotification, PaginateBar } from "../../../../../common-components";
 
 import { AssetManagerActions } from '../../../../asset/admin/asset-information/redux/actions'
-// import { transportRequirementsActions } from "../redux/actions";
+import { transportVehicleActions } from "../redux/actions";
+
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
 
 function TransportVehicle(props) {
@@ -76,6 +77,18 @@ function TransportVehicle(props) {
     }, [vehiclesListState])
     const { vehiclesList } = vehiclesListState;
     
+    const handleChooseVehicle = (vehicle) => {
+        console.log(vehicle, " day la vehicle")
+        const data = {
+            id: vehicle._id,
+            code: vehicle.code,
+            name: vehicle.assetName,
+            payload: vehicle.payload,
+            volume: vehicle.volume,
+        }
+        props.createTransportVehicle(data);
+    }
+
     return (
         <React.Fragment>
             <div className="box-body qlcv">
@@ -88,6 +101,7 @@ function TransportVehicle(props) {
                             <th>{"Tên phương tiện"}</th>
                             <th>{"Trọng tải"}</th>
                             <th>{"Thể tích"}</th>
+                            <th>{"Hành động"}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -101,6 +115,26 @@ function TransportVehicle(props) {
                                         <td>{vehicle.assetName}</td>
                                         <td>{vehicle.payload}</td>
                                         <td>{vehicle.volume}</td>
+                                        <td style={{ textAlign: "center" }}>
+                                            <a className="edit text-green" style={{ width: '5px' }} title={"Thông tin xe"} 
+                                                // onClick={() => handleShowDetailInfo(example)}
+                                            >
+                                                <i className="material-icons">visibility</i></a>
+
+                                            <a className="text-green"
+                                                onClick={() => handleChooseVehicle(vehicle)}
+                                            >
+                                                <i className="material-icons">add_comment</i></a>
+                                            {/* <a className="edit text-yellow" style={{ width: '5px' }} title={translate('manage_example.edit')} onClick={() => handleEdit(example)}><i className="material-icons">edit</i></a> */}
+                                            {/* <DeleteNotification
+                                                content={translate('manage_example.delete')}
+                                                data={{
+                                                    id: example._id,
+                                                    info: example.exampleName
+                                                }}
+                                                func={handleDelete}
+                                            /> */}
+                                        </td>
                                     </tr>
                                 )
                             )
@@ -158,6 +192,7 @@ function mapState(state) {
 const actions = {
     getAllAsset: AssetManagerActions.getAllAsset,
     // deleteExample: exampleActions.deleteExample
+    createTransportVehicle: transportVehicleActions.createTransportVehicle,
 }
 
 const connectedTransportVehicle = connect(mapState, actions)(withTranslate(TransportVehicle));
