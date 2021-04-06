@@ -1303,10 +1303,14 @@ class ActionTab extends Component {
                                                         <React.Fragment>
                                                             <div className="content-level1" data-width="100%">
                                                                 {/* Tên người tạo hoạt động */}
-                                                                {
-                                                                    item.creator && <a style={{ cursor: "pointer" }}>{item.creator?.name} </a>
-                                                                }
-
+                                                                <div style={{ display: 'flex', fontWeight: 'bold', justifyContent: 'space-between' }}>
+                                                                    {
+                                                                        item.creator && <a style={{ cursor: "pointer" }}>{item.creator?.name} </a>
+                                                                    }
+                                                                    {
+                                                                        item.creator && <a className="pull-right" style={{ cursor: 'pointer' }} onClick={() => this.showDetailTimer(item.description, item.timesheetLogs)}>{this.handleShowTime(item.timesheetLogs)}</a>
+                                                                    }
+                                                                </div>
                                                                 <div>
                                                                     {
                                                                         item.name && <b style={{ display: 'flex', marginTop: '4px' }}>{item.name} </b>
@@ -1381,8 +1385,6 @@ class ActionTab extends Component {
                                                                     </React.Fragment>
                                                                 }
 
-                                                                {/* Thời gian thực hiện hoạt động */}
-                                                                <li className="pull-right" style={{ cursor: 'pointer' }} onClick={() => this.showDetailTimer(item.description, item.timesheetLogs)}>{this.handleShowTime(item.timesheetLogs)}</li>
                                                             </ul>}
                                                             <div className="tool-level1" style={{ paddingLeft: 5 }}>
                                                                 {/* Các kết quả đánh giá của action */}
