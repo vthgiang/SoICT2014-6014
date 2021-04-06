@@ -10,7 +10,7 @@ import { DatePickerId } from './datePickerId'
 import { transportRequirementsActions } from "../../transport-requirements/redux/actions";
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
 
-function TransportArrangeSchedule(props) {
+function TransportArrangePlan(props) {
     const getTableId = "table-manage-transport-requirements-hooks";
     const defaultConfig = { limit: 5 }
     const getLimit = getTableConfiguration(getTableId, defaultConfig).limit;
@@ -212,5 +212,5 @@ const actions = {
     editTransportRequirement: transportRequirementsActions.editTransportRequirement,
 }
 
-const connectedTransportArrangeSchedule = connect(mapState, actions)(withTranslate(TransportArrangeSchedule));
-export { connectedTransportArrangeSchedule as TransportArrangeSchedule };
+const connectedTransportArrangePlan = connect(mapState, actions)(withTranslate(TransportArrangePlan));
+export { connectedTransportArrangePlan as TransportArrangePlan };

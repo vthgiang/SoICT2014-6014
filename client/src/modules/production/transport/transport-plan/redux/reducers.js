@@ -1,31 +1,31 @@
-import { transportScheduleConstants } from './constants';
+import { transportPlanConstants } from './constants';
 const initialState = {
     lists: [],
     isLoading: true,
 }
-export function transportSchedule(state = initialState, action) {
+export function transportPlan(state = initialState, action) {
 switch (action.type) {
-		case transportScheduleConstants.GET_ALL_TRANSPORT_SCHEDULES_REQUEST:
-        case transportScheduleConstants.CREATE_TRANSPORT_SCHEDULE_REQUEST:
+		case transportPlanConstants.GET_ALL_TRANSPORT_PLANS_REQUEST:
+        case transportPlanConstants.CREATE_TRANSPORT_PLAN_REQUEST:
 		return {
                 ...state,
                 isLoading: true
             }
 		
-		case transportScheduleConstants.GET_ALL_TRANSPORT_SCHEDULES_FAILURE:
-        case transportScheduleConstants.CREATE_TRANSPORT_SCHEDULE_FAILURE:        
+		case transportPlanConstants.GET_ALL_TRANSPORT_PLANS_FAILURE:
+        case transportPlanConstants.CREATE_TRANSPORT_PLAN_FAILURE:        
 		return {
                 ...state,
                 isLoading: false,
                 error: action.error
             }
-		case transportScheduleConstants.GET_ALL_TRANSPORT_SCHEDULES_SUCCESS:
+		case transportPlanConstants.GET_ALL_TRANSPORT_PLANS_SUCCESS:
 		return {
                 ...state,
                 lists: action.payload.data,
                 isLoading: false
             }
-        case transportScheduleConstants.CREATE_TRANSPORT_SCHEDULE_SUCCESS:
+        case transportPlanConstants.CREATE_TRANSPORT_PLAN_SUCCESS:
             return {
                 ...state,
                 lists: [

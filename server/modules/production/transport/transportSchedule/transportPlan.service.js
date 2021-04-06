@@ -1,15 +1,15 @@
 const {
-    TransportSchedule
+    TransportPlan
 } = require('../../../../models');
 
 const {
     connect
 } = require(`../../../../helpers/dbHelper`);
 
-exports.createTransportSchedule = async (portal, data) => {
-    let newScheduleRequirement;
+exports.createTransportPlan = async (portal, data) => {
+    let newTransportPlan;
     if (data && data.length !== 0) {
-            newScheduleRequirement = await TransportSchedule(connect(DB_CONNECTION, portal)).create({
+            newTransportPlan = await TransportPlan(connect(DB_CONNECTION, portal)).create({
             code: data.code,
             startTime: data.startDate,
             endTime: data.endDate,
@@ -60,8 +60,7 @@ exports.createTransportSchedule = async (portal, data) => {
 //         }
 //     }
 
-exports.getAllTransportSchedules = async (portal, data) => {
-    console.log("lay du lieu schedules trong service");
+exports.getAllTransportPlans = async (portal, data) => {
     let keySearch = {};
     // if (data?.exampleName?.length > 0) {
     //     keySearch = {
@@ -76,12 +75,12 @@ exports.getAllTransportSchedules = async (portal, data) => {
     page = data?.page ? Number(data.page) : 1;
     limit = data?.limit ? Number(data.limit) : 200;
 
-    let totalList = await TransportSchedule(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
-    let schedules = await TransportSchedule(connect(DB_CONNECTION, portal)).find(keySearch)
+    let totalList = await TransportPlan(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
+    let plans = await TransportPlan(connect(DB_CONNECTION, portal)).find(keySearch)
         .skip((page - 1) * limit)
         .limit(limit);
     return { 
-        data: schedules, 
+        data: plans, 
         totalList 
     }
 }

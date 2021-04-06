@@ -4,23 +4,23 @@ import { withTranslate } from "react-redux-multilingual";
 
 import { DataTableSetting, DeleteNotification, PaginateBar } from "../../../../../common-components";
 
-import { TransportScheduleCreateForm } from "./transportScheduleCreateForm"
+import { TransportPlanCreateForm } from "./transportPlanCreateForm"
 
-import { transportScheduleActions } from "../redux/actions"
+import { transportPlanActions } from "../redux/actions"
 // import { transportRequirementsActions } from "../redux/actions";
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
 import { convertJsonObjectToFormData } from '../../../../../helpers/jsonObjectToFormDataObjectConverter'
-function TransportScheduleManagementTable(props) {
+function TransportPlanManagementTable(props) {
 
-    let { allTransportSchedules } = props;
+    let { allTransportPlans } = props;
 
     useEffect(() => {
-        props.getAllTransportSchedules({page: 1, limit: 500});
+        props.getAllTransportPlans({page: 1, limit: 500});
     }, [])
 
    return (
             <div className="box-body qlcv">
-                <TransportScheduleCreateForm />
+                <TransportPlanCreateForm />
                 <div className="form-inline">
 
                 </div>
@@ -39,8 +39,8 @@ function TransportScheduleManagementTable(props) {
                     </thead>
                     <tbody>
                     {
-                    (allTransportSchedules && allTransportSchedules.length !== 0) &&
-                            allTransportSchedules.map((x, index) => (
+                    (allTransportPlans && allTransportPlans.length !== 0) &&
+                    allTransportPlans.map((x, index) => (
                                 x &&
                                 <tr key={index}>
                                     <td>{index + 1}</td>
@@ -71,13 +71,13 @@ function TransportScheduleManagementTable(props) {
 }
 
 function mapState(state) {
-    const allTransportSchedules = state.transportSchedule.lists;
-    return { allTransportSchedules }
+    const allTransportPlans = state.transportPlan.lists;
+    return { allTransportPlans }
 }
 
 const actions = {
-    getAllTransportSchedules: transportScheduleActions.getAllTransportSchedules,
+    getAllTransportPlans: transportPlanActions.getAllTransportPlans,
 }
 
-const connectedTransportScheduleManagementTable = connect(mapState, actions)(withTranslate(TransportScheduleManagementTable));
-export { connectedTransportScheduleManagementTable as TransportScheduleManagementTable };
+const connectedTransportPlanManagementTable = connect(mapState, actions)(withTranslate(TransportPlanManagementTable));
+export { connectedTransportPlanManagementTable as TransportPlanManagementTable };

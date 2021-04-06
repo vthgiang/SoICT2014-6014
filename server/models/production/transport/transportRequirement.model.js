@@ -70,7 +70,7 @@ const TransportRequirementSchema = new Schema({
     },
     transportSchedule: { // Lich van chuyen
         type: Schema.Types.ObjectId,
-        ref: 'TransportSchedule',
+        ref: 'TransportPlan',
     },
     transportVehicle: { // Phuong tien van chuyen
         type: Schema.Types.ObjectId,

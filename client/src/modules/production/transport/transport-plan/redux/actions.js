@@ -1,50 +1,50 @@
-import { transportScheduleConstants } from './constants';
-import { transportScheduleServices } from './services';
+import { transportPlanConstants } from './constants';
+import { transportPlanServices } from './services';
 
-export const transportScheduleActions = {
-    getAllTransportSchedules,
-    createTransportSchedule,
+export const transportPlanActions = {
+    getAllTransportPlans,
+    createTransportPlan,
 }
 
-function getAllTransportSchedules(queryData) {
+function getAllTransportPlans(queryData) {
     return (dispatch) => {
         dispatch({
-            type: transportScheduleConstants.GET_ALL_TRANSPORT_SCHEDULES_REQUEST
+            type: transportPlanConstants.GET_ALL_TRANSPORT_PLANS_REQUEST
         });
 
-        transportScheduleServices
-            .getAllTransportSchedules(queryData)
+        transportPlanServices
+            .getAllTransportPlans(queryData)
             .then((res) => {
                 dispatch({
-                    type: transportScheduleConstants.GET_ALL_TRANSPORT_SCHEDULES_SUCCESS,
+                    type: transportPlanConstants.GET_ALL_TRANSPORT_PLANS_SUCCESS,
                     payload: res.data.content
                 });
             })
             .catch((error) => {
                 dispatch({
-                    type: transportScheduleConstants.GET_ALL_TRANSPORT_SCHEDULES_FAILURE,
+                    type: transportPlanConstants.GET_ALL_TRANSPORT_PLANS_FAILURE,
                     error
                 });
             });
     }
 }
 
-function createTransportSchedule(data) {
+function createTransportPlan(data) {
     return (dispatch) => {
         dispatch({
-            type: transportScheduleConstants.CREATE_TRANSPORT_SCHEDULE_REQUEST
+            type: transportPlanConstants.CREATE_TRANSPORT_PLAN_REQUEST
         });
-        transportScheduleServices
-            .createTransportSchedule(data)
+        transportPlanServices
+            .createTransportPlan(data)
             .then((res) => {
                 dispatch({
-                    type: transportScheduleConstants.CREATE_TRANSPORT_SCHEDULE_SUCCESS,
+                    type: transportPlanConstants.CREATE_TRANSPORT_PLAN_SUCCESS,
                     payload: res.data.content
                 });
             })
             .catch((error) => {
                 dispatch({
-                    type: transportScheduleConstants.CREATE_TRANSPORT_SCHEDULE_FAILURE,
+                    type: transportPlanConstants.CREATE_TRANSPORT_PLAN_FAILURE,
                     error
                 });
             });

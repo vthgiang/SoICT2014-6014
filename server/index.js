@@ -272,7 +272,7 @@ app.use("/projects", require("./modules/project/project.route"));
 app.use("/news-feed", require("./modules/news-feed/newsFeed.route"));
 
 app.use("/transport-requirement", require("./modules/production/transport/transportRequirements/transportRequirements.route"));
-app.use("/transport-plan", require("./modules/production/transport/transportSchedule/transportSchedule.route"));
+app.use("/transport-plan", require("./modules/production/transport/transportSchedule/transportPlan.route"));
 app.use("/transport-vehicle", require("./modules/production/transport/transportVehicle/transportVehicle.route"));
 
 app.use(router);

@@ -1,20 +1,20 @@
-const TransportScheduleService = require('./transportSchedule.service');
+const TransportPlanService = require('./transportPlan.service');
 const Log = require(`../../../../logs`);
 
 // Thêm mới một ví dụ
-exports.createTransportSchedule = async (req, res) => {
+exports.createTransportPlan = async (req, res) => {
     try {
-        const newTransportSchedule = await TransportScheduleService.createTransportSchedule(req.portal, req.body);
+        const newTransportPlan = await TransportPlanService.createTransportPlan(req.portal, req.body);
 
-        await Log.info(req.user.email, 'CREATED_NEW_SCHEDULE_REQUIREMENT', req.portal);
+        await Log.info(req.user.email, 'CREATED_NEW_TRANSPORT_PLAN', req.portal);
 
         res.status(201).json({
             success: true,
             messages: ["add_success"],
-            content: newTransportSchedule
+            content: newTransportPlan
         });
     } catch (error) {
-        await Log.error(req.user.email, "CREATED_NEW_SCHEDULE_REQUIREMENT", req.portal);
+        await Log.error(req.user.email, "CREATED_NEW_TRANSPORT_PLAN", req.portal);
 
         res.status(400).json({
             success: false,
@@ -128,19 +128,19 @@ exports.createTransportSchedule = async (req, res) => {
 // }
 
 // Lấy ra tên của tất cả các Ví dụ
-exports.getAllTransportSchedules = async (req, res) => {
+exports.getAllTransportPlans = async (req, res) => {
     try {
         let data;
-        data = await TransportScheduleService.getAllTransportSchedules(req.portal, req.query);
+        data = await TransportPlanService.getAllTransportPlans(req.portal, req.query);
 
-        await Log.info(req.user.email, "GET_ALL_TRANSPORT_REQUIREMENTS", req.portal);
+        await Log.info(req.user.email, "GET_ALL_TRANSPORT_PLANS", req.portal);
         res.status(200).json({
             success: true,
             messages: ["success"],
             content: data
         });
     } catch (error) {
-        await Log.error(req.user.email, "GET_ALL_TRANSPORT_REQUIREMENTS", req.portal);
+        await Log.error(req.user.email, "GET_ALL_TRANSPORT_PLANS", req.portal);
 
         res.status(400).json({
             success: false,

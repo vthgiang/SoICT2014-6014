@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 const TransportRouteSchema = new Schema({
     transportSchedule: {
         type: Schema.Types.ObjectId,
-        ref: 'TransportSchedule',
+        ref: 'TransportPlan',
         required: true,
     },
     transportRoute: [{

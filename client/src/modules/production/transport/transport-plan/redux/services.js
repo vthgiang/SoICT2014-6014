@@ -1,10 +1,11 @@
 import { sendRequest } from '../../../../../helpers/requestHelper';
-export const transportScheduleServices = {
-    getAllTransportSchedules,
-    createTransportSchedule,
+export const transportPlanServices = {
+    getAllTransportPlans,
+    createTransportPlan,
 }
 
-function getAllTransportSchedules(queryData) {
+function getAllTransportPlans(queryData) {
+    console.log(queryData);
     return sendRequest(
         {
             url: `${process.env.REACT_APP_SERVER}/transport-plan`,
@@ -18,12 +19,11 @@ function getAllTransportSchedules(queryData) {
         },
          false, // Nếu có truy vấn thành công thì không hiện thông báo
          true, // Nếu có truy vấn thất bại thì hiện thông báo
-         "transport.schedules"
+         "transport.plans"
     );
 }
 
-function createTransportSchedule(data) {
-    console.log(data, " schedule");
+function createTransportPlan(data) {
     return sendRequest(
         {
             url: `${process.env.REACT_APP_SERVER}/transport-plan`,

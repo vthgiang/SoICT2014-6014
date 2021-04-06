@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const TransportScheduleSchema = new Schema({
+const TransportPlanSchema = new Schema({
     code: {
         type: String,
         required: true,
@@ -58,7 +58,7 @@ const TransportScheduleSchema = new Schema({
 });
 
 module.exports = (db) => {
-    if (!db.models.TransportSchedule)
-        return db.model('TransportSchedule', TransportScheduleSchema);
-    return db.models.TransportSchedule;
+    if (!db.models.TransportPlan)
+        return db.model('TransportPlan', TransportPlanSchema);
+    return db.models.TransportPlan;
 } 

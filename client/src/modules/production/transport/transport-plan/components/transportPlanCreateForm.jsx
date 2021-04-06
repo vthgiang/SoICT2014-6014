@@ -6,9 +6,9 @@ import { generateCode } from "../../../../../helpers/generateCode";
 import { formatToTimeZoneDate } from "../../../../../helpers/formatDate"
 import ValidationHelper from '../../../../../helpers/validationHelper';
 
-import { transportScheduleActions } from '../redux/actions'
+import { transportPlanActions } from '../redux/actions'
 
-function TransportScheduleCreateForm(props) {
+function TransportPlanCreateForm(props) {
 
     const [formSchedule, setFormSchedule] = useState({
         code: "",
@@ -38,7 +38,7 @@ function TransportScheduleCreateForm(props) {
         })
     }
     const save = () => {
-        props.createTransportSchedule(formSchedule);
+        props.createTransportPlan(formSchedule);
     }
     return (
         <React.Fragment>
@@ -143,8 +143,8 @@ function mapState(state) {
 }
 
 const actions = {
-    createTransportSchedule: transportScheduleActions.createTransportSchedule,
+    createTransportPlan: transportPlanActions.createTransportPlan,
 }
 
-const connectedTransportScheduleCreateForm = connect(mapState, actions)(withTranslate(TransportScheduleCreateForm));
-export { connectedTransportScheduleCreateForm as TransportScheduleCreateForm };
+const connectedTransportPlanCreateForm = connect(mapState, actions)(withTranslate(TransportPlanCreateForm));
+export { connectedTransportPlanCreateForm as TransportPlanCreateForm };
