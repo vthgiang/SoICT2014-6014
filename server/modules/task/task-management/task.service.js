@@ -404,15 +404,7 @@ exports.getPaginatedTasks = async (portal, task) => {
                 }
             ]
         })
-
         const getIdAccountable = accountable && accountable.length > 0 ? accountable.map(o => o._id): [];
-
-        keySearch = {
-            ...keySearch,
-            accountableEmployees: {
-                $in: getIdAccountable
-            }
-        }
     }
 
     // Tìm kiếm theo người thiết lập
@@ -2230,7 +2222,7 @@ exports.createProjectTask = async (portal, task) => {
 /**
  * Tạo công việc mới của dự án
  */
- exports.createProjectTask = async (portal, task) => {
+exports.createProjectTask = async (portal, task) => {
     // // Lấy thông tin công việc liên quan
     // var level = 1;
     // if (mongoose.Types.ObjectId.isValid(task.parent)) {
@@ -2311,8 +2303,8 @@ exports.createProjectTask = async (portal, task) => {
     }
 
     var newTask = await Task(connect(DB_CONNECTION, portal)).create({ //Tạo dữ liệu mẫu công việc
-        // organizationalUnit: task.organizationalUnit,
-        // collaboratedWithOrganizationalUnits: task.collaboratedWithOrganizationalUnits,
+        organizationalUnit: task.organizationalUnit,
+        collaboratedWithOrganizationalUnits: task.collaboratedWithOrganizationalUnits,
         creator: task.creator, //id của người tạo
         name: task.name,
         description: task.description,
@@ -2330,7 +2322,13 @@ exports.createProjectTask = async (portal, task) => {
         consultedEmployees: task.consultedEmployees,
         informedEmployees: task.informedEmployees,
         confirmedByEmployees: task.responsibleEmployees.concat(task.accountableEmployees).concat(task.consultedEmployees).includes(task.creator) ? task.creator : [],
-        taskProject
+        taskProject,
+        estimateNormalTime: task.estimateNormalTime,
+        estimateOptimisticTime: task.estimateOptimisticTime,
+        estimatePessimisticTime: task.estimatePessimisticTime,
+        estimateNormalCost: task.estimateNormalCost,
+        estimateMaxCost: task.estimateMaxCost,
+        preceedingTasks: task.preceedingTasks,
     });
 
     if (newTask.taskTemplate !== null) {
@@ -2344,7 +2342,7 @@ exports.createProjectTask = async (portal, task) => {
     return {
         task: newTask,
         user: mail.user, email: mail.email, html: mail.html,
-        // managersOfOrganizationalUnitThatHasCollaborated: mail.managersOfOrganizationalUnitThatHasCollaborated,
+        managersOfOrganizationalUnitThatHasCollaborated: mail.managersOfOrganizationalUnitThatHasCollaborated,
         collaboratedEmail: mail.collaboratedEmail, collaboratedHtml: mail.collaboratedHtml
     };
 }

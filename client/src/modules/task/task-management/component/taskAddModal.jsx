@@ -57,31 +57,16 @@ class TaskAddModal extends Component {
         const { newTask, startTime, endTime } = this.state;
         let startDateTask = this.convertDateTime(newTask.startDate, startTime);
         let endDateTask = this.convertDateTime(newTask.endDate, endTime);
-        if (this.props.isProjectForm) {
-            const newTaskFormatted = {
-                ...newTask,
-                taskProject: getCurrentProjectDetails(this.props.project)._id
-            }
-            this.props.addProjectTask({
-                ...newTaskFormatted,
-                startDate: startDateTask,
-                endDate: endDateTask,
-            });
-            return;
-        }
         this.props.addTask({
             ...newTask,
             startDate: startDateTask,
             endDate: endDateTask,
         });
-
-        const currentProjectId = getCurrentProjectDetails(this.props.project)._id;
-        this.props.getTasksByProject(currentProjectId)
     }
 
     componentDidMount() {
         const userId = getStorage("userId");
-        this.props.getProjectsDispatch({ calledId: "all", userId });;
+        this.props.getProjectsDispatch({ calledId: "all", userId });
     }
 
     componentDidMount() {
@@ -107,13 +92,13 @@ class TaskAddModal extends Component {
         return (
             <React.Fragment>
                 <DialogModal
-                    size='100' modalID={isProjectForm ? `addNewProjectTask-undefined` : `addNewTask-undefined`} isLoading={false}
+                    size='100' modalID={`addNewTask-${id}`} isLoading={false}
                     formID={`form-add-new-task-${id}`}
                     func={this.handleSubmit}
                     title={translate('task.task_management.add_new_task')}
                     disableSubmit={!this.isFormValidated()}
                 >
-                    {isProjectForm ? <AddProjectTaskForm
+                    <AddTaskForm
                         quillId={this.props.id}
                         handleChangeTaskData={this.onChangeTaskData}
                         handleChangeStartTime={this.onChangeStartTime}
@@ -121,18 +106,8 @@ class TaskAddModal extends Component {
                         id={id}
                         task={task}
                         parentTask={parentTask}
-                        currentProjectTasks={currentProjectTasks}
-                    /> :
-                        <AddTaskForm
-                            quillId={this.props.id}
-                            handleChangeTaskData={this.onChangeTaskData}
-                            handleChangeStartTime={this.onChangeStartTime}
-                            handleChangeEndTime={this.onChangeEndTime}
-                            id={id}
-                            task={task}
-                            parentTask={parentTask}
-                            currentTasks={currentTasks}
-                        />}
+                        currentTasks={currentTasks}
+                    />
                 </DialogModal>
             </React.Fragment>
         );
