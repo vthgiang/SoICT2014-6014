@@ -129,62 +129,67 @@ class Content extends Component {
     handleDataTable = async (index) => {
         let tables = window.$("table:not(.not-sort)");
 
-        for (let i = 0; i < tables.length; ++i) {
+        let nonAccentVietnamese = (str) => {
+            if (str === null || str === undefined) return str;
+            str = str.toLowerCase();
+            str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a");
+            str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, "e");
+            str = str.replace(/ì|í|ị|ỉ|ĩ/g, "i");
+            str = str.replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g, "o");
+            str = str.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, "u");
+            str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g, "y");
+            str = str.replace(/đ/g, "d");
+            // Some system encode vietnamese combining accent as individual utf-8 characters
+            str = str.replace(/\u0300|\u0301|\u0303|\u0309|\u0323/g, ""); // Huyền sắc hỏi ngã nặng 
+            str = str.replace(/\u02C6|\u0306|\u031B/g, ""); // Â, Ê, Ă, Ơ, Ư
+            return str;
+        }
+
+        let convertDate = (str) => {
+            if (moment(str, 'DD-MM-YYYY', true).isValid()) {
+                str = str.split("-")
+                str = [str[2], str[1], str[0]].join("-")
+            }
+
+            if (moment(str, 'MM-YYYY', true).isValid()) {
+                str = str.split("-")
+                str = [str[1], str[0]].join("-")
+            }
+
+            if (moment(str, 'HH:mm DD-MM-YYYY', true).isValid()) {
+                let time = str.split(" ")
+                let date = time[1].split("-")
+                date = [date[2], date[1], date[0]].join("-")
+                str = date + " " + time[0]
+            }
+
+            if (moment(str, 'HH:mm:SS DD/MM/YYYY', true).isValid()) {
+                let time = str.split(" ")
+                let date = time[1].split("/")
+                date = [date[2], date[1], date[0]].join("-")
+                str = date + " " + time[0]
+            }
+            return str;
+        }
+
+        for (let i = 0; i < tables.length; i++) {
             let table = window.$(tables[i]);
+            //console.log(table)
             let tableHeadings = table.find("th:not(:last-child)").not(".not-sort");
+            //console.log(tableHeadings)
             let tableHeadingsColSort = table.find("th.col-sort").not(".not-sort");
+            //console.log(tableHeadingsColSort)
             if (tableHeadingsColSort && tableHeadingsColSort.length) {
                 for (let k = 0; k < tableHeadingsColSort.length; ++k) {
                     tableHeadings.push(tableHeadingsColSort[k])
                 }
             }
-            for (let j = 0; j < tableHeadings.length; ++j) {
+            for (let j = 0; j < tableHeadings.length; j++) {
                 let th = window.$(tableHeadings[j]);
-
+                //console.log(th);
+                //console.log(th.find("div.sort"))
                 if (th.find("div.sort").length < 1) {
-                    let nonAccentVietnamese = (str) => {
-                        str = str.toLowerCase();
-                        str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a");
-                        str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, "e");
-                        str = str.replace(/ì|í|ị|ỉ|ĩ/g, "i");
-                        str = str.replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g, "o");
-                        str = str.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, "u");
-                        str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g, "y");
-                        str = str.replace(/đ/g, "d");
-                        // Some system encode vietnamese combining accent as individual utf-8 characters
-                        str = str.replace(/\u0300|\u0301|\u0303|\u0309|\u0323/g, ""); // Huyền sắc hỏi ngã nặng 
-                        str = str.replace(/\u02C6|\u0306|\u031B/g, ""); // Â, Ê, Ă, Ơ, Ư
-                        return str;
-                    }
-
-                    let convertDate = (str) => {
-                        if (moment(str, 'DD-MM-YYYY', true).isValid()) {
-                            str = str.split("-")
-                            str = [str[2], str[1], str[0]].join("-")
-                        }
-
-                        if (moment(str, 'MM-YYYY', true).isValid()) {
-                            str = str.split("-")
-                            str = [str[1], str[0]].join("-")
-                        }
-
-                        if (moment(str, 'HH:mm DD-MM-YYYY', true).isValid()) {
-                            let time = str.split(" ")
-                            let date = time[1].split("-")
-                            date = [date[2], date[1], date[0]].join("-")
-                            str = date + " " + time[0]
-                        }
-
-                        if (moment(str, 'HH:mm:SS DD/MM/YYYY', true).isValid()) {
-                            let time = str.split(" ")
-                            let date = time[1].split("/")
-                            date = [date[2], date[1], date[0]].join("-")
-                            str = date + " " + time[0]
-                        }
-                        return str;
-                    }
-
-
+                    //hàm sort
                     let sort = (ascOrder) => {
                         let rows = table.find("tbody>tr");
                         for (let k = 0; k < tableHeadings.length; ++k) {
@@ -210,6 +215,7 @@ class Content extends Component {
                                 }
                             }
                         }
+
                         if (th[0].className == "col-sort-number") {
                             rows.sort((a, b) => {
                                 let keyA = parseInt(window.$(window.$(a).find("td")[j]).text());
@@ -241,49 +247,32 @@ class Content extends Component {
                             table.children('tbody').append(row);
                         });
                     }
-
-                    let filter = (data) => {
-                        let rows = table.find("tbody>tr");
-                        for (let k = 0; k < tableHeadings.length; ++k) {
-                            if (k !== j) {
-                                let thNotChoice = window.$(tableHeadings[k]);
-                                let listdiv = thNotChoice.find("div.filter")
-                                window.$(listdiv[0]).find("i.fa.fa-filter")[0].style.color = "rgb(226 222 222)"
-                            } else {
-                                let thNotChoice = window.$(tableHeadings[j]);
-                                let listdiv = thNotChoice.find("div.filter")
-                                if (data == "") {
-                                    window.$(listdiv[0]).find("i.fa.fa-filter")[0].style.color = "rgb(226 222 222)"
-
-                                } else {
-                                    window.$(listdiv[0]).find("i.fa.fa-filter")[0].style.color = "black"
-                                }
-                            }
-                        }
-
-                        if (data == "") {
-                            rows.map((a) => {
-                                rows[a].style = ""
-                            })
-                        } else {
-                            rows.map((a) => {
-                                let keyData = window.$(window.$(rows[a]).find("td")[j]).text();
-                                if (keyData.indexOf(data) == -1) {
-                                    rows[a].style = "display: none"
-                                } else {
-                                    rows[a].style = ""
-                                }
-                            })
-                        }
-
-                        window.$.each(rows, function (index, row) {
-                            table.children('tbody').append(row);
-                        });
-                    }
+                    
+                    // icon sort
                     let up = window.$("<i>", { style: 'width: 100%; float: left; cursor: pointer; color: rgb(226 222 222) ', class: 'fa fa-sort' });
                     let down = window.$("<i>", { style: 'width: 100%; float: left; cursor: pointer; color: black; display: none ', class: 'fa fa-sort-amount-asc' });
                     let requestReturn = window.$("<i>", { style: 'width: 100%; float: left; cursor: pointer; color: black; display: none ', class: 'fa fa-sort-amount-desc' });
-                    let filterData = window.$("<i>", { style: 'width: 100%; float: left; cursor: pointer; color: rgb(226 222 222) ', class: 'fa fa-filter' });
+
+                    //icon filter
+                    let filterIcon = window.$("<button>", { style: 'width: 100%; float: right; cursor: pointer; color: rgb(226 222 222); border: none; background: none', class: 'fa fa-filter', target: 'dropdown-menu-filter'});
+                    let filterDropdown = window.$("<div>", { style: 'display: none; cursor: auto; z-index: 1000; position: absolute;width: 200px;margin-top: 25px;text-align: left;border-radius: 5px;margin: 26px 0px 0px 19px;padding: 10px;background-color: rgb(232, 240, 244);box-sizing: border-box;border-top: 2px solid rgb(54, 156, 199);box-shadow: 4px 4px 15px rgba(50, 50, 50)', class: 'collapse dropdown-menu-filter'});
+                    let closeButton = window.$("<button>", { style: 'float: right; font-size: 11px;top: 7px;right: 8px;line-height: 15px;background-color: rgb(60 141 188);color: rgb(232, 240, 244);border-radius: 50%;width: 14px;height: 14px;font-weight: bold;text-align: center;margin: 0;padding: 0;border: 0', class: 'fa fa-times', target: 'dropdown-menu-filter'});
+                    //let clearButton = window.$("<button>", { style: 'float: right; font-size: 11px; width: 24px;height: 24px;font-weight: bold;background-color: blue;text-align: center;margin: 0;padding: 0;border: 0', target: 'dropdown-menu-filter'});
+                    let filterInput = window.$("<input>",{style: 'width: 100%; display: block', class: 'form-control'} )
+                    let filterTitle = window.$("<h6>",{ style: 'margin: 0px 0px 15px;padding: 0px;font-weight: bold;color: #3c8dbc; text-align: center', text:'kkk'})
+                    let filterLabel = window.$("<label>",{ style: 'margin: 0; color: #3c8dbc' , text: 'Filter' })
+                    filterDropdown.append(closeButton,filterTitle, filterLabel, filterInput)
+
+
+                    for (let k = 0; k < tableHeadings.length; ++k) {
+                        if(k === j){
+                            let thChoiced = window.$(tableHeadings[k]);
+                            let title = thChoiced[0].innerText;
+                            filterTitle[0].innerText = title;
+                            
+                        }
+                    }
+
                     up.click(() => {
                         sort(true);
                     })
@@ -296,25 +285,82 @@ class Content extends Component {
                         sort("return")
                     })
 
-
-                    filterData.click(async () => {
-                        const { value: text } = await Swal.fire({
-                            input: 'text',
-                            inputLabel: 'Message',
-                            inputPlaceholder: 'Nhập thông tin tìm kiếm',
-                            inputAttributes: {
-                                'aria-label': 'Type your message here'
-                            },
-                            showCancelButton: true
-                        })
-
-                        filter(text);
+                    filterIcon.click(() => {
+                        for (let k = 0; k < tableHeadings.length; ++k) {
+                            if(k === j){
+                                let thChoiced = window.$(tableHeadings[k]);
+                                let filterDiv = thChoiced.find("div.filter")
+                                let x = window.$(filterDiv[0]).find(".dropdown-menu-filter")[0];
+                                if (x.style.display = "none") {
+                                    x.style.display = "block";
+                                  } 
+                            }else{
+                                let thNotChoice = window.$(tableHeadings[k]);
+                                let filterDiv = thNotChoice.find("div.filter")
+                                let x = window.$(filterDiv[0]).find(".dropdown-menu-filter")[0];
+                                if (x.style.display = "block") {
+                                    x.style.display = "none";
+                                  }
+                            }
+                        }
                     })
-                    let div = window.$("<div>", { style: 'float: left; margin-top: 3px; margin-right: 4px', class: 'sort' });
-                    let divFilter = window.$("<div>", { style: 'float: left; margin-top: 3px; margin-right: 2px', class: 'filter' });
-                    div.append(up, down, requestReturn, filterData);
-                    divFilter.append(filterData)
-                    th.prepend(div, divFilter);
+
+                    closeButton.click(() => {
+                        for (let k = 0; k < tableHeadings.length; ++k) {
+                            if(j === k){
+                                let thNotChoice = window.$(tableHeadings[k]);
+                                let listdiv = thNotChoice.find("div.filter")
+                                
+                                let x = window.$(listdiv[0]).find(".dropdown-menu-filter")[0];
+                                if (x.style.display == "none") {
+                                    x.style.display = "block";
+                                  } else {
+                                    x.style.display = "none";
+                                  }
+                            }
+                        }
+                    })
+
+                    
+                    // bắt sự kiện user nhập thông tin từ bàn phím
+                    table.find('.filter input').keyup(function(e) {
+                        let inputs = window.$('.filter input');
+                        let rows = table.find('tbody tr');
+                        window.$(rows).show();
+
+                        window.$.each(inputs, function(index, input) {
+                            let value = input.value.toLowerCase();
+                            if (value.replace(/\s/g,"") !== "") { // value khác rỗng
+                                //console.log(input.value)
+                                //console.log(input)
+                                rows.filter((a) => {
+                                    let keyData = window.$(window.$(rows[a]).find("td:eq("+index+")")).text();
+                                    //console.log( window.$((window.$(rows[a]))[0]).find("td:eq("+index+")")[0].innerText)
+                                    console.log(keyData)
+                                    //console.log(keyData)
+                                    let re = new RegExp(nonAccentVietnamese(value), "gi");
+                                    if (nonAccentVietnamese(keyData).search(re) == -1) {
+                                        window.$(rows[a]).hide();
+                                    }
+                                });
+                            }
+                            
+                        });
+                    });
+                    // if (value.replace(/\s/g,"") !== "") { // check if input có giá trị
+                    //     window.$(window.$(input))[0].offsetParent.previousSibling.style.color = "black"
+                    // }
+                    // else {
+                    //     console.log(window.$(window.$(input)))
+                    //     //window.$(window.$(input))[0].offsetParent.previousSibling.style.color = "rgb(226, 222, 222)"
+                    // }
+                    let divSort = window.$("<div>", { style: 'float: left; margin-top: 3px; margin-right: 4px', class: 'sort' });
+                    let divFilter = window.$("<div>", { style: 'float: right; margin-top: 3px; margin-right: -10px', class: 'filter' });
+                    filterDropdown.hide();
+                    divSort.append(up, down, requestReturn,filterIcon);
+                    divFilter.append(filterIcon, filterDropdown)
+                    th.prepend(divSort);
+                    th.append(divFilter);
                 }
             }
         }
