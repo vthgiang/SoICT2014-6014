@@ -137,10 +137,9 @@ exports.getAllTransportRequirements = async (portal, data) => {
 // Chỉnh sửa một Ví dụ
 exports.editTransportRequirement = async (portal, id, data) => {
 
-    console.log(id, " id edit", data, " data edit")
 
     let oldTransportRequirement = await TransportRequirement(connect(DB_CONNECTION, portal)).findById(id);
-    console.log(oldTransportRequirement, " oleas");
+
     if (!oldTransportRequirement) {
         return -1;
     }

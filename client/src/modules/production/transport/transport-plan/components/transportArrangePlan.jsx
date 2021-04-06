@@ -19,6 +19,9 @@ function TransportArrangePlan(props) {
     const getLimit = getTableConfiguration(getTableId, defaultConfig).limit;
     
     const { transportArrangeRequirements, allTransportPlans } = props;
+
+    const [currentRequirement, setCurrentRequirement] = useState({});
+
     const [ timeData, setTimeData ] = useState({
         lists: [],
     });
@@ -133,7 +136,8 @@ function TransportArrangePlan(props) {
         let timeTransport = formatToTimeZoneDate(getValueFromTimeData(id));
         props.editTransportRequirement(id, { timeTransport: timeTransport,});
     }
-    const handleTransportPlanChosenEdit = () => {
+    const handleTransportPlanChosenEdit = (item) => {
+        setCurrentRequirement(item);
         window.$('#modal-edit-example-hooks').modal('show');
     }
     return (
@@ -141,6 +145,7 @@ function TransportArrangePlan(props) {
         <React.Fragment>
         <TransportPlanChosenEdit
             allTransportPlans={allTransportPlans}
+            currentRequirement={currentRequirement}
         />
         <div className="box-body qlcv">
             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -181,7 +186,7 @@ function TransportArrangePlan(props) {
                                         <td>
                                             {"KHVC.020293294823984239 "}
                                             <a className="edit text-yellow" style={{ width: '5px' }} title={'manage_example.edit'} 
-                                                onClick={() => handleTransportPlanChosenEdit(index)}
+                                                onClick={() => handleTransportPlanChosenEdit(item)}
                                             >
                                                 <i className="material-icons">edit</i></a>
                                         </td>

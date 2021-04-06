@@ -68,7 +68,7 @@ const TransportRequirementSchema = new Schema({
     timeTransport: { // Thoi gian van chuyen
         type: Date,
     },
-    transportSchedule: { // Lich van chuyen
+    transportPlan: { // Lich van chuyen
         type: Schema.Types.ObjectId,
         ref: 'TransportPlan',
     },

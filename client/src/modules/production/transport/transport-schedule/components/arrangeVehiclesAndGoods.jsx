@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { withTranslate } from "react-redux-multilingual";
 
-import { DataTableSetting, DeleteNotification, PaginateBar, SlimScroll } from "../../../../../common-components";
+import { DataTableSetting, DeleteNotification, PaginateBar, SlimScroll, SelectBox } from "../../../../../common-components";
 import { formatToTimeZoneDate } from "../../../../../helpers/formatDate";
 import "./arrangeVehiclesAndGoods.css";
 import { transportRequirementsActions } from "../../transport-requirements/redux/actions";
@@ -20,6 +20,32 @@ function ArrangeVehiclesAndGoods(props) {
 
     return (
         <React.Fragment>
+        <div className="box-body qlcv">
+            <div className="form-inline">
+                            <div className="form-group">
+                                <label className="form-control-static">Chọn lịch trình</label>
+                                <SelectBox
+                                    id={`select-filter-status-discounts`}
+                                    className="form-control select2"
+                                    style={{ width: "100%" }}
+                                    items={[
+                                        { value: "all", text: "Tất cả lịch trình" },
+                                        { value: "1", text: "Lịch trình 1" },
+                                    ]}
+                                    // onChange={this.handleQueryDateChange}
+                                />
+                            </div>
+
+                            <div className="form-group">
+                                <button type="button" className="btn btn-success" title="Lọc" 
+                                    // onClick={this.handleSubmitSearch}
+                                >
+                                    Tìm kiếm
+                                </button>
+                            </div>
+                        </div>
+                        
+
             <div className={"divTest"}>
                 <table className={"tableTest table-bordered table-hover not-sort"}>
                     <thead>
@@ -85,7 +111,7 @@ function ArrangeVehiclesAndGoods(props) {
                     </tr>
                     <tr className="word-no-break">
                         <th>{"Điểm nhận"}</th>
-                        <td colSpan={3}>{"Bách Khoa k k k k k k k k k  k k k k k k k k k "}</td>
+                        <td colSpan={3}>{"Lê Thanh Nghị Bách Khoa, Hai Bà Trưng, Hà Nội "}</td>
                         <th>{"Khối lượng"}</th>
                         <td>{"100"}</td>
                     </tr>
@@ -114,7 +140,7 @@ function ArrangeVehiclesAndGoods(props) {
                     </tr>
                     <tr className="word-no-break">
                         <th>{"Điểm nhận"}</th>
-                        <td colSpan={3}>{"Bách Khoa k k k k k k k k k  k k k k k k k k k "}</td>
+                        <td colSpan={3}>{"Lê Thanh Nghị Bách Khoa, Hai Bà Trưng, Hà Nội "}</td>
                         <th>{"Khối lượng"}</th>
                         <td>{"100"}</td>
                     </tr>
@@ -143,7 +169,7 @@ function ArrangeVehiclesAndGoods(props) {
                     </tr>
                     <tr className="word-no-break">
                         <th>{"Điểm nhận"}</th>
-                        <td colSpan={3}>{"Bách Khoa k k k k k k k k k  k k k k k k k k k "}</td>
+                        <td colSpan={3}>{"Lê Thanh Nghị Bách Khoa, Hai Bà Trưng, Hà Nội "}</td>
                         <th>{"Khối lượng"}</th>
                         <td>{"100"}</td>
                     </tr>
@@ -156,6 +182,7 @@ function ArrangeVehiclesAndGoods(props) {
                     
                     </tbody>
                 </table>
+            </div>
             </div>
         </React.Fragment>
     )

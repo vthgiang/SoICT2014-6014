@@ -2,13 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 
+import { formatDate } from "../../../../../helpers/formatDate"
 import { DialogModal, ErrorLabel } from '../../../../../common-components';
 import ValidationHelper from '../../../../../helpers/validationHelper';
+import { transportRequirementsActions } from "../../transport-requirements/redux/actions";
 
 
 function TransportPlanChosenEdit(props) {
-    let {allTransportPlans} = props;
-
+    let {allTransportPlans, currentRequirement} = props;
+    const handleSelectPlan = (id) => {
+        props.editTransportRequirement(currentRequirement._id, { transportPlan: id});
+    }
     return (
         <React.Fragment>
             <DialogModal
@@ -20,6 +24,26 @@ function TransportPlanChosenEdit(props) {
                 size={50}
                 maxWidth={500}
             >
+                <table id={"123"} className="table table-striped table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th className="col-fixed" style={{ width: 60 }}>{"STT"}</th>
+                                    <th>{"Điểm nhận hàng"}</th>
+                                    <th>{"Điểm giao hàng"}</th>
+                                </tr>
+                            </thead>
+                            <tbody>                                
+                                {
+                                    currentRequirement && 
+                                    <tr key={1}>
+                                        <td>{"Giao hàng"}</td>
+                                        <td>{currentRequirement.fromAddress}</td>
+                                        <td>{currentRequirement.toAddress}</td>                                        
+                                    </tr>
+                                }
+                    </tbody>
+                        </table>
+
                 <form id={`form-edit-example-hooks`}>
                 <table id={"6666"} className="table table-striped table-bordered table-hover">
                     <thead>
@@ -38,9 +62,14 @@ function TransportPlanChosenEdit(props) {
                                 item && 
                                 <tr key={index}>
                                     <td>{index + 1}</td>
-                                    {/* <td>{item.code}</td>
-                                    <td>{item.x.startTime}</td>
-                                    <td>{item.x.endTime}</td> */}
+                                    <td>{item.code}</td>
+                                    <td>{formatDate(item.startTime)}</td>
+                                    <td>{formatDate(item.endTime)}</td>
+                                    <td>
+                                        <a className="text-green"
+                                            onClick={() => handleSelectPlan(item._id)}
+                                            ><i className="material-icons">add_comment</i></a>
+                                    </td>
                                 </tr>
                             )
                         )
@@ -59,7 +88,7 @@ function mapState(state) {
 }
 
 const actions = {
-    // editExample: exampleActions.editExample
+    editTransportRequirement: transportRequirementsActions.editTransportRequirement,
 }
 
 const connectedTransportPlanChosenEdit = connect(mapState, actions)(withTranslate(TransportPlanChosenEdit));

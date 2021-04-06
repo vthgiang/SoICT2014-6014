@@ -45,8 +45,8 @@ function TransportPlanCreateForm(props) {
             <ButtonModal
                     onButtonCallBack={handleClickCreateCode}
                     modalID={"modal-create-transport-plan"}
-                    button_name={"Thêm lịch vận chuyển"}
-                    title={"Thêm lịch vận chuyển"}
+                    button_name={"Thêm kế hoạch vận chuyển"}
+                    title={"Thêm kế hoạch vận chuyển"}
             />
             <DialogModal
                 modalID="modal-create-transport-plan" 
