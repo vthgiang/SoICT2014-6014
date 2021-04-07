@@ -5,7 +5,8 @@ import { withTranslate } from 'react-redux-multilingual';
 import Sortable from 'sortablejs';
 import { QuillEditor } from '../../../../common-components';
 import parse from 'html-react-parser';
-const ActionForm = (props) => {
+
+function ActionForm (props) {
 
     let EMPTY_ACTION = {
         name: '',
@@ -90,10 +91,9 @@ const ActionForm = (props) => {
     const handleChangeActionName = (event) => {
         let value = event.target.value;
         let { action } = state;
-        action.name = value;
+        state.action.name = value;
         setState(
-            ...state,
-            { action }
+            {...state}
         );
     }
 
@@ -112,10 +112,11 @@ const ActionForm = (props) => {
     const handleChangeActionMandatory = (event) => {
         let value = event.target.checked;
         let { action } = state;
-        action.mandatory = value;
+        state.action.mandatory = value;
         setState(
-            ...state,
-            { action }
+            
+            {
+                ...state}
         );
     }
 
@@ -156,9 +157,8 @@ const ActionForm = (props) => {
             action,
         ]
 
-        setState(
+        setState({
             ...state,
-            {
             taskActions: newTaskActions,
             action: {
                 name: '',
@@ -189,9 +189,8 @@ const ActionForm = (props) => {
         let { indexAction, taskActions, action } = state;
         taskActions[indexAction] = action;
 
-        setState(
+        setState({
             ...state,
-            {
             taskActions,
             editAction: false,
             action: { ...state.EMPTY_ACTION },
