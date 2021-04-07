@@ -20,7 +20,7 @@ exports.getAllFields = async (req, res) => {
         await Log.error(req.user.email, 'GET_FIELDS', req.portal);
         res.status(400).json({
             success: false,
-            messages: ["get_fields_faile"],
+            messages: ["get_fields_fail"],
             content: {
                 error: error
             }
@@ -42,7 +42,7 @@ exports.createFields = async (req, res) => {
         await Log.error(req.user.email, 'CREATE_FIELDS', req.portal);
         res.status(400).json({
             success: false,
-            messages: ["create_fields_faile"],
+            messages: ["create_fields_fail"],
             content: {
                 error: error
             }
@@ -64,7 +64,7 @@ exports.deleteFields = async (req, res) => {
         await Log.error(req.user.email, 'DELETE_FIELDS', req.portal);
         res.status(400).json({
             success: false,
-            messages: ["delete_fields_faile"],
+            messages: ["delete_fields_fail"],
             content: {
                 error: error
             }
@@ -86,7 +86,7 @@ exports.updateFields = async (req, res) => {
         await Log.error(req.user.email, 'EDIT_FIELDS', req.portal);
         res.status(400).json({
             success: false,
-            messages: ["edit_fields_faile"],
+            messages: ["edit_fields_fail"],
             content: {
                 error: error
             }
