@@ -2192,14 +2192,14 @@ export default {
                 // Thông điệp trả về từ server
                 get_fields_success:
                     "Lấy danh sách ngành nghề/lĩnh vực thành công",
-                get_fields_faile: "Lấy danh sách ngành nghề/lĩnh vực thất bại",
+                get_fields_fail: "Lấy danh sách ngành nghề/lĩnh vực thất bại",
                 create_fields_success:
                     "Thêm mới ngành nghề/lĩnh vực thành công",
-                create_fields_faile: "Thêm mới ngành nghề/lĩnh vực thất bại",
+                create_fields_fail: "Thêm mới ngành nghề/lĩnh vực thất bại",
                 delete_fields_success: "Xoá ngành nghề/lĩnh vực thành công",
-                delete_fields_faile: "Xoá ngành nghề/lĩnh vực thất bại",
+                delete_fields_fail: "Xoá ngành nghề/lĩnh vực thất bại",
                 edit_fields_success: "Chỉnh sửa ngành nghề/lĩnh vực thành công",
-                edit_fields_faile: "Chỉnh sửa ngành nghề/lĩnh vực thất bại",
+                edit_fields_fail: "Chỉnh sửa ngành nghề/lĩnh vực thất bại",
             },
 
             // Quản lý chấm công nhân viên

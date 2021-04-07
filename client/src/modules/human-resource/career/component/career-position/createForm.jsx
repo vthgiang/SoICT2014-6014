@@ -10,6 +10,10 @@ function CreateForm(props) {
         action: [],
     });
 
+    const { translate, career } = props;
+    const { list } = props;
+    let { parent, field, nameError, codeError, action } = state;
+
     const handleName = (e) => {
         let { value } = e.target;
         const { translate } = props;
@@ -115,9 +119,6 @@ function CreateForm(props) {
         props.createCareerPosition(data);
     }
 
-    const { translate, career } = props;
-    const { list } = props;
-    let { parent, field, nameError, codeError, action } = state;
     return (
         <React.Fragment>
             <DialogModal

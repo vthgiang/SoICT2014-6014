@@ -5,7 +5,7 @@ const Schema = mongoose.Schema;
 const CareerActionSchema = new Schema({
     name: String,
     code: String,
-    
+
     package: [{
         type: String,
     }],
@@ -14,14 +14,14 @@ const CareerActionSchema = new Schema({
         type: Number,
         default: 0,
     },
-    
+
     label: [{
         type: Schema.Types.ObjectId,
         replies: this,
     }],
 
     // detail hiện giờ k dùng, về sau sẽ xóa
-    detail: [{ // detail chỉ có thằng con có vidu: con là vận hành giám sát hệ thống attt thì label là vận hành và giám sát
+    detail: [{ // detail chỉ có thằng con có ví dụ: con là vận hành giám sát hệ thống attt thì label là vận hành và giám sát
         label: {
             type: Schema.Types.ObjectId,
             replies: this,
