@@ -1978,13 +1978,13 @@ export default {
 
                 // Thông điệp trả về từ server
                 get_fields_success: "Get career/fields success",
-                get_fields_faile: "Get career/fields faile",
+                get_fields_fail: "Get career/fields fail",
                 create_fields_success: "Add career/fields success",
-                create_fields_faile: "Add career/fields faile",
+                create_fields_fail: "Add career/fields fail",
                 delete_fields_success: "Delete career/fields success",
-                delete_fields_faile: "Delete career/fields faile",
+                delete_fields_fail: "Delete career/fields fail",
                 edit_fields_success: "Edit career/fields success",
-                edit_fields_faile: "Edit career/fields faile",
+                edit_fields_fail: "Edit career/fields fail",
             },
 
             // Quản lý chấm công nhân viên
