@@ -12,6 +12,10 @@ function EditForm(props) {
         code: ''
     })
 
+    const { translate, documents, career } = props;
+    const { listData, unChooseNode } = props;
+    const { name, code, parent, showParent, codeError, nameError } = state;
+
     useEffect(() => {
         setState({
             ...state,
@@ -139,9 +143,6 @@ function EditForm(props) {
 
     console.log('state', state);
 
-    const { translate, documents, career } = props;
-    const { listData, unChooseNode } = props;
-    const { name, code, parent, showParent, codeError, nameError } = state;
     // const { list } = listData;
     // let listCareer = [];
     // for (let i in list) {

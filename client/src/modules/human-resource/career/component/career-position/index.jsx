@@ -14,6 +14,11 @@ function CareerPosition(props) {
         deleteNode: [],
     });
 
+    const { careerParent, currentNode } = state;
+    const { translate } = props;
+    const { career } = props;
+    const list = career.listPosition;
+
     useEffect(() => {
         props.getListCareerPosition({ name: '', page: 1, limit: 1000 });
         props.getListCareerAction({ name: '', page: 1, limit: 1000 });
@@ -95,11 +100,6 @@ function CareerPosition(props) {
         return array;
     }
 
-    const { careerParent, currentNode } = state;
-    const { translate } = props;
-    const { career } = props;
-    const list = career.listPosition;
-
     let dataTree = list.map(elm => {
         return {
             ...elm,
@@ -169,7 +169,6 @@ function CareerPosition(props) {
                                 careerCode={currentNode.original.code}
                                 careerPackage={currentNode.original.package ? currentNode.original.package : ""}
                                 careerParent={(currentNode.parent !== "#") ? currentNode.parent : []}
-
                                 listData={dataTree}
                                 unChooseNode={unChooseNode}
                             />

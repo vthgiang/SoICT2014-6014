@@ -14,6 +14,11 @@ function CareerField(props) {
         deleteNode: [],
     });
 
+    const { careerParent, currentNode } = state;
+    const { translate } = props;
+    const { career } = props;
+    const list = career.listField;
+
     useEffect(() => {
         props.getListCareerField({ name: '', page: 1, limit: 1000 });
         props.getListCareerPosition({ name: '', page: 1, limit: 1000 });
@@ -93,11 +98,6 @@ function CareerField(props) {
         array.unshift(node.id);
         return array;
     }
-
-    const { careerParent, currentNode } = state;
-    const { translate } = props;
-    const { career } = props;
-    const list = career.listField;
 
     let dataTree = list.map(elm => {
         return {

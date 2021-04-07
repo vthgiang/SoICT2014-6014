@@ -12,6 +12,11 @@ function EditForm(props) {
         code: ''
     });
 
+    const { translate, documents } = props;
+    const { listData, unChooseNode } = props;
+    const { name, code, parent, showParent, codeError, nameError } = state;
+    const { list } = listData;
+
     useEffect(() => {
         setState({
             ...state,
@@ -133,10 +138,6 @@ function EditForm(props) {
         // });
     }
 
-    const { translate, documents } = props;
-    const { listData, unChooseNode } = props;
-    const { name, code, parent, showParent, codeError, nameError } = state;
-    const { list } = listData;
     let listCareer = [];
     for (let i in list) {
         if (!unChooseNode.includes(list[i].id)) {
