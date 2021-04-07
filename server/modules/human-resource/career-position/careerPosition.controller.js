@@ -104,9 +104,9 @@ exports.searchCareerField = async (req, res) => {
 // =================CREATE====================
 
 /** Tạo mới Lĩnh vực */
-exports.crateNewCareerField = async (req, res) => {
+exports.createNewCareerField = async (req, res) => {
     try {
-        data = await careerPositionService.crateNewCareerField(req.portal, req.body);
+        data = await careerPositionService.createNewCareerField(req.portal, req.body);
         await Log.info(req.user.email, 'CREATE_FIELD', req.portal);
         res.status(200).json({
             success: true,
@@ -127,9 +127,9 @@ exports.crateNewCareerField = async (req, res) => {
 
 
 /** Tạo mới vị trí công việc */
-exports.crateNewCareerPosition = async (req, res) => {
+exports.createNewCareerPosition = async (req, res) => {
     try {
-        data = await careerPositionService.crateNewCareerPosition(req.portal, req.body);
+        data = await careerPositionService.createNewCareerPosition(req.portal, req.body);
         await Log.info(req.user.email, 'CREATE_POSITION', req.portal);
         res.status(200).json({
             success: true,
@@ -150,9 +150,9 @@ exports.crateNewCareerPosition = async (req, res) => {
 
 
 /** Tạo mới hoạt động công việc */
-exports.crateNewCareerAction = async (req, res) => {
+exports.createNewCareerAction = async (req, res) => {
     try {
-        data = await careerPositionService.crateNewCareerAction(req.portal, req.body);
+        data = await careerPositionService.createNewCareerAction(req.portal, req.body);
         await Log.info(req.user.email, 'CREATE_ACTION', req.portal);
         res.status(200).json({
             success: true,
