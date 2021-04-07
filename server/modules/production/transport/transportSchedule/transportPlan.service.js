@@ -100,14 +100,16 @@ exports.getAllTransportPlans = async (portal, data) => {
 //     }
 // }
 
-// // Lấy ra Ví dụ theo id
-// exports.getExampleById = async (portal, id) => {
-//     let example = await Example(connect(DB_CONNECTION, portal)).findById({ _id: id });
-//     if (example) {
-//         return example;
-//     }
-//     return -1;
-// }
+// Lấy ra Ví dụ theo id
+exports.getPlanById = async (portal, id) => {
+    console.log(id);
+    let plan = await TransportPlan(connect(DB_CONNECTION, portal)).findById({ _id: id });
+    console.log(plan, "kkk")
+    if (plan) {
+        return plan;
+    }
+    return -1;
+}
 
 // // Chỉnh sửa một Ví dụ
 // exports.editExample = async (portal, id, data) => {
@@ -128,3 +130,18 @@ exports.getAllTransportPlans = async (portal, data) => {
 //     let example = Example(connect(DB_CONNECTION, portal)).findByIdAndDelete({ _id: id });
 //     return example;
 // }
+
+exports.editTransportPlan = async (portal, id, data) => {
+
+
+    let oldTransportPlan = await TransportPlan(connect(DB_CONNECTION, portal)).findById(id);
+
+    if (!oldTransportPlan) {
+        return -1;
+    }
+
+    // Cach 2 de update
+    await TransportPlan(connect(DB_CONNECTION, portal)).update({ _id: id }, { $set: data });
+    let transportPlan = await TransportPlan(connect(DB_CONNECTION, portal)).findById({ _id: oldTransportPlan._id });
+    return transportPlan;
+}

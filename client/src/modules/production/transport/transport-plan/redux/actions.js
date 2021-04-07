@@ -4,6 +4,7 @@ import { transportPlanServices } from './services';
 export const transportPlanActions = {
     getAllTransportPlans,
     createTransportPlan,
+    getDetailTransportPlan,
 }
 
 function getAllTransportPlans(queryData) {
@@ -45,6 +46,26 @@ function createTransportPlan(data) {
             .catch((error) => {
                 dispatch({
                     type: transportPlanConstants.CREATE_TRANSPORT_PLAN_FAILURE,
+                    error
+                });
+            });
+    }
+}
+
+function getDetailTransportPlan(id) {
+    return dispatch => {
+        dispatch({
+            type: transportPlanConstants.GET_DETAIL_TRANSPORT_PLAN_REQUEST
+        });
+        transportPlanServices.getDetailTransportPlan(id)
+            .then((res) => {
+                dispatch({
+                    type: transportPlanConstants.GET_DETAIL_TRANSPORT_PLAN_SUCCESS,
+                    payload: res.data.content
+                });
+            }).catch((error) => {
+                dispatch({
+                    type: transportPlanConstants.GET_DETAIL_TRANSPORT_PLAN_FAILURE,
                     error
                 });
             });

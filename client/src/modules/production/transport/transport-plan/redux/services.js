@@ -2,6 +2,7 @@ import { sendRequest } from '../../../../../helpers/requestHelper';
 export const transportPlanServices = {
     getAllTransportPlans,
     createTransportPlan,
+    getDetailTransportPlan,
 }
 
 function getAllTransportPlans(queryData) {
@@ -33,5 +34,17 @@ function createTransportPlan(data) {
         true,
         true,
         "manage_transport"
+    )
+}
+
+function getDetailTransportPlan(id) {
+    return sendRequest(
+        {
+            url: `${process.env.REACT_APP_SERVER}/transport-plan/${id}`,
+            method: "GET"
+        },
+        false,
+        true,
+        'transport.plan'
     )
 }

@@ -6,13 +6,16 @@ import { formatDate } from "../../../../../helpers/formatDate"
 import { DialogModal, ErrorLabel } from '../../../../../common-components';
 import ValidationHelper from '../../../../../helpers/validationHelper';
 import { transportRequirementsActions } from "../../transport-requirements/redux/actions";
+import { transportPlanActions } from "../redux/actions"
 
 
 function TransportPlanChosenEdit(props) {
-    let {allTransportPlans, currentRequirement} = props;
+    let {allTransportPlans, currentRequirement, currentTransportPlan} = props;
     const handleSelectPlan = (id) => {
         props.editTransportRequirement(currentRequirement._id, { transportPlan: id});
+        props.getDetailTransportPlan(id);
     }
+
     return (
         <React.Fragment>
             <DialogModal
@@ -83,12 +86,14 @@ function TransportPlanChosenEdit(props) {
 }
 
 function mapState(state) {
-    // const example = state.example1;
-    // return { example }
+    console.log(state);
+    const { currentTransportPlan } = state.transportPlan;
+    return { currentTransportPlan }
 }
 
 const actions = {
     editTransportRequirement: transportRequirementsActions.editTransportRequirement,
+    getDetailTransportPlan: transportPlanActions.getDetailTransportPlan,
 }
 
 const connectedTransportPlanChosenEdit = connect(mapState, actions)(withTranslate(TransportPlanChosenEdit));

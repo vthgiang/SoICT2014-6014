@@ -12,12 +12,12 @@ import { getTableConfiguration } from '../../../../../helpers/tableConfiguration
 
 function ArrangeVehiclesAndGoods(props) {
 
-    let { allTransportVehicle } = props;
+    let { allTransportVehicle, transportArrangeRequirements } = props;
 
     useEffect(() => {
         props.getAllTransportVehicles({page: 1, limit : 100});
+        props.getAllTransportRequirements({page: 1, limit: 100});
     }, []);
-
     return (
         <React.Fragment>
         <div className="box-body qlcv">
@@ -50,7 +50,8 @@ function ArrangeVehiclesAndGoods(props) {
                 <table className={"tableTest table-bordered table-hover not-sort"}>
                     <thead>
                         <tr className="word-no-break">
-                            <th colSpan={6} rowSpan={3}>{"Yêu cầu vận chuyển"}</th>
+                            <th rowSpan={3}>{"STT"}</th>
+                            <th colSpan={3} rowSpan={3}>{"Yêu cầu vận chuyển"}</th>
                             {
                                 (allTransportVehicle && allTransportVehicle.length !== 0) &&
                                 allTransportVehicle.map((item, index) => (
@@ -87,18 +88,153 @@ function ArrangeVehiclesAndGoods(props) {
                         </tr>
                     </thead>
                     <tbody className="transport-special-row">
+                        
+                    {
+                            (transportArrangeRequirements && transportArrangeRequirements.length !==0) &&
+                            transportArrangeRequirements.map((item, index) => (
+                                item &&
+                                <tr className="word-no-break">
+                                <td>
+                                    {index+1}
+                                </td>
+                                <td>
+                                    <div>
+                                        <p className="p-header">
+                                            {"Mã yêu cầu:"}
+                                        </p>
+                                        <p>
+                                            {"123"}
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <p className="p-header">
+                                            {"Loại yêu cầu:"}
+                                        </p>
+                                        <p>
+                                            {"Giao hàng"}
+                                        </p>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div>
+                                        <p className="p-header">
+                                            {"Điểm nhận:"}
+                                        </p>
+                                        <p>
+                                            {item.fromAddress}
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <p className="p-header">
+                                            {"Điểm giao:"}
+                                        </p>
+                                        <p>
+                                            {item.toAddress}
+                                        </p>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div>
+                                        <p className="p-header">
+                                            {"Khối lượng:"}
+                                        </p>
+                                        <p>
+                                            {"1000"}
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <p className="p-header">
+                                            {"Thể tích:"}
+                                        </p>
+                                        <p>
+                                            {"1000"}
+                                        </p>
+                                    </div>
+                                </td>
+                                
+                                {
+                                    (allTransportVehicle && allTransportVehicle.length !== 0) &&
+                                    allTransportVehicle.map((item, index) => (
+                                        item &&
+                                        <td key={index} className="tooltip-checkbox">
+                                            <span className="icon" title={"alo"} style={{ backgroundColor: "white"}}></span>
+                                            <span className="tooltiptext">
+                                                <a style={{ color: "white" }} 
+                                                    // onClick={() => this.handleShowDetailManufacturingCommand(command)}
+                                                >{"1"}</a>
+                                            </span>
+                                        </td>
+                                    ))
+                                }
+                            </tr >
+          
+                            ))
+                        }
                     <tr className="word-no-break">
-                        <th>{"Mã yêu cầu"}</th>
-                        <td>{"123"}</td>
-                        <th>{"Loại yêu cầu"}</th>
-                        <td>{"Giao hàng"}</td>
-                        <th>{"Hành động"}</th>
-                        <td>{"Xem"}</td>
+                        <td>
+                            {"1"}
+                        </td>
+                        <td>
+                            <div>
+                                <p>
+                                    {"Mã yêu cầu:"}
+                                </p>
+                                <p>
+                                    {"123"}
+                                </p>
+                            </div>
+                            <div>
+                                <p>
+                                    {"Loại yêu cầu:"}
+                                </p>
+                                <p>
+                                    {"Giao hàng"}
+                                </p>
+                            </div>
+                        </td>
+                        <td>
+                            <div>
+                                <p>
+                                    {"Điểm nhận:"}
+                                </p>
+                                <p>
+                                    {"Lê Thanh Nghị Bách Khoa, Hai Bà Trưng, Hà Nội"}
+                                </p>
+                            </div>
+                            <div>
+                                <p>
+                                    {"Điểm giao:"}
+                                </p>
+                                <p>
+                                    {"Lê Thanh Nghị Bách Khoa, Hai Bà Trưng, Hà Nội"}
+                                </p>
+                            </div>
+                        </td>
+                        <td>
+                            <div>
+                                <p>
+                                    {"Khối lượng:"}
+                                </p>
+                                <p>
+                                    {"1000"}
+                                </p>
+                            </div>
+                            <div>
+                                <p>
+                                    {"Thể tích:"}
+                                </p>
+                                <p>
+                                    {"1000"}
+                                </p>
+                            </div>
+                        </td>
+                        {/* <th>{"Hành động"}</th>
+                        <td>{"Xem"}</td> */}
                         {
                             (allTransportVehicle && allTransportVehicle.length !== 0) &&
                             allTransportVehicle.map((item, index) => (
                                 item &&
-                                <td rowSpan={3} key={index} className="tooltip-checkbox">
+                                <td key={index} className="tooltip-checkbox">
                                     <span className="icon" title={"alo"} style={{ backgroundColor: "white"}}></span>
                                     <span className="tooltiptext">
                                         <a style={{ color: "white" }} 
@@ -108,8 +244,13 @@ function ArrangeVehiclesAndGoods(props) {
                                 </td>
                             ))
                         }
-                    </tr>
-                    <tr className="word-no-break">
+                    </tr >
+
+
+
+
+
+                    {/* <tr className="word-no-break">
                         <th>{"Điểm nhận"}</th>
                         <td colSpan={3}>{"Lê Thanh Nghị Bách Khoa, Hai Bà Trưng, Hà Nội "}</td>
                         <th>{"Khối lượng"}</th>
@@ -154,7 +295,7 @@ function ArrangeVehiclesAndGoods(props) {
                     <tr className="word-no-break">
                         <th>{"Mã yêu cầu"}</th>
                         <td>{"123"}</td>
-                        <th>{"Loại yêu cầu"}</th>
+                        <th><div>{"Loại yêu cầu"}</div><div>{"Loại yêu cầu"}</div></th>
                         <td>{"Giao hàng"}</td>
                         <th>{"Hành động"}</th>
                         <td>{"Xem"}</td>
@@ -178,7 +319,7 @@ function ArrangeVehiclesAndGoods(props) {
                         <td colSpan={3}>{"Thái Hà"}</td>
                         <th>{"Thể tích"}</th>
                         <td>{"1000"}</td>
-                    </tr>
+                    </tr> */}
                     
                     </tbody>
                 </table>
@@ -352,7 +493,6 @@ function ArrangeVehiclesAndGoods(props) {
 }
 
 function mapState(state) {
-    console.log(state, " day la state");
     const transportArrangeRequirements = state.transportRequirements.lists;
     const allTransportVehicle = state.transportVehicle.lists;
     return { transportArrangeRequirements, allTransportVehicle };

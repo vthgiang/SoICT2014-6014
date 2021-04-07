@@ -85,9 +85,16 @@ table.tableTest th.first-column {
 .word-no-break th {
     word-break: keep-all;
 }
-.transport-special-row tr:nth-child(3n):not(:last-child) {
+.transport-special-row tr:nth-child(2n):not(2) {
+    /* border-bottom: 2px solid rgb(0, 162, 255); */
+    background: #a7cde4;
+}
+/* .transport-special-row tr:nth-child(3n):not(:last-child) {
     border-bottom: 2px solid rgb(0, 162, 255);
 }
 .transport-special-row tr:nth-child(3n+1) {
     border-top: 2px solid rgb(0, 162, 255);
+} */
+td p.p-header {
+    font-weight: bold;
 }

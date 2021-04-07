@@ -6,12 +6,12 @@ const TransportPlanSchema = new Schema({
         type: String,
         required: true,
     },
-    // transportRequirements: [{
-    //     transportRequirement: {
-    //         type: Schema.Types.ObjectId,
-    //         ref: 'TransportRequirements',
-    //         // required: true
-    //     },
+    transportRequirements: [{
+        transportRequirement: {
+            type: Schema.Types.ObjectId,
+            ref: 'TransportRequirements',
+            // required: true
+        },
     //     fromAddress: {
     //         type: String,
     //         // required: true,
@@ -24,11 +24,15 @@ const TransportPlanSchema = new Schema({
     //         type: String,
     //         // required: true,
     //     },
-    //     totalVolume: { // Tong khoi luong van chuyen cua yeu cau
-    //         type: Number,
-    //         // required: true
-    //     }
-    // }],
+        totalVolume: { // Tổng thể tích vận chuyển của yêu cầu
+            type: Number,
+            // required: true
+        },
+        totalPayload: { // Tổng khối lượng vận chuyển của yêu cầu
+            type: Number,
+            // required: true
+        }
+    }],
     // transportVehicles: [{ // phuong tien van chuyen
     //     transportVehicle: {
     //         type: Schema.Types.ObjectId,

@@ -48,31 +48,31 @@ exports.createTransportPlan = async (req, res) => {
 //     }
 // }
 
-// //  Lấy ra Ví dụ theo id
-// exports.getExampleById = async (req, res) => {
-//     try {
-//         let { id } = req.params;
-//         let example = await ExampleService.getExampleById(req.portal, id);
-//         if (example !== -1) {
-//             await Log.info(req.user.email, "GET_EXAMPLE_BY_ID", req.portal);
-//             res.status(200).json({
-//                 success: true,
-//                 messages: ["get_example_by_id_success"],
-//                 content: example
-//             });
-//         } else {
-//             throw Error("example is invalid")
-//         }
-//     } catch (error) {
-//         await Log.error(req.user.email, "GET_EXAMPLE_BY_ID", req.portal);
+//  Lấy ra Ví dụ theo id
+exports.getPlanById = async (req, res) => {
+    try {
+        let { id } = req.params;
+        let transportPlan = await TransportPlanService.getPlanById(req.portal, id);
+        if (transportPlan !== -1) {
+            await Log.info(req.user.email, "GET_PLAN_BY_ID", req.portal);
+            res.status(200).json({
+                success: true,
+                messages: ["get_plan_by_id_success"],
+                content: transportPlan
+            });
+        } else {
+            throw Error("plan is invalid")
+        }
+    } catch (error) {
+        await Log.error(req.user.email, "GET_PLAN_BY_ID", req.portal);
 
-//         res.status(400).json({
-//             success: false,
-//             messages: ["get_example_by_id_fail"],
-//             content: error.message
-//         });
-//     }
-// }
+        res.status(400).json({
+            success: false,
+            messages: ["get_plan_by_id_fail"],
+            content: error.message
+        });
+    }
+}
 
 // // Sửa Ví dụ
 // exports.editExample = async (req, res) => {

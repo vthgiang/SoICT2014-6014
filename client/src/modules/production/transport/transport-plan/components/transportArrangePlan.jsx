@@ -212,9 +212,9 @@ function TransportArrangePlan(props) {
                     </div>
                 </div>
         
-                <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                {/* <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                     <Chart />
-                </div>
+                </div> */}
             </div>
         </div>
         </React.Fragment>

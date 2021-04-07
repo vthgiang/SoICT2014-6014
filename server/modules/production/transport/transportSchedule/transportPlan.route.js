@@ -6,6 +6,7 @@ const { auth } = require(`../../../../middleware`);
 // router.get('/', auth, ExampleController.getExamples);
 // router.get('/getOnlyExampleName', auth, ExampleController.getOnlyExampleName);
 // router.get('/:id', auth, ExampleController.getExampleById);
+router.get('/:id', auth, TransportPlanController.getPlanById);
 // router.get('/', auth, TransportRequirementController.getAllTransportRequirements);
 router.get('/', auth, TransportPlanController.getAllTransportPlans);
 router.post('/', auth, TransportPlanController.createTransportPlan);
