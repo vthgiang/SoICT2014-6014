@@ -19,6 +19,23 @@ function Major(props) {
         props.getListMajor({ name: '', page: 1, limit: 1000 });
     }, [])
 
+    const { majorParent, currentNode } = state;
+    const { translate } = props;
+    const { major } = props;
+    const list = major.listMajor;
+
+    let dataTreeSelect = [];
+    let dataTree = list.map(elm => {
+        return {
+            ...elm,
+            id: elm._id,
+            text: elm.name,
+            state: { "opened": true },
+            parent: "#",
+        }
+    });
+    dataTreeSelect = dataTree;
+
     const onChanged = async (e, data) => {
         setState({
             ...state,
@@ -67,7 +84,7 @@ function Major(props) {
         }).then(result => {
             console.log('Confirm delete');
             console.log('state', state);
-            this.props.deleteMajor(deleteNode);
+            props.deleteMajor(deleteNode);
         })
     }
 
@@ -86,22 +103,6 @@ function Major(props) {
         return array;
     }
 
-    const { majorParent, currentNode } = state;
-    const { translate } = props;
-    const { major } = props;
-    const list = major.listMajor;
-
-    let dataTreeSelect = [];
-    let dataTree = list.map(elm => {
-        return {
-            ...elm,
-            id: elm._id,
-            text: elm.name,
-            state: { "opened": true },
-            parent: "#",
-        }
-    });
-    dataTreeSelect = dataTree;
     for (let i in list) {
         let groupMap = list[i].group;
         let group = list[i].group.map(elm => {
@@ -168,8 +169,7 @@ function Major(props) {
                                 majorId={currentNode.id}
                                 majorName={currentNode.text}
                                 majorCode={currentNode.original.code}
-                                majorParent={currentNode.parent}
-
+                                majorParent={(currentNode.parent !== "#") ? currentNode.parent : []}
                                 listData={dataTreeSelect}
                                 unChooseNode={unChooseNode}
                             />

@@ -10,24 +10,29 @@ function CreateForm(props) {
         archiveParent: ''
     })
 
+    const { translate, documents } = props;
+    const { list } = props;
+    let { parent, nameError, codeError } = state;
+
     const handleName = (e) => {
-        const { value } = e.target;
+        let { value } = e.target;
         const { translate } = props;
-        const { message } = ValidationHelper.validateName(translate, value, 1, 255);
+        let { message } = ValidationHelper.validateName(translate, value, 1, 255);
         setState({
             ...state,
             name: value,
-            nameError: message
+            nameError: !message ? '' : message
         });
     }
 
     const handleCode = (e) => {
-        const { value } = e.target;
-        let msg;
+        let { value } = e.target;
+        const { translate } = props;
+        let { message } = ValidationHelper.validateName(translate, value, 1, 255);
         setState({
             ...state,
             code: value,
-            codeError: msg,
+            codeError: !message ? '' : message,
         });
     }
 
@@ -38,10 +43,25 @@ function CreateForm(props) {
         });
     };
 
-    const isValidateForm = () => {
-        let { name } = state;
+    const validateMajorName = (name) => {
         let { translate } = props;
-        if (!ValidationHelper.validateName(translate, name, 1, 255).status) return false;
+        if (
+            !ValidationHelper.validateName(translate, name, 1, 255).status
+        ) return false;
+        return true;
+    }
+
+    const validateMajorCode = (code) => {
+        if (!code) return false;
+        return true;
+    }
+
+    const isValidateForm = () => {
+        let { name, code } = state;
+        let { translate } = props;
+        if (
+            !validateMajorName(name) || !validateMajorCode(code)
+        ) return false;
         return true;
     }
 
@@ -54,10 +74,6 @@ function CreateForm(props) {
         console.log('data', data);
         props.createMajor(data);
     }
-
-    const { translate, documents } = props;
-    const { list } = props;
-    let { parent, nameError, codeError } = state;
 
     return (
         <React.Fragment>
@@ -81,7 +97,7 @@ function CreateForm(props) {
                     <div className={`form-group ${!codeError ? "" : "has-error"}`}>
                         <label>Nhãn<span className="text-red">*</span></label>
                         <input type="text" className="form-control" onChange={handleCode} />
-                        <ErrorLabel content={nameError} />
+                        <ErrorLabel content={codeError} />
                     </div>
                 </form>
             </DialogModal>
