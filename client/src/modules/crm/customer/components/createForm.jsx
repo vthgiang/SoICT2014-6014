@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal } from '../../../../common-components';
@@ -9,20 +9,12 @@ import { getStorage } from '../../../../config';
 import GeneralTabCreateForm from './generalTabCreateForm';
 import FileTabCreateForm from './fileTabCreateForm';
 import { convertJsonObjectToFormData } from '../../../../helpers/jsonObjectToFormDataObjectConverter';
-class CrmCustomerCreate extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            newCustomer: {
-            },
-            currentRole: getStorage('currentRole')
-        }
-    }
+function CrmCustomerCreate(props) {
+    const [newCustomer, setNewCustomer] = useState({});
+    const [currentRole, setCurrentRole] = useState(getStorage('currentRole'))
 
-    static getDerivedStateFromProps(props, state) {
-        const { auth, user } = props;
-        const { newCustomer, currentRole } = state;
-
+    const { auth, user } = props;
+    useEffect(() => {
         if (!newCustomer.owner && auth.user && user.organizationalUnitsOfUser) {
             let getCurrentUnit = user.organizationalUnitsOfUser.find(item =>
                 item.managers[0] === currentRole
@@ -34,61 +26,38 @@ class CrmCustomerCreate extends Component {
                 props.getChildrenOfOrganizationalUnits(getCurrentUnit._id);
             }
 
-            return {
-                ...state,
-                newCustomer: {
-                    owner: [auth.user._id],
-                },
+
+            const newCustomerInit = {
+                ...newCustomer,
+                owner: [auth.user._id],
             }
-        } else {
-            return null;
+            setNewCustomer(newCustomerInit);
+
+
         }
-    }
+    }, [])
 
-    // async componentDidMount() {
-    //     const { auth, user } = this.props;
-    //     const { newCustomer, currentRole } = this.state;
-
-    //     if (!newCustomer.owner && auth.user && user.organizationalUnitsOfUser) {
-    //         let getCurrentUnit = await user.organizationalUnitsOfUser.find(item =>
-    //             item.managers[0] === currentRole
-    //             || item.deputyManagers[0] === currentRole
-    //             || item.employees[0] === currentRole);
-
-    //         // Lấy người dùng của đơn vị hiện tại và người dùng của đơn vị con
-    //         if (getCurrentUnit) {
-    //             this.props.getChildrenOfOrganizationalUnits(getCurrentUnit._id);
-    //         }
-
-    //         this.setState({
-    //             newCustomer: {
-    //                 owner: [auth.user._id],
-    //             },
-    //         })
-    //     }
-    // }
 
     /**
      * function setState các giá trị lấy từ component con vào state
      * @param {*} name 
      * @param {*} value 
      */
-    myCallBack = (name, value) => {
-        const { newCustomer } = this.state;
-        this.setState({
-            newCustomer: {
-                ...newCustomer,
-                [name]: value,
-            }
-        })
+    const myCallBack = (name, value) => {
+
+        const newCustomerInput = {
+            ...newCustomer,
+            [name]: value,
+        }
+        setNewCustomer(newCustomerInput)
     }
 
     /**
      * Hàm kiểm tra validate
      */
-    isFormValidated = () => {
-        const { code, name, taxNumber } = this.state.newCustomer;
-        const { translate } = this.props;
+    const isFormValidated = () => {
+        const { code, name, taxNumber } = newCustomer;
+        const { translate } = props;
 
         if (!ValidationHelper.validateName(translate, code).status
             || !ValidationHelper.validateName(translate, name).status
@@ -97,9 +66,8 @@ class CrmCustomerCreate extends Component {
         return true;
     }
 
-    save = () => {
-        const { auth } = this.props;
-        let { newCustomer } = this.state;
+    const save = () => {
+        const { auth } = props;
         let formData;
         const getStatus = newCustomer.status;
         const statusHistories = [];
@@ -108,71 +76,71 @@ class CrmCustomerCreate extends Component {
         // Ghi log thay đổi trạng thái
         if (getStatus && getStatus.length > 0) {
             statusHistories.push({
-                oldValue: getStatus[getStatus.length - 1],
-                newValue: getStatus[getStatus.length - 1],
+                oldValue: getStatus[0],
+                newValue: getStatus[0],
                 createdAt: getDateTime,
                 createdBy: auth.user._id,
             })
         }
-        newCustomer = { ...newCustomer, statusHistories }
+        const newCustomerInput = { ...newCustomer, statusHistories }
 
         // Convert file upload
-        formData = convertJsonObjectToFormData(newCustomer);
-        if (newCustomer.files) {
-            newCustomer.files.forEach(o => {
+        formData = convertJsonObjectToFormData(newCustomerInput);
+        if (newCustomerInput.files) {
+            newCustomerInput.files.forEach(o => {
                 formData.append('file', o.fileUpload);
             })
         }
 
-        if (this.isFormValidated) {
-            this.props.createCustomer(formData);
+        if (isFormValidated) {
+            props.createCustomer(formData);
         }
     }
 
-    render() {
-        const { translate, crm } = this.props;
-        const { newCustomer } = this.state;
-        return (
-            <React.Fragment>
-                <DialogModal
-                    modalID="modal-customer-create" isLoading={crm.customers.isLoading}
-                    formID="modal-customer-create"
-                    title={translate("crm.customer.add")}
-                    size={75}
-                    func={this.save}
-                    disableSubmit={!this.isFormValidated()}
-                >
-                    {/* Form thêm khách hàng mới */}
-                    <div className="nav-tabs-custom">
-                        <ul className="nav nav-tabs">
-                            <li className="active"><a href="#customer-general" data-toggle="tab" >Thông tin chung</a></li>
-                            <li><a href="#customer-fileAttachment" data-toggle="tab">Tài liệu liên quan</a></li>
-                        </ul>
-                        <div className="tab-content">
-                            {/* Tab thông tin chung */}
-                            {
-                                newCustomer && newCustomer.owner &&
-                                <GeneralTabCreateForm
-                                    id={"customer-general"}
-                                    callBackFromParentCreateForm={this.myCallBack}
-                                    newCustomer={newCustomer}
-                                />
-                            }
 
-                            {/* Tab file liên quan đến khách hàng */}
-                            {
-                                <FileTabCreateForm
-                                    id={'customer-fileAttachment'}
-                                    callBackFromParentCreateForm={this.myCallBack}
-                                />
-                            }
-                        </div>
+    const { translate, crm } = props;
+    return (
+        <React.Fragment>
+            <DialogModal
+                modalID="modal-customer-create" isLoading={crm.customers.isLoading}
+                formID="modal-customer-create"
+                title={translate("crm.customer.add")}
+                size={75}
+                func={save}
+                disableSubmit={!isFormValidated()}
+            >
+                {/* Form thêm khách hàng mới */}
+                <div className="nav-tabs-custom">
+                    <ul className="nav nav-tabs">
+                        <li className="active"><a href="#customer-general" data-toggle="tab" >Thông tin chung</a></li>
+                        <li><a href="#customer-fileAttachment" data-toggle="tab">Tài liệu liên quan</a></li>
+                    </ul>
+                    <div className="tab-content">
+                        {/* Tab thông tin chung */}
+                        {
+                            newCustomer && newCustomer.owner &&
+                            <GeneralTabCreateForm
+                                id={"customer-general"}
+                                callBackFromParentCreateForm={myCallBack}
+                                newCustomer={newCustomer}
+                            />
+                        }
+
+                        {/* Tab file liên quan đến khách hàng */}
+                        {
+                            <FileTabCreateForm
+                                id={'customer-fileAttachment'}
+                                callBackFromParentCreateForm={myCallBack}
+                            />
+                        }
                     </div>
-                </DialogModal>
-            </React.Fragment>
-        );
-    }
+                </div>
+            </DialogModal>
+        </React.Fragment>
+    );
 }
+
+
 
 function mapStateToProps(state) {
     const { crm, auth, user } = state;

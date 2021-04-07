@@ -122,7 +122,6 @@ module.exports = {
     TransportVehicle: require('./production/transport/transportVehicle.model'),
     
     // project
-
     Project: require('./project/project.model'),
 
     // news feed

@@ -19,7 +19,7 @@ function CreateCareForm  (props) {
     const handleChangeCaregiver = (value) => {
            const  newCareInput =  {
                 ...newCare,
-                caregiver: value,
+                customerCareStaffs: value,
             }
             setNewCare (newCareInput)
         }
@@ -32,7 +32,7 @@ function CreateCareForm  (props) {
     const handleChangeCustomer = (value) => {
         const  newCareInput =  {
             ...newCare,
-            customer: value,
+            customer: value[0],
         }
         setNewCare (newCareInput)
        
@@ -72,7 +72,7 @@ function CreateCareForm  (props) {
     const handleChangeCareType = (value) => {
         const  newCareInput =  {
             ...newCare,
-            careType: value,
+            customerCareTypes: value,
         }
         setNewCare (newCareInput)
        
@@ -92,7 +92,18 @@ function CreateCareForm  (props) {
        
         
     }
-
+    /**
+     * Hàm xử lý khi độ ưu tiên thay đổi
+     * @param {*} value 
+     */
+const handleChangePriority = (value) =>{
+    const  newCareInput =  {
+        ...newCare,
+        priority: value[0],
+    }
+    setNewCare (newCareInput)
+   
+}
     /**
      * Hàm xử lý khi ngày bắt đầu thực hiện công việc thay đổi
      * @param {*} value 
@@ -123,7 +134,6 @@ function CreateCareForm  (props) {
     
 
     const save = () => {
-      
     props.createCare(newCare);
     }
 
@@ -154,6 +164,7 @@ function CreateCareForm  (props) {
                 { value: o._id, text: o.name }
             ))
         }
+        console.log('Caretype',careTypes);
         return (
             <React.Fragment>
                 <ButtonModal modalID="modal-crm-care-create" button_name={translate('general.add')} title={translate('crm.care.add')} />
@@ -178,7 +189,7 @@ function CreateCareForm  (props) {
                                     items={
                                         employees
                                     }
-                                    value={newCare.caregiver ? newCare.caregiver : []}
+                                   // value={newCare.caregiver ? newCare.caregiver : []}
                                     onChange={handleChangeCaregiver}
                                     multiple={true}
                                     options={{ placeholder: translate('crm.care.caregiver') }}
@@ -199,7 +210,7 @@ function CreateCareForm  (props) {
                                     items={
                                         listCustomers
                                     }
-                                    value={newCare.customer ? newCare.customer : []}
+                                  //  value={newCare.customer ? newCare.customer : []}
                                     onChange={handleChangeCustomer}
                                     multiple={true}
                                     options={{ placeholder: translate('crm.care.customer') }}
@@ -260,7 +271,7 @@ function CreateCareForm  (props) {
                                     ]
                                 }
                                 value={newCare.status ? newCare.status : ''}
-                                onChange={handleChangeStatus}
+                                onChange={handleChangePriority}
                                 multiple={false}
                             />
                         </div>

@@ -5,7 +5,6 @@ import { withTranslate } from 'react-redux-multilingual';
 import { DatePicker, ErrorLabel, SelectBox, ApiImage } from '../../../../../common-components';
 
 import ValidationHelper from '../../../../../helpers/validationHelper';
-
 import "./addEmployee.css";
 
 class GeneralTab extends Component {
@@ -358,6 +357,13 @@ class GeneralTab extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
+        if ((nextProps.id === "general" || nextProps.id === "page_general") && !prevState.employeeNumber && !prevState.employeeTimesheetId && nextProps.employee && nextProps.employee.employeeNumber && nextProps.employee.employeeTimesheetId) {
+            return {
+                ...prevState,
+                employeeNumber: nextProps.employee.employeeNumber,
+                employeeTimesheetId: nextProps.employee.employeeTimesheetId
+            }
+        }
         if (nextProps.id !== prevState.id && nextProps.employee) {
             return {
                 ...prevState,
@@ -404,7 +410,7 @@ class GeneralTab extends Component {
             startingDate, leavingDate, emailInCompany, maritalStatus, identityCardNumber, identityCardAddress, ethnic, religion, nationality,
             errorOnBrithdate, errorOnDateCMND, errorOnEmployeeNumber, errorOnMSCC, errorOnFullName, errorOnEmailCompany, errorOnStartingDate,
             errorOnCMND, errorOnAddressCMND, errorOnLeavingDate } = this.state;
-
+        console.log('employeeNumber', employeeNumber)
         return (
             <div id={id} className="tab-pane active">
                 <div className="row box-body">
@@ -431,7 +437,7 @@ class GeneralTab extends Component {
                             {/* Mã số nhân viên */}
                             <div className={`form-group col-lg-6 col-md-6 col-ms-12 col-xs-12 ${errorOnEmployeeNumber && "has-error"}`}>
                                 <label>{translate('human_resource.profile.staff_number')}<span className="text-red">*</span></label>
-                                <input type="text" className="form-control" name="employeeNumber" value={employeeNumber} autoComplete="off" placeholder={translate('human_resource.profile.staff_number')} onChange={this.handleMSNVChange} />
+                                <input type="text" className="form-control" name="employeeNumber" value={employeeNumber} placeholder={translate('human_resource.profile.staff_number')} onChange={this.handleMSNVChange} />
                                 <ErrorLabel content={errorOnEmployeeNumber} />
                             </div>
                             {/* Mã số chấm công */}

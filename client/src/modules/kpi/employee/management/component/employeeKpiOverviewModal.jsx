@@ -26,6 +26,22 @@ function EmployeeKpiOverviewModal(props) {
 
     return (
         <React.Fragment>
+            <DataTableSetting
+                className="pull-right"
+                tableId={tableId}
+                tableContainerId="tree-table-container"
+                tableWidth="1300px"
+                columnArr={[
+                    translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.no_'),
+                    translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.target_name'),
+                    translate('kpi.organizational_unit.dashboard.trend_chart.amount_tasks'),
+                    translate('kpi.evaluation.dashboard.auto_point'),
+                    translate('kpi.evaluation.dashboard.employee_point'),
+                    translate('kpi.evaluation.dashboard.approve_point'),
+                    translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.weight')
+                ]}
+                linePerPageOption={false}
+            />
             <table id={tableId} className="table table-hover table-bordered  table-striped mb-0" >
                 <thead>
                     <tr>
@@ -35,24 +51,7 @@ function EmployeeKpiOverviewModal(props) {
                         <th title={translate('kpi.evaluation.dashboard.auto_point')} style={thStyle}>{translate('kpi.evaluation.dashboard.auto_point')}</th>
                         <th title={translate('kpi.evaluation.dashboard.employee_point')} style={thStyle}>{translate('kpi.evaluation.dashboard.employee_point')}</th>
                         <th title={translate('kpi.evaluation.dashboard.approve_point')} style={thStyle}>{translate('kpi.evaluation.dashboard.approve_point')}</th>
-                        <th title={translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.weight')} style={thStyle}>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.weight')}
-                            <DataTableSetting
-                                className="pull-right"
-                                tableId={tableId}
-                                tableContainerId="tree-table-container"
-                                tableWidth="1300px"
-                                columnArr={[
-                                    translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.no_'),
-                                    translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.target_name'),
-                                    translate('kpi.organizational_unit.dashboard.trend_chart.amount_tasks'),
-                                    translate('kpi.evaluation.dashboard.auto_point'),
-                                    translate('kpi.evaluation.dashboard.employee_point'),
-                                    translate('kpi.evaluation.dashboard.approve_point'),
-                                    translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.weight')
-                                ]}
-                                linePerPageOption={false}
-                            />
-                        </th>
+                        <th title={translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.weight')} style={thStyle}>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.weight')}</th>
                     </tr>
                 </thead>
                 <tbody >

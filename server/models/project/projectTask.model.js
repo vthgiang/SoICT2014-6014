@@ -1,0 +1,715 @@
+const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
+const mongoosePaginate = require('mongoose-paginate-v2');
+const { generateUniqueCode } = require("../../helpers/functionHelper");
+
+const ProjectTaskSchema = new Schema(
+    {
+        code: {
+            type: String,
+            default: generateUniqueCode('DXT_')
+        },
+        process: {
+            type: Schema.Types.ObjectId,
+            ref: "TaskProcess",
+        },
+        codeInProcess: {
+            type: String,
+        },
+        commentsInProcess: [
+            {
+                // Bình luận trong quy trình
+                creator: {
+                    type: Schema.Types.ObjectId,
+                    ref: "User",
+                },
+                description: {
+                    type: String,
+                },
+                createdAt: {
+                    type: Date,
+                    default: Date.now,
+                },
+                updatedAt: {
+                    type: Date,
+                    default: Date.now,
+                },
+                files: [
+                    {
+                        // Các file đi kèm comments
+                        name: {
+                            type: String,
+                        },
+                        url: {
+                            type: String,
+                        },
+                    },
+                ],
+                comments: [
+                    {
+                        // Comments của comment
+                        creator: {
+                            type: Schema.Types.ObjectId,
+                            ref: "User",
+                        },
+                        description: {
+                            type: String,
+                        },
+                        createdAt: {
+                            type: Date,
+                            default: Date.now,
+                        },
+                        updatedAt: {
+                            type: Date,
+                            default: Date.now,
+                        },
+                        files: [
+                            {
+                                // Các file đi kèm comments
+                                name: {
+                                    type: String,
+                                },
+                                url: {
+                                    type: String,
+                                },
+                            },
+                        ],
+                    },
+                ],
+            },
+        ],
+        numberOfDaysTaken: {
+            type: Number,
+        },
+        followingTasks: [
+            {
+                task: {
+                    type: Schema.Types.ObjectId,
+                    replies: this,
+                },
+                link: {
+                    type: String,
+                },
+                activated: {
+                    type: Boolean,
+                    default: false,
+                },
+            },
+        ],
+        preceedingTasks: [
+            {
+                task: {
+                    type: Schema.Types.ObjectId,
+                    replies: this,
+                },
+                link: {
+                    type: String,
+                },
+            },
+        ],
+        organizationalUnit: {
+            type: Schema.Types.ObjectId,
+            ref: "OrganizationalUnit",
+        },
+        collaboratedWithOrganizationalUnits: [
+            {
+                organizationalUnit: {
+                    type: Schema.Types.ObjectId,
+                    ref: "OrganizationalUnit",
+                },
+                isAssigned: {
+                    type: Boolean,
+                    default: false,
+                },
+            },
+        ],
+        creator: {
+            type: Schema.Types.ObjectId,
+            ref: "User",
+        },
+        name: {
+            type: String,
+        },
+        description: {
+            type: String,
+        },
+        startDate: {
+            type: Date,
+        },
+        endDate: {
+            type: Date,
+        },
+        priority: {
+            //
+            // 1: Thấp, 2: Trung Bình, 3: Tiêu chuẩn, 4: Cao, 5: Khẩn cấp
+            // Low, Average, Standard, High, Urgent
+            type: Number,
+        },
+        isArchived: {
+            // Lưu kho hay không. Task lưu kho sẽ mặc định ẩn đi cho gọn giao diện, vì số task có thể rất lớn. Khi cần xem lại, phải chọn filter phù hợp và search
+            type: Boolean,
+            default: false,
+        },
+        status: {
+            // có 5 trạng thái công việc: Đang thực hiện, Chờ phê duyệt, Đã hoàn thành, Tạm hoãn, Bị hủy
+            type: String,
+            default: "inprocess",
+            enum: [
+                "inprocess",
+                "wait_for_approval",
+                "finished",
+                "delayed",
+                "canceled",
+            ],
+        },
+        taskTemplate: {
+            type: Schema.Types.ObjectId,
+            ref: "TaskTemplate",
+        },
+        parent: {
+            // Công việc liên quan
+            type: Schema.Types.ObjectId,
+            replies: this,
+        },
+        level: {
+            // Không có cha -> level 1, có cha -> level 2, có ông -> level 3, ...
+            type: Number,
+        },
+        inactiveEmployees: [
+            {
+                // Những người từng tham gia công việc nhưng không còn tham gia nữa
+                type: Schema.Types.ObjectId,
+                ref: "User",
+            },
+        ],
+        responsibleEmployees: [
+            {
+                //người thực hiện
+                type: Schema.Types.ObjectId,
+                ref: "User",
+            },
+        ],
+        accountableEmployees: [
+            {
+                //người phê duyệt
+                type: Schema.Types.ObjectId,
+                ref: "User",
+            },
+        ],
+        consultedEmployees: [
+            {
+                //người tư vấn
+                type: Schema.Types.ObjectId,
+                ref: "User",
+            },
+        ],
+        informedEmployees: [
+            {
+                //người quan sát
+                type: Schema.Types.ObjectId,
+                ref: "User",
+            },
+        ],
+        confirmedByEmployees: [
+            {
+                type: Schema.Types.ObjectId,
+                ref: "User",
+            },
+        ],
+        requestToCloseTask: {
+            requestedBy: {
+                type: Schema.Types.ObjectId,
+                ref: "User",
+            },
+            createdAt: {
+                type: Date,
+                default: Date.now,
+            },
+            description: {
+                type: String,
+            },
+            taskStatus: { // Các trạng thái như trạng thái công việc, trừ inprocess
+                type: String,
+            },
+            requestStatus: { // 0: chưa yêu cầu, 1: đang yêu cầu, 2: từ chối, 3: đồng ý
+                type: Number,
+                default: 0,
+            }
+        },
+        evaluations: [
+            {
+                // Một công việc có thể trải dài nhiều tháng, mỗi tháng phải đánh giá một lần
+                date: { // về sau không dùng. thay bởi các thuộc tính (evaluatingMonth, startDate, endDate) bên dưới
+                    // Lưu ngày đánh giá. Khi muốn match công việc trong 1 KPI thì chỉ lấy tháng
+                    type: Date,
+                },
+                evaluatingMonth: { // tháng đánh giá
+                    type: Date,
+                },
+                startDate: { // đánh giá từ ngày
+                    type: Date,
+                },
+                endDate: { // đánh giá đến ngày
+                    type: Date,
+                },
+                progress: {
+                    type: Number,
+                    default: 0,
+                },
+                results: [
+                    {
+                        // Kết quả thực hiện công việc trong tháng đánh giá nói trên
+                        employee: {
+                            // Người được đánh giá
+                            type: Schema.Types.ObjectId,
+                            ref: "User",
+                        },
+                        organizationalUnit: {
+                            type: Schema.Types.ObjectId,
+                            ref: "OrganizationalUnit",
+                        },
+                        role: {
+                            // người thực hiện: responsible, người tư vấn: consulted, người phê duyệt: accountable
+                            type: String,
+                            enum: ["responsible", "consulted", "accountable"],
+                        },
+                        kpis: [
+                            {
+                                // Các kpis của người thực hiện A đó. Phải chọn kpis lúc tạo công việc, và sang đầu tháng mới, nếu công việc chưa kết thúc thì phải chọn lại.
+                                type: Schema.Types.ObjectId,
+                                ref: "EmployeeKpi",
+                            },
+                        ],
+                        automaticPoint: {
+                            // Điểm hệ thống đánh giá
+                            type: Number,
+                            default: 0,
+                        },
+                        employeePoint: {
+                            // Điểm tự đánh giá
+                            type: Number,
+                            default: 0,
+                        },
+                        approvedPoint: {
+                            // Điểm được phê duyệt
+                            type: Number,
+                            default: 0,
+                        },
+                        contribution: {
+                            // % Đóng góp: 0->100
+                            type: Number,
+                        },
+                        hoursSpent: {
+                            type: Number,
+                        },
+                        taskImportanceLevel: {
+                            // Mức độ quan trọng của công việc với người được đánh giá, từ 0-10, dùng trong công thức tính điểm KPI
+                            type: Number, // Suggest tự động dựa theo lần đánh giá trước đó (nếu có), theo thời gian thực hiện, độ quan trọng của công việc, % đóng góp
+                            default: -1,
+                        },
+                    },
+                ],
+                taskInformations: [
+                    {
+                        // Lưu lại lịch sử các giá trị của thuộc tính công việc trong mỗi lần đánh giá
+                        code: {
+                            // Mã thuộc tính công việc dùng trong công thức (nếu công việc theo mẫu)
+                            type: String,
+                        },
+                        name: {
+                            // Tên thuộc tính công việc (bao gồm progress + point + các thuộc tính khác nếu như đây là công việc theo mẫu)
+                            type: String,
+                        },
+                        filledByAccountableEmployeesOnly: {
+                            // Chỉ người phê duyệt được điền?
+                            type: Boolean,
+                            default: true,
+                        },
+                        extra: {
+                            // Cho kiểu dữ liệu tập giá trị, lưu lại các tập giá trị
+                            type: String,
+                        },
+                        type: {
+                            type: String,
+                            enum: [
+                                "text",
+                                "boolean",
+                                "date",
+                                "number",
+                                "set_of_values",
+                            ],
+                        },
+                        value: {
+                            // Giá trị tương ứng của các thuộc tính (tại thời điểm đánh giá)
+                            type: Schema.Types.Mixed,
+                        },
+                    },
+                ],
+            },
+        ],
+        formula: {
+            type: String,
+            default:
+                "progress / (daysUsed / totalDays) - (numberOfFailedActions / (numberOfFailedActions + numberOfPassedActions)) * 100",
+        },
+        progress: {
+            // % Hoàn thành thành công việc
+            type: Number,
+            default: 0,
+        },
+        point: {
+            type: Number,
+            default: -1,
+        },
+        documents: [
+            {
+                // Các files đi kèm với công việc
+                files: [
+                    {
+                        name: {
+                            type: String,
+                        },
+                        url: {
+                            type: String,
+                        },
+                    },
+                ],
+                description: {
+                    type: String,
+                },
+                creator: {
+                    type: Schema.Types.ObjectId,
+                    ref: "User",
+                },
+                isOutput: {
+                    type: Boolean,
+                    default: false,
+                },
+            },
+        ],
+        hoursSpentOnTask: {
+            totalHoursSpent: {
+                type: Number,
+                default: 0,
+            },
+            contributions: [
+                {
+                    employee: {
+                        type: Schema.Types.ObjectId,
+                        ref: "User",
+                    },
+                    hoursSpent: {
+                        type: Number,
+                    },
+                },
+            ],
+        },
+        timesheetLogs: [
+            {
+                creator: {
+                    // Người thực hiện nào tiến hành bấm giờ
+                    type: Schema.Types.ObjectId,
+                    ref: "User",
+                },
+                startedAt: {
+                    // Lưu dạng miliseconds. Thời gian khi người dùng nhất nút bắt đầu bấm giờ
+                    type: Date,
+                },
+                stoppedAt: {
+                    // Lưu dạng miliseconds. Thời gian kết thúc bấm giờ. Khi stoppedAt-startedAt quá 4 tiếng, hỏi lại người dùng stop chính xác vào lúc nào và cập nhật lại stoppedAt.
+                    type: Date,
+                },
+                description: {
+                    // Mô tả ngắn gọn việc đã làm khi log
+                    type: String,
+                },
+                duration: {
+                    type: Number,
+                },
+                autoStopped: { // 1: Tắt bấm giờ bằng tay, 2: Tắt bấm giờ tự động với thời gian hẹn trc, 3: add log timer
+                    type: Number,
+                    default: 1,
+                    enum: [1, 2, 3],
+                },
+                acceptLog: {
+                    type: Boolean,
+                    default: true
+                }
+            },
+        ],
+
+        taskInformations: [
+            {
+                // Khi tạo công việc theo mẫu, các giá trị này sẽ được copy từ mẫu công việc sang
+                code: {
+                    // Mã thuộc tính công việc dùng trong công thức
+                    type: String,
+                    required: true,
+                },
+                name: {
+                    // Tên thuộc tính công việc
+                    type: String,
+                },
+                description: {
+                    type: String,
+                },
+                extra: {
+                    // Cho kiểu dữ liệu tập giá trị, lưu lại các tập giá trị
+                    type: String,
+                },
+                filledByAccountableEmployeesOnly: {
+                    // Chỉ người phê duyệt được điền?
+                    type: Boolean,
+                    default: true,
+                },
+                type: {
+                    type: String,
+                    enum: [
+                        "text",
+                        "boolean",
+                        "date",
+                        "number",
+                        "set_of_values",
+                    ],
+                },
+                value: {
+                    type: Schema.Types.Mixed,
+                },
+                isOutput: {
+                    type: Boolean,
+                    default: false,
+                },
+            },
+        ],
+        taskActions: [
+            {
+                // Khi task theo tempate nào đó, sẽ copy hết actions trong template vào đây
+                creator: {
+                    // Trường này không bắt buộc. Khi người thực hiện task (loại task theo teamplate) xác nhận xong action thì mới điền id người đó vào trường này
+                    type: Schema.Types.ObjectId,
+                    ref: "User",
+                },
+                name: {
+                    type: String,
+                },
+                description: {
+                    type: String,
+                },
+                mandatory: {
+                    // Hoạt động này bắt buộc hay không?
+                    type: Boolean,
+                    default: true,
+                },
+                createdAt: {
+                    type: Date,
+                    default: Date.now,
+                },
+                updatedAt: {
+                    type: Date,
+                    default: Date.now,
+                },
+                rating: {
+                    // -1: chưa đánh giá, 0-10: tùy mức độ tốt
+                    type: Number,
+                    default: -1,
+                },
+                files: [
+                    {
+                        // Các files đi kèm actions
+                        name: {
+                            type: String,
+                        },
+                        url: {
+                            type: String,
+                        },
+                    },
+                ],
+                evaluations: [
+                    {
+                        // Đánh giá actions (Dù là người quản lý, phê duyệt, tư vấn, ai cũng có thể đánh giá, nhưng chỉ tính đánh gía của người phê duyệt)
+                        creator: {
+                            type: Schema.Types.ObjectId,
+                            ref: "User",
+                        },
+                        role: {
+                            type: String // đánh giá với vai trò ntn (phê duyệt, tư vấn, quan sát, thiết)
+                        },
+                        createdAt: {
+                            type: Date,
+                            default: Date.now,
+                        },
+                        updatedAt: {
+                            type: Date,
+                            default: Date.now,
+                        },
+                        rating: {
+                            // -1: chưa đánh giá, 0-10: tùy mức độ tốt
+                            type: Number,
+                            default: -1,
+                        },
+                    },
+                ],
+                comments: [
+                    {
+                        // Comments của action
+                        creator: {
+                            type: Schema.Types.ObjectId,
+                            ref: "User",
+                        },
+                        description: {
+                            type: String,
+                        },
+                        createdAt: {
+                            type: Date,
+                            default: Date.now,
+                        },
+                        updatedAt: {
+                            type: Date,
+                            default: Date.now,
+                        },
+                        files: [
+                            {
+                                // Các file đi kèm comments
+                                name: {
+                                    type: String,
+                                },
+                                url: {
+                                    type: String,
+                                },
+                            },
+                        ],
+                    },
+                ],
+            },
+        ],
+        taskComments: [
+            {
+                // Trao đổi trong tasks
+                creator: {
+                    type: Schema.Types.ObjectId,
+                    ref: "User",
+                },
+                description: {
+                    type: String,
+                },
+                createdAt: {
+                    type: Date,
+                    default: Date.now,
+                },
+                updatedAt: {
+                    type: Date,
+                    default: Date.now,
+                },
+                createdAt: {
+                    type: Date,
+                    default: Date.now,
+                },
+                updatedAt: {
+                    type: Date,
+                    default: Date.now,
+                },
+                files: [
+                    {
+                        // Các file đi kèm comments
+                        name: {
+                            type: String,
+                        },
+                        url: {
+                            type: String,
+                        },
+                    },
+                ],
+                comments: [
+                    {
+                        // Comments của comment
+                        creator: {
+                            type: Schema.Types.ObjectId,
+                            ref: "User",
+                        },
+                        description: {
+                            type: String,
+                        },
+                        createdAt: {
+                            type: Date,
+                            default: Date.now,
+                        },
+                        updatedAt: {
+                            type: Date,
+                            default: Date.now,
+                        },
+                        files: [
+                            {
+                                // Các file đi kèm comments
+                                name: {
+                                    type: String,
+                                },
+                                url: {
+                                    type: String,
+                                },
+                            },
+                        ],
+                    },
+                ],
+            },
+        ],
+        logs: [
+            {
+                createdAt: {
+                    type: Date,
+                    default: Date.now,
+                },
+                creator: {
+                    type: Schema.Types.ObjectId,
+                    ref: "User",
+                },
+                title: {
+                    type: String,
+                },
+                description: {
+                    type: String,
+                },
+            },
+        ],
+        taskProject: { //tên dự án công việc thuộc về
+            type: Schema.Types.ObjectId,
+            ref: 'Project'
+        },
+        //tên phase mà task thuộc về
+        taskPhase: { 
+            type: Schema.Types.ObjectId,
+            ref: 'ProjectPhase'
+        },
+        //thời gian ước lượng thông thường của task
+        estimateNormalTime: {
+            type: Number,
+        },
+        //thời gian ước lượng ít nhất để hoàn thành task
+        estimateOptimisticTime: {
+            type: Number,
+        },
+        //thời gian ước lượng nhiều nhất có thể cho phép để hoàn thành task
+        estimatePessimisticTime: {
+            type: Number,
+        },
+        //chi phí ước lượng thông thường của task
+        estimateNormalCost: {
+            type: Number,
+        },
+        //chi phí ước lượng nhiều nhất có thể cho phép của task
+        estimateMaxCost: {
+            type: Number,
+        },
+        //chi phí thực cho task đó
+        actualCost: {
+            type: Number,
+        },
+    },
+    {
+        timestamps: true,
+    }
+);
+ProjectTaskSchema.plugin(mongoosePaginate);
+module.exports = (db) => {
+    if (!db.models.ProjectTask) return db.model("ProjectTask", ProjectTaskSchema);
+    return db.models.ProjectTask;
+};

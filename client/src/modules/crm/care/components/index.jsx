@@ -10,6 +10,8 @@ import EditCareForm from './editForm';
 import InfoCareForm from './infoForm';
 import CompleteCareForm from './completeForm'
 import CreateCareCommonForm from '../../common/createCareCommonForm'
+import { CrmCareTypeActions } from '../../careType/redux/action';
+import { UserActions } from '../../../super-admin/user/redux/actions';
 
 class CrmCare extends Component {
     constructor(props) {
@@ -65,6 +67,9 @@ class CrmCare extends Component {
     componentDidMount() {
         this.props.getCares(this.state);
         this.props.getCustomers();
+        this.props.getCareTypes({});
+        this.props.getDepartment();
+        this.props.getAllEmployeeOfUnitByRole(localStorage.getItem('currentRole'));
     }
 
     render() {
@@ -76,11 +81,11 @@ class CrmCare extends Component {
             parseInt(cares.totalDocs / limit) :
             parseInt((cares.totalDocs / limit) + 1);
         const cr_page = parseInt((page / limit) + 1);
-
+        console.log('CRM',crm)
         return (
             <div className="box">
                 <div className="box-body qlcv">
-                    <CreateCareForm />
+                   { cares && <CreateCareForm />}
                     {/* form xem chi tieets */}
                     {
                         careInfoId && <InfoCareForm careInfoId={careInfoId} />
@@ -190,11 +195,10 @@ class CrmCare extends Component {
                                        
                                         <td>{o.name ? o.name : ''}</td>
                                         <td>{o.careType ? o.careType.map(cr => cr.name).join(', ') : ''}</td>
-                                        <td>{o.customer ? o.customer.map(cus => cus.name).join(', ') : ''}</td>
+                                        <td>{o.customer ? o.customer.name : ''}</td>
                                         <td>{o.description}</td>
                                         <td>ưu tiên cao</td>
-                                        <td>{o.caregiver ? o.caregiver.map(cg => cg.name).join(', ') : ''}</td>
-                                        
+                                        <td>{o.customerCareStaffs ? o.customerCareStaffs.map(cg => cg.name).join(', ') : ''}</td>                      
                                         <td>{this.formatCareStatus(o.status)}</td>
                                         <td>{o.startDate ? formatFunction.formatDate(o.startDate) : ''}</td>
                                         <td>{o.endDate ? formatFunction.formatDate(o.endDate) : ''}</td>
@@ -243,6 +247,10 @@ const mapDispatchToProps = {
     getCares: CrmCareActions.getCares,
     deleteCare: CrmCareActions.deleteCare,
     getCustomers: CrmCustomerActions.getCustomers,
+    getCareTypes: CrmCareTypeActions.getCareTypes,
+    getDepartment: UserActions.getDepartmentOfUser, 
+    getChildrenOfOrganizationalUnits: UserActions.getChildrenOfOrganizationalUnitsAsTree,
+    getAllEmployeeOfUnitByRole: UserActions.getAllEmployeeOfUnitByRole,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(CrmCare));

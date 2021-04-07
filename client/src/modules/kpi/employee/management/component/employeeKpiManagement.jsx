@@ -363,6 +363,24 @@ function KPIPersonalManager(props) {
                     {exportData && <ExportExcel id="export-employee-kpi-management" exportData={exportData} />}
                 </div>
 
+                {/**Table chứa danh sách các tập KPI */}
+                <DataTableSetting 
+                    className="pull-right" 
+                    tableId={tableId} 
+                    tableContainerId="tree-table-container" 
+                    tableWidth="1300px"
+                    columnArr={[
+                        translate('kpi.evaluation.employee_evaluation.index'),
+                        translate('kpi.evaluation.employee_evaluation.time'),
+                        translate('kpi.evaluation.employee_evaluation.status'),
+                        translate('kpi.evaluation.employee_evaluation.number_of_targets'),
+                        translate('kpi.evaluation.employee_evaluation.system_evaluate'),
+                        translate('kpi.evaluation.employee_evaluation.result_self_evaluate'),
+                        translate('kpi.evaluation.employee_evaluation.evaluation_management'),
+                        translate('kpi.evaluation.employee_evaluation.action')
+                    ]}
+                    setLimit={setLimit}
+                />
                 <table id={tableId} className="table table-hover table-bordered">
                     <thead>
                     <tr>
@@ -373,21 +391,7 @@ function KPIPersonalManager(props) {
                         <th title={translate('kpi.evaluation.employee_evaluation.system_evaluate')}>{translate('kpi.evaluation.employee_evaluation.system_evaluate')}</th>
                         <th title={translate('kpi.evaluation.employee_evaluation.result_self_evaluate')}>{translate('kpi.evaluation.employee_evaluation.result_self_evaluate')}</th>
                         <th title={translate('kpi.evaluation.employee_evaluation.evaluation_management')}>{translate('kpi.evaluation.employee_evaluation.evaluation_management')}</th>
-                        <th title={translate('kpi.evaluation.employee_evaluation.action')}>{translate('kpi.evaluation.employee_evaluation.action')}
-                            {/**Table chứa danh sách các tập KPI */}
-                            <DataTableSetting className="pull-right" tableId={tableId} tableContainerId="tree-table-container" tableWidth="1300px"
-                                              columnArr={[
-                                                  translate('kpi.evaluation.employee_evaluation.index'),
-                                                  translate('kpi.evaluation.employee_evaluation.time'),
-                                                  translate('kpi.evaluation.employee_evaluation.status'),
-                                                  translate('kpi.evaluation.employee_evaluation.number_of_targets'),
-                                                  translate('kpi.evaluation.employee_evaluation.system_evaluate'),
-                                                  translate('kpi.evaluation.employee_evaluation.result_self_evaluate'),
-                                                  translate('kpi.evaluation.employee_evaluation.evaluation_management'),
-                                                  translate('kpi.evaluation.employee_evaluation.action')
-                                              ]}
-                                              setLimit={setLimit} />
-                        </th>
+                        <th title={translate('kpi.evaluation.employee_evaluation.action')}>{translate('kpi.evaluation.employee_evaluation.action')}</th>
                     </tr>
                     </thead>
                     <tbody>

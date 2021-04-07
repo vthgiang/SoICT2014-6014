@@ -1,57 +1,60 @@
-import React, { Component } from 'react';
+import React, { Component, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import Sortable from 'sortablejs';
 import { QuillEditor } from '../../../../common-components';
 import parse from 'html-react-parser';
-class ActionForm extends Component {
-    constructor(props) {
-        super(props);
-        let EMPTY_ACTION = {
-            name: '',
-            description: '',
-            mandatory: true,
-        };
-        this.state = {
-            EMPTY_ACTION: Object.assign({}, EMPTY_ACTION),
-            editAction: false,
-            action: Object.assign({}, EMPTY_ACTION),
-            quillValueDefault: null
-        }
-    }
 
-    static getDerivedStateFromProps(props, state) {
+function ActionForm (props) {
+
+    let EMPTY_ACTION = {
+        name: '',
+        description: '',
+        mandatory: true,
+    };
+    
+    const [state, setState] = useState({
+        EMPTY_ACTION: Object.assign({}, EMPTY_ACTION),
+        editAction: false,
+        action: Object.assign({}, EMPTY_ACTION),
+        quillValueDefault: null
+    })
+
+    useEffect(() => {
         if (props.type !== state.type) {
-            return {
-                ...state,
-                taskActions: props.initialData,
-                type: props.type
-            }
+            setState( state => {
+                return {
+                    ...state,
+                    taskActions: props.initialData,
+                    type: props.type
+                }
+            })
         }
         if (props.savedTaskAsTemplate && props.initialData && props.initialData.length > 0 && !state.taskActions) {
-            return {
-                ...state,
-                taskActions: props.initialData,
-            }
-        } else {
-            return null;
-        }
-    }
+            
+            setState(state =>{
+                return {
+                    ...state,
+                    taskActions: props.initialData,
+                }
+            })
+        } 
+    },[props.type])
 
     /**Gửi truy vấn tạo 1 template mới */
-    handleSubmit = async (event) => {
-        const { newTemplate } = this.state;
-        this.props.addNewTemplate(newTemplate);
+    const handleSubmit = async (event) => {
+        const { newTemplate } = state;
+        props.addNewTemplate(newTemplate);
     }
 
-    componentDidMount() {
+    useEffect(() => {
         // Load library for sort action table
-        this.handleSortable();
-    }
+        handleSortable();
+    },[])
 
     // Drag and drop item in action table
-    handleSortable = () => {
+    const handleSortable = () => {
         var el1 = document.getElementById('actions');
         Sortable.create(el1, {
             chosenClass: 'chosen',
@@ -62,7 +65,7 @@ class ActionForm extends Component {
                 });
             },
             onEnd: async (evt) => {
-                let taskActions = this.state.taskActions;
+                let taskActions = state.taskActions;
                 const item = taskActions[evt.oldIndex];
                 taskActions.splice(evt.oldIndex, 1);
                 taskActions.splice(evt.newIndex, 0, item);
@@ -74,10 +77,10 @@ class ActionForm extends Component {
                  * Kết quả: thứ tự trong State lưu một đằng, giao diện hiển thị thể hiện một nẻo
                  **/
                 set: (sortable) => {
-                    let state = this.state;
+                    let state = state;
                     state.keyPrefix = Math.random(); // force react to destroy children
                     state.order = sortable.toArray();
-                    this.setState({
+                    setState({
                         ...state
                     })
                 }
@@ -85,16 +88,19 @@ class ActionForm extends Component {
         });
     }
 
-    handleChangeActionName = (event) => {
+    const handleChangeActionName = (event) => {
         let value = event.target.value;
-        let { action } = this.state;
-        action.name = value;
-        this.setState({ action });
+        let { action } = state;
+        state.action.name = value;
+        setState(
+            {...state}
+        );
     }
 
-    handleChangeActionDesc = (value, imgs) => {
-        const { action } = this.state;
-        this.setState({
+    const handleChangeActionDesc = (value, imgs) => {
+        const { action } = state;
+        setState({
+            ...state,
             action: {
                 ...action,
                 description: value
@@ -103,17 +109,21 @@ class ActionForm extends Component {
         })
     }
 
-    handleChangeActionMandatory = (event) => {
+    const handleChangeActionMandatory = (event) => {
         let value = event.target.checked;
-        let { action } = this.state;
-        action.mandatory = value;
-        this.setState({ action });
+        let { action } = state;
+        state.action.mandatory = value;
+        setState(
+            
+            {
+                ...state}
+        );
     }
 
     /** cancel editing an action*/
-    handleCancelEditAction = (event) => {
+    const handleCancelEditAction = (event) => {
         event.preventDefault(); // Ngăn không submit     
-        this.setState(state => {
+        setState(state => {
             return {
                 ...state,
                 editAction: false,
@@ -124,9 +134,9 @@ class ActionForm extends Component {
     }
 
     /**reset all data fields of action table */
-    handleClearAction = (event) => {
+    const handleClearAction = (event) => {
         event.preventDefault(); // Ngăn không submit
-        this.setState(state => {
+        setState(state => {
             return {
                 ...state,
                 action: Object.assign({}, state.EMPTY_ACTION),
@@ -136,9 +146,9 @@ class ActionForm extends Component {
     }
 
     /**Thêm 1 hoạt động */
-    handleAddAction = (event) => {
+    const handleAddAction = (event) => {
         event.preventDefault(); // Ngăn không submit
-        let { taskActions, action } = this.state;
+        let { taskActions, action } = state;
 
         if (!taskActions)
             taskActions = [];
@@ -147,7 +157,8 @@ class ActionForm extends Component {
             action,
         ]
 
-        this.setState({
+        setState({
+            ...state,
             taskActions: newTaskActions,
             action: {
                 name: '',
@@ -155,12 +166,12 @@ class ActionForm extends Component {
                 mandatory: true,
             },
             quillValueDefault: ''
-        }, () => this.props.onDataChange(newTaskActions));
+        }, () => props.onDataChange(newTaskActions));
     }
 
     /** Sửa các thông tin của hành động */
-    handleEditAction = (action, index) => {
-        this.setState(state => {
+    const handleEditAction = (action, index) => {
+        setState(state => {
             return {
                 ...state,
                 editAction: true,
@@ -172,113 +183,112 @@ class ActionForm extends Component {
     }
 
     /**Lưu sau khi chỉnh sửa thông tin hoạt động */
-    handleSaveEditedAction = (event) => {
+    const handleSaveEditedAction = (event) => {
         event.preventDefault(); // Ngăn không submit
 
-        let { indexAction, taskActions, action } = this.state;
+        let { indexAction, taskActions, action } = state;
         taskActions[indexAction] = action;
 
-        this.setState({
+        setState({
+            ...state,
             taskActions,
             editAction: false,
-            action: { ...this.state.EMPTY_ACTION },
-            quillValueDefault: this.state.EMPTY_ACTION.description
-        }, () => this.props.onDataChange(taskActions))
+            action: { ...state.EMPTY_ACTION },
+            quillValueDefault: state.EMPTY_ACTION.description
+        }, () => props.onDataChange(taskActions))
     }
 
     /**Xóa 1 hành động */
-    handleDeleteAction = (index) => {
-        let { taskActions } = this.state;
+    const handleDeleteAction = (index) => {
+        let { taskActions } = state;
         taskActions.splice(index, 1);
 
-        this.setState(state => {
+        setState(state => {
             return {
                 ...state,
                 taskActions
             }
-        }, () => this.props.onDataChange(taskActions))
+        }, () => props.onDataChange(taskActions))
     }
 
-    render() {
-        const { translate } = this.props;
-        let { action, taskActions, quillValueDefault } = this.state;
-        const { type } = this.props;
+    const { translate } = props;
+    let { action, taskActions, quillValueDefault } = state;
+    const { type } = props;
 
-        return (
-            /**Form chứa các thông tin của phần hoạt động của 1 task-template*/
-            <fieldset className="scheduler-border">
-                <legend className="scheduler-border">{translate('task_template.activity_list')}</legend>
+    return (
+        /**Form chứa các thông tin của phần hoạt động của 1 task-template*/
+        <fieldset className="scheduler-border">
+            <legend className="scheduler-border">{translate('task_template.activity_list')}</legend>
 
-                {/**Tên hoạt động  */}
-                <div className={`form-group ${this.state.action.errorOnName === undefined ? "" : "has-error"}`} >
-                    <label className="control-label">{translate('task_template.action_name')}</label>
-                    <input type="text" className="form-control" placeholder={translate('task_template.action_name')} value={action.name} onChange={this.handleChangeActionName} />
-                </div>
+            {/**Tên hoạt động  */}
+            <div className={`form-group ${state.action.errorOnName === undefined ? "" : "has-error"}`} >
+                <label className="control-label">{translate('task_template.action_name')}</label>
+                <input type="text" className="form-control" placeholder={translate('task_template.action_name')} value={action.name} onChange={handleChangeActionName} />
+            </div>
 
-                {/**Mô tả hoạt động*/}
-                <div className={`form-group ${this.state.action.errorOnDescription === undefined ? "" : "has-error"}`} >
-                    <label className="control-label">{translate('task_template.description')}</label>
-                    <QuillEditor
-                        id={`actionsTemplate${type}`}
-                        getTextData={this.handleChangeActionDesc}
-                        quillValueDefault={quillValueDefault}
-                        embeds={false}
-                    />
-                </div>
+            {/**Mô tả hoạt động*/}
+            <div className={`form-group ${state.action.errorOnDescription === undefined ? "" : "has-error"}`} >
+                <label className="control-label">{translate('task_template.description')}</label>
+                <QuillEditor
+                    id={`actionsTemplate${type}`}
+                    getTextData={handleChangeActionDesc}
+                    quillValueDefault={quillValueDefault}
+                    embeds={false}
+                />
+            </div>
 
-                {/**Hoạt động này có bắt buộc không?*/}
-                <div className="form-group" >
-                    <label className="control-label">
-                        {translate('task_template.mandatory')} &nbsp;
-                        <input type="checkbox" className="" checked={action.mandatory} onChange={this.handleChangeActionMandatory} />
-                    </label>
-                </div>
+            {/**Hoạt động này có bắt buộc không?*/}
+            <div className="form-group" >
+                <label className="control-label">
+                    {translate('task_template.mandatory')} &nbsp;
+                    <input type="checkbox" className="" checked={action.mandatory} onChange={handleChangeActionMandatory} />
+                </label>
+            </div>
 
-                {/**Các button thêm 1 hoạt động, xóa trắng các trường thông tin đã nhập*/}
-                <div className="pull-right" style={{ marginBottom: '10px' }}>
-                    {this.state.editAction ?
-                        <React.Fragment>
-                            <button className="btn btn-success" style={{ marginLeft: "10px" }} onClick={this.handleCancelEditAction}>{translate('task_template.cancel_editing')}</button>
-                            <button className="btn btn-success" style={{ marginLeft: "10px" }} onClick={this.handleSaveEditedAction}>{translate('task_template.save')}</button>
-                        </React.Fragment> :
-                        <button className="btn btn-success" style={{ marginLeft: "10px" }} onClick={this.handleAddAction}>{translate('task_template.add')}</button>
+            {/**Các button thêm 1 hoạt động, xóa trắng các trường thông tin đã nhập*/}
+            <div className="pull-right" style={{ marginBottom: '10px' }}>
+                {state.editAction ?
+                    <React.Fragment>
+                        <button className="btn btn-success" style={{ marginLeft: "10px" }} onClick={handleCancelEditAction}>{translate('task_template.cancel_editing')}</button>
+                        <button className="btn btn-success" style={{ marginLeft: "10px" }} onClick={handleSaveEditedAction}>{translate('task_template.save')}</button>
+                    </React.Fragment> :
+                    <button className="btn btn-success" style={{ marginLeft: "10px" }} onClick={handleAddAction}>{translate('task_template.add')}</button>
+                }
+                <button className="btn btn-primary" style={{ marginLeft: "10px" }} onClick={handleClearAction}>{translate('task_template.delete')}</button>
+            </div>
+
+            {/**Table chứa các hoạt động sẵn có*/}
+            <table className="table table-hover table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th style={{ width: '50px' }} className="col-fixed">STT</th>
+                        <th title="Tên hoạt động">{translate('task_template.action_name')}</th>
+                        <th title="Mô tả">{translate('task_template.description')}</th>
+                        <th style={{ width: '60px' }} title="Bắt buộc">{translate('task_template.mandatory')}</th>
+                        <th style={{ width: '60px' }} title="Hành động">{translate('task_template.action')}</th>
+                    </tr>
+                </thead>
+                <tbody id="actions">
+                    {
+                        (typeof taskActions === 'undefined' || taskActions.length === 0) ? <tr><td colSpan={5}><center>{translate('task_template.no_data')}</center></td></tr> :
+                            taskActions.map((item, index) =>
+                                <tr key={`${state.keyPrefix}_${index}`}>
+                                    <td>{index + 1}</td>
+                                    <td>{parse(item.name)}</td>
+                                    <td><div>{parse(item.description)}</div></td>
+                                    <td>{item.mandatory ? "Có" : "Không"}</td>
+                                    {/**các button sửa, xóa 1 hoạt động */}
+                                    <td>
+                                        <a href="#abc" className="edit" title="Edit" data-toggle="tooltip" onClick={() => handleEditAction(item, index)}><i className="material-icons"></i></a>
+                                        <a href="#abc" className="delete" title="Delete" data-toggle="tooltip" onClick={() => handleDeleteAction(index)}><i className="material-icons"></i></a>
+                                    </td>
+                                </tr>
+                            )
                     }
-                    <button className="btn btn-primary" style={{ marginLeft: "10px" }} onClick={this.handleClearAction}>{translate('task_template.delete')}</button>
-                </div>
-
-                {/**Table chứa các hoạt động sẵn có*/}
-                <table className="table table-hover table-striped table-bordered">
-                    <thead>
-                        <tr>
-                            <th style={{ width: '50px' }} className="col-fixed">STT</th>
-                            <th title="Tên hoạt động">{translate('task_template.action_name')}</th>
-                            <th title="Mô tả">{translate('task_template.description')}</th>
-                            <th style={{ width: '60px' }} title="Bắt buộc">{translate('task_template.mandatory')}</th>
-                            <th style={{ width: '60px' }} title="Hành động">{translate('task_template.action')}</th>
-                        </tr>
-                    </thead>
-                    <tbody id="actions">
-                        {
-                            (typeof taskActions === 'undefined' || taskActions.length === 0) ? <tr><td colSpan={5}><center>{translate('task_template.no_data')}</center></td></tr> :
-                                taskActions.map((item, index) =>
-                                    <tr key={`${this.state.keyPrefix}_${index}`}>
-                                        <td>{index + 1}</td>
-                                        <td>{parse(item.name)}</td>
-                                        <td><div>{parse(item.description)}</div></td>
-                                        <td>{item.mandatory ? "Có" : "Không"}</td>
-                                        {/**các button sửa, xóa 1 hoạt động */}
-                                        <td>
-                                            <a href="#abc" className="edit" title="Edit" data-toggle="tooltip" onClick={() => this.handleEditAction(item, index)}><i className="material-icons"></i></a>
-                                            <a href="#abc" className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.handleDeleteAction(index)}><i className="material-icons"></i></a>
-                                        </td>
-                                    </tr>
-                                )
-                        }
-                    </tbody>
-                </table>
-            </fieldset>
-        )
-    }
+                </tbody>
+            </table>
+        </fieldset>
+    )
 }
 
 const actionForm = connect()(withTranslate(ActionForm));

@@ -19,10 +19,9 @@ import { DashboardEvaluationEmployeeKpiSetAction } from '../../../evaluation/das
 import { AuthActions } from '../../../../auth/redux/actions';
 import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
 
-var translate = '';
-
 function OrganizationalUnitKpiCreate(props) {
-    var translate = props.translate;
+    const { translate, dashboardEvaluationEmployeeKpiSet, createKpiUnit, user, department } = props;
+    const { type, selectBoxAllUnit } = props;
 
     let d = new Date(),
         currentMonth = d.getMonth() + 1,
@@ -44,6 +43,11 @@ function OrganizationalUnitKpiCreate(props) {
         organizationalUnitId: null,
         month: [year, currentMonth].join('-'),
 
+        infoSearch: {
+            organizationalUnitId: null,
+            month: [year, currentMonth].join('-'),
+        },
+
         adding: false,
         editing: false,
         submitted: false,
@@ -51,44 +55,64 @@ function OrganizationalUnitKpiCreate(props) {
         currentRole: localStorage.getItem("currentRole"),
         userId: localStorage.getItem("userId")
     });
-    useEffect(()=>{
-        // Get department list of company
-        props.getDepartmentsThatUserIsManager();
-        props.getChildrenOfOrganizationalUnitsAsTree(localStorage.getItem("currentRole"));
-        props.getDepartment();
-        props.getCurrentKPIUnit(localStorage.getItem('currentRole'));
-        props.getKPIParent({
-            roleId: localStorage.getItem('currentRole')
-        })
-    },[])
+    const { id, userId, organizationalUnitId, month, 
+        selectBoxUnit, currentRole, organizationalUnit, 
+        defaultDate, organizationalUnitKpi, infoSearch
+    } = state;
 
     useEffect(()=>{
-        const { dashboardEvaluationEmployeeKpiSet } = props;
-        const { organizationalUnitId, month } = state;
-
-        // Trưởng hợp đổi 2 role cùng là trưởng đơn vị, cập nhật lại select box chọn đơn vị
-        if (organizationalUnitId && dashboardEvaluationEmployeeKpiSet && !dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit) {
-            setState({
-                ...state,
-                organizationalUnitId: null
+        if (type !== 'for-admin') {
+            // Get department list of company
+            props.getDepartmentsThatUserIsManager();
+            props.getChildrenOfOrganizationalUnitsAsTree(localStorage.getItem("currentRole"));
+            props.getDepartment();
+            props.getCurrentKPIUnit(localStorage.getItem('currentRole'));
+            props.getKPIParent({
+                roleId: localStorage.getItem('currentRole')
             })
         }
+    },[])
 
-        // Khở tạo select box mới
-        if (!organizationalUnitId && dashboardEvaluationEmployeeKpiSet && dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit) {
-            setSelectBoxOrganizationalUnit();
+    // Trường hợp trưởng đơn vị truy cập
+    useEffect(()=>{
+        if (type !== 'for-admin') {
+            // Trưởng hợp đổi 2 role cùng là trưởng đơn vị, cập nhật lại select box chọn đơn vị
+            if (organizationalUnitId && dashboardEvaluationEmployeeKpiSet && !dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit) {
+                setState({
+                    ...state,
+                    organizationalUnitId: null
+                })
+            }
+
+            // Khở tạo select box mới
+            if (!organizationalUnitId && dashboardEvaluationEmployeeKpiSet && dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit) {
+                setSelectBoxOrganizationalUnit();
+            }
         }
-
-        // // Không re-render khi đag chọn các lựa chọn
-        // if (state.organizationalUnitId !== organizationalUnitId || state.month !== month || state.month === '') {
-        //     return false;
-        // }
     });
+
+    // Trường hợp Admin truy cập
+    useEffect(() => {
+        if (type === 'for-admin' && selectBoxAllUnit && !organizationalUnitId) {
+            setState((state) => {
+                return {
+                    ...state,
+                    organizationalUnitId: selectBoxAllUnit[0].id,
+                    selectBoxUnit: selectBoxAllUnit,
+                    organizationalUnitKpiSet: {
+                        ...state.organizationalUnitKpiSet,
+                        organizationalUnitId: selectBoxAllUnit[0].id,
+                    },
+                    organizationalUnit: selectBoxAllUnit[0]
+                }
+            });
+
+            props.getCurrentKPIUnit(null, selectBoxAllUnit[0].id);
+        }
+    })
 
     /** Hàm khởi tạo select box chọn đơn vị */
     const setSelectBoxOrganizationalUnit = () => {
-        const { dashboardEvaluationEmployeeKpiSet } = props;
-
         let childrenOrganizationalUnit = [], queue = [], currentOrganizationalUnit;
 
         // Khởi tạo selectbox đơn vị
@@ -110,7 +134,6 @@ function OrganizationalUnitKpiCreate(props) {
             }
         }
 
-        console.log("childrenOrganizationalUnit", childrenOrganizationalUnit[0])
         setState((state) => {
             return {
                 ...state,
@@ -246,13 +269,15 @@ function OrganizationalUnitKpiCreate(props) {
     }
 
     const handleSelectOrganizationalUnit = (value) => {
-        const { selectBoxUnit } =state;
         let organizationalUnit = selectBoxUnit.filter(item => item.id === value[0]);
 
         setState( {
             ...state,
-            organizationalUnitId: value[0],
-            organizationalUnit: organizationalUnit && organizationalUnit[0]
+            infoSearch: {
+                ...state.infoSearch,
+                organizationalUnitId: value[0],
+                organizationalUnit: organizationalUnit && organizationalUnit[0],
+            }
         })
     };
 
@@ -264,52 +289,36 @@ function OrganizationalUnitKpiCreate(props) {
 
         setState(  {
             ...state,
-            month: month
+            infoSearch: {
+                ...state.infoSearch,
+                month: month
+            }
         })
     };
 
     const handleSearchData = () => {
-        const { currentRole, organizationalUnitId, month } = state;
-
         setState(  {
             ...state,
             organizationalUnitKpiSet: {
                 organizationalUnitId: organizationalUnitId,
                 month: month
-            }
+            },
+            month: infoSearch?.month,
+            organizationalUnitId: infoSearch?.organizationalUnitId,
+            organizationalUnit: infoSearch?.organizationalUnit
         })
 
-        if (organizationalUnitId && month && month !== '') {
-            props.getCurrentKPIUnit(currentRole, organizationalUnitId, month);
+        if (infoSearch?.organizationalUnitId && infoSearch?.month && infoSearch?.month !== '') {
+            props.getCurrentKPIUnit(currentRole, infoSearch?.organizationalUnitId, infoSearch?.month);
             props.getKPIParent({
                 roleId: currentRole,
-                organizationalUnitId: organizationalUnitId,
-                month: month
+                organizationalUnitId: infoSearch?.organizationalUnitId,
+                month: infoSearch?.month
             });
         }
     }
 
-    /** Tạm thời cho phép trưởng đơn vị được quyền chỉnh sửa KPI đơn vị con */
-    const checkPermisson = (managerCurrentUnit) => {
-        // const { createKpiUnit } = this.props;
-        // const { currentRole } = this.state;
-
-        // let currentKPI, currentRole, checkApproval;
-
-        // if (createKpiUnit) {
-        //     currentKPI = createKpiUnit.currentKPI;
-        // }
-        // if (currentKPI) {
-
-        // }
-
-        // return (managerCurrentUnit && managerCurrentUnit.includes(currentRole));
-        return true;
-    }
-
     const checkEdittingPermission = (currentUnit) => {
-        const { createKpiUnit } = props;
-
         if (currentUnit) {
             let parentUnit = currentUnit.parent ? currentUnit.parent : currentUnit.parent_id;
             let parentKpi = createKpiUnit && createKpiUnit.parent;
@@ -347,8 +356,6 @@ function OrganizationalUnitKpiCreate(props) {
     }
 
     const swalEdittingPermission = () => {
-        const { createKpiUnit } = props;
-
         let parentKpi = createKpiUnit && createKpiUnit.parent;
         if (!parentKpi) {
             Swal.fire({
@@ -406,14 +413,6 @@ function OrganizationalUnitKpiCreate(props) {
                 })
         }
     }
-    const { user, createKpiUnit, dashboardEvaluationEmployeeKpiSet, department } = props;
-    // const { translate } = props;
-    const {
-        id, organizationalUnitKpi, organizationalUnit,
-        defaultDate, selectBoxUnit, organizationalUnitId, month,
-        userId
-    } = state;
-
 
     let unitList, currentKPI, organizationalUnitKpiLoading, organizationalUnitsOfUserLoading, childrenOrganizationalUnit, childrenOrganizationalUnitLoading;
 
@@ -442,6 +441,7 @@ function OrganizationalUnitKpiCreate(props) {
         listUnitOfUser = department.departmentsThatUserIsManager;
     }
 
+    // Đơn vị có thể copy: đơn vị cha và đơn vị cùng cha
     listOrganizationalUnitCopy = selectBoxUnit?.filter(item => {
         return (
                 (organizationalUnit?.parent_id && item?.parent_id === organizationalUnit?.parent_id)
@@ -464,6 +464,7 @@ function OrganizationalUnitKpiCreate(props) {
         listIdOfExistUnit.push(parentKPI?._id)
     }
 
+    // Copy từ đơn vị nhân viên này là trưởng
     if (listUnitOfUser?.length > 0 && listOrganizationalUnitCopy) {
         listUnitOfUser.map(item => {
             if (item?.parent === organizationalUnit?.parent_id && !listIdOfExistUnit?.includes(item?._id) && (item?._id !== organizationalUnit?.id)) {
@@ -478,7 +479,7 @@ function OrganizationalUnitKpiCreate(props) {
 
     return (
         <React.Fragment>
-            {unitList && unitList.length !== 0
+            {unitList && unitList.length !== 0 || type === 'for-admin'
                 ? <section>
                     <div className="qlcv" style={{ marginLeft: "-5px" }}>
                         {selectBoxUnit &&
@@ -522,7 +523,6 @@ function OrganizationalUnitKpiCreate(props) {
                                         organizationalUnitKpi={organizationalUnitKpi}
                                         organizationalUnit={currentKPI.organizationalUnit}
                                     />
-                                    {checkPermisson(organizationalUnit && organizationalUnit.managers) &&
                                     <div style={{ marginLeft: "-10px" }}>
                                         {/* Xóa KPI tháng */}
                                         <a className="btn btn-app" onClick={checkEdittingPermission(currentKPI && currentKPI.organizationalUnit) ? () => deleteKPI(currentKPI.status, currentKPI._id) : () => swalEdittingPermission()} title="Xóa KPI tháng">
@@ -617,7 +617,7 @@ function OrganizationalUnitKpiCreate(props) {
                                                     </span>
                                         }
                                     </div>
-                                    }
+
                                     <div className="">
                                         <h4 style={{ display: "inline-block", fontWeight: "600" }}>
                                             KPI {currentKPI.organizationalUnit ? currentKPI.organizationalUnit.name : "Đơn vị đã bị xóa"} {formatDate(month)}
@@ -648,7 +648,7 @@ function OrganizationalUnitKpiCreate(props) {
                                                 {currentKPI?.organizationalUnit?.parent && <th title="Mục tiêu cha">{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.parents_target')}</th>}
                                                 <th title="Tiêu chí đánh giá">{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.evaluation_criteria')}</th>
                                                 <th title="Trọng số" className="col-sort-number" style={{ width: "100px" }}>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.weight')}</th>
-                                                {checkPermisson(organizationalUnit && organizationalUnit.managers) && <th style={{ width: "100px" }}>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.action')}</th>}
+                                                <th style={{ width: "100px" }}>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.action')}</th>
                                             </tr>
                                             </thead>
                                             <tbody>
@@ -660,13 +660,11 @@ function OrganizationalUnitKpiCreate(props) {
                                                         {currentKPI?.organizationalUnit?.parent && <td title={item?.parent?.name}>{item?.parent?.name}</td>}
                                                         <td title={parse(item.criteria)}>{parse(item.criteria)}</td>
                                                         <td title={item.weight}>{item.weight}</td>
-                                                        {checkPermisson(organizationalUnit && organizationalUnit.managers) &&
                                                         <td>
                                                             <a
                                                                 className="edit"
                                                                 title={translate('kpi.organizational_unit.create_organizational_unit_kpi_set.edit')}
                                                                 data-toggle="modal"
-                                                                // data-target={`#editTargetKPIUnit${item._id}`}
                                                                 data-backdrop="static"
                                                                 data-keyboard="false"
                                                                 onClick={checkEdittingPermission(currentKPI && currentKPI.organizationalUnit) ? () => handleEditOrganizationalUnitKPi(item._id, item, currentKPI) : () => swalEdittingPermission()}>
@@ -683,7 +681,6 @@ function OrganizationalUnitKpiCreate(props) {
                                                                 />
                                                             }
                                                         </td>
-                                                        }
                                                     </tr>
                                                 )
                                             }
@@ -709,19 +706,18 @@ function OrganizationalUnitKpiCreate(props) {
                                     </div>
                                 </div>
                             </React.Fragment>
-                            : organizationalUnitKpiLoading && childrenOrganizationalUnitLoading
+                            : organizationalUnitKpiLoading && (childrenOrganizationalUnitLoading || type === 'for-admin')
                             && <div className="box-body">
                                 <div style={{ marginLeft: "-10px" }}>
-                                    {checkPermisson(organizationalUnit && organizationalUnit.managers) &&
                                     <div>
                                         {/* Khởi tạo KPI */}
                                         {checkEdittingPermission(organizationalUnit) ?
                                             <span>
-                                                        <a className="btn btn-app" data-toggle="modal" data-target="#startKPIUnit" data-backdrop="static" data-keyboard="false">
-                                                            <i className="fa fa-calendar-plus-o" style={{ fontSize: "16px" }}></i>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.initialize_kpi_newmonth')} {formatDate(month)}
-                                                        </a>
-                                                        <OrganizationalUnitKpiCreateModal organizationalUnit={organizationalUnit} month={month} />
-                                                    </span>
+                                                <a className="btn btn-app" data-toggle="modal" data-target="#startKPIUnit" data-backdrop="static" data-keyboard="false">
+                                                    <i className="fa fa-calendar-plus-o" style={{ fontSize: "16px" }}></i>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.initialize_kpi_newmonth')} {formatDate(month)}
+                                                </a>
+                                                <OrganizationalUnitKpiCreateModal organizationalUnit={organizationalUnit} month={month} />
+                                            </span>
                                             :
                                             // Cảnh báo đơn vị cha chưa kích hoạt KPI
                                             <a className="btn btn-app" data-toggle="modal" data-backdrop="static" data-keyboard="false" onClick={() => swalEdittingPermission()}>
@@ -732,28 +728,27 @@ function OrganizationalUnitKpiCreate(props) {
                                         {/* Sao chép mục tiêu từ KPI đơn vị cha */}
                                         {checkEdittingPermission(organizationalUnit) && parentKpi ?
                                             <span>
-                                                        <a className="btn btn-app" data-toggle="modal" data-target={`#copy-old-kpi-to-new-time-${parentKpi && parentKpi._id}`} data-backdrop="static" data-keyboard="false">
-                                                            <i className="fa fa-copy" style={{ fontSize: "16px" }}></i>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.copy_kpi_unit')}
-                                                        </a>
-                                                        <ModalCopyKPIUnit
-                                                            kpiId={parentKpi?._id}
-                                                            idunit={organizationalUnit?.id}
-                                                            organizationalUnitSelect={listOrganizationalUnitCopy}
-                                                            kpiunit={parentKpi}
-                                                            editMonth={true}
-                                                            monthDefault={month}
-                                                            type={'copy-parent-kpi-to-unit'}
-                                                        />
-                                                    </span>
+                                                <a className="btn btn-app" data-toggle="modal" data-target={`#copy-old-kpi-to-new-time-${parentKpi && parentKpi._id}`} data-backdrop="static" data-keyboard="false">
+                                                    <i className="fa fa-copy" style={{ fontSize: "16px" }}></i>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.copy_kpi_unit')}
+                                                </a>
+                                                <ModalCopyKPIUnit
+                                                    kpiId={parentKpi?._id}
+                                                    idunit={organizationalUnit?.id}
+                                                    organizationalUnitSelect={listOrganizationalUnitCopy}
+                                                    kpiunit={parentKpi}
+                                                    editMonth={true}
+                                                    monthDefault={month}
+                                                    type={'copy-parent-kpi-to-unit'}
+                                                />
+                                            </span>
                                             : (organizationalUnit?.parent || organizationalUnit?.parent_id)
                                             && <span>
-                                                        <a className="btn btn-app" onClick={() => swalEdittingPermission()}>
-                                                            <i className="fa fa-copy" style={{ fontSize: "16px" }}></i>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.copy_kpi_unit')}
-                                                        </a>
-                                                    </span>
+                                                <a className="btn btn-app" onClick={() => swalEdittingPermission()}>
+                                                    <i className="fa fa-copy" style={{ fontSize: "16px" }}></i>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.copy_kpi_unit')}
+                                                </a>
+                                            </span>
                                         }
                                     </div>
-                                    }
                                 </div>
                                 <h4 style={{ display: "inline-block", fontWeight: "600" }}>KPI {organizationalUnit && organizationalUnit.name}</h4>
                                 <p>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.not_initialize')} {formatDate(month)}</p>

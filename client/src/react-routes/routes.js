@@ -60,6 +60,7 @@ import { SearchEmployeeForPackage } from "../modules/human-resource/profile/empl
 import CareerManagement from "../modules/human-resource/career/component";
 import Major from "../modules/human-resource/major/component";
 
+import { OrganizationalUnitKpiCreateForAdmin } from "../modules/kpi/organizational-unit/creation/component/organizationalUnitKpiCreateForAdmin";
 import { OrganizationalUnitKpiCreate } from "../modules/kpi/organizational-unit/creation/component/organizationalUnitKpiCreate";
 import { OrganizationalUnitKpiDashboard } from "../modules/kpi/organizational-unit/dashboard/component/organizationalUnitKpiDashboard";
 import { KPIUnitManager } from "../modules/kpi/organizational-unit/management/component/organizationalUnitKpiOverview";
@@ -991,6 +992,25 @@ class Routes extends Component {
                     />
 
                     {/* kpi - routes */}
+                    <PrivateRoute
+                        isLoading={this.props.createKpiUnit.isLoading}
+                        key={"kpi-unit-create"}
+                        arrPage={[
+                            { link: "/", name: "home", icon: "fa fa-home" },
+                            {
+                                link: "/kpi-units/create-for-admin",
+                                name: "kpi_unit_create_for_admin",
+                                icon: "",
+                            },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/kpi-units/create-for-admin"}
+                        path={"/kpi-units/create-for-admin"}
+                        pageName={"kpi_unit_create_for_admin"}
+                        layout={Layout}
+                        component={OrganizationalUnitKpiCreateForAdmin}
+                    />
                     <PrivateRoute
                         isLoading={this.props.createKpiUnit.isLoading}
                         key={"kpi-unit-create"}

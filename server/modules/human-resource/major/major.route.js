@@ -8,7 +8,7 @@ const { auth } = require(`../../../middleware`);
 router.get('/major', auth, MajorController.searchMajor);
 
 
-router.post('/major', auth, MajorController.crateNewMajor);
+router.post('/major', auth, MajorController.createNewMajor);
 
 router.patch('/major/:id', auth, MajorController.updateMajor);
 

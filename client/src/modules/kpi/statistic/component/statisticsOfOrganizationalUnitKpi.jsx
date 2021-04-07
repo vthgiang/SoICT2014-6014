@@ -22,7 +22,7 @@ function StatisticsOfOrganizationalUnitKpi(props) {
     var translate = props.translate;
 
     const DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
-    var TREE_INDEX = 0;            // Dùng làm id cho những phàn tử trong tree nếu phần tử đó k có kpi con
+    const  TREE_INDEX = 0;            // Dùng làm id cho những phàn tử trong tree nếu phần tử đó k có kpi con
     const today = new Date();
 
     const INFO_SEARCH = {
@@ -65,7 +65,6 @@ function StatisticsOfOrganizationalUnitKpi(props) {
             return false;
         }
 
-        if (state.organizationalUnitId !== state.organizationalUnitId || state.month !== state.month) {
              props.getCurrentKPIUnit(state.currentRole, state.organizationalUnitId, state.month);
              props.getAllEmployeeKpiInChildrenOrganizationalUnit(state.currentRole, state.month, state.organizationalUnitId);
              props.getAllTaskOfChildrenOrganizationalUnit(state.currentRole, state.month, state.organizationalUnitId)
@@ -74,8 +73,6 @@ function StatisticsOfOrganizationalUnitKpi(props) {
                 ...state,
                 dataStatus: DATA_STATUS.QUERYING,
             });
-
-        }
 
         if (state.dataStatus === DATA_STATUS.QUERYING) {
             if (!props.createKpiUnit.currentKPI) {
@@ -98,7 +95,7 @@ function StatisticsOfOrganizationalUnitKpi(props) {
                 dataStatus: DATA_STATUS.FINISHED,
             });
         }
-    })
+    },[state.organizationalUnitId, state.month ])
 
     /**
      * Duyệt các kpi con của cùng 1 kpi, mỗi phần tử trả về object gồm tên, đơn vị, số lượng kpi con,... (config dùng trong Tree)
@@ -108,6 +105,7 @@ function StatisticsOfOrganizationalUnitKpi(props) {
      */
     const traversesListChildTargetSameParent = (listChildTargetSameParent, listChildTarget, listTaskSameParent, organizationalUnit) => {
         let treeData = [];
+        let TREE_INDEX;
         if (listChildTargetSameParent.length !== 0) {
             listChildTargetSameParent.map(unit => {
                 if (unit.length !== 0) {
@@ -341,7 +339,7 @@ function StatisticsOfOrganizationalUnitKpi(props) {
     };
 
     const onChanged = async (e, data) => {
-        let TREE_INDEX = 0;
+        const TREE_INDEX = 0;
 
         setState( {
             ...state,
@@ -360,6 +358,7 @@ function StatisticsOfOrganizationalUnitKpi(props) {
     }
 
     const handleSearchData = () => {
+        console.log("hello", INFO_SEARCH)
         if (INFO_SEARCH.month === '-') {
             Swal.fire({
                 title: translate('task.task_management.date_not_empty'),
@@ -475,28 +474,26 @@ function StatisticsOfOrganizationalUnitKpi(props) {
 
 
                         <div className="row row-equal-height">
-                            <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6" style={{ padding: 10 }}>
-                                <div className="description-box" style={{ height: "100%" }}>
+                            <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6" style={{ padding: 10, maxHeight: "400px" }}>
+                                <div id="details-tree" className="description-box" style={{ height: "100%" }}>
                                     {currentKPI
                                         ? <React.Fragment>
                                             <h4 className="box-title">Cây KPI đơn vị tháng {month.slice(5, 7) + "-" + month.slice(0, 4)}</h4>
-                                            <div className="details-tree" id="details-tree" style={{ maxHeight: "500px" }}>
-                                                <Tree
-                                                    id="tree-qlcv-document"
-                                                    onChanged={onChanged}
-                                                    data={dataTree}
-                                                    plugins={false}
-                                                />
-                                            </div>
-                                            <SlimScroll outerComponentId="details-tree" innerComponentId="tree-qlcv-document" innerComponentWidth={"100%"} activate={true} />
+                                            <Tree
+                                                id="tree-qlcv-document"
+                                                onChanged={onChanged}
+                                                data={dataTree}
+                                                plugins={false}
+                                            />
                                         </React.Fragment>
                                         : organizationalUnitKpiLoading
-                                        && <h4> Đơn vị chưa khởi tạo KPI tháng {month.slice(5, 7) + "-" + month.slice(0, 4)}</h4>
+                                        && <h4>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.not_initialize')} {month.slice(5, 7) + "-" + month.slice(0, 4)}</h4>
                                     }
+                                    <SlimScroll outerComponentId="details-tree" innerComponentId="tree-qlcv-document" innerComponentWidth={"100%"} activate={true} />
                                 </div>
                             </div>
 
-                            <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6" style={{ padding: 10 }}>
+                            <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6" style={{ padding: 10, maxHeight: "400px" }}>
                                 <DetailsOfOrganizationalUnitKpiForm
                                     details={details ? details : dataTree?.[0]}
                                 />

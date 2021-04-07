@@ -4,7 +4,7 @@ const mongoosePaginate = require('mongoose-paginate-v2');
 
 const CareSchema = new Schema({
     creator: {
-        type: Schema.Types.ObjectId,
+        type: Schema.Types.ObjectId,//người tạo hoạt động
         ref: 'User',
     },
     name: { //tên công việc chăm sóc khách hàng
@@ -14,39 +14,54 @@ const CareSchema = new Schema({
     description: { // Mô tả công việc chăm sóc khách hàng
         type: String,  
     },
-    customer: [{ // khách hàng được chăm sóc
+    customer: { // khách hàng được chăm sóc
         type: Schema.Types.ObjectId,
         ref: 'Customer',
         required: true,
-    }],
-    caregiver: [{ //nhân viên chăm sóc khách hàng
+    },
+    customerCareStaffs : [{ //nhân viên chăm sóc khách hàng
         type: Schema.Types.ObjectId,
         ref: 'User',
         required: true,
     }],
-    careType: [{
-        type: Schema.Types.ObjectId,
+    customerCareTypes: [{
+        type: Schema.Types.ObjectId,//loại hình cskh
         ref: 'CareType',
         required: true,
     }],
-    status: { //trạng thái công việc 1: chưa thực hiện, 2: đang thực hiện, 3: Hoàn thành, 4: Không hoàn thành
+    status: { //trạng thái công việc 1: chưa thực hiện, 2: đang thực hiện, 3: Hoàn thành, 4: quá hạn, 5: hoàn thành quá hạn
         type: Number,
         default: 1,
     },
-    startDate: {
+    priority:{// độ ưu tiên
+        type: Number,
+    },
+    startDate: {// ngày bắt đầu
         type: Date,
         required: true,
     },
-    endDate: {
+    endDate: {// ngày kết thúc
         type: Date,
+    },
+    completeDate: {// ngày hoàn thành
+        type: Date,
+    },
+    evaluation :{// đánh giá hoạt động CSKH
+        result :{// kết quả 1 : thành công, 2: thất bại
+            type : Number 
+        },
+        point :{// điểm số
+            type : Number
+        },
+        comment : {// nhận xét
+            type : String
+        }
+
     },
     notes: { // Ghi chu
         type: String,
     },
-    company: {
-        type: Schema.Types.ObjectId,
-        ref: 'Company',
-    }
+   
 }, {
     timestamps: true,
 });

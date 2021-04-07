@@ -608,6 +608,15 @@ const LINKS = [{
 
 // KPI
 {
+    url: '/kpi-units/create-for-admin',
+    description: 'Khởi tạo KPI đơn vị',
+    category: LINK_CATEGORY.KPI.name,
+    roles: [
+        ROOT_ROLES.ADMIN.name,
+    ],
+    components: getComponentsInLink('/kpi-units/create-for-admin')
+},
+{
     url: '/kpi-units/create',
     description: 'Khởi tạo KPI đơn vị',
     category: LINK_CATEGORY.KPI.name,

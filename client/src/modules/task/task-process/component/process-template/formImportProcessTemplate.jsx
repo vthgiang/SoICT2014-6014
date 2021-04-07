@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import { configProcessTemplate, templateImportProcessTemplate } from './fileConfigurationImportProcessTemplate';
 import { DialogModal, ImportFileExcel, ShowImportData, ConFigImportFile, ExportExcel } from '../../../../../common-components';
 import { TaskProcessActions } from '../../redux/actions';
@@ -6,35 +6,33 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { AuthActions } from '../../../../auth/redux/actions';
 
-class FormImportProcessTemplate extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            configData: configProcessTemplate,
-            // templateImportProcessTemplate: templateImportProcessTemplate,
-            checkFileImport: true,
-            rowError: [],
-            importData: [],
-            importShowData: [],
-            processData: [],
-            limit: 100,
-            page: 0
-        };
-    }
+function FormImportProcessTemplate(props) {
+    const [state, setState] = useState({
+        configData: configProcessTemplate,
+        // templateImportProcessTemplate: templateImportProcessTemplate,
+        checkFileImport: true,
+        rowError: [],
+        importData: [],
+        importShowData: [],
+        processData: [],
+        limit: 100,
+        page: 0
+    })
 
     // Function thay đổi cấu hình file import
-    handleChangeConfig = (value) => {
-        this.setState({
+    const handleChangeConfig = (value) => {
+        setState({
+            ...state,
             configData: value,
             importData: [],
         })
     }
 
-    handleDataSend = () => {
+    const handleDataSend = () => {
 
     }
 
-    handleImportExcel = (value, checkFileImport) => {
+    const handleImportExcel = (value, checkFileImport) => {
         let values = [];
         let valueShow = [];
         let k = -1;
@@ -88,7 +86,7 @@ class FormImportProcessTemplate extends Component {
                 "taskInformations": [x.taskInformations],
             }];
         }
-        console.log('quangdz \n\n\n\n', value, values);
+        // console.log('quangdz \n\n\n\n', value, values);
 
         // Xử lý dữ liệu gửi lên server
         let processData = [];
@@ -204,7 +202,8 @@ class FormImportProcessTemplate extends Component {
             };
             // convert dữ liệu thành dạng array json mong muốn để gửi lên server
 
-            this.setState({
+            setState({
+                ...state,
                 importData: value,
                 importShowData: valueShow,
                 processData: processData,
@@ -212,25 +211,26 @@ class FormImportProcessTemplate extends Component {
                 checkFileImport: checkFileImport,
             })
         } else {
-            this.setState({
+            setState({
+                ...state,
                 checkFileImport: checkFileImport,
             })
         }
     }
 
-    save = () => {
-        let { importShowData, importData, processData } = this.state;
-        console.log(importShowData, importData);
-        console.log("processData", processData);
-        this.props.importProcessTemplate(processData);
+    const save = () => {
+        let { importShowData, importData, processData } = state;
+        // console.log(importShowData, importData);
+        // console.log("processData", processData);
+        props.importProcessTemplate(processData);
     }
 
-    requestDownloadFile = (e, path, fileName) => {
+    const requestDownloadFile = (e, path, fileName) => {
         e.preventDefault()
-        this.props.downloadFile(path, fileName)
+        props.downloadFile(path, fileName)
     }
 
-    convertDataExport = (dataExport) => {
+    const convertDataExport = (dataExport) => {
         for (let va = 0; va < dataExport.dataSheets.length; va++) {
             for (let val = 0; val < dataExport.dataSheets[va].tables.length; val++) {
                 let datas = [];
@@ -396,64 +396,62 @@ class FormImportProcessTemplate extends Component {
         return dataExport;
     }
 
-    render() {
-        const { translate } = this.props;
-        let { limit, page, importData, importShowData, rowError, configData, checkFileImport } = this.state;
-        let templateImportProcessTemplate2 = this.convertDataExport(templateImportProcessTemplate);
-        console.log('templateImportProcessTemplate2', templateImportProcessTemplate2);
-        return (
-            <React.Fragment>
-                <DialogModal
-                    modalID={`modal-import-process-task`} isLoading={false}
-                    formID={`form_import_file`}
-                    title="Thêm mẫu quy trình bằng import file excel"
-                    func={this.save}
-                    disableSubmit={false}
-                    size={75}
-                >
-                    <form className="form-group" id={`form_import_file`}>
-                        <ConFigImportFile
-                            id="import_taskTemplate_config"
-                            configData={configData}
-                            // textareaRow={8}
-                            scrollTable={false}
-                            handleChangeConfig={this.handleChangeConfig}
-                        />
-                        <div className="row">
-                            <div className="form-group col-md-4 col-xs-12">
-                                <label>{translate('human_resource.choose_file')}</label>
-                                <ImportFileExcel
-                                    configData={configData}
-                                    handleImportExcel={this.handleImportExcel}
-                                />
-                            </div>
-                            <div className="form-group col-md-4 col-xs-12">
-                                <label></label>
-                                <ExportExcel id="download_template_task_template" type='link' exportData={templateImportProcessTemplate2}
-                                    buttonName='Download file import mẫu' />
-                            </div>
-                            <div className="form-group col-md-12 col-xs-12">
-                                {/*  style={{width: "100vmax !important", maxWidth: "100vmax !important"}} */}
-                                <ShowImportData
-                                    id="import_process_template_show_data"
-                                    configData={configData}
-                                    importData={importData}
-                                    rowError={rowError}
-                                    // scrollTable={false}
-                                    scrollTableWidth={2500}
-                                    checkFileImport={checkFileImport}
-                                    limit={limit}
-                                    page={page}
-                                />
-                            </div>
+    const { translate } = props;
+    let { limit, page, importData, importShowData, rowError, configData, checkFileImport } = state;
+    let templateImportProcessTemplate2 = convertDataExport(templateImportProcessTemplate);
+    // console.log('templateImportProcessTemplate2', templateImportProcessTemplate2);
+    return (
+        <React.Fragment>
+            <DialogModal
+                modalID={`modal-import-process-task`} isLoading={false}
+                formID={`form_import_file`}
+                title="Thêm mẫu quy trình bằng import file excel"
+                func={save}
+                disableSubmit={false}
+                size={75}
+            >
+                <form className="form-group" id={`form_import_file`}>
+                    <ConFigImportFile
+                        id="import_taskTemplate_config"
+                        configData={configData}
+                        // textareaRow={8}
+                        scrollTable={false}
+                        handleChangeConfig={handleChangeConfig}
+                    />
+                    <div className="row">
+                        <div className="form-group col-md-4 col-xs-12">
+                            <label>{translate('human_resource.choose_file')}</label>
+                            <ImportFileExcel
+                                configData={configData}
+                                handleImportExcel={handleImportExcel}
+                            />
                         </div>
-                    </form>
-                </DialogModal>
-            </React.Fragment>
-        )
-    }
-
+                        <div className="form-group col-md-4 col-xs-12">
+                            <label></label>
+                            <ExportExcel id="download_template_task_template" type='link' exportData={templateImportProcessTemplate2}
+                                buttonName='Download file import mẫu' />
+                        </div>
+                        <div className="form-group col-md-12 col-xs-12">
+                            {/*  style={{width: "100vmax !important", maxWidth: "100vmax !important"}} */}
+                            <ShowImportData
+                                id="import_process_template_show_data"
+                                configData={configData}
+                                importData={importData}
+                                rowError={rowError}
+                                // scrollTable={false}
+                                scrollTableWidth={2500}
+                                checkFileImport={checkFileImport}
+                                limit={limit}
+                                page={page}
+                            />
+                        </div>
+                    </div>
+                </form>
+            </DialogModal>
+        </React.Fragment>
+    )
 }
+
 
 function mapState(state) {
     const { taskProcess } = state;

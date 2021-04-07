@@ -1,92 +1,108 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { DialogModal, ErrorLabel, TreeSelect } from '../../../../common-components';
 import { MajorActions } from '../redux/actions';
 import ValidationHelper from '../../../../helpers/validationHelper';
-class CreateForm extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            archiveParent: ''
-        }
-    }
+function CreateForm(props) {
+    const [state, setState] = useState({
+        archiveParent: ''
+    })
 
-    handleName = (e) => {
-        const { value } = e.target;
-        const { translate } = this.props;
-        const { message } = ValidationHelper.validateName(translate, value, 1, 255);
-        this.setState({
+    const { translate, documents } = props;
+    const { list } = props;
+    let { parent, nameError, codeError } = state;
+
+    const handleName = (e) => {
+        let { value } = e.target;
+        const { translate } = props;
+        let { message } = ValidationHelper.validateName(translate, value, 1, 255);
+        setState({
+            ...state,
             name: value,
-            nameError: message
+            nameError: !message ? '' : message
         });
     }
 
-    handleCode = (e) => {
-        const {value} = e.target;
-        let msg;
-        this.setState({
+    const handleCode = (e) => {
+        let { value } = e.target;
+        const { translate } = props;
+        let { message } = ValidationHelper.validateName(translate, value, 1, 255);
+        setState({
+            ...state,
             code: value,
-            codeError: msg,
+            codeError: !message ? '' : message,
         });
     }
 
-    handleParent = (value) => {
-        this.setState({ parent: value[0] });
+    const handleParent = (value) => {
+        setState({
+            ...state,
+            parent: value[0]
+        });
     };
 
-    isValidateForm = () => {
-        let {name} = this.state;
-        let {translate} = this.props;
-        if(!ValidationHelper.validateName(translate, name, 1, 255).status) return false;
+    const validateMajorName = (name) => {
+        let { translate } = props;
+        if (
+            !ValidationHelper.validateName(translate, name, 1, 255).status
+        ) return false;
         return true;
     }
 
-    save = () => {
+    const validateMajorCode = (code) => {
+        if (!code) return false;
+        return true;
+    }
+
+    const isValidateForm = () => {
+        let { name, code } = state;
+        let { translate } = props;
+        if (
+            !validateMajorName(name) || !validateMajorCode(code)
+        ) return false;
+        return true;
+    }
+
+    const save = () => {
         const data = {
-            name: this.state.name,
-            code: this.state.code,
-            parent: this.state.parent,
+            name: state.name,
+            code: state.code,
+            parent: state.parent,
         }
         console.log('data', data);
-        this.props.createMajor(data);
+        props.createMajor(data);
     }
 
-    render() {
-        const { translate, documents } = this.props;
-        const { list } = this.props;
-        let { parent, nameError, codeError } = this.state;
-
-        return (
-            <React.Fragment>
-                <DialogModal
-                    modalID="modal-create-major"
-                    formID="form-create-major"
-                    title="Thêm chuyên ngành"
-                    disableSubmit={!this.isValidateForm()}
-                    func={this.save}
-                >
-                    <form id="form-create-major">
-                        <div className={`form-group ${!nameError ? "" : "has-error"}`}>
-                            <label>Tên<span className="text-red">*</span></label>
-                            <input type="text" className="form-control" onChange={this.handleName} />
-                            <ErrorLabel content={nameError} />
-                        </div>
-                        <div className="form-group">
-                            <label>Chọn thông tin cha</label>
-                            <TreeSelect data={list} value={parent} handleChange={this.handleParent} mode="radioSelect" />
-                        </div>
-                        <div className={`form-group ${!codeError ? "" : "has-error"}`}>
-                            <label>Nhãn<span className="text-red">*</span></label>
-                            <input type="text" className="form-control" onChange={this.handleCode} />
-                            <ErrorLabel content={nameError} />
-                        </div>
-                    </form>
-                </DialogModal>
-            </React.Fragment>
-        );
-    }
+    return (
+        <React.Fragment>
+            <DialogModal
+                modalID="modal-create-major"
+                formID="form-create-major"
+                title="Thêm chuyên ngành"
+                disableSubmit={!isValidateForm()}
+                func={save}
+            >
+                <form id="form-create-major">
+                    <div className={`form-group ${!nameError ? "" : "has-error"}`}>
+                        <label>Tên<span className="text-red">*</span></label>
+                        <input type="text" className="form-control" onChange={handleName} />
+                        <ErrorLabel content={nameError} />
+                    </div>
+                    <div className="form-group">
+                        <label>Chọn thông tin cha</label>
+                        <TreeSelect data={list} value={parent} handleChange={handleParent} mode="radioSelect" />
+                    </div>
+                    <div className={`form-group ${!codeError ? "" : "has-error"}`}>
+                        <label>Nhãn<span className="text-red">*</span></label>
+                        <input type="text" className="form-control" onChange={handleCode} />
+                        <ErrorLabel content={codeError} />
+                    </div>
+                </form>
+            </DialogModal>
+        </React.Fragment>
+    );
 }
 
 const mapStateToProps = state => state;

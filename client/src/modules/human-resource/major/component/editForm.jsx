@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
@@ -6,45 +6,93 @@ import { ErrorLabel, TreeSelect } from '../../../../common-components';
 import { MajorActions } from '../redux/actions';
 import ValidationHelper from '../../../../helpers/validationHelper';
 
-class EditForm extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {}
-    }
+function EditForm(props) {
+    const [state, setState] = useState({
+        name: '',
+        code: ''
+    })
 
-    handleName = (e) => {
+    const { translate, documents } = props;
+    const { listData, unChooseNode } = props;
+    const { name, code, parent, codeError, nameError } = state;
+    const { list } = listData;
+    let listCareer = [];
+
+    useEffect(() => {
+        setState({
+            ...state,
+            oldData: {
+                majorId: props.majorId,
+                name: props.majorName,
+                code: props.majorCode,
+                parent: props.majorParent,
+                nameError: '',
+                codeError: ''
+            },
+            majorId: props.majorId,
+            name: props.majorName,
+            code: props.majorCode,
+            parent: props.majorParent,
+            showParent: props.majorParent.length === 0 ? false : true,
+            nameError: '',
+            codeError: ''
+        })
+    }, [props.majorId])
+
+    const handleName = (e) => {
         const { value } = e.target;
-        const { translate } = this.props;
+        const { translate } = props;
         const { message } = ValidationHelper.validateName(translate, value, 1, 255);
-        this.setState({
+        setState({
+            ...state,
             name: value,
-            nameError: message
+            nameError: !message ? '' : message
         });
     }
 
-    handleCode = (e) => {
-        const { value } = e.target;
-        let msg;
-        this.setState({
+    const handleCode = (e) => {
+        let { value } = e.target;
+        const { translate } = props;
+        let { message } = ValidationHelper.validateName(translate, value, 1, 255);
+        setState({
+            ...state,
             code: value,
-            codeError: msg,
+            codeError: !message ? '' : message,
         });
     }
 
-    handleParent = (value) => {
-        this.setState({ parent: value[0] });
+    const handleParent = (value) => {
+        setState({
+            ...state,
+            parent: value[0]
+        });
     };
 
-    isValidateForm = () => {
-        let { name, description } = this.state;
-        let { translate } = this.props;
+    const validateMajorName = (name) => {
+        let { translate } = props;
         if (
             !ValidationHelper.validateName(translate, name, 1, 255).status
         ) return false;
         return true;
     }
 
-    findNode = (element, id) => {
+    const validateMajorCode = (code) => {
+        if (!code) return false;
+        return true;
+    }
+
+    const isValidateForm = () => {
+        let { name, code, showParent, parent } = state;
+        if (
+            !validateMajorName(name) || !validateMajorCode(code)
+        ) return false;
+        if (
+            showParent && (!parent || parent?.length === 0)
+        ) return false;
+        return true;
+    }
+
+    const findNode = (element, id) => {
         if (element.id === id) {
             return element
         }
@@ -52,14 +100,14 @@ class EditForm extends Component {
             let i;
             let result = "";
             for (i = 0; i < element.children.length; i++) {
-                result = this.findNode(element.children[i], id);
+                result = findNode(element.children[i], id);
             }
             return result;
         }
         return null;
     }
     // tìm các node con cháu
-    findChildrenNode = (list, node) => {
+    const findChildrenNode = (list, node) => {
         let array = [];
         let queue_children = [node];
         while (queue_children.length > 0) {
@@ -71,78 +119,49 @@ class EditForm extends Component {
         return array;
     }
 
-    save = () => {
-        const { documents } = this.props;
-        const { archiveId, name, description, archiveParent } = this.state;
+    const save = () => {
+        const { documents } = props;
+        const { archiveId, name, description, archiveParent } = state;
         const { list } = documents.administration.archives;
 
-        console.log('state data', this.state);
+        console.log('state data', state);
 
-        this.props.updateMajor(this.state);
+        props.updateMajor(state);
     }
 
-    static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.majorId !== prevState.majorId) {
-            return {
-                ...prevState,
-                oldData: {
-                    majorId: nextProps.majorId,
-                    name: nextProps.majorName,
-                    code: nextProps.majorCode,
-                    parent: nextProps.majorParent,
-                },
-                majorId: nextProps.majorId,
-                name: nextProps.majorName,
-                code: nextProps.majorCode,
-                parent: nextProps.majorParent,
-
-                nameError: undefined,
-                codeError: undefined
-            }
-        } else {
-            return null;
+    for (let i in list) {
+        if (!unChooseNode.includes(list[i].id)) {
+            listCareer.push(list[i]);
         }
     }
-
-    render() {
-        const { translate, documents } = this.props;
-        const { listData, unChooseNode } = this.props;
-        const { name, code, parent, codeError, nameError } = this.state;
-        const { list } = listData;
-            let listCareer = [];
-        for (let i in list) {
-            if (!unChooseNode.includes(list[i].id)) {
-                listCareer.push(list[i]);
-            }
-        }
-        const disabled = !this.isValidateForm();
-        return (
-            <div id="edit-major">
-                <div className={`form-group ${nameError === undefined ? "" : "has-error"}`}>
-                    <label>Tên<span className="text-red">*</span></label>
-                    <input type="text" className="form-control" onChange={this.handleName} value={name} />
-                    <ErrorLabel content={nameError} />
-                </div>
-                <div className={`form-group ${nameError === undefined ? "" : "has-error"}`}>
-                    <label>Nhãn dán<span className="text-red">*</span></label>
-                    <input type="text" className="form-control" onChange={this.handleCode} value={code} />
-                    <ErrorLabel content={codeError} />
-                </div>
+    const disabled = !isValidateForm();
+    return (
+        <div id="edit-major">
+            <div className={`form-group ${nameError === '' ? "" : "has-error"}`}>
+                <label>Tên<span className="text-red">*</span></label>
+                <input type="text" className="form-control" onChange={handleName} value={name} />
+                <ErrorLabel content={nameError} />
+            </div>
+            <div className={`form-group ${codeError === '' ? "" : "has-error"}`}>
+                <label>Nhãn dán<span className="text-red">*</span></label>
+                <input type="text" className="form-control" onChange={handleCode} value={code} />
+                <ErrorLabel content={codeError} />
+            </div>
+            {state.showParent &&
                 <div className="form-group">
                     <label>{translate('document.administration.archives.parent')}</label>
-                    <TreeSelect data={listData} value={parent} handleChange={this.handleParent} mode="radioSelect" />
+                    <TreeSelect data={listData} value={parent} handleChange={handleParent} mode="radioSelect" />
                 </div>
-                <div className="form-group">
-                    <button className="btn btn-success pull-right" style={{ marginLeft: '5px' }} disabled={disabled} onClick={this.save}>{translate('form.save')}</button>
-                    <button className="btn btn-danger" onClick={() => {
-                        window.$(`#edit-major`).slideUp()
-                    }}>{translate('form.close')}</button>
-                </div>
+            }
+            <div className="form-group">
+                <button className="btn btn-success pull-right" style={{ marginLeft: '5px' }} disabled={disabled} onClick={save}>{translate('form.save')}</button>
+                <button className="btn btn-danger" onClick={() => {
+                    window.$(`#edit-major`).slideUp()
+                }}>{translate('form.close')}</button>
             </div>
-        )
-    }
+        </div>
+    )
 }
-
 
 const mapStateToProps = state => state;
 

@@ -10,14 +10,18 @@ function CreateForm(props) {
         parent: [],
     });
 
+    const { translate, career } = props;
+    const { list } = props;
+    let { parent, position, nameError, codeError } = state;
+
     const handleName = (e) => {
-        const { value } = e.target;
+        let { value } = e.target;
         const { translate } = props;
-        const { message } = ValidationHelper.validateName(translate, value, 1, 255);
+        let { message } = ValidationHelper.validateName(translate, value, 1, 255);
         setState({
             ...state,
             name: value,
-            nameError: message
+            nameError: !message ? '' : message
         });
     }
 
@@ -33,12 +37,13 @@ function CreateForm(props) {
     }
 
     const handleCode = (e) => {
-        const { value } = e.target;
-        let msg;
+        let { value } = e.target;
+        const { translate } = props;
+        let { message } = ValidationHelper.validateName(translate, value, 1, 255);
         setState({
             ...state,
             code: value,
-            codeError: msg,
+            codeError: !message ? '' : message,
         });
     }
 
@@ -59,10 +64,34 @@ function CreateForm(props) {
         console.log('position...', state);
     };
 
-    const isValidateForm = () => {
-        let { name } = state;
+    const isHavingParent = (parent) => {
+        if (!parent || parent?.length === 0) return false;
+        return true;
+    }
+
+    const isBelongToAnyPositions = (position) => {
+        if (!position || position?.length === 0) return false;
+        return true;
+    }
+
+    const validateActionName = (name) => {
         let { translate } = props;
-        if (!ValidationHelper.validateName(translate, name, 1, 255).status) return false;
+        if (
+            !ValidationHelper.validateName(translate, name, 1, 255).status
+        ) return false;
+        return true;
+    }
+
+    const validateActionCode = (code) => {
+        if (!code) return false;
+        return true;
+    }
+
+    const isValidateForm = () => {
+        let { name, code } = state;
+        if (
+            !(validateActionCode(code) && validateActionName(name))
+        ) return false;
         return true;
     }
 
@@ -78,9 +107,6 @@ function CreateForm(props) {
         props.createCareerAction(data);
     }
 
-    const { translate, career } = props;
-    const { list } = props;
-    let { parent, position, nameError, codeError } = state;
     return (
         <React.Fragment>
             <DialogModal
@@ -106,7 +132,7 @@ function CreateForm(props) {
                             <label>Chọn thông tin cha</label>
                             <TreeSelect data={list} value={parent} handleChange={this.handleParent} mode="radioSelect" />
                         </div> */}
-                    {
+                    {!isBelongToAnyPositions(state.position) &&
                         <div className="form-group">
                             <label>Chọn hoạt động chi tiết</label>
                             <SelectBox
@@ -123,7 +149,7 @@ function CreateForm(props) {
                             />
                         </div>
                     }
-                    {parent.length === 0 &&
+                    {!isHavingParent(state.parent) &&
                         <div className="form-group">
                             <label>Vị trí công việc</label>
                             <SelectBox

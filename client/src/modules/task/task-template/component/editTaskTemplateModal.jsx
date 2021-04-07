@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { taskTemplateActions } from '../redux/actions';
@@ -7,12 +7,9 @@ import { DialogModal } from '../../../../common-components';
 import { TaskTemplateFormValidator } from './taskTemplateFormValidator';
 import ValidationHelper from '../../../../helpers/validationHelper';
 
-class ModalEditTaskTemplate extends Component {
+function ModalEditTaskTemplate (props) {
 
-    constructor(props) {
-        super(props);
-
-        this.state = {
+    const [state, setState] = useState ({
             currentRole: localStorage.getItem('currentRole'),
             editingTemplate: {
                 organizationalUnit: '',
@@ -29,105 +26,104 @@ class ModalEditTaskTemplate extends Component {
                 taskActions: [],
                 taskInformations: []
             },
+    })
 
-        };
-    }
-
-    static getDerivedStateFromProps(props, state) {
+    useEffect(()=> {
         if (props.taskTemplateId !== state.taskTemplateId) {
-            return {
-                ...state,
-                taskTemplateId: props.taskTemplateId,
-                taskTemplate: props.taskTemplate,
-                editingTemplate: {
-                    _id: props.taskTemplate._id,
-                    organizationalUnit: props.taskTemplate.organizationalUnit._id,
-                    collaboratedWithOrganizationalUnits: props.taskTemplate.collaboratedWithOrganizationalUnits.map(item => { if (item) return item._id }),
-                    name: props.taskTemplate.name,
-                    readByEmployees: props.taskTemplate.readByEmployees.map(item => item.id),
-                    responsibleEmployees: props.taskTemplate.responsibleEmployees.map(item => item.id),
-                    accountableEmployees: props.taskTemplate.accountableEmployees.map(item => item.id),
-                    consultedEmployees: props.taskTemplate.consultedEmployees.map(item => item.id),
-                    informedEmployees: props.taskTemplate.informedEmployees.map(item => item.id),
-                    description: props.taskTemplate.description,
-                    formula: props.taskTemplate.formula,
-                    priority: props.taskTemplate.priority,
-                    taskActions: props.taskTemplate.taskActions,
-                    taskInformations: props.taskTemplate.taskInformations,
-                },
-                showActionForm: true,
-            }
-        } else return null;
+            setState(state => {
+                return {
+                    ...state,
+                    taskTemplateId: props.taskTemplateId,
+                    taskTemplate: props.taskTemplate,
+                    editingTemplate: {
+                        _id: props.taskTemplate._id,
+                        organizationalUnit: props.taskTemplate.organizationalUnit._id,
+                        collaboratedWithOrganizationalUnits: props.taskTemplate.collaboratedWithOrganizationalUnits.map(item => { if (item) return item._id }),
+                        name: props.taskTemplate.name,
+                        readByEmployees: props.taskTemplate.readByEmployees.map(item => item.id),
+                        responsibleEmployees: props.taskTemplate.responsibleEmployees.map(item => item.id),
+                        accountableEmployees: props.taskTemplate.accountableEmployees.map(item => item.id),
+                        consultedEmployees: props.taskTemplate.consultedEmployees.map(item => item.id),
+                        informedEmployees: props.taskTemplate.informedEmployees.map(item => item.id),
+                        description: props.taskTemplate.description,
+                        formula: props.taskTemplate.formula,
+                        priority: props.taskTemplate.priority,
+                        taskActions: props.taskTemplate.taskActions,
+                        taskInformations: props.taskTemplate.taskInformations,
+                    },
+                    showActionForm: true,
+            }})
+        }
+    },[props.taskTemplateId])
+
+    const handleSubmit = () => {
+        const { editingTemplate } = state;
+        props.editTaskTemplate(editingTemplate._id, editingTemplate);
     }
 
-    handleSubmit = () => {
-        const { editingTemplate } = this.state;
-        this.props.editTaskTemplate(editingTemplate._id, editingTemplate);
-    }
-
-    isTaskTemplateFormValidated = () => {
-        if (!this.state.editingTemplate._id)
+    const isTaskTemplateFormValidated = () => {
+        if (!state.editingTemplate._id)
             return false;
         let result =
-            this.validateTaskTemplateRead(this.state.editingTemplate.readByEmployees, false) &&
-            this.validateTaskTemplateName(this.state.editingTemplate.name, false) &&
-            this.validateTaskTemplateDesc(this.state.editingTemplate.description, false) &&
-            this.validateTaskTemplateFormula(this.state.editingTemplate.formula, false) &&
-            this.validateTaskTemplateUnit(this.state.editingTemplate.organizationalUnit, false);
+            validateTaskTemplateRead(state.editingTemplate.readByEmployees, false) &&
+            validateTaskTemplateName(state.editingTemplate.name, false) &&
+            validateTaskTemplateDesc(state.editingTemplate.description, false) &&
+            validateTaskTemplateFormula(state.editingTemplate.formula, false) &&
+            validateTaskTemplateUnit(state.editingTemplate.organizationalUnit, false);
         return result;
     }
 
-    validateTaskTemplateName = (value, willUpdateState = true) => {
-        let { message } = ValidationHelper.validateName(this.props.translate, value);
+    const validateTaskTemplateName = (value, willUpdateState = true) => {
+        let { message } = ValidationHelper.validateName(props.translate, value);
 
         if (willUpdateState) {
-            let { editingTemplate } = this.state;
+            let { editingTemplate } = state;
             editingTemplate.name = value;
             editingTemplate.errorOnName = message;
-            this.setState({
+            setState({
                 editingTemplate
             })
         }
         return message == undefined;
     }
 
-    validateTaskTemplateDesc = (value, willUpdateState = true) => {
-        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
+    const validateTaskTemplateDesc = (value, willUpdateState = true) => {
+        let { message } = ValidationHelper.validateEmpty(props.translate, value);
 
         if (willUpdateState) {
-            let { editingTemplate } = this.state;
+            let { editingTemplate } = state;
             editingTemplate.description = value;
             editingTemplate.errorOnDescription = message;
-            this.setState({
+            setState({
                 editingTemplate
             })
         }
         return message == undefined;
     }
 
-    validateTaskTemplateFormula = (value, willUpdateState = true) => {
+    const validateTaskTemplateFormula = (value, willUpdateState = true) => {
         let msg = TaskTemplateFormValidator.validateTaskTemplateFormula(value);
 
         if (willUpdateState) {
-            let { editingTemplate } = this.state;
+            let { editingTemplate } = state;
             editingTemplate.formula = value;
             editingTemplate.errorOnFormula = msg;
-            this.setState({
+            setState({
                 editingTemplate
             })
         }
         return msg == undefined;
     }
 
-    validateTaskTemplateUnit = (value, willUpdateState = true) => {
-        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
+    const validateTaskTemplateUnit = (value, willUpdateState = true) => {
+        let { message } = ValidationHelper.validateEmpty(props.translate, value);
 
         if (willUpdateState) {
-            this.setState(state => {
+            setState(state => {
                 return {
                     ...state,
                     editingTemplate: { // update lại unit, và reset các selection phía sau
-                        ...this.state.editingTemplate,
+                        ...state.editingTemplate,
                         organizationalUnit: value,
                         errorOnUnit: message,
                         readByEmployees: [],
@@ -142,49 +138,48 @@ class ModalEditTaskTemplate extends Component {
         return message == undefined;
     }
 
-    validateTaskTemplateRead = (value, willUpdateState = true) => {
-        let { message } = ValidationHelper.validateArrayLength(this.props.translate, value);
+    const validateTaskTemplateRead = (value, willUpdateState = true) => {
+        let { message } = ValidationHelper.validateArrayLength(props.translate, value);
 
         if (willUpdateState) {
-            let { editingTemplate } = this.state;
+            let { editingTemplate } = state;
             editingTemplate.readByEmployees = value;
             editingTemplate.errorOnRead = message;
-            this.setState({
+            setState({
                 editingTemplate
             })
         }
         return message == undefined;
     }
 
-    onChangeTemplateData = (value) => {
-        this.setState({
+    const onChangeTemplateData = (value) => {
+        setState({
+            ...state,
             editingTemplate: value
         })
     }
 
-    render() {
-        const { department, user, translate, tasktemplates } = this.props;
-        const { editingTemplate, taskTemplateId } = this.state;
+    const { department, user, translate, tasktemplates } = props;
+    const { editingTemplate, taskTemplateId } = state;
 
-        return (
-            <DialogModal
-                modalID="modal-edit-task-template" isLoading={user.isLoading}
-                formID="form-edit-task-template"
-                title={translate('task_template.edit_tasktemplate')}
-                func={this.handleSubmit}
-                // disableSubmit={!this.isTaskTemplateFormValidated()}
-                size={100}
-            >
-                <React.Fragment>
-                    <EditTaskTemplate
-                        isTaskTemplate={true}
-                        taskTemplate={editingTemplate}
-                        taskTemplateId={taskTemplateId} onChangeTemplateData={this.onChangeTemplateData}
-                    />
-                </React.Fragment>
-            </DialogModal>
-        );
-    }
+    return (
+        <DialogModal
+            modalID="modal-edit-task-template" isLoading={user.isLoading}
+            formID="form-edit-task-template"
+            title={translate('task_template.edit_tasktemplate')}
+            func={handleSubmit}
+            // disableSubmit={!isTaskTemplateFormValidated()}
+            size={100}
+        >
+        <React.Fragment>
+            <EditTaskTemplate
+                isTaskTemplate={true}
+                taskTemplate={editingTemplate}
+                taskTemplateId={taskTemplateId} onChangeTemplateData={onChangeTemplateData}
+            />
+            </React.Fragment>
+        </DialogModal>
+    );
 }
 
 function mapState(state) {

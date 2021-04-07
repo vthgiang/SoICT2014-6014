@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { SelectBox, DatePicker, ErrorLabel } from '../../../../common-components';
@@ -6,15 +6,16 @@ import getEmployeeSelectBoxItems from '../../../task/organizationalUnitHelper';
 import ValidationHelper from '../../../../helpers/validationHelper';
 import './customer.css';
 
-class GeneralTabCreateForm extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {}
-    }
+function GeneralTabCreateForm(props) {
 
-    static getDerivedStateFromProps(props, state) {
-        const { crm, user } = props;
-        if (props.id != state.id && crm.status.list && crm.status.list.length > 0 && user.usersOfChildrenOrganizationalUnit) {
+    const { crm, user } = props;
+    const { callBackFromParentCreateForm } = props;
+    const [customerInfo, setCustomerInfo] = useState({})
+    const [crmState, setCrmState] = useState({});
+
+    useEffect(() => {
+
+        if ( crm.status.list && crm.status.list.length > 0 && user.usersOfChildrenOrganizationalUnit) {
 
             // Lấy danh sách người trong phòng ban hiện tại và con
             let unitMembers;
@@ -29,29 +30,30 @@ class GeneralTabCreateForm extends Component {
                 listGroups.unshift({ value: '', text: '---Chọn---' });
             }
 
-            return {
-                ...state,
-                id: props.id,
+            const newCrmState = {
+                ...crmState,
                 owner: props.newCustomer.owner,
                 unitMembers,
                 listGroups,
                 listStatus: crm.status.list.map(o => ({ _id: o._id, name: o.name, active: o.active }))
             }
-        } else {
-            return null;
+            setCrmState(newCrmState);
+
         }
-    }
+
+    }, [])
 
     /**
      * Hàm xử lý khi người sở hữu/quản lý thay đổi
      * @param {*} value giá trị mới
      */
-    handleChangeCustomerOwner = (value) => {
-        const { callBackFromParentCreateForm } = this.props;
+    const handleChangeCustomerOwner = (value) => {
 
-        this.setState({
+        const newCustomerInfo = {
+            ...customerInfo,
             owner: value,
-        });
+        }
+        setCustomerInfo(newCustomerInfo);
         callBackFromParentCreateForm('owner', value); // Truyền giá trị về form cha
     }
 
@@ -59,14 +61,16 @@ class GeneralTabCreateForm extends Component {
      * Hàm xử lý khi nguồn khách hàng thay đổi
      * @param {*} e 
      */
-    handleChangeCustomerSource = (e) => {
-        const { callBackFromParentCreateForm } = this.props;
-        const { value } = e.target;
+    const handleChangeCustomerSource = (e) => {
 
-        this.setState({
+        const { value } = e.target;
+        const newCustomerInfo = {
+            ...customerInfo,
             customerSource: value,
-        })
-        callBackFromParentCreateForm('customerSource', value)
+        }
+        setCustomerInfo(newCustomerInfo);
+        callBackFromParentCreateForm('customerSource', value);
+
     }
 
 
@@ -74,20 +78,19 @@ class GeneralTabCreateForm extends Component {
      * Hàm xử lý khi mã khách hàng thay đổi
      * @param {*} e 
      */
-    handleChangeCustomerCode = (e) => {
-        const { callBackFromParentCreateForm } = this.props;
+    const handleChangeCustomerCode = (e) => {
+
         const { value } = e.target;
-        const { translate } = this.props;
-
-        this.setState({
-            code: value,
-        })
-
+        const newCustomerInfo = {
+            ...customerInfo,
+            code: value
+        }
+        setCustomerInfo(newCustomerInfo);
         // validate mã khách hàng
-        let { message } = ValidationHelper.validateName(translate, value, 4, 255);
-        this.setState({ customerCodeError: message });
+        // let { message } = ValidationHelper.validateName(translate, value, 4, 255);
+        // this.setState({ customerCodeError: message });
 
-        callBackFromParentCreateForm('code', value)
+        callBackFromParentCreateForm('code', value);
     }
 
 
@@ -95,18 +98,19 @@ class GeneralTabCreateForm extends Component {
      * Hàm xử lý khi tên khách hàng thay đổi
      * @param {*} e 
      */
-    handleChangeCustomerName = (e) => {
-        const { callBackFromParentCreateForm } = this.props;
-        const { value } = e.target;
-        const { translate } = this.props;
+    const handleChangeCustomerName = (e) => {
 
-        this.setState({
-            name: value,
-        })
+        const { value } = e.target;
+        const newCustomerInfo = {
+            ...customerInfo,
+            name: value
+        }
+
+        setCustomerInfo(newCustomerInfo);
 
         // validate tên khách hàng
-        let { message } = ValidationHelper.validateName(translate, value, 4, 255);
-        this.setState({ customerNameError: message });
+        // let { message } = ValidationHelper.validateName(translate, value, 4, 255);
+        // this.setState({ customerNameError: message });
 
         callBackFromParentCreateForm('name', value)
     }
@@ -116,12 +120,13 @@ class GeneralTabCreateForm extends Component {
      * Hàm xử lý khi loại khách hàng thay đổi
      * @param {*} value 
      */
-    handleChangeCustomerType = (value) => {
-        const { callBackFromParentCreateForm } = this.props;
-        this.setState({
-            customerType: value[0],
-        })
+    const handleChangeCustomerType = (value) => {
 
+        const newCustomerInfo = {
+            ...customerInfo,
+            customerType: value[0]
+        }
+        setCustomerInfo(newCustomerInfo);
         callBackFromParentCreateForm('customerType', parseInt(value[0]))
     }
 
@@ -130,13 +135,14 @@ class GeneralTabCreateForm extends Component {
      * Hàm xử lý khi tên công ty của khách hàng thay đổi
      * @param {*} e 
      */
-    handleChangeCompanyName = (e) => {
-        const { callBackFromParentCreateForm } = this.props;
+    const handleChangeCompanyName = (e) => {
         const { value } = e.target;
 
-        this.setState({
-            company: value,
-        })
+        const newCustomerInfo = {
+            ...customerInfo,
+            company: value
+        }
+        setCustomerInfo(newCustomerInfo);
         callBackFromParentCreateForm('company', value)
     }
 
@@ -145,13 +151,14 @@ class GeneralTabCreateForm extends Component {
      * Hàm xử lý khi người tại diện thay đổi
      * @param {*} e 
      */
-    handleChangeRepresent = (e) => {
-        const { callBackFromParentCreateForm } = this.props;
+    const handleChangeRepresent = (e) => {
         const { value } = e.target;
 
-        this.setState({
-            represent: value,
-        })
+        const newCustomerInfo = {
+            ...customerInfo,
+            represent: value
+        }
+        setCustomerInfo(newCustomerInfo);
         callBackFromParentCreateForm('represent', value)
     }
 
@@ -160,12 +167,13 @@ class GeneralTabCreateForm extends Component {
      * Hàm xử lý khi Ngày thành lập công ty thay đổi
      * @param {*} value 
      */
-    handleChangeCompanyEstablishmentDate = (value) => {
-        const { callBackFromParentCreateForm } = this.props;
+    const handleChangeCompanyEstablishmentDate = (value) => {
 
-        this.setState({
+        const newCustomerInfo = {
+            ...customerInfo,
             companyEstablishmentDate: value,
-        })
+        }
+        setCustomerInfo(newCustomerInfo);
         callBackFromParentCreateForm('companyEstablishmentDate', value)
     }
 
@@ -174,13 +182,15 @@ class GeneralTabCreateForm extends Component {
      * Hàm xử lý khi số điện thoại di động thay đổi
      * @param {*} e 
      */
-    handleChangeMobilephoneNumber = (e) => {
-        const { callBackFromParentCreateForm } = this.props;
+    const handleChangeMobilephoneNumber = (e) => {
         const { value } = e.target;
 
-        this.setState({
+
+        const newCustomerInfo = {
+            ...customerInfo,
             mobilephoneNumber: parseInt(value),
-        })
+        }
+        setCustomerInfo(newCustomerInfo);
         callBackFromParentCreateForm('mobilephoneNumber', parseInt(value))
     }
 
@@ -189,13 +199,13 @@ class GeneralTabCreateForm extends Component {
      * Hàm xử lý khi số điện thoại khách hàng bàn thay đổi
      * @param {*} e 
      */
-    handleChangeTelephoneNumber = (e) => {
-        const { callBackFromParentCreateForm } = this.props;
+    const handleChangeTelephoneNumber = (e) => {
         const { value } = e.target;
-
-        this.setState({
+        const newCustomerInfo = {
+            ...customerInfo,
             telephoneNumber: parseInt(value),
-        })
+        }
+        setCustomerInfo(newCustomerInfo);
         callBackFromParentCreateForm('telephoneNumber', parseInt(value))
     }
 
@@ -204,13 +214,14 @@ class GeneralTabCreateForm extends Component {
      * Hàm xử lý khi địa chỉ email khách hàng thay đổi
      * @param {*} e 
      */
-    handleChangeCustomerEmail = (e) => {
-        const { callBackFromParentCreateForm } = this.props;
-        const { value } = e.target;
+    const handleChangeCustomerEmail = (e) => {
 
-        this.setState({
+        const { value } = e.target;
+        const newCustomerInfo = {
+            ...customerInfo,
             email: value,
-        })
+        }
+        setCustomerInfo(newCustomerInfo);
         callBackFromParentCreateForm('email', value)
     }
 
@@ -219,28 +230,30 @@ class GeneralTabCreateForm extends Component {
      * Hàm xử lý khi địa chỉ email phụ khách hàng thay đổi
      * @param {*} e 
      */
-    handleChangeCustomerEmail2 = (e) => {
-        const { callBackFromParentCreateForm } = this.props;
-        const { value } = e.target;
+    // handleChangeCustomerEmail2 = (e) => {
+    //     const { callBackFromParentCreateForm } = this.props;
+    //     const { value } = e.target;
 
-        this.setState({
-            email2: value,
-        })
-        callBackFromParentCreateForm('email2', value)
-    }
+    //     this.setState({
+    //         email2: value,
+    //     })
+    //     callBackFromParentCreateForm('email2', value)
+    // }
 
 
     /**
      * Hàm xử lý khi địa chỉ khách hàng thay đổi
      * @param {*} e 
      */
-    handleChangeCustomerAddress = (e) => {
-        const { callBackFromParentCreateForm } = this.props;
+    const handleChangeCustomerAddress = (e) => {
+
         const { value } = e.target;
 
-        this.setState({
+        const newCustomerInfo = {
+            ...customerInfo,
             address: value,
-        })
+        }
+        setCustomerInfo(newCustomerInfo);
         callBackFromParentCreateForm('address', value)
     }
 
@@ -249,27 +262,30 @@ class GeneralTabCreateForm extends Component {
      * Hàm xử lý khi địa chỉ phụ khách hàng thay đổi
      * @param {*} e 
      */
-    handleChangeCustomerAddress2 = (e) => {
-        const { callBackFromParentCreateForm } = this.props;
-        const { value } = e.target;
+    // handleChangeCustomerAddress2 = (e) => {
+    //     const { callBackFromParentCreateForm } = this.props;
+    //     const { value } = e.target;
 
-        this.setState({
-            address2: value,
-        })
-        callBackFromParentCreateForm('address2', value)
-    }
+    //     this.setState({
+    //         address2: value,
+    //     })
+    //     callBackFromParentCreateForm('address2', value)
+    // }
 
 
     /**
      * Hàm xử lý khi giới tính khách hàng thay đổi
      * @param {*} value 
      */
-    handleChangeCustomerGender = (value) => {
-        const { callBackFromParentCreateForm } = this.props;
+    const handleChangeCustomerGender = (value) => {
 
-        this.setState({
+
+
+        const newCustomerInfo = {
+            ...customerInfo,
             gender: value[0],
-        })
+        }
+        setCustomerInfo(newCustomerInfo);
         callBackFromParentCreateForm('gender', parseInt(value[0]))
     }
 
@@ -278,12 +294,13 @@ class GeneralTabCreateForm extends Component {
      * Hàm xử lý khi ngày sinh nhật khách hàng thay đổi
      * @param {*} value 
      */
-    handleChangeCustomerBirth = (value) => {
-        const { callBackFromParentCreateForm } = this.props;
+    const handleChangeCustomerBirth = (value) => {
 
-        this.setState({
+        const newCustomerInfo = {
+            ...customerInfo,
             birthDate: value,
-        })
+        }
+        setCustomerInfo(newCustomerInfo);
         callBackFromParentCreateForm('birthDate', value)
     }
 
@@ -292,11 +309,13 @@ class GeneralTabCreateForm extends Component {
      * Hàm xử lý khi nhóm khách hàng thay đổi
      * @param {*} value 
      */
-    handleChangeCustomerGroup = (value) => {
-        const { callBackFromParentCreateForm } = this.props;
-        this.setState({
+    const handleChangeCustomerGroup = (value) => {
+
+        const newCustomerInfo = {
+            ...customerInfo,
             group: value[0],
-        })
+        }
+        setCustomerInfo(newCustomerInfo);
         callBackFromParentCreateForm('group', value[0])
     }
 
@@ -305,9 +324,7 @@ class GeneralTabCreateForm extends Component {
      * Hàm xử lý khi trạng thái khách hàng thay đổi
      * @param {*} index 
      */
-    handleChangeCustomerStatus = (index) => {
-        const { listStatus } = this.state;
-        const { callBackFromParentCreateForm } = this.props;
+    const handleChangeCustomerStatus = (index) => {
         let getStatusActive = [];
 
         listStatus.map((o, i) => {
@@ -322,13 +339,15 @@ class GeneralTabCreateForm extends Component {
         // lấy trạng thái khách hàng lưu vào db
         listStatus.forEach(o => {
             if (o.active) {
-                getStatusActive.push(o._id);
+                getStatusActive=[o._id];
             }
         })
-
-        this.setState({
+        const newCustomerInfo = {
+            ...customerInfo,
             listStatus: listStatus,
-        })
+        }
+        setCustomerInfo(newCustomerInfo);
+        console.log('listStatus', listStatus)
         callBackFromParentCreateForm('status', getStatusActive)
     }
 
@@ -337,12 +356,14 @@ class GeneralTabCreateForm extends Component {
      * Hàm xử lý khi khu vực khách hàng thay đổi
      * @param {*} value 
      */
-    handleChangeCustomerLocation = (value) => {
-        const { callBackFromParentCreateForm } = this.props;
-
-        this.setState({
+    const handleChangeCustomerLocation = (value) => {
+        const newCustomerInfo = {
+            ...customerInfo,
             location: value[0],
-        })
+        }
+        setCustomerInfo(newCustomerInfo);
+
+
         callBackFromParentCreateForm('location', parseInt(value[0]))
     }
 
@@ -351,18 +372,19 @@ class GeneralTabCreateForm extends Component {
      * Hàm xử lý khi mã số thuế khách hàng thay đổi
      * @param {*} e 
      */
-    handleChangeTaxNumber = (e) => {
-        const { callBackFromParentCreateForm } = this.props;
-        const { value } = e.target;
-        const { translate } = this.props;
+    const handleChangeTaxNumber = (e) => {
 
-        this.setState({
+        const { value } = e.target;
+        const newCustomerInfo = {
+            ...customerInfo,
             taxNumber: value,
-        })
+        }
+        setCustomerInfo(newCustomerInfo);
+
 
         // validate mã số thuế khách hàng
-        let { message } = ValidationHelper.validateInvalidCharacter(translate, value);
-        this.setState({ customerTaxNumberError: message });
+        // let { message } = ValidationHelper.validateInvalidCharacter(translate, value);
+        // this.setState({ customerTaxNumberError: message });
 
         callBackFromParentCreateForm('taxNumber', value)
     }
@@ -372,13 +394,16 @@ class GeneralTabCreateForm extends Component {
      * Hàm xử lý khi địa chỉ website khách hàng thay đổi
      * @param {*} e 
      */
-    handleChangeCustomerWebsite = (e) => {
-        const { callBackFromParentCreateForm } = this.props;
+    const handleChangeCustomerWebsite = (e) => {
         const { value } = e.target;
 
-        this.setState({
+
+        const newCustomerInfo = {
+            ...customerInfo,
             website: value,
-        })
+        }
+
+        setCustomerInfo(newCustomerInfo);
         callBackFromParentCreateForm('website', value)
     }
 
@@ -387,13 +412,12 @@ class GeneralTabCreateForm extends Component {
      * Hàm xử lý khi địa chỉ ghi chú khách hàng thay đổi
      * @param {*} e
      */
-    handleChangeCustomerNote = (e) => {
-        const { callBackFromParentCreateForm } = this.props;
+    const handleChangeCustomerNote = (e) => {
         const { value } = e.target;
-
-        this.setState({
+        const newCustomerInfo = {
+            ...customerInfo,
             note: value,
-        })
+        }
         callBackFromParentCreateForm('note', value)
     }
 
@@ -401,351 +425,345 @@ class GeneralTabCreateForm extends Component {
      * Hàm xử lý khi địa chỉ linkedIn khách hàng thay đổi
      * @param {*} e
      */
-    handleChangeCustomerLinkedIn = (e) => {
-        const { callBackFromParentCreateForm } = this.props;
-        const { value } = e.target;
+    // handleChangeCustomerLinkedIn = (e) => {
+    //     const { callBackFromParentCreateForm } = this.props;
+    //     const { value } = e.target;
 
-        this.setState({
-            linkedIn: value,
-        })
-        callBackFromParentCreateForm('linkedIn', value)
+    //     this.setState({
+    //         linkedIn: value,
+    //     })
+    //     callBackFromParentCreateForm('linkedIn', value)
+    // }
+
+
+    const { translate } = props; // state redux
+    const { id } = props; // Lấy giá trị từ component cha
+    const {
+        owner,
+        customerSource,
+        code,
+        name,
+        company,
+        represent,
+        customerType,
+        companyEstablishmentDate,
+        mobilephoneNumber,
+        telephoneNumber,
+        email,
+        address,
+        gender,
+        birth,
+        group,
+        location,
+        taxNumber,
+        website
+    } = customerInfo;
+
+    const { customerNameError, customerCodeError, customerTaxNumberError, } = {};
+    const {unitMembers,listGroups,listStatus} = crmState;
+    let progressBarWidth;
+
+    // setting timeline customer status
+    if (listStatus) {
+        const totalItem = listStatus.length;
+        const numberOfActiveItems = listStatus.filter(o => o.active).length;
+        progressBarWidth = totalItem > 1 && numberOfActiveItems > 0 ? ((numberOfActiveItems - 1) / (totalItem - 1)) * 100 : 0;
     }
 
-    render() {
-        const { translate } = this.props; // state redux
-        const { id } = this.props; // Lấy giá trị từ component cha
 
-        const {
-            listStatus,
-            owner,
-            customerSource,
-            code,
-            name,
-            company,
-            represent,
-            customerType,
-            companyEstablishmentDate,
-            mobilephoneNumber,
-            telephoneNumber,
-            email,
-            email2,
-            address,
-            address2,
-            gender,
-            birth,
-            group,
-            location,
-            taxNumber,
-            website,
-            linkedIn,
-            unitMembers,
-            listGroups,
-        } = this.state;
-
-        const { customerNameError, customerCodeError, customerTaxNumberError, } = this.state;
-        let progressBarWidth;
-
-        // setting timeline customer status
-        if (listStatus) {
-            const totalItem = listStatus.length;
-            const numberOfActiveItems = listStatus.filter(o => o.active).length;
-            progressBarWidth = totalItem > 1 && numberOfActiveItems > 0 ? ((numberOfActiveItems - 1) / (totalItem - 1)) * 100 : 0;
-        }
-
-
-        return (
-            <React.Fragment>
-                <div id={id} className="tab-pane active">
-                    {/* timeline trạng thái khách hàng */}
-                    <fieldset className="scheduler-border">
-                        <legend className="scheduler-border">{"Thông tin khách hàng"}</legend>
-                        <div className="row">
-                            <div className="col-md-12">
-                                <label>{translate('crm.customer.status')}<span className="text-red">*</span></label>
-                                <div className="timeline">
-                                    <div className="timeline-crm-progress" style={{ width: `${progressBarWidth}%` }}></div>
-                                    <div className="timeline-items">
-                                        {
-                                            listStatus && listStatus.length > 0 &&
-                                            listStatus.map((o, index) => (
-                                                <div key={index} className={`timeline-item ${o.active ? 'active' : ''}`} onClick={() => this.handleChangeCustomerStatus(index)}>
-                                                    <div className="timeline-contain">{o.name}</div>
-                                                </div>
-                                            ))
-                                        }
-                                    </div>
+    return (
+        <React.Fragment>
+            <div id={id} className="tab-pane active">
+                {/* timeline trạng thái khách hàng */}
+                <fieldset className="scheduler-border">
+                    <legend className="scheduler-border">{"Thông tin khách hàng"}</legend>
+                    <div className="row">
+                        <div className="col-md-12">
+                            <label>{translate('crm.customer.status')}<span className="text-red">*</span></label>
+                            <div className="timeline">
+                                <div className="timeline-crm-progress" style={{ width: `${progressBarWidth}%` }}></div>
+                                <div className="timeline-items">
+                                    {
+                                        listStatus && listStatus.length > 0 &&
+                                        listStatus.map((o, index) => (
+                                            <div key={index} className={`timeline-item ${o.active ? 'active' : ''}`} onClick={() => handleChangeCustomerStatus(index)}>
+                                                <div className="timeline-contain">{o.name}</div>
+                                            </div>
+                                        ))
+                                    }
                                 </div>
                             </div>
                         </div>
+                    </div>
 
 
 
 
-                        <div className="row">
-                            {/* Mã khách hàng */}
-                            <div className="col-md-6">
-                                <div className={`form-group ${!customerCodeError ? "" : "has-error"}`}>
-                                    <label>{translate('crm.customer.code')}<span className="text-red">*</span></label>
-                                    <input type="text" className="form-control" value={code ? code : ''} onChange={this.handleChangeCustomerCode} placeholder={translate('crm.customer.code')} />
-                                    <ErrorLabel content={customerCodeError} />
-                                </div>
+                    <div className="row">
+                        {/* Mã khách hàng */}
+                        <div className="col-md-6">
+                            <div className={`form-group ${!customerCodeError ? "" : "has-error"}`}>
+                                <label>{translate('crm.customer.code')}<span className="text-red">*</span></label>
+                                <input type="text" className="form-control" value={code ? code : ''} onChange={handleChangeCustomerCode} placeholder={translate('crm.customer.code')} />
+                                <ErrorLabel content={customerCodeError} />
                             </div>
+                        </div>
 
-                            {/* Tên khách hàng */}
+                        {/* Tên khách hàng */}
+                        <div className="col-md-6">
+                            <div className={`form-group ${!customerNameError ? "" : "has-error"}`}>
+                                <label>{translate('crm.customer.name')}<span className="text-red">*</span></label>
+                                <input type="Name" className="form-control" value={name ? name : ''} onChange={handleChangeCustomerName} placeholder={translate('crm.customer.name')} />
+                                <ErrorLabel content={customerNameError} />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="row">
+                        {/* Loại khách hàng */}
+                        <div className="col-md-6">
+                            <div className={`form-group`} >
+                                <label className="control-label">{translate('crm.customer.customerType')}<span className="text-red">*</span></label>
+                                <SelectBox
+                                    id={`customerType`}
+                                    className="form-control select2"
+                                    style={{ width: "100%" }}
+                                    items={[
+                                        { value: '', text: '---Chọn---' },
+                                        { value: 1, text: 'Cá nhân' },
+                                        { value: 2, text: 'Công ty' },
+                                    ]}
+                                    value={customerType ? customerType : ''}
+                                    onChange={handleChangeCustomerType}
+                                    multiple={false}
+                                />
+                            </div>
+                        </div>
+
+                        {/* Nhóm khách hàng */}
+                        <div className="col-md-6">
+                            <div className="form-group">
+                                <label>{translate('crm.customer.group')}</label>
+                                {listGroups && <SelectBox
+                                    id={`customer-group`}
+                                    className="form-control select2"
+                                    style={{ width: "100%" }}
+                                    items={
+                                        listGroups
+                                    }
+                                    value={group ? group : ''}
+                                    onChange={handleChangeCustomerGroup}
+                                    multiple={false}
+                                />}
+                            </div>
+                        </div>
+                    </div>
+
+                    {customerType == 2 ? (<>
+                        <div className="row">
+                            {/* Người đại diện */}
                             <div className="col-md-6">
-                                <div className={`form-group ${!customerNameError ? "" : "has-error"}`}>
-                                    <label>{translate('crm.customer.name')}<span className="text-red">*</span></label>
-                                    <input type="Name" className="form-control" value={name ? name : ''} onChange={this.handleChangeCustomerName} placeholder={translate('crm.customer.name')} />
+                                <div className={`form-group`}>
+                                    <label>Người đại diện</label>
+                                    <input type="Name" className="form-control" value={represent ? represent : ''} onChange={handleChangeRepresent} placeholder={'Người đại diện'} />
                                     <ErrorLabel content={customerNameError} />
                                 </div>
                             </div>
-                        </div>
-
-                        <div className="row">
-                            {/* Loại khách hàng */}
+                            {/* Ngày thành lập công ty */}
                             <div className="col-md-6">
-                                <div className={`form-group`} >
-                                    <label className="control-label">{translate('crm.customer.customerType')}<span className="text-red">*</span></label>
-                                    <SelectBox
-                                        id={`customerType`}
-                                        className="form-control select2"
-                                        style={{ width: "100%" }}
-                                        items={[
-                                            { value: '', text: '---Chọn---' },
-                                            { value: 1, text: 'Cá nhân' },
-                                            { value: 2, text: 'Công ty' },
-                                        ]}
-                                        value={customerType ? customerType : ''}
-                                        onChange={this.handleChangeCustomerType}
-                                        multiple={false}
+                                <div className="form-group">
+                                    <label>{translate('crm.customer.companyEstablishmentDate')}</label>
+                                    <DatePicker
+                                        id="start-date-form-create"
+                                        value={companyEstablishmentDate ? companyEstablishmentDate : ''}
+                                        onChange={handleChangeCompanyEstablishmentDate}
+                                        disabled={false}
                                     />
                                 </div>
                             </div>
 
-                            {/* Nhóm khách hàng */}
+                        </div>
+
+
+                        <div className="row">
+
+
+
+                            {/* // Mã số thuế */}
                             <div className="col-md-6">
-                                <div className="form-group">
-                                    <label>{translate('crm.customer.group')}</label>
-                                    {listGroups && <SelectBox
-                                        id={`customer-group`}
-                                        className="form-control select2"
-                                        style={{ width: "100%" }}
-                                        items={
-                                            listGroups
-                                        }
-                                        value={group ? group : ''}
-                                        onChange={this.handleChangeCustomerGroup}
-                                        multiple={false}
-                                    />}
+                                <div className={`form-group ${!customerTaxNumberError ? "" : "has-error"}`}>
+                                    <label>{translate('crm.customer.taxNumber')}</label>
+                                    <input type="text" className="form-control" value={taxNumber ? taxNumber : ''} onChange={handleChangeTaxNumber} placeholder={translate('crm.customer.taxNumber')} />
+                                    <ErrorLabel content={customerTaxNumberError} />
                                 </div>
                             </div>
                         </div>
-
-                        {customerType == 2 ? (<>
-                            <div className="row">
-                                {/* Người đại diện */}
-                                <div className="col-md-6">
-                                    <div className={`form-group`}>
-                                        <label>Người đại diện</label>
-                                        <input type="Name" className="form-control" value={represent ? represent : ''} onChange={this.handleChangeRepresent} placeholder={'Người đại diện'} />
-                                        <ErrorLabel content={customerNameError} />
-                                    </div>
-                                </div>
-                                {/* Ngày thành lập công ty */}
-                                <div className="col-md-6">
-                                    <div className="form-group">
-                                        <label>{translate('crm.customer.companyEstablishmentDate')}</label>
-                                        <DatePicker
-                                            id="start-date-form-create"
-                                            value={companyEstablishmentDate ? companyEstablishmentDate : ''}
-                                            onChange={this.handleChangeCompanyEstablishmentDate}
-                                            disabled={false}
-                                        />
-                                    </div>
-                                </div>
-
-                            </div>
-
-
-                            <div className="row">
-
-
-
-                                {/* // Mã số thuế */}
-                                <div className="col-md-6">
-                                    <div className={`form-group ${!customerTaxNumberError ? "" : "has-error"}`}>
-                                        <label>{translate('crm.customer.taxNumber')}</label>
-                                        <input type="text" className="form-control" value={taxNumber ? taxNumber : ''} onChange={this.handleChangeTaxNumber} placeholder={translate('crm.customer.taxNumber')} />
-                                        <ErrorLabel content={customerTaxNumberError} />
-                                    </div>
-                                </div>
-                            </div>
-                        </>) : (<>
-                            <div className="row">
-
-
-                                {/* Giới tính */}
-                                <div className="col-md-6">
-                                    <div className={`form-group`}>
-                                        <label>{translate('crm.customer.gender')}</label>
-                                        <SelectBox
-                                            id={`customer-gender`}
-                                            className="form-control select2"
-                                            style={{ width: "100%" }}
-                                            items={
-                                                [
-                                                    { value: '', text: '---Chọn---' },
-                                                    { value: 1, text: 'Nam' },
-                                                    { value: 2, text: 'Nữ' },
-                                                ]
-                                            }
-                                            value={gender ? gender : ''}
-                                            onChange={this.handleChangeCustomerGender}
-                                            multiple={false}
-                                        />
-                                    </div>
-                                </div>
-
-                                {/* ngày sinh */}
-                                <div className="col-md-6">
-                                    <div className={`form-group`}>
-                                        <label>{translate('crm.customer.birth')}</label>
-                                        <DatePicker
-                                            id="birth-form-create"
-                                            value={birth ? birth : ''}
-                                            onChange={this.handleChangeCustomerBirth}
-                                            disabled={false}
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-
-                        </>)
-                        }
-
+                    </>) : (<>
                         <div className="row">
-                            {/* Số điện thoại di động*/}
+
+
+                            {/* Giới tính */}
                             <div className="col-md-6">
                                 <div className={`form-group`}>
-                                    <label>{translate('crm.customer.mobilephoneNumber')} </label>
-                                    <input type="number" className="form-control" value={mobilephoneNumber ? mobilephoneNumber : ''} onChange={this.handleChangeMobilephoneNumber} placeholder={translate('crm.customer.mobilephoneNumber')} />
-                                </div>
-                            </div>
-
-                            {/* Địa chỉ email*/}
-                            <div className="col-md-6">
-                                <div className={`form-group`}>
-                                    <label>{translate('crm.customer.email')} </label>
-                                    <input type="email" className="form-control" value={email ? email : ''} onChange={this.handleChangeCustomerEmail} placeholder={translate('crm.customer.email')} />
-                                </div>
-                            </div>
-
-
-                        </div>
-
-                        <div className="row">
-                            {/* Địa chỉ */}
-                            <div className="col-md-6">
-                                <div className={`form-group`}>
-                                    <label>{translate('crm.customer.address')}</label>
-                                    <input type="text" className="form-control" value={address ? address : ''} onChange={this.handleChangeCustomerAddress} placeholder={translate('crm.customer.address')} />
-                                </div>
-                            </div>
-
-                            {/* Số điện thoại cố định */}
-                            <div className="col-md-6">
-                                <div className={`form-group`}>
-                                    <label>{translate('crm.customer.telephoneNumber')} </label>
-                                    <input type="number" className="form-control" value={telephoneNumber ? telephoneNumber : ''} onChange={this.handleChangeTelephoneNumber} placeholder={translate('crm.customer.telephoneNumber')} />
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="row">
-                            {/* location */}
-                            <div className="col-md-6">
-                                <div className="form-group">
-                                    <label>{translate('crm.customer.location')} </label>
+                                    <label>{translate('crm.customer.gender')}</label>
                                     <SelectBox
-                                        id={`customer-location`}
+                                        id={`customer-gender`}
                                         className="form-control select2"
                                         style={{ width: "100%" }}
                                         items={
                                             [
-                                                { value: '', text: 'Chọn' },
-                                                { value: 1, text: 'Bắc' },
-                                                { value: 2, text: 'Trung ' },
-                                                { value: 3, text: 'Nam ' },
+                                                { value: '', text: '---Chọn---' },
+                                                { value: 1, text: 'Nam' },
+                                                { value: 2, text: 'Nữ' },
                                             ]
                                         }
-                                        value={location ? location : ''}
-                                        onChange={this.handleChangeCustomerLocation}
+                                        value={gender ? gender : ''}
+                                        onChange={handleChangeCustomerGender}
                                         multiple={false}
                                     />
                                 </div>
                             </div>
 
-                            {/* website */}
+                            {/* ngày sinh */}
                             <div className="col-md-6">
-                                <div className="form-group">
-                                    <label>{translate('crm.customer.website')}</label>
-                                    <input type="text" className="form-control" value={website ? website : ''} onChange={this.handleChangeCustomerWebsite} placeholder={translate('crm.customer.website')} />
+                                <div className={`form-group`}>
+                                    <label>{translate('crm.customer.birth')}</label>
+                                    <DatePicker
+                                        id="birth-form-create"
+                                        value={birth ? birth : ''}
+                                        onChange={handleChangeCustomerBirth}
+                                        disabled={false}
+                                    />
                                 </div>
                             </div>
                         </div>
 
+                    </>)
+                    }
+
+                    <div className="row">
+                        {/* Số điện thoại di động*/}
+                        <div className="col-md-6">
+                            <div className={`form-group`}>
+                                <label>{translate('crm.customer.mobilephoneNumber')} </label>
+                                <input type="number" className="form-control" value={mobilephoneNumber ? mobilephoneNumber : ''} onChange={handleChangeMobilephoneNumber} placeholder={translate('crm.customer.mobilephoneNumber')} />
+                            </div>
+                        </div>
+
+                        {/* Địa chỉ email*/}
+                        <div className="col-md-6">
+                            <div className={`form-group`}>
+                                <label>{translate('crm.customer.email')} </label>
+                                <input type="email" className="form-control" value={email ? email : ''} onChange={handleChangeCustomerEmail} placeholder={translate('crm.customer.email')} />
+                            </div>
+                        </div>
 
 
-                    </fieldset>
-                    <fieldset className="scheduler-border">
-                        <legend className="scheduler-border">{"Thông tin liên quan"}
-                        </legend>
-                        <div className="row">
-                            {/* Người quản lý */}
-                            <div className="col-md-6">
-                                <div className={`form-group`} >
-                                    <label className="control-label">{translate('crm.customer.owner')}<span className="text-red">*</span></label>
-                                    {
-                                        unitMembers &&
-                                        <SelectBox
-                                            id={`customer-owner`}
-                                            className="form-control select2"
-                                            style={{ width: "100%" }}
-                                            items={unitMembers}
-                                            value={owner}
-                                            onChange={this.handleChangeCustomerOwner}
-                                            multiple={true}
-                                        />
+                    </div>
+
+                    <div className="row">
+                        {/* Địa chỉ */}
+                        <div className="col-md-6">
+                            <div className={`form-group`}>
+                                <label>{translate('crm.customer.address')}</label>
+                                <input type="text" className="form-control" value={address ? address : ''} onChange={handleChangeCustomerAddress} placeholder={translate('crm.customer.address')} />
+                            </div>
+                        </div>
+
+                        {/* Số điện thoại cố định */}
+                        <div className="col-md-6">
+                            <div className={`form-group`}>
+                                <label>{translate('crm.customer.telephoneNumber')} </label>
+                                <input type="number" className="form-control" value={telephoneNumber ? telephoneNumber : ''} onChange={handleChangeTelephoneNumber} placeholder={translate('crm.customer.telephoneNumber')} />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="row">
+                        {/* location */}
+                        <div className="col-md-6">
+                            <div className="form-group">
+                                <label>{translate('crm.customer.location')} </label>
+                                <SelectBox
+                                    id={`customer-location`}
+                                    className="form-control select2"
+                                    style={{ width: "100%" }}
+                                    items={
+                                        [
+                                            { value: '', text: 'Chọn' },
+                                            { value: 1, text: 'Bắc' },
+                                            { value: 2, text: 'Trung ' },
+                                            { value: 3, text: 'Nam ' },
+                                        ]
                                     }
-                                </div>
-                            </div>
-
-                            {/* Nguồn khách hàng */}
-                            <div className="col-md-6">
-                                <div className={`form-group`} >
-                                    <label className="control-label">{translate('crm.customer.source')}</label>
-                                    <input type="text" className="form-control" value={customerSource ? customerSource : ''} onChange={this.handleChangeCustomerSource} placeholder="Facebook,...." />
-                                </div>
+                                    value={location ? location : ''}
+                                    onChange={handleChangeCustomerLocation}
+                                    multiple={false}
+                                />
                             </div>
                         </div>
 
-                        <div className="row">
-                            {/* Ghi chú */}
-                            <div className="col-md-6">
-                                <div className="form-group">
-                                    <label>{translate('crm.customer.note')}</label>
-                                    <textarea type="text" className="form-control" onChange={this.handleChangeCustomerNote} />
-                                </div>
+                        {/* website */}
+                        <div className="col-md-6">
+                            <div className="form-group">
+                                <label>{translate('crm.customer.website')}</label>
+                                <input type="text" className="form-control" value={website ? website : ''} onChange={handleChangeCustomerWebsite} placeholder={translate('crm.customer.website')} />
                             </div>
-
-
                         </div>
-                    </fieldset>
-                </div>
-            </React.Fragment>
-        );
-    }
+                    </div>
+
+
+
+                </fieldset>
+                <fieldset className="scheduler-border">
+                    <legend className="scheduler-border">{"Thông tin liên quan"}
+                    </legend>
+                    <div className="row">
+                        {/* Người quản lý */}
+                        <div className="col-md-6">
+                            <div className={`form-group`} >
+                                <label className="control-label">{translate('crm.customer.owner')}<span className="text-red">*</span></label>
+                                {
+                                    unitMembers &&
+                                    <SelectBox
+                                        id={`customer-owner`}
+                                        className="form-control select2"
+                                        style={{ width: "100%" }}
+                                        items={unitMembers}
+                                        value={owner}
+                                        onChange={handleChangeCustomerOwner}
+                                        multiple={true}
+                                    />
+                                }
+                            </div>
+                        </div>
+
+                        {/* Nguồn khách hàng */}
+                        <div className="col-md-6">
+                            <div className={`form-group`} >
+                                <label className="control-label">{translate('crm.customer.source')}</label>
+                                <input type="text" className="form-control" value={customerSource ? customerSource : ''} onChange={handleChangeCustomerSource} placeholder="Facebook,...." />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="row">
+                        {/* Ghi chú */}
+                        <div className="col-md-6">
+                            <div className="form-group">
+                                <label>{translate('crm.customer.note')}</label>
+                                <textarea type="text" className="form-control" onChange={handleChangeCustomerNote} />
+                            </div>
+                        </div>
+
+
+                    </div>
+                </fieldset>
+            </div>
+        </React.Fragment>
+    );
 }
+
 
 
 function mapStateToProps(state) {
@@ -755,10 +773,3 @@ function mapStateToProps(state) {
 
 export default connect(mapStateToProps, null)(withTranslate(GeneralTabCreateForm));
 
-// {/* Địa chỉ email phu*/ }
-// <div className="col-md-6">
-//     <div className={`form-group`}>
-//         <label>{translate('crm.customer.secondaryEmail')}</label>
-//         <input type="email" className="form-control" value={email2 ? email2 : ''} onChange={this.handleChangeCustomerEmail2} placeholder={translate('crm.customer.secondaryEmail')} />
-//     </div>
-// </div>

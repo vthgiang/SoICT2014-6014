@@ -265,7 +265,7 @@ function ModalDetailKPIPersonal(props) {
                 <div className="nav-tabs-custom" style={{ boxShadow: "none", MozBoxShadow: "none", WebkitBoxShadow: "none" }}>
                     <ul className="nav nav-tabs">
                         <li className="active"><a href="#overview" data-toggle="tab">{translate('menu.kpi_personal_overview')}</a></li>
-                        <li><a href="#detail" data-toggle="tab">{translate('menu.kpi_member_manager')}</a></li>
+                        <li><a href="#detail" data-toggle="tab">{translate('menu.kpi_member_detail')}</a></li>
                     </ul>
                     <div className="tab-content">
                         {/* Tổng quan KPI */}
@@ -333,8 +333,8 @@ function ModalDetailKPIPersonal(props) {
                                             <br />
 
 
-                                            <h4>{translate('kpi.evaluation.employee_evaluation.task_list')}</h4>
-                                            <div className="table-wrapper-scroll-y my-custom-scrollbar" style={{ height: "calc(80vh - 160px)", overflow: "auto" }}>
+                                            <h4>
+                                                {translate('kpi.evaluation.employee_evaluation.task_list')}
                                                 <DataTableSetting className="pull-right" tableId="employeeKpiEvaluate" tableContainerId="tree-table-container" tableWidth="1300px"
                                                     columnArr={[
                                                         translate('kpi.evaluation.employee_evaluation.index'),
@@ -346,14 +346,15 @@ function ModalDetailKPIPersonal(props) {
                                                         translate('kpi.evaluation.employee_evaluation.point'),
                                                         translate('kpi.evaluation.employee_evaluation.importance_level')]}
                                                     limit={state.perPage}
-                                                    // setLimit={setLimit}
-                                                    hideColumnOption={true} />
-
+                                                    hideColumnOption={true}
+                                                />
+                                            </h4>
+                                            <div className="table-wrapper-scroll-y my-custom-scrollbar" style={{ height: "calc(80vh - 160px)", overflow: "auto" }}>
                                                 {/**Table danh sách công việc của mục tiêu */}
-                                                <table id="employeeKpiEvaluate" className="table table-hover table-bordered">
+                                                <table id="employeeKpiEvaluate" className="table table-striped table-hover table-bordered" style={{ marginBottom: 0 }}>
                                                     <thead>
                                                         <tr>
-                                                            <th title={translate('kpi.evaluation.employee_evaluation.index')} style={{ width: "40px" }} className="col-fixed"></th>
+                                                            <th title={translate('kpi.evaluation.employee_evaluation.index')} style={{ width: "40px" }} className="col-fixed">{translate('kpi.evaluation.employee_evaluation.index')}</th>
                                                             <th title={translate('task.task_management.name')}>{translate('task.task_management.name')}</th>
                                                             <th title={translate('kpi.evaluation.employee_evaluation.work_duration_time')}>{translate('kpi.evaluation.employee_evaluation.work_duration_time')}</th>
                                                             <th title={translate('kpi.evaluation.employee_evaluation.evaluate_time')}>{translate('kpi.evaluation.employee_evaluation.evaluate_time')}</th>
@@ -365,9 +366,8 @@ function ModalDetailKPIPersonal(props) {
                                                     </thead>
                                                     <tbody>
                                                         {
-                                                            (kpimembers.tasks !== undefined && Array.isArray(kpimembers.tasks)) ?
-                                                                (kpimembers.tasks.map((itemTask, index) =>
-
+                                                            (kpimembers?.tasks?.length > 0 && Array.isArray(kpimembers.tasks)) 
+                                                                && (kpimembers.tasks.map((itemTask, index) =>
                                                                     <tr key={index}>
                                                                         <td>{index + 1}</td>
                                                                         <td><a style={{ cursor: 'pointer' }} onClick={() => handleClickTaskName(itemTask.taskId)}>{itemTask.name}</a></td>
@@ -386,10 +386,17 @@ function ModalDetailKPIPersonal(props) {
                                                                                 </a>
                                                                             </div>
                                                                         </td>
-                                                                    </tr>)) : <tr><td colSpan={8}>{translate('general.no_data')}</td></tr>
+                                                                    </tr>)
+                                                                )
                                                         }
                                                     </tbody>
                                                 </table>
+                                                {!kpimembers?.tasks?.length && kpimembers?.taskLoading
+                                                    && <div className="table-info-panel">{translate('general.loading')}</div>
+                                                }
+                                                {!kpimembers?.tasks?.length && !kpimembers?.taskLoading
+                                                    && <div className="table-info-panel">{translate('general.no_data')}</div>
+                                                }
                                             </div>
                                             {
                                                 taskImportanceDetail &&

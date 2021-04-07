@@ -31,7 +31,7 @@ exports.searchCareerPosition = async (req, res) => {
         await Log.error(req.user.email, 'GET_CAREER_POSITION', req.portal);
         res.status(400).json({
             success: false,
-            messages: ["get_position_faile"],
+            messages: ["get_position_fail"],
             content: {
                 error: error
             }
@@ -61,7 +61,7 @@ exports.searchCareerAction = async (req, res) => {
         await Log.error(req.user.email, 'GET_CAREER_ACTION', req.portal);
         res.status(400).json({
             success: false,
-            messages: ["get_position_faile"],
+            messages: ["get_position_fail"],
             content: {
                 error: error
             }
@@ -91,7 +91,7 @@ exports.searchCareerField = async (req, res) => {
         await Log.error(req.user.email, 'GET_CAREER_FIELD', req.portal);
         res.status(400).json({
             success: false,
-            messages: ["get_position_faile"],
+            messages: ["get_position_fail"],
             content: {
                 error: error
             }
@@ -104,9 +104,9 @@ exports.searchCareerField = async (req, res) => {
 // =================CREATE====================
 
 /** Tạo mới Lĩnh vực */
-exports.crateNewCareerField = async (req, res) => {
+exports.createNewCareerField = async (req, res) => {
     try {
-        data = await careerPositionService.crateNewCareerField(req.portal, req.body);
+        data = await careerPositionService.createNewCareerField(req.portal, req.body);
         await Log.info(req.user.email, 'CREATE_FIELD', req.portal);
         res.status(200).json({
             success: true,
@@ -117,7 +117,7 @@ exports.crateNewCareerField = async (req, res) => {
         await Log.error(req.user.email, 'CREATE_FIELD', req.portal);
         res.status(400).json({
             success: false,
-            messages: ["create_career_field_faile"],
+            messages: ["create_career_field_fail"],
             content: {
                 error: error
             }
@@ -127,9 +127,9 @@ exports.crateNewCareerField = async (req, res) => {
 
 
 /** Tạo mới vị trí công việc */
-exports.crateNewCareerPosition = async (req, res) => {
+exports.createNewCareerPosition = async (req, res) => {
     try {
-        data = await careerPositionService.crateNewCareerPosition(req.portal, req.body);
+        data = await careerPositionService.createNewCareerPosition(req.portal, req.body);
         await Log.info(req.user.email, 'CREATE_POSITION', req.portal);
         res.status(200).json({
             success: true,
@@ -140,7 +140,7 @@ exports.crateNewCareerPosition = async (req, res) => {
         await Log.error(req.user.email, 'CREATE_POSITION', req.portal);
         res.status(400).json({
             success: false,
-            messages: ["create_career_position_faile"],
+            messages: ["create_career_position_fail"],
             content: {
                 error: error
             }
@@ -150,9 +150,9 @@ exports.crateNewCareerPosition = async (req, res) => {
 
 
 /** Tạo mới hoạt động công việc */
-exports.crateNewCareerAction = async (req, res) => {
+exports.createNewCareerAction = async (req, res) => {
     try {
-        data = await careerPositionService.crateNewCareerAction(req.portal, req.body);
+        data = await careerPositionService.createNewCareerAction(req.portal, req.body);
         await Log.info(req.user.email, 'CREATE_ACTION', req.portal);
         res.status(200).json({
             success: true,
@@ -163,7 +163,7 @@ exports.crateNewCareerAction = async (req, res) => {
         await Log.error(req.user.email, 'CREATE_ACTION', req.portal);
         res.status(400).json({
             success: false,
-            messages: ["create_career_action_faile"],
+            messages: ["create_career_action_fail"],
             content: {
                 error: error
             }
@@ -188,7 +188,7 @@ exports.editCareerPosition = async (req, res) => {
     //     // await Log.error(req.user.email, 'EDIT_POSITION', req.portal);
     //     res.status(400).json({
     //         success: false,
-    //         messages: ["edit_career_position_faile"],
+    //         messages: ["edit_career_position_fail"],
     //         content: {
     //             error: error
     //         }
@@ -210,7 +210,7 @@ exports.editCareerField = async (req, res) => {
     //     // await Log.error(req.user.email, 'EDIT_FIELD', req.portal);
     //     res.status(400).json({
     //         success: false,
-    //         messages: ["edit_career_position_faile"],
+    //         messages: ["edit_career_position_fail"],
     //         content: {
     //             error: error
     //         }
@@ -232,7 +232,7 @@ exports.editCareerAction = async (req, res) => {
     //     // await Log.error(req.user.email, 'EDIT_ACTION', req.portal);
     //     res.status(400).json({
     //         success: false,
-    //         messages: ["edit_career_position_faile"],
+    //         messages: ["edit_career_position_fail"],
     //         content: {
     //             error: error
     //         }
@@ -258,7 +258,7 @@ exports.deleteCareerField = async (req, res) => {
         // await Log.error(req.user.email, 'DELETE_FIELD', req.portal);
         res.status(400).json({
             success: false,
-            messages: ["delete_field_faile"],
+            messages: ["delete_field_fail"],
             content: {
                 error: error
             }
@@ -280,7 +280,7 @@ exports.deleteCareerPosition = async (req, res) => {
     //     // await Log.error(req.user.email, 'DELETE_FIELD', req.portal);
     //     res.status(400).json({
     //         success: false,
-    //         messages: ["delete_field_faile"],
+    //         messages: ["delete_field_fail"],
     //         content: {
     //             error: error
     //         }
@@ -302,7 +302,7 @@ exports.deleteCareerAction = async (req, res) => {
     //     // await Log.error(req.user.email, 'DELETE_FIELD', req.portal);
     //     res.status(400).json({
     //         success: false,
-    //         messages: ["delete_field_faile"],
+    //         messages: ["delete_field_fail"],
     //         content: {
     //             error: error
     //         }
