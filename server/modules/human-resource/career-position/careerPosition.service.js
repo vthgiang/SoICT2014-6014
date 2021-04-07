@@ -113,8 +113,7 @@ exports.searchCareerAction = async (portal, params) => {
  * @data : dữ liệu chuyên ngành tương đương mới
  * 
  */
-exports.crateNewCareerField = async (portal, data) => {
-    let field, position;
+exports.createNewCareerField = async (portal, data) => {
     if (!data.parent) {
         console.log('is parent ');
         field = await CareerField(connect(DB_CONNECTION, portal)).create({
@@ -149,7 +148,7 @@ exports.crateNewCareerField = async (portal, data) => {
                 )
             }
             else {
-                console.log('data.position',data.position, data.parent);
+                console.log('data.position', data.position, data.parent);
                 for (let i in data.position) {
                     position = await CareerField(connect(DB_CONNECTION, portal)).findOneAndUpdate(
                         {
@@ -178,8 +177,8 @@ exports.crateNewCareerField = async (portal, data) => {
  * @data : dữ liệu chuyên ngành tương đương mới
  * 
  */
-exports.crateNewCareerPosition = async (portal, data) => {
-    let position, description;
+exports.createNewCareerPosition = async (portal, data) => {
+    let position;
     console.log('data.action', data.action);
     if (!data.parent) {
         console.log('is parent ');
@@ -221,36 +220,10 @@ exports.crateNewCareerPosition = async (portal, data) => {
                     package: data.package,
                 })
 
-                description = await CareerPosition(connect(DB_CONNECTION, portal)).findOneAndUpdate(
-                    {
-                        _id: data.parent,
-                    },
-                    {
-                        $push: {
-                            "description": {
-                                action: action._id,
-                                multi: 0,
-                            }
-                        }
-                    }
-                )
             }
             else {
                 console.log('action', data.action);
                 for (let i in data.action) {
-                    description = await CareerPosition(connect(DB_CONNECTION, portal)).findOneAndUpdate(
-                        {
-                            _id: data.parent,
-                        },
-                        {
-                            $push: {
-                                "description": {
-                                    action: data.action[i],
-                                    multi: 1,
-                                }
-                            }
-                        }
-                    )
                 }
 
             }
@@ -266,7 +239,7 @@ exports.crateNewCareerPosition = async (portal, data) => {
  * @data : dữ liệu chuyên ngành tương đương mới
  * 
  */
-exports.crateNewCareerAction = async (portal, data) => {
+exports.createNewCareerAction = async (portal, data) => {
     let action, detail;
     if (data.parent.length === 0) {
         console.log('is parent ');
@@ -334,7 +307,7 @@ exports.crateNewCareerAction = async (portal, data) => {
 exports.editCareerField = async (portal, data, params) => {
     let oldItem = data.oldData;
 
-    if (!data.parent) {
+    if (data.parent.length === 0||!data.parent) {
         await CareerField(connect(DB_CONNECTION, portal)).updateOne({ _id: params.id },
             {
                 $set: {
@@ -365,7 +338,7 @@ exports.editCareerField = async (portal, data, params) => {
             )
         }
         if (data.parent !== oldItem.parent) { // parent có thay đổi
-            await CareerField(connect(DB_CONNECTION, portal)).update(
+            await CareerField(connect(DB_CONNECTION, portal)).updateOne(
                 {
                     _id: oldItem.parent,
                     "position._id": params.id
@@ -403,7 +376,7 @@ exports.editCareerField = async (portal, data, params) => {
 exports.editCareerPosition = async (portal, data, params) => {
     let oldItem = data.oldData;
 
-    if (!data.parent) {
+    if (!data.parent||data.parent.length === 0) {
         await CareerPosition(connect(DB_CONNECTION, portal)).updateOne({ _id: params.id },
             {
                 $set: {
@@ -438,7 +411,7 @@ exports.editCareerPosition = async (portal, data, params) => {
 
         if (data.parent !== oldItem.parent) { // thay dổi cha
             // bỏ đi description ở vị trí cv cũ (parent cũ)
-            await CareerPosition(connect(DB_CONNECTION, portal)).update(
+            await CareerPosition(connect(DB_CONNECTION, portal)).updateOne(
                 {
                     _id: oldItem.parent,
                     "description._id": params.id
@@ -579,7 +552,7 @@ exports.deleteCareerField = async (portal, data) => {
     }
 
     for (let i in data) {
-        await CareerField(connect(DB_CONNECTION, portal)).update(
+        await CareerField(connect(DB_CONNECTION, portal)).updateOne(
             {
                 "position._id": data[i],
             },
@@ -594,7 +567,7 @@ exports.deleteCareerField = async (portal, data) => {
 }
 
 /**
- * Xoá lĩnh vực
+ * Xoá vị trí
  * @data : list id xóa
  */
 exports.deleteCareerPosition = async (portal, data) => {
@@ -605,14 +578,13 @@ exports.deleteCareerPosition = async (portal, data) => {
             },
             {
                 $pull: { position: { "position": data[i], } },
-            },
-            { multi: true }
+            }
         );
         await CareerPosition(connect(DB_CONNECTION, portal)).findOneAndDelete({ _id: data[i] });
     }
 
     for (let i in data) {
-        await CareerPosition(connect(DB_CONNECTION, portal)).update(
+        await CareerPosition(connect(DB_CONNECTION, portal)).updateOne(
             {
                 "description._id": data[i],
             },
@@ -627,28 +599,27 @@ exports.deleteCareerPosition = async (portal, data) => {
 }
 
 /**
- * Xoá lĩnh vực
+ * Xoá hoạt động
  * @data : list id xóa
  */
 exports.deleteCareerAction = async (portal, data) => {
 
     for (let i in data) {
         let id = data[i].split('-')[0];
-        await CareerPosition(connect(DB_CONNECTION, portal)).update(
+        await CareerPosition(connect(DB_CONNECTION, portal)).updateMany(
             {
                 "description.action": id,
             },
             {
                 $pull: { description: { "action": id, } },
-            },
-            { multi: true }
+        }
         );
         await CareerAction(connect(DB_CONNECTION, portal)).findOneAndDelete({ _id: id });
     }
 
     for (let i in data) {
         let id = data[i].split('-')[0];
-        await CareerAction(connect(DB_CONNECTION, portal)).update(
+        await CareerAction(connect(DB_CONNECTION, portal)).updateOne(
             {
                 label: id
             },

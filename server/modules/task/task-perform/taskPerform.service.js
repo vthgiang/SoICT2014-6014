@@ -272,6 +272,19 @@ exports.getTaskById = async (portal, id, userId) => {
         };
     }
     task.evaluations.reverse();
+    task.taskActions.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    task.taskActions.map(o => {
+        if (o.comments && o.comments.length > 0)
+            o.comments.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        return o;
+    })
+
+    task.taskComments.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    task.taskComments.map(o => {
+        if (o.comments && o.comments.length > 0)
+            o.comments.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        return o;
+    })
     return task;
 };
 
@@ -1035,6 +1048,9 @@ exports.createCommentOfTaskAction = async (portal, params, body, files, user) =>
     // Lấy người liên quan đến trong subcomment 
     const subCommentOfTaskActionsLength = getTaskAction[0].comments.length;
 
+    // sắp xết comment của haotj động theo chiều giảm dàn cua thời gian tạo
+    getTaskAction[0].comments.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
     for (let index = 0; index < subCommentOfTaskActionsLength; index++) {
         userReceive = [...userReceive, getTaskAction[0].comments[index].creator._id];
     }
@@ -1327,6 +1343,8 @@ exports.createTaskAction = async (portal, params, body, files) => {
     // Danh sách người phê duyệt được gửi mail
     let userEmail = await User(connect(DB_CONNECTION, portal)).find({ _id: { $in: accEmployees } });
     let email = userEmail.map(item => item.email);
+
+    task.taskActions.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     return { taskActions: task.taskActions, tasks: task, userCreator: getUser, email: email };
 }
 /**
@@ -1570,6 +1588,8 @@ exports.createTaskComment = async (portal, params, body, files, user) => {
 
     if (userReceive && userReceive.length > 0)
         NotificationServices.createNotification(portal, user.company._id, data)
+    
+    taskComment.taskComments.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     return taskComment.taskComments;
 };
 /**
@@ -1799,7 +1819,7 @@ exports.createCommentOfTaskComment = async (portal, params, body, files, user) =
 
     // Lấy người liên quan đến trong subcomment
     const subCommentLength = getTaskComment[0].comments.length;
-
+    getTaskComment[0].comments.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     for (let index = 0; index < subCommentLength; index++) {
         userReceive = [...userReceive, getTaskComment[0].comments[index].creator._id];
     }

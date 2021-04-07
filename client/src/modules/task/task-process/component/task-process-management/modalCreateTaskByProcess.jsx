@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, useEffect, useMemo, useState } from "react";
 import { connect } from 'react-redux';
 import { getStorage } from '../../../../../config';
 import { withTranslate } from "react-redux-multilingual";
@@ -62,7 +62,7 @@ PaletteProvider.prototype.getPaletteEntries = function (element) {
 }
 
 // diagram khởi tạo
-const initialDiagram =
+const InitialDiagram =
     '<?xml version="1.0" encoding="UTF-8"?>' +
     '<bpmn:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ' +
     'xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" ' +
@@ -85,89 +85,88 @@ const initialDiagram =
 // zoom level mặc định, dùng cho zoomin zoomout
 var zlevel = 1;
 
-class ModalCreateTaskByProcess extends Component {
+function ModalCreateTaskByProcess(props) {
 
-    constructor() {
-        super();
-        this.state = {
-            userId: getStorage("userId"),
-            currentRole: getStorage('currentRole'),
+    const [state, setState] = useState({
+        userId: getStorage("userId"),
+        currentRole: getStorage('currentRole'),
+        showInfo: false,
+        selectedCreate: 'info',
+        info: {},
+        save: false,
+        manager: [],
+        viewer: [],
+        processName: '',
+        processDescription: '',
+        indexRenderer: 0,
+    })
+    const initialDiagram = InitialDiagram
+    const [modeler, setModeler] = useState(new BpmnModeler({
+        additionalModules: [
+            customModule,
+            { zoomScroll: ['value', ''] }
+        ],
+    }));
+    const generateId = "createprocess"
 
-            showInfo: false,
-            selectedCreate: 'info',
-            info: {},
-            save: false,
+    if (state.save === true) {
+		props.getAllDepartments()
+		modeler.importXML(initialDiagram);
+		setState({
+			...state,
+			save: false,
+		});
+	}
+    // modeling = modeler.get('modeling');
+    useEffect(() => {
+        props.getAllUsers();
+        props.getAllDepartments();
+		modeler.attachTo('#' + generateId);
+		modeler.importXML(initialDiagram);
+		var eventBus = modeler.get('eventBus');
+		//Vo hieu hoa double click edit label
+		eventBus.on('element.dblclick', 10000, function (event) {
+			var element = event.element;
 
-            manager: [],
-            viewer: [],
-            processName: '',
-            processDescription: '',
+			if (isAny(element, ['bpmn:Task'])) {
+				return false; // will cancel event
+			}
+		});
 
-            indexRenderer: 0,
-        }
-        this.initialDiagram = initialDiagram
-        this.modeler = new BpmnModeler({
-            additionalModules: [
-                customModule,
-                { zoomScroll: ['value', ''] }
-            ],
-        });
-        this.modeling = this.modeler.get('modeling');
-        this.generateId = "createprocess"
-    }
+		//Vo hieu hoa edit label khi tao shape
+		eventBus.on([
+			'create.end',
+			'autoPlace.end'
+		], 250, (e) => {
+			// if (e.element[0].type === "bpmn:Task") {
+			modeler.get('directEditing').cancel()
+			// }
+		});
 
-    shouldComponentUpdate(nextProps, nextState) {
-        if (nextState.save === true) {
-            this.props.getAllDepartments()
-            this.modeler.importXML(this.initialDiagram);
-            this.setState({
-                save: false,
-            });
-            return true;
-        }
-        return true
-    }
+		modeler.on('element.click', 1, (e) => interactPopup(e));
 
-    componentDidMount() {
-        this.props.getAllUsers();
-        this.props.getAllDepartments();
-        this.modeler.attachTo('#' + this.generateId);
-        this.modeler.importXML(this.initialDiagram);
-        var eventBus = this.modeler.get('eventBus');
-        //Vo hieu hoa double click edit label
-        eventBus.on('element.dblclick', 10000, function (event) {
-            var element = event.element;
+		modeler.on('shape.remove', 1000, (e) => deleteElements(e));
 
-            if (isAny(element, ['bpmn:Task'])) {
-                return false; // will cancel event
-            }
-        });
+		modeler.on('commandStack.shape.delete.revert', (e) => handleUndoDeleteElement(e));
 
-        //Vo hieu hoa edit label khi tao shape
-        eventBus.on([
-            'create.end',
-            'autoPlace.end'
-        ], 250, (e) => {
-            // if (e.element[0].type === "bpmn:Task") {
-            this.modeler.get('directEditing').cancel()
-            // }
-        });
-
-        this.modeler.on('element.click', 1, (e) => this.interactPopup(e));
-
-        this.modeler.on('shape.remove', 1000, (e) => this.deleteElements(e));
-
-        this.modeler.on('commandStack.shape.delete.revert', (e) => this.handleUndoDeleteElement(e));
-
-        // this.modeler.on('shape.changed', 1, (e) => this.changeNameElement(e));
-    }
-
+    }, [])
+    // useMemo(() => {
+    //     if (state.save === true) {
+    //         props.getAllDepartments()
+    //         modeler.importXML(initialDiagram);
+    //         setState({
+    //             ...state,
+    //             save: false,
+    //         });
+    //     }
+    // }, [state.save])
+    
     // Hàm đổi tên Quy trình
-    handleChangeBpmnName = async (e) => {
+    const handleChangeBpmnName = async (e) => {
         let { value } = e.target;
-        let { message } = ValidationHelper.validateName(this.props.translate, value);
+        let { message } = ValidationHelper.validateName(props.translate, value);
 
-        await this.setState(state => {
+        await setState(state => {
             return {
                 ...state,
                 processName: value,
@@ -177,11 +176,11 @@ class ModalCreateTaskByProcess extends Component {
     }
 
     // Hàm cập nhật mô tả quy trình
-    handleChangeBpmnDescription = async (e) => {
+    const handleChangeBpmnDescription = async (e) => {
         let { value } = e.target;
-        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
+        let { message } = ValidationHelper.validateEmpty(props.translate, value);
 
-        await this.setState(state => {
+        await setState(state => {
             return {
                 ...state,
                 processDescription: value,
@@ -189,63 +188,33 @@ class ModalCreateTaskByProcess extends Component {
             }
         });
     }
-
-    // Hàm cập nhật người được xem quy trình
-    handleChangeViewer = async (value) => {
-        let { message } = ValidationHelper.validateArrayLength(this.props.translate, value);
-
-        await this.setState(state => {
-
-            return {
-                ...state,
-                viewer: value,
-                errorOnViewer: message,
-            }
-        })
-    }
-
-    // Hàm cập nhật người quản lý quy trình
-    handleChangeManager = async (value) => {
-        let { message } = ValidationHelper.validateArrayLength(this.props.translate, value);
-     
-        await this.setState(state => {
-
-            return {
-                ...state,
-                manager: value,
-                errorOnManager: message,
-            }
-        })
-    }
-
-    // Các hàm cập nhật thông tin task
-
+    
     // hàm up date thông tin task vào diagram xml
-    handleUpdateElement = (abc) => {
-        const modeling = this.modeler.get('modeling');
-        let element1 = this.modeler.get('elementRegistry').get(this.state.id);
+    const handleUpdateElement = (abc) => {
+        const modeling = modeler.get('modeling');
+        let element1 = modeler.get('elementRegistry').get(state.id);
         modeling.updateProperties(element1, {
-            info: this.state.info,
+            info: state.info,
         });
     }
 
     // hàm cập nhật tên công việc trong quy trình
-    handleChangeName = async (value) => {
+    const handleChangeName = async (value) => {
         let stringName = value
-        const modeling = this.modeler.get('modeling');
-        let element1 = this.modeler.get('elementRegistry').get(this.state.id);
+        const modeling = modeler.get('modeling');
+        let element1 = modeler.get('elementRegistry').get(state.id);
         modeling.updateProperties(element1, {
             shapeName: stringName,
         });
 
-        this.forceUpdate();
+        // forceUpdate();
     }
 
     // hàm cập nhật người thực hiện công việc
-    handleChangeResponsible = async (value) => {
-        const modeling = this.modeler.get('modeling');
-        let element1 = this.modeler.get('elementRegistry').get(this.state.id);
-        let { user } = this.props
+    const handleChangeResponsible = async (value) => {
+        const modeling = modeler.get('modeling');
+        let element1 = modeler.get('elementRegistry').get(state.id);
+        let { user } = props
         let responsibleName
         let responsible = []
         value.forEach(x => {
@@ -258,10 +227,10 @@ class ModalCreateTaskByProcess extends Component {
     }
 
     // hàm cập nhật người phê duyệt công việc
-    handleChangeAccountable = async (value) => {
-        const modeling = this.modeler.get('modeling');
-        let element1 = this.modeler.get('elementRegistry').get(this.state.id);
-        let { user } = this.props
+    const handleChangeAccountable = async (value) => {
+        const modeling = modeler.get('modeling');
+        let element1 = modeler.get('elementRegistry').get(state.id);
+        let { user } = props
         let accountableName
         let accountable = []
         value.forEach(x => {
@@ -273,10 +242,11 @@ class ModalCreateTaskByProcess extends Component {
     }
 
     // hàm cập nhật màu sắc trong diagram
-    done = (e) => {
+    const done = (e) => {
         e.preventDefault()
-        let element1 = this.modeler.get('elementRegistry').get(this.state.id);
-        this.modeling.setColor(element1, {
+        const modeling = modeler.get('modeling');
+        let element1 = modeler.get('elementRegistry').get(state.id);
+        modeling.setColor(element1, {
             fill: '#dde6ca',
             stroke: '#6b7060'
         });
@@ -285,7 +255,7 @@ class ModalCreateTaskByProcess extends Component {
             target.push(x.target.id)
         })
         target.forEach(x => {
-            this.modeling.setColor(this.modeler.get('elementRegistry').get(x), {
+            modeling.setColor(modeler.get('elementRegistry').get(x), {
                 fill: '#7236ff',
                 stroke: '#7236ff'
             });
@@ -293,18 +263,17 @@ class ModalCreateTaskByProcess extends Component {
     }
 
     // Các hàm sự kiện của BPMN element
-    interactPopup = async (event) => {
+    const interactPopup = async (event) => {
         let element = event.element;
         let nameStr = element.type.split(':');
-        console.log(this.props.department?.tree[0]?.id)
-        this.setState(state => {
+        setState(state => {
             if (element.type === "bpmn:Task" || element.type === "bpmn:ExclusiveGateway") {
                 if (!state.info[`${element.businessObject.id}`] || (state.info[`${element.businessObject.id}`] && !state.info[`${element.businessObject.id}`].organizationalUnit)) {
                     state.info[`${element.businessObject.id}`] = {
                         ...state.info[`${element.businessObject.id}`],
-                        organizationalUnit: this.props.department?.tree[0]?.id,
+                        organizationalUnit: props.department?.tree[0]?.id,
                     }
-                }  
+                }
                 return {
                     ...state,
                     showInfo: true,
@@ -317,35 +286,32 @@ class ModalCreateTaskByProcess extends Component {
             else {
                 return { ...state, showInfo: false, type: element.type, name: '', id: element.businessObject.id, }
             }
-        },()=> console.log(this.state.info))
+        }, () => console.log(state.info))
 
     }
-
-    deleteElements = (event) => {
+    const deleteElements = (event) => {
         var element = event.element;
-        console.log(element);
-        this.setState(state => {
+        setState(state => {
             delete state.info[`${state.id}`];
             return {
                 ...state,
                 showInfo: false,
             }
         })
-        console.log(this.state);
     }
 
-    handleUndoDeleteElement = (event) => {
+    const handleUndoDeleteElement = (event) => {
         var element = event.context.shape;
     }
 
-    changeNameElement = (event) => {
+    const changeNameElement = (event) => {
         var name = event.element.businessObject.name;
     }
 
     // các hàm dành cho export, import, download diagram...
-    exportDiagram = () => {
+    const exportDiagram = () => {
         let xmlStr;
-        this.modeler.saveXML({ format: true }, function (err, xml) {
+        modeler.saveXML({ format: true }, function (err, xml) {
             if (err) {
                 console.log(err);
             }
@@ -354,7 +320,7 @@ class ModalCreateTaskByProcess extends Component {
                 xmlStr = xml;
             }
         });
-        this.setState(state => {
+        setState(state => {
             return {
                 ...state,
                 xmlDiagram: xmlStr,
@@ -362,8 +328,8 @@ class ModalCreateTaskByProcess extends Component {
         })
     }
 
-    downloadAsSVG = () => {
-        this.modeler.saveSVG({ format: true }, function (error, svg) {
+    const downloadAsSVG = () => {
+        modeler.saveSVG({ format: true }, function (error, svg) {
             if (error) {
                 return;
             }
@@ -387,16 +353,16 @@ class ModalCreateTaskByProcess extends Component {
         });
     }
 
-    downloadAsBpmn = () => {
-        this.modeler.saveXML({ format: true }, function (error, xml) {
+    const downloadAsBpmn = () => {
+        modeler.saveXML({ format: true }, function (error, xml) {
             if (error) {
                 return;
             }
         });
     }
 
-    downloadAsImage = () => {
-        this.modeler.saveSVG({ format: true }, function (error, svg) {
+    const downloadAsImage = () => {
+        modeler.saveSVG({ format: true }, function (error, svg) {
             if (error) {
                 return;
             }
@@ -440,10 +406,10 @@ class ModalCreateTaskByProcess extends Component {
     }
 
 
-    handleZoomOut = async () => {
+    const handleZoomOut = async () => {
         let zstep = 0.2;
-        let canvas = this.modeler.get('canvas');
-        let eventBus = this.modeler.get('eventBus');
+        let canvas = modeler.get('canvas');
+        let eventBus = modeler.get('eventBus');
 
         // set initial zoom level
         canvas.zoom(zlevel, 'auto');
@@ -456,15 +422,15 @@ class ModalCreateTaskByProcess extends Component {
         canvas.zoom(zlevel, 'auto');
     }
 
-    handleZoomReset = () => {
-        let canvas = this.modeler.get('canvas');
+    const handleZoomReset = () => {
+        let canvas = modeler.get('canvas');
         canvas.zoom('fit-viewport');
     }
 
-    handleZoomIn = async () => {
+    const handleZoomIn = async () => {
         let zstep = 0.2;
-        let canvas = this.modeler.get('canvas');
-        let eventBus = this.modeler.get('eventBus');
+        let canvas = modeler.get('canvas');
+        let eventBus = modeler.get('eventBus');
 
         // set initial zoom level
         canvas.zoom(zlevel, 'auto');
@@ -478,8 +444,8 @@ class ModalCreateTaskByProcess extends Component {
     }
 
     // Các hàm xử lý tabbedPane
-    handleChangeContent = async (content) => {
-        await this.setState(state => {
+    const handleChangeContent = async (content) => {
+        await setState(state => {
             return {
                 ...state,
                 selectedCreate: content
@@ -488,27 +454,31 @@ class ModalCreateTaskByProcess extends Component {
     }
 
     // hàm cập nhật các thông tin của task trong quy trình
-    handleChangeInfo = (value) => {
+    const handleChangeInfo = (value) => {
         let info = {
             ...value,
-            code: this.state.id,
-            organizationalUnit: this.props.department.tree[0].id
+            code: state.id,
+            organizationalUnit: props.department.tree[0].id
         }
 
-        this.setState(
-            state => {
-                state.info[`${state.id}`] = info
+        const infos = state.info
+        infos[`${state.id}`] = info ;
+        
+        state.info[`${state.id}`] = info
+        setState({
+                ...state,
+                info: infos
             })
     }
 
     // validate quy trình
-    isFormValidate = () => {
-        let elementList = this.modeler.get('elementRegistry')._elements;
+    const isFormValidate = () => {
+        let elementList = modeler.get('elementRegistry')._elements;
         let check = true; // valid
         let hasStart = false, hasEnd = false
 
         let validateTasks = true;
-        let { info } = this.state;
+        let { info } = state;
 
         for (let i in info) {
             let taskItem = info[i];
@@ -545,26 +515,26 @@ class ModalCreateTaskByProcess extends Component {
         if (!hasStart || !hasEnd) {
             check = false;
         }
-        return check && this.state.manager.length !== 0 && this.state.viewer.length !== 0 && validateTasks
-            && this.state.processDescription.trim() !== '' && this.state.processName.trim() !== ''
-            && this.state.errorOnManager === undefined && this.state.errorOnProcessDescription === undefined
-            && this.state.errorOnProcessName === undefined && this.state.errorOnViewer === undefined;
+        return check && state.manager.length !== 0 && state.viewer.length !== 0 && validateTasks
+            && state.processDescription.trim() !== '' && state.processName.trim() !== ''
+            && state.errorOnManager === undefined && state.errorOnProcessDescription === undefined
+            && state.errorOnProcessName === undefined && state.errorOnViewer === undefined;
     }
     // hàm cập nhật ngày bắt đầu công việc
-    handleChangeTaskStartDate = (value) => {
-        this.validateTaskStartDate(value, true);
+    const handleChangeTaskStartDate = (value) => {
+        validateTaskStartDate(value, true);
     }
-    validateTaskStartDate = (value, willUpdateState = true) => {
-        let { translate } = this.props;
-        let msgStart = TaskFormValidator.validateTaskStartDate(value, this.state.endDate ? this.state.endDate : "", translate);
-        let msgEnd = TaskFormValidator.validateTaskEndDate(value, this.state.endDate ? this.state.endDate : "", translate);
+    const validateTaskStartDate = (value, willUpdateState = true) => {
+        let { translate } = props;
+        let msgStart = TaskFormValidator.validateTaskStartDate(value, state.endDate ? state.endDate : "", translate);
+        let msgEnd = TaskFormValidator.validateTaskEndDate(value, state.endDate ? state.endDate : "", translate);
 
         if (willUpdateState) {
-            this.state.startDate = value;
-            this.state.errorOnStartDate = msgStart;
-            // this.state.errorOnEndDate = msgEnd;
+            state.startDate = value;
+            state.errorOnStartDate = msgStart;
+            // state.errorOnEndDate = msgEnd;
 
-            this.setState(state => {
+            setState(state => {
                 return {
                     ...state,
                 };
@@ -574,20 +544,20 @@ class ModalCreateTaskByProcess extends Component {
     }
 
     // hàm cập nhật ngày kết thúc công việc
-    handleChangeTaskEndDate = (value) => {
-        this.validateTaskEndDate(value, true);
+    const handleChangeTaskEndDate = (value) => {
+        validateTaskEndDate(value, true);
     }
-    validateTaskEndDate = (value, willUpdateState = true) => {
-        let { translate } = this.props;
-        let msgEnd = TaskFormValidator.validateTaskEndDate(this.state.startDate ? this.state.startDate : "", value, translate);
-        let msgStart = TaskFormValidator.validateTaskStartDate(this.state.startDate ? this.state.startDate : "", value, translate);
+    const validateTaskEndDate = (value, willUpdateState = true) => {
+        let { translate } = props;
+        let msgEnd = TaskFormValidator.validateTaskEndDate(state.startDate ? state.startDate : "", value, translate);
+        let msgStart = TaskFormValidator.validateTaskStartDate(state.startDate ? state.startDate : "", value, translate);
 
         if (willUpdateState) {
-            this.state.endDate = value;
-            this.state.errorOnEndDate = msgEnd;
-            // this.state.errorOnStartDate = msgStart;
+            state.endDate = value;
+            state.errorOnEndDate = msgEnd;
+            // state.errorOnStartDate = msgStart;
 
-            this.setState(state => {
+            setState(state => {
                 return {
                     ...state,
                 };
@@ -598,10 +568,10 @@ class ModalCreateTaskByProcess extends Component {
 
 
     // Hàm cập nhật người được xem quy trình
-    handleChangeViewer = async (value) => {
-        let { message } = ValidationHelper.validateArrayLength(this.props.translate, value);
+    const handleChangeViewer = async (value) => {
+        let { message } = ValidationHelper.validateArrayLength(props.translate, value);
 
-        await this.setState(state => {
+        await setState(state => {
 
             return {
                 ...state,
@@ -612,10 +582,10 @@ class ModalCreateTaskByProcess extends Component {
     }
 
     // Hàm cập nhật người quản lý quy trình
-    handleChangeManager = async (value) => {
-        let { message } = ValidationHelper.validateArrayLength(this.props.translate, value);
+    const handleChangeManager = async (value) => {
+        let { message } = ValidationHelper.validateArrayLength(props.translate, value);
 
-        await this.setState(state => {
+        await setState(state => {
 
             return {
                 ...state,
@@ -626,9 +596,9 @@ class ModalCreateTaskByProcess extends Component {
     }
 
     // hàm cập nhật độ ưu tiên
-    handleChangeTaskPriority = (value) => {
-        this.state.info[`${this.state.id}`].priority = value;
-        this.setState(state => {
+    const handleChangeTaskPriority = (value) => {
+        state.info[`${state.id}`].priority = value;
+        setState(state => {
             return {
                 ...state,
             };
@@ -636,23 +606,23 @@ class ModalCreateTaskByProcess extends Component {
     }
 
     // hàm validate form tạo quy trình công việc
-    isTaskFormValidated = () => {
-        let { errorOnEndDate, errorOnProcessDescription, errorOnProcessName, errorOnStartDate, startDate, endDate, viewer, manager, errorOnManager, errorOnViewer } = this.state;
+    const isTaskFormValidated = () => {
+        let { errorOnEndDate, errorOnProcessDescription, errorOnProcessName, errorOnStartDate, startDate, endDate, viewer, manager, errorOnManager, errorOnViewer } = state;
 
         return errorOnEndDate === undefined && errorOnProcessDescription === undefined && errorOnProcessName === undefined && errorOnStartDate === undefined
             && errorOnViewer === undefined && errorOnManager === undefined && manager.length !== 0 && viewer.length !== 0
             && startDate.trim() !== "" && endDate.trim() !== "";
     }
     // Hàm lưu thông tin 
-    save = async () => {
-        let { info, startDate, endDate, userId, processName, processDescription, xmlDiagram, viewer, manager } = this.state;
-        console.log("info",info)
+    const save = async () => {
+        let { info, startDate, endDate, userId, processName, processDescription, xmlDiagram, viewer, manager } = state;
+        // console.log("info", info)
         let xmlStr;
-        this.modeler.saveXML({ format: true }, function (err, xml) {
+        modeler.saveXML({ format: true }, function (err, xml) {
             xmlStr = xml;
         });
 
-        await this.setState(state => {
+        await setState(state => {
             return {
                 ...state,
                 xmlDiagram: xmlStr,
@@ -669,224 +639,222 @@ class ModalCreateTaskByProcess extends Component {
             processDescription: processDescription,
             viewer: viewer,
             manager: manager,
-            xmlDiagram: this.state.xmlDiagram,
+            xmlDiagram: xmlStr,
             creator: userId,
             taskList: info,
             startDate: startDate,
             endDate: endDate,
             template: false
         }
-        this.props.createTaskByProcess(data, this.state.idProcess);
+        props.createTaskByProcess(data, state.idProcess);
     }
 
-    render() {
-        let idProcess = ""
-        const { translate, department, role, user } = this.props;
-        const { id, name, info, showInfo, processDescription, processName, viewer, manager, selectedCreate, indexRenderer, type, errorOnEndDate, errorOnStartDate, errorOnManager, errorOnViewer,
-            selected, errorOnProcessName, errorOnProcessDescription, startDate, endDate } = this.state;
-        const { listOrganizationalUnit } = this.props;
-        if (type === "bpmn:ExclusiveGateway" && info && id && info[id].name) {
-            window.$(`.task-process-gate-way-title`).css("background-color", "white")
-        }
-        let listRole = [];
-        if (role && role.list.length !== 0) listRole = role.list;
-        let listItem = listRole.filter(e => ['Admin', 'Super Admin', 'Manager', 'Deputy Manager', 'Employee'].indexOf(e.name) === -1)
-            .map(item => { return { text: item.name, value: item._id } });
-        let usersInUnitsOfCompany;
-        if (user && user.usersInUnitsOfCompany) {
-            usersInUnitsOfCompany = user.usersInUnitsOfCompany;
-        }
-        var usersOfChildrenOrganizationalUnit;
-        if (user && user.usersOfChildrenOrganizationalUnit) {
-            usersOfChildrenOrganizationalUnit = user.usersOfChildrenOrganizationalUnit;
-        }
-        let allUnitsMember = getEmployeeSelectBoxItems(usersInUnitsOfCompany);
-        return (
-            <React.Fragment>
-                <DialogModal
-                    size='100'
-                    modalID="modal-create-task-by-process"
-                    isLoading={false}
-                    formID="form-create-task-by-process"
-                    resetOnSave={true}
-                    resetOnClose={true}
-                    title={this.props.title}
-                    func={this.save}
-                    disableSubmit={!this.isFormValidate()}
-                    bodyStyle={{ paddingTop: 0, paddingBottom: 0 }}
-                >
-                    <form id="form-create-task-by-process">
-                        <div>
-                            <div className="nav-tabs-custom" style={{ boxShadow: "none", MozBoxShadow: "none", WebkitBoxShadow: "none", marginBottom: 0 }}>
-                                {/* Tabbed pane */}
-                                <ul className="nav nav-tabs">
-                                    {/* Nút tab thông tin cơ bản quy trình */}
-                                    <li className="active"><a href="#info-create" onClick={() => this.handleChangeContent("info")} data-toggle="tab">{translate("task.task_process.process_information")}</a></li>
-                                    {/* Nút tab quy trình - công việc */}
-                                    <li><a href="#process-create" onClick={() => this.handleChangeContent("process")} data-toggle="tab">{translate("task.task_process.task_process")}</a></li>
-                                </ul>
+    let idProcess = ""
+    const { translate, department, role, user } = props;
+    const { id, name, info, showInfo, processDescription, processName, viewer, manager, selectedCreate, indexRenderer, type, errorOnEndDate, errorOnStartDate, errorOnManager, errorOnViewer,
+        selected, errorOnProcessName, errorOnProcessDescription, startDate, endDate } = state;
+    const { listOrganizationalUnit } = props;
+    if (type === "bpmn:ExclusiveGateway" && info && id && info[id].name) {
+        window.$(`.task-process-gate-way-title`).css("background-color", "white")
+    }
+    let listRole = [];
+    if (role && role.list.length !== 0) listRole = role.list;
+    let listItem = listRole.filter(e => ['Admin', 'Super Admin', 'Manager', 'Deputy Manager', 'Employee'].indexOf(e.name) === -1)
+        .map(item => { return { text: item.name, value: item._id } });
+    let usersInUnitsOfCompany;
+    if (user && user.usersInUnitsOfCompany) {
+        usersInUnitsOfCompany = user.usersInUnitsOfCompany;
+    }
+    var usersOfChildrenOrganizationalUnit;
+    if (user && user.usersOfChildrenOrganizationalUnit) {
+        usersOfChildrenOrganizationalUnit = user.usersOfChildrenOrganizationalUnit;
+    }
+    let allUnitsMember = getEmployeeSelectBoxItems(usersInUnitsOfCompany);
+    return (
+        <React.Fragment>
+            <DialogModal
+                size='100'
+                modalID="modal-create-task-by-process"
+                isLoading={false}
+                formID="form-create-task-by-process"
+                resetOnSave={true}
+                resetOnClose={true}
+                title={props.title}
+                func={save}
+                disableSubmit={!isFormValidate()}
+                bodyStyle={{ paddingTop: 0, paddingBottom: 0 }}
+            >
+                <form id="form-create-task-by-process">
+                    <div>
+                        <div className="nav-tabs-custom" style={{ boxShadow: "none", MozBoxShadow: "none", WebkitBoxShadow: "none", marginBottom: 0 }}>
+                            {/* Tabbed pane */}
+                            <ul className="nav nav-tabs">
+                                {/* Nút tab thông tin cơ bản quy trình */}
+                                <li className="active"><a href="#info-create" onClick={() => handleChangeContent("info")} data-toggle="tab">{translate("task.task_process.process_information")}</a></li>
+                                {/* Nút tab quy trình - công việc */}
+                                <li><a href="#process-create" onClick={() => handleChangeContent("process")} data-toggle="tab">{translate("task.task_process.task_process")}</a></li>
+                            </ul>
 
-                                {/* Tab Thông tin quy trình */}
-                                <div className="tab-content">
-                                    <div className={selectedCreate === "info" ? "active tab-pane" : "tab-pane"} id="info-create-task">
-                                        <div className='row'>
-                                            <div className='col-md-6'>
-                                                {/* Tên quy trình */}
-                                                <div className={`form-group ${errorOnProcessName === undefined ? "" : "has-error"}`}>
-                                                    <label>{translate("task.task_process.process_name")} <span style={{ color: "red" }}>*</span></label>
-                                                    <input type="text"
-                                                        value={processName}
-                                                        className="form-control" placeholder={translate("task.task_process.process_name")}
-                                                        onChange={this.handleChangeBpmnName}
-                                                    />
-                                                    <ErrorLabel content={errorOnProcessName} />
-                                                </div>
-
-                                                {/* Mô tả quy trình */}
-                                                <div className={`form-group ${errorOnProcessDescription === undefined ? "" : "has-error"}`}>
-                                                    <label>{translate("task.task_process.process_description")} <span style={{ color: "red" }}>*</span></label>
-                                                    <textarea type="text" rows={4} style={{ minHeight: '103.5px' }}
-                                                        value={processDescription}
-                                                        className="form-control" placeholder={translate("task.task_process.process_description")}
-                                                        onChange={this.handleChangeBpmnDescription}
-                                                    />
-                                                    <ErrorLabel content={errorOnProcessDescription} />
-                                                </div>
+                            {/* Tab Thông tin quy trình */}
+                            <div className="tab-content">
+                                <div className={selectedCreate === "info" ? "active tab-pane" : "tab-pane"} id="info-create-task">
+                                    <div className='row'>
+                                        <div className='col-md-6'>
+                                            {/* Tên quy trình */}
+                                            <div className={`form-group ${errorOnProcessName === undefined ? "" : "has-error"}`}>
+                                                <label>{translate("task.task_process.process_name")} <span style={{ color: "red" }}>*</span></label>
+                                                <input type="text"
+                                                    value={processName}
+                                                    className="form-control" placeholder={translate("task.task_process.process_name")}
+                                                    onChange={handleChangeBpmnName}
+                                                />
+                                                <ErrorLabel content={errorOnProcessName} />
                                             </div>
 
-                                            <div className='col-md-6'>
-                                                {/* Ngày bắt đầu - kết thúc quy trình */}
-                                                <div className="row form-group">
-                                                    <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 ${errorOnStartDate === undefined ? "" : "has-error"}`}>
-                                                        <label className="control-label">{translate('task.task_management.start_date')} <span style={{ color: "red" }}>*</span></label>
-                                                        <DatePicker
-                                                            id={`datepicker1-process-${idProcess}`}
-                                                            dateFormat="day-month-year"
-                                                            value={startDate}
-                                                            onChange={this.handleChangeTaskStartDate}
-                                                        />
-                                                        <ErrorLabel content={errorOnStartDate} />
-                                                    </div>
-                                                    <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 ${errorOnEndDate === undefined ? "" : "has-error"}`}>
-                                                        <label className="control-label">{translate('task.task_management.end_date')} <span style={{ color: "red" }}>*</span></label>
-                                                        <DatePicker
-                                                            id={`datepicker2-process-${idProcess}`}
-                                                            value={endDate}
-                                                            onChange={this.handleChangeTaskEndDate}
-                                                        />
-                                                        <ErrorLabel content={errorOnEndDate} />
-                                                    </div>
-                                                </div>
-
-                                                <div className={`form-group ${errorOnViewer === undefined ? "" : "has-error"}`}>
-                                                    {/* Người được xem quy trình */}
-                                                    <label className="control-label">{translate("task.task_process.viewer")} <span style={{ color: "red" }}>*</span></label>
-                                                    {allUnitsMember &&
-                                                        <SelectBox
-                                                            id={`select-viewer-employee-create-task-by-process-${indexRenderer}-${idProcess}`}
-                                                            className="form-control select2"
-                                                            style={{ width: "100%" }}
-                                                            items={allUnitsMember}
-                                                            onChange={this.handleChangeViewer}
-                                                            multiple={true}
-                                                            value={viewer}
-                                                        />
-                                                    }
-                                                    <ErrorLabel content={errorOnViewer} />
-                                                </div>
-                                                <div className={`form-group ${errorOnManager === undefined ? "" : "has-error"}`}>
-                                                    {/* Người quản lý quy trình */}
-                                                    <label className="control-label" >{translate("task.task_process.manager")} <span style={{ color: "red" }}>*</span></label>
-                                                    {allUnitsMember &&
-                                                        <SelectBox
-                                                            id={`select-manager-employee-create-task-by-process-${indexRenderer}-${idProcess}`}
-                                                            className="form-control select2"
-                                                            style={{ width: "100%" }}
-                                                            items={allUnitsMember}
-                                                            onChange={this.handleChangeManager}
-                                                            multiple={true}
-                                                            value={manager}
-                                                        />
-                                                    }
-                                                    <ErrorLabel content={errorOnManager} />
-                                                </div>
+                                            {/* Mô tả quy trình */}
+                                            <div className={`form-group ${errorOnProcessDescription === undefined ? "" : "has-error"}`}>
+                                                <label>{translate("task.task_process.process_description")} <span style={{ color: "red" }}>*</span></label>
+                                                <textarea type="text" rows={4} style={{ minHeight: '103.5px' }}
+                                                    value={processDescription}
+                                                    className="form-control" placeholder={translate("task.task_process.process_description")}
+                                                    onChange={handleChangeBpmnDescription}
+                                                />
+                                                <ErrorLabel content={errorOnProcessDescription} />
                                             </div>
                                         </div>
-                                    </div>
-                                </div>
 
-
-                                {/* Tab quy trình - công việc */}
-                                <div className="tab-content" style={{ padding: 0, marginTop: -15 }}>
-                                    <div className={selectedCreate === "process" ? "active tab-pane" : "tab-pane"} id="process-create">
-
-                                        <div className="">
-                                            {/* Quy trình công việc */}
-                                            <div className={`contain-border ${showInfo ? 'col-md-8' : 'col-md-12'}`}>
-                                                {/* nút export, import diagram,... */}
-                                                <div className="tool-bar-xml" style={{ /*position: "absolute", right: 5, top: 5*/ }}>
-                                                    <button onClick={this.exportDiagram}>Export XML</button>
-                                                    <button onClick={this.downloadAsSVG}>Save SVG</button>
-                                                    <button onClick={this.downloadAsImage}>Save Image</button>
-                                                    <button onClick={this.downloadAsBpmn}>Download BPMN</button>
+                                        <div className='col-md-6'>
+                                            {/* Ngày bắt đầu - kết thúc quy trình */}
+                                            <div className="row form-group">
+                                                <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 ${errorOnStartDate === undefined ? "" : "has-error"}`}>
+                                                    <label className="control-label">{translate('task.task_management.start_date')} <span style={{ color: "red" }}>*</span></label>
+                                                    <DatePicker
+                                                        id={`datepicker1-process-${idProcess}`}
+                                                        dateFormat="day-month-year"
+                                                        value={startDate}
+                                                        onChange={handleChangeTaskStartDate}
+                                                    />
+                                                    <ErrorLabel content={errorOnStartDate} />
                                                 </div>
-
-                                                {/* phần vẽ biểu đồ */}
-                                                <div id={this.generateId}></div>
-
-                                                {/* Nút zoom in, zoom out */}
-                                                <div className="row">
-                                                    <div className="io-zoom-controls">
-                                                        <ul className="io-zoom-reset io-control io-control-list">
-                                                            <li>
-                                                                <a style={{ cursor: "pointer" }} title="Reset zoom" onClick={this.handleZoomReset}>
-                                                                    <i className="fa fa-crosshairs"></i>
-                                                                </a>
-                                                            </li>
-                                                            <li>
-                                                                <a style={{ cursor: "pointer" }} title="Zoom in" onClick={this.handleZoomIn}>
-                                                                    <i className="fa fa-plus"></i>
-                                                                </a>
-                                                            </li>
-                                                            <li>
-                                                                <a style={{ cursor: "pointer" }} title="Zoom out" onClick={this.handleZoomOut}>
-                                                                    <i className="fa fa-minus"></i>
-                                                                </a>
-                                                            </li>
-                                                        </ul>
-                                                    </div>
+                                                <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 ${errorOnEndDate === undefined ? "" : "has-error"}`}>
+                                                    <label className="control-label">{translate('task.task_management.end_date')} <span style={{ color: "red" }}>*</span></label>
+                                                    <DatePicker
+                                                        id={`datepicker2-process-${idProcess}`}
+                                                        value={endDate}
+                                                        onChange={handleChangeTaskEndDate}
+                                                    />
+                                                    <ErrorLabel content={errorOnEndDate} />
                                                 </div>
                                             </div>
 
-                                            {/* form thông tin công việc */}
-                                            <div className={`right-content ${showInfo ? 'col-md-4' : undefined}`}>
-                                                {
-                                                    (showInfo) &&
-                                                    <div>
-                                                        <AddTaskForm
-                                                            isProcess={true}
-                                                            id={id}
-                                                            info={(info && info[`${id}`]) && info[`${id}`]}
-                                                            handleChangeTaskData={this.handleChangeInfo}
-                                                            handleChangeName={this.handleChangeName} // cập nhật tên vào diagram
-                                                            handleChangeResponsible={this.handleChangeResponsible} // cập nhật hiển thi diagram
-                                                            handleChangeAccountable={this.handleChangeAccountable} // cập nhật hiển thị diagram
-                                                        />
-                                                    </div>
+                                            <div className={`form-group ${errorOnViewer === undefined ? "" : "has-error"}`}>
+                                                {/* Người được xem quy trình */}
+                                                <label className="control-label">{translate("task.task_process.viewer")} <span style={{ color: "red" }}>*</span></label>
+                                                {allUnitsMember &&
+                                                    <SelectBox
+                                                        id={`select-viewer-employee-create-task-by-process-${indexRenderer}-${idProcess}`}
+                                                        className="form-control select2"
+                                                        style={{ width: "100%" }}
+                                                        items={allUnitsMember}
+                                                        onChange={handleChangeViewer}
+                                                        multiple={true}
+                                                        value={viewer}
+                                                    />
                                                 }
+                                                <ErrorLabel content={errorOnViewer} />
+                                            </div>
+                                            <div className={`form-group ${errorOnManager === undefined ? "" : "has-error"}`}>
+                                                {/* Người quản lý quy trình */}
+                                                <label className="control-label" >{translate("task.task_process.manager")} <span style={{ color: "red" }}>*</span></label>
+                                                {allUnitsMember &&
+                                                    <SelectBox
+                                                        id={`select-manager-employee-create-task-by-process-${indexRenderer}-${idProcess}`}
+                                                        className="form-control select2"
+                                                        style={{ width: "100%" }}
+                                                        items={allUnitsMember}
+                                                        onChange={handleChangeManager}
+                                                        multiple={true}
+                                                        value={manager}
+                                                    />
+                                                }
+                                                <ErrorLabel content={errorOnManager} />
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+                            </div>
 
+
+                            {/* Tab quy trình - công việc */}
+                            <div className="tab-content" style={{ padding: 0, marginTop: -15 }}>
+                                <div className={selectedCreate === "process" ? "active tab-pane" : "tab-pane"} id="process-create">
+
+                                    <div className="">
+                                        {/* Quy trình công việc */}
+                                        <div className={`contain-border ${showInfo ? 'col-md-8' : 'col-md-12'}`}>
+                                            {/* nút export, import diagram,... */}
+                                            <div className="tool-bar-xml" style={{ /*position: "absolute", right: 5, top: 5*/ }}>
+                                                <button onClick={exportDiagram}>Export XML</button>
+                                                <button onClick={downloadAsSVG}>Save SVG</button>
+                                                <button onClick={downloadAsImage}>Save Image</button>
+                                                <button onClick={downloadAsBpmn}>Download BPMN</button>
+                                            </div>
+
+                                            {/* phần vẽ biểu đồ */}
+                                            <div id={generateId}></div>
+
+                                            {/* Nút zoom in, zoom out */}
+                                            <div className="row">
+                                                <div className="io-zoom-controls">
+                                                    <ul className="io-zoom-reset io-control io-control-list">
+                                                        <li>
+                                                            <a style={{ cursor: "pointer" }} title="Reset zoom" onClick={handleZoomReset}>
+                                                                <i className="fa fa-crosshairs"></i>
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a style={{ cursor: "pointer" }} title="Zoom in" onClick={handleZoomIn}>
+                                                                <i className="fa fa-plus"></i>
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a style={{ cursor: "pointer" }} title="Zoom out" onClick={handleZoomOut}>
+                                                                <i className="fa fa-minus"></i>
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {/* form thông tin công việc */}
+                                        <div className={`right-content ${showInfo ? 'col-md-4' : undefined}`}>
+                                            {
+                                                (showInfo) &&
+                                                <div>
+                                                    <AddTaskForm
+                                                        isProcess={true}
+                                                        id={id}
+                                                        info={(info && info[`${id}`]) && info[`${id}`]}
+                                                        handleChangeTaskData={handleChangeInfo}
+                                                        handleChangeName={handleChangeName} // cập nhật tên vào diagram
+                                                        handleChangeResponsible={handleChangeResponsible} // cập nhật hiển thi diagram
+                                                        handleChangeAccountable={handleChangeAccountable} // cập nhật hiển thị diagram
+                                                    />
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
 
                         </div>
-                    </form>
-                </DialogModal>
-            </React.Fragment>
-        )
-    }
+
+                    </div>
+                </form>
+            </DialogModal>
+        </React.Fragment>
+    )
 }
 
 

@@ -10,7 +10,7 @@ import { TaskTemplateFormValidator } from './taskTemplateFormValidator';
 import { AddTaskTemplate } from './addTaskTemplate';
 import ValidationHelper from '../../../../helpers/validationHelper';
 
-const ModalAddTaskTemplate = (props) => {
+function ModalAddTaskTemplate (props) {
 
     const [state, setState] = useState({
             newTemplate: {

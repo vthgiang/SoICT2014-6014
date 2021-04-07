@@ -14,12 +14,18 @@ function CareerAction(props) {
         deleteNode: [],
     })
 
+    const { careerParent, currentNode } = state;
+    const { translate } = props;
+    const { career } = props;
+    const list = career.listAction.filter(e => e.isLabel !== 1);
+
     useEffect(() => {
         props.getListCareerAction({ name: '', page: 1, limit: 1000 });
         props.getListCareerPosition({ name: '', page: 1, limit: 1000 });
     }, [])
+
     const onChanged = async (e, data) => {
-        await setState({
+        setState({
             ...state,
             currentNode: data.node,
         })
@@ -89,11 +95,6 @@ function CareerAction(props) {
         array.unshift(node.id);
         return array;
     }
-
-    const { careerParent, currentNode } = state;
-    const { translate } = props;
-    const { career } = props;
-    const list = career.listAction.filter(e => e.isLabel !== 1);
 
     let dataTree = list.map(elm => {
         return {

@@ -164,6 +164,7 @@ export default {
             manage_kpi_unit: "KPI đơn vị",
             manage_kpi_personal: "KPI cá nhân",
             kpi_unit_create: "Khởi tạo KPI đơn vị",
+            kpi_unit_create_for_admin: "Khởi tạo KPI toàn công ty",
             kpi_unit_evaluate: "Dữ liệu KPI đơn vị",
             kpi_unit_overview: "Tổng quan KPI đơn vị",
             kpi_unit_dashboard: "Dashboard KPI đơn vị",
@@ -176,7 +177,8 @@ export default {
             kpi_personal_overview: "Tổng quan KPI cá nhân",
             kpi_personal_dashboard: "Dashboard KPI cá nhân",
             kpi_personal_manager: "Quản lí KPI cá nhân",
-
+            kpi_member_detail: "Chi tiết KPI cá nhân",
+            
             notifications: "Thông báo",
 
             tasks: "Công việc cá nhân",
@@ -2190,14 +2192,14 @@ export default {
                 // Thông điệp trả về từ server
                 get_fields_success:
                     "Lấy danh sách ngành nghề/lĩnh vực thành công",
-                get_fields_faile: "Lấy danh sách ngành nghề/lĩnh vực thất bại",
+                get_fields_fail: "Lấy danh sách ngành nghề/lĩnh vực thất bại",
                 create_fields_success:
                     "Thêm mới ngành nghề/lĩnh vực thành công",
-                create_fields_faile: "Thêm mới ngành nghề/lĩnh vực thất bại",
+                create_fields_fail: "Thêm mới ngành nghề/lĩnh vực thất bại",
                 delete_fields_success: "Xoá ngành nghề/lĩnh vực thành công",
-                delete_fields_faile: "Xoá ngành nghề/lĩnh vực thất bại",
+                delete_fields_fail: "Xoá ngành nghề/lĩnh vực thất bại",
                 edit_fields_success: "Chỉnh sửa ngành nghề/lĩnh vực thành công",
-                edit_fields_faile: "Chỉnh sửa ngành nghề/lĩnh vực thất bại",
+                edit_fields_fail: "Chỉnh sửa ngành nghề/lĩnh vực thất bại",
             },
 
             // Quản lý chấm công nhân viên

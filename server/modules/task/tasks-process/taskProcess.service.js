@@ -197,6 +197,7 @@ exports.createXmlDiagram = async (portal, body) => {
  * @param {*} body dữ liệu gửi vào body từ client
  */
 exports.editXmlDiagram = async (portal, params, body) => {
+    // console.log(body);
     let info = [];
     for (let x in body.info) {
         if (Object.keys(body.info[x]).length > 4) {
@@ -267,6 +268,33 @@ exports.deleteXmlDiagram = async (portal, diagramId, query) => {
     let data = await this.getAllXmlDiagram(portal, queryData);
     return data;
 }
+exports.deleteTaskProcess = async (portal, taskProcessId, query) => {
+    // console.log(taskProcessId);
+    
+    // await Privilege(connect(DB_CONNECTION, portal)).findOneAndDelete({ resourceId: diagramId, resourceType: "ProcessTemplate" })
+    await TaskProcess(connect(DB_CONNECTION, portal)).findById(taskProcessId,(error,data1)=>{
+        // console.log(data1);
+        data1.tasks.forEach(value=>{
+            // console.log(value);
+            Task(connect(DB_CONNECTION, portal)).findByIdAndRemove(value,(error,data2)=>{
+                // console.log(data2);
+            })
+        })
+    })
+    await TaskProcess(connect(DB_CONNECTION, portal)).findOneAndDelete({
+        _id: taskProcessId,
+    });
+    let queryData = {
+        userId: query.userId,
+        name: query.name,
+        // pageNumber : query.pageNumber,
+        pageNumber: 1,
+        noResultsPerPage: query.noResultsPerPage,
+    }
+
+    let data = await this.getAllTaskProcess(portal, queryData);
+    return data;
+}
 
 
 isStartTask = (task) => {
@@ -293,7 +321,7 @@ exports.createTaskByProcess = async (portal, processId, body) => {
     let startDateProcess = new Date(splitter[2], splitter[1] - 1, splitter[0]);
     splitter = body.endDate.split("-");
     let endDateProcess = new Date(splitter[2], splitter[1] - 1, splitter[0]);
-
+    // console.log(body);
     let newTaskProcess = await TaskProcess(connect(DB_CONNECTION, portal)).create({
         // processTemplate: processId ? processId : null,
         xmlDiagram: body.xmlDiagram,
@@ -463,7 +491,6 @@ exports.createTaskByProcess = async (portal, processId, body) => {
     }else {
         return { process: myProcess, newTask: newTaskItem, mailInfo: mailInfoArr }
     }
-    
 }
 
 /**
@@ -588,13 +615,57 @@ exports.updateDiagram = async (portal, params, body) => {
  * @param {Object} body dữ liệu body
  */
 exports.editProcessInfo = async (portal, params, body) => {
+    // console.log(body);
+    // if (body)
+    const array = Object.values(body.info);
+    // console.log(array);
+    TaskProcess(connect(DB_CONNECTION, portal)).findByIdAndUpdate( body.id ,{
+        $set:{
+            xmlDiagram:body.xmlDiagram
+        }
+    },(error,data)=>{
+        // if (error) console.log(error) ;
+        // if (data) console.log(data);
+    })
+    array.forEach(data=>{
+        // console.log(data);
+        let splitter = data.startDate.split("-");
+        let startDateProcess = new Date(splitter[2], splitter[1] - 1, splitter[0]);
+        splitter = data.endDate.split("-");
+        let endDateProcess = new Date(splitter[2], splitter[1] - 1, splitter[0]);
+        
+        Task(connect(DB_CONNECTION, portal)).findByIdAndUpdate( data._id ,{
+            $set:{
+                name:data.name,
+                description:data.description,
+                startDate:data.startDate,
+                endDate:data.endDate,
+                creator:data.creator,
+                priority:data.priority,
+                level:data.level,
+                responsibleEmployees:data.responsibleEmployees,
+                accountableEmployees:data.accountableEmployees,
+                consultedEmployees:data.consultedEmployees,
+                // parent:data.parent,
+                // taskProject:data.taskProject,
+                codeInProcess:data.code,
+                organizationalUnit:data.organizationalUnit,
+                collaboratedWithOrganizationalUnits:data.collaboratedWithOrganizationalUnits,
+                quillDescriptionDefault:data.quillDescriptionDefault,
+
+            }
+        },(error,data)=>{
+            // if (error) console.log(error) ;
+            // if (data) console.log(data);
+        })
+    })
     let { processName, processDescription, status, startDate, endDate, viewer } = body;
 
     let splitterStartDate = startDate.split('-');
     let start = new Date(splitterStartDate[2], splitterStartDate[1] - 1, splitterStartDate[0]);
     let splitterEndDate = endDate.split('-');
     let end = new Date(splitterEndDate[2], splitterEndDate[1] - 1, splitterEndDate[0]);
-
+    // let newTask12= await Task(connect(DB_CONNECTION, portal)).findOne()
     let diagram = await TaskProcess(connect(DB_CONNECTION, portal)).findByIdAndUpdate(params.processId,
         {
             $set: {

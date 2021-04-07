@@ -148,6 +148,7 @@ export default {
             manage_kpi_unit: "Organizational unit KPI",
             manage_kpi_personal: "Personal KPI",
             kpi_unit_create: "Create unit KPI",
+            kpi_unit_create_for_admin: "Create unit KPI in company",
             kpi_unit_evaluate: "Evaluate unit KPI",
             kpi_unit_overview: "Overview unit KPI",
             kpi_unit_dashboard: "Dashboard unit KPI",
@@ -160,6 +161,7 @@ export default {
             kpi_personal_overview: "Overview personal KPI",
             kpi_personal_dashboard: "DashBoard personal KPI",
             kpi_personal_manager: "Manager personal KPI",
+            kpi_member_detail: "Details of personal KPI",
 
             notifications: "Notifications",
 
@@ -1996,13 +1998,13 @@ export default {
 
                 // Thông điệp trả về từ server
                 get_fields_success: "Get career/fields success",
-                get_fields_faile: "Get career/fields faile",
+                get_fields_fail: "Get career/fields fail",
                 create_fields_success: "Add career/fields success",
-                create_fields_faile: "Add career/fields faile",
+                create_fields_fail: "Add career/fields fail",
                 delete_fields_success: "Delete career/fields success",
-                delete_fields_faile: "Delete career/fields faile",
+                delete_fields_fail: "Delete career/fields fail",
                 edit_fields_success: "Edit career/fields success",
-                edit_fields_faile: "Edit career/fields faile",
+                edit_fields_fail: "Edit career/fields fail",
             },
 
             // Quản lý chấm công nhân viên

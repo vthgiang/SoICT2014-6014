@@ -14,7 +14,7 @@ import { getStorage } from '../../../../config';
 import ValidationHelper from '../../../../helpers/validationHelper';
 import parse from 'html-react-parser';
 
-const AddTaskTemplate = (props) => {
+function AddTaskTemplate (props) {
 
     let userId = getStorage("userId")
         
@@ -56,7 +56,10 @@ const AddTaskTemplate = (props) => {
         newTemplate.name = value;
         newTemplate.errorOnName = message;
         props.onChangeTemplateData(newTemplate);
-        setState({ newTemplate });
+        setState({ 
+            ...state,
+            newTemplate 
+        });
     }
 
     // handleTaskTemplateDesc = (e) => {
@@ -132,7 +135,10 @@ const AddTaskTemplate = (props) => {
         let { value } = e.target;
         newTemplate.priority = value;
         props.onChangeTemplateData(newTemplate);
-        setState({ newTemplate });
+        setState({ 
+            ...state,
+            newTemplate 
+        });
     }
 
     const handleTaskTemplateUnit = (value) => {
@@ -178,14 +184,20 @@ const AddTaskTemplate = (props) => {
         let { newTemplate } = state;
         newTemplate.collaboratedWithOrganizationalUnits = value;
         props.onChangeTemplateData(newTemplate);
-        setState({ newTemplate });
+        setState({ 
+            ...state,
+            newTemplate 
+        });
     }
 
     const handleTaskTemplateRead = (value) => {
         let { newTemplate } = state;
         newTemplate.readByEmployees = value;
         props.onChangeTemplateData(newTemplate);
-        setState({ newTemplate });
+        setState({
+            ...state,
+            newTemplate 
+        });
     }
 
     const handleTaskTemplateResponsible = (value) => {
@@ -193,7 +205,10 @@ const AddTaskTemplate = (props) => {
         newTemplate.responsibleEmployees = value;
         props.isProcess && props.handleChangeResponsible(value)
         props.onChangeTemplateData(newTemplate);
-        setState({ newTemplate });
+        setState({ 
+            ...state,
+            newTemplate 
+        });
     }
 
     const handleTaskTemplateAccountable = async (value) => {
@@ -201,14 +216,20 @@ const AddTaskTemplate = (props) => {
         newTemplate.accountableEmployees = value;
         props.isProcess && props.handleChangeAccountable(value)
         props.onChangeTemplateData(newTemplate);
-        setState({ newTemplate });
+        setState({ 
+            ...state,
+            newTemplate 
+        });
     }
 
     const handleTaskTemplateConsult = (value) => {
         let { newTemplate } = state;
         newTemplate.consultedEmployees = value;
         props.onChangeTemplateData(newTemplate);
-        setState({ newTemplate });
+        setState({ 
+            ...state,
+            newTemplate 
+        });
     }
 
     const handleTaskTemplateInform = (value) => {
@@ -216,6 +237,7 @@ const AddTaskTemplate = (props) => {
         newTemplate.informedEmployees = value;
         props.onChangeTemplateData(newTemplate);
         setState({
+            ...state,
             newTemplate
         });
     }
@@ -224,14 +246,20 @@ const AddTaskTemplate = (props) => {
         let { newTemplate } = state;
         newTemplate.taskActions = data;
         props.onChangeTemplateData(newTemplate);
-        setState({ newTemplate })
+        setState({ 
+            ...state,
+            newTemplate 
+        })
     }
 
     const handleTaskInformationsChange = (data) => {
         let { newTemplate } = state;
         newTemplate.taskInformations = data;
         props.onChangeTemplateData(newTemplate);
-        setState({ newTemplate })
+        setState({ 
+            ...state,
+            newTemplate 
+        })
     }
 
     useEffect(() => {
@@ -280,7 +308,7 @@ const AddTaskTemplate = (props) => {
             }
             // props.getChildrenOfOrganizationalUnits(defaultUnit && defaultUnit._id); // => user.usersOfChildrenOrganizationalUnit
         }
-    },[props.id,state.newTemplate])
+    },[props.id, state.newTemplate])
 
     //dùng cho chức năng lưu task thành template
     useEffect(() => {
@@ -365,7 +393,7 @@ const AddTaskTemplate = (props) => {
                 // Sẽ cập nhật lại state nên không cần render
             }
         }
-    },[props.savedTaskId,state.newTemplate])
+    },[props.savedTaskId, state.newTemplate])
 
     const clickShowMore = () => {
         setState(state => {

@@ -892,7 +892,26 @@ function EmployeeKpiManagement(props) {
                         </div>
                     </div>
 
-
+                    <DataTableSetting
+                        tableId={tableId}
+                        tableContainerId="tree-table-container"
+                        tableWidth="1300px"
+                        columnArr={[
+                            'STT',
+                            translate('kpi.evaluation.employee_evaluation.name'),
+                            translate('kpi.employee.employee_kpi_set.create_employee_kpi_set_modal.approver'),
+                            translate('kpi.evaluation.employee_evaluation.time'),
+                            translate('kpi.evaluation.employee_evaluation.num_of_kpi'),
+                            translate('kpi.evaluation.employee_evaluation.kpi_status'),
+                            translate('kpi.evaluation.employee_evaluation.system_evaluate'),
+                            translate('kpi.evaluation.employee_evaluation.result_self_evaluate'),
+                            translate('kpi.evaluation.employee_evaluation.evaluation_management'),
+                            translate('kpi.evaluation.employee_evaluation.approve'),
+                            translate('kpi.evaluation.employee_evaluation.evaluate')
+                        ]}
+                        setLimit={setLimit}
+                        hideColumnOption={true}
+                    />
                     <div id="tree-table-container" style={{ marginTop: '30px' }}>
                         <table id={tableId} className="table table-hover table-bordered">
                             <thead>
@@ -907,28 +926,7 @@ function EmployeeKpiManagement(props) {
                                     <th title={translate('kpi.evaluation.employee_evaluation.result_self_evaluate')}>{translate('kpi.evaluation.employee_evaluation.result_self_evaluate')}</th>
                                     <th title={translate('kpi.evaluation.employee_evaluation.evaluation_management')}>{translate('kpi.evaluation.employee_evaluation.evaluation_management')}</th>
                                     <th title="Phê duyệt" style={{ textAlign: "center" }}>{translate('kpi.evaluation.employee_evaluation.approve')}</th>
-                                    <th title="Đánh giá">{translate('kpi.evaluation.employee_evaluation.evaluate')}
-                                        <DataTableSetting
-                                            tableId={tableId}
-                                            tableContainerId="tree-table-container"
-                                            tableWidth="1300px"
-                                            columnArr={[
-                                                'STT',
-                                                translate('kpi.evaluation.employee_evaluation.name'),
-                                                translate('kpi.employee.employee_kpi_set.create_employee_kpi_set_modal.approver'),
-                                                translate('kpi.evaluation.employee_evaluation.time'),
-                                                translate('kpi.evaluation.employee_evaluation.num_of_kpi'),
-                                                translate('kpi.evaluation.employee_evaluation.kpi_status'),
-                                                translate('kpi.evaluation.employee_evaluation.system_evaluate'),
-                                                translate('kpi.evaluation.employee_evaluation.result_self_evaluate'),
-                                                translate('kpi.evaluation.employee_evaluation.evaluation_management'),
-                                                translate('kpi.evaluation.employee_evaluation.approve'),
-                                                translate('kpi.evaluation.employee_evaluation.evaluate')
-                                            ]}
-                                            setLimit={setLimit}
-                                            hideColumnOption={true}
-                                        />
-                                    </th>
+                                    <th title="Đánh giá">{translate('kpi.evaluation.employee_evaluation.evaluate')}</th>
                                 </tr>
                             </thead>
                             <tbody className="task-table">

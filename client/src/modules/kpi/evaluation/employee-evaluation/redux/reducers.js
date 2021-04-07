@@ -65,6 +65,17 @@ export function kpimembers(state = {}, action) {
         error: action.payload,
         isLoading: false
       };
+    case createKpiSetConstants.EDIT_EMPLOYEE_KPI_SUCCESS:
+      return {
+        ...state,
+        currentKPI: {
+          ...state.currentKPI,
+          kpis: state.currentKPI?.kpis?.map(target =>
+            target?._id === action.payload._id
+              ? action.payload : target)
+        },
+        isLoading: false
+      };
     case kpiMemberConstants.GET_KPIMEMBER_BYMONTH_REQUEST:
       return {
         ...state,
@@ -160,18 +171,21 @@ export function kpimembers(state = {}, action) {
       return {
         ...state,
         loading: true,
+        taskLoading: true,
         tasks: null
       };
     case kpiMemberConstants.GET_TASK_BYID_SUCCESS:
       return {
         ...state,
         loading: false,
+        taskLoading: false,
         tasks: action.payload,
       };
     case kpiMemberConstants.GET_TASK_BY_LIST_KPI_FAILURE:
       return {
         ...state,
-        error: action.payload
+        error: action.payload,
+        taskLoading: false
       };
     case kpiMemberConstants.GET_TASK_BY_LIST_KPI_REQUEST:
       return {

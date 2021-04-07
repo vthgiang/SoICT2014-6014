@@ -31,7 +31,7 @@ exports.searchMajor = async (req, res) => {
         // await Log.error(req.user.email, 'GET_MAJOR', req.portal);
         res.status(400).json({
             success: false,
-            messages: ["get_major_faile"],
+            messages: ["get_major_fail"],
             content: {
                 error: error
             }
@@ -40,9 +40,9 @@ exports.searchMajor = async (req, res) => {
 }
 
 /** Tạo mới chuyên ngành */
-exports.crateNewMajor = async (req, res) => {
+exports.createNewMajor = async (req, res) => {
     // try {
-        data = await MajorService.crateNewMajor(req.portal, req.body);
+        data = await MajorService.createNewMajor(req.portal, req.body);
         // await Log.info(req.user.email, 'create_major', req.portal);
         res.status(200).json({
             success: true,
@@ -53,7 +53,7 @@ exports.crateNewMajor = async (req, res) => {
     //     // await Log.error(req.user.email, 'create_major', req.portal);
     //     res.status(400).json({
     //         success: false,
-    //         messages: ["create_major_faile"],
+    //         messages: ["create_major_fail"],
     //         content: {
     //             error: error
     //         }
@@ -75,7 +75,7 @@ exports.updateMajor = async (req, res) => {
     //     // await Log.error(req.user.email, 'update_major', req.portal);
     //     res.status(400).json({
     //         success: false,
-    //         messages: ["update_major_faile"],
+    //         messages: ["update_major_fail"],
     //         content: {
     //             error: error
     //         }
@@ -97,7 +97,7 @@ exports.deleteMajor = async (req, res) => {
     //     // await Log.error(req.user.email, 'delete_major', req.portal);
     //     res.status(400).json({
     //         success: false,
-    //         messages: ["delete_major_faile"],
+    //         messages: ["delete_major_fail"],
     //         content: {
     //             error: error
     //         }

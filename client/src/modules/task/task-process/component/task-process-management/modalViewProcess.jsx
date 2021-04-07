@@ -6,41 +6,33 @@ import { ViewProcess } from "./viewProcess";
 import { UserActions } from "../../../../super-admin/user/redux/actions";
 import { performTaskAction } from "../../../task-perform/redux/actions";
 
-class ModalViewProcess extends Component {
+function ModalViewProcess(props) {
+    const { translate, role, user } = props;
+    const { data, listOrganizationalUnit, idProcess, xmlDiagram, processName, processDescription, infoTask, creator } = props;
 
-    constructor(props) {
-        super(props);
-    }
-
-    render() {
-        const { translate, role, user } = this.props;
-        const { data, listOrganizationalUnit, idProcess, xmlDiagram, processName, processDescription, infoTask, creator } = this.props;
-
-        return (
-            <React.Fragment>
-                <DialogModal
-                    size='100' modalID={`modal-view-process-task-list`} isLoading={false}
-                    formID="modal-view-process-task-list"
-                    // disableSubmit={!this.isTaskFormValidated()}
-                    title={this.props.title}
-                    func={this.save}
-                    hasSaveButton={false}
-                    bodyStyle={{ paddingTop: 0, paddingBottom: 0 }}
-                >
-                   <ViewProcess
-                        listOrganizationalUnit={listOrganizationalUnit}
-                        data={data}
-                        idProcess={idProcess}
-                        xmlDiagram={xmlDiagram}
-                        processName={processName}
-                        processDescription={processDescription}
-                        infoTask={infoTask}
-                        creator={creator}
-                   />
-                </DialogModal>
-            </React.Fragment>
-        )
-    }
+    return (
+        <React.Fragment>
+            <DialogModal
+                size='100' modalID={`modal-view-process-task-list`} isLoading={false}
+                formID="modal-view-process-task-list"
+                // disableSubmit={!isTaskFormValidated()}
+                title={props.title}
+                hasSaveButton={false}
+                bodyStyle={{ paddingTop: 0, paddingBottom: 0 }}
+            >
+                <ViewProcess
+                    listOrganizationalUnit={listOrganizationalUnit}
+                    data={data}
+                    idProcess={idProcess}
+                    xmlDiagram={xmlDiagram}
+                    processName={processName}
+                    processDescription={processDescription}
+                    infoTask={infoTask}
+                    creator={creator}
+                />
+            </DialogModal>
+        </React.Fragment>
+    )
 
 }
 

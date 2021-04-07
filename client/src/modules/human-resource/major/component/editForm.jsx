@@ -9,9 +9,35 @@ import ValidationHelper from '../../../../helpers/validationHelper';
 function EditForm(props) {
     const [state, setState] = useState({
         name: '',
-        code: '',
-        parent: []
+        code: ''
     })
+
+    const { translate, documents } = props;
+    const { listData, unChooseNode } = props;
+    const { name, code, parent, codeError, nameError } = state;
+    const { list } = listData;
+    let listCareer = [];
+
+    useEffect(() => {
+        setState({
+            ...state,
+            oldData: {
+                majorId: props.majorId,
+                name: props.majorName,
+                code: props.majorCode,
+                parent: props.majorParent,
+                nameError: '',
+                codeError: ''
+            },
+            majorId: props.majorId,
+            name: props.majorName,
+            code: props.majorCode,
+            parent: props.majorParent,
+            showParent: props.majorParent.length === 0 ? false : true,
+            nameError: '',
+            codeError: ''
+        })
+    }, [props.majorId])
 
     const handleName = (e) => {
         const { value } = e.target;
@@ -20,17 +46,18 @@ function EditForm(props) {
         setState({
             ...state,
             name: value,
-            nameError: message
+            nameError: !message ? '' : message
         });
     }
 
     const handleCode = (e) => {
-        const { value } = e.target;
-        let msg;
+        let { value } = e.target;
+        const { translate } = props;
+        let { message } = ValidationHelper.validateName(translate, value, 1, 255);
         setState({
             ...state,
             code: value,
-            codeError: msg,
+            codeError: !message ? '' : message,
         });
     }
 
@@ -41,11 +68,26 @@ function EditForm(props) {
         });
     };
 
-    const isValidateForm = () => {
-        let { name, description } = state;
+    const validateMajorName = (name) => {
         let { translate } = props;
         if (
             !ValidationHelper.validateName(translate, name, 1, 255).status
+        ) return false;
+        return true;
+    }
+
+    const validateMajorCode = (code) => {
+        if (!code) return false;
+        return true;
+    }
+
+    const isValidateForm = () => {
+        let { name, code, showParent, parent } = state;
+        if (
+            !validateMajorName(name) || !validateMajorCode(code)
+        ) return false;
+        if (
+            showParent && (!parent || parent?.length === 0)
         ) return false;
         return true;
     }
@@ -87,32 +129,6 @@ function EditForm(props) {
         props.updateMajor(state);
     }
 
-    useEffect(() => {
-        setState({
-            ...state,
-            oldData: {
-                majorId: props.majorId,
-                name: props.majorName,
-                code: props.majorCode,
-                parent: props.majorParent,
-                nameError: '',
-                codeError: ''
-            },
-            majorId: props.majorId,
-            name: props.majorName,
-            code: props.majorCode,
-            parent: props.majorParent,
-            showParent: props.majorParent.length === 0 ? false : true,
-            nameError: '',
-            codeError: ''
-        })
-    }, [props.majorId])
-
-    const { translate, documents } = props;
-    const { listData, unChooseNode } = props;
-    const { name, code, parent, codeError, nameError } = state;
-    const { list } = listData;
-    let listCareer = [];
     for (let i in list) {
         if (!unChooseNode.includes(list[i].id)) {
             listCareer.push(list[i]);
@@ -126,15 +142,17 @@ function EditForm(props) {
                 <input type="text" className="form-control" onChange={handleName} value={name} />
                 <ErrorLabel content={nameError} />
             </div>
-            <div className={`form-group ${nameError === '' ? "" : "has-error"}`}>
+            <div className={`form-group ${codeError === '' ? "" : "has-error"}`}>
                 <label>Nhãn dán<span className="text-red">*</span></label>
                 <input type="text" className="form-control" onChange={handleCode} value={code} />
                 <ErrorLabel content={codeError} />
             </div>
-            <div className="form-group">
-                <label>{translate('document.administration.archives.parent')}</label>
-                <TreeSelect data={listData} value={parent} handleChange={handleParent} mode="radioSelect" />
-            </div>
+            {state.showParent &&
+                <div className="form-group">
+                    <label>{translate('document.administration.archives.parent')}</label>
+                    <TreeSelect data={listData} value={parent} handleChange={handleParent} mode="radioSelect" />
+                </div>
+            }
             <div className="form-group">
                 <button className="btn btn-success pull-right" style={{ marginLeft: '5px' }} disabled={disabled} onClick={save}>{translate('form.save')}</button>
                 <button className="btn btn-danger" onClick={() => {

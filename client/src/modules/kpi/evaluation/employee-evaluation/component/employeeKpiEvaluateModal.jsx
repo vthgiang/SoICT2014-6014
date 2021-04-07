@@ -369,7 +369,25 @@ function EmployeeKpiEvaluateModal(props) {
                                         }
                                     </div>
                                     <br /><br />
-                                    <h4>{translate('kpi.evaluation.employee_evaluation.task_list')} ({kpimembers?.tasks?.length})</h4>
+                                    <h4>
+                                        {translate('kpi.evaluation.employee_evaluation.task_list')} ({kpimembers?.tasks?.length})
+                                        <DataTableSetting
+                                            className="pull-right"
+                                            tableId={tableId}
+                                            tableContainerId="tree-table-container"
+                                            tableWidth="1300px"
+                                            columnArr={[
+                                                'STT',
+                                                'Tên công việc',
+                                                'Thời gian thực hiện',
+                                                'Thời gian đánh giá',
+                                                'Trạng thái',
+                                                'Đóng góp (%)',
+                                                'Điểm',
+                                                'Độ quan trọng']}
+                                            linePerPageOption={false}
+                                        />
+                                    </h4>
                                     <div className="table-wrapper-scroll-y my-custom-scrollbar" style={{ height: "calc(80vh - 160px)", overflow: "auto" }}>
                                         <table id={tableId} className="table table-hover table-bordered  table-striped mb-0" >
                                             <thead>
@@ -381,29 +399,12 @@ function EmployeeKpiEvaluateModal(props) {
                                                     <th title="Trạng thái">{translate('kpi.evaluation.employee_evaluation.status')}</th>
                                                     <th title="Đóng góp (%)">{translate('kpi.evaluation.employee_evaluation.contribution')} (%)</th>
                                                     <th title="Điểm">{translate('kpi.evaluation.employee_evaluation.point')}</th>
-                                                    <th title="Độ quan trọng">{translate('kpi.evaluation.employee_evaluation.importance_level')}
-                                                        <DataTableSetting
-                                                            className="pull-right"
-                                                            tableId={tableId}
-                                                            tableContainerId="tree-table-container"
-                                                            tableWidth="1300px"
-                                                            columnArr={[
-                                                                'STT',
-                                                                'Tên công việc',
-                                                                'Thời gian thực hiện',
-                                                                'Thời gian đánh giá',
-                                                                'Trạng thái',
-                                                                'Đóng góp (%)',
-                                                                'Điểm',
-                                                                'Độ quan trọng']}
-                                                            linePerPageOption={false}
-                                                        />
-                                                    </th>
+                                                    <th title="Độ quan trọng">{translate('kpi.evaluation.employee_evaluation.importance_level')}</th>
                                                 </tr>
                                             </thead>
                                             <tbody >
                                                 {
-                                                    (kpimembers.tasks && Array.isArray(kpimembers.tasks)) && kpimembers.tasks?.length > 0 ?
+                                                    (kpimembers.tasks && Array.isArray(kpimembers.tasks)) && kpimembers.tasks?.length > 0 &&
                                                         (kpimembers.tasks.map((itemTask, index) =>
                                                             <tr key={index}>
                                                                 <td>{index + 1}</td>
@@ -437,11 +438,16 @@ function EmployeeKpiEvaluateModal(props) {
                                                                         </React.Fragment>
                                                                     }
                                                                 </td>
-                                                            </tr>)) : <tr><td colSpan={8}>{translate('kpi.evaluation.employee_evaluation.data_not_found')}</td></tr>
+                                                            </tr>))
                                                 }
                                             </tbody>
                                         </table>
-
+                                        {!kpimembers?.tasks?.length && kpimembers?.taskLoading
+                                            && <div className="table-info-panel">{translate('general.loading')}</div>
+                                        }
+                                        {!kpimembers?.tasks?.length && !kpimembers?.taskLoading
+                                            && <div className="table-info-panel">{translate('general.no_data')}</div>
+                                        }
                                     </div>
                                     {
                                         taskImportanceDetail &&

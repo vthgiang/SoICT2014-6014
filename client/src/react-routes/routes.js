@@ -998,7 +998,7 @@ class Routes extends Component {
                             { link: "/", name: "home", icon: "fa fa-home" },
                             {
                                 link: "/kpi-units/create-for-admin",
-                                name: "kpi_unit_create",
+                                name: "kpi_unit_create_for_admin",
                                 icon: "",
                             },
                         ]}
@@ -1006,7 +1006,7 @@ class Routes extends Component {
                         exact={true}
                         link={"/kpi-units/create-for-admin"}
                         path={"/kpi-units/create-for-admin"}
-                        pageName={"kpi_unit_create"}
+                        pageName={"kpi_unit_create_for_admin"}
                         layout={Layout}
                         component={OrganizationalUnitKpiCreateForAdmin}
                     />

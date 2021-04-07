@@ -1378,7 +1378,7 @@ exports.getPaginatedTasksThatUserHasInformedRole = async (portal, task) => {
  */
 exports.getPaginatedTasksByUser = async (portal, task, type = "paginated_task_by_user") => {
     var { perPage, page, user, organizationalUnit, status, priority, special, name, 
-        startDate, endDate, isAssigned, responsibleEmployees, 
+        startDate, endDate, responsibleEmployees, 
         accountableEmployees, creatorEmployees, organizationalUnitRole
     } = task;
     var tasks;
@@ -1530,18 +1530,6 @@ exports.getPaginatedTasksByUser = async (portal, task, type = "paginated_task_by
         }
     }
 
-    if (isAssigned && JSON.parse(isAssigned) !== -1) {
-        keySearch = {
-            ...keySearch,
-            collaboratedWithOrganizationalUnits: {
-                $elemMatch: {
-                    "organizationalUnit": organizationalUnit,
-                    "isAssigned": JSON.parse(isAssigned)
-                }
-            }
-        }
-    }
-
     if (status) {
         keySearch = {
             ...keySearch,
@@ -1568,7 +1556,7 @@ exports.getPaginatedTasksByUser = async (portal, task, type = "paginated_task_by
                     isArchived: true
                 };
             }
-            else {
+            else if (special[i] === "currentMonth") {
                 let now = new Date();
                 let currentYear = now.getFullYear();
                 let currentMonth = now.getMonth();
@@ -1582,6 +1570,26 @@ exports.getPaginatedTasksByUser = async (portal, task, type = "paginated_task_by
                         { 'startDate': { $lt: nextMonth, $gte: month } },
                         { $and: [{ 'endDate': { $gte: nextMonth } }, { 'startDate': { $lt: month } }] }
                     ]
+                }
+            } else if (special[i] === "assigned" && !special.includes("not_assigned")) {
+                keySearch = {
+                    ...keySearch,
+                    collaboratedWithOrganizationalUnits: {
+                        $elemMatch: {
+                            "organizationalUnit": organizationalUnit,
+                            "isAssigned": JSON.parse(1)
+                        }
+                    }
+                }
+            } else if (special[i] === "not_assigned" && !special.includes("assigned")) {
+                keySearch = {
+                    ...keySearch,
+                    collaboratedWithOrganizationalUnits: {
+                        $elemMatch: {
+                            "organizationalUnit": organizationalUnit,
+                            "isAssigned": JSON.parse(0)
+                        }
+                    }
                 }
             }
         }

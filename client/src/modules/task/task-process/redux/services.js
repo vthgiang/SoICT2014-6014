@@ -12,7 +12,7 @@ export const TaskProcessService = {
     createTaskByProcess,
     getAllTaskProcess,
     updateDiagram,
-
+    deleteTaskProcess,
     editProcessInfo,
     importProcessTemplate,
 };
@@ -53,7 +53,19 @@ function getAllTaskProcess(pageNumber, noResultsPerPage, name) {
         },
     }, false, true, 'task.task_process');
 }
-
+function deleteTaskProcess(taskProcessId, pageNumber, noResultsPerPage, name) {
+    let userId = getStorage("userId");
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/process/${taskProcessId}`,
+        method: 'DELETE',
+        params: {
+            userId: userId,
+            pageNumber: pageNumber,
+            noResultsPerPage: noResultsPerPage,
+            name: name,
+        },
+    }, false, true, 'task.task_process');
+}
 /**
  * Lấy diagram theo id
  */
@@ -155,6 +167,7 @@ function updateDiagram(processId, diagram) {
  * @param {Object} data dữ liệu cần chỉnh sửa
  */
 function editProcessInfo(processId, data) {
+    console.log(data);
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/process/processes/${processId}`,
         method: 'PATCH',

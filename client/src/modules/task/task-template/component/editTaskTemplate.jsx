@@ -221,6 +221,7 @@ const EditTaskTemplate = (props) => {
             editingTemplate.description = value;
             editingTemplate.errorOnDescription = message;
             setState({
+                ...state,
                 editingTemplate
             });
         }
@@ -241,6 +242,7 @@ const EditTaskTemplate = (props) => {
             editingTemplate.numberOfDaysTaken = value;
             editingTemplate.errorOnNumberOfDaysTaken = message;
             setState({
+                ...state,
                 editingTemplate
             });
         }
@@ -261,6 +263,7 @@ const EditTaskTemplate = (props) => {
             editingTemplate.formula = value;
             editingTemplate.errorOnFormula = msg;
             setState({
+                ...state,
                 editingTemplate
             });
         }
@@ -272,6 +275,7 @@ const EditTaskTemplate = (props) => {
         let { editingTemplate } = state;
         editingTemplate.priority = event.target.value;
         setState({
+            ...state,
             editingTemplate
         });
         props.onChangeTemplateData(state.editingTemplate);
@@ -346,6 +350,7 @@ const EditTaskTemplate = (props) => {
             editingTemplate.readByEmployees = value;
             editingTemplate.errorOnRead = message;
             setState({
+                ...state,
                 editingTemplate
             });
         }
@@ -357,6 +362,7 @@ const EditTaskTemplate = (props) => {
         let { editingTemplate } = state;
         editingTemplate.responsibleEmployees = value;
         setState({
+            ...state,
             editingTemplate
         });
         props.isProcess && props.handleChangeResponsible(value)
@@ -367,6 +373,7 @@ const EditTaskTemplate = (props) => {
         let { editingTemplate } = state;
         editingTemplate.accountableEmployees = value;
         setState({
+            ...state,
             editingTemplate
         });
         props.isProcess && props.handleChangeAccountable(value)
@@ -377,6 +384,7 @@ const EditTaskTemplate = (props) => {
         let { editingTemplate } = state;
         editingTemplate.consultedEmployees = value;
         setState({
+            ...state,
             editingTemplate
         });
         props.onChangeTemplateData(state.editingTemplate);
@@ -387,6 +395,7 @@ const EditTaskTemplate = (props) => {
         editingTemplate.informedEmployees = value;
 
         setState({
+            ...state,
             editingTemplate
         });
         props.onChangeTemplateData(state.editingTemplate);

@@ -160,7 +160,7 @@ function ModalEditEmployeeKpi(props) {
     return (
         <React.Fragment>
             <DialogModal
-                modalID={`editEmployeeKpi${_id}`} isLoading={editing}
+                modalID={`editEmployeeKpi`} isLoading={editing}
                 formID="formeditEmployeeKpi"
                 title={translate('kpi.employee.employee_kpi_set.edit_employee_kpi_modal.edit_employee_kpi')}
                 msg_success={translate('kpi.employee.employee_kpi_set.edit_employee_kpi_modal.success')}
