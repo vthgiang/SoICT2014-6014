@@ -7,7 +7,7 @@ import { DialogModal } from '../../../../common-components';
 import { TaskTemplateFormValidator } from './taskTemplateFormValidator';
 import ValidationHelper from '../../../../helpers/validationHelper';
 
-const ModalEditTaskTemplate = (props) => {
+function ModalEditTaskTemplate (props) {
 
     const [state, setState] = useState ({
             currentRole: localStorage.getItem('currentRole'),
