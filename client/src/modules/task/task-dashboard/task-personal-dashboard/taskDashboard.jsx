@@ -78,17 +78,22 @@ class TaskDashboard extends Component {
             willUpdate: false,       // Khi true sẽ cập nhật dữ liệu vào props từ redux
             callAction: false,
             type: 'status',
-            monthTimeSheetLog: '',
+            monthTimeSheetLog: this.INFO_SEARCH.endMonthTitle,
         };
     }
 
     componentDidMount = async () => {
         const { startMonth, endMonth } = this.state;
+        let d = new Date(),
+            month = d.getMonth() + 1,
+            year = d.getFullYear();
+
         await this.props.getResponsibleTaskByUser([], 1, 1000, [], [], [], null, startMonth, endMonth, null, null, true);
         await this.props.getAccountableTaskByUser([], 1, 1000, [], [], [], null, startMonth, endMonth, null, null, true);
         await this.props.getConsultedTaskByUser([], 1, 1000, [], [], [], null, startMonth, endMonth, null, null, true);
         await this.props.getCreatorTaskByUser([], 1, 1000, [], [], [], null, startMonth, endMonth, null, null, true);
         await this.props.getInformedTaskByUser([], 1, 1000, [], [], [], null, startMonth, endMonth, null, null, true);
+        await this.props.getTimeSheetOfUser(getStorage('userId'), month, year);
 
         let data = {
             type: "user"
@@ -152,11 +157,11 @@ class TaskDashboard extends Component {
     convertType = (value) => {
         // 1: Tắt bấm giờ bằng tay, 2: Tắt bấm giờ tự động với thời gian hẹn trc, 3: add log timer
         if (value == 1) {
-            return "Bấm giờ bù giờ"
+            return "Bấm giờ"
         } else if (value == 2) {
             return "Bấm hẹn giờ"
         } else {
-            return "Bấm giờ"
+            return "Bấm bù giờ"
         }
     }
 
