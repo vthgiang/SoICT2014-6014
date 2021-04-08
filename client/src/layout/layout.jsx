@@ -16,6 +16,8 @@ class Layout extends Component {
         if (this.props.pageName) {
             document.title = translate(`menu.${this.props.pageName}`);
         }
+
+        window.scrollTo(0, 0)
     }
 
     render() {
