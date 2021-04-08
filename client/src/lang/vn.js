@@ -3209,10 +3209,10 @@ export default {
                 get_outside_info:
                     "Nhập tự động từ thông tin công việc hiện tại",
 
-                dashboard_created: "Số CV bạn đã tạo",
-                dashboard_need_perform: "Số CV bạn thực hiện",
-                dashboard_need_approve: "Số CV bạn phê duyệt",
-                dashboard_need_consult: "Số CV bạn tư vấn",
+                dashboard_created: "Bạn đã tạo",
+                dashboard_need_perform: "Bạn thực hiện",
+                dashboard_need_approve: "Bạn phê duyệt",
+                dashboard_need_consult: "Bạn tư vấn",
                 dashboard_area_result: "Miền kết quả công việc",
                 dashboard_overdue: "Công việc quá hạn",
                 dashboard_about_to_overdue: "Công việc sắp hết hạn",

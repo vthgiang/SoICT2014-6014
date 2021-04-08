@@ -21,6 +21,7 @@ import { filterDifference } from '../../../../helpers/taskModuleHelpers';
 import { getStorage } from '../../../../config';
 import moment from 'moment';
 import GeneralTaskPersonalChart from './generalTaskPersonalChart';
+import { Link } from 'react-router-dom';
 class TaskDashboard extends Component {
 
     constructor(props) {
@@ -255,94 +256,124 @@ class TaskDashboard extends Component {
         })
     }
 
+    showGeneralTaskDescription = () => {
+        Swal.fire({
+            icon: "question",
+            html: `<h3 style="color: red"><div>Tổng quan công việc được thống kê như sau  ?</div> </h3>
+            <ul>
+             <li style="font-size: 15px; margin-top: 25px; text-align: left;">Thời gian thống kê tự chọn</li>
+             <li style="font-size: 15px; margin-top: 25px; text-align: left;">Vai trò trong công việc</strong>: thực hiện, phê duyệt, hỗ trợ</li>
+             <li style="font-size: 15px; margin-top: 25px; text-align: left;">Trạng thái công viêc: đang thực hiện</li>
+             </ul>`,
+            width: "50%",
+        })
+    }
+
 
     render() {
         const { tasks, translate } = this.props;
         const { startMonth, endMonth, willUpdate, callAction, taskAnalys, monthTimeSheetLog } = this.state;
-
+        const { loadingInformed, loadingCreator, loadingConsulted, loadingAccountable } = tasks;
         let { startMonthTitle, endMonthTitle } = this.INFO_SEARCH;
         let { userTimeSheetLogs } = tasks;       // Thống kê bấm giờ
-        let amountResponsibleTask = 0, amountTaskCreated = 0, amountAccountableTasks = 0, amountConsultedTasks = 0;
-        let numTask = [];
+
+        let amountResponsibleTask = 0, amountTaskCreated = 0, amountAccountableTasks = 0, amountConsultedTasks = 0, amountInformedTasks = 0;
         let totalTasks = 0;
-        
-        // Tinh so luong tat ca cac task
-        if (tasks && tasks.responsibleTasks) {
-            let task = tasks.responsibleTasks;
-            let i;
-            for (i in task) {
-                if (task[i].status === "inprocess")
-                    amountResponsibleTask++;
-
-            }
-        }
-
-        // tính số lượng task mà người này là creator
-        if (tasks && tasks.creatorTasks) {
-            let task = tasks.creatorTasks;
-            let i;
-            for (i in task) {
-                if (task[i].status === "inprocess")
-                    amountTaskCreated++;
-
-            }
-        }
-
-        // tính số lượng task mà người này cần phê duyệt
-        if (tasks && tasks.accountableTasks) {
-            let task = tasks.accountableTasks;
-            let i;
-            for (i in task) {
-                if (task[i].status === "inprocess")
-                    amountAccountableTasks++;
-            }
-        }
-
-        // tính số lượng task mà người này là người tư vấn
-        if (tasks && tasks.consultedTasks) {
-            let task = tasks.consultedTasks;
-            let i;
-            for (i in task) {
-                if (task[i].status === "inprocess")
-                    amountConsultedTasks++;
-            }
-        }
-
-        // Tinh tong so luong cong viec co trang thai Inprogess
-        let responsibleTasks = [], creatorTasks = [], accountableTasks = [], consultedTasks = [];
-
         let newNumTask = [], listTasksGeneral = [];
-        if (tasks) {
-            if (tasks.responsibleTasks && tasks.responsibleTasks.length > 0) {
-                responsibleTasks = tasks.responsibleTasks.filter(o => o.status === "inprocess")
+
+        if (!loadingInformed && !loadingCreator && !loadingConsulted && !loadingAccountable) {
+            // Tinh so luong tat ca cac task
+            if (tasks && tasks.responsibleTasks) {
+                let task = tasks.responsibleTasks;
+                let i;
+                for (i in task) {
+                    if (task[i].status === "inprocess")
+                        amountResponsibleTask++;
+
+                }
             }
 
-            if (tasks.creatorTasks && tasks.creatorTasks.length > 0) {
-                creatorTasks = tasks.creatorTasks.filter(o => o.status === "inprocess")
+            // tính số lượng task mà người này là creator
+            if (tasks && tasks.creatorTasks) {
+                let task = tasks.creatorTasks;
+                let i;
+                for (i in task) {
+                    if (task[i].status === "inprocess")
+                        amountTaskCreated++;
+
+                }
             }
 
-            if (tasks.accountableTasks && tasks.accountableTasks.length > 0) {
-                accountableTasks = tasks.accountableTasks.filter(o => o.status === "inprocess")
+            // tính số lượng task mà người này cần phê duyệt
+            if (tasks && tasks.accountableTasks) {
+                let task = tasks.accountableTasks;
+                let i;
+                for (i in task) {
+                    if (task[i].status === "inprocess")
+                        amountAccountableTasks++;
+                }
             }
 
-            if (tasks.consultedTasks && tasks.consultedTasks.length > 0) {
-                consultedTasks = tasks.consultedTasks.filter(o => o.status === "inprocess")
+            // tính số lượng task mà người này là người tư vấn
+            if (tasks && tasks.consultedTasks) {
+                let task = tasks.consultedTasks;
+                let i;
+                for (i in task) {
+                    if (task[i].status === "inprocess")
+                        amountConsultedTasks++;
+                }
             }
 
-            newNumTask = [...newNumTask, ...responsibleTasks, ...creatorTasks, ...consultedTasks, ...accountableTasks];
-            listTasksGeneral = [...listTasksGeneral, ...responsibleTasks, ...accountableTasks, ...consultedTasks];
+            // tính số lượng task mà người này là người quan sát
+            if (tasks && tasks.informedTasks) {
+                let task = tasks.informedTasks;
+                let i;
+                for (i in task) {
+                    if (task[i].status === "inprocess")
+                        amountInformedTasks++;
+                }
+            }
 
-            newNumTask = filterDifference(newNumTask);
-            listTasksGeneral = filterDifference(listTasksGeneral);
+            // Tinh tong so luong cong viec co trang thai Inprogess
+            let responsibleTasks = [], creatorTasks = [], accountableTasks = [], consultedTasks = [], informedTasks = [];
 
-            totalTasks = newNumTask.length;
+
+            if (tasks) {
+                if (tasks.responsibleTasks && tasks.responsibleTasks.length > 0) {
+                    responsibleTasks = tasks.responsibleTasks.filter(o => o.status === "inprocess")
+                }
+
+                if (tasks.creatorTasks && tasks.creatorTasks.length > 0) {
+                    creatorTasks = tasks.creatorTasks.filter(o => o.status === "inprocess")
+                }
+
+                if (tasks.accountableTasks && tasks.accountableTasks.length > 0) {
+                    accountableTasks = tasks.accountableTasks.filter(o => o.status === "inprocess")
+                }
+
+                if (tasks.consultedTasks && tasks.consultedTasks.length > 0) {
+                    consultedTasks = tasks.consultedTasks.filter(o => o.status === "inprocess")
+                }
+
+                if (tasks.informedTasks && tasks.informedTasks.length > 0) {
+                    informedTasks = tasks.informedTasks.filter(o => o.status === "inprocess")
+                }
+
+                newNumTask = [...newNumTask, ...responsibleTasks, ...creatorTasks, ...consultedTasks, ...accountableTasks, ...informedTasks];
+                listTasksGeneral = [...listTasksGeneral, ...responsibleTasks, ...accountableTasks, ...consultedTasks];
+
+                newNumTask = filterDifference(newNumTask);
+                listTasksGeneral = filterDifference(listTasksGeneral);
+
+                totalTasks = newNumTask.length;
+            }
         }
 
 
 
         return (
             <React.Fragment>
-                <div className="qlcv" style={{ textAlign: "right" }}>
+                <div className="qlcv" style={{ textAlign: "left" }}>
                     {/**Chọn ngày bắt đầu */}
                     <div className="form-inline">
                         <div className="form-group">
@@ -375,41 +406,122 @@ class TaskDashboard extends Component {
                     </div>
                 </div>
 
-                <div className="row">
-                    <div className="col-md-3 col-sm-6 col-xs-12">
+                <div className="row" style={{ marginTop: '5px' }}>
+                    <div className="col-md-4 col-sm-12 col-xs-12">
+                        <div className="info-box">
+                            <span className="info-box-icon bg-aqua"><i className="fa fa-plus" /></span>
+                            <div className="info-box-content">
+                                <span className="info-box-text">Tổng số công việc</span>
+                                <Link to="/task-management" onClick={() => localStorage.setItem('stateFromTaskDashboard', JSON.stringify(
+                                    {
+                                        fromTaskPersonalDashboard: true,
+                                        status: ["inprocess"],
+                                        startDate: this.INFO_SEARCH.startMonth,
+                                        endDate: this.INFO_SEARCH.endMonth,
+                                        roles: ["responsible", "accountable", "consulted", "creator", "informed"]
+                                    }
+                                ))} target="_blank" rel="noopener noreferrer">
+                                    <span className="info-box-number">{totalTasks}</span>
+                                </Link>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="col-md-4 col-sm-12 col-xs-12">
                         <div className="info-box">
                             <span className="info-box-icon bg-aqua"><i className="fa fa-plus" /></span>
                             <div className="info-box-content">
                                 <span className="info-box-text">{translate('task.task_management.dashboard_created')}</span>
-                                <span className="info-box-number">{amountTaskCreated}/{totalTasks}</span>
+                                <Link to="/task-management" onClick={() => localStorage.setItem('stateFromTaskDashboard', JSON.stringify(
+                                    {
+                                        fromTaskPersonalDashboard: true,
+                                        status: ["inprocess"],
+                                        startDate: this.INFO_SEARCH.startMonth,
+                                        endDate: this.INFO_SEARCH.endMonth,
+                                        roles: ["creator"]
+                                    }
+                                ))} target="_blank" rel="noopener noreferrer">
+                                    <span className="info-box-number">{amountTaskCreated}</span>
+                                </Link>
                             </div>
                         </div>
                     </div>
-                    <div className="col-md-3 col-sm-6 col-xs-12">
+                    <div className="col-md-4 col-sm-12 col-xs-12">
                         <div className="info-box">
                             <span className="info-box-icon bg-green"><i className="fa fa-spinner" /></span>
                             <div className="info-box-content">
                                 <span className="info-box-text">{translate('task.task_management.dashboard_need_perform')}</span>
-                                <span className="info-box-number">{amountResponsibleTask}/{totalTasks}</span>
+                                <Link to="/task-management" onClick={() => localStorage.setItem('stateFromTaskDashboard', JSON.stringify(
+                                    {
+                                        fromTaskPersonalDashboard: true,
+                                        status: ["inprocess"],
+                                        startDate: this.INFO_SEARCH.startMonth,
+                                        endDate: this.INFO_SEARCH.endMonth,
+                                        roles: ["responsible"]
+                                    }
+                                ))} target="_blank" rel="noopener noreferrer">
+                                    <span className="info-box-number">{amountResponsibleTask}</span>
+                                </Link>
+
                             </div>
                         </div>
                     </div>
-                    <div className="col-md-3 col-sm-6 col-xs-12">
+                </div>
+                <div className="row">
+                    <div className="col-md-4 col-sm-12 col-xs-12">
                         <div className="info-box">
                             <span className="info-box-icon bg-red"><i className="fa fa-check-square-o" /></span>
                             <div className="info-box-content">
                                 <span className="info-box-text">{translate('task.task_management.dashboard_need_approve')}</span>
-                                <span className="info-box-number">{amountAccountableTasks}/{totalTasks}</span>
+                                <Link to="/task-management" onClick={() => localStorage.setItem('stateFromTaskDashboard', JSON.stringify(
+                                    {
+                                        fromTaskPersonalDashboard: true,
+                                        status: ["inprocess"],
+                                        startDate: this.INFO_SEARCH.startMonth,
+                                        endDate: this.INFO_SEARCH.endMonth,
+                                        roles: ["accountable"]
+                                    }
+                                ))} target="_blank" rel="noopener noreferrer">
+                                    <span className="info-box-number">{amountAccountableTasks}</span>
+                                </Link>
                             </div>
                         </div>
                     </div>
-                    <div className="clearfix visible-sm-block" />
-                    <div className="col-md-3 col-sm-6 col-xs-12">
+                    <div className="col-md-4 col-sm-12 col-xs-12">
                         <div className="info-box">
                             <span className="info-box-icon bg-yellow"><i className="fa fa-comments-o" /></span>
                             <div className="info-box-content">
                                 <span className="info-box-text">{translate('task.task_management.dashboard_need_consult')}</span>
-                                <span className="info-box-number">{amountConsultedTasks}/{totalTasks}</span>
+                                <Link to="/task-management" onClick={() => localStorage.setItem('stateFromTaskDashboard', JSON.stringify(
+                                    {
+                                        fromTaskPersonalDashboard: true,
+                                        status: ["inprocess"],
+                                        startDate: this.INFO_SEARCH.startMonth,
+                                        endDate: this.INFO_SEARCH.endMonth,
+                                        roles: ["consulted"]
+                                    }
+                                ))} target="_blank" rel="noopener noreferrer">
+                                    <span className="info-box-number">{amountConsultedTasks}</span>
+                                </Link>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="clearfix visible-sm-block" />
+                    <div className="col-md-4 col-sm-12 col-xs-12">
+                        <div className="info-box">
+                            <span className="info-box-icon bg-yellow"><i className="fa fa-comments-o" /></span>
+                            <div className="info-box-content">
+                                <span className="info-box-text">Bạn quan sát</span>
+                                <Link to="/task-management" onClick={() => localStorage.setItem('stateFromTaskDashboard', JSON.stringify(
+                                    {
+                                        fromTaskPersonalDashboard: true,
+                                        status: ["inprocess"],
+                                        startDate: this.INFO_SEARCH.startMonth,
+                                        endDate: this.INFO_SEARCH.endMonth,
+                                        roles: ["informed"]
+                                    }
+                                ))} target="_blank" rel="noopener noreferrer">
+                                    <span className="info-box-number">{amountInformedTasks}</span>
+                                </Link>
                             </div>
                         </div>
                     </div>
@@ -420,12 +532,18 @@ class TaskDashboard extends Component {
                     <div className="col-md-12">
                         <div className="box box-primary">
                             <div className="box-header with-border">
-                                <div className="box-title">{`Tổng quan công việc (${listTasksGeneral ? listTasksGeneral.length : 0} công việc)`}</div>
+                                <div className="box-title">{`Tổng quan công việc `} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle} {`(${listTasksGeneral ? listTasksGeneral.length : 0} công việc)`}</div>
+                                <a title={translate('task.task_management.explain')} onClick={() => this.showGeneralTaskDescription()}>
+                                    <i className="fa fa-question-circle" style={{ cursor: 'pointer', marginLeft: '5px' }} />
+                                </a>
                             </div>
                             <LazyLoadComponent once={true}>
                                 {
-                                    listTasksGeneral && listTasksGeneral.length > 0 &&
-                                    <GeneralTaskPersonalChart tasks={listTasksGeneral} tasksbyuser={tasks && tasks.tasksbyuser} />
+                                    listTasksGeneral && listTasksGeneral.length > 0 ?
+                                        <GeneralTaskPersonalChart tasks={listTasksGeneral} tasksbyuser={tasks && tasks.tasksbyuser} />
+                                        : (loadingInformed && loadingCreator && loadingConsulted && loadingAccountable) ?
+                                            <div className="table-info-panel">{translate('confirm.loading')}</div> :
+                                            <div className="table-info-panel">{translate('confirm.no_data')}</div>
                                 }
                             </LazyLoadComponent>
                         </div>
