@@ -11,11 +11,26 @@ import { transportPlanActions } from "../redux/actions"
 
 function TransportPlanChosenEdit(props) {
     let {allTransportPlans, currentRequirement, currentTransportPlan} = props;
+    const [currentTransportPlanId, setCurrentTransportPlanId] = useState("");
+
     const handleSelectPlan = (id) => {
         props.editTransportRequirement(currentRequirement._id, { transportPlan: id});
         props.getDetailTransportPlan(id);
+        setCurrentTransportPlanId(id);
     }
+    useEffect(() => {
+        if (currentTransportPlan && currentTransportPlan._id === currentTransportPlanId) {
+            const requirementsList = currentTransportPlan.transportRequirements;
+            if (currentTransportPlanId in requirementsList){
 
+            }
+            else{
+                requirementsList.push(currentTransportPlanId);
+            }
+            console.log(requirementsList, " requirementsList")
+            props.editTransportPlan(currentTransportPlan._id, {transportRequirements: requirementsList})
+        }
+    }, [currentTransportPlan])
     return (
         <React.Fragment>
             <DialogModal
@@ -94,6 +109,7 @@ function mapState(state) {
 const actions = {
     editTransportRequirement: transportRequirementsActions.editTransportRequirement,
     getDetailTransportPlan: transportPlanActions.getDetailTransportPlan,
+    editTransportPlan: transportPlanActions.editTransportPlan,
 }
 
 const connectedTransportPlanChosenEdit = connect(mapState, actions)(withTranslate(TransportPlanChosenEdit));

@@ -132,7 +132,7 @@ exports.getPlanById = async (portal, id) => {
 // }
 
 exports.editTransportPlan = async (portal, id, data) => {
-
+    console.log(id, " edit ", data);
 
     let oldTransportPlan = await TransportPlan(connect(DB_CONNECTION, portal)).findById(id);
 

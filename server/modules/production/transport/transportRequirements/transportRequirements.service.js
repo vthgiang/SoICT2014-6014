@@ -29,7 +29,6 @@ exports.createTransportRequirement = async (portal, data) => {
                 })
             })
         }
-        console.log(data, " day la list time")
         newTransportRequirement = await TransportRequirement(connect(DB_CONNECTION, portal)).create({
             status: data.status,
             type: data.type,
@@ -85,7 +84,6 @@ exports.createTransportRequirement = async (portal, data) => {
 //     }
 
 exports.getAllTransportRequirements = async (portal, data) => {
-    console.log("lay du lieu");
     let keySearch = {};
     // if (data?.exampleName?.length > 0) {
     //     keySearch = {

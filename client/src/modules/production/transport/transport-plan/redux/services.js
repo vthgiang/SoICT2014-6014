@@ -3,6 +3,7 @@ export const transportPlanServices = {
     getAllTransportPlans,
     createTransportPlan,
     getDetailTransportPlan,
+    editTransportPlan,
 }
 
 function getAllTransportPlans(queryData) {
@@ -46,5 +47,18 @@ function getDetailTransportPlan(id) {
         false,
         true,
         'transport.plan'
+    )
+}
+
+function editTransportPlan(id, data) {
+    return sendRequest(
+        {
+            url: `${process.env.REACT_APP_SERVER}/transport-plan/${id}`,
+            method: "PATCH",
+            data: data
+        },
+        true,
+        true,
+        "manage_transport"
     )
 }

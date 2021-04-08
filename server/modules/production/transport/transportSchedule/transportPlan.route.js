@@ -10,7 +10,7 @@ router.get('/:id', auth, TransportPlanController.getPlanById);
 // router.get('/', auth, TransportRequirementController.getAllTransportRequirements);
 router.get('/', auth, TransportPlanController.getAllTransportPlans);
 router.post('/', auth, TransportPlanController.createTransportPlan);
-// router.patch('/:id', auth, ExampleController.editExample);
+router.patch('/:id', auth, TransportPlanController.editTransportPlan);
 // router.delete('/:id', auth, ExampleController.deleteExample);
 
 module.exports = router;
