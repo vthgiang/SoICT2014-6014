@@ -272,7 +272,9 @@ function MaintainanceManagement(props) {
         window.$('#modal-edit-asset').modal('show');
 
         // Mở tab thứ 5
-        window.$('.nav-tabs li:eq(4) a').tab('show');
+        window.$('#modal-edit-asset').on('shown.bs.modal', function (){
+            window.$('#nav-tabs li:eq(4) a').tab('show');
+        });
 
     }
 
@@ -494,7 +496,7 @@ function MaintainanceManagement(props) {
                         code={currentRowEditAsset.code}
                         assetName={currentRowEditAsset.assetName}
                         serial={currentRowEditAsset.serial}
-                        assetType={currentRowEditAsset.assetType}
+                        assetType={JSON.stringify(currentRowEditAsset.assetType)}
                         group={currentRowEditAsset.group}
                         purchaseDate={currentRowEditAsset.purchaseDate}
                         warrantyExpirationDate={currentRowEditAsset.warrantyExpirationDate}
@@ -506,7 +508,7 @@ function MaintainanceManagement(props) {
                         location={currentRowEditAsset.location}
                         description={currentRowEditAsset.description}
                         status={currentRowEditAsset.status}
-                        canRegisterForUse={currentRowEditAsset.canRegisterForUse}
+                        typeRegisterForUse={currentRowEditAsset.typeRegisterForUse}
                         detailInfo={currentRowEditAsset.detailInfo}
                         readByRoles={currentRowEditAsset.readByRoles}
                         cost={currentRowEditAsset.cost}
@@ -531,6 +533,8 @@ function MaintainanceManagement(props) {
                         incidentLogs={currentRowEditAsset.incidentLogs}
                         archivedRecordNumber={currentRowEditAsset.archivedRecordNumber}
                         files={currentRowEditAsset.documents}
+                        linkPage={"management"}
+                        page={page}
                     />
                 }
             </div>

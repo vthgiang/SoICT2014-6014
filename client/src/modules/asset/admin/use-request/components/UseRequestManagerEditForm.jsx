@@ -533,7 +533,7 @@ function UseRequestManagerEditForm(props) {
                                                 return { value: x._id, text: x.name + " - " + x.email }
                                             })}
                                             onChange={handleApproverChange}
-                                            value={auth.user._id}
+                                            value={approver ? approver._id : null}
                                             multiple={false}
                                             disabled
                                         />

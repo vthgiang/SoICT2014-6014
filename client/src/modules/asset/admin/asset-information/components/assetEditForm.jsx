@@ -423,7 +423,7 @@ function AssetEditForm(props) {
             >
                 {/* Nav-tabs */}
                 <div className="nav-tabs-custom" style={{ marginTop: '-15px' }}>
-                    <ul className="nav nav-tabs">
+                    <ul className="nav nav-tabs" id = "nav-tabs">
                         <li className="active"><a title={translate('asset.general_information.general_information')} data-toggle="tab" href={`#edit_general${_id}`}>{translate('asset.general_information.general_information')}</a></li>
                         <li><a title={translate('asset.general_information.depreciation_information')} data-toggle="tab" href={`#edit_depreciation${_id}`}>{translate('asset.general_information.depreciation_information')}</a></li>
                         <li><a title={translate('asset.general_information.usage_information')} data-toggle="tab" href={`#edit_usage${_id}`} onClick={() => { Scheduler.triggerOnActiveEvent(".asset-usage-scheduler") }}>{translate('asset.general_information.usage_information')}</a></li>
