@@ -11,13 +11,15 @@ class Layout extends Component {
         this.state = {}
     }
 
+    componentDidMount = () => {
+        window.scrollTo(0, 0)
+    }
+
     componentDidUpdate = () => {
         const { translate } = this.props;
         if (this.props.pageName) {
             document.title = translate(`menu.${this.props.pageName}`);
         }
-
-        window.scrollTo(0, 0)
     }
 
     render() {
