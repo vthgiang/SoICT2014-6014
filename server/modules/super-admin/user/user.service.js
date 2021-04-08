@@ -874,7 +874,15 @@ exports.sendEmailResetPasswordUser = async(portal, email) => {
     let user = await User(connect(DB_CONNECTION, portal)).findOne({ email });
     let code = await generator.generate({ length: 6, numbers: true });
     user.resetPasswordToken = code;
-    await user.save();
+    if (user.password2) {
+        user.password2 = ""
+        
+        await User(connect(DB_CONNECTION, portal)).updateOne({
+            _id: user._id,
+        }, { $set: user })
+    } else {
+        await user.save();
+    }
     
     let subject = `${process.env.WEB_NAME} : Thay đổi mật khẩu - Change password`;
     let html = `
