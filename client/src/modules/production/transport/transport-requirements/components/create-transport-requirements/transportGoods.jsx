@@ -121,6 +121,9 @@ function TransportGoods(props) {
             volume: v,
         })
     }
+    /**
+     * Xử lý khi ấn nút thêm hàng hóa (set state listGoodsChosen để callback) 
+     */
     const handleAddGood = (e) => {
         e.preventDefault();
         let good = {
@@ -129,6 +132,7 @@ function TransportGoods(props) {
             name: currentGood.name ? currentGood.name : "",
             quantity: currentGood.quantity,
             volume: currentGood.volume,
+            payload: currentGood.weight,
         }
         setListGoodsChosen(listGoodsChosen => [...listGoodsChosen, good]);
     }

@@ -22,6 +22,7 @@ export function transportRequirements(state = initialState, action) {
 		case transportRequirementsConstants.GET_ALL_TRANSPORT_REQUIREMENTS_REQUEST:
         case transportRequirementsConstants.CREATE_TRANSPORT_REQUIREMENT_REQUEST:
         case transportRequirementsConstants.EDIT_TRANSPORT_REQUIREMENT_REQUEST:
+        case transportRequirementsConstants.DELETE_TRANSPORT_REQUIREMENT_REQUEST:
 		return {
                 ...state,
                 isLoading: true
@@ -30,6 +31,7 @@ export function transportRequirements(state = initialState, action) {
 		case transportRequirementsConstants.GET_ALL_TRANSPORT_REQUIREMENTS_FAILURE:
         case transportRequirementsConstants.CREATE_TRANSPORT_REQUIREMENT_FAILURE:
         case transportRequirementsConstants.EDIT_TRANSPORT_REQUIREMENT_FAILURE:
+        case transportRequirementsConstants.DELETE_TRANSPORT_REQUIREMENT_FAILURE:
 		return {
                 ...state,
                 isLoading: false,
@@ -57,6 +59,12 @@ export function transportRequirements(state = initialState, action) {
             }
             return {
                 ...state,
+                isLoading: false
+            }
+        case transportRequirementsConstants.DELETE_TRANSPORT_REQUIREMENT_SUCCESS:
+            return {
+                ...state,
+                lists: state.lists.filter(transportRequirement => (transportRequirement?._id !== action.payload?._id)),
                 isLoading: false
             }
 		default:

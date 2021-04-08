@@ -24,14 +24,14 @@ const TransportPlanSchema = new Schema({
     //         type: String,
     //         // required: true,
     //     },
-        totalVolume: { // Tổng thể tích vận chuyển của yêu cầu
-            type: Number,
-            // required: true
-        },
-        totalPayload: { // Tổng khối lượng vận chuyển của yêu cầu
-            type: Number,
-            // required: true
-        }
+        // totalVolume: { // Tổng thể tích vận chuyển của yêu cầu
+        //     type: Number,
+        //     // required: true
+        // },
+        // totalPayload: { // Tổng khối lượng vận chuyển của yêu cầu
+        //     type: Number,
+        //     // required: true
+        // }
     }],
     // transportVehicles: [{ // phuong tien van chuyen
     //     transportVehicle: {

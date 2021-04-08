@@ -4,10 +4,6 @@ import { withTranslate } from "react-redux-multilingual";
 
 import { DataTableSetting, DeleteNotification, PaginateBar } from "../../../../../common-components";
 
-// import { ExampleCreateForm } from "./exampleCreateForm";
-// import { ExampleEditForm } from "./exampleEditForm";
-// import { ExampleDetailInfo } from "./exampleDetailInfo";
-// import { ExampleImportForm } from "./exampleImortForm";
 import { TransportRequirementsCreateForm } from "./create-transport-requirements/transportRequirementsCreateForm"
 
 import { transportRequirementsActions } from "../redux/actions";
@@ -102,12 +98,12 @@ function TransportRequirementsManagementTable(props) {
      * @param {*} id của ví dụ cần xóa
      */
     const handleDelete = (id) => {
-        props.deleteExample(id);
-        props.getExamples({
-            exampleName,
-            perPage,
-            page: example && example.lists && example.lists.length === 1 ? page - 1 : page
-        });
+        props.deleteTransportRequirement(id);
+        // props.getExamples({
+        //     exampleName,
+        //     perPage,
+        //     page: example && example.lists && example.lists.length === 1 ? page - 1 : page
+        // });
     }
 
 
@@ -189,18 +185,19 @@ function TransportRequirementsManagementTable(props) {
                                     <td>{"Giao hàng"}</td>
                                     <td>{x.fromAddress}</td>
                                     <td>{x.toAddress}</td>
-                                    {/* <td style={{ textAlign: "center" }}>
-                                        <a className="edit text-green" style={{ width: '5px' }} title={translate('manage_example.detail_info_example')} onClick={() => handleShowDetailInfo(example)}><i className="material-icons">visibility</i></a>
-                                        <a className="edit text-yellow" style={{ width: '5px' }} title={translate('manage_example.edit')} onClick={() => handleEdit(example)}><i className="material-icons">edit</i></a>
+                                    <td style={{ textAlign: "center" }}>
+                                        {/* <a className="edit text-green" style={{ width: '5px' }} title={translate('manage_example.detail_info_example')} onClick={() => handleShowDetailInfo(example)}><i className="material-icons">visibility</i></a>
+                                        <a className="edit text-yellow" style={{ width: '5px' }} title={translate('manage_example.edit')} onClick={() => handleEdit(example)}><i className="material-icons">edit</i></a> */}
                                         <DeleteNotification
-                                            content={translate('manage_example.delete')}
+                                            // content={translate('manage_example.delete')}
+                                            content={"123"}
                                             data={{
-                                                id: example._id,
-                                                info: example.exampleName
+                                                id: x._id,
+                                                info: "day la info"
                                             }}
                                             func={handleDelete}
                                         />
-                                    </td> */}
+                                    </td>
                                 </tr>
                             ))
                         }
@@ -235,6 +232,7 @@ function mapState(state) {
 
 const actions = {
     getAllTransportRequirements: transportRequirementsActions.getAllTransportRequirements,
+    deleteTransportRequirement: transportRequirementsActions.deleteTransportRequirement,
 }
 
 const connectedTransportRequirementsManagementTable = connect(mapState, actions)(withTranslate(TransportRequirementsManagementTable));

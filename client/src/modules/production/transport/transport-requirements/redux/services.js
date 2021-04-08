@@ -3,6 +3,7 @@ export const transportRequirementsServices = {
     getAllTransportRequirements,
     createTransportRequirement,
     editTransportRequirement,
+    deleteTransportRequirement,
 }
 
 function getAllTransportRequirements(queryData) {
@@ -42,6 +43,18 @@ function editTransportRequirement(id, data) {
             url: `${process.env.REACT_APP_SERVER}/transport-requirement/${id}`,
             method: "PATCH",
             data: data
+        },
+        true,
+        true,
+        "manage_transport"
+    )
+}
+
+function deleteTransportRequirement(id) {
+    return sendRequest(
+        {
+            url: `${process.env.REACT_APP_SERVER}/transport-requirement/${id}`,
+            method: "DELETE"
         },
         true,
         true,

@@ -164,12 +164,16 @@ function TransportRequirementsCreateForm(props) {
         //             perPage: perPage
         //         });
         //     }
+        const {payload, volume} = getTotalPayloadVolume(requirementsForm.goods);
+
         let data = {
             status: 1,
             type: 5, 
             fromAddress: requirementsForm.info.customer1AddressTransport ? requirementsForm.info.customer1AddressTransport : "",
             toAddress: requirementsForm.info.customer2AddressTransport ? requirementsForm.info.customer2AddressTransport : [],
             goods : formatGoodsForSubmit(requirementsForm.goods),
+            payload: payload,
+            volume: volume,
             timeRequests: formatTimeForSubmit(requirementsForm.timeRequests),
         }
         props.createTransportRequirement(data)
@@ -185,10 +189,24 @@ function TransportRequirementsCreateForm(props) {
                 good: item._id,
                 quantity: item.quantity,
                 volume: item.volume,
+                payload: item.payload,
             };
         });
         return goodMap;
     }
+
+    const getTotalPayloadVolume = (goods) => {
+        let payload = 0;
+        let volume = 0;
+        if (goods && goods.length !==0) {
+            goods.map((good) => {
+                payload+=Number(good.payload);
+                volume+=Number(good.volume)
+            })
+        }
+        return {payload, volume};
+    }
+
     /**
      * chuẩn hóa dữ liệu time request để lưu vào db
      */

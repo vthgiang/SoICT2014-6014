@@ -13,24 +13,45 @@ function TransportPlanChosenEdit(props) {
     let {allTransportPlans, currentRequirement, currentTransportPlan} = props;
     const [currentTransportPlanId, setCurrentTransportPlanId] = useState("");
 
-    const handleSelectPlan = (id) => {
-        props.editTransportRequirement(currentRequirement._id, { transportPlan: id});
-        props.getDetailTransportPlan(id);
-        setCurrentTransportPlanId(id);
+    const handleSelectPlan = async(id) => {
+        // if (currentRequirement.transportPlan && String(currentRequirement.transportPlan) === id){
+        //     return;
+        // }
+        // else{            
+        //     if (currentRequirement.transportPlan){
+        //         // props.getDetailTransportPlan
+        //     }
+            props.editTransportRequirement(currentRequirement._id, { transportPlan: id});
+        //     props.getDetailTransportPlan(id);   // Thêm yêu cầu vc vào plan mới
+        //     setCurrentTransportPlanId(id);  // ..................................
+        // }
     }
-    useEffect(() => {
-        if (currentTransportPlan && currentTransportPlan._id === currentTransportPlanId) {
-            const requirementsList = currentTransportPlan.transportRequirements;
-            if (currentTransportPlanId in requirementsList){
 
-            }
-            else{
-                requirementsList.push(currentTransportPlanId);
-            }
-            console.log(requirementsList, " requirementsList")
-            props.editTransportPlan(currentTransportPlan._id, {transportRequirements: requirementsList})
-        }
-    }, [currentTransportPlan])
+    /**
+     * khi user chọn thêm yêu cầu vận chuyển vào 1 kế hoạch và lấy được dữ liệu kế hoạch chọn
+     * thêm yêu cầu vào trường transportRequirements của transportPlan
+     */
+    // useEffect(() => {
+    //     if (currentTransportPlan && currentTransportPlan._id === currentTransportPlanId) {
+    //         const requirementsList = currentTransportPlan.transportRequirements;
+    //         let check;
+    //         /**
+    //          * Kiểm tra plan này đã có requirement chưa
+    //          */
+    //         if (requirementsList && requirementsList.length !==0){
+    //             check = requirementsList.filter(r => String(r.transportRequirement) === String(currentRequirement._id));
+    //         }
+    //         if (check && check.length !==0){
+                
+    //         }
+    //         else{
+    //             requirementsList.push({transportRequirement: currentRequirement._id});
+    //             props.editTransportPlan(currentTransportPlan._id, {transportRequirements: requirementsList});
+    //         }            
+    //     }
+    // }, [currentTransportPlan])
+
+
     return (
         <React.Fragment>
             <DialogModal
@@ -95,6 +116,25 @@ function TransportPlanChosenEdit(props) {
                     </tbody>
                 </table>
                 </form>
+            
+            
+                {/* <iframe
+                    width="600"
+                    height="450"
+                    style="border:0"
+                    loading="lazy"
+                    allowfullscreen
+                    src={"https://www.google.com/maps/embed/v1/place?key=AIzaSyCkVQAqCoJU79mTctNsNmQLy9ME7qiTlfs&q=Space+Needle,Seattle+WA"}>
+                </iframe> */}
+
+                <iframe src={"https://www.google.com/maps/embed/v1/place?key=AIzaSyCkVQAqCoJU79mTctNsNmQLy9ME7qiTlfs&q=tan+lap,Dan+phuong,Hanoi,vietnam&q=hoai+duc,hanoi,vietnam"} 
+                width="600" 
+                height="450" 
+                frameborder="0" 
+                style={{border:0}} 
+                allowfullscreen="" 
+                aria-hidden="false" 
+                tabindex="0"></iframe>   
             </DialogModal>
         </React.Fragment>
     );

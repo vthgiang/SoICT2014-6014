@@ -5,6 +5,7 @@ export const transportRequirementsActions = {
     getAllTransportRequirements,
     createTransportRequirement,
     editTransportRequirement,
+    deleteTransportRequirement,
 }
 
 function getAllTransportRequirements(queryData) {
@@ -68,6 +69,29 @@ function editTransportRequirement(id, data) {
             .catch((error) => {
                 dispatch({
                     type: transportRequirementsConstants.EDIT_TRANSPORT_REQUIREMENT_FAILURE,
+                    error
+                });
+            });
+    }
+}
+
+function deleteTransportRequirement(id) {
+    return (dispatch) => {
+        dispatch({
+            type: transportRequirementsConstants.DELETE_TRANSPORT_REQUIREMENT_REQUEST
+        });
+
+        transportRequirementsServices
+            .deleteTransportRequirement(id)
+            .then((res) => {
+                dispatch({
+                    type: transportRequirementsConstants.DELETE_TRANSPORT_REQUIREMENT_SUCCESS,
+                    payload: res.data.content
+                });
+            })
+            .catch((error) => {
+                dispatch({
+                    type: transportRequirementsConstants.DELETE_TRANSPORT_REQUIREMENT_FAILURE,
                     error
                 });
             });

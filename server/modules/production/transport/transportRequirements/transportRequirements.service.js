@@ -6,6 +6,8 @@ const {
     connect
 } = require(`../../../../helpers/dbHelper`);
 
+const TransportPlanServices = require("../transportSchedule/transportPlan.service")
+
 // Tạo mới mảng Ví dụ
 exports.createTransportRequirement = async (portal, data) => {
     let newTransportRequirement;
@@ -16,7 +18,8 @@ exports.createTransportRequirement = async (portal, data) => {
                 listGoods.push({
                     good: item.good,
                     quantity: item.quantity,
-                    volume: item.volume
+                    volume: item.volume,
+                    payload: item.payload
                 })
             })
         }
@@ -36,12 +39,14 @@ exports.createTransportRequirement = async (portal, data) => {
             toAddress: data.toAddress,
             goods: listGoods,
             timeRequests: listTime,
+            volume: data.volume,
+            payload: data.payload,
         });
         
     }
 
-    // let example = await Example(connect(DB_CONNECTION, portal)).findById({ _id: newExample._id });;
-    // return example;
+    let requirement = await TransportRequirement(connect(DB_CONNECTION, portal)).findById({ _id: newTransportRequirement._id });;
+    return requirement;
 }
 
 // Lấy ra tất cả các thông tin Ví dụ theo mô hình lấy dữ liệu số  1
@@ -84,6 +89,9 @@ exports.createTransportRequirement = async (portal, data) => {
 //     }
 
 exports.getAllTransportRequirements = async (portal, data) => {
+    if (data.transportPlan){
+        transportPlans = TransportPlanServices.getPlanById(portal,data.transportPlan);
+    }
     let keySearch = {};
     // if (data?.exampleName?.length > 0) {
     //     keySearch = {
@@ -93,15 +101,16 @@ exports.getAllTransportRequirements = async (portal, data) => {
     //         }
     //     }
     // }
-
     let page, limit;
     page = data?.page ? Number(data.page) : 1;
     limit = data?.limit ? Number(data.limit) : 20;
 
     let totalList = await TransportRequirement(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
     let requirements = await TransportRequirement(connect(DB_CONNECTION, portal)).find(keySearch)
+        .populate({path:'transportPlan', select: 'code startTime endTime'})
         .skip((page - 1) * limit)
         .limit(limit);
+        // .populate('TransportPlan');
     return { 
         data: requirements, 
         totalList 
@@ -148,8 +157,8 @@ exports.editTransportRequirement = async (portal, id, data) => {
     return transportRequirement;
 }
 
-// // Xóa một Ví dụ
-// exports.deleteExample = async (portal, id) => {
-//     let example = Example(connect(DB_CONNECTION, portal)).findByIdAndDelete({ _id: id });
-//     return example;
-// }
+// Xóa một Ví dụ
+exports.deleteTransportRequirement = async (portal, id) => {
+    let requirement = TransportRequirement(connect(DB_CONNECTION, portal)).findByIdAndDelete({ _id: id });
+    return requirement;
+}

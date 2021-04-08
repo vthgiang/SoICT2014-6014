@@ -124,6 +124,10 @@ function TransportArrangePlan(props) {
         }
         return times;
     }
+    
+    useEffect(() => {
+        console.log(transportArrangeRequirements, " transportArrangeRequirements")
+    }, [transportArrangeRequirements])
 
     const handleEdit = (index) => {
         console.log(index, " day la nut sua");
@@ -184,7 +188,7 @@ function TransportArrangePlan(props) {
                                             />
                                         </td>
                                         <td>
-                                            {"KHVC.020293294823984239 "}
+                                            {item?.transportPlan?.code?item.transportPlan.code: ""}
                                             <a className="edit text-yellow" style={{ width: '5px' }} title={'manage_example.edit'} 
                                                 onClick={() => handleTransportPlanChosenEdit(item)}
                                             >
@@ -196,7 +200,7 @@ function TransportArrangePlan(props) {
                                             >
                                                 <i className="material-icons">visibility</i></a>
                                             <a className="edit text-yellow" style={{ width: '5px' }} title={'manage_example.edit'} 
-                                                onClick={() => handleEdit(index)}
+                                                onClick={() => handleTransportPlanChosenEdit(index)}
                                             >
                                                 <i className="material-icons">edit</i></a>
                                             <a className="text-green"

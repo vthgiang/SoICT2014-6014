@@ -102,30 +102,30 @@ exports.editTransportRequirement = async (req, res) => {
     }
 }
 
-// // Xóa Ví dụ
-// exports.deleteExample = async (req, res) => {
-//     try {
-//         let { id } = req.params;
-//         let deletedExample = await ExampleService.deleteExample(req.portal, id);
-//         if (deletedExample) {
-//             await Log.info(req.user.email, "DELETED_EXAMPLE", req.portal);
-//             res.status(200).json({
-//                 success: true,
-//                 messages: ["delete_success"],
-//                 content: deletedExample
-//             });
-//         } else {
-//             throw Error("Example is invalid");
-//         }
-//     } catch (error) {
-//         await Log.error(req.user.email, "DELETED_EXAMPLE", req.portal);
-//         res.status(400).json({
-//             success: false,
-//             messages: ["delete_fail"],
-//             content: error.message
-//         });
-//     }
-// }
+// Xóa Ví dụ
+exports.deleteTransportRequirement = async (req, res) => {
+    try {
+        let { id } = req.params;
+        let deleteTransportRequirement = await TransportRequirementService.deleteTransportRequirement(req.portal, id);
+        if (deleteTransportRequirement) {
+            await Log.info(req.user.email, "DELETED_TRANSPORT_REQUIREMENT", req.portal);
+            res.status(200).json({
+                success: true,
+                messages: ["delete_success"],
+                content: deleteTransportRequirement
+            });
+        } else {
+            throw Error("TransportRequirement is invalid");
+        }
+    } catch (error) {
+        await Log.error(req.user.email, "DELETED_TRANSPORT_REQUIREMENT", req.portal);
+        res.status(400).json({
+            success: false,
+            messages: ["delete_fail"],
+            content: error.message
+        });
+    }
+}
 
 // Lấy ra tên của tất cả các Ví dụ
 exports.getAllTransportRequirements = async (req, res) => {

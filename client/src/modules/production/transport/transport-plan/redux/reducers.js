@@ -58,6 +58,13 @@ export function transportPlan(state = initialState, action) {
                 currentTransportPlan: action.payload,
             }
 
+        case transportPlanConstants.GET_DETAIL_TRANSPORT_PLAN_2_SUCCESS:
+            return {
+                ...state,
+                isLoading: false,
+                currentTransportPlan2: action.payload,
+            }
+
         case transportPlanConstants.EDIT_TRANSPORT_PLAN_SUCCESS:
             index = findIndex(state.lists, action.payload._id);
             if (index !== -1) {

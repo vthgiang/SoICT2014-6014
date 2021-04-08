@@ -53,7 +53,7 @@ const TransportRequirementSchema = new Schema({
             type: Number,
             // required: true
         },
-        weight: { // khối lượng hàng hóa
+        payload: { // khối lượng hàng hóa
             type: Number
         }
     }],
@@ -79,6 +79,14 @@ const TransportRequirementSchema = new Schema({
     bill: { // tuong ung phieu xuat kho
         type: Schema.Types.ObjectId,
         ref: 'Bill',
+    },
+    payload: { // Khối lượng hàng hóa của cả yêu cầu vận chuyển
+        type: Number,
+        required: true,
+    },
+    volume: { // Thể tích yêu cầu của cả yêu cầu vận chuyển
+        type: Number,
+        required: true,
     }
 });
 
