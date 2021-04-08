@@ -20,8 +20,9 @@ class Header extends Component {
     render() {
         const { translate, auth } = this.props;
         const {
-            oldPasswordError, newPasswordError, confirmPasswordError
+            oldPasswordError, newPasswordError, confirmPasswordError, password2Error
         } = this.state;
+        const { user } = auth;
 
         return (
             <React.Fragment>
@@ -71,7 +72,16 @@ class Header extends Component {
                             <input className="form-control" type="password" onChange={this.handleConfirmPassword} placeholder="Nhập lại mật khẩu mới" />
                             <ErrorLabel content={confirmPasswordError} />
                         </div>
-                        <div className={`form-group`}>
+
+                        {user && Object.keys(user).length > 0 && user.password2Exists === true ?
+                            <div className={`form-group ${!password2Error ? "" : "has-error"}`}>
+                                <label style={{ display: 'flex', marginTop: '5px' }}>
+                                    Mật khẩu cấp 2
+                                    <span className="text-red" style={{ marginLeft: '5px' }}>*</span>
+                                </label>
+                                <input className="form-control" type="password" onChange={this.handleChangePassword2} placeholder="Nhập mật khẩu cấp 2" />
+                                <ErrorLabel content={password2Error} />
+                            </div> :
                             <label style={{ display: 'flex', marginTop: '5px' }}>
                                 <span style={{ marginRight: '10px' }}>Mật khẩu cấp 2</span>
                                 <div style={{ display: 'flex' }}>
@@ -83,8 +93,7 @@ class Header extends Component {
                                     </span>
                                 </div>
                             </label>
-                            <input className="form-control" type="password" onChange={this.handleNewPassword2} placeholder="Nhập mật khẩu cáp 2 mới" />
-                        </div>
+                        }
                     </form>
                 </DialogModal>
 
@@ -122,20 +131,26 @@ class Header extends Component {
         })
     }
 
-    handleNewPassword2 = (e) => {
+    handleChangePassword2 = (e) => {
         const { value } = e.target;
+        let { translate } = this.props;
+        let { message } = ValidationHelper.validateEmpty(translate, value);
+
         this.setState({
             password2: value,
+            password2Error: message,
         })
     }
 
     isFormValidated = () => {
-        const { oldPassword, newPassword, confirmPassword } = this.state;
-        let { translate } = this.props;
+        const { oldPassword, newPassword, confirmPassword, password2 } = this.state;
+        let { translate, auth } = this.props;
+        const { user } = auth;
         if (
             !ValidationHelper.validatePassword(translate, oldPassword).status ||
             !ValidationHelper.validatePassword(translate, newPassword).status ||
-            !ValidationHelper.validatePassword(translate, confirmPassword).status
+            !ValidationHelper.validatePassword(translate, confirmPassword).status ||
+            (user && user.password2Exists && !ValidationHelper.validateEmpty(translate, password2).status)
         ) return false;
         return true;
     }
@@ -149,6 +164,7 @@ class Header extends Component {
         if (this.isFormValidated()) {
             return this.props.changePassword({
                 password: oldPassword,
+                confirmPassword,
                 new_password: newPassword,
                 password2,
             });

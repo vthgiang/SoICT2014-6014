@@ -13,7 +13,7 @@ class ModalChangeUserInformation extends Component {
         this.state = {}
     }
 
-    showCropImageSpace= () => {
+    showCropImageSpace = () => {
         window.$('#modal-crop-user-image').modal('show');
     }
 
@@ -32,10 +32,11 @@ class ModalChangeUserInformation extends Component {
             })
     }
 
-    render() { 
-        const {translate} = this.props;
-        const {userAvatar, userName, userEmail, userNameError, userEmailError} = this.state;
-        return ( 
+    render() {
+        const { translate, auth } = this.props;
+        const { userAvatar, userName, userEmail, password2, userNameError, userEmailError, password2Error } = this.state;
+        const { user } = auth;
+        return (
             <React.Fragment>
                 <DialogModal
                     modalID="modal-profile"
@@ -51,34 +52,42 @@ class ModalChangeUserInformation extends Component {
                                 <div className="profile-pic">
                                     {
                                         this.state.img === undefined ?
-                                        <img className="user-avatar" src={process.env.REACT_APP_SERVER+this.props.auth.user.avatar}/> :
-                                        <img className="user-avatar" src={this.state.img}/>
+                                            <img className="user-avatar" src={process.env.REACT_APP_SERVER + this.props.auth.user.avatar} /> :
+                                            <img className="user-avatar" src={this.state.img} />
                                     }
-                                    <button type="button" className="edit-option" onClick={this.showCropImageSpace}><i className="fa fa-camera" style={{color: 'white'}}></i></button>
+                                    <button type="button" className="edit-option" onClick={this.showCropImageSpace}><i className="fa fa-camera" style={{ color: 'white' }}></i></button>
                                 </div>
                             </div>
                             <div className="col-xs-6 col-sm-8 col-md-8 col-lg-8">
-                                <div className={`form-group ${userNameError===undefined?"":"has-error"}`}>
-                                    <label>{ translate('auth.profile.name') }<span className="text-red">*</span></label>
-                                    <input type="text" className="form-control" name="name" value={userName} onChange={this.handleChangeName}/>
-                                    <ErrorLabel content={userNameError}/>
+                                <div className={`form-group ${userNameError === undefined ? "" : "has-error"}`}>
+                                    <label>{translate('auth.profile.name')}<span className="text-red">*</span></label>
+                                    <input type="text" className="form-control" name="name" value={userName} onChange={this.handleChangeName} />
+                                    <ErrorLabel content={userNameError} />
                                 </div>
-                                <div className={`form-group ${userEmailError===undefined?"":"has-error"}`}>
-                                    <label>{ translate('auth.profile.email') }<span className="text-red">*</span></label>
-                                    <input type="email" className="form-control" name="email" onChange={this.handleEmail} value={userEmail}/>
-                                    <ErrorLabel content={userEmailError}/>
+                                <div className={`form-group ${userEmailError === undefined ? "" : "has-error"}`}>
+                                    <label>{translate('auth.profile.email')}<span className="text-red">*</span></label>
+                                    <input type="email" className="form-control" name="email" onChange={this.handleEmail} value={userEmail} />
+                                    <ErrorLabel content={userEmailError} />
                                 </div>
+                                {
+                                    user && Object.keys(user).length > 0 && user.password2Exists === true &&
+                                    <div className={`form-group ${password2Error === undefined ? "" : "has-error"}`}>
+                                        <label>{translate('form.password2')}<span className="text-red">*</span></label>
+                                        <input type="password" className="form-control" name="password2" onChange={this.handlePassword2} value={password2 ? password2 : ""} />
+                                        <ErrorLabel content={password2Error} />
+                                    </div>
+                                }
                             </div>
                         </div>
                     </form>
                 </DialogModal>
                 {/* Crop image */}
-                <CropImage getImage={this.getImage}/>
+                <CropImage getImage={this.getImage} />
             </React.Fragment>
-         );
+        );
     }
 
-    static getDerivedStateFromProps(nextProps, prevState){
+    static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.userId !== prevState.userId) {
             return {
                 ...prevState,
@@ -86,56 +95,71 @@ class ModalChangeUserInformation extends Component {
                 userName: nextProps.userName,
                 userEmail: nextProps.userEmail,
                 userNameError: undefined,
-                userEmailError: undefined
-            } 
+                userEmailError: undefined,
+                password2Error: undefined,
+            }
         } else {
             return null;
         }
     }
-      
-    changeInformation = async() => {
-        const {userName, userEmail} = this.state;
+
+    changeInformation = async () => {
+        const { userName, userEmail, password2 } = this.state;
         let formdata = new FormData();
         await formdata.append('avatar', this.state.avatar);
         await formdata.append('name', userName);
         await formdata.append('email', userEmail);
+        await formdata.append('password2', password2);
 
-        if(this.isFormValidated()) return this.props.changeInformation(formdata);
-            
+        if (this.isFormValidated()) return this.props.changeInformation(formdata);
+
     }
 
     handleChangeName = (e) => {
-        let {value} = e.target;
-        let {translate} = this.props;
-        let {message} = ValidationHelper.validateName(translate, value, 4, 255);
+        let { value } = e.target;
+        let { translate } = this.props;
+        let { message } = ValidationHelper.validateName(translate, value, 4, 255);
         this.setState({
             userName: value,
             userNameError: message
         })
     }
-    
+
     handleEmail = (e) => {
-        let {value} = e.target;
-        let {translate} = this.props;
-        let {message} = ValidationHelper.validateEmail(translate, value);
+        let { value } = e.target;
+        let { translate } = this.props;
+        let { message } = ValidationHelper.validateEmail(translate, value);
         this.setState({
             userEmail: value,
             userEmailError: message
         })
     }
 
-    
+
+    handlePassword2 = (e) => {
+        let { value } = e.target;
+        let { translate } = this.props;
+        let { message } = ValidationHelper.validateEmpty(translate, value);
+        this.setState({
+            password2: value,
+            password2Error: message
+        })
+    }
+
+
     isFormValidated = () => {
-        let {userName, userEmail} = this.state;
-        let {translate} = this.props;
-        if(
+        let { userName, userEmail, password2 } = this.state;
+        let { translate, auth } = this.props;
+        const { user } = auth;
+        if (
             !ValidationHelper.validateName(translate, userName, 6, 255).status ||
-            !ValidationHelper.validateEmail(translate, userEmail).status
+            !ValidationHelper.validateEmail(translate, userEmail).status ||
+            (user && user.password2Exists && !ValidationHelper.validateEmpty(translate, password2).status)
         ) return false;
         return true;
     }
 }
- 
+
 const mapStateToProps = state => {
     return state;
 }
@@ -143,4 +167,4 @@ const mapStateToProps = state => {
 const mapDispatchToProps = {
     changeInformation: AuthActions.changeInformation
 }
-export default connect( mapStateToProps, mapDispatchToProps )( withTranslate(ModalChangeUserInformation) );
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(ModalChangeUserInformation));
