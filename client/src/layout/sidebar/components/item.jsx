@@ -30,7 +30,7 @@ class Item extends Component {
             {
                 this.checkURL(item.path, links) &&
                 <li className={window.location.pathname === item.path ? "active" : ""}>
-                    <Link to={item.path}>
+                    <Link to={item.path} onClick={() => window.$(window).scrollTop(0)}>
                         <i className={item.icon} /> <span>{translate(item.name)}</span>
                     </Link>
                 </li>
