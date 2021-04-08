@@ -115,7 +115,7 @@ exports.changeInformation = async (req, res) => {
             let path = req.file.destination +'/'+ req.file.filename;
             avatar = path.substr(1, path.length)
         }
-        const profile = await AuthService.changeInformation(req.portal, req.params.id, req.body.name, req.body.email, avatar);
+        const profile = await AuthService.changeInformation(req.portal, req.params.id, req.body.name, req.body.email, req.body.password2, avatar);
 
         await Logger.info(req.user.email, 'change_user_information_success', req.portal);
         res.status(200).json({
@@ -136,7 +136,7 @@ exports.changeInformation = async (req, res) => {
 
 exports.changePassword = async (req, res) => {
     try {
-        const user = await AuthService.changePassword(req.portal, req.params.id, req.body.password, req.body.new_password, req.body.password2);
+        const user = await AuthService.changePassword(req.portal, req.params.id, req.body.password, req.body.new_password, req.body.confirmPassword, req.body.password2);
 
         await Logger.info(req.user.email, 'change_user_password_success', req.portal);
         res.status(200).json({
@@ -218,7 +218,6 @@ exports.downloadFile = async (req, res) => {
 exports.answerAuthQuestions = async(req, res) => {
     try {
         const answer = await AuthService.answerAuthQuestions(req.portal, req.user._id, req.body);
-        console.log("anser", answer);
         await Logger.info(req.user.email, 'answer_auth_question_success', req.portal);
         res.status(200).json({
             success: true,
