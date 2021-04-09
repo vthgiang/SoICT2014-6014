@@ -87,6 +87,24 @@ const TransportRequirementSchema = new Schema({
     volume: { // Thể tích yêu cầu của cả yêu cầu vận chuyển
         type: Number,
         required: true,
+    },
+    geocode: { // Tọa độ địa chỉ (phục vụ show bản đồ) kinh độ vĩ độ
+        fromAddress: {
+            lat: {
+                type: Number,
+            },
+            lng: {
+                type: Number,
+            },
+        },
+        toAddress: {
+            lat: {
+                type: Number,
+            },
+            lng: {
+                type: Number,
+            },
+        },
     }
 });
 

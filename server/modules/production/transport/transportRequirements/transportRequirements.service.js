@@ -41,6 +41,16 @@ exports.createTransportRequirement = async (portal, data) => {
             timeRequests: listTime,
             volume: data.volume,
             payload: data.payload,
+            geocode: {
+                fromAddress: {
+                    lat: data.fromLat,
+                    lng: data.fromLng,
+                },
+                toAddress: {
+                    lat: data.toLat,
+                    lng: data.toLng,
+                },
+            }
         });
         
     }

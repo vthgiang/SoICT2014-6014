@@ -7,7 +7,8 @@ import { DialogModal, ErrorLabel } from '../../../../../common-components';
 import ValidationHelper from '../../../../../helpers/validationHelper';
 import { transportRequirementsActions } from "../../transport-requirements/redux/actions";
 import { transportPlanActions } from "../redux/actions"
-
+import {SimpleMap} from './map/map'
+import { MapContainer } from './map/maphook'
 
 function TransportPlanChosenEdit(props) {
     let {allTransportPlans, currentRequirement, currentTransportPlan} = props;
@@ -127,7 +128,7 @@ function TransportPlanChosenEdit(props) {
                     src={"https://www.google.com/maps/embed/v1/place?key=AIzaSyCkVQAqCoJU79mTctNsNmQLy9ME7qiTlfs&q=Space+Needle,Seattle+WA"}>
                 </iframe> */}
 
-                <iframe src={"https://www.google.com/maps/embed/v1/place?key=AIzaSyCkVQAqCoJU79mTctNsNmQLy9ME7qiTlfs&q=tan+lap,Dan+phuong,Hanoi,vietnam&q=hoai+duc,hanoi,vietnam"} 
+                {/* <iframe src={"https://www.google.com/maps/embed/v1/place?key=AIzaSyCkVQAqCoJU79mTctNsNmQLy9ME7qiTlfs&q=tan+lap,Dan+phuong,Hanoi,vietnam&q=hoai+duc,hanoi,vietnam"} 
                 width="600" 
                 height="450" 
                 frameborder="0" 
@@ -135,6 +136,11 @@ function TransportPlanChosenEdit(props) {
                 allowfullscreen="" 
                 aria-hidden="false" 
                 tabindex="0"></iframe>   
+                <SimpleMap/> */}
+
+                <MapContainer/>
+
+
             </DialogModal>
         </React.Fragment>
     );

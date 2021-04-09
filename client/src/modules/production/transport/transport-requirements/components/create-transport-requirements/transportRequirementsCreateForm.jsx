@@ -22,6 +22,7 @@ import { BillActions } from '../../../../warehouse/bill-management/redux/actions
 import { CrmCustomerActions } from "../../../../../crm/customer/redux/actions";
 import { GoodActions} from '../../../../common-production/good-management/redux/actions';
 import { transportRequirementsActions } from '../../redux/actions'
+import { getGeocode } from '../../../transportHelper/getGeocodeGoong'
 
 function TransportRequirementsCreateForm(props) {
 
@@ -152,10 +153,10 @@ function TransportRequirementsCreateForm(props) {
         }
         return true;
     }
-    // /**
-    //  * Hàm dùng để lưu thông tin của form và gọi service tạo mới ví dụ
-    //  */
-    const save = () => {
+    /**
+     * Hàm dùng để lưu thông tin của form và gọi service tạo mới ví dụ
+     */
+    const save = async () => {
         //     if (isFormValidated() && exampleName) {
         //         props.createExample([{ exampleName, description }]);
         //         props.getExamples({
@@ -166,6 +167,25 @@ function TransportRequirementsCreateForm(props) {
         //     }
         const {payload, volume} = getTotalPayloadVolume(requirementsForm.goods);
 
+        let fromLat, fromLng;
+        let toLat, toLng;
+        if (requirementsForm.info.customer1AddressTransport){
+            await getGeocode(requirementsForm.info.customer1AddressTransport).then(
+                (value) => {
+                    fromLat = value.lat;
+                    fromLng = value.lng;
+                }
+            );
+        }
+        if (requirementsForm.info.customer2AddressTransport){
+            await getGeocode(requirementsForm.info.customer2AddressTransport).then(
+                (value) => {
+                    toLat = value.lat;
+                    toLng = value.lng;
+                }
+            );
+        }
+
         let data = {
             status: 1,
             type: 5, 
@@ -175,6 +195,10 @@ function TransportRequirementsCreateForm(props) {
             payload: payload,
             volume: volume,
             timeRequests: formatTimeForSubmit(requirementsForm.timeRequests),
+            fromLat: fromLat,
+            fromLng: fromLng,
+            toLat: toLat,
+            toLng: toLng,
         }
         props.createTransportRequirement(data)
     }
@@ -335,9 +359,6 @@ function TransportRequirementsCreateForm(props) {
             timeRequests: value,
         })
     }
-    useEffect(() => {
-        console.log(requirementsForm, " requirementsForm")
-    }, [requirementsForm])
 
     return (
         <React.Fragment>
