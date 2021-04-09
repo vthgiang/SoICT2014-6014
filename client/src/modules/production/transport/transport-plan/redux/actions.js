@@ -7,6 +7,7 @@ export const transportPlanActions = {
     getDetailTransportPlan,
     getDetailTransportPlan2,
     editTransportPlan,
+    addTransportRequirementToPlan,
 }
 
 function getAllTransportPlans(queryData) {
@@ -79,7 +80,7 @@ function getDetailTransportPlan2(id) {
         dispatch({
             type: transportPlanConstants.GET_DETAIL_TRANSPORT_PLAN_2_REQUEST
         });
-        transportPlanServices.getDetailTransportPlan(id)
+        transportPlanServices.getDetailTransportPlan2(id)
             .then((res) => {
                 dispatch({
                     type: transportPlanConstants.GET_DETAIL_TRANSPORT_PLAN_2_SUCCESS,
@@ -110,6 +111,28 @@ function editTransportPlan(id, data) {
             .catch((error) => {
                 dispatch({
                     type: transportPlanConstants.EDIT_TRANSPORT_PLAN_FAILURE,
+                    error
+                });
+            });
+    }
+}
+
+function addTransportRequirementToPlan(id, data) {
+    return (dispatch) => {
+        dispatch({
+            type: transportPlanConstants.ADD_TRANSPORT_REQUIREMENT_TO_PLAN_REQUEST
+        });
+        transportPlanServices
+            .addTransportRequirementToPlan(id, data)
+            .then((res) => {
+                dispatch({
+                    type: transportPlanConstants.ADD_TRANSPORT_REQUIREMENT_TO_PLAN_SUCCESS,
+                    payload: res.data.content
+                });
+            })
+            .catch((error) => {
+                dispatch({
+                    type: transportPlanConstants.ADD_TRANSPORT_REQUIREMENT_TO_PLAN_FAILURE,
                     error
                 });
             });

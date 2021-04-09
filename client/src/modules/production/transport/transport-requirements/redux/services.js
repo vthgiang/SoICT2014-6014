@@ -2,6 +2,7 @@ import { sendRequest } from '../../../../../helpers/requestHelper';
 export const transportRequirementsServices = {
     getAllTransportRequirements,
     createTransportRequirement,
+    getDetailTransportRequirement,
     editTransportRequirement,
     deleteTransportRequirement,
 }
@@ -34,6 +35,18 @@ function createTransportRequirement(data) {
         true,
         true,
         "manage_transport"
+    )
+}
+
+function getDetailTransportRequirement(id) {
+    return sendRequest(
+        {
+            url: `${process.env.REACT_APP_SERVER}/transport-requirement/${id}`,
+            method: "GET"
+        },
+        false,
+        true,
+        'manage_transport'
     )
 }
 

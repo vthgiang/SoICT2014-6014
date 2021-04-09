@@ -3,11 +3,12 @@ export const transportPlanServices = {
     getAllTransportPlans,
     createTransportPlan,
     getDetailTransportPlan,
+    getDetailTransportPlan2,
     editTransportPlan,
+    addTransportRequirementToPlan,
 }
 
 function getAllTransportPlans(queryData) {
-    console.log(queryData);
     return sendRequest(
         {
             url: `${process.env.REACT_APP_SERVER}/transport-plan`,
@@ -50,10 +51,35 @@ function getDetailTransportPlan(id) {
     )
 }
 
+function getDetailTransportPlan2(id) {
+    return sendRequest(
+        {
+            url: `${process.env.REACT_APP_SERVER}/transport-plan/${id}`,
+            method: "GET"
+        },
+        false,
+        true,
+        'transport.plan'
+    )
+}
+
 function editTransportPlan(id, data) {
     return sendRequest(
         {
             url: `${process.env.REACT_APP_SERVER}/transport-plan/${id}`,
+            method: "PATCH",
+            data: data
+        },
+        true,
+        true,
+        "manage_transport"
+    )
+}
+
+function addTransportRequirementToPlan(id, data) {
+    return sendRequest(
+        {
+            url: `${process.env.REACT_APP_SERVER}/transport-plan/add-transport-requirement/${id}`,
             method: "PATCH",
             data: data
         },

@@ -126,7 +126,7 @@ function TransportArrangePlan(props) {
     }
     
     useEffect(() => {
-        console.log(transportArrangeRequirements, " transportArrangeRequirements")
+        // console.log(transportArrangeRequirements, " transportArrangeRequirements")
     }, [transportArrangeRequirements])
 
     const handleEdit = (index) => {
@@ -149,7 +149,7 @@ function TransportArrangePlan(props) {
         <React.Fragment>
         <TransportPlanChosenEdit
             allTransportPlans={allTransportPlans}
-            currentRequirement={currentRequirement}
+            currentRequirementId={currentRequirement._id}
         />
         <div className="box-body qlcv">
             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -163,7 +163,7 @@ function TransportArrangePlan(props) {
                                     <th>{"Điểm nhận hàng"}</th>
                                     <th>{"Điểm giao hàng"}</th>
                                     <th>{"Thời gian mong muốn"}</th>
-                                    <th style={{width: 200}}>{"Thời gian vận chuyển"}</th>
+                                    {/* <th style={{width: 200}}>{"Thời gian vận chuyển"}</th> */}
                                     <th>{"Kế hoạch vận chuyển"}</th>
                                     <th>{"Hành động"}</th>
                                 </tr>
@@ -179,16 +179,16 @@ function TransportArrangePlan(props) {
                                         <td>{item.fromAddress}</td>
                                         <td>{item.toAddress}</td>
                                         <td>{getRequestsTime(index)}</td>
-                                        <td>
+                                        {/* <td>
                                             <DatePickerId
                                                 id={`${item._id}`}
                                                 value={""}
                                                 onChange={handleTimeChange}
                                                 disabled={false}
                                             />
-                                        </td>
+                                        </td> */}
                                         <td>
-                                            {item?.transportPlan?.code?item.transportPlan.code: ""}
+                                            {item?.transportPlan?.code?item.transportPlan.code+" ": ""}
                                             <a className="edit text-yellow" style={{ width: '5px' }} title={'manage_example.edit'} 
                                                 onClick={() => handleTransportPlanChosenEdit(item)}
                                             >
@@ -226,7 +226,6 @@ function TransportArrangePlan(props) {
 }
 
 function mapState(state) {
-    console.log(state, " day la state");
     const transportArrangeRequirements = state.transportRequirements.lists;
     const allTransportPlans = state.transportPlan.lists
     return { transportArrangeRequirements, allTransportPlans };

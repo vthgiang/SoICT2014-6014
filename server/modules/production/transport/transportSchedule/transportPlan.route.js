@@ -13,5 +13,6 @@ router.post('/', auth, TransportPlanController.createTransportPlan);
 router.patch('/:id', auth, TransportPlanController.editTransportPlan);
 // router.delete('/:id', auth, ExampleController.deleteExample);
 
+router.patch('/add-transport-requirement/:id', auth, TransportPlanController.addTransportRequirementToPlan);
 module.exports = router;
 

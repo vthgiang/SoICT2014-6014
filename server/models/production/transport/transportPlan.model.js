@@ -7,11 +7,9 @@ const TransportPlanSchema = new Schema({
         required: true,
     },
     transportRequirements: [{
-        transportRequirement: {
             type: Schema.Types.ObjectId,
-            ref: 'TransportRequirements',
+            ref: 'TransportRequirement',
             // required: true
-        },
     //     fromAddress: {
     //         type: String,
     //         // required: true,

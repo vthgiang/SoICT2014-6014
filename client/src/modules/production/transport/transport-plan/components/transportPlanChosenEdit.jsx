@@ -11,78 +11,231 @@ import {SimpleMap} from './map/map'
 import { MapContainer } from './map/maphook'
 
 function TransportPlanChosenEdit(props) {
-    let {allTransportPlans, currentRequirement, currentTransportPlan} = props;
-    const [currentTransportPlanId, setCurrentTransportPlanId] = useState("");
+    let {allTransportPlans, 
+        currentRequirementId, 
+        currentTransportPlan, 
+        currentTransportRequirement,
+        } = props;
 
-    const handleSelectPlan = async(id) => {
-        // if (currentRequirement.transportPlan && String(currentRequirement.transportPlan) === id){
-        //     return;
-        // }
-        // else{            
-        //     if (currentRequirement.transportPlan){
-        //         // props.getDetailTransportPlan
-        //     }
-            props.editTransportRequirement(currentRequirement._id, { transportPlan: id});
-        //     props.getDetailTransportPlan(id);   // Thêm yêu cầu vc vào plan mới
-        //     setCurrentTransportPlanId(id);  // ..................................
-        // }
-    }
+    const [status, setStatus]=useState();
 
     /**
-     * khi user chọn thêm yêu cầu vận chuyển vào 1 kế hoạch và lấy được dữ liệu kế hoạch chọn
-     * thêm yêu cầu vào trường transportRequirements của transportPlan
+     * Load lại info currentRequirement
      */
-    // useEffect(() => {
-    //     if (currentTransportPlan && currentTransportPlan._id === currentTransportPlanId) {
-    //         const requirementsList = currentTransportPlan.transportRequirements;
-    //         let check;
-    //         /**
-    //          * Kiểm tra plan này đã có requirement chưa
-    //          */
-    //         if (requirementsList && requirementsList.length !==0){
-    //             check = requirementsList.filter(r => String(r.transportRequirement) === String(currentRequirement._id));
-    //         }
-    //         if (check && check.length !==0){
-                
-    //         }
-    //         else{
-    //             requirementsList.push({transportRequirement: currentRequirement._id});
-    //             props.editTransportPlan(currentTransportPlan._id, {transportRequirements: requirementsList});
-    //         }            
-    //     }
-    // }, [currentTransportPlan])
+    useEffect(() => {
+        if (currentRequirementId){
+            props.getDetailTransportRequirement(currentRequirementId);
+        }
+        console.log("realod");
+    }, [allTransportPlans, status, currentRequirementId]);
 
+    const [placeGeocode, setPlaceGeoCode] = useState([
+        {
+            name: "current",
+            lat: currentTransportRequirement?.geocode?.fromAddress.lat,
+            lng: currentTransportRequirement?.geocode?.fromAddress.lng,
+        },
+        {
+            name: "current",
+            lat: currentTransportRequirement?.geocode?.toAddress.lat,
+            lng: currentTransportRequirement?.geocode?.toAddress.lng,
+        },
+    ]);
 
+    /**
+     * Khi xác nhận chọn 1 kế hoạch làm 3 việc
+     * Thêm id kế hoạch chọn vào yêu cầu vận chuyển editTransportRequirement
+     * Thêm _id yêu cầu vận chuyển vào kế hoạch được chọn getDetailTransportPlan, useEffect selectedTransportPlan
+     * Xóa _id yêu cầu vận chuyển trong kế hoạch cũ
+     * @param {*} item - kế hoạch user chọn 
+     * @returns 
+     */
+    const handleSelectPlan = (id) => {
+            // Update plan cũ
+            if (currentTransportRequirement?.transportPlan){
+                if (String(currentTransportRequirement.transportPlan._id) === String(id)){
+                    return;
+                }
+                let requirementsList= [];
+                if (currentTransportRequirement.transportPlan.transportRequirements) {
+                    requirementsList = currentTransportRequirement.transportPlan.transportRequirements.filter(r => String(r)!== String(currentTransportRequirement._id));
+                }
+                console.log(requirementsList, " requirementlisst luu vao db");
+                props.editTransportPlan(currentTransportRequirement.transportPlan._id, {transportRequirements: requirementsList});
+            }
+            props.addTransportRequirementToPlan(id, {requirement: currentTransportRequirement._id});
+            props.editTransportRequirement(currentRequirementId, { transportPlan: id});
+    }
+
+    const handleShowDetailInfo = (transportPlan) => {
+        props.getDetailTransportPlan(transportPlan._id);
+    }
+
+    useEffect(() => {
+        console.log(currentTransportPlan , " cureen");
+        let newPlaceGeocode = [];
+        newPlaceGeocode.push({
+            name: "current",
+            location: {
+                lat: currentTransportRequirement?.geocode?.fromAddress.lat,
+                lng: currentTransportRequirement?.geocode?.fromAddress.lng,
+            }
+        });
+        newPlaceGeocode.push({
+            name: "current",
+            location: {
+                lat: currentTransportRequirement?.geocode?.toAddress.lat,
+                lng: currentTransportRequirement?.geocode?.toAddress.lng,
+            }
+        });
+        if (currentTransportPlan){
+            if (currentTransportPlan.transportRequirements && currentTransportPlan.transportRequirements.length !==0){
+                currentTransportPlan.transportRequirements.map((item, index) => {
+                    newPlaceGeocode.push({
+                        name: "plan " +index,
+                        location: {
+                            lat: item.geocode?.fromAddress?.lat,
+                            lng: item.geocode?.fromAddress?.lng,
+                        }
+                    });
+                    newPlaceGeocode.push({
+                        name: "plan " +index,
+                        location: {
+                            lat: item.geocode?.toAddress?.lat,
+                            lng: item.geocode?.toAddress?.lng,
+                        }
+                    })
+                })
+            }
+        }
+        setPlaceGeoCode(newPlaceGeocode);
+    }, [currentTransportPlan])
+
+    useEffect(() => {
+        console.log(placeGeocode, " okmen");
+    }, [placeGeocode])
     return (
         <React.Fragment>
             <DialogModal
                 modalID={`modal-edit-example-hooks`} isLoading={false}
                 formID={`form-edit-example-hooks`}
-                title={'manage_example.edit_title'}
+                title={'Lựa chọn kế hoạch vận chuyển'}
                 // disableSubmit={!isFormValidated}
                 // func={save}
-                size={50}
+                size={100}
                 maxWidth={500}
             >
                 <table id={"123"} className="table table-striped table-bordered table-hover">
-                            <thead>
-                                <tr>
-                                    <th className="col-fixed" style={{ width: 60 }}>{"STT"}</th>
-                                    <th>{"Điểm nhận hàng"}</th>
-                                    <th>{"Điểm giao hàng"}</th>
-                                </tr>
-                            </thead>
-                            <tbody>                                
-                                {
-                                    currentRequirement && 
-                                    <tr key={1}>
-                                        <td>{"Giao hàng"}</td>
-                                        <td>{currentRequirement.fromAddress}</td>
-                                        <td>{currentRequirement.toAddress}</td>                                        
-                                    </tr>
-                                }
+                    <thead>
+                        <tr>
+                            <th className="col-fixed" style={{ width: 60 }}>{"STT"}</th>
+                            <th>{"Điểm nhận hàng"}</th>
+                            <th>{"Điểm giao hàng"}</th>
+                        </tr>
+                    </thead>
+                    <tbody>                                
+                        {
+                            currentTransportRequirement && 
+                            <tr key={1}>
+                                <td>{"Giao hàng"}</td>
+                                <td>{currentTransportRequirement.fromAddress}</td>
+                                <td>{currentTransportRequirement.toAddress}</td>                                        
+                            </tr>
+                        }
                     </tbody>
-                        </table>
+                </table>
+                <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-6">
+                        <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                            <fieldset className="scheduler-border" style={{ height: "100%" }}>
+                                <legend className="scheduler-border">Chọn kế hoạch vận chuyển</legend>
+                                    <form id={`form-edit-example-hooks`}>
+                                        <table id={"6666"} className="table table-striped table-bordered table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th className="col-fixed" style={{ width: 60 }}>{"STT"}</th>
+                                                    <th>{"Mã kế hoạch"}</th>
+                                                    <th>{"Thời gian bắt đầu"}</th>
+                                                    <th>{"Thời gian kết thúc"}</th>
+                                                    <th>{"Hành động"}</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>                                
+                                            {
+                                                (allTransportPlans && allTransportPlans.length !==0) &&
+                                                allTransportPlans.map((item, index) => (
+                                                        item && 
+                                                        <tr key={index}>
+                                                            <td>{index + 1}</td>
+                                                            <td>{item.code}</td>
+                                                            <td>{formatDate(item.startTime)}</td>
+                                                            <td>{formatDate(item.endTime)}</td>
+                                                            <td style={{ textAlign: "center" }}>
+                                                                <a className="edit text-green" style={{ width: '5px' }} title={'manage_example.detail_info_example'} 
+                                                                        onClick={() => handleShowDetailInfo(item)}
+                                                                        >
+                                                                            <i className="material-icons">visibility</i></a>
+                                                                <a className="text-green"
+                                                                    onClick={() => handleSelectPlan(item._id)}
+                                                                    ><i className="material-icons">add_comment</i></a>
+                                                            </td>
+                                                        </tr>
+                                                    )
+                                                )
+                                            }
+                                            </tbody>
+                                        </table>
+                                    </form>
+                            </fieldset>
+                        </div>
+                        <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                            <fieldset className="scheduler-border" style={{ height: "100%" }}>
+                                <legend className="scheduler-border">Phương tiện vận chuyển có thể sử dụng</legend>
+                                    <form id={`form-edit-example-hooks`}>
+                                        <table id={"6666"} className="table table-striped table-bordered table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th className="col-fixed" style={{ width: 60 }}>{"STT"}</th>
+                                                    <th>{"Mã kế hoạch"}</th>
+                                                    <th>{"Thời gian bắt đầu"}</th>
+                                                    <th>{"Thời gian kết thúc"}</th>
+                                                    <th>{"Hành động"}</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>                                
+                                            {
+                                                (allTransportPlans && allTransportPlans.length !==0) &&
+                                                allTransportPlans.map((item, index) => (
+                                                        item && 
+                                                        <tr key={index}>
+                                                            <td>{index + 1}</td>
+                                                            <td>{item.code}</td>
+                                                            <td>{formatDate(item.startTime)}</td>
+                                                            <td>{formatDate(item.endTime)}</td>
+                                                            <td>
+                                                                <a className="text-green"
+                                                                    onClick={() => handleSelectPlan(item)}
+                                                                    ><i className="material-icons">add_comment</i></a>
+                                                            </td>
+                                                        </tr>
+                                                    )
+                                                )
+                                            }
+                                            </tbody>
+                                        </table>
+                                    </form>
+                            </fieldset>
+                        </div>
+                    </div>
+                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-6">
+                        <fieldset className="scheduler-border" style={{ height: "100%" }}>
+                        <legend className="scheduler-border">Các địa điểm trong kế hoạch</legend>
+                            {/* <MapContainer 
+                                locations = {placeGeocode}
+                            /> */}
+                        </fieldset>
+                    </div>
+                </div>
 
                 <form id={`form-edit-example-hooks`}>
                 <table id={"6666"} className="table table-striped table-bordered table-hover">
@@ -105,7 +258,11 @@ function TransportPlanChosenEdit(props) {
                                     <td>{item.code}</td>
                                     <td>{formatDate(item.startTime)}</td>
                                     <td>{formatDate(item.endTime)}</td>
-                                    <td>
+                                    <td style={{ textAlign: "center" }}>
+                                    <a className="edit text-green" style={{ width: '5px' }} title={'manage_example.detail_info_example'} 
+                                            // onClick={() => handleShowDetailInfo(example)}
+                                            >
+                                                <i className="material-icons">visibility</i></a>
                                         <a className="text-green"
                                             onClick={() => handleSelectPlan(item._id)}
                                             ><i className="material-icons">add_comment</i></a>
@@ -117,6 +274,9 @@ function TransportPlanChosenEdit(props) {
                     </tbody>
                 </table>
                 </form>
+
+
+
             
             
                 {/* <iframe
@@ -138,7 +298,7 @@ function TransportPlanChosenEdit(props) {
                 tabindex="0"></iframe>   
                 <SimpleMap/> */}
 
-                <MapContainer/>
+                {/* <MapContainer/> */}
 
 
             </DialogModal>
@@ -147,15 +307,18 @@ function TransportPlanChosenEdit(props) {
 }
 
 function mapState(state) {
-    console.log(state);
-    const { currentTransportPlan } = state.transportPlan;
-    return { currentTransportPlan }
+    console.log(state, " change");
+    const { currentTransportPlan} = state.transportPlan;
+    const { currentTransportRequirement } = state.transportRequirements;
+    return { currentTransportPlan, currentTransportRequirement }
 }
 
 const actions = {
     editTransportRequirement: transportRequirementsActions.editTransportRequirement,
+    getDetailTransportRequirement: transportRequirementsActions.getDetailTransportRequirement,
     getDetailTransportPlan: transportPlanActions.getDetailTransportPlan,
     editTransportPlan: transportPlanActions.editTransportPlan,
+    addTransportRequirementToPlan: transportPlanActions.addTransportRequirementToPlan,
 }
 
 const connectedTransportPlanChosenEdit = connect(mapState, actions)(withTranslate(TransportPlanChosenEdit));

@@ -1,15 +1,16 @@
 import React from 'react';
 import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
 function MapContainer(props){
-  let locationsa = [
-      {
-          name: "Location 1",
-          location: {
-              lat: 21.004748911,
-              lng: 105.84537907
-          }
-      }
-  ]
+  // let locationsa = [
+  //     {
+  //         name: "Location 1",
+  //         location: {
+  //             lat: 21.004748911,
+  //             lng: 105.84537907
+  //         }
+  //     }
+  // ]
+  let { locations } = props;
   const mapStyles = {        
     height: "100vh",
     width: "100%"};
@@ -27,7 +28,7 @@ function MapContainer(props){
           center={defaultCenter}
           >
           {
-              locationsa.map(item => {
+              locations.map(item => {
                   return (
                       <Marker key={item.name} position={item.location}/>
                   )

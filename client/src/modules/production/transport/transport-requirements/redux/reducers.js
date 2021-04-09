@@ -21,6 +21,7 @@ export function transportRequirements(state = initialState, action) {
     switch (action.type) {
 		case transportRequirementsConstants.GET_ALL_TRANSPORT_REQUIREMENTS_REQUEST:
         case transportRequirementsConstants.CREATE_TRANSPORT_REQUIREMENT_REQUEST:
+        case transportRequirementsConstants.GET_DETAIL_TRANSPORT_REQUIREMENT_REQUEST:
         case transportRequirementsConstants.EDIT_TRANSPORT_REQUIREMENT_REQUEST:
         case transportRequirementsConstants.DELETE_TRANSPORT_REQUIREMENT_REQUEST:
 		return {
@@ -30,6 +31,7 @@ export function transportRequirements(state = initialState, action) {
 		
 		case transportRequirementsConstants.GET_ALL_TRANSPORT_REQUIREMENTS_FAILURE:
         case transportRequirementsConstants.CREATE_TRANSPORT_REQUIREMENT_FAILURE:
+        case transportRequirementsConstants.GET_DETAIL_TRANSPORT_REQUIREMENT_FAILURE:
         case transportRequirementsConstants.EDIT_TRANSPORT_REQUIREMENT_FAILURE:
         case transportRequirementsConstants.DELETE_TRANSPORT_REQUIREMENT_FAILURE:
 		return {
@@ -51,6 +53,12 @@ export function transportRequirements(state = initialState, action) {
                     action.payload
                 ],
                 isLoading: false
+            }
+        case transportRequirementsConstants.GET_DETAIL_TRANSPORT_REQUIREMENT_SUCCESS:
+            return {
+                ...state,
+                isLoading: false,
+                currentTransportRequirement: action.payload,
             }
         case transportRequirementsConstants.EDIT_TRANSPORT_REQUIREMENT_SUCCESS:
             index = findIndex(state.lists, action.payload._id);

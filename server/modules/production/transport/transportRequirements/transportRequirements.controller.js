@@ -48,31 +48,32 @@ exports.createTransportRequirement = async (req, res) => {
 //     }
 // }
 
-// //  Lấy ra Ví dụ theo id
-// exports.getExampleById = async (req, res) => {
-//     try {
-//         let { id } = req.params;
-//         let example = await ExampleService.getExampleById(req.portal, id);
-//         if (example !== -1) {
-//             await Log.info(req.user.email, "GET_EXAMPLE_BY_ID", req.portal);
-//             res.status(200).json({
-//                 success: true,
-//                 messages: ["get_example_by_id_success"],
-//                 content: example
-//             });
-//         } else {
-//             throw Error("example is invalid")
-//         }
-//     } catch (error) {
-//         await Log.error(req.user.email, "GET_EXAMPLE_BY_ID", req.portal);
+//  Lấy ra Ví dụ theo id
+exports.getTransportRequirementById = async (req, res) => {
+    try {
+        let { id } = req.params;
+        console.log("dasdsad");
+        let transportRequirement = await TransportRequirementService.getTransportRequirementById(req.portal, id);
+        if (transportRequirement !== -1) {
+            await Log.info(req.user.email, "GET_TRANPORT_REQUIREMENT_BY_ID", req.portal);
+            res.status(200).json({
+                success: true,
+                messages: ["get_transport_requirement_by_id_success"],
+                content: transportRequirement
+            });
+        } else {
+            throw Error("transport requirement is invalid")
+        }
+    } catch (error) {
+        await Log.error(req.user.email, "GET_TRANPORT_REQUIREMENT_BY_ID", req.portal);
 
-//         res.status(400).json({
-//             success: false,
-//             messages: ["get_example_by_id_fail"],
-//             content: error.message
-//         });
-//     }
-// }
+        res.status(400).json({
+            success: false,
+            messages: ["get_transport_requirement_by_id_fail"],
+            content: error.message
+        });
+    }
+}
 
 // Sửa Ví dụ
 exports.editTransportRequirement = async (req, res) => {

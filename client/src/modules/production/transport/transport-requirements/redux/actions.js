@@ -4,6 +4,7 @@ import { transportRequirementsServices } from './services';
 export const transportRequirementsActions = {
     getAllTransportRequirements,
     createTransportRequirement,
+    getDetailTransportRequirement,
     editTransportRequirement,
     deleteTransportRequirement,
 }
@@ -47,6 +48,26 @@ function createTransportRequirement(data) {
             .catch((error) => {
                 dispatch({
                     type: transportRequirementsConstants.CREATE_TRANSPORT_REQUIREMENT_FAILURE,
+                    error
+                });
+            });
+    }
+}
+
+function getDetailTransportRequirement(id) {
+    return dispatch => {
+        dispatch({
+            type: transportRequirementsConstants.GET_DETAIL_TRANSPORT_REQUIREMENT_REQUEST
+        });
+        transportRequirementsServices.getDetailTransportRequirement(id)
+            .then((res) => {
+                dispatch({
+                    type: transportRequirementsConstants.GET_DETAIL_TRANSPORT_REQUIREMENT_SUCCESS,
+                    payload: res.data.content
+                });
+            }).catch((error) => {
+                dispatch({
+                    type: transportRequirementsConstants.GET_DETAIL_TRANSPORT_REQUIREMENT_FAILURE,
                     error
                 });
             });

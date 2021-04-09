@@ -117,7 +117,7 @@ exports.getAllTransportRequirements = async (portal, data) => {
 
     let totalList = await TransportRequirement(connect(DB_CONNECTION, portal)).countDocuments(keySearch);
     let requirements = await TransportRequirement(connect(DB_CONNECTION, portal)).find(keySearch)
-        .populate({path:'transportPlan', select: 'code startTime endTime'})
+        .populate({path:'transportPlan'})
         .skip((page - 1) * limit)
         .limit(limit);
         // .populate('TransportPlan');
@@ -163,7 +163,8 @@ exports.editTransportRequirement = async (portal, id, data) => {
 
     // Cach 2 de update
     await TransportRequirement(connect(DB_CONNECTION, portal)).update({ _id: id }, { $set: data });
-    let transportRequirement = await TransportRequirement(connect(DB_CONNECTION, portal)).findById({ _id: oldTransportRequirement._id });
+    let transportRequirement = await TransportRequirement(connect(DB_CONNECTION, portal)).findById({ _id: oldTransportRequirement._id })
+    .populate({path: 'transportPlan'})
     return transportRequirement;
 }
 
@@ -171,4 +172,16 @@ exports.editTransportRequirement = async (portal, id, data) => {
 exports.deleteTransportRequirement = async (portal, id) => {
     let requirement = TransportRequirement(connect(DB_CONNECTION, portal)).findByIdAndDelete({ _id: id });
     return requirement;
+}
+
+exports.getTransportRequirementById = async (portal, id) => {
+    let transportRequirement = await TransportRequirement(connect(DB_CONNECTION, portal)).findById({ _id: id })
+    .populate({
+        path: 'transportPlan',
+    });
+    console.log(transportRequirement);
+    if (transportRequirement) {
+        return transportRequirement;
+    }
+    return -1;
 }
