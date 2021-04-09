@@ -5,7 +5,7 @@ import {UserActions} from "../../../../super-admin/user/redux/actions";
 import {kpiMemberActions} from '../../employee-evaluation/redux/actions';
 import {DashboardEvaluationEmployeeKpiSetAction} from '../redux/actions';
 
-import {StatisticsOfEmployeeKpiSetChart} from '../component/statisticsOfEmployeeKpiSetChart';
+import {StatisticsOfEmployeeKpiSetChart} from './statisticsOfEmployeeKpiSetChart';
 import {ResultsOfAllEmployeeKpiSetChart} from './resultsOfAllEmployeeKpiSetChart';
 
 import {SelectBox, SelectMulti, ExportExcel} from '../../../../../common-components';
