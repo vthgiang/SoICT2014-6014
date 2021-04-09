@@ -428,7 +428,7 @@ const GeneralTaskChart = (props) => {
     return (
         <React.Fragment>
             <ViewAllGeneralTask showDetailTask={showDetailTask} />
-            <DataTableSetting className="pull-right" tableId='generalTaskUnit' tableContainerId="tree-table-container" tableWidth="1300px"
+            <DataTableSetting className="pull-right" tableId='general-list-task' tableContainerId="tree-table-container" tableWidth="1300px"
                 columnArr={[
                     translate('task.task_dashboard.unit'),
                     translate('task.task_dashboard.all_tasks'),
