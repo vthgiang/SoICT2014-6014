@@ -284,7 +284,7 @@ class DistributionOfEmployee extends Component {
             <React.Fragment>
                 <div className="box-header with-border">
                     <div className="box-title">
-                        {translate('task.task_management.distribution_Of_Employee')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}
+                        {translate('task.task_management.distribution_Of_Employee')} {startMonthTitle}<i className="fa fa-fw fa-caret-right"></i>{endMonthTitle}
                         {
                             unitIds && unitIds.length < 2 ?
                                 <>
