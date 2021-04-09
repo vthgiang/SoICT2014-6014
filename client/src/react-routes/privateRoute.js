@@ -21,9 +21,6 @@ const PrivateRoute = ({ auth, isLoading, arrPage, pageName, link, component: Com
     
     return <Route {...rest} render={props => {
         var logged = getStorage();
-        // if(password2AlreadyExists)
-        //     return <Redirect to='/answer-auth-questions'/>
-        // else
         if (logged !== null) {
             if(auth.calledAPI !== CallApiStatus.FINISHED)
                 return <Layout></Layout>

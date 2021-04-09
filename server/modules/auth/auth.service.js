@@ -136,10 +136,21 @@ exports.logoutAllAccount = async (portal, id) => {
  * @password2: mật khẩu cấp 2 dự phòng khi quên mật khẩu
  */
 exports.forgetPassword = async (portal, email, password2) => {
+    if (!email)
+        throw ['email_empty']
+    if (!validateEmailValid(email))
+        throw ['email_invalid']
+    
     var user = await User(connect(DB_CONNECTION, portal)).findOne({ email });
-    if(!user.password2) throw ['pwd2_not_complete'];
-    let validPass = await bcrypt.compare(String(password2), user.password2);
-    if (!validPass) throw ["pwd2_invalid"];
+    if (!user)
+        throw ['email_not_found'];
+    if (user.password2) {
+        // Nếu người dùng đã có pass cấp 2 rồi thì kiểm tra xem pass c2 vừa nhập có trùng vs giá trị cũ hay không
+        if (!password2)
+            throw ['password2_empty'];
+        const validPass = await bcrypt.compare(String(password2), user.password2);
+        if (!validPass) throw ["password2_invalid"];
+    }
     
     var code = await generator.generate({ length: 6, numbers: true });
     user.resetPasswordToken = code;
@@ -311,6 +322,55 @@ exports.changePassword = async (portal, id, password, new_password, confirmPassw
     return user;
 };
 
+
+exports.changePassword2 = async (portal, id, body) => {
+    const { oldPassword, oldPassword2, newPassword2, confirmNewPassword2 } = body;
+    if (!oldPassword)
+        throw ['old_password_empty']
+    
+    if (!oldPassword2) 
+        throw ['old_password2_empty']
+    
+    if (!newPassword2)
+        throw ['new_password2_empty']
+    if (!confirmNewPassword2)
+        throw ['confirm_password2_empty']
+    
+    if (newPassword2 !== confirmNewPassword2)
+        throw ['confirm_password2_invalid']
+    
+    let user = await User(connect(DB_CONNECTION, portal))
+        .findById(id)
+        .populate([{ path: "roles", populate: { path: "roleId" } }]);
+    
+    // Check mật khảu cũ
+    const validPass = await bcrypt.compare(oldPassword, user.password);
+    if (!validPass) {
+        throw ['old_password_invalid'];
+    }
+
+    // check mật khẩu cấp 2 cũ
+    const validPass2 = await bcrypt.compare(oldPassword2, user.password2);
+    if (!validPass2) {
+        throw ['old_password2_invalid'];
+    }
+    
+    const salt = await bcrypt.genSaltSync(10);
+    const hashPassword2 = await bcrypt.hashSync(newPassword2, salt);
+    user.password2 = hashPassword2;
+
+    await user.save();
+
+    user = user.toObject();
+    const password2Exists = user.password2 ? true : false;
+    user['password2Exists'] = password2Exists;
+    delete user['password2'];
+    delete user['password'];
+
+    return user;
+}
+
+
 /**
  * Lấy ra các trang mà người dùng có quyền truy cập
  * @param {*} idRole : id role người dùng
@@ -349,21 +409,42 @@ exports.getProfile = async (portal, id) => {
     return user;
 };
 
-exports.answerAuthQuestions = async (portal, userId, data) => {
+exports.createPassword2 = async (portal, userId, data) => {
+    const { oldPassword, newPassword2, confirmNewPassword2 } = data;
+
     let user = await User(connect(DB_CONNECTION, portal)).findById(userId);
-    if(user.password2) throw ['pwd2_existed']
-    let {password2} = data;
-    if(!password2) throw ['pwd2_invalid'];
-    var salt = bcrypt.genSaltSync(10);
-    var hash = bcrypt.hashSync(password2, salt);
-    user.password2 = hash;
+    // check xem pass cấp 2 đã tồn tại hay chưa
+    if (user.password2) throw ['pwd2_existed']
+    
+    if (!oldPassword)
+        throw ['old_password_empty'];
+
+    if (!newPassword2) throw ['password2_empty'];
+    if (!confirmNewPassword2)
+        throw ['confirm_password2_empty']
+    
+    if (newPassword2 !== confirmNewPassword2)
+        throw ['confirm_password2_invalid'];
+    
+    // Check mật khảu cũ
+    const validPass = await bcrypt.compare(oldPassword, user.password);
+    if (!validPass) {
+        throw ['old_password_invalid'];
+    }
+
+    const salt = await bcrypt.genSaltSync(10);
+    const hashPassword2 = await bcrypt.hashSync(newPassword2, salt);
+    user.password2 = hashPassword2;
+
     await user.save();
 
-    let newUser = await User(connect(DB_CONNECTION, portal)).findById(userId).select("-password").lean();
-    const password2Exists = newUser.password2 ? true : false;
-    newUser['password2Exists'] = password2Exists;
-    delete newUser['password2'];
-    return newUser;
+    user = user.toObject();
+    const password2Exists = user.password2 ? true : false;
+    user['password2Exists'] = password2Exists;
+    delete user['password2'];
+    delete user['password'];
+
+    return user;
 }
 
 exports.checkPassword2Exists = async (portal, userId) => {

@@ -397,6 +397,8 @@ export default {
             validator: {
                 confirm_password_invalid:
                     "Mật khẩu không trùng khớp. Vui lòng kiểm tra lại",
+                confirm_password2_invalid:
+                    "Mật khẩu cấp 2 không trùng khớp. Vui lòng kiểm tra lại",
                 password_length_error:
                     "Mật khẩu phải có độ dài tối thiểu 6 và không quá 30 ký tự",
                 confirm_password_error: "Mật khẩu xác thực không khớp",
@@ -405,8 +407,12 @@ export default {
                 label: "Bảo mật",
                 title: "Thay đổi mật khẩu người dùng",
                 old_password: "Mật khẩu cũ",
+                old_password2: "Mật khẩu cấp 2 cũ",
                 new_password: "Mật khẩu mới",
+                new_password2: "Mật khẩu cấp 2 mới",
                 confirm_password: "Xác thực mật khẩu",
+                re_enter_new_password: "Nhập lại mật khẩu mới",
+                re_enter_new_password2: "Nhập lại mật khẩu cấp 2 mới"
             },
             login: "Đăng nhập",
             logout: "Đăng xuất",
@@ -447,8 +453,16 @@ export default {
             reset_password_success: "Thiết lập mật khẩu thành công",
             otp_invalid: "Yêu cầu thiết lập lại mật khẩu không hợp lệ",
             portal_invalid: "Portal không hợp lệ",
-            answer_auth_question_success: 'Thêm mật khẩu cấp 2 thành công',
-            answer_auth_question_faile: 'Thêm mật khẩu cấp 2 thất bại',
+            create_password2_success: 'Thêm mật khẩu cấp 2 thành công',
+            create_password2_faile: 'Thêm mật khẩu cấp 2 thất bại',
+            change_user_password2_success: "Chỉnh sửa mật khảu cấp 2 thành công",
+            change_user_password2_faile: "Chỉnh sửa mật khảu cấp 2 thất bại",
+            old_password_empty: "Mật khẩu cũ không được để trống",
+            old_password2_empty: "Mật khẩu cấp 2 cũ không được để trống",
+            new_password2_empty: "Mật khẩu cấp 2 mới không được để trống",
+            confirm_password2_invalid: "Xác nhận mật khẩu cấp 2 không hợp lệ",
+            old_password_invalid: "Mật khẩu cũ không hợp lệ",
+            old_password2_invalid: "Mật khẩu cấp 2 cũ không hợp lệ",
         },
 
         system_admin: {

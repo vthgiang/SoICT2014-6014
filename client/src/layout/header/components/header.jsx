@@ -8,6 +8,8 @@ import { Link } from 'react-router-dom';
 import './header.css';
 import { getStorage } from '../../../config';
 import ModalChangeUserInformation from './modalChangeUserInformation';
+import ResetPassword2 from '../../../modules/auth/components/resetPassword2';
+import CreatePassword2 from '../../../modules/auth/components/createPassword2';
 import { toast } from 'react-toastify';
 import ValidationHelper from '../../../helpers/validationHelper';
 
@@ -15,6 +17,14 @@ class Header extends Component {
     constructor(props) {
         super(props);
         this.state = {};
+    }
+
+    handleResetPassword2 = () => {
+        window.$('#modal-reset-pwd2').appendTo("body").modal('show');
+    }
+
+    handleCreatePassword2 = () => {
+        window.$('#modal-create-pwd2').appendTo("body").modal('show');
     }
 
     render() {
@@ -48,6 +58,8 @@ class Header extends Component {
                         userEmail={auth.user.email}
                     />
                 }
+                <ResetPassword2 />
+                <CreatePassword2 />
 
                 {/* Modal Security */}
                 <DialogModal
@@ -68,8 +80,8 @@ class Header extends Component {
                             <ErrorLabel content={newPasswordError} />
                         </div>
                         <div className={`form-group ${!confirmPasswordError ? "" : "has-error"}`}>
-                            <label>{translate('auth.security.confirm_password')}<span className="text-red">*</span></label>
-                            <input className="form-control" type="password" onChange={this.handleConfirmPassword} placeholder="Nhập lại mật khẩu mới" />
+                            <label>{translate('auth.security.re_enter_new_password')}<span className="text-red">*</span></label>
+                            <input className="form-control" type="password" onChange={this.handleConfirmPassword} placeholder={translate('auth.security.re_enter_new_password')} />
                             <ErrorLabel content={confirmPasswordError} />
                         </div>
 
@@ -78,18 +90,16 @@ class Header extends Component {
                                 <label style={{ display: 'flex', marginTop: '5px' }}>
                                     Mật khẩu cấp 2
                                     <span className="text-red" style={{ marginLeft: '5px' }}>*</span>
+                                    <a onClick={this.handleResetPassword2} style={{ marginLeft: '5px', cursor: 'pointer' }}>Đổi mật khẩu cấp 2</a>
                                 </label>
                                 <input className="form-control" type="password" onChange={this.handleChangePassword2} placeholder="Nhập mật khẩu cấp 2" />
                                 <ErrorLabel content={password2Error} />
                             </div> :
                             <label style={{ display: 'flex', marginTop: '5px' }}>
-                                <span style={{ marginRight: '10px' }}>Mật khẩu cấp 2</span>
+                                <span style={{ marginRight: '10px' }}>Chưa có mật khẩu cấp 2! </span>
                                 <div style={{ display: 'flex' }}>
-                                    <span style={{ marginRight: '5px' }}>Chưa có?</span>
                                     <span>
-                                        <Link to="/answer-auth-questions" target="_blank">
-                                            <p>{` Thêm ngay`}</p>
-                                        </Link>
+                                        <a onClick={this.handleCreatePassword2} style={{ fontSize: '13px', cursor: 'pointer' }}>Thiết lập</a>
                                     </span>
                                 </div>
                             </label>
