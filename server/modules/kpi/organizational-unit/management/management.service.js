@@ -12,7 +12,7 @@ const mongoose = require("mongoose");
  * @query {*} idunit Id của đơn vị 
  */
 exports.copyKPI = async (portal, kpiId, data) => {
-    let organizationalUnitOldKPISet, checkOrganizationalUnitKpiSet;
+    let organizationalUnitOldKPISet, checkOrganizationalUnitKpiSet, parentUnitKpiSet;
     let newDate, nextNewDate;
 
     newDate = new Date(data.datenew);
@@ -44,6 +44,13 @@ exports.copyKPI = async (portal, kpiId, data) => {
                 .populate("organizationalUnit")
                 .populate({ path: "creator", select: "_id name email avatar" })
                 .populate({ path: "kpis", populate: { path: 'parent' } });
+
+            parentUnitKpiSet = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
+                .findOne({
+                    organizationalUnit: mongoose.Types.ObjectId(organizationalUnitOldKPISet?.organizationalUnit?.parent),
+                    date: { $gte: newDate, $lt: nextNewDate }
+                })
+                .populate({ path: "kpis" });
         } else {
             organizationalUnitOldKPISet = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
                 .findOne({
@@ -55,14 +62,24 @@ exports.copyKPI = async (portal, kpiId, data) => {
                 .populate({ path: "kpis" });
         }
 
-
-
         for (let i in organizationalUnitOldKPISet?.kpis) {
             if (data?.listKpiUnit?.includes(organizationalUnitOldKPISet.kpis?.[i]?._id.toString())) {
-                let target = await OrganizationalUnitKpi(connect(DB_CONNECTION, portal))
+                let target, parent;
+
+                if (data.type === 'default' ) {
+                    let parentKpi = parentUnitKpiSet?.kpis?.filter(item => {
+                        return item?.name === organizationalUnitOldKPISet.kpis[i]?.name
+                    })
+
+                    parent = parentKpi?.[0]?._id 
+                } else {    // 2 trường hợp, copy từ kpi cha hoặc copy từ đơn vị cùng cha
+                    parent = JSON.parse(data?.matchParent?.toLowerCase()) ? organizationalUnitOldKPISet.kpis[i]?._id : organizationalUnitOldKPISet.kpis[i]?.parent
+                }
+
+                target = await OrganizationalUnitKpi(connect(DB_CONNECTION, portal))
                     .create({
                         name: organizationalUnitOldKPISet.kpis[i]?.name,
-                        parent: data.type !== 'default' ? (JSON.parse(data?.matchParent?.toLowerCase()) ? organizationalUnitOldKPISet.kpis[i]?._id : organizationalUnitOldKPISet.kpis[i]?.parent) : null,
+                        parent: parent,
                         weight: organizationalUnitOldKPISet.kpis[i]?.weight,
                         criteria: organizationalUnitOldKPISet.kpis[i]?.criteria,
                         type: organizationalUnitOldKPISet.kpis[i]?.type
@@ -266,6 +283,36 @@ exports.calculateKpiUnit = async (portal, data) => {
     let childrenKpi = await EmployeeKpiService.getChildTargetByParentId(portal, { organizationalUnitKpiSetId: data.idKpiUnitSet })
     
     return { kpiUnitSet, childrenKpi };
-
 }
 
+/** Thêm logs */
+exports.createOrganizationalUnitKpiSetLogs = async (portal, data) => {
+    const { creator, title, description, organizationalUnitKpiSetId } = data;
+
+    let log = {
+        creator: creator,
+        title: title,
+        description: description,
+    };
+
+    await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
+        .updateOne(
+            { '_id': organizationalUnitKpiSetId },
+            { $push: { logs: log } },
+            { new: true }
+        )
+        .populate({ path: "logs.creator", select: "_id name emmail avatar" });
+
+    let kpiLogs = await this.getOrganizationalUnitKpiSetLogs(portal, organizationalUnitKpiSetId);
+
+    return kpiLogs;
+} 
+
+/** Lấy các logs của tập kpi đơn vị */
+exports.getOrganizationalUnitKpiSetLogs = async (portal, organizationalUnitKpiSetId) => {
+    let kpiLogs = await OrganizationalUnitKpiSet(connect(DB_CONNECTION, portal))
+        .findById(organizationalUnitKpiSetId)
+        .populate({ path: "logs.creator", select: "_id name emmail avatar" });
+
+    return kpiLogs?.logs?.reverse();
+}
