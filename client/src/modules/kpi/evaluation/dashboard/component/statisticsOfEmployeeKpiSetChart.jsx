@@ -1,108 +1,91 @@
-import React, { Component } from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import ReactDOM from 'react-dom';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 
-import { createKpiSetActions } from '../../../employee/creation/redux/actions';
-import { UserActions } from "../../../../super-admin/user/redux/actions";
+import {createKpiSetActions} from '../../../employee/creation/redux/actions';
+import {UserActions} from "../../../../super-admin/user/redux/actions";
 
-import { withTranslate } from 'react-redux-multilingual';
+import {withTranslate} from 'react-redux-multilingual';
 
 import c3 from 'c3';
 import 'c3/c3.css';
 
-class StatisticsOfEmployeeKpiSetChart extends Component {
+function StatisticsOfEmployeeKpiSetChart(props) {
+    const DATA_STATUS = {NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3};
 
-    constructor(props) {
-        super(props);
+    const [state, setState] = useState({
+        dataStatus: DATA_STATUS.QUERYING,
+        exportData: null
+    });
 
-        this.DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
+    // useEffect(() => {
+    //     const { userId, startMonth, endMonth, organizationalUnitIds } = state;
+    //
+    //     // if (props.organizationalUnitIds !== organizationalUnitIds || props.userId !== userId || props.startMonth !== startMonth || props.endMonth !== endMonth) {
+    //         props.getAllEmployeeKpiSetByMonth(props.organizationalUnitIds, props.userId, props.startMonth, props.endMonth);
+    //         setState({
+    //             ...state,
+    //             dataStatus: DATA_STATUS.QUERYING
+    //         });
+    //     // }
+    //
+    // },[props.organizationalUnitIds, props.userId, props.startMonth, props.endMonth])
 
-        this.state = {
-            dataStatus: this.DATA_STATUS.QUERYING,
-            exportData : null
-        };
-    }
+    useEffect(() => {
+        props.getAllEmployeeKpiSetByMonth(props.organizationalUnitIds, props.userId, props.startMonth, props.endMonth);
+        setState({
+            ...state,
+            userId: props.userId,
+            startMonth: props.startMonth,
+            endMonth: props.endMonth,
+            userName: props.userName,
+            organizationalUnitIds: props.organizationalUnitIds
+        })
+    }, [props.userId, props.startMonth, props.endMonth, props.userName, props.organizationalUnitIds]);
 
-    shouldComponentUpdate = async (nextProps, nextState) => {
-        const { userId, startMonth, endMonth, organizationalUnitIds } = this.state;
+    useEffect(() => {
+        // console.log("abc")
 
-        if (nextProps.organizationalUnitIds !== organizationalUnitIds || nextProps.userId !== userId || nextProps.startMonth !== startMonth || nextProps.endMonth !== endMonth) {
-            await this.props.getAllEmployeeKpiSetByMonth(nextProps.organizationalUnitIds, nextProps.userId, nextProps.startMonth, nextProps.endMonth);
-            
-            this.setState(state => {
-                return {
-                    ...state,
-                    dataStatus: this.DATA_STATUS.QUERYING
-                }
-            });
-            return false;
-        }
+        // if (state.dataStatus === DATA_STATUS.NOT_AVAILABLE) {
+        //    props.getAllEmployeeKpiSetByMonth(props.organizationalUnitIds, props.userId, props.startMonth, props.endMonth);
+        //
+        //     setState({
+        //         ...state,
+        //         dataStatus: DATA_STATUS.QUERYING
+        //     });
+        //
+        // } else if (state.dataStatus === DATA_STATUS.QUERYING) {
+        //     if (props.createEmployeeKpiSet.employeeKpiSetByMonth) {
+        //         setState({
+        //             ...state,
+        //             dataStatus: DATA_STATUS.AVAILABLE
+        //         });
+        //     }
+        //
+        // } else if (state.dataStatus === DATA_STATUS.AVAILABLE) {
+        //     multiLineChart();
+        //     setState( {
+        //         ...state,
+        //         dataStatus: DATA_STATUS.FINISHED
+        //     });
+        //     console.log("##", state.dataStatus)
+        //
+        // }
+        const {createEmployeeKpiSet, translate} = props;
+        console.log("dataStatus", createEmployeeKpiSet)
+            multiLineChart();
 
-        if (nextState.dataStatus === this.DATA_STATUS.NOT_AVAILABLE) {
-            await this.props.getAllEmployeeKpiSetByMonth(nextProps.organizationalUnitIds, nextProps.userId, nextProps.startMonth, nextProps.endMonth);
+    },[props.createEmployeeKpiSet.employeeKpiSetByMonth])
 
-            this.setState(state => {
-                return {
-                    ...state,
-                    dataStatus: this.DATA_STATUS.QUERYING
-                }
-            });
 
-            return false;
-        } else if (nextState.dataStatus === this.DATA_STATUS.QUERYING) {
-            if (!nextProps.createEmployeeKpiSet.employeeKpiSetByMonth)
-                return false;
-            
-            this.setState(state => {
-                return {
-                    ...state,
-                    dataStatus: this.DATA_STATUS.AVAILABLE
-                };
-            });
 
-            return false;
-        } else if (nextState.dataStatus === this.DATA_STATUS.AVAILABLE) {
-            this.multiLineChart();
+    const filterEmloyeeKpiSetSameOrganizationaUnit = () => {
+        const {createEmployeeKpiSet, translate} = props;
+        const {userName} = state;
 
-            this.setState(state => {
-                return {
-                    ...state,
-                    dataStatus: this.DATA_STATUS.FINISHED
-                };
-            });
+        let listEmployeeKpiSet, listOrganizationalUnit, listEmployeeKpiSetSameOrganizationalUnit = [], dataChart,
+            exportData;
 
-            return true
-        }
-
-        return false;
-    }
-
-    static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.userId !== prevState.userId
-            || nextProps.startMonth !== prevState.startMonth
-            || nextProps.endMonth !== prevState.endMonth
-            || nextProps.userName !== prevState.userName
-            || nextProps.organizationalUnitIds !== prevState.organizationalUnitIds
-        ) {
-            return {
-                ...prevState,
-                userId: nextProps.userId,
-                startMonth: nextProps.startMonth,
-                endMonth: nextProps.endMonth,
-                userName: nextProps.userName,
-                organizationalUnitIds: nextProps.organizationalUnitIds
-            }
-        } else {
-            return null;
-        }
-    }
-
-    filterEmloyeeKpiSetSameOrganizationaUnit = () => {
-        const { createEmployeeKpiSet, translate } = this.props;
-        const { userName } = this.state;
-
-        let listEmployeeKpiSet, listOrganizationalUnit, listEmployeeKpiSetSameOrganizationalUnit = [], dataChart,exportData;
-        
         if (createEmployeeKpiSet) {
             listEmployeeKpiSet = createEmployeeKpiSet.employeeKpiSetByMonth
         }
@@ -122,23 +105,23 @@ class StatisticsOfEmployeeKpiSetChart extends Component {
 
             })
         }
-        if (listEmployeeKpiSetSameOrganizationalUnit && userName ) {
-            exportData=this.convertDataToExportData(listEmployeeKpiSetSameOrganizationalUnit,userName)
-            this.handleExportData(exportData);
+        if (listEmployeeKpiSetSameOrganizationalUnit && userName) {
+            exportData = convertDataToExportData(listEmployeeKpiSetSameOrganizationalUnit, userName)
+            handleExportData(exportData);
         }
 
         if (listEmployeeKpiSetSameOrganizationalUnit.length !== 0) {
             dataChart = listEmployeeKpiSetSameOrganizationalUnit.map(kpi => {
-                return this.setDataMultiLineChart(kpi);
+                return setDataMultiLineChart(kpi);
             })
         }
 
         return dataChart;
-    }
+    };
 
-    setDataMultiLineChart = (listEmployeeKpiSet) => {
-        const { createEmployeeKpiSet, translate } = this.props;
-        const { userName } = this.state;
+    const setDataMultiLineChart = (listEmployeeKpiSet) => {
+        const {createEmployeeKpiSet, translate} = props;
+        const {userName} = state;
 
         let employeeName, title;
         let dataMultiLineChart, automaticPoint, employeePoint, approvedPoint, date;
@@ -166,9 +149,9 @@ class StatisticsOfEmployeeKpiSetChart extends Component {
             "data": [['x'].concat(date), automaticPoint, employeePoint, approvedPoint]
         };
         return dataMultiLineChart;
-    }
+    };
 
-    removePreviousChart() {
+    function removePreviousChart() {
         const chart = document.getElementById("chart");
 
         if (chart) {
@@ -178,11 +161,11 @@ class StatisticsOfEmployeeKpiSetChart extends Component {
         }
     }
 
-    multiLineChart = () => {
-        this.removePreviousChart();
+    const multiLineChart = () => {
+        removePreviousChart();
 
-        const { translate } = this.props;
-        let dataMultiLineChart = this.filterEmloyeeKpiSetSameOrganizationaUnit();
+        const {translate} = props;
+        let dataMultiLineChart = filterEmloyeeKpiSetSameOrganizationaUnit();
         if (dataMultiLineChart && dataMultiLineChart.length !== 0) {
             dataMultiLineChart.map(data => {
                 let div = document.createElement('div');
@@ -190,7 +173,7 @@ class StatisticsOfEmployeeKpiSetChart extends Component {
                 let section = document.getElementById("chart");
                 section.appendChild(div);
 
-                this.chart = c3.generate({
+                let chart = c3.generate({
                     bindto: document.getElementById(data.title),
                     title: {
                         show: false,
@@ -206,16 +189,18 @@ class StatisticsOfEmployeeKpiSetChart extends Component {
                         right: 20,
                         left: 20
                     },
-                    data: {                                
+                    data: {
                         x: 'x',
                         columns: data.data,
                         type: 'spline'
                     },
-                    axis: {                               
+                    axis: {
                         x: {
                             type: 'timeseries',
                             tick: {
-                                format: function (x) { return (x.getMonth() + 1) + "-" + x.getFullYear(); }
+                                format: function (x) {
+                                    return (x.getMonth() + 1) + "-" + x.getFullYear();
+                                }
                             }
                         },
                         y: {
@@ -231,10 +216,10 @@ class StatisticsOfEmployeeKpiSetChart extends Component {
                             }
                         }
                     },
-                    zoom: {                         
+                    zoom: {
                         enabled: false
                     }
-                    
+
                 })
             })
         } else {
@@ -243,101 +228,94 @@ class StatisticsOfEmployeeKpiSetChart extends Component {
             let section = document.getElementById("chart");
             section.appendChild(div);
         }
-    }
+    };
 
-    handleExportData =(exportData)=>
-    {
-        const { onDataAvailable } = this.props;
+    const handleExportData = (exportData) => {
+        const {onDataAvailable} = props;
         if (onDataAvailable) {
             onDataAvailable(exportData);
         }
-        
-    }
-    
+
+    };
+
     /*Chuyển đổi dữ liệu KPI nhân viên thành dữ liệu export to file excel */
-    convertDataToExportData = (data,name) => {
-        let convertedData=[],names = name.split("("),temp;
-        let fileName = "Kết quả KPI " + (names?names[0]:"") + " theo từng tháng ";               
-        if (data) {      
+    const convertDataToExportData = (data, name) => {
+        let convertedData = [], names = name.split("("), temp;
+        let fileName = "Kết quả KPI " + (names ? names[0] : "") + " theo từng tháng ";
+        if (data) {
             for (let i = 0; i < data.length; i++) {
-                for (let j = 0; j < data[i].length; j++)
-                {
-                   convertedData.push(data[i][j])
-                }    
+                for (let j = 0; j < data[i].length; j++) {
+                    convertedData.push(data[i][j])
+                }
             }
             let d1, d2;
             //Sap xep tap kpi theo thu tu thoi gian
-            for (let i = 0; i < convertedData.length - 1; i++)
-            {
-                for(let j = i + 1; j < convertedData.length; j++)
-                {
-                    d1= new Date(convertedData[i].date);
-                    d2= new Date(convertedData[j].date)
-                    if(d1>d2)
-                    {
-                        temp=convertedData[i];
-                        convertedData[i]=convertedData[j];
-                        convertedData[j]=temp;
+            for (let i = 0; i < convertedData.length - 1; i++) {
+                for (let j = i + 1; j < convertedData.length; j++) {
+                    d1 = new Date(convertedData[i].date);
+                    d2 = new Date(convertedData[j].date)
+                    if (d1 > d2) {
+                        temp = convertedData[i];
+                        convertedData[i] = convertedData[j];
+                        convertedData[j] = temp;
                     }
                 }
             }
-                         
 
-            for (let i = 0; i < convertedData.length; i++){
+
+            for (let i = 0; i < convertedData.length; i++) {
                 let d = new Date(convertedData[i].date);
                 convertedData[i]["time"] = d;
-                convertedData[i]["STT"] = i+1;
+                convertedData[i]["STT"] = i + 1;
                 convertedData[i]["unit"] = convertedData[i].organizationalUnit.name
             }
-        }     
-            
+        }
+
 
         let exportData = {
             fileName: fileName,
             dataSheets: [
                 {
-                    sheetName: "sheet1" ,
-                    sheetTitle : fileName,
+                    sheetName: "sheet1",
+                    sheetTitle: fileName,
                     tables: [
                         {
                             columns: [
-                                { key: "STT", value: "STT" },
-                                { key: "time", value: "Thời gian" },  
-                                { key: "unit", value: "Đơn vị " },  
-                                { key: "automaticPoint", value: "Điểm KPI tự động" },
-                                { key: "employeePoint", value: "Điểm KPI tự đánh giá" },
-                                { key: "approvedPoint", value: "Điểm KPI được phê duyệt" }
+                                {key: "STT", value: "STT"},
+                                {key: "time", value: "Thời gian"},
+                                {key: "unit", value: "Đơn vị "},
+                                {key: "automaticPoint", value: "Điểm KPI tự động"},
+                                {key: "employeePoint", value: "Điểm KPI tự đánh giá"},
+                                {key: "approvedPoint", value: "Điểm KPI được phê duyệt"}
                             ],
                             data: convertedData
                         }
                     ]
                 },
-            ]    
-                
-            
-        }
-        return exportData;        
-       
-    }
+            ]
 
-    render() {
-        let { exportData } = this.state;
-        
-        return (
-            <React.Fragment>
-                <section id="chart"></section>
-            </React.Fragment>
-        )
-    }
+
+        };
+        return exportData;
+
+    };
+
+    let {exportData} = state;
+    return (
+        <React.Fragment>
+            <section id="chart"> </section>
+        </React.Fragment>
+    )
 }
 
 function mapState(state) {
-    const { createEmployeeKpiSet } = state;
-    return { createEmployeeKpiSet };
-}
-const actions = {
-    getAllEmployeeKpiSetByMonth: createKpiSetActions.getAllEmployeeKpiSetByMonth
+    const {createEmployeeKpiSet} = state;
+    return {createEmployeeKpiSet};
 }
 
+const actions = {
+    getAllEmployeeKpiSetByMonth: createKpiSetActions.getAllEmployeeKpiSetByMonth
+};
+
 const connectedStatisticsOfEmployeeKpiSetChart = connect(mapState, actions)(withTranslate(StatisticsOfEmployeeKpiSetChart));
-export { connectedStatisticsOfEmployeeKpiSetChart as StatisticsOfEmployeeKpiSetChart };
+export {connectedStatisticsOfEmployeeKpiSetChart as StatisticsOfEmployeeKpiSetChart};

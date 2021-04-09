@@ -97,7 +97,26 @@ const EmployeeKpiSetSchema = new Schema({
                 }
             }],
         }],
-    }]
+    }],
+    
+    logs: [
+        {
+            createdAt: {
+                type: Date,
+                default: Date.now,
+            },
+            creator: {
+                type: Schema.Types.ObjectId,
+                ref: "User",
+            },
+            title: {
+                type: String,
+            },
+            description: {
+                type: String,
+            },
+        },
+    ]
 }, {
     timestamps: true
 });

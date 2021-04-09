@@ -18,8 +18,7 @@ export const AuthService = {
     changeInformation,
     changePassword,
     downloadFile,
-    answerAuthQuestion,
-    checkExistsPassword2
+    createPassword2,
 };
 
 async function login(data) {
@@ -63,12 +62,14 @@ function changeInformation(data) {
     }, true, true, 'auth');
 }
 
-function changePassword(data) {
+function changePassword(data, type) {
+    console.log('type',type);
     var id = getStorage("userId");
     return sendRequest({
         url: `${ process.env.REACT_APP_SERVER }/auth/profile/${id}/change-password`,
         method: 'PATCH',
         data: data,
+        params:{type}
     }, true, true, 'auth');
 }
 
@@ -131,17 +132,10 @@ function downloadFile(path, type) {
     }, false, false, 'auth');
 }
 
-function answerAuthQuestion(data) {
+function createPassword2(data) {
     return sendRequest({
-        url: `${process.env.REACT_APP_SERVER}/auth/profile/answer-questions`,
+        url: `${process.env.REACT_APP_SERVER}/auth/profile/create-password2`,
         method: 'PATCH',
         data
     }, true, true, 'auth');
-}
-
-function checkExistsPassword2() {
-    return sendRequest({
-        url: `${process.env.REACT_APP_SERVER}/auth/profile/check-user-exists-password2`,
-        method: 'GET',
-    }, false, false, 'auth');
 }

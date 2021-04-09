@@ -196,7 +196,7 @@ class AllTimeSheetLogsByUnit extends Component {
             <React.Fragment>
                 <div className="box-header with-border">
                     <div className="box-title">
-                        Thống kê bấm giờ từ tháng {startMonthTitle} đến tháng {endMonthTitle}
+                        Thống kê bấm giờ {startMonthTitle}<i className="fa fa-fw fa-caret-right"></i>{endMonthTitle}
                         {
                             unitIds && unitIds.length < 2 ?
                                 <>

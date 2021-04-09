@@ -11,6 +11,10 @@ class Layout extends Component {
         this.state = {}
     }
 
+    componentDidMount = () => {
+        window.scrollTo(0, 0)
+    }
+
     componentDidUpdate = () => {
         const { translate } = this.props;
         if (this.props.pageName) {

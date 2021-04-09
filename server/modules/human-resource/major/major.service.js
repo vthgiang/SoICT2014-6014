@@ -48,9 +48,8 @@ exports.searchMajor = async (portal, params) => {
  * @data : dữ liệu chuyên ngành tương đương mới
  * 
  */
-exports.crateNewMajor = async (portal, data) => {
-    let major, groupMajor, specialized;
-    if (!data.parent) {
+exports.createNewMajor = async (portal, data) => {
+    if (!data.parent ||data.parent.length ===0 ) {
         console.log('is parent ');
         major = await Major(connect(DB_CONNECTION, portal)).create({
             name: data.name,
@@ -115,7 +114,7 @@ exports.deleteMajor = async (portal, data) => {
     }
 
     for (let i in data) {
-        await Major(connect(DB_CONNECTION, portal)).update(
+        await Major(connect(DB_CONNECTION, portal)).updateOne(
             {
                 "group._id": data[i],
             },
@@ -140,7 +139,7 @@ exports.deleteMajor = async (portal, data) => {
                 idGroup = groupHasSpecialized._id
             }
         }
-        let a = await Major(connect(DB_CONNECTION, portal)).update(
+        let a = await Major(connect(DB_CONNECTION, portal)).updateOne(
             {
                 "group._id": idGroup,
             },
@@ -167,7 +166,7 @@ exports.deleteMajor = async (portal, data) => {
 exports.updateMajor = async (portal, data, params) => {
     let oldItem = data.oldData;
 
-    if (!data.parent) {
+    if (!data.parent||data.parent.length === 0) {
         await Major(connect(DB_CONNECTION, portal)).updateOne({ _id: params.id },
             {
                 $set: {
@@ -201,7 +200,7 @@ exports.updateMajor = async (portal, data, params) => {
 
             if (data.parent !== oldItem.parent) { // thay dổi cha
                 // bỏ đi cái này ở cha cũ (parent cũ)
-                await Major(connect(DB_CONNECTION, portal)).update(
+                await Major(connect(DB_CONNECTION, portal)).updateOne(
                     {
                         _id: oldItem.parent,
                         "group._id": params.id
@@ -247,8 +246,8 @@ exports.updateMajor = async (portal, data, params) => {
 
             if (data.parent !== oldItem.parent) { // thay dổi cha
                 // bỏ đi cái này ở cha cũ (parent cũ)
-                console.log('abcvaof này');
-                await Major(connect(DB_CONNECTION, portal)).update(
+                console.log('bỏ này');
+                await Major(connect(DB_CONNECTION, portal)).updateOne(
                     {
                         "group._id": oldItem.parent,
                         _id: groupFounded._id,

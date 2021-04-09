@@ -11,6 +11,13 @@ function EditForm(props) {
         name: ''
     });
 
+    const { translate, documents } = props;
+    const { listData, unChooseNode } = props;
+    const { name, code, parent, showParent, codeError, nameError, actionLabel, careerId, isLabel } = state;
+    const { list } = listData;
+    const { career } = props;
+    const listLabel = career.listAction.filter(e => e.isLabel === 1);
+
     useEffect(() => {
         setState({
             ...state,
@@ -148,11 +155,6 @@ function EditForm(props) {
         props.editCareerAction(state);
     }
 
-
-    const { translate, documents } = props;
-    const { listData, unChooseNode } = props;
-    const { name, code, parent, showParent, codeError, nameError, actionLabel, careerId, isLabel } = state;
-    const { list } = listData;
     let listCareer = [];
     for (let i in list) {
         if (!unChooseNode.includes(list[i].id)) {
@@ -161,9 +163,6 @@ function EditForm(props) {
     }
 
     const disabled = !isValidateForm();
-    const { career } = props;
-    const listLabel = career.listAction.filter(e => e.isLabel === 1);
-
     console.log('statesssss', state);
 
     return (

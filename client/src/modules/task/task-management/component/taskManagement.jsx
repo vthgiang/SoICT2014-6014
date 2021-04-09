@@ -26,20 +26,24 @@ class TaskManagement extends Component {
         const tableId = "tree-table-task-management";
         const defaultConfig = { limit: 20, hiddenColumns: ["2", "7", "8"] }
         const limit = getTableConfiguration(tableId, defaultConfig).limit;
+        // lấy giá trị từ dashboard công việc cá nhân
+        const stateFromTaskDashboard = JSON.parse(localStorage.getItem("stateFromTaskDashboard"));
+        localStorage.removeItem("stateFromTaskDashboard");
+
         this.state = {
             displayType: 'table',
             perPage: limit,
             currentPage: 1,
             tableId,
 
-            currentTab: ["responsible", "accountable"],
+            currentTab: stateFromTaskDashboard && stateFromTaskDashboard.roles && stateFromTaskDashboard.roles.length > 0 ? stateFromTaskDashboard.roles : ["responsible", "accountable"],
             organizationalUnit: [],
-            status: ["inprocess", "wait_for_approval"],
+            status: stateFromTaskDashboard && stateFromTaskDashboard.status && stateFromTaskDashboard.status.length > 0 ? stateFromTaskDashboard.status : ["inprocess", "wait_for_approval"],
             priority: [],
             special: [],
             name: "",
-            startDate: "",
-            endDate: "",
+            startDate: stateFromTaskDashboard && stateFromTaskDashboard.startDate ? stateFromTaskDashboard.startDate : "",
+            endDate: stateFromTaskDashboard && stateFromTaskDashboard.endDate ? stateFromTaskDashboard.endDate : "",
             startDateAfter: "",
             endDateBefore: "",
             startTimer: false,
@@ -63,7 +67,7 @@ class TaskManagement extends Component {
 
     shouldComponentUpdate(nextProps, nextState) {
         let { currentTab, organizationalUnit, status, priority, special, name, startDate, endDate } = this.state;
-
+        console.log('should', nextProps.history.location.state)
         if (currentTab !== nextState.currentTab ||
             organizationalUnit !== nextState.organizationalUnit ||
             status !== nextState.status ||
@@ -455,7 +459,7 @@ class TaskManagement extends Component {
         const { tasks, user, translate, project } = this.props;
         const { currentTaskId, currentPage, currentTab, parentTask, startDate, endDate, perPage, status, monthTimeSheetLog, tableId, responsibleEmployees, creatorTime, projectSearch } = this.state;
         let currentTasks, units = [];
-
+        console.log('redener', this.props.history.location.state)
         if (tasks) {
             currentTasks = tasks.tasks;
         }

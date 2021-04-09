@@ -397,6 +397,8 @@ export default {
             validator: {
                 confirm_password_invalid:
                     "Mật khẩu không trùng khớp. Vui lòng kiểm tra lại",
+                confirm_password2_invalid:
+                    "Mật khẩu cấp 2 không trùng khớp. Vui lòng kiểm tra lại",
                 password_length_error:
                     "Mật khẩu phải có độ dài tối thiểu 6 và không quá 30 ký tự",
                 confirm_password_error: "Mật khẩu xác thực không khớp",
@@ -405,8 +407,12 @@ export default {
                 label: "Bảo mật",
                 title: "Thay đổi mật khẩu người dùng",
                 old_password: "Mật khẩu cũ",
+                old_password2: "Mật khẩu cấp 2 cũ",
                 new_password: "Mật khẩu mới",
+                new_password2: "Mật khẩu cấp 2 mới",
                 confirm_password: "Xác thực mật khẩu",
+                re_enter_new_password: "Nhập lại mật khẩu mới",
+                re_enter_new_password2: "Nhập lại mật khẩu cấp 2 mới"
             },
             login: "Đăng nhập",
             logout: "Đăng xuất",
@@ -429,9 +435,14 @@ export default {
             change_user_password_success: "Thay đổi mật khẩu thành công",
             change_user_password_faile: "Thay đổi mật khẩu thất bại",
             user_not_found: "Không tìm thấy thông tin người dùng",
+            username_invalid_length: "Tên người dùng có độ dài không hợp lê",
+            username_empty: "Tên người dùng không được để trống",
+            email_empty: "Email không được để trống",
             email_invalid: "Email không hợp lệ",
             email_not_found: "Email này chưa được đăng kí trên hệ thống",
             password_invalid: "Mật khẩu không chính xác",
+            password2_empty: "Mật khẩu cấp 2 không được để trống",
+            password2_invalid: "Mật khẩu cấp 2 không chính xác",
             email_password_invalid: "Email hoặc mật khẩu không chính xác",
             acc_blocked: "Tài khoản này đã bị tạm khóa",
             acc_have_not_role: "Tài khoản chưa được phân quyền trên hệ thống",
@@ -442,8 +453,16 @@ export default {
             reset_password_success: "Thiết lập mật khẩu thành công",
             otp_invalid: "Yêu cầu thiết lập lại mật khẩu không hợp lệ",
             portal_invalid: "Portal không hợp lệ",
-            answer_auth_question_success: 'Thêm mật khẩu cấp 2 thành công',
-            answer_auth_question_faile: 'Thêm mật khẩu cấp 2 thất bại',
+            create_password2_success: 'Thêm mật khẩu cấp 2 thành công',
+            create_password2_faile: 'Thêm mật khẩu cấp 2 thất bại',
+            change_user_password2_success: "Chỉnh sửa mật khảu cấp 2 thành công",
+            change_user_password2_faile: "Chỉnh sửa mật khảu cấp 2 thất bại",
+            old_password_empty: "Mật khẩu cũ không được để trống",
+            old_password2_empty: "Mật khẩu cấp 2 cũ không được để trống",
+            new_password2_empty: "Mật khẩu cấp 2 mới không được để trống",
+            confirm_password2_invalid: "Xác nhận mật khẩu cấp 2 không hợp lệ",
+            old_password_invalid: "Mật khẩu cũ không hợp lệ",
+            old_password2_invalid: "Mật khẩu cấp 2 cũ không hợp lệ",
         },
 
         system_admin: {
@@ -2192,14 +2211,14 @@ export default {
                 // Thông điệp trả về từ server
                 get_fields_success:
                     "Lấy danh sách ngành nghề/lĩnh vực thành công",
-                get_fields_faile: "Lấy danh sách ngành nghề/lĩnh vực thất bại",
+                get_fields_fail: "Lấy danh sách ngành nghề/lĩnh vực thất bại",
                 create_fields_success:
                     "Thêm mới ngành nghề/lĩnh vực thành công",
-                create_fields_faile: "Thêm mới ngành nghề/lĩnh vực thất bại",
+                create_fields_fail: "Thêm mới ngành nghề/lĩnh vực thất bại",
                 delete_fields_success: "Xoá ngành nghề/lĩnh vực thành công",
-                delete_fields_faile: "Xoá ngành nghề/lĩnh vực thất bại",
+                delete_fields_fail: "Xoá ngành nghề/lĩnh vực thất bại",
                 edit_fields_success: "Chỉnh sửa ngành nghề/lĩnh vực thành công",
-                edit_fields_faile: "Chỉnh sửa ngành nghề/lĩnh vực thất bại",
+                edit_fields_fail: "Chỉnh sửa ngành nghề/lĩnh vực thất bại",
             },
 
             // Quản lý chấm công nhân viên
@@ -3204,10 +3223,10 @@ export default {
                 get_outside_info:
                     "Nhập tự động từ thông tin công việc hiện tại",
 
-                dashboard_created: "Số CV bạn đã tạo",
-                dashboard_need_perform: "Số CV bạn thực hiện",
-                dashboard_need_approve: "Số CV bạn phê duyệt",
-                dashboard_need_consult: "Số CV bạn tư vấn",
+                dashboard_created: "Bạn đã tạo",
+                dashboard_need_perform: "Bạn thực hiện",
+                dashboard_need_approve: "Bạn phê duyệt",
+                dashboard_need_consult: "Bạn tư vấn",
                 dashboard_area_result: "Miền kết quả công việc",
                 dashboard_overdue: "Công việc quá hạn",
                 dashboard_about_to_overdue: "Công việc sắp hết hạn",

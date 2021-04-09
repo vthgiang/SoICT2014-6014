@@ -319,7 +319,9 @@ function UseRequestManager(props) {
         window.$('#modal-edit-asset').modal('show');
 
         // Mở tab thứ 3
-        window.$('.nav-tabs li:eq(2) a').tab('show');
+        window.$('#modal-edit-asset').on('shown.bs.modal', function (){
+            window.$('#nav-tabs li:eq(2) a').tab('show');
+        });
 
     }
 
@@ -510,7 +512,7 @@ function UseRequestManager(props) {
                         code={currentRowEditAsset.code}
                         assetName={currentRowEditAsset.assetName}
                         serial={currentRowEditAsset.serial}
-                        assetType={currentRowEditAsset.assetType}
+                        assetType={JSON.stringify(currentRowEditAsset.assetType)}
                         group={currentRowEditAsset.group}
                         purchaseDate={currentRowEditAsset.purchaseDate}
                         warrantyExpirationDate={currentRowEditAsset.warrantyExpirationDate}
@@ -522,7 +524,6 @@ function UseRequestManager(props) {
                         location={currentRowEditAsset.location}
                         description={currentRowEditAsset.description}
                         status={currentRowEditAsset.status}
-                        canRegisterForUse={currentRowEditAsset.canRegisterForUse}
                         typeRegisterForUse={currentRowEditAsset.typeRegisterForUse}
                         detailInfo={currentRowEditAsset.detailInfo}
                         readByRoles={currentRowEditAsset.readByRoles}
@@ -548,6 +549,8 @@ function UseRequestManager(props) {
                         incidentLogs={currentRowEditAsset.incidentLogs}
                         archivedRecordNumber={currentRowEditAsset.archivedRecordNumber}
                         files={currentRowEditAsset.documents}
+                        linkPage={"management"}
+                        page={page}
                     />
                 }
 

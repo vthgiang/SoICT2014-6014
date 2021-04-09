@@ -409,9 +409,14 @@ export default {
             change_user_password_success: "Change password success",
             change_user_password_faile: "Change password faile",
             user_not_found: "User not found",
+            username_empty: "Username not empty",
+            username_invalid_length: "Username invalid length",
+            email_empty: "Email not empty",
             email_invalid: "Email invalid",
             email_not_found: "Email not found",
             password_invalid: "Password invalid",
+            password2_empty: "Password2 not empty",
+            password2_invalid: "Password2 invalid",
             email_password_invalid: "Email or Password invalid",
             acc_blocked: "Account blocked",
             acc_have_not_role: "Account have not role",
@@ -1998,13 +2003,13 @@ export default {
 
                 // Thông điệp trả về từ server
                 get_fields_success: "Get career/fields success",
-                get_fields_faile: "Get career/fields faile",
+                get_fields_fail: "Get career/fields fail",
                 create_fields_success: "Add career/fields success",
-                create_fields_faile: "Add career/fields faile",
+                create_fields_fail: "Add career/fields fail",
                 delete_fields_success: "Delete career/fields success",
-                delete_fields_faile: "Delete career/fields faile",
+                delete_fields_fail: "Delete career/fields fail",
                 edit_fields_success: "Edit career/fields success",
-                edit_fields_faile: "Edit career/fields faile",
+                edit_fields_fail: "Edit career/fields fail",
             },
 
             // Quản lý chấm công nhân viên
