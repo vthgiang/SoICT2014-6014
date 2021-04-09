@@ -106,6 +106,7 @@ const ModalAddTaskSchedule = (props) => {
             }
         })
     }
+    console.log(currentModeImport);
 
     const handleDelete = (index) => {
         if (listTasks && listTasks.length > 0) {
