@@ -159,7 +159,7 @@ const ProjectDetailPage = (props) => {
                     {/* Button thêm mới */}
                     {checkIfAbleToCRUDProject({ project, user, currentProjectId }) &&
                         <div className="dropdown pull-right" style={{ marginTop: 15, marginRight: 10 }}>
-                            <TaskProjectAddModal onHandleReRender={onHandleReRender} currentProjectTasks={currentProjectTasks} parentTask={parentTask} />
+                            {currentProjectTasks && currentProjectTasks.length > 0 ? null : <TaskProjectAddModal onHandleReRender={onHandleReRender} currentProjectTasks={currentProjectTasks} parentTask={parentTask} />}
                             <ModalAddTaskSchedule />
                             <button type="button" className="btn btn-success dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="true"
                                 title={translate('project.add_btn_task')}>
@@ -168,8 +168,9 @@ const ProjectDetailPage = (props) => {
                             <ul className="dropdown-menu pull-right" style={{ marginTop: 0 }}>
                                 <li><a style={{ cursor: 'pointer' }} onClick={handleOpenCreateTask} title={translate('project.add_btn_normal')}>
                                     {translate('project.add_btn_normal')}</a></li>
-                                <li><a style={{ cursor: 'pointer' }} onClick={onHandleOpenScheduleModal} title={translate('project.add_btn_scheduling')}>
-                                    {translate('project.add_btn_scheduling')}</a></li>
+                                {currentProjectTasks && currentProjectTasks.length > 0 ? null : <li><a style={{ cursor: 'pointer' }} onClick={onHandleOpenScheduleModal} title={translate('project.add_btn_scheduling')}>
+                                    {translate('project.add_btn_scheduling')}</a></li>}
+
                             </ul>
                         </div>}
                 </div>

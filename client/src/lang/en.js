@@ -4266,6 +4266,10 @@ export default {
                 insertListTasksToDB: 'Insert tasks list to database',
                 calculateRecommend: 'Calculate recommendation',
                 percentFinishTask: 'Percentage of finishing project in',
+            },
+
+            report: {
+                title: 'Detailed project report'
             }
         },
         phase: {

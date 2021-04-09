@@ -5810,6 +5810,10 @@ export default {
                 insertListTasksToDB: 'Thêm vào cơ sở dữ liệu',
                 calculateRecommend: 'Tính toán đề xuất thoả hiệp dự án',
                 percentFinishTask: 'Xác suất hoàn thành dự án trong',
+            },
+
+            report: {
+                title: 'Báo cáo chi tiết dự án'
             }
         },
         phase: {

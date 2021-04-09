@@ -163,7 +163,7 @@ import TransportVehicle from '../modules/production/transport/transport-vehicle/
 import TransportHuman from '../modules/production/transport/transport-human/components';
 import TransportRoute from '../modules/production/transport/transport-route/components';
 
-import AnswerAuthQuestionPage from '../modules/auth/components/answerAuthQuestion';
+// import AnswerAuthQuestionPage from '../modules/auth/components/answerAuthQuestion';
 
 import { Project } from '../modules/project/component/projects/index';
 import Phase from '../modules/project/component/phases/index';

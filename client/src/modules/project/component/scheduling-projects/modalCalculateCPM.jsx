@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import { withTranslate } from 'react-redux-multilingual';
 import { UserActions } from '../../../super-admin/user/redux/actions'
@@ -9,13 +9,12 @@ import { fakeObj, fakeArr } from './staticData';
 import { Collapse } from 'react-bootstrap';
 import { DialogModal } from '../../../../common-components';
 import { getCurrentProjectDetails } from '../projects/functionHelper';
-import { Canvas, Node, Edge, Port, Label } from 'reaflow';
+import { Canvas, Node } from 'reaflow';
 
 const ModalCalculateCPM = (props) => {
-    const { tasksData, translate, project } = props;
+    const { tasksData, translate, project, estDurationEndProject } = props;
     const projectDetail = getCurrentProjectDetails(project);
     const [isTableShown, setIsTableShown] = useState(true);
-    const [timeEstProjectDone, setTimeEstProjectDone] = useState(10);
     let formattedTasksData = {}
     for (let item of tasksData) {
         formattedTasksData = {
@@ -29,35 +28,23 @@ const ModalCalculateCPM = (props) => {
             }
         }
     }
-    // const pert = jsPERT(formattedTasksData || {});
-    const pert = jsPERT(fakeObj);
-    const estProjectDone = (pertProbability(pert, timeEstProjectDone) * 100);
-
-    const handleSelect = (nodeKey) => {
-
-    }
-    const getFillColor = (nodeKey, pert) => {
-        if (nodeKey === START || nodeKey === END) {
-            return 'blue';
-        }
-        return pert.criticalPath.indexOf(nodeKey) > -1 ? 'red' : 'green';
-    };
-
-    const save = () => { }
+    const pert = jsPERT(formattedTasksData || {});
+    // const pert = jsPERT(fakeObj);
+    const estProjectDone = (pertProbability(pert, estDurationEndProject) * 100);
 
     const handleInsertListToDB = () => {
 
     }
 
-    const handleCalculateRecommend = () => {
-        setTimeout(() => {
-            window.$(`#modal-calculate-recommend`).modal('show');
-        }, 10);
-    }
+    // const handleCalculateRecommend = () => {
+    //     setTimeout(() => {
+    //         window.$(`#modal-calculate-recommend`).modal('show');
+    //     }, 10);
+    // }
 
     const processNodes = () => {
-        // const resultNodes = tasksData.map((taskItem, taskIndex) => {
-            const resultNodes = fakeArr.map((taskItem, taskIndex) => {
+        const resultNodes = tasksData.map((taskItem, taskIndex) => {
+            // const resultNodes = fakeArr.map((taskItem, taskIndex) => {
             return ({
                 id: taskItem.code,
                 height: 80,
@@ -77,16 +64,18 @@ const ModalCalculateCPM = (props) => {
 
     const processEdges = () => {
         let resultEdges = [];
-        // for (let taskItem of tasksData) {
-        for (let taskItem of fakeArr) {
-            for (let preceedingItem of taskItem.predecessors) {
+        for (let taskItem of tasksData) {
+            // for (let taskItem of fakeArr) {
+            for (let preceedingItem of taskItem.preceedingTasks) {
+                console.log('taskItem.preceedingTasks', taskItem.preceedingTasks)
                 resultEdges.push({
-                    id: `${preceedingItem}-${taskItem.code}`,
-                    from: preceedingItem,
+                    id: preceedingItem.trim() ? `${preceedingItem.trim()}-${taskItem.code}` : `${taskItem.code}`,
+                    from: preceedingItem.trim(),
                     to: taskItem.code,
                 })
             }
         }
+        console.log('resultEdges', resultEdges)
         return resultEdges;
     }
 
@@ -96,7 +85,7 @@ const ModalCalculateCPM = (props) => {
                 modalID={`modal-show-info-calculate-cpm`} isLoading={false}
                 formID={`form-show-info-calculate-cpm`}
                 title={translate('project.schedule.calculateCPM')}
-                func={save}
+                hasSaveButton={false}
                 size={100}
             >
                 <div>
@@ -110,13 +99,13 @@ const ModalCalculateCPM = (props) => {
                             </button>
                         </div>
                         {/* Button Tính toán mức thoả hiệp dự án */}
-                        <div className="dropdown pull-right" style={{ marginTop: 15, marginRight: 10 }}>
+                        {/* <div className="dropdown pull-right" style={{ marginTop: 15, marginRight: 10 }}>
                             <button
                                 onClick={handleCalculateRecommend}
                                 type="button" className="btn btn-success dropdown-toggle" data-toggle="dropdown">
                                 {translate('project.schedule.calculateRecommend')}
                             </button>
-                        </div>
+                        </div> */}
                     </div>
 
                     {/* Bảng dữ liệu CPM */}
@@ -124,7 +113,7 @@ const ModalCalculateCPM = (props) => {
                         <legend className="scheduler-border">Bảng dữ liệu CPM</legend>
 
                         <div style={{ flexDirection: 'row', display: 'flex', marginLeft: 10 }}>
-                            <h4><strong>{translate('project.schedule.percentFinishTask')} {timeEstProjectDone} {translate(`project.unit.${projectDetail?.unitTime}`)}:</strong></h4>
+                            <h4><strong>{translate('project.schedule.percentFinishTask')} {estDurationEndProject} {translate(`project.unit.${projectDetail?.unitTime}`)}:</strong></h4>
                             <h4 style={{ marginLeft: 5 }}>{estProjectDone.toFixed(2)}%</h4>
                         </div>
 
@@ -156,26 +145,8 @@ const ModalCalculateCPM = (props) => {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {/* {(tasksData && tasksData.length > 0) &&
-                        tasksData.map((taskItem, index) => (
-                            <tr key={index}>
-                                <td>{taskItem?.code}</td>
-                                <td>{pert.earliestStartTimes[taskItem?.code]}</td>
-                                <td>{pert.latestStartTimes[taskItem?.code]}</td>
-                                <td>{pert.earliestFinishTimes[taskItem?.code]}</td>
-                                <td>{pert.latestFinishTimes[taskItem?.code]}</td>
-                                <td>{pert.slack[taskItem?.code]}</td>
-                                <td>{pert.slack[taskItem?.code] === 0 ? 'Đúng' : ''}</td>
-                                <td>{taskItem?.estimateNormalTime}</td>
-                                <td>{taskItem?.estimateOptimisticTime}</td>
-                                <td>{taskItem?.estimatePessimisticTime}</td>
-                                <td>{taskItem?.estimateNormalCost}</td>
-                                <td>{taskItem?.estimateMaxCost}</td>
-                            </tr>
-                        ))
-                    } */}
-                                        {(fakeArr && fakeArr.length > 0) &&
-                                            fakeArr.map((taskItem, index) => (
+                                        {(tasksData && tasksData.length > 0) &&
+                                            tasksData.map((taskItem, index) => (
                                                 <tr key={index}>
                                                     <td>{taskItem?.code}</td>
                                                     <td>{pert.earliestStartTimes[taskItem?.code]}</td>
@@ -207,8 +178,8 @@ const ModalCalculateCPM = (props) => {
                             width={'100%'}
                             height={500}
                             direction="RIGHT"
-                            pannable={false}
-                            center={false}
+                            center={true}
+                            fit={true}
                             node={
                                 <Node>
                                     {event => (

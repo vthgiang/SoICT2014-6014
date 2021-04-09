@@ -98,6 +98,7 @@ export const formatPriority = (priority, translate) => {
  * @param {*} listProject 
  */
 export const getProjectName = (id, listProject) => {
+    console.log('listProject', listProject)
       if (id && listProject && listProject.length > 0) {
         const projectLength = listProject.length;
         for (let i = 0; i < projectLength; i++){
