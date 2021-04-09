@@ -282,6 +282,7 @@ function EmployeeKpiEvaluationDashboard(props) {
                 }
             })
         }
+        console.log(state.infosearch)
     };
 
 

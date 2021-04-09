@@ -1,224 +1,183 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { withTranslate } from 'react-redux-multilingual';
+import React, {useEffect, useState} from 'react';
+import {connect} from 'react-redux';
+import {withTranslate} from 'react-redux-multilingual';
 
-import { createKpiSetActions } from '../../creation/redux/actions';
+import {createKpiSetActions} from '../../creation/redux/actions';
 
-import { DatePicker, CustomLegendC3js } from '../../../../../common-components';
+import {DatePicker, CustomLegendC3js} from '../../../../../common-components';
 
 import c3 from 'c3';
 import 'c3/c3.css';
 
+function DistributionOfEmployeeKpiChart(props) {
+    const { translate, createEmployeeKpiSet } = props;
+    const refKpiSet = React.createRef();
 
-var translate ='';
-class DistributionOfEmployeeKpiChart extends Component {
+    let currentDate = new Date();
+    let currentYear = currentDate.getFullYear();
+    let currentMonth = currentDate.getMonth();
 
-    constructor(props) {
-        super(props);
+    const DATA_STATUS = {NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3};
+    const chart = null;
+    const dataPieChart = null;
 
-        translate = this.props.translate;
+    const [state, setState] = useState({
+        month: currentYear + '-' + (currentMonth + 1),
+        dataStatus: DATA_STATUS.QUERYING,
+        currentRole: localStorage.getItem("currentRole")
+    });
 
-        let currentDate = new Date();
-        let currentYear = currentDate.getFullYear();
-        let currentMonth = currentDate.getMonth();
+    let currentEmployeeKpiSet;
 
-        this.DATA_STATUS = {NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3};
-        this.chart = null;
-        this.dataPieChart = null;
-
-        this.state = {
-            month: currentYear + '-' + (currentMonth + 1),
-            dataStatus: this.DATA_STATUS.QUERYING,
-            currentRole: localStorage.getItem("currentRole")
-        };
-    }
-
-    componentDidMount = () => {
-        const { currentRole, month } = this.state;
+    useEffect(() => {
+        const {currentRole, month} = state;
 
         // Lấy Kpi của cá nhân hiện tại
-        this.props.getEmployeeKpiSet({
+        props.getEmployeeKpiSet({
             roleId: currentRole,
             month: month
         });
+    }, []);
 
-        this.setState(state => {
-            return {
-                ...state,
-                dataStatus: this.DATA_STATUS.QUERYING,
-            };
+
+    useEffect(() => {
+        pieChart(createEmployeeKpiSet);
+    });
+
+    useEffect(() => {
+        const {currentRole} = state;
+
+        props.getEmployeeKpiSet({
+            roleId: currentRole,
+            month: state.month
         });
-    }
-
-    shouldComponentUpdate = async (nextProps, nextState) => {
-        const { currentRole, month } = this.state;
-
-        if (nextState.month !== month) {
-            await this.props.getEmployeeKpiSet({
-                roleId: currentRole,
-                month: nextState.month
+            setState(  {
+                ...state,
+                dataStatus: DATA_STATUS.QUERYING,
             });
-
-            this.setState(state => {
-                return {
-                    ...state,
-                    dataStatus: this.DATA_STATUS.QUERYING,
-                };
-            });
-
-            return false;
-        }
-    
-        if (nextState.dataStatus === this.DATA_STATUS.QUERYING) {
-            if (!nextProps.createEmployeeKpiSet.currentKPI)
-                return false;
-            
-            this.setState(state => {
-                return {
-                    ...state,
-                    dataStatus: this.DATA_STATUS.AVAILABLE,
-                };
-            });
-            return false;
-        } else if (nextState.dataStatus === this.DATA_STATUS.AVAILABLE){
-            this.pieChart();
-
-            this.setState(state => {
-                return {
-                    ...state,
-                    dataStatus: this.DATA_STATUS.FINISHED,
-                };
-            });
-        }
-
-        return false;
-    }
+    }, [state.month]);
 
     /**Thiết lập dữ liệu biểu đồ */
-    setDataPieChart = () => {
-        const { createEmployeeKpiSet } = this.props;
+    const setDataPieChart = (createEmployeeKpiSet) => {
         let listEmployeeKpi, dataPieChart;
-
-        if (createEmployeeKpiSet.currentKPI && createEmployeeKpiSet.currentKPI.kpis) {
+        if (createEmployeeKpiSet?.currentKPI?.kpis) {
             listEmployeeKpi = createEmployeeKpiSet.currentKPI.kpis
         }
-        if(listEmployeeKpi){
-            dataPieChart = listEmployeeKpi.map(x => { 
-                return [ x.name, x.weight ]
+        if (listEmployeeKpi) {
+            dataPieChart = listEmployeeKpi.map(x => {
+                return [x.name, x.weight]
             })
         }
-
+        // console.log("dataPieChart", dataPieChart)
         return dataPieChart;
-    }
+    };
 
-     /**Xóa các chart đã render khi chưa đủ dữ liệu */
-    removePreviousChart(){
-        const chart = this.refs.chart;
-        while(chart.hasChildNodes()){
-            chart.removeChild(chart.lastChild);
+    /**Xóa các chart đã render khi chưa đủ dữ liệu */
+    function removePreviousChart() {
+        const chart = refKpiSet.current;
+        if (chart) {
+            while (chart.hasChildNodes()) {
+                chart.removeChild(chart.lastChild);
+            }
         }
-    } 
+    }
 
     /**Khởi tạo PieChart bằng C3 */
-    pieChart = () => {
-        this.removePreviousChart();
+    const pieChart = (createEmployeeKpiSet) => {
+        removePreviousChart();
 
         // Tạo mảng dữ liệu
-        this.dataPieChart = this.setDataPieChart(); 
+        let dataPieChart = setDataPieChart(createEmployeeKpiSet);
+        // console.log("pieChart", dataPieChart)
 
-        this.chart = c3.generate({
-            bindto: this.refs.chart,             // Đẩy chart vào thẻ div có id="pieChart"
+        if(dataPieChart){
+    let chart = c3.generate({
+        bindto: refKpiSet.current,             // Đẩy chart vào thẻ div có id="pieChart"
 
-            // Căn lề biểu đồ
-            padding: {
-                top: 20,
-                bottom: 20,
-                right: 20,
-                left: 20
-            },
+        // Căn lề biểu đồ
+        padding: {
+            top: 20,
+            bottom: 20,
+            right: 20,
+            left: 20
+        },
 
-            data: {                                 // Dữ liệu biểu đồ
-                columns: this.dataPieChart,
-                type : 'pie',
-            },
+        data: {                                 // Dữ liệu biểu đồ
+            columns: dataPieChart,
+            type: 'pie',
 
-            legend: {
-                show: false
-            }
-        });
-    }
+        },
 
-    handleSelectMonth = async (value) => {
-        let month = value.slice(3,7) + '-' + value.slice(0,2);
-        this.setState(state => {
-            return {
-                ...state,
-                month: month
-            }
-        })
-    }
-
-    render() {
-        const { createEmployeeKpiSet } = this.props;
-        let currentEmployeeKpiSet;
-
-        if(createEmployeeKpiSet) {
-            currentEmployeeKpiSet = createEmployeeKpiSet.currentKPI
+        legend: {
+            show: false
         }
+    });
+}
 
-        let d = new Date(),
+    };
+
+    const handleSelectMonth = async (value) => {
+        let month = value.slice(3, 7) + '-' + value.slice(0, 2);
+        setState({
+            ...state,
+            month: month
+        })
+    };
+
+    if (createEmployeeKpiSet) {
+        currentEmployeeKpiSet = createEmployeeKpiSet.currentKPI
+    }
+    let d = new Date(),
         month = '' + (d.getMonth() + 1),
         day = '' + d.getDate(),
         year = d.getFullYear();
 
-        if (month.length < 2)
-            month = '0' + month;
-        if (day.length < 2)
-            day = '0' + day;
-        let defaultDate = [month, year].join('-');
+    if (month.length < 2)
+        month = '0' + month;
+    if (day.length < 2)
+        day = '0' + day;
+    let defaultDate = [month, year].join('-');
 
-        return (
-            <React.Fragment>
-                <section className="form-inline">
-                    <div className="form-group">
+    return (
+        <React.Fragment>
+            <section className="form-inline">
+                <div className="form-group">
                     <label>{translate('kpi.organizational_unit.dashboard.month')}</label>
-                        <DatePicker 
-                            id="monthDistributionOfEmployeeKpiChart"      
-                            dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm 
-                            value={defaultDate}                 // giá trị mặc định cho datePicker    
-                            onChange={this.handleSelectMonth}
-                            disabled={false}                    // sử dụng khi muốn disabled, mặc định là false
-                        />
-                    </div>
-                </section>
+                    <DatePicker
+                        id="monthDistributionOfEmployeeKpiChart"
+                        dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm
+                        value={defaultDate}                 // giá trị mặc định cho datePicker
+                        onChange={handleSelectMonth}
+                        disabled={false}                    // sử dụng khi muốn disabled, mặc định là false
+                    />
+                </div>
+            </section>
 
-                {currentEmployeeKpiSet ?
-                   <section id={"distributionOfEmployeeKpi"} className="c3-chart-container">
-                        <div ref="chart"></div>
-                        <CustomLegendC3js
-                            chart={this.chart}
-                            chartId={"distributionOfEmployeeKpi"}
-                            legendId={"distributionOfEmployeeKpiLegend"}
-                            title={`${translate('kpi.evaluation.employee_evaluation.KPI_list')} (${currentEmployeeKpiSet.kpis && currentEmployeeKpiSet.kpis.length})`}
-                            dataChartLegend={this.dataPieChart && this.dataPieChart.map(item => item[0])}
-                        />
-                    </section>
-                    : <section>{translate('kpi.organizational_unit.dashboard.no_data')}</section>
-                }
-            </React.Fragment>
-        )
-    }
-        
+            {currentEmployeeKpiSet ?
+                <section id={"distributionOfEmployeeKpi"} className="c3-chart-container">
+                    <div ref={refKpiSet}> </div>
+                    <CustomLegendC3js
+                        chart={chart}
+                        chartId={"distributionOfEmployeeKpi"}
+                        legendId={"distributionOfEmployeeKpiLegend"}
+                        title={`${translate('kpi.evaluation.employee_evaluation.KPI_list')} (${currentEmployeeKpiSet.kpis && currentEmployeeKpiSet.kpis.length})`}
+                        dataChartLegend={dataPieChart && dataPieChart.map(item => item[0])}
+                    />
+                </section>
+                : <section>{translate('kpi.organizational_unit.dashboard.no_data')}</section>
+            }
+        </React.Fragment>
+    )
 }
 
 function mapState(state) {
-    const { createEmployeeKpiSet } = state;
-    return { createEmployeeKpiSet };
+    const {createEmployeeKpiSet} = state;
+    return {createEmployeeKpiSet};
 }
 
 const actions = {
     getEmployeeKpiSet: createKpiSetActions.getEmployeeKpiSet
-}
+};
 
 const connectedDistributionOfEmployeeKpiChart = connect(mapState, actions)(withTranslate(DistributionOfEmployeeKpiChart));
-export { connectedDistributionOfEmployeeKpiChart as DistributionOfEmployeeKpiChart}
+export {connectedDistributionOfEmployeeKpiChart as DistributionOfEmployeeKpiChart}
