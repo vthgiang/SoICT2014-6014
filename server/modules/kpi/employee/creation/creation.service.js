@@ -103,14 +103,14 @@ exports.getAllEmployeeKpiSetByMonth = async (portal, organizationalUnitIds, user
 
 /* Lấy tất cả các tập KPI của tất cả nhân viên trong mảng đơn vị cho trước theo thời gian */
 exports.getAllEmployeeKpiSetOfAllEmployeeInOrganizationalUnitByMonth = async (portal, organizationalUnitIds, startDate, endDate) => {
-
     let organizationalUnitIdsArray = organizationalUnitIds.map(item => { return new mongoose.Types.ObjectId(item) });
+    endDate = new Date(endDate)
+    endDate.setMonth(endDate.getMonth() + 1)
 
     const employeeKpiSetsInOrganizationalUnitByMonth = await EmployeeKpiSet(connect(DB_CONNECTION, portal)).aggregate([
         { $match: { 'organizationalUnit': { $in: [...organizationalUnitIdsArray] } } },
 
-        // Thời gian lấy chưa tính tháng hiện tại(ví dụ endDate là 2020-8 thì service trả về k bao gồm kpi tháng 8)
-        { $match: { 'date': { $gt: new Date(startDate), $lte: new Date(endDate) } } },
+        { $match: { 'date': { $gte: new Date(startDate), $lt: new Date(endDate) } } },
 
         {
             $lookup: {
