@@ -9,6 +9,7 @@ export const RecommendDistributeService = {
 
 // Lấy danh sách phiếu đề nghị mua sắm thiết bị
 function searchRecommendDistributes(data) {
+    console.log(data)
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/use-request/use-requests`,
         method: 'GET',
