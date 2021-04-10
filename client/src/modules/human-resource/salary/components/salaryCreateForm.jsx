@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
@@ -9,28 +9,14 @@ import { UserActions } from '../../../super-admin/user/redux/actions';
 import { EmployeeManagerActions } from '../../profile/employee-management/redux/actions';
 import ValidationHelper from '../../../../helpers/validationHelper';
 
-class SalaryCreateForm extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            unit: "VND",
-            employee: "",
-            organizationalUnit: "",
-            month: this.formatDate(Date.now()),
-            mainSalary: "",
-            bonus: [],
-        };
-    };
-
-    componentDidMount() {
-        this.props.getAllEmployee({ organizationalUnits: 'allUnist' });
-    }
+const SalaryCreateForm = (props) => {
+    const { getAllEmployee, getDepartmentOfUser, createSalary } = props;
 
     /**
      * Function format ngày hiện tại thành dạnh mm-yyyy
      * @param {*} date : Ngày muốn format
      */
-    formatDate = (date) => {
+    const formatDate = (date) => {
         if (date) {
             let d = new Date(date),
                 month = '' + (d.getMonth() + 1),
@@ -45,171 +31,178 @@ class SalaryCreateForm extends Component {
         return date;
     }
 
+    const [state, setState] = useState({
+        unit: "VND",
+        employee: "",
+        organizationalUnit: "",
+        month: formatDate(Date.now()),
+        mainSalary: "",
+        bonus: [],
+    });
+
+    useState(() => {
+        getAllEmployee({ organizationalUnits: 'allUnist' });
+    }, []);
+
+    
+
     /** Function bắt sự kiện thay đổi mã nhân viên */
-    handleMSNVChange = async (value) => {
-        await this.props.getDepartmentOfUser({ email: value[0] });
-        this.validateEmployeeNumber(value[0], true);
-    }
-    validateEmployeeNumber = (value, willUpdateState = true) => {
-        let { translate } = this.props;
+    const validateEmployeeNumber = (value, willUpdateState = true) => {
+        let { translate } = props;
         let { message } = ValidationHelper.validateEmpty(translate, value);
 
         if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    errorOnEmployee: message,
-                    employee: value,
-                    organizationalUnit: "",
-                }
-            });
-
+            setState(state => ({...state,
+                errorOnEmployee: message,
+                employee: value,
+                organizationalUnit: ""}))
         }
         return message === undefined;
+    }
+
+    const handleMSNVChange = async (value) => {
+        await getDepartmentOfUser({ email: value[0] });
+        validateEmployeeNumber(value[0], true);
     }
 
     /** Function bắt sự kiện thay đổi đơn vị */
-    handleOrganizationalUnitChange = (value) => {
-        this.validateOrganizationalUnit(value[0], true);
-    }
-    validateOrganizationalUnit = (value, willUpdateState = true) => {
-        let { translate } = this.props;
+    const validateOrganizationalUnit = (value, willUpdateState = true) => {
+        let { translate } = props;
         let { message } = ValidationHelper.validateEmpty(translate, value);
 
         if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    errorOnOrganizationalUnit: message,
-                    organizationalUnit: value,
-                }
-            });
+            setState(state => ({
+                ...state,
+                errorOnOrganizationalUnit: message,
+                organizationalUnit: value,
+            }))
         }
         return message === undefined;
     }
+
+    const handleOrganizationalUnitChange = (value) => {
+        validateOrganizationalUnit(value[0], true);
+    }
+    
 
 
     /**
      * Function bắt sự kiện thay đổi tháng lương để lưu vào state
      * @param {*} value : Giá trị tháng lương
      */
-    handleMonthChange = (value) => {
-        this.validateMonthSalary(value, true);
-    }
-    validateMonthSalary = (value, willUpdateState = true) => {
-        let { translate } = this.props;
+
+    const validateMonthSalary = (value, willUpdateState = true) => {
+        let { translate } = props;
         let { message } = ValidationHelper.validateEmpty(translate, value);
 
         if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    errorOnMonthSalary: message,
-                    month: value,
-                }
-            });
+            setState(state => ({
+                ...state,
+                errorOnMonthSalary: message,
+                month: value,
+            }))
         }
         return message === undefined;
     }
+    const handleMonthChange = (value) => {
+        validateMonthSalary(value, true);
+    }
+    
 
     /** Function bắt sự kiện thay đổi tiền lương chính */
-    handleMainSalaryChange = (e) => {
-        let value = e.target.value;
-        this.validateMainSalary(value, true);
-    }
-    validateMainSalary = (value, willUpdateState = true) => {
-        let { translate } = this.props;
+    const validateMainSalary = (value, willUpdateState = true) => {
+        let { translate } = props;
         let { message } = ValidationHelper.validateEmpty(translate, value);
 
         if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    errorOnMainSalary: message,
-                    mainSalary: value,
-                }
-            });
+            setState(state => ({
+                ...state,
+                errorOnMainSalary: message,
+                mainSalary: value
+            }))
         }
         return message === undefined;
     }
+    const handleMainSalaryChange = (e) => {
+        let value = e.target.value;
+        validateMainSalary(value, true);
+    }
+    
 
     /** Function bắt sự kiện thay đổi đơn vị tiền lương */
-    handleChange = (e) => {
+    const handleChange = (e) => {
         let value = e.target.value;
-        this.setState({
-            unit: value
-        });
+        setState(state => ({...state, unit: value}));
     }
 
     /** Bắt sự kiện click thêm lương thưởng khác */
-    handleAddBonus = () => {
-        let { bonus } = this.state;
+    const handleAddBonus = () => {
+        let { bonus } = state;
         if (bonus.length !== 0) {
             let result;
             for (let n in bonus) {
-                result = this.validateNameSalary(bonus[n].nameBonus, n) &&
-                    this.validateMoreMoneySalary(bonus[n].number, n);
+                result = validateNameSalary(bonus[n].nameBonus, n) &&
+                    validateMoreMoneySalary(bonus[n].number, n);
                 if (result === false) {
-                    this.validateNameSalary(bonus[n].nameBonus, n);
-                    this.validateMoreMoneySalary(bonus[n].number, n)
+                    validateNameSalary(bonus[n].nameBonus, n);
+                    validateMoreMoneySalary(bonus[n].number, n)
                     break;
                 }
             }
             if (result === true) {
-                this.setState({
+                setState(state => ({
+                    ...state,
                     bonus: [...bonus, { nameBonus: "", number: "" }]
-                })
+                }))
             }
         } else {
-            this.setState({
+            setState(state => ({
+                ...state,
                 bonus: [...bonus, { nameBonus: "", number: "" }]
-            })
+            }))
         }
 
     }
 
     /** Bắt sự kiện chỉnh sửa tên lương thưởng khác */
-    handleChangeNameBonus = (e) => {
+    const handleChangeNameBonus = (e) => {
         let { value, className } = e.target;
-        this.validateNameSalary(value, className);
+        validateNameSalary(value, className);
     }
-    validateNameSalary = (value, className, willUpdateState = true) => {
-        let { translate } = this.props;
+
+    const validateNameSalary = (value, className, willUpdateState = true) => {
+        let { translate } = props;
         let { message } = ValidationHelper.validateEmpty(translate, value);
 
         if (willUpdateState) {
-            let { bonus } = this.state;
+            let { bonus } = state;
             bonus[className] = { ...bonus[className], nameBonus: value }
-            this.setState(state => {
-                return {
-                    ...state,
-                    errorOnNameSalary: message,
-                    bonus: bonus
-                }
-            });
+            setState(state => ({
+                ...state,
+                errorOnNameSalary: message,
+                bonus: bonus
+            }))
         }
         return message === undefined;
     }
 
     /** Bắt sự kiện chỉnh sửa tiền lương thưởng khác */
-    handleChangeMoneyBonus = (e) => {
+    const handleChangeMoneyBonus = (e) => {
         let { value, className } = e.target;
-        this.validateMoreMoneySalary(value, className);
+        validateMoreMoneySalary(value, className);
     }
-    validateMoreMoneySalary = (value, className, willUpdateState = true) => {
-        let { translate } = this.props;
+    const validateMoreMoneySalary = (value, className, willUpdateState = true) => {
+        let { translate } = props;
         let { message } = ValidationHelper.validateEmpty(translate, value);
 
         if (willUpdateState) {
-            let { bonus } = this.state;
+            let { bonus } = state;
             bonus[className] = { ...bonus[className], number: value }
-            this.setState(state => {
-                return {
-                    ...state,
-                    errorOnMoreMoneySalary: message,
-                    bonus: bonus
-                }
-            });
+            setState(state => ({
+                ...state,
+                errorOnMoreMoneySalary: message,
+                bonus: bonus
+            }))
         }
         return message === undefined;
     }
@@ -218,29 +211,28 @@ class SalaryCreateForm extends Component {
      * Function xoá lương thưởng khác
      * @param {*} index : Số thứ tự lương thưởng khác cần xoá
      */
-    delete = (index) => {
-        let { bonus } = this.state;
+    const Delete = (index) => {
+        let { bonus } = state;
         bonus.splice(index, 1);
-        this.setState({
-            bonus: bonus
-        })
+        setState(state => ({...state, bonus: bonus}))
         if (bonus.length !== 0) {
             for (let n in bonus) {
-                this.validateNameSalary(bonus[n].nameBonus, n);
-                this.validateMoreMoneySalary(bonus[n].number, n)
+                validateNameSalary(bonus[n].nameBonus, n);
+                validateMoreMoneySalary(bonus[n].number, n)
             }
         } else {
-            this.setState({
+            setState(state => ({
+                ...state,
                 errorOnMoreMoneySalary: undefined,
                 errorOnNameSalary: undefined
-            })
+            }))
         }
     };
 
     /** Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form  */
-    isFormValidated = () => {
-        const { user } = this.props;
-        let { employee, organizationalUnit, mainSalary, month, bonus } = this.state;
+    const isFormValidated = () => {
+        const { user } = props;
+        let { employee, organizationalUnit, mainSalary, month, bonus } = state;
 
         if (user.organizationalUnitsOfUserByEmail) {
             if (!organizationalUnit) {
@@ -249,16 +241,16 @@ class SalaryCreateForm extends Component {
             }
         }
 
-        let result = this.validateEmployeeNumber(employee, false) &&
-            this.validateMainSalary(mainSalary, false) && this.validateOrganizationalUnit(organizationalUnit, false) &&
-            this.validateMonthSalary(month, false);
+        let result = validateEmployeeNumber(employee, false) &&
+            validateMainSalary(mainSalary, false) && validateOrganizationalUnit(organizationalUnit, false) &&
+            validateMonthSalary(month, false);
 
         if (result === true) {
             if (bonus !== []) {
                 let test = bonus;
                 for (let n in test) {
-                    result = this.validateNameSalary(test[n].nameBonus, n, false) &&
-                        this.validateMoreMoneySalary(test[n].number, n, false);
+                    result = validateNameSalary(test[n].nameBonus, n, false) &&
+                        validateMoreMoneySalary(test[n].number, n, false);
                     if (result === false) break;
                 }
             }
@@ -267,9 +259,9 @@ class SalaryCreateForm extends Component {
     }
 
     /** Function bắt sự kiện lưu bảng lương */
-    save = () => {
-        const { user, employeesManager } = this.props;
-        let { organizationalUnit, month, employee } = this.state;
+    const save = () => {
+        const { user, employeesManager } = props;
+        let { organizationalUnit, month, employee } = state;
 
         if (user.organizationalUnitsOfUserByEmail) {
             if (!organizationalUnit) {
@@ -282,127 +274,125 @@ class SalaryCreateForm extends Component {
 
         let partMonth = month.split('-');
         let monthNew = [partMonth[1], partMonth[0]].join('-');
-        if (this.isFormValidated()) {
-            this.props.createSalary({ ...this.state, employee: employeeID, organizationalUnit: organizationalUnit, month: monthNew });
+        if (isFormValidated()) {
+            createSalary({ ...state, employee: employeeID, organizationalUnit: organizationalUnit, month: monthNew });
         }
     }
 
-    render() {
-        const { translate, salary, employeesManager, user } = this.props;
+    const { translate, salary, employeesManager, user } = props;
 
-        let { employee, organizationalUnit, unit, mainSalary, bonus, month, errorOnEmployee, errorOnOrganizationalUnit,
-            errorOnMainSalary, errorOnNameSalary, errorOnMoreMoneySalary, errorOnMonthSalary } = this.state;
+    let { employee, organizationalUnit, unit, mainSalary, bonus, month, errorOnEmployee, errorOnOrganizationalUnit,
+        errorOnMainSalary, errorOnNameSalary, errorOnMoreMoneySalary, errorOnMonthSalary } = state;
 
-        let listAllEmployees = employeesManager.listEmployeesOfOrganizationalUnits;
-        let listDepartments = [{ _id: "", name: translate('human_resource.non_unit') }];
+    let listAllEmployees = employeesManager.listEmployeesOfOrganizationalUnits;
+    let listDepartments = [{ _id: "", name: translate('human_resource.non_unit') }];
 
-        if (user.organizationalUnitsOfUserByEmail) {
-            listDepartments = user.organizationalUnitsOfUserByEmail;
-            if (!organizationalUnit) {
-                let department = user.organizationalUnitsOfUserByEmail[0];
-                organizationalUnit = department._id;
-            }
+    if (user.organizationalUnitsOfUserByEmail) {
+        listDepartments = user.organizationalUnitsOfUserByEmail;
+        if (!organizationalUnit) {
+            let department = user.organizationalUnitsOfUserByEmail[0];
+            organizationalUnit = department._id;
         }
-
-        return (
-            <React.Fragment>
-                <DialogModal
-                    size='50' modalID="modal-create-salary" isLoading={salary.isLoading}
-                    formID="form-create-salary"
-                    title={translate('human_resource.salary.add_salary_title')}
-                    resetOnSave={true}
-                    resetOnClose={true}
-                    func={this.save}
-                    disableSubmit={!this.isFormValidated()}
-                >
-                    <form className="form-group" id="form-create-salary">
-                        {/* Mã số nhân viên */}
-                        <div className={`form-group ${errorOnEmployee && "has-error"}`}>
-                            <label>{translate('human_resource.staff_number')}<span className="text-red">*</span></label>
-                            <SelectBox
-                                id={`create-salary-employee`}
-                                className="form-control select2"
-                                style={{ width: "100%" }}
-                                value={employee}
-                                items={listAllEmployees.map(y => { return { value: y.emailInCompany, text: `${y.employeeNumber} - ${y.fullName}` } }).concat([{ value: "", text: translate('human_resource.non_staff') }])}
-                                onChange={this.handleMSNVChange}
-                            />
-                            <ErrorLabel content={errorOnEmployee} />
-                        </div>
-                        {/* Đơn vị */}
-                        <div className={`form-group ${errorOnOrganizationalUnit && "has-error"}`}>
-                            <label>{translate('human_resource.unit')}<span className="text-red">*</span></label>
-                            <SelectBox
-                                id={`create-salary-unit`}
-                                className="form-control select2"
-                                disabled={listDepartments.length > 1 ? false : true}
-                                style={{ width: "100%" }}
-                                value={organizationalUnit}
-                                items={listDepartments.map(y => { return { value: y._id, text: y.name } })}
-                                onChange={this.handleOrganizationalUnitChange}
-                            />
-                            <ErrorLabel content={errorOnOrganizationalUnit} />
-                        </div>
-                        {/* Tháng lương */}
-                        <div className={`form-group ${errorOnMonthSalary && "has-error"}`}>
-                            <label>{translate('human_resource.month')}<span className="text-red">*</span></label>
-                            <DatePicker
-                                id="create_month"
-                                dateFormat="month-year"
-                                value={month}
-                                onChange={this.handleMonthChange}
-                            />
-                            <ErrorLabel content={errorOnMonthSalary} />
-                        </div>
-                        {/* Tiền lương chính */}
-                        <div className={`form-group ${errorOnMainSalary && "has-error"}`}>
-                            <label >{translate('human_resource.salary.table.main_salary')}<span className="text-red">*</span></label>
-                            <div>
-                                <input type="number" className="form-control" name="mainSalary" value={mainSalary} onChange={this.handleMainSalaryChange}
-                                    style={{ display: "inline", width: "85%" }} autoComplete="off" placeholder={translate('human_resource.salary.table.main_salary')} autoComplete="off" />
-                                <select className="form-control" name="unit" value={unit} onChange={this.handleChange} style={{ display: "inline", width: "15%" }}>
-                                    <option value="VND">VND</option>
-                                    <option value="USD">USD</option>
-                                </select>
-                            </div>
-                            <ErrorLabel content={errorOnMainSalary} />
-                        </div>
-                        {/* Các loại lương thưởng khác */}
-                        <div className={`form-group ${(errorOnNameSalary || errorOnMoreMoneySalary) && "has-error"}`}>
-                            <label>{translate('human_resource.salary.table.other_salary')}<a title={translate('human_resource.salary.table.add_more_salary')}>
-                                <i className="fa fa-plus-square" style={{ color: "#28A745", marginLeft: 5 }} onClick={this.handleAddBonus} /></a></label>
-                            <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }}>
-                                <thead>
-                                    <tr>
-                                        <th>{translate('human_resource.salary.table.name_salary')}</th>
-                                        <th>{translate('human_resource.salary.table.money_salary')}</th>
-                                        <th style={{ width: '120px', textAlign: 'center' }}>{translate('human_resource.salary.table.action')}</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {(bonus && bonus.length !== 0) &&
-                                        bonus.map((x, index) => (
-                                            <tr key={index}>
-                                                <td><input className={index} type="text" value={x.nameBonus} name="nameBonus" style={{ width: "100%" }} onChange={this.handleChangeNameBonus} /></td>
-                                                <td><input className={index} type="number" value={x.number} name="number" style={{ width: "100%" }} onChange={this.handleChangeMoneyBonus} /></td>
-                                                <td style={{ textAlign: "center" }}>
-                                                    <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.delete(index)}><i className="material-icons"></i></a>
-                                                </td>
-                                            </tr>
-                                        ))}
-                                </tbody>
-                            </table>
-                            {
-                                (!bonus || bonus.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
-                            }
-                            <ErrorLabel content={errorOnNameSalary} />
-                            <ErrorLabel content={errorOnMoreMoneySalary} />
-                        </div>
-                    </form>
-                </DialogModal>
-            </React.Fragment>
-        );
     }
+
+    return (
+        <React.Fragment>
+            <DialogModal
+                size='50' modalID="modal-create-salary" isLoading={salary.isLoading}
+                formID="form-create-salary"
+                title={translate('human_resource.salary.add_salary_title')}
+                resetOnSave={true}
+                resetOnClose={true}
+                func={save}
+                disableSubmit={!isFormValidated()}
+            >
+                <form className="form-group" id="form-create-salary">
+                    {/* Mã số nhân viên */}
+                    <div className={`form-group ${errorOnEmployee && "has-error"}`}>
+                        <label>{translate('human_resource.staff_number')}<span className="text-red">*</span></label>
+                        <SelectBox
+                            id={`create-salary-employee`}
+                            className="form-control select2"
+                            style={{ width: "100%" }}
+                            value={employee}
+                            items={listAllEmployees.map(y => { return { value: y.emailInCompany, text: `${y.employeeNumber} - ${y.fullName}` } }).concat([{ value: "", text: translate('human_resource.non_staff') }])}
+                            onChange={handleMSNVChange}
+                        />
+                        <ErrorLabel content={errorOnEmployee} />
+                    </div>
+                    {/* Đơn vị */}
+                    <div className={`form-group ${errorOnOrganizationalUnit && "has-error"}`}>
+                        <label>{translate('human_resource.unit')}<span className="text-red">*</span></label>
+                        <SelectBox
+                            id={`create-salary-unit`}
+                            className="form-control select2"
+                            disabled={listDepartments.length > 1 ? false : true}
+                            style={{ width: "100%" }}
+                            value={organizationalUnit}
+                            items={listDepartments.map(y => { return { value: y._id, text: y.name } })}
+                            onChange={handleOrganizationalUnitChange}
+                        />
+                        <ErrorLabel content={errorOnOrganizationalUnit} />
+                    </div>
+                    {/* Tháng lương */}
+                    <div className={`form-group ${errorOnMonthSalary && "has-error"}`}>
+                        <label>{translate('human_resource.month')}<span className="text-red">*</span></label>
+                        <DatePicker
+                            id="create_month"
+                            dateFormat="month-year"
+                            value={month}
+                            onChange={handleMonthChange}
+                        />
+                        <ErrorLabel content={errorOnMonthSalary} />
+                    </div>
+                    {/* Tiền lương chính */}
+                    <div className={`form-group ${errorOnMainSalary && "has-error"}`}>
+                        <label >{translate('human_resource.salary.table.main_salary')}<span className="text-red">*</span></label>
+                        <div>
+                            <input type="number" className="form-control" name="mainSalary" value={mainSalary} onChange={handleMainSalaryChange}
+                                style={{ display: "inline", width: "85%" }} autoComplete="off" placeholder={translate('human_resource.salary.table.main_salary')} autoComplete="off" />
+                            <select className="form-control" name="unit" value={unit} onChange={handleChange} style={{ display: "inline", width: "15%" }}>
+                                <option value="VND">VND</option>
+                                <option value="USD">USD</option>
+                            </select>
+                        </div>
+                        <ErrorLabel content={errorOnMainSalary} />
+                    </div>
+                    {/* Các loại lương thưởng khác */}
+                    <div className={`form-group ${(errorOnNameSalary || errorOnMoreMoneySalary) && "has-error"}`}>
+                        <label>{translate('human_resource.salary.table.other_salary')}<a title={translate('human_resource.salary.table.add_more_salary')}>
+                            <i className="fa fa-plus-square" style={{ color: "#28A745", marginLeft: 5 }} onClick={handleAddBonus} /></a></label>
+                        <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }}>
+                            <thead>
+                                <tr>
+                                    <th>{translate('human_resource.salary.table.name_salary')}</th>
+                                    <th>{translate('human_resource.salary.table.money_salary')}</th>
+                                    <th style={{ width: '120px', textAlign: 'center' }}>{translate('human_resource.salary.table.action')}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {(bonus && bonus.length !== 0) &&
+                                    bonus.map((x, index) => (
+                                        <tr key={index}>
+                                            <td><input className={index} type="text" value={x.nameBonus} name="nameBonus" style={{ width: "100%" }} onChange={handleChangeNameBonus} /></td>
+                                            <td><input className={index} type="number" value={x.number} name="number" style={{ width: "100%" }} onChange={handleChangeMoneyBonus} /></td>
+                                            <td style={{ textAlign: "center" }}>
+                                                <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => Delete(index)}><i className="material-icons"></i></a>
+                                            </td>
+                                        </tr>
+                                    ))}
+                            </tbody>
+                        </table>
+                        {
+                            (!bonus || bonus.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                        }
+                        <ErrorLabel content={errorOnNameSalary} />
+                        <ErrorLabel content={errorOnMoreMoneySalary} />
+                    </div>
+                </form>
+            </DialogModal>
+        </React.Fragment>
+    );
 };
 function mapState(state) {
     const { salary, employeesManager, user } = state;

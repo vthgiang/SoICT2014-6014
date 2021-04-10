@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { convertJsonObjectToFormData } from '../../../../../helpers/jsonObjectToFormDataObjectConverter';
@@ -30,35 +30,35 @@ const initMember = {
     note: ''
 }
 
-class EmployeeEditFrom extends Component {
-    constructor(props) {
-        super(props);
-        this.DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, };
-        this.state = {
-            dataStatus: this.DATA_STATUS.NOT_AVAILABLE,
-            houseHold: {
-                headHouseHoldName: '',
-                documentType: '',
-                houseHoldNumber: '',
-                city: '',
-                district: '',
-                ward: '',
-                houseHoldAddress: '',
-                phone: '',
-                houseHoldCode: '',
-                familyMembers: []
-            },
-            editMember: initMember
-        };
-    }
+const EmployeeEditFrom = (props) => {
+
+    const DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, };
+    
+    const [state, setState] = useState({
+        dataStatus: DATA_STATUS.NOT_AVAILABLE,
+        houseHold: {
+            headHouseHoldName: '',
+            documentType: '',
+            houseHoldNumber: '',
+            city: '',
+            district: '',
+            ward: '',
+            houseHoldAddress: '',
+            phone: '',
+            houseHoldCode: '',
+            familyMembers: []
+        },
+        editMember: initMember
+    });
 
     /**
      * Function upload avatar 
      * @param {*} img 
      * @param {*} avatar 
      */
-    handleUpload = (img, avatar) => {
-        this.setState({
+    const handleUpload = (img, avatar) => {
+        setState({
+            ...state,
             img: img,
             avatar: avatar
         })
@@ -69,15 +69,16 @@ class EmployeeEditFrom extends Component {
      * @param {*} name : Tên trường
      * @param {*} value : Giá trị của trường
      */
-    handleChange = (name, value) => {
-        const { employee } = this.state;
+    const handleChange = (name, value) => {
+        const { employee } = state;
         if (name === 'startingDate' || name === 'leavingDate' || name === 'birthdate' || name === 'identityCardDate' || name === 'taxDateOfIssue' || name === 'healthInsuranceStartDate' || name === 'healthInsuranceEndDate') {
             if (value) {
                 let partValue = value.split('-');
                 value = [partValue[2], partValue[1], partValue[0]].join('-');
             }
         }
-        this.setState({
+        setState({
+            ...state,
             employee: {
                 ...employee,
                 [name]: value
@@ -91,8 +92,9 @@ class EmployeeEditFrom extends Component {
      * @param {*} data : Dữ liệu thông tin kinh nghiệm làm việc
      * @param {*} addData : Kinh nghiệm làm việc muốn thêm
      */
-    handleCreateExperiences = (data, addData) => {
-        this.setState({
+    const handleCreateExperiences = (data, addData) => {
+        setState({
+            ...state,
             experiences: data
         })
     }
@@ -102,14 +104,16 @@ class EmployeeEditFrom extends Component {
      * @param {*} data : Dữ liệu thông tin kinh nghiệm làm việc
      * @param {*} editData : Kinh nghiệm làm việc muốn chỉnh sửa
      */
-    handleEditExperiences = (data, editData) => {
-        const { editExperiences } = this.state;
+    const handleEditExperiences = (data, editData) => {
+        const { editExperiences } = state;
         if (editData._id) {
-            this.setState({
+            setState({
+                ...state,
                 editExperiences: [...editExperiences, editData]
             })
         } else {
-            this.setState({
+            setState({
+                ...state,
                 experiences: data
             })
         }
@@ -120,15 +124,17 @@ class EmployeeEditFrom extends Component {
      * @param {*} data : Dữ liệu thông tin kinh nghiệm làm việc
      * @param {*} deleteData : Kinh nghiệm làm việc muốn xoá
      */
-    handleDeleteExperiences = (data, deleteData) => {
-        const { deleteExperiences, editExperiences } = this.state;
+    const handleDeleteExperiences = (data, deleteData) => {
+        const { deleteExperiences, editExperiences } = state;
         if (deleteData._id) {
-            this.setState({
+            setState({
+                ...state,
                 deleteExperiences: [...deleteExperiences, deleteData],
                 editExperiences: editExperiences.filter(x => x._id !== deleteData._id)
             })
         } else {
-            this.setState({
+            setState({
+                ...state,
                 experiences: data
             })
         }
@@ -140,8 +146,9 @@ class EmployeeEditFrom extends Component {
      * @param {*} data : Dữ liệu thông tin bằng cấp
      * @param {*} addData : Bằng cấp muốn thêm 
      */
-    handleCreateDegree = (data, addData) => {
-        this.setState({
+    const handleCreateDegree = (data, addData) => {
+        setState({
+            ...state,
             degrees: data
         })
     }
@@ -151,14 +158,16 @@ class EmployeeEditFrom extends Component {
      * @param {*} data : Dữ liệu thông tin bằng cấp
      * @param {*} editData : bằng cấp muốn chỉnh sửa
      */
-    handleEditDegree = (data, editData) => {
-        const { editDegrees } = this.state;
+    const handleEditDegree = (data, editData) => {
+        const { editDegrees } = state;
         if (editData._id) {
-            this.setState({
+            setState({
+                ...state,
                 editDegrees: [...editDegrees, editData]
             })
         } else {
-            this.setState({
+            setState({
+                ...state,
                 degrees: data
             })
         }
@@ -169,15 +178,17 @@ class EmployeeEditFrom extends Component {
      * @param {*} data : Dữ liệu thông tin bằng cấp
      * @param {*} deleteData : Bằng cấp muốn xoá
      */
-    handleDeleteDegree = (data, deleteData) => {
-        const { deleteDegrees, editDegrees } = this.state;
+    const handleDeleteDegree = (data, deleteData) => {
+        const { deleteDegrees, editDegrees } = state;
         if (deleteData._id) {
-            this.setState({
+            setState({
+                ...state,
                 deleteDegrees: [...deleteDegrees, deleteData],
                 editDegrees: editDegrees.filter(x => x._id !== deleteData._id)
             })
         } else {
-            this.setState({
+            setState({
+                ...state,
                 degrees: data
             })
         }
@@ -188,8 +199,9 @@ class EmployeeEditFrom extends Component {
      * @param {*} data : Dữ liệu thông tin chuyên ngành tuowg đương
      * @param {*} addData : Chuyên ngành tuowg đương muốn thêm 
      */
-    handleAddMajor = (data, addData) => {
-        this.setState({
+    const handleAddMajor = (data, addData) => {
+        setState({
+            ...state,
             major: data
         })
     }
@@ -199,14 +211,16 @@ class EmployeeEditFrom extends Component {
      * @param {*} data : Dữ liệu thông tin chuyên ngành tuowg đương
      * @param {*} editData : chuyên ngành tuowg đương muốn chỉnh sửa
      */
-    handleEditMajor = (data, editData) => {
-        const { editMajor } = this.state;
+    const handleEditMajor = (data, editData) => {
+        const { editMajor } = state;
         if (editData._id) {
-            this.setState({
+            setState({
+                ...state,
                 editMajor: [...editMajor, editData]
             })
         } else {
-            this.setState({
+            setState({
+                ...state,
                 major: data
             })
         }
@@ -217,15 +231,17 @@ class EmployeeEditFrom extends Component {
      * @param {*} data : Dữ liệu thông tin chuyên ngành tuowg đương
      * @param {*} deleteData : chuyên ngành tuowg đương muốn xoá
      */
-    handleDeleteMajor = (data, deleteData) => {
-        const { deleteMajor, editMajor } = this.state;
+    const handleDeleteMajor = (data, deleteData) => {
+        const { deleteMajor, editMajor } = state;
         if (deleteData._id) {
-            this.setState({
+            setState({
+                ...state,
                 deleteMajor: [...deleteMajor, deleteData],
                 editMajor: editMajor.filter(x => x._id !== deleteData._id)
             })
         } else {
-            this.setState({
+            setState({
+                ...state,
                 major: data
             })
         }
@@ -236,8 +252,9 @@ class EmployeeEditFrom extends Component {
      * @param {*} data : Dữ liệu thông tin Công việc đương tương
      * @param {*} addData : Công việc đương tương muốn thêm 
      */
-    handleAddCareer = (data, addData) => {
-        this.setState({
+    const handleAddCareer = (data, addData) => {
+        setState({
+            ...state,
             career: data
         })
     }
@@ -247,14 +264,16 @@ class EmployeeEditFrom extends Component {
      * @param {*} data : Dữ liệu thông tin bằng cấp
      * @param {*} editData : bằng cấp muốn chỉnh sửa
      */
-    handleEditCareer = (data, editData) => {
-        const { editCareer } = this.state;
+    const handleEditCareer = (data, editData) => {
+        const { editCareer } = state;
         if (editData._id) {
-            this.setState({
+            setState({
+                ...state,
                 editCareer: [...editCareer, editData]
             })
         } else {
-            this.setState({
+            setState({
+                ...state,
                 career: data
             })
         }
@@ -265,15 +284,17 @@ class EmployeeEditFrom extends Component {
      * @param {*} data : Dữ liệu thông tin Công việc đương tương
      * @param {*} deleteData : Công việc đương tương muốn xoá
      */
-    handleDeleteCareer = (data, deleteData) => {
-        const { deleteCareer, editCareer } = this.state;
+    const handleDeleteCareer = (data, deleteData) => {
+        const { deleteCareer, editCareer } = state;
         if (deleteData._id) {
-            this.setState({
+            setState({
+                ...state,
                 deleteCareer: [...deleteCareer, deleteData],
                 editCareer: editCareer.filter(x => x._id !== deleteData._id)
             })
         } else {
-            this.setState({
+            setState({
+                ...state,
                 career: data
             })
         }
@@ -285,8 +306,9 @@ class EmployeeEditFrom extends Component {
      * @param {*} data : Dữ liệu thông tin chứng chỉ
      * @param {*} addData : Chứng chỉ muốn thêm
      */
-    handleCreateCertificate = (data, addData) => {
-        this.setState({
+    const handleCreateCertificate = (data, addData) => {
+        setState({
+            ...state,
             certificates: data
         })
     }
@@ -296,14 +318,16 @@ class EmployeeEditFrom extends Component {
      * @param {*} data : Dữ liệu thông tin chứng chỉ
      * @param {*} editData : Chứng chỉ muốn chỉnh sửa
      */
-    handleEditCertificate = (data, editData) => {
-        const { editCertificates } = this.state;
+    const handleEditCertificate = (data, editData) => {
+        const { editCertificates } = state;
         if (editData._id) {
-            this.setState({
+            setState({
+                ...state,
                 editCertificates: [...editCertificates, editData]
             })
         } else {
-            this.setState({
+            setState({
+                ...state,
                 certificates: data
             })
         }
@@ -314,15 +338,17 @@ class EmployeeEditFrom extends Component {
      * @param {*} data : Dữ liệu thông tin chứng chỉ
      * @param {*} deleteData : Chứng chỉ muốn xoá
      */
-    handleDeleteCertificate = (data, deleteData) => {
-        const { deleteCertificates, editCertificates } = this.state;
+    const handleDeleteCertificate = (data, deleteData) => {
+        const { deleteCertificates, editCertificates } = state;
         if (deleteData._id) {
-            this.setState({
+            setState({
+                ...state,
                 deleteCertificates: [...deleteCertificates, deleteData],
                 editCertificates: editCertificates.filter(x => x._id !== deleteData._id)
             })
         } else {
-            this.setState({
+            setState({
+                ...state,
                 certificates: data
             })
         }
@@ -334,8 +360,9 @@ class EmployeeEditFrom extends Component {
      * @param {*} data : Dữ liệu quá trình đóng bảo hiểm xã hội
      * @param {*} addData : Quá trình bảo hiểm xã hội muốn thêm
      */
-    handleCreateBHXH = (data, addData) => {
-        this.setState({
+    const handleCreateBHXH = (data, addData) => {
+        setState({
+            ...state,
             socialInsuranceDetails: data
         })
     }
@@ -345,14 +372,16 @@ class EmployeeEditFrom extends Component {
      * @param {*} data : Dữ liệu quá trình đóng bảo hiểm xã hội
      * @param {*} editData : Quá trình đóng bảo hiểm xã hội muốn thêm
      */
-    handleEditBHXH = (data, editData) => {
-        const { editSocialInsuranceDetails } = this.state;
+    const handleEditBHXH = (data, editData) => {
+        const { editSocialInsuranceDetails } = state;
         if (editData._id) {
-            this.setState({
+            setState({
+                ...state,
                 editSocialInsuranceDetails: [...editSocialInsuranceDetails, editData]
             })
         } else {
-            this.setState({
+            setState({
+                ...state,
                 socialInsuranceDetails: data
             })
         }
@@ -363,15 +392,17 @@ class EmployeeEditFrom extends Component {
      * @param {*} data : Dữ liệu quá trình đóng bảo hiểm xã hội
      * @param {*} deleteData : Quá trình đóng bảo hiểm xã hội muốn xoá
      */
-    handleDeleteBHXH = (data, deleteData) => {
-        const { deleteSocialInsuranceDetails, editSocialInsuranceDetails } = this.state;
+    const handleDeleteBHXH = (data, deleteData) => {
+        const { deleteSocialInsuranceDetails, editSocialInsuranceDetails } = state;
         if (deleteData._id) {
-            this.setState({
+            setState({
+                ...state,
                 deleteSocialInsuranceDetails: [...deleteSocialInsuranceDetails, deleteData],
                 editSocialInsuranceDetails: editSocialInsuranceDetails.filter(x => x._id !== deleteData._id)
             })
         } else {
-            this.setState({
+            setState({
+                ...state,
                 socialInsuranceDetails: data
             })
         }
@@ -383,8 +414,9 @@ class EmployeeEditFrom extends Component {
      * @param {*} data : Dữ liệu hợp đồng lao động
      * @param {*} addData : Hợp đồng lao động muốn thêm
      */
-    handleCreateContract = (data, addData) => {
-        this.setState({
+    const handleCreateContract = (data, addData) => {
+        setState({
+            ...state,
             contracts: data
         })
     }
@@ -394,14 +426,16 @@ class EmployeeEditFrom extends Component {
      * @param {*} data : Dữ liệu thông tin hợp đồng lao động
      * @param {*} editData : Hợp đồng lao động muốn chỉnh sửa
      */
-    handleEditContract = (data, editData) => {
-        const { editContracts } = this.state;
+    const handleEditContract = (data, editData) => {
+        const { editContracts } = state;
         if (editData._id) {
-            this.setState({
+            setState({
+                ...state,
                 editContracts: [...editContracts, editData]
             })
         } else {
-            this.setState({
+            setState({
+                ...state,
                 contracts: data
             })
         }
@@ -412,15 +446,17 @@ class EmployeeEditFrom extends Component {
      * @param {*} data : Dữ liệu thông tin hợp đồng lao động
      * @param {*} deleteData : Hợp đồng lao động muốn xoá
      */
-    handleDeleteContract = (data, deleteData) => {
-        const { deleteContracts, editContracts } = this.state;
+    const handleDeleteContract = (data, deleteData) => {
+        const { deleteContracts, editContracts } = state;
         if (deleteData._id) {
-            this.setState({
+            setState({
+                ...state,
                 deleteContracts: [...deleteContracts, deleteData],
                 editContracts: editContracts.filter(x => x._id !== deleteData._id)
             })
         } else {
-            this.setState({
+            setState({
+                ...state,
                 contracts: data
             })
         }
@@ -432,8 +468,9 @@ class EmployeeEditFrom extends Component {
      * @param {*} data : Dữ liệu thông tin khen thưởng
      * @param {*} addData : Khen thưởng muốn thêm
      */
-    handleCreateConmmendation = (data, addData) => {
-        this.setState({
+    const handleCreateConmmendation = (data, addData) => {
+        setState({
+            ...state,
             commendations: data
         })
     }
@@ -443,14 +480,16 @@ class EmployeeEditFrom extends Component {
      * @param {*} data : Dữ liệu thông tin khen thưởng
      * @param {*} editData : Khen thưởng muốn chỉnh sửa
      */
-    handleEditConmmendation = (data, editData) => {
-        const { editConmmendations } = this.state;
+    const handleEditConmmendation = (data, editData) => {
+        const { editConmmendations } = state;
         if (editData._id) {
-            this.setState({
+            setState({
+                ...state,
                 editConmmendations: [...editConmmendations, editData]
             })
         } else {
-            this.setState({
+            setState({
+                ...state,
                 commendations: data
             })
         }
@@ -461,15 +500,17 @@ class EmployeeEditFrom extends Component {
      * @param {*} data : Dữ liệu thông tin khen thưởng
      * @param {*} deleteData : Khen thưởng muốn xoá
      */
-    handleDeleteConmmendation = (data, deleteData) => {
-        const { editConmmendations, deleteConmmendations } = this.state;
+    const handleDeleteConmmendation = (data, deleteData) => {
+        const { editConmmendations, deleteConmmendations } = state;
         if (deleteData._id) {
-            this.setState({
+            setState({
+                ...state,
                 deleteConmmendations: [...deleteConmmendations, deleteData],
                 editConmmendations: editConmmendations.filter(x => x._id !== deleteData._id)
             })
         } else {
-            this.setState({
+            setState({
+                ...state,
                 commendations: data
             })
         }
@@ -481,8 +522,9 @@ class EmployeeEditFrom extends Component {
      * @param {*} data : Dữ liệu thông tin kỷ luật
      * @param {*} addData : Kỷ luật muốn thêm
      */
-    handleCreateDiscipline = (data, addData) => {
-        this.setState({
+    const handleCreateDiscipline = (data, addData) => {
+        setState({
+            ...state,
             disciplines: data
         })
     }
@@ -492,14 +534,16 @@ class EmployeeEditFrom extends Component {
      * @param {*} data : Dữ liệu thông tin kỷ luật
      * @param {*} editData : Kỷ luật muốn chỉnh sửa
      */
-    handleEditDiscipline = (data, editData) => {
-        const { editDisciplines } = this.state;
+    const handleEditDiscipline = (data, editData) => {
+        const { editDisciplines } = state;
         if (editData._id) {
-            this.setState({
+            setState({
+                ...state,
                 editDisciplines: [...editDisciplines, editData]
             })
         } else {
-            this.setState({
+            setState({
+                ...state,
                 disciplines: data
             })
         }
@@ -510,15 +554,17 @@ class EmployeeEditFrom extends Component {
      * @param {*} data : Dữ liệu thông tin kỷ luật
      * @param {*} deleteData : Kỷ luật muốn xoá
      */
-    handleDeleteDiscipline = (data, deleteData) => {
-        const { editDisciplines, deleteDisciplines } = this.state;
+    const handleDeleteDiscipline = (data, deleteData) => {
+        const { editDisciplines, deleteDisciplines } = state;
         if (deleteData._id) {
-            this.setState({
+            setState({
+                ...state,
                 deleteDisciplines: [...deleteDisciplines, deleteData],
                 editDisciplines: editDisciplines.filter(x => x._id !== deleteData._id)
             })
         } else {
-            this.setState({
+            setState({
+                ...state,
                 disciplines: data
             })
         }
@@ -530,8 +576,9 @@ class EmployeeEditFrom extends Component {
      * @param {*} data : Dữ liệu thông tin nghỉ phép
      * @param {*} addData : Nghỉ phép muốn thêm
      */
-    handleCreateAnnualLeave = (data, addData) => {
-        this.setState({
+    const handleCreateAnnualLeave = (data, addData) => {
+        setState({
+            ...state,
             annualLeaves: data
         })
     }
@@ -541,14 +588,16 @@ class EmployeeEditFrom extends Component {
      * @param {*} data : Dữ liệu thông tin nghỉ phép
      * @param {*} editData : Nghỉ phép muốn chỉnh sửa
      */
-    handleEditAnnualLeave = (data, editData) => {
-        const { editAnnualLeaves } = this.state;
+    const handleEditAnnualLeave = (data, editData) => {
+        const { editAnnualLeaves } = state;
         if (editData._id) {
-            this.setState({
+            setState({
+                ...state,
                 editAnnualLeaves: [...editAnnualLeaves, editData]
             })
         } else {
-            this.setState({
+            setState({
+                ...state,
                 annualLeaves: data
             })
         }
@@ -559,15 +608,17 @@ class EmployeeEditFrom extends Component {
      * @param {*} data : Dữ liệu thông tin nghỉ phép
      * @param {*} deleteData : Nghỉ phép muốn xoá
      */
-    handleDeleteAnnualLeave = (data, deleteData) => {
-        const { editAnnualLeaves, deleteAnnualLeaves } = this.state;
+    const handleDeleteAnnualLeave = (data, deleteData) => {
+        const { editAnnualLeaves, deleteAnnualLeaves } = state;
         if (deleteData._id) {
-            this.setState({
+            setState({
+                ...state,
                 deleteAnnualLeaves: [...deleteAnnualLeaves, deleteData],
                 editAnnualLeaves: editAnnualLeaves.filter(x => x._id !== deleteData._id)
             })
         } else {
-            this.setState({
+            setState({
+                ...state,
                 annualLeaves: data
             })
         }
@@ -579,8 +630,9 @@ class EmployeeEditFrom extends Component {
      * @param {*} data : Dữ liệu tài liệu đính kềm
      * @param {*} addData : Tài liệu đính kèm muốn thêm
      */
-    handleCreateFile = (data, addData) => {
-        this.setState({
+    const handleCreateFile = (data, addData) => {
+        setState({
+            ...state,
             files: data
         })
     }
@@ -590,14 +642,16 @@ class EmployeeEditFrom extends Component {
      * @param {*} data : Dữ liệu tài liệu đính kèm
      * @param {*} editData : Tài liệu đính kèm muốn chỉnh sửa
      */
-    handleEditFile = (data, editData) => {
-        const { editFiles } = this.state;
+    const handleEditFile = (data, editData) => {
+        const { editFiles } = state;
         if (editData._id) {
-            this.setState({
+            setState({
+                ...state,
                 editFiles: [...editFiles, editData]
             })
         } else {
-            this.setState({
+            setState({
+                ...state,
                 files: data
             })
         }
@@ -608,15 +662,17 @@ class EmployeeEditFrom extends Component {
      * @param {*} data : Dữ liệu tài liệu đính kèm
      * @param {*} deleteData : Tài liệu đính kèm muốn xoá
      */
-    handleDeleteFile = (data, deleteData) => {
-        const { editFiles, deleteFiles } = this.state;
+    const handleDeleteFile = (data, deleteData) => {
+        const { editFiles, deleteFiles } = state;
         if (deleteData._id) {
-            this.setState({
+            setState({
+                ...state,
                 deleteFiles: [...deleteFiles, deleteData],
                 editFiles: editFiles.filter(x => x._id !== deleteData._id)
             })
         } else {
-            this.setState({
+            setState({
+                ...state,
                 files: data
             })
         }
@@ -628,8 +684,9 @@ class EmployeeEditFrom extends Component {
      * @param {*} data : Dữ liệu quá trình đào tạo
      * @param {*} addData : Quá trình đào tạo muốn thêm
      */
-    handleCreateCourse = (data, addData) => {
-        this.setState({
+    const handleCreateCourse = (data, addData) => {
+        setState({
+            ...state,
             courses: data
         })
     }
@@ -639,14 +696,16 @@ class EmployeeEditFrom extends Component {
      * @param {*} data : Dữ liệu quá trình đào tạo
      * @param {*} editData : Quá trình đào tạo muốn chỉnh sửa
      */
-    handleEditCourse = (data, editData) => {
-        const { editCourses } = this.state;
+    const handleEditCourse = (data, editData) => {
+        const { editCourses } = state;
         if (editData._id) {
-            this.setState({
+            setState({
+                ...state,
                 editCourses: [...editCourses, editData]
             })
         } else {
-            this.setState({
+            setState({
+                ...state,
                 courses: data
             })
         }
@@ -657,15 +716,17 @@ class EmployeeEditFrom extends Component {
      * @param {*} data : Dữ liệu quá trình đào tạo
      * @param {*} deleteData : Quá trình đào tạo muốn xoá
      */
-    handleDeleteCourse = (data, deleteData) => {
-        const { editCourses, deleteCourses } = this.state;
+    const handleDeleteCourse = (data, deleteData) => {
+        const { editCourses, deleteCourses } = state;
         if (deleteData._id) {
-            this.setState({
+            setState({
+                ...state,
                 deleteCourses: [...deleteCourses, deleteData],
                 editCourses: editCourses.filter(x => x._id !== deleteData._id)
             })
         } else {
-            this.setState({
+            setState({
+                ...state,
                 courses: data
             })
         }
@@ -677,7 +738,7 @@ class EmployeeEditFrom extends Component {
      * Function kiểm tra các trường bắt buộc phải nhập
      * @param {*} value : Giá trị của trường cần kiểm tra
      */
-    validatorInput = (value) => {
+    const validatorInput = (value) => {
         if (value && value.toString().trim() !== '') {
             return true;
         }
@@ -685,15 +746,15 @@ class EmployeeEditFrom extends Component {
     }
 
     /** Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form */
-    isFormValidated = () => {
-        const { employee } = this.state;
+    const isFormValidated = () => {
+        const { employee } = state;
         let result = true;
         if (employee) {
-            result = this.validatorInput(employee.employeeNumber) && this.validatorInput(employee.employeeTimesheetId) &&
-                this.validatorInput(employee.fullName) && this.validatorInput(employee.birthdate) &&
-                this.validatorInput(employee.emailInCompany) && this.validatorInput(employee.identityCardNumber) &&
-                this.validatorInput(employee.identityCardDate) && this.validatorInput(employee.identityCardAddress) &&
-                this.validatorInput(employee.phoneNumber) && this.validatorInput(employee.temporaryResidence);
+            result = validatorInput(employee.employeeNumber) && validatorInput(employee.employeeTimesheetId) &&
+                validatorInput(employee.fullName) && validatorInput(employee.birthdate) &&
+                validatorInput(employee.emailInCompany) && validatorInput(employee.identityCardNumber) &&
+                validatorInput(employee.identityCardDate) && validatorInput(employee.identityCardAddress) &&
+                validatorInput(employee.phoneNumber) && validatorInput(employee.temporaryResidence);
             if (employee.healthInsuranceStartDate && employee.healthInsuranceEndDate) {
                 if (new Date(employee.healthInsuranceEndDate).getTime() < new Date(employee.healthInsuranceStartDate).getTime()) {
                     return false;
@@ -714,11 +775,12 @@ class EmployeeEditFrom extends Component {
     }
 
 
-    save = async () => {
+    const save = async () => {
         let { _id, experiences, degrees, certificates, contracts, files, avatar,
-            disciplines, commendations, annualLeaves, socialInsuranceDetails, courses, career, major } = this.state;
+            disciplines, commendations, annualLeaves, socialInsuranceDetails, courses, career, major } = state;
 
-        await this.setState({
+        await setState({
+            ...state,
             createExperiences: experiences.filter(x => x._id === undefined),
             createDegrees: degrees.filter(x => x._id === undefined),
             createCertificates: certificates.filter(x => x._id === undefined),
@@ -733,7 +795,7 @@ class EmployeeEditFrom extends Component {
             createFiles: files.filter(x => x._id === undefined),
         });
 
-        let formData = convertJsonObjectToFormData(this.state);
+        let formData = convertJsonObjectToFormData(state);
         degrees.forEach(x => {
             formData.append("fileDegree", x.fileUpload);
         })
@@ -754,7 +816,7 @@ class EmployeeEditFrom extends Component {
         })
         formData.append("fileAvatar", avatar);
 
-        this.props.updateInformationEmployee(_id, formData);
+        props.updateInformationEmployee(_id, formData);
     }
 
     /**
@@ -762,7 +824,7 @@ class EmployeeEditFrom extends Component {
      * @param {*} date : Ngày muốn format
      * @param {*} monthYear : true trả về tháng năm, false trả về ngày tháng năm
      */
-    formatDate(date, monthYear = false) {
+    const formatDate = (date, monthYear = false) => {
         if (date) {
             let d = new Date(date),
                 month = '' + (d.getMonth() + 1),
@@ -782,392 +844,404 @@ class EmployeeEditFrom extends Component {
 
     }
 
-    static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps._id !== prevState._id) {
-            return {
-                ...prevState,
-                _id: nextProps._id,
-                dataStatus: 0,
+    // useEffect(() => {
+    //     if (props._id != state._id) {
+    //         setState({
+    //             ...state,
+    //             _id: props._id,
+    //             dataStatus: 0,
+    //             editExperiences: [],
+    //             deleteExperiences: [],
+    //             editDegrees: [],
+    //             deleteDegrees: [],
+    //             editMajor: [],
+    //             deleteMajor: [],
+    //             editCareer: [],
+    //             deleteCareer: [],
+    //             editCertificates: [],
+    //             deleteCertificates: [],
+    //             editSocialInsuranceDetails: [],
+    //             deleteSocialInsuranceDetails: [],
+    //             editContracts: [],
+    //             deleteContracts: [],
+    //             editConmmendations: [],
+    //             deleteConmmendations: [],
+    //             editDisciplines: [],
+    //             deleteDisciplines: [],
+    //             editAnnualLeaves: [],
+    //             deleteAnnualLeaves: [],
+    //             editCourses: [],
+    //             deleteCourses: [],
+    //             editFiles: [],
+    //             deleteFiles: [],
+    //         })
+    //     }
+    // }, [props._id, state._id])
 
-                editExperiences: [],
-                deleteExperiences: [],
-                editDegrees: [],
-                deleteDegrees: [],
-                editMajor: [],
-                deleteMajor: [],
-                editCareer: [],
-                deleteCareer: [],
-                editCertificates: [],
-                deleteCertificates: [],
-                editSocialInsuranceDetails: [],
-                deleteSocialInsuranceDetails: [],
-                editContracts: [],
-                deleteContracts: [],
-                editConmmendations: [],
-                deleteConmmendations: [],
-                editDisciplines: [],
-                deleteDisciplines: [],
-                editAnnualLeaves: [],
-                deleteAnnualLeaves: [],
-                editCourses: [],
-                deleteCourses: [],
-                editFiles: [],
-                deleteFiles: [],
-            }
-        } else {
-            return null;
+    useEffect(() => {
+        const shouldUpdate = async () => {
+            if (props._id !== state._id && !props.employeesInfo.isLoading) {
+                await props.getEmployeeProfile({ id: props._id, callAPIByUser: false });
+                setState({
+                    ...state,
+                    dataStatus: DATA_STATUS.QUERYING,
+                    img: undefined,
+                    avatar: "",
+                    employee: '',
+                    experiences: [],
+                    degrees: [],
+                    certificates: [],
+                    career: [],
+                    major: [],
+                    contracts: [],
+                    files: [],
+                    socialInsuranceDetails: [],
+                    annualLeaves: [],
+                    commendations: [],
+                    disciplines: [],
+                    courses: [],
+                    roles: [],
+                    houseHold: {}
+                })
+            };
+
+            console.log("status", state.dataStatus)
+    
+            if (state.dataStatus === DATA_STATUS.QUERYING && !props.employeesInfo.isLoading) {
+                await setState({
+                    ...state,
+                    dataStatus: DATA_STATUS.AVAILABLE,
+                    img: `.${props.employeesInfo?.employees?.[0]?.avatar}`,
+                    avatar: "",
+                    employee: props.employeesInfo.employees?.[0],
+                    experiences: props.employeesInfo.employees?.[0]?.experiences,
+                    degrees: props.employeesInfo.employees?.[0]?.degrees,
+                    certificates: props.employeesInfo.employees?.[0]?.certificates,
+                    career: props.employeesInfo.employees?.[0]?.career,
+                    major: props.employeesInfo.employees?.[0]?.major,
+                    contracts: props.employeesInfo.employees?.[0]?.contracts,
+                    files: props.employeesInfo.employees?.[0]?.files,
+                    socialInsuranceDetails: props.employeesInfo.employees?.[0]?.socialInsuranceDetails,
+                    annualLeaves: props.employeesInfo?.annualLeaves,
+                    commendations: props.employeesInfo?.commendations,
+                    disciplines: props.employeesInfo?.disciplines,
+                    courses: props.employeesInfo?.courses,
+                    roles: props.employeesInfo.roles?.map(x => x.roleId.id),
+                    organizationalUnits: props.employeesInfo.organizationalUnits?.map(x => x._id),
+                    houseHold: props.employeesInfo.employees?.[0]?.houseHold,
+                });
+            };
+            console.log("status", state.dataStatus)
         }
-    }
-
-    shouldComponentUpdate = async (nextProps, nextState) => {
-        if (nextProps._id !== this.state._id && !nextProps.employeesInfo.isLoading) {
-            await this.props.getEmployeeProfile({ id: nextProps._id, callAPIByUser: false });
-            this.setState({
-                dataStatus: this.DATA_STATUS.QUERYING,
-                img: undefined,
-                avatar: "",
-                employee: '',
-                experiences: [],
-                degrees: [],
-                certificates: [],
-                career: [],
-                major: [],
-                contracts: [],
-                files: [],
-                socialInsuranceDetails: [],
-                annualLeaves: [],
-                commendations: [],
-                disciplines: [],
-                courses: [],
-                roles: [],
-                houseHold: {}
-            })
-            return false;
-        };
-
-        if (this.state.dataStatus === this.DATA_STATUS.QUERYING && !nextProps.employeesInfo.isLoading) {
-            await this.setState({
-                dataStatus: this.DATA_STATUS.AVAILABLE,
-                img: `.${nextProps.employeesInfo.employees[0].avatar}`,
-                avatar: "",
-                employee: nextProps.employeesInfo.employees[0],
-                experiences: nextProps.employeesInfo.employees[0].experiences,
-                degrees: nextProps.employeesInfo.employees[0].degrees,
-                certificates: nextProps.employeesInfo.employees[0].certificates,
-                career: nextProps.employeesInfo.employees[0].career,
-                major: nextProps.employeesInfo.employees[0].major,
-                contracts: nextProps.employeesInfo.employees[0].contracts,
-                files: nextProps.employeesInfo.employees[0].files,
-                socialInsuranceDetails: nextProps.employeesInfo.employees[0].socialInsuranceDetails,
-                annualLeaves: nextProps.employeesInfo.annualLeaves,
-                commendations: nextProps.employeesInfo.commendations,
-                disciplines: nextProps.employeesInfo.disciplines,
-                courses: nextProps.employeesInfo.courses,
-                roles: nextProps.employeesInfo.roles.map(x => x.roleId.id),
-                organizationalUnits: nextProps.employeesInfo.organizationalUnits.map(x => x._id),
-                houseHold: nextProps.employeesInfo.employees[0].houseHold,
-            });
-            return true;
-        };
-        return true;
-    }
+        shouldUpdate();
+    }, [props._id, state.dataStatus]);
 
 
-    _fm_saveMember = (data) => {
-        this.setState({
+    const _fm_saveMember = (data) => {
+        setState({
+            ...state,
             houseHold: {
-                ...this.state.houseHold,
-                familyMembers: [...this.state.houseHold.familyMembers, data]
+                ...state.houseHold,
+                familyMembers: [...state.houseHold.familyMembers, data]
             }
         })
     }
 
-    _fm_handleHeadHouseHoldName = (e) => {
-        this.setState({
+    const _fm_handleHeadHouseHoldName = (e) => {
+        setState({
+            ...state,
             houseHold: {
-                ...this.state.houseHold,
+                ...state.houseHold,
                 headHouseHoldName: e.target.value
             }
         });
     }
 
-    _fm_handleDocumentType = (e) => {
-        this.setState({
+    const _fm_handleDocumentType = (e) => {
+        setState({
+            ...state,
             houseHold: {
-                ...this.state.houseHold,
+                ...state.houseHold,
                 documentType: e.target.value
             }
         });
     }
 
-    _fm_handleHouseHoldNumber = (e) => {
-        this.setState({
+    const _fm_handleHouseHoldNumber = (e) => {
+        setState({
+            ...state,
             houseHold: {
-                ...this.state.houseHold,
+                ...state.houseHold,
                 houseHoldNumber: e.target.value
             }
         })
     }
 
-    _fm_handleCity = (e) => {
-        this.setState({
+    const _fm_handleCity = (e) => {
+        setState({
+            ...state,
             houseHold: {
-                ...this.state.houseHold,
+                ...state.houseHold,
                 city: e.target.value
             }
         })
     }
 
-    _fm_handleDistrict = (e) => {
-        this.setState({
+    const _fm_handleDistrict = (e) => {
+        setState({
+            ...state,
             houseHold: {
-                ...this.state.houseHold,
+                ...state.houseHold,
                 district: e.target.value
             }
         });
     }
 
-    _fm_handleWard = (e) => {
-        this.setState({
+    const _fm_handleWard = (e) => {
+        setState({
+            ...state,
             houseHold: {
-                ...this.state.houseHold,
+                ...state.houseHold,
                 ward: e.target.value
             }
         });
     }
 
-    _fm_handleHouseHoldAddress = (e) => {
-        this.setState({
+    const _fm_handleHouseHoldAddress = (e) => {
+        setState({
+            ...state,
             houseHold: {
-                ...this.state.houseHold,
+                ...state.houseHold,
                 houseHoldAddress: e.target.value
             }
         })
     }
 
-    _fm_handlePhone = (e) => {
-        this.setState({
+    const _fm_handlePhone = (e) => {
+        setState({
+            ...state,
             houseHold: {
-                ...this.state.houseHold,
+                ...state.houseHold,
                 phone: e.target.value
             }
         });
     }
 
-    _fm_handleHouseHoldCode = (e) => {
-        this.setState({
+    const _fm_handleHouseHoldCode = (e) => {
+        setState({
+            ...state,
             houseHold: {
-                ...this.state.houseHold,
+                ...state.houseHold,
                 houseHoldCode: e.target.value
             }
         });
     }
 
-    _fm_editMember = (index, data) => {
-        let familyMembers = this.state.houseHold.familyMembers;
+    const _fm_editMember = (index, data) => {
+        let familyMembers = state.houseHold.familyMembers;
         familyMembers[index] = data;
-        this.setState({
+        setState({
+            ...state,
             houseHold: {
-                ...this.state.houseHold,
+                ...state.houseHold,
                 familyMembers
             }
         })
     }
 
-    _fm_deleteMember = (index) => {
-        let familyMembers = this.state.houseHold.familyMembers;
+    const _fm_deleteMember = (index) => {
+        let familyMembers = state.houseHold.familyMembers;
         familyMembers = familyMembers.filter((node, i) => i !== index);
-        this.setState({
+        setState({
+            ...state,
             houseHold: {
-                ...this.state.houseHold,
+                ...state.houseHold,
                 familyMembers
             }
         })
     }
 
-    render() {
-        const { translate, employeesInfo } = this.props;
+    const { translate, employeesInfo } = props;
 
-        let { _id, img, employee, degrees, certificates, socialInsuranceDetails, contracts, courses,
-            organizationalUnits, roles, commendations, disciplines, annualLeaves, files, major, career, houseHold, editMember } = this.state;
+    let { _id, img, employee, degrees, certificates, socialInsuranceDetails, contracts, courses,
+        organizationalUnits, roles, commendations, disciplines, annualLeaves, files, major, career, houseHold, editMember } = state;
 
-        return (
-            <React.Fragment>
-                <DialogModal
-                    size='75' modalID={`modal-edit-employee${_id}`} isLoading={employeesInfo.isLoading}
-                    formID={`form-edit-employee${_id}`}
-                    title={translate('human_resource.profile.employee_management.edit_employee')}
-                    func={this.save}
-                    disableSubmit={!this.isFormValidated()}
-                >
-                    {/* <form className="form-group" id="form-edit-employee"> */}
-                    {employee &&
-                        <div className="nav-tabs-custom row" style={{ marginTop: '-15px' }}>
-                            <ul className="nav nav-tabs">
-                                <li className="active"><a title={translate('human_resource.profile.tab_name.menu_general_infor_title')} data-toggle="tab" href={`#edit_general${_id}`}>{translate('human_resource.profile.tab_name.menu_general_infor')}</a></li>
-                                <li><a title={translate('human_resource.profile.tab_name.menu_contact_infor_title')} data-toggle="tab" href={`#edit_contact${_id}`}>{translate('human_resource.profile.tab_name.menu_contact_infor')}</a></li>
-                                <li><a title={translate('human_resource.profile.tab_name.menu_education_experience_title')} data-toggle="tab" href={`#edit_experience${_id}`}>{translate('human_resource.profile.tab_name.menu_education_experience')}</a></li>
-                                <li><a title={translate('human_resource.profile.tab_name.menu_diploma_certificate_title')} data-toggle="tab" href={`#edit_diploma${_id}`}>{translate('human_resource.profile.tab_name.menu_diploma_certificate')}</a></li>
-                                <li><a title={translate('human_resource.profile.tab_name.menu_account_tax_title')} data-toggle="tab" href={`#edit_account${_id}`}>{translate('human_resource.profile.tab_name.menu_account_tax')}</a></li>
-                                <li><a title={translate('human_resource.profile.tab_name.menu_insurrance_infor_title')} data-toggle="tab" href={`#edit_insurrance${_id}`}>{translate('human_resource.profile.tab_name.menu_insurrance_infor')}</a></li>
-                                <li><a title={translate('human_resource.profile.tab_name.menu_contract_training_title')} data-toggle="tab" href={`#edit_contract${_id}`}>{translate('human_resource.profile.tab_name.menu_contract_training')}</a></li>
-                                <li><a title={translate('human_resource.profile.tab_name.menu_reward_discipline_title')} data-toggle="tab" href={`#edit_reward${_id}`}>{translate('human_resource.profile.tab_name.menu_reward_discipline')}</a></li>
-                                <li><a title={translate('menu.annual_leave_personal')} data-toggle="tab" href={`#edit_salary${_id}`}>{translate('menu.annual_leave_personal')}</a></li>
-                                <li><a title={"Công việc - chuyên ngành tương đương"} data-toggle="tab" href={`#edit_major_career${_id}`}>Công việc - chuyên ngành tương đương</a></li>
-                                <li><a title={"Thành viên hộ gia đình"} data-toggle="tab" href={`#edit_family_member${_id}`}>Thành viên hộ gia đình</a></li>
-                                <li><a title={translate('human_resource.profile.tab_name.menu_attachments_title')} data-toggle="tab" href={`#edit_attachments${_id}`}>{translate('human_resource.profile.tab_name.menu_attachments')}</a></li>
-                            </ul>
-                            <div className="tab-content">
-                                {/* Tab thông tin chung */
-                                    <GeneralTab
-                                        id={`edit_general${_id}`}
-                                        img={img}
-                                        handleChange={this.handleChange}
-                                        handleUpload={this.handleUpload}
-                                        employee={employee}
-                                    />}
-                                {/* Tab thông tin liên hệ */}
-                                <ContactTab
-                                    id={`edit_contact${_id}`}
-                                    handleChange={this.handleChange}
+    return (
+        <React.Fragment>
+            <DialogModal
+                size='75' modalID={`modal-edit-employee${props._id}`} isLoading={employeesInfo.isLoading}
+                formID={`form-edit-employee${_id}`}
+                title={translate('human_resource.profile.employee_management.edit_employee')}
+                func={save}
+                disableSubmit={!isFormValidated()}
+            >
+                {/* <form className="form-group" id="form-edit-employee"> */}
+                {employee &&
+                    <div className="nav-tabs-custom row" style={{ marginTop: '-15px' }}>
+                        <ul className="nav nav-tabs">
+                            <li className="active"><a title={translate('human_resource.profile.tab_name.menu_general_infor_title')} data-toggle="tab" href={`#edit_general${_id}`}>{translate('human_resource.profile.tab_name.menu_general_infor')}</a></li>
+                            <li><a title={translate('human_resource.profile.tab_name.menu_contact_infor_title')} data-toggle="tab" href={`#edit_contact${_id}`}>{translate('human_resource.profile.tab_name.menu_contact_infor')}</a></li>
+                            <li><a title={translate('human_resource.profile.tab_name.menu_education_experience_title')} data-toggle="tab" href={`#edit_experience${_id}`}>{translate('human_resource.profile.tab_name.menu_education_experience')}</a></li>
+                            <li><a title={translate('human_resource.profile.tab_name.menu_diploma_certificate_title')} data-toggle="tab" href={`#edit_diploma${_id}`}>{translate('human_resource.profile.tab_name.menu_diploma_certificate')}</a></li>
+                            <li><a title={translate('human_resource.profile.tab_name.menu_account_tax_title')} data-toggle="tab" href={`#edit_account${_id}`}>{translate('human_resource.profile.tab_name.menu_account_tax')}</a></li>
+                            <li><a title={translate('human_resource.profile.tab_name.menu_insurrance_infor_title')} data-toggle="tab" href={`#edit_insurrance${_id}`}>{translate('human_resource.profile.tab_name.menu_insurrance_infor')}</a></li>
+                            <li><a title={translate('human_resource.profile.tab_name.menu_contract_training_title')} data-toggle="tab" href={`#edit_contract${_id}`}>{translate('human_resource.profile.tab_name.menu_contract_training')}</a></li>
+                            <li><a title={translate('human_resource.profile.tab_name.menu_reward_discipline_title')} data-toggle="tab" href={`#edit_reward${_id}`}>{translate('human_resource.profile.tab_name.menu_reward_discipline')}</a></li>
+                            <li><a title={translate('menu.annual_leave_personal')} data-toggle="tab" href={`#edit_salary${_id}`}>{translate('menu.annual_leave_personal')}</a></li>
+                            <li><a title={"Công việc - chuyên ngành tương đương"} data-toggle="tab" href={`#edit_major_career${_id}`}>Công việc - chuyên ngành tương đương</a></li>
+                            <li><a title={"Thành viên hộ gia đình"} data-toggle="tab" href={`#edit_family_member${_id}`}>Thành viên hộ gia đình</a></li>
+                            <li><a title={translate('human_resource.profile.tab_name.menu_attachments_title')} data-toggle="tab" href={`#edit_attachments${_id}`}>{translate('human_resource.profile.tab_name.menu_attachments')}</a></li>
+                        </ul>
+                        <div className="tab-content">
+                            {/* Tab thông tin chung */
+                                <GeneralTab
+                                    id={`edit_general${_id}`}
+                                    img={img}
+                                    handleChange={handleChange}
+                                    handleUpload={handleUpload}
                                     employee={employee}
-                                />
-                                {/* Tab học vấn - kinh nghiệm */}
-                                <ExperienceTab
-                                    id={`edit_experience${_id}`}
-                                    employee={employee}
-                                    handleChange={this.handleChange}
+                                />}
+                            {/* Tab thông tin liên hệ */}
+                            <ContactTab
+                                id={`edit_contact${_id}`}
+                                handleChange={handleChange}
+                                employee={employee}
+                            />
+                            {/* Tab học vấn - kinh nghiệm */}
+                            <ExperienceTab
+                                id={`edit_experience${_id}`}
+                                employee={employee}
+                                handleChange={handleChange}
 
-                                    handleAddExperience={this.handleCreateExperiences}
-                                    handleEditExperience={this.handleEditExperiences}
-                                    handleDeleteExperience={this.handleDeleteExperiences}
-                                />
-                                {/* Tab bằng cấp - chứng chỉ */}
-                                <CertificateTab
-                                    id={`edit_diploma${_id}`}
-                                    degrees={degrees}
-                                    certificates={certificates}
+                                handleAddExperience={handleCreateExperiences}
+                                handleEditExperience={handleEditExperiences}
+                                handleDeleteExperience={handleDeleteExperiences}
+                            />
+                            {/* Tab bằng cấp - chứng chỉ */}
+                            <CertificateTab
+                                id={`edit_diploma${_id}`}
+                                degrees={degrees}
+                                certificates={certificates}
 
-                                    handleAddDegree={this.handleCreateDegree}
-                                    handleEditDegree={this.handleEditDegree}
-                                    handleDeleteDegree={this.handleDeleteDegree}
+                                handleAddDegree={handleCreateDegree}
+                                handleEditDegree={handleEditDegree}
+                                handleDeleteDegree={handleDeleteDegree}
 
-                                    handleAddCertificate={this.handleCreateCertificate}
-                                    handleEditCertificate={this.handleEditCertificate}
-                                    handleDeleteCertificate={this.handleDeleteCertificate}
-                                />
-                                {/* Tab Tài khoản - thuế */}
-                                <TaxTab
-                                    id={`edit_account${_id}`}
-                                    employee={employee}
-                                    handleChange={this.handleChange} />
-                                {/* Tab thông tin bảo hiểm */}
-                                <InsurranceTab
-                                    id={`edit_insurrance${_id}`}
-                                    socialInsuranceDetails={socialInsuranceDetails}
-                                    employee={employee}
-                                    handleChange={this.handleChange}
+                                handleAddCertificate={handleCreateCertificate}
+                                handleEditCertificate={handleEditCertificate}
+                                handleDeleteCertificate={handleDeleteCertificate}
+                            />
+                            {/* Tab Tài khoản - thuế */}
+                            <TaxTab
+                                id={`edit_account${_id}`}
+                                employee={employee}
+                                handleChange={handleChange} />
+                            {/* Tab thông tin bảo hiểm */}
+                            <InsurranceTab
+                                id={`edit_insurrance${_id}`}
+                                socialInsuranceDetails={socialInsuranceDetails}
+                                employee={employee}
+                                handleChange={handleChange}
 
-                                    handleAddBHXH={this.handleCreateBHXH}
-                                    handleEditBHXH={this.handleEditBHXH}
-                                    handleDeleteBHXH={this.handleDeleteBHXH}
-                                />
-                                {/* Tab hợp đồng - quá trình đào tạo*/}
-                                <ContractTab
-                                    id={`edit_contract${_id}`}
-                                    pageCreate={false}
-                                    employee={employee}
-                                    contracts={contracts}
-                                    courses={courses}
-                                    organizationalUnits={organizationalUnits}
-                                    roles={roles}
-                                    handleChange={this.handleChange}
+                                handleAddBHXH={handleCreateBHXH}
+                                handleEditBHXH={handleEditBHXH}
+                                handleDeleteBHXH={handleDeleteBHXH}
+                            />
+                            {/* Tab hợp đồng - quá trình đào tạo*/}
+                            <ContractTab
+                                id={`edit_contract${_id}`}
+                                pageCreate={false}
+                                employee={employee}
+                                contracts={contracts}
+                                courses={courses}
+                                organizationalUnits={organizationalUnits}
+                                roles={roles}
+                                handleChange={handleChange}
 
-                                    handleAddContract={this.handleCreateContract}
-                                    handleEditContract={this.handleEditContract}
-                                    handleDeleteContract={this.handleDeleteContract}
+                                handleAddContract={handleCreateContract}
+                                handleEditContract={handleEditContract}
+                                handleDeleteContract={handleDeleteContract}
 
-                                    handleAddCourse={this.handleCreateCourse}
-                                    handleEditCourse={this.handleEditCourse}
-                                    handleDeleteCourse={this.handleDeleteCourse}
-                                />
-                                {/* Tab khen thưởng - kỷ luật*/}
-                                <DisciplineTab
-                                    id={`edit_reward${_id}`}
-                                    commendations={commendations}
-                                    disciplines={disciplines}
-                                    handleAddConmmendation={this.handleCreateConmmendation}
-                                    handleEditConmmendation={this.handleEditConmmendation}
-                                    handleDeleteConmmendation={this.handleDeleteConmmendation}
+                                handleAddCourse={handleCreateCourse}
+                                handleEditCourse={handleEditCourse}
+                                handleDeleteCourse={handleDeleteCourse}
+                            />
+                            {/* Tab khen thưởng - kỷ luật*/}
+                            <DisciplineTab
+                                id={`edit_reward${_id}`}
+                                commendations={commendations}
+                                disciplines={disciplines}
+                                handleAddConmmendation={handleCreateConmmendation}
+                                handleEditConmmendation={handleEditConmmendation}
+                                handleDeleteConmmendation={handleDeleteConmmendation}
 
-                                    handleAddDiscipline={this.handleCreateDiscipline}
-                                    handleEditDiscipline={this.handleEditDiscipline}
-                                    handleDeleteDiscipline={this.handleDeleteDiscipline}
-                                />
-                                {/* Tab lương thưởng - nghỉ phép*/}
-                                <SalaryTab
-                                    id={`edit_salary${_id}`}
-                                    annualLeaves={annualLeaves}
+                                handleAddDiscipline={handleCreateDiscipline}
+                                handleEditDiscipline={handleEditDiscipline}
+                                handleDeleteDiscipline={handleDeleteDiscipline}
+                            />
+                            {/* Tab lương thưởng - nghỉ phép*/}
+                            <SalaryTab
+                                id={`edit_salary${_id}`}
+                                annualLeaves={annualLeaves}
 
-                                    handleAddAnnualLeave={this.handleCreateAnnualLeave}
-                                    handleEditAnnualLeave={this.handleEditAnnualLeave}
-                                    handleDeleteAnnualLeave={this.handleDeleteAnnualLeave}
-                                />
-                                {/* Tab tài liệu đính kèm */}
-                                <FileTab
-                                    id={`edit_attachments${_id}`}
-                                    files={files}
-                                    employee={employee}
-                                    handleChange={this.handleChange}
+                                handleAddAnnualLeave={handleCreateAnnualLeave}
+                                handleEditAnnualLeave={handleEditAnnualLeave}
+                                handleDeleteAnnualLeave={handleDeleteAnnualLeave}
+                            />
+                            {/* Tab tài liệu đính kèm */}
+                            <FileTab
+                                id={`edit_attachments${_id}`}
+                                files={files}
+                                employee={employee}
+                                handleChange={handleChange}
 
-                                    handleAddFile={this.handleCreateFile}
-                                    handleEditFile={this.handleEditFile}
-                                    handleDeleteFile={this.handleDeleteFile}
-                                />
-                                {/* Tab công việc - chuyên ngành tương đương */}
-                                <CareerMajorTab
-                                    id={`edit_major_career${_id}`}
-                                    files={files}
-                                    major={major}
-                                    career={career}
-                                    handleChange={this.handleChange}
+                                handleAddFile={handleCreateFile}
+                                handleEditFile={handleEditFile}
+                                handleDeleteFile={handleDeleteFile}
+                            />
+                            {/* Tab công việc - chuyên ngành tương đương */}
+                            <CareerMajorTab
+                                id={`edit_major_career${_id}`}
+                                files={files}
+                                major={major}
+                                career={career}
+                                handleChange={handleChange}
 
-                                    handleAddMajor={this.handleAddMajor}
-                                    handleEditMajor={this.handleEditMajor}
-                                    handleDeleteMajor={this.handleDeleteMajor}
+                                handleAddMajor={handleAddMajor}
+                                handleEditMajor={handleEditMajor}
+                                handleDeleteMajor={handleDeleteMajor}
 
-                                    handleAddCareer={this.handleAddCareer}
-                                    handleEditCareer={this.handleEditCareer}
-                                    handleDeleteCareer={this.handleDeleteCareer}
-                                    type={"edit"}
-                                />
-                                {/* Tab thành viên hộ gia đình */}
-                                <FamilyMemberTab
-                                    id={`edit_family_member${_id}`}
-                                    tabEditMember="modal-edit-member-e"
-                                    editMember={editMember}
-                                    _fm_editMember={this._fm_editMember}
-                                    _fm_deleteMember={this._fm_deleteMember}
-                                    houseHold={houseHold}
-                                    _fm_handleHeadHouseHoldName={this._fm_handleHeadHouseHoldName}
-                                    _fm_handleDocumentType={this._fm_handleDocumentType}
-                                    _fm_handleHouseHoldNumber={this._fm_handleHouseHoldNumber}
-                                    _fm_handleCity={this._fm_handleCity}
-                                    _fm_handleDistrict={this._fm_handleDistrict}
-                                    _fm_handleWard={this._fm_handleWard}
-                                    _fm_handleHouseHoldAddress={this._fm_handleHouseHoldAddress}
-                                    _fm_handlePhone={this._fm_handlePhone}
-                                    _fm_handleHouseHoldCode={this._fm_handleHouseHoldCode}
-                                    _fm_saveMember={this._fm_saveMember}
-                                />
+                                handleAddCareer={handleAddCareer}
+                                handleEditCareer={handleEditCareer}
+                                handleDeleteCareer={handleDeleteCareer}
+                                type={"edit"}
+                            />
+                            {/* Tab thành viên hộ gia đình */}
+                            <FamilyMemberTab
+                                id={`edit_family_member${_id}`}
+                                tabEditMember="modal-edit-member-e"
+                                editMember={editMember}
+                                _fm_editMember={_fm_editMember}
+                                _fm_deleteMember={_fm_deleteMember}
+                                houseHold={houseHold}
+                                _fm_handleHeadHouseHoldName={_fm_handleHeadHouseHoldName}
+                                _fm_handleDocumentType={_fm_handleDocumentType}
+                                _fm_handleHouseHoldNumber={_fm_handleHouseHoldNumber}
+                                _fm_handleCity={_fm_handleCity}
+                                _fm_handleDistrict={_fm_handleDistrict}
+                                _fm_handleWard={_fm_handleWard}
+                                _fm_handleHouseHoldAddress={_fm_handleHouseHoldAddress}
+                                _fm_handlePhone={_fm_handlePhone}
+                                _fm_handleHouseHoldCode={_fm_handleHouseHoldCode}
+                                _fm_saveMember={_fm_saveMember}
+                            />
 
-                            </div>
-                        </div>}
-                    {/* </form> */}
-                </DialogModal>
-            </React.Fragment>
-        )
-    }
+                        </div>
+                    </div>}
+                {/* </form> */}
+            </DialogModal>
+        </React.Fragment>
+    )
 };
 
 function mapState(state) {

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
@@ -16,54 +16,52 @@ import { formatDate } from '../../../../../helpers/formatDate';
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
 
 
-class SearchEmployeeForPackage extends Component {
-    constructor(props) {
-        super(props);
-        let search = window.location.search.split('?')
-        let keySearch = 'organizationalUnits';
-        let organizationalUnits = null;
-        for (let n in search) {
-            let index = search[n].lastIndexOf(keySearch);
-            if (index !== -1) {
-                organizationalUnits = search[n].slice(keySearch.length + 1, search[n].length);
-                if (organizationalUnits !== 'null' && organizationalUnits.trim() !== '') {
-                    organizationalUnits = organizationalUnits.split(',')
-                } else organizationalUnits = null
-                break;
-            }
-        }
-
-        const tableId = "search-employee-for-package";
-        const defaultConfig = { limit: 5 }
-        const limit = getTableConfiguration(tableId, defaultConfig).limit;
-
-        this.state = {
-            searchForPackage: true,
-            // organizationalUnits: organizationalUnits,
-            status: 'active',
-            page: 0,
-            limit: limit,
-            listSuggest: {},
-            listSuggestForProps: {},
-            tableId
+const SearchEmployeeForPackage = (props) => {
+    
+    let search = window.location.search.split('?')
+    let keySearch = 'organizationalUnits';
+    let _organizationalUnits = null;
+    for (let n in search) {
+        let index = search[n].lastIndexOf(keySearch);
+        if (index !== -1) {
+            _organizationalUnits = search[n].slice(keySearch.length + 1, search[n].length);
+            if (_organizationalUnits !== 'null' && _organizationalUnits.trim() !== '') {
+                _organizationalUnits = _organizationalUnits.split(',')
+            } else _organizationalUnits = null
+            break;
         }
     }
 
-    componentDidMount() {
-        this.props.getAllEmployee(this.state);
-        this.props.getDepartment();
-        this.props.getListMajor({ name: '', page: 1, limit: 1000 });
-        this.props.getListCareerPosition({ name: '', page: 1, limit: 1000 });
-        this.props.getListCareerAction({ name: '', page: 1, limit: 1000 });
-        this.props.getListCareerField({ name: '', page: 1, limit: 1000 });
-    }
+    const tableId = "search-employee-for-package";
+    const defaultConfig = { limit: 5 }
+    const _limit = getTableConfiguration(tableId, defaultConfig).limit;
+
+    const [state, setState] = useState({
+        searchForPackage: true,
+        organizationalUnits: _organizationalUnits,
+        status: 'active',
+        page: 0,
+        limit: _limit,
+        listSuggest: {},
+        listSuggestForProps: {},
+        tableId
+    });
+
+    useEffect(() => {
+        props.getAllEmployee(state);
+        props.getDepartment();
+        props.getListMajor({ name: '', page: 1, limit: 1000 });
+        props.getListCareerPosition({ name: '', page: 1, limit: 1000 });
+        props.getListCareerAction({ name: '', page: 1, limit: 1000 });
+        props.getListCareerField({ name: '', page: 1, limit: 1000 });
+    }, []);
 
     /**
      * Function format dữ liệu Date thành string
      * @param {*} date : Ngày muốn format
      * @param {*} monthYear : true trả về tháng năm, false trả về ngày tháng năm
      */
-    formatDate(date, monthYear = false) {
+    const formatDate = (date, monthYear = false) => {
         if (date) {
             let d = new Date(date),
                 month = '' + (d.getMonth() + 1),
@@ -87,8 +85,8 @@ class SearchEmployeeForPackage extends Component {
      *  Bắt sự kiện click xem thông tin nhân viên
      * @param {*} value : Thông tin nhân viên muốn xem
      */
-    handleView = async (value) => {
-        await this.setState(state => {
+    const handleView = async (value) => {
+        await setState(state => {
             return {
                 ...state,
                 currentRowView: value
@@ -101,9 +99,9 @@ class SearchEmployeeForPackage extends Component {
      *  Xóa đề xuất
      * @param {*} value : Thông tin nhân viên muốn xem
      */
-    deleteSuggest = async (id) => {
-        console.log('state.listSuggest', id, this.state.listSuggest);
-        await this.setState(state => {
+    const deleteSuggest = async (id) => {
+        console.log('state.listSuggest', id, state.listSuggest);
+        await setState(state => {
             delete state.listSuggest[id];
             state.listSuggestForProps[id] = {
                 ...state.listSuggestForProps[id],
@@ -119,8 +117,8 @@ class SearchEmployeeForPackage extends Component {
      *  Thêm đề xuất
      * @param {*} value : Thông tin nhân viên muốn xem
      */
-    addSuggest = async (id, x) => {
-        await this.setState(state => {
+    const addSuggest = async (id, x) => {
+        await setState(state => {
             state.listSuggest[id] = x;
             state.listSuggestForProps[id] = x;
             return {
@@ -133,8 +131,8 @@ class SearchEmployeeForPackage extends Component {
      * Bắt sự kiện click chỉnh sửa thông tin nhân viên
      * @param {*} value : Thông tin nhân viên muốn chỉnh sửa
      */
-    handleEdit = async (value) => {
-        await this.setState(state => {
+    const handleEdit = async (value) => {
+        await setState(state => {
             return {
                 ...state,
                 currentRow: value
@@ -147,36 +145,36 @@ class SearchEmployeeForPackage extends Component {
      * Function lưu giá trị unit vào state khi thay đổi
      * @param {*} value : Array id đơn vị
      */
-    handleUnitChange = (value) => {
+    const handleUnitChange = (value) => {
         if (value.length === 0) {
             value = null
         };
-        this.setState({
-            ...this.state,
+        setState(state => ({
+            ...state,
             organizationalUnits: value
-        })
+        }))
     }
 
     /**
      * Function lưu giá trị unit vào state khi thay đổi
      * @param {*} value : Array id trình độ
      */
-    handleChangeProfessionalSkill = (value) => {
+    const handleChangeProfessionalSkill = (value) => {
         if (value.length === 0) {
             value = null
         };
-        this.setState({
-            ...this.state,
+        setState(state => ({
+            ...state,
             professionalSkill: value[0]
-        })
+        }))
     }
 
     /**
      * Function lưu giá trị unit vào state khi thay đổi
      * @param {*} value : Array id Chuyên ngành
      */
-    handleMajor = (value) => {
-        let { major } = this.props;
+    const handleMajor = (value) => {
+        let { major } = props;
         const listMajor = major.listMajor;
         let dataTreeMajor = []
         for (let i in listMajor) {
@@ -216,7 +214,11 @@ class SearchEmployeeForPackage extends Component {
             }
         }
 
-        this.setState({ majorID: value[0], majorInfo: majorSearch });
+        setState(state => ({
+            ...state,
+            majorID: value[0],
+            majorInfo: majorSearch
+        }));
     }
 
     /**
@@ -224,51 +226,61 @@ class SearchEmployeeForPackage extends Component {
      * @param {*} value : Array id Vị trí công việc
      */
 
-    handleAction = (value) => {
-        let action = this.state.action;
-        if (!this.state.action) {
+    const handleAction = (value) => {
+        let action = state.action;
+        if (!state.action) {
             action = [];
         }
 
-        this.setState({ action: value });
+        setState(state => ({
+            ...state,
+            action: value
+        }));
 
         console.log('value', value, value[value.length - 1], action.indexOf(value[value.length - 1]));
     };
 
-    handleField = (value) => {
-        this.setState({ field: value[0], position: undefined });
+    const handleField = (value) => {
+        setState(state => ({
+            ...state,
+            field: value[0], position: undefined
+        }));
     };
 
-    handlePosition = (value) => {
-        let { career } = this.props;
+    const handlePosition = (value) => {
+        let { career } = props;
         let listPosition = career?.listPosition.map(elm => { return { ...elm, id: elm._id } });
         let position = listPosition?.find(e => e._id === value[0]);
         console.log('value', value, position);
-        this.setState({ position: value[0], posName: position?.name });
+        setState(state => ({
+            ...state,
+            position: value[0], posName: position?.name
+        }));
     };
 
     /**
      * Function lưu giá trị ngày hết hạn hợp đồng vào state khi thay đổi
      * @param {*} value : Tháng hết hạn hợp đồng
      */
-    handleEndDateOfCertificateChange = (value) => {
-        this.setState({
-            ...this.state,
+    const handleEndDateOfCertificateChange = (value) => {
+        setState(state => ({
+            ...state,
             certificatesEndDate: value
-        });
+        }))
     }
 
-    handleChange = (e) => {
+    const handleChange = (e) => {
         const { name, value } = e.target;
-        this.setState({
+        setState(state => ({
+            ...state,
             [name]: value
-        });
+        }));
     }
 
     /** Function bắt sự kiện tìm kiếm */
-    handleSunmitSearch = async () => {
-        console.log('state', this.state);
-        let data = this.state;
+    const handleSunmitSearch = async () => {
+        console.log('state', state);
+        let data = state;
         let keySearch = {
             organizationalUnits: data.organizationalUnits,
             professionalSkill: data.professionalSkill,
@@ -287,37 +299,41 @@ class SearchEmployeeForPackage extends Component {
             searchForPackage: true,
             status: "active"
         }
-        console.log('keysearch', keySearch, this.state);
-        this.props.getAllEmployee(keySearch);
+        console.log('keysearch', keySearch, state);
+        props.getAllEmployee(keySearch);
     }
 
     /**
      * Bắt sự kiện setting số dòng hiện thị trên một trang
      * @param {*} number : Số dòng trên 1 trang
      */
-    setLimit = async (number) => {
-        await this.setState({
-            limit: parseInt(number),
-        });
-        this.props.getAllEmployee(this.state);
+    const setLimit = async (number) => {
+        await setState(state => ({
+            ...state,
+            limit: parseInt(number)
+        }))
     }
 
     /**
      * Bắt sự kiện chuyển trang
      * @param {*} pageNumber : Số trang muốn xem
      */
-    setPage = async (pageNumber) => {
+    const setPage = async (pageNumber) => {
         console.log('xx', pageNumber);
         let page = (pageNumber - 1);
-        await this.setState({
+        await setState(state => ({
+            ...state,
             page: parseInt(page),
-        });
-        this.props.getAllEmployee(this.state);
+        }))
     }
+    
+    useEffect(() => {
+        props.getAllEmployee(state)
+    }, [state.limit, state.page]);
 
     /** show more option search */
-    clickShowMore = () => {
-        this.setState(state => {
+    const clickShowMore = () => {
+        setState(state => {
             return {
                 ...state,
                 showMore: !state.showMore,
@@ -326,22 +342,22 @@ class SearchEmployeeForPackage extends Component {
     }
 
     // import thông tin tìm kiếm
-    clickImport = async () => {
-        await this.setState({
+    const clickImport = async () => {
+        await setState({
             importSearch: true
         })
         window.$('#modal_import_file_search').modal('show');
     }
 
-    clickExport = () => {
+    const clickExport = () => {
         console.log('export data search click');
     }
 
-    convertDataExport = () => {
+    const convertDataExport = () => {
         let datas = [];
         let { position, professionalSkill, majorInfo,
             certificatesName, certificatesType, certificatesEndDate,
-            exp, sameExp, field, action } = this.state;
+            exp, sameExp, field, action } = state;
         let out = {
             STT: 1,
             position: position,
@@ -353,7 +369,7 @@ class SearchEmployeeForPackage extends Component {
             exp: exp,
             sameExp: sameExp,
             field: field,
-            package: this.state.package,
+            package: state.package,
             action: action && action.join(","),
         }
         datas = [...datas, out];
@@ -386,7 +402,7 @@ class SearchEmployeeForPackage extends Component {
         return res;
     }
 
-    getYear = (date) => {
+    const getYear = (date) => {
         let t1 = new Date(date).getTime();
         let t2 = new Date().getTime();
 
@@ -394,12 +410,12 @@ class SearchEmployeeForPackage extends Component {
         return year;
     }
 
-    convertExportSearchResult = () => {
+    const convertExportSearchResult = () => {
         let datasA = [];
         let datasB = [];
         let datasC = [];
-        const { employeesManager } = this.props;
-        const { listSuggest } = this.state;
+        const { employeesManager } = props;
+        const { listSuggest } = state;
 
         let listEmployees = [];
         if (employeesManager.listEmployees) {
@@ -428,16 +444,16 @@ class SearchEmployeeForPackage extends Component {
                 STT: stt,
                 fullName: x?.fullName,
                 position: x?.roles?.map(e => e.roleId.name).join(", "),
-                birthdate: this.formatDate(x?.birthdate),
+                birthdate: formatDate(x?.birthdate),
 
-                professionalSkill: (`- Trình độ: ${this.formatSkill(x?.professionalSkill)}\n- Chứng chỉ: ${x?.certificates?.length > 0 && x?.certificates?.map((e, key) => {
-                    return `- ${e?.name} - ${e?.issuedBy} - Hiệu lực: ${this.formatDate(e?.endDate)}`
+                professionalSkill: (`- Trình độ: ${formatSkill(x?.professionalSkill)}\n- Chứng chỉ: ${x?.certificates?.length > 0 && x?.certificates?.map((e, key) => {
+                    return `- ${e?.name} - ${e?.issuedBy} - Hiệu lực: ${formatDate(e?.endDate)}`
                 }).join("\n")}`).split("\n").join("\n"),
 
                 boss: x?.company?.name,
                 address: x?.company?.address,
-                jobTitle: `${this.formatSkill(x?.professionalSkill)} ${x?.major?.length > 0 ? `về ${x?.major[0].specialized?.name}` : ""}`,
-                yearExp: this.getYear(x?.experiences[0].startDate),
+                jobTitle: `${formatSkill(x?.professionalSkill)} ${x?.major?.length > 0 ? `về ${x?.major[0].specialized?.name}` : ""}`,
+                yearExp: getYear(x?.experiences[0].startDate),
                 contactPerson: x?.company?.contactPerson?.name,
                 phone: `- Điện thoại: ${x?.company?.phone}\n- Fax: ${x?.company?.fax}\n-Email: ${x?.company?.email}`,
             }
@@ -453,8 +469,8 @@ class SearchEmployeeForPackage extends Component {
             let outC = {
                 STT: stt,
                 fullName: x?.fullName,
-                startDate: x?.career?.length > 0 ? this.formatDate(x?.career[0].startDate) : "Không có dữ liệu",
-                endDate: x?.career?.length > 0 ? this.formatDate(x?.career[0].startDate) : "Không có dữ liệu",
+                startDate: x?.career?.length > 0 ? formatDate(x?.career[0].startDate) : "Không có dữ liệu",
+                endDate: x?.career?.length > 0 ? formatDate(x?.career[0].startDate) : "Không có dữ liệu",
                 career: x?.career?.length > 0 ? `-Dự án: ${x?.career[0].package}\n-Chức vụ: ${x?.career[0].position?.name}\n-Kinh nghiệm chuyên môn và quản lý có liên quan:\n${x?.career[0].action.map(act => `  + ${act?.name}`).join("\n")}`.split("\n").join("\n") : `Chưa có dữ liệu`,
             }
             datasC = [...datasC, outC];
@@ -464,8 +480,8 @@ class SearchEmployeeForPackage extends Component {
                     outC = {
                         STT: "",
                         fullName: "",
-                        startDate: x?.career?.length > 0 ? this.formatDate(x.career[k].startDate) : "Không có dữ liệu",
-                        endDate: x?.career?.length > 0 ? this.formatDate(x.career[k].startDate) : "Không có dữ liệu",
+                        startDate: x?.career?.length > 0 ? formatDate(x.career[k].startDate) : "Không có dữ liệu",
+                        endDate: x?.career?.length > 0 ? formatDate(x.career[k].startDate) : "Không có dữ liệu",
                         career: x?.career?.length > 0 ? `-Dự án: ${x?.career[k].package}\n-Chức vụ: ${x?.career[k].position?.name}\n-Kinh nghiệm chuyên môn và quản lý có liên quan:\n${x?.career[k].action.map(act => `  + ${act?.name}`).join("\n")}`.split("\n").join("\n") : `Chưa có dữ liệu`,
                     }
                     datasC = [...datasC, outC];
@@ -544,12 +560,13 @@ class SearchEmployeeForPackage extends Component {
         return res;
     }
 
-    updateSearchData = async (data) => {
+    const updateSearchData = async (data) => {
         console.log('dataa', data);
         let { position, professionalSkill, majorSearch,
             certificatesName, certificatesType, certificatesEndDate,
             exp, sameExp, field, action } = data;
-        this.setState({
+        setState(state => ({
+            ...state,
             position: position,
             professionalSkill: professionalSkill,
             majorInfo: majorSearch,
@@ -560,12 +577,12 @@ class SearchEmployeeForPackage extends Component {
             sameExp: sameExp,
             field: field,
             package: data.package,
-            action: action,
-        });
+            action: action
+        }))
 
     }
 
-    formatSkill = (item) => {
+    const formatSkill = (item) => {
         if (item === "intermediate_degree") return "Trung cấp";
         if (item === "colleges") return "Cao đẳng";
         if (item === "university") return "Đại học";
@@ -576,7 +593,7 @@ class SearchEmployeeForPackage extends Component {
         if (item === "unavailable") return "Không có";
     }
 
-    formatDegreeType = (item) => {
+    const formatDegreeType = (item) => {
         //excellent-Xuất sắc, very_good-Giỏi, good-Khá, average_good-Trung bình khá, ordinary-Trung bình
         if (item === "excellent") return "Xuất sắc";
         if (item === "very_good") return "Giỏi";
@@ -586,28 +603,105 @@ class SearchEmployeeForPackage extends Component {
     }
 
 
-    render() {
-        const { employeesManager, translate, department, career, major } = this.props;
+    const { employeesManager, translate, department, career, major } = props;
 
-        const { showMore, importEmployee, limit, page, currentRow, currentRowView,
-            certificatesEndDate, certificatesType, certificatesName,
-            professionalSkill, majorInfo, exp, sameExp, majorID,
-            field, position, posName, action, listSuggest, listSuggestForProps, tableId } = this.state; // filterField, filterPosition, filterAction, 
+    const { showMore, importEmployee, limit, page, currentRow, currentRowView,
+        certificatesEndDate, certificatesType, certificatesName,
+        professionalSkill, majorInfo, exp, sameExp, majorID,
+        field, position, posName, action, listSuggest, listSuggestForProps} = state; // filterField, filterPosition, filterAction, 
 
-        let listEmployees = [];
-        if (employeesManager.listEmployees) {
-            listEmployees = employeesManager.listEmployees;
+    let listEmployees = [];
+    if (employeesManager.listEmployees) {
+        listEmployees = employeesManager.listEmployees;
+    }
+    console.log('listEmployees1', listEmployees);
+
+    let pageTotal = ((employeesManager.totalList % limit) === 0) ?
+        parseInt(employeesManager.totalList / limit) :
+        parseInt((employeesManager.totalList / limit) + 1);
+    let currentPage = parseInt(page + 1);
+
+    let listField = career.listField;
+    let dataTreeField = []
+    let lField = listField.map(elm => {
+        return {
+            ...elm,
+            id: elm._id,
+            text: elm.name,
+            state: { "opened": true },
+            parent: "#",
         }
-        console.log('listEmployees1', listEmployees);
+    });
+    dataTreeField = [...dataTreeField, ...lField];
 
-        let pageTotal = ((employeesManager.totalList % limit) === 0) ?
-            parseInt(employeesManager.totalList / limit) :
-            parseInt((employeesManager.totalList / limit) + 1);
-        let currentPage = parseInt(page + 1);
+    let listPosition = career.listPosition;
+    let dataTreePosition = []
+    let pos = listPosition.map(elm => {
+        return {
+            ...elm,
+            id: elm._id,
+            text: elm.name,
+            state: { "opened": true },
+            parent: "#",
+        }
+    });
+    dataTreePosition = [...dataTreePosition, ...pos];
 
-        let listField = career.listField;
-        let dataTreeField = []
-        let lField = listField.map(elm => {
+    if (field) {
+        let listPos = listField.find(e => String(e._id) === String(field))?.position?.map(elm => elm.position._id)
+        let tmp = dataTreePosition.filter(e => listPos.indexOf(String(e.id)) !== -1);
+        dataTreePosition = tmp;
+    }
+
+    let listAction = career.listAction.filter(e => e.isLabel !== 1);
+    let dataTreeAction = []
+    let acts = listAction.map(elm => {
+        return {
+            ...elm,
+            id: elm._id,
+            text: elm.name,
+            state: { "opened": true },
+            parent: "#",
+        }
+    });
+    // dataTreeAction = [...dataTreeAction, ...act];
+    for (let i in listAction) {
+        let labelMap = listAction[i].label;
+        let labels = labelMap.map(elm => {
+            return {
+                ...elm,
+                id: elm._id,
+                text: elm.name,
+                // state: { "opened": true },
+                // parent: listAction[i]._id.toString(),
+            }
+        });
+        dataTreeAction = [...dataTreeAction, ...labels];
+    }
+
+    let listSelectAction = career.listAction.filter(e => e.isLabel === 1).map(e => {
+        return { id: e._id, text: e.name, value: [] }
+    });
+
+    for (let i in listSelectAction) {
+        for (let x in listAction) {
+            if (listAction[x].label.map(lb => lb._id).indexOf(String(listSelectAction[i].id)) !== -1) {
+                listSelectAction[i].value.push(
+                    { text: listAction[x].name, value: listAction[x]._id }
+                )
+            }
+        }
+    }
+
+    let additionalItems = career.listAction.filter(e => e.isLabel !== 1 && e.label.length === 0).map(x => { return { text: x.name, value: x._id } })
+
+    listSelectAction = [...listSelectAction, ...additionalItems];
+
+    const listMajor = major.listMajor;
+    let dataTreeMajor = []
+    for (let i in listMajor) {
+        let groupMap = listMajor[i].group;
+        let group = listMajor[i].group.map(elm => {
             return {
                 ...elm,
                 id: elm._id,
@@ -616,11 +710,47 @@ class SearchEmployeeForPackage extends Component {
                 parent: "#",
             }
         });
-        dataTreeField = [...dataTreeField, ...lField];
+        dataTreeMajor = [...dataTreeMajor, ...group];
+        for (let x in groupMap) {
+            let specializedMap = groupMap[x].specialized;
+            let specialized = groupMap[x].specialized.map(elm => {
+                return {
+                    ...elm,
+                    id: elm._id,
+                    text: elm.name,
+                    state: { "opened": true },
+                    parent: groupMap[x]._id.toString(),
+                }
+            });
+            dataTreeMajor = [...dataTreeMajor, ...specialized];
+        }
+    }
 
-        let listPosition = career.listPosition;
-        let dataTreePosition = []
-        let pos = listPosition.map(elm => {
+    let professionalSkillArr = [
+        { value: "", text: "Chọn trình độ" },
+        { value: "intermediate_degree", text: "Trung cấp" },
+        { value: "colleges", text: "Cao đẳng" },
+        { value: "university", text: "Đại học" },
+        { value: "bachelor", text: "Cử nhân" },
+        { value: "engineer", text: "Kỹ sư" },
+        { value: "master_degree", text: "Thạc sĩ" },
+        { value: "phd", text: "Tiến sĩ" },
+        { value: "unavailable", text: "Không có" },
+    ];
+
+    // Filter danh sách
+    let filterField = dataTreeField;
+    let filterPosition = dataTreePosition;
+    let filterAction = dataTreeAction;
+
+    let posCodeArr = [];
+    if (field?.id) {
+        for (let x in field.position) {
+            posCodeArr = [...posCodeArr, ...field.position[x].code];
+        }
+        filterPosition = listPosition.filter((item) => posCodeArr.find(e => e === item.code));
+        dataTreePosition = [];
+        let pos = filterPosition.map(elm => {
             return {
                 ...elm,
                 id: elm._id,
@@ -630,410 +760,295 @@ class SearchEmployeeForPackage extends Component {
             }
         });
         dataTreePosition = [...dataTreePosition, ...pos];
-
-        if (field) {
-            let listPos = listField.find(e => String(e._id) === String(field))?.position?.map(elm => elm.position._id)
-            let tmp = dataTreePosition.filter(e => listPos.indexOf(String(e.id)) !== -1);
-            dataTreePosition = tmp;
-        }
-
-        let listAction = career.listAction.filter(e => e.isLabel !== 1);
-        let dataTreeAction = []
-        let acts = listAction.map(elm => {
-            return {
-                ...elm,
-                id: elm._id,
-                text: elm.name,
-                state: { "opened": true },
-                parent: "#",
-            }
-        });
-        // dataTreeAction = [...dataTreeAction, ...act];
-        for (let i in listAction) {
-            let labelMap = listAction[i].label;
-            let labels = labelMap.map(elm => {
-                return {
-                    ...elm,
-                    id: elm._id,
-                    text: elm.name,
-                    // state: { "opened": true },
-                    // parent: listAction[i]._id.toString(),
-                }
-            });
-            dataTreeAction = [...dataTreeAction, ...labels];
-        }
-
-        let listSelectAction = career.listAction.filter(e => e.isLabel === 1).map(e => {
-            return { id: e._id, text: e.name, value: [] }
-        });
-
-        for (let i in listSelectAction) {
-            for (let x in listAction) {
-                if (listAction[x].label.map(lb => lb._id).indexOf(String(listSelectAction[i].id)) !== -1) {
-                    listSelectAction[i].value.push(
-                        { text: listAction[x].name, value: listAction[x]._id }
-                    )
-                }
-            }
-        }
-
-        let additionalItems = career.listAction.filter(e => e.isLabel !== 1 && e.label.length === 0).map(x => { return { text: x.name, value: x._id } })
-
-        listSelectAction = [...listSelectAction, ...additionalItems];
-
-        const listMajor = major.listMajor;
-        let dataTreeMajor = []
-        for (let i in listMajor) {
-            let groupMap = listMajor[i].group;
-            let group = listMajor[i].group.map(elm => {
+        for (let i in filterPosition) {
+            let desMap = filterPosition[i].description;
+            let description = desMap.map(elm => {
                 return {
                     ...elm,
                     id: elm._id,
                     text: elm.name,
                     state: { "opened": true },
-                    parent: "#",
+                    parent: filterPosition[i]._id.toString(),
                 }
             });
-            dataTreeMajor = [...dataTreeMajor, ...group];
-            for (let x in groupMap) {
-                let specializedMap = groupMap[x].specialized;
-                let specialized = groupMap[x].specialized.map(elm => {
-                    return {
-                        ...elm,
-                        id: elm._id,
-                        text: elm.name,
-                        state: { "opened": true },
-                        parent: groupMap[x]._id.toString(),
-                    }
-                });
-                dataTreeMajor = [...dataTreeMajor, ...specialized];
-            }
-        }
+            dataTreePosition = [...dataTreePosition, ...description];
+        };
+    }
 
-        let professionalSkillArr = [
-            { value: "", text: "Chọn trình độ" },
-            { value: "intermediate_degree", text: "Trung cấp" },
-            { value: "colleges", text: "Cao đẳng" },
-            { value: "university", text: "Đại học" },
-            { value: "bachelor", text: "Cử nhân" },
-            { value: "engineer", text: "Kỹ sư" },
-            { value: "master_degree", text: "Thạc sĩ" },
-            { value: "phd", text: "Tiến sĩ" },
-            { value: "unavailable", text: "Không có" },
-        ];
+    console.log('listEmployees2', listEmployees);
 
-        // Filter danh sách
-        let filterField = dataTreeField;
-        let filterPosition = dataTreePosition;
-        let filterAction = dataTreeAction;
-
-        let posCodeArr = [];
-        if (field?.id) {
-            for (let x in field.position) {
-                posCodeArr = [...posCodeArr, ...field.position[x].code];
-            }
-            filterPosition = listPosition.filter((item) => posCodeArr.find(e => e === item.code));
-            dataTreePosition = [];
-            let pos = filterPosition.map(elm => {
-                return {
-                    ...elm,
-                    id: elm._id,
-                    text: elm.name,
-                    state: { "opened": true },
-                    parent: "#",
+    return (
+        <div className="box">
+            <div className="box-body qlcv">
+                { // Object.keys(listSuggest).length > 0 &&
+                    <div className="form-inline">
+                        {/* Button export nhân viên */}
+                        {<ExportExcel id="export-process-template" exportData={convertExportSearchResult()} buttonName={"Xuất file tìm kiếm"} style={{ marginLeft: 5, marginTop: 5 }} />}
+                    </div>
                 }
-            });
-            dataTreePosition = [...dataTreePosition, ...pos];
-            for (let i in filterPosition) {
-                let desMap = filterPosition[i].description;
-                let description = desMap.map(elm => {
-                    return {
-                        ...elm,
-                        id: elm._id,
-                        text: elm.name,
-                        state: { "opened": true },
-                        parent: filterPosition[i]._id.toString(),
-                    }
-                });
-                dataTreePosition = [...dataTreePosition, ...description];
-            };
-        }
-
-        console.log('listEmployees2', listEmployees);
-
-        return (
-            <div className="box">
-                <div className="box-body qlcv">
-                    { // Object.keys(listSuggest).length > 0 &&
-                        <div className="form-inline">
-                            {/* Button export nhân viên */}
-                            {<ExportExcel id="export-process-template" exportData={this.convertExportSearchResult()} buttonName={"Xuất file tìm kiếm"} style={{ marginLeft: 5, marginTop: 5 }} />}
-                        </div>
-                    }
-                    <div className="form-inline">
-                        {/* Vị trí công việc  */}
-                        <div className="form-group">
-                            <label className="form-control-static">Vị trí công việc</label>
-                            <TreeSelect data={dataTreePosition} value={[position]} handleChange={this.handlePosition} mode="radioSelect" />
-                        </div>
-                        {/* Trình độ chuyên môn  */}
-                        <div className="form-group">
-                            <label className="form-control-static">Trình độ chuyên môn</label>
-                            <SelectBox id={`professionalSkillArr-selectbox`}
-                                multiple={false}
-                                className="form-control select2"
-                                style={{ width: "100%" }}
-                                value={professionalSkill}
-                                items={professionalSkillArr} onChange={this.handleChangeProfessionalSkill}>
-                            </SelectBox>
-                        </div>
-                        {/* Chuyên ngành  */}
-                        <div className="form-group">
-                            <label className="form-control-static">Chuyên ngành</label>
-                            <TreeSelect data={dataTreeMajor} value={[majorInfo]} handleChange={this.handleMajor} mode="radioSelect" />
-                        </div>
+                <div className="form-inline">
+                    {/* Vị trí công việc  */}
+                    <div className="form-group">
+                        <label className="form-control-static">Vị trí công việc</label>
+                        <TreeSelect data={dataTreePosition} value={[position]} handleChange={handlePosition} mode="radioSelect" />
                     </div>
-
-                    <div className="form-inline">
-                        {/* Loại chứng chỉ */}
-                        <div className="form-group">
-                            <label className="form-control-static">Loại chứng chỉ</label>
-                            <input type="text" className="form-control" value={certificatesType} name="certificatesType" onChange={this.handleChange} placeholder={"Oracle Database"} />
-                        </div>
-                        {/* Loại hợp đồng lao động */}
-                        <div className="form-group">
-                            <label className="form-control-static">Tên chứng chỉ</label>
-                            <input type="text" className="form-control" value={certificatesName} name="certificatesName" onChange={this.handleChange} />
-                        </div>
-                        {/* Tháng hết hạn chứng chỉ */}
-                        <div className="form-group">
-                            <label className="form-control-static">Hiệu lực chứng chỉ</label>
-                            <DatePicker
-                                id="month-endDate-certificate"
-                                // dateFormat="month-year"
-                                value={certificatesEndDate}
-                                onChange={this.handleEndDateOfCertificateChange}
-                            />
-                        </div>
+                    {/* Trình độ chuyên môn  */}
+                    <div className="form-group">
+                        <label className="form-control-static">Trình độ chuyên môn</label>
+                        <SelectBox id={`professionalSkillArr-selectbox`}
+                            multiple={false}
+                            className="form-control select2"
+                            style={{ width: "100%" }}
+                            value={professionalSkill}
+                            items={professionalSkillArr} onChange={handleChangeProfessionalSkill}>
+                        </SelectBox>
                     </div>
-
-                    <div className="form-inline">
-                        {/* Số năm kinh nghiệm */}
-                        <div className="form-group">
-                            <label className="form-control-static">Số năm KN</label>
-                            <input type="number" className="form-control" value={exp} name="exp" onChange={this.handleChange} placeholder={"Số năm kinh nghiệm"} />
-                        </div>
-                        {/* Số năm kinh nghiệm công việc tương đương */}
-                        <div className="form-group">
-                            <label className="form-control-static">Số năm KN công việc tương đương</label>
-                            <input type="number" className="form-control" value={sameExp} name="sameExp" onChange={this.handleChange} placeholder={"Kinh nghiệm công việc tương tự"} />
-                        </div>
+                    {/* Chuyên ngành  */}
+                    <div className="form-group">
+                        <label className="form-control-static">Chuyên ngành</label>
+                        <TreeSelect data={dataTreeMajor} value={[majorInfo]} handleChange={handleMajor} mode="radioSelect" />
                     </div>
-
-
-                    {showMore &&
-                        <div className="form-inline">
-                            {/* Lĩnh vực công việc  */}
-                            <div className="form-group">
-                                <label className="form-control-static">Lĩnh vực công việc</label>
-                                <TreeSelect data={dataTreeField} value={[field]} handleChange={this.handleField} mode="radioSelect" />
-                            </div>
-                            {/* Tên gói thầu */}
-                            <div className="form-group">
-                                <label className="form-control-static">Tên gói thầu</label>
-                                <input type="text" className="form-control" value={this.state.package} name="package" onChange={this.handleChange} />
-                            </div>
-                            {/* Hoạt động công việc  */}
-                            <div className="form-group">
-                                <label className="form-control-static">Hoạt động công việc</label>
-                                {/* <TreeSelect data={dataTreeAction} value={action?.id} handleChange={this.handleAction} mode="radioSelect" /> */}
-                                <SelectBox
-                                    id={`select-career-action-select`}
-                                    lassName="form-control select2"
-                                    style={{ width: "100%" }}
-                                    items={listSelectAction}
-                                    // items={listAction.map(x => {
-                                    //     return { text: x.name, value: x._id }
-                                    // })}
-                                    options={{ placeholder: "Chọn hoạt động công việc" }}
-                                    onChange={this.handleAction}
-                                    value={action}
-                                    multiple={true}
-                                />
-                            </div>
-
-                        </div>
-                    }
-                    <div className="form-inline" style={{ marginBottom: 15 }}>
-                        {/* Button show more */}
-                        <div className="form-group">
-                            <label></label>
-                            <div className="dropdown">
-                                <button type="button" className="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="true" title={translate('human_resource.profile.employee_management.add_employee_title')} >Tùy chọn</button>
-                                <ul className="dropdown-menu" style={{ marginTop: 0 }}>
-                                    <li><a style={{ cursor: 'pointer' }} onClick={this.clickImport}>Nhập thông tin tìm kiếm từ file</a></li>
-                                    {/* <li><a style={{ cursor: 'pointer' }} onClick={this.clickExport}>Lưu thông tin tìm kiếm</a></li> */}
-                                    <li>
-                                        <ExportExcel id="download_template_search_package" type='link' exportData={this.convertDataExport()}
-                                            buttonName='Lưu thông tin tìm kiếm' />
-                                    </li>
-                                </ul>
-                            </div>
-                            <button type="button" className="btn btn-primary" title={translate('general.search')} onClick={this.clickShowMore} >
-                                {showMore ?
-                                    <span>
-                                        Ẩn bớt <i className="fa fa-angle-double-up"></i>
-                                    </span>
-                                    : <span>
-                                        Hiện thêm <i className="fa fa-angle-double-down"></i>
-                                    </span>
-                                }
-                            </button>
-                        </div>
-                        {/* Button tìm kiếm */}
-                        <div className="form-group">
-                            <label>
-                                <button type="button" className="btn btn-success" title={translate('general.search')} onClick={this.handleSunmitSearch} >{translate('general.search')}</button>
-                            </label>
-                        </div>
-                    </div>
-
-
-                    <h4>Danh sách nhân viên tìm kiếm</h4>
-                    <table id={tableId} className="table table-striped table-bordered table-hover">
-                        <thead>
-                            <tr>
-                                <th>{translate('human_resource.staff_name')}</th>
-                                <th>Vị trí công việc</th>
-                                <th>Trình độ chuyên môn</th>
-                                <th>Chuyên ngành</th>
-                                <th>Chứng chỉ</th>
-                                <th>Bằng cấp</th>
-                                <th style={{ width: '120px', textAlign: 'center' }}>{translate('general.action')}
-                                    <DataTableSetting
-                                        tableId={tableId}
-                                        columnArr={[
-                                            translate('human_resource.staff_name'),
-                                            "Vị trí công việc",
-                                            "Trình độ chuyên môn",
-                                            "Chuyên ngành",
-                                            "Chứng chỉ",
-                                            "Bằng cấp",
-                                        ]}
-                                        setLimit={this.setLimit}
-                                    />
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {listEmployees && listEmployees.length !== 0 &&
-                                listEmployees.map((x, index) => (
-                                    <tr key={index}>
-                                        <td>{x.fullName}</td>
-                                        <td>
-                                            {x.career?.length > 0 ? (x.career?.map((e, key) => {
-                                                return <li key={key}>{new Date(e.startDate).getFullYear()} - {new Date(e.endDate).getFullYear()} : {e?.position ? (e?.position?.name) : "Không có thông tin vị trí"}</li>
-                                            })) : <p>Chưa có dữ liệu</p>}
-                                        </td>
-                                        <td>{this.formatSkill(x.professionalSkill)}</td>
-                                        <td>{x.major?.length > 0 ? (x.major?.map((e, key) => {
-                                            return <li key={key}> {e?.group?.name} - {e?.specialized?.name} </li>
-                                        })) : <p>Chưa có dữ liệu</p>}
-                                        </td>
-                                        <td>
-                                            {x.certificates?.length > 0 ? x.certificates?.map((e, key) => {
-                                                return <li key={key}> {e?.name} - {e?.issuedBy} - Hiệu lực: {this.formatDate(e?.endDate)} </li>
-                                            }) : <p>Chưa có dữ liệu</p>}
-                                        </td>
-                                        <td>
-                                            {x.degrees?.length > 0 ? x.degrees?.map((e, key) => {
-                                                return <li key={key}> {e?.name} - Năm: {e?.year} - Loại: {this.formatDegreeType(e?.degreeType)}</li>
-                                            }) : <p>Chưa có dữ liệu</p>}
-                                        </td>
-                                        <td>
-                                            <a onClick={() => this.handleView(x)} style={{ width: '5px' }} title={translate('human_resource.profile.employee_management.view_employee')}><i className="material-icons">view_list</i></a>
-                                        </td>
-                                    </tr>
-                                ))}
-                        </tbody>
-
-                    </table>
-                    {employeesManager.isLoading ?
-                        <div className="table-info-panel">{translate('confirm.loading')}</div> :
-                        (!listEmployees || listEmployees.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
-                    }
-
-                    <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={currentPage} func={this.setPage} />
-
-                    <h4>Bảng đề xuất nhân sự chủ chốt</h4>
-                    <table id="employee-table-suggest" className="table table-striped table-bordered table-hover">
-                        <thead>
-                            <tr>
-                                <th>{translate('human_resource.staff_name')}</th>
-                                <th>Vị trí công việc</th>
-                                <th style={{ width: '120px', textAlign: 'center' }}>{translate('general.action')}
-                                    <DataTableSetting
-                                        tableId="employee-table-suggest"
-                                        columnArr={[
-                                            translate('human_resource.staff_name'),
-                                            "Vị trí công việc",
-                                        ]}
-                                        limit={this.state.limit}
-                                        setLimit={this.setLimit}
-                                        hideColumnOption={true}
-                                    />
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {Object.keys(listSuggest).length !== 0 &&
-                                Object.values(listSuggest).map((x, index) => (
-                                    <tr key={index}>
-                                        <td>{x.emp.fullName}</td>
-                                        <td>{x.position}</td>
-                                        <td>
-                                            <a onClick={() => this.deleteSuggest(x.id)} style={{ width: '5px' }} title={"Xóa đề xuất nhân sự"}><i style={{ color: "red" }} className="material-icons">delete</i></a>
-                                        </td>
-                                    </tr>
-                                ))}
-                        </tbody>
-                    </table>
-                    {
-                        (Object.keys(listSuggest).length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
-                    }
                 </div>
 
-                {/* From thêm mới thông tin nhân viên */}
-                <EmployeeCreateForm />
+                <div className="form-inline">
+                    {/* Loại chứng chỉ */}
+                    <div className="form-group">
+                        <label className="form-control-static">Loại chứng chỉ</label>
+                        <input type="text" className="form-control" value={certificatesType} name="certificatesType" onChange={handleChange} placeholder={"Oracle Database"} />
+                    </div>
+                    {/* Loại hợp đồng lao động */}
+                    <div className="form-group">
+                        <label className="form-control-static">Tên chứng chỉ</label>
+                        <input type="text" className="form-control" value={certificatesName} name="certificatesName" onChange={handleChange} />
+                    </div>
+                    {/* Tháng hết hạn chứng chỉ */}
+                    <div className="form-group">
+                        <label className="form-control-static">Hiệu lực chứng chỉ</label>
+                        <DatePicker
+                            id="month-endDate-certificate"
+                            // dateFormat="month-year"
+                            value={certificatesEndDate}
+                            onChange={handleEndDateOfCertificateChange}
+                        />
+                    </div>
+                </div>
 
-                {/* From import thông tin nhân viên*/
-                    importEmployee && <EmployeeImportForm />
+                <div className="form-inline">
+                    {/* Số năm kinh nghiệm */}
+                    <div className="form-group">
+                        <label className="form-control-static">Số năm KN</label>
+                        <input type="number" className="form-control" value={exp} name="exp" onChange={handleChange} placeholder={"Số năm kinh nghiệm"} />
+                    </div>
+                    {/* Số năm kinh nghiệm công việc tương đương */}
+                    <div className="form-group">
+                        <label className="form-control-static">Số năm KN công việc tương đương</label>
+                        <input type="number" className="form-control" value={sameExp} name="sameExp" onChange={handleChange} placeholder={"Kinh nghiệm công việc tương tự"} />
+                    </div>
+                </div>
+
+
+                {showMore &&
+                    <div className="form-inline">
+                        {/* Lĩnh vực công việc  */}
+                        <div className="form-group">
+                            <label className="form-control-static">Lĩnh vực công việc</label>
+                            <TreeSelect data={dataTreeField} value={[field]} handleChange={handleField} mode="radioSelect" />
+                        </div>
+                        {/* Tên gói thầu */}
+                        <div className="form-group">
+                            <label className="form-control-static">Tên gói thầu</label>
+                            <input type="text" className="form-control" value={state.package} name="package" onChange={handleChange} />
+                        </div>
+                        {/* Hoạt động công việc  */}
+                        <div className="form-group">
+                            <label className="form-control-static">Hoạt động công việc</label>
+                            {/* <TreeSelect data={dataTreeAction} value={action?.id} handleChange={handleAction} mode="radioSelect" /> */}
+                            <SelectBox
+                                id={`select-career-action-select`}
+                                lassName="form-control select2"
+                                style={{ width: "100%" }}
+                                items={listSelectAction}
+                                // items={listAction.map(x => {
+                                //     return { text: x.name, value: x._id }
+                                // })}
+                                options={{ placeholder: "Chọn hoạt động công việc" }}
+                                onChange={handleAction}
+                                value={action}
+                                multiple={true}
+                            />
+                        </div>
+
+                    </div>
+                }
+                <div className="form-inline" style={{ marginBottom: 15 }}>
+                    {/* Button show more */}
+                    <div className="form-group">
+                        <label></label>
+                        <div className="dropdown">
+                            <button type="button" className="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="true" title={translate('human_resource.profile.employee_management.add_employee_title')} >Tùy chọn</button>
+                            <ul className="dropdown-menu" style={{ marginTop: 0 }}>
+                                <li><a style={{ cursor: 'pointer' }} onClick={clickImport}>Nhập thông tin tìm kiếm từ file</a></li>
+                                {/* <li><a style={{ cursor: 'pointer' }} onClick={clickExport}>Lưu thông tin tìm kiếm</a></li> */}
+                                <li>
+                                    <ExportExcel id="download_template_search_package" type='link' exportData={convertDataExport()}
+                                        buttonName='Lưu thông tin tìm kiếm' />
+                                </li>
+                            </ul>
+                        </div>
+                        <button type="button" className="btn btn-primary" title={translate('general.search')} onClick={clickShowMore} >
+                            {showMore ?
+                                <span>
+                                    Ẩn bớt <i className="fa fa-angle-double-up"></i>
+                                </span>
+                                : <span>
+                                    Hiện thêm <i className="fa fa-angle-double-down"></i>
+                                </span>
+                            }
+                        </button>
+                    </div>
+                    {/* Button tìm kiếm */}
+                    <div className="form-group">
+                        <label>
+                            <button type="button" className="btn btn-success" title={translate('general.search')} onClick={handleSunmitSearch} >{translate('general.search')}</button>
+                        </label>
+                    </div>
+                </div>
+
+
+                <h4>Danh sách nhân viên tìm kiếm</h4>
+                <table id={tableId} className="table table-striped table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th>{translate('human_resource.staff_name')}</th>
+                            <th>Vị trí công việc</th>
+                            <th>Trình độ chuyên môn</th>
+                            <th>Chuyên ngành</th>
+                            <th>Chứng chỉ</th>
+                            <th>Bằng cấp</th>
+                            <th style={{ width: '120px', textAlign: 'center' }}>{translate('general.action')}
+                                <DataTableSetting
+                                    tableId={tableId}
+                                    columnArr={[
+                                        translate('human_resource.staff_name'),
+                                        "Vị trí công việc",
+                                        "Trình độ chuyên môn",
+                                        "Chuyên ngành",
+                                        "Chứng chỉ",
+                                        "Bằng cấp",
+                                    ]}
+                                    setLimit={setLimit}
+                                />
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {listEmployees && listEmployees.length !== 0 &&
+                            listEmployees.map((x, index) => (
+                                <tr key={index}>
+                                    <td>{x.fullName}</td>
+                                    <td>
+                                        {x.career?.length > 0 ? (x.career?.map((e, key) => {
+                                            return <li key={key}>{new Date(e.startDate).getFullYear()} - {new Date(e.endDate).getFullYear()} : {e?.position ? (e?.position?.name) : "Không có thông tin vị trí"}</li>
+                                        })) : <p>Chưa có dữ liệu</p>}
+                                    </td>
+                                    <td>{formatSkill(x.professionalSkill)}</td>
+                                    <td>{x.major?.length > 0 ? (x.major?.map((e, key) => {
+                                        return <li key={key}> {e?.group?.name} - {e?.specialized?.name} </li>
+                                    })) : <p>Chưa có dữ liệu</p>}
+                                    </td>
+                                    <td>
+                                        {x.certificates?.length > 0 ? x.certificates?.map((e, key) => {
+                                            return <li key={key}> {e?.name} - {e?.issuedBy} - Hiệu lực: {formatDate(e?.endDate)} </li>
+                                        }) : <p>Chưa có dữ liệu</p>}
+                                    </td>
+                                    <td>
+                                        {x.degrees?.length > 0 ? x.degrees?.map((e, key) => {
+                                            return <li key={key}> {e?.name} - Năm: {e?.year} - Loại: {formatDegreeType(e?.degreeType)}</li>
+                                        }) : <p>Chưa có dữ liệu</p>}
+                                    </td>
+                                    <td>
+                                        <a onClick={() => handleView(x)} style={{ width: '5px' }} title={translate('human_resource.profile.employee_management.view_employee')}><i className="material-icons">view_list</i></a>
+                                    </td>
+                                </tr>
+                            ))}
+                    </tbody>
+
+                </table>
+                {employeesManager.isLoading ?
+                    <div className="table-info-panel">{translate('confirm.loading')}</div> :
+                    (!listEmployees || listEmployees.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                 }
 
-                {/* From xem thông tin nhân viên */
-                    <ViewEmployeeCVForm
-                        _id={currentRowView ? currentRowView._id : ""}
-                        company={currentRowView?.company}
-                        experiences={currentRowView?.experiences}
-                        suggestItem={listSuggestForProps[currentRowView?._id]}
-                        emp={currentRowView}
-                        position={posName}
+                <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={currentPage} func={setPage} />
 
-                        addSuggest={this.addSuggest}
-                        deleteSuggest={this.deleteSuggest}
-                    />
-                }
-                {/* From chinh sửa thông tin nhân viên */
-                    <EmployeeEditFrom
-                        _id={currentRow ? currentRow._id : ""}
-                    />
-                }
-                {/** modal import - export */
-                    this.state.importSearch && <SearchDataImportForm updateSearchData={this.updateSearchData} />
+                <h4>Bảng đề xuất nhân sự chủ chốt</h4>
+                <table id="employee-table-suggest" className="table table-striped table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th>{translate('human_resource.staff_name')}</th>
+                            <th>Vị trí công việc</th>
+                            <th style={{ width: '120px', textAlign: 'center' }}>{translate('general.action')}
+                                <DataTableSetting
+                                    tableId="employee-table-suggest"
+                                    columnArr={[
+                                        translate('human_resource.staff_name'),
+                                        "Vị trí công việc",
+                                    ]}
+                                    limit={state.limit}
+                                    setLimit={setLimit}
+                                    hideColumnOption={true}
+                                />
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {Object.keys(listSuggest).length !== 0 &&
+                            Object.values(listSuggest).map((x, index) => (
+                                <tr key={index}>
+                                    <td>{x.emp.fullName}</td>
+                                    <td>{x.position}</td>
+                                    <td>
+                                        <a onClick={() => deleteSuggest(x.id)} style={{ width: '5px' }} title={"Xóa đề xuất nhân sự"}><i style={{ color: "red" }} className="material-icons">delete</i></a>
+                                    </td>
+                                </tr>
+                            ))}
+                    </tbody>
+                </table>
+                {
+                    (Object.keys(listSuggest).length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                 }
             </div>
-        );
-    };
+
+            {/* From thêm mới thông tin nhân viên */}
+            <EmployeeCreateForm />
+
+            {/* From import thông tin nhân viên*/
+                importEmployee && <EmployeeImportForm />
+            }
+
+            {/* From xem thông tin nhân viên */
+                <ViewEmployeeCVForm
+                    _id={currentRowView ? currentRowView._id : ""}
+                    company={currentRowView?.company}
+                    experiences={currentRowView?.experiences}
+                    suggestItem={listSuggestForProps[currentRowView?._id]}
+                    emp={currentRowView}
+                    position={posName}
+
+                    addSuggest={addSuggest}
+                    deleteSuggest={deleteSuggest}
+                />
+            }
+            {/* From chinh sửa thông tin nhân viên */
+                <EmployeeEditFrom
+                    _id={currentRow ? currentRow._id : ""}
+                />
+            }
+            {/** modal import - export */
+                state.importSearch && <SearchDataImportForm updateSearchData={updateSearchData} />
+            }
+        </div>
+    );
 }
 
 function mapState(state) {

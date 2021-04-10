@@ -1,5 +1,5 @@
 /* Biểu đồ thể hiện đổ tuổi của nhân viên */
-import React, { Component } from 'react';
+import React, { Component, useEffect, useRef, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
@@ -8,27 +8,27 @@ import { showListInSwal } from '../../../../helpers/showListInSwal';
 import c3 from 'c3';
 import 'c3/c3.css';
 
-class AgePyramidChart extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            organizationalUnits: []
-        }
-    }
+const AgePyramidChart = (props) => {
+    
+    const [state, setState] = useState({
+        organizationalUnits: []
+    })
+
+    const _chart = useRef(null);
 
     /**
      * Function tính tuổi nhân viên theo ngày sinh nhập vào
      * @param {*} date : Ngày sinh
      */
-    getYear = (date) => {
+    const getYear = (date) => {
         let dateNow = new Date(Date.now()), birthDate = new Date(date);
         let age = dateNow.getFullYear() - birthDate.getFullYear();
         return age;
     }
 
     /** Xóa các chart đã render khi chưa đủ dữ liệu */
-    removePreviousChart() {
-        const chart = this.refs.chart;
+    const removePreviousChart = () => {
+        const chart = _chart.current;
         while (chart && chart.hasChildNodes()) {
             chart.removeChild(chart.lastChild);
         }
@@ -38,7 +38,7 @@ class AgePyramidChart extends Component {
      * Hàm tiện ích tìm giá trị lớn nhất của mảng
      * @param {*} data : Array dữ liệu truyền vào
      */
-    findMaxOfArray = (data) => {
+    const findMaxOfArray = (data) => {
         let max = data[1];
         for (let i = 2; i < data.length - 1; i++) {
             if (data[i] > max) {
@@ -52,7 +52,7 @@ class AgePyramidChart extends Component {
      * Hàm tiện ích tìm giá trị nhỏ nhất của mảng
      * @param {*} data : Array dữ liệu truyền vào
      */
-    findMinOfArray = (data) => {
+    const findMinOfArray = (data) => {
         let min = data[1];
         for (let i = 2; i < data.length - 1; i++) {
             if (data[i] < min) {
@@ -66,14 +66,14 @@ class AgePyramidChart extends Component {
      * Render chart
      * @param {*} data : Dữ liệu của Chart
      */
-    renderChart = (data) => {
-        let maxData1 = 0 - this.findMinOfArray(data.data1), maxData2 = this.findMaxOfArray(data.data2);
+    const renderChart = (data) => {
+        let maxData1 = 0 - findMinOfArray(data.data1), maxData2 = findMaxOfArray(data.data2);
         let qty_max = maxData1 >= maxData2 ? maxData1 : maxData2;
         data.data1.shift(); data.data2.shift();
 
-        this.removePreviousChart();
+        removePreviousChart();
         let chart = c3.generate({
-            bindto: this.refs.chart,
+            bindto: _chart.current,
             data: {
                 columns: [],
                 hide: true,
@@ -120,7 +120,7 @@ class AgePyramidChart extends Component {
         }, 100);
     }
 
-    static isEqual = (items1, items2) => {
+    const isEqual = (items1, items2) => {
         if (!items1 || !items2) {
             return false;
         }
@@ -135,114 +135,113 @@ class AgePyramidChart extends Component {
         return true;
     }
 
-    static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.organizationalUnits !== prevState.organizationalUnits || !AgePyramidChart.isEqual(nextProps.employeesManager.listAllEmployees, prevState.listAllEmployees) ||
-            !AgePyramidChart.isEqual(nextProps.employeesManager.listEmployeesOfOrganizationalUnits, prevState.listEmployeesOfOrganizationalUnits)) {
-            return {
-                organizationalUnits: nextProps.organizationalUnits,
-                listAllEmployees: nextProps.employeesManager.listAllEmployees,
-                listEmployeesOfOrganizationalUnits: nextProps.employeesManager.listEmployeesOfOrganizationalUnits
-            }
+    useEffect(() => {
+        if (props.organizationalUnits !== state.organizationalUnits || !isEqual(props.employeesManager.listAllEmployees, state.listAllEmployees) ||
+            !isEqual(props.employeesManager.listEmployeesOfOrganizationalUnits, state.listEmployeesOfOrganizationalUnits)) {
+            setState({
+                ...state,
+                organizationalUnits: props.organizationalUnits,
+                listAllEmployees: props.employeesManager.listAllEmployees,
+                listEmployeesOfOrganizationalUnits: props.employeesManager.listEmployeesOfOrganizationalUnits
+            })
         }
-        return null;
-    };
+    }, [props.organizationalUnits, state.organizationalUnits, props.employeesManager.listAllEmployees, state.listAllEmployees, props.employeesManager.listEmployeesOfOrganizationalUnits, state.listEmployeesOfOrganizationalUnits])
 
-    shouldComponentUpdate(nextProps, nextState) {
-        if (nextProps.organizationalUnits !== this.state.organizationalUnits || !AgePyramidChart.isEqual(nextProps.employeesManager.listAllEmployees, this.state.listAllEmployees) ||
-            !AgePyramidChart.isEqual(nextProps.employeesManager.listEmployeesOfOrganizationalUnits, this.state.listEmployeesOfOrganizationalUnits)) {
-            return true;
+    useEffect(() => {
+        if (props.organizationalUnits !== state.organizationalUnits || !isEqual(props.employeesManager.listAllEmployees, state.listAllEmployees) ||
+            !isEqual(props.employeesManager.listEmployeesOfOrganizationalUnits, state.listEmployeesOfOrganizationalUnits)) {
+            setState({
+                ...state
+            })
         };
-        return false;
+    }, [props.organizationalUnits, state.organizationalUnits, props.employeesManager.listAllEmployees, state.listAllEmployees, props.employeesManager.listEmployeesOfOrganizationalUnits, state.listEmployeesOfOrganizationalUnits])
+
+    const { employeesManager, department, translate } = props;
+    const { organizationalUnits } = state;
+
+    let organizationalUnitsName;
+    if (organizationalUnits && department?.list) {
+        organizationalUnitsName = department.list.filter(x => organizationalUnits.includes(x._id));
+        organizationalUnitsName = organizationalUnitsName.map(x => x.name);
     }
 
-    render() {
-        const { employeesManager, department, translate } = this.props;
-        const { organizationalUnits } = this.state;
+    let listAllEmployees = (!organizationalUnits || organizationalUnits.length === 0 || organizationalUnits.length === department.list.length) ?
+        employeesManager.listAllEmployees : employeesManager.listEmployeesOfOrganizationalUnits;
+    let maleEmployees = listAllEmployees.filter(x => x.gender === 'male');
+    let femaleEmployees = listAllEmployees.filter(x => x.gender === 'female');
 
-        let organizationalUnitsName;
-        if (organizationalUnits && department?.list) {
-            organizationalUnitsName = department.list.filter(x => organizationalUnits.includes(x._id));
-            organizationalUnitsName = organizationalUnitsName.map(x => x.name);
+    // Start Định dạng dữ liệu cho biểu đồ tháp tuổi
+    let age = 69, i = 0, data1AgePyramid = [], data2AgePyramid = [];
+    while (age > 18) {
+        let maleData = [], femaleData = [];
+        if (age === 19) {
+            femaleData = femaleEmployees.filter(x => getYear(x.birthdate) <= age && getYear(x.birthdate) > age - 2);
+            maleData = maleEmployees.filter(x => getYear(x.birthdate) <= age && getYear(x.birthdate) > age - 2);
+        } else {
+            femaleData = femaleEmployees.filter(x => getYear(x.birthdate) <= age && getYear(x.birthdate) > age - 5);
+            maleData = maleEmployees.filter(x => getYear(x.birthdate) <= age && getYear(x.birthdate) > age - 5);
         }
+        data1AgePyramid[i] = 0 - femaleData.length;
+        data2AgePyramid[i] = maleData.length;
+        age = age - 5;
+        i++;
+    }
+    data1AgePyramid.unshift('Nữ');
+    data2AgePyramid.unshift('Nam');
+    // End Định dạng dữ liệu cho biểu đồ tháp tuổi
 
-        let listAllEmployees = (!organizationalUnits || organizationalUnits.length === 0 || organizationalUnits.length === department.list.length) ?
-            employeesManager.listAllEmployees : employeesManager.listEmployeesOfOrganizationalUnits;
-        let maleEmployees = listAllEmployees.filter(x => x.gender === 'male');
-        let femaleEmployees = listAllEmployees.filter(x => x.gender === 'female');
+    let data = {
+        nameData1: 'Nữ',
+        nameData2: 'Nam',
+        ageRanges: ['65-69', '60-64', '55-59', '50-54', '45-49', '40-44', '35-39', '30-34', '25-29', '20-24', '18-19'],
+        data1: data1AgePyramid,
+        data2: data2AgePyramid,
+    }
+    renderChart(data);
 
-        // Start Định dạng dữ liệu cho biểu đồ tháp tuổi
-        let age = 69, i = 0, data1AgePyramid = [], data2AgePyramid = [];
-        while (age > 18) {
-            let maleData = [], femaleData = [];
-            if (age === 19) {
-                femaleData = femaleEmployees.filter(x => this.getYear(x.birthdate) <= age && this.getYear(x.birthdate) > age - 2);
-                maleData = maleEmployees.filter(x => this.getYear(x.birthdate) <= age && this.getYear(x.birthdate) > age - 2);
-            } else {
-                femaleData = femaleEmployees.filter(x => this.getYear(x.birthdate) <= age && this.getYear(x.birthdate) > age - 5);
-                maleData = maleEmployees.filter(x => this.getYear(x.birthdate) <= age && this.getYear(x.birthdate) > age - 5);
-            }
-            data1AgePyramid[i] = 0 - femaleData.length;
-            data2AgePyramid[i] = maleData.length;
-            age = age - 5;
-            i++;
-        }
-        data1AgePyramid.unshift('Nữ');
-        data2AgePyramid.unshift('Nam');
-        // End Định dạng dữ liệu cho biểu đồ tháp tuổi
-
-        let data = {
-            nameData1: 'Nữ',
-            nameData2: 'Nam',
-            ageRanges: ['65-69', '60-64', '55-59', '50-54', '45-49', '40-44', '35-39', '30-34', '25-29', '20-24', '18-19'],
-            data1: data1AgePyramid,
-            data2: data2AgePyramid,
-        }
-        this.renderChart(data);
-
-        return (
-            <React.Fragment>
-                <div ref="chart"></div>
-                <div className="box box-solid">
-                    <div className="box-header with-border">
-                        <i className="fa fa-bar-chart-o" />
-                        <div className="box-title">
-                            {`Tháp tuổi cán bộ công nhân viên `}
-                            {
-                                organizationalUnitsName && organizationalUnitsName.length < 2 ?
-                                    <>
-                                        <span>{` ${translate('task.task_dashboard.of_unit')}`}</span>
-                                        <span>{` ${organizationalUnitsName?.[0]}`}</span>
-                                    </>
-                                    :
-                                    <span onClick={() => showListInSwal(organizationalUnitsName, translate('general.list_unit'))} style={{ cursor: 'pointer' }}>
-                                        <span>{` ${translate('task.task_dashboard.of')}`}</span>
-                                        <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {organizationalUnitsName?.length}</a>
-                                        <span>{` ${translate('task.task_dashboard.unit_lowercase')}`}</span>
-                                    </span>
-                            }
-                        </div>
+    return (
+        <React.Fragment>
+            <div ref={_chart}></div>
+            <div className="box box-solid">
+                <div className="box-header with-border">
+                    <i className="fa fa-bar-chart-o" />
+                    <div className="box-title">
+                        {`Tháp tuổi cán bộ công nhân viên `}
+                        {
+                            organizationalUnitsName && organizationalUnitsName.length < 2 ?
+                                <>
+                                    <span>{` ${translate('task.task_dashboard.of_unit')}`}</span>
+                                    <span>{` ${organizationalUnitsName?.[0]}`}</span>
+                                </>
+                                :
+                                <span onClick={() => showListInSwal(organizationalUnitsName, translate('general.list_unit'))} style={{ cursor: 'pointer' }}>
+                                    <span>{` ${translate('task.task_dashboard.of')}`}</span>
+                                    <a style={{ cursor: 'pointer', fontWeight: 'bold' }}> {organizationalUnitsName?.length}</a>
+                                    <span>{` ${translate('task.task_dashboard.unit_lowercase')}`}</span>
+                                </span>
+                        }
                     </div>
-                    <div className="box-body dashboard_box_body">
-                        <div className="form-inline">
-                            <div style={{ textAlign: "center", padding: 2 }} className='form-group col-lg-1 col-md-1 col-sm-1 col-xs-1'>
-                                <img style={{ width: 40, marginTop: 80, height: 120 }} src="image/female_icon.png" />
-                                <div className='number_box'>{femaleEmployees.length}</div>
-                            </div>
-                            <div className='row form-group col-lg-10 col-md-10 col-sm-10 col-xs-10' style={{ padding: 0 }}>
-                                <p className="pull-left" style={{ marginBottom: 0 }}><b>Độ tuổi</b></p>
-                                <p className="pull-right" style={{ marginBottom: 0 }}><b>ĐV tính: Người</b></p>
-                                <div ref="chart"></div>
-                            </div>
-                            <div style={{ textAlign: "center", padding: 2 }} className='form-group col-lg-1 col-md-1 col-sm-1 col-xs-1'>
-                                <img style={{ width: 40, marginTop: 80, height: 120 }} src="image/male_icon.png" />
-                                <div className='number_box'>{maleEmployees.length}</div>
-                            </div>
+                </div>
+                <div className="box-body dashboard_box_body">
+                    <div className="form-inline">
+                        <div style={{ textAlign: "center", padding: 2 }} className='form-group col-lg-1 col-md-1 col-sm-1 col-xs-1'>
+                            <img style={{ width: 40, marginTop: 80, height: 120 }} src="image/female_icon.png" />
+                            <div className='number_box'>{femaleEmployees.length}</div>
+                        </div>
+                        <div className='row form-group col-lg-10 col-md-10 col-sm-10 col-xs-10' style={{ padding: 0 }}>
+                            <p className="pull-left" style={{ marginBottom: 0 }}><b>Độ tuổi</b></p>
+                            <p className="pull-right" style={{ marginBottom: 0 }}><b>ĐV tính: Người</b></p>
+                            <div ref={_chart}></div>
+                        </div>
+                        <div style={{ textAlign: "center", padding: 2 }} className='form-group col-lg-1 col-md-1 col-sm-1 col-xs-1'>
+                            <img style={{ width: 40, marginTop: 80, height: 120 }} src="image/male_icon.png" />
+                            <div className='number_box'>{maleEmployees.length}</div>
                         </div>
                     </div>
                 </div>
-            </React.Fragment>
-        )
-    }
+            </div>
+        </React.Fragment>
+    )
 }
 
 function mapState(state) {
