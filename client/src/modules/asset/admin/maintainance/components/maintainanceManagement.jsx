@@ -347,7 +347,7 @@ function MaintainanceManagement(props) {
                             <DatePicker
                                 id="maintain-month"
                                 dateFormat="month-year"
-                                value={formatDate(Date.now())}
+                                value={maintainCreateDate}
                                 onChange={handleMaintainCreateDateChange}
                             />
                         </div>
