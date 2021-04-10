@@ -318,6 +318,18 @@ exports.getPaginatedTasks = async (portal, task) => {
                     isArchived: true
                 };
             }
+            if (special[i] === "request_to_close") {
+                keySearch = {
+                    ...keySearch,
+                    "requestToCloseTask.requestStatus": 1,
+                    status: {
+                        $in: ["inprocess"],
+                    },
+                    $or: [
+                        { accountableEmployees: { $in: [user] } }
+                    ]
+                }
+            }
             else {
                 let now = new Date();
                 let currentYear = now.getFullYear();

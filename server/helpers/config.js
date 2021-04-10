@@ -1500,18 +1500,6 @@ const LINKS = [{
         ROOT_ROLES.EMPLOYEE.name,
     ],
     components: getComponentsInLink('/time-sheet-log/all')
-}, {
-    url: "/answer-auth-questions",
-    description: "Mật khẩu cấp 2",
-    category: LINK_CATEGORY.TASK.name,
-    roles: [
-        ROOT_ROLES.SUPER_ADMIN.name,
-        ROOT_ROLES.ADMIN.name,
-        ROOT_ROLES.MANAGER.name,
-        ROOT_ROLES.DEPUTY_MANAGER.name,
-        ROOT_ROLES.EMPLOYEE.name,
-    ],
-    components: getComponentsInLink('/answer-auth-questions')
 }
 ];
 

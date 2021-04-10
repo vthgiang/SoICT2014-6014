@@ -4,6 +4,7 @@ import { managerConstants } from "../../../organizational-unit/management/redux/
 export function createEmployeeKpiSet(state = {}, action) {
     switch (action.type) {
         case createKpiSetConstants.GET_EMPLOYEE_KPI_SET_REQUEST:
+            console.log("redux")
             return {
                 ...state,
                 currentKPI: null,

@@ -1,6 +1,10 @@
 const EmployeeKpiSetService = require('./creation.service');
 const KPIPersonalController = require("../../employee/management/management.controller");
+const overviewService = require('../management/management.service');
+
 const Logger = require(`../../../../logs`);
+
+const { getDataEmployeeKpiSetLog } = require('../../../../helpers/descriptionLogKpi')
 
 // Điều phối đến các hàm thao tác với cơ sở dữ liệu của module quản lý kpi cá nhân
 
@@ -97,6 +101,19 @@ exports.createEmployeeKpiSet = async (req, res) => {
         }
         let employeeKpiSet = await EmployeeKpiSetService.createEmployeeKpiSet(req.portal, data);
 
+        let log = getDataEmployeeKpiSetLog({
+            type: "create",
+            creator: req.user._id,
+            organizationalUnit: employeeKpiSet?.organizationalUnit, 
+            employee: employeeKpiSet?.creator,
+            month: employeeKpiSet?.date,
+            newData: employeeKpiSet
+        })
+        await overviewService.createEmployeeKpiSetLogs(req.portal, {
+            ...log,
+            employeeKpiSetId: employeeKpiSet?._id
+        })
+
         await Logger.info(req.user.email, ` create employee kpi set `, req.portal)
         res.status(200).json({
             success: true,
@@ -104,6 +121,7 @@ exports.createEmployeeKpiSet = async (req, res) => {
             content: employeeKpiSet
         })
     } catch (error) {
+        console.log(error)
         await Logger.error(req.user.email, ` create employee kpi set `, req.portal)
         res.status(400).json({
             success: false,
@@ -117,15 +135,29 @@ exports.createEmployeeKpiSet = async (req, res) => {
 /** Tạo 1 mục tiêu KPI mới */
 exports.createEmployeeKpi = async (req, res) => {
     try {
-        let employeeKpi = await EmployeeKpiSetService.createEmployeeKpi(req.portal, req.body);
+        let employeeKpiSet = await EmployeeKpiSetService.createEmployeeKpi(req.portal, req.body);
+
+        let log = getDataEmployeeKpiSetLog({
+            type: "add_kpi",
+            creator: req.user._id,
+            organizationalUnit: employeeKpiSet?.organizationalUnit, 
+            employee: employeeKpiSet?.creator,
+            month: employeeKpiSet?.date,
+            newData: employeeKpiSet?.kpis?.[employeeKpiSet?.kpis?.length - 1]
+        })
+        await overviewService.createEmployeeKpiSetLogs(req.portal, {
+            ...log,
+            employeeKpiSetId: employeeKpiSet?._id
+        })
 
         await Logger.info(req.user.email, ` create employee kpi `, req.portal)
         res.status(200).json({
             success: true,
             messages: ['create_employee_kpi_success'],
-            content: employeeKpi
+            content: employeeKpiSet
         })
     } catch (error) {
+        console.log(error)
         await Logger.error(req.user.email, ` create employee kpi `, req.portal)
         res.status(400).json({
             success: false,
@@ -138,13 +170,25 @@ exports.createEmployeeKpi = async (req, res) => {
 /** Chỉnh sửa thông tin chung của KPI cá nhân */
 exports.editEmployeeKpiSet = async (req, res) => {
     if (req.query.status) {
-
         this.updateEmployeeKpiSetStatus(req, res);
     }
     else {
         try {
             let employeeKpiSet = await EmployeeKpiSetService.editEmployeeKpiSet(req.portal, req.body.approver, req.params.id);
             
+            let log = getDataEmployeeKpiSetLog({
+                type: "edit_kpi_set",
+                creator: req.user._id,
+                organizationalUnit: employeeKpiSet?.organizationalUnit, 
+                employee: employeeKpiSet?.creator,
+                month: employeeKpiSet?.date,
+                newData: employeeKpiSet
+            })
+            await overviewService.createEmployeeKpiSetLogs(req.portal, {
+                ...log,
+                employeeKpiSetId: employeeKpiSet?._id
+            })
+
             await Logger.info(req.user.email, ` edit employee kpi set `, req.portal)
             res.status(200).json({
                 success: true,
@@ -167,6 +211,19 @@ exports.updateEmployeeKpiSetStatus = async (req, res) => {
     try {
         let employeeKpiSet = await EmployeeKpiSetService.updateEmployeeKpiSetStatus(req.portal, req.params.id, req.query.status, req.user.company._id);
        
+        let log = getDataEmployeeKpiSetLog({
+            type: "edit_status",
+            creator: req.user._id,
+            organizationalUnit: employeeKpiSet?.organizationalUnit, 
+            employee: employeeKpiSet?.creator,
+            month: employeeKpiSet?.date,
+            newData: employeeKpiSet
+        })
+        await overviewService.createEmployeeKpiSetLogs(req.portal, {
+            ...log,
+            employeeKpiSetId: employeeKpiSet?._id
+        })
+
         await Logger.info(req.user.email, ` edit employee kpi set status `, req.portal)
         res.status(200).json({
             success: true,
@@ -174,6 +231,7 @@ exports.updateEmployeeKpiSetStatus = async (req, res) => {
             content: employeeKpiSet
         })
     } catch (error) {
+        console.log(error)
         await Logger.error(req.user.email, ` edit employee kpi set status `, req.portal)
         res.status(400).json({
             success: false,
@@ -189,6 +247,7 @@ exports.deleteEmployeeKpiSet = async (req, res) => {
         let arr = await EmployeeKpiSetService.deleteEmployeeKpiSet(req.portal, req.params.id);
         employeeKpiSet = arr[0];
         kpis = arr[1];
+        
         await Logger.info(req.user.email, ` delete employee kpi set `, req.portal)
         res.status(200).json({
             success: true,
@@ -210,12 +269,26 @@ exports.deleteEmployeeKpiSet = async (req, res) => {
 /** Xóa 1 mục tiêu KPI cá nhân */
 exports.deleteEmployeeKpi = async (req, res) => {
     try {
-        let employeeKpiSet = await EmployeeKpiSetService.deleteEmployeeKpi(req.portal, req.params.id, req.query.employeeKpiSetId);
+        let data = await EmployeeKpiSetService.deleteEmployeeKpi(req.portal, req.params.id, req.query.employeeKpiSetId);
+        
+        let log = getDataEmployeeKpiSetLog({
+            type: "delete_kpi",
+            creator: req.user._id,
+            organizationalUnit: data?.employeeKpiSet?.organizationalUnit, 
+            employee: data?.employeeKpiSet?.creator,
+            month: data?.employeeKpiSet?.date,
+            newData: data?.employeeKpi
+        })
+        await overviewService.createEmployeeKpiSetLogs(req.portal, {
+            ...log,
+            employeeKpiSetId: data?.employeeKpiSet?._id
+        })
+        
         await Logger.info(req.user.email, ` delete employee kpi `, req.portal)
         res.status(200).json({
             success: true,
             messages: ['delete_employee_kpi_success'],
-            content: employeeKpiSet,
+            content: data?.employeeKpiSet,
         })
     } catch (error) {
         await Logger.error(req.user.email, ` delete employee kpi `, req.portal)

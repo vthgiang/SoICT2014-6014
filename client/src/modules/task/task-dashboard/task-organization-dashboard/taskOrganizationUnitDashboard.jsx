@@ -84,7 +84,6 @@ class TaskOrganizationUnitDashboard extends Component {
         await this.props.getDepartment();
         await this.props.getChildrenOfOrganizationalUnitsAsTree(localStorage.getItem("currentRole"));
         await this.props.getAllUserSameDepartment(localStorage.getItem("currentRole"));
-        await this.props.getTaskInOrganizationUnitByMonth([], new Date(this.state.startMonth), new Date(this.state.endMonth));
         await this.props.getAllUserInAllUnitsOfCompany();
         await this.setState(state => {
             return {

@@ -33,11 +33,6 @@ function OrganizationalUnitKpiCreate(props) {
 
 
     const [state, setState] = useState({
-        organizationalUnitKpiSet: {
-            organizationalUnitId: null,
-            month: [year, currentMonth].join('-'),
-        },
-
         defaultDate: [currentMonth, year].join('-'),
 
         organizationalUnitId: null,
@@ -97,17 +92,17 @@ function OrganizationalUnitKpiCreate(props) {
             setState((state) => {
                 return {
                     ...state,
-                    organizationalUnitId: selectBoxAllUnit[0].id,
+                    organizationalUnitId: selectBoxAllUnit?.[0]?.id,
                     selectBoxUnit: selectBoxAllUnit,
-                    organizationalUnitKpiSet: {
-                        ...state.organizationalUnitKpiSet,
-                        organizationalUnitId: selectBoxAllUnit[0].id,
+                    infoSearch: {
+                        ...state.infoSearch,
+                        organizationalUnitId: selectBoxAllUnit?.[0]?.id
                     },
-                    organizationalUnit: selectBoxAllUnit[0]
+                    organizationalUnit: selectBoxAllUnit?.[0]
                 }
             });
 
-            props.getCurrentKPIUnit(null, selectBoxAllUnit[0].id);
+            props.getCurrentKPIUnit(null, selectBoxAllUnit?.[0]?.id);
         }
     })
 
@@ -137,13 +132,13 @@ function OrganizationalUnitKpiCreate(props) {
         setState((state) => {
             return {
                 ...state,
-                organizationalUnitId: childrenOrganizationalUnit[0].id,
+                organizationalUnitId: childrenOrganizationalUnit?.[0]?.id,
                 selectBoxUnit: childrenOrganizationalUnit,
-                organizationalUnitKpiSet: {
-                    ...state.organizationalUnitKpiSet,
-                    organizationalUnitId: childrenOrganizationalUnit[0].id,
+                infoSearch: {
+                    ...state.infoSearch,
+                    organizationalUnitId: childrenOrganizationalUnit?.[0]?.id
                 },
-                organizationalUnit: childrenOrganizationalUnit[0]
+                organizationalUnit: childrenOrganizationalUnit?.[0]
             }
         });
     }
@@ -276,7 +271,7 @@ function OrganizationalUnitKpiCreate(props) {
             infoSearch: {
                 ...state.infoSearch,
                 organizationalUnitId: value[0],
-                organizationalUnit: organizationalUnit && organizationalUnit[0],
+                organizationalUnit: organizationalUnit?.[0],
             }
         })
     };
@@ -299,10 +294,6 @@ function OrganizationalUnitKpiCreate(props) {
     const handleSearchData = () => {
         setState(  {
             ...state,
-            organizationalUnitKpiSet: {
-                organizationalUnitId: organizationalUnitId,
-                month: month
-            },
             month: infoSearch?.month,
             organizationalUnitId: infoSearch?.organizationalUnitId,
             organizationalUnit: infoSearch?.organizationalUnit

@@ -164,8 +164,6 @@ import TransportVehical from '../modules/production/transport/transport-vehical/
 import TransportHuman from '../modules/production/transport/transport-human/components';
 import TransportRoute from '../modules/production/transport/transport-route/components';
 
-import AnswerAuthQuestionPage from '../modules/auth/components/answerAuthQuestion';
-
 import { Project } from '../modules/project/component/index';
 import { UserGuide } from '../modules/user-guide/components';
 import AllTimeSheetLog from '../modules/task/task-dashboard/statistic/allTimeSheetLog';
@@ -182,20 +180,9 @@ class Routes extends Component {
             department,
             employeesManager,
         } = this.props;
-        const { password2AlreadyExists, autoRedirectAfterQuestionAnswer } = auth;
         return (
             <React.Fragment>
                 <Switch>
-                    <Route
-                        exact={true}
-                        path={"/answer-auth-questions"}
-                        // component={AnswerAuthQuestionPage}
-                        render={props =>
-                            (password2AlreadyExists && autoRedirectAfterQuestionAnswer)
-                                ? <Redirect to={{ pathname: '/', state: { from: props.location } }} />
-                                : <AnswerAuthQuestionPage {...props} />
-                        }
-                    />
                     <AuthRoute
                         exact
                         auth={auth}

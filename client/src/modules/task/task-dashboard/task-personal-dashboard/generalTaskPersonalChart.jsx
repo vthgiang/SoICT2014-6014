@@ -136,6 +136,12 @@ const GeneralTaskPersonalChart = (props) => {
                 }
             }
         }
+
+        urgentTask.sort((a, b) => (a.createdToNow < b.createdToNow) ? 1 : -1);
+        todoTask.sort((a, b) => (a.createdToNow < b.createdToNow) ? 1 : -1);
+        overdueTask.sort((a, b) => (a.nowToEnd < b.nowToEnd) ? 1 : -1);
+        delayTask.sort((a, b) => (a.nowToEnd < b.nowToEnd) ? 1 : -1);
+        intimeTask.sort((a, b) => (a.nowToEnd < b.nowToEnd) ? 1 : -1);
         setState({
             ...state,
             urgentTask,
@@ -219,7 +225,8 @@ const GeneralTaskPersonalChart = (props) => {
 
     const { tasksbyuser } = props;
     const deadlineincoming = tasksbyuser && tasksbyuser.deadlineincoming;
-    console.log('deadlineincoming', deadlineincoming);
+    deadlineincoming.sort((a, b) => (a.totalDays < b.totalDays) ? 1 : -1);
+
     return (
         <div className="qlcv box-body">
             <div className="nav-tabs-custom" >

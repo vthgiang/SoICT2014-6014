@@ -51,7 +51,7 @@ class ForgotPassword extends Component {
                                             <input type="text" className="form-control" name="email" onChange={this.handleChange} />
                                         </div>
                                         <div className="form-group">
-                                            <label>{translate('form.password2')}</label>
+                                            <label>{`${translate('form.password2')} (nếu có)`}</label>
                                             <input type="password" className="form-control" name="password2" onChange={this.handleChange} />
                                         </div>
                                     </div>

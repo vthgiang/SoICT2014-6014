@@ -165,38 +165,46 @@ class AllTimeSheetLogsByUnit extends Component {
                 }
             }
         }
-        if (organizationUnitTasks && organizationUnitTasks.tasks && listEmployee) {
-            for (let i in organizationUnitTasks.tasks) {
-                if (organizationUnitTasks.tasks[i].timesheetLogs && organizationUnitTasks.tasks[i].timesheetLogs.length) {
-                    for (let j in organizationUnitTasks.tasks[i].timesheetLogs) {
-                        let autoStopped = organizationUnitTasks.tasks[i].timesheetLogs[j].autoStopped;
-                        let creator = organizationUnitTasks.tasks[i].timesheetLogs[j].creator;
-                        if (creator && allTimeSheet[creator]) {
-                            if (autoStopped == 1) {
-                                allTimeSheet[creator].manualtimer += organizationUnitTasks.tasks[i].timesheetLogs[j].duration
-                            } else if (autoStopped == 2) {
-                                allTimeSheet[creator].autotimer += organizationUnitTasks.tasks[i].timesheetLogs[j].duration
-                            } else if (autoStopped == 3) {
-                                allTimeSheet[creator].logtimer += organizationUnitTasks.tasks[i].timesheetLogs[j].duration
-                            }
-                        }
-                    }
-                }
-            }
 
-            for (let i in allTimeSheet) {
-                if (allTimeSheet?.[i]?.totalhours >= 0) {
-                    allTimeSheet[i].totalhours = allTimeSheet?.[i]?.autotimer + allTimeSheet?.[i]?.manualtimer + allTimeSheet?.[i]?.logtimer
+        let filterTimeSheetLogs = [];
+        organizationUnitTasks?.tasks && organizationUnitTasks.tasks.forEach((o, index) => {
+            if (o.timesheetLogs && o.timesheetLogs.length > 0) {
+                filterTimeSheetLogs = [
+                    ...filterTimeSheetLogs,
+                    ...o.timesheetLogs
+                ]
+            }
+        });
+
+        filterTimeSheetLogs = filterTimeSheetLogs.filter(o => o.creator && o.duration && o.startedAt && o.stoppedAt && o.acceptLog);
+
+        for (let i in filterTimeSheetLogs) {
+            let autoStopped = filterTimeSheetLogs[i].autoStopped;
+            let creator = filterTimeSheetLogs[i].creator;
+
+            if (allTimeSheet[creator]) {
+                if (autoStopped === 1) {
+                    allTimeSheet[creator].manualtimer += filterTimeSheetLogs[i].duration
+                } else if (autoStopped === 2) {
+                    allTimeSheet[creator].autotimer += filterTimeSheetLogs[i].duration
+                } else if (autoStopped === 3) {
+                    allTimeSheet[creator].logtimer += filterTimeSheetLogs[i].duration
                 }
-                timesheetlogs.push(allTimeSheet?.[i])
             }
         }
+
+        allTimeSheet = Object.entries(allTimeSheet).map(([key, value]) => {
+            if (value.totalhours >= 0) {
+                value.totalhours = value?.manualtimer + value?.logtimer + value?.autotimer;
+            }
+            return value;
+        })
 
         return (
             <React.Fragment>
                 <div className="box-header with-border">
                     <div className="box-title">
-                        Thống kê bấm giờ từ tháng {startMonthTitle} đến tháng {endMonthTitle}
+                        Thống kê bấm giờ {startMonthTitle}<i className="fa fa-fw fa-caret-right"></i>{endMonthTitle}
                         {
                             unitIds && unitIds.length < 2 ?
                                 <>
@@ -223,14 +231,14 @@ class AllTimeSheetLogsByUnit extends Component {
                                 <th style={{ width: '60px' }}>STT</th>
                                 <th>Họ và tên</th>
                                 <th>Tổng thời gian bấm giờ</th>
-                                <th>Bấm bù giờ</th>
-                                <th>Bấm hẹn giờ</th>
                                 <th>Bấm giờ</th>
+                                <th>Bấm hẹn giờ</th>
+                                <th>Bấm bù giờ</th>
                             </tr>
                         </thead>
                         <tbody>
                             {
-                                timesheetlogs?.length > 0 && timesheetlogs.map((tsl, index) => {
+                                allTimeSheet?.length > 0 && allTimeSheet.map((tsl, index) => {
                                     return (
                                         <tr key={index}>
                                             <td>{index + 1}</td>

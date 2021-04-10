@@ -135,6 +135,14 @@ exports.changeInformation = async (req, res) => {
 };
 
 exports.changePassword = async (req, res) => {
+    if (req.query.type === "pwd2") {
+        changePassword2(req, res);
+    } else {
+        changePassword1(req, res);
+    }
+};
+
+changePassword1 = async (req, res) => {
     try {
         const user = await AuthService.changePassword(req.portal, req.params.id, req.body.password, req.body.new_password, req.body.confirmPassword, req.body.password2);
 
@@ -153,8 +161,29 @@ exports.changePassword = async (req, res) => {
             content: error
         });
     }
-};
+}
 
+
+changePassword2 = async(req, res) => {
+    try {
+        const user = await AuthService.changePassword2(req.portal, req.params.id, req.body);
+
+        await Logger.info(req.user.email, 'change_user_password2_success', req.portal);
+        res.status(200).json({
+            success: true,
+            messages: ['change_user_password2_success'],
+            content: user
+        });
+    } catch (error) {
+        console.log(error);
+        await Logger.error(req.user.email, 'change_user_password2_faile', req.portal);
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['change_user_password2_faile'],
+            content: error
+        });
+    }
+}
 exports.getLinksThatRoleCanAccess = async (req, res) => {
     try {
         const data = await AuthService.getLinksThatRoleCanAccess(req.portal, req.params.id);
@@ -215,21 +244,21 @@ exports.downloadFile = async (req, res) => {
     }
 }
 
-exports.answerAuthQuestions = async(req, res) => {
+exports.createPassword2 = async(req, res) => {
     try {
-        const answer = await AuthService.answerAuthQuestions(req.portal, req.user._id, req.body);
-        await Logger.info(req.user.email, 'answer_auth_question_success', req.portal);
+        const answer = await AuthService.createPassword2(req.portal, req.user._id, req.body);
+        await Logger.info(req.user.email, 'create_password2_success', req.portal);
         res.status(200).json({
             success: true,
-            messages: ['answer_auth_question_success'],
+            messages: ['create_password2_success'],
             content: answer
         });
     } catch (error) {
 
-        await Logger.info(req.user.email, 'answer_auth_question_faile', req.portal);
+        await Logger.info(req.user.email, 'create_password2_faile', req.portal);
         res.status(400).json({
             success: false,
-            messages: Array.isArray(error) ? error : ['answer_auth_question_faile'],
+            messages: Array.isArray(error) ? error : ['create_password2_faile'],
             content: error
         });
     }

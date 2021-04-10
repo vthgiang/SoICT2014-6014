@@ -937,10 +937,7 @@ exports.links = [
     }, {
         url: '/hr-manage-field',
         apis: ['@all']
-    }, {
-        url: '/answer-auth-questions',
-        apis: ['@all']
-    }, 
+    },
 
     //transport
     {

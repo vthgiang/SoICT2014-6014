@@ -16,7 +16,6 @@ var initState = {
     reset_password: false,
     showFiles: [],
     isLoading: false,
-    password2AlreadyExists: false,
 }
 
 export function auth(state = initState, action) {
@@ -36,20 +35,18 @@ export function auth(state = initState, action) {
         case AuthConstants.CHANGE_USER_INFORMATION_REQUEST:
         case AuthConstants.CHANGE_USER_PASSWORD_REQUEST:
         case AuthConstants.GET_COMPONENTS_OF_USER_IN_LINK_REQUEST:
-        case AuthConstants.ANSWER_AUTH_QUESTIONS_REQUEST:
-        case AuthConstants.CHECK_PASSWORD2_EXITS_REQUEST:
+        case AuthConstants.CREATE_PASSWORD2_REQUEST:
             return {
                 ...state,
                 isLoading: true,
                 error: null
             };
 
-        case AuthConstants.ANSWER_AUTH_QUESTIONS_SUCCESS:
+        case AuthConstants.CREATE_PASSWORD2_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
-                password2AlreadyExists: true,
-                autoRedirectAfterQuestionAnswer: true,
+                user: action.payload,
             };
 
         case AuthConstants.LOGIN_SUCCESS:
@@ -60,19 +57,6 @@ export function auth(state = initState, action) {
                 error: null
             };
         
-        case AuthConstants.CHECK_PASSWORD2_EXITS_SUCCESS:
-            return {
-                ...state,
-                password2AlreadyExists: false,
-                error: null
-            };
-        
-        case AuthConstants.CHECK_PASSWORD2_EXITS_FAILE:
-            return {
-                ...state,
-                password2AlreadyExists: true,
-                error: action.payload
-            }
         
         case AuthConstants.LOGIN_FAILE:
             return {
@@ -154,7 +138,7 @@ export function auth(state = initState, action) {
         case AuthConstants.GET_COMPONENTS_OF_USER_IN_LINK_FAILE:
         case AuthConstants.CHANGE_USER_INFORMATION_FAILE:
         case AuthConstants.CHANGE_USER_PASSWORD_FAILE:
-        case AuthConstants.ANSWER_AUTH_QUESTIONS_FAILE:
+        case AuthConstants.CREATE_PASSWORD2_FAILE:
             return {
                 ...state,
                 isLoading: false,
