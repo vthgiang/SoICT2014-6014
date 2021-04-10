@@ -19,7 +19,7 @@ import { LoadTaskChart } from './loadTaskChart';
 import { convertTime } from '../../../../helpers/stringMethod';
 import { filterDifference } from '../../../../helpers/taskModuleHelpers';
 import { getStorage } from '../../../../config';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import GeneralTaskPersonalChart from './generalTaskPersonalChart';
 import { Link } from 'react-router-dom';
 class TaskDashboard extends Component {
@@ -717,8 +717,8 @@ class TaskDashboard extends Component {
                                                     tsl?.acceptLog && <tr>
                                                         <td>{index + 1}</td>
                                                         <td>{tsl.name}</td>
-                                                        <td>{moment(tsl.startedAt).format("HH:mm:ss DD/MM/YYYY")}</td>
-                                                        <td>{moment(tsl.stoppedAt).format("HH:mm:ss DD/MM/YYYY")}</td>
+                                                        <td>{dayjs(tsl.startedAt).format("DD-MM-YYYY h:mm:ss A")}</td>
+                                                        <td>{dayjs(tsl.stoppedAt).format("DD-MM-YYYY h:mm:ss A")}</td>
                                                         <td>{this.convertType(tsl.autoStopped)}</td>
                                                         <td>{convertTime(tsl.duration)}</td>
                                                     </tr>
