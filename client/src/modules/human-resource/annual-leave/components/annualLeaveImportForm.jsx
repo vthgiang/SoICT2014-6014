@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
@@ -9,31 +9,29 @@ import { configurationAnnualLeave } from './fileConfigurationImportAnnualLeave';
 import { AnnualLeaveActions } from '../redux/actions';
 import { AuthActions } from '../../../auth/redux/actions';
 
-class AnnualLeaveImportForm extends Component {
-    constructor(props) {
-        super(props);
-        let organizationalUnit = this.props.department.list[0];
-        this.state = {
-            organizationalUnit: organizationalUnit._id,
-            configData: configurationAnnualLeave.configurationImport(this.props.translate),
-            checkFileImport: true,
-            rowError: [],
-            importData: [],
-            limit: 100,
-            page: 0
-        };
-    }
+function AnnualLeaveImportForm(props) {
 
-    componentDidUpdate() {
-        const { annualLeave } = this.props;
+    const _organizationalUnit = props.department.list[0];
+    const [state, setState] = useState({
+        organizationalUnit: _organizationalUnit._id,
+        configData: configurationAnnualLeave.configurationImport(props.translate),
+        checkFileImport: true,
+        rowError: [],
+        importData: [],
+        limit: 100,
+        page: 0
+    });
+
+    useEffect(() => {
+        const { annualLeave } = props;
         annualLeave.importStatus && window.$(`#modal_import_file`).modal("hide");
-    }
+    }, [])
 
     /**
     * Convert dữ liệu date trong excel thành dạng dd-mm-yyyy
     * @param {*} serial : seri ngày cần format
     */
-    convertExcelDateToJSDate = (serial) => {
+    const convertExcelDateToJSDate = (serial) => {
         let utc_days = Math.floor(serial - 25569);
         let utc_value = utc_days * 86400;
         let date_info = new Date(utc_value * 1000);
@@ -51,7 +49,7 @@ class AnnualLeaveImportForm extends Component {
      * @param {*} date : Ngày muốn format
      * @param {*} monthYear : true trả về tháng năm, false trả về ngày tháng năm
      */
-    formatDate(date, monthYear = false) {
+    const formatDate = (date, monthYear = false) => {
         if (date) {
             let d = new Date(date),
                 month = '' + (d.getMonth() + 1),
@@ -74,9 +72,10 @@ class AnnualLeaveImportForm extends Component {
      * Bắt sự kiện thay đổi giá trị đơn vị
      * @param {*} value : Giá trị đơn vị
      */
-    handleOrganizationalUnitChange = (value) => {
-        const { salary } = this.props;
-        this.setState({
+    const handleOrganizationalUnitChange = (value) => {
+        const { salary } = props;
+        setState({
+            ...state,
             organizationalUnit: value[0],
             importData: [],
             changeMonth: true,
@@ -85,9 +84,9 @@ class AnnualLeaveImportForm extends Component {
     }
 
     /** Function kiểm tra lỗi trước khi submit form*/
-    isFormValidated = () => {
-        let { rowError, importData } = this.state;
-        const { annualLeave } = this.props;
+    const isFormValidated = () => {
+        let { rowError, importData } = state;
+        const { annualLeave } = props;
         if (annualLeave.error.rowError !== undefined) {
             rowError = annualLeave.error.rowError;
             importData = annualLeave.error.data
@@ -98,8 +97,8 @@ class AnnualLeaveImportForm extends Component {
     }
 
     /** Function import dữ liệu */
-    save = () => {
-        let { importData, organizationalUnit } = this.state;
+    const save = () => {
+        let { importData, organizationalUnit } = state;
         let data = importData;
         for (let n in data) {
             let partStart = data[n].startDate.split('-');
@@ -108,15 +107,16 @@ class AnnualLeaveImportForm extends Component {
             let endDate = [partEnd[2], partEnd[1], partEnd[0]].join('-');
             data[n] = { ...data[n], startDate: startDate, endDate: endDate, organizationalUnit: organizationalUnit };
         };
-        this.props.importAnnualLeave(data);
+        props.importAnnualLeave(data);
     }
 
     /**
      * Function Thay đổi cấu hình file import
      * @param {*} value : Dữ liệu cấu hình file import
      */
-    handleChangeConfig = async (value) => {
-        await this.setState({
+    const handleChangeConfig = async (value) => {
+        setState({
+            ...state,
             configData: value,
             importData: [],
         })
@@ -127,12 +127,12 @@ class AnnualLeaveImportForm extends Component {
      * @param {*} value : Dữ liệu file import
      * @param {*} checkFileImport : true - file import đúng định dạng, false - file import sai định dạng
      */
-    handleImportExcel = (value, checkFileImport) => {
-        const { translate } = this.props;
+    const handleImportExcel = (value, checkFileImport) => {
+        const { translate } = props;
 
         value = value.map(x => {
-            let startDate = typeof x.startDate === 'string' ? x.startDate : this.convertExcelDateToJSDate(x.startDate);
-            let endDate = typeof x.endDate === 'string' ? x.endDate : this.convertExcelDateToJSDate(x.endDate);
+            let startDate = typeof x.startDate === 'string' ? x.startDate : convertExcelDateToJSDate(x.startDate);
+            let endDate = typeof x.endDate === 'string' ? x.endDate : convertExcelDateToJSDate(x.endDate);
             let status = x.status;
             let type = false;
             if (x.totalHours) {
@@ -174,13 +174,15 @@ class AnnualLeaveImportForm extends Component {
                 x = { ...x, errorAlert: errorAlert }
                 return x;
             });
-            this.setState({
+            setState({
+                ...state,
                 importData: value,
                 rowError: rowError,
                 checkFileImport: checkFileImport,
             })
         } else {
-            this.setState({
+            setState({
+                ...state,
                 checkFileImport: checkFileImport,
             })
         }
@@ -192,107 +194,104 @@ class AnnualLeaveImportForm extends Component {
      * @param {*} path : Đường dẫn file
      * @param {*} fileName : Tên file muốn tải về
      */
-    requestDownloadFile = (e, path, fileName) => {
+    const requestDownloadFile = (e, path, fileName) => {
         e.preventDefault()
-        this.props.downloadFile(path, fileName)
+        props.downloadFile(path, fileName)
     }
 
-    render() {
+    const { translate, annualLeave, department } = props;
 
-        const { translate, annualLeave, department } = this.props;
+    let { limit, page, importData, rowError, configData, checkFileImport, organizationalUnit } = state;
 
-        let { limit, page, importData, rowError, configData, checkFileImport, organizationalUnit } = this.state;
+    if (annualLeave.error.rowError !== undefined) {
+        rowError = annualLeave.error.rowError;
+        importData = annualLeave.error.data
+        importData = importData.map(x => {
+            let startDate = formatDate(x.startDate)
+            let endDate = formatDate(x.endDate)
+            if (x.errorAlert && x.errorAlert.length !== 0) {
+                let errorAlert = x.errorAlert.map(err => translate(`human_resource.annual_leave.${err}`));
+                return { ...x, errorAlert: errorAlert, startDate: startDate, endDate: endDate }
+            }
+            return { ...x, startDate: startDate, endDate: endDate }
+        })
+    };
 
-        if (annualLeave.error.rowError !== undefined) {
-            rowError = annualLeave.error.rowError;
-            importData = annualLeave.error.data
-            importData = importData.map(x => {
-                let startDate = this.formatDate(x.startDate)
-                let endDate = this.formatDate(x.endDate)
-                if (x.errorAlert && x.errorAlert.length !== 0) {
-                    let errorAlert = x.errorAlert.map(err => translate(`human_resource.annual_leave.${err}`));
-                    return { ...x, errorAlert: errorAlert, startDate: startDate, endDate: endDate }
-                }
-                return { ...x, startDate: startDate, endDate: endDate }
-            })
-        };
+    importData = importData.map(x => { return { ...x, status: translate(`human_resource.annual_leave.status.${x.status}`) } })
 
-        importData = importData.map(x => { return { ...x, status: translate(`human_resource.annual_leave.status.${x.status}`) } })
-
-        let exportData = configurationAnnualLeave.templateImport(translate);
-        return (
-            <React.Fragment>
-                <DialogModal
-                    modalID={`modal_import_file`} isLoading={false}
-                    formID={`form_import_file`}
-                    title={translate('human_resource.add_data_by_excel')}
-                    func={this.save}
-                    disableSubmit={!this.isFormValidated()}
-                    closeOnSave={false}
-                    size={75}
-                >
-                    <form className="form-group" id={`form_import_file`}>
-                        {/* Form cấu file import */}
-                        <ConFigImportFile
-                            id="import_annual-leave_config"
-                            configData={configData}
-                            textareaRow={8}
-                            scrollTable={false}
-                            handleChangeConfig={this.handleChangeConfig}
-                        />
-                        <div className="row">
-                            {/* Đơn vị */}
-                            <div className="form-group col-md-4 col-sm-12 col-xs-12">
-                                <label>{translate('human_resource.unit')}<span className="text-red">*</span></label>
-                                <SelectBox
-                                    id={`import-annual-leave-unit`}
-                                    className="form-control select2"
-                                    style={{ width: "100%" }}
-                                    value={organizationalUnit}
-                                    items={department.list.map(y => { return { value: y._id, text: y.name } })}
-                                    onChange={this.handleOrganizationalUnitChange}
-                                />
-                            </div>
-                        </div>
-                        <div className="row">
-                            {/* File import */}
-                            <div className="form-group col-md-4 col-sm-12 col-xs-12">
-                                <label>{translate('human_resource.choose_file')}</label>
-                                <ImportFileExcel
-                                    id={'file-import-annual-leave'}
-                                    configData={configData}
-                                    handleImportExcel={this.handleImportExcel}
-                                />
-                            </div>
-
-                            <div className="form-group pull-right col-md-4 col-sm-12 col-xs-12">
-                                {/* Dowload file import mẫu */}
-                                <ExportExcel id="download_template_annual-leave" type='link' exportData={exportData}
-                                    buttonName={` ${translate('human_resource.download_file')}`} />
-
-                            </div>
-                        </div>
-
-
-                        <div className="col-md-12 col-xs-12" style={{ padding: 0 }}>
-                            {/* Form hiện thì dữ liệu sẽ import */}
-                            <ShowImportData
-                                id="import_annual_leave_show_data"
-                                configData={configData}
-                                importData={importData}
-                                rowError={rowError}
-                                scrollTableWidth={1000}
-                                checkFileImport={checkFileImport}
-                                limit={limit}
-                                page={page}
+    let exportData = configurationAnnualLeave.templateImport(translate);
+    return (
+        <React.Fragment>
+            <DialogModal
+                modalID={`modal_import_file`} isLoading={false}
+                formID={`form_import_file`}
+                title={translate('human_resource.add_data_by_excel')}
+                func={save}
+                disableSubmit={!isFormValidated()}
+                closeOnSave={false}
+                size={75}
+            >
+                <form className="form-group" id={`form_import_file`}>
+                    {/* Form cấu file import */}
+                    <ConFigImportFile
+                        id="import_annual-leave_config"
+                        configData={configData}
+                        textareaRow={8}
+                        scrollTable={false}
+                        handleChangeConfig={handleChangeConfig}
+                    />
+                    <div className="row">
+                        {/* Đơn vị */}
+                        <div className="form-group col-md-4 col-sm-12 col-xs-12">
+                            <label>{translate('human_resource.unit')}<span className="text-red">*</span></label>
+                            <SelectBox
+                                id={`import-annual-leave-unit`}
+                                className="form-control select2"
+                                style={{ width: "100%" }}
+                                value={organizationalUnit}
+                                items={department.list.map(y => { return { value: y._id, text: y.name } })}
+                                onChange={handleOrganizationalUnitChange}
                             />
                         </div>
-                        {/* </div> */}
-                    </form>
-                </DialogModal>
-            </React.Fragment>
-        );
-    }
+                    </div>
+                    <div className="row">
+                        {/* File import */}
+                        <div className="form-group col-md-4 col-sm-12 col-xs-12">
+                            <label>{translate('human_resource.choose_file')}</label>
+                            <ImportFileExcel
+                                id={'file-import-annual-leave'}
+                                configData={configData}
+                                handleImportExcel={handleImportExcel}
+                            />
+                        </div>
+
+                        <div className="form-group pull-right col-md-4 col-sm-12 col-xs-12">
+                            {/* Dowload file import mẫu */}
+                            <ExportExcel id="download_template_annual-leave" type='link' exportData={exportData}
+                                buttonName={` ${translate('human_resource.download_file')}`} />
+
+                        </div>
+                    </div>
+
+
+                    <div className="col-md-12 col-xs-12" style={{ padding: 0 }}>
+                        {/* Form hiện thì dữ liệu sẽ import */}
+                        <ShowImportData
+                            id="import_annual_leave_show_data"
+                            configData={configData}
+                            importData={importData}
+                            rowError={rowError}
+                            scrollTableWidth={1000}
+                            checkFileImport={checkFileImport}
+                            limit={limit}
+                            page={page}
+                        />
+                    </div>
+                    {/* </div> */}
+                </form>
+            </DialogModal>
+        </React.Fragment>
+    );
 };
 
 function mapState(state) {

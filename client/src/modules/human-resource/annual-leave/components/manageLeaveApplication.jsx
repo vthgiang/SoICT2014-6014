@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
@@ -11,36 +11,33 @@ import { AnnualLeaveActions } from '../redux/actions';
 import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
 import { getTableConfiguration } from '../../../../helpers/tableConfiguration';
 
-class ManageLeaveApplication extends Component {
-    constructor(props) {
-        super(props);
-        const tableId = "manage-leave-applicationn-table";
-        const defaultConfig = { limit: 5 }
-        const limit = getTableConfiguration(tableId, defaultConfig).limit;
+function ManageLeaveApplication(props) {
+    const tableId = "manage-leave-applicationn-table";
+    const defaultConfig = { limit: 5 }
+    const limit = getTableConfiguration(tableId, defaultConfig).limit;
 
-        this.state = {
-            dataStatus: 0,
-            employeeNumber: "",
-            employeeName: "",
-            status: ['waiting_for_approval'],
-            page: 0,
-            limit: limit,
-            tableId
-        }
-    }
+    const [state, setState] = useState({
+        dataStatus: 0,
+        employeeNumber: "",
+        employeeName: "",
+        status: ['waiting_for_approval'],
+        page: 0,
+        limit: limit,
+        tableId
+    })
 
-    componentDidMount() {
-        this.props.getDepartmentsThatUserIsManager();
-        this.props.getDepartment();
-        // this.props.searchAnnualLeaves(this.state);
-    }
+    useEffect(() => {
+        props.getDepartmentsThatUserIsManager();
+        props.getDepartment();
+        // props.searchAnnualLeaves(state);
+    }, [])
 
     /**
      * Function format dữ liệu Date thành string
      * @param {*} date : Ngày muốn format
      * @param {*} monthYear : true trả về tháng năm, false trả về ngày tháng năm
      */
-    formatDate(date, monthYear = false) {
+    const formatDate = (date, monthYear = false) => {
         if (date) {
             let d = new Date(date),
                 month = '' + (d.getMonth() + 1),
@@ -62,7 +59,7 @@ class ManageLeaveApplication extends Component {
      * Function format dữ liệu Date thành string
      * @param {*} date : Ngày muốn format
      */
-    formatDate2(date) {
+    const formatDate2 = (date) => {
         if (date) {
             let d = new Date(date),
                 month = '' + (d.getMonth() + 1),
@@ -82,8 +79,8 @@ class ManageLeaveApplication extends Component {
      *  Bắt sự kiện click xem thông tin nhân viên
      * @param {*} value : Thông tin nhân viên muốn xem
      */
-    handleView = async (value) => {
-        await this.setState(state => {
+    const handleView = async (value) => {
+        setState(state => {
             return {
                 ...state,
                 currentRowView: value
@@ -93,9 +90,10 @@ class ManageLeaveApplication extends Component {
     }
 
     /** Function bắt sự kiện thay đổi mã nhân viên, tên nhân viên */
-    handleChange = (e) => {
+    const handleChange = (e) => {
         const { name, value } = e.target;
-        this.setState({
+        setState({
+            ...state,
             [name]: value
         });
     }
@@ -104,13 +102,13 @@ class ManageLeaveApplication extends Component {
      * Function lưu giá trị tháng vào state khi thay đổi
      * @param {*} value :Tháng tìm kiếm
      */
-    handleMonthChange = (value) => {
+    const handleMonthChange = (value) => {
         if (value) {
             let partMonth = value.split('-');
             value = [partMonth[1], partMonth[0]].join('-');
         }
-        this.setState({
-            ...this.state,
+        setState({
+            ...state,
             month: value
         });
     }
@@ -119,80 +117,81 @@ class ManageLeaveApplication extends Component {
      * Function lưu giá trị status vào state khi thay đổi
      * @param {*} value 
      */
-    handleStatusChange = (value) => {
+    const handleStatusChange = (value) => {
         if (value.length === 0) {
             value = null
         };
-        this.setState({
-            ...this.state,
+        setState({
+            ...state,
             status: value
         })
     }
 
     /** Function bắt sự kiện tìm kiếm */
-    handleSunmitSearch = async () => {
-        this.props.searchAnnualLeaves(this.state);
+    const handleSunmitSearch = async () => {
+        props.searchAnnualLeaves(state);
     }
 
-    shouldComponentUpdate(nextProps, nextState) {
-        let departmentsThatUserIsManager = this.props.department.departmentsThatUserIsManager;
-        if (this.state.dataStatus === 0 && departmentsThatUserIsManager && departmentsThatUserIsManager.length !== 0) {
+    useEffect(() => {
+        let departmentsThatUserIsManager = props.department.departmentsThatUserIsManager;
+        if (state.dataStatus === 0 && departmentsThatUserIsManager && departmentsThatUserIsManager.length !== 0) {
             departmentsThatUserIsManager = departmentsThatUserIsManager.map(x => x._id);
-            this.props.searchAnnualLeaves({ ...this.state, organizationalUnits: departmentsThatUserIsManager });
-            this.setState({
+            props.searchAnnualLeaves({ ...state, organizationalUnits: departmentsThatUserIsManager });
+            setState({
+                ...state,
                 dataStatus: 1,
                 organizationalUnits: departmentsThatUserIsManager,
             })
-            return false;
         }
-        return true;
-    };
+    }, [props.department.departmentsThatUserIsManager]);
 
     /**
      * Bắt sự kiện setting số dòng hiện thị trên một trang
      * @param {*} number : Số dòng hiện thị
      */
-    setLimit = async (number) => {
-        await this.setState({
+    const setLimit = async (number) => {
+        setState({
+            ...state,
             limit: parseInt(number),
         });
-        this.props.searchAnnualLeaves(this.state);
+        props.searchAnnualLeaves(state);
     }
 
     /**
      * Bắt sự kiện chuyển trang
      * @param {*} pageNumber : Số trạng hiện tại cần hiện thị
      */
-    setPage = async (pageNumber) => {
-        let { limit } = this.state;
+    const setPage = async (pageNumber) => {
+        let { limit } = state;
         let page = (pageNumber - 1) * limit;
-        await this.setState({
+        setState({
+            ...state,
             page: parseInt(page),
 
         });
-        this.props.searchAnnualLeaves(this.state);
+        props.searchAnnualLeaves(state);
     };
 
     /**
      * Bắt sự kiện chấp nhận đơn xin nghỉ phép
      * @param {*} value : Đơn xin nghỉ phép
      */
-    handleAcceptApplication = (value) => {
-        const { translate } = this.props;
-        let startDateNew = this.formatDate2(value.startDate);
-        let endDateNew = this.formatDate2(value.endDate);
+    const handleAcceptApplication = (value) => {
+        const { translate } = props;
+        let startDateNew = formatDate2(value.startDate);
+        let endDateNew = formatDate2(value.endDate);
 
         Swal.fire({
-            html: `<h4 style="color: red"><div>${translate('human_resource.work_plan.accept_application')}</div> <div>"${this.formatDate(value.startDate)} - ${this.formatDate(value.endDate)}" ?</div></h4>`,
+            html: `<h4 style="color: red"><div>${translate('human_resource.work_plan.accept_application')}</div> <div>"${formatDate(value.startDate)} - ${formatDate(value.endDate)}" ?</div></h4>`,
             icon: 'success',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
-            cancelButtonText: this.props.translate('general.no'),
-            confirmButtonText: this.props.translate('general.yes'),
+            cancelButtonText: props.translate('general.no'),
+            confirmButtonText: props.translate('general.yes'),
         }).then((result) => {
             if (result.value) {
-                this.props.updateAnnualLeave(value._id, { ...value, startDate: startDateNew, endDate: endDateNew, status: 'approved', approvedApplication: true })
+                props.updateAnnualLeave(value._id, { ...value, startDate: startDateNew, endDate: endDateNew, status: 'approved', approvedApplication: true })
             }
         })
     };
@@ -201,158 +200,155 @@ class ManageLeaveApplication extends Component {
      * Bắt sự kiện từ chối đơn xin nghỉ phép
      * @param {*} value : Đơn xin nghỉ
      */
-    handleRefuseApplication = (value) => {
-        const { translate } = this.props;
-        let startDateNew = this.formatDate2(value.startDate);
-        let endDateNew = this.formatDate2(value.endDate);
+    const handleRefuseApplication = (value) => {
+        const { translate } = props;
+        let startDateNew = formatDate2(value.startDate);
+        let endDateNew = formatDate2(value.endDate);
 
         Swal.fire({
-            html: `<h4 style="color: red"><div>${translate('human_resource.work_plan.refuse_application')}</div> <div>"${this.formatDate(value.startDate)} - ${this.formatDate(value.endDate)}" ?</div></h4>`,
+            html: `<h4 style="color: red"><div>${translate('human_resource.work_plan.refuse_application')}</div> <div>"${formatDate(value.startDate)} - ${formatDate(value.endDate)}" ?</div></h4>`,
             icon: 'error',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
-            cancelButtonText: this.props.translate('general.no'),
-            confirmButtonText: this.props.translate('general.yes'),
+            cancelButtonText: props.translate('general.no'),
+            confirmButtonText: props.translate('general.yes'),
         }).then((result) => {
             if (result.value) {
-                this.props.updateAnnualLeave(value._id, { ...value, startDate: startDateNew, endDate: endDateNew, status: 'disapproved', approvedApplication: true })
+                props.updateAnnualLeave(value._id, { ...value, startDate: startDateNew, endDate: endDateNew, status: 'disapproved', approvedApplication: true })
             }
         })
     }
 
-    render() {
-        const { translate, annualLeave } = this.props;
-        const { month, status, limit, page, currentRow, currentRowView, importAnnualLeave, tableId } = this.state;
+    const { translate, annualLeave } = props;
+    const { month, status, page, currentRow, currentRowView, importAnnualLeave } = state;
 
-        let listAnnualLeaves = [];
-        if (annualLeave.isLoading === false) {
-            listAnnualLeaves = annualLeave.listAnnualLeaves;
-        };
+    let listAnnualLeaves = [];
+    if (annualLeave.isLoading === false) {
+        listAnnualLeaves = annualLeave.listAnnualLeaves;
+    };
 
-        let pageTotal = ((annualLeave.totalList % limit) === 0) ?
-            parseInt(annualLeave.totalList / limit) :
-            parseInt((annualLeave.totalList / limit) + 1);
-        let currentPage = parseInt((page / limit) + 1);
+    let pageTotal = ((annualLeave.totalList % limit) === 0) ?
+        parseInt(annualLeave.totalList / limit) :
+        parseInt((annualLeave.totalList / limit) + 1);
+    let currentPage = parseInt((page / limit) + 1);
 
-        return (
-            <div className="box" >
-                <div className="box-body qlcv">
-                    <div className="form-inline">
-                        {/* Mã nhân viên*/}
-                        <div className="form-group">
-                            <label className="form-control-static">{translate('human_resource.staff_number')}</label>
-                            <input type="text" className="form-control" name="employeeNumber" onChange={this.handleChange} placeholder={translate('page.staff_number')} autoComplete="off" />
-                        </div>
-                        {/* Tên nhân viên  */}
-                        <div className="form-group">
-                            <label className="form-control-static">{translate('human_resource.staff_name')}</label>
-                            <input type="text" className="form-control" name="employeeName" onChange={this.handleChange} placeholder={translate('human_resource.staff_name')} autoComplete="off" />
-                        </div>
-
-                        <div className="dropdown pull-right" style={{ marginBottom: 15 }}>
-                            <button type="button" className="btn btn-success dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('human_resource.annual_leave.add_annual_leave_title')} >{translate('human_resource.annual_leave.add_annual_leave')}</button>
-                            <ul className="dropdown-menu pull-right" style={{ marginTop: 0 }}>
-                                <li><a style={{ cursor: 'pointer' }} onClick={() => window.$(`#modal-create-annual-leave`).modal('show')}>{translate('human_resource.salary.add_by_hand')}</a></li>
-                                <li><a style={{ cursor: 'pointer' }} onClick={() => this.setState({ importAnnualLeave: true }, () => window.$(`#modal_import_file`).modal('show'))}>{translate('human_resource.salary.add_import')}</a></li>
-                            </ul>
-                        </div>
+    return (
+        <div className="box" >
+            <div className="box-body qlcv">
+                <div className="form-inline">
+                    {/* Mã nhân viên*/}
+                    <div className="form-group">
+                        <label className="form-control-static">{translate('human_resource.staff_number')}</label>
+                        <input type="text" className="form-control" name="employeeNumber" onChange={handleChange} placeholder={translate('page.staff_number')} autoComplete="off" />
+                    </div>
+                    {/* Tên nhân viên  */}
+                    <div className="form-group">
+                        <label className="form-control-static">{translate('human_resource.staff_name')}</label>
+                        <input type="text" className="form-control" name="employeeName" onChange={handleChange} placeholder={translate('human_resource.staff_name')} autoComplete="off" />
                     </div>
 
-                    <div className="form-inline" style={{ marginBottom: 10 }}>
-                        {/* Tháng */}
-                        <div className="form-group">
-                            <label className="form-control-static">{translate('human_resource.month')}</label>
-                            <DatePicker
-                                id="month"
-                                dateFormat="month-year"
-                                value={this.formatDate(month, true)}
-                                onChange={this.handleMonthChange}
-                            />
-                        </div>
-                        {/* Trạng thái */}
-                        <div className="form-group">
-                            <label className="form-control-static">{translate('human_resource.status')}</label>
-                            <SelectMulti id={`multiSelectStatus`} multiple="multiple"
-                                options={{ nonSelectedText: translate('human_resource.non_status'), allSelectedText: translate('human_resource.all_status') }}
-                                onChange={this.handleStatusChange}
-                                value={status}
-                                items={[
-                                    { value: "approved", text: translate('human_resource.annual_leave.status.approved') },
-                                    { value: "waiting_for_approval", text: translate('human_resource.annual_leave.status.waiting_for_approval') },
-                                    { value: "disapproved", text: translate('human_resource.annual_leave.status.disapproved') }
-                                ]}
-                            >
-                            </SelectMulti>
-                        </div>
-                        {/* Button tìm kiếm */}
-                        <button type="button" className="btn btn-success" title={translate('general.search')} onClick={() => this.handleSunmitSearch()} >{translate('general.search')}</button>
+                    <div className="dropdown pull-right" style={{ marginBottom: 15 }}>
+                        <button type="button" className="btn btn-success dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('human_resource.annual_leave.add_annual_leave_title')} >{translate('human_resource.annual_leave.add_annual_leave')}</button>
+                        <ul className="dropdown-menu pull-right" style={{ marginTop: 0 }}>
+                            <li><a style={{ cursor: 'pointer' }} onClick={() => window.$(`#modal-create-annual-leave`).modal('show')}>{translate('human_resource.salary.add_by_hand')}</a></li>
+                            <li><a style={{ cursor: 'pointer' }} onClick={() => setState({ ...state, importAnnualLeave: true }, () => window.$(`#modal_import_file`).modal('show'))}>{translate('human_resource.salary.add_import')}</a></li>
+                        </ul>
                     </div>
-                    <AnnualLeaveCreateForm />
-                    {importAnnualLeave && <AnnualLeaveImportForm />}
-
-                    <table className="table table-striped table-bordered table-hover" id={tableId}>
-                        <thead>
-                            <tr>
-                                <th>{translate('human_resource.staff_number')}</th>
-                                <th>{translate('human_resource.staff_name')}</th>
-                                <th>{translate('human_resource.annual_leave.table.start_date')}</th>
-                                <th>{translate('human_resource.annual_leave.table.end_date')}</th>
-                                <th>{translate('human_resource.annual_leave.table.reason')}</th>
-                                <th>{translate('human_resource.status')}</th>
-                                <th style={{ width: '120px', textAlign: 'center' }}>{translate('human_resource.annual_leave.table.action')}
-                                    <DataTableSetting
-                                        tableId={tableId}
-                                        columnArr={[
-                                            translate('human_resource.staff_number'),
-                                            translate('human_resource.staff_name'),
-                                            translate('human_resource.annual_leave.table.start_date'),
-                                            translate('human_resource.annual_leave.table.end_date'),
-                                            translate('human_resource.unit'),
-                                            translate('human_resource.annual_leave.table.reason'),
-                                            translate('human_resource.status')
-                                        ]}
-                                        setLimit={this.setLimit}
-                                    />
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {listAnnualLeaves && listAnnualLeaves.length !== 0 &&
-                                listAnnualLeaves.map((x, index) => (
-                                    <tr key={index}>
-                                        <td><a style={{ cursor: 'pointer' }} onClick={() => this.handleView(x.employee)}>{x.employee.employeeNumber}</a></td>
-                                        <td>{x.employee.fullName}</td>
-                                        <td><p>{this.formatDate(x.startDate)}</p>{x.startTime ? x.startTime : null}</td>
-                                        <td><p>{this.formatDate(x.endDate)}</p>{x.endTime ? x.endTime : null}</td>
-                                        <td>{x.reason}</td>
-                                        <td>{translate(`human_resource.annual_leave.status.${x.status}`)}</td>
-                                        <td style={{ textAlign: "center" }}>
-                                            {(x.status === 'waiting_for_approval' || x.status === "disapproved") &&
-                                                <a onClick={() => this.handleAcceptApplication(x)} className="add_circle" style={{ width: '5px' }} title={translate('human_resource.work_plan.accept_application')}><i className="material-icons">check</i></a>}
-                                            {(x.status === 'waiting_for_approval' || x.status === "approved") &&
-                                                <a onClick={() => this.handleRefuseApplication(x)} className="delete" style={{ width: '5px' }} title={translate('human_resource.work_plan.refuse_application')}><i className="material-icons">clear</i></a>}
-                                        </td>
-                                    </tr>))
-                            }
-                        </tbody>
-                    </table>
-                    {annualLeave.isLoading ?
-                        <div className="table-info-panel">{translate('confirm.loading')}</div> :
-                        (!listAnnualLeaves || listAnnualLeaves.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
-                    }
-                    <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={currentPage} func={this.setPage} />
                 </div>
-                {/* From xem thông tin nhân viên */
-                    <EmployeeViewForm
-                        _id={currentRowView ? currentRowView._id : ""}
-                    />
-                }
-            </div >
-        );
-    }
-};
 
+                <div className="form-inline" style={{ marginBottom: 10 }}>
+                    {/* Tháng */}
+                    <div className="form-group">
+                        <label className="form-control-static">{translate('human_resource.month')}</label>
+                        <DatePicker
+                            id="month"
+                            dateFormat="month-year"
+                            value={formatDate(month, true)}
+                            onChange={handleMonthChange}
+                        />
+                    </div>
+                    {/* Trạng thái */}
+                    <div className="form-group">
+                        <label className="form-control-static">{translate('human_resource.status')}</label>
+                        <SelectMulti id={`multiSelectStatus`} multiple="multiple"
+                            options={{ nonSelectedText: translate('human_resource.non_status'), allSelectedText: translate('human_resource.all_status') }}
+                            onChange={handleStatusChange}
+                            value={status}
+                            items={[
+                                { value: "approved", text: translate('human_resource.annual_leave.status.approved') },
+                                { value: "waiting_for_approval", text: translate('human_resource.annual_leave.status.waiting_for_approval') },
+                                { value: "disapproved", text: translate('human_resource.annual_leave.status.disapproved') }
+                            ]}
+                        >
+                        </SelectMulti>
+                    </div>
+                    {/* Button tìm kiếm */}
+                    <button type="button" className="btn btn-success" title={translate('general.search')} onClick={() => handleSunmitSearch()} >{translate('general.search')}</button>
+                </div>
+                <AnnualLeaveCreateForm />
+                {importAnnualLeave && <AnnualLeaveImportForm />}
+
+                <table className="table table-striped table-bordered table-hover" id={tableId}>
+                    <thead>
+                        <tr>
+                            <th>{translate('human_resource.staff_number')}</th>
+                            <th>{translate('human_resource.staff_name')}</th>
+                            <th>{translate('human_resource.annual_leave.table.start_date')}</th>
+                            <th>{translate('human_resource.annual_leave.table.end_date')}</th>
+                            <th>{translate('human_resource.annual_leave.table.reason')}</th>
+                            <th>{translate('human_resource.status')}</th>
+                            <th style={{ width: '120px', textAlign: 'center' }}>{translate('human_resource.annual_leave.table.action')}
+                                <DataTableSetting
+                                    tableId={tableId}
+                                    columnArr={[
+                                        translate('human_resource.staff_number'),
+                                        translate('human_resource.staff_name'),
+                                        translate('human_resource.annual_leave.table.start_date'),
+                                        translate('human_resource.annual_leave.table.end_date'),
+                                        translate('human_resource.unit'),
+                                        translate('human_resource.annual_leave.table.reason'),
+                                        translate('human_resource.status')
+                                    ]}
+                                    setLimit={setLimit}
+                                />
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {listAnnualLeaves && listAnnualLeaves.length !== 0 &&
+                            listAnnualLeaves.map((x, index) => (
+                                <tr key={index}>
+                                    <td><a style={{ cursor: 'pointer' }} onClick={() => handleView(x.employee)}>{x.employee.employeeNumber}</a></td>
+                                    <td>{x.employee.fullName}</td>
+                                    <td><p>{formatDate(x.startDate)}</p>{x.startTime ? x.startTime : null}</td>
+                                    <td><p>{formatDate(x.endDate)}</p>{x.endTime ? x.endTime : null}</td>
+                                    <td>{x.reason}</td>
+                                    <td>{translate(`human_resource.annual_leave.status.${x.status}`)}</td>
+                                    <td style={{ textAlign: "center" }}>
+                                        {(x.status === 'waiting_for_approval' || x.status === "disapproved") &&
+                                            <a onClick={() => handleAcceptApplication(x)} className="add_circle" style={{ width: '5px' }} title={translate('human_resource.work_plan.accept_application')}><i className="material-icons">check</i></a>}
+                                        {(x.status === 'waiting_for_approval' || x.status === "approved") &&
+                                            <a onClick={() => handleRefuseApplication(x)} className="delete" style={{ width: '5px' }} title={translate('human_resource.work_plan.refuse_application')}><i className="material-icons">clear</i></a>}
+                                    </td>
+                                </tr>))
+                        }
+                    </tbody>
+                </table>
+                {annualLeave.isLoading ?
+                    <div className="table-info-panel">{translate('confirm.loading')}</div> :
+                    (!listAnnualLeaves || listAnnualLeaves.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                }
+                <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={currentPage} func={setPage} />
+            </div>
+            {/* From xem thông tin nhân viên */
+                <EmployeeViewForm
+                    _id={currentRowView ? currentRowView._id : ""}
+                />
+            }
+        </div >
+    );
+}
 function mapState(state) {
     const { annualLeave, department } = state;
     return { annualLeave, department };
