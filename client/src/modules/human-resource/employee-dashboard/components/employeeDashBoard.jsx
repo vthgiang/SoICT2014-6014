@@ -15,6 +15,13 @@ import { UserActions } from '../../../super-admin/user/redux/actions';
 import './employeeDashBoard.css';
 
 const DashBoardEmployees = (props) => {
+    const {
+        translate, employeesManager, annualLeave, discipline, timesheets,
+        childOrganizationalUnit, getAllEmployeeOfUnitByIds, 
+        getAllEmployee, searchAnnualLeaves, 
+        getListPraise, getListDiscipline, 
+        searchSalary, getTimesheets
+    } = props;
 
     /**
      * Function format dữ liệu Date thành string
@@ -43,13 +50,12 @@ const DashBoardEmployees = (props) => {
     const [state, setState] = useState({
         month: formatDate(Date.now(), true),
         monthShow: formatDate(Date.now(), true),
-        organizationalUnits: null,
-        arrayUnitShow: null,
+        organizationalUnits: childOrganizationalUnit.map(x => x.id),
+        arrayUnitShow: childOrganizationalUnit.map(x => x.id),
     });
+    const { monthShow, month, organizationalUnits, arrayUnitShow } = state;
 
     useEffect(() => {
-        const { organizationalUnits, month } = state;
-        const { childOrganizationalUnit, getAllEmployeeOfUnitByIds, getAllEmployee, searchAnnualLeaves, getListPraise, getListDiscipline, searchSalary, getTimesheets } = props;
         let partMonth = month.split('-');
         let newMonth = [partMonth[1], partMonth[0]].join('-');
 
@@ -84,7 +90,10 @@ const DashBoardEmployees = (props) => {
      * @param {*} value : Array id đơn vị
      */
     const handleSelectOrganizationalUnit = (value) => {
-        setState(state => ({...state, arrayUnitShow: value}));
+        setState(state => ({
+            ...state, 
+            arrayUnitShow: value
+        }));
     }
 
     /**
@@ -102,35 +111,40 @@ const DashBoardEmployees = (props) => {
         let partMonth = month.split('-');
         let newMonth = [partMonth[1], partMonth[0]].join('-');
 
-        setState(state => ({...state, organizationalUnits: arrayUnitShow, monthShow: month}));
-
-        if (arrayUnitShow && arrayUnitShow.length === childOrganizationalUnit.length) {
-            arrayUnitShow = null;
-        };
-        const { getAllEmployeeOfUnitByIds, getAllEmployee, searchAnnualLeaves, getListPraise, getListDiscipline, searchSalary, getTimesheets } = props;
-
-        getAllEmployeeOfUnitByIds(arrayUnitShow && arrayUnitShow.length !== 0 ? arrayUnitShow : childOrganizationalUnit.map(x => x.id));
-
-        /* Lấy danh sách nhân viên  */
-        getAllEmployee({ organizationalUnits: arrayUnitShow, status: ["active", 'maternity_leave', 'unpaid_leave', 'probationary', 'sick_leave'] });
-
-        /* Lấy thông tin nghi phép */
-        searchAnnualLeaves({ organizationalUnits: arrayUnitShow, month: newMonth });
-
-        /* Lấy dánh sách khen thưởng, kỷ luật */
-        getListPraise({ organizationalUnits: arrayUnitShow, month: newMonth });
-        getListDiscipline({ organizationalUnits: arrayUnitShow, month: newMonth });
-
-        /* Lấy dữ liệu lương nhân viên*/
-        searchSalary({ callApiDashboard: true, organizationalUnits: arrayUnitShow, month: newMonth });
-        searchSalary({ callApiDashboard: true, month: newMonth });
-
-        /* Lấy dữ liệu nghỉ phép, tăng ca của nhân viên */
-        getTimesheets({
-            organizationalUnits: arrayUnitShow, month: newMonth, page: 0,
-            limit: 100000,
-        });
-
+        if (arrayUnitShow?.length > 0) {
+            setState(state => ({
+                ...state, 
+                organizationalUnits: arrayUnitShow, 
+                monthShow: month
+            }));
+    
+            if (arrayUnitShow && arrayUnitShow.length === childOrganizationalUnit.length) {
+                arrayUnitShow = null;
+            };
+            const { getAllEmployeeOfUnitByIds, getAllEmployee, searchAnnualLeaves, getListPraise, getListDiscipline, searchSalary, getTimesheets } = props;
+    
+            getAllEmployeeOfUnitByIds(arrayUnitShow && arrayUnitShow.length !== 0 ? arrayUnitShow : childOrganizationalUnit.map(x => x.id));
+    
+            /* Lấy danh sách nhân viên  */
+            getAllEmployee({ organizationalUnits: arrayUnitShow, status: ["active", 'maternity_leave', 'unpaid_leave', 'probationary', 'sick_leave'] });
+    
+            /* Lấy thông tin nghi phép */
+            searchAnnualLeaves({ organizationalUnits: arrayUnitShow, month: newMonth });
+    
+            /* Lấy dánh sách khen thưởng, kỷ luật */
+            getListPraise({ organizationalUnits: arrayUnitShow, month: newMonth });
+            getListDiscipline({ organizationalUnits: arrayUnitShow, month: newMonth });
+    
+            /* Lấy dữ liệu lương nhân viên*/
+            searchSalary({ callApiDashboard: true, organizationalUnits: arrayUnitShow, month: newMonth });
+            searchSalary({ callApiDashboard: true, month: newMonth });
+    
+            /* Lấy dữ liệu nghỉ phép, tăng ca của nhân viên */
+            getTimesheets({
+                organizationalUnits: arrayUnitShow, month: newMonth, page: 0,
+                limit: 100000,
+            });
+        }
     }
 
     /** Bắt sự kiện chuyển tab  */
@@ -141,11 +155,6 @@ const DashBoardEmployees = (props) => {
         window.dispatchEvent(new Event('resize')); // Fix lỗi chart bị resize khi đổi tab
     }
 
-    const { translate, employeesManager, annualLeave, discipline, timesheets } = props;
-
-    const { childOrganizationalUnit } = props;
-
-    const { monthShow, month, organizationalUnits, arrayUnitShow } = state;
 
     let listAllEmployees = (!organizationalUnits || organizationalUnits.length === 0 || organizationalUnits.length === childOrganizationalUnit.length) ?
         employeesManager.listAllEmployees : employeesManager.listEmployeesOfOrganizationalUnits;
@@ -246,7 +255,7 @@ const DashBoardEmployees = (props) => {
                         <div className="tab-content ">
                             {/* Tab tổng quan nhân sự*/}
                             <div className="tab-pane active" id="human-resourse">
-                                <TabHumanResource childOrganizationalUnit={childOrganizationalUnit} defaultUnit={false} organizationalUnits={organizationalUnits} monthShow={monthShow} />
+                                <TabHumanResource childOrganizationalUnit={childOrganizationalUnit} defaultUnit={true} organizationalUnits={organizationalUnits} monthShow={monthShow} />
                             </div>
 
                             {/* Tab nghỉ phép tăng ca*/}
