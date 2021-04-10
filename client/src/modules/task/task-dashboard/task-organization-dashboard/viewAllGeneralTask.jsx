@@ -37,6 +37,19 @@ const ViewAllGeneralTask = (props) => {
         return dayjs(date).format("DD-MM-YYYY hh:mm A")
     }
 
+    const convertStatus = (status) => {
+        const { translate } = props;
+
+        switch (status) {
+            case "inprocess": return translate('task.task_management.inprocess');
+            case "wait_for_approval": return translate('task.task_management.wait_for_approval');
+            case "finished": return translate('task.task_management.finished');
+            case "delayed": return translate('task.task_management.delayed');
+            case "canceled": return translate('task.task_management.canceled');
+        }
+    }
+
+    console.log('tasks', tasks)
     return (
         <React.Fragment>
             <DialogModal
@@ -53,6 +66,7 @@ const ViewAllGeneralTask = (props) => {
                                 <th className="col-fixed" style={{ width: 80 }}>STT</th>
                                 <th>Tên công việc</th>
                                 <th>Thời gian thực hiện công việc</th>
+                                <th>Trạng thái</th>
                                 <th>Tiến độ thực hiện</th>
                             </tr>
                         </thead>
@@ -63,6 +77,7 @@ const ViewAllGeneralTask = (props) => {
                                         <td>{index + 1}</td>
                                         <td><a href={`/task?taskId=${obj._id}`} target="_blank">{obj.name}</a></td>
                                         <td>{`${formatTime(obj.startDate)} đến ${formatTime(obj.endDate)}`}</td>
+                                        <td>{convertStatus(obj.status)}</td>
                                         <td>{`${obj.progress}%`}</td>
                                     </tr>
                                 ))
