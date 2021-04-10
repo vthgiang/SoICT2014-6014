@@ -16,8 +16,14 @@ function TransportPlanChosenEdit(props) {
         currentTransportPlan, 
         currentTransportRequirement,
         } = props;
+    
 
-    const [status, setStatus]=useState();
+    /**
+     * State lưu transportPlan id của currentRequirementId
+     * Khi chọn plan mới, state cập nhật
+     * Khi state thay đổi, query lại dữ liệu của currentRequirementId
+     */    
+    const [currentTransportRequirementPlanId, setCurrentTransportRequirementPlanId] = useState()
 
     /**
      * Load lại info currentRequirement
@@ -26,8 +32,17 @@ function TransportPlanChosenEdit(props) {
         if (currentRequirementId){
             props.getDetailTransportRequirement(currentRequirementId);
         }
-        console.log("realod");
-    }, [allTransportPlans, status, currentRequirementId]);
+    }, [currentRequirementId]);
+
+    useEffect(()=>{
+        setCurrentTransportRequirementPlanId(currentTransportRequirement?.transportPlan?._id)
+    }, [currentTransportRequirement])
+
+    useEffect(() =>{
+        if (currentRequirementId){
+            props.getDetailTransportRequirement(currentRequirementId);
+        }
+    }, [currentTransportRequirementPlanId])
 
     const [placeGeocode, setPlaceGeoCode] = useState([
         {
@@ -51,9 +66,10 @@ function TransportPlanChosenEdit(props) {
      * @returns 
      */
     const handleSelectPlan = (id) => {
+        console.log(currentTransportRequirement);
             // Update plan cũ
             if (currentTransportRequirement?.transportPlan){
-                if (String(currentTransportRequirement.transportPlan._id) === String(id)){
+                if (String(currentTransportRequirementPlanId) === String(id)){
                     return;
                 }
                 let requirementsList= [];
@@ -61,15 +77,21 @@ function TransportPlanChosenEdit(props) {
                     requirementsList = currentTransportRequirement.transportPlan.transportRequirements.filter(r => String(r)!== String(currentTransportRequirement._id));
                 }
                 console.log(requirementsList, " requirementlisst luu vao db");
-                props.editTransportPlan(currentTransportRequirement.transportPlan._id, {transportRequirements: requirementsList});
+                props.editTransportPlan(currentTransportRequirementPlanId, {transportRequirements: requirementsList});
             }
             props.addTransportRequirementToPlan(id, {requirement: currentTransportRequirement._id});
             props.editTransportRequirement(currentRequirementId, { transportPlan: id});
+            setCurrentTransportRequirementPlanId(id);
     }
 
     const handleShowDetailInfo = (transportPlan) => {
         props.getDetailTransportPlan(transportPlan._id);
     }
+
+
+    useEffect(() => {
+        props.getAllTransportPlans({page:1, limit: 100});
+    }, []);
 
     useEffect(() => {
         console.log(currentTransportPlan , " cureen");
@@ -309,8 +331,10 @@ function TransportPlanChosenEdit(props) {
 function mapState(state) {
     console.log(state, " change");
     const { currentTransportPlan} = state.transportPlan;
+    let allTransportPlans = [];
+    allTransportPlans = state.transportPlan.lists;
     const { currentTransportRequirement } = state.transportRequirements;
-    return { currentTransportPlan, currentTransportRequirement }
+    return { currentTransportPlan, currentTransportRequirement, allTransportPlans }
 }
 
 const actions = {
@@ -319,6 +343,7 @@ const actions = {
     getDetailTransportPlan: transportPlanActions.getDetailTransportPlan,
     editTransportPlan: transportPlanActions.editTransportPlan,
     addTransportRequirementToPlan: transportPlanActions.addTransportRequirementToPlan,
+    getAllTransportPlans: transportPlanActions.getAllTransportPlans,
 }
 
 const connectedTransportPlanChosenEdit = connect(mapState, actions)(withTranslate(TransportPlanChosenEdit));

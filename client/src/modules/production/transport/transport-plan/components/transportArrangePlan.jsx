@@ -29,7 +29,7 @@ function TransportArrangePlan(props) {
 
     useEffect(() => {
         props.getAllTransportRequirements({page:1, limit: 100});
-        props.getAllTransportPlans({page:1, limit: 100});
+        // props.getAllTransportPlans({page:1, limit: 100});
     }, []);
 
     useEffect(() => {
@@ -148,7 +148,7 @@ function TransportArrangePlan(props) {
         
         <React.Fragment>
         <TransportPlanChosenEdit
-            allTransportPlans={allTransportPlans}
+            // allTransportPlans={allTransportPlans}
             currentRequirementId={currentRequirement._id}
         />
         <div className="box-body qlcv">
@@ -227,8 +227,8 @@ function TransportArrangePlan(props) {
 
 function mapState(state) {
     const transportArrangeRequirements = state.transportRequirements.lists;
-    const allTransportPlans = state.transportPlan.lists
-    return { transportArrangeRequirements, allTransportPlans };
+    // const allTransportPlans = state.transportPlan.lists
+    return { transportArrangeRequirements };
 }
 
 const actions = {
