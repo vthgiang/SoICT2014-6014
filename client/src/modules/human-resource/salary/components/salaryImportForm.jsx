@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
@@ -9,33 +9,33 @@ import { configurationSalary } from './fileConfigurationImportSalary';
 import { SalaryActions } from '../redux/actions';
 import { AuthActions } from '../../../auth/redux/actions';
 
-class SalaryImportForm extends Component {
-    constructor(props) {
-        super(props);
-        let organizationalUnit = this.props.department.list[0];
-        this.state = {
-            organizationalUnit: organizationalUnit._id,
-            configData: configurationSalary.configurationImport(this.props.translate),
-            checkFileImport: true,
-            rowError: [],
-            importData: [],
-            month: null,
-            limit: 100,
-            page: 0
-        };
-    }
+const SalaryImportForm = (props) => {
 
-    componentDidUpdate() {
-        const { salary } = this.props;
+    const { translate, salary, department } = props;
+    let _organizationalUnit = department.list[0];
+
+    const [state, setState] = useState({
+        organizationalUnit: _organizationalUnit._id,
+        configData: configurationSalary.configurationImport(props.translate),
+        checkFileImport: true,
+        rowError: [],
+        importData: [],
+        month: null,
+        limit: 100,
+        page: 0
+    });
+    
+    useEffect(() => {
+        const { salary } = props;
         salary.importStatus && window.$(`#modal_import_file`).modal("hide");
-    }
+    })
 
     /**
      * Function format dữ liệu Date thành string
      * @param {*} date : Ngày muốn format
      * @param {*} monthYear : true trả về tháng năm, false trả về ngày tháng năm
      */
-    formatDate(date, monthYear = false) {
+    const formatDate = (date, monthYear = false) => {
         if (date) {
             let d = new Date(date),
                 month = '' + (d.getMonth() + 1),
@@ -58,13 +58,14 @@ class SalaryImportForm extends Component {
      * Bắt sự kiện thay đổi giá trị đơn vị
      * @param {*} value : Giá trị đơn vị
      */
-    handleOrganizationalUnitChange = (value) => {
-        const { salary } = this.props;
-        this.setState({
+    const handleOrganizationalUnitChange = (value) => {
+        const { salary } = props;
+        setState(state => ({
+            ...state,
             organizationalUnit: value[0],
             importData: [],
-            changeMonth: true,
-        });
+            changeMonth: true
+        }))
         window.$('#file-import-salary').val('');
     }
 
@@ -72,10 +73,10 @@ class SalaryImportForm extends Component {
      * Bắt sự kiện thay đổi tháng lương
      * @param {*} value : Giá trị tháng lương
      */
-    handleMonthChange = (value) => {
+    const handleMonthChange = (value) => {
         if (value) {
-            const { salary, translate } = this.props;
-            const { configData } = this.state;
+            const { salary, translate } = props;
+            const { configData } = state;
 
             let partMonth = value.split('-'), rowError = [], importData = [];
             value = [partMonth[1], partMonth[0]].join('-');
@@ -102,33 +103,35 @@ class SalaryImportForm extends Component {
                     return x;
                 })
 
-                this.setState({
-                    ...this.state,
+                setState(state => ({
+                    ...state,
                     importData: importData,
                     rowError: rowError,
-                    changeMonth: true,
-                })
+                    changeMonth: true
+                }));
             }
-            this.setState({
-                ...this.state,
+            setState(state => ({
+                ...state,
                 month: value,
                 changeMonth: true,
-            });
+            }));
         } else {
-            this.setState({
-                ...this.state,
+            setState(state => ({
+                ...state,
                 importData: [],
                 rowError: [],
                 month: value,
-                changeMonth: true,
-            });
+                changeMonth: true
+            }))
         }
     }
 
+    const { importSalary, downloadFile} = props;
+
     /** Function kiểm tra lỗi trước khi submit form*/
-    isFormValidated = () => {
-        const { salary } = this.props;
-        let { rowError, month, importData, changeMonth } = this.state;
+    const isFormValidated = () => {
+        const { salary } = props;
+        let { rowError, month, importData, changeMonth } = state;
 
         if (salary.error.rowError && changeMonth === false) {
             rowError = salary.error.rowError;
@@ -140,8 +143,8 @@ class SalaryImportForm extends Component {
     }
 
     /** Function import dữ liệu */
-    save = () => {
-        let { importData, month, configData, organizationalUnit } = this.state;
+    const save = () => {
+        let { importData, month, configData, organizationalUnit } = state;
 
         let bonusName = configData.bonus.value;
         importData = importData.map(x => {
@@ -153,21 +156,23 @@ class SalaryImportForm extends Component {
             })
             return { ...x, month: month, organizationalUnit: organizationalUnit, bonus: bonus }
         });
-        this.props.importSalary(importData);
-        this.setState({
+        importSalary(importData);
+        setState(state => ({
+            ...state,
             changeMonth: false
-        })
+        }))
     }
 
     /**
      * Function Thay đổi cấu hình file import
      * @param {*} value : Dữ liệu cấu hình file import
      */
-    handleChangeConfig = async (value) => {
-        await this.setState({
+    const handleChangeConfig = async (value) => {
+        await setState(state => ({
+            ...state,
             configData: value,
-            importData: [],
-        })
+            importData: []
+        }));
     }
 
     /**
@@ -175,9 +180,9 @@ class SalaryImportForm extends Component {
      * @param {*} value : Dữ liệu file import
      * @param {*} checkFileImport : true - file import đúng định dạng, false - file import sai định dạng
      */
-    handleImportExcel = (value, checkFileImport) => {
+    const handleImportExcel = (value, checkFileImport) => {
         console.log(value);
-        const { translate } = this.props;
+        const { translate } = props;
         if (checkFileImport) {
             let rowError = [];
             // Check dữ liệu import có hợp lệ hay không
@@ -200,15 +205,17 @@ class SalaryImportForm extends Component {
                 x = { ...x, errorAlert: errorAlert }
                 return x;
             });
-            this.setState({
+            setState(state => ({
+                ...state,
                 importData: value,
                 rowError: rowError,
-                checkFileImport: checkFileImport,
-            })
+                checkFileImport: checkFileImport
+            }));
         } else {
-            this.setState({
-                checkFileImport: checkFileImport,
-            })
+            setState(state => ({
+                ...state,
+                checkFileImport: checkFileImport
+            }));
         }
     }
 
@@ -218,121 +225,119 @@ class SalaryImportForm extends Component {
      * @param {*} path : Đường dẫn file
      * @param {*} fileName : Tên file muốn tải về
      */
-    requestDownloadFile = (e, path, fileName) => {
+    const requestDownloadFile = (e, path, fileName) => {
         e.preventDefault()
-        this.props.downloadFile(path, fileName)
+        downloadFile(path, fileName)
     }
 
-    render() {
+    
 
-        const { translate, salary, department } = this.props;
-
-        let { limit, page, importData, rowError, configData, changeMonth, month, checkFileImport, organizationalUnit } = this.state;
-        if (salary.error.rowError && changeMonth === false) {
-            rowError = salary.error.rowError;
-            importData = salary.error.data
-            importData = importData.map(x => {
-                let bonusName = configData.bonus.value;
-                let bonus = bonusName.map(b => null);
-                bonusName.forEach((y, key) => {
-                    if (x.nameBonus === y) {
-                        bonus[key] = x.number;
-                    }
-                })
-                if (x.errorAlert && x.errorAlert.length !== 0) {
-                    let errorAlert = x.errorAlert.map(err => translate(`human_resource.salary.${err}`));
-                    return { ...x, bonus: bonus, errorAlert: errorAlert }
+    let { limit, page, importData, rowError, configData, changeMonth, month, checkFileImport, organizationalUnit } = state;
+    if (salary.error.rowError && changeMonth === false) {
+        rowError = salary.error.rowError;
+        importData = salary.error.data
+        importData = importData.map(x => {
+            let bonusName = configData.bonus.value;
+            let bonus = bonusName.map(b => null);
+            bonusName.forEach((y, key) => {
+                if (x.nameBonus === y) {
+                    bonus[key] = x.number;
                 }
-                return { ...x, bonus: bonus }
             })
-        }
+            if (x.errorAlert && x.errorAlert.length !== 0) {
+                let errorAlert = x.errorAlert.map(err => translate(`human_resource.salary.${err}`));
+                return { ...x, bonus: bonus, errorAlert: errorAlert }
+            }
+            return { ...x, bonus: bonus }
+        })
+    }
 
-        let exportData = configurationSalary.templateImport(translate);
-        return (
-            <React.Fragment>
-                <DialogModal
-                    modalID={`modal_import_file`} isLoading={false}
-                    formID={`form_import_file`}
-                    title={translate('human_resource.add_data_by_excel')}
-                    func={this.save}
-                    disableSubmit={!this.isFormValidated()}
-                    closeOnSave={false}
-                    size={75}
-                >
-                    <form className="form-group" id={`form_import_file`}>
-                        {/* Form cấu file import */}
-                        <ConFigImportFile
-                            id="import_salary_config"
-                            configData={configData}
-                            textareaRow={8}
-                            scrollTable={false}
-                            handleChangeConfig={this.handleChangeConfig}
-                        />
-                        <div className="row">
-                            {/* Đơn vị */}
-                            <div className="form-group col-md-4 col-sm-12 col-xs-12">
-                                <label>{translate('human_resource.unit')}<span className="text-red">*</span></label>
-                                <SelectBox
-                                    id={`import-salary-unit`}
-                                    className="form-control select2"
-                                    style={{ width: "100%" }}
-                                    value={organizationalUnit}
-                                    items={department.list.map(y => { return { value: y._id, text: y.name } })}
-                                    onChange={this.handleOrganizationalUnitChange}
-                                />
-                            </div>
-                            {/* Tháng */}
-                            <div className="form-group col-md-4 col-sm-12 col-xs-12">
-                                <label>{translate('human_resource.month')}<span className="text-red">*</span></label>
-                                <DatePicker
-                                    id="import-salary-month"
-                                    dateFormat="month-year"
-                                    deleteValue={false}
-                                    value=""
-                                    onChange={this.handleMonthChange}
-                                />
-                            </div>
-                        </div>
-                        <div className="row">
-                            {/* File import */}
-                            <div className="form-group col-md-4 col-sm-12 col-xs-12">
-                                <label>{translate('human_resource.choose_file')}</label>
-                                <ImportFileExcel
-                                    id={'file-import-salary'}
-                                    configData={configData}
-                                    handleImportExcel={this.handleImportExcel}
-                                    disabled={!month ? true : false}
-                                />
-                            </div>
+    let exportData = configurationSalary.templateImport(translate);
 
-                            <div className="form-group pull-right col-md-4 col-sm-12 col-xs-12">
-                                {/* Dowload file import mẫu */}
-                                <ExportExcel id="download_template_salary" type='link' exportData={exportData}
-                                    buttonName={` ${translate('human_resource.download_file')}`} />
-
-                            </div>
-                        </div>
-
-
-                        <div className="col-md-12 col-xs-12" style={{ padding: 0 }}>
-                            {/* Form hiện thì dữ liệu sẽ import */}
-                            <ShowImportData
-                                id="import_salary_show_data"
-                                configData={configData}
-                                importData={importData}
-                                rowError={rowError}
-                                scrollTableWidth={1000}
-                                checkFileImport={checkFileImport}
-                                limit={limit}
-                                page={page}
+    return (
+        <React.Fragment>
+            <DialogModal
+                modalID={`modal_import_file`} isLoading={false}
+                formID={`form_import_file`}
+                title={translate('human_resource.add_data_by_excel')}
+                func={save}
+                disableSubmit={!isFormValidated()}
+                closeOnSave={false}
+                size={75}
+            >
+                <form className="form-group" id={`form_import_file`}>
+                    {/* Form cấu file import */}
+                    <ConFigImportFile
+                        id="import_salary_config"
+                        configData={configData}
+                        textareaRow={8}
+                        scrollTable={false}
+                        handleChangeConfig={handleChangeConfig}
+                    />
+                    <div className="row">
+                        {/* Đơn vị */}
+                        <div className="form-group col-md-4 col-sm-12 col-xs-12">
+                            <label>{translate('human_resource.unit')}<span className="text-red">*</span></label>
+                            <SelectBox
+                                id={`import-salary-unit`}
+                                className="form-control select2"
+                                style={{ width: "100%" }}
+                                value={organizationalUnit}
+                                items={department.list.map(y => { return { value: y._id, text: y.name } })}
+                                onChange={handleOrganizationalUnitChange}
                             />
                         </div>
-                        {/* </div> */}
-                    </form>
-                </DialogModal>
-            </React.Fragment>
-        );
-    }
+                        {/* Tháng */}
+                        <div className="form-group col-md-4 col-sm-12 col-xs-12">
+                            <label>{translate('human_resource.month')}<span className="text-red">*</span></label>
+                            <DatePicker
+                                id="import-salary-month"
+                                dateFormat="month-year"
+                                deleteValue={false}
+                                value=""
+                                onChange={handleMonthChange}
+                            />
+                        </div>
+                    </div>
+                    <div className="row">
+                        {/* File import */}
+                        <div className="form-group col-md-4 col-sm-12 col-xs-12">
+                            <label>{translate('human_resource.choose_file')}</label>
+                            <ImportFileExcel
+                                id={'file-import-salary'}
+                                configData={configData}
+                                handleImportExcel={handleImportExcel}
+                                disabled={!month ? true : false}
+                            />
+                        </div>
+
+                        <div className="form-group pull-right col-md-4 col-sm-12 col-xs-12">
+                            {/* Dowload file import mẫu */}
+                            <ExportExcel id="download_template_salary" type='link' exportData={exportData}
+                                buttonName={` ${translate('human_resource.download_file')}`} />
+
+                        </div>
+                    </div>
+
+
+                    <div className="col-md-12 col-xs-12" style={{ padding: 0 }}>
+                        {/* Form hiện thì dữ liệu sẽ import */}
+                        <ShowImportData
+                            id="import_salary_show_data"
+                            configData={configData}
+                            importData={importData}
+                            rowError={rowError}
+                            scrollTableWidth={1000}
+                            checkFileImport={checkFileImport}
+                            limit={limit}
+                            page={page}
+                        />
+                    </div>
+                    {/* </div> */}
+                </form>
+            </DialogModal>
+        </React.Fragment>
+    );
 };
 
 function mapState(state) {
