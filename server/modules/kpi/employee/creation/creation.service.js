@@ -65,22 +65,8 @@ exports.getEmployeeKpiSet = async (portal, data) => {
 
 /* Lấy tất cả các tập KPI của 1 nhân viên theo thời gian cho trước */
 exports.getAllEmployeeKpiSetByMonth = async (portal, organizationalUnitIds, userId, startDate, endDate) => {
-    let year, month;
-    if (endDate) {
-        year = endDate.slice(0, 4);
-        month = endDate.slice(5, 7);
-    }
-    if ((new Number(month)) == 12) {
-        month = '1';
-        year = (new Number(year)) + 1;
-    } else {
-        month = (new Number(month)) + 1;
-    }
-    if (month < 10) {
-        endDate = year + '-0' + month;
-    } else {
-        endDate = year + '-' + month;
-    }
+    endDate = new Date(endDate)
+    endDate.setMonth(endDate.getMonth() + 1)    
 
     let keySearch = {
         creator: new mongoose.Types.ObjectId(userId),
@@ -103,14 +89,14 @@ exports.getAllEmployeeKpiSetByMonth = async (portal, organizationalUnitIds, user
 
 /* Lấy tất cả các tập KPI của tất cả nhân viên trong mảng đơn vị cho trước theo thời gian */
 exports.getAllEmployeeKpiSetOfAllEmployeeInOrganizationalUnitByMonth = async (portal, organizationalUnitIds, startDate, endDate) => {
-
     let organizationalUnitIdsArray = organizationalUnitIds.map(item => { return new mongoose.Types.ObjectId(item) });
+    endDate = new Date(endDate)
+    endDate.setMonth(endDate.getMonth() + 1)
 
     const employeeKpiSetsInOrganizationalUnitByMonth = await EmployeeKpiSet(connect(DB_CONNECTION, portal)).aggregate([
         { $match: { 'organizationalUnit': { $in: [...organizationalUnitIdsArray] } } },
 
-        // Thời gian lấy chưa tính tháng hiện tại(ví dụ endDate là 2020-8 thì service trả về k bao gồm kpi tháng 8)
-        { $match: { 'date': { $gt: new Date(startDate), $lte: new Date(endDate) } } },
+        { $match: { 'date': { $gte: new Date(startDate), $lt: new Date(endDate) } } },
 
         {
             $lookup: {
