@@ -46,11 +46,9 @@ const HumanResourceIncreaseAndDecreaseChart = (props) => {
         startDateShow: _startDate,
         endDate: formatDate(Date.now(), true),
         endDateShow: formatDate(Date.now(), true),
-        organizationalUnits: props.defaultUnit ? [props.childOrganizationalUnit[0].id] : [],
-        organizationalUnitsSearch: props.defaultUnit ? [props.childOrganizationalUnit[0].id] : [],
+        organizationalUnits: props.defaultUnit ? props?.childOrganizationalUnit?.map(item => item?.id) : [],
+        organizationalUnitsSearch: props.defaultUnit ? props?.childOrganizationalUnit?.map(item => item?.id) : [],
     })
-
-    
 
     useEffect(() => {
         const { organizationalUnits, startDate, endDate } = state;
@@ -125,32 +123,22 @@ const HumanResourceIncreaseAndDecreaseChart = (props) => {
         return true;
     }
 
-    useEffect(() => {
-        if (!state.arrMonth || props.employeesManager.arrMonth?.length !== state.arrMonth?.length ||
-            !isEqual(props.employeesManager.listEmployeesHaveStartingDateOfNumberMonth, state.listEmployeesHaveStartingDateOfNumberMonth) ||
-            !isEqual(props.employeesManager.listEmployeesHaveLeavingDateOfNumberMonth, state.listEmployeesHaveLeavingDateOfNumberMonth)) {
-            setState({
-                ...state,
-                nameChart: props.nameChart,
-                nameData1: props.nameData1,
-                nameData2: props.nameData2,
-                nameData3: props.nameData3,
-                arrMonth: props.employeesManager.arrMonth,
-                listEmployeesHaveStartingDateOfNumberMonth: props.employeesManager.listEmployeesHaveStartingDateOfNumberMonth,
-                listEmployeesHaveLeavingDateOfNumberMonth: props.employeesManager.listEmployeesHaveLeavingDateOfNumberMonth
-            })
-        }
-    }, [props.employeesManager.arrMonth?.length, props.employeesManager.listEmployeesHaveStartingDateOfNumberMonth, props.employeesManager.listEmployeesHaveLeavingDateOfNumberMonth])
-
-    useEffect(() => {
-        if (props.employeesManager.arrMonth?.length !== state.arrMonth?.length ||
-            state.lineChart !== state.lineChart ||
-            !isEqual(props.employeesManager.listEmployeesHaveStartingDateOfNumberMonth, state.listEmployeesHaveStartingDateOfNumberMonth) ||
-            !isEqual(props.employeesManager.listEmployeesHaveLeavingDateOfNumberMonth, state.listEmployeesHaveLeavingDateOfNumberMonth) ||
-            JSON.stringify(state.organizationalUnitsSearch) !== JSON.stringify(state.organizationalUnitsSearch)) {
-            setState({...state})
-        }
-    }, [props.employeesManager.arrMonth?.length, props.employeesManager.listEmployeesHaveStartingDateOfNumberMonth, props.employeesManager.listEmployeesHaveLeavingDateOfNumberMonth]);
+    if (!state.arrMonth 
+        || props.employeesManager.arrMonth?.length !== state.arrMonth?.length 
+        || !isEqual(props.employeesManager.listEmployeesHaveStartingDateOfNumberMonth, state.listEmployeesHaveStartingDateOfNumberMonth) 
+        || !isEqual(props.employeesManager.listEmployeesHaveLeavingDateOfNumberMonth, state.listEmployeesHaveLeavingDateOfNumberMonth)
+    ) {
+        setState({
+            ...state,
+            nameChart: props.nameChart,
+            nameData1: props.nameData1,
+            nameData2: props.nameData2,
+            nameData3: props.nameData3,
+            arrMonth: props.employeesManager.arrMonth,
+            listEmployeesHaveStartingDateOfNumberMonth: props.employeesManager.listEmployeesHaveStartingDateOfNumberMonth,
+            listEmployeesHaveLeavingDateOfNumberMonth: props.employeesManager.listEmployeesHaveLeavingDateOfNumberMonth
+        })
+    }
 
     const _chart = useRef(null);
     /** Xóa các chart đã render khi chưa đủ dữ liệu */
@@ -233,20 +221,22 @@ const HumanResourceIncreaseAndDecreaseChart = (props) => {
     /** Bắt sự kiện tìm kiếm */
     const handleSunmitSearch = async () => {
         const { organizationalUnits, startDate, endDate } = state;
-        await setState({
-            ...state,
-            startDateShow: startDate,
-            endDateShow: endDate,
-            organizationalUnitsSearch: organizationalUnits,
-        });
-
-        let arrStart = startDate.split('-');
-        let startDateNew = [arrStart[1], arrStart[0]].join('-');
-
-        let arrEnd = endDate.split('-');
-        let endDateNew = [arrEnd[1], arrEnd[0]].join('-');
-
-        props.getAllEmployee({ organizationalUnits: organizationalUnits, startDate: startDateNew, endDate: endDateNew });
+        if (organizationalUnits?.length > 0) {
+            await setState({
+                ...state,
+                startDateShow: startDate,
+                endDateShow: endDate,
+                organizationalUnitsSearch: organizationalUnits,
+            });
+    
+            let arrStart = startDate.split('-');
+            let startDateNew = [arrStart[1], arrStart[0]].join('-');
+    
+            let arrEnd = endDate.split('-');
+            let endDateNew = [arrEnd[1], arrEnd[0]].join('-');
+    
+            props.getAllEmployee({ organizationalUnits: organizationalUnits, startDate: startDateNew, endDate: endDateNew });
+        }
     }
 
     const { department, employeesManager, translate } = props;

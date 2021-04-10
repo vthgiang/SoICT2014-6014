@@ -135,17 +135,18 @@ const AgePyramidChart = (props) => {
         return true;
     }
 
-    useEffect(() => {
-        if (props.organizationalUnits !== state.organizationalUnits || !isEqual(props.employeesManager.listAllEmployees, state.listAllEmployees) ||
-            !isEqual(props.employeesManager.listEmployeesOfOrganizationalUnits, state.listEmployeesOfOrganizationalUnits)) {
-            setState({
-                ...state,
-                organizationalUnits: props.organizationalUnits,
-                listAllEmployees: props.employeesManager.listAllEmployees,
-                listEmployeesOfOrganizationalUnits: props.employeesManager.listEmployeesOfOrganizationalUnits
-            })
-        }
-    }, [props.organizationalUnits, state.organizationalUnits, props.employeesManager.listAllEmployees, state.listAllEmployees, props.employeesManager.listEmployeesOfOrganizationalUnits, state.listEmployeesOfOrganizationalUnits])
+    if (
+        props.organizationalUnits !== state.organizationalUnits 
+        || !isEqual(props.employeesManager.listAllEmployees, state.listAllEmployees) 
+        || !isEqual(props.employeesManager.listEmployeesOfOrganizationalUnits, state.listEmployeesOfOrganizationalUnits)
+    ) {
+        setState({
+            ...state,
+            organizationalUnits: props.organizationalUnits,
+            listAllEmployees: props.employeesManager.listAllEmployees,
+            listEmployeesOfOrganizationalUnits: props.employeesManager.listEmployeesOfOrganizationalUnits
+        })
+    }
 
     useEffect(() => {
         if (props.organizationalUnits !== state.organizationalUnits || !isEqual(props.employeesManager.listAllEmployees, state.listAllEmployees) ||
@@ -161,6 +162,7 @@ const AgePyramidChart = (props) => {
 
     let organizationalUnitsName;
     if (organizationalUnits && department?.list) {
+        console.log(department.list, organizationalUnits)
         organizationalUnitsName = department.list.filter(x => organizationalUnits.includes(x._id));
         organizationalUnitsName = organizationalUnitsName.map(x => x.name);
     }
