@@ -6,15 +6,27 @@ import { DataTableSetting, DeleteNotification, PaginateBar } from "../../../../.
 
 import { AssetManagerActions } from '../../../../asset/admin/asset-information/redux/actions'
 import { transportVehicleActions } from "../redux/actions";
+import { transportPlanActions} from "../../transport-plan/redux/actions"
 
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
+import './transportVehicleChosen.css';
 
 function TransportVehicle(props) {
+    const { currentTransportPlanId, currentTransportPlan } = props;
+
     const getTableId = "table-manage-transport-vehicle";
     const defaultConfig = { limit: 5 }
     const getLimit = getTableConfiguration(getTableId, defaultConfig).limit;
 
     const [vehiclesListState, setVehilesListState] = useState({});
+
+
+    const [fullVehiclesList, setFullVehicleList] = useState(); // State chứa cả trạng thái xe đã chọn hay chưa
+
+    /*
+     * State lưu trạng thái xe đang có của lịch trình hiện tại
+     */
+    const [planVehiclesList, setPlanVehiclesList] = useState();
 
     useEffect(() => {
         const data = {
@@ -77,6 +89,36 @@ function TransportVehicle(props) {
     }, [vehiclesListState])
     const { vehiclesList } = vehiclesListState;
     
+    /**
+     * Lấy dữ liệu array transportVehicles lưu state
+     */
+    useEffect(() => {
+        if (currentTransportPlanId){
+            props.getDetailTransportPlan(currentTransportPlanId);
+        }
+    }, [currentTransportPlanId])
+
+    useEffect(() => {
+        setPlanVehiclesList(currentTransportPlan?.transportVehicles);
+    }, [currentTransportPlan])
+
+    useEffect(() => {
+        console.log(planVehiclesList, " planVehiclesList")
+    }, [planVehiclesList])
+
+    /**
+     * Check xe trong kế hoạch planVehiclesList và xe được sử dụng vehicleList
+     */
+    useEffect(() => {
+        // if (vehiclesList && vehiclesList.length !==0 && planVehiclesList && planVehiclesList.length !== 0){
+        //     vehiclesList.map((item, index) => {
+        //         planVehiclesList.map((item2, index2) => {
+
+        //         })
+        //     })
+        // }
+    }, [planVehiclesList, vehiclesList])
+
     const handleChooseVehicle = (vehicle) => {
         console.log(vehicle, " day la vehicle")
         const data = {
@@ -85,13 +127,27 @@ function TransportVehicle(props) {
             name: vehicle.assetName,
             payload: vehicle.payload,
             volume: vehicle.volume,
+            transportPlan: currentTransportPlanId,
         }
-        props.createTransportVehicle(data);
+        // props.createTransportVehicle(data);
+        props.createTransportPlanVehicleNotDuplicate(vehicle._id, data);
+        // props.editTransportPlan(currentTransportPlanId, {
+        //     transportVehicles: {
+        //         transportVehicle:
+        //     }
+        // })
     }
 
     return (
         <React.Fragment>
             <div className="box-body qlcv">
+                <div className="form-group">
+                    <button type="button" className="btn btn-success" title="Lọc" 
+                        // onClick={this.handleSubmitSearch}
+                    >
+                        {"Lưu kế hoạch phương tiện"}
+                    </button>
+                </div>
                 <div className="form-inline">
                 <table id={"123"} className="table table-striped table-bordered table-hover">
                     <thead>
@@ -102,6 +158,7 @@ function TransportVehicle(props) {
                             <th>{"Trọng tải"}</th>
                             <th>{"Thể tích"}</th>
                             <th>{"Hành động"}</th>
+                            <th>{"Chosen"}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -134,6 +191,21 @@ function TransportVehicle(props) {
                                                 }}
                                                 func={handleDelete}
                                             /> */}
+                                        </td>
+                                        <td key={index} className="tooltip-checkbox">
+                                            <span className="icon" 
+                                                // title={translate(`manufacturing.work_schedule.${command.status}.content`)} 
+                                                // style={{ backgroundColor: translate(`manufacturing.work_schedule.${command.status}.color`) }}
+                                            >
+                                            </span>
+                                            <span className="tooltiptext">
+                                                {/* <a 
+                                                    style={{ color: "white" }} 
+                                                    onClick={() => this.handleShowDetailManufacturingCommand(command)}
+                                                >
+                                                    {command.code}
+                                                </a> */}
+                                            </span>
                                         </td>
                                     </tr>
                                 )
@@ -183,16 +255,17 @@ function TransportVehicle(props) {
 }
 
 function mapState(state) {
-
     const { assetsManager } =state;
-
-    return { assetsManager };
+    const { currentTransportPlan } = state.transportPlan;
+    return { assetsManager,  currentTransportPlan};
 }
 
 const actions = {
     getAllAsset: AssetManagerActions.getAllAsset,
-    // deleteExample: exampleActions.deleteExample
     createTransportVehicle: transportVehicleActions.createTransportVehicle,
+    createTransportPlanVehicleNotDuplicate: transportVehicleActions.createTransportPlanVehicleNotDuplicate,
+    editTransportPlan: transportPlanActions.editTransportPlan,
+    getDetailTransportPlan: transportPlanActions.getDetailTransportPlan,
 }
 
 const connectedTransportVehicle = connect(mapState, actions)(withTranslate(TransportVehicle));

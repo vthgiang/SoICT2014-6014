@@ -2,10 +2,14 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const TransportVehicleSchema = new Schema({ // Phương tiện vận tải (lấy từ module asset và trong kế hoạch sử dụng)
-    asset: { // Trạng thái chờ phê duyệt, đã phê duyệt...
+    asset: { 
         type: Schema.Types.ObjectId,
         ref: 'Asset',
         required: true
+    },
+    transportPlan: { // Kế hoạch có sử dụng phương tiện
+        type: Schema.Types.ObjectId,
+        ref: 'TransportPlan',
     },
     code: { // Mã phương tiện
         type: String,

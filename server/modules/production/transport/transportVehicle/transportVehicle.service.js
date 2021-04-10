@@ -24,6 +24,39 @@ exports.createTransportVehicle = async (portal, data) => {
     // return example;
 }
 
+/**
+ * 
+ * @param {*} portal 
+ * @param {*} vehicleId id phương tiện (assetid)
+ * @param {*} data {asset: id tương ứng tài sản cố định, code: mã phương tiện,
+ *                  name: tên phương tiện, payload, volume, transportPlan: id plan } 
+ * @returns 
+ */
+exports.editTransportVehicleToSetPlan = async (portal, vehicleId, data) => {
+    console.log(vehicleId);
+    let newTransportVehicle;
+    let oldTransportVehicle = await TransportVehicle(connect(DB_CONNECTION, portal)).findOne({asset: vehicleId});
+    console.log(oldTransportVehicle);
+    if (!oldTransportVehicle) {
+        newTransportVehicle = await TransportVehicle(connect(DB_CONNECTION, portal)).create({
+            asset: data.id,
+            code: data.code,
+            name: data.name,
+            payload: data.payload,
+            volume: data.volume,
+            transportPlan: data.transportPlan,
+        });
+        console.log("1");
+    }
+    else {
+        const transportVehicleId = oldTransportVehicle._id; 
+        await TransportVehicle(connect(DB_CONNECTION, portal)).update({ _id: transportVehicleId }, { $set: data });
+        newTransportVehicle = await TransportVehicle(connect(DB_CONNECTION, portal)).findById({ _id: transportVehicleId });
+        console.log("2");
+    }
+    return newTransportVehicle;
+}
+
 // Lấy ra tất cả các thông tin Ví dụ theo mô hình lấy dữ liệu số  1
 // exports.getExamples = async (portal, data) => {
 //     let keySearch = {};

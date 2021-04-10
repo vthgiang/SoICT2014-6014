@@ -4,6 +4,7 @@ import { transportVehicleServices } from './services';
 export const transportVehicleActions = {
     createTransportVehicle,
     getAllTransportVehicles,
+    createTransportPlanVehicleNotDuplicate,
 }
 
 function getAllTransportVehicles(queryData) {
@@ -45,6 +46,28 @@ function createTransportVehicle(data) {
             .catch((error) => {
                 dispatch({
                     type: transportVehicleConstants.CREATE_TRANSPORT_VEHICLE_FAILURE,
+                    error
+                });
+            });
+    }
+}
+
+function createTransportPlanVehicleNotDuplicate(id, data) {
+    return (dispatch) => {
+        dispatch({
+            type: transportVehicleConstants.CREATE_TRANSPORT_VEHICLE_REQUEST
+        });
+        transportVehicleServices
+            .createTransportPlanVehicleNotDuplicate(id, data)
+            .then((res) => {
+                dispatch({
+                    type: transportVehicleConstants.CREATE_TRANSPORT_PLAN_VEHICLE_NOT_DUPLICATE_SUCCESS,
+                    payload: res.data.content
+                });
+            })
+            .catch((error) => {
+                dispatch({
+                    type: transportVehicleConstants.CREATE_TRANSPORT_PLAN_VEHICLE_NOT_DUPLICATE_FAILURE,
                     error
                 });
             });

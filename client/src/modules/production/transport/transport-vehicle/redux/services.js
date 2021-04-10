@@ -2,10 +2,10 @@ import { sendRequest } from '../../../../../helpers/requestHelper';
 export const transportVehicleServices = {
     getAllTransportVehicles,
     createTransportVehicle,
+    createTransportPlanVehicleNotDuplicate,
 }
 
 function getAllTransportVehicles(queryData) {
-    console.log(queryData, " day la queyrasdasdasdasdad")
     return sendRequest(
         {
             url: `${process.env.REACT_APP_SERVER}/transport-vehicle`,
@@ -34,4 +34,17 @@ function createTransportVehicle(data) {
         true,
         "manage_transport"
     )
+}
+
+function createTransportPlanVehicleNotDuplicate(id, data) {
+    return sendRequest(
+        {
+            url: `${process.env.REACT_APP_SERVER}/transport-vehicle/${id}`,
+            method: "POST",
+            data: data
+        },
+        true,
+        true,
+        "manage_transport"
+    )    
 }

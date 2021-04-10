@@ -747,11 +747,11 @@ class SideBar extends Component {
                                             icon: "fa fa-calendar-o",
                                             path: "/manage-transport-vehicle",
                                         },
-                                        {
-                                            name: "menu.manage_transport_human",
-                                            icon: "fa fa-calendar-o",
-                                            path: "/manage-transport-human",
-                                        },
+                                        // {
+                                        //     name: "menu.manage_transport_human",
+                                        //     icon: "fa fa-calendar-o",
+                                        //     path: "/manage-transport-human",
+                                        // },
                                         {
                                             name: "menu.manage_transport_route",
                                             icon: "fa fa-calendar-o",

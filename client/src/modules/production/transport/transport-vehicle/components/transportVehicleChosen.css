@@ -1,0 +1,59 @@
+.checkbox-custom {
+    width: 17px;
+    height: 17px;
+}
+
+.checkbox-custom > input[type="checkbox"] {
+    margin: auto;
+    width: 17px;
+    height: 17px;
+    position: inherit;
+}
+
+.tooltip-checkbox {
+    position: relative;
+    border-bottom: 1px dotted black;
+}
+
+.tooltip-checkbox .tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 1;
+    bottom: 100%;
+    left: 50%;
+    margin-left: -60px;
+}
+
+.tooltip-checkbox .tooltiptext::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #408e4d transparent transparent transparent;
+}
+
+.tooltip-checkbox:hover .tooltiptext {
+    visibility: visible;
+    background-color: #408e4d;
+    z-index: 1;
+}
+.icon {
+    display: inline-block;
+    width: 25px;
+    height: 25px;
+    border-radius: 4px;
+    border: 1px solid #a7cde4;
+}
+
+.tooltiptext:hover a {
+    text-decoration: underline;
+}

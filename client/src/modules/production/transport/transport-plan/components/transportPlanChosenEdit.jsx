@@ -76,10 +76,11 @@ function TransportPlanChosenEdit(props) {
                 if (currentTransportRequirement.transportPlan.transportRequirements) {
                     requirementsList = currentTransportRequirement.transportPlan.transportRequirements.filter(r => String(r)!== String(currentTransportRequirement._id));
                 }
-                console.log(requirementsList, " requirementlisst luu vao db");
                 props.editTransportPlan(currentTransportRequirementPlanId, {transportRequirements: requirementsList});
             }
+            // Thêm requirement id vào plan mới
             props.addTransportRequirementToPlan(id, {requirement: currentTransportRequirement._id});
+            // Edit transport plan của requirement
             props.editTransportRequirement(currentRequirementId, { transportPlan: id});
             setCurrentTransportRequirementPlanId(id);
     }
@@ -97,17 +98,23 @@ function TransportPlanChosenEdit(props) {
         console.log(currentTransportPlan , " cureen");
         let newPlaceGeocode = [];
         newPlaceGeocode.push({
-            name: "current",
+            name: "current1",
             location: {
                 lat: currentTransportRequirement?.geocode?.fromAddress.lat,
                 lng: currentTransportRequirement?.geocode?.fromAddress.lng,
+            },
+            icon : {
+                url: "https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png", // url
             }
         });
         newPlaceGeocode.push({
-            name: "current",
+            name: "current2",
             location: {
                 lat: currentTransportRequirement?.geocode?.toAddress.lat,
                 lng: currentTransportRequirement?.geocode?.toAddress.lng,
+            },
+            icon : {
+                url: "https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png", // url
             }
         });
         if (currentTransportPlan){

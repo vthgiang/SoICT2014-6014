@@ -31,24 +31,27 @@ const TransportPlanSchema = new Schema({
         //     // required: true
         // }
     }],
-    // transportVehicles: [{ // phuong tien van chuyen
-    //     transportVehicle: {
-    //         type: Schema.Types.ObjectId,
-    //         ref: 'TransportVehicle',
-    //         // required: true
-    //     },
-    //     maxVolume: { // khoi luong van chuyen cua xe
-    //         type: Number,
-    //         // required: true,
-    //     },
-    //     carriers: [{ // nguoi su dung xe nay
-    //         carrier: {
-    //             type: Schema.Types.ObjectId,
-    //             ref: 'User',
-    //             // required: true
-    //         }
-    //     }]
-    // }],
+    transportVehicles: [{ // phuong tien van chuyen
+        transportVehicle: {
+            type: Schema.Types.ObjectId,
+            ref: 'TransportVehicle',
+            // required: true
+        },
+        volume: { // Thể tích thùng của xe
+            type: Number,
+            // required: true,
+        },
+        payload: { // Trọng tải của xe
+            type: Number,
+        },
+        carriers: [{ // nguoi su dung xe nay
+            carrier: {
+                type: Schema.Types.ObjectId,
+                ref: 'User',
+                // required: true
+            }
+        }]
+    }],
     startTime: {
         type: Date,
         required: true,

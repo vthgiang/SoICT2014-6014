@@ -116,7 +116,12 @@ function editTransportPlan(id, data) {
             });
     }
 }
-
+/**
+ * thêm transport requirement vào plan (push thêm vào array trường transportRequirements)
+ * @param {*} id 
+ * @param {*} data 
+ * @returns 
+ */
 function addTransportRequirementToPlan(id, data) {
     return (dispatch) => {
         dispatch({
