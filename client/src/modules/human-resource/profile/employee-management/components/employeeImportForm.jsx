@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
@@ -12,17 +12,14 @@ import {
 
 import { EmployeeManagerActions } from '../redux/actions';
 
-class EmployeeImportForm extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {};
-    }
+const EmployeeImportForm = (props) => {
+    const [state, setState] = useState({})
 
     /**
      * Function chuyển dữ liệu date trong excel thành dạng dd-mm-yyyy
      * @param {*} serial :số serial của ngày
      */
-    convertExcelDateToJSDate = (serial) => {
+    const convertExcelDateToJSDate = (serial) => {
         let utc_days = Math.floor(serial - 25569);
         let utc_value = utc_days * 86400;
         let date_info = new Date(utc_value * 1000);
@@ -40,7 +37,7 @@ class EmployeeImportForm extends Component {
      * Function chuyển String(dd-mm-yyyy) sang date
      * @param {*} data 
      */
-    convertStringToDate = (data, monthYear = false) => {
+    const convertStringToDate = (data, monthYear = false) => {
         if (data) {
             data = data.split('-');
             let date;
@@ -60,17 +57,17 @@ class EmployeeImportForm extends Component {
      * Function kiểm dữ liệu import thông tin cơ bản của nhân viên
      * @param {*} value : dữ liệu cần import
      */
-    handleCheckImportDataOfEmployeeInfor = (value) => {
-        const { translate } = this.props;
+    const handleCheckImportDataOfEmployeeInfor = (value) => {
+        const { translate } = props;
 
         value = value.map(x => {
-            let birthdate = (!x.birthdate || typeof x.birthdate === 'string') ? x.birthdate : this.convertExcelDateToJSDate(x.birthdate);
-            let identityCardDate = (!x.identityCardDate || typeof x.identityCardDate === 'string') ? x.identityCardDate : this.convertExcelDateToJSDate(x.identityCardDate);
-            let startingDate = (!x.startingDate || typeof x.startingDate === 'string') ? x.startingDate : this.convertExcelDateToJSDate(x.startingDate);
-            let leavingDate = (!x.leavingDate || typeof x.leavingDate === 'string') ? x.leavingDate : this.convertExcelDateToJSDate(x.leavingDate);
-            let taxDateOfIssue = (!x.taxDateOfIssue || typeof x.taxDateOfIssue === 'string') ? x.taxDateOfIssue : this.convertExcelDateToJSDate(x.taxDateOfIssue);
-            let healthInsuranceStartDate = (!x.healthInsuranceStartDate || typeof x.healthInsuranceStartDate === 'string') ? x.healthInsuranceStartDate : this.convertExcelDateToJSDate(x.healthInsuranceStartDate);
-            let healthInsuranceEndDate = (!x.healthInsuranceEndDate || typeof x.healthInsuranceEndDate === 'string') ? x.healthInsuranceEndDate : this.convertExcelDateToJSDate(x.healthInsuranceEndDate);
+            let birthdate = (!x.birthdate || typeof x.birthdate === 'string') ? x.birthdate : convertExcelDateToJSDate(x.birthdate);
+            let identityCardDate = (!x.identityCardDate || typeof x.identityCardDate === 'string') ? x.identityCardDate : convertExcelDateToJSDate(x.identityCardDate);
+            let startingDate = (!x.startingDate || typeof x.startingDate === 'string') ? x.startingDate : convertExcelDateToJSDate(x.startingDate);
+            let leavingDate = (!x.leavingDate || typeof x.leavingDate === 'string') ? x.leavingDate : convertExcelDateToJSDate(x.leavingDate);
+            let taxDateOfIssue = (!x.taxDateOfIssue || typeof x.taxDateOfIssue === 'string') ? x.taxDateOfIssue : convertExcelDateToJSDate(x.taxDateOfIssue);
+            let healthInsuranceStartDate = (!x.healthInsuranceStartDate || typeof x.healthInsuranceStartDate === 'string') ? x.healthInsuranceStartDate : convertExcelDateToJSDate(x.healthInsuranceStartDate);
+            let healthInsuranceEndDate = (!x.healthInsuranceEndDate || typeof x.healthInsuranceEndDate === 'string') ? x.healthInsuranceEndDate : convertExcelDateToJSDate(x.healthInsuranceEndDate);
 
             let gender = x.gender === translate('human_resource.profile.male') ? "male" : "female";
             let maritalStatus = x.maritalStatus === translate('human_resource.profile.single') ? "single" : "married";
@@ -136,13 +133,13 @@ class EmployeeImportForm extends Component {
             };
             return {
                 ...x,
-                birthdate: this.convertStringToDate(birthdate, false),
-                identityCardDate: this.convertStringToDate(identityCardDate, false),
-                startingDate: this.convertStringToDate(startingDate, false),
-                leavingDate: this.convertStringToDate(leavingDate, false),
-                taxDateOfIssue: this.convertStringToDate(taxDateOfIssue, false),
-                healthInsuranceStartDate: this.convertStringToDate(healthInsuranceStartDate, false),
-                healthInsuranceEndDate: this.convertStringToDate(healthInsuranceEndDate, false),
+                birthdate: convertStringToDate(birthdate, false),
+                identityCardDate: convertStringToDate(identityCardDate, false),
+                startingDate: convertStringToDate(startingDate, false),
+                leavingDate: convertStringToDate(leavingDate, false),
+                taxDateOfIssue: convertStringToDate(taxDateOfIssue, false),
+                healthInsuranceStartDate: convertStringToDate(healthInsuranceStartDate, false),
+                healthInsuranceEndDate: convertStringToDate(healthInsuranceEndDate, false),
                 gender: gender,
                 maritalStatus: maritalStatus,
                 educationalLevel: educationalLevel,
@@ -216,9 +213,10 @@ class EmployeeImportForm extends Component {
             x = { ...x, errorAlert: errorAlert }
             return x;
         });
-        this.setState({
-            importDataOfEmployeeInfor: value,
-        })
+        setState(state => ({
+            ...state,
+            importDataOfEmployeeInfor: value
+        }))
         return { importData: value, rowError: rowError }
     }
 
@@ -226,16 +224,16 @@ class EmployeeImportForm extends Component {
      * Function kiểm dữ liệu import kinh nghiệm làm việc
      * @param {*} value : dữ liệu cần import
      */
-    handleCheckImportDataOfExperience = (value) => {
-        const { translate } = this.props;
+    const handleCheckImportDataOfExperience = (value) => {
+        const { translate } = props;
 
         value = value.map(x => {
-            let startDate = (!x.startDate || typeof x.startDate === 'string') ? x.startDate : this.convertExcelDateToJSDate(x.startDate);
-            let endDate = (!x.endDate || typeof x.endDate === 'string') ? x.endDate : this.convertExcelDateToJSDate(x.endDate);
+            let startDate = (!x.startDate || typeof x.startDate === 'string') ? x.startDate : convertExcelDateToJSDate(x.startDate);
+            let endDate = (!x.endDate || typeof x.endDate === 'string') ? x.endDate : convertExcelDateToJSDate(x.endDate);
             return {
                 ...x,
-                startDate: this.convertStringToDate(startDate, true),
-                endDate: this.convertStringToDate(endDate, true),
+                startDate: convertStringToDate(startDate, true),
+                endDate: convertStringToDate(endDate, true),
             }
         });
 
@@ -269,9 +267,10 @@ class EmployeeImportForm extends Component {
             x = { ...x, errorAlert: errorAlert }
             return x;
         });
-        this.setState({
-            importDataOfExperience: value,
-        })
+        setState(state => ({
+            ...state,
+            importDataOfExperience: value
+        }))
         return { importData: value, rowError: rowError }
     }
 
@@ -279,8 +278,8 @@ class EmployeeImportForm extends Component {
      * Function kiểm dữ liệu import thông tin bằng cấp
      * @param {*} value : dữ liệu cần import
      */
-    handleCheckImportDataOfDegree = (value) => {
-        const { translate, field } = this.props;
+    const handleCheckImportDataOfDegree = (value) => {
+        const { translate, field } = props;
         const listFields = field.listFields
         value = value.map(x => {
             let degreeType;
@@ -339,9 +338,10 @@ class EmployeeImportForm extends Component {
             x = { ...x, errorAlert: errorAlert }
             return x;
         });
-        this.setState({
-            importDataOfDegree: value,
-        })
+        setState(state => ({
+            ...state,
+            importDataOfDegree: value
+        }))
         return { importData: value, rowError: rowError }
 
     }
@@ -350,16 +350,16 @@ class EmployeeImportForm extends Component {
      * Function kiểm dữ liệu import thông tin chứng chỉ
      * @param {*} value : dữ liệu cần import
      */
-    handleCheckImportDataOfCertificate = (value) => {
-        const { translate } = this.props;
+    const handleCheckImportDataOfCertificate = (value) => {
+        const { translate } = props;
 
         value = value.map(x => {
-            let startDate = (!x.startDate || typeof x.startDate === 'string') ? x.startDate : this.convertExcelDateToJSDate(x.startDate);
-            let endDate = (!x.endDate || typeof x.endDate === 'string') ? x.endDate : this.convertExcelDateToJSDate(x.endDate);
+            let startDate = (!x.startDate || typeof x.startDate === 'string') ? x.startDate : convertExcelDateToJSDate(x.startDate);
+            let endDate = (!x.endDate || typeof x.endDate === 'string') ? x.endDate : convertExcelDateToJSDate(x.endDate);
             return {
                 ...x,
-                startDate: this.convertStringToDate(startDate, false),
-                endDate: this.convertStringToDate(endDate, false),
+                startDate: convertStringToDate(startDate, false),
+                endDate: convertStringToDate(endDate, false),
             }
         });
 
@@ -390,9 +390,10 @@ class EmployeeImportForm extends Component {
             x = { ...x, errorAlert: errorAlert }
             return x;
         });
-        this.setState({
-            importDataOfCertificate: value,
-        })
+        setState(state => ({
+            ...state,
+            importDataOfCertificate: value
+        }))
         return { importData: value, rowError: rowError }
 
     }
@@ -401,16 +402,16 @@ class EmployeeImportForm extends Component {
      * Function kiểm dữ liệu import hợp đồng lao động
      * @param {*} value : dữ liệu cần import
      */
-    handleCheckImportDataOfContract = (value) => {
-        const { translate } = this.props;
+    const handleCheckImportDataOfContract = (value) => {
+        const { translate } = props;
 
         value = value.map(x => {
-            let startDate = (!x.startDate || typeof x.startDate === 'string') ? x.startDate : this.convertExcelDateToJSDate(x.startDate);
-            let endDate = (!x.endDate || typeof x.endDate === 'string') ? x.endDate : this.convertExcelDateToJSDate(x.endDate);
+            let startDate = (!x.startDate || typeof x.startDate === 'string') ? x.startDate : convertExcelDateToJSDate(x.startDate);
+            let endDate = (!x.endDate || typeof x.endDate === 'string') ? x.endDate : convertExcelDateToJSDate(x.endDate);
             return {
                 ...x,
-                startDate: this.convertStringToDate(startDate, false),
-                endDate: this.convertStringToDate(endDate, false),
+                startDate: convertStringToDate(startDate, false),
+                endDate: convertStringToDate(endDate, false),
             }
         });
 
@@ -441,9 +442,10 @@ class EmployeeImportForm extends Component {
             x = { ...x, errorAlert: errorAlert }
             return x;
         });
-        this.setState({
-            importDataOfContract: value,
-        })
+        setState(state => ({
+            ...state,
+            importDataOfContract: value
+        }))
         return { importData: value, rowError: rowError }
     }
 
@@ -451,16 +453,16 @@ class EmployeeImportForm extends Component {
      * Function kiểm dữ liệu import quá trình đóng bảo hiểm
      * @param {*} value : dữ liệu cần import
      */
-    handleCheckImportDataOfSocialInsuranceDetails = (value) => {
-        const { translate } = this.props;
+    const handleCheckImportDataOfSocialInsuranceDetails = (value) => {
+        const { translate } = props;
 
         value = value.map(x => {
-            let startDate = (!x.startDate || typeof x.startDate === 'string') ? x.startDate : this.convertExcelDateToJSDate(x.startDate);
-            let endDate = (!x.endDate || typeof x.endDate === 'string') ? x.endDate : this.convertExcelDateToJSDate(x.endDate);
+            let startDate = (!x.startDate || typeof x.startDate === 'string') ? x.startDate : convertExcelDateToJSDate(x.startDate);
+            let endDate = (!x.endDate || typeof x.endDate === 'string') ? x.endDate : convertExcelDateToJSDate(x.endDate);
             return {
                 ...x,
-                startDate: this.convertStringToDate(startDate, true),
-                endDate: this.convertStringToDate(endDate, true),
+                startDate: convertStringToDate(startDate, true),
+                endDate: convertStringToDate(endDate, true),
             }
         });
 
@@ -494,9 +496,10 @@ class EmployeeImportForm extends Component {
             x = { ...x, errorAlert: errorAlert }
             return x;
         });
-        this.setState({
-            importDataOfSocialInsuranceDetails: value,
-        })
+        setState(state => ({
+            ...state,
+            importDataOfSocialInsuranceDetails: value
+        }))
         return { importData: value, rowError: rowError }
     }
 
@@ -504,8 +507,8 @@ class EmployeeImportForm extends Component {
      * Function kiểm dữ liệu import tài liệu đính kèm
      * @param {*} value : dữ liệu cần import
      */
-    handleCheckImportDataOfFile = (value) => {
-        const { translate } = this.props;
+    const handleCheckImportDataOfFile = (value) => {
+        const { translate } = props;
 
         value = value.map(x => {
             let status;
@@ -554,9 +557,10 @@ class EmployeeImportForm extends Component {
             x = { ...x, errorAlert: errorAlert }
             return x;
         });
-        this.setState({
-            importDataOfFile: value,
-        })
+        setState(state => ({
+            ...state,
+            importDataOfFile: value
+        }))
         return { importData: value, rowError: rowError }
     }
 
@@ -564,8 +568,8 @@ class EmployeeImportForm extends Component {
      * Function kiểm dữ liệu import thông tin thành viên hộ gia đình
      * @param {*} value : dữ liệu cần import
      */
-    handleCheckImportDataOfFamily = (value) => {
-        const { translate } = this.props;
+    const handleCheckImportDataOfFamily = (value) => {
+        const { translate } = props;
         value = value.map(x => {
             let isHeadHousehold = x.isHeadHousehold ? 'yes' : 'no'
             let gender = x.gender === translate('human_resource.profile.male') ? "male" : "female";
@@ -594,9 +598,10 @@ class EmployeeImportForm extends Component {
             x = { ...x, errorAlert: errorAlert }
             return x;
         });
-        this.setState({
-            importDataOfFamily: value,
-        })
+        setState(state => ({
+            ...state,
+            importDataOfFamily: value
+        }))
         return { importData: value, rowError: rowError }
     }
 
@@ -605,212 +610,210 @@ class EmployeeImportForm extends Component {
     /**
      * Function bắt sự kiện import thông tin cơ bản của nhân viên
      */
-    handleImportEmployeeInfor = () => {
-        let { importDataOfEmployeeInfor } = this.state;
-        this.props.importEmployees({ importType: "Employee_Infor", importData: importDataOfEmployeeInfor });
+    const handleImportEmployeeInfor = () => {
+        let { importDataOfEmployeeInfor } = state;
+        props.importEmployees({ importType: "Employee_Infor", importData: importDataOfEmployeeInfor });
     }
 
     /**
     * Function bắt sự kiện import kinh nghiệm làm việc
     */
-    handleImportExperience = () => {
-        let { importDataOfExperience } = this.state;
-        this.props.importEmployees({ importType: "Experience", importData: importDataOfExperience });
+    const handleImportExperience = () => {
+        let { importDataOfExperience } = state;
+        props.importEmployees({ importType: "Experience", importData: importDataOfExperience });
     }
 
     /**
     * Function bắt sự kiện import thông tin bằng cấp
     */
-    handleImportDegree = () => {
-        let { importDataOfDegree } = this.state;
-        this.props.importEmployees({ importType: "Degree", importData: importDataOfDegree });
+    const handleImportDegree = () => {
+        let { importDataOfDegree } = state;
+        props.importEmployees({ importType: "Degree", importData: importDataOfDegree });
     }
 
     /**
     * Function bắt sự kiện import thông tin chứng chỉ
     */
-    handleImportCertificate = () => {
-        let { importDataOfCertificate } = this.state;
-        this.props.importEmployees({ importType: "Certificate", importData: importDataOfCertificate });
+    const handleImportCertificate = () => {
+        let { importDataOfCertificate } = state;
+        props.importEmployees({ importType: "Certificate", importData: importDataOfCertificate });
     }
 
     /**
     * Function bắt sự kiện import hợp đồng lao động
     */
-    handleImportConstract = () => {
-        let { importDataOfContract } = this.state;
-        this.props.importEmployees({ importType: "Contract", importData: importDataOfContract });
+    const handleImportConstract = () => {
+        let { importDataOfContract } = state;
+        props.importEmployees({ importType: "Contract", importData: importDataOfContract });
     }
 
     /**
    * Function bắt sự kiện import quá trình đóng bảo hiểm
    */
-    handleImportSocialInsuranceDetails = () => {
-        let { importDataOfSocialInsuranceDetails } = this.state;
-        this.props.importEmployees({ importType: "SocialInsuranceDetails", importData: importDataOfSocialInsuranceDetails });
+    const handleImportSocialInsuranceDetails = () => {
+        let { importDataOfSocialInsuranceDetails } = state;
+        props.importEmployees({ importType: "SocialInsuranceDetails", importData: importDataOfSocialInsuranceDetails });
     }
 
     /**
     * Function bắt sự kiện import Tài liệu đính kèm
     */
-    handleImportFile = () => {
-        let { importDataOfFile } = this.state;
-        this.props.importEmployees({ importType: "File", importData: importDataOfFile });
+    const handleImportFile = () => {
+        let { importDataOfFile } = state;
+        props.importEmployees({ importType: "File", importData: importDataOfFile });
     }
 
     /**
     * Function bắt sự kiện import thành viên hộ gia đình
     */
-    handleFamilyMembers = () => {
-        let { importDataOfFamily } = this.state;
-        this.props.importEmployees({ importType: "FamilyMembers", importData: importDataOfFamily });
+    const handleFamilyMembers = () => {
+        let { importDataOfFamily } = state;
+        props.importEmployees({ importType: "FamilyMembers", importData: importDataOfFamily });
     }
 
 
-    render() {
-        const { employeesManager, translate, field } = this.props;
-        let configurationEmployeeInfo = configurationEmployee.configurationEmployeeInfo(translate),
-            configurationExperience = configurationEmployee.configurationExperience(translate),
-            configurationSocialInsuranceDetails = configurationEmployee.configurationSocialInsuranceDetails(translate),
-            configurationDegree = configurationEmployee.configurationDegree(translate),
-            configurationCertificate = configurationEmployee.configurationCertificate(translate),
-            configurationContract = configurationEmployee.configurationContract(translate),
-            configurationFile = configurationEmployee.configurationFile(translate),
-            configurationFamilyMembers = configurationEmployee.configurationFamilyMembers(translate),
-            teamplateImport = configurationEmployee.templateImport(translate);
-        let listFields = field.listFields
-        return (
-            <React.Fragment>
-                <DialogModal
-                    modalID={`modal_import_file`} isLoading={false}
-                    formID={`form_import_file`}
-                    title={translate('human_resource.add_data_by_excel')}
-                    hasSaveButton={false}
-                    hasNote={false}
-                    size={75}
-                >
-                    <form className="form-group" id={`form_import_file`}>
-                        <div className="nav-tabs-custom row" style={{ marginTop: '-15px' }} >
-                            <ul className="nav nav-tabs">
-                                <li className="active"><a title={translate(`human_resource.profile.employee_management.import.import_general_infor_title`)} data-toggle="tab" href="#import_employee_general_infor">{translate(`human_resource.profile.employee_management.import.import_general_infor`)}</a></li>
-                                <li><a title={translate(`human_resource.profile.employee_management.import.import_experience_title`)} data-toggle="tab" href="#import_employee_experience">{translate(`human_resource.profile.employee_management.import.import_experience`)}</a></li>
-                                <li><a title={translate(`human_resource.profile.employee_management.import.import_degree_title`)} data-toggle="tab" href="#import_employee_degree">{translate(`human_resource.profile.employee_management.import.import_degree`)}</a></li>
-                                <li><a title={translate(`human_resource.profile.employee_management.import.import_certificate_title`)} data-toggle="tab" href="#import_employee_certificate">{translate(`human_resource.profile.employee_management.import.import_certificate`)}</a></li>
-                                <li><a title={translate(`human_resource.profile.employee_management.import.import_contract_title`)} data-toggle="tab" href="#import_employee_contract">{translate(`human_resource.profile.employee_management.import.import_contract`)}</a></li>
-                                <li><a title={translate(`human_resource.profile.employee_management.import.import_socialInsurance_details_title`)} data-toggle="tab" href="#import_employee_socialInsurance_details">{translate(`human_resource.profile.employee_management.import.import_socialInsurance_details`)}</a></li>
-                                <li><a title={translate(`human_resource.profile.employee_management.import.import_file_title`)} data-toggle="tab" href="#import_employee_file">{translate(`human_resource.profile.employee_management.import.import_file`)}</a></li>
-                                <li><a title={translate(`human_resource.profile.employee_management.import.import_file_family`)} data-toggle="tab" href="#import_employee_family">{translate(`human_resource.profile.employee_management.import.import_family`)}</a></li>
+    const { employeesManager, translate, field } = props;
+    let configurationEmployeeInfo = configurationEmployee.configurationEmployeeInfo(translate),
+        configurationExperience = configurationEmployee.configurationExperience(translate),
+        configurationSocialInsuranceDetails = configurationEmployee.configurationSocialInsuranceDetails(translate),
+        configurationDegree = configurationEmployee.configurationDegree(translate),
+        configurationCertificate = configurationEmployee.configurationCertificate(translate),
+        configurationContract = configurationEmployee.configurationContract(translate),
+        configurationFile = configurationEmployee.configurationFile(translate),
+        configurationFamilyMembers = configurationEmployee.configurationFamilyMembers(translate),
+        teamplateImport = configurationEmployee.templateImport(translate);
+    let listFields = field.listFields
+    return (
+        <React.Fragment>
+            <DialogModal
+                modalID={`modal_import_file`} isLoading={false}
+                formID={`form_import_file`}
+                title={translate('human_resource.add_data_by_excel')}
+                hasSaveButton={false}
+                hasNote={false}
+                size={75}
+            >
+                <form className="form-group" id={`form_import_file`}>
+                    <div className="nav-tabs-custom row" style={{ marginTop: '-15px' }} >
+                        <ul className="nav nav-tabs">
+                            <li className="active"><a title={translate(`human_resource.profile.employee_management.import.import_general_infor_title`)} data-toggle="tab" href="#import_employee_general_infor">{translate(`human_resource.profile.employee_management.import.import_general_infor`)}</a></li>
+                            <li><a title={translate(`human_resource.profile.employee_management.import.import_experience_title`)} data-toggle="tab" href="#import_employee_experience">{translate(`human_resource.profile.employee_management.import.import_experience`)}</a></li>
+                            <li><a title={translate(`human_resource.profile.employee_management.import.import_degree_title`)} data-toggle="tab" href="#import_employee_degree">{translate(`human_resource.profile.employee_management.import.import_degree`)}</a></li>
+                            <li><a title={translate(`human_resource.profile.employee_management.import.import_certificate_title`)} data-toggle="tab" href="#import_employee_certificate">{translate(`human_resource.profile.employee_management.import.import_certificate`)}</a></li>
+                            <li><a title={translate(`human_resource.profile.employee_management.import.import_contract_title`)} data-toggle="tab" href="#import_employee_contract">{translate(`human_resource.profile.employee_management.import.import_contract`)}</a></li>
+                            <li><a title={translate(`human_resource.profile.employee_management.import.import_socialInsurance_details_title`)} data-toggle="tab" href="#import_employee_socialInsurance_details">{translate(`human_resource.profile.employee_management.import.import_socialInsurance_details`)}</a></li>
+                            <li><a title={translate(`human_resource.profile.employee_management.import.import_file_title`)} data-toggle="tab" href="#import_employee_file">{translate(`human_resource.profile.employee_management.import.import_file`)}</a></li>
+                            <li><a title={translate(`human_resource.profile.employee_management.import.import_file_family`)} data-toggle="tab" href="#import_employee_family">{translate(`human_resource.profile.employee_management.import.import_family`)}</a></li>
 
-                            </ul>
-                            < div className="tab-content">
-                                <EmployeeImportTab
-                                    id="import_employee_general_infor"
-                                    className="tab-pane active"
-                                    textareaRow={12}
-                                    configTableWidth={8000}
-                                    showTableWidth={5000}
-                                    rowErrorOfReducer={employeesManager.error.rowErrorOfEmployeeInfor}
-                                    dataOfReducer={employeesManager.error.employeesInfor}
-                                    configuration={configurationEmployeeInfo}
-                                    teamplateImport={teamplateImport}
-                                    handleCheckImportData={this.handleCheckImportDataOfEmployeeInfor}
-                                    handleImport={this.handleImportEmployeeInfor}
-                                />
-                                <EmployeeImportTab
-                                    id="import_employee_experience"
-                                    textareaRow={10}
-                                    configTableWidth={1000}
-                                    showTableWidth={1000}
-                                    rowErrorOfReducer={employeesManager.error.rowErrorOfExperience}
-                                    dataOfReducer={employeesManager.error.experiences}
-                                    configuration={configurationExperience}
-                                    teamplateImport={teamplateImport}
-                                    handleCheckImportData={this.handleCheckImportDataOfExperience}
-                                    handleImport={this.handleImportExperience}
-                                />
-                                <EmployeeImportTab
-                                    id="import_employee_degree"
-                                    textareaRow={10}
-                                    configTableWidth={1000}
-                                    showTableWidth={1000}
-                                    fil
-                                    rowErrorOfReducer={employeesManager.error.rowErrorOfDegree}
-                                    dataOfReducer={employeesManager.error.degrees}
-                                    configuration={configurationDegree}
-                                    teamplateImport={teamplateImport}
-                                    listFields={listFields}
-                                    handleCheckImportData={this.handleCheckImportDataOfDegree}
-                                    handleImport={this.handleImportDegree}
-                                />
-                                <EmployeeImportTab
-                                    id="import_employee_certificate"
-                                    textareaRow={10}
-                                    configTableWidth={1000}
-                                    showTableWidth={1000}
-                                    rowErrorOfReducer={employeesManager.error.rowErrorOfCertificate}
-                                    dataOfReducer={employeesManager.error.certificates}
-                                    configuration={configurationCertificate}
-                                    teamplateImport={teamplateImport}
-                                    handleCheckImportData={this.handleCheckImportDataOfCertificate}
-                                    handleImport={this.handleImportCertificate}
-                                />
-                                <EmployeeImportTab
-                                    id="import_employee_contract"
-                                    textareaRow={10}
-                                    configTableWidth={1000}
-                                    showTableWidth={1000}
-                                    rowErrorOfReducer={employeesManager.error.rowErrorOfContract}
-                                    dataOfReducer={employeesManager.error.contracts}
-                                    configuration={configurationContract}
-                                    teamplateImport={teamplateImport}
-                                    handleCheckImportData={this.handleCheckImportDataOfContract}
-                                    handleImport={this.handleImportConstract}
-                                />
-                                <EmployeeImportTab
-                                    id="import_employee_socialInsurance_details"
-                                    textareaRow={10}
-                                    configTableWidth={1000}
-                                    showTableWidth={1000}
-                                    rowErrorOfReducer={employeesManager.error.rowErrorOfSocialInsuranceDetails}
-                                    dataOfReducer={employeesManager.error.SocialInsuranceDetails}
-                                    configuration={configurationSocialInsuranceDetails}
-                                    teamplateImport={teamplateImport}
-                                    handleCheckImportData={this.handleCheckImportDataOfSocialInsuranceDetails}
-                                    handleImport={this.handleImportSocialInsuranceDetails}
-                                />
+                        </ul>
+                        < div className="tab-content">
+                            <EmployeeImportTab
+                                id="import_employee_general_infor"
+                                className="tab-pane active"
+                                textareaRow={12}
+                                configTableWidth={8000}
+                                showTableWidth={5000}
+                                rowErrorOfReducer={employeesManager.error.rowErrorOfEmployeeInfor}
+                                dataOfReducer={employeesManager.error.employeesInfor}
+                                configuration={configurationEmployeeInfo}
+                                teamplateImport={teamplateImport}
+                                handleCheckImportData={handleCheckImportDataOfEmployeeInfor}
+                                handleImport={handleImportEmployeeInfor}
+                            />
+                            <EmployeeImportTab
+                                id="import_employee_experience"
+                                textareaRow={10}
+                                configTableWidth={1000}
+                                showTableWidth={1000}
+                                rowErrorOfReducer={employeesManager.error.rowErrorOfExperience}
+                                dataOfReducer={employeesManager.error.experiences}
+                                configuration={configurationExperience}
+                                teamplateImport={teamplateImport}
+                                handleCheckImportData={handleCheckImportDataOfExperience}
+                                handleImport={handleImportExperience}
+                            />
+                            <EmployeeImportTab
+                                id="import_employee_degree"
+                                textareaRow={10}
+                                configTableWidth={1000}
+                                showTableWidth={1000}
+                                fil
+                                rowErrorOfReducer={employeesManager.error.rowErrorOfDegree}
+                                dataOfReducer={employeesManager.error.degrees}
+                                configuration={configurationDegree}
+                                teamplateImport={teamplateImport}
+                                listFields={listFields}
+                                handleCheckImportData={handleCheckImportDataOfDegree}
+                                handleImport={handleImportDegree}
+                            />
+                            <EmployeeImportTab
+                                id="import_employee_certificate"
+                                textareaRow={10}
+                                configTableWidth={1000}
+                                showTableWidth={1000}
+                                rowErrorOfReducer={employeesManager.error.rowErrorOfCertificate}
+                                dataOfReducer={employeesManager.error.certificates}
+                                configuration={configurationCertificate}
+                                teamplateImport={teamplateImport}
+                                handleCheckImportData={handleCheckImportDataOfCertificate}
+                                handleImport={handleImportCertificate}
+                            />
+                            <EmployeeImportTab
+                                id="import_employee_contract"
+                                textareaRow={10}
+                                configTableWidth={1000}
+                                showTableWidth={1000}
+                                rowErrorOfReducer={employeesManager.error.rowErrorOfContract}
+                                dataOfReducer={employeesManager.error.contracts}
+                                configuration={configurationContract}
+                                teamplateImport={teamplateImport}
+                                handleCheckImportData={handleCheckImportDataOfContract}
+                                handleImport={handleImportConstract}
+                            />
+                            <EmployeeImportTab
+                                id="import_employee_socialInsurance_details"
+                                textareaRow={10}
+                                configTableWidth={1000}
+                                showTableWidth={1000}
+                                rowErrorOfReducer={employeesManager.error.rowErrorOfSocialInsuranceDetails}
+                                dataOfReducer={employeesManager.error.SocialInsuranceDetails}
+                                configuration={configurationSocialInsuranceDetails}
+                                teamplateImport={teamplateImport}
+                                handleCheckImportData={handleCheckImportDataOfSocialInsuranceDetails}
+                                handleImport={handleImportSocialInsuranceDetails}
+                            />
 
-                                <EmployeeImportTab
-                                    id="import_employee_file"
-                                    textareaRow={10}
-                                    configTableWidth={1000}
-                                    showTableWidth={1000}
-                                    rowErrorOfReducer={employeesManager.error.rowErrorOfFile}
-                                    dataOfReducer={employeesManager.error.files}
-                                    configuration={configurationFile}
-                                    teamplateImport={teamplateImport}
-                                    handleCheckImportData={this.handleCheckImportDataOfFile}
-                                    handleImport={this.handleImportFile}
-                                />
+                            <EmployeeImportTab
+                                id="import_employee_file"
+                                textareaRow={10}
+                                configTableWidth={1000}
+                                showTableWidth={1000}
+                                rowErrorOfReducer={employeesManager.error.rowErrorOfFile}
+                                dataOfReducer={employeesManager.error.files}
+                                configuration={configurationFile}
+                                teamplateImport={teamplateImport}
+                                handleCheckImportData={handleCheckImportDataOfFile}
+                                handleImport={handleImportFile}
+                            />
 
-                                <EmployeeImportTab
-                                    id="import_employee_family"
-                                    textareaRow={10}
-                                    configTableWidth={1000}
-                                    showTableWidth={1000}
-                                    rowErrorOfReducer={employeesManager.error.rowErrorOfFile}
-                                    dataOfReducer={employeesManager.error.files}
-                                    configuration={configurationFamilyMembers}
-                                    teamplateImport={teamplateImport}
-                                    handleCheckImportData={this.handleCheckImportDataOfFamily}
-                                    handleImport={this.handleFamilyMembers}
-                                />
-                            </div>
+                            <EmployeeImportTab
+                                id="import_employee_family"
+                                textareaRow={10}
+                                configTableWidth={1000}
+                                showTableWidth={1000}
+                                rowErrorOfReducer={employeesManager.error.rowErrorOfFile}
+                                dataOfReducer={employeesManager.error.files}
+                                configuration={configurationFamilyMembers}
+                                teamplateImport={teamplateImport}
+                                handleCheckImportData={handleCheckImportDataOfFamily}
+                                handleImport={handleFamilyMembers}
+                            />
                         </div>
-                    </form>
-                </DialogModal>
-            </React.Fragment>
-        )
-    }
+                    </div>
+                </form>
+            </DialogModal>
+        </React.Fragment>
+    )
 }
 
 function mapState(state) {
