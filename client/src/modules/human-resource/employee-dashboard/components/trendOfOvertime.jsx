@@ -125,19 +125,21 @@ const TrendOfOvertime = (props) => {
         return true;
     }
 
-    useEffect(() => {
-        if (!state.arrMonth || props.timesheets.arrMonth?.length !== state.arrMonth?.length ||
-            !isEqual(props.timesheets.listOvertimeOfUnitsByStartDateAndEndDate, state.listOvertimeOfUnitsByStartDateAndEndDate)) {
-            setState(state => ({
-                ...state,
-                nameChart: props.nameChart,
-                nameData1: props.nameData1,
-                arrMonth: props.timesheets.arrMonth,
-                listOvertimeOfUnitsByStartDateAndEndDate: props.timesheets.listOvertimeOfUnitsByStartDateAndEndDate,
-            }))
-        }
-    }, [state.arrMonth, props.timesheets.arrMonth, state.arrMonth, props.timesheets.listOvertimeOfUnitsByStartDateAndEndDate, state.listOvertimeOfUnitsByStartDateAndEndDate]);
-
+    if (!state.arrMonth 
+        || props.timesheets.arrMonth?.length !== state.arrMonth?.length 
+        || !isEqual(props.timesheets.listOvertimeOfUnitsByStartDateAndEndDate, state.listOvertimeOfUnitsByStartDateAndEndDate)
+        || props.nameChart !== state.nameChart
+        || props.nameData1 !== state.nameData1
+        || props.nameData2 !== state.nameData2
+    ) {
+        setState(state => ({
+            ...state,
+            nameChart: props.nameChart,
+            nameData1: props.nameData1,
+            arrMonth: props.timesheets.arrMonth,
+            listOvertimeOfUnitsByStartDateAndEndDate: props.timesheets.listOvertimeOfUnitsByStartDateAndEndDate,
+        }))
+    }
 
     useEffect(() => {
         if (props.timesheets.arrMonth?.length !== state.arrMonth?.length ||
@@ -322,8 +324,8 @@ const TrendOfOvertime = (props) => {
                         <p className="pull-left" style={{ marginBottom: 0 }}><b>ĐV tính: Số giờ</b></p>
                         <div className="box-tools pull-right">
                             <div className="btn-group pull-rigth">
-                                <button type="button" className={`btn btn-xs ${lineChart ? "active" : "btn-danger"}`} onClick={() => handleChangeViewChart(false)}>Bar chart</button>
-                                <button type="button" className={`btn btn-xs ${lineChart ? 'btn-danger' : "active"}`} onClick={() => handleChangeViewChart(true)}>Line chart</button>
+                                <button type="button" className={`btn btn-xs ${lineChart ? "active" : "btn-danger"}`} onClick={() => handleChangeViewChart(false)}>Dạng cột</button>
+                                <button type="button" className={`btn btn-xs ${lineChart ? 'btn-danger' : "active"}`} onClick={() => handleChangeViewChart(true)}>Dạng đường</button>
                             </div>
                         </div>
                         <div ref={barChart}></div>

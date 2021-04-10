@@ -12,7 +12,8 @@ class TreeSelect extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.id !== prevState.id || nextProps.data !== prevState.data) {
+        // console.log(nextProps.value,prevState.value);
+        if (nextProps.id !== prevState.id || nextProps.data !== prevState.data || prevState.value!==nextProps.value) {
             return {
                 id: nextProps.id,
                 value: nextProps.value, // Lưu value ban đầu vào state
@@ -24,14 +25,15 @@ class TreeSelect extends Component {
     }
 
     shouldComponentUpdate(nextProps, nextState) {
-        if (nextProps.data !== this.props.data || nextProps.id !== this.state.id || nextProps.value !== nextState.value) // Chỉ render 1 lần, trừ khi id, value, data thay đổi
+        // console.log(nextProps.value,this.state.value,this.state.value);
+        if (nextProps.data !== this.props.data || nextProps.id !== this.state.id || nextProps.value !== this.state.value) // Chỉ render 1 lần, trừ khi id, value, data thay đổi
             return true;
         return false;  // Tự chủ động update (do đã lưu value vào state)
     }
 
     onChange = (currentNode, selectedNodes) => {
         const value = selectedNodes.map(node => node._id);
-
+        // console.log("object");
         this.setState(state => {
             return {
                 ...state,
@@ -81,9 +83,10 @@ class TreeSelect extends Component {
         let getData = this.convertData(data, value);
         let tree = convertArrayToTree(getData);
         let c = this.isFreshArray(value);
-
+        // console.log(this.state.value,this.props.value);
+        // console.log(tree);
         placeholder = this.isFreshArray(value) ? placeholder : ' ';
-
+        // console.log(placeholder);
         if (!action) {
             return (
                 <React.Fragment>
