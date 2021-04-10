@@ -225,7 +225,7 @@ const GeneralTaskPersonalChart = (props) => {
 
     const { tasksbyuser } = props;
     const deadlineincoming = tasksbyuser && tasksbyuser.deadlineincoming;
-    deadlineincoming.sort((a, b) => (a.totalDays < b.totalDays) ? 1 : -1);
+    deadlineincoming && deadlineincoming.length > 0 && deadlineincoming.sort((a, b) => (a.totalDays < b.totalDays) ? 1 : -1);
 
     return (
         <div className="qlcv box-body">
