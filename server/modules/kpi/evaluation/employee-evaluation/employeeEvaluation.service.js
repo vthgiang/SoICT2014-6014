@@ -290,7 +290,14 @@ exports.editKpi = async (portal, id, data) => {
         .findByIdAndUpdate(id, { $set: objUpdate }, { new: true })
 
     target = target && await target.populate("parent").execPopulate();
-    return target;
+
+    let employeeKpiSet = await EmployeeKpiSet(connect(DB_CONNECTION, portal))
+        .findOne({ kpis: { $in: [mongoose.Types.ObjectId(id)] }})
+
+    return {
+        target,
+        employeeKpiSet
+    };
 }
 
 /**
