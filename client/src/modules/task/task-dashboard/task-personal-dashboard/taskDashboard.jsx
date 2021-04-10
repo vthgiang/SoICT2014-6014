@@ -578,15 +578,13 @@ class TaskDashboard extends Component {
                                 <div className="box-title">{translate('task.task_management.dashboard_area_result')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
                             </div>
                             <div className="box-body qlcv">
-                                {callAction &&
-                                    <LazyLoadComponent once={true}>
-                                        <DomainOfTaskResultsChart
-                                            callAction={!willUpdate}
-                                            startMonth={startMonth}
-                                            endMonth={endMonth}
-                                        />
-                                    </LazyLoadComponent>
-                                }
+                                <LazyLoadComponent once={true}>
+                                    <DomainOfTaskResultsChart
+                                        callAction={!willUpdate}
+                                        startMonth={startMonth}
+                                        endMonth={endMonth}
+                                    />
+                                </LazyLoadComponent>
                             </div>
                         </div>
                     </div>

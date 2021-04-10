@@ -74,7 +74,6 @@ class DomainOfTaskResultsChart extends Component {
     }
 
     shouldComponentUpdate = async (nextProps, nextState) => {
-
         if (nextProps.units !== this.props.units || nextProps.callAction !== this.state.callAction || nextProps.startMonth !== this.state.startMonth || nextProps.endMonth !== this.state.endMonth) {
             if (this.props.TaskOrganizationUnitDashboard) {
                 this.setState(state => {
