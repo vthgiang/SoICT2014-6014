@@ -24,9 +24,6 @@ function ResultsOfAllEmployeeKpiSetChart(props) {
     const DATA_STATUS = {NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3};
     const KIND_OF_POINT = {AUTOMATIC: 1, EMPLOYEE: 2, APPROVED: 3};
 
-    const chart = null;
-    const dataChart = null;
-
     const [state, setState] = useState({
         userRoleId: localStorage.getItem("currentRole"),
 
@@ -34,9 +31,8 @@ function ResultsOfAllEmployeeKpiSetChart(props) {
         endMonth: INFO_SEARCH.endMonth,
 
         dataStatus: DATA_STATUS.NOT_AVAILABLE,
-        kindOfPoint: KIND_OF_POINT.AUTOMATIC,
+        kindOfPoint: KIND_OF_POINT.AUTOMATIC
     });
-
     const refMultiLineChart = React.createRef();
 
     useEffect(() => {
@@ -45,7 +41,12 @@ function ResultsOfAllEmployeeKpiSetChart(props) {
             kindOfPoint: state.kindOfPoint,
         });
 
-        multiLineChart();
+        let data = multiLineChart();
+        setState({
+            ...state,
+            chart: data?.chart,
+            dataChart: data?.dataChart
+        })
     }, [state.kindOfPoint]);
 
     useEffect(() => {
@@ -77,9 +78,11 @@ function ResultsOfAllEmployeeKpiSetChart(props) {
 
         } else if (state.dataStatus === DATA_STATUS.AVAILABLE) {
 
-            multiLineChart();
+            let data = multiLineChart();
             setState({
                 ...state,
+                chart: data?.chart,
+                dataChart: data?.dataChart,
                 dataStatus: DATA_STATUS.FINISHED,
             });
         }
@@ -155,7 +158,7 @@ function ResultsOfAllEmployeeKpiSetChart(props) {
 
         for (let i = 0; i < arrayPoint.length; i++) {
             let newDate = new Date(arrayPoint[i].date);
-            newDate = newDate.getFullYear() + "-" + (newDate.getMonth() + 1) + "-" + (newDate.getDate() - 1);
+            newDate = newDate.getFullYear() + "-" + (newDate.getMonth() + 1) + "-01";
 
             dateAxisX.push(newDate);
 
@@ -194,7 +197,8 @@ function ResultsOfAllEmployeeKpiSetChart(props) {
     };
 
     const removePreviousChart = () => {
-        const chart = refMultiLineChart.chart;
+        const chart = refMultiLineChart.current;
+
         if (chart) {
             while (chart.hasChildNodes()) {
                 chart.removeChild(chart.lastChild);
@@ -226,8 +230,7 @@ function ResultsOfAllEmployeeKpiSetChart(props) {
 
             data: {
                 xs: xs,
-                columns: dataChart,
-                type: 'spline'
+                columns: dataChart
             },
 
             axis: {
@@ -257,6 +260,11 @@ function ResultsOfAllEmployeeKpiSetChart(props) {
                 show: false
             }
         })
+
+        return {
+            chart, 
+            dataChart
+        }
     };
 
     const handleExportData = (exportData) => {
@@ -403,11 +411,11 @@ function ResultsOfAllEmployeeKpiSetChart(props) {
             <section id={"resultsOfAllEmployeeKpiSet"} className="c3-chart-container">
                 <div ref={refMultiLineChart}></div>
                 <CustomLegendC3js
-                    chart={chart}
+                    chart={state.chart}
                     chartId={"resultsOfAllEmployeeKpiSet"}
                     legendId={"resultsOfAllEmployeeKpiSetLegend"}
-                    title={dataChart && `${translate('general.list_employee')} (${dataChart.length / 2})`}
-                    dataChartLegend={dataChart && dataChart.filter((item, index) => index % 2 === 1).map(item => item[0])}
+                    title={state.dataChart && `${translate('general.list_employee')} (${state.dataChart.length / 2})`}
+                    dataChartLegend={state.dataChart && state.dataChart.filter((item, index) => index % 2 === 1).map(item => item[0])}
                 />
             </section>
         </React.Fragment>
