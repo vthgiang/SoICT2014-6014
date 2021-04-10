@@ -65,22 +65,8 @@ exports.getEmployeeKpiSet = async (portal, data) => {
 
 /* Lấy tất cả các tập KPI của 1 nhân viên theo thời gian cho trước */
 exports.getAllEmployeeKpiSetByMonth = async (portal, organizationalUnitIds, userId, startDate, endDate) => {
-    let year, month;
-    if (endDate) {
-        year = endDate.slice(0, 4);
-        month = endDate.slice(5, 7);
-    }
-    if ((new Number(month)) == 12) {
-        month = '1';
-        year = (new Number(year)) + 1;
-    } else {
-        month = (new Number(month)) + 1;
-    }
-    if (month < 10) {
-        endDate = year + '-0' + month;
-    } else {
-        endDate = year + '-' + month;
-    }
+    endDate = new Date(endDate)
+    endDate.setMonth(endDate.getMonth() + 1)    
 
     let keySearch = {
         creator: new mongoose.Types.ObjectId(userId),
