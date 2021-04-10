@@ -2069,9 +2069,9 @@ class ActionTab extends Component {
                                         <label>Hình thức bấm giờ</label>
                                         <select className="form-control" value={this.state.filterLogAutoStopped} onChange={this.filterLogAutoStopped}>
                                             <option value="all">Tất cả</option>
-                                            <option value="auto">Tắt tự động</option>
-                                            <option value="hand">Tắt bằng tay</option>
-                                            <option value="addlog">Giờ được thêm</option>
+                                            <option value="hand">Bấm giờ</option>
+                                            <option value="auto">Bấm hẹn giờ</option>
+                                            <option value="addlog">Bấm bù giờ</option>
                                         </select>
                                     </div>
                                 </div>
@@ -2169,7 +2169,7 @@ class ActionTab extends Component {
                                                         <i className="fa fa-clock-o"> </i> {moment(item.stoppedAt).format("DD/MM/YYYY HH:mm:ss")})
                                                     </div>
                                                     <div>
-                                                        <i style={{ marginRight: '5px' }} className={`${item.autoStopped === 1 ? 'text-green fa fa-hand-pointer-o' : (item.autoStopped === 2 ? 'text-red fa fa-clock-o' : 'text-red fa fa-plus')}`}>{item.autoStopped === 1 ? 'Tắt bằng tay' : (item.autoStopped === 2 ? 'Tự động' : 'Add log timer')}</i>
+                                                        <i style={{ marginRight: '5px' }} className={`${item.autoStopped === 1 ? 'text-green fa fa-hand-pointer-o' : (item.autoStopped === 2 ? 'text-red fa fa-clock-o' : 'text-red fa fa-plus')}`}>{item.autoStopped === 1 ? 'Bấm giờ' : (item.autoStopped === 2 ? 'Bấm hẹn giờ' : 'Bấm bù giờ')}</i>
                                                         {
                                                             role === "accountable" ?
                                                                 (

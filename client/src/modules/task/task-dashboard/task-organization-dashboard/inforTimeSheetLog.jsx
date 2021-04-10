@@ -6,15 +6,15 @@ import moment from 'moment';
 import { DialogModal } from '../../../../common-components';
 import { convertTime } from '../../../../helpers/stringMethod';
 
-const InforTimeSheetLog = (props) =>{
+const InforTimeSheetLog = (props) => {
     const convertType = (value) => {
         // 1: Tắt bấm giờ bằng tay, 2: Tắt bấm giờ tự động với thời gian hẹn trc, 3: add log timer
         if (value == 1) {
-            return "Bấm bù giờ"
+            return "Bấm giờ"
         } else if (value == 2) {
             return "Bấm hẹn giờ"
         } else {
-            return "Bấm giờ"
+            return "Bấm bù giờ"
         }
     };
 
