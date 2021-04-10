@@ -203,7 +203,7 @@ function KPIUnitManager(props) {
                 organizationalUnit: state.organizationalUnit
             }
         })
-        const infosearch= {
+        const infosearch = {
             ...state.infosearch,
             status: state.status,
             startDate: state.startDate,
@@ -482,6 +482,26 @@ function KPIUnitManager(props) {
                             {exportData && <ExportExcel id="export-unit-kpi-management-overview" exportData={exportData} style={{ margin: 0 }} buttonName={"Xuất"} />}
                         </div>
 
+                        <DataTableSetting
+                            className="pull-right"
+                            tableId={tableId}
+                            tableContainerId="kpiTableContainer"
+                            tableWidth="1300px"
+                            columnArr={[
+                                translate('kpi.organizational_unit.management.over_view.time'),
+                                translate('task.task_management.col_organization'),
+                                translate('kpi.organizational_unit.management.over_view.status'),
+                                translate('kpi.organizational_unit.management.over_view.number_target'),
+                                translate('kpi.organizational_unit.management.over_view.creator'),
+                                translate('kpi.evaluation.employee_evaluation.system_evaluate'),
+                                translate('kpi.evaluation.employee_evaluation.result_self_evaluate'),
+                                translate('kpi.evaluation.employee_evaluation.evaluation_management'),
+                                translate('kpi.organizational_unit.management.over_view.action')
+                            ]}
+                            setLimit={setLimit}
+                            hideColumnOption={true}
+                        />
+
                         {/* Danh sách các KPI của đơn vị */}
                         <table id={tableId} className="table table-hover table-bordered">
                             <thead>
@@ -494,26 +514,7 @@ function KPIUnitManager(props) {
                                 <th title={translate('kpi.evaluation.employee_evaluation.system_evaluate')}>{translate('kpi.evaluation.employee_evaluation.system_evaluate')}</th>
                                 <th title={translate('kpi.evaluation.employee_evaluation.result_self_evaluate')}>{translate('kpi.evaluation.employee_evaluation.result_self_evaluate')}</th>
                                 <th title={translate('kpi.evaluation.employee_evaluation.evaluation_management')}>{translate('kpi.evaluation.employee_evaluation.evaluation_management')}</th>
-                                <th title={translate('kpi.organizational_unit.management.over_view.action')}>{translate('kpi.organizational_unit.management.over_view.action')}
-                                    <DataTableSetting
-                                        className="pull-right"
-                                        tableId={tableId}
-                                        tableContainerId="kpiTableContainer"
-                                        tableWidth="1300px"
-                                        columnArr={[
-                                            'Người tạo',
-                                            'Thời gian',
-                                            'Trạng thái',
-                                            'Số lượng mục tiêu',
-                                            'Kết quả đánh giá',
-                                            'Xem chi tiết',
-                                            'Tạo KPI tháng mới',
-                                            'Cập nhật'
-                                        ]}
-                                        setLimit={setLimit}
-                                        hideColumnOption={true}
-                                    />
-                                </th>
+                                <th title={translate('kpi.organizational_unit.management.over_view.action')}>{translate('kpi.organizational_unit.management.over_view.action')}</th>
                             </tr>
                             </thead>
                             <tbody>
