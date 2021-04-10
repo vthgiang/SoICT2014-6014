@@ -252,7 +252,7 @@ const DashBoardEmployees = (props) => {
                             {/* Tab nghỉ phép tăng ca*/}
                             <div className="tab-pane" id="annualLeave">
                                 <LazyLoadComponent>
-                                    <TabAnualLeave childOrganizationalUnit={childOrganizationalUnit} defaultUnit={false} />
+                                    <TabAnualLeave childOrganizationalUnit={childOrganizationalUnit} defaultUnit={true} />
                                 </LazyLoadComponent>
                             </div>
 

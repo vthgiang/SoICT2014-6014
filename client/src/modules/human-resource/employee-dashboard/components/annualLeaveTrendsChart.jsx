@@ -119,6 +119,7 @@ const AnnualLeaveTrendsChart = (props) => {
         if (items1.length !== items2.length) {
             return false;
         }
+
         for (let i = 0; i < items1.length; ++i) {
             if (items1[i].startDate !== items2[i].startDate || items1[i]._id !== items2[i]._id) {
                 return false;
@@ -126,31 +127,25 @@ const AnnualLeaveTrendsChart = (props) => {
         }
         return true;
     }
-
-    useEffect(() => {
-        if (!state.arrMonth || props.annualLeave.arrMonth?.length !== state.arrMonth?.length ||
-            !isEqual(props.annualLeave.listAnnualLeaveOfNumberMonth, state.listAnnualLeaveOfNumberMonth) ||
-            props.timesheets.arrMonth?.length !== state.arrMonth?.length ||
-            !isEqual(props.timesheets.listHoursOffOfUnitsByStartDateAndEndDate, state.listHoursOffOfUnitsByStartDateAndEndDate)) {
-            setState({
-                ...state,
-                nameChart: props.nameChart,
-                nameData1: props.nameData1,
-                nameData2: props.nameData2,
-                arrMonth: props.annualLeave.arrMonth,
-                listAnnualLeaveOfNumberMonth: props.annualLeave.listAnnualLeaveOfNumberMonth,
-                listHoursOffOfUnitsByStartDateAndEndDate: props.timesheets.listHoursOffOfUnitsByStartDateAndEndDate,
-            });
-        }
-    }, [state.arrMonth, props.annualLeave.arrMonth?.length, state.arrMonth?.length, props.annualLeave.listAnnualLeaveOfNumberMonth, state.listAnnualLeaveOfNumberMonth, props.timesheets.listHoursOffOfUnitsByStartDateAndEndDate, state.listHoursOffOfUnitsByStartDateAndEndDate])
     
-    useEffect(() => {
-        if (props.annualLeave.arrMonth?.length !== state.arrMonth?.length ||
-            !isEqual(props.annualLeave.listAnnualLeaveOfNumberMonth, state.listAnnualLeaveOfNumberMonth) ||
-            !isEqual(props.timesheets.listHoursOffOfUnitsByStartDateAndEndDate, state.listHoursOffOfUnitsByStartDateAndEndDate)) {
-            setState({...state});
-        }
-    }, [props.annualLeave.arrMonth?.length, state.arrMonth?.length, props.annualLeave.listAnnualLeaveOfNumberMonth, state.listAnnualLeaveOfNumberMonth, props.timesheets.listHoursOffOfUnitsByStartDateAndEndDate, state.listHoursOffOfUnitsByStartDateAndEndDate])
+    if (!state.arrMonth 
+        || props.annualLeave.arrMonth?.length !== state.arrMonth?.length 
+        || !isEqual(props.annualLeave.listAnnualLeaveOfNumberMonth, state.listAnnualLeaveOfNumberMonth) 
+        || !isEqual(props.timesheets.listHoursOffOfUnitsByStartDateAndEndDate, state.listHoursOffOfUnitsByStartDateAndEndDate)
+        || props.nameChart !== state.nameChart
+        || props.nameData1 !== state.nameData1
+        || props.nameData2 !== state.nameData2
+    ) {
+        setState({
+            ...state,
+            nameChart: props.nameChart,
+            nameData1: props.nameData1,
+            nameData2: props.nameData2,
+            arrMonth: props.annualLeave.arrMonth,
+            listAnnualLeaveOfNumberMonth: props.annualLeave.listAnnualLeaveOfNumberMonth,
+            listHoursOffOfUnitsByStartDateAndEndDate: props.timesheets.listHoursOffOfUnitsByStartDateAndEndDate,
+        });
+    }
 
     /** Xóa các chart đã render khi chưa đủ dữ liệu */
     const removePreviousChart = () => {
@@ -235,9 +230,10 @@ const AnnualLeaveTrendsChart = (props) => {
         let arrEnd = endDate.split('-');
         let endDateNew = [arrEnd[1], arrEnd[0]].join('-');
 
-        props.getAnnualLeave({ organizationalUnits: organizationalUnits, startDate: startDateNew, endDate: endDateNew, })
-        props.getTimesheets({ organizationalUnits: organizationalUnits, startDate: startDateNew, endDate: endDateNew, trendHoursOff: true })
-
+        if (organizationalUnits?.length > 0) {
+            props.getAnnualLeave({ organizationalUnits: organizationalUnits, startDate: startDateNew, endDate: endDateNew, })
+            props.getTimesheets({ organizationalUnits: organizationalUnits, startDate: startDateNew, endDate: endDateNew, trendHoursOff: true })
+        }
     }
 
     const { department, annualLeave, translate, timesheets, childOrganizationalUnit } = props;
@@ -251,8 +247,8 @@ const AnnualLeaveTrendsChart = (props) => {
 
     if (annualLeave.arrMonth.length !== 0) {
         let ratioX = ['x', ...annualLeave.arrMonth];
-        let listHoursOffOfUnitsByStartDateAndEndDate = timesheets.listHoursOffOfUnitsByStartDateAndEndDate;
-        let listAnnualLeaveOfNumberMonth = annualLeave.listAnnualLeaveOfNumberMonth;
+        let listHoursOffOfUnitsByStartDateAndEndDate = JSON.parse(JSON.stringify(timesheets.listHoursOffOfUnitsByStartDateAndEndDate));
+        let listAnnualLeaveOfNumberMonth = JSON.parse(JSON.stringify(annualLeave.listAnnualLeaveOfNumberMonth));
         let data1 = ['data1'], data2 = ['data2'];
         annualLeave.arrMonth.forEach(x => {
             let total = 0;
@@ -284,7 +280,7 @@ const AnnualLeaveTrendsChart = (props) => {
                         {
                             organizationalUnitsName && organizationalUnitsName.length < 2 ?
                                 <>
-                                    <span>{` ${translate('task.task_dashboard.of_unit')}`}</span>
+                                    <span>{` ${translate('task.task_dashboard.of')}`}</span>
                                     <span>{` ${organizationalUnitsName?.[0]}`}</span>
                                 </>
                                 :
@@ -346,8 +342,8 @@ const AnnualLeaveTrendsChart = (props) => {
                         <p className="pull-left" style={{ marginBottom: 0 }}><b>ĐV tính: Số lần</b></p>
                         <div className="box-tools pull-right">
                             <div className="btn-group pull-rigth">
-                                <button type="button" className={`btn btn-xs ${lineChart ? "active" : "btn-danger"}`} onClick={() => handleChangeViewChart(false)}>Bar chart</button>
-                                <button type="button" className={`btn btn-xs ${lineChart ? 'btn-danger' : "active"}`} onClick={() => handleChangeViewChart(true)}>Line chart</button>
+                                <button type="button" className={`btn btn-xs ${lineChart ? "active" : "btn-danger"}`} onClick={() => handleChangeViewChart(false)}>Dạng cột</button>
+                                <button type="button" className={`btn btn-xs ${lineChart ? 'btn-danger' : "active"}`} onClick={() => handleChangeViewChart(true)}>Dạng đường</button>
                             </div>
                         </div>
                         <div ref={barChart}></div>
