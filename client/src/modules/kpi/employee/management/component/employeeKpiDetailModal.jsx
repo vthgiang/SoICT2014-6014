@@ -104,8 +104,6 @@ function ModalDetailKPIPersonal(props) {
                 return translate('task.task_management.delayed');
             case "canceled":
                 return translate('task.task_management.canceled');
-            case "requested_to_close":
-                return translate('task.task_management.requested_to_close');
         }
     };
 
@@ -366,28 +364,28 @@ function ModalDetailKPIPersonal(props) {
                                                     </thead>
                                                     <tbody>
                                                         {
-                                                            (kpimembers?.tasks?.length > 0 && Array.isArray(kpimembers.tasks)) 
-                                                                && (kpimembers.tasks.map((itemTask, index) =>
-                                                                    <tr key={index}>
-                                                                        <td>{index + 1}</td>
-                                                                        <td><a style={{ cursor: 'pointer' }} onClick={() => handleClickTaskName(itemTask.taskId)}>{itemTask.name}</a></td>
-                                                                        <td>{formatDate(itemTask.startDateTask)}<br /> <i className="fa fa-angle-double-down"></i><br /> {formatDate(itemTask.endDateTask)}</td>
-                                                                        <td>{itemTask.startDate ? formatDate(itemTask.startDate) : ""}<br /> <i className="fa fa-angle-double-down"></i><br /> {itemTask.endDate ? formatDate(itemTask.endDate) : ""}</td>
-                                                                        <td>{formatTaskStatus(translate, itemTask.status)}</td>
-                                                                        <td>{itemTask.results.contribution ? itemTask.results.contribution : 0}%</td>
-                                                                        <td>{itemTask.results.automaticPoint + '-' + itemTask.results.employeePoint + '-' + itemTask.results.approvedPoint}</td>
-                                                                        <td>
-                                                                            <div>
-                                                                                {translate('kpi.evaluation.employee_evaluation.evaluated_value')}: {itemTask.results.taskImportanceLevel}
-                                                                            </div>
-                                                                            <div>
-                                                                                <a href="#modal-taskimportance-auto" onClick={() => showDetailTaskImportanceCal(itemTask)}>
-                                                                                    {translate('kpi.evaluation.employee_evaluation.auto_value')}: {itemTask.taskImportanceLevelCal}
-                                                                                </a>
-                                                                            </div>
-                                                                        </td>
-                                                                    </tr>)
-                                                                )
+                                                            (kpimembers?.tasks?.length > 0 && Array.isArray(kpimembers.tasks))
+                                                            && (kpimembers.tasks.map((itemTask, index) =>
+                                                                <tr key={index}>
+                                                                    <td>{index + 1}</td>
+                                                                    <td><a style={{ cursor: 'pointer' }} onClick={() => handleClickTaskName(itemTask.taskId)}>{itemTask.name}</a></td>
+                                                                    <td>{formatDate(itemTask.startDateTask)}<br /> <i className="fa fa-angle-double-down"></i><br /> {formatDate(itemTask.endDateTask)}</td>
+                                                                    <td>{itemTask.startDate ? formatDate(itemTask.startDate) : ""}<br /> <i className="fa fa-angle-double-down"></i><br /> {itemTask.endDate ? formatDate(itemTask.endDate) : ""}</td>
+                                                                    <td>{formatTaskStatus(translate, itemTask.status)}</td>
+                                                                    <td>{itemTask.results.contribution ? itemTask.results.contribution : 0}%</td>
+                                                                    <td>{itemTask.results.automaticPoint + '-' + itemTask.results.employeePoint + '-' + itemTask.results.approvedPoint}</td>
+                                                                    <td>
+                                                                        <div>
+                                                                            {translate('kpi.evaluation.employee_evaluation.evaluated_value')}: {itemTask.results.taskImportanceLevel}
+                                                                        </div>
+                                                                        <div>
+                                                                            <a href="#modal-taskimportance-auto" onClick={() => showDetailTaskImportanceCal(itemTask)}>
+                                                                                {translate('kpi.evaluation.employee_evaluation.auto_value')}: {itemTask.taskImportanceLevelCal}
+                                                                            </a>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>)
+                                                            )
                                                         }
                                                     </tbody>
                                                 </table>

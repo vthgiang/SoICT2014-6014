@@ -905,7 +905,6 @@ class ModalEditTaskByAccountableEmployee extends Component {
         else if (data === "finished") return translate('task.task_management.finished');
         else if (data === "delayed") return translate('task.task_management.delayed');
         else if (data === "canceled") return translate('task.task_management.canceled');
-        else if (data === "requested_to_close") return translate('task.task_management.requested_to_close');
     }
 
     handleTaskProject = (value) => {
@@ -1015,7 +1014,6 @@ class ModalEditTaskByAccountableEmployee extends Component {
             { value: "finished", text: translate('task.task_management.finished') },
             { value: "delayed", text: translate('task.task_management.delayed') },
             { value: "canceled", text: translate('task.task_management.canceled') },
-            { value: "requested_to_close", text: translate('task.task_management.requested_to_close') },
         ];
 
         let usersOfChildrenOrganizationalUnit;

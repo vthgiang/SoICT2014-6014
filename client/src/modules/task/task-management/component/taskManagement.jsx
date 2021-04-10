@@ -664,7 +664,6 @@ class TaskManagement extends Component {
                                         { value: "finished", text: translate('task.task_management.finished') },
                                         { value: "delayed", text: translate('task.task_management.delayed') },
                                         { value: "canceled", text: translate('task.task_management.canceled') },
-                                        { value: "requested_to_close", text: translate('task.task_management.requested_to_close') },
                                     ]}
                                     onChange={this.handleSelectStatus}
                                     options={{ nonSelectedText: translate('task.task_management.select_status'), allSelectedText: translate('task.task_management.select_all_status') }}>
@@ -705,6 +704,7 @@ class TaskManagement extends Component {
                                     items={[
                                         { value: "stored", text: translate('task.task_management.stored') },
                                         { value: "currentMonth", text: translate('task.task_management.current_month') },
+                                        { value: "request_to_close", text: "Chưa phê duyệt kết thúc" },
                                     ]}
                                     onChange={this.handleSelectSpecial}
                                     options={{ nonSelectedText: translate('task.task_management.select_special'), allSelectedText: translate('task.task_management.select_all_special') }}>

@@ -27,7 +27,7 @@ class SelectMulti extends Component {
 
     componentDidMount() {
         const { translate } = this.props;
-        let { id, options, onChange, disabled = false, includeSelectAllOption = true } = this.props;
+        let { id, options, disabled = false, includeSelectAllOption = true } = this.props;
         options = {
             ...options,
             includeSelectAllOption: includeSelectAllOption,
@@ -46,8 +46,8 @@ class SelectMulti extends Component {
                 }
             })
 
-            if (onChange !== undefined) {
-                onChange(value);
+            if (this.props.onChange !== undefined) {
+                this.props.onChange(value);
             }
         })
 

@@ -266,7 +266,10 @@ exports.deleteEmployeeKpi = async (portal, id, employeeKpiSetId) => {
         ])
         .execPopulate();
 
-    return employeeKpiSet;
+    return {
+        employeeKpiSet,
+        employeeKpi
+    };
 }
 
 /* Chỉnh sửa trạng thái KPI: yêu cầu phê duyệt, hủy bỏ yêu cầu phê duyệt, khóa KPI */
