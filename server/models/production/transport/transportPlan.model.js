@@ -9,32 +9,11 @@ const TransportPlanSchema = new Schema({
     transportRequirements: [{
             type: Schema.Types.ObjectId,
             ref: 'TransportRequirement',
-            // required: true
-    //     fromAddress: {
-    //         type: String,
-    //         // required: true,
-    //     },
-    //     toAddress: {
-    //         type: String,
-    //         // required: true,
-    //     },
-    //     timeTransport: {
-    //         type: String,
-    //         // required: true,
-    //     },
-        // totalVolume: { // Tổng thể tích vận chuyển của yêu cầu
-        //     type: Number,
-        //     // required: true
-        // },
-        // totalPayload: { // Tổng khối lượng vận chuyển của yêu cầu
-        //     type: Number,
-        //     // required: true
-        // }
     }],
     transportVehicles: [{ // phuong tien van chuyen
         transportVehicle: {
             type: Schema.Types.ObjectId,
-            ref: 'TransportVehicle',
+            ref: 'Asset',
             // required: true
         },
         volume: { // Thể tích thùng của xe

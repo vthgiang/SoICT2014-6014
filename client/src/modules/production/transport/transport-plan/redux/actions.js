@@ -8,6 +8,7 @@ export const transportPlanActions = {
     getDetailTransportPlan2,
     editTransportPlan,
     addTransportRequirementToPlan,
+    addTransportVehicleToPlan,
 }
 
 function getAllTransportPlans(queryData) {
@@ -138,6 +139,28 @@ function addTransportRequirementToPlan(id, data) {
             .catch((error) => {
                 dispatch({
                     type: transportPlanConstants.ADD_TRANSPORT_REQUIREMENT_TO_PLAN_FAILURE,
+                    error
+                });
+            });
+    }
+}
+
+function addTransportVehicleToPlan(id, data) {
+    return (dispatch) => {
+        dispatch({
+            type: transportPlanConstants.ADD_TRANSPORT_VEHICLE_TO_PLAN_REQUEST
+        });
+        transportPlanServices
+            .addTransportVehicleToPlan(id, data)
+            .then((res) => {
+                dispatch({
+                    type: transportPlanConstants.ADD_TRANSPORT_VEHICLE_TO_PLAN_SUCCESS,
+                    payload: res.data.content
+                });
+            })
+            .catch((error) => {
+                dispatch({
+                    type: transportPlanConstants.ADD_TRANSPORT_VEHICLE_TO_PLAN_FAILURE,
                     error
                 });
             });

@@ -155,7 +155,7 @@ exports.editTransportPlan = async (portal, id, data) => {
  * @returns 
  */
 exports.addTransportRequirementToPlan = async (portal, id, data) => {
-    let transportRequirement = data.requirement;
+    let transportRequirement = data.requirement; // String id
     let oldTransportPlan = await TransportPlan(connect(DB_CONNECTION, portal)).findById(id);
 
     if (!oldTransportPlan) {
@@ -165,4 +165,16 @@ exports.addTransportRequirementToPlan = async (portal, id, data) => {
     await TransportPlan(connect(DB_CONNECTION, portal)).update({ _id: id }, {$push: {transportRequirements: transportRequirement}});
     let transportPlan = await TransportPlan(connect(DB_CONNECTION, portal)).findById({ _id: oldTransportPlan._id });
     return transportPlan;
+}
+
+exports.addTransportVehicleToPlan = async (portal, id, data) => {
+    let oldTransportPlan = await TransportPlan(connect(DB_CONNECTION, portal)).findById(id);
+
+    if (!oldTransportPlan) {
+        return -1;
+    }
+    await TransportPlan(connect(DB_CONNECTION, portal)).update({ _id: id }, {$pull: {transportVehicles: data}});
+    await TransportPlan(connect(DB_CONNECTION, portal)).update({ _id: id }, {$push: {transportVehicles: data}});
+    let transportPlan = await TransportPlan(connect(DB_CONNECTION, portal)).findById({ _id: oldTransportPlan._id });
+    return transportPlan;    
 }

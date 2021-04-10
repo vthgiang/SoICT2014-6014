@@ -22,6 +22,7 @@ export function transportPlan(state = initialState, action) {
         case transportPlanConstants.GET_DETAIL_TRANSPORT_PLAN_REQUEST:
         case transportPlanConstants.EDIT_TRANSPORT_PLAN_REQUEST:
         case transportPlanConstants.ADD_TRANSPORT_REQUIREMENT_TO_PLAN_REQUEST:
+        case transportPlanConstants.ADD_TRANSPORT_VEHICLE_TO_PLAN_REQUEST:
 		return {
                 ...state,
                 isLoading: true
@@ -32,6 +33,7 @@ export function transportPlan(state = initialState, action) {
         case transportPlanConstants.GET_DETAIL_TRANSPORT_PLAN_FAILURE:   
         case transportPlanConstants.EDIT_TRANSPORT_PLAN_FAILURE:
         case transportPlanConstants.ADD_TRANSPORT_REQUIREMENT_TO_PLAN_FAILURE:
+        case transportPlanConstants.ADD_TRANSPORT_VEHICLE_TO_PLAN_FAILURE:
 		return {
                 ...state,
                 isLoading: false,
@@ -69,6 +71,7 @@ export function transportPlan(state = initialState, action) {
 
         case transportPlanConstants.EDIT_TRANSPORT_PLAN_SUCCESS:
         case transportPlanConstants.ADD_TRANSPORT_REQUIREMENT_TO_PLAN_SUCCESS:
+        case transportPlanConstants.ADD_TRANSPORT_VEHICLE_TO_PLAN_SUCCESS:
             index = findIndex(state.lists, action.payload._id);
             if (index !== -1) {
                 state.lists[index] = action.payload

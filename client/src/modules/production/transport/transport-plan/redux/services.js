@@ -6,6 +6,7 @@ export const transportPlanServices = {
     getDetailTransportPlan2,
     editTransportPlan,
     addTransportRequirementToPlan,
+    addTransportVehicleToPlan,
 }
 
 function getAllTransportPlans(queryData) {
@@ -80,6 +81,19 @@ function addTransportRequirementToPlan(id, data) {
     return sendRequest(
         {
             url: `${process.env.REACT_APP_SERVER}/transport-plan/add-transport-requirement/${id}`,
+            method: "PATCH",
+            data: data
+        },
+        true,
+        true,
+        "manage_transport"
+    )
+}
+
+function addTransportVehicleToPlan(id, data) {
+    return sendRequest(
+        {
+            url: `${process.env.REACT_APP_SERVER}/transport-plan/add-transport-vehicle/${id}`,
             method: "PATCH",
             data: data
         },

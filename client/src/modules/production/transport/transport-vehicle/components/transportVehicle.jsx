@@ -12,16 +12,13 @@ import { getTableConfiguration } from '../../../../../helpers/tableConfiguration
 import './transportVehicleChosen.css';
 
 function TransportVehicle(props) {
-    const { currentTransportPlanId, currentTransportPlan } = props;
+    const { currentTransportPlanId, currentTransportPlan, allTransportVehicles } = props;
 
     const getTableId = "table-manage-transport-vehicle";
     const defaultConfig = { limit: 5 }
     const getLimit = getTableConfiguration(getTableId, defaultConfig).limit;
 
     const [vehiclesListState, setVehilesListState] = useState({});
-
-
-    const [fullVehiclesList, setFullVehicleList] = useState(); // State chứa cả trạng thái xe đã chọn hay chưa
 
     /*
      * State lưu trạng thái xe đang có của lịch trình hiện tại
@@ -96,28 +93,39 @@ function TransportVehicle(props) {
         if (currentTransportPlanId){
             props.getDetailTransportPlan(currentTransportPlanId);
         }
+        // props.getAllTransportVehicles({page: 1, limit : 100});
+
     }, [currentTransportPlanId])
 
     useEffect(() => {
         setPlanVehiclesList(currentTransportPlan?.transportVehicles);
     }, [currentTransportPlan])
 
+    const [state1, setstate1] = useState([])
     useEffect(() => {
+        let listIconState = [];
         console.log(planVehiclesList, " planVehiclesList")
-    }, [planVehiclesList])
 
-    /**
-     * Check xe trong kế hoạch planVehiclesList và xe được sử dụng vehicleList
-     */
+        if (vehiclesList && vehiclesList.length !==0){
+            for (let i = 0; i < vehiclesList.length; i++){
+                listIconState.push("iconunactive")
+            }
+            for (let i = 0; i < vehiclesList.length; i++){
+                if (planVehiclesList && planVehiclesList.length!==0){
+                    for (let j = 0; j < planVehiclesList.length; j++){
+                        if (String(vehiclesList[i]._id) === String(planVehiclesList[j].transportVehicle)){
+                            listIconState[i] = "iconactive";
+                        }
+                    }
+                }
+            }
+        }
+        setstate1(listIconState);
+    }, [planVehiclesList, vehiclesListState])
+
     useEffect(() => {
-        // if (vehiclesList && vehiclesList.length !==0 && planVehiclesList && planVehiclesList.length !== 0){
-        //     vehiclesList.map((item, index) => {
-        //         planVehiclesList.map((item2, index2) => {
-
-        //         })
-        //     })
-        // }
-    }, [planVehiclesList, vehiclesList])
+        console.log(state1, " sa")
+    }, [state1])
 
     const handleChooseVehicle = (vehicle) => {
         console.log(vehicle, " day la vehicle")
@@ -131,11 +139,19 @@ function TransportVehicle(props) {
         }
         // props.createTransportVehicle(data);
         props.createTransportPlanVehicleNotDuplicate(vehicle._id, data);
-        // props.editTransportPlan(currentTransportPlanId, {
-        //     transportVehicles: {
-        //         transportVehicle:
-        //     }
-        // })
+        props.addTransportVehicleToPlan(currentTransportPlanId, {transportVehicle: vehicle._id});
+    }
+
+    const selectVehicle = (index) => {
+        console.log(index);
+        console.log(state1);
+        // if (listIconState[index]==="iconactive"){
+        //     listIconState[index] = "iconunactive";
+        // }
+        // else {
+        //     listIconState[index] = "iconactive";
+        // }
+        // setstate1(listIconState);
     }
 
     return (
@@ -159,6 +175,7 @@ function TransportVehicle(props) {
                             <th>{"Thể tích"}</th>
                             <th>{"Hành động"}</th>
                             <th>{"Chosen"}</th>
+                            <th>{"sad"}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -193,9 +210,11 @@ function TransportVehicle(props) {
                                             /> */}
                                         </td>
                                         <td key={index} className="tooltip-checkbox">
-                                            <span className="icon" 
+                                            <span className={"icon " + state1[index]}
                                                 // title={translate(`manufacturing.work_schedule.${command.status}.content`)} 
-                                                // style={{ backgroundColor: translate(`manufacturing.work_schedule.${command.status}.color`) }}
+                                                // style={{ backgroundColor: "green"}}
+                                                onClick={() => selectVehicle(index)}
+                                                
                                             >
                                             </span>
                                             <span className="tooltiptext">
@@ -207,32 +226,13 @@ function TransportVehicle(props) {
                                                 </a> */}
                                             </span>
                                         </td>
+                                        <td>
+                                            {state1[index]}
+                                        </td>
                                     </tr>
                                 )
                             )
                         }
-                 
-                        {/* {(lists && lists.length !== 0) &&
-                            lists.map((example, index) => (
-                                <tr key={index}>
-                                    <td>{index + 1 + (page - 1) * perPage}</td>
-                                    <td>{example.exampleName}</td>
-                                    <td>{example.description}</td>
-                                    <td style={{ textAlign: "center" }}>
-                                        <a className="edit text-green" style={{ width: '5px' }} title={translate('manage_example.detail_info_example')} onClick={() => handleShowDetailInfo(example)}><i className="material-icons">visibility</i></a>
-                                        <a className="edit text-yellow" style={{ width: '5px' }} title={translate('manage_example.edit')} onClick={() => handleEdit(example)}><i className="material-icons">edit</i></a>
-                                        <DeleteNotification
-                                            content={translate('manage_example.delete')}
-                                            data={{
-                                                id: example._id,
-                                                info: example.exampleName
-                                            }}
-                                            func={handleDelete}
-                                        />
-                                    </td>
-                                </tr>
-                            ))
-                        } */}
                     </tbody>
                 </table>
 
@@ -257,7 +257,8 @@ function TransportVehicle(props) {
 function mapState(state) {
     const { assetsManager } =state;
     const { currentTransportPlan } = state.transportPlan;
-    return { assetsManager,  currentTransportPlan};
+    const allTransportVehicles = state.transportVehicle.lists;
+    return { assetsManager,  currentTransportPlan, allTransportVehicles};
 }
 
 const actions = {
@@ -266,6 +267,8 @@ const actions = {
     createTransportPlanVehicleNotDuplicate: transportVehicleActions.createTransportPlanVehicleNotDuplicate,
     editTransportPlan: transportPlanActions.editTransportPlan,
     getDetailTransportPlan: transportPlanActions.getDetailTransportPlan,
+    getAllTransportVehicles: transportVehicleActions.getAllTransportVehicles,
+    addTransportVehicleToPlan: transportPlanActions.addTransportVehicleToPlan,
 }
 
 const connectedTransportVehicle = connect(mapState, actions)(withTranslate(TransportVehicle));

@@ -204,3 +204,30 @@ exports.addTransportRequirementToPlan = async (req, res) => {
     }
 }
 
+exports.addTransportVehicleToPlan = async (req, res) => {
+    try {
+        let { id } = req.params;
+        let data = req.body;
+        let updatedTransportPlan = await TransportPlanService.addTransportVehicleToPlan(req.portal, id, data);
+        if (updatedTransportPlan !== -1) {
+            await Log.info(req.user.email, "UPDATED_TRANSPORT_PLAN_ADD", req.portal);
+            res.status(200).json({
+                success: true,
+                messages: ["edit_transport_plan_success"],
+                content: updatedTransportPlan
+            });
+        } else {
+            throw Error("TransportPlan is invalid");
+        }
+
+    } catch (error) {
+        await Log.error(req.user.email, "UPDATED_TRANSPORT_PLAN_ADD", req.portal);
+
+        res.status(400).json({
+            success: false,
+            messages: ["edit_transport_plan_fail"],
+            content: error.message
+        });
+    }
+}
+

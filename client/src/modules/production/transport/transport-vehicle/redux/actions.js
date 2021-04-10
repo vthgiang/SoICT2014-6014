@@ -52,6 +52,12 @@ function createTransportVehicle(data) {
     }
 }
 
+/**
+ * Cập nhật trường transportPlan, nếu chưa có xe -> tạo xe
+ * @param {*} id id của xe, tương đương asset
+ * @param {*} data 
+ * @returns 
+ */
 function createTransportPlanVehicleNotDuplicate(id, data) {
     return (dispatch) => {
         dispatch({
