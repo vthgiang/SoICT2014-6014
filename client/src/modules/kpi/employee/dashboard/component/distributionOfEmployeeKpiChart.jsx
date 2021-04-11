@@ -10,7 +10,7 @@ import c3 from 'c3';
 import 'c3/c3.css';
 
 function DistributionOfEmployeeKpiChart(props) {
-    const { translate, createEmployeeKpiSet } = props;
+    const {translate, createEmployeeKpiSet} = props;
     const refKpiSet = React.createRef();
 
     let currentDate = new Date();
@@ -18,7 +18,6 @@ function DistributionOfEmployeeKpiChart(props) {
     let currentMonth = currentDate.getMonth();
 
     const DATA_STATUS = {NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3};
-    const chart = null;
     const dataPieChart = null;
 
     const [state, setState] = useState({
@@ -90,7 +89,6 @@ function DistributionOfEmployeeKpiChart(props) {
                 return [x.name, x.weight]
             })
         }
-        // console.log("dataPieChart", dataPieChart)
         return dataPieChart;
     };
 
@@ -181,7 +179,7 @@ function DistributionOfEmployeeKpiChart(props) {
 
             {currentEmployeeKpiSet ?
                 <section id={"distributionOfEmployeeKpi"} className="c3-chart-container">
-                    <div ref={refKpiSet}> </div>
+                    <div ref={refKpiSet}></div>
                     <CustomLegendC3js
                         chart={state.chart}
                         chartId={"distributionOfEmployeeKpi"}

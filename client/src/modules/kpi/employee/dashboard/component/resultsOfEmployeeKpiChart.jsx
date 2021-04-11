@@ -192,7 +192,7 @@ function ResultsOfEmployeeKpiChart(props) {
 
     /**Xóa các chart đã render trước khi đủ dữ liệu */
     const removePreviosMultiLineChart = () => {
-        const chart = document.getElementById("refMultiLineChart");
+        const chart = document.getElementById("chart");
         if (chart) {
             while (chart.hasChildNodes()) {
                 chart.removeChild(chart.lastChild)
@@ -210,7 +210,7 @@ function ResultsOfEmployeeKpiChart(props) {
             dataMultiLineChart.map(data => {
                 let div = document.createElement('div');
                 div.id = data.title;
-                let section = document.getElementById("refMultiLineChart");
+                let section = document.getElementById("chart");
                 section.appendChild(div);
 
                 let chart = c3.generate({
@@ -264,7 +264,7 @@ function ResultsOfEmployeeKpiChart(props) {
         } else {
             let div = document.createElement('div');
             div.innerHTML = "Không có dữ liệu";
-            let section = document.getElementById("refMultiLineChart");
+            let section = document.getElementById("chart");
             section.appendChild(div);
         }
     };
@@ -377,7 +377,7 @@ function ResultsOfEmployeeKpiChart(props) {
                 </div>
             </section>
 
-            <section id={"refMultiLineChart"}> </section>
+            <section id={"chart"}> </section>
         </React.Fragment>
     )
 
