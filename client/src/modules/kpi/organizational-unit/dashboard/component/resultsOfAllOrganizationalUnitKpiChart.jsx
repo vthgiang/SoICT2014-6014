@@ -61,7 +61,6 @@ function ResultsOfAllOrganizationalUnitKpiChart(props) {
     }, [state.kindOfPoint]);
 
     useEffect(() => {
-
         if (state.dataStatus === DATA_STATUS.NOT_AVAILABLE) {
             props.getAllOrganizationalUnitKpiSetByTimeOfChildUnit(state.userRoleId, state.startDate, state.endDate)
 

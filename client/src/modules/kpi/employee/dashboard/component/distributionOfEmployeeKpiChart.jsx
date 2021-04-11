@@ -13,69 +13,49 @@ function DistributionOfEmployeeKpiChart(props) {
     const {translate, createEmployeeKpiSet} = props;
     const refKpiSet = React.createRef();
 
-    let currentDate = new Date();
-    let currentYear = currentDate.getFullYear();
-    let currentMonth = currentDate.getMonth();
+    let d = new Date(),
+        monthToday = d.getMonth() + 1,
+        year = d.getFullYear();
+    let endMonth;
 
-    const DATA_STATUS = {NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3};
-    const dataPieChart = null;
+    if (monthToday < 10) {
+        endMonth = '0' + monthToday;
+    } else {
+        endMonth = monthToday;
+    }
 
     const [state, setState] = useState({
-        month: currentYear + '-' + (currentMonth + 1),
-        dataStatus: DATA_STATUS.QUERYING,
+        defaultDate: [endMonth, year].join('-'),
+        month: [year, endMonth].join('-'),
         currentRole: localStorage.getItem("currentRole")
     });
+    const {currentRole, month, defaultDate} = state;
 
     let currentEmployeeKpiSet;
 
     useEffect(() => {
-        const {currentRole, month} = state;
-
         // Lấy Kpi của cá nhân hiện tại
         props.getEmployeeKpiSet({
             roleId: currentRole,
             month: month
         });
-        props.createEmployeeKpiSet.currentKPI = null
-        setState(  {
-            ...state,
-            dataStatus: DATA_STATUS.QUERYING,
-        });
     }, []);
 
+    useEffect(() => {
+        let data = pieChart(createEmployeeKpiSet);
+
+        setState({
+            ...state,
+            chart: data?.chart,
+            dataPieChart: data?.dataPieChart,
+        })
+    }, [props.createEmployeeKpiSet.currentKPI]);
 
     useEffect(() => {
-        if (state.dataStatus === DATA_STATUS.QUERYING) {
-            if (props.createEmployeeKpiSet.currentKPI) {
-                setState({
-                    ...state,
-                    dataStatus: DATA_STATUS.AVAILABLE
-                });
-            }
-
-        } else if (state.dataStatus === DATA_STATUS.AVAILABLE) {
-            let data = pieChart(createEmployeeKpiSet);
-            setState({
-                ...state,
-                chart: data?.chart,
-                dataPieChart: data?.dataPieChart,
-                dataStatus: DATA_STATUS.FINISHED
-            })
-        }
-    });
-
-    useEffect(() => {
-        const {currentRole} = state;
-
         props.getEmployeeKpiSet({
             roleId: currentRole,
             month: state.month
         });
-        setState(  {
-            ...state,
-            dataStatus: DATA_STATUS.QUERYING,
-        });
-        props.createEmployeeKpiSet.currentKPI = null
     }, [state.month]);
 
     /**Thiết lập dữ liệu biểu đồ */
@@ -151,16 +131,6 @@ function DistributionOfEmployeeKpiChart(props) {
     if (createEmployeeKpiSet) {
         currentEmployeeKpiSet = createEmployeeKpiSet.currentKPI
     }
-    let d = new Date(),
-        month = '' + (d.getMonth() + 1),
-        day = '' + d.getDate(),
-        year = d.getFullYear();
-
-    if (month.length < 2)
-        month = '0' + month;
-    if (day.length < 2)
-        day = '0' + day;
-    let defaultDate = [month, year].join('-');
 
     return (
         <React.Fragment>

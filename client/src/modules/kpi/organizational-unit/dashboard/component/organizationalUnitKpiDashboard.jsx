@@ -120,10 +120,10 @@ function OrganizationalUnitKpiDashboard(props) {
 
     const handleSearchData = () => {
         setState( {
-                ...state,
-                organizationalUnitId: DATA_SEARCH.organizationalUnitId,
-                month: DATA_SEARCH.month,
-                date: DATA_SEARCH.date
+            ...state,
+            organizationalUnitId: DATA_SEARCH.organizationalUnitId,
+            month: DATA_SEARCH.month,
+            date: DATA_SEARCH.date
         })
     };
 
@@ -343,7 +343,6 @@ function OrganizationalUnitKpiDashboard(props) {
                         </div>
                     </div>
 
-                     Phân bố KPI đơn vị
                     <LazyLoadComponent
                         key="distributionOfOrganizationalUnitKpiChart"
                     >

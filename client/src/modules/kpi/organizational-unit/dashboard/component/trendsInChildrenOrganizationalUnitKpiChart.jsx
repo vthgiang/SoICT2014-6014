@@ -85,15 +85,13 @@ function TrendsInChildrenOrganizationalUnitKpiChart(props) {
         }
     });
 
-    useEffect(() => {
-        if (props.organizationalUnitId !== state.organizationalUnitId || props.month !== state.month) {
-            setState ({
-                ...state,
-                organizationalUnitId: props.organizationalUnitId,
-                month: props.month
-            })
-        }
-    }, [props.organizationalUnitId, props.month])
+    if (props.organizationalUnitId !== state.organizationalUnitId || props.month !== state.month) {
+        setState ({
+            ...state,
+            organizationalUnitId: props.organizationalUnitId,
+            month: props.month
+        })
+    }
 
     /** Hàm tiện ích lấy các KPI con có cùng parent */
     const getArrayListChildTargetSameParent = () => {
@@ -112,7 +110,7 @@ function TrendsInChildrenOrganizationalUnitKpiChart(props) {
             arrayListChildTargetSameParent = listOrganizationalUnitKpi.map(parent => {
 
                 let index = 0;
-                let maxDeg = listChildTarget[listChildTarget.length - 1][0].deg;
+                let maxDeg = listChildTarget?.[listChildTarget?.length - 1]?.[0]?.deg;
 
                 let listChildTargetSameParent = [];
 
@@ -173,8 +171,8 @@ function TrendsInChildrenOrganizationalUnitKpiChart(props) {
 
                     if (arrayListChildTargetSameParent) {
                         listChildTargetSameParent = arrayListChildTargetSameParent.filter(item => {
-                            if (item[0][0][0]) {
-                                return item[0][0][0]._id === parent.name;
+                            if (item?.[0]?.[0]?.[0]) {
+                                return item[0][0][0]._id === parent?.name;
                             }
                         });
                     }
@@ -388,41 +386,42 @@ function TrendsInChildrenOrganizationalUnitKpiChart(props) {
         if (!listOrganizationalUnitKpi) {
             numberOfEmployeeKpis = {}
         } else {
-            listOrganizationalUnitKpi.map(parent => {
-
-                let numberOfEmployeeKpi = 0, temporary = {};
-                let listChildTargetSameParent;
-
-                if (arrayListChildTargetSameParent) {
-                    listChildTargetSameParent = arrayListChildTargetSameParent.filter(item => {
-                        if (item[0][0][0]) {
-                            return item[0][0][0]._id === parent.name;
-                        }
-                    })
-                }
-
-                if (listChildTargetSameParent.length !== 0) {
-                    listChildTargetSameParent = [...listChildTargetSameParent[0]];
-
-                    listChildTargetSameParent.map(deg => {
-                        if (deg.length !== 0) {
-                            deg.map(unit => {
-                                if (unit.length !== 0) {
-                                    unit.forEach(kpi => {
-                                        if (kpi.employeeKpi[0].creator.length !== 0) {
-                                            numberOfEmployeeKpi = numberOfEmployeeKpi + kpi.employeeKpi.length;
-                                        }
-                                    });
-                                }
-                            })
-
-                        }
-                    })
-                }
-
-                temporary[parent.name] = numberOfEmployeeKpi;
-                numberOfEmployeeKpis = Object.assign(numberOfEmployeeKpis, temporary);
-            })
+            if (listOrganizationalUnitKpi?.length > 0) {
+                listOrganizationalUnitKpi.map(parent => {
+                    let numberOfEmployeeKpi = 0, temporary = {};
+                    let listChildTargetSameParent;
+    
+                    if (arrayListChildTargetSameParent) {
+                        listChildTargetSameParent = arrayListChildTargetSameParent.filter(item => {
+                            if (item?.[0]?.[0]?.[0]) {
+                                return item[0][0][0]._id === parent?.name;
+                            }
+                        })
+                    }
+    
+                    if (listChildTargetSameParent.length !== 0) {
+                        listChildTargetSameParent = [...listChildTargetSameParent[0]];
+    
+                        listChildTargetSameParent.map(deg => {
+                            if (deg.length !== 0) {
+                                deg.map(unit => {
+                                    if (unit.length !== 0) {
+                                        unit.forEach(kpi => {
+                                            if (kpi.employeeKpi[0].creator.length !== 0) {
+                                                numberOfEmployeeKpi = numberOfEmployeeKpi + kpi.employeeKpi.length;
+                                            }
+                                        });
+                                    }
+                                })
+    
+                            }
+                        })
+                    }
+    
+                    temporary[parent.name] = numberOfEmployeeKpi;
+                    numberOfEmployeeKpis = Object.assign(numberOfEmployeeKpis, temporary);
+                })
+            }
         }
 
         numberOfEmployeeKpis = Object.assign(

@@ -13,7 +13,6 @@ import 'c3/c3.css';
 function DistributionOfOrganizationalUnitKpiChart(props) {
     const DATA_STATUS = {NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3};
     const KIND_OF_CHART = {LINE: 1, PIE: 2};
-    const chart = useRef();
     const refPieChart = React.createRef();
 
     const [state, setState] = useState({
@@ -28,22 +27,26 @@ function DistributionOfOrganizationalUnitKpiChart(props) {
     const {dataPieChart, kindOfChart} = state;
     let currentKpi, organizationalUnitKpiLoading;
 
-    useEffect(async() =>  {
-        await props.getCurrentKPIUnit(localStorage.getItem("currentRole"), props.organizationalUnitId, props.month);
+    useEffect(() => {
+        async function fecth() {
+            await props.getCurrentKPIUnit(localStorage.getItem("currentRole"), props.organizationalUnitId, props.month);
+            let data = await pieChart(KIND_OF_CHART.LINE);
 
-        await setState({
-            ...state,
-            currentRole: localStorage.getItem("currentRole"),
-            dataStatus: DATA_STATUS.QUERYING,
-            willUpdate: true
-        })
-        await pieChart(KIND_OF_CHART.LINE);
+            await setState({
+                ...state,
+                currentRole: localStorage.getItem("currentRole"),
+                dataStatus: DATA_STATUS.QUERYING,
+                willUpdate: true,
+                chart: data?.chart,
+                dataPieChart: data?.dataPieChart
+            })
+        }
+
+        fecth()
     }, []);
 
 
     useEffect(() => {
-
-
         props.getCurrentKPIUnit(state.currentRole, props.organizationalUnitId, props.month);
         setState({
             ...state,
@@ -54,7 +57,6 @@ function DistributionOfOrganizationalUnitKpiChart(props) {
     }, [props.organizationalUnitId, props.month]);
 
     useEffect(() => {
-        console.log("hellooosdofsdf",state.dataStatus,state.willUpdate)
         if (state.dataStatus === DATA_STATUS.QUERYING) {
             if (props.createKpiUnit.currentKPI) {
                 setState({
@@ -65,26 +67,25 @@ function DistributionOfOrganizationalUnitKpiChart(props) {
             }
 
         } else if (state.dataStatus === DATA_STATUS.AVAILABLE && state.willUpdate) {
-            console.log(state.kindOfChart)
-            pieChart(state.kindOfChart);
+            let data = pieChart(state.kindOfChart);
 
             setState({
                 ...state,
                 dataStatus: DATA_STATUS.FINISHED,
-                willUpdate: false
+                willUpdate: false,
+                chart: data?.chart,
+                dataPieChart: data?.dataPieChart
             });
         }
-
-
     });
 
-    useEffect(() => {
+    if (props.organizationalUnitId !== state.organizationalUnitId || props.month !== state.month) {
         setState({
             ...state,
             organizationalUnitId: props.organizationalUnitId,
             month: props.month
         })
-    }, [props.organizationalUnitId, props.month]);
+    }
 
     const setDataPieChart = () => {
         const {createKpiUnit} = props;
@@ -120,7 +121,6 @@ function DistributionOfOrganizationalUnitKpiChart(props) {
             [translate('kpi.organizational_unit.dashboard.trend_chart.weight')]
         ];
         let dataPieChart = setDataPieChart();
-        console.log("dataPieChart", dataPieChart)
         let data, tooltip;
 
         if (kindOfChart === KIND_OF_CHART.LINE) {
@@ -195,20 +195,22 @@ function DistributionOfOrganizationalUnitKpiChart(props) {
             }
         });
 
-        setState({
-            ...state,
-            dataPieChart: dataPieChart
-        })
+        return {
+            chart,
+            dataPieChart
+        }
     };
 
     const handleSelectKindOfChart = (value) => {
+        let data = pieChart(Number(value));
+
         setState({
             ...state,
-            kindOfChart: Number(value)
+            kindOfChart: Number(value),
+            chart: data?.chart,
+            dataPieChart: data?.dataPieChart
         })
-        pieChart(Number(value));
     };
-    console.log("hello",state.kindOfChart)
 
     if (createKpiUnit) {
         currentKpi = createKpiUnit.currentKPI;
@@ -232,11 +234,11 @@ function DistributionOfOrganizationalUnitKpiChart(props) {
                     <div ref={refPieChart} id={"abc"} > </div>
                     {kindOfChart === KIND_OF_CHART.PIE
                     && <CustomLegendC3js
-                        chart={chart.current}
+                        chart={state.chart}
                         chartId={"distributionOfUnit"}
                         legendId={"distributionOfUnitLegend"}
-                        title={dataPieChart && `${translate('kpi.evaluation.employee_evaluation.KPI_list')} (${currentKpi.kpis && currentKpi.kpis.length})`}
-                        dataChartLegend={dataPieChart && dataPieChart.map(item => item[0])}
+                        title={state.dataPieChart && `${translate('kpi.evaluation.employee_evaluation.KPI_list')} (${currentKpi.kpis && currentKpi.kpis.length})`}
+                        dataChartLegend={state.dataPieChart && state.dataPieChart.map(item => item[0])}
                     />
                     }
                 </section>

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { managerActions } from '../../management/redux/actions';
@@ -6,7 +6,7 @@ import arrayToTree from 'array-to-tree';
 import './kpiUnit.css';
 
 const StatisticsKpiUnits = (props) => {
-    const [state, setState] = React.useState(() => {
+    const [state, setState] = useState(() => {
         let d = new Date(),
             month = d.getMonth() + 1,
             year = d.getFullYear();
@@ -23,11 +23,7 @@ const StatisticsKpiUnits = (props) => {
         }
     });
 
-    if (props.monthStatistics) {
-
-    }
-
-    React.useEffect(() => {
+    useEffect(() => {
         const { role, date } = state;
         if (props && props.organizationalUnitIds) {
             let infoSearch = {
@@ -51,7 +47,6 @@ const StatisticsKpiUnits = (props) => {
                 }
             }
 
-            console.log('infoSearch', infoSearch)
             props.getAllKPIUnit(infoSearch);
         }
     }, [props.monthStatistics])

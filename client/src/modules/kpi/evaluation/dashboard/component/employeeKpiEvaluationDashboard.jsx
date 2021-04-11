@@ -154,6 +154,10 @@ function EmployeeKpiEvaluationDashboard(props) {
                 userId: userId,
                 unitMembers: unitMembers
             });
+
+            if (ids) {
+                props.getAllEmployeeKpiSetByMonth(ids, userId, state.startMonth, state.endMonth)
+            }
         }
     }, [props.user.userdepartments])
 
@@ -232,7 +236,6 @@ function EmployeeKpiEvaluationDashboard(props) {
             if (IDS.length > 0) {
                 props.getAllEmployeeKpiSetOfUnitByIds(IDS);
                 props.getAllEmployeeOfUnitByIds({organizationalUnitIds: IDS});
-                props.getChildrenOfOrganizationalUnitsAsTree(localStorage.getItem("currentRole"));
                 props.getAllUserOfDepartment(IDS);
             }
         }

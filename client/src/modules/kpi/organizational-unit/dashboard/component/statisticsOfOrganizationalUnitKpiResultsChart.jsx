@@ -34,69 +34,31 @@ function StatisticsOfOrganizationalUnitKpiResultsChart(props) {
     useEffect(() => {
         props.getAllEmployeeKpiSetInOrganizationalUnit(localStorage.getItem("currentRole"), props.organizationalUnitId, state.month);
         forceCheckOrVisible(true, true);
-
     },[]);
 
     useEffect(() => {
-        // if (state.kindOfPoint !== state.kindOfPoint) {
-            setState(  {
-                ...state,
-                kindOfPoint: state.kindOfPoint,
-            });
+        setState(  {
+            ...state,
+            kindOfPoint: state.kindOfPoint,
+        });
 
-            columnChart();
-        // }
-    },[state.kindOfPoint]);
+        columnChart();
+    }, [state.kindOfPoint]);
 
     useEffect(() => {
-        if (props.organizationalUnitId !== state.organizationalUnitId || props.month !== state.month) {
-            props.getAllEmployeeKpiSetInOrganizationalUnit(localStorage.getItem("currentRole"), props.organizationalUnitId, props.month);
+        columnChart();
+    }, [props.dashboardOrganizationalUnitKpi.employeeKpiSets]);
 
-            setState({
-                ...state,
-                dataStatus: DATA_STATUS.QUERYING,
-            });
+    if (props.organizationalUnitId !== state.organizationalUnitId || props.month !== state.month) {
+        props.getAllEmployeeKpiSetInOrganizationalUnit(localStorage.getItem("currentRole"), props.organizationalUnitId, props.month);
 
-        }
-    },[props.organizationalUnitId, props.month]);
-
-    useEffect(() => {
-        // Chỉ thực hiện LazyLoading trong lần đầu tiên
-
-        if (state.dataStatus === DATA_STATUS.NOT_AVAILABLE) {
-            props.getAllEmployeeKpiSetInOrganizationalUnit(localStorage.getItem("currentRole"), props.organizationalUnitId, state.month);
-
-            setState( {
-                ...state,
-                dataStatus: DATA_STATUS.QUERYING,
-            });
-        } else if (state.dataStatus === DATA_STATUS.QUERYING) {
-            if (props.dashboardOrganizationalUnitKpi.employeeKpiSets) {
-
-                setState( {
-                        ...state,
-                        dataStatus: DATA_STATUS.AVAILABLE,
-                });
-            }
-        } else if (state.dataStatus === DATA_STATUS.AVAILABLE) {
-            columnChart();
-
-            setState( {
-                    ...state,
-                    dataStatus: DATA_STATUS.FINISHED,
-            });
-        }
-    });
-
-    useEffect(() => {
-        if (props.organizationalUnitId !== state.organizationalUnitId || props.month !== state.month) {
-            setState ({
-                ...state,
-                organizationalUnitId: props.organizationalUnitId,
-                month: props.month
-            })
-        }
-    }, [props.organizationalUnitId, props.month]);
+        setState ({
+            ...state,
+            organizationalUnitId: props.organizationalUnitId,
+            month: props.month,
+            dataStatus: DATA_STATUS.QUERYING
+        })
+    }
 
     const handleSelectKindOfPoint = (value) => {
         if (Number(value) !== state.kindOfPoint) {

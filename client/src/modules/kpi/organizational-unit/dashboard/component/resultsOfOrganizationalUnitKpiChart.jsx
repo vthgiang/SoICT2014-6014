@@ -82,14 +82,12 @@ function ResultsOfOrganizationalUnitKpiChart(props) {
 
     });
 
-    useEffect(() => {
-        if (props.organizationalUnitId !== state.organizationalUnitId) {
-            setState ({
-                ...state,
-                organizationalUnitId: props.organizationalUnitId
-            })
-        }
-    }, [props.organizationalUnitId]);
+    if (props.organizationalUnitId !== state.organizationalUnitId) {
+        setState ({
+            ...state,
+            organizationalUnitId: props.organizationalUnitId
+        })
+    }
 
     const setDataMultiLineChart = () => {
         const { createKpiUnit, translate, organizationalUnit } = props;

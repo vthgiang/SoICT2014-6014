@@ -34,9 +34,9 @@ function TrendsInOrganizationalUnitKpiChart(props) {
 
     useEffect(() => {
         if (state.currentRole !== localStorage.getItem("currentRole")) {
-             props.getCurrentKPIUnit(localStorage.getItem("currentRole"), props.organizationalUnitId, props.month);
-             props.getAllEmployeeKpiInOrganizationalUnit(localStorage.getItem("currentRole"), props.organizationalUnitId, props.month);
-             props.getAllTaskOfOrganizationalUnit(localStorage.getItem("currentRole"), props.organizationalUnitId, props.month);
+            props.getCurrentKPIUnit(localStorage.getItem("currentRole"), props.organizationalUnitId, props.month);
+            props.getAllEmployeeKpiInOrganizationalUnit(localStorage.getItem("currentRole"), props.organizationalUnitId, props.month);
+            props.getAllTaskOfOrganizationalUnit(localStorage.getItem("currentRole"), props.organizationalUnitId, props.month);
 
             setState( {
                 ...state,
@@ -84,15 +84,13 @@ function TrendsInOrganizationalUnitKpiChart(props) {
 
     });
 
-    useEffect(() => {
-        if (props.organizationalUnitId !== state.organizationalUnitId || props.month !== state.month) {
-            setState ({
-                ...state,
-                organizationalUnitId: props.organizationalUnitId,
-                month: props.month
-            })
-        }
-    },[props.organizationalUnitId,  props.month])
+    if (props.organizationalUnitId !== state.organizationalUnitId || props.month !== state.month) {
+        setState ({
+            ...state,
+            organizationalUnitId: props.organizationalUnitId,
+            month: props.month
+        })
+    }
 
     const getArrayListTaskSameOrganizationUnitKpi = () => {
         const { createKpiUnit, dashboardOrganizationalUnitKpi } = props;
@@ -240,40 +238,42 @@ function TrendsInOrganizationalUnitKpiChart(props) {
         if (!listOrganizationalUnitKpi && listChildTarget){
             numberOfParticipants = {}
         } else {
-            listOrganizationalUnitKpi.map(parent => {
-                let key = listOrganizationalUnitKpi.indexOf(parent);
-                let creators1, creators2, numberOfParticipant=0;
-                let temporary = {};
-
-                if (listChildTarget) {
-                    creators1 = listChildTarget.filter(item => item._id === parent.name);
-
-                    if (creators1.length !== 0) {
-                        creators1 = creators1[0].employeeKpi.map(x => {
-                            if (x.creator[0]) {
-                                return x.creator[0];
-                            }
+            if (listOrganizationalUnitKpi?.length > 0) {
+                listOrganizationalUnitKpi.map(parent => {
+                    let key = listOrganizationalUnitKpi.indexOf(parent);
+                    let creators1, creators2, numberOfParticipant=0;
+                    let temporary = {};
+    
+                    if (listChildTarget) {
+                        creators1 = listChildTarget.filter(item => item._id === parent.name);
+    
+                        if (creators1.length !== 0) {
+                            creators1 = creators1[0].employeeKpi.map(x => {
+                                if (x.creator[0]) {
+                                    return x.creator[0];
+                                }
+                            })
+                        }
+                    }
+    
+    
+                    if (arrayListTaskSameOrganizationUnitKpi) {
+                        creators2 = arrayListTaskSameOrganizationUnitKpi[key].map(x => {
+                            return x.accountableEmployees.concat(x.consultedEmployees).concat(x.informedEmployees).concat(x.responsibleEmployees);
                         })
+                        creators2.forEach(x => creators1 = creators1.concat(x));
                     }
-                }
-
-
-                if (arrayListTaskSameOrganizationUnitKpi) {
-                    creators2 = arrayListTaskSameOrganizationUnitKpi[key].map(x => {
-                        return x.accountableEmployees.concat(x.consultedEmployees).concat(x.informedEmployees).concat(x.responsibleEmployees);
-                    })
-                    creators2.forEach(x => creators1 = creators1.concat(x));
-                }
-
-                creators1 = Array.from(new Set(creators1));
-                creators1.map(x => {
-                    if (x) {
-                        numberOfParticipant++;
-                    }
-                });
-                temporary[parent.name] = numberOfParticipant;
-                numberOfParticipants = Object.assign(numberOfParticipants, temporary);
-            })
+    
+                    creators1 = Array.from(new Set(creators1));
+                    creators1.map(x => {
+                        if (x) {
+                            numberOfParticipant++;
+                        }
+                    });
+                    temporary[parent.name] = numberOfParticipant;
+                    numberOfParticipants = Object.assign(numberOfParticipants, temporary);
+                })
+            }
         }
 
         numberOfParticipants = Object.assign(
@@ -299,20 +299,22 @@ function TrendsInOrganizationalUnitKpiChart(props) {
         if(!listOrganizationalUnitKpi && listChildTarget){
             numberOfEmployeeKpis = {}
         } else {
-            listOrganizationalUnitKpi.map(parent => {
-                let numberOfEmployeeKpi = 0;
-                let temporary = {};
-                if(listChildTarget){
-                    numberOfEmployeeKpi = listChildTarget.filter(item => item._id === parent.name).map(item => {
-                        if (item.employeeKpi[0].creator.length !== 0) {
-                            return item.employeeKpi.length;
-                        }
-                    })
-                }
-
-                temporary[parent.name] = numberOfEmployeeKpi;
-                numberOfEmployeeKpis = Object.assign(numberOfEmployeeKpis, temporary);
-            })
+            if (listOrganizationalUnitKpi?.length > 0) {
+                listOrganizationalUnitKpi.map(parent => {
+                    let numberOfEmployeeKpi = 0;
+                    let temporary = {};
+                    if(listChildTarget){
+                        numberOfEmployeeKpi = listChildTarget.filter(item => item._id === parent.name).map(item => {
+                            if (item.employeeKpi[0].creator.length !== 0) {
+                                return item.employeeKpi.length;
+                            }
+                        })
+                    }
+    
+                    temporary[parent.name] = numberOfEmployeeKpi;
+                    numberOfEmployeeKpis = Object.assign(numberOfEmployeeKpis, temporary);
+                })
+            }
         }
 
         numberOfEmployeeKpis = Object.assign(
