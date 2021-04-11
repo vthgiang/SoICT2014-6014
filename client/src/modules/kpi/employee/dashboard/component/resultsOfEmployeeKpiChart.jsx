@@ -53,20 +53,14 @@ function ResultsOfEmployeeKpiChart(props) {
     let listEmployeeKpiSetEachYear;
 
     useEffect(() => {
-        props.getAllEmployeeKpiSetByMonth(state.roleId, state.userId, state.startMonth, state.endMonth);
+        props.getAllEmployeeKpiSetByMonth([state.roleId], state.userId, state.startMonth, state.endMonth);
+        props.createEmployeeKpiSet.employeeKpiSetByMonth = null
 
         setState( {
             ...state,
             dataStatus: DATA_STATUS.QUERYING,
         });
     }, [])
-
-    useEffect(() => { 
-            setState( {
-                ...state,
-                dataStatus: DATA_STATUS.QUERYING,
-            });
-    }, [state.infosearch.startMonth, state.infosearch.endMonth]);
 
     useEffect(()=>{
         if(state.dataStatus === DATA_STATUS.QUERYING) {
@@ -123,10 +117,12 @@ function ResultsOfEmployeeKpiChart(props) {
             await setState( {
                     ...state,
                     startMonth: state.startMonth,
-                    endMonth: state.endMonth
+                    endMonth: state.endMonth,
+                    dataStatus: DATA_STATUS.QUERYING
             })
-
-            props.getAllEmployeeKpiSetByMonth(state.roleId, state.userId, state.startMonth, state.endMonth);
+            
+            props.createEmployeeKpiSet.employeeKpiSetByMonth = null
+            props.getAllEmployeeKpiSetByMonth([state.roleId], state.userId, state.startMonth, state.endMonth);
         }
     };
 

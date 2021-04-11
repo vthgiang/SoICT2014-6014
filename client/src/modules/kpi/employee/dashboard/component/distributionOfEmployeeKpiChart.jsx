@@ -37,11 +37,32 @@ function DistributionOfEmployeeKpiChart(props) {
             roleId: currentRole,
             month: month
         });
+        props.createEmployeeKpiSet.currentKPI = null
+        setState(  {
+            ...state,
+            dataStatus: DATA_STATUS.QUERYING,
+        });
     }, []);
 
 
     useEffect(() => {
-        pieChart(createEmployeeKpiSet);
+        if (state.dataStatus === DATA_STATUS.QUERYING) {
+            if (props.createEmployeeKpiSet.currentKPI) {
+                setState({
+                    ...state,
+                    dataStatus: DATA_STATUS.AVAILABLE
+                });
+            }
+
+        } else if (state.dataStatus === DATA_STATUS.AVAILABLE) {
+            let data = pieChart(createEmployeeKpiSet);
+            setState({
+                ...state,
+                chart: data?.chart,
+                dataPieChart: data?.dataPieChart,
+                dataStatus: DATA_STATUS.FINISHED
+            })
+        }
     });
 
     useEffect(() => {
@@ -51,10 +72,11 @@ function DistributionOfEmployeeKpiChart(props) {
             roleId: currentRole,
             month: state.month
         });
-            setState(  {
-                ...state,
-                dataStatus: DATA_STATUS.QUERYING,
-            });
+        setState(  {
+            ...state,
+            dataStatus: DATA_STATUS.QUERYING,
+        });
+        props.createEmployeeKpiSet.currentKPI = null
     }, [state.month]);
 
     /**Thiết lập dữ liệu biểu đồ */
@@ -87,33 +109,37 @@ function DistributionOfEmployeeKpiChart(props) {
         removePreviousChart();
 
         // Tạo mảng dữ liệu
+        let chart
         let dataPieChart = setDataPieChart(createEmployeeKpiSet);
-        // console.log("pieChart", dataPieChart)
 
         if(dataPieChart){
-    let chart = c3.generate({
-        bindto: refKpiSet.current,             // Đẩy chart vào thẻ div có id="pieChart"
+            chart = c3.generate({
+                bindto: refKpiSet.current,             // Đẩy chart vào thẻ div có id="pieChart"
 
-        // Căn lề biểu đồ
-        padding: {
-            top: 20,
-            bottom: 20,
-            right: 20,
-            left: 20
-        },
+                // Căn lề biểu đồ
+                padding: {
+                    top: 20,
+                    bottom: 20,
+                    right: 20,
+                    left: 20
+                },
 
-        data: {                                 // Dữ liệu biểu đồ
-            columns: dataPieChart,
-            type: 'pie',
+                data: {                                 // Dữ liệu biểu đồ
+                    columns: dataPieChart,
+                    type: 'pie',
 
-        },
+                },
 
-        legend: {
-            show: false
+                legend: {
+                    show: false
+                }
+            });
         }
-    });
-}
 
+        return {
+            chart,
+            dataPieChart
+        }
     };
 
     const handleSelectMonth = async (value) => {
@@ -157,11 +183,11 @@ function DistributionOfEmployeeKpiChart(props) {
                 <section id={"distributionOfEmployeeKpi"} className="c3-chart-container">
                     <div ref={refKpiSet}> </div>
                     <CustomLegendC3js
-                        chart={chart}
+                        chart={state.chart}
                         chartId={"distributionOfEmployeeKpi"}
                         legendId={"distributionOfEmployeeKpiLegend"}
                         title={`${translate('kpi.evaluation.employee_evaluation.KPI_list')} (${currentEmployeeKpiSet.kpis && currentEmployeeKpiSet.kpis.length})`}
-                        dataChartLegend={dataPieChart && dataPieChart.map(item => item[0])}
+                        dataChartLegend={state.dataPieChart && state.dataPieChart.map(item => item[0])}
                     />
                 </section>
                 : <section>{translate('kpi.organizational_unit.dashboard.no_data')}</section>
