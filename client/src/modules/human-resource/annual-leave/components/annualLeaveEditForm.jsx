@@ -178,7 +178,7 @@ function AnnualLeaveEditForm(props) {
                     totalHours: value,
                 }
             });
-        }
+        };
         return msg === undefined;
     }
 
@@ -200,7 +200,7 @@ function AnnualLeaveEditForm(props) {
                     reason: value,
                 }
             });
-        }
+        };
         return msg === undefined;
     }
 

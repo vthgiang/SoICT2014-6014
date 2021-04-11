@@ -128,11 +128,12 @@ function AnnualLeaveApplicationForm(props) {
         }
 
         setState({
+            ...state,
             endDate: value,
             errorOnStartDate: errorOnStartDate,
             errorOnEndDate: errorOnEndDate
         })
-    }
+    };
 
     /** Bắt sự kiện chọn xin nghi theo giờ */
     const handleChecked = () => {
@@ -142,9 +143,8 @@ function AnnualLeaveApplicationForm(props) {
             endTime: "",
             startTime: "",
             totalHours: ""
-
         })
-    }
+    };
 
     /**
      * Bắt sự kiện thay đổi giờ bắt đầu
@@ -157,7 +157,7 @@ function AnnualLeaveApplicationForm(props) {
                 startTime: value
             }
         });
-    }
+    };
 
     /**
      * Bắt sự kiện thay đổi giờ kết thúc
@@ -170,7 +170,7 @@ function AnnualLeaveApplicationForm(props) {
                 endTime: value
             }
         });
-    }
+    };
 
     const validateTotalHours = (value, willUpdateState = true) => {
         const { translate } = props;
@@ -183,7 +183,7 @@ function AnnualLeaveApplicationForm(props) {
                     totalHours: value,
                 }
             });
-        }
+        };
         return msg === undefined;
     }
 
@@ -196,15 +196,13 @@ function AnnualLeaveApplicationForm(props) {
     const validateReason = (value, willUpdateState = true) => {
         const { translate } = props;
         let msg = AnnualLeaveFormValidator.validateReason(value, translate);
-        if (willUpdateState) {
-            setState(state => {
-                return {
-                    ...state,
-                    errorOnReason: msg,
-                    reason: value,
-                }
-            });
-        }
+        setState(state => {
+            return {
+                ...state,
+                errorOnReason: msg,
+                reason: value,
+            }
+        });
         return msg === undefined;
     }
 

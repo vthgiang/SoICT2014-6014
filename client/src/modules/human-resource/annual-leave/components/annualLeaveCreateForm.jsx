@@ -63,14 +63,13 @@ function AnnualLeaveCreateForm(props) {
                     organizationalUnit: "",
                 }
             });
-
-        }
+        };
         return msg === undefined;
     }
 
     /** Function bắt sự kiện thay đổi mã nhân viên */
     const handleMSNVChange = async (value) => {
-        props.getDepartmentOfUser({ email: value[0] });
+        await props.getDepartmentOfUser({ email: value[0] });
         validateEmployeeNumber(value[0], true);
     }
 
@@ -85,7 +84,7 @@ function AnnualLeaveCreateForm(props) {
                     organizationalUnit: value,
                 }
             });
-        }
+        };
         return msg === undefined;
     }
 
@@ -131,7 +130,6 @@ function AnnualLeaveCreateForm(props) {
             endTime: "",
             startTime: "",
             totalHours: ""
-
         })
     }
 
@@ -208,7 +206,7 @@ function AnnualLeaveCreateForm(props) {
                     totalHours: value,
                 }
             });
-        }
+        };
         return msg === undefined;
     }
 
@@ -231,7 +229,7 @@ function AnnualLeaveCreateForm(props) {
                     reason: value,
                 }
             });
-        }
+        };
         return msg === undefined;
     }
 

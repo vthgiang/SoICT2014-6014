@@ -74,11 +74,13 @@ function AnnualLeaveImportForm(props) {
      */
     const handleOrganizationalUnitChange = (value) => {
         const { salary } = props;
-        setState({
-            ...state,
-            organizationalUnit: value[0],
-            importData: [],
-            changeMonth: true,
+        setState(state => {
+            return {
+                ...state,
+                organizationalUnit: value[0],
+                importData: [],
+                changeMonth: true,
+            }
         });
         window.$('#file-import-annual-leave').val('');
     }
@@ -115,10 +117,12 @@ function AnnualLeaveImportForm(props) {
      * @param {*} value : Dữ liệu cấu hình file import
      */
     const handleChangeConfig = async (value) => {
-        setState({
-            ...state,
-            configData: value,
-            importData: [],
+        await setState(state => {
+            return {
+                ...state,
+                configData: value,
+                importData: [],
+            }
         })
     }
 
@@ -174,16 +178,20 @@ function AnnualLeaveImportForm(props) {
                 x = { ...x, errorAlert: errorAlert }
                 return x;
             });
-            setState({
-                ...state,
-                importData: value,
-                rowError: rowError,
-                checkFileImport: checkFileImport,
+            setState(state => {
+                return {
+                    ...state,
+                    importData: value,
+                    rowError: rowError,
+                    checkFileImport: checkFileImport,
+                }
             })
         } else {
-            setState({
-                ...state,
-                checkFileImport: checkFileImport,
+            setState(state => {
+                return {
+                    ...state,
+                    checkFileImport: checkFileImport,
+                }
             })
         }
     }

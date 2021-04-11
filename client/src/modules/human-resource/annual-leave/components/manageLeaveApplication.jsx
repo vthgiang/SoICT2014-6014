@@ -12,9 +12,9 @@ import { DepartmentActions } from '../../../super-admin/organizational-unit/redu
 import { getTableConfiguration } from '../../../../helpers/tableConfiguration';
 
 function ManageLeaveApplication(props) {
-    const tableId = "manage-leave-applicationn-table";
+    const _tableId = "manage-leave-applicationn-table";
     const defaultConfig = { limit: 5 }
-    const limit = getTableConfiguration(tableId, defaultConfig).limit;
+    const _limit = getTableConfiguration(_tableId, defaultConfig).limit;
 
     const [state, setState] = useState({
         dataStatus: 0,
@@ -22,8 +22,8 @@ function ManageLeaveApplication(props) {
         employeeName: "",
         status: ['waiting_for_approval'],
         page: 0,
-        limit: limit,
-        tableId
+        limit: _limit,
+        tableId: _tableId
     })
 
     useEffect(() => {
@@ -80,7 +80,7 @@ function ManageLeaveApplication(props) {
      * @param {*} value : Thông tin nhân viên muốn xem
      */
     const handleView = async (value) => {
-        setState(state => {
+        await setState(state => {
             return {
                 ...state,
                 currentRowView: value
@@ -92,9 +92,11 @@ function ManageLeaveApplication(props) {
     /** Function bắt sự kiện thay đổi mã nhân viên, tên nhân viên */
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setState({
-            ...state,
-            [name]: value
+        setState(state => {
+            return {
+                ...state,
+                [name]: value
+            }
         });
     }
 
@@ -107,9 +109,11 @@ function ManageLeaveApplication(props) {
             let partMonth = value.split('-');
             value = [partMonth[1], partMonth[0]].join('-');
         }
-        setState({
-            ...state,
-            month: value
+        setState(state => {
+            return {
+                ...state,
+                month: value
+            }
         });
     }
 
@@ -121,53 +125,62 @@ function ManageLeaveApplication(props) {
         if (value.length === 0) {
             value = null
         };
-        setState({
-            ...state,
-            status: value
+        setState(state => {
+            return {
+                ...state,
+                status: value
+            }
         })
     }
 
     /** Function bắt sự kiện tìm kiếm */
     const handleSunmitSearch = async () => {
-        props.searchAnnualLeaves(state);
+        await props.searchAnnualLeaves(state);
     }
 
     useEffect(() => {
-        let departmentsThatUserIsManager = props.department.departmentsThatUserIsManager;
-        if (state.dataStatus === 0 && departmentsThatUserIsManager && departmentsThatUserIsManager.length !== 0) {
-            departmentsThatUserIsManager = departmentsThatUserIsManager.map(x => x._id);
-            props.searchAnnualLeaves({ ...state, organizationalUnits: departmentsThatUserIsManager });
-            setState({
-                ...state,
-                dataStatus: 1,
-                organizationalUnits: departmentsThatUserIsManager,
-            })
-        }
-    }, [props.department.departmentsThatUserIsManager]);
+        const shouldComponentDidUpdate = () => {
+            let departmentsThatUserIsManager = props.department.departmentsThatUserIsManager;
+            if (state.dataStatus === 0 && departmentsThatUserIsManager && departmentsThatUserIsManager.length !== 0) {
+                departmentsThatUserIsManager = departmentsThatUserIsManager.map(x => x._id);
+                props.searchAnnualLeaves({ ...state, organizationalUnits: departmentsThatUserIsManager });
+                setState(state => {
+                    return {
+                        dataStatus: 1,
+                        organizationalUnits: departmentsThatUserIsManager,
+                    }
+                })
+            }
+        };
+        shouldComponentDidUpdate();
+    }, [props.department.departmentsThatUserIsManager, state.dataStatus]);
 
     /**
      * Bắt sự kiện setting số dòng hiện thị trên một trang
      * @param {*} number : Số dòng hiện thị
      */
     const setLimit = async (number) => {
-        setState({
-            ...state,
-            limit: parseInt(number),
+        await setState(state => {
+            return {
+                ...state,
+                limit: parseInt(number),
+            }
         });
         props.searchAnnualLeaves(state);
     }
 
     /**
      * Bắt sự kiện chuyển trang
-     * @param {*} pageNumber : Số trạng hiện tại cần hiện thị
+     * @param {*} pageNumber : Số trang hiện tại cần hiện thị
      */
     const setPage = async (pageNumber) => {
         let { limit } = state;
         let page = (pageNumber - 1) * limit;
-        setState({
-            ...state,
-            page: parseInt(page),
-
+        await setState(state => {
+            return {
+                ...state,
+                page: parseInt(page),
+            }
         });
         props.searchAnnualLeaves(state);
     };
@@ -221,7 +234,7 @@ function ManageLeaveApplication(props) {
     }
 
     const { translate, annualLeave } = props;
-    const { month, status, page, currentRow, currentRowView, importAnnualLeave } = state;
+    const { month, status, limit, page, currentRow, currentRowView, importAnnualLeave, tableId } = state;
 
     let listAnnualLeaves = [];
     if (annualLeave.isLoading === false) {
