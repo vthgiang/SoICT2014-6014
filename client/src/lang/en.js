@@ -75,7 +75,7 @@ export default {
             select_all: "Select all",
             add_import: "Add data from file",
         },
-        
+
         dashboard_unit: {
             urgent_need_to_do_chart: "The chart shows the number of urgent / To-do tasks",
             urgent_task_amount: "The number of urgent tasks",
@@ -107,7 +107,7 @@ export default {
                 group: "Groups",
                 statistic: "Statistics",
                 generalConfiguration: "generalConfiguration",
-                evaluation:"Evaluation"
+                evaluation: "Evaluation"
             },
 
             task_template: "Task Template",
@@ -152,7 +152,7 @@ export default {
             kpi_unit_evaluate: "Evaluate unit KPI",
             kpi_unit_overview: "Overview unit KPI",
             kpi_unit_dashboard: "Dashboard unit KPI",
-            kpi_unit_statistic: "Statistic unit KPI",
+            kpi_unit_statistic: "Ananyze the rationality of unit KPI",
             kpi_unit_manager: "Manage organizational unit KPI",
             kpi_member_manager: "Evaluate Employee KPI",
             kpi_member_dashboard: "DashBoard KPI Member",
@@ -979,7 +979,7 @@ export default {
         },
 
         language: "Setting language",
-        
+
         alert: {
             title: "Notification from system",
             log_again: "Error! Log in again!",
@@ -3337,9 +3337,9 @@ export default {
             task_dashboard: {
                 general_unit_task: "General unit task dashboard",
                 unit: "Organizational unit",
-                unit_lowercase : "organizational unit",
+                unit_lowercase: "organizational unit",
                 all_tasks: "All tasks",
-                 of: "of",
+                of: "of",
                 all_tasks_inprocess: "All tasks inprocess",
                 all_tasks_finished: "All tasks finished",
                 confirmed_task: "Confirmed tasks",
@@ -3463,7 +3463,7 @@ export default {
                                 "KPI is being approved, you can not edit!",
                             activated:
                                 "KPI is being activated, you can not edit!",
-                            evaluated: 
+                            evaluated:
                                 "KPI is being evaluated, you can not edit!"
                         },
                         request_approval_kpi: {
@@ -3775,7 +3775,7 @@ export default {
                     copy_kpi_unit: "Copy KPI Unit",
                     employee_importance: "Employee importances",
                     organizational_unit_importance: "Children organizational unit importances",
-                    
+
                     // Nhóm dành cho trọng số
                     weight_total: "Weight total",
                     not_satisfied: "Not satisfied",
