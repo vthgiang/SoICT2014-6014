@@ -54,10 +54,12 @@ const AnnualLeaveManagement = (props) => {
     }, [search]);
 
     useEffect(() => {
-        const { searchAnnualLeaves } = props;
-        searchAnnualLeaves(state);
-        props.getDepartment();
-    }, [state.limit, state.page]);
+        async function fetchData() {
+            await props.searchAnnualLeaves(state);
+            await props.getDepartment();
+        };
+        fetchData();
+    }, []);
 
     useEffect(() => {
         if (!state.organizationalUnits && props && props.department && props.department.list.length > 0) {
@@ -128,7 +130,7 @@ const AnnualLeaveManagement = (props) => {
 
     const { translate, annualLeave, department } = props;
 
-    const { month, limit, page, organizationalUnits, currentRow, currentRowView, importAnnualLeave, tableId } = state;
+    const { month, limit, page, organizationalUnits, currentRow, currentRowView, importAnnualLeave, tableId, } = state;
 
     const { list } = department;
     let listAnnualLeaves = [], exportData = [];
@@ -137,7 +139,6 @@ const AnnualLeaveManagement = (props) => {
         parseInt(annualLeave.totalList / limit) :
         parseInt((annualLeave.totalList / limit) + 1);
     currentPage = parseInt((page / limit) + 1);
-    console.log(currentPage);
 
     if (annualLeave.isLoading === false) {
         listAnnualLeaves = annualLeave.listAnnualLeaves;
@@ -286,7 +287,10 @@ const AnnualLeaveManagement = (props) => {
                 limit: parseInt(number),
             }
         });
-        props.searchAnnualLeaves(state);
+        props.searchAnnualLeaves({
+            ...state,
+            limit: parseInt(number)
+        });
     }
 
     /**
@@ -302,9 +306,10 @@ const AnnualLeaveManagement = (props) => {
                 page: parseInt(page),
             }
         });
-        currentPage = pageNumber;
-        console.log(currentPage);
-        props.searchAnnualLeaves(state);
+        props.searchAnnualLeaves({
+            ...state,
+            page: parseInt(page),
+        });
     }
 
     return (
@@ -447,7 +452,6 @@ const AnnualLeaveManagement = (props) => {
                     display={listAnnualLeaves && listAnnualLeaves.length !== 0 && listAnnualLeaves.length}
                     total={annualLeave && annualLeave.totalList}
                     func={setPage} />
-                {console.log(currentPage)}
             </div>
             {   /* From chỉnh sửa thông tin nghỉ phép */
                 currentRow &&

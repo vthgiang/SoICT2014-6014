@@ -7,21 +7,6 @@ import { DialogModal, ButtonModal, ErrorLabel, DatePicker, UploadFile } from '..
 import ValidationHelper from '../../../../../helpers/validationHelper';
 
 function CertificateAddModal(props) {
-    const [state, setState] = useState({
-        startDate: formatDate(Date.now()),
-        endDate: "",
-        name: "",
-        issuedBy: "",
-        urlFile: "",
-        fileUpload: "",
-        file: "",
-    })
-
-    const { translate } = props;
-
-    const { id } = props;
-
-    const { name, issuedBy, endDate, startDate, errorOnName, errorOnUnit, errorOnEndDate, errorOnStartDate } = state;
 
     /**
      * Function format ngày hiện tại thành dạnh mm-yyyy
@@ -43,6 +28,22 @@ function CertificateAddModal(props) {
         }
         return date;
     }
+
+    const [state, setState] = useState({
+        startDate: formatDate(Date.now()),
+        endDate: "",
+        name: "",
+        issuedBy: "",
+        urlFile: "",
+        fileUpload: "",
+        file: "",
+    })
+
+    const { translate } = props;
+
+    const { id } = props;
+
+    const { name, issuedBy, endDate, startDate, errorOnName, errorOnUnit, errorOnEndDate, errorOnStartDate } = state;
 
     /** Bắt sự kiện thay đổi file đính kèm */
     const handleChangeFile = (value) => {
