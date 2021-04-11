@@ -25,7 +25,7 @@ function CareerField(props) {
     }, [])
 
     const onChanged = async (e, data) => {
-        setState({
+        await setState({
             ...state,
             currentNode: data.node,
         })
