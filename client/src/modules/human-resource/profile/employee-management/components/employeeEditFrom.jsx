@@ -882,8 +882,10 @@ const EmployeeEditFrom = (props) => {
         const shouldUpdate = async () => {
             if (props._id !== state._id && !props.employeesInfo.isLoading) {
                 await props.getEmployeeProfile({ id: props._id, callAPIByUser: false });
+                
                 setState({
                     ...state,
+                    _id: props?._id,
                     dataStatus: DATA_STATUS.QUERYING,
                     img: undefined,
                     avatar: "",
@@ -905,8 +907,6 @@ const EmployeeEditFrom = (props) => {
                 })
             };
 
-            console.log("status", state.dataStatus)
-    
             if (state.dataStatus === DATA_STATUS.QUERYING && !props.employeesInfo.isLoading) {
                 await setState({
                     ...state,
@@ -931,10 +931,9 @@ const EmployeeEditFrom = (props) => {
                     houseHold: props.employeesInfo.employees?.[0]?.houseHold,
                 });
             };
-            console.log("status", state.dataStatus)
         }
         shouldUpdate();
-    }, [props._id, state.dataStatus]);
+    });
 
 
     const _fm_saveMember = (data) => {
