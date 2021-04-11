@@ -37,11 +37,13 @@ class IncidentLogTab extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
+        console.log(nextProps)
         if (nextProps.id !== prevState.id) {
             return {
                 ...prevState,
                 id: nextProps.id,
                 incidentLogs: nextProps.incidentLogs,
+                status: nextProps.status
             }
         } else {
             return null;
@@ -58,11 +60,33 @@ class IncidentLogTab extends Component {
             return '';
         }
     }
+    formatStatus = (status) => {
+        const { translate } = this.props;
+
+        if (status === 'ready_to_use') {
+            return translate('asset.general_information.ready_use')
+        }
+        else if (status === 'in_use') {
+            return translate('asset.general_information.using')
+        }
+        else if (status === 'broken') {
+            return translate('asset.general_information.damaged')
+        }
+        else if (status === 'lost') {
+            return translate('asset.general_information.lost')
+        }
+        else if (status === 'disposed') {
+            return translate('asset.general_information.disposal')
+        }
+        else {
+            return '';
+        }
+    }
 
     render() {
         const { id } = this.props;
         const { translate, user } = this.props;
-        const { incidentLogs } = this.state;
+        const { incidentLogs, status } = this.state;
 
         var userlist = user.list;
 
@@ -77,6 +101,7 @@ class IncidentLogTab extends Component {
                                 <th>{translate('asset.general_information.reported_by')}</th>
                                 <th>{translate('asset.general_information.date_incident')}</th>
                                 <th>{translate('asset.general_information.content')}</th>
+                                <th>{translate('asset.general_information.status')}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -88,6 +113,7 @@ class IncidentLogTab extends Component {
                                         <td>{x.reportedBy ? (userlist.length && userlist.filter(item => item._id === x.reportedBy).pop() ? userlist.filter(item => item._id === x.reportedBy).pop().name : '') : ''}</td>
                                         <td>{x.dateOfIncident ? this.formatDate(x.dateOfIncident) : ''}</td>
                                         <td>{x.description}</td>
+                                        <td>{this.formatStatus(status)}</td>
                                     </tr>
                                 ))
                             }
