@@ -51,6 +51,9 @@ const {
     CoinRule,
     Quote,
     BusinessDepartment,
+    SalesOrder,
+    Payment,
+    PurchaseOrder,
 
     Customer,
     Care,
@@ -65,8 +68,7 @@ const {
     ManufacturingMill,
     ManufacturingPlan,
     ManufacturingCommand,
-    WorkSchedule,
-    SalesOrder
+    WorkSchedule
 } = require("../models");
 
 require("dotenv").config();
@@ -183,6 +185,10 @@ const initSampleCompanyDB = async () => {
         if (!db.models.BankAccount) BankAccount(db);
         if (!db.models.CoinRule) CoinRule(db);
         if (!db.models.Quote) Quote(db);
+        if (!db.models.BusinessDepartment) Discount(db);
+        if (!db.models.SalesOrder) BankAccount(db);
+        if (!db.models.Payment) CoinRule(db);
+        if (!db.models.PurchaseOrder) Quote(db);
 
         if (!db.models.Customer) Customer(db);
         if (!db.models.Care) Care(db);
@@ -332,7 +338,7 @@ const initSampleCompanyDB = async () => {
             email: "cuongth.vnist@gmail.com",
             password: hash,
             company: vnist._id,
-        },
+        }
     ]);
     console.log("Dữ liệu tài khoản người dùng cho công ty VNIST", users);
 
@@ -394,33 +400,67 @@ const initSampleCompanyDB = async () => {
         name: "Giám đốc",
         type: roleChucDanh._id,
     });
-    const nvPhongHC = await Role(vnistDB).create({
-        parents: [roleEmployee._id],
-        name: "Nhân viên phòng kinh doanh",
-        type: roleChucDanh._id,
-    });
-    const phoPhongHC = await Role(vnistDB).create({
-        parents: [roleDeputyManager._id, nvPhongHC._id],
-        name: "Phó phòng kinh doanh",
-        type: roleChucDanh._id,
-    });
-    const truongPhongHC = await Role(vnistDB).create({
-        parents: [roleManager._id, nvPhongHC._id, phoPhongHC._id],
-        name: "Trưởng phòng kinh doanh",
-        type: roleChucDanh._id,
-    });
 
-    const nvPhongNS = await Role(vnistDB).create({
+    //Khởi tạo Role cho bộ phận kinh doanh
+    const nvKinhDoanh247 = await Role(vnistDB).create({
+        parents: [roleEmployee._id],
+        name: "Nhân viên phòng kinh doanh 247",
+        type: roleChucDanh._id,
+    });
+    const truongPhongKinhDoanh247 = await Role(vnistDB).create({
+        parents: [roleManager._id, nvKinhDoanh247._id],
+        name: "Trưởng phòng kinh doanh 247",
+        type: roleChucDanh._id,
+    });
+    const nvKinhDoanh123 = await Role(vnistDB).create({
+        parents: [roleEmployee._id],
+        name: "Nhân viên phòng kinh doanh 123",
+        type: roleChucDanh._id,
+    });
+    const truongPhongKinhDoanh123 = await Role(vnistDB).create({
+        parents: [roleManager._id, nvKinhDoanh123._id],
+        name: "Trưởng phòng kinh doanh 123",
+        type: roleChucDanh._id,
+    });
+    const keToanVien = await Role(vnistDB).create({
+        parents: [roleEmployee._id],
+        name: "Kế toán viên",
+        type: roleChucDanh._id,
+    });
+    const keToanTruong = await Role(vnistDB).create({
+        parents: [roleManager._id, keToanVien._id],
+        name: "Kế toán trưởng",
+        type: roleChucDanh._id,
+    });
+    const nvSalesAdmin = await Role(vnistDB).create({
+        parents: [roleEmployee._id],
+        name: "Nhân viên qản lý bán hàng",
+        type: roleChucDanh._id,
+    });
+    const truongPhongSalesAdmin = await Role(vnistDB).create({
+        parents: [roleManager._id, nvSalesAdmin._id],
+        name: "Trưởng phòng quản lý bán hàng",
+        type: roleChucDanh._id,
+    });
+    const giamDocKinhDoanh = await Role(vnistDB).create({
+        parents: [roleManager._id, nvKinhDoanh247._id, truongPhongKinhDoanh247._id,
+            nvKinhDoanh123._id, truongPhongKinhDoanh123._id ],
+        name: "Giám đốc kinh doanh",
+        type: roleChucDanh._id,
+    });
+    //Kết thúc phần khởi tạo role cho bộ phận kinh doanh
+
+    const nvPhongHC = await Role(vnistDB).create({
         parents: [roleEmployee._id],
         name: "Nhân viên phòng nhân sự",
         type: roleChucDanh._id,
     });
-    const phoPhongNS = await Role(vnistDB).create({
+    const phoPhongHC = await Role(vnistDB).create({
         parents: [roleDeputyManager._id, nvPhongHC._id],
         name: "Phó phòng nhân sự",
         type: roleChucDanh._id,
     });
-    const truongPhongNS = await Role(vnistDB).create({
+    const truongPhongHC = await Role(vnistDB).create({
         parents: [roleManager._id, nvPhongHC._id, phoPhongHC._id],
         name: "Trưởng phòng nhân sự",
         type: roleChucDanh._id,
@@ -524,12 +564,12 @@ const initSampleCompanyDB = async () => {
             roleId: thanhVienBGĐ._id,
         },
         {
-            // Phó phòng kinh doanh Trần Thị Én
+            // Phó phòng nhân sự Trần Thị Én
             userId: users[6]._id,
             roleId: phoPhongHC._id,
         },
         {
-            // Nhân viên phòng kinh doanh Phạm Đình Phúc
+            // Nhân viên phòng nhân sự Phạm Đình Phúc
             userId: users[7]._id,
             roleId: nvPhongHC._id,
         },
@@ -617,6 +657,52 @@ const initSampleCompanyDB = async () => {
             userId: users[10]._id,
             roleId: nvNhaMayTPCN._id,
         },
+
+        //Gán quyền cho bộ phận kinh doanh
+        {
+            userId: users[2]._id,
+            roleId: giamDocKinhDoanh._id,
+        },
+        {
+            userId: users[3]._id,
+            roleId: truongPhongKinhDoanh247._id,
+        },
+        {
+            userId: users[4]._id,
+            roleId: nvKinhDoanh247._id,
+        },
+        {
+            userId: users[5]._id,
+            roleId: nvKinhDoanh247._id,
+        },
+        {
+            userId: users[6]._id,
+            roleId: truongPhongKinhDoanh123._id,
+        },
+        {
+            userId: users[7]._id,
+            roleId: nvKinhDoanh123._id,
+        },
+        {
+            userId: users[8]._id,
+            roleId: nvKinhDoanh123._id,
+        },
+        {
+            userId: users[9]._id,
+            roleId: keToanTruong._id,
+        },
+        {
+            userId: users[10]._id,
+            roleId: keToanVien._id,
+        },
+        {
+            userId: users[11]._id,
+            roleId: truongPhongSalesAdmin._id,
+        },
+        {
+            userId: users[12]._id,
+            roleId: nvSalesAdmin._id,
+        },
     ]);
 
     /**
@@ -632,11 +718,75 @@ const initSampleCompanyDB = async () => {
         employees: [thanhVienBGĐ._id],
         parent: null,
     });
+
+    // Khởi tạo cơ cấu tổ chức bộ phận kinh doanh
+    const boPhanKinhDoanh = await OrganizationalUnit(vnistDB).insertMany([
+        {
+            name: "Bộ phận kinh doanh",
+            description:
+                "Bao gồm các phòng ban kinh doanh",
+            managers: [giamDocKinhDoanh._id],
+            parent: Directorate._id,
+        },
+    ]);
+
+    // const phongKinhDoanh247 = await OrganizationalUnit(vnistDB).insertMany([
+    //     {
+    //         name: "Phòng kinh doanh 247",
+    //         description:
+    //             "Phòng kinh doanh 247",
+    //         managers: [truongPhongKinhDoanh247._id],
+    //         employees: [nvKinhDoanh247._id],
+    //         parent: boPhanKinhDoanh._id,
+    //     },
+    // ]);
+
+    // const phongKinhDoanh123 = await OrganizationalUnit(vnistDB).insertMany([
+    //     {
+    //         name: "Phòng kinh doanh 123",
+    //         description:
+    //             "Phòng kinh doanh 123",
+    //         managers: [truongPhongKinhDoanh123._id],
+    //         employees: [nvKinhDoanh123._id],
+    //         parent: boPhanKinhDoanh._id,
+    //     },
+    // ]);
+
+    // const boPhanKeToan = await OrganizationalUnit(vnistDB).insertMany([
+    //     {
+    //         name: "Bộ phận kế toán",
+    //         description:
+    //             "Bộ phận kế toán",
+    //         managers: [keToanTruong._id],
+    //         employees: [keToanVien._id],
+    //         parent: boPhanKinhDoanh._id,
+    //     },
+    // ]);
+
+    // const boPhanSalesAdmin = await OrganizationalUnit(vnistDB).insertMany([
+    //     {
+    //         name: "Bộ phận Sales Admin",
+    //         description:
+    //             "Bộ phận Sales Admin",
+    //         managers: [truongPhongSalesAdmin._id],
+    //         employees: [nvSalesAdmin._id],
+    //         parent: boPhanKinhDoanh._id,
+    //     },
+    // ]);
+
+    // console.log("Đã tạo dữ liệu các phòng ban kinh doanh",
+    //     boPhanKinhDoanh,
+    //     phongKinhDoanh247,
+    //     phongKinhDoanh123,
+    //     boPhanKeToan,
+    //     boPhanSalesAdmin
+    // )
+
     const departments = await OrganizationalUnit(vnistDB).insertMany([
         {
-            name: "Phòng kinh doanh",
+            name: "Phòng nhân sự",
             description:
-                "Phòng kinh doanh Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam",
+                "Phòng nhân sự",
             managers: [truongPhongHC._id],
             deputyManagers: [phoPhongHC._id],
             employees: [nvPhongHC._id],
@@ -5486,56 +5636,6 @@ const initSampleCompanyDB = async () => {
 
     /*---------------------------------------------------------------------------------------------
     -----------------------------------------------------------------------------------------------
-       TẠO DỮ LIỆU THÔNG TIN ĐƠN HÀNG
-    -----------------------------------------------------------------------------------------------
-    ----------------------------------------------------------------------------------------------- */
-
-    // const salesOrderData = [{
-    //     code: 'DKD20200001',
-    //     goods: [{
-    //         good: listProduct[0]._id,
-    //         packingRule: 'Baox10Thung',
-    //         conversionRate: '10',
-    //         quantity: 100
-    //     }, {
-    //         good: listProduct[1]._id,
-    //         packingRule: 'Thungx20Bao',
-    //         conversionRate: '12',
-    //         quantity: 150
-    //     }],
-    //     priority: 1
-    // }, {
-    //     code: 'DKD20200002',
-    //     goods: [{
-    //         good: listProduct[0]._id,
-    //         packingRule: 'Baox10Thung',
-    //         conversionRate: '10',
-    //         quantity: 50
-    //     }, {
-    //         good: listProduct[1]._id,
-    //         packingRule: 'Thungx20Bao',
-    //         conversionRate: '12',
-    //         quantity: 100
-    //     }],
-    //     priority: 2
-    // }, {
-    //     code: 'DKD20200003',
-    //     goods: [{
-    //         good: listProduct[0]._id,
-    //         packingRule: 'Baox10Thung',
-    //         conversionRate: '10',
-    //         quantity: 200
-    //     }],
-    //     priority: 3
-    // }];
-
-    // const listSalesOrders = await SalesOrder(vnistDB).insertMany(salesOrderData);
-
-    // console.log("Tạo xong dữ liệu đơn hàng", listSalesOrders);
-
-
-    /*---------------------------------------------------------------------------------------------
-    -----------------------------------------------------------------------------------------------
       TẠO DỮ LIỆU THÔNG TIN THUẾ
     -----------------------------------------------------------------------------------------------
     ----------------------------------------------------------------------------------------------- */
@@ -5859,6 +5959,21 @@ const initSampleCompanyDB = async () => {
     ]);
     console.log("Khởi tạo xong danh sách thông tin khuyến mãi");
 
+         /*---------------------------------------------------------------------------------------------
+    -----------------------------------------------------------------------------------------------
+      TẠO DỮ LIỆU CẤU HÌNH ĐƠN VỊ KINH DOANH
+    -----------------------------------------------------------------------------------------------
+    ----------------------------------------------------------------------------------------------- */
+
+    console.log("Khởi tạo dữ liệu cấu hình đơn vị kinh doanh");
+    var listBusinessDepartments = await BusinessDepartment(vnistDB).insertMany([
+        {
+        },
+
+    ]);
+    console.log("Khởi tạo xong cấu hình đơn vị kinh doanh");
+
+
     /*---------------------------------------------------------------------------------------------
        -----------------------------------------------------------------------------------------------
            TẠO DỮ LIỆU THÔNG TIN BÁO GIÁ
@@ -5949,10 +6064,455 @@ const initSampleCompanyDB = async () => {
             paymentAmount: 871500,
             note: "Khách hàng quen thuộc",
         },
+        {
+            status: 1,
+            code: "QUOTE_201249331",
+            creator: users[1]._id,
+            effectiveDate: "2021-01-07T00:00:00.000Z",
+            expirationDate: "2020-01-19T00:00:00.000Z",
+            customer: listCustomers[1]._id,
+            customerName: listCustomers[1].name,
+            customerPhone: listCustomers[1].mobilephoneNumber,
+            customerAddress: listCustomers[1].address,
+            customerRepresent: listCustomers[1].represent,
+            customerTaxNumber: listCustomers[1].taxNumber,
+            customerEmail: listCustomers[1].email,
+            goods: [
+                {
+                    good: listProduct[0]._id,
+                    pricePerBaseUnit: 60000,
+                    pricePerBaseUnitOrigin: listProduct[0].pricePerBaseUnit,
+                    salesPriceVariance: listProduct[0].salesPriceVariance,
+                    quantity: 12,
+                    serviceLevelAgreements: [
+                        {
+                            descriptions: ["Đóng gói đúng quy trình", "Sản phẩm đi đầu về chất lượng"],
+                            _id: listServiceLevelAgreements[0]._id,
+                            title: "Chất lượng sản phẩm đi đầu"
+                        }
+                    ],
+                    taxs: [
+                        {
+                            _id: listTaxs[0]._id,
+                            code: listTaxs[0]._id,
+                            name: "VAT",
+                            description: listTaxs[0]._id,
+                            percent: 5,
+                        }
+                    ],
+                    discounts: [],
+                    amount: 720000,
+                    amountAfterDiscount: 720000,
+                    amountAfterTax: 792000
+                },
+            ],
+            discounts: [
+                {
+                    _id: listDistcounts[5]._id,
+                    code: listDistcounts[5].code,
+                    type: listDistcounts[5].type,
+                    formality: listDistcounts[5].formality,
+                    name: listDistcounts[5].name,
+                    effectiveDate: listDistcounts[5].effectiveDate,
+                    expirationDate: listDistcounts[5].expirationDate,
+                    maximumFreeShippingCost: 20000,
+                },
+                {
+                    _id: listDistcounts[6]._id,
+                    code: listDistcounts[6].code,
+                    type: listDistcounts[6].type,
+                    formality: listDistcounts[6].formality,
+                    name: listDistcounts[6].name,
+                    effectiveDate: listDistcounts[6].effectiveDate,
+                    expirationDate: listDistcounts[6].expirationDate,
+                    discountedPercentage: 10,
+                },
+                {
+                    _id: listDistcounts[7]._id,
+                    code: listDistcounts[7].code,
+                    type: listDistcounts[7].type,
+                    formality: listDistcounts[7].formality,
+                    name: listDistcounts[7].name,
+                    effectiveDate: listDistcounts[7].effectiveDate,
+                    expirationDate: listDistcounts[7].expirationDate,
+                    loyaltyCoin: 1000,
+                },
+
+            ],
+            shippingFee: 100000,
+            deliveryTime: "2020-12-18T00:00:00.000Z",
+            coin: 500,
+            paymentAmount: 871500,
+            note: "Khách hàng quen thuộc",
+        },
+        {
+            status: 1,
+            code: "QUOTE_201249333",
+            creator: users[1]._id,
+            effectiveDate: "2020-11-05T00:00:00.000Z",
+            expirationDate: "2020-12-20T00:00:00.000Z",
+            customer: listCustomers[0]._id,
+            customerName: listCustomers[0].name,
+            customerPhone: listCustomers[0].mobilephoneNumber,
+            customerAddress: listCustomers[0].address,
+            customerRepresent: listCustomers[0].represent,
+            customerTaxNumber: listCustomers[0].taxNumber,
+            customerEmail: listCustomers[0].email,
+            goods: [
+                {
+                    good: listProduct[0]._id,
+                    pricePerBaseUnit: 60000,
+                    pricePerBaseUnitOrigin: listProduct[0].pricePerBaseUnit,
+                    salesPriceVariance: listProduct[0].salesPriceVariance,
+                    quantity: 12,
+                    serviceLevelAgreements: [
+                        {
+                            descriptions: ["Đóng gói đúng quy trình", "Sản phẩm đi đầu về chất lượng"],
+                            _id: listServiceLevelAgreements[0]._id,
+                            title: "Chất lượng sản phẩm đi đầu"
+                        }
+                    ],
+                    taxs: [
+                        {
+                            _id: listTaxs[0]._id,
+                            code: listTaxs[0]._id,
+                            name: "VAT",
+                            description: listTaxs[0]._id,
+                            percent: 5,
+                        }
+                    ],
+                    discounts: [],
+                    amount: 720000,
+                    amountAfterDiscount: 720000,
+                    amountAfterTax: 792000
+                },
+            ],
+            discounts: [
+                {
+                    _id: listDistcounts[5]._id,
+                    code: listDistcounts[5].code,
+                    type: listDistcounts[5].type,
+                    formality: listDistcounts[5].formality,
+                    name: listDistcounts[5].name,
+                    effectiveDate: listDistcounts[5].effectiveDate,
+                    expirationDate: listDistcounts[5].expirationDate,
+                    maximumFreeShippingCost: 20000,
+                },
+                {
+                    _id: listDistcounts[6]._id,
+                    code: listDistcounts[6].code,
+                    type: listDistcounts[6].type,
+                    formality: listDistcounts[6].formality,
+                    name: listDistcounts[6].name,
+                    effectiveDate: listDistcounts[6].effectiveDate,
+                    expirationDate: listDistcounts[6].expirationDate,
+                    discountedPercentage: 10,
+                },
+                {
+                    _id: listDistcounts[7]._id,
+                    code: listDistcounts[7].code,
+                    type: listDistcounts[7].type,
+                    formality: listDistcounts[7].formality,
+                    name: listDistcounts[7].name,
+                    effectiveDate: listDistcounts[7].effectiveDate,
+                    expirationDate: listDistcounts[7].expirationDate,
+                    loyaltyCoin: 1000,
+                },
+
+            ],
+            shippingFee: 100000,
+            deliveryTime: "2020-12-18T00:00:00.000Z",
+            coin: 500,
+            paymentAmount: 871500,
+            note: "Khách hàng quen thuộc",
+        },
+        {
+            status: 1,
+            code: "QUOTE_201249334",
+            creator: users[1]._id,
+            effectiveDate: "2020-12-04T00:00:00.000Z",
+            expirationDate: "2020-12-22T00:00:00.000Z",
+            customer: listCustomers[1]._id,
+            customerName: listCustomers[1].name,
+            customerPhone: listCustomers[1].mobilephoneNumber,
+            customerAddress: listCustomers[1].address,
+            customerRepresent: listCustomers[1].represent,
+            customerTaxNumber: listCustomers[1].taxNumber,
+            customerEmail: listCustomers[1].email,
+            goods: [
+                {
+                    good: listProduct[0]._id,
+                    pricePerBaseUnit: 60000,
+                    pricePerBaseUnitOrigin: listProduct[0].pricePerBaseUnit,
+                    salesPriceVariance: listProduct[0].salesPriceVariance,
+                    quantity: 12,
+                    serviceLevelAgreements: [
+                        {
+                            descriptions: ["Đóng gói đúng quy trình", "Sản phẩm đi đầu về chất lượng"],
+                            _id: listServiceLevelAgreements[0]._id,
+                            title: "Chất lượng sản phẩm đi đầu"
+                        }
+                    ],
+                    taxs: [
+                        {
+                            _id: listTaxs[0]._id,
+                            code: listTaxs[0]._id,
+                            name: "VAT",
+                            description: listTaxs[0]._id,
+                            percent: 5,
+                        }
+                    ],
+                    discounts: [],
+                    amount: 720000,
+                    amountAfterDiscount: 720000,
+                    amountAfterTax: 792000
+                },
+            ],
+            discounts: [
+                {
+                    _id: listDistcounts[5]._id,
+                    code: listDistcounts[5].code,
+                    type: listDistcounts[5].type,
+                    formality: listDistcounts[5].formality,
+                    name: listDistcounts[5].name,
+                    effectiveDate: listDistcounts[5].effectiveDate,
+                    expirationDate: listDistcounts[5].expirationDate,
+                    maximumFreeShippingCost: 20000,
+                },
+                {
+                    _id: listDistcounts[6]._id,
+                    code: listDistcounts[6].code,
+                    type: listDistcounts[6].type,
+                    formality: listDistcounts[6].formality,
+                    name: listDistcounts[6].name,
+                    effectiveDate: listDistcounts[6].effectiveDate,
+                    expirationDate: listDistcounts[6].expirationDate,
+                    discountedPercentage: 10,
+                },
+                {
+                    _id: listDistcounts[7]._id,
+                    code: listDistcounts[7].code,
+                    type: listDistcounts[7].type,
+                    formality: listDistcounts[7].formality,
+                    name: listDistcounts[7].name,
+                    effectiveDate: listDistcounts[7].effectiveDate,
+                    expirationDate: listDistcounts[7].expirationDate,
+                    loyaltyCoin: 1000,
+                },
+
+            ],
+            shippingFee: 100000,
+            deliveryTime: "2020-12-18T00:00:00.000Z",
+            coin: 500,
+            paymentAmount: 871500,
+            note: "Khách hàng quen thuộc",
+        },
+        {
+            status: 2,
+            code: "QUOTE_201249335",
+            creator: users[1]._id,
+            effectiveDate: "2020-12-01T00:00:00.000Z",
+            expirationDate: "2020-12-28T00:00:00.000Z",
+            customer: listCustomers[0]._id,
+            customerName: listCustomers[0].name,
+            customerPhone: listCustomers[0].mobilephoneNumber,
+            customerAddress: listCustomers[0].address,
+            customerRepresent: listCustomers[0].represent,
+            customerTaxNumber: listCustomers[0].taxNumber,
+            customerEmail: listCustomers[0].email,
+            goods: [
+                {
+                    good: listProduct[0]._id,
+                    pricePerBaseUnit: 60000,
+                    pricePerBaseUnitOrigin: listProduct[0].pricePerBaseUnit,
+                    salesPriceVariance: listProduct[0].salesPriceVariance,
+                    quantity: 12,
+                    serviceLevelAgreements: [
+                        {
+                            descriptions: ["Đóng gói đúng quy trình", "Sản phẩm đi đầu về chất lượng"],
+                            _id: listServiceLevelAgreements[0]._id,
+                            title: "Chất lượng sản phẩm đi đầu"
+                        }
+                    ],
+                    taxs: [
+                        {
+                            _id: listTaxs[0]._id,
+                            code: listTaxs[0]._id,
+                            name: "VAT",
+                            description: listTaxs[0]._id,
+                            percent: 5,
+                        }
+                    ],
+                    discounts: [],
+                    amount: 720000,
+                    amountAfterDiscount: 720000,
+                    amountAfterTax: 792000
+                },
+            ],
+            discounts: [
+                {
+                    _id: listDistcounts[5]._id,
+                    code: listDistcounts[5].code,
+                    type: listDistcounts[5].type,
+                    formality: listDistcounts[5].formality,
+                    name: listDistcounts[5].name,
+                    effectiveDate: listDistcounts[5].effectiveDate,
+                    expirationDate: listDistcounts[5].expirationDate,
+                    maximumFreeShippingCost: 20000,
+                },
+                {
+                    _id: listDistcounts[6]._id,
+                    code: listDistcounts[6].code,
+                    type: listDistcounts[6].type,
+                    formality: listDistcounts[6].formality,
+                    name: listDistcounts[6].name,
+                    effectiveDate: listDistcounts[6].effectiveDate,
+                    expirationDate: listDistcounts[6].expirationDate,
+                    discountedPercentage: 10,
+                },
+                {
+                    _id: listDistcounts[7]._id,
+                    code: listDistcounts[7].code,
+                    type: listDistcounts[7].type,
+                    formality: listDistcounts[7].formality,
+                    name: listDistcounts[7].name,
+                    effectiveDate: listDistcounts[7].effectiveDate,
+                    expirationDate: listDistcounts[7].expirationDate,
+                    loyaltyCoin: 1000,
+                },
+
+            ],
+            shippingFee: 100000,
+            deliveryTime: "2020-12-18T00:00:00.000Z",
+            coin: 500,
+            paymentAmount: 871500,
+            note: "Khách hàng quen thuộc",
+        },
+        {
+            status: 2,
+            code: "QUOTE_201249330",
+            creator: users[1]._id,
+            effectiveDate: "2020-12-07T00:00:00.000Z",
+            expirationDate: "2020-12-19T00:00:00.000Z",
+            customer: listCustomers[0]._id,
+            customerName: listCustomers[0].name,
+            customerPhone: listCustomers[0].mobilephoneNumber,
+            customerAddress: listCustomers[0].address,
+            customerRepresent: listCustomers[0].represent,
+            customerTaxNumber: listCustomers[0].taxNumber,
+            customerEmail: listCustomers[0].email,
+            goods: [
+                {
+                    good: listProduct[0]._id,
+                    pricePerBaseUnit: 60000,
+                    pricePerBaseUnitOrigin: listProduct[0].pricePerBaseUnit,
+                    salesPriceVariance: listProduct[0].salesPriceVariance,
+                    quantity: 12,
+                    serviceLevelAgreements: [
+                        {
+                            descriptions: ["Đóng gói đúng quy trình", "Sản phẩm đi đầu về chất lượng"],
+                            _id: listServiceLevelAgreements[0]._id,
+                            title: "Chất lượng sản phẩm đi đầu"
+                        }
+                    ],
+                    taxs: [
+                        {
+                            _id: listTaxs[0]._id,
+                            code: listTaxs[0]._id,
+                            name: "VAT",
+                            description: listTaxs[0]._id,
+                            percent: 5,
+                        }
+                    ],
+                    discounts: [],
+                    amount: 720000,
+                    amountAfterDiscount: 720000,
+                    amountAfterTax: 792000
+                },
+            ],
+            discounts: [
+                {
+                    _id: listDistcounts[5]._id,
+                    code: listDistcounts[5].code,
+                    type: listDistcounts[5].type,
+                    formality: listDistcounts[5].formality,
+                    name: listDistcounts[5].name,
+                    effectiveDate: listDistcounts[5].effectiveDate,
+                    expirationDate: listDistcounts[5].expirationDate,
+                    maximumFreeShippingCost: 20000,
+                },
+                {
+                    _id: listDistcounts[6]._id,
+                    code: listDistcounts[6].code,
+                    type: listDistcounts[6].type,
+                    formality: listDistcounts[6].formality,
+                    name: listDistcounts[6].name,
+                    effectiveDate: listDistcounts[6].effectiveDate,
+                    expirationDate: listDistcounts[6].expirationDate,
+                    discountedPercentage: 10,
+                },
+                {
+                    _id: listDistcounts[7]._id,
+                    code: listDistcounts[7].code,
+                    type: listDistcounts[7].type,
+                    formality: listDistcounts[7].formality,
+                    name: listDistcounts[7].name,
+                    effectiveDate: listDistcounts[7].effectiveDate,
+                    expirationDate: listDistcounts[7].expirationDate,
+                    loyaltyCoin: 1000,
+                },
+
+            ],
+            shippingFee: 100000,
+            deliveryTime: "2020-12-18T00:00:00.000Z",
+            coin: 500,
+            paymentAmount: 871500,
+            note: "Khách hàng quen thuộc",
+        },
 
     ]);
     console.log("Khởi tạo xong danh sách thông tin báo giá");
 
+    /*---------------------------------------------------------------------------------------------
+      -----------------------------------------------------------------------------------------------
+          TẠO DỮ LIỆU ĐƠN BÁN HÀNG
+      -----------------------------------------------------------------------------------------------
+      ----------------------------------------------------------------------------------------------- */
+    console.log("Khởi tạo dữ liệu đơn bán hàng");
+    var listSalesOrder = await SalesOrder(vnistDB).insertMany([
+        {
+           
+        },
+    ]);
+    console.log("Khởi tạo xong danh sách đơn bán hàng");
+
+       /*---------------------------------------------------------------------------------------------
+    -----------------------------------------------------------------------------------------------
+      TẠO DỮ LIỆU ĐƠN MUA NGUYÊN VẬT LIỆU
+    -----------------------------------------------------------------------------------------------
+    ----------------------------------------------------------------------------------------------- */
+
+    console.log("Khởi tạo dữ liệu đơn mua nguyên vật liệu");
+    var listPurchaseOrder = await PurchaseOrder(vnistDB).insertMany([
+        {
+
+        },
+
+    ]);
+    console.log("Khởi tạo xong danh sách đơn mua nguyên vật liệu");
+
+    /*---------------------------------------------------------------------------------------------
+      -----------------------------------------------------------------------------------------------
+          TẠO DỮ LIỆU THÔNG TIN THANH TOÁN ĐƠN MUA HÀNG, ĐƠN MUA NGUYÊN VẬT LIỆU
+      -----------------------------------------------------------------------------------------------
+      ----------------------------------------------------------------------------------------------- */
+    console.log("Khởi tạo dữ liệu thông tin thanh toán đơn hàng, đơn mua nvl");
+    var listPurchaseOrders = await purchaseDate(vnistDB).insertMany([
+        {
+            
+        },
+    ]);
+    console.log("Khởi tạo xong danh sách thông tin thanh toán đơn hàng, đơn mua nvl");
 
 
     /**

@@ -152,7 +152,7 @@ const TabIntegratedStatistics = (props) => {
                     <div className="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                         <div className="box box-solid">
                             <div className="box-header with-border">
-                                <h3 className="box-title">Tổng hợp khen thưởng tháng{month}</h3>
+                                <h3 className="box-title">Tổng hợp khen thưởng tháng {month}</h3>
                             </div>
                             <div className="box-body">
                                 <table className="table table-striped table-bordered table-hover">

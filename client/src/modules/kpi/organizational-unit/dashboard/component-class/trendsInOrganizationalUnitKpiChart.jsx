@@ -1,4 +1,4 @@
-import React, {Component, useEffect, useState} from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
@@ -9,93 +9,126 @@ import { customAxisC3js } from '../../../../../helpers/customAxisC3js';
 import c3 from 'c3';
 import 'c3/c3.css';
 
-function TrendsInOrganizationalUnitKpiChart(props) {
-    const DATA_STATUS = {NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3};
-    const chart = null;
+class TrendsInOrganizationalUnitKpiChart extends Component {
 
-    const [state, setState] = useState({
-        currentRole: null,
-        dataStatus: DATA_STATUS.NOT_AVAILABLE
-    });
+    constructor(props) {
+        super(props);
 
-    const refBarChart = React.createRef();
+        this.DATA_STATUS = {NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3};
+        this.chart = null;
 
-    useEffect(() => {
-        props.getCurrentKPIUnit(localStorage.getItem("currentRole"), props.organizationalUnitId, props.month);
-        props.getAllEmployeeKpiInOrganizationalUnit(localStorage.getItem("currentRole"), props.organizationalUnitId, props.month);
-        props.getAllTaskOfOrganizationalUnit(localStorage.getItem("currentRole"), props.organizationalUnitId, props.month);
+        this.state = {
+            currentRole: null,
+            dataStatus: this.DATA_STATUS.NOT_AVAILABLE
+        };
+    }
 
-        setState({
-            ...state,
-            currentRole: localStorage.getItem("currentRole"),
-            dataStatus: DATA_STATUS.QUERYING
-        })
-    },[]);
+    componentDidMount = () => {
+        this.props.getCurrentKPIUnit(localStorage.getItem("currentRole"), this.props.organizationalUnitId, this.props.month);
+        this.props.getAllEmployeeKpiInOrganizationalUnit(localStorage.getItem("currentRole"), this.props.organizationalUnitId, this.props.month);
+        this.props.getAllTaskOfOrganizationalUnit(localStorage.getItem("currentRole"), this.props.organizationalUnitId, this.props.month);
 
-    useEffect(() => {
-        if (state.currentRole !== localStorage.getItem("currentRole")) {
-             props.getCurrentKPIUnit(localStorage.getItem("currentRole"), props.organizationalUnitId, props.month);
-             props.getAllEmployeeKpiInOrganizationalUnit(localStorage.getItem("currentRole"), props.organizationalUnitId, props.month);
-             props.getAllTaskOfOrganizationalUnit(localStorage.getItem("currentRole"), props.organizationalUnitId, props.month);
-
-            setState( {
+        this.setState(state => {
+            return {
                 ...state,
                 currentRole: localStorage.getItem("currentRole"),
-                dataStatus: DATA_STATUS.QUERYING
-            });
-
-        }
-
-        if (props.organizationalUnitId !== state.organizationalUnitId || props.month !== state.month) {
-            props.getCurrentKPIUnit(state.currentRole, props.organizationalUnitId, props.month);
-            props.getAllEmployeeKpiInOrganizationalUnit(state.currentRole, props.organizationalUnitId, props.month);
-            props.getAllTaskOfOrganizationalUnit(state.currentRole, props.organizationalUnitId, props.month)
-
-            setState( {
-                ...state,
-                dataStatus:DATA_STATUS.QUERYING,
-            });
-        }
-
-        if (state.dataStatus === DATA_STATUS.QUERYING) {
-            if (props.createKpiUnit.currentKPI && props.dashboardOrganizationalUnitKpi.employeeKpis && props.dashboardOrganizationalUnitKpi.tasksOfOrganizationalUnit) {
-                setState( {
-                    ...state,
-                    dataStatus: DATA_STATUS.AVAILABLE,
-                });
+                dataStatus: this.DATA_STATUS.QUERYING
             }
-        } else if (state.dataStatus === DATA_STATUS.AVAILABLE){
-            barChart();
+        })
+    }
 
-            setState( {
-                ...state,
-                dataStatus: DATA_STATUS.FINISHED,
+    shouldComponentUpdate = async (nextProps, nextState) => {
+        if (this.state.currentRole !== localStorage.getItem("currentRole")) {
+            await this.props.getCurrentKPIUnit(localStorage.getItem("currentRole"), this.props.organizationalUnitId, this.props.month);
+            await this.props.getAllEmployeeKpiInOrganizationalUnit(localStorage.getItem("currentRole"), this.props.organizationalUnitId, this.props.month);
+            await this.props.getAllTaskOfOrganizationalUnit(localStorage.getItem("currentRole"), this.props.organizationalUnitId, this.props.month);
+            
+            this.setState(state => {
+                return {
+                    ...state,
+                    currentRole: localStorage.getItem("currentRole"),
+                    dataStatus: this.DATA_STATUS.QUERYING
+                }
             });
+
+            return false;
         }
 
-        if (!props.createKpiUnit.currentKPI && state.dataStatus === DATA_STATUS.FINISHED) {
-            setState(  {
-                ...state,
-                dataStatus: DATA_STATUS.QUERYING,
-                willUpdate: true
+        if (nextProps.organizationalUnitId !== this.state.organizationalUnitId || nextProps.month !== this.state.month) {
+            await this.props.getCurrentKPIUnit(this.state.currentRole, nextProps.organizationalUnitId, nextProps.month);
+            await this.props.getAllEmployeeKpiInOrganizationalUnit(this.state.currentRole, nextProps.organizationalUnitId, nextProps.month);
+            await this.props.getAllTaskOfOrganizationalUnit(this.state.currentRole, nextProps.organizationalUnitId, nextProps.month)
+
+            this.setState(state => {
+                return {
+                    ...state,
+                    dataStatus: this.DATA_STATUS.QUERYING,
+                }
             });
 
+            return false;
         }
 
-    });
+        if (nextState.dataStatus === this.DATA_STATUS.QUERYING) {
+            if (!nextProps.createKpiUnit.currentKPI) {
+                return false            
+            }
 
-    useEffect(() => {
-        if (props.organizationalUnitId !== state.organizationalUnitId || props.month !== state.month) {
-            setState ({
-                ...state,
-                organizationalUnitId: props.organizationalUnitId,
-                month: props.month
-            })
+            if(!nextProps.dashboardOrganizationalUnitKpi.employeeKpis) {
+                return false           
+            }
+
+            if (!nextProps.dashboardOrganizationalUnitKpi.tasksOfOrganizationalUnit) {
+                return false           
+            }
+            
+            this.setState(state =>{
+                return {
+                    ...state,
+                    dataStatus: this.DATA_STATUS.AVAILABLE,
+                };
+            });
+            return false;
+        } else if (nextState.dataStatus === this.DATA_STATUS.AVAILABLE){
+            this.barChart();
+
+            this.setState(state =>{
+                return {
+                    ...state,
+                    dataStatus: this.DATA_STATUS.FINISHED,
+                };
+            });
+        } 
+        
+        if (!nextProps.createKpiUnit.currentKPI && this.state.dataStatus === this.DATA_STATUS.FINISHED) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    dataStatus: this.DATA_STATUS.QUERYING,
+                    willUpdate: true
+                }
+            });
+
+            return false;
         }
-    },[props.organizationalUnitId,  props.month])
 
-    const getArrayListTaskSameOrganizationUnitKpi = () => {
-        const { createKpiUnit, dashboardOrganizationalUnitKpi } = props;
+        return false;
+    }
+
+    static getDerivedStateFromProps(nextProps, prevState){
+        if (nextProps.organizationalUnitId !== prevState.organizationalUnitId || nextProps.month !== prevState.month) {
+            return {
+                ...prevState,
+                organizationalUnitId: nextProps.organizationalUnitId,
+                month: nextProps.month
+            }
+        } else {
+            return null;
+        }
+    }
+
+    getArrayListTaskSameOrganizationUnitKpi = () => {
+        const { createKpiUnit, dashboardOrganizationalUnitKpi } = this.props;
         let listOrganizationalUnitKpi, listChildTarget, listTask, arrayListTaskSameOrganizationUnitKpi;
 
         if (createKpiUnit.currentKPI && createKpiUnit.currentKPI.kpis) {
@@ -133,16 +166,16 @@ function TrendsInOrganizationalUnitKpiChart(props) {
                     }
                 }
                 temporaryArrayListTaskSameOrganizationUnitKpi = Array.from(new Set(temporaryArrayListTaskSameOrganizationUnitKpi));
-
+                
                 return temporaryArrayListTaskSameOrganizationUnitKpi;
             })
         }
 
         return arrayListTaskSameOrganizationUnitKpi;
-    };
+    }
 
-    const setExecutionTimeData = () => {
-        const { createKpiUnit, translate } = props;
+    setExecutionTimeData = () => {
+        const { createKpiUnit, translate } = this.props;
 
         let listOrganizationalUnitKpi, arrayListTaskSameOrganizationUnitKpi;
         let executionTimes = {};
@@ -156,7 +189,7 @@ function TrendsInOrganizationalUnitKpiChart(props) {
             listOrganizationalUnitKpi = createKpiUnit.currentKPI.kpis;
         }
 
-        arrayListTaskSameOrganizationUnitKpi = getArrayListTaskSameOrganizationUnitKpi();
+        arrayListTaskSameOrganizationUnitKpi = this.getArrayListTaskSameOrganizationUnitKpi();
 
         if (listOrganizationalUnitKpi && arrayListTaskSameOrganizationUnitKpi) {
             listOrganizationalUnitKpi.map(parent => {
@@ -191,8 +224,8 @@ function TrendsInOrganizationalUnitKpiChart(props) {
         return executionTimes;
     }
 
-    const setNumberOfTaskData = () => {
-        const { createKpiUnit, translate } = props;
+    setNumberOfTaskData = () => {
+        const { createKpiUnit, translate } = this.props;
 
         let listOrganizationalUnitKpi, arrayListTaskSameOrganizationUnitKpi;
         let numberOfTasks = {};
@@ -201,7 +234,7 @@ function TrendsInOrganizationalUnitKpiChart(props) {
             listOrganizationalUnitKpi = createKpiUnit.currentKPI.kpis
         }
 
-        arrayListTaskSameOrganizationUnitKpi = getArrayListTaskSameOrganizationUnitKpi();
+        arrayListTaskSameOrganizationUnitKpi = this.getArrayListTaskSameOrganizationUnitKpi();
 
         if (listOrganizationalUnitKpi && arrayListTaskSameOrganizationUnitKpi) {
             listOrganizationalUnitKpi.map(parent => {
@@ -220,15 +253,15 @@ function TrendsInOrganizationalUnitKpiChart(props) {
             numberOfTasks
         )
 
-        return numberOfTasks;
-    };
+        return numberOfTasks; 
+    }
 
-    const setNumberOfParticipantData = () => {
-        const { createKpiUnit, dashboardOrganizationalUnitKpi, translate } = props;
+    setNumberOfParticipantData = () => {
+        const { createKpiUnit, dashboardOrganizationalUnitKpi, translate } = this.props;
 
         let listOrganizationalUnitKpi, listChildTarget;
-        let numberOfParticipants = {};
-        let arrayListTaskSameOrganizationUnitKpi = getArrayListTaskSameOrganizationUnitKpi();
+        let numberOfParticipants = {}; 
+        let arrayListTaskSameOrganizationUnitKpi = this.getArrayListTaskSameOrganizationUnitKpi();
 
         if (createKpiUnit.currentKPI && createKpiUnit.currentKPI.kpis) {
             listOrganizationalUnitKpi = createKpiUnit.currentKPI.kpis
@@ -256,8 +289,8 @@ function TrendsInOrganizationalUnitKpiChart(props) {
                         })
                     }
                 }
-
-
+                
+               
                 if (arrayListTaskSameOrganizationUnitKpi) {
                     creators2 = arrayListTaskSameOrganizationUnitKpi[key].map(x => {
                         return x.accountableEmployees.concat(x.consultedEmployees).concat(x.informedEmployees).concat(x.responsibleEmployees);
@@ -282,10 +315,10 @@ function TrendsInOrganizationalUnitKpiChart(props) {
         )
 
         return numberOfParticipants;
-    };
+    }
 
-    const setNumberOfEmployeeKpiData = () => {
-        const { createKpiUnit, dashboardOrganizationalUnitKpi, translate } = props;
+    setNumberOfEmployeeKpiData = () => {
+        const { createKpiUnit, dashboardOrganizationalUnitKpi, translate } = this.props;
 
         let listOrganizationalUnitKpi, listChildTarget;
         let numberOfEmployeeKpis = {};
@@ -321,11 +354,11 @@ function TrendsInOrganizationalUnitKpiChart(props) {
         )
 
         return numberOfEmployeeKpis;
-    };
-
+    }
+    
     // Thiết lập data trọng số của từng Kpi đơn vị
-    const setWeightData = () => {
-        const { createKpiUnit, translate } = props;
+    setWeightData = () => {
+        const { createKpiUnit, translate } = this.props;
 
         let listOrganizationalUnitKpi;
         let weight = {};
@@ -349,22 +382,22 @@ function TrendsInOrganizationalUnitKpiChart(props) {
         )
 
         return weight;
-    };
+    }
 
-    const removePreviousBarChart = () => {
-        const chart = refBarChart.current;
+    removePreviousBarChart = () => {
+        const chart = this.refs.chart;
         if (chart) {
             while (chart.hasChildNodes()) {
                 chart.removeChild(chart.lastChild);
             }
-        }
-    };
+        } 
+    } 
 
-    const barChart = () => {
-        const { translate } = props;
-        removePreviousBarChart();
+    barChart = () => {
+        const { translate } = this.props;
+        this.removePreviousBarChart();
 
-        const { createKpiUnit } = props;
+        const { createKpiUnit } = this.props;
         let numberOfParticipants, numberOfEmployeeKpis, executionTimes, numberOfTasks, weight, listOrganizationalUnitKpi, titleX = ['x'];
         let numberOfParticipantsArray = [], numberOfEmployeeKpisArray = [], executionTimesArray = [], numberOfTasksArray = [], weightArray = [];
 
@@ -372,18 +405,18 @@ function TrendsInOrganizationalUnitKpiChart(props) {
             listOrganizationalUnitKpi = createKpiUnit.currentKPI.kpis;
         }
 
-        executionTimes = setExecutionTimeData();
-        numberOfEmployeeKpis = setNumberOfEmployeeKpiData();
-        numberOfParticipants = setNumberOfParticipantData();
-        numberOfTasks = setNumberOfTaskData();
-        weight = setWeightData();
-
+        executionTimes = this.setExecutionTimeData();
+        numberOfEmployeeKpis = this.setNumberOfEmployeeKpiData();
+        numberOfParticipants = this.setNumberOfParticipantData();
+        numberOfTasks = this.setNumberOfTaskData();
+        weight = this.setWeightData();
+        
         executionTimesArray.push(executionTimes?.name ? executionTimes.name : null);
         numberOfEmployeeKpisArray.push(numberOfEmployeeKpis?.name ? numberOfEmployeeKpis.name : null);
         numberOfParticipantsArray.push(numberOfParticipants?.name ? numberOfParticipants.name : null);
         numberOfTasksArray.push(numberOfTasks?.name ? numberOfTasks.name : null);
         weightArray.push(weight?.name ? weight.name : null);
-
+        
         if(listOrganizationalUnitKpi) {
             listOrganizationalUnitKpi.map(kpis => {
                 titleX.push(kpis?.name);
@@ -404,11 +437,11 @@ function TrendsInOrganizationalUnitKpiChart(props) {
             weightArray
         ]
 
-        let chart = c3.generate({
-            bindto: refBarChart.current,
+        this.chart = c3.generate({
+            bindto: this.refs.chart,                
 
-            size: {
-                height: 350
+            size: {                                 
+                height: 350                     
             },
 
             padding: {
@@ -417,12 +450,12 @@ function TrendsInOrganizationalUnitKpiChart(props) {
                 right: 20
             },
 
-            data: {
+            data: {                             
                 x: 'x',
                 columns: dataChart
             },
 
-            axis: {
+            axis: {                            
                 x: {
                     type: 'category',
                     tick: {
@@ -450,26 +483,27 @@ function TrendsInOrganizationalUnitKpiChart(props) {
                 }
             }
         });
-    };
-
-    const { createKpiUnit, translate } = props;
-    let currentKpi, organizationalUnitKpiLoading;
-
-    if(createKpiUnit) {
-        currentKpi = createKpiUnit.currentKPI;
-        organizationalUnitKpiLoading = createKpiUnit.organizationalUnitKpiLoading
     }
+    
+    render() {
+        const { createKpiUnit, translate } = this.props;
+        let currentKpi, organizationalUnitKpiLoading;
 
-    return (
-        <React.Fragment>
-            {currentKpi ?
-                <div id="trendsInUnitChart" ref={refBarChart}></div>
-                : organizationalUnitKpiLoading && <section>{translate('kpi.organizational_unit.dashboard.no_data')}</section>
-            }
-        </React.Fragment>
-    )
+        if(createKpiUnit) {
+            currentKpi = createKpiUnit.currentKPI;
+            organizationalUnitKpiLoading = createKpiUnit.organizationalUnitKpiLoading
+        }
+
+        return (
+            <React.Fragment>
+                {currentKpi ?
+                    <div id="trendsInUnitChart" ref="chart"></div>
+                    : organizationalUnitKpiLoading && <section>{translate('kpi.organizational_unit.dashboard.no_data')}</section>
+                }
+            </React.Fragment>
+        )
+    }
 }
-
 
 function mapState(state) {
     const { createKpiUnit, dashboardOrganizationalUnitKpi } = state;
