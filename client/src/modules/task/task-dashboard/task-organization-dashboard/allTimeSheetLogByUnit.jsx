@@ -7,7 +7,12 @@ import { InforTimeSheetLog } from './inforTimeSheetLog'
 import { UserActions } from '../../../super-admin/user/redux/actions';
 
 import { PaginateBar, DataTableSetting } from '../../../../common-components/index';
-import { getTableConfiguration } from '../../../../helpers/tableConfiguration'
+import { getTableConfiguration } from '../../../../helpers/tableConfiguration';
+import dayjs from 'dayjs';
+import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
+import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
+dayjs.extend(isSameOrAfter)
+dayjs.extend(isSameOrBefore)
 class AllTimeSheetLogsByUnit extends Component {
     constructor(props) {
         super(props);
@@ -144,7 +149,7 @@ class AllTimeSheetLogsByUnit extends Component {
 
     render() {
         const { translate, user } = this.props;
-        const { organizationUnitTasks, startMonthTitle, endMonthTitle, unitIds, selectBoxUnit } = this.props;
+        const { organizationUnitTasks, startMonthTitle, endMonthTitle, unitIds, selectBoxUnit, startMonth, endMonth } = this.props;
         const { currentRowTimeSheetLog, page } = this.state;
         let allTimeSheet = [], timesheetlogs = [];
         let listEmployee;
@@ -155,7 +160,7 @@ class AllTimeSheetLogsByUnit extends Component {
 
         if (listEmployee) {
             for (let i in listEmployee) {
-                allTimeSheet[listEmployee[i].userId._id] = {
+                allTimeSheet[listEmployee[i]?.userId._id] = {
                     totalhours: 0,
                     autotimer: 0,
                     manualtimer: 0,
@@ -176,7 +181,7 @@ class AllTimeSheetLogsByUnit extends Component {
             }
         });
 
-        filterTimeSheetLogs = filterTimeSheetLogs.filter(o => o.creator && o.duration && o.startedAt && o.stoppedAt && o.acceptLog);
+        filterTimeSheetLogs = filterTimeSheetLogs.filter(o => o.creator && o.duration && o.startedAt && o.stoppedAt && o.acceptLog && dayjs(o.startedAt).isSameOrAfter(startMonth, 'month') && dayjs(o.stoppedAt).isSameOrBefore(endMonth, 'month'));
 
         for (let i in filterTimeSheetLogs) {
             let autoStopped = filterTimeSheetLogs[i].autoStopped;

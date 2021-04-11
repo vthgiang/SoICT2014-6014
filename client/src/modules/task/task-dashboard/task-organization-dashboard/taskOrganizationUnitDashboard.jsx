@@ -684,6 +684,8 @@ class TaskOrganizationUnitDashboard extends Component {
                                         selectBoxUnit={selectBoxUnit}
                                         getUnitName={this.getUnitName}
                                         showUnitGeneraTask={this.showUnitGeneraTask}
+                                        startMonth={startMonth}
+                                        endMonth={endMonth}
                                     />
                                 </div>
                             </div>
