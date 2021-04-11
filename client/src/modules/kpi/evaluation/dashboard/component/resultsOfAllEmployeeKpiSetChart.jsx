@@ -24,7 +24,7 @@ function ResultsOfAllEmployeeKpiSetChart(props) {
     }
 
     const INFO_SEARCH = {
-        startMonth: year + '-0' + 1,
+        startMonth: year + '-01',
         endMonth: [year, endMonth].join('-')
     };
 
@@ -52,11 +52,6 @@ function ResultsOfAllEmployeeKpiSetChart(props) {
     const refMultiLineChart = React.createRef();
 
     useEffect(() => {
-        setState({
-            ...state,
-            kindOfPoint: state.kindOfPoint,
-        });
-
         let data = multiLineChart();
         setState({
             ...state,
@@ -74,7 +69,7 @@ function ResultsOfAllEmployeeKpiSetChart(props) {
 
     useEffect(() => {
         if (state.dataStatus === DATA_STATUS.NOT_AVAILABLE) {
-            props.getAllEmployeeKpiSetInOrganizationalUnitsByMonth(state.organizationalUnitIds, state.startMonth, state.endMonth);
+            props.getAllEmployeeKpiSetInOrganizationalUnitsByMonth(props.organizationalUnitIds, state.startMonth, state.endMonth);
 
             setState({
                 ...state,
@@ -99,18 +94,14 @@ function ResultsOfAllEmployeeKpiSetChart(props) {
 
     });
 
-    useEffect(() => {
-        if (props.organizationalUnitIds !== state.organizationalUnitIds) {
-            setState({
-                ...state,
-                organizationalUnitIds: props.organizationalUnitIds
-            })
-        }
-    });
+    if (props.organizationalUnitIds !== state.organizationalUnitIds) {
+        props.getAllEmployeeKpiSetInOrganizationalUnitsByMonth(props.organizationalUnitIds, state.startMonth, state.endMonth);
 
-    useEffect(() => {
-        props.getAllEmployeeKpiSetInOrganizationalUnitsByMonth(state.organizationalUnitIds, state.startMonth, state.endMonth);
-    }, []);
+        setState({
+            ...state,
+            organizationalUnitIds: props.organizationalUnitIds
+        })
+    }
 
     /** Select kind of point */
     const handleSelectKindOfPoint = (value) => {
