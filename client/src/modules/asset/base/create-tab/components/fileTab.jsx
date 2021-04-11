@@ -49,6 +49,7 @@ class FileTab extends Component {
 
     // Function thêm thông tin tài liệu đính kèm
     handleAddFile = async (data) => {
+        console.log(data)
         let { files } = this.state;
         if (!files) {
             files = [];
@@ -62,7 +63,7 @@ class FileTab extends Component {
                 }]
             }
         })
-        this.props.handleAddFile(this.state.files, data)
+        this.props.handleAddFile(this.state.files)
     }
 
     // Function chỉnh sửa thông tin tài liệu đính kèm
