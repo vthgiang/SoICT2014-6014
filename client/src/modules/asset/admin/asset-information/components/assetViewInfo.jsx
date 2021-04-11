@@ -146,6 +146,7 @@ function AssetViewInfo(props) {
                         <IncidentLogTab
                             id={`view_incident${_id}`}
                             incidentLogs={incidentLogs}
+                            status={status}
                         />
 
                         {/* Thông tin thanh lý */}

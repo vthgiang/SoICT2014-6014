@@ -189,7 +189,8 @@ function AssetEditForm(props) {
     }
 
     // Function thêm thông tin tài liệu đính kèm
-    const handleCreateFile = (data, addData) => {
+    const handleCreateFile = (data) => {
+        console.log(data)
         setState({
             ...state,
             files: data
@@ -272,16 +273,21 @@ function AssetEditForm(props) {
         let { avatar, maintainanceLogs, usageLogs, incidentLogs, files, assignedToUser,
             assignedToOrganizationalUnit, handoverFromDate, handoverToDate, employeeId, page } = state;
 
-        await setState({
-            ...state,
-            // img: img,
-            createMaintainanceLogs: maintainanceLogs.filter(x => !x._id),
-            createUsageLogs: usageLogs.filter(x => !x._id),
-            createIncidentLogs: incidentLogs.filter(x => !x._id),
-            createFiles: files.filter(x => !x._id),
-        })
+        const createMaintainanceLogs = maintainanceLogs.filter(x => !x._id);
+        const createUsageLogs = usageLogs.filter(x => !x._id);
+        const createIncidentLogs = incidentLogs.filter(x => !x._id);
+        const createFiles = files.filter(x => !x._id);
 
-        let formData = convertJsonObjectToFormData(state);
+        const data = {
+            ...state,
+            createMaintainanceLogs,
+            createUsageLogs,
+            createIncidentLogs,
+            createFiles
+        }
+
+        console.log(data)
+        let formData = convertJsonObjectToFormData(data);
         files.forEach(x => {
             x.files.forEach(item => {
                 formData.append("file", item.fileUpload);
@@ -289,22 +295,26 @@ function AssetEditForm(props) {
         })
         formData.append("fileAvatar", avatar);
 
-        props.updateInformationAsset(state._id, formData);
+        props.updateInformationAsset(data._id, formData);
 
         // Thêm vào thông tin sử dụng
         if (assignedToUser !== props.assignedToUser || assignedToOrganizationalUnit !== props.assignedToOrganizationalUnit || handoverFromDate !== props.handoverFromDate || handoverToDate !== props.handoverToDate) {
-            props.createUsage(state._id, {
+            props.createUsage(data._id, {
                 usageLogs: {
-                    usedByUser: state.assignedToUser,
-                    startDate: state.handoverFromDate,
-                    endDate: state.handoverToDate,
+                    usedByUser: data.assignedToUser,
+                    startDate: data.handoverFromDate,
+                    endDate: data.handoverToDate,
                     description: '',
                 },
-                assignedToUser: state.assignedToUser,
-                assignedToOrganizationalUnit: state.assignedToOrganizationalUnit,
+                assignedToUser: data.assignedToUser,
+                assignedToOrganizationalUnit: data.assignedToOrganizationalUnit,
                 status: "in_use",
             });
         }
+
+        setState({
+            ...data,
+        })
     }
 
     // Function format dữ liệu Date thành string

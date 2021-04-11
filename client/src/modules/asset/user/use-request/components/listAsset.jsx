@@ -1,4 +1,4 @@
-import React, { Component,useState, useEffect} from 'react';
+import React, { Component, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
@@ -24,29 +24,31 @@ function ListAsset(props) {
         code: "",
         assetName: "",
         assetType: null,
-        status: "",
-        typeRegisterForUse: [2, 3],
+        group: ["building", "vehicle", "machine", "other"],
+        status: ["ready_use", "using", "damaged", "lost", "disposal"],
+        typeRegisterForUse: ["1", "2", "3"],
         page: 0,
         limit: limit_constructor,
         currentRole: localStorage.getItem('currentRole'),
     })
+
+    const { translate, assetsManager, assetType, user, auth } = props;
+    const { page, limit, currentRowView, currentRow, tableId, group, status, typeRegisterForUse } = state;
     
-    useEffect(() => {
+    useEffect(()=> {
         props.searchAssetTypes({ typeNumber: "", typeName: "", limit: 0 });
         props.getAllAsset({
-        code: "",
-        assetName: "",
-        assetType: null,
-        status: "",
-        page: 0,
-        limit: 5,
-        typeRegisterForUse: [2, 3],
-        currentRole: localStorage.getItem('currentRole'),
+            code: "",
+            assetName: "",
+            assetType: null,
+            status: "",
+            page: 0,
+            limit: 5,
+            typeRegisterForUse: "",
+            currentRole: localStorage.getItem('currentRole'),
         });
         props.getUser();
     }, [])
-
-    
 
     // Bắt sự kiện click xem thông tin tài sản
     const handleView = async (value) => {
@@ -72,7 +74,7 @@ function ListAsset(props) {
     }
 
     // Function format dữ liệu Date thành string
-    const formatDate2 = (date, monthYear = false)  =>{
+    const formatDate2 = (date, monthYear = false) => {
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
@@ -112,13 +114,11 @@ function ListAsset(props) {
     }
 
     // Function lưu giá trị mã tài sản vào state khi thay đổi
-   const handleCodeChange = (event) => {
+    const handleCodeChange = (event) => {
         const { name, value } = event.target;
-        setState(state =>{
-            return{
-                ...state,
-                [name]: value
-            }
+        setState({
+            ...state,
+            [name]: value
         });
 
     }
@@ -126,11 +126,9 @@ function ListAsset(props) {
     // Function lưu giá trị tên tài sản vào state khi thay đổi
     const handleAssetNameChange = (event) => {
         const { name, value } = event.target;
-        setState(state =>{
-            return{
-                ...state,
-                [name]: value
-            }
+        setState({
+            ...state,
+            [name]: value
         });
 
     }
@@ -141,11 +139,9 @@ function ListAsset(props) {
             value = null
         }
 
-        setState(state => {
-            return{
-                ...state,
-                assetType: value
-            }
+        setState({
+            ...state,
+            assetType: value
         })
     }
 
@@ -155,11 +151,9 @@ function ListAsset(props) {
             value = null
         }
 
-        setState(state => {
-            return{
-                ...state,
-                group: value
-            }
+        setState({
+            ...state,
+            group: value
         })
     }
 
@@ -169,34 +163,28 @@ function ListAsset(props) {
             value = null
         }
 
-        setState(state =>{
-            return{
-                ...state,
-                status: value
-            }
+        setState({
+            ...state,
+            status: value
         })
     }
 
     // Function lưu giá trị status vào state khi thay đổi
-    const handleTypeRegisterForUseChange = (value) => {
+    const handleTypeRegisterForUseChange = async (value) => {
         if (value.length === 0) {
             value = null
         }
 
-        setState(state =>{
-            return{
-                ...state,
-                typeRegisterForUse: value
-            }
+        await setState({
+            ...state,
+            typeRegisterForUse: value
         })
     }
     // Function bắt sự kiện tìm kiếm
-    const handleSubmitSearch = () => {
-        setState(state =>{
-            return{
-                ...state,
-                page: 0
-            }
+    const handleSubmitSearch = async () => {
+        await setState({
+            ...state,
+            page: 0
         })
 
         props.getAllAsset({ ...state, page: 0 });
@@ -250,18 +238,18 @@ function ListAsset(props) {
             return translate('asset.dashboard.machine')
         } else if (group === 'other') {
             return translate('asset.dashboard.other')
-        } else return null;
+        } 
     }
 
     const convertStatusAsset = (status) => {
         const { translate } = props;
-        if (status === 'ready_to_use') {
+        if (status === 'ready_use') {
             return translate('asset.general_information.ready_use');
         }
-        else if (status === 'in_use') {
+        else if (status === 'using') {
             return translate('asset.general_information.using');
         }
-        else if (status === 'broken') {
+        else if (status === 'damaged') {
             return translate('asset.general_information.damaged');
         }
         else if (status === 'lost') {
@@ -269,11 +257,9 @@ function ListAsset(props) {
         }
         else if (status === 'disposal') {
             return translate('asset.general_information.disposal')
-        } else return null;
+        } 
     }
-
-    const { translate, assetsManager, assetType, user, auth } = props;
-    const { page, limit, currentRowView, currentRow, tableId } = state;
+        
 
     var lists = "";
     var userlist = user.list;
@@ -315,6 +301,7 @@ function ListAsset(props) {
                     <div className="form-group">
                         <label className="form-control-static">{translate('asset.general_information.asset_group')}</label>
                         <SelectMulti id={`multiSelectGroupInManagement`} multiple="multiple"
+                            value={group}
                             options={{ nonSelectedText: translate('asset.asset_info.select_group'), allSelectedText: translate('asset.general_information.select_all_group') }}
                             onChange={handleGroupChange}
                             items={[
@@ -347,6 +334,7 @@ function ListAsset(props) {
                             id={`typeRegisterForUseInManagement`}
                             className="form-control select2"
                             multiple="multiple"
+                            value={typeRegisterForUse}
                             options={{ nonSelectedText: "Chọn quyền sử dụng", allSelectedText: "Chọn tất cả" }}
                             style={{ width: "100%" }}
                             items={[
@@ -362,14 +350,15 @@ function ListAsset(props) {
                     <div className="form-group">
                         <label className="form-control-static">{translate('page.status')}</label>
                         <SelectMulti id={`multiSelectStatus1`} multiple="multiple"
+                            value={status}
                             options={{ nonSelectedText: translate('page.non_status'), allSelectedText: translate('asset.general_information.select_all_status') }}
                             onChange={handleStatusChange}
                             items={[
-                                { value: "ready_to_use", text: translate('asset.general_information.ready_use') },
-                                { value: "in_use", text: translate('asset.general_information.using') },
-                                { value: "broken", text: translate('asset.general_information.damaged') },
+                                { value: "ready_use", text: translate('asset.general_information.ready_use') },
+                                { value: "using", text: translate('asset.general_information.using') },
+                                { value: "damaged", text: translate('asset.general_information.damaged') },
                                 { value: "lost", text: translate('asset.general_information.lost') },
-                                { value: "disposed", text: translate('asset.general_information.disposal') }
+                                { value: "disposal", text: translate('asset.general_information.disposal') }
                             ]}
                         >
                         </SelectMulti>

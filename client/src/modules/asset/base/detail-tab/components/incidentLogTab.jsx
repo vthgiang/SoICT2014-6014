@@ -43,6 +43,7 @@ function IncidentLogTab(props) {
                 ...state,
                 id: props.id,
                 incidentLogs: props.incidentLogs,
+                status: props.status
         })
         setPrevProps(props)
     }
@@ -58,11 +59,33 @@ function IncidentLogTab(props) {
             return '';
         }
     }
+    const formatStatus = (status) => {
+        const { translate } = props;
+
+        if (status === 'ready_to_use') {
+            return translate('asset.general_information.ready_use')
+        }
+        else if (status === 'in_use') {
+            return translate('asset.general_information.using')
+        }
+        else if (status === 'broken') {
+            return translate('asset.general_information.damaged')
+        }
+        else if (status === 'lost') {
+            return translate('asset.general_information.lost')
+        }
+        else if (status === 'disposed') {
+            return translate('asset.general_information.disposal')
+        }
+        else {
+            return '';
+        }
+    }
 
     
     const { id } = props;
     const { translate, user } = props;
-    const { incidentLogs } = state;
+    const { incidentLogs, status } = state;
 
     var userlist = user.list;
 
@@ -77,6 +100,7 @@ function IncidentLogTab(props) {
                             <th>{translate('asset.general_information.reported_by')}</th>
                             <th>{translate('asset.general_information.date_incident')}</th>
                             <th>{translate('asset.general_information.content')}</th>
+                            <th>{translate('asset.general_information.status')}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -88,6 +112,7 @@ function IncidentLogTab(props) {
                                     <td>{x.reportedBy ? (userlist.length && userlist.filter(item => item._id === x.reportedBy).pop() ? userlist.filter(item => item._id === x.reportedBy).pop().name : '') : ''}</td>
                                     <td>{x.dateOfIncident ? formatDate(x.dateOfIncident) : ''}</td>
                                     <td>{x.description}</td>
+                                    <td>{formatStatus(status)}</td>
                                 </tr>
                             ))
                         }
