@@ -249,6 +249,7 @@ function ResultsOfAllOrganizationalUnitKpiChart(props) {
 
         setState({
             ...state,
+            chart: chart,
             dataChart: dataChart
         })
     };
@@ -395,16 +396,22 @@ function ResultsOfAllOrganizationalUnitKpiChart(props) {
                             onClick={() => handleSelectKindOfPoint(KIND_OF_POINT.APPROVED)}>{translate('kpi.evaluation.dashboard.approve_point')}</button>
                 </div>
             </section>
+            {organizationalUnitKpiSetsOfChildUnit ?
+
             <section id={"resultsOfAllUnit"} className="c3-chart-container">
                 <div ref={refMultiLineChart}></div>
                 <CustomLegendC3js
-                    chart={chart}
+                    chart={state.chart}
                     chartId={"resultsOfAllUnit"}
                     legendId={"resultsOfAllUnitLegend"}
-                    title={dataChart && `${translate('general.list_unit')} (${dataChart.length / 2})`}
-                    dataChartLegend={dataChart && dataChart.filter((item, index) => index % 2 === 1).map(item => item[0])}
+                    title={organizationalUnitKpiSetsOfChildUnit && `${translate('general.list_unit')} (${organizationalUnitKpiSetsOfChildUnit.length})`}
+                    dataChartLegend={organizationalUnitKpiSetsOfChildUnit && organizationalUnitKpiSetsOfChildUnit.map(item => item[0].name)}
                 />
             </section>
+                : organizationalUnitKpiSetsOfChildUnit &&
+                <section>{translate('kpi.organizational_unit.dashboard.no_data')}</section>
+            }
+
         </React.Fragment>
     )
 

@@ -1,10 +1,10 @@
 import React, {Component, useEffect, useState} from 'react';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 
-import { createUnitKpiActions } from '../../creation/redux/actions';
+import {createUnitKpiActions} from '../../creation/redux/actions';
 
-import { DatePicker } from '../../../../../common-components';
-import { withTranslate } from 'react-redux-multilingual';
+import {DatePicker} from '../../../../../common-components';
+import {withTranslate} from 'react-redux-multilingual';
 import Swal from 'sweetalert2';
 
 import c3 from 'c3';
@@ -21,7 +21,7 @@ function ResultsOfOrganizationalUnitKpiChart(props) {
         endDate: (currentMonth > 10) ? ((currentYear + 1) + '-' + (currentMonth - 10)) : (currentYear + '-' + (currentMonth + 2))
     };
 
-    const DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
+    const DATA_STATUS = {NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3};
 
     const refMultiLineChart = React.createRef();
 
@@ -36,37 +36,35 @@ function ResultsOfOrganizationalUnitKpiChart(props) {
     useEffect(() => {
         props.getAllOrganizationalUnitKpiSetByTime(localStorage.getItem("currentRole"), props.organizationalUnitId, state.startDate, state.endDate);
 
-        setState( {
+        setState({
             ...state,
             dataStatus: DATA_STATUS.QUERYING,
         });
-    },[]);
+    }, []);
 
     useEffect(() => {
         if (props.organizationalUnitId !== state.organizationalUnitId) {
             props.getAllOrganizationalUnitKpiSetByTime(state.currentRole, props.organizationalUnitId, state.startDate, state.endDate);
-            setState( {
+            setState({
                 ...state,
                 dataStatus: DATA_STATUS.QUERYING,
             });
 
         }
 
-        // if (state.startDate !== state.startDate || state.endDate !== state.endDate) {
-            props.getAllOrganizationalUnitKpiSetByTime(state.currentRole, state.organizationalUnitId, state.startDate, state.endDate);
-            setState( {
-                ...state,
-                dataStatus: DATA_STATUS.QUERYING,
-            });
+        props.getAllOrganizationalUnitKpiSetByTime(state.currentRole, state.organizationalUnitId, state.startDate, state.endDate);
+        setState({
+            ...state,
+            dataStatus: DATA_STATUS.QUERYING,
+        });
 
-        // }
     }, [props.organizationalUnitId, state.startDate, state.endDate])
 
     useEffect(() => {
         if (state.dataStatus === DATA_STATUS.QUERYING) {
             if (props.createKpiUnit.organizationalUnitKpiSets) {
 
-                setState( {
+                setState({
                     ...state,
                     dataStatus: DATA_STATUS.AVAILABLE
                 })
@@ -74,7 +72,7 @@ function ResultsOfOrganizationalUnitKpiChart(props) {
         } else if (state.dataStatus === DATA_STATUS.AVAILABLE) {
             multiLineChart();
 
-            setState( {
+            setState({
                 ...state,
                 dataStatus: DATA_STATUS.FINISHED
             })
@@ -83,16 +81,17 @@ function ResultsOfOrganizationalUnitKpiChart(props) {
     });
 
     if (props.organizationalUnitId !== state.organizationalUnitId) {
-        setState ({
+        setState({
             ...state,
             organizationalUnitId: props.organizationalUnitId
         })
     }
 
     const setDataMultiLineChart = () => {
-        const { createKpiUnit, translate, organizationalUnit } = props;
-        const { startDate, endDate, } = state;
-        let listOrganizationalUnitKpiSetEachYear, automaticPoint, employeePoint, approvedPoint, date, dataMultiLineChart, exportData;
+        const {createKpiUnit, translate, organizationalUnit} = props;
+        const {startDate, endDate,} = state;
+        let listOrganizationalUnitKpiSetEachYear, automaticPoint, employeePoint, approvedPoint, date,
+            dataMultiLineChart, exportData;
 
         if (createKpiUnit.organizationalUnitKpiSets) {
             listOrganizationalUnitKpiSetEachYear = createKpiUnit.organizationalUnitKpiSets
@@ -145,7 +144,7 @@ function ResultsOfOrganizationalUnitKpiChart(props) {
     const handleSearchData = async () => {
         let startDate = new Date(INFO_SEARCH.startDate);
         let endDate = new Date(INFO_SEARCH.endDate);
-        const { translate } = props;
+        const {translate} = props;
         if (startDate.getTime() >= endDate.getTime()) {
             Swal.fire({
                 title: translate('kpi.organizational_unit.dashboard.alert_search.search'),
@@ -154,7 +153,7 @@ function ResultsOfOrganizationalUnitKpiChart(props) {
                 confirmButtonText: translate('kpi.organizational_unit.dashboard.alert_search.confirm')
             })
         } else {
-            await setState( {
+            await setState({
                 ...state,
                 startDate: INFO_SEARCH.startDate,
                 endDate: INFO_SEARCH.endDate
@@ -174,7 +173,7 @@ function ResultsOfOrganizationalUnitKpiChart(props) {
 
     const multiLineChart = () => {
         removePreviosMultiLineChart();
-        const { translate } = props;
+        const {translate} = props;
 
         let dataMultiLineChart = setDataMultiLineChart();
 
@@ -196,7 +195,9 @@ function ResultsOfOrganizationalUnitKpiChart(props) {
                 x: {
                     type: 'timeseries',
                     tick: {
-                        format: function (x) { return (x?.getMonth() + 1) + "-" + x?.getFullYear(); }
+                        format: function (x) {
+                            return (x?.getMonth() + 1) + "-" + x?.getFullYear();
+                        }
                     }
                 },
                 y: {
@@ -220,7 +221,7 @@ function ResultsOfOrganizationalUnitKpiChart(props) {
     };
 
     const handleExportData = (exportData) => {
-        const { onDataAvailable } = props;
+        const {onDataAvailable} = props;
         if (onDataAvailable) {
             onDataAvailable(exportData);
         }
@@ -228,13 +229,12 @@ function ResultsOfOrganizationalUnitKpiChart(props) {
 
     /*Chuyển đổi dữ liệu KPI nhân viên thành dữ liệu export to file excel */
     const convertDataToExportData = (data, organizationalUnit, startDate, endDate) => {
-        const { organizationalUnitId } = state;
+        const {organizationalUnitId} = state;
         let name;
         if (organizationalUnitId) {
             let currentOrganizationalUnit = organizationalUnit.find(item => item.id === organizationalUnitId);
             name = currentOrganizationalUnit.name;
-        }
-        else {
+        } else {
             name = organizationalUnit[0].name;
         }
 
@@ -265,10 +265,10 @@ function ResultsOfOrganizationalUnitKpiChart(props) {
                     tables: [
                         {
                             columns: [
-                                { key: "date", value: "Thời gian" },
-                                { key: "automaticPoint", value: "Điểm KPI tự động" },
-                                { key: "employeePoint", value: "Điểm KPI tự đánh giá" },
-                                { key: "approverPoint", value: "Điểm KPI được phê duyệt" }
+                                {key: "date", value: "Thời gian"},
+                                {key: "automaticPoint", value: "Điểm KPI tự động"},
+                                {key: "employeePoint", value: "Điểm KPI tự đánh giá"},
+                                {key: "approverPoint", value: "Điểm KPI được phê duyệt"}
                             ],
                             data: data
                         }
@@ -279,7 +279,7 @@ function ResultsOfOrganizationalUnitKpiChart(props) {
         return exportData;
     };
 
-    const { translate } = props;
+    const {translate} = props;
 
     let d = new Date(),
         month = '' + (d.getMonth() + 1),
@@ -320,18 +320,19 @@ function ResultsOfOrganizationalUnitKpiChart(props) {
                     />
                 </div>
                 <div className="form-group">
-                    <button type="button" className="btn btn-success" onClick={handleSearchData}>{translate('kpi.organizational_unit.dashboard.search')}</button>
+                    <button type="button" className="btn btn-success"
+                            onClick={handleSearchData}>{translate('kpi.organizational_unit.dashboard.search')}</button>
                 </div>
             </section>
 
-            <section ref={refMultiLineChart}> </section>
+            <section ref={refMultiLineChart}></section>
         </React.Fragment>
     )
 }
 
 function mapState(state) {
-    const { createKpiUnit } = state;
-    return { createKpiUnit };
+    const {createKpiUnit} = state;
+    return {createKpiUnit};
 }
 
 const actions = {
@@ -339,4 +340,4 @@ const actions = {
 }
 
 const connectedResultsOfOrganizationalUnitKpiChart = connect(mapState, actions)(withTranslate(ResultsOfOrganizationalUnitKpiChart));
-export { connectedResultsOfOrganizationalUnitKpiChart as ResultsOfOrganizationalUnitKpiChart }
+export {connectedResultsOfOrganizationalUnitKpiChart as ResultsOfOrganizationalUnitKpiChart}
