@@ -2,7 +2,7 @@ import React, { Component, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal, Scheduler } from '../../../../../common-components';
-
+import _isEqual from 'lodash/isEqual';
 import {
     GeneralTab, MaintainanceLogTab, UsageLogTab, DepreciationTab, IncidentLogTab, DisposalTab, AttachmentTab
 } from '../../../base/detail-tab/components/combinedContent';
@@ -22,14 +22,14 @@ function AssetViewInfo(props) {
         disposalDesc, archivedRecordNumber, files, readByRoles
     } = state;
 
-    let isChange = 0;
-    for(const property in prevProps){
-        if(prevProps[property] !== props[property]){
-        isChange =1;
-        }
-    }
-
-    if (isChange === 1){
+    // let isChange = 0;
+    // for(const property in prevProps){
+    //     if(prevProps[property] !== props[property]){
+    //     isChange =1;
+    //     }
+    // }
+    console.log(props)
+    if(state._id !== props._id || !_isEqual(state.files, props.files)){
         setState({
             ...state,
             _id: props._id,
@@ -70,9 +70,8 @@ function AssetViewInfo(props) {
             files: props.files,
             readByRoles: props.readByRoles
         })
-        setPrevProps(props)
     }
-
+    console.log(state)
     return (
         <React.Fragment>
             <form className="form-group" id="form-view-asset" >
