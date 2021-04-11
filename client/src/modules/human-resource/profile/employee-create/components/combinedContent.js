@@ -9,7 +9,6 @@ export * from './InsuranceTab';
 export * from './disciplineTab';
 export * from './salaryTab';
 export * from './fileTab';
-export * from './careerMajorTab';
 
 export * from './socialInsuranceEditModal';
 export * from './degreeEditModal';
