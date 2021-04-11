@@ -102,10 +102,10 @@ function TransportVehicle(props) {
     }, [currentTransportPlan])
 
     const [state1, setstate1] = useState([])
-    useEffect(() => {
-        let listIconState = [];
-        console.log(planVehiclesList, " planVehiclesList")
 
+    useEffect(() => {
+        console.log(planVehiclesList, " planVehiclesList")
+        let listIconState = []
         if (vehiclesList && vehiclesList.length !==0){
             for (let i = 0; i < vehiclesList.length; i++){
                 listIconState.push("iconunactive")
@@ -144,14 +144,25 @@ function TransportVehicle(props) {
 
     const selectVehicle = (index) => {
         console.log(index);
-        console.log(state1);
-        // if (listIconState[index]==="iconactive"){
-        //     listIconState[index] = "iconunactive";
-        // }
-        // else {
-        //     listIconState[index] = "iconactive";
-        // }
-        // setstate1(listIconState);
+        let value;
+        if (state1[index]==="iconactive"){
+            value = "iconunactive";
+        }
+        else {
+            value = "iconactive";
+        }
+        if (index === 0){
+            setstate1(state1 => [
+                value,
+                ...state1.slice(1)
+            ])
+        }
+        else
+        setstate1(state1 => [
+            ...state1.slice(0,index),
+                value,
+            ...state1.slice(index+2),
+        ])
     }
 
     return (
