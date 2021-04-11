@@ -36,7 +36,7 @@ function ResultsOfEmployeeKpiChart(props) {
         dataStatus: DATA_STATUS.QUERYING,
 
         userId: localStorage.getItem("userId"),
-
+        roleId: localStorage.getItem("currentRole"),
         startMonth: INFO_SEARCH.startMonth,
         endMonth: INFO_SEARCH.endMonth,
         defaultendMonth: [endMonth, year].join('-'),
@@ -53,7 +53,7 @@ function ResultsOfEmployeeKpiChart(props) {
     let listEmployeeKpiSetEachYear;
 
     useEffect(() => {
-        props.getAllEmployeeKpiSetByMonth(undefined, state.userId, state.startMonth, state.endMonth);
+        props.getAllEmployeeKpiSetByMonth(state.roleId, state.userId, state.startMonth, state.endMonth);
 
         setState( {
             ...state,
@@ -126,7 +126,7 @@ function ResultsOfEmployeeKpiChart(props) {
                     endMonth: state.endMonth
             })
 
-            props.getAllEmployeeKpiSetByMonth(undefined, state.userId, state.startMonth, state.endMonth);
+            props.getAllEmployeeKpiSetByMonth(state.roleId, state.userId, state.startMonth, state.endMonth);
         }
     };
 
@@ -178,9 +178,9 @@ function ResultsOfEmployeeKpiChart(props) {
         }
 
         if (listEmployeeKpiSet) {
-            automaticPoint = [translate('kpi.evaluation.dashboard.auto_eva')].concat(listEmployeeKpiSet.map(x => x.automaticPoint));
-            employeePoint = [translate('kpi.evaluation.dashboard.employee_eva')].concat(listEmployeeKpiSet.map(x => x.employeePoint));
-            approvedPoint = [translate('kpi.evaluation.dashboard.approver_eva')].concat(listEmployeeKpiSet.map(x => x.approvedPoint));
+            automaticPoint = [translate('kpi.evaluation.dashboard.auto_eva')].concat(listEmployeeKpiSet.map(x => x.automaticPoint ? x.automaticPoint : 0));
+            employeePoint = [translate('kpi.evaluation.dashboard.employee_eva')].concat(listEmployeeKpiSet.map(x => x.employeePoint ? x.employeePoint : 0));
+            approvedPoint = [translate('kpi.evaluation.dashboard.approver_eva')].concat(listEmployeeKpiSet.map(x => x.approvedPoint ? x.approvedPoint : 0));
             date = listEmployeeKpiSet.map(x => {
                 date = new Date(x.date);
                 return date.getFullYear() + "-" + (date.getMonth() + 1) + "-01";
@@ -268,7 +268,7 @@ function ResultsOfEmployeeKpiChart(props) {
         } else {
             let div = document.createElement('div');
             div.innerHTML = "Không có dữ liệu";
-            let section = document.getElementById("chart");
+            let section = document.getElementById("refMultiLineChart");
             section.appendChild(div);
         }
     };

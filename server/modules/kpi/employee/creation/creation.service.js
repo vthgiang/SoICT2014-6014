@@ -72,10 +72,30 @@ exports.getAllEmployeeKpiSetByMonth = async (portal, organizationalUnitIds, user
         creator: new mongoose.Types.ObjectId(userId),
         date: { $gte: new Date(startDate), $lt: new Date(endDate) }
     }
+
+    // Tạm thời check hoặc role hoặc đơn vị, sau này sẽ tách 2 biến riêng
     if (organizationalUnitIds) {
-        keySearch = {
-            ...keySearch,
-            organizationalUnit: { $in: [...organizationalUnitIds] }
+        let unit = await OrganizationalUnit(connect(DB_CONNECTION, portal))
+            .find({ _id: { $in: [...organizationalUnitIds] } })
+        
+        if (unit?.length > 0) {
+            keySearch = {
+                ...keySearch,
+                organizationalUnit: { $in: [...organizationalUnitIds] }
+            }
+        } else {
+            unit = await OrganizationalUnit(connect(DB_CONNECTION, portal)).find({
+                $or: [
+                    { managers: { $in: [...organizationalUnitIds] } },
+                    { deputyManagers: { $in: [...organizationalUnitIds] } },
+                    { employees: { $in: [...organizationalUnitIds] } }
+                ]
+            });
+
+            keySearch = {
+                ...keySearch,
+                organizationalUnit: { $in: unit.map(item => item?._id) }
+            }
         }
     } 
 
