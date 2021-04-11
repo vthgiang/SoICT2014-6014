@@ -1491,6 +1491,12 @@ export default {
                     delete_discipline_faile: "Delete discipline faile",
                     edit_discipline_success: "Edit discipline success",
                     edit_discipline_faile: "Edit discipline faile",
+
+                    update_major_success: "Edit major successfully",
+                    update_major_failure: "Edit major unsuccessfully",
+
+                    delete_major_success: "Delete major successfully",
+                    delete_major_failure: "Delete major unsuccessfully"
                 },
             },
 

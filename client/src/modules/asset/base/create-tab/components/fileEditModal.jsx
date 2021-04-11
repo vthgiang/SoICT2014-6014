@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
@@ -6,14 +6,14 @@ import { DialogModal, ErrorLabel, UploadFile } from '../../../../../common-compo
 
 import ValidationHelper from '../../../../../helpers/validationHelper';
 
-class FileEditModal extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {}
-    }
+function FileEditModal(props){
+    const [state, setState] =useState({})
+    const [prevProps, setPrevProps] = useState({
+        id: null
+    })
 
     // Bắt sự kiện thay đổi file đính kèm
-    handleChangeFile = (file) => {
+    const handleChangeFile = (file) => {
         file = file.map(x => {
             return {
                 fileName: x.fileName,
@@ -21,17 +21,20 @@ class FileEditModal extends Component {
                 fileUpload: x.fileUpload
             }
         })
-        this.setState({
-            files: file
+        setState(state =>{
+            return{
+                ...state,
+                files: file
+            }
         });
     }
 
     // Bắt sự kiện xóa file đính kèm
-    handleDeleteFile = (name) => {
-        const { files } = this.state;
+    const handleDeleteFile = (name) => {
+        const { files } = state;
         let newfiles = files.filter((item) => item.fileName !== name);
 
-        this.setState(state => {
+        setState(state => {
             return {
                 ...state,
                 files: newfiles,
@@ -40,15 +43,15 @@ class FileEditModal extends Component {
     }
 
     // Bắt sự kiên thay đổi tên tài liệu
-    handleNameFileChange = (e) => {
+    const handleNameFileChange = (e) => {
         let { value } = e.target;
-        this.validateNameFile(value, true);
+        validateNameFile(value, true);
     }
-    validateNameFile = (value, willUpdateState = true) => {
-        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
+    const validateNameFile = (value, willUpdateState = true) => {
+        let { message } = ValidationHelper.validateEmpty(props.translate, value);
 
         if (willUpdateState) {
-            this.setState(state => {
+            setState(state => {
                 return {
                     ...state,
                     errorOnNameFile: message,
@@ -60,15 +63,15 @@ class FileEditModal extends Component {
     }
 
     // Bắt sự kiên thay đổi mô tả
-    handleDiscFileChange = (e) => {
+    const handleDiscFileChange = (e) => {
         let { value } = e.target;
-        this.validateDiscFile(value, true);
+        validateDiscFile(value, true);
     }
-    validateDiscFile = (value, willUpdateState = true) => {
-        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
+    const validateDiscFile = (value, willUpdateState = true) => {
+        let { message } = ValidationHelper.validateEmpty(props.translate, value);
 
         if (willUpdateState) {
-            this.setState(state => {
+            setState(state => {
                 return {
                     ...state,
                     errorOnDiscFile: message,
@@ -80,43 +83,43 @@ class FileEditModal extends Component {
     }
 
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
-    isFormValidated = () => {
-        let result = this.validateNameFile(this.state.name, false) && this.validateDiscFile(this.state.description, false);
+    const isFormValidated = () => {
+        let result = validateNameFile(state.name, false) && validateDiscFile(state.description, false);
 
         return result;
     }
 
     // Bắt sự kiện submit form
-    save = () => {
-        if (this.isFormValidated()) {
-            return this.props.handleEditFile(this.state);
+    const save = () => {
+        if (isFormValidated()) {
+            return props.handleEditFile(state);
         }
     }
 
-    static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.id !== prevState.id) {
+    if(prevProps.id !== props.id){
+        setState(state => {
             return {
-                ...prevState,
-                id: nextProps.id,
-                _id: nextProps._id,
-                index: nextProps.index,
-                name: nextProps.name,
-                description: nextProps.description,
-                files: nextProps.files,
+                ...state,
+                id: props.id,
+                _id: props._id,
+                index: props.index,
+                name: props.name,
+                description: props.description,
+                files: props.files,
 
                 errorOnNameFile: undefined,
                 errorOnDiscFile: undefined,
                 errorOnNumberFile: undefined,
             }
-        } else {
-            return null;
-        }
+        })
+        setPrevProps(props)
     }
+    
 
-    render() {
-        const { id } = this.props;
-        const { translate } = this.props;
-        const { name, description, files, errorOnNameFile, errorOnDiscFile, errorOnNumberFile } = this.state;
+    
+        const { id } = props;
+        const { translate } = props;
+        const { name, description, files, errorOnNameFile, errorOnDiscFile, errorOnNumberFile } = state;
 
         return (
             <React.Fragment>
@@ -124,41 +127,40 @@ class FileEditModal extends Component {
                     size='50' modalID={`modal-edit-file-${id}`} isLoading={false}
                     formID={`form-edit-file-${id}`}
                     title={translate('asset.general_information.edit_document')}
-                    func={this.save}
-                    disableSubmit={!this.isFormValidated()}
+                    func={save}
+                    disableSubmit={!isFormValidated()}
                 >
                     {/* Form chỉnh sửa tài liệu đính kèm */}
                     <form className="form-group" id={`form-create-file-${id}`}>
                         {/* Tên tài liệu */}
                         <div className={`form-group ${!errorOnNameFile ? "" : "has-error"}`}>
                             <label>{translate('asset.general_information.file_name')}<span className="text-red">*</span></label>
-                            <input type="text" className="form-control" name="name" value={name} onChange={this.handleNameFileChange} autoComplete="off" />
+                            <input type="text" className="form-control" name="name" value={name} onChange={handleNameFileChange} autoComplete="off" />
                             <ErrorLabel content={errorOnNameFile} />
                         </div>
 
                         {/* Mô tả */}
                         <div className={`form-group ${!errorOnDiscFile ? "" : "has-error"}`}>
                             <label>{translate('asset.general_information.description')}<span className="text-red">*</span></label>
-                            <textarea className="form-control" rows="3" name="description" value={description} onChange={this.handleDiscFileChange} autoComplete="off"></textarea>
+                            <textarea className="form-control" rows="3" name="description" value={description} onChange={handleDiscFileChange} autoComplete="off"></textarea>
                             <ErrorLabel content={errorOnDiscFile} />
                         </div>
 
                         {/* File đính kèm */}
                         <div className="form-group">
                             <label htmlFor="file">{translate('asset.general_information.attached_file')}</label>
-                            <UploadFile multiple={true} onChange={this.handleChangeFile} />
+                            <UploadFile multiple={true} onChange={handleChangeFile} />
                             {/* <br />
                             <div className="upload btn btn-primary">
                                 <i className="fa fa-folder"></i>
                                 {" " + translate('document.choose_file')}
-                                <input className="upload" type="file" name="file" onChange={this.handleChangeFile} />
+                                <input className="upload" type="file" name="file" onChange={handleChangeFile} />
                             </div> */}
                         </div>
                     </form>
                 </DialogModal>
             </React.Fragment>
         );
-    }
 };
 
 const editModal = connect(null, null)(withTranslate(FileEditModal));
