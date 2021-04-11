@@ -12,14 +12,12 @@ import 'c3/c3.css';
 import * as d3 from "d3";
 
 function StatisticsOfOrganizationalUnitKpiResultsChart(props) {
-    const DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
     const KIND_OF_POINT = { AUTOMATIC: 1, EMPLOYEE: 2, APPROVED: 3 };
 
     const today = new Date();
 
     const [state, setState] = useState({
         month: today.getFullYear() + '-' + (today.getMonth() + 1),
-        dataStatus: DATA_STATUS.QUERYING,
         kindOfPoint: KIND_OF_POINT.AUTOMATIC,
         exportData:null
     });
@@ -38,7 +36,11 @@ function StatisticsOfOrganizationalUnitKpiResultsChart(props) {
 
     useEffect(() => {
         columnChart();
-    });
+    }, [state.kindOfPoint]);
+
+    useEffect(() => {
+        columnChart();
+    }, [props.dashboardOrganizationalUnitKpi.employeeKpiSets]);
 
     if (props.organizationalUnitId !== state.organizationalUnitId || props.month !== state.month) {
         props.getAllEmployeeKpiSetInOrganizationalUnit(localStorage.getItem("currentRole"), props.organizationalUnitId, props.month);
@@ -46,8 +48,7 @@ function StatisticsOfOrganizationalUnitKpiResultsChart(props) {
         setState ({
             ...state,
             organizationalUnitId: props.organizationalUnitId,
-            month: props.month,
-            dataStatus: DATA_STATUS.QUERYING
+            month: props.month
         })
     }
 
