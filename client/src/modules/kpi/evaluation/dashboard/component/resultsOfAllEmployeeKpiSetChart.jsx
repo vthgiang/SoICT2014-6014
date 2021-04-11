@@ -80,7 +80,6 @@ function ResultsOfAllEmployeeKpiSetChart(props) {
                 ...state,
                 dataStatus: DATA_STATUS.QUERYING,
             });
-
         } else if (state.dataStatus === DATA_STATUS.QUERYING) {
             if (props.createEmployeeKpiSet.employeeKpiSetsInOrganizationalUnitByMonth) {
                 setState({
@@ -88,9 +87,7 @@ function ResultsOfAllEmployeeKpiSetChart(props) {
                     dataStatus: DATA_STATUS.AVAILABLE
                 });
             }
-
         } else if (state.dataStatus === DATA_STATUS.AVAILABLE) {
-
             let data = multiLineChart();
             setState({
                 ...state,

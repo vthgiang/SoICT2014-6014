@@ -76,7 +76,7 @@ exports.getAllEmployeeKpiSetByMonth = async (portal, organizationalUnitIds, user
     // Tạm thời check hoặc role hoặc đơn vị, sau này sẽ tách 2 biến riêng
     if (organizationalUnitIds) {
         let unit = await OrganizationalUnit(connect(DB_CONNECTION, portal))
-            .find({ _id: { $in: [...organizationalUnitIds] } })
+            .find({ _id: { $in: organizationalUnitIds.map(item => mongoose.Types.ObjectId(item)) } })
         
         if (unit?.length > 0) {
             keySearch = {
