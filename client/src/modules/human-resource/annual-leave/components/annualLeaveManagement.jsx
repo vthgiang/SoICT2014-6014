@@ -210,6 +210,7 @@ class AnnualLeaveManagement extends Component {
             page: parseInt(page),
 
         });
+        console.log(page);
         this.props.searchAnnualLeaves(this.state);
     }
 
