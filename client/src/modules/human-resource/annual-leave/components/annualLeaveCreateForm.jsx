@@ -11,6 +11,7 @@ import { UserActions } from '../../../super-admin/user/redux/actions';
 import { EmployeeManagerActions } from '../../profile/employee-management/redux/actions';
 
 function AnnualLeaveCreateForm(props) {
+    const { translate, annualLeave, user, employeesManager, department } = props;
 
     const createStartTime = useRef('');
     const createEndTime = useRef('');
@@ -45,14 +46,67 @@ function AnnualLeaveCreateForm(props) {
         endTime: '',
         status: "approved",
         reason: "",
+        listAllEmployees: []
     });
+    const { employee, organizationalUnit, startDate, endDate, reason, status, errorOnOrganizationalUnit,
+        errorOnEmployee, errorOnReason, errorOnStartDate, errorOnEndDate, totalHours, errorOnTotalHours, type,
+        listAllEmployees, listDepartments, startTime,  endTime 
+    } = state;
 
     useEffect(() => {
-        props.getAllEmployee({ organizationalUnits: 'allUnist' });
-    }, [])
+        let unit;
+        if (department?.departmentsThatUserIsManager) {
+            unit = department.departmentsThatUserIsManager.map(item => item?._id)
+        }
+
+        if (unit?.length > 0) {
+            props.getAllEmployeeOfUnitByIds({
+                organizationalUnitIds: unit,
+                callApi: true
+            });
+        }
+    }, [department.departmentsThatUserIsManager])
+
+    useEffect(() => {
+        let listAllEmployees;
+        if (user?.employeesOfUnitsUserIsManager) {
+            listAllEmployees = user.employeesOfUnitsUserIsManager;
+            if (listAllEmployees?.length > 0) {
+                listAllEmployees = listAllEmployees.map(item => { 
+                    return {
+                        text: item?.userId?.name, 
+                        value: item?.userId?.email 
+                    }
+                })
+            }
+        }
+
+        setState({
+            ...state,
+            organizationalUnit: user?.userdepartments?.[0]?.id,
+            listAllEmployees: listAllEmployees,
+            employee: listAllEmployees?.[0]?.value
+        })
+
+        props.getDepartmentOfUser({ email: listAllEmployees?.[0]?.value });
+    }, [user.employeesOfUnitsUserIsManager])
+
+
+    useEffect(() => {
+        let listDepartments = [{ _id: "", name: translate('human_resource.non_unit') }];
+        if (user?.organizationalUnitsOfUserByEmail) {
+            listDepartments = user.organizationalUnitsOfUserByEmail;
+
+            setState({
+                ...state,
+                organizationalUnit: listDepartments[0]?._id,
+                listDepartments: listDepartments
+            })
+        }
+    }, [user.organizationalUnitsOfUserByEmail])
+    
 
     const validateEmployeeNumber = (value, willUpdateState = true) => {
-        let { translate } = props;
         let msg = AnnualLeaveFormValidator.validateEmployeeNumber(value, translate);
         if (willUpdateState) {
             setState(state => {
@@ -74,7 +128,6 @@ function AnnualLeaveCreateForm(props) {
     }
 
     const validateOrganizationalUnit = (value, willUpdateState = true) => {
-        let { translate } = props;
         let msg = AnnualLeaveFormValidator.validateEmployeeNumber(value, translate);
         if (willUpdateState) {
             setState(state => {
@@ -98,7 +151,6 @@ function AnnualLeaveCreateForm(props) {
      * @param {*} value : Giá trị ngày bắt đầu
      */
     const handleStartDateChange = (value) => {
-        const { translate } = props;
         let { errorOnEndDate, endDate } = state;
 
         let errorOnStartDate;
@@ -164,7 +216,6 @@ function AnnualLeaveCreateForm(props) {
      * @param {*} value : Giá trị ngày kết thúc
      */
     const handleEndDateChange = (value) => {
-        const { translate } = props;
         let { startDate, errorOnStartDate } = state;
 
         let errorOnEndDate;
@@ -195,8 +246,6 @@ function AnnualLeaveCreateForm(props) {
     }
 
     const validateTotalHours = (value, willUpdateState = true) => {
-        const { translate } = props;
-
         let msg = AnnualLeaveFormValidator.validateTotalHour(value, translate)
         if (willUpdateState) {
             setState(state => {
@@ -218,8 +267,6 @@ function AnnualLeaveCreateForm(props) {
     }
 
     const validateReason = (value, willUpdateState = true) => {
-        const { translate } = props;
-
         let msg = AnnualLeaveFormValidator.validateReason(value, translate)
         if (willUpdateState) {
             setState(state => {
@@ -244,16 +291,6 @@ function AnnualLeaveCreateForm(props) {
 
     /** Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form */
     const isFormValidated = () => {
-        const { user } = props;
-        let { employee, organizationalUnit, reason, startDate, endDate, type, totalHours } = state;
-
-        if (user.organizationalUnitsOfUserByEmail) {
-            if (!organizationalUnit) {
-                let department = user.organizationalUnitsOfUserByEmail[0];
-                organizationalUnit = department._id;
-            }
-        }
-
         let result = validateEmployeeNumber(employee, false) && validateReason(reason, false) &&
             validateOrganizationalUnit(organizationalUnit, false) && (type ? validateTotalHours(totalHours, false) : true);
 
@@ -269,14 +306,6 @@ function AnnualLeaveCreateForm(props) {
 
     /** Bắt sự kiện submit form */
     const save = () => {
-        const { user, employeesManager } = props;
-        let { organizationalUnit, startDate, endDate, employee, type, startTime, endTime } = state;
-        if (user.organizationalUnitsOfUserByEmail) {
-            if (!organizationalUnit) {
-                let department = user.organizationalUnitsOfUserByEmail[0];
-                organizationalUnit = department._id;
-            }
-        }
         let employeeID = employeesManager.listEmployeesOfOrganizationalUnits.find(x => x.emailInCompany === employee);
         employeeID = employeeID._id;
 
@@ -299,21 +328,6 @@ function AnnualLeaveCreateForm(props) {
         }
     }
 
-    const { translate, annualLeave, user, employeesManager } = props;
-
-    let { employee, organizationalUnit, startDate, endDate, reason, status, errorOnOrganizationalUnit,
-        errorOnEmployee, errorOnReason, errorOnStartDate, errorOnEndDate, totalHours, errorOnTotalHours, type } = state;
-
-    let listAllEmployees = employeesManager.listEmployeesOfOrganizationalUnits;
-    let listDepartments = [{ _id: "", name: translate('human_resource.non_unit') }];
-    if (user.organizationalUnitsOfUserByEmail) {
-        listDepartments = user.organizationalUnitsOfUserByEmail;
-        if (!organizationalUnit) {
-            let department = user.organizationalUnitsOfUserByEmail[0];
-            organizationalUnit = department._id;
-        }
-    }
-
     return (
         <React.Fragment>
             {/* <ButtonModal modalID="modal-create-annual-leave" button_name={translate('human_resource.annual_leave.add_annual_leave')} title={translate('human_resource.annual_leave.add_annual_leave_title')} /> */}
@@ -333,7 +347,7 @@ function AnnualLeaveCreateForm(props) {
                             className="form-control select2"
                             style={{ width: "100%" }}
                             value={employee}
-                            items={listAllEmployees.map(y => { return { value: y.emailInCompany, text: `${y.employeeNumber} - ${y.fullName}` } }).concat([{ value: "", text: translate('human_resource.non_staff') }])}
+                            items={listAllEmployees}
                             onChange={handleMSNVChange}
                         />
                         <ErrorLabel content={errorOnEmployee} />
@@ -344,10 +358,10 @@ function AnnualLeaveCreateForm(props) {
                         <SelectBox
                             id={`create-annual-leave-unit`}
                             className="form-control select2"
-                            disabled={listDepartments.length > 1 ? false : true}
+                            disabled={listDepartments?.length > 1 ? false : true}
                             style={{ width: "100%" }}
                             value={organizationalUnit}
-                            items={listDepartments.map(y => { return { value: y._id, text: y.name } })}
+                            items={listDepartments?.length > 0 && listDepartments.map(y => { return { value: y._id, text: y.name } })}
                             onChange={handleOrganizationalUnitChange}
                         />
                         <ErrorLabel content={errorOnOrganizationalUnit} />
@@ -429,14 +443,15 @@ function AnnualLeaveCreateForm(props) {
 };
 
 function mapState(state) {
-    const { annualLeave, employeesManager, user } = state;
-    return { annualLeave, employeesManager, user };
+    const { annualLeave, employeesManager, user, department } = state;
+    return { annualLeave, employeesManager, user, department };
 };
 
 const actionCreators = {
     createAnnualLeave: AnnualLeaveActions.createAnnualLeave,
     getAllEmployee: EmployeeManagerActions.getAllEmployee,
     getDepartmentOfUser: UserActions.getDepartmentOfUser,
+    getAllEmployeeOfUnitByIds: UserActions.getAllEmployeeOfUnitByIds
 };
 
 const createForm = connect(mapState, actionCreators)(withTranslate(AnnualLeaveCreateForm));
