@@ -161,7 +161,7 @@ function TransportVehicle(props) {
         setstate1(state1 => [
             ...state1.slice(0,index),
                 value,
-            ...state1.slice(index+2),
+            ...state1.slice(index+1),
         ])
     }
 
