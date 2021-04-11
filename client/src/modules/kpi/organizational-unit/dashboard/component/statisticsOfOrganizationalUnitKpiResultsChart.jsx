@@ -37,17 +37,8 @@ function StatisticsOfOrganizationalUnitKpiResultsChart(props) {
     },[]);
 
     useEffect(() => {
-        setState(  {
-            ...state,
-            kindOfPoint: state.kindOfPoint,
-        });
-
         columnChart();
-    }, [state.kindOfPoint]);
-
-    useEffect(() => {
-        columnChart();
-    }, [props.dashboardOrganizationalUnitKpi.employeeKpiSets]);
+    });
 
     if (props.organizationalUnitId !== state.organizationalUnitId || props.month !== state.month) {
         props.getAllEmployeeKpiSetInOrganizationalUnit(localStorage.getItem("currentRole"), props.organizationalUnitId, props.month);
