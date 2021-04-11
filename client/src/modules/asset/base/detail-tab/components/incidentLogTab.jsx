@@ -60,7 +60,7 @@ function IncidentLogTab(props) {
         }
     }
     const formatStatus = (status) => {
-        const { translate } = this.props;
+        const { translate } = props;
 
         if (status === 'ready_to_use') {
             return translate('asset.general_information.ready_use')
