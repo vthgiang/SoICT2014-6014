@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
@@ -6,14 +6,14 @@ import { DatePicker, DialogModal, ErrorLabel } from '../../../../../common-compo
 
 import ValidationHelper from '../../../../../helpers/validationHelper';
 
-class MaintainanceLogEditModal extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {};
-    }
+function MaintainanceLogEditModal (props) {
+    const [state, setState] =useState({})
+    const [prevProps, setPrevProps] = useState({
+        id:null,
+    })
 
     // Function format dữ liệu Date thành string
-    formatDate(date, monthYear = false) {
+    const formatDate = (date, monthYear = false) => {
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
@@ -35,15 +35,15 @@ class MaintainanceLogEditModal extends Component {
     }
 
     // Bắt sự kiện thay đổi mã phiếu
-    handleMaintainanceCodeChange = (e) => {
+    const handleMaintainanceCodeChange = (e) => {
         let { value } = e.target;
-        this.validateMaintainanceCode(value, true);
+        validateMaintainanceCode(value, true);
     }
-    validateMaintainanceCode = (value, willUpdateState = true) => {
-        let { message } = ValidationHelper.validateCode(this.props.translate, value);
+    const validateMaintainanceCode = (value, willUpdateState = true) => {
+        let { message } = ValidationHelper.validateCode(props.translate, value);
 
         if (willUpdateState) {
-            this.setState(state => {
+            setState(state => {
                 return {
                     ...state,
                     errorOnMaintainanceCode: message,
@@ -55,14 +55,14 @@ class MaintainanceLogEditModal extends Component {
     }
 
     // Bắt sự kiện thay đổi "Ngày lập"
-    handleCreateDateChange = (value) => {
-        this.validateCreateDate(value, true);
+    const handleCreateDateChange = (value) => {
+        validateCreateDate(value, true);
     }
-    validateCreateDate = (value, willUpdateState = true) => {
-        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
+    const validateCreateDate = (value, willUpdateState = true) => {
+        let { message } = ValidationHelper.validateEmpty(props.translate, value);
 
         if (willUpdateState) {
-            this.setState(state => {
+            setState(state => {
                 return {
                     ...state,
                     errorOnCreateDate: message,
@@ -74,24 +74,24 @@ class MaintainanceLogEditModal extends Component {
     }
 
     // Bắt sự kiện thay đổi loại phiếu
-    handleTypeChange = (e) => {
+    const handleTypeChange = (e) => {
         let { value } = e.target;
-        this.setState({
-            ...this.state,
+        setState({
+            ...state,
             type: value
         })
     }
 
     // Bắt sự kiện thay đổi "Nội dung"
-    handleDescriptionChange = (e) => {
+    const handleDescriptionChange = (e) => {
         let { value } = e.target;
-        this.validateDescription(value, true);
+        validateDescription(value, true);
     }
-    validateDescription = (value, willUpdateState = true) => {
-        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
+    const validateDescription = (value, willUpdateState = true) => {
+        let { message } = ValidationHelper.validateEmpty(props.translate, value);
 
         if (willUpdateState) {
-            this.setState(state => {
+            setState(state => {
                 return {
                     ...state,
                     errorOnDescription: message,
@@ -103,14 +103,14 @@ class MaintainanceLogEditModal extends Component {
     }
 
     // Bắt sự kiện thay đổi "Ngày thực hiện"
-    handleStartDateChange = (value) => {
-        this.validateStartDate(value, true);
+    const handleStartDateChange = (value) => {
+        validateStartDate(value, true);
     }
-    validateStartDate = (value, willUpdateState = true) => {
-        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
+    const validateStartDate = (value, willUpdateState = true) => {
+        let { message } = ValidationHelper.validateEmpty(props.translate, value);
 
         if (willUpdateState) {
-            this.setState(state => {
+            setState(state => {
                 return {
                     ...state,
                     errorOnStartDate: message,
@@ -122,23 +122,23 @@ class MaintainanceLogEditModal extends Component {
     }
 
     // Bắt sự kiện thay đổi "Ngày hoàn thành"
-    handleEndDateChange = (value) => {
-        this.setState({
-            ...this.state,
+    const handleEndDateChange = (value) => {
+        setState({
+            ...state,
             endDate: value
         })
     }
 
     // Bắt sự kiện thay đổi "Chi phí"
-    handleExpenseChange = (e) => {
+    const handleExpenseChange = (e) => {
         let { value } = e.target;
-        this.validateExpense(value, true);
+        validateExpense(value, true);
     }
-    validateExpense = (value, willUpdateState = true) => {
-        let { message } = ValidationHelper.validateEmpty(this.props.translate, value);
+    const validateExpense = (value, willUpdateState = true) => {
+        let { message } = ValidationHelper.validateEmpty(props.translate, value);
 
         if (willUpdateState) {
-            this.setState(state => {
+            setState(state => {
                 return {
                     ...state,
                     errorOnExpense: message,
@@ -150,67 +150,66 @@ class MaintainanceLogEditModal extends Component {
     }
 
     // Bắt sự kiện thay đổi "Trạng thái phiếu"
-    handleStatusChange = (e) => {
+    const handleStatusChange = (e) => {
         let { value } = e.target;
-        this.setState({
-            ...this.state,
+        setState({
+            ...state,
             status: value
         })
     }
 
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
-    isFormValidated = () => {
-        let result = this.validateCreateDate(this.state.createDate, false)
+    const isFormValidated = () => {
+        let result = validateCreateDate(state.createDate, false)
 
         return result;
     }
 
     // Bắt sự kiện submit form
-    save = async () => {
-        // var partCreate = this.state.createDate.split('-');
+    const save = async () => {
+        // var partCreate = state.createDate.split('-');
         // var createDate = [partCreate[2], partCreate[1], partCreate[0]].join('-');
-        // var partStart = this.state.startDate.split('-');
+        // var partStart = state.startDate.split('-');
         // var startDate = [partStart[2], partStart[1], partStart[0]].join('-');
-        // var partEnd = this.state.endDate.split('-');
+        // var partEnd = state.endDate.split('-');
         // var endDate = [partEnd[2], partEnd[1], partEnd[0]].join('-');
-        const { createDate, startDate, endDate } = this.state;
-        if (this.isFormValidated()) {
-            return this.props.handleChange({ ...this.state, createDate: createDate, startDate: startDate, endDate: endDate });
+        const { createDate, startDate, endDate } = state;
+        if (isFormValidated()) {
+            return props.handleChange({ ...state, createDate: createDate, startDate: startDate, endDate: endDate });
         }
     }
 
-    static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.id !== prevState.id) {
-            return {
-                ...prevState,
-                _id: nextProps._id,
-                id: nextProps.id,
-                index: nextProps.index,
-                maintainanceCode: nextProps.maintainanceCode,
-                createDate: nextProps.createDate,
-                type: nextProps.type,
-                description: nextProps.description,
-                startDate: nextProps.startDate,
-                endDate: nextProps.endDate,
-                expense: nextProps.expense,
-                status: nextProps.status,
+    if(prevProps.id !== props.id){
+        setState(state =>{
+            return{
+                ...state,
+                _id: props._id,
+                id: props.id,
+                index: props.index,
+                maintainanceCode: props.maintainanceCode,
+                createDate: props.createDate,
+                type: props.type,
+                description: props.description,
+                startDate: props.startDate,
+                endDate: props.endDate,
+                expense: props.expense,
+                status: props.status,
                 errorOnMaintainanceCode: undefined,
                 errorOnCreateDate: undefined,
                 errorOnDescription: undefined,
                 errorOnStartDate: undefined,
                 errorOnExpense: undefined,
             }
-        } else {
-            return null;
-        }
+        })
+        setPrevProps(props)
     }
-
-    render() {
-        const { id } = this.props;
-        const { translate } = this.props;
+    
+  
+        const { id } = props;
+        const { translate } = props;
         const { maintainanceCode, createDate, type, description, startDate, endDate, expense, status,
             errorOnMaintainanceCode, errorOnCreateDate, errorOnDescription, errorOnStartDate, errorOnExpense
-        } = this.state;
+        } = state;
 
         return (
             <React.Fragment>
@@ -218,8 +217,8 @@ class MaintainanceLogEditModal extends Component {
                     size='50' modalID={`modal-edit-maintainance-${id}`} isLoading={false}
                     formID={`form-edit-maintainance-${id}`}
                     title={translate('asset.asset_info.edit_maintenance_card')}
-                    func={this.save}
-                    disableSubmit={!this.isFormValidated()}
+                    func={save}
+                    disableSubmit={!isFormValidated()}
                 >
                     {/* Form chỉnh sửa phiếu bảo trì */}
                     <form className="form-group" id={`form-edit-maintainance-${id}`}>
@@ -229,7 +228,7 @@ class MaintainanceLogEditModal extends Component {
                                 {/* Mã phiếu */}
                                 <div className={`form-group ${!errorOnMaintainanceCode ? "" : "has-error"}`}>
                                     <label>{translate('asset.general_information.form_code')}</label>
-                                    <input type="text" className="form-control" name="maintainanceCode" value={maintainanceCode} onChange={this.handleMaintainanceCodeChange} autoComplete="off"
+                                    <input type="text" className="form-control" name="maintainanceCode" value={maintainanceCode} onChange={handleMaintainanceCodeChange} autoComplete="off"
                                         placeholder="Mã phiếu" />
                                     <ErrorLabel content={errorOnMaintainanceCode} />
                                 </div>
@@ -239,8 +238,8 @@ class MaintainanceLogEditModal extends Component {
                                     <label>{translate('asset.general_information.create_date')}<span className="text-red">*</span></label>
                                     <DatePicker
                                         id={`edit-create-date-${id}`}
-                                        value={this.formatDate(createDate)}
-                                        onChange={this.handleCreateDateChange}
+                                        value={formatDate(createDate)}
+                                        onChange={handleCreateDateChange}
                                     />
                                     <ErrorLabel content={errorOnCreateDate} />
                                 </div>
@@ -248,7 +247,7 @@ class MaintainanceLogEditModal extends Component {
                                 {/* Phân loại */}
                                 <div className="form-group">
                                     <label>{translate('asset.general_information.type')}</label>
-                                    <select className="form-control" value={type} name="type" onChange={this.handleTypeChange}>
+                                    <select className="form-control" value={type} name="type" onChange={handleTypeChange}>
                                         <option value="1">{translate('asset.asset_info.repair')}</option>
                                         <option value="2">{translate('asset.asset_info.replace')}</option>
                                         <option value="3">{translate('asset.asset_info.upgrade')}</option>
@@ -258,7 +257,7 @@ class MaintainanceLogEditModal extends Component {
                                 {/* Nội dung */}
                                 <div className={`form-group ${!errorOnDescription ? "" : "has-error"}`}>
                                     <label>{translate('asset.general_information.content')}</label>
-                                    <textarea className="form-control" rows="3" name="description" value={description} onChange={this.handleDescriptionChange} autoComplete="off"
+                                    <textarea className="form-control" rows="3" name="description" value={description} onChange={handleDescriptionChange} autoComplete="off"
                                         placeholder="Nội dung"></textarea>
                                     <ErrorLabel content={errorOnDescription} />
                                 </div>
@@ -270,8 +269,8 @@ class MaintainanceLogEditModal extends Component {
                                     <label>{translate('asset.general_information.start_date')}</label>
                                     <DatePicker
                                         id={`edit-start-date-${id}`}
-                                        value={this.formatDate(startDate)}
-                                        onChange={this.handleStartDateChange}
+                                        value={formatDate(startDate)}
+                                        onChange={handleStartDateChange}
                                     />
                                     <ErrorLabel content={errorOnStartDate} />
                                 </div>
@@ -281,21 +280,21 @@ class MaintainanceLogEditModal extends Component {
                                     <label>{translate('asset.general_information.end_date')}</label>
                                     <DatePicker
                                         id={`edit-end-date-${id}`}
-                                        value={this.formatDate(endDate)}
-                                        onChange={this.handleEndDateChange}
+                                        value={formatDate(endDate)}
+                                        onChange={handleEndDateChange}
                                     />
                                 </div>
 
                                 {/* Chi phí */}
                                 <div className={`form-group`}>
                                     <label>{translate('asset.general_information.expense')} (VNĐ)</label>
-                                    <input type="text" className="form-control" name="expense" value={expense} onChange={this.handleExpenseChange} autoComplete="off" placeholder="Chi phí" />
+                                    <input type="text" className="form-control" name="expense" value={expense} onChange={handleExpenseChange} autoComplete="off" placeholder="Chi phí" />
                                 </div>
 
                                 {/* Trạng thái */}
                                 <div className="form-group">
                                     <label>{translate('asset.general_information.status')}</label>
-                                    <select className="form-control" value={status} name="status" onChange={this.handleStatusChange}>
+                                    <select className="form-control" value={status} name="status" onChange={handleStatusChange}>
                                         <option value="1">{translate('asset.asset_info.unfulfilled')}</option>
                                         <option value="2">{translate('asset.asset_info.processing')}</option>
                                         <option value="3">{translate('asset.asset_info.made')}</option>
@@ -307,7 +306,6 @@ class MaintainanceLogEditModal extends Component {
                 </DialogModal>
             </React.Fragment>
         );
-    }
 };
 
 
