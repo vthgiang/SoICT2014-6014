@@ -10,28 +10,30 @@ import c3 from 'c3';
 import 'c3/c3.css';
 
 function DistributionOfEmployeeKpiChart(props) {
-    const { translate, createEmployeeKpiSet } = props;
+    const {translate, createEmployeeKpiSet} = props;
     const refKpiSet = React.createRef();
 
-    let currentDate = new Date();
-    let currentYear = currentDate.getFullYear();
-    let currentMonth = currentDate.getMonth();
+    let d = new Date(),
+        monthToday = d.getMonth() + 1,
+        year = d.getFullYear();
+    let endMonth;
 
-    const DATA_STATUS = {NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3};
-    const chart = null;
-    const dataPieChart = null;
+    if (monthToday < 10) {
+        endMonth = '0' + monthToday;
+    } else {
+        endMonth = monthToday;
+    }
 
     const [state, setState] = useState({
-        month: currentYear + '-' + (currentMonth + 1),
-        dataStatus: DATA_STATUS.QUERYING,
+        defaultDate: [endMonth, year].join('-'),
+        month: [year, endMonth].join('-'),
         currentRole: localStorage.getItem("currentRole")
     });
+    const {currentRole, month, defaultDate} = state;
 
     let currentEmployeeKpiSet;
 
     useEffect(() => {
-        const {currentRole, month} = state;
-
         // Lấy Kpi của cá nhân hiện tại
         props.getEmployeeKpiSet({
             roleId: currentRole,
@@ -39,22 +41,21 @@ function DistributionOfEmployeeKpiChart(props) {
         });
     }, []);
 
+    useEffect(() => {
+        let data = pieChart(createEmployeeKpiSet);
+
+        setState({
+            ...state,
+            chart: data?.chart,
+            dataPieChart: data?.dataPieChart,
+        })
+    }, [props.createEmployeeKpiSet.currentKPI]);
 
     useEffect(() => {
-        pieChart(createEmployeeKpiSet);
-    });
-
-    useEffect(() => {
-        const {currentRole} = state;
-
         props.getEmployeeKpiSet({
             roleId: currentRole,
             month: state.month
         });
-            setState(  {
-                ...state,
-                dataStatus: DATA_STATUS.QUERYING,
-            });
     }, [state.month]);
 
     /**Thiết lập dữ liệu biểu đồ */
@@ -68,7 +69,6 @@ function DistributionOfEmployeeKpiChart(props) {
                 return [x.name, x.weight]
             })
         }
-        // console.log("dataPieChart", dataPieChart)
         return dataPieChart;
     };
 
@@ -87,33 +87,37 @@ function DistributionOfEmployeeKpiChart(props) {
         removePreviousChart();
 
         // Tạo mảng dữ liệu
+        let chart
         let dataPieChart = setDataPieChart(createEmployeeKpiSet);
-        // console.log("pieChart", dataPieChart)
 
         if(dataPieChart){
-    let chart = c3.generate({
-        bindto: refKpiSet.current,             // Đẩy chart vào thẻ div có id="pieChart"
+            chart = c3.generate({
+                bindto: refKpiSet.current,             // Đẩy chart vào thẻ div có id="pieChart"
 
-        // Căn lề biểu đồ
-        padding: {
-            top: 20,
-            bottom: 20,
-            right: 20,
-            left: 20
-        },
+                // Căn lề biểu đồ
+                padding: {
+                    top: 20,
+                    bottom: 20,
+                    right: 20,
+                    left: 20
+                },
 
-        data: {                                 // Dữ liệu biểu đồ
-            columns: dataPieChart,
-            type: 'pie',
+                data: {                                 // Dữ liệu biểu đồ
+                    columns: dataPieChart,
+                    type: 'pie',
 
-        },
+                },
 
-        legend: {
-            show: false
+                legend: {
+                    show: false
+                }
+            });
         }
-    });
-}
 
+        return {
+            chart,
+            dataPieChart
+        }
     };
 
     const handleSelectMonth = async (value) => {
@@ -127,16 +131,6 @@ function DistributionOfEmployeeKpiChart(props) {
     if (createEmployeeKpiSet) {
         currentEmployeeKpiSet = createEmployeeKpiSet.currentKPI
     }
-    let d = new Date(),
-        month = '' + (d.getMonth() + 1),
-        day = '' + d.getDate(),
-        year = d.getFullYear();
-
-    if (month.length < 2)
-        month = '0' + month;
-    if (day.length < 2)
-        day = '0' + day;
-    let defaultDate = [month, year].join('-');
 
     return (
         <React.Fragment>
@@ -155,13 +149,13 @@ function DistributionOfEmployeeKpiChart(props) {
 
             {currentEmployeeKpiSet ?
                 <section id={"distributionOfEmployeeKpi"} className="c3-chart-container">
-                    <div ref={refKpiSet}> </div>
+                    <div ref={refKpiSet}></div>
                     <CustomLegendC3js
-                        chart={chart}
+                        chart={state.chart}
                         chartId={"distributionOfEmployeeKpi"}
                         legendId={"distributionOfEmployeeKpiLegend"}
                         title={`${translate('kpi.evaluation.employee_evaluation.KPI_list')} (${currentEmployeeKpiSet.kpis && currentEmployeeKpiSet.kpis.length})`}
-                        dataChartLegend={dataPieChart && dataPieChart.map(item => item[0])}
+                        dataChartLegend={state.dataPieChart && state.dataPieChart.map(item => item[0])}
                     />
                 </section>
                 : <section>{translate('kpi.organizational_unit.dashboard.no_data')}</section>

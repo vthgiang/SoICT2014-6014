@@ -1,23 +1,25 @@
-import React, { Component } from 'react';
+import React, { Component ,useState, useEffect} from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { AssetTypeActions } from '../../../admin/asset-type/redux/actions';
 import { ApiImage } from '../../../../../common-components';
 
-class GeneralTab extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            defaultAvatar: "./upload/asset/pictures/picture5.png"
-        };
-    }
-    componentDidMount() {
-        this.props.getAssetTypes();
+function GeneralTab(props){
+    const [state, setState] = useState({
+        defaultAvatar: "./upload/asset/pictures/picture5.png"
+    })
 
-    }
+    const [prevProps, setPrevProps] = useState({
+        id: null
+    })
+    
+    useEffect(() => {
+        props.getAssetTypes();
+    }, [])
+    
     // Function format dữ liệu Date thành string
-    formatDate(date, monthYear = false) {
+    const formatDate = (date, monthYear = false) => {
         if (!date) return null;
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
@@ -39,8 +41,8 @@ class GeneralTab extends Component {
         }
     }
 
-    convertGroupAsset = (group) => {
-        const { translate } = this.props;
+    const convertGroupAsset = (group) => {
+        const { translate } = props;
         if (group === 'building') {
             return translate('asset.dashboard.building')
         }
@@ -56,38 +58,36 @@ class GeneralTab extends Component {
         else return null;
     }
 
-    static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.id !== prevState.id) {
-            return {
-                ...prevState,
-                id: nextProps.id,
-                avatar: nextProps.avatar,
-                code: nextProps.code,
-                assetName: nextProps.assetName,
-                serial: nextProps.serial,
-                assetTypes: nextProps.assetTypes,
-                group: nextProps.group,
-                purchaseDate: nextProps.purchaseDate,
-                warrantyExpirationDate: nextProps.warrantyExpirationDate,
-                managedBy: nextProps.managedBy,
-                assignedToUser: nextProps.assignedToUser,
-                assignedToOrganizationalUnit: nextProps.assignedToOrganizationalUnit,
-                handoverFromDate: nextProps.handoverFromDate,
-                handoverToDate: nextProps.handoverToDate,
-                location: nextProps.location,
-                description: nextProps.description,
-                status: nextProps.status,
-                typeRegisterForUse: nextProps.typeRegisterForUse,
-                detailInfo: nextProps.detailInfo,
-                usageLogs: nextProps.usageLogs,
-                readByRoles: nextProps.readByRoles
-            }
-        } else {
-            return null;
-        }
+    if(prevProps.id !== props.id){
+        setState({
+            ...state,
+            id: props.id,
+            avatar: props.avatar,
+            code: props.code,
+            assetName: props.assetName,
+            serial: props.serial,
+            assetTypes: props.assetTypes,
+            group: props.group,
+            purchaseDate: props.purchaseDate,
+            warrantyExpirationDate: props.warrantyExpirationDate,
+            managedBy: props.managedBy,
+            assignedToUser: props.assignedToUser,
+            assignedToOrganizationalUnit: props.assignedToOrganizationalUnit,
+            handoverFromDate: props.handoverFromDate,
+            handoverToDate: props.handoverToDate,
+            location: props.location,
+            description: props.description,
+            status: props.status,
+            typeRegisterForUse: props.typeRegisterForUse,
+            detailInfo: props.detailInfo,
+            usageLogs: props.usageLogs,
+            readByRoles: props.readByRoles
+        })
+        setPrevProps(props)
     }
-    formatStatus = (status) => {
-        const { translate } = this.props;
+    
+    const formatStatus = (status) => {
+        const { translate } = props;
 
         if (status === 'ready_to_use') {
             return translate('asset.general_information.ready_use')
@@ -109,8 +109,8 @@ class GeneralTab extends Component {
         }
     }
 
-    render() {
-        const { id, translate, user, assetsManager, department, role } = this.props;
+    
+        const { id, translate, user, assetsManager, department, role } = props;
         var userlist = user.list, departmentlist = department.list;
         let assetbuilding = assetsManager && assetsManager.buildingAssets;
         let assetbuildinglist = assetbuilding && assetbuilding.list;
@@ -119,7 +119,7 @@ class GeneralTab extends Component {
             avatar, code, assetName, serial, assetTypes, group, purchaseDate, warrantyExpirationDate,
             managedBy, assignedToUser, assignedToOrganizationalUnit, location,
             description, status, typeRegisterForUse, detailInfo, usageLogs, readByRoles
-        } = this.state;
+        } = state;
 
         return (
             <div id={id} className="tab-pane active">
@@ -159,7 +159,7 @@ class GeneralTab extends Component {
                                     {/* Nhóm tài sản */}
                                     <div className="form-group">
                                         <strong>{translate('asset.general_information.asset_group')}&emsp; </strong>
-                                        {this.convertGroupAsset(group)}
+                                        {convertGroupAsset(group)}
                                     </div>
 
                                     {/* Loại tài sản */}
@@ -171,13 +171,13 @@ class GeneralTab extends Component {
                                     {/* Ngày nhập */}
                                     <div className="form-group">
                                         <strong>{translate('asset.general_information.purchase_date')}&emsp; </strong>
-                                        {this.formatDate(purchaseDate)}
+                                        {formatDate(purchaseDate)}
                                     </div>
 
                                     {/* Ngày bảo hành */}
                                     <div className="form-group">
                                         <strong>{translate('asset.general_information.warranty_expiration_date')}&emsp; </strong>
-                                        {this.formatDate(warrantyExpirationDate)}
+                                        {formatDate(warrantyExpirationDate)}
                                     </div>
 
                                     {/* Người quản lý */}
@@ -209,13 +209,13 @@ class GeneralTab extends Component {
                                     {/* Thời gian bắt đầu sử dụng */}
                                     <div className="form-group">
                                         <strong>{translate('asset.general_information.handover_from_date')}&emsp; </strong>
-                                        {status === "in_use" && usageLogs ? this.formatDate(usageLogs[usageLogs.length - 1] && usageLogs[usageLogs.length - 1].startDate) : ''}
+                                        {status === "in_use" && usageLogs ? formatDate(usageLogs[usageLogs.length - 1] && usageLogs[usageLogs.length - 1].startDate) : ''}
                                     </div>
 
                                     {/* Thời gian kết thúc sử dụng */}
                                     <div className="form-group">
                                         <strong>{translate('asset.general_information.handover_to_date')}&emsp; </strong>
-                                        {status === "in_use" && usageLogs ? this.formatDate(usageLogs[usageLogs.length - 1] && usageLogs[usageLogs.length - 1].endDate) : ''}
+                                        {status === "in_use" && usageLogs ? formatDate(usageLogs[usageLogs.length - 1] && usageLogs[usageLogs.length - 1].endDate) : ''}
                                     </div>
 
                                     {/* Vị trí */}
@@ -233,7 +233,7 @@ class GeneralTab extends Component {
                                     {/* Trạng thái */}
                                     <div className="form-group">
                                         <strong>{translate('asset.general_information.status')}&emsp; </strong>
-                                        {this.formatStatus(status)}
+                                        {formatStatus(status)}
                                     </div>
 
                                     {/* Quyền đăng ký sử dụng */}
@@ -276,7 +276,6 @@ class GeneralTab extends Component {
                 </div>
             </div>
         );
-    }
 };
 
 function mapState(state) {

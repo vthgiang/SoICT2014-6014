@@ -459,7 +459,7 @@ const GeneralTaskChart = (props) => {
                     </thead>
                     <tbody>
                         {
-                            state.map((x, index) => {
+                            state.filter(o => o.name).map((x, index) => {
                                 return (
                                     <tr key={index} style={{ fontWeight: x.organization ? 600 : 500, display: x.show ? "table-row" : "none", }} >
                                         <td style={{ display: x.parent === true ? 'flex' : 'table-cell', cursor: 'pointer', paddingLeft: x.parent === true ? '8px' : '30px' }} onClick={() => toggleCollapse(x?._id, x.parent)}>

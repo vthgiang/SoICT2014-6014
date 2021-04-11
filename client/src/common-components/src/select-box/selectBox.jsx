@@ -252,13 +252,13 @@ class SelectBox extends Component {
                         {!searching &&
                             <React.Fragment>
                                 {options.placeholder !== undefined && multiple === false && <option></option>} {/*Ở chế độ single selection, nếu muốn mặc định không chọn gì*/}
-                                {items.map(item => {
-                                    if (!(item.value instanceof Array)) { // Dạng bình thường
+                                {items?.length > 0 && items.map(item => {
+                                    if (!(item?.value instanceof Array)) { // Dạng bình thường
                                         return <option key={`key-${item.value}`} value={item.value}>{item.text}</option>
                                     } else {
                                         return ( // Dạng group
                                             <optgroup key={item.text} label={item.text}>
-                                                {item.value.map(subItem => {
+                                                {item?.value?.length > 0 && item.value.map(subItem => {
                                                     return <option key={subItem.value} value={subItem.value}>{subItem.text}</option>
                                                 })}
                                             </optgroup>

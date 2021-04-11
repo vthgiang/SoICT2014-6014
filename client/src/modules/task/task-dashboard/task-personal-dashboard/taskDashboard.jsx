@@ -19,7 +19,7 @@ import { LoadTaskChart } from './loadTaskChart';
 import { convertTime } from '../../../../helpers/stringMethod';
 import { filterDifference } from '../../../../helpers/taskModuleHelpers';
 import { getStorage } from '../../../../config';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import GeneralTaskPersonalChart from './generalTaskPersonalChart';
 import { Link } from 'react-router-dom';
 class TaskDashboard extends Component {
@@ -245,12 +245,21 @@ class TaskDashboard extends Component {
         const { translate } = this.props;
         Swal.fire({
             icon: "question",
-            html: `<h3 style="color: red"><div>Cách tính tải công việc  ?</div> </h3>
+            html: `<h3 style="color: red"><div>Tải công việc cá nhân</div> </h3>
+            <div style="font-size: 1.3em; text-align: left; margin-top: 15px; line-height: 1.7">
+            <p>Tải công việc cá nhân trong 1 tháng được tính như sau</p>
             <ul>
-             <li style="font-size: 15px; margin-top: 25px; text-align: left;">Lấy tất cả các công việc người đó đống một trong 3 vai trò: thực hiện,phê duyệt, hỗ trợ,  trong khoảng thời gian được chọn,</li>
-             <li style="font-size: 15px; margin-top: 25px; text-align: left;">Tính lần lượt tải công việc theo từng tháng rồi cộng lại,</li>
-             <li style="font-size: 15px; margin-top: 25px; text-align: left;">Tải công việc theo từng tháng được tính bằng tỉ số: Số ngày thực hiện với  tổng số người thực hiện, phê duyệt, hỗ trợ</li>
-             </ul>`,
+                <li>Lấy tất cả các công việc trong tháng đó (theo các vai trò thực hiện, phê duyệt, tư vấn)</li>
+                <li>Tải của một công việc = Số ngày thực hiện công việc trong tháng đó/tổng số người thực hiện, phê duyệt, tư vấn trong công việc</li>
+                <li>Tải công việc tháng = Tổng tải của tất cả các công việc</li>
+            </ul>
+            <p>Ví dụ, 1 công việc kéo dài từ 15/3 đến 20/5, có 1 người thực hiện, 1 người phê duyệt và 1 người tư vấn</p>
+            <ul>
+                <li>Tải công việc đó trong tháng 3 = 15/(1+1+1)</li>
+                <li>Tải công việc đó trong tháng 4 = 31/(1+1+1)</li>
+                <li>Tải công việc đó trong tháng 5 = 20/(1+1+1)</li>
+            </ul>
+            </div>`,
             width: "50%",
 
         })
@@ -578,15 +587,13 @@ class TaskDashboard extends Component {
                                 <div className="box-title">{translate('task.task_management.dashboard_area_result')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
                             </div>
                             <div className="box-body qlcv">
-                                {callAction &&
-                                    <LazyLoadComponent once={true}>
-                                        <DomainOfTaskResultsChart
-                                            callAction={!willUpdate}
-                                            startMonth={startMonth}
-                                            endMonth={endMonth}
-                                        />
-                                    </LazyLoadComponent>
-                                }
+                                <LazyLoadComponent once={true}>
+                                    <DomainOfTaskResultsChart
+                                        callAction={!willUpdate}
+                                        startMonth={startMonth}
+                                        endMonth={endMonth}
+                                    />
+                                </LazyLoadComponent>
                             </div>
                         </div>
                     </div>
@@ -649,7 +656,7 @@ class TaskDashboard extends Component {
                             <div className="box-header with-border">
                                 <div className="box-title">{translate('task.task_management.load_task_chart')}</div>
                                 <a className="text-red" title={translate('task.task_management.explain')} onClick={() => this.showLoadTaskDoc()}>
-                                    <i className="fa fa-question-circle" style={{ color: '#dd4b39', marginLeft: '5px' }} />
+                                    <i className="fa fa-question-circle" style={{ cursor: 'pointer', color: '#dd4b39', marginLeft: '5px' }} />
                                 </a>
                             </div>
 
@@ -719,8 +726,8 @@ class TaskDashboard extends Component {
                                                     tsl?.acceptLog && <tr>
                                                         <td>{index + 1}</td>
                                                         <td>{tsl.name}</td>
-                                                        <td>{moment(tsl.startedAt).format("HH:mm:ss DD/MM/YYYY")}</td>
-                                                        <td>{moment(tsl.stoppedAt).format("HH:mm:ss DD/MM/YYYY")}</td>
+                                                        <td>{dayjs(tsl.startedAt).format("DD-MM-YYYY h:mm:ss A")}</td>
+                                                        <td>{dayjs(tsl.stoppedAt).format("DD-MM-YYYY h:mm:ss A")}</td>
                                                         <td>{this.convertType(tsl.autoStopped)}</td>
                                                         <td>{convertTime(tsl.duration)}</td>
                                                     </tr>

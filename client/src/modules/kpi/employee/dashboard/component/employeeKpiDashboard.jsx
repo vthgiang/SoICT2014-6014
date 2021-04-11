@@ -23,7 +23,7 @@ function DashBoardEmployeeKpiSet(props) {
         })
     }
 
-    let { resultsOfEmployeeKpiResultChartData } =state;
+    let { resultsOfEmployeeKpiResultChartData } = state;
     return (
         <React.Fragment>
             <section className="row">

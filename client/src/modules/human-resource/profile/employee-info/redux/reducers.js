@@ -27,14 +27,14 @@ export function employeesInfo(state = initState, action) {
             return {
                 ...state,
                 isLoading: false,
-                    employees: action.payload.employees,
-                    salaries: action.payload.salaries,
-                    annualLeaves: action.payload.annualLeaves,
-                    commendations: action.payload.commendations,
-                    disciplines: action.payload.disciplines,
-                    courses: action.payload.courses,
-                    roles: action.payload.roles,
-                    organizationalUnits: action.payload.organizationalUnits
+                employees: action.payload.employees,
+                salaries: action.payload.salaries,
+                annualLeaves: action.payload.annualLeaves,
+                commendations: action.payload.commendations,
+                disciplines: action.payload.disciplines,
+                courses: action.payload.courses,
+                roles: action.payload.roles,
+                organizationalUnits: action.payload.organizationalUnits
 
             };
         case Constants.UPDATE_PERSONAL_INFOR_SUCCESS:

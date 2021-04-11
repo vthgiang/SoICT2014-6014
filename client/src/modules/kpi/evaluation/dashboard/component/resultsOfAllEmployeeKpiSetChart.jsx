@@ -12,20 +12,24 @@ import c3 from 'c3';
 import 'c3/c3.css';
 
 function ResultsOfAllEmployeeKpiSetChart(props) {
-    let currentDate = new Date();
-    let currentYear = currentDate.getFullYear();
-    let currentMonth = currentDate.getMonth();
+    let today = new Date(),
+        month = today.getMonth() + 1,
+        year = today.getFullYear();
+    let endMonth;
+
+    if (month < 10) {
+        endMonth = '0' + month;
+    } else {
+        endMonth = month;
+    }
 
     const INFO_SEARCH = {
-        startMonth: currentYear + '-' + 1,
-        endMonth: (currentMonth > 10) ? ((currentYear + 1) + '-' + (currentMonth - 10)) : (currentYear + '-' + (currentMonth + 2))
+        startMonth: year + '-01',
+        endMonth: [year, endMonth].join('-')
     };
 
     const DATA_STATUS = {NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3};
     const KIND_OF_POINT = {AUTOMATIC: 1, EMPLOYEE: 2, APPROVED: 3};
-
-    const chart = null;
-    const dataChart = null;
 
     const [state, setState] = useState({
         userRoleId: localStorage.getItem("currentRole"),
@@ -33,40 +37,44 @@ function ResultsOfAllEmployeeKpiSetChart(props) {
         startMonth: INFO_SEARCH.startMonth,
         endMonth: INFO_SEARCH.endMonth,
 
-        dataStatus: DATA_STATUS.NOT_AVAILABLE,
-        kindOfPoint: KIND_OF_POINT.AUTOMATIC,
-    });
+        infosearch: {
+            startMonth: INFO_SEARCH.startMonth,
+            endMonth: INFO_SEARCH.endMonth,
+        },
 
+        defaultEndMonth: [endMonth, year].join('-'),
+        defaultStartMonth: ['01', year].join('-'),
+
+        dataStatus: DATA_STATUS.NOT_AVAILABLE,
+        kindOfPoint: KIND_OF_POINT.AUTOMATIC
+    });
+    const { defaultEndMonth, defaultStartMonth } = state;
     const refMultiLineChart = React.createRef();
 
     useEffect(() => {
+        let data = multiLineChart();
         setState({
             ...state,
-            kindOfPoint: state.kindOfPoint,
-        });
-
-        multiLineChart();
+            chart: data?.chart,
+            dataChart: data?.dataChart
+        })
     }, [state.kindOfPoint]);
 
     useEffect(() => {
-        props.getAllEmployeeKpiSetInOrganizationalUnitsByMonth(props.organizationalUnitIds, state.startMonth, state.endMonth);
-
         setState({
             ...state,
             dataStatus: DATA_STATUS.QUERYING
         });
-    }, [props.organizationalUnitIds, state.startMonth, state.endMonth]);
+    }, [props.organizationalUnitIds, state.infosearch.startMonth, state.infosearch.endMonth]);
 
     useEffect(() => {
-
         if (state.dataStatus === DATA_STATUS.NOT_AVAILABLE) {
-            props.getAllEmployeeKpiSetInOrganizationalUnitsByMonth(state.organizationalUnitIds, state.startMonth, state.endMonth);
+            props.getAllEmployeeKpiSetInOrganizationalUnitsByMonth(props.organizationalUnitIds, state.startMonth, state.endMonth);
 
             setState({
                 ...state,
                 dataStatus: DATA_STATUS.QUERYING,
             });
-
         } else if (state.dataStatus === DATA_STATUS.QUERYING) {
             if (props.createEmployeeKpiSet.employeeKpiSetsInOrganizationalUnitByMonth) {
                 setState({
@@ -74,30 +82,26 @@ function ResultsOfAllEmployeeKpiSetChart(props) {
                     dataStatus: DATA_STATUS.AVAILABLE
                 });
             }
-
         } else if (state.dataStatus === DATA_STATUS.AVAILABLE) {
-
-            multiLineChart();
+            let data = multiLineChart();
             setState({
                 ...state,
+                chart: data?.chart,
+                dataChart: data?.dataChart,
                 dataStatus: DATA_STATUS.FINISHED,
             });
         }
 
     });
 
-    useEffect(() => {
-        if (props.organizationalUnitIds !== state.organizationalUnitIds) {
-            setState({
-                ...state,
-                organizationalUnitIds: props.organizationalUnitIds
-            })
-        }
-    });
+    if (props.organizationalUnitIds !== state.organizationalUnitIds) {
+        props.getAllEmployeeKpiSetInOrganizationalUnitsByMonth(props.organizationalUnitIds, state.startMonth, state.endMonth);
 
-    useEffect(() => {
-        props.getAllEmployeeKpiSetInOrganizationalUnitsByMonth(state.organizationalUnitIds, state.startMonth, state.endMonth);
-    }, []);
+        setState({
+            ...state,
+            organizationalUnitIds: props.organizationalUnitIds
+        })
+    }
 
     /** Select kind of point */
     const handleSelectKindOfPoint = (value) => {
@@ -112,25 +116,27 @@ function ResultsOfAllEmployeeKpiSetChart(props) {
     /** Select month start in box */
     const handleSelectMonthStart = (value) => {
         let month = value.slice(3, 7) + '-' + value.slice(0, 2);
-        INFO_SEARCH.startMonth = month;
+        setState({
+            ...state,
+            startMonth: month
+        })
     };
 
     /** Select month end in box */
     const handleSelectMonthEnd = async (value) => {
-        if (value.slice(0, 2) < 12) {
-            var month = value.slice(3, 7) + '-' + (new Number(value.slice(0, 2)) + 1);
-        } else {
-            var month = (new Number(value.slice(3, 7)) + 1) + '-' + '1';
-        }
-        INFO_SEARCH.endMonth = month;
+        let month = value.slice(3, 7) + '-' + value.slice(0, 2);
+        setState({
+            ...state,
+            endMonth: month
+        })
     };
 
     /** Search data */
     const handleSearchData = async () => {
-        let startMonth = new Date(INFO_SEARCH.startMonth);
-        let endMonth = new Date(INFO_SEARCH.endMonth);
+        let startMonth = new Date(state.startMonth);
+        let endMonth = new Date(state.endMonth);
 
-        if (startMonth.getTime() >= endMonth.getTime()) {
+        if (startMonth.getTime() > endMonth.getTime()) {
             const {translate} = props;
             Swal.fire({
                 title: translate('kpi.evaluation.employee_evaluation.wrong_time'),
@@ -141,9 +147,14 @@ function ResultsOfAllEmployeeKpiSetChart(props) {
         } else {
             await setState({
                 ...state,
-                startMonth: INFO_SEARCH.startMonth,
-                endMonth: INFO_SEARCH.endMonth
+                infosearch: {
+                    ...state.infosearch,
+                    startMonth: state.startMonth,
+                    endMonth: state.endMonth
+                }
             })
+
+            props.getAllEmployeeKpiSetInOrganizationalUnitsByMonth(props.organizationalUnitIds, state.startMonth, state.endMonth);
         }
     };
 
@@ -155,7 +166,7 @@ function ResultsOfAllEmployeeKpiSetChart(props) {
 
         for (let i = 0; i < arrayPoint.length; i++) {
             let newDate = new Date(arrayPoint[i].date);
-            newDate = newDate.getFullYear() + "-" + (newDate.getMonth() + 1) + "-" + (newDate.getDate() - 1);
+            newDate = newDate.getFullYear() + "-" + (newDate.getMonth() + 1) + "-01";
 
             dateAxisX.push(newDate);
 
@@ -194,7 +205,8 @@ function ResultsOfAllEmployeeKpiSetChart(props) {
     };
 
     const removePreviousChart = () => {
-        const chart = refMultiLineChart.chart;
+        const chart = refMultiLineChart.current;
+
         if (chart) {
             while (chart.hasChildNodes()) {
                 chart.removeChild(chart.lastChild);
@@ -215,7 +227,7 @@ function ResultsOfAllEmployeeKpiSetChart(props) {
             xs = Object.assign(xs, temporary);
         }
 
-        let chart = c3.generate({
+        const chart = c3.generate({
             bindto: refMultiLineChart.current,
 
             padding: {
@@ -226,8 +238,7 @@ function ResultsOfAllEmployeeKpiSetChart(props) {
 
             data: {
                 xs: xs,
-                columns: dataChart,
-                type: 'spline'
+                columns: dataChart
             },
 
             axis: {
@@ -257,6 +268,15 @@ function ResultsOfAllEmployeeKpiSetChart(props) {
                 show: false
             }
         })
+        setState({
+            ...state,
+            chart: chart
+        })
+
+        return {
+            chart, 
+            dataChart
+        }
     };
 
     const handleExportData = (exportData) => {
@@ -341,18 +361,7 @@ function ResultsOfAllEmployeeKpiSetChart(props) {
     if (createEmployeeKpiSet.employeeKpiSetsInOrganizationalUnitByMonth) {
         employeeKpiSetsInOrganizationalUnitByMonth = createEmployeeKpiSet.employeeKpiSetsInOrganizationalUnitByMonth;
     }
-    let d = new Date(),
-        month = '' + (d.getMonth() + 1),
-        day = '' + d.getDate(),
-        year = d.getFullYear();
-
-    if (month.length < 2)
-        month = '0' + month;
-    if (day.length < 2)
-        day = '0' + day;
-    let defaultEndMonth = [month, year].join('-');
-    let defaultStartMonth = ['01', year].join('-');
-
+    
     return (
         <React.Fragment>
             <section className="form-inline">
@@ -400,16 +409,21 @@ function ResultsOfAllEmployeeKpiSetChart(props) {
                             onClick={() => handleSelectKindOfPoint(KIND_OF_POINT.APPROVED)}>{translate('kpi.evaluation.dashboard.approve_point')}</button>
                 </div>
             </section>
+            {employeeKpiSetsInOrganizationalUnitByMonth ?
+
             <section id={"resultsOfAllEmployeeKpiSet"} className="c3-chart-container">
                 <div ref={refMultiLineChart}></div>
                 <CustomLegendC3js
-                    chart={chart}
+                    chart={state.chart}
                     chartId={"resultsOfAllEmployeeKpiSet"}
                     legendId={"resultsOfAllEmployeeKpiSetLegend"}
-                    title={dataChart && `${translate('general.list_employee')} (${dataChart.length / 2})`}
-                    dataChartLegend={dataChart && dataChart.filter((item, index) => index % 2 === 1).map(item => item[0])}
+                    title={employeeKpiSetsInOrganizationalUnitByMonth && `${translate('general.list_employee')} (${employeeKpiSetsInOrganizationalUnitByMonth.length })`}
+                    dataChartLegend={state.dataChart && state.dataChart.filter((item, index) => index % 2 === 1).map(item => item[0])}
                 />
             </section>
+                : employeeKpiSetsInOrganizationalUnitByMonth &&
+                <section>{translate('kpi.organizational_unit.dashboard.no_data')}</section>
+            }
         </React.Fragment>
     )
 }

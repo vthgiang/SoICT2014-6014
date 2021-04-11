@@ -11,55 +11,56 @@ import c3 from 'c3';
 import 'c3/c3.css';
 
 
-var translate ='';
-
 function ResultsOfEmployeeKpiChart(props) {
-    translate = props.translate;
+    const { translate, createEmployeeKpiSet, auth } = props
 
-    let currentDate = new Date();
-    let currentYear = currentDate.getFullYear();
-    let currentMonth = currentDate.getMonth();
+    let today = new Date(),
+        month = today.getMonth() + 1,
+        year = today.getFullYear();
+    let endMonth;
+
+    if (month < 10) {
+        endMonth = '0' + month;
+    } else {
+        endMonth = month;
+    }
 
     const DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
 
     const INFO_SEARCH = {
-        startMonth: currentYear + '-0' + 1,
-        endMonth: (currentMonth < 9) ? (currentYear + '-0' + currentMonth + 1) : (currentYear + '-' + (currentMonth + 1))
-    };
-    const refMultiLineChart = React.createRef();
-
+        startMonth: year + '-0' + 1,
+        endMonth: [year, endMonth].join('-')
+    }
 
     const[state, setState]  = useState({
         dataStatus: DATA_STATUS.QUERYING,
 
         userId: localStorage.getItem("userId"),
-
+        roleId: localStorage.getItem("currentRole"),
         startMonth: INFO_SEARCH.startMonth,
-        endMonth: INFO_SEARCH.endMonth
-    });
+        endMonth: INFO_SEARCH.endMonth,
+        defaultendMonth: [endMonth, year].join('-'),
+        defaultstartMonth: ['01', year].join('-'),
 
-    const { createEmployeeKpiSet } = props;
+        infosearch: {
+            startMonth: INFO_SEARCH.startMonth,
+            endMonth: INFO_SEARCH.endMonth,
+        }
+    });
+    const { defaultstartMonth, defaultendMonth } = state
+
 
     let listEmployeeKpiSetEachYear;
 
     useEffect(() => {
-        props.getAllEmployeeKpiSetByMonth(undefined, state.userId, state.startMonth, state.endMonth);
+        props.getAllEmployeeKpiSetByMonth([state.roleId], state.userId, state.startMonth, state.endMonth);
+        props.createEmployeeKpiSet.employeeKpiSetByMonth = null
 
         setState( {
             ...state,
             dataStatus: DATA_STATUS.QUERYING,
         });
-    },[])
-
-    useEffect(() => {
-            // Cài đặt await, và phải đặt trước setState để kịp thiết lập createEmployeeKpiSet.employeeKpiSetByMonth là null khi gọi service
-            props.getAllEmployeeKpiSetByMonth(undefined, state.userId, state.startMonth, state.endMonth);
-
-            setState( {
-                ...state,
-                dataStatus: DATA_STATUS.QUERYING,
-            });
-    },[state.startMonth, state.endMonth]);
+    }, [])
 
     useEffect(()=>{
         if(state.dataStatus === DATA_STATUS.QUERYING) {
@@ -85,19 +86,25 @@ function ResultsOfEmployeeKpiChart(props) {
      */
 
     const handleSelectMonthStart = (value) => {
-        let month = value.slice(3,7) + '-' + value.slice(0,2);
-        INFO_SEARCH.startMonth = month;
+        let month = value.slice(3, 7) + '-' + value.slice(0, 2);
+        setState({
+            ...state,
+            startMonth: month
+        })
     };
 
     const handleSelectMonthEnd = (value) => {
-        let month = value.slice(3,7) + '-' + value.slice(0,2);
-        INFO_SEARCH.endMonth = month;
+        let month = value.slice(3, 7) + '-' + value.slice(0, 2);
+        setState({
+            ...state,
+            endMonth: month
+        })
     };
 
     /**Gửi req và vẽ biểu đồ */
     const handleSearchData = async () => {
-        let startMonth = new Date(INFO_SEARCH.startMonth);
-        let endMonth = new Date(INFO_SEARCH.endMonth);
+        let startMonth = new Date(state.startMonth);
+        let endMonth = new Date(state.endMonth);
 
         if (startMonth && endMonth && startMonth.getTime() > endMonth.getTime()) {
             Swal.fire({
@@ -109,50 +116,83 @@ function ResultsOfEmployeeKpiChart(props) {
         } else {
             await setState( {
                     ...state,
-                    startMonth: INFO_SEARCH.startMonth,
-                    endMonth: INFO_SEARCH.endMonth
+                    startMonth: state.startMonth,
+                    endMonth: state.endMonth,
+                    dataStatus: DATA_STATUS.QUERYING
             })
+            
+            props.createEmployeeKpiSet.employeeKpiSetByMonth = null
+            props.getAllEmployeeKpiSetByMonth([state.roleId], state.userId, state.startMonth, state.endMonth);
         }
     };
 
-    /**Thiết lập dữ liệu biểu đồ */
-    const setDataMultiLineChart = () => {
-        const { createEmployeeKpiSet } = props;
-        let listEmployeeKpiSetEachYear, automaticPoint, employeePoint, approvedPoint, date, dataMultiLineChart,exportData;
+    const filterEmloyeeKpiSetSameOrganizationaUnit = () => {
+        let listEmployeeKpiSet, listOrganizationalUnit, listEmployeeKpiSetSameOrganizationalUnit = [], dataChart,
+            exportData;
 
-        if(createEmployeeKpiSet.employeeKpiSetByMonth) {
-            listEmployeeKpiSetEachYear = createEmployeeKpiSet.employeeKpiSetByMonth
-            exportData =convertDataToExportData(listEmployeeKpiSetEachYear);
-            handleExportData(exportData)
-
+        if (createEmployeeKpiSet) {
+            listEmployeeKpiSet = createEmployeeKpiSet.employeeKpiSetByMonth
         }
 
-        if(listEmployeeKpiSetEachYear) {
+        if (listEmployeeKpiSet && listEmployeeKpiSet.length !== 0) {
+            listOrganizationalUnit = listEmployeeKpiSet.map(kpi => {
+                if (kpi.organizationalUnit) {
+                    return kpi.organizationalUnit.name;
+                }
+            })
+        }
+        listOrganizationalUnit = Array.from(new Set(listOrganizationalUnit));
 
-            automaticPoint = [translate('kpi.organizational_unit.dashboard.result_kpi_unit_chart.automatic_point')];
-            employeePoint = [translate('kpi.organizational_unit.dashboard.result_kpi_unit_chart.employee_point')];
-            approvedPoint = [translate('kpi.organizational_unit.dashboard.result_kpi_unit_chart.approved_point')];
-            date = ['x'];
+        if (listOrganizationalUnit && listOrganizationalUnit.length !== 0) {
+            listOrganizationalUnit.map((unit, index) => {
+                listEmployeeKpiSetSameOrganizationalUnit[index] = listEmployeeKpiSet.filter(kpi => kpi.organizationalUnit && kpi.organizationalUnit.name === unit);
 
-            listEmployeeKpiSetEachYear.map(x => {
-                automaticPoint.push(x.automaticPoint);
-                employeePoint.push(x.employeePoint);
-                approvedPoint.push(x.approvedPoint);
-
-                let newDate = new Date(x.date);
-                newDate = newDate.getFullYear() + "-" + (newDate.getMonth() + 1) + "-" + (newDate.getDate() - 1);
-                date.push(newDate);
-            });
+            })
+        }
+        if (listEmployeeKpiSetSameOrganizationalUnit) {
+            exportData = convertDataToExportData(listEmployeeKpiSetSameOrganizationalUnit, auth?.user?.name)
+            handleExportData(exportData);
         }
 
-        dataMultiLineChart = [date, automaticPoint, employeePoint, approvedPoint];
+        if (listEmployeeKpiSetSameOrganizationalUnit.length !== 0) {
+            dataChart = listEmployeeKpiSetSameOrganizationalUnit.map(kpi => {
+                return setDataMultiLineChart(kpi);
+            })
+        }
 
+        return dataChart;
+    };
+
+    const setDataMultiLineChart = (listEmployeeKpiSet) => {
+
+        let title;
+        let dataMultiLineChart, automaticPoint, employeePoint, approvedPoint, date;
+
+
+        if (listEmployeeKpiSet[0] && listEmployeeKpiSet[0].organizationalUnit) {
+            title = auth?.user?.name + ' - ' + listEmployeeKpiSet[0].organizationalUnit.name;
+        }
+
+        if (listEmployeeKpiSet) {
+            automaticPoint = [translate('kpi.evaluation.dashboard.auto_eva')].concat(listEmployeeKpiSet.map(x => x.automaticPoint ? x.automaticPoint : 0));
+            employeePoint = [translate('kpi.evaluation.dashboard.employee_eva')].concat(listEmployeeKpiSet.map(x => x.employeePoint ? x.employeePoint : 0));
+            approvedPoint = [translate('kpi.evaluation.dashboard.approver_eva')].concat(listEmployeeKpiSet.map(x => x.approvedPoint ? x.approvedPoint : 0));
+            date = listEmployeeKpiSet.map(x => {
+                date = new Date(x.date);
+                return date.getFullYear() + "-" + (date.getMonth() + 1) + "-01";
+            })
+        }
+
+        dataMultiLineChart = {
+            "title": title,
+            "data": [['x'].concat(date), automaticPoint, employeePoint, approvedPoint]
+        };
         return dataMultiLineChart;
     };
 
     /**Xóa các chart đã render trước khi đủ dữ liệu */
     const removePreviosMultiLineChart = () => {
-        const chart =  refMultiLineChart.current;
+        const chart = document.getElementById("chart");
         if (chart) {
             while (chart.hasChildNodes()) {
                 chart.removeChild(chart.lastChild)
@@ -165,47 +205,68 @@ function ResultsOfEmployeeKpiChart(props) {
         removePreviosMultiLineChart();
 
         // Tạo mảng dữ liệu
-        let dataMultiLineChart = setDataMultiLineChart();
-        console.log("dataMultiLineChart",dataMultiLineChart)
-        let chart = c3.generate({
-            bindto: refMultiLineChart.current,       // Đẩy chart vào thẻ div có id="multiLineChart"
+        let dataMultiLineChart = filterEmloyeeKpiSetSameOrganizationaUnit();
+        if (dataMultiLineChart && dataMultiLineChart.length !== 0) {
+            dataMultiLineChart.map(data => {
+                let div = document.createElement('div');
+                div.id = data.title;
+                let section = document.getElementById("chart");
+                section.appendChild(div);
 
-            padding: {                              // Căn lề biểu đồ
-                top: 20,
-                bottom: 20,
-                right: 20
-            },
-
-            data: {                                 // Dữ liệu biểu đồ
-                x: 'x',
-                columns: dataMultiLineChart,
-                type: 'spline'
-            },
-
-            axis : {                                // Config trục tọa độ
-                x : {
-                    type : 'timeseries',
-                    tick: {
-                        format: function (x) { return (x.getMonth() + 1) + "-" + x.getFullYear(); }
-                    }
-                },
-                y: {
-                    max: 100,
-                    min: 0,
-                    label: {
-                        text: translate('kpi.organizational_unit.dashboard.point'),
-                        position: 'outer-right'
+                let chart = c3.generate({
+                    bindto: document.getElementById(data.title),
+                    title: {
+                        show: false,
+                        text: data.title,
+                        position: 'top-left',   // top-left, top-center and top-right
+                        padding: {
+                            top: 20,
+                            bottom: 5,
+                        }
                     },
                     padding: {
-                        top: 10,
-                        bottom: 10
+                        top: 20,
+                        right: 20,
+                        left: 20
+                    },
+                    data: {
+                        x: 'x',
+                        columns: data.data
+                    },
+                    axis: {
+                        x: {
+                            type: 'timeseries',
+                            tick: {
+                                format: function (x) {
+                                    return (x.getMonth() + 1) + "-" + x.getFullYear();
+                                }
+                            }
+                        },
+                        y: {
+                            max: 100,
+                            min: 0,
+                            label: {
+                                text: translate('kpi.evaluation.employee_evaluation.point'),
+                                position: 'outer-right'
+                            },
+                            padding: {
+                                top: 10,
+                                bottom: 10
+                            }
+                        }
+                    },
+                    zoom: {
+                        enabled: false
                     }
-                }
-            },
-            zoom: {                                 // Cho phép zoom biểu đồ
-                enabled: false
-            }
-        });
+
+                })
+            })
+        } else {
+            let div = document.createElement('div');
+            div.innerHTML = "Không có dữ liệu";
+            let section = document.getElementById("chart");
+            section.appendChild(div);
+        }
     };
 
     const handleExportData =(exportData)=>
@@ -217,67 +278,69 @@ function ResultsOfEmployeeKpiChart(props) {
     };
 
     /*Chuyển đổi dữ liệu KPI nhân viên thành dữ liệu export to file excel */
-    const convertDataToExportData = (data,name,email) => {
-        let fileName = "Biểu đồ theo dõi kết quả KPI cá nhân";
-
+    const convertDataToExportData = (data, name) => {
+        let convertedData = [], names = name?.split("("), temp;
+        let fileName = "Kết quả KPI " + (names ? names?.[0] : "") + " theo từng tháng ";
         if (data) {
-            data = data.map((x, index) => {
-                let automaticPoint = (x.automaticPoint === null)?"Chưa đánh giá":parseInt(x.automaticPoint);
-                let employeePoint = (x.employeePoint === null)?"Chưa đánh giá":parseInt(x.employeePoint);
-                let approverPoint =(x.approvedPoint===null)?"Chưa đánh giá":parseInt(x.approvedPoint);
-                let d = new Date(x.date),
-                    month = '' + (d.getMonth() + 1),
-                    year = d.getFullYear(),
-                    date =month+'-'+year;
+            for (let i = 0; i < data.length; i++) {
+                for (let j = 0; j < data[i].length; j++) {
+                    convertedData.push(data[i][j])
+                }
+            }
+            let d1, d2;
+            //Sap xep tap kpi theo thu tu thoi gian
+            for (let i = 0; i < convertedData.length - 1; i++) {
+                for (let j = i + 1; j < convertedData.length; j++) {
+                    d1 = new Date(convertedData[i].date);
+                    d2 = new Date(convertedData[j].date)
+                    if (d1 > d2) {
+                        temp = convertedData[i];
+                        convertedData[i] = convertedData[j];
+                        convertedData[j] = temp;
+                    }
+                }
+            }
 
-                return {
-                    automaticPoint: automaticPoint,
-                    employeePoint: employeePoint,
-                    approverPoint: approverPoint,
-                    time : date,
-                };
-            })
+
+            for (let i = 0; i < convertedData.length; i++) {
+                let d = new Date(convertedData[i].date);
+                convertedData[i]["time"] = d;
+                convertedData[i]["STT"] = i + 1;
+                convertedData[i]["unit"] = convertedData[i].organizationalUnit.name
+            }
         }
+
 
         let exportData = {
             fileName: fileName,
             dataSheets: [
                 {
-                    sheetName: "Biểu đồ theo dõi kết quả KPI cá nhân của ",
+                    sheetName: "sheet1",
                     sheetTitle: fileName,
                     tables: [
                         {
-                            tableTitle: "Dữ liệu để vẽ biểu đồ "+ fileName,
                             columns: [
-                                { key: "time", value: "Thời gian" },
-                                { key: "automaticPoint", value: "Điểm KPI tự động" },
-                                { key: "employeePoint", value: "Điểm KPI tự đánh giá" },
-                                { key: "approverPoint", value: "Điểm KPI được đánh giá" }
+                                {key: "STT", value: "STT"},
+                                {key: "time", value: "Thời gian"},
+                                {key: "unit", value: "Đơn vị "},
+                                {key: "automaticPoint", value: "Điểm KPI tự động"},
+                                {key: "employeePoint", value: "Điểm KPI tự đánh giá"},
+                                {key: "approvedPoint", value: "Điểm KPI được phê duyệt"}
                             ],
-                            data: data
+                            data: convertedData
                         }
                     ]
                 },
             ]
-        }
+
+
+        };
         return exportData;
     };
 
     if (createEmployeeKpiSet.employeeKpiSetByMonth) {
         listEmployeeKpiSetEachYear = createEmployeeKpiSet.employeeKpiSetByMonth;
     }
-
-    let d = new Date(),
-        month = '' + (d.getMonth() + 1),
-        day = '' + d.getDate(),
-        year = d.getFullYear();
-
-    if (month.length < 2)
-        month = '0' + month;
-    if (day.length < 2)
-        day = '0' + day;
-    let defaultendMonth = [month, year].join('-');
-    let defaultstartMonth = ['01', year].join('-');
 
     return (
         <React.Fragment>
@@ -314,15 +377,15 @@ function ResultsOfEmployeeKpiChart(props) {
                 </div>
             </section>
 
-            <section ref={refMultiLineChart}> </section>
+            <section id={"chart"}> </section>
         </React.Fragment>
     )
 
 }
 
 function mapState(state) {
-    const { createEmployeeKpiSet } = state;
-    return { createEmployeeKpiSet };
+    const { createEmployeeKpiSet, auth } = state;
+    return { createEmployeeKpiSet, auth };
 }
 
 const actions = {

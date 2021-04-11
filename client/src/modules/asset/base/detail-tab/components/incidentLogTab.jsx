@@ -1,21 +1,23 @@
-import React, { Component } from 'react';
+import React, { Component, useState, useEffect} from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { UserActions } from '../../../../super-admin/user/redux/actions';
 import { translate } from 'react-redux-multilingual/lib/utils';
 
-class IncidentLogTab extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {};
-    }
+function IncidentLogTab(props) {
+    
+    const [state, setState] = useState({})
+    const [prevProps, setPrevProps] = useState({
+        id: null
+    })
 
-    componentDidMount() {
-        this.props.getUser({ name: "" });
-    }
+    useEffect(() => {
+        props.getUser({ name: "" });
+    }, [])
+   
 
     // Function format dữ liệu Date thành string
-    formatDate(date, monthYear = false) {
+    const formatDate = (date, monthYear = false) => {
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
@@ -36,22 +38,19 @@ class IncidentLogTab extends Component {
         }
     }
 
-    static getDerivedStateFromProps(nextProps, prevState) {
-        console.log(nextProps)
-        if (nextProps.id !== prevState.id) {
-            return {
-                ...prevState,
-                id: nextProps.id,
-                incidentLogs: nextProps.incidentLogs,
-                status: nextProps.status
-            }
-        } else {
-            return null;
-        }
+    if(prevProps.id !== props.id){
+        setState({
+                ...state,
+                id: props.id,
+                incidentLogs: props.incidentLogs,
+                status: props.status
+        })
+        setPrevProps(props)
     }
+   
 
-    formatType = (type) => {
-        const { translate } = this.props;
+    const formatType = (type) => {
+        const { translate } = props;
         if (Number(type) === 1) {
             return translate('asset.general_information.damaged');
         } else if (Number(type) === 2) {
@@ -60,7 +59,7 @@ class IncidentLogTab extends Component {
             return '';
         }
     }
-    formatStatus = (status) => {
+    const formatStatus = (status) => {
         const { translate } = this.props;
 
         if (status === 'ready_to_use') {
@@ -83,49 +82,48 @@ class IncidentLogTab extends Component {
         }
     }
 
-    render() {
-        const { id } = this.props;
-        const { translate, user } = this.props;
-        const { incidentLogs, status } = this.state;
+    
+    const { id } = props;
+    const { translate, user } = props;
+    const { incidentLogs, status } = state;
 
-        var userlist = user.list;
+    var userlist = user.list;
 
-        return (
-            <div id={id} className="tab-pane">
-                <div className="box-body qlcv">
-                    <table className="table table-striped table-bordered table-hover">
-                        <thead>
-                            <tr>
-                                <th>{translate('asset.general_information.incident_code')}</th>
-                                <th>{translate('asset.general_information.incident_type')}</th>
-                                <th>{translate('asset.general_information.reported_by')}</th>
-                                <th>{translate('asset.general_information.date_incident')}</th>
-                                <th>{translate('asset.general_information.content')}</th>
-                                <th>{translate('asset.general_information.status')}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {(incidentLogs && incidentLogs.length !== 0) &&
-                                incidentLogs.map((x, index) => (
-                                    <tr key={index}>
-                                        <td>{x.incidentCode}</td>
-                                        <td>{this.formatType(x.type)}</td>
-                                        <td>{x.reportedBy ? (userlist.length && userlist.filter(item => item._id === x.reportedBy).pop() ? userlist.filter(item => item._id === x.reportedBy).pop().name : '') : ''}</td>
-                                        <td>{x.dateOfIncident ? this.formatDate(x.dateOfIncident) : ''}</td>
-                                        <td>{x.description}</td>
-                                        <td>{this.formatStatus(status)}</td>
-                                    </tr>
-                                ))
-                            }
-                        </tbody>
-                    </table>
-                    {
-                        (!incidentLogs || incidentLogs.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
-                    }
-                </div>
+    return (
+        <div id={id} className="tab-pane">
+            <div className="box-body qlcv">
+                <table className="table table-striped table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th>{translate('asset.general_information.incident_code')}</th>
+                            <th>{translate('asset.general_information.incident_type')}</th>
+                            <th>{translate('asset.general_information.reported_by')}</th>
+                            <th>{translate('asset.general_information.date_incident')}</th>
+                            <th>{translate('asset.general_information.content')}</th>
+                            <th>{translate('asset.general_information.status')}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {(incidentLogs && incidentLogs.length !== 0) &&
+                            incidentLogs.map((x, index) => (
+                                <tr key={index}>
+                                    <td>{x.incidentCode}</td>
+                                    <td>{formatType(x.type)}</td>
+                                    <td>{x.reportedBy ? (userlist.length && userlist.filter(item => item._id === x.reportedBy).pop() ? userlist.filter(item => item._id === x.reportedBy).pop().name : '') : ''}</td>
+                                    <td>{x.dateOfIncident ? formatDate(x.dateOfIncident) : ''}</td>
+                                    <td>{x.description}</td>
+                                    <td>{formatStatus(status)}</td>
+                                </tr>
+                            ))
+                        }
+                    </tbody>
+                </table>
+                {
+                    (!incidentLogs || incidentLogs.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                }
             </div>
-        );
-    }
+        </div>
+    );
 };
 function mapState(state) {
     const { user } = state;

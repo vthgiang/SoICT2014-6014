@@ -1,38 +1,37 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { AuthActions } from '../../../../auth/redux/actions';
 
-class AttachmentTab extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {};
-    }
-
-    requestDownloadFile = (e, path, fileName) => {
+function AttachmentTab(props) {
+    const [state, setState] = useState({})
+    const [prevProps, setPrevProps] = useState({
+        id: null,
+    })
+    const requestDownloadFile = (e, path, fileName) => {
         e.preventDefault();
-        this.props.downloadFile(path, fileName);
+        props.downloadFile(path, fileName);
     }
 
-    static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.id !== prevState.id) {
-            return {
-                ...prevState,
-                id: nextProps.id,
-                files: nextProps.files,
-                archivedRecordNumber: nextProps.archivedRecordNumber,
+    if(prevProps.id !== props.id) {
+        setState(state =>{
+            return{
+                ...state,
+                id: props.id,
+                files: props.files,
+                archivedRecordNumber: props.archivedRecordNumber,
             }
-        } else {
-            return null;
-        }
+        })
+        setPrevProps(props)
     }
+    
 
-    render() {
-        const { id } = this.props;
-        const { translate } = this.props;
-        const { files, archivedRecordNumber } = this.state;
-
+    
+        const { id } = props;
+        const { translate } = props;
+        const { files, archivedRecordNumber } = state;
+        console.log('here')
         return (
             <div id={id} className="tab-pane">
                 <div className="row box-body">
@@ -59,7 +58,7 @@ class AttachmentTab extends Component {
                                                         return (
                                                             <React.Fragment>
                                                                 <li>
-                                                                    <a style={{ cursor: "pointer" }} onClick={(e) => this.requestDownloadFile(e, child.url, child.fileName)} >{child.fileName}</a>
+                                                                    <a style={{ cursor: "pointer" }} onClick={(e) => requestDownloadFile(e, child.url, child.fileName)} >{child.fileName}</a>
                                                                 </li>
                                                             </React.Fragment>
                                                         )
@@ -79,7 +78,6 @@ class AttachmentTab extends Component {
             </div>
 
         );
-    }
 };
 
 const actionCreators = {

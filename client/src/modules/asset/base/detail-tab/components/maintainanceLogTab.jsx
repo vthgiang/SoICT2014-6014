@@ -1,15 +1,15 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-class MaintainanceLogTab extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {};
-    }
+function MaintainanceLogTab(props) {
+    const [state, setState] = useState({})
+    const [prevProps, setPrevProps] = useState({
+        id:null,
+    })
 
     // Function format dữ liệu Date thành string
-    formatDate(date, monthYear = false) {
+    const formatDate = (date, monthYear = false) => {
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
@@ -30,20 +30,18 @@ class MaintainanceLogTab extends Component {
         }
     }
 
-    static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.id !== prevState.id) {
-            return {
-                ...prevState,
-                id: nextProps.id,
-                maintainanceLogs: nextProps.maintainanceLogs
-            }
-        } else {
-            return null;
-        }
+    if(prevProps.id !== props.id){
+        setState({
+                ...state,
+                id: props.id,
+                maintainanceLogs: props.maintainanceLogs
+        })
+        setPrevProps(props)
     }
+    
 
-    formatType = (type) => {
-        const { translate } = this.props;
+    const formatType = (type) => {
+        const { translate } = props;
 
         switch (type) {
             case "1":
@@ -57,8 +55,8 @@ class MaintainanceLogTab extends Component {
         }
     }
 
-    formatStatus = (status) => {
-        const { translate } = this.props;
+    const formatStatus = (status) => {
+        const { translate } = props;
 
         switch (status) {
             case "1":
@@ -72,10 +70,10 @@ class MaintainanceLogTab extends Component {
         }
     }
 
-    render() {
-        const { id } = this.props;
-        const { translate } = this.props;
-        const { maintainanceLogs } = this.state;
+
+        const { id } = props;
+        const { translate } = props;
+        const { maintainanceLogs } = state;
 
         var formater = new Intl.NumberFormat();
 
@@ -105,13 +103,13 @@ class MaintainanceLogTab extends Component {
                                 maintainanceLogs.map((x, index) => (
                                     <tr key={index}>
                                         <td>{x.maintainanceCode}</td>
-                                        <td>{x.createDate ? this.formatDate(x.createDate) : ''}</td>
-                                        <td>{this.formatType(x.type)}</td>
-                                        <td>{x.startDate ? this.formatDate(x.startDate) : ''}</td>
-                                        <td>{x.endDate ? this.formatDate(x.endDate) : ''}</td>
+                                        <td>{x.createDate ? formatDate(x.createDate) : ''}</td>
+                                        <td>{formatType(x.type)}</td>
+                                        <td>{x.startDate ? formatDate(x.startDate) : ''}</td>
+                                        <td>{x.endDate ? formatDate(x.endDate) : ''}</td>
                                         <td>{x.description}</td>
                                         <td>{x.expense ? formater.format(parseInt(x.expense)) : ''} VNĐ</td>
-                                        <td>{this.formatStatus(x.status)}</td>
+                                        <td>{formatStatus(x.status)}</td>
                                     </tr>))
                             }
                         </tbody>
@@ -129,7 +127,6 @@ class MaintainanceLogTab extends Component {
                 </div>
             </div>
         );
-    }
 };
 
 const maintainanceLogTab = connect(null, null)(withTranslate(MaintainanceLogTab));

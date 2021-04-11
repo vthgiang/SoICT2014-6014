@@ -1,9 +1,9 @@
 export const AnnualLeaveFormValidator = {
     validateEmployeeNumber,
     validateReason,
-    validateTotalHour
-
+    validateTotalHour,
 }
+
 
 /**
  * Kiểm tra mã nhân viên nhập vào
@@ -12,7 +12,7 @@ export const AnnualLeaveFormValidator = {
  */
 function validateEmployeeNumber(value, translate) {
     let msg = undefined;
-    if (value.trim() === "") {
+    if (value && value.trim() === "") {
         msg = translate('human_resource.annual_leave.employee_number_required');
     }
     return msg;
@@ -25,7 +25,7 @@ function validateEmployeeNumber(value, translate) {
  */
 function validateReason(value, translate) {
     let msg = undefined;
-    if (value.trim() === "") {
+    if (!value||value?.trim() === "") {
         // msg = translate('human_resource.annual_leave.reason_annual_leave_required');
         msg = 'Giá trị không được để trống';
     }

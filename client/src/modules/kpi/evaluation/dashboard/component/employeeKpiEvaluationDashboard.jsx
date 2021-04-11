@@ -1,17 +1,17 @@
 import React, {useEffect, useState} from 'react';
 import {connect} from 'react-redux';
-
-import {UserActions} from "../../../../super-admin/user/redux/actions";
-import {kpiMemberActions} from '../../employee-evaluation/redux/actions';
-import {DashboardEvaluationEmployeeKpiSetAction} from '../redux/actions';
-
-import {StatisticsOfEmployeeKpiSetChart} from './statisticsOfEmployeeKpiSetChart';
-import {ResultsOfAllEmployeeKpiSetChart} from './resultsOfAllEmployeeKpiSetChart';
-
-import {SelectBox, SelectMulti, ExportExcel} from '../../../../../common-components';
+import { withTranslate } from 'react-redux-multilingual';
 import Swal from 'sweetalert2';
-import {DatePicker} from '../../../../../common-components';
-import {withTranslate} from 'react-redux-multilingual';
+
+import { UserActions } from "../../../../super-admin/user/redux/actions";
+import { kpiMemberActions } from '../../employee-evaluation/redux/actions';
+import { DashboardEvaluationEmployeeKpiSetAction } from '../redux/actions';
+import { createKpiSetActions } from '../../../employee/creation/redux/actions';
+
+import { StatisticsOfEmployeeKpiSetChart } from './statisticsOfEmployeeKpiSetChart';
+import { ResultsOfAllEmployeeKpiSetChart } from './resultsOfAllEmployeeKpiSetChart';
+
+import { SelectBox, SelectMulti, ExportExcel, DatePicker } from '../../../../../common-components';
 
 
 import getEmployeeSelectBoxItems from '../../../../task/organizationalUnitHelper';
@@ -41,32 +41,31 @@ function EmployeeKpiEvaluationDashboard(props) {
         endMonth = month;
     }
 
-    const INFO_SEARCH = {
+    const [state, setState] = useState({
+        commenting: false,
+        infosearch: {
+            role: localStorage.getItem("currentRole"),
+            userId: null,
+            status: 4,
+            startMonth: [startYear, startMonth].join('-'),
+            endMonth: [year, endMonth].join('-')
+        },
+
         userId: null,
         startMonth: [startYear, startMonth].join('-'),
         endMonth: [year, endMonth].join('-'),
 
         startMonthTitle: [startMonth, startYear].join('-'),
-        endMonthTitle: [endMonth, year].join('-')
-    };
-    const IDS = null;
+        endMonthTitle: [endMonth, year].join('-'),
 
-    const [state, setState] = useState({
-        commenting: false,
-        infosearch: {
-            role: localStorage.getItem("currentRole"),
-            userId: INFO_SEARCH.userId,
-            status: 4,
-            startMonth: INFO_SEARCH.startMonth,
-            endMonth: INFO_SEARCH.endMonth
-        },
         showApproveModal: "",
         showEvaluateModal: "",
 
         dateOfExcellentEmployees: formatDate(new Date(currentYear, currentMonth - 1, 1)),
         numberOfExcellentEmployees: 5,
-        ids: IDS,
+        ids: null,
         editing: false,
+        IDS: null,
 
         organizationalUnitIds: null
     });
@@ -75,12 +74,11 @@ function EmployeeKpiEvaluationDashboard(props) {
     const {translate} = props;
 
     const {
-        unitMembers, dateOfExcellentEmployees,
-        numberOfExcellentEmployees, infosearch, ids,
+        unitMembers, dateOfExcellentEmployees, userId,
+        numberOfExcellentEmployees, infosearch, ids, IDS, startMonthTitle, endMonthTitle,
         organizationalUnitIds, statisticsOfEmployeeKpiSetChartData, resultsOfAllEmployeeKpiSetChartData
     } = state;
 
-    let {startMonthTitle, endMonthTitle} = INFO_SEARCH;
     let employeeKpiSets, lastMonthEmployeeKpiSets, currentMonthEmployeeKpiSets, settingUpKpi, awaitingApprovalKpi,
         activatedKpi, totalKpi, numberOfEmployee;
     let queue = [], childrenOrganizationalUnit = [], userName;
@@ -97,8 +95,8 @@ function EmployeeKpiEvaluationDashboard(props) {
             role: localStorage.getItem("currentRole"),
             user: null,
             status: 5,
-            startDate: INFO_SEARCH.startMonth,
-            endDate: INFO_SEARCH.endMonth
+            startDate: state.startMonth,
+            endDate: endMonth
         }
 
         props.getAllUserSameDepartment(localStorage.getItem("currentRole"));
@@ -108,28 +106,29 @@ function EmployeeKpiEvaluationDashboard(props) {
     }, []);
 
     useEffect(() => {
-        const {dashboardEvaluationEmployeeKpiSet} = props;
-        const {ids} = state;
-
         if (!ids && dashboardEvaluationEmployeeKpiSet && dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit) {
+            let unit = [dashboardEvaluationEmployeeKpiSet?.childrenOrganizationalUnit?.id]
             setState({
                 ...state,
-                ids: [dashboardEvaluationEmployeeKpiSet && dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit && dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit.id],
+                ids: unit,
+                IDS: unit,
                 infosearch: {
                     ...state.infosearch
                 },
-                organizationalUnitIds: [dashboardEvaluationEmployeeKpiSet && dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit && dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit.id]
+                organizationalUnitIds: unit
             });
 
             if (dashboardEvaluationEmployeeKpiSet && dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit && dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit.id) {
                 props.getAllEmployeeOfUnitByIds({
-                    organizationalUnitIds: [dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit.id]
+                    organizationalUnitIds: unit
                 });
-                props.getAllEmployeeKpiSetOfUnitByIds([dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit.id]);
+                props.getAllEmployeeKpiSetOfUnitByIds(unit);
             }
 
+            if (userId) {
+                props.getAllEmployeeKpiSetByMonth(unit, userId, state.startMonth, state.endMonth)
+            }
         }
-
     });
 
     useEffect(() => {
@@ -141,24 +140,26 @@ function EmployeeKpiEvaluationDashboard(props) {
                 userdepartments = [userdepartments]
             }
 
-            let unitMembers;
+            let unitMembers, userId;
             unitMembers = getEmployeeSelectBoxItems(userdepartments);
             unitMembers = [...unitMembers];
+            userId = unitMembers[0].value[2] ? unitMembers[0].value[2].value : (unitMembers[0].value[0] ? unitMembers[0].value[0].value : null)
 
             setState({
                 ...state,
                 infosearch: {
                     ...state.infosearch,
-                    userId: unitMembers[0].value[2] ? unitMembers[0].value[2].value : (unitMembers[0].value[0] ? unitMembers[0].value[0].value : null)
+                    userId: userId
                 },
-                organizationalUnitIds: IDS,
+                userId: userId,
                 unitMembers: unitMembers
             });
-            INFO_SEARCH.userId = unitMembers[0].value[2] ? unitMembers[0].value[2].value : (unitMembers[0].value[0] ? unitMembers[0].value[0].value : null);
+
+            if (ids) {
+                props.getAllEmployeeKpiSetByMonth(ids, userId, state.startMonth, state.endMonth)
+            }
         }
-    },[props.user.userdepartments])
-
-
+    }, [props.user.userdepartments])
 
     function formatDate(date) {
         let d = new Date(date),
@@ -214,55 +215,66 @@ function EmployeeKpiEvaluationDashboard(props) {
     };
 
     const handleSelectOrganizationalUnit = (value) => {
-        const IDS = value;
+        setState({
+            ...state,
+            IDS: value
+        })
     };
 
     const handleUpdateData = () => {
-        if (IDS && IDS !== state.ids) {
+        if (IDS && IDS !== ids) {
             setState({
                 ...state,
                 infosearch: {
                     ...state.infosearch,
                     userId: null
                 },
-                organizationalUnitIds: null,
+                organizationalUnitIds: IDS,
                 ids: IDS
             });
 
             if (IDS.length > 0) {
                 props.getAllEmployeeKpiSetOfUnitByIds(IDS);
                 props.getAllEmployeeOfUnitByIds({organizationalUnitIds: IDS});
-                props.getChildrenOfOrganizationalUnitsAsTree(localStorage.getItem("currentRole"));
                 props.getAllUserOfDepartment(IDS);
             }
         }
     };
 
     const handleSelectEmployee = (value) => {
-        INFO_SEARCH.userId = value[0];
+        setState({
+            ...state,
+            userId: value[0]
+        })
     };
 
     const handleSelectMonthStart = (value) => {
         let month = value.slice(3, 7) + '-' + value.slice(0, 2);
         let startMonthTitle = value.slice(0, 2) + '-' + value.slice(3, 7);
 
-        INFO_SEARCH.startMonth = month;
-        INFO_SEARCH.startMonthTitle = startMonthTitle;
+        setState({
+            ...state,
+            startMonth: month,
+            startMonthTitle: startMonthTitle
+        })
     };
 
     const handleSelectMonthEnd = (value) => {
         let month = value.slice(3, 7) + '-' + value.slice(0, 2);
         let endMonthTitle = value.slice(0, 2) + '-' + value.slice(3, 7);
 
-        INFO_SEARCH.endMonth = month;
-        INFO_SEARCH.endMonthTitle = endMonthTitle;
+        setState({
+            ...state,
+            endMonth: month,
+            endMonthTitle: endMonthTitle
+        })
     };
 
     const handleSearchData = async () => {
-        let startMonth = new Date(INFO_SEARCH.startMonth);
-        let endMonth = new Date(INFO_SEARCH.endMonth);
+        let startMonthIso = new Date(state.startMonth);
+        let endMonthIso = new Date(state.endMonth);
 
-        if (startMonth.getTime() > endMonth.getTime()) {
+        if (startMonthIso.getTime() > endMonthIso.getTime()) {
             const {translate} = props;
             Swal.fire({
                 title: translate('kpi.evaluation.employee_evaluation.wrong_time'),
@@ -275,13 +287,14 @@ function EmployeeKpiEvaluationDashboard(props) {
                 ...state,
                 infosearch: {
                     ...state.infosearch,
-                    userId: INFO_SEARCH.userId,
-                    startMonth: INFO_SEARCH.startMonth,
-                    endMonth: INFO_SEARCH.endMonth
+                    userId: state.userId,
+                    startMonth: state.startMonth,
+                    endMonth: state.endMonth
                 }
             })
+
+            props.getAllEmployeeKpiSetByMonth(ids, state.userId, state.startMonth, state.endMonth)
         }
-        console.log(state.infosearch)
     };
 
 
@@ -306,10 +319,12 @@ function EmployeeKpiEvaluationDashboard(props) {
     }
 
     if (unitMembers && infosearch) {
-        for (let i = 0; i < unitMembers[0].value.length; i++) {
-            let arr = unitMembers[0].value;
-            if (arr[i].value === infosearch.userId) {
-                userName = arr[i].text
+        for (let i=0; i < unitMembers.length; i++) {
+            for (let j = 0; j < unitMembers[i].value.length; j++) {
+                let arr = unitMembers[i].value;
+                if (arr[j].value === infosearch.userId) {
+                    userName = arr[j].text
+                }
             }
         }
     }
@@ -394,16 +409,17 @@ function EmployeeKpiEvaluationDashboard(props) {
                                 <label
                                     className="form-control-static">{translate('kpi.evaluation.dashboard.organizational_unit')}</label>
                                 {ids &&
-                                <SelectMulti id="multiSelectOrganizationalUnit"
-                                             items={childrenOrganizationalUnit.map(item => {
-                                                 return {value: item.id, text: item.name}
-                                             })}
-                                             options={{
-                                                 nonSelectedText: translate('kpi.evaluation.dashboard.select_units'),
-                                                 allSelectedText: translate('kpi.evaluation.dashboard.all_unit'),
-                                             }}
-                                             onChange={handleSelectOrganizationalUnit}
-                                             value={ids}
+                                <SelectMulti
+                                     id="multiSelectOrganizationalUnit"
+                                    items={childrenOrganizationalUnit.map(item => {
+                                        return {value: item.id, text: item.name}
+                                    })}
+                                    options={{
+                                        nonSelectedText: translate('kpi.evaluation.dashboard.select_units'),
+                                        allSelectedText: translate('kpi.evaluation.dashboard.all_unit'),
+                                    }}
+                                    onChange={handleSelectOrganizationalUnit}
+                                    value={ids}
                                 >
                                 </SelectMulti>
                                 }
@@ -546,11 +562,14 @@ function EmployeeKpiEvaluationDashboard(props) {
                             <div className="box">
                                 <div className="box-header with-border">
                                     <h3 className="box-title">{translate('kpi.evaluation.dashboard.statistics_chart_title')}</h3>
-                                    {statisticsOfEmployeeKpiSetChartData &&
-                                    <ExportExcel type="link" id="export-statistic-employee-kpi-set-chart"
-                                                 exportData={statisticsOfEmployeeKpiSetChartData}/>}
+                                    { statisticsOfEmployeeKpiSetChartData &&
+                                        <ExportExcel 
+                                            type="link" 
+                                            id="export-statistic-employee-kpi-set-chart"
+                                            exportData={statisticsOfEmployeeKpiSetChartData}
+                                        />
+                                    }
                                 </div>
-                                {/* /.box-header */}
 
                                 <div className="box-body qlcv" id="statisticsOfEmployeeKpiSetChart">
                                     <div className="form-inline">
@@ -586,7 +605,7 @@ function EmployeeKpiEvaluationDashboard(props) {
                                                 items={unitMembers}
                                                 multiple={false}
                                                 onChange={handleSelectEmployee}
-                                                value={INFO_SEARCH.userId}
+                                                value={state.userId}
                                             />
                                         </div>
                                         }
@@ -600,16 +619,16 @@ function EmployeeKpiEvaluationDashboard(props) {
                                     <div className="col-sm-12 col-xs-12">
                                         <div className="qlcv">
                                             {unitMembers &&
-                                            <StatisticsOfEmployeeKpiSetChart
-                                                userId={infosearch.userId}
-                                                startMonth={infosearch.startMonth}
-                                                endMonth={infosearch.endMonth}
-                                                info={infosearch}
-                                                unitId={currentUnit}
-                                                userName={userName}
-                                                organizationalUnitIds={ids}
-                                                onDataAvailable={handleStatisticsOfEmployeeKpiSetChartDataAvailable}
-                                            />
+                                                <StatisticsOfEmployeeKpiSetChart
+                                                    userId={infosearch.userId}
+                                                    startMonth={infosearch.startMonth}
+                                                    endMonth={infosearch.endMonth}
+                                                    info={infosearch}
+                                                    unitId={currentUnit}
+                                                    userName={userName}
+                                                    organizationalUnitIds={ids}
+                                                    onDataAvailable={handleStatisticsOfEmployeeKpiSetChartDataAvailable}
+                                                />
                                             }
                                         </div>
 
@@ -627,11 +646,13 @@ function EmployeeKpiEvaluationDashboard(props) {
                                 <div className="box-header with-border">
                                     <h3 className="box-title">{translate('kpi.evaluation.dashboard.result_kpi_titile')}</h3>
                                     {resultsOfAllEmployeeKpiSetChartData &&
-                                    <ExportExcel type="link" id="export-all-employee-kpi-evaluate-result-dashboard"
-                                                 exportData={resultsOfAllEmployeeKpiSetChartData}
-                                                 style={{marginTop: 5}}/>}
+                                        <ExportExcel 
+                                            type="link" id="export-all-employee-kpi-evaluate-result-dashboard"
+                                            exportData={resultsOfAllEmployeeKpiSetChartData}
+                                            style={{marginTop: 5}}
+                                        />
+                                    }
                                 </div>
-                                {/* /.box-header */}
 
                                 <div className="box-body qlcv">
                                     <ResultsOfAllEmployeeKpiSetChart
@@ -662,6 +683,7 @@ function mapState(state) {
 const actionCreators = {
     getAllUserSameDepartment: UserActions.getAllUserSameDepartment,
     getAllUserOfDepartment: UserActions.getAllUserOfDepartment,
+    getAllEmployeeKpiSetByMonth: createKpiSetActions.getAllEmployeeKpiSetByMonth,
     getEmployeeKPISets: kpiMemberActions.getEmployeeKPISets,
     getAllEmployeeOfUnitByRole: UserActions.getAllEmployeeOfUnitByRole,
     getAllEmployeeKpiSetOfUnitByIds: DashboardEvaluationEmployeeKpiSetAction.getAllEmployeeKpiSetOfUnitByIds,

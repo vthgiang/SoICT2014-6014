@@ -1,38 +1,23 @@
-import React, {useCallback, useEffect, useState} from 'react';
-import ReactDOM from 'react-dom';
-import {connect} from 'react-redux';
-
-import {createKpiSetActions} from '../../../employee/creation/redux/actions';
-import {UserActions} from "../../../../super-admin/user/redux/actions";
-
+import React, { useEffect, useState } from 'react';
+import { connect } from 'react-redux';
 import {withTranslate} from 'react-redux-multilingual';
+
+import { createKpiSetActions } from '../../../employee/creation/redux/actions';
 
 import c3 from 'c3';
 import 'c3/c3.css';
 
 function StatisticsOfEmployeeKpiSetChart(props) {
+    const { createEmployeeKpiSet, translate, onDataAvailable } = props;
     const DATA_STATUS = {NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3};
 
     const [state, setState] = useState({
         dataStatus: DATA_STATUS.QUERYING,
         exportData: null
     });
-
-    // useEffect(() => {
-    //     const { userId, startMonth, endMonth, organizationalUnitIds } = state;
-    //
-    //     // if (props.organizationalUnitIds !== organizationalUnitIds || props.userId !== userId || props.startMonth !== startMonth || props.endMonth !== endMonth) {
-    //         props.getAllEmployeeKpiSetByMonth(props.organizationalUnitIds, props.userId, props.startMonth, props.endMonth);
-    //         setState({
-    //             ...state,
-    //             dataStatus: DATA_STATUS.QUERYING
-    //         });
-    //     // }
-    //
-    // },[props.organizationalUnitIds, props.userId, props.startMonth, props.endMonth])
+    const { organizationalUnitIds, userId, startMonth, endMonth, userName, exportData } = state
 
     useEffect(() => {
-        props.getAllEmployeeKpiSetByMonth(props.organizationalUnitIds, props.userId, props.startMonth, props.endMonth);
         setState({
             ...state,
             userId: props.userId,
@@ -44,45 +29,11 @@ function StatisticsOfEmployeeKpiSetChart(props) {
     }, [props.userId, props.startMonth, props.endMonth, props.userName, props.organizationalUnitIds]);
 
     useEffect(() => {
-        // console.log("abc")
-
-        // if (state.dataStatus === DATA_STATUS.NOT_AVAILABLE) {
-        //    props.getAllEmployeeKpiSetByMonth(props.organizationalUnitIds, props.userId, props.startMonth, props.endMonth);
-        //
-        //     setState({
-        //         ...state,
-        //         dataStatus: DATA_STATUS.QUERYING
-        //     });
-        //
-        // } else if (state.dataStatus === DATA_STATUS.QUERYING) {
-        //     if (props.createEmployeeKpiSet.employeeKpiSetByMonth) {
-        //         setState({
-        //             ...state,
-        //             dataStatus: DATA_STATUS.AVAILABLE
-        //         });
-        //     }
-        //
-        // } else if (state.dataStatus === DATA_STATUS.AVAILABLE) {
-        //     multiLineChart();
-        //     setState( {
-        //         ...state,
-        //         dataStatus: DATA_STATUS.FINISHED
-        //     });
-        //     console.log("##", state.dataStatus)
-        //
-        // }
-        const {createEmployeeKpiSet, translate} = props;
-        console.log("dataStatus", createEmployeeKpiSet)
-            multiLineChart();
-
-    },[props.createEmployeeKpiSet.employeeKpiSetByMonth])
-
+        multiLineChart();
+    }, [props.createEmployeeKpiSet.employeeKpiSetByMonth])
 
 
     const filterEmloyeeKpiSetSameOrganizationaUnit = () => {
-        const {createEmployeeKpiSet, translate} = props;
-        const {userName} = state;
-
         let listEmployeeKpiSet, listOrganizationalUnit, listEmployeeKpiSetSameOrganizationalUnit = [], dataChart,
             exportData;
 
@@ -120,8 +71,6 @@ function StatisticsOfEmployeeKpiSetChart(props) {
     };
 
     const setDataMultiLineChart = (listEmployeeKpiSet) => {
-        const {createEmployeeKpiSet, translate} = props;
-        const {userName} = state;
 
         let employeeName, title;
         let dataMultiLineChart, automaticPoint, employeePoint, approvedPoint, date;
@@ -130,6 +79,7 @@ function StatisticsOfEmployeeKpiSetChart(props) {
             employeeName = userName.split('(');
             employeeName = employeeName[0];
         }
+
         if (listEmployeeKpiSet[0] && listEmployeeKpiSet[0].organizationalUnit) {
             title = employeeName + ' - ' + listEmployeeKpiSet[0].organizationalUnit.name;
         }
@@ -140,7 +90,7 @@ function StatisticsOfEmployeeKpiSetChart(props) {
             approvedPoint = [translate('kpi.evaluation.dashboard.approver_eva')].concat(listEmployeeKpiSet.map(x => x.approvedPoint));
             date = listEmployeeKpiSet.map(x => {
                 date = new Date(x.date);
-                return date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + (date.getDate() - 1);
+                return date.getFullYear() + "-" + (date.getMonth() + 1) + "-01";
             })
         }
 
@@ -164,7 +114,6 @@ function StatisticsOfEmployeeKpiSetChart(props) {
     const multiLineChart = () => {
         removePreviousChart();
 
-        const {translate} = props;
         let dataMultiLineChart = filterEmloyeeKpiSetSameOrganizationaUnit();
         if (dataMultiLineChart && dataMultiLineChart.length !== 0) {
             dataMultiLineChart.map(data => {
@@ -191,8 +140,7 @@ function StatisticsOfEmployeeKpiSetChart(props) {
                     },
                     data: {
                         x: 'x',
-                        columns: data.data,
-                        type: 'spline'
+                        columns: data.data
                     },
                     axis: {
                         x: {
@@ -231,7 +179,6 @@ function StatisticsOfEmployeeKpiSetChart(props) {
     };
 
     const handleExportData = (exportData) => {
-        const {onDataAvailable} = props;
         if (onDataAvailable) {
             onDataAvailable(exportData);
         }
@@ -297,10 +244,8 @@ function StatisticsOfEmployeeKpiSetChart(props) {
 
         };
         return exportData;
-
     };
 
-    let {exportData} = state;
     return (
         <React.Fragment>
             <section id="chart"> </section>
@@ -309,12 +254,11 @@ function StatisticsOfEmployeeKpiSetChart(props) {
 }
 
 function mapState(state) {
-    const {createEmployeeKpiSet} = state;
-    return {createEmployeeKpiSet};
+    const { createEmployeeKpiSet } = state;
+    return { createEmployeeKpiSet };
 }
 
 const actions = {
-    getAllEmployeeKpiSetByMonth: createKpiSetActions.getAllEmployeeKpiSetByMonth
 };
 
 const connectedStatisticsOfEmployeeKpiSetChart = connect(mapState, actions)(withTranslate(StatisticsOfEmployeeKpiSetChart));

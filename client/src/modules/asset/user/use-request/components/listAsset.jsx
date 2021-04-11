@@ -13,11 +13,13 @@ import { AssetDetailForm } from '../../../admin/asset-information/components/ass
 import { getPropertyOfValue } from '../../../../../helpers/stringMethod';
 import { getTableConfiguration } from '../../../../../helpers/tableConfiguration';
 
-function ListAsset(props){
+function ListAsset(props) {
+
     const tableId_constructor = "table-list-asset";
     const defaultConfig = { limit: 5 }
     const limit_constructor = getTableConfiguration(tableId_constructor, defaultConfig).limit;
-    const [state, setState] = useState({
+
+    const [state, setState] =useState({
         tableId: tableId_constructor,
         code: "",
         assetName: "",
@@ -52,6 +54,7 @@ function ListAsset(props){
     const handleView = async (value) => {
         await setState(state => {
             return {
+                ...state,
                 currentRowView: value
             }
         });
@@ -189,22 +192,25 @@ function ListAsset(props){
 
     // Bắt sự kiện setting số dòng hiện thị trên một trang
     const setLimit = async (number) => {
-        await setState({
-            ...state,
-            limit: parseInt(number),
+        await setState(state =>{
+            return{
+                ...state,
+                limit: parseInt(number),
+            }
         });
-        props.getAllAsset(state);
+        props.getAllAsset({...state, limit: parseInt(number)});
     }
 
     // Bắt sự kiện chuyển trang
     const setPage = async (pageNumber) => {
         var page = (pageNumber - 1) * state.limit;
-        await setState({
-            ...state,
-            page: parseInt(page),
-
+        await setState(state =>{
+            return{
+                ...state,
+                page: parseInt(page),
+            }
         });
-        props.getAllAsset(state);
+        props.getAllAsset({...state,  page: parseInt(page)});
     }
 
     const getAssetTypes = () => {

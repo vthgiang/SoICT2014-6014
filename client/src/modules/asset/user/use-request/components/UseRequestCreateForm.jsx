@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useState, useEffect} from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
@@ -11,35 +11,9 @@ import Swal from 'sweetalert2';
 import ValidationHelper from '../../../../../helpers/validationHelper';
 import { generateCode } from "../../../../../helpers/generateCode";
 
-class UseRequestCreateForm extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            recommendNumber: "",
-            dateCreate: this.formatDate(Date.now()),
-            proponent: "",
-            reqContent: "",
-            dateStartUse: this.props.startDate ? this.formatDate(this.props.startDate) : this.formatDate(Date.now()),
-            dateEndUse: this.props.endDate ? this.formatDate(this.props.endDate) : this.formatDate(Date.now()),
-            startTime: null,
-            stopTime: null,
-            status: "waiting_for_approval",
-            asset: "",
-        };
-    }
-    componentDidMount = () => {
-        // Mỗi khi modal mở, cần sinh lại code
-        let { _id } = this.props;
-        _id && window.$(`#modal-create-recommenddistribute-${_id}`).on('shown.bs.modal', this.regenerateCode);
-    }
-
-    componentWillUnmount = () => {
-        // Unsuscribe event
-        let { _id } = this.props;
-        _id && window.$(`#modal-create-recommenddistribute-${_id}`).unbind('shown.bs.modal', this.regenerateCode)
-    }
+function UseRequestCreateForm(props) {
     // Function format ngày hiện tại thành dạnh dd-mm-yyyy
-    formatDate = (date) => {
+    const formatDate = (date) => {
         if (!date) return null;
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
@@ -57,121 +31,205 @@ class UseRequestCreateForm extends Component {
         return [day, month, year].join('-');
     }
 
-    regenerateCode = () => {
+    
+    const [state, setState] = useState({
+        recommendNumber: "",
+        dateCreate: formatDate(Date.now()),
+        proponent: "",
+        reqContent: "",
+        dateStartUse: props.startDate ? formatDate(props.startDate) : formatDate(Date.now()),
+        dateEndUse: props.endDate ? formatDate(props.endDate) : formatDate(Date.now()),
+        startTime: null,
+        stopTime: null,
+        status: "waiting_for_approval",
+        asset: "",
+    })
+    const [prevProps, setPrevProps] = useState({
+        _id: null
+    })
+    const { _id } = props;
+    const { translate, recommendDistribute, assetsManager, user, auth } = props;
+    const {
+        recommendNumber, dateCreate, asset, reqContent, dateStartUse, dateEndUse,
+        errorOnRecommendNumber, errorOnDateCreate, errorOnReqContent, errorOnDateStartUse, errorOnDateEndUse, startTime, stopTime
+    } = state;
+    // 
+    var assetlist = assetsManager.listAssets;
+    var userlist = user.list;
+
+    if(prevProps._id !== props._id){
+        setState(state =>{
+            return{ 
+                ...state,
+                _id: props._id,
+                asset: props.asset,
+                stopTime: props.stopTime,
+                startTime: props.startTime,
+            }
+        })
+        setPrevProps(props)
+    }
+    
+    useEffect(() => {
+        // Mỗi khi modal mở, cần sinh lại code
+        let { _id } = props;
+        _id && window.$(`#modal-create-recommenddistribute-${_id}`).on('shown.bs.modal', regenerateCode);
+        return () => {
+            let { _id } = props;
+            _id && window.$(`#modal-create-recommenddistribute-${_id}`).unbind('shown.bs.modal', regenerateCode)
+        }
+    }, [])
+    
+
+    const regenerateCode = () => {
         let code = generateCode("UR");
-        this.setState((state) => ({
+        setState((state) => ({
             ...state,
             recommendNumber: code,
         }));
     }
 
     // Bắt sự kiện thay đổi mã phiếu
-    handleRecommendNumberChange = (e) => {
+    const handleRecommendNumberChange = (e) => {
         let { value } = e.target;
-        let { translate } = this.props;
+        let { translate } = props;
         let { message } = ValidationHelper.validateName(translate, value, 4, 255);
-        this.setState({
-            recommendNumber: value,
-            errorOnRecommendNumber: message
+        setState(state =>{
+            return{ 
+                ...state,
+                recommendNumber: value,
+                errorOnRecommendNumber: message
+            }
         });
     }
 
     // Bắt sự kiện thay đổi "Ngày lập"
-    handleDateCreateChange = (value) => {
-        let { translate } = this.props;
+    const handleDateCreateChange = (value) => {
+        let { translate } = props;
         let { message } = ValidationHelper.validateName(translate, value, 4, 255);
-        this.setState({
-            dateCreate: value,
-            errorOnDateCreate: message
+        setState(state => {
+            return{
+                ...state,
+                dateCreate: value,
+                errorOnDateCreate: message
+            }
         });
     }
 
     /**
      * Bắt sự kiện thay đổi người sử dụng
      */
-    handleProponentChange = (value) => {
-        this.setState({
+    const handleProponentChange = (value) => {
+        setState({
             proponent: value[0]
         });
     }
 
     // Bắt sự kiện thay đổi "Nội dung đề nghị"
-    handleReqContentChange = (e) => {
+    const handleReqContentChange = (e) => {
         let { value } = e.target;
-        let { translate } = this.props;
+        let { translate } = props;
         let { message } = ValidationHelper.validateName(translate, value, 4, 255);
-        this.setState({
-            reqContent: value,
-            errorOnReqContent: message
+        setState(state =>{
+            return{
+                ...state,
+                reqContent: value,
+                errorOnReqContent: message
+            }
         });
     }
 
     /**
      * Bắt sự kiện thay đổi Mã tài sản
      */
-    handleAssetChange = (value) => {
-        this.setState({
-            asset: value[0]
+    const handleAssetChange = (value) => {
+        setState(state => {
+            return{
+                ...state,
+                asset: value[0]
+            }
         });
     }
 
     // Bắt sự kiện thay đổi "Thời gian đăng ký sử dụng từ ngày"
-    handleDateStartUseChange = (value) => {
-        let { translate } = this.props;
+    const handleDateStartUseChange = (value) => {
+        let { translate } = props;
         let { message } = ValidationHelper.validateName(translate, value, 4, 255);
-        this.setState({
-            dateStartUse: value,
-            errorOnDateStartUse: message
+        setState(state =>{
+            return{
+                ...state,
+                dateStartUse: value,
+                errorOnDateStartUse: message
+            }
         });
     }
 
-    handleStartTimeChange = (value) => {
-        this.setState({
-            startTime: value
+    const handleStartTimeChange = (value) => {
+        setState(state => {
+            return{
+                ...state,
+                startTime: value
+            }
         });
     }
 
-    handleStopTimeChange = (value) => {
-        this.setState({
-            stopTime: value
+    const handleStopTimeChange = (value) => {
+        setState(state =>{
+            return{
+                ...state,
+                stopTime: value
+            }
         });
 
     }
     // Bắt sự kiện thay đổi "Thời gian đăng ký sử dụng đến ngày"
-    handleDateEndUseChange = (value) => {
-        let { translate } = this.props;
+    const handleDateEndUseChange = (value) => {
+        let { translate } = props;
         let { message } = ValidationHelper.validateName(translate, value, 4, 255);
-        this.setState({
-            dateEndUse: value,
-            errorOnDateEndUse: this.props.typeRegisterForUse == 3 ? undefined : message
+        setState(state =>{
+            return{
+                ...state,
+                dateEndUse: value,
+                errorOnDateEndUse: props.typeRegisterForUse == 3 ? undefined : message
+            }
         });
     }
 
-    getDefaultStartValue = (value) => {
-        this.setState({ startTime: value });
+    const getDefaultStartValue = (value) => {
+        setState(state =>{ 
+            return{
+                ...state,
+                startTime: value 
+            }
+        });
     }
 
-    getDefaultEndValue = (value) => {
-        this.setState({ stopTime: value });
+    const getDefaultEndValue = (value) => {
+        setState(state =>{ 
+            return{
+                ...state,
+                stopTime: value 
+            }
+        });
     }
 
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
-    isFormValidated = () => {
-        let { recommendNumber, dateCreate, reqContent, dateStartUse, dateEndUse } = this.state;
-        let { translate } = this.props;
+    const isFormValidated = () => {
+        let { recommendNumber, dateCreate, reqContent, dateStartUse, dateEndUse } = state;
+        let { translate } = props;
         if (
             // !ValidationHelper.validateEmpty(translate, recommendNumber).status ||
             !ValidationHelper.validateEmpty(translate, dateCreate).status ||
             !ValidationHelper.validateEmpty(translate, reqContent).status ||
             !ValidationHelper.validateEmpty(translate, dateStartUse).status ||
-            (this.props.typeRegisterForUse != 3 && !ValidationHelper.validateName(translate, dateEndUse).status)
+            (props.typeRegisterForUse != 3 && !ValidationHelper.validateName(translate, dateEndUse).status)
         ) return false;
         return true;
     }
 
     // Bắt sự kiện submit form
-    save = async () => {
-        let { dateStartUse, dateEndUse, dateCreate, date, partStart, partEnd, partCreate, startTime, stopTime } = this.state;
+    const save = async () => {
+        let { dateStartUse, dateEndUse, dateCreate, date, partStart, partEnd, partCreate, startTime, stopTime } = state;
 
         partStart = dateStartUse.split('-');
         partEnd = dateEndUse.split('-');
@@ -195,12 +253,12 @@ class UseRequestCreateForm extends Component {
         date = [partCreate[2], partCreate[1], partCreate[0]].join('-');
         dateCreate = new Date(date);
 
-        let dataToSubmit = { ...this.state, dateCreate, dateStartUse, dateEndUse, proponent: this.props.auth.user._id }
-        if (this.isFormValidated()) {
+        let dataToSubmit = { ...state, dateCreate, dateStartUse, dateEndUse, proponent: props.auth.user._id }
+        if (isFormValidated()) {
             let nowDate = new Date();
             let dateStartUse, date;
 
-            date = this.state.dateStartUse.split("-");
+            date = state.dateStartUse.split("-");
             date = [date[2], date[1], date[0]].join('-')
             dateStartUse = new Date(date)
 
@@ -212,166 +270,141 @@ class UseRequestCreateForm extends Component {
                     confirmButtonText: "Đóng",
                 })
             } else {
-                await this.props.createRecommendDistribute(dataToSubmit);
-                if (this.props._id === `calendar-${this.props.asset}`) {
-                    await this.props.handleChange(dataToSubmit)
+                await props.createRecommendDistribute(dataToSubmit);
+                if (props._id === `calendar-${props.asset}`) {
+                    await props.handleChange(dataToSubmit)
                 }
             }
         }
     }
 
-    static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps._id !== prevState._id) {
-            return {
-                ...prevState,
-                _id: nextProps._id,
-                asset: nextProps.asset,
-                stopTime: nextProps.stopTime,
-                startTime: nextProps.startTime,
-            }
-        } else {
-            return null;
-        }
-    }
+    return (
+        <React.Fragment>
+            <DialogModal
+                size='50' modalID={`modal-create-recommenddistribute-${_id}`} isLoading={recommendDistribute.isLoading}
+                formID="form-create-recommenddistribute"
+                title={translate('asset.asset_info.add_usage_info')}
+                func={save}
+                disableSubmit={!isFormValidated()}
+            >
+                {/* Form thêm mới phiếu đăng ký sử dụng thiết bị */}
+                <form className="form-group" id="form-create-recommenddistribute">
+                    <div className="col-md-12">
 
-    render() {
-        const { _id } = this.props;
-        const { translate, recommendDistribute, assetsManager, user, auth } = this.props;
-        const {
-            recommendNumber, dateCreate, asset, reqContent, dateStartUse, dateEndUse,
-            errorOnRecommendNumber, errorOnDateCreate, errorOnReqContent, errorOnDateStartUse, errorOnDateEndUse, startTime, stopTime
-        } = this.state;
-        // 
-        var assetlist = assetsManager.listAssets;
-        var userlist = user.list;
-        return (
-            <React.Fragment>
-                <DialogModal
-                    size='50' modalID={`modal-create-recommenddistribute-${_id}`} isLoading={recommendDistribute.isLoading}
-                    formID="form-create-recommenddistribute"
-                    title={translate('asset.asset_info.add_usage_info')}
-                    func={this.save}
-                    disableSubmit={!this.isFormValidated()}
-                >
-                    {/* Form thêm mới phiếu đăng ký sử dụng thiết bị */}
-                    <form className="form-group" id="form-create-recommenddistribute">
-                        <div className="col-md-12">
+                        <div className="col-sm-6">
+                            {/* Mã phiếu */}
+                            <div className={`form-group`}>
+                                <label>{translate('asset.general_information.form_code')}</label>
+                                <input type="text" className="form-control" name="recommendNumber" value={recommendNumber} onChange={handleRecommendNumberChange} autoComplete="off" placeholder="Mã phiếu" />
+                                {/* <ErrorLabel content={errorOnRecommendNumber} /> */}
+                            </div>
 
-                            <div className="col-sm-6">
-                                {/* Mã phiếu */}
-                                <div className={`form-group`}>
-                                    <label>{translate('asset.general_information.form_code')}</label>
-                                    <input type="text" className="form-control" name="recommendNumber" value={recommendNumber} onChange={this.handleRecommendNumberChange} autoComplete="off" placeholder="Mã phiếu" />
-                                    {/* <ErrorLabel content={errorOnRecommendNumber} /> */}
-                                </div>
+                            {/* Ngày lập */}
+                            <div className={`form-group ${!errorOnDateCreate ? "" : "has-error"}`}>
+                                <label>{translate('asset.general_information.create_date')}<span className="text-red">*</span></label>
+                                <DatePicker
+                                    id="create_start_date"
+                                    value={dateCreate}
+                                    onChange={handleDateCreateChange}
+                                />
+                                <ErrorLabel content={errorOnDateCreate} />
+                            </div>
 
-                                {/* Ngày lập */}
-                                <div className={`form-group ${!errorOnDateCreate ? "" : "has-error"}`}>
-                                    <label>{translate('asset.general_information.create_date')}<span className="text-red">*</span></label>
-                                    <DatePicker
-                                        id="create_start_date"
-                                        value={dateCreate}
-                                        onChange={this.handleDateCreateChange}
-                                    />
-                                    <ErrorLabel content={errorOnDateCreate} />
-                                </div>
-
-                                {/* Người đề nghị */}
-                                <div className={`form-group`}>
-                                    <label>{translate('asset.usage.proponent')}</label>
-                                    <div>
-                                        <div id="proponentBox">
-                                            <SelectBox
-                                                id={`add-proponent${_id}`}
-                                                className="form-control select2"
-                                                style={{ width: "100%" }}
-                                                items={userlist.map(x => {
-                                                    return { value: x._id, text: x.name + " - " + x.email }
-                                                })}
-                                                onChange={this.handleProponentChange}
-                                                value={auth.user._id}
-                                                multiple={false}
-                                                disabled
-                                            />
-                                        </div>
+                            {/* Người đề nghị */}
+                            <div className={`form-group`}>
+                                <label>{translate('asset.usage.proponent')}</label>
+                                <div>
+                                    <div id="proponentBox">
+                                        <SelectBox
+                                            id={`add-proponent${_id}`}
+                                            className="form-control select2"
+                                            style={{ width: "100%" }}
+                                            items={userlist.map(x => {
+                                                return { value: x._id, text: x.name + " - " + x.email }
+                                            })}
+                                            onChange={handleProponentChange}
+                                            value={auth.user._id}
+                                            multiple={false}
+                                            disabled
+                                        />
                                     </div>
-                                </div>
-
-                                {/* Nội dung đề nghị */}
-                                <div className={`form-group ${!errorOnReqContent ? "" : "has-error"}`}>
-                                    <label>{translate('asset.general_information.content')}<span className="text-red">*</span></label>
-                                    <textarea className="form-control" rows="3" name="reqContent" value={reqContent} onChange={this.handleReqContentChange} autoComplete="off" placeholder="Nội dung đề nghị"></textarea>
-                                    <ErrorLabel content={errorOnReqContent} />
                                 </div>
                             </div>
 
-                            <div className="col-sm-6">
-                                {/* Tài sản */}
-                                <div className={`form-group`}>
-                                    <label>{translate('asset.general_information.asset')}</label>
-                                    <div>
-                                        <div id="assetUBox">
-                                            <SelectBox
-                                                id={`asset${_id}`}
-                                                className="form-control select2"
-                                                style={{ width: "100%" }}
-                                                items={assetlist.map(x => {
-                                                    return { value: x._id, text: x.code + " - " + x.assetName }
-                                                })}
-                                                onChange={this.handleAssetChange}
-                                                value={asset}
-                                                multiple={false}
-                                                disabled
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Thời gian đăng ký sử dụng từ ngày */}
-                                <div className={`form-group ${errorOnDateStartUse === undefined ? "" : "has-error"}`}>
-                                    <label>{translate('asset.general_information.handover_from_date')}<span className="text-red">*</span></label>
-                                    <DatePicker
-                                        id="create_start_use"
-                                        value={dateStartUse}
-                                        onChange={this.handleDateStartUseChange}
-                                    />
-                                    {this.props.typeRegisterForUse == 2 &&
-                                        <TimePicker
-                                            id={`time-picker-start`}
-                                            onChange={this.handleStartTimeChange}
-                                            value={startTime}
-                                        />
-                                    }
-                                    <ErrorLabel content={errorOnDateStartUse} />
-                                </div>
-
-                                {/* Thời gian đăng ký sử dụng đến ngày */}
-                                <div className={`form-group ${errorOnDateEndUse === undefined ? "" : "has-error"}`}>
-                                    <label>{translate('asset.general_information.handover_to_date')}{this.props.typeRegisterForUse != 3 && <span className="text-red">*</span>}</label>
-                                    <DatePicker
-                                        id="create_end_use"
-                                        value={dateEndUse}
-                                        onChange={this.handleDateEndUseChange}
-                                    />
-                                    {this.props.typeRegisterForUse == 2 &&
-                                        <TimePicker
-                                            id={`time-picker-end`}
-                                            onChange={this.handleStopTimeChange}
-                                            value={stopTime}
-                                        />
-                                    }
-
-                                    <ErrorLabel content={errorOnDateEndUse} />
-                                </div>
-
-
+                            {/* Nội dung đề nghị */}
+                            <div className={`form-group ${!errorOnReqContent ? "" : "has-error"}`}>
+                                <label>{translate('asset.general_information.content')}<span className="text-red">*</span></label>
+                                <textarea className="form-control" rows="3" name="reqContent" value={reqContent} onChange={handleReqContentChange} autoComplete="off" placeholder="Nội dung đề nghị"></textarea>
+                                <ErrorLabel content={errorOnReqContent} />
                             </div>
                         </div>
-                    </form>
-                </DialogModal>
-            </React.Fragment>
-        );
-    }
+
+                        <div className="col-sm-6">
+                            {/* Tài sản */}
+                            <div className={`form-group`}>
+                                <label>{translate('asset.general_information.asset')}</label>
+                                <div>
+                                    <div id="assetUBox">
+                                        <SelectBox
+                                            id={`asset${_id}`}
+                                            className="form-control select2"
+                                            style={{ width: "100%" }}
+                                            items={assetlist.map(x => {
+                                                return { value: x._id, text: x.code + " - " + x.assetName }
+                                            })}
+                                            onChange={handleAssetChange}
+                                            value={asset}
+                                            multiple={false}
+                                            disabled
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Thời gian đăng ký sử dụng từ ngày */}
+                            <div className={`form-group ${errorOnDateStartUse === undefined ? "" : "has-error"}`}>
+                                <label>{translate('asset.general_information.handover_from_date')}<span className="text-red">*</span></label>
+                                <DatePicker
+                                    id="create_start_use"
+                                    value={dateStartUse}
+                                    onChange={handleDateStartUseChange}
+                                />
+                                {props.typeRegisterForUse == 2 &&
+                                    <TimePicker
+                                        id={`time-picker-start`}
+                                        onChange={handleStartTimeChange}
+                                        value={startTime}
+                                    />
+                                }
+                                <ErrorLabel content={errorOnDateStartUse} />
+                            </div>
+
+                            {/* Thời gian đăng ký sử dụng đến ngày */}
+                            <div className={`form-group ${errorOnDateEndUse === undefined ? "" : "has-error"}`}>
+                                <label>{translate('asset.general_information.handover_to_date')}{props.typeRegisterForUse != 3 && <span className="text-red">*</span>}</label>
+                                <DatePicker
+                                    id="create_end_use"
+                                    value={dateEndUse}
+                                    onChange={handleDateEndUseChange}
+                                />
+                                {props.typeRegisterForUse == 2 &&
+                                    <TimePicker
+                                        id={`time-picker-end`}
+                                        onChange={handleStopTimeChange}
+                                        value={stopTime}
+                                    />
+                                }
+
+                                <ErrorLabel content={errorOnDateEndUse} />
+                            </div>
+
+
+                        </div>
+                    </div>
+                </form>
+            </DialogModal>
+        </React.Fragment>
+    );
 };
 
 function mapState(state) {
