@@ -74,7 +74,7 @@ function EmployeeKpiEvaluationDashboard(props) {
     const {translate} = props;
 
     const {
-        unitMembers, dateOfExcellentEmployees,
+        unitMembers, dateOfExcellentEmployees, userId,
         numberOfExcellentEmployees, infosearch, ids, IDS, startMonthTitle, endMonthTitle,
         organizationalUnitIds, statisticsOfEmployeeKpiSetChartData, resultsOfAllEmployeeKpiSetChartData
     } = state;
@@ -107,20 +107,26 @@ function EmployeeKpiEvaluationDashboard(props) {
 
     useEffect(() => {
         if (!ids && dashboardEvaluationEmployeeKpiSet && dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit) {
+            let unit = [dashboardEvaluationEmployeeKpiSet?.childrenOrganizationalUnit?.id]
             setState({
                 ...state,
-                ids: [dashboardEvaluationEmployeeKpiSet && dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit && dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit.id],
+                ids: unit,
+                IDS: unit,
                 infosearch: {
                     ...state.infosearch
                 },
-                organizationalUnitIds: [dashboardEvaluationEmployeeKpiSet && dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit && dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit.id]
+                organizationalUnitIds: unit
             });
 
             if (dashboardEvaluationEmployeeKpiSet && dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit && dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit.id) {
                 props.getAllEmployeeOfUnitByIds({
-                    organizationalUnitIds: [dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit.id]
+                    organizationalUnitIds: unit
                 });
-                props.getAllEmployeeKpiSetOfUnitByIds([dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit.id]);
+                props.getAllEmployeeKpiSetOfUnitByIds(unit);
+            }
+
+            if (userId) {
+                props.getAllEmployeeKpiSetByMonth(unit, userId, state.startMonth, state.endMonth)
             }
         }
     });
@@ -146,13 +152,10 @@ function EmployeeKpiEvaluationDashboard(props) {
                     userId: userId
                 },
                 userId: userId,
-                organizationalUnitIds: IDS,
                 unitMembers: unitMembers
             });
-
-            props.getAllEmployeeKpiSetByMonth(IDS, userId, state.startMonth, state.endMonth)
         }
-    },[props.user.userdepartments])
+    }, [props.user.userdepartments])
 
     function formatDate(date) {
         let d = new Date(date),
