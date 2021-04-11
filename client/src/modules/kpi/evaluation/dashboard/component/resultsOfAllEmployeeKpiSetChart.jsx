@@ -236,7 +236,7 @@ function ResultsOfAllEmployeeKpiSetChart(props) {
             xs = Object.assign(xs, temporary);
         }
 
-        let chart = c3.generate({
+        const chart = c3.generate({
             bindto: refMultiLineChart.current,
 
             padding: {
@@ -276,6 +276,10 @@ function ResultsOfAllEmployeeKpiSetChart(props) {
             legend: {
                 show: false
             }
+        })
+        setState({
+            ...state,
+            chart: chart
         })
 
         return {
@@ -414,16 +418,21 @@ function ResultsOfAllEmployeeKpiSetChart(props) {
                             onClick={() => handleSelectKindOfPoint(KIND_OF_POINT.APPROVED)}>{translate('kpi.evaluation.dashboard.approve_point')}</button>
                 </div>
             </section>
+            {employeeKpiSetsInOrganizationalUnitByMonth ?
+
             <section id={"resultsOfAllEmployeeKpiSet"} className="c3-chart-container">
                 <div ref={refMultiLineChart}></div>
                 <CustomLegendC3js
                     chart={state.chart}
                     chartId={"resultsOfAllEmployeeKpiSet"}
                     legendId={"resultsOfAllEmployeeKpiSetLegend"}
-                    title={state.dataChart && `${translate('general.list_employee')} (${state.dataChart.length / 2})`}
+                    title={employeeKpiSetsInOrganizationalUnitByMonth && `${translate('general.list_employee')} (${employeeKpiSetsInOrganizationalUnitByMonth.length })`}
                     dataChartLegend={state.dataChart && state.dataChart.filter((item, index) => index % 2 === 1).map(item => item[0])}
                 />
             </section>
+                : employeeKpiSetsInOrganizationalUnitByMonth &&
+                <section>{translate('kpi.organizational_unit.dashboard.no_data')}</section>
+            }
         </React.Fragment>
     )
 }

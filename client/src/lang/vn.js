@@ -1682,6 +1682,12 @@ export default {
                     delete_discipline_faile: "Xoá kỷ luật thất bại",
                     edit_discipline_success: "Chỉnh sửa kỷ luật thành công",
                     edit_discipline_faile: "Chỉnh sửa kỷ luật thất bại",
+
+                    update_major_success: "Chỉnh sửa chuyên ngành thành công",
+                    update_major_failure: "Chỉnh sửa chuyên ngành thất bại",
+
+                    delete_major_success: "Xóa chuyên ngành thành công",
+                    delete_major_failure: "Xóa chuyên ngành thất bại"
                 },
             },
 
